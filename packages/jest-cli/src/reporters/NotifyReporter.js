@@ -10,7 +10,8 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
+import type {Context} from 'types/Context';
 
 const BaseReporter = require('./BaseReporter');
 const notifier = require('node-notifier');
@@ -29,9 +30,13 @@ class NotifyReporter extends BaseReporter {
     this._startRun = startRun;
   }
 
-  onRunComplete(config: Config, result: AggregatedResult): void {
-    const success = result.numFailedTests === 0 &&
-      result.numRuntimeErrorTestSuites === 0;
+  onRunComplete(
+    contexts: Set<Context>,
+    config: GlobalConfig,
+    result: AggregatedResult,
+  ): void {
+    const success =
+      result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 
     if (success) {
       const title = util.format('%d%% Passed', 100);
@@ -56,24 +61,27 @@ class NotifyReporter extends BaseReporter {
 
       const restartAnswer = 'Run again';
       const quitAnswer = 'Exit tests';
-      notifier.notify({
-        actions: [restartAnswer, quitAnswer],
-        closeLabel: 'Close',
-        icon,
-        message,
-        title,
-      }, (err, _, metadata) => {
-        if (err || !metadata) {
-          return;
-        }
-        if (metadata.activationValue === quitAnswer) {
-          process.exit(0);
-          return;
-        }
-        if (metadata.activationValue === restartAnswer) {
-          this._startRun();
-        }
-      });
+      notifier.notify(
+        {
+          actions: [restartAnswer, quitAnswer],
+          closeLabel: 'Close',
+          icon,
+          message,
+          title,
+        },
+        (err, _, metadata) => {
+          if (err || !metadata) {
+            return;
+          }
+          if (metadata.activationValue === quitAnswer) {
+            process.exit(0);
+            return;
+          }
+          if (metadata.activationValue === restartAnswer) {
+            this._startRun();
+          }
+        },
+      );
     }
   }
 }

@@ -16,12 +16,13 @@ const chalk = require('chalk');
 const micromatch = require('micromatch');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
+const slash = require('slash');
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE =
-  /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const STACK_TRACE_IGNORE =
-  /^\s+at.*?jest(-.*?)?(\/|\\)(vendor|build|node_modules|packages)(\/|\\)/;
+/* eslint-disable max-len */
+const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+/* eslint-enable max-len */
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -38,7 +39,7 @@ const trim = string => (string || '').replace(/^\s+/, '').replace(/\s+$/, '');
 // want to trim those, because they may have pointers to the column/character
 // which will get misaligned.
 const trimPaths = string =>
-  string.match(STACK_PATH_REGEXP) ? trim(string) : string;
+  (string.match(STACK_PATH_REGEXP) ? trim(string) : string);
 
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
@@ -81,8 +82,13 @@ const formatExecError = (
   }
 
   return (
-    TITLE_INDENT + TITLE_BULLET + EXEC_ERROR_MESSAGE + '\n\n' +
-    message + stack + '\n'
+    TITLE_INDENT +
+    TITLE_BULLET +
+    EXEC_ERROR_MESSAGE +
+    '\n\n' +
+    message +
+    stack +
+    '\n'
   );
 };
 
@@ -113,7 +119,7 @@ const formatPaths = (config: StackTraceOptions, relativeTestPath, line) => {
     return line;
   }
 
-  let filePath = path.relative(config.rootDir, match[2]);
+  let filePath = slash(path.relative(config.rootDir, match[2]));
   // highlight paths from the current test file
   if (
     (config.testMatch &&
@@ -139,7 +145,7 @@ const formatStackTrace = (
 ) => {
   let lines = stack.split(/\n/);
   const relativeTestPath = testPath
-    ? path.relative(config.rootDir, testPath)
+    ? slash(path.relative(config.rootDir, testPath))
     : null;
   lines = removeInternalStackEntries(lines, config);
   return lines
@@ -154,38 +160,39 @@ const formatResultsErrors = (
   config: Config,
   testPath: ?Path,
 ): ?string => {
-  const failedResults = testResults.reduce(
-    (errors, result) => {
-      result.failureMessages.forEach(content => errors.push({content, result}));
-      return errors;
-    },
-    [],
-  );
+  const failedResults = testResults.reduce((errors, result) => {
+    result.failureMessages.forEach(content => errors.push({content, result}));
+    return errors;
+  }, []);
 
   if (!failedResults.length) {
     return null;
   }
 
-  return failedResults.map(({result, content}) => {
-    let {message, stack} = separateMessageFromStack(content);
-    stack = config.noStackTrace
-      ? ''
-      : STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath)) + '\n';
+  return failedResults
+    .map(({result, content}) => {
+      let {message, stack} = separateMessageFromStack(content);
+      stack = config.noStackTrace
+        ? ''
+        : STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath)) + '\n';
 
-    message = message
-      .split(/\n/)
-      .map(line => MESSAGE_INDENT + line)
-      .join('\n');
+      message = message
+        .split(/\n/)
+        .map(line => MESSAGE_INDENT + line)
+        .join('\n');
 
-    const title = chalk.bold.red(
-      TITLE_INDENT + TITLE_BULLET +
-      result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-      (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-      result.title,
-    ) + '\n';
+      const title =
+        chalk.bold.red(
+          TITLE_INDENT +
+            TITLE_BULLET +
+            result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
+            (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+            result.title,
+        ) + '\n';
 
-    return title + '\n' + message + '\n' + stack;
-  }).join('\n');
+      return title + '\n' + message + '\n' + stack;
+    })
+    .join('\n');
 };
 
 module.exports = {

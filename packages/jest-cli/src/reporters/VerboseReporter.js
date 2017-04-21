@@ -9,24 +9,28 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
 import type {
   AggregatedResult,
   AssertionResult,
   Suite,
   TestResult,
 } from 'types/TestResult';
+import type {Test} from 'types/TestRunner';
 
 const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 const {ICONS} = require('../constants');
 
-class VerboseReporter extends DefaultReporter {
-  _config: Config;
+type Options = {|
+  expand: boolean,
+|};
 
-  constructor(config: Config) {
+class VerboseReporter extends DefaultReporter {
+  _options: Options;
+
+  constructor(options: Options) {
     super();
-    this._config = config;
+    this._options = options;
   }
 
   static filterTestResults(testResults: Array<AssertionResult>) {
@@ -55,11 +59,11 @@ class VerboseReporter extends DefaultReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     result: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    super.onTestResult(config, result, aggregatedResults);
+    super.onTestResult(test, result, aggregatedResults);
     if (!result.testExecError && !result.skipped) {
       this._logTestResults(result.testResults);
     }
@@ -92,16 +96,12 @@ class VerboseReporter extends DefaultReporter {
 
   _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
-    const time = test.duration
-      ? ` (${test.duration.toFixed(0)}ms)`
-      : '';
+    const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
   _logTests(tests: Array<AssertionResult>, indentLevel: number) {
-    const config = this._config;
-
-    if (config.expand) {
+    if (this._options.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
       const skippedCount = tests.reduce((result, test) => {
@@ -131,7 +131,6 @@ class VerboseReporter extends DefaultReporter {
     const indentation = '  '.repeat(indentLevel || 0);
     this.log(indentation + (str || ''));
   }
-
 }
 
 module.exports = VerboseReporter;

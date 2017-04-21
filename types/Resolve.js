@@ -9,7 +9,9 @@
  */
 'use strict';
 
-import type _Resolver, { ResolveModuleConfig as _ResolveModuleConfig } from 'jest-resolve';
+import type _Resolver, {
+  ResolveModuleConfig as _ResolveModuleConfig,
+} from 'jest-resolve';
 
 export type Resolver = _Resolver;
 export type ResolveModuleConfig = _ResolveModuleConfig;

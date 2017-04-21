@@ -13,8 +13,15 @@
 const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
 const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
+const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
+const HTMLElementPlugin = require('pretty-format/build/plugins/HTMLElement');
+const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
 
-const PLUGINS = [AsymmetricMatcherPlugin];
+const PLUGINS = [
+  AsymmetricMatcherPlugin,
+  ReactElementPlugin,
+  HTMLElementPlugin,
+].concat(ImmutablePlugins);
 
 export type ValueType =
   | 'array'
@@ -113,14 +120,10 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
 const highlightTrailingWhitespace = (text: string, bgColor: Function): string =>
   text.replace(/\s+$/gm, bgColor('$&'));
 
-const printReceived = (object: any) => highlightTrailingWhitespace(
-  RECEIVED_COLOR(stringify(object)),
-  RECEIVED_BG,
-);
-const printExpected = (value: any) => highlightTrailingWhitespace(
-  EXPECTED_COLOR(stringify(value)),
-  EXPECTED_BG,
-);
+const printReceived = (object: any) =>
+  highlightTrailingWhitespace(RECEIVED_COLOR(stringify(object)), RECEIVED_BG);
+const printExpected = (value: any) =>
+  highlightTrailingWhitespace(EXPECTED_COLOR(stringify(value)), EXPECTED_BG);
 
 const printWithType = (
   name: string,
@@ -129,10 +132,9 @@ const printWithType = (
 ) => {
   const type = getType(received);
   return (
-    name + ':' +
-    (type !== 'null' && type !== 'undefined'
-      ? '\n  ' + type + ': '
-      : ' ') +
+    name +
+    ':' +
+    (type !== 'null' && type !== 'undefined' ? '\n  ' + type + ': ' : ' ') +
     print(received)
   );
 };
@@ -141,9 +143,10 @@ const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
     throw new Error(
-      matcherHint('[.not]' + matcherName, undefined, '') + '\n\n' +
-      'Matcher does not accept any arguments.\n' +
-      printWithType('Got', expected, printExpected),
+      matcherHint('[.not]' + matcherName, undefined, '') +
+        '\n\n' +
+        'Matcher does not accept any arguments.\n' +
+        printWithType('Got', expected, printExpected),
     );
   }
 };
@@ -152,9 +155,10 @@ const ensureActualIsNumber = (actual: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof actual !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) + '\n\n' +
-      `Received value must be a number.\n` +
-      printWithType('Received', actual, printReceived),
+      matcherHint('[.not]' + matcherName) +
+        '\n\n' +
+        `Received value must be a number.\n` +
+        printWithType('Received', actual, printReceived),
     );
   }
 };
@@ -163,9 +167,10 @@ const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof expected !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) + '\n\n' +
-      `Expected value must be a number.\n` +
-      printWithType('Got', expected, printExpected),
+      matcherHint('[.not]' + matcherName) +
+        '\n\n' +
+        `Expected value must be a number.\n` +
+        printWithType('Got', expected, printExpected),
     );
   }
 };
@@ -175,9 +180,8 @@ const ensureNumbers = (actual: any, expected: any, matcherName: string) => {
   ensureExpectedIsNumber(expected, matcherName);
 };
 
-const pluralize =
-  (word: string, count: number) =>
-    (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
+const pluralize = (word: string, count: number) =>
+  (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
 
 const matcherHint = (
   matcherName: string,

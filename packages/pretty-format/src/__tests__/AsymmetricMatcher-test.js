@@ -44,12 +44,17 @@ beforeEach(() => {
   });
 
   test(`supports nested any(${fnNameFor(type)})`, () => {
-    const result = prettyFormat({
-      test: {
-        nested: expect.any(type),
+    const result = prettyFormat(
+      {
+        test: {
+          nested: expect.any(type),
+        },
       },
-    }, options);
-    expect(result).toEqual(`Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(type)}>,\n  },\n}`);
+      options,
+    );
+    expect(result).toEqual(
+      `Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(type)}>,\n  },\n}`,
+    );
   });
 });
 
@@ -61,19 +66,19 @@ test(`anything()`, () => {
 test(`arrayContaining()`, () => {
   const result = prettyFormat(expect.arrayContaining([1, 2]), options);
   expect(result).toEqual(
-`ArrayContaining [
+    `ArrayContaining [
   1,
   2,
-]`
+]`,
   );
 });
 
 test(`objectContaining()`, () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
   expect(result).toEqual(
-`ObjectContaining {
+    `ObjectContaining {
   "a": "test",
-}`
+}`,
   );
 });
 
@@ -93,20 +98,23 @@ test(`stringMatching(regexp)`, () => {
 });
 
 test(`supports multiple nested asymmetric matchers`, () => {
-  const result = prettyFormat({
-    test: {
-      nested: expect.objectContaining({
-        a: expect.arrayContaining([1]),
-        b: expect.anything(),
-        c: expect.any(String),
-        d: expect.stringContaining('jest'),
-        e: expect.stringMatching('jest'),
-        f: expect.objectContaining({test: 'case'}),
-      }),
+  const result = prettyFormat(
+    {
+      test: {
+        nested: expect.objectContaining({
+          a: expect.arrayContaining([1]),
+          b: expect.anything(),
+          c: expect.any(String),
+          d: expect.stringContaining('jest'),
+          e: expect.stringMatching('jest'),
+          f: expect.objectContaining({test: 'case'}),
+        }),
+      },
     },
-  }, options);
+    options,
+  );
   expect(result).toEqual(
-`Object {
+    `Object {
   "test": Object {
     "nested": ObjectContaining {
       "a": ArrayContaining [
@@ -121,25 +129,28 @@ test(`supports multiple nested asymmetric matchers`, () => {
       },
     },
   },
-}`
+}`,
   );
 });
 
 test(`supports minified output`, () => {
   options.min = true;
-  const result = prettyFormat({
-    test: {
-      nested: expect.objectContaining({
-        a: expect.arrayContaining([1]),
-        b: expect.anything(),
-        c: expect.any(String),
-        d: expect.stringContaining('jest'),
-        e: expect.stringMatching('jest'),
-        f: expect.objectContaining({test: 'case'}),
-      }),
+  const result = prettyFormat(
+    {
+      test: {
+        nested: expect.objectContaining({
+          a: expect.arrayContaining([1]),
+          b: expect.anything(),
+          c: expect.any(String),
+          d: expect.stringContaining('jest'),
+          e: expect.stringMatching('jest'),
+          f: expect.objectContaining({test: 'case'}),
+        }),
+      },
     },
-  }, options);
+    options,
+  );
   expect(result).toEqual(
-`{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}`
+    `{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}`,
   );
 });

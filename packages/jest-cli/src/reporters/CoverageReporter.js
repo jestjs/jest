@@ -10,8 +10,9 @@
 'use strict';
 
 import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
-import type {RunnerContext} from 'types/Reporters';
+import type {GlobalConfig} from 'types/Config';
+import type {Context} from 'types/Context';
+import type {Test} from 'types/TestRunner';
 
 const BaseReporter = require('./BaseReporter');
 
@@ -40,7 +41,7 @@ class CoverageReporter extends BaseReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
@@ -52,18 +53,18 @@ class CoverageReporter extends BaseReporter {
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
         this._sourceMapStore.registerURL(
           sourcePath,
-          testResult.sourceMaps[sourcePath]
+          testResult.sourceMaps[sourcePath],
         );
       });
     }
   }
 
   onRunComplete(
-    config: Config,
+    contexts: Set<Context>,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
   ) {
-    this._addUntestedFiles(config, runnerContext);
+    this._addUntestedFiles(contexts);
     let map = this._coverageMap;
     let sourceFinder: Object;
     if (config.mapCoverage) {
@@ -89,48 +90,62 @@ class CoverageReporter extends BaseReporter {
       reporter.write(map, sourceFinder && {sourceFinder});
       aggregatedResults.coverageMap = map;
     } catch (e) {
-      console.error(chalk.red(`
+      console.error(
+        chalk.red(
+          `
         Failed to write coverage reports:
         ERROR: ${e.toString()}
         STACK: ${e.stack}
-      `));
+      `,
+        ),
+      );
     }
 
     this._checkThreshold(map, config);
   }
 
-  _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
-    if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
-      if (isInteractive) {
-        process.stderr.write(RUNNING_TEST_COLOR(
-          'Running coverage on untested files...',
-        ));
+  _addUntestedFiles(contexts: Set<Context>) {
+    const files = [];
+    contexts.forEach(context => {
+      const config = context.config;
+      if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
+        context.hasteFS
+          .matchFilesWithGlob(config.collectCoverageFrom, config.rootDir)
+          .forEach(filePath =>
+            files.push({
+              config,
+              path: filePath,
+            }),
+          );
       }
-      const files = runnerContext.hasteFS.matchFilesWithGlob(
-        config.collectCoverageFrom,
-        config.rootDir,
-      );
-
-      files.forEach(filename => {
-        if (!this._coverageMap.data[filename]) {
+    });
+    if (files.length) {
+      if (isInteractive) {
+        process.stderr.write(
+          RUNNING_TEST_COLOR('Running coverage on untested files...'),
+        );
+      }
+      files.forEach(({config, path}) => {
+        if (!this._coverageMap.data[path]) {
           try {
-            const source = fs.readFileSync(filename).toString();
-            const result = generateEmptyCoverage(source, filename, config);
+            const source = fs.readFileSync(path).toString();
+            const result = generateEmptyCoverage(source, path, config);
             if (result) {
               this._coverageMap.addFileCoverage(result.coverage);
               if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath
-                );
+                this._sourceMapStore.registerURL(path, result.sourceMapPath);
               }
             }
           } catch (e) {
-            console.error(chalk.red(`
-              Failed to collect coverage from ${filename}
+            console.error(
+              chalk.red(
+                `
+              Failed to collect coverage from ${path}
               ERROR: ${e}
               STACK: ${e.stack}
-            `));
+            `,
+              ),
+            );
           }
         }
       });
@@ -140,7 +155,7 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  _checkThreshold(map: CoverageMap, config: Config) {
+  _checkThreshold(map: CoverageMap, config: GlobalConfig) {
     if (config.coverageThreshold) {
       const results = map.getCoverageSummary().toJSON();
 
@@ -160,24 +175,20 @@ class CoverageReporter extends BaseReporter {
               if (threshold * -1 < actualUncovered) {
                 errors.push(
                   `Jest: Uncovered count for ${key} (${actualUncovered})` +
-                  `exceeds ${name} threshold (${-1 * threshold})`,
+                    `exceeds ${name} threshold (${-1 * threshold})`,
                 );
               }
             } else if (actual < threshold) {
               errors.push(
                 `Jest: Coverage for ${key} (${actual}` +
-                `%) does not meet ${name} threshold (${threshold}%)`,
+                  `%) does not meet ${name} threshold (${threshold}%)`,
               );
             }
           }
           return errors;
         }, []);
       }
-      const errors = check(
-        'global',
-        config.coverageThreshold.global,
-        results,
-      );
+      const errors = check('global', config.coverageThreshold.global, results);
 
       if (errors.length > 0) {
         this.log(`${FAIL_COLOR(errors.join('\n'))}`);

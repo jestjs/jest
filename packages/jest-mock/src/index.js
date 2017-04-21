@@ -95,7 +95,7 @@ function isA(typeName: string, value: any): boolean {
 }
 
 function getType(ref?: any): string | null {
-  if (isA('Function', ref)) {
+  if (isA('Function', ref) || isA('AsyncFunction', ref)) {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
@@ -122,17 +122,19 @@ function getType(ref?: any): string | null {
 }
 
 function isReadonlyProp(object: any, prop: string): boolean {
-  return ((prop === 'arguments' ||
-    prop === 'caller' ||
-    prop === 'callee' ||
-    prop === 'name' ||
-    prop === 'length') &&
-    isA('Function', object)) ||
+  return (
+    ((prop === 'arguments' ||
+      prop === 'caller' ||
+      prop === 'callee' ||
+      prop === 'name' ||
+      prop === 'length') &&
+      (isA('Function', object) || isA('AsyncFunction', object))) ||
     ((prop === 'source' ||
       prop === 'global' ||
       prop === 'ignoreCase' ||
       prop === 'multiline') &&
-      isA('RegExp', object));
+      isA('RegExp', object))
+  );
 }
 
 function getSlots(object?: Object): Array<string> {
@@ -257,8 +259,9 @@ class ModuleMockerClass {
           });
 
           // Run the mock constructor implementation
-          return mockConfig.mockImpl &&
-            mockConfig.mockImpl.apply(this, arguments);
+          return (
+            mockConfig.mockImpl && mockConfig.mockImpl.apply(this, arguments)
+          );
         }
 
         let returnValue;
@@ -351,9 +354,10 @@ class ModuleMockerClass {
         return f;
       };
 
-      f.mockReturnThis = () => f.mockImplementation(function() {
-        return this;
-      });
+      f.mockReturnThis = () =>
+        f.mockImplementation(function() {
+          return this;
+        });
 
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
@@ -403,7 +407,8 @@ class ModuleMockerClass {
       name = name.replace(/[\s-]/g, '$');
     }
 
-    const body = 'return function ' +
+    const body =
+      'return function ' +
       name +
       '() {' +
       'return ' +

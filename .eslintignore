@@ -1,9 +1,7 @@
 **/coverage/**
 **/node_modules/**
-**/vendor/**
 bin/
 docs/
-examples/react-native
 flow-typed/**
 packages/*/build/**
 types/**

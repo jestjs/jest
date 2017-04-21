@@ -10,8 +10,10 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, Path} from 'types/Config';
-import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
+import type {GlobalConfig} from 'types/Config';
+import type {Context} from 'types/Context';
+import type {Test} from 'types/TestRunner';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const preRunMessage = require('../preRunMessage');
 
@@ -23,30 +25,21 @@ class BaseReporter {
   }
 
   onRunStart(
-    config: Config,
+    config: GlobalConfig,
     results: AggregatedResult,
-    runnerContext: RunnerContext,
     options: ReporterOnStartOptions,
   ) {
     preRunMessage.remove(process.stderr);
   }
 
-  onTestResult(
-    config: Config,
-    testResult: TestResult,
-    results: AggregatedResult,
-  ) {}
+  onTestResult(test: Test, testResult: TestResult, results: AggregatedResult) {}
 
-  onTestStart(
-    config: Config,
-    path: Path,
-    runnerContext: RunnerContext,
-  ) {}
+  onTestStart(test: Test) {}
 
   onRunComplete(
-    config: Config,
+    contexts: Set<Context>,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
   ): ?Promise<any> {}
 
   _setError(error: Error) {

@@ -9,8 +9,8 @@
  */
 'use strict';
 
+import type {Path} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
 
 const {formatTestPath} = require('./utils');
 const chalk = require('chalk');
@@ -21,9 +21,9 @@ const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 const FAIL = chalk.reset.inverse.bold.red(' FAIL ');
 const PASS = chalk.reset.inverse.bold.green(' PASS ');
 
-module.exports = (result: TestResult, config: Config) => {
+module.exports = (result: TestResult, config: {rootDir: Path}) => {
   const testPath = result.testFilePath;
-  const status = (result.numFailingTests > 0 || result.testExecError)
+  const status = result.numFailingTests > 0 || result.testExecError
     ? FAIL
     : PASS;
 

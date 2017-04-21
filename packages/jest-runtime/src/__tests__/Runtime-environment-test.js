@@ -27,8 +27,7 @@ describe('Runtime', () => {
           expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
         }
         expect(hasThrown).toBe(true);
-      }),
-    );
+      }));
 
     it('emulates a node stack trace during function execution', () =>
       createRuntime(__filename).then(runtime => {
@@ -55,7 +54,6 @@ describe('Runtime', () => {
           /* eslint-enable max-len */
         }
         expect(hasThrown).toBe(true);
-      }),
-    );
+      }));
   });
 });

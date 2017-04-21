@@ -8,13 +8,14 @@
  * @flow
  */
 
- /* global stream$Writable, tty$WriteStream */
+/* global stream$Writable, tty$WriteStream */
 
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, Path} from 'types/Config';
-import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
+import type {Config, GlobalConfig, Path} from 'types/Config';
+import type {Test} from 'types/TestRunner';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 const Status = require('./Status');
@@ -33,10 +34,7 @@ const isInteractive = process.stdin.isTTY && !isCI;
 
 class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
-  _currentlyRunning: Map<Path, Config>;
-  _currentStatusHeight: number;
   _err: write;
-  _lastAggregatedResults: AggregatedResult;
   _out: write;
   _status: Status;
 
@@ -108,16 +106,15 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunStart(
-    config: Config,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
     options: ReporterOnStartOptions,
   ) {
     this._status.runStarted(aggregatedResults, options);
   }
 
-  onTestStart(config: Config, testPath: Path) {
-    this._status.testStarted(testPath, config);
+  onTestStart(test: Test) {
+    this._status.testStarted(test.path, test.context.config);
   }
 
   onRunComplete() {
@@ -130,31 +127,33 @@ class DefaultReporter extends BaseReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    this._status.testFinished(config, testResult, aggregatedResults);
-    this._printTestFileSummary(testResult.testFilePath, config, testResult);
+    this._status.testFinished(
+      test.context.config,
+      testResult,
+      aggregatedResults,
+    );
+    this._printTestFileSummary(
+      testResult.testFilePath,
+      test.context.config,
+      testResult,
+    );
   }
 
-  _printTestFileSummary(
-    testPath: Path,
-    config: Config,
-    result: TestResult,
-  ) {
+  _printTestFileSummary(testPath: Path, config: Config, result: TestResult) {
     if (!result.skipped) {
       this.log(getResultHeader(result, config));
 
       const consoleBuffer = result.console;
       if (consoleBuffer && consoleBuffer.length) {
         this.log(
-          '  ' + TITLE_BULLET + 'Console\n\n' +
-          getConsoleOutput(
-            config.rootDir,
-            !!config.verbose,
-            consoleBuffer,
-          ),
+          '  ' +
+            TITLE_BULLET +
+            'Console\n\n' +
+            getConsoleOutput(config.rootDir, !!config.verbose, consoleBuffer),
         );
       }
 

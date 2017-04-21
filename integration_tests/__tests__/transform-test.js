@@ -19,7 +19,7 @@ describe('babel-jest', () => {
 
   beforeEach(() => {
     if (process.platform !== 'win32') {
-      run('npm install', dir);
+      run('yarn --no-lockfile', dir);
       linkJestPackage('babel-jest', dir);
     }
   });
@@ -63,7 +63,7 @@ describe('custom transformer', () => {
   const dir = path.resolve(
     __dirname,
     '..',
-    'transform/custom-instrumenting-preprocessor'
+    'transform/custom-instrumenting-preprocessor',
   );
 
   it('proprocesses files', () => {
@@ -84,15 +84,11 @@ describe('custom transformer', () => {
 });
 
 describe('multiple-transformers', () => {
-  const dir = path.resolve(
-    __dirname,
-    '..',
-    'transform/multiple-transformers',
-  );
+  const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
     if (process.platform !== 'win32') {
-      run('npm install', dir);
+      run('yarn --no-lockfile', dir);
       linkJestPackage('babel-jest', dir);
     }
   });

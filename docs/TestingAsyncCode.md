@@ -62,14 +62,25 @@ test('the data is peanut butter', () => {
 
 Be sure to return the promise - if you omit this `return` statement, your test will complete before `fetchData` completes.
 
+##### available in Jest **20.0.0+**
+
+You can also use the `resolves` keyword in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+
+```js
+test('the data is peanut butter', () => {
+  return expect(fetchData()).resolves.toBe('peanut butter');
+});
+```
+
+Be sure to return the promise - if you omit this `return` statement, your test will complete before `fetchData` completes.
+
 ### Async/Await
 
 If your code uses `async` and `await`, you can use these in your tests as well. To write an async test, just use the `async` keyword in front of the function passed to `test`. For example, the same `fetchData` scenario can be tested with:
 
 ```js
 test('the data is peanut butter', async () => {
-  const data = await fetchData();
-  expect(data).toBe('peanut butter');
+  await expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
 

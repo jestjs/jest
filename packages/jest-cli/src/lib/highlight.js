@@ -23,7 +23,6 @@ const highlight = (
   pattern: string,
   rootDir: string,
 ) => {
-
   let regexp;
 
   try {

@@ -27,60 +27,72 @@ jest.mock('ansi-escapes', () => ({
   cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
 }));
 
-jest.mock('../SearchSource', () => class {
-  findMatchingTests(pattern) {
-    return {paths: []};
-  }
-});
+jest.mock(
+  '../SearchSource',
+  () => class {
+    findMatchingTests(pattern) {
+      return {paths: []};
+    }
+  },
+);
 
-jest.doMock('chalk', () => Object.assign(
-  new chalk.constructor({enabled: false}),
-  {stripColor: str => str},
-));
+jest.doMock('chalk', () =>
+  Object.assign(new chalk.constructor({enabled: false}), {
+    stripColor: str => str,
+  }),
+);
 
-jest.doMock('../runJest', () => function() {
-  const args = Array.from(arguments);
-  runJestMock.apply(null, args);
+jest.doMock(
+  '../runJest',
+  () =>
+    function() {
+      const args = Array.from(arguments);
+      runJestMock.apply(null, args);
 
-  // Call the callback
-  args[args.length - 1]({
-    snapshot: {},
-    testResults: [
-      {
-        testResults: [{title: 'should return the correct index when'}],
-      },
-      {
-        testResults: [{title: 'should allow test siblings to modify'}],
-      },
-      {
-        testResults: [{title: 'might get confusing'}],
-      },
-      {
-        testResults: [{title: 'should handle length properties that cannot'}],
-      },
-      {
-        testResults: [{title: 'should recognize various types'}],
-      },
-      {
-        testResults: [{title: 'should recognize null and undefined'}],
-      },
-      {
-        testResults: [{title: 'should not output colors to pipe'}],
-      },
-      {
-        testResults: [{title: 'should convert string to a RegExp'}],
-      },
-      {
-        testResults: [{title: 'should escape and convert string to a RegExp'}],
-      },
-      {
-        testResults: [{title: 'should convert grep string to a RegExp'}],
-      },
-    ],
-  });
+      // Call the callback
+      args[args.length - 1]({
+        snapshot: {},
+        testResults: [
+          {
+            testResults: [{title: 'should return the correct index when'}],
+          },
+          {
+            testResults: [{title: 'should allow test siblings to modify'}],
+          },
+          {
+            testResults: [{title: 'might get confusing'}],
+          },
+          {
+            testResults: [
+              {title: 'should handle length properties that cannot'},
+            ],
+          },
+          {
+            testResults: [{title: 'should recognize various types'}],
+          },
+          {
+            testResults: [{title: 'should recognize null and undefined'}],
+          },
+          {
+            testResults: [{title: 'should not output colors to pipe'}],
+          },
+          {
+            testResults: [{title: 'should convert string to a RegExp'}],
+          },
+          {
+            testResults: [
+              {title: 'should escape and convert string to a RegExp'},
+            ],
+          },
+          {
+            testResults: [{title: 'should convert grep string to a RegExp'}],
+          },
+        ],
+      });
 
-  return Promise.resolve();
-});
+      return Promise.resolve();
+    },
+);
 
 jest.doMock('../lib/terminalUtils', () => ({
   getTerminalWidth: () => terminalWidth,
@@ -92,35 +104,23 @@ afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
   let pipe;
-  let hasteMap;
+  let hasteMapInstances;
   let argv;
-  let hasteContext;
-  let config;
-  let hasDeprecationWarnings;
+  let contexts;
   let stdin;
 
   beforeEach(() => {
     terminalWidth = 80;
     pipe = {write: jest.fn()};
-    hasteMap = {on: () => {}};
+    hasteMapInstances = [{on: () => {}}];
     argv = {};
-    hasteContext = {};
-    config = {};
-    hasDeprecationWarnings = false;
+    contexts = [{config: {}}];
     stdin = new MockStdin();
   });
 
   it('Pressing "T" enters pattern mode', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -135,16 +135,11 @@ describe('Watch mode flows', () => {
     const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
     // Write a pattern
-    ['c', 'o', 'n', ' ', '1', '2']
-    .map(toHex)
-    .forEach(assertPattern);
+    ['c', 'o', 'n', ' ', '1', '2'].map(toHex).forEach(assertPattern);
 
-    [KEYS.BACKSPACE, KEYS.BACKSPACE]
-    .forEach(assertPattern);
+    [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
 
-    ['*']
-    .map(toHex)
-    .forEach(assertPattern);
+    ['*'].map(toHex).forEach(assertPattern);
 
     // Runs Jest again
     runJestMock.mockReset();
@@ -161,16 +156,8 @@ describe('Watch mode flows', () => {
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.T);
 

@@ -13,7 +13,7 @@
 import type {Config, Path} from 'types/Config';
 import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
-import type {HasteContext} from 'types/HasteMap';
+import type {Context} from 'types/Context';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
@@ -49,11 +49,16 @@ type InternalModuleOptions = {|
   isInternalModule: boolean,
 |};
 
+type BooleanObject = {[key: string]: boolean};
+type CacheFS = {[path: Path]: string};
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: Config) => {
-  if (config.moduleNameMapper.length) {
+  if (
+    Array.isArray(config.moduleNameMapper) && config.moduleNameMapper.length
+  ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => {
       return {moduleName, regex: new RegExp(regex)};
     });
@@ -69,9 +74,8 @@ const mockParentModule = {
 
 const unmockRegExpCache = new WeakMap();
 
-type BooleanObject = {[key: string]: boolean};
-
 class Runtime {
+  _cacheFS: CacheFS;
   _config: Config;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
@@ -92,11 +96,17 @@ class Runtime {
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
 
-  constructor(config: Config, environment: Environment, resolver: Resolver) {
+  constructor(
+    config: Config,
+    environment: Environment,
+    resolver: Resolver,
+    cacheFS?: CacheFS,
+  ) {
     this._moduleRegistry = Object.create(null);
     this._internalModuleRegistry = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._sourceMapRegistry = Object.create(null);
+    this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
     this._environment = environment;
     this._resolver = resolver;
@@ -116,20 +126,21 @@ class Runtime {
 
     this._unmockList = unmockRegExpCache.get(config);
     if (
-      !this._unmockList &&
-      config.automock &&
-      config.unmockedModulePathPatterns
+      !this._unmockList && config.automock && config.unmockedModulePathPatterns
     ) {
-      this._unmockList =
-        new RegExp(config.unmockedModulePathPatterns.join('|'));
+      this._unmockList = new RegExp(
+        config.unmockedModulePathPatterns.join('|'),
+      );
       unmockRegExpCache.set(config, this._unmockList);
     }
 
     if (config.automock) {
       config.setupFiles.forEach(filePath => {
         if (filePath && filePath.includes(NODE_MODULES)) {
-          const moduleID =
-            this._resolver.getModuleID(this._virtualMocks, filePath);
+          const moduleID = this._resolver.getModuleID(
+            this._virtualMocks,
+            filePath,
+          );
           this._transitiveShouldMock[moduleID] = false;
         }
       });
@@ -157,14 +168,14 @@ class Runtime {
     return transform.transformSource(filename, config, content, instrument);
   }
 
-  static createHasteContext(
+  static createContext(
     config: Config,
     options: {
       console?: Console,
       maxWorkers: number,
       watch?: boolean,
     },
-  ): Promise<HasteContext> {
+  ): Promise<Context> {
     createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
@@ -174,6 +185,7 @@ class Runtime {
     });
     return instance.build().then(
       hasteMap => ({
+        config,
         hasteFS: hasteMap.hasteFS,
         moduleMap: hasteMap.moduleMap,
         resolver: Runtime.createResolver(config, hasteMap.moduleMap),
@@ -184,10 +196,7 @@ class Runtime {
     );
   }
 
-  static createHasteMap(
-    config: Config,
-    options?: HasteMapOptions,
-  ): HasteMap {
+  static createHasteMap(config: Config, options?: HasteMapOptions): HasteMap {
     const ignorePattern = new RegExp(
       [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
     );
@@ -211,10 +220,7 @@ class Runtime {
     });
   }
 
-  static createResolver(
-    config: Config,
-    moduleMap: ModuleMap,
-  ): Resolver {
+  static createResolver(config: Config, moduleMap: ModuleMap): Resolver {
     return new Resolver(moduleMap, {
       browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
@@ -241,13 +247,16 @@ class Runtime {
     moduleName?: string,
     options: ?InternalModuleOptions,
   ) {
-    const moduleID =
-      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+    const moduleID = this._resolver.getModuleID(
+      this._virtualMocks,
+      from,
+      moduleName,
+    );
     let modulePath;
 
-    const moduleRegistry = (!options || !options.isInternalModule) ?
-      this._moduleRegistry :
-      this._internalModuleRegistry;
+    const moduleRegistry = !options || !options.isInternalModule
+      ? this._moduleRegistry
+      : this._internalModuleRegistry;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
@@ -285,7 +294,7 @@ class Runtime {
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
-          stripBOM(fs.readFileSync(modulePath, 'utf8'))
+          stripBOM(fs.readFileSync(modulePath, 'utf8')),
         );
       } else if (path.extname(modulePath) === '.node') {
         // $FlowFixMe
@@ -302,15 +311,18 @@ class Runtime {
   }
 
   requireMock(from: Path, moduleName: string) {
-    const moduleID =
-      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+    const moduleID = this._resolver.getModuleID(
+      this._virtualMocks,
+      from,
+      moduleName,
+    );
 
     if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
     }
 
     if (moduleID in this._mockFactories) {
-      return this._mockRegistry[moduleID] = this._mockFactories[moduleID]();
+      return (this._mockRegistry[moduleID] = this._mockFactories[moduleID]());
     }
 
     let manualMock = this._resolver.getMockModule(from, moduleName);
@@ -333,8 +345,11 @@ class Runtime {
       // corresponding to that particular MyModule.js file.
       const moduleDir = path.dirname(modulePath);
       const moduleFileName = path.basename(modulePath);
-      const potentialManualMock =
-        path.join(moduleDir, '__mocks__', moduleFileName);
+      const potentialManualMock = path.join(
+        moduleDir,
+        '__mocks__',
+        moduleFileName,
+      );
       if (fs.existsSync(potentialManualMock)) {
         manualMock = true;
         modulePath = potentialManualMock;
@@ -410,8 +425,11 @@ class Runtime {
       const mockPath = this._resolver.getModulePath(from, moduleName);
       this._virtualMocks[mockPath] = true;
     }
-    const moduleID =
-      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+    const moduleID = this._resolver.getModuleID(
+      this._virtualMocks,
+      from,
+      moduleName,
+    );
     this._explicitShouldMock[moduleID] = true;
     this._mockFactories[moduleID] = mockFactory;
   }
@@ -450,7 +468,10 @@ class Runtime {
     const transformedFile = transform(
       filename,
       this._config,
-      {isInternalModule}
+      {
+        isInternalModule,
+      },
+      this._cacheFS[filename],
     );
 
     if (transformedFile.sourceMapPath) {
@@ -481,8 +502,9 @@ class Runtime {
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      this._mockMetaDataCache[modulePath] =
-        (this._moduleMocker.getMetadata({}): any);
+      this._mockMetaDataCache[modulePath] = (this._moduleMocker.getMetadata(
+        {},
+      ): any);
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute
@@ -503,7 +525,7 @@ class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
+            `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
         );
       }
       this._mockMetaDataCache[modulePath] = mockMetadata;
@@ -520,8 +542,11 @@ class Runtime {
     }
 
     const explicitShouldMock = this._explicitShouldMock;
-    const moduleID =
-      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+    const moduleID = this._resolver.getModuleID(
+      this._virtualMocks,
+      from,
+      moduleName,
+    );
     const key = from + path.delimiter + moduleID;
 
     if (moduleID in explicitShouldMock) {
@@ -558,30 +583,26 @@ class Runtime {
     }
 
     // transitive unmocking for package managers that store flat packages (npm3)
-    const currentModuleID =
-      this._resolver.getModuleID(this._virtualMocks, from);
+    const currentModuleID = this._resolver.getModuleID(
+      this._virtualMocks,
+      from,
+    );
     if (
-      this._transitiveShouldMock[currentModuleID] === false || (
-        from.includes(NODE_MODULES) &&
+      this._transitiveShouldMock[currentModuleID] === false ||
+      (from.includes(NODE_MODULES) &&
         modulePath.includes(NODE_MODULES) &&
-        (
-          (this._unmockList && this._unmockList.test(from)) ||
-          explicitShouldMock[currentModuleID] === false
-        )
-      )
+        ((this._unmockList && this._unmockList.test(from)) ||
+          explicitShouldMock[currentModuleID] === false))
     ) {
       this._transitiveShouldMock[moduleID] = false;
       this._shouldUnmockTransitiveDependenciesCache[key] = true;
       return false;
     }
 
-    return this._shouldMockModuleCache[moduleID] = true;
+    return (this._shouldMockModuleCache[moduleID] = true);
   }
 
-  _createRequireImplementation(
-    from: Path,
-    options: ?InternalModuleOptions,
-  ) {
+  _createRequireImplementation(from: Path, options: ?InternalModuleOptions) {
     const moduleRequire = options && options.isInternalModule
       ? (moduleName: string) => this.requireInternalModule(from, moduleName)
       : this.requireModuleOrMock.bind(this, from);
@@ -603,14 +624,20 @@ class Runtime {
       return runtime;
     };
     const unmock = (moduleName: string) => {
-      const moduleID =
-        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+      const moduleID = this._resolver.getModuleID(
+        this._virtualMocks,
+        from,
+        moduleName,
+      );
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
     const deepUnmock = (moduleName: string) => {
-      const moduleID =
-        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+      const moduleID = this._resolver.getModuleID(
+        this._virtualMocks,
+        from,
+        moduleName,
+      );
       this._explicitShouldMock[moduleID] = false;
       this._transitiveShouldMock[moduleID] = false;
       return runtime;
@@ -624,8 +651,11 @@ class Runtime {
         return setMockFactory(moduleName, mockFactory, options);
       }
 
-      const moduleID =
-        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+      const moduleID = this._resolver.getModuleID(
+        this._virtualMocks,
+        from,
+        moduleName,
+      );
       this._explicitShouldMock[moduleID] = true;
       return runtime;
     };
@@ -657,9 +687,8 @@ class Runtime {
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
     const runtime = {
-      addMatchers:
-        (matchers: Object) =>
-          this._environment.global.jasmine.addMatchers(matchers),
+      addMatchers: (matchers: Object) =>
+        this._environment.global.jasmine.addMatchers(matchers),
 
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
@@ -672,8 +701,8 @@ class Runtime {
       enableAutomock,
       fn,
       genMockFn: fn,
-      genMockFromModule:
-        (moduleName: string) => this._generateMock(from, moduleName),
+      genMockFromModule: (moduleName: string) =>
+        this._generateMock(from, moduleName),
       genMockFunction: fn,
       isMockFunction: this._moduleMocker.isMockFunction,
 

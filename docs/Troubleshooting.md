@@ -4,7 +4,7 @@ title: Troubleshooting
 layout: docs
 category: Guides
 permalink: docs/troubleshooting.html
-previous: migration-guide
+previous: testing-frameworks
 ---
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.
@@ -77,7 +77,7 @@ to `false`.
 
 Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
 
-### Tests are Extremely Slow on Docker and/or Continuous Integration server.
+### Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
 While Jest is most of the time extremely fast on modern multi-core computers
 with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/facebook/jest/issues/1395)
@@ -95,6 +95,11 @@ jest --runInBand
 # Using npm test (e.g. with create-react-app)
 npm test -- --runInBand
 ```
+
+### Tests are slow when leveraging automocking
+Whether via [`automock: true`](configuration.html#automock-boolean) in config or lots of [`jest.mock('my-module')`](jest-object.html#jestmockmodulename-factory-options) calls in tests, automocking has a performance cost that can add up in large projects. The more dependencies a module has, the more work Jest has to do to mock it. Something that can offset this performance cost significantly is adding a code transformer that moves `import` or `require` calls from the top of a module, where they are always executed, down into the body of the module, where they are usually not executed. This can lower the number of modules Jest has to load when running your tests by a considerable amount.
+
+To transform `import` statements, there is [babel-plugin-transform-inline-imports-commonjs](https://github.com/zertosh/babel-plugin-transform-inline-imports-commonjs), and to transform `require` statements, there is [Facebook's `inline-requires` babel plugin](https://github.com/facebook/fbjs/blob/master/packages/babel-preset-fbjs/plugins/inline-requires.js), which is part of the `babel-preset-fbjs` package.
 
 ### I'm using npm3 and my node_modules aren't properly loading.
 

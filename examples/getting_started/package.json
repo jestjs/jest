@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "babel-preset-env": "*",
     "jest": "*"
   },
   "scripts": {

@@ -15,21 +15,36 @@ const os = require('os');
 const docblock = require('../');
 
 describe('docblock', () => {
-
   it('extracts valid docblock with line comment', () => {
     const code =
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL +
-      '* // TODO: test' + os.EOL + '*/' + os.EOL +
+      '/**' +
+      os.EOL +
+      ' * @providesModule foo' +
+      os.EOL +
+      '* // TODO: test' +
+      os.EOL +
+      '*/' +
+      os.EOL +
       'const x = foo;';
     expect(docblock.extract(code)).toBe(
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL +
-      '* // TODO: test' + os.EOL + '*/',
+      '/**' +
+        os.EOL +
+        ' * @providesModule foo' +
+        os.EOL +
+        '* // TODO: test' +
+        os.EOL +
+        '*/',
     );
   });
 
   it('extracts valid docblock', () => {
     const code =
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
+      '/**' +
+      os.EOL +
+      ' * @providesModule foo' +
+      os.EOL +
+      '*/' +
+      os.EOL +
       'const x = foo;';
     expect(docblock.extract(code)).toBe(
       '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
@@ -38,8 +53,15 @@ describe('docblock', () => {
 
   it('extracts valid docblock with more comments', () => {
     const code =
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
-      'const x = foo;' + os.EOL + '/**foo*/';
+      '/**' +
+      os.EOL +
+      ' * @providesModule foo' +
+      os.EOL +
+      '*/' +
+      os.EOL +
+      'const x = foo;' +
+      os.EOL +
+      '/**foo*/';
     expect(docblock.extract(code)).toBe(
       '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
     );
@@ -47,7 +69,12 @@ describe('docblock', () => {
 
   it('extracts from invalid docblock', () => {
     const code =
-      '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
+      '/*' +
+      os.EOL +
+      ' * @providesModule foo' +
+      os.EOL +
+      '*/' +
+      os.EOL +
       'const x = foo;';
     expect(docblock.extract(code)).toBe(
       '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
@@ -56,69 +83,117 @@ describe('docblock', () => {
 
   it('returns extract and parsedocblock', () => {
     const code =
-      '/** @provides module-name */' + os.EOL + '' +
-      '' + os.EOL + '' +
-      '.dummy {}' + os.EOL + '';
+      '/** @provides module-name */' +
+      os.EOL +
+      '' +
+      '' +
+      os.EOL +
+      '' +
+      '.dummy {}' +
+      os.EOL +
+      '';
 
     expect(docblock.parse(docblock.extract(code))).toEqual({
-      'provides': 'module-name',
+      provides: 'module-name',
     });
   });
 
   it('parses directives out of a docblock', () => {
     const code =
-      '/**' + os.EOL + '' +
-      ' * @providesModule foo' + os.EOL + '' +
-      ' * @css a b' + os.EOL + '' +
-      ' * @preserve-whitespace' + os.EOL + '' +
+      '/**' +
+      os.EOL +
+      '' +
+      ' * @providesModule foo' +
+      os.EOL +
+      '' +
+      ' * @css a b' +
+      os.EOL +
+      '' +
+      ' * @preserve-whitespace' +
+      os.EOL +
+      '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'css': 'a b',
+      css: 'a b',
       'preserve-whitespace': '',
-      'providesModule': 'foo',
+      providesModule: 'foo',
     });
   });
 
   it('parses directives out of a docblock with comments', () => {
     const code =
-      '/**' + os.EOL + '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' + os.EOL + '' +
-      ' * @providesModule foo' + os.EOL + '' +
-      ' * @css a b' + os.EOL + '' +
-      ' *' + os.EOL + '' +
-      ' * And some license here' + os.EOL + '' +
-      ' * @preserve-whitespace' + os.EOL + '' +
+      '/**' +
+      os.EOL +
+      '' +
+      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      os.EOL +
+      '' +
+      ' * @providesModule foo' +
+      os.EOL +
+      '' +
+      ' * @css a b' +
+      os.EOL +
+      '' +
+      ' *' +
+      os.EOL +
+      '' +
+      ' * And some license here' +
+      os.EOL +
+      '' +
+      ' * @preserve-whitespace' +
+      os.EOL +
+      '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'css': 'a b',
+      css: 'a b',
       'preserve-whitespace': '',
-      'providesModule': 'foo',
+      providesModule: 'foo',
     });
   });
 
   it('parses directives out of a docblock with line comments', () => {
     const code =
-      '/**' + os.EOL + '' +
-      ' * @providesModule foo' + os.EOL + '' +
-      ' * // TODO: test' + os.EOL + '' +
+      '/**' +
+      os.EOL +
+      '' +
+      ' * @providesModule foo' +
+      os.EOL +
+      '' +
+      ' * // TODO: test' +
+      os.EOL +
+      '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'providesModule': 'foo',
+      providesModule: 'foo',
     });
   });
 
   it('parses multiline directives', () => {
     const code =
-      '/**' + os.EOL + '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' + os.EOL + '' +
-      ' * @class A long declaration of a class' + os.EOL + '' +
-      ' *        goes here, so we can read it and enjoy' + os.EOL + '' +
-      ' *' + os.EOL + '' +
-      ' * And some license here' + os.EOL + '' +
-      ' * @preserve-whitespace' + os.EOL + '' +
+      '/**' +
+      os.EOL +
+      '' +
+      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      os.EOL +
+      '' +
+      ' * @class A long declaration of a class' +
+      os.EOL +
+      '' +
+      ' *        goes here, so we can read it and enjoy' +
+      os.EOL +
+      '' +
+      ' *' +
+      os.EOL +
+      '' +
+      ' * And some license here' +
+      os.EOL +
+      '' +
+      ' * @preserve-whitespace' +
+      os.EOL +
+      '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'class': 'A long declaration of a class goes here, ' +
+      class: 'A long declaration of a class goes here, ' +
         'so we can read it and enjoy',
       'preserve-whitespace': '',
     });
@@ -126,11 +201,15 @@ describe('docblock', () => {
 
   it('supports slashes in @providesModule directive', () => {
     const code =
-      '/**' + os.EOL + '' +
-      ' * @providesModule apple/banana' + os.EOL + '' +
+      '/**' +
+      os.EOL +
+      '' +
+      ' * @providesModule apple/banana' +
+      os.EOL +
+      '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'providesModule': 'apple/banana',
+      providesModule: 'apple/banana',
     });
   });
 });

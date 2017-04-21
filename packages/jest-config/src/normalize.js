@@ -33,8 +33,8 @@ const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const ERROR = `${BULLET}Validation Error`;
 
-const createConfigError =
-  message => new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+const createConfigError = message =>
+  new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
 const setupPreset = (config: InitialConfig, configPreset: string) => {
   let preset;
@@ -52,17 +52,16 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
     // $FlowFixMe
     preset = require(presetModule);
   } catch (error) {
-    throw createConfigError(
-      `  Preset ${chalk.bold(presetPath)} not found.`
-    );
+    throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
   if (config.setupFiles) {
     config.setupFiles = (preset.setupFiles || []).concat(config.setupFiles);
   }
   if (config.modulePathIgnorePatterns) {
-    config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
-      .concat(config.modulePathIgnorePatterns);
+    config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
+      config.modulePathIgnorePatterns,
+    );
   }
   if (config.moduleNameMapper) {
     config.moduleNameMapper = Object.assign(
@@ -152,9 +151,7 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   return config[key].map(pattern =>
-    utils.replacePathSepForRegex(
-      pattern.replace(/<rootDir>/g, config.rootDir),
-    )
+    utils.replacePathSepForRegex(pattern.replace(/<rootDir>/g, config.rootDir)),
   );
 };
 
@@ -162,15 +159,15 @@ const normalizePreprocessor = (config: InitialConfig) => {
   /* eslint-disable max-len */
   if (config.scriptPreprocessor && config.transform) {
     throw createConfigError(
-`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`
+      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transform')}.`,
     );
   }
 
   if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
     throw createConfigError(
-`  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`
+      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
     );
   }
   /* eslint-enable max-len */
@@ -201,8 +198,11 @@ const normalizeMissingOptions = (config: InitialConfig) => {
   if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
-    config.testRunner =
-      resolve(config.rootDir, 'testRunner', config.testRunner);
+    config.testRunner = resolve(
+      config.rootDir,
+      'testRunner',
+      config.testRunner,
+    );
   }
 
   return config;
@@ -212,7 +212,7 @@ const normalizeRootDir = (config: InitialConfig) => {
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
     throw createConfigError(
-      `  Configuration option ${chalk.bold('rootDir')} must be specified.`
+      `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
   }
   config.rootDir = path.normalize(config.rootDir);
@@ -230,7 +230,7 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
   if (argv.collectCoverageOnlyFrom) {
     const collectCoverageOnlyFrom = Object.create(null);
     argv.collectCoverageOnlyFrom.forEach(
-      path => collectCoverageOnlyFrom[path] = true
+      path => collectCoverageOnlyFrom[path] = true,
     );
     config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
   }
@@ -278,10 +278,12 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         break;
       case 'roots':
         //$FlowFixMe
-        value = config[key].map(filePath => path.resolve(
-          config.rootDir,
-          _replaceRootDirInPath(config.rootDir, filePath),
-        ));
+        value = config[key].map(filePath =>
+          path.resolve(
+            config.rootDir,
+            _replaceRootDirInPath(config.rootDir, filePath),
+          ),
+        );
         break;
       case 'collectCoverageFrom':
         value = normalizeCollectCoverageFrom(config, key);
@@ -339,7 +341,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'cache':
       case 'clearMocks':
       case 'collectCoverage':
-      case 'coverageCollector':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'globals':
@@ -353,7 +354,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'name':
       case 'noStackTrace':
       case 'notify':
-      case 'persistModuleRegistryBetweenSpecs':
       case 'preset':
       case 'replname':
       case 'resetMocks':
@@ -362,7 +362,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'testMatch':
       case 'testEnvironment':
       case 'testRegex':
-      case 'testReporter':
       case 'testRunner':
       case 'testURL':
       case 'timers':

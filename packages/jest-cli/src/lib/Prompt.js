@@ -20,18 +20,14 @@ class Prompt {
   _onCancel: Function;
 
   constructor() {
-    (this:any)._onResize = this._onResize.bind(this);
+    (this: any)._onResize = this._onResize.bind(this);
   }
 
   _onResize() {
     this._onChange(this._value);
   }
 
-  enter(
-    onChange: Function,
-    onSuccess: Function,
-    onCancel: Function,
-  ) {
+  enter(onChange: Function, onSuccess: Function, onCancel: Function) {
     this._entering = true;
     this._value = '';
     this._onChange = onChange;
@@ -43,9 +39,7 @@ class Prompt {
     process.stdout.on('resize', this._onResize);
   }
 
-  put(
-    key: string,
-  ) {
+  put(key: string) {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;

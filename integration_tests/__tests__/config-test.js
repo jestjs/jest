@@ -10,16 +10,14 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('config as JSON', () => {
   const result = runJest('verbose_reporter', [
-    '--config=' + JSON.stringify({
-      testEnvironment: 'node',
-      testMatch: ['banana strawbery kiwi'],
-    }),
+    '--config=' +
+      JSON.stringify({
+        testEnvironment: 'node',
+        testMatch: ['banana strawbery kiwi'],
+      }),
   ]);
   const stdout = result.stdout.toString();
 
@@ -29,9 +27,10 @@ test('config as JSON', () => {
 
 test('works with sane config JSON', () => {
   const result = runJest('verbose_reporter', [
-    '--config=' + JSON.stringify({
-      testEnvironment: 'node',
-    }),
+    '--config=' +
+      JSON.stringify({
+        testEnvironment: 'node',
+      }),
   ]);
   const stderr = result.stderr.toString();
 
@@ -41,12 +40,13 @@ test('works with sane config JSON', () => {
 
 test('watchman config option is respected over default argv', () => {
   const {stdout} = runJest('verbose_reporter', [
-    '--config=' + JSON.stringify({
-      testEnvironment: 'node',
-      watchman: false,
-    }),
+    '--config=' +
+      JSON.stringify({
+        testEnvironment: 'node',
+        watchman: false,
+      }),
     '--debug',
   ]);
 
-  expect(stdout).toMatch('\"watchman\": false,');
+  expect(stdout).toMatch('"watchman": false,');
 });

@@ -17,7 +17,6 @@ import type {
 } from 'types/Transform';
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
-const fileExists = require('jest-file-exists');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
@@ -54,35 +53,34 @@ const getCacheKey = (
   if (!configToJsonMap.has(config)) {
     // We only need this set of config options that can likely influence
     // cached output instead of all config options.
-    configToJsonMap.set(config, stableStringify({
-      cacheDirectory: config.cacheDirectory,
-      collectCoverage: config.collectCoverage,
-      collectCoverageFrom: config.collectCoverageFrom,
-      collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
-      coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
-      haste: config.haste,
-      moduleFileExtensions: config.moduleFileExtensions,
-      moduleNameMapper: config.moduleNameMapper,
-      rootDir: config.rootDir,
-      roots: config.roots,
-      testMatch: config.testMatch,
-      testRegex: config.testRegex,
-      transformIgnorePatterns: config.transformIgnorePatterns,
-    }));
+    configToJsonMap.set(
+      config,
+      stableStringify({
+        cacheDirectory: config.cacheDirectory,
+        collectCoverage: config.collectCoverage,
+        collectCoverageFrom: config.collectCoverageFrom,
+        collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
+        coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
+        haste: config.haste,
+        moduleFileExtensions: config.moduleFileExtensions,
+        moduleNameMapper: config.moduleNameMapper,
+        rootDir: config.rootDir,
+        roots: config.roots,
+        testMatch: config.testMatch,
+        testRegex: config.testRegex,
+        transform: config.transform,
+        transformIgnorePatterns: config.transformIgnorePatterns,
+      }),
+    );
   }
   const configString = configToJsonMap.get(config) || '';
   const transformer = getTransformer(filename, config);
 
   if (transformer && typeof transformer.getCacheKey === 'function') {
-    return transformer.getCacheKey(
-      fileData,
-      filename,
-      configString,
-      {
-        instrument,
-        watch: config.watch,
-      },
-    );
+    return transformer.getCacheKey(fileData, filename, configString, {
+      instrument,
+      watch: config.watch,
+    });
   } else {
     return crypto
       .createHash('md5')
@@ -111,7 +109,7 @@ const wrap = content =>
   '\n}});';
 
 const readCacheFile = (filename: Path, cachePath: Path): ?string => {
-  if (!fileExists(cachePath)) {
+  if (!fs.existsSync(cachePath)) {
     return null;
   }
 
@@ -154,10 +152,7 @@ const shouldTransform = (filename: Path, config: Config): boolean => {
   return (
     !!config.transform &&
     !!config.transform.length &&
-    (
-      !config.transformIgnorePatterns.length ||
-      !isIgnored
-    )
+    (!config.transformIgnorePatterns.length || !isIgnored)
   );
 };
 
@@ -176,10 +171,12 @@ const getFileCachePath = (
   // Create sub folders based on the cacheKey to avoid creating one
   // directory with many files.
   const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
-  const cachePath = slash(path.join(
-    cacheDir,
-    path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-  ));
+  const cachePath = slash(
+    path.join(
+      cacheDir,
+      path.basename(filename, path.extname(filename)) + '_' + cacheKey,
+    ),
+  );
   createDirectory(cacheDir);
 
   return cachePath;
@@ -347,13 +344,14 @@ const transformAndBuildScript = (
   config: Config,
   options: ?Options,
   instrument: boolean,
+  fileSource?: string,
 ): BuiltTransformResult => {
   const isInternalModule = !!(options && options.isInternalModule);
-  const content = stripShebang(fs.readFileSync(filename, 'utf8'));
+  const content = stripShebang(fileSource || fs.readFileSync(filename, 'utf8'));
   let wrappedCode: string;
   let sourceMapPath: ?string = null;
-  const willTransform = !isInternalModule
-    && (shouldTransform(filename, config) || instrument);
+  const willTransform =
+    !isInternalModule && (shouldTransform(filename, config) || instrument);
 
   try {
     if (willTransform) {
@@ -361,7 +359,7 @@ const transformAndBuildScript = (
         filename,
         config,
         content,
-        instrument
+        instrument,
       );
 
       wrappedCode = wrap(transformedSource.code);
@@ -382,10 +380,10 @@ const transformAndBuildScript = (
     if (config.logTransformErrors) {
       console.error(
         `FILENAME: ${filename}\n` +
-        `TRANSFORM: ${willTransform.toString()}\n` +
-        `INSTRUMENT: ${instrument.toString()}\n` +
-        `SOURCE:\n` +
-        String(wrappedCode),
+          `TRANSFORM: ${willTransform.toString()}\n` +
+          `INSTRUMENT: ${instrument.toString()}\n` +
+          `SOURCE:\n` +
+          String(wrappedCode),
       );
     }
 
@@ -397,6 +395,7 @@ module.exports = (
   filename: Path,
   config: Config,
   options: Options,
+  fileSource?: string,
 ): BuiltTransformResult => {
   const instrument = shouldInstrument(filename, config);
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
@@ -404,7 +403,13 @@ module.exports = (
   if (result) {
     return result;
   } else {
-    result = transformAndBuildScript(filename, config, options, instrument);
+    result = transformAndBuildScript(
+      filename,
+      config,
+      options,
+      instrument,
+      fileSource,
+    );
     cache.set(scriptCacheKey, result);
     return result;
   }

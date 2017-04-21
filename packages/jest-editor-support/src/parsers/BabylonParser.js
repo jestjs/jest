@@ -20,9 +20,11 @@ const fs = require('fs');
 const BABELRC_FILENAME = '.babelrc';
 const cache = Object.create(null);
 
-// This is an exact copy of babel-jest's parser
+// This is a copy of babel-jest's parser, but it takes create-react-app
+// into account, and will return an empty JSON object instead of "".
 const getBabelRC = (filename, {useCache}) => {
-  const paths = [];
+  // Special case for create-react-app, which hides the .babelrc
+  const paths: string[] = ['node_modules/react-scripts/'];
   let directory = filename;
   while (directory !== (directory = path.dirname(directory))) {
     if (useCache && cache[directory]) {
@@ -40,7 +42,8 @@ const getBabelRC = (filename, {useCache}) => {
     cache[directoryPath] = cache[directory];
   });
 
-  return cache[directory] || '';
+  // return an empy JSON parse compatible string
+  return cache[directory] || '{}';
 };
 
 const parse = (file: string) => {
@@ -52,8 +55,8 @@ const parse = (file: string) => {
   const babel = JSON.parse(babelRC);
 
   const plugins = Array.isArray(babel.plugins)
-    ? babel.plugins.concat(['flow'])
-    : ['flow'];
+    ? babel.plugins.concat(['*'])
+    : ['*'];
 
   const config = {plugins, sourceType: 'module'};
   const ast = babylon.parse(data, config);
@@ -65,7 +68,7 @@ const parse = (file: string) => {
     const block = new ItBlock();
     block.name = node.expression.arguments[0].value;
     block.start = node.loc.start;
-    block.end =  node.loc.end;
+    block.end = node.loc.end;
 
     block.start.column += 1;
 
@@ -79,7 +82,7 @@ const parse = (file: string) => {
   const foundExpectNode = (node: any, file: string) => {
     const expect = new Expect();
     expect.start = node.loc.start;
-    expect.end =  node.loc.end;
+    expect.end = node.loc.end;
 
     expect.start.column += 1;
     expect.end.column += 1;
@@ -91,6 +94,7 @@ const parse = (file: string) => {
   const isFunctionCall = node => {
     return (
       node.type === 'ExpressionStatement' &&
+      node.expression &&
       node.expression.type === 'CallExpression'
     );
   };
@@ -108,8 +112,16 @@ const parse = (file: string) => {
     if (!isFunctionCall(node)) {
       return false;
     }
-    let {name} = node.expression.callee;
-    if (!name && node.expression.callee.object) {
+    let name = node && node.expression && node.expression.callee
+      ? node.expression.callee.name
+      : undefined;
+    if (
+      !name &&
+      node &&
+      node.expression &&
+      node.expression.callee &&
+      node.expression.callee.object
+    ) {
       name = node.expression.callee.object.name;
     }
     return name;
@@ -119,11 +131,7 @@ const parse = (file: string) => {
   // the start of an it/test block?
   const isAnIt = node => {
     const name = getNameForNode(node);
-    return (
-      name === 'it' ||
-      name === 'fit' ||
-      name === 'test'
-    );
+    return name === 'it' || name === 'fit' || name === 'test';
   };
 
   // When given a node in the AST, does this represent
@@ -132,9 +140,9 @@ const parse = (file: string) => {
     if (!isFunctionCall(node)) {
       return false;
     }
-    let name: string;
-    let element = node.expression.callee;
-    while (!name) {
+    let name = '';
+    let element = node && node.expression ? node.expression.callee : undefined;
+    while (!name && element) {
       name = element.name;
       // Because expect may have acccessors taked on (.to.be) or
       // nothing (expect()) we have to check mulitple levels for the name
@@ -158,21 +166,24 @@ const parse = (file: string) => {
         foundItNode(element, file);
       } else if (isAnExpect(element)) {
         foundExpectNode(element, file);
-      } else if (element.type === 'VariableDeclaration') {
+      } else if (element && element.type === 'VariableDeclaration') {
         element.declarations
-          .filter(declaration => (
-            declaration.init && isFunctionDeclaration(declaration.init.type))
+          .filter(
+            declaration =>
+              declaration.init && isFunctionDeclaration(declaration.init.type),
           )
           .forEach(declaration => searchNodes(declaration.init.body, file));
       } else if (
+        element &&
         element.type === 'ExpressionStatement' &&
+        element.expression &&
         element.expression.type === 'AssignmentExpression' &&
+        element.expression.right &&
         isFunctionDeclaration(element.expression.right.type)
       ) {
         searchNodes(element.expression.right.body, file);
       } else if (
-        element.type === 'ReturnStatement' &&
-        element.argument.arguments
+        element.type === 'ReturnStatement' && element.argument.arguments
       ) {
         element.argument.arguments
           .filter(argument => isFunctionDeclaration(argument.type))

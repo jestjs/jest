@@ -35,8 +35,10 @@ test('adds 1 + 2 to equal 3', () => {
 Add the following section to your `package.json`:
 
 ```json
-"scripts": {
-  "test": "jest"
+{
+  "scripts": {
+    "test": "jest"
+  }
 }
 ```
 
@@ -95,10 +97,10 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-To use TypeScript in your tests, install the `ts-jest` package:
+To use TypeScript in your tests, install the `ts-jest` package and the types for Jest.
 
 ```
-npm install --save-dev ts-jest
+npm install --save-dev ts-jest @types/jest
 ```
 
 then modify your `package.json` so the `jest` section looks something like:
@@ -113,7 +115,8 @@ then modify your `package.json` so the `jest` section looks something like:
     "moduleFileExtensions": [
       "ts",
       "tsx",
-      "js"
+      "js",
+      "json"
     ]
   }
 }

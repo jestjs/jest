@@ -20,10 +20,12 @@ const logDebugMessages = (
 ): void => {
   /* $FlowFixMe */
   const testFramework = require(config.testRunner);
-  pipe.write('jest version = ' + VERSION + '\n');
-  pipe.write('test framework = ' + testFramework.name + '\n');
-  pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
-
+  const output = {
+    config,
+    framework: testFramework.name,
+    version: VERSION,
+  };
+  pipe.write(JSON.stringify(output, null, '  ') + '\n');
 };
 
 module.exports = logDebugMessages;

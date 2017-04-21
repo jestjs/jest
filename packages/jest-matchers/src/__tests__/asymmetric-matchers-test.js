@@ -7,7 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
- /* eslint-disable max-len */
+/* eslint-disable max-len */
 
 'use strict';
 
@@ -97,7 +97,9 @@ test('ObjectContaining matches', () => {
     objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
-    objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({first: {second: {}}}),
+    objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
+      first: {second: {}},
+    }),
   ].forEach(test => {
     jestExpect(test).toEqual(true);
   });
@@ -116,7 +118,9 @@ test('ObjectContaining does not match', () => {
 test('ObjectContaining matches defined properties', () => {
   const definedPropertyObject = {};
   Object.defineProperty(definedPropertyObject, 'foo', {get: () => 'bar'});
-  jestExpect(objectContaining({foo: 'bar'}).asymmetricMatch(definedPropertyObject)).toBe(true);
+  jestExpect(
+    objectContaining({foo: 'bar'}).asymmetricMatch(definedPropertyObject),
+  ).toBe(true);
 });
 
 test('ObjectContaining matches prototype properties', () => {

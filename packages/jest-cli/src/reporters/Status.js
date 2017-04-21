@@ -138,27 +138,28 @@ class Status {
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
-        content += wrapAnsiString(
-          RUNNING + trimAndFormatPath(
-            RUNNING_TEXT.length + 1,
-            config,
-            testPath,
+        content +=
+          wrapAnsiString(
+            RUNNING +
+              trimAndFormatPath(
+                RUNNING_TEXT.length + 1,
+                config,
+                testPath,
+                width,
+              ),
             width,
-          ),
-          width,
-        ) + '\n';
+          ) + '\n';
       }
     });
 
     if (this._showStatus && this._aggregatedResults) {
-      content += '\n' + getSummary(
-        this._aggregatedResults,
-        {
+      content +=
+        '\n' +
+        getSummary(this._aggregatedResults, {
           estimatedTime: this._estimatedTime,
           roundTime: true,
           width,
-        },
-      );
+        });
     }
 
     let height = 0;
@@ -170,7 +171,7 @@ class Status {
     }
 
     const clear = '\r\x1B[K\r\x1B[1A'.repeat(height);
-    return this._cache = {clear, content};
+    return (this._cache = {clear, content});
   }
 
   _emit() {
@@ -194,7 +195,6 @@ class Status {
   _tick() {
     this._debouncedEmit();
   }
-
 }
 
 module.exports = Status;

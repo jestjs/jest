@@ -14,7 +14,8 @@ import type {Path} from 'types/Config';
 
 const args = require('./args');
 const getJest = require('./getJest');
-const getPackageRoot = require('jest-util').getPackageRoot;
+const pkgDir = require('pkg-dir');
+const runCLI = require('./runCLI');
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
 
@@ -25,8 +26,7 @@ function run(argv?: Object, root?: Path) {
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
-    .check(args.check)
-    .argv;
+    .check(args.check).argv;
 
   validateCLIOptions(argv, args.options);
 
@@ -37,10 +37,16 @@ function run(argv?: Object, root?: Path) {
   }
 
   if (!root) {
-    root = getPackageRoot();
+    root = pkgDir.sync();
   }
 
-  getJest(root).runCLI(argv, root, result => {
+  argv.projects = argv.experimentalProjects;
+  if (!argv.projects) {
+    argv.projects = [root];
+  }
+
+  const execute = argv.projects.length === 1 ? getJest(root).runCLI : runCLI;
+  execute(argv, argv.projects, result => {
     const code = !result || result.success ? 0 : 1;
     process.on('exit', () => process.exit(code));
     if (argv && argv.forceExit) {
@@ -50,3 +56,4 @@ function run(argv?: Object, root?: Path) {
 }
 
 exports.run = run;
+exports.runCLI = runCLI;

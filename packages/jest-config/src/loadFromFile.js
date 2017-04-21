@@ -13,12 +13,11 @@
 import type {Path} from 'types/Config';
 
 const fs = require('fs');
-const normalize = require('./normalize');
 const jsonlint = require('./vendor/jsonlint');
 const path = require('path');
 const pify = require('pify');
 
-function loadFromFile(filePath: Path, argv: Object) {
+function loadFromFile(filePath: Path) {
   return pify(fs.readFile)(filePath).then(data => {
     const parse = () => {
       try {
@@ -35,7 +34,7 @@ function loadFromFile(filePath: Path, argv: Object) {
     config.rootDir = config.rootDir
       ? path.resolve(path.dirname(filePath), config.rootDir)
       : process.cwd();
-    return normalize(config, argv);
+    return config;
   });
 }
 

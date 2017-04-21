@@ -34,12 +34,14 @@ function getJest(packageRoot: Path) {
         (dependencies && dependencies['jest-cli']) ||
         (devDependencies && devDependencies['jest-cli'])
       ) {
-        process.on('exit', () => console.log(
-          chalk.red(
-            'Please run `npm install` to use the version of Jest intended ' +
-            'for this project.',
+        process.on('exit', () =>
+          console.log(
+            chalk.red(
+              'Please run `npm install` to use the version of Jest intended ' +
+                'for this project.',
+            ),
           ),
-        ));
+        );
       }
     }
     return jest;

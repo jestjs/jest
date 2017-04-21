@@ -16,7 +16,6 @@ const cwd = process.cwd();
 let createLocalRuntime;
 
 describe('Runtime', () => {
-
   beforeEach(() => {
     jest.resetModules();
 
@@ -70,10 +69,11 @@ describe('Runtime', () => {
           runtime.__mockRootPath,
           'RegularModuleInNodePath',
         );
-      }).toThrow(new Error(
-        `Cannot find module 'RegularModuleInNodePath' from 'root.js'`,
-      ));
+      }).toThrow(
+        new Error(
+          `Cannot find module 'RegularModuleInNodePath' from 'root.js'`,
+        ),
+      );
     });
   });
-
 });

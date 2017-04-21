@@ -30,7 +30,7 @@ beforeEach(() => {
     rootDir: '.',
     roots: ['./packages/jest-resolve-dependencies'],
   }).config;
-  return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+  return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
     dependencyResolver = new DependencyResolver(
       hasteMap.resolver,
       hasteMap.hasteFS,
@@ -49,7 +49,7 @@ test('resolves dependencies for existing path', () => {
   );
   expect(resolved).toEqual([
     expect.stringContaining('jest-resolve-dependencies'),
-    expect.stringContaining('jest-file-exists'),
+    expect.stringContaining('jest-regex-util'),
   ]);
 });
 

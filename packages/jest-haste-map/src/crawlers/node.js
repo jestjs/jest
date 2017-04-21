@@ -97,9 +97,7 @@ function findNative(
   child.stdout.on('data', data => stdout += data);
 
   child.stdout.on('close', () => {
-    const lines = stdout.trim()
-      .split('\n')
-      .filter(x => !ignore(x));
+    const lines = stdout.trim().split('\n').filter(x => !ignore(x));
     const result = [];
     let count = lines.length;
     if (!count) {
@@ -122,13 +120,7 @@ function findNative(
 module.exports = function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const {
-    data,
-    extensions,
-    forceNodeFilesystemAPI,
-    ignore,
-    roots,
-  } = options;
+  const {data, extensions, forceNodeFilesystemAPI, ignore, roots} = options;
 
   return new Promise(resolve => {
     const callback = list => {

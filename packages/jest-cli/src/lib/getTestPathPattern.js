@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {PatternInfo} from '../SearchSource';
+import type {PathPattern} from '../SearchSource';
 
 const {clearLine} = require('jest-util');
 const chalk = require('chalk');
@@ -25,10 +25,15 @@ const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
   // eslint-disable-next-line max-len
-  console.log(chalk.red(`  Invalid testPattern ${testPathPattern} supplied. Running all tests instead.`));
+  console.log(
+    chalk.red(
+      `  Invalid testPattern ${testPathPattern} supplied. ` +
+        `Running all tests instead.`,
+    ),
+  );
 };
 
-module.exports = (argv: Object): PatternInfo => {
+module.exports = (argv: Object): PathPattern => {
   if (argv.onlyChanged) {
     return {
       input: '',

@@ -11,7 +11,6 @@
 'use strict';
 
 const {
-  contains,
   equals,
   fnNameFor,
   hasProperty,
@@ -131,14 +130,11 @@ class ArrayContaining extends AsymmetricMatcher {
       );
     }
 
-    for (let i = 0; i < this.sample.length; i++) {
-      const item = this.sample[i];
-      if (!contains(other, item)) {
-        return false;
-      }
-    }
-
-    return true;
+    return (
+      this.sample.length === 0 ||
+      (Array.isArray(other) &&
+        this.sample.every(item => other.some(another => equals(item, another))))
+    );
   }
 
   toString() {

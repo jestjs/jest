@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
 const chalk = require('chalk');
@@ -27,7 +27,7 @@ const PROGRESS_BAR_WIDTH = 40;
 
 const trimAndFormatPath = (
   pad: number,
-  config: Config,
+  config: {rootDir: Path},
   testPath: Path,
   columns: number,
 ): string => {
@@ -45,8 +45,8 @@ const trimAndFormatPath = (
   const basenameLength = basename.length;
   if (basenameLength + 4 < maxLength) {
     const dirnameLength = maxLength - 4 - basenameLength;
-    dirname = '...' +
-      dirname.slice(dirname.length - dirnameLength, dirname.length);
+    dirname =
+      '...' + dirname.slice(dirname.length - dirnameLength, dirname.length);
     return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
   }
 
@@ -55,18 +55,19 @@ const trimAndFormatPath = (
   }
 
   // can't fit dirname, but can fit trimmed basename
-  return slash(chalk.bold(
-    '...' +
-    basename.slice(basename.length - maxLength - 4, basename.length),
-  ));
+  return slash(
+    chalk.bold(
+      '...' + basename.slice(basename.length - maxLength - 4, basename.length),
+    ),
+  );
 };
 
-const formatTestPath = (config: Config, testPath: Path) => {
+const formatTestPath = (config: {rootDir: Path}, testPath: Path) => {
   const {dirname, basename} = relativePath(config, testPath);
   return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const relativePath = (config: Config, testPath: Path) => {
+const relativePath = (config: {rootDir: Path}, testPath: Path) => {
   testPath = path.relative(config.rootDir, testPath);
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
@@ -108,61 +109,41 @@ const getSummary = (
     (suitesFailed ? chalk.bold.red(`${suitesFailed} failed`) + ', ' : '') +
     (suitesPending
       ? chalk.bold.yellow(`${suitesPending} skipped`) + ', '
-      : ''
-    ) +
-    (suitesPassed
-      ? chalk.bold.green(`${suitesPassed} passed`) + ', '
-      : ''
-    ) +
+      : '') +
+    (suitesPassed ? chalk.bold.green(`${suitesPassed} passed`) + ', ' : '') +
     (suitesRun !== suitesTotal
       ? suitesRun + ' of ' + suitesTotal
-      : suitesTotal
-    ) + ` total`;
+      : suitesTotal) +
+    ` total`;
 
   const tests =
     chalk.bold('Tests:       ') +
     (testsFailed ? chalk.bold.red(`${testsFailed} failed`) + ', ' : '') +
-    (testsPending
-      ? chalk.bold.yellow(`${testsPending} skipped`) + ', '
-      : ''
-    ) +
-    (testsPassed
-      ? chalk.bold.green(`${testsPassed} passed`) + ', '
-      : ''
-    ) +
+    (testsPending ? chalk.bold.yellow(`${testsPending} skipped`) + ', ' : '') +
+    (testsPassed ? chalk.bold.green(`${testsPassed} passed`) + ', ' : '') +
     `${testsTotal} total`;
 
   const snapshots =
     chalk.bold('Snapshots:   ') +
     (snapshotsFailed
       ? chalk.bold.red(`${snapshotsFailed} failed`) + ', '
-      : ''
-    ) +
+      : '') +
     (snapshotsUpdated
       ? chalk.bold.green(`${snapshotsUpdated} updated`) + ', '
-      : ''
-    ) +
-    (snapshotsAdded
-      ? chalk.bold.green(`${snapshotsAdded} added`) + ', '
-      : ''
-    ) +
+      : '') +
+    (snapshotsAdded ? chalk.bold.green(`${snapshotsAdded} added`) + ', ' : '') +
     (snapshotsPassed
       ? chalk.bold.green(`${snapshotsPassed} passed`) + ', '
-      : ''
-    ) +
+      : '') +
     `${snapshotsTotal} total`;
 
   const time = renderTime(runTime, estimatedTime, width);
   return [suites, tests, snapshots, time].join('\n');
 };
 
-const renderTime = (
-  runTime,
-  estimatedTime,
-  width,
-) => {
+const renderTime = (runTime, estimatedTime, width) => {
   // If we are more than one second over the estimated time, highlight it.
-  const renderedTime = (estimatedTime && runTime >= estimatedTime + 1)
+  const renderedTime = estimatedTime && runTime >= estimatedTime + 1
     ? chalk.bold.yellow(runTime + 's')
     : runTime + 's';
   let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
@@ -172,11 +153,7 @@ const renderTime = (
 
   // Only show a progress bar if the test run is actually going to take
   // some time.
-  if (
-    estimatedTime > 2 &&
-    runTime < estimatedTime &&
-    width
-  ) {
+  if (estimatedTime > 2 && runTime < estimatedTime && width) {
     const availableWidth = Math.min(PROGRESS_BAR_WIDTH, width);
     const length = Math.min(
       Math.floor(runTime / estimatedTime * availableWidth),
@@ -205,7 +182,7 @@ const wrapAnsiString = (string: string, terminalWidth: number) => {
   let lastIndex = 0;
   let match;
 
-  while (match = ANSI_REGEXP.exec(string)) {
+  while ((match = ANSI_REGEXP.exec(string))) {
     const ansi = match[0];
     const index = match['index'];
     if (index != lastIndex) {
@@ -221,37 +198,38 @@ const wrapAnsiString = (string: string, terminalWidth: number) => {
 
   let lastLineLength = 0;
 
-  return tokens.reduce(
-    (lines, [kind, token]) => {
-      if (kind === 'string') {
-        if (lastLineLength + token.length > terminalWidth) {
-
-          while (token.length) {
-            const chunk = token.slice(0, terminalWidth - lastLineLength);
-            const remaining = token.slice(
-              terminalWidth - lastLineLength,
-              token.length,
-            );
-            lines[lines.length - 1] += chunk;
-            lastLineLength += chunk.length;
-            token = remaining;
-            if (token.length) {
-              lines.push('');
-              lastLineLength = 0;
+  return tokens
+    .reduce(
+      (lines, [kind, token]) => {
+        if (kind === 'string') {
+          if (lastLineLength + token.length > terminalWidth) {
+            while (token.length) {
+              const chunk = token.slice(0, terminalWidth - lastLineLength);
+              const remaining = token.slice(
+                terminalWidth - lastLineLength,
+                token.length,
+              );
+              lines[lines.length - 1] += chunk;
+              lastLineLength += chunk.length;
+              token = remaining;
+              if (token.length) {
+                lines.push('');
+                lastLineLength = 0;
+              }
             }
+          } else {
+            lines[lines.length - 1] += token;
+            lastLineLength += token.length;
           }
         } else {
           lines[lines.length - 1] += token;
-          lastLineLength += token.length;
         }
-      } else {
-        lines[lines.length - 1] += token;
-      }
 
-      return lines;
-    },
-    [''],
-  ).join('\n');
+        return lines;
+      },
+      [''],
+    )
+    .join('\n');
 };
 
 module.exports = {

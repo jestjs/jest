@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {TestResult} from 'types/TestResult';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
@@ -19,7 +19,7 @@ const stringLength = require('string-length');
 const Prompt = require('./lib/Prompt');
 const formatTestNameByPattern = require('./lib/formatTestNameByPattern');
 
-const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
+const pluralizeTest = (total: number) => (total === 1 ? 'test' : 'tests');
 
 const usage = () =>
   `\n ${chalk.bold('Pattern Mode Usage')}\n` +
@@ -30,107 +30,104 @@ const usage = () =>
 
 const usageRows = usage().split('\n').length;
 
-module.exports = (
-  config: Config,
-  pipe: stream$Writable | tty$WriteStream,
-  prompt: Prompt,
-) => {
-  class TestNamePatternPrompt {
-    // $FlowFixMe
-    _cachedTestResults;
+module.exports = class TestNamePatternPrompt {
+  _cachedTestResults: Array<TestResult>;
+  _pipe: stream$Writable | tty$WriteStream;
+  _prompt: Prompt;
 
-    constructor() {
-      (this: any).onChange = this.onChange.bind(this);
-    }
+  constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
+    this._pipe = pipe;
+    this._prompt = prompt;
+  }
 
-    run(onSuccess: Function, onCancel: Function) {
-      pipe.write(ansiEscapes.cursorHide);
-      pipe.write(ansiEscapes.clearScreen);
-      pipe.write(usage());
-      pipe.write(ansiEscapes.cursorShow);
+  run(onSuccess: Function, onCancel: Function) {
+    this._pipe.write(ansiEscapes.cursorHide);
+    this._pipe.write(ansiEscapes.clearScreen);
+    this._pipe.write(usage());
+    this._pipe.write(ansiEscapes.cursorShow);
 
-      prompt.enter(this.onChange, onSuccess, onCancel);
-    }
+    this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
+  }
 
-    onChange(pattern: string) {
-      pipe.write(ansiEscapes.eraseLine);
-      pipe.write(ansiEscapes.cursorLeft);
-      this.printTypeahead(pattern, 10);
-    }
+  _onChange(pattern: string) {
+    this._pipe.write(ansiEscapes.eraseLine);
+    this._pipe.write(ansiEscapes.cursorLeft);
+    this._printTypeahead(pattern, 10);
+  }
 
-    printTypeahead(pattern: string, max: number) {
-      const matchedTests = this.getMatchedTests(pattern);
+  _printTypeahead(pattern: string, max: number) {
+    const matchedTests = this._getMatchedTests(pattern);
 
-      const total = matchedTests.length;
-      const results = matchedTests.slice(0, max);
-      const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
+    const total = matchedTests.length;
+    const results = matchedTests.slice(0, max);
+    const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
-      pipe.write(ansiEscapes.eraseDown);
-      pipe.write(inputText);
-      pipe.write(ansiEscapes.cursorSavePosition);
+    this._pipe.write(ansiEscapes.eraseDown);
+    this._pipe.write(inputText);
+    this._pipe.write(ansiEscapes.cursorSavePosition);
 
-      if (pattern) {
-        if (total) {
-          pipe.write(`\n\n Pattern matches ${total} ${pluralizeTest(total)}`);
-        } else {
-          pipe.write(`\n\n Pattern matches no tests`);
-        }
-
-        pipe.write(' from cached test suites.');
-
-        const width = getTerminalWidth();
-
-        results.forEach(name => {
-          const testName = formatTestNameByPattern(name, pattern, width - 4);
-
-          pipe.write(`\n ${chalk.dim('\u203A')} ${testName}`);
-        });
-
-        if (total > max) {
-          const more = total - max;
-          pipe.write(
-            // eslint-disable-next-line max-len
-            `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`,
-          );
-        }
+    if (pattern) {
+      if (total) {
+        this._pipe.write(
+          `\n\n Pattern matches ${total} ${pluralizeTest(total)}`,
+        );
       } else {
-        pipe.write(
+        this._pipe.write(`\n\n Pattern matches no tests`);
+      }
+
+      this._pipe.write(' from cached test suites.');
+
+      const width = getTerminalWidth();
+
+      results.forEach(name => {
+        const testName = formatTestNameByPattern(name, pattern, width - 4);
+
+        this._pipe.write(`\n ${chalk.dim('\u203A')} ${testName}`);
+      });
+
+      if (total > max) {
+        const more = total - max;
+        this._pipe.write(
           // eslint-disable-next-line max-len
-          `\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`,
+          `\n ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`,
         );
       }
-
-      pipe.write(ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1));
-      pipe.write(ansiEscapes.cursorRestorePosition);
+    } else {
+      this._pipe.write(
+        // eslint-disable-next-line max-len
+        `\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`,
+      );
     }
 
-    getMatchedTests(pattern: string) {
-      let regex;
+    this._pipe.write(
+      ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1),
+    );
+    this._pipe.write(ansiEscapes.cursorRestorePosition);
+  }
 
-      try {
-        regex = new RegExp(pattern, 'i');
-      } catch (e) {
-        return [];
-      }
+  _getMatchedTests(pattern: string) {
+    let regex;
 
-      const matchedTests = [];
+    try {
+      regex = new RegExp(pattern, 'i');
+    } catch (e) {
+      return [];
+    }
 
-      this._cachedTestResults.forEach(({testResults}) => testResults.forEach((
-        {title},
-      ) => {
+    const matchedTests = [];
+
+    this._cachedTestResults.forEach(({testResults}) =>
+      testResults.forEach(({title}) => {
         if (regex.test(title)) {
           matchedTests.push(title);
         }
-      }));
+      }),
+    );
 
-      return matchedTests;
-    }
-
-    // $FlowFixMe
-    updateCachedTestResults(testResults) {
-      this._cachedTestResults = testResults || [];
-    }
+    return matchedTests;
   }
 
-  return new TestNamePatternPrompt();
+  updateCachedTestResults(testResults: Array<TestResult>) {
+    this._cachedTestResults = testResults || [];
+  }
 };

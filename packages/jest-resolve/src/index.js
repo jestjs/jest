@@ -126,7 +126,7 @@ class Resolver {
     // 1. Check if the module is a haste module.
     let module = this.getModule(moduleName);
     if (module) {
-      return this._moduleNameCache[key] = module;
+      return (this._moduleNameCache[key] = module);
     }
 
     // 2. Check if the module is a node module and resolve it based on
@@ -135,9 +135,8 @@ class Resolver {
     // node modules (ie. are not relative requires). This enables us to speed
     // up resolution when we build a dependency graph because we don't have
     // to look at modules that may not exist and aren't mocked.
-    const skipResolution = options &&
-      options.skipNodeResolution &&
-      !moduleName.includes(path.sep);
+    const skipResolution =
+      options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
     if (!skipResolution) {
       module = Resolver.findNodeModule(moduleName, {
@@ -150,7 +149,7 @@ class Resolver {
       });
 
       if (module) {
-        return this._moduleNameCache[key] = module;
+        return (this._moduleNameCache[key] = module);
       }
     }
 
@@ -160,9 +159,9 @@ class Resolver {
     module = this.getPackage(parts.shift());
     if (module) {
       try {
-        return this._moduleNameCache[key] = require.resolve(
+        return (this._moduleNameCache[key] = require.resolve(
           path.join.apply(path, [path.dirname(module)].concat(parts)),
-        );
+        ));
       } catch (ignoredError) {}
     }
 
@@ -247,12 +246,13 @@ class Resolver {
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
-    const id = moduleType +
+    const id =
+      moduleType +
       sep +
       (absolutePath ? absolutePath + sep : '') +
       (mockPath ? mockPath + sep : '');
 
-    return this._moduleIDCache[key] = id;
+    return (this._moduleIDCache[key] = id);
   }
 
   _getModuleType(moduleName: string): 'node' | 'user' {
@@ -313,14 +313,16 @@ class Resolver {
               (_, index) => matches[parseInt(index, 10)],
             );
           }
-          return this.getModule(moduleName) ||
+          return (
+            this.getModule(moduleName) ||
             Resolver.findNodeModule(moduleName, {
               basedir: dirname,
               browser: this._options.browser,
               extensions,
               moduleDirectory,
               paths,
-            });
+            })
+          );
         }
       }
     }

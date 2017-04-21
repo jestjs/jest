@@ -1,77 +1,77 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dims everything when there is no match 1`] = `"[2mjest-cli/__tests__/watch-test.js[22m"`;
+exports[`dims everything when there is no match 1`] = `"<dim>jest-cli/__tests__/watch-test.js"`;
 
-exports[`dims everything when there is no match 2`] = `"[2m...t-cli/__tests__/watch-test.js[22m"`;
+exports[`dims everything when there is no match 2`] = `"<dim>...t-cli/__tests__/watch-test.js"`;
 
-exports[`dims everything when there is no match 3`] = `"[2m.../__tests__/watch-test.js[22m"`;
+exports[`dims everything when there is no match 3`] = `"<dim>.../__tests__/watch-test.js"`;
 
-exports[`dims everything when there is no match 4`] = `"[2m...sts__/watch-test.js[22m"`;
+exports[`dims everything when there is no match 4`] = `"<dim>...sts__/watch-test.js"`;
 
-exports[`dims everything when there is no match 5`] = `"[2m...watch-test.js[22m"`;
+exports[`dims everything when there is no match 5`] = `"<dim>...watch-test.js"`;
 
-exports[`dims everything when there is no match 6`] = `"[2m...-test.js[22m"`;
+exports[`dims everything when there is no match 6`] = `"<dim>...-test.js"`;
 
-exports[`dims everything when there is no match 7`] = `"[2m....js[22m"`;
+exports[`dims everything when there is no match 7`] = `"<dim>....js"`;
 
-exports[`dims everything when there is no match 8`] = `"[2m./watch-test.js[22m"`;
+exports[`dims everything when there is no match 8`] = `"<dim>./watch-test.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 1`] = `"[2mjest-cli/__tests__/watch-test.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 1`] = `"<dim>jest-cli/__tests__/watch-test.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 2`] = `"[0m...[0m[2mt-cli/__tests__/watch-test.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 2`] = `"</>...</><dim>t-cli/__tests__/watch-test.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 3`] = `"[0m...[0m[2m/__tests__/watch-test.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 3`] = `"</>...</><dim>/__tests__/watch-test.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 4`] = `"[0m...[0m[2msts__/watch-test.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 4`] = `"</>...</><dim>sts__/watch-test.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 5`] = `"[0m...[0m[2mwatch-test.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 5`] = `"</>...</><dim>watch-test.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 6`] = `"[0m...[0m[2m-test.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 6`] = `"</>...</><dim>-test.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 7`] = `"[0m...[0m[2m.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 7`] = `"</>...</><dim>.js"`;
 
-exports[`highlight the trimmed part when there is only a rootDir match 8`] = `"[0m./[0m[2mwatch-test.js[22m"`;
+exports[`highlight the trimmed part when there is only a rootDir match 8`] = `"</>./</><dim>watch-test.js"`;
 
-exports[`highlights everything when there is a full match 1`] = `"[0mjest-cli/__tests__/watch-test.js[0m"`;
+exports[`highlights everything when there is a full match 1`] = `"</>jest-cli/__tests__/watch-test.js</>"`;
 
-exports[`highlights everything when there is a full match 2`] = `"[0m...t-cli/__tests__/watch-test.js[0m"`;
+exports[`highlights everything when there is a full match 2`] = `"</>...t-cli/__tests__/watch-test.js</>"`;
 
-exports[`highlights everything when there is a full match 3`] = `"[0m.../__tests__/watch-test.js[0m"`;
+exports[`highlights everything when there is a full match 3`] = `"</>.../__tests__/watch-test.js</>"`;
 
-exports[`highlights everything when there is a full match 4`] = `"[0m...sts__/watch-test.js[0m"`;
+exports[`highlights everything when there is a full match 4`] = `"</>...sts__/watch-test.js</>"`;
 
-exports[`highlights everything when there is a full match 5`] = `"[0m...watch-test.js[0m"`;
+exports[`highlights everything when there is a full match 5`] = `"</>...watch-test.js</>"`;
 
-exports[`highlights everything when there is a full match 6`] = `"[0m...-test.js[0m"`;
+exports[`highlights everything when there is a full match 6`] = `"</>...-test.js</>"`;
 
-exports[`highlights everything when there is a full match 7`] = `"[0m....js[0m"`;
+exports[`highlights everything when there is a full match 7`] = `"</>....js</>"`;
 
-exports[`highlights everything when there is a full match 8`] = `"[0m./watch-test.js[0m"`;
+exports[`highlights everything when there is a full match 8`] = `"</>./watch-test.js</>"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 1`] = `"[2mjest-cli/__tests__/[22m[0mwatch[0m[2m-test.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 1`] = `"<dim>jest-cli/__tests__/</>watch</><dim>-test.js"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 2`] = `"[2m...t-cli/__tests__/[22m[0mwatch[0m[2m-test.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 2`] = `"<dim>...t-cli/__tests__/</>watch</><dim>-test.js"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 3`] = `"[2m.../__tests__/[22m[0mwatch[0m[2m-test.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 3`] = `"<dim>.../__tests__/</>watch</><dim>-test.js"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 4`] = `"[2m...sts__/[22m[0mwatch[0m[2m-test.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 4`] = `"<dim>...sts__/</>watch</><dim>-test.js"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 5`] = `"[2m...[22m[0mwatch[0m[2m-test.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 5`] = `"<dim>...</>watch</><dim>-test.js"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 6`] = `"[0m...[0m[2m-test.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 6`] = `"</>...</><dim>-test.js"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 7`] = `"[0m...[0m[2m.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 7`] = `"</>...</><dim>.js"`;
 
-exports[`highlights part of file name when there is a partially match of the file name 8`] = `"[2m./[22m[0mwatch[0m[2m-test.js[22m"`;
+exports[`highlights part of file name when there is a partially match of the file name 8`] = `"<dim>./</>watch</><dim>-test.js"`;
 
-exports[`highlights the trimmed part there is a non visible match 1`] = `"[0m...t-cli[0m[2m/__tests__/watch-test.js[22m"`;
+exports[`highlights the trimmed part there is a non visible match 1`] = `"</>...t-cli</><dim>/__tests__/watch-test.js"`;
 
-exports[`highlights the trimmed part there is a non visible match 2`] = `"[0m...[0m[2m/__tests__/watch-test.js[22m"`;
+exports[`highlights the trimmed part there is a non visible match 2`] = `"</>...</><dim>/__tests__/watch-test.js"`;
 
-exports[`highlights the trimmed part there is a non visible match 3`] = `"[0m...[0m[2msts__/watch-test.js[22m"`;
+exports[`highlights the trimmed part there is a non visible match 3`] = `"</>...</><dim>sts__/watch-test.js"`;
 
-exports[`highlights the trimmed part there is a non visible match 4`] = `"[0m...[0m[2mwatch-test.js[22m"`;
+exports[`highlights the trimmed part there is a non visible match 4`] = `"</>...</><dim>watch-test.js"`;
 
-exports[`highlights the trimmed part there is a non visible match 5`] = `"[0m...[0m[2m-test.js[22m"`;
+exports[`highlights the trimmed part there is a non visible match 5`] = `"</>...</><dim>-test.js"`;
 
-exports[`highlights the trimmed part there is a non visible match 6`] = `"[0m...[0m[2m.js[22m"`;
+exports[`highlights the trimmed part there is a non visible match 6`] = `"</>...</><dim>.js"`;

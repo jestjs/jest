@@ -13,13 +13,13 @@ import type {ConsoleBuffer} from './Console';
 
 export type RawFileCoverage = {|
   path: string,
-  s: { [statementId: number]: number },
-  b: { [branchId: number]: number },
-  f: { [functionId: number]: number },
-  l: { [lineId: number]: number },
-  fnMap: { [functionId: number]: any },
-  statementMap: { [statementId: number]: any },
-  branchMap: { [branchId: number]: any },
+  s: {[statementId: number]: number},
+  b: {[branchId: number]: number},
+  f: {[functionId: number]: number},
+  l: {[lineId: number]: number},
+  fnMap: {[functionId: number]: any},
+  statementMap: {[statementId: number]: any},
+  branchMap: {[branchId: number]: any},
   inputSourceMap?: Object,
 |};
 
@@ -50,7 +50,7 @@ export type FileCoverage = {|
   computeSimpleTotals: (property: string) => FileCoverageTotal,
   computeBranchTotals: () => FileCoverageTotal,
   resetHits: () => void,
-  toSummary: () => CoverageSummary
+  toSummary: () => CoverageSummary,
 |};
 
 export type CoverageMap = {|

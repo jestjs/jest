@@ -13,24 +13,24 @@ import type {EslintContext, CallExpression} from './types';
 
 /* $FlowFixMe */
 const describeAliases = Object.assign(Object.create(null), {
-  'describe': true,
+  describe: true,
   'describe.only': true,
   'describe.skip': true,
-  'fdescribe': true,
-  'xdescribe': true,
+  fdescribe: true,
+  xdescribe: true,
 });
 
 /* $FlowFixMe */
 const testCaseNames = Object.assign(Object.create(null), {
-  'fit': true,
-  'it': true,
+  fit: true,
+  it: true,
   'it.only': true,
   'it.skip': true,
-  'test': true,
+  test: true,
   'test.only': true,
   'test.skip': true,
-  'xit': true,
-  'xtest': true,
+  xit: true,
+  xtest: true,
 });
 
 const getNodeName = node => {
@@ -40,17 +40,15 @@ const getNodeName = node => {
   return node.name;
 };
 
-const isDescribe = node => (
+const isDescribe = node =>
   node &&
   node.type === 'CallExpression' &&
-  describeAliases[getNodeName(node.callee)]
-);
+  describeAliases[getNodeName(node.callee)];
 
-const isTestCase = node => (
+const isTestCase = node =>
   node &&
   node.type === 'CallExpression' &&
-  testCaseNames[getNodeName(node.callee)]
-);
+  testCaseNames[getNodeName(node.callee)];
 
 const newDescribeContext = () => ({
   describeTitles: [],
@@ -82,16 +80,11 @@ const handleTestSuiteTitles = (context, titles, node, title) => {
   titles.push(title);
 };
 
-const isFirstArgLiteral = node => (
-  node.arguments &&
-  node.arguments[0] &&
-  node.arguments[0].type === 'Literal'
-);
+const isFirstArgLiteral = node =>
+  node.arguments && node.arguments[0] && node.arguments[0].type === 'Literal';
 
 module.exports = (context: EslintContext) => {
-  const contexts = [
-    newDescribeContext(),
-  ];
+  const contexts = [newDescribeContext()];
   return {
     CallExpression(node: CallExpression) {
       const currentLayer = contexts[contexts.length - 1];

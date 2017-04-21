@@ -10,8 +10,11 @@
 'use strict';
 
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
-import type {Config} from 'types/Config';
-import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
+import type {GlobalConfig} from 'types/Config';
+import type {Context} from 'types/Context';
+import type {Options as SummaryReporterOptions} from '../TestRunner';
+import type {PathPattern} from '../SearchSource';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 
@@ -55,12 +58,13 @@ const NPM_EVENTS = new Set([
   'postrestart',
 ]);
 
-class SummareReporter extends BaseReporter {
-
+class SummaryReporter extends BaseReporter {
   _estimatedTime: number;
+  _options: SummaryReporterOptions;
 
-  constructor() {
+  constructor(options: SummaryReporterOptions) {
     super();
+    this._options = options;
     this._estimatedTime = 0;
   }
 
@@ -76,19 +80,18 @@ class SummareReporter extends BaseReporter {
   }
 
   onRunStart(
-    config: Config,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
     options: ReporterOnStartOptions,
   ) {
-    super.onRunStart(config, aggregatedResults, runnerContext, options);
+    super.onRunStart(config, aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
   onRunComplete(
-    config: Config,
+    contexts: Set<Context>,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
   ) {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
@@ -110,17 +113,24 @@ class SummareReporter extends BaseReporter {
       if (numTotalTestSuites) {
         const testSummary = wasInterrupted
           ? chalk.bold.red('Test run was interrupted.')
-          : runnerContext.getTestSummary();
+          : this._getTestSummary(
+              contexts,
+              this._options.pattern,
+              this._options.testNamePattern,
+              this._options.testPathPattern,
+            );
         this.log(
           getSummary(aggregatedResults, {
             estimatedTime: this._estimatedTime,
-          }) + '\n' + testSummary,
+          }) +
+            '\n' +
+            testSummary,
         );
       }
     }
   }
 
-  _printSnapshotSummary(snapshots: SnapshotSummary, config: Config) {
+  _printSnapshotSummary(snapshots: SnapshotSummary, config: GlobalConfig) {
     if (
       snapshots.added ||
       snapshots.filesRemoved ||
@@ -131,10 +141,14 @@ class SummareReporter extends BaseReporter {
       let updateCommand;
       const event = process.env.npm_lifecycle_event;
       const prefix = NPM_EVENTS.has(event) ? '' : 'run ';
+      const client = typeof process.env.npm_config_user_agent === 'string' &&
+        process.env.npm_config_user_agent.match('yarn') !== null
+        ? 'yarn'
+        : 'npm';
       if (config.watch) {
         updateCommand = 'press `u`';
       } else if (event) {
-        updateCommand = `run with \`npm ${prefix + event} -- -u\``;
+        updateCommand = `run with \`${client + ' ' + prefix + event} -- -u\``;
       } else {
         updateCommand = 're-run with `-u`';
       }
@@ -143,51 +157,57 @@ class SummareReporter extends BaseReporter {
       if (snapshots.added) {
         this.log(
           SNAPSHOT_ADDED(ARROW + pluralize('snapshot', snapshots.added)) +
-          ` written in ${pluralize('test suite', snapshots.filesAdded)}.`,
+            ` written in ${pluralize('test suite', snapshots.filesAdded)}.`,
         );
       }
 
       if (snapshots.unmatched) {
         this.log(
           FAIL_COLOR(ARROW + pluralize('snapshot test', snapshots.unmatched)) +
-          ` failed in ${pluralize('test suite', snapshots.filesUnmatched)}. ` +
-          SNAPSHOT_NOTE(
-            'Inspect your code changes or ' +
-            updateCommand + ' to update them.',
-          ),
+            ` failed in ` +
+            `${pluralize('test suite', snapshots.filesUnmatched)}. ` +
+            SNAPSHOT_NOTE(
+              'Inspect your code changes or ' +
+                updateCommand +
+                ' to update them.',
+            ),
         );
       }
 
       if (snapshots.updated) {
         this.log(
           SNAPSHOT_UPDATED(ARROW + pluralize('snapshot', snapshots.updated)) +
-          ` updated in ${pluralize('test suite', snapshots.filesUpdated)}.`,
+            ` updated in ${pluralize('test suite', snapshots.filesUpdated)}.`,
         );
       }
 
       if (snapshots.filesRemoved) {
         this.log(
-          SNAPSHOT_REMOVED(ARROW + pluralize(
-            'obsolete snapshot file',
-            snapshots.filesRemoved,
-          )) +
-          (snapshots.didUpdate
-            ? ' removed.'
-            : ' found, ' + updateCommand + ' to remove ' +
-              (snapshots.filesRemoved === 1 ? 'it' : 'them.') + '.'),
+          SNAPSHOT_REMOVED(
+            ARROW + pluralize('obsolete snapshot file', snapshots.filesRemoved),
+          ) +
+            (snapshots.didUpdate
+              ? ' removed.'
+              : ' found, ' +
+                  updateCommand +
+                  ' to remove ' +
+                  (snapshots.filesRemoved === 1 ? 'it' : 'them.') +
+                  '.'),
         );
       }
 
       if (snapshots.unchecked) {
         this.log(
-          FAIL_COLOR(ARROW + pluralize(
-            'obsolete snapshot',
-            snapshots.unchecked,
-          )) +
-          (snapshots.didUpdate
-            ? ' removed.'
-            : ' found, ' + updateCommand + ' to remove ' +
-              (snapshots.filesRemoved === 1 ? 'it' : 'them') + '.'),
+          FAIL_COLOR(
+            ARROW + pluralize('obsolete snapshot', snapshots.unchecked),
+          ) +
+            (snapshots.didUpdate
+              ? ' removed.'
+              : ' found, ' +
+                  updateCommand +
+                  ' to remove ' +
+                  (snapshots.filesRemoved === 1 ? 'it' : 'them') +
+                  '.'),
         );
       }
 
@@ -195,7 +215,7 @@ class SummareReporter extends BaseReporter {
     }
   }
 
-  _printSummary(aggregatedResults: AggregatedResult, config: Config) {
+  _printSummary(aggregatedResults: AggregatedResult, config: GlobalConfig) {
     // If there were any failing tests and there was a large number of tests
     // executed, re-print the failing results at the end of execution output.
     const failedTests = aggregatedResults.numFailedTests;
@@ -209,14 +229,40 @@ class SummareReporter extends BaseReporter {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
-            getResultHeader(testResult, config) + '\n' +
-            failureMessage + '\n',
+            getResultHeader(testResult, config) + '\n' + failureMessage + '\n',
           );
         }
       });
       this.log(''); // print empty line
     }
   }
+
+  _getTestSummary(
+    contexts: Set<Context>,
+    pattern: PathPattern,
+    testNamePattern: string,
+    testPathPattern: string,
+  ) {
+    const testInfo = pattern.onlyChanged
+      ? chalk.dim(' related to changed files')
+      : pattern.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
+
+    const nameInfo = testNamePattern
+      ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
+      : '';
+
+    const contextInfo = contexts.size > 1
+      ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
+      : '';
+
+    return (
+      chalk.dim('Ran all test suites') +
+      testInfo +
+      nameInfo +
+      contextInfo +
+      chalk.dim('.')
+    );
+  }
 }
 
-module.exports = SummareReporter;
+module.exports = SummaryReporter;

@@ -11,9 +11,6 @@
 
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 it('runs tests in only test.js and spec.js', () => {
   const result = runJest.json('test-in-root').json;
@@ -22,9 +19,9 @@ it('runs tests in only test.js and spec.js', () => {
   expect(result.numTotalTests).toBe(2);
 
   const testNames = result.testResults
-      .map(res => res.name)
-      .map(name => path.basename(name))
-      .sort();
+    .map(res => res.name)
+    .map(name => path.basename(name))
+    .sort();
 
   expect(testNames.length).toBe(2);
   expect(testNames[0]).toBe('spec.js');

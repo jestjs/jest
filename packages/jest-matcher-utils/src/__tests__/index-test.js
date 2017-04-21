@@ -10,7 +10,13 @@
 
 'use strict';
 
-const {stringify, getType} = require('../');
+const {
+  stringify,
+  getType,
+  ensureNumbers,
+  pluralize,
+  ensureNoExpected,
+} = require('../');
 
 describe('.stringify()', () => {
   [
@@ -46,8 +52,9 @@ describe('.stringify()', () => {
       },
     };
     expect(stringify(evil)).toBe('{"toJSON": [Function toJSON]}');
-    expect(stringify({a: {b: {evil}}}))
-      .toBe('{"a": {"b": {"evil": {"toJSON": [Function toJSON]}}}}');
+    expect(stringify({a: {b: {evil}}})).toBe(
+      '{"a": {"b": {"evil": {"toJSON": [Function toJSON]}}}}',
+    );
 
     function Evil() {}
     Evil.toJSON = evil.toJSON;
@@ -67,8 +74,7 @@ describe('.stringify()', () => {
       toJSON,
     };
 
-    expect(() => expect(evilA).toEqual(evilB))
-      .toThrowErrorMatchingSnapshot();
+    expect(() => expect(evilA).toEqual(evilB)).toThrowErrorMatchingSnapshot();
   });
 
   test('reduces maxDepth if stringifying very large objects', () => {
@@ -87,7 +93,6 @@ describe('.stringify()', () => {
   });
 });
 
-
 describe('.getType()', () => {
   test('null', () => expect(getType(null)).toBe('null'));
   test('undefined', () => expect(getType(undefined)).toBe('undefined'));
@@ -100,4 +105,51 @@ describe('.getType()', () => {
   test('symbol', () => expect(getType(Symbol.for('a'))).toBe('symbol'));
   test('regexp', () => expect(getType(/abc/)).toBe('regexp'));
   test('map', () => expect(getType(new Map())).toBe('map'));
+  test('set', () => expect(getType(new Set())).toBe('set'));
+});
+
+describe('.ensureNumbers()', () => {
+  test('dont throw error when variables are numbers', () => {
+    expect(() => {
+      ensureNumbers(1, 2);
+    }).not.toThrow();
+  });
+
+  test('throws error when expected is not a number', () => {
+    expect(() => {
+      ensureNumbers(1, 'not_a_number');
+    }).toThrow('Expected value must be a number');
+  });
+
+  test('throws error when actual is not a number', () => {
+    expect(() => {
+      ensureNumbers('not_a_number', 3);
+    }).toThrow('Received value must be a number');
+  });
+});
+
+describe('.ensureNoExpected()', () => {
+  test('dont throw error when undefined', () => {
+    expect(() => {
+      ensureNoExpected(undefined);
+    }).not.toThrow();
+  });
+
+  test('throws error when is not undefined', () => {
+    expect(() => {
+      ensureNoExpected({a: 1});
+    }).toThrow('Matcher does not accept any arguments');
+  });
+
+  test('throws error when is not undefined with matcherName', () => {
+    expect(() => {
+      ensureNoExpected({a: 1}, '.toBeDefined');
+    }).toThrow('Matcher does not accept any arguments');
+  });
+});
+
+describe('.pluralize()', () => {
+  test('one', () => expect(pluralize('apple', 1)).toEqual('one apple'));
+  test('two', () => expect(pluralize('apple', 2)).toEqual('two apples'));
+  test('20', () => expect(pluralize('apple', 20)).toEqual('20 apples'));
 });

@@ -8,12 +8,9 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 const {extractSummary} = require('../utils');
 
 describe('Stack Trace', () => {
-  skipOnWindows.suite();
-
   it('prints a stack trace for runtime errors', () => {
     const result = runJest('stack_trace', ['runtime-error-test.js']);
     const stderr = result.stderr.toString();
@@ -22,10 +19,10 @@ describe('Stack Trace', () => {
 
     expect(result.status).toBe(1);
     expect(stderr).toMatch(
-      /ReferenceError: thisIsARuntimeError is not defined/
+      /ReferenceError: thisIsARuntimeError is not defined/,
     );
     expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/,
     );
   });
 
@@ -40,10 +37,10 @@ describe('Stack Trace', () => {
     expect(result.status).toBe(1);
 
     expect(stderr).toMatch(
-      /ReferenceError: thisIsARuntimeError is not defined/
+      /ReferenceError: thisIsARuntimeError is not defined/,
     );
     expect(stderr).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/,
     );
   });
 
@@ -54,9 +51,7 @@ describe('Stack Trace', () => {
     expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(1);
 
-    expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/
-    );
+    expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/);
   });
 
   it('does not print a stack trace for matching errors when --noStackTrace is given', () => {
@@ -70,7 +65,7 @@ describe('Stack Trace', () => {
     expect(result.status).toBe(1);
 
     expect(stderr).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/,
     );
   });
 
@@ -84,19 +79,17 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(/this is unexpected\./);
     expect(stderr).toMatch(/this is a string\. thrown/);
 
-    expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/
-    );
+    expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/);
 
     // Make sure we show Jest's jest-resolve as part of the stack trace
     /* eslint-disable max-len */
     expect(stderr).toMatch(
-      /Cannot find module 'this-module-does-not-exist' from 'test-error-test\.js'/
+      /Cannot find module 'this-module-does-not-exist' from 'test-error-test\.js'/,
     );
     /* eslint-enable max-len */
 
     expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/
+      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/,
     );
   });
 
@@ -111,8 +104,7 @@ describe('Stack Trace', () => {
     expect(result.status).toBe(1);
 
     expect(stderr).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/,
     );
   });
-
 });

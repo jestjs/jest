@@ -13,9 +13,13 @@ applications.
 
 ## Setup
 
-If you are just getting started with React, we recommend using [create-react-app](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)!
+### Setup with Create React App
 
-If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
+If you are just getting started with React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)! You don't need to do any extra steps for setup, and can head straight to the next section.
+
+### Setup without Create React App
+
+If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](/jest/docs/getting-started.html#using-babel).
 
 Run
 
@@ -174,7 +178,7 @@ The code for this example is available at
 
 If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
 
-You have to run `npm install --save-dev enzyme react-addons-test-utils` to use Enzyme (`react-addons-test-utils` is a peer dependency).
+You have to run `npm install --save-dev enzyme` to use Enzyme. If you are using a React below version 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's implement a simple checkbox which swaps between two labels:
 

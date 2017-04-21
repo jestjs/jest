@@ -14,7 +14,6 @@ const path = require('path');
 let createRuntime;
 
 describe('Runtime', () => {
-
   beforeEach(() => {
     createRuntime = require('createRuntime');
   });
@@ -41,11 +40,11 @@ describe('Runtime', () => {
 
         expect(
           runtime.requireModuleOrMock(
-            runtime.__mockRootPath, path.join('nested1', 'nested2', 'nested3')
+            runtime.__mockRootPath,
+            path.join('nested1', 'nested2', 'nested3'),
           ),
         ).toEqual(mockReference);
-      }),
-    );
+      }));
 
     it('sets virtual mock for non-existing module required from same directory', () =>
       createRuntime(__filename).then(runtime => {
@@ -79,9 +78,8 @@ describe('Runtime', () => {
             '/AbsolutePath/Mock',
           ),
         ).toEqual(mockReference);
-      }),
-    );
-    
+      }));
+
     it('sets virtual mock for non-existing module required from different directory', () =>
       createRuntime(__filename).then(runtime => {
         const mockReference = {isVirtualMock: true};
@@ -93,7 +91,7 @@ describe('Runtime', () => {
         root.jest.mock('NotInstalledModule', () => mockReference, {virtual});
         root.jest.mock('../ManuallyMocked', () => mockReference, {virtual});
         root.jest.mock('/AbsolutePath/Mock', () => mockReference, {virtual});
-        
+
         expect(
           runtime.requireModuleOrMock(
             runtime.__mockSubdirPath,
@@ -114,8 +112,7 @@ describe('Runtime', () => {
             '/AbsolutePath/Mock',
           ),
         ).toEqual(mockReference);
-      }),
-    );
+      }));
   });
 
   describe('jest.setMock', () => {
@@ -136,7 +133,6 @@ describe('Runtime', () => {
         expect(
           runtime.requireModuleOrMock(runtime.__mockRootPath, 'ManuallyMocked'),
         ).toBe(mockReference);
-      }),
-    );
+      }));
   });
 });

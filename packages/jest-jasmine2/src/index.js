@@ -17,16 +17,9 @@ import type Runtime from 'jest-runtime';
 const JasmineReporter = require('./reporter');
 
 const jasmineAsync = require('./jasmine-async');
-const fs = require('graceful-fs');
 const path = require('path');
-const vm = require('vm');
 
-const JASMINE_PATH = require.resolve('../vendor/jasmine-2.5.2.js');
-
-const jasmineScript = new vm.Script(fs.readFileSync(JASMINE_PATH, 'utf8'), {
-  displayErrors: true,
-  filename: JASMINE_PATH,
-});
+const JASMINE = require.resolve('./jasmine/jasmine-light.js');
 
 function jasmine2(
   config: Config,
@@ -35,13 +28,11 @@ function jasmine2(
   testPath: string,
 ): Promise<TestResult> {
   const reporter = new JasmineReporter(config, environment, testPath);
-  environment.runScript(jasmineScript);
-
-  const requireJasmine = environment.global.jasmineRequire;
-  const jasmine = requireJasmine.core(requireJasmine);
+  const jasmineFactory = runtime.requireInternalModule(JASMINE);
+  const jasmine = jasmineFactory.create();
 
   const env = jasmine.getEnv();
-  const jasmineInterface = requireJasmine.interface(jasmine, env);
+  const jasmineInterface = jasmineFactory.interface(jasmine, env);
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
 

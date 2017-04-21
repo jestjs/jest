@@ -17,7 +17,6 @@ const callsites = require('callsites');
 const format = require('util').format;
 
 class BufferedConsole extends Console {
-
   _buffer: ConsoleBuffer;
 
   constructor() {
@@ -57,7 +56,6 @@ class BufferedConsole extends Console {
   getBuffer() {
     return this._buffer;
   }
-
 }
 
 module.exports = BufferedConsole;

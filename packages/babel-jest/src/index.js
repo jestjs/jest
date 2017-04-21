@@ -19,6 +19,7 @@ const jestPreset = require('babel-preset-jest');
 const path = require('path');
 
 const BABELRC_FILENAME = '.babelrc';
+const BABELRC_JS_FILENAME = '.babelrc.js';
 const THIS_FILE = fs.readFileSync(__filename);
 
 const cache = Object.create(null);
@@ -37,6 +38,12 @@ const getBabelRC = (filename, {useCache}) => {
     const configFilePath = path.join(directory, BABELRC_FILENAME);
     if (fs.existsSync(configFilePath)) {
       cache[directory] = fs.readFileSync(configFilePath, 'utf8');
+      break;
+    }
+    const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
+    if (fs.existsSync(configJsFilePath)) {
+      // $FlowFixMe
+      cache[directory] = JSON.stringify(require(configJsFilePath));
       break;
     }
   }
@@ -64,20 +71,22 @@ const createTransformer = (options: any) => {
       configString: string,
       {instrument, watch}: TransformOptions,
     ): string {
-      return crypto
-        .createHash('md5')
-        .update(THIS_FILE)
-        .update('\0', 'utf8')
-        .update(fileData)
-        .update('\0', 'utf8')
-        .update(configString)
-        .update('\0', 'utf8')
-        // Don't use the in-memory cache in watch mode because the .babelrc
-        // file may be modified.
-        .update(getBabelRC(filename, {useCache: !watch}))
-        .update('\0', 'utf8')
-        .update(instrument ? 'instrument' : '')
-        .digest('hex');
+      return (
+        crypto
+          .createHash('md5')
+          .update(THIS_FILE)
+          .update('\0', 'utf8')
+          .update(fileData)
+          .update('\0', 'utf8')
+          .update(configString)
+          .update('\0', 'utf8')
+          // Don't use the in-memory cache in watch mode because the .babelrc
+          // file may be modified.
+          .update(getBabelRC(filename, {useCache: !watch}))
+          .update('\0', 'utf8')
+          .update(instrument ? 'instrument' : '')
+          .digest('hex')
+      );
     },
     process(
       src: string,
@@ -89,7 +98,7 @@ const createTransformer = (options: any) => {
         babel = require('babel-core');
       }
 
-      if (!babel.util.canCompile(filename)) {
+      if (babel.util && !babel.util.canCompile(filename)) {
         return src;
       }
 

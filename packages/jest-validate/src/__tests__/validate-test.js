@@ -19,18 +19,22 @@ const jestValidateExampleConfig = require('../exampleConfig');
 const jestValidateDefaultConfig = require('../defaultConfig');
 
 test('validates default Jest config', () => {
-  expect(validate(defaultConfig, {
-    exampleConfig: validConfig,
-  })).toEqual({
+  expect(
+    validate(defaultConfig, {
+      exampleConfig: validConfig,
+    }),
+  ).toEqual({
     hasDeprecationWarnings: false,
     isValid: true,
   });
 });
 
 test('validates default jest-validate config', () => {
-  expect(validate(jestValidateDefaultConfig, {
-    exampleConfig: jestValidateExampleConfig,
-  })).toEqual({
+  expect(
+    validate(jestValidateDefaultConfig, {
+      exampleConfig: jestValidateExampleConfig,
+    }),
+  ).toEqual({
     hasDeprecationWarnings: false,
     isValid: true,
   });
@@ -43,16 +47,22 @@ test('validates default jest-validate config', () => {
   [{haste: 42}, 'Object'],
 ].forEach(([config, type]) => {
   test(`pretty prints valid config for ${type}`, () => {
-    expect(() => validate(config, {exampleConfig: validConfig}))
-      .toThrowErrorMatchingSnapshot();
+    expect(() =>
+      validate(config, {
+        exampleConfig: validConfig,
+      }),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 
 test(`pretty prints valid config for Function`, () => {
   const config = {fn: 'test'};
   const validConfig = {fn: (config, option, deprecatedOptions) => true};
-  expect(() => validate(config, {exampleConfig: validConfig}))
-    .toThrowErrorMatchingSnapshot();
+  expect(() =>
+    validate(config, {
+      exampleConfig: validConfig,
+    }),
+  ).toThrowErrorMatchingSnapshot();
 });
 
 test('omits null and undefined config values', () => {
@@ -83,10 +93,12 @@ test('displays warning for deprecated config options', () => {
   const warn = console.warn;
   console.warn = jest.fn();
 
-  expect(validate(config, {
-    deprecatedConfig,
-    exampleConfig: validConfig,
-  })).toEqual({
+  expect(
+    validate(config, {
+      deprecatedConfig,
+      exampleConfig: validConfig,
+    }),
+  ).toEqual({
     hasDeprecationWarnings: true,
     isValid: true,
   });

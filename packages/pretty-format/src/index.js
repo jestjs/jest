@@ -11,25 +11,9 @@
 
 'use strict';
 
+import type {Colors, Refs, StringOrNull, Plugins, Options} from './types.js';
+
 const style = require('ansi-styles');
-
-type Colors = Object;
-type Indent = (str: string) => string;
-type Refs = Array<any>;
-type Serialize = (val: any) => string;
-type StringOrNull = string | null; // but disallow undefined, unlike ?string
-
-type Plugin = {
-  print: (
-    val: any,
-    serialize: Serialize,
-    indent: Indent,
-    opts: Object,
-    colors: Colors,
-  ) => string,
-  test: Function,
-};
-type Plugins = Array<Plugin>;
 
 type Theme = {|
   content?: string,
@@ -41,30 +25,15 @@ type Theme = {|
 type InitialOptions = {|
   callToJSON?: boolean,
   escapeRegex?: boolean,
+  edgeSpacing?: string,
   highlight?: boolean,
   indent?: number,
   maxDepth?: number,
   min?: boolean,
   plugins?: Plugins,
   printFunctionName?: boolean,
+  spacing?: string,
   theme?: Theme,
-|};
-
-type Options = {|
-  callToJSON: boolean,
-  escapeRegex: boolean,
-  highlight: boolean,
-  indent: number,
-  maxDepth: number,
-  min: boolean,
-  plugins: Plugins,
-  printFunctionName: boolean,
-  theme: {|
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
-  |},
 |};
 
 const toString = Object.prototype.toString;
@@ -79,7 +48,8 @@ const NEWLINE_REGEXP = /\n/ig;
 const getSymbols = Object.getOwnPropertySymbols || (obj => []);
 
 function isToStringedArrayType(toStringed: string): boolean {
-  return toStringed === '[object Array]' ||
+  return (
+    toStringed === '[object Array]' ||
     toStringed === '[object ArrayBuffer]' ||
     toStringed === '[object DataView]' ||
     toStringed === '[object Float32Array]' ||
@@ -90,7 +60,8 @@ function isToStringedArrayType(toStringed: string): boolean {
     toStringed === '[object Uint8Array]' ||
     toStringed === '[object Uint8ClampedArray]' ||
     toStringed === '[object Uint16Array]' ||
-    toStringed === '[object Uint32Array]';
+    toStringed === '[object Uint32Array]'
+  );
 }
 
 function printNumber(val: number): string {
@@ -217,7 +188,8 @@ function printList(
     const innerIndent = prevIndent + indent;
 
     for (let i = 0; i < list.length; i++) {
-      body += innerIndent +
+      body +=
+        innerIndent +
         print(
           list[i],
           indent,
@@ -262,7 +234,8 @@ function printArguments(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  return (min ? '' : 'Arguments ') +
+  return (
+    (min ? '' : 'Arguments ') +
     printList(
       val,
       indent,
@@ -278,7 +251,8 @@ function printArguments(
       printFunctionName,
       escapeRegex,
       colors,
-    );
+    )
+  );
 }
 
 function printArray(
@@ -297,7 +271,8 @@ function printArray(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  return (min ? '' : val.constructor.name + ' ') +
+  return (
+    (min ? '' : val.constructor.name + ' ') +
     printList(
       val,
       indent,
@@ -313,7 +288,8 @@ function printArray(
       printFunctionName,
       escapeRegex,
       colors,
-    );
+    )
+  );
 }
 
 function printMap(
@@ -503,7 +479,8 @@ function printSet(
     const innerIndent = prevIndent + indent;
 
     while (!current.done) {
-      result += innerIndent +
+      result +=
+        innerIndent +
         print(
           current.value[1],
           indent,
@@ -803,6 +780,7 @@ function print(
 
 const DEFAULTS: Options = {
   callToJSON: true,
+  edgeSpacing: '\n',
   escapeRegex: false,
   highlight: false,
   indent: 2,
@@ -810,6 +788,7 @@ const DEFAULTS: Options = {
   min: false,
   plugins: [],
   printFunctionName: true,
+  spacing: '\n',
   theme: {
     content: 'reset',
     prop: 'yellow',
@@ -864,15 +843,12 @@ function normalizeTheme(themeOption: ?Theme) {
   // Silently ignore any keys in `theme` that are not in defaults.
   const themeRefined = themeOption;
   const themeDefaults = DEFAULTS.theme;
-  return Object.keys(themeDefaults).reduce(
-    (theme, key) => {
-      theme[key] = Object.prototype.hasOwnProperty.call(themeOption, key)
-        ? themeRefined[key]
-        : themeDefaults[key];
-      return theme;
-    },
-    {},
-  );
+  return Object.keys(themeDefaults).reduce((theme, key) => {
+    theme[key] = Object.prototype.hasOwnProperty.call(themeOption, key)
+      ? themeRefined[key]
+      : themeDefaults[key];
+    return theme;
+  }, {});
 }
 
 function createIndent(indent: number): string {
@@ -891,7 +867,7 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
   const colors: Colors = {};
   Object.keys(opts.theme).forEach(key => {
     if (opts.highlight) {
-      const color = colors[key] = style[opts.theme[key]];
+      const color = (colors[key] = style[opts.theme[key]]);
       if (
         !color ||
         typeof color.close !== 'string' ||

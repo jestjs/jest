@@ -10,7 +10,6 @@
 'use strict';
 
 describe('snapshot', () => {
-
   it('works with plain objects and the title has `escape` characters', () => {
     const test = {
       a: 1,
@@ -20,5 +19,4 @@ describe('snapshot', () => {
     };
     expect(test).toMatchSnapshot();
   });
-
 });

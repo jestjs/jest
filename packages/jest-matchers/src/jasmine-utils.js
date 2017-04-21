@@ -31,24 +31,6 @@ function equals(a, b, customTesters) {
   return eq(a, b, [], [], customTesters);
 }
 
-function contains(haystack, needle, customTesters) {
-  customTesters = customTesters || [];
-
-  if (
-    Object.prototype.toString.apply(haystack) === '[object Array]' ||
-    (!!haystack && !haystack.indexOf)
-  ) {
-    for (var i = 0; i < haystack.length; i++) {
-      if (eq(haystack[i], needle, [], [], customTesters)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  return !!haystack && haystack.indexOf(needle) >= 0;
-}
-
 function isAsymmetric(obj) {
   return obj && isA('Function', obj.asymmetricMatch);
 }
@@ -121,10 +103,12 @@ function eq(a, b, aStack, bStack, customTesters) {
       return +a == +b;
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
-      return a.source == b.source &&
+      return (
+        a.source == b.source &&
         a.global == b.global &&
         a.multiline == b.multiline &&
-        a.ignoreCase == b.ignoreCase;
+        a.ignoreCase == b.ignoreCase
+      );
   }
   if (typeof a != 'object' || typeof b != 'object') {
     return false;
@@ -253,8 +237,9 @@ function keys(obj, isArray) {
 function has(obj, key) {
   // CUSTOM JEST CHANGE:
   // TODO(cpojer): remove the `obj[key] !== undefined` check.
-  return Object.prototype.hasOwnProperty.call(obj, key) &&
-    obj[key] !== undefined;
+  return (
+    Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined
+  );
 }
 
 function isA(typeName, value) {
@@ -303,7 +288,6 @@ function hasProperty(obj, property) {
 }
 
 module.exports = {
-  contains,
   equals,
   fnNameFor,
   hasProperty,

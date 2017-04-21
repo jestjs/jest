@@ -39,18 +39,20 @@ describe('Test Reconciler', () => {
     it('fails a failing method in the same file', () => {
       parser = reconcilerWithFile('failing_jest_json.json');
       const testName =
-      'validates when all Travis environment' +
-      ' vars are set and Josh K says so';
+        'validates when all Travis environment' +
+        ' vars are set and Josh K says so';
 
       const status = parser.stateForTestAssertion(dangerFilePath, testName);
       expect(status.status).toEqual('KnownFail');
       expect(status.line).toEqual(12);
       const errorMessage = 'Expected value to be falsy, instead received true';
       expect(status.terseMessage).toEqual(errorMessage);
-      expect(status.shortMessage).toEqual(`Error: expect(received).toBeFalsy()
+      expect(status.shortMessage).toEqual(
+        `Error: expect(received).toBeFalsy()
 
 Expected value to be falsy, instead received
-  true`);
+  true`,
+      );
     });
   });
 });

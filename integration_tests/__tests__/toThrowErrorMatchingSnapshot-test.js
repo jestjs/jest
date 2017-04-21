@@ -11,12 +11,9 @@
 const {makeTemplate, makeTests, cleanup} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 const DIR = path.resolve(__dirname, '../toThrowErrorMatchingSnapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
-
-skipOnWindows.suite();
 
 beforeEach(() => cleanup(TESTS_DIR));
 afterAll(() => cleanup(TESTS_DIR));
@@ -51,9 +48,7 @@ test(`throws the error if tested function didn't throw error`, () => {
   {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch(
-      `Expected the function to throw an error.`,
-    );
+    expect(stderr).toMatch(`Expected the function to throw an error.`);
     expect(status).toBe(1);
   }
 });
@@ -71,9 +66,7 @@ test('does not accept arguments', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch(
-      'Matcher does not accept any arguments.',
-    );
+    expect(stderr).toMatch('Matcher does not accept any arguments.');
     expect(status).toBe(1);
   }
 });

@@ -31,7 +31,8 @@ const unknownOptionWarning = (
     Object.keys(exampleConfig),
   );
   /* eslint-disable max-len */
-  const message = `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
+  const message =
+    `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
     (didYouMean && ` ${didYouMean}`) +
     `\n  This is probably a typing mistake. Fixing it will remove this message.`;
   /* eslint-enable max-len */
