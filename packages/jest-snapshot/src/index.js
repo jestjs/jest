@@ -15,6 +15,7 @@ import type {Path} from 'types/Config';
 const diff = require('jest-diff');
 const fs = require('fs');
 const path = require('path');
+const utils = require('./utils');
 const SnapshotState = require('./State');
 const {addSerializer, getSerializers} = require('./plugins');
 
@@ -157,4 +158,5 @@ module.exports = {
   initializeSnapshotState,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
+  utils,
 };

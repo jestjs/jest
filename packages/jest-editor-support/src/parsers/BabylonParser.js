@@ -46,10 +46,7 @@ const getBabelRC = (filename, {useCache}) => {
   return cache[directory] || '{}';
 };
 
-const parse = (file: string) => {
-  const itBlocks: ItBlock[] = [];
-  const expects: Expect[] = [];
-
+const getASTfor = (file: string) => {
   const data = readFileSync(file).toString();
   const babelRC = getBabelRC(file, {useCache: true});
   const babel = JSON.parse(babelRC);
@@ -59,7 +56,13 @@ const parse = (file: string) => {
     : ['*'];
 
   const config = {plugins, sourceType: 'module'};
-  const ast = babylon.parse(data, config);
+  return babylon.parse(data, config);
+};
+
+const parse = (file: string) => {
+  const itBlocks: ItBlock[] = [];
+  const expects: Expect[] = [];
+  const ast = getASTfor(file);
 
   // An `it`/`test` was found in the AST
   // So take the AST node and create an object for us
@@ -207,5 +210,6 @@ const parse = (file: string) => {
 };
 
 module.exports = {
+  getASTfor,
   parse,
 };
