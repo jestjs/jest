@@ -59,11 +59,10 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('TestReporter with all tests passing', () => {
-    const {
-      stdout,
-      status,
-      stderr,
-    } = runJest('custom_reporters', ['add-test.js']);
+    const {stdout, status, stderr} = runJest('custom_reporters', [
+      'add-test.js',
+    ]);
+
     const parsedJSON = JSON.parse(stdout);
 
     expect(status).toBe(0);
@@ -72,11 +71,9 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('TestReporter with all tests failing', () => {
-    const {
-      stdout,
-      status,
-      stderr,
-    } = runJest('custom_reporters', ['add-fail-test.js']);
+    const {stdout, status, stderr} = runJest('custom_reporters', [
+      'add-fail-test.js',
+    ]);
 
     const parsedJSON = JSON.parse(stdout);
 
@@ -87,6 +84,7 @@ describe('Custom Reporters Integration', () => {
 
   test('IncompleteReporter for flexibility', () => {
     const {stderr, stdout, status} = runJest('custom_reporters', [
+      '--no-cache',
       '--config',
       JSON.stringify({
         reporters: ['<rootDir>/reporters/IncompleteReporter.js'],

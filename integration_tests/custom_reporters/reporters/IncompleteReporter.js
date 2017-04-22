@@ -12,15 +12,11 @@
  * IncompleteReporter
  * Reporter to test for the flexibility of the interface we implemented.
  * The reporters shouldn't be required to implement all the methods
- * 
- * This only implements one mehtod onRunComplete which should be called
+ *
+ * This only implements one method onRunComplete which should be called
  */
 class IncompleteReporter {
-  constructor(options) {
-    this.options = {};
-  }
-
-  onRunComplete(config, results) {
+  onRunComplete(contexts, results) {
     console.log('onRunComplete is called');
     console.log('Passed Tests: ' + results.numPassedTests);
     console.log('Failed Tests: ' + results.numFailedTests);

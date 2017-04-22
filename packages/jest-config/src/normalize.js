@@ -21,8 +21,8 @@ const {
   resolve,
 } = require('./utils');
 const {NODE_MODULES, DEFAULT_JS_PATTERN} = require('./constants');
-const {ValidationError, validate} = require('jest-validate');
 const {validateReporters} = require('./reporterValidationErrors');
+const {ValidationError, validate} = require('jest-validate');
 const chalk = require('chalk');
 const crypto = require('crypto');
 const DEFAULT_CONFIG = require('./defaults');

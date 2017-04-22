@@ -12,14 +12,12 @@ exports[`Custom Reporters Integration TestReporter with all tests failing 1`] = 
 Object {
   "onRunComplete": Object {
     "called": true,
-    "config": "object",
     "numFailedTests": 1,
     "numPassedTests": 0,
     "numTotalTests": 1,
   },
   "onRunStart": Object {
     "called": true,
-    "config": "object",
     "options": "object",
   },
   "onTestResult": Object {
@@ -28,11 +26,10 @@ Object {
   },
   "onTestStart": Object {
     "called": true,
-    "config": false,
-    "path": true,
+    "path": false,
   },
   "options": Object {
-    "christop": "pojer",
+    "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
   },
@@ -43,14 +40,12 @@ exports[`Custom Reporters Integration TestReporter with all tests passing 1`] = 
 Object {
   "onRunComplete": Object {
     "called": true,
-    "config": "object",
     "numFailedTests": 0,
     "numPassedTests": 1,
     "numTotalTests": 1,
   },
   "onRunStart": Object {
     "called": true,
-    "config": "object",
     "options": "object",
   },
   "onTestResult": Object {
@@ -59,11 +54,10 @@ Object {
   },
   "onTestStart": Object {
     "called": true,
-    "config": false,
-    "path": true,
+    "path": false,
   },
   "options": Object {
-    "christop": "pojer",
+    "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
   },
@@ -78,6 +72,8 @@ Unexpected value for Path at index 0 of reporter at index 0
    string
  Got:
    number
+ Reporters config:
+   [      3243242    ]
 
   Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html

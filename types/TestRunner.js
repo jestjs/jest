@@ -12,7 +12,8 @@
 import type {Context} from './Context';
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from './Config';
-import type {TestResult} from 'types/TestResult';
+import type {ReporterOnStartOptions} from 'types/Reporters';
+import type {TestResult, AggregatedResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 export type Test = {|
@@ -20,6 +21,26 @@ export type Test = {|
   path: Path,
   duration: ?number,
 |};
+
+export type Reporter = {
+  +onTestResult: (
+    test: Test,
+    testResult: TestResult,
+    aggregatedResult: AggregatedResult,
+  ) => void,
+  +onRunStart: (
+    results: AggregatedResult,
+    options: ReporterOnStartOptions,
+  ) => void,
+  +onTestStart: (test: Test) => void,
+  +onRunComplete: (
+    contexts: Set<Context>,
+    results: AggregatedResult,
+  ) => ?Promise<void>,
+  +getLastError: () => ?Error,
+};
+
+export type Tests = Array<Test>;
 
 export type TestFramework = (
   globalConfig: GlobalConfig,

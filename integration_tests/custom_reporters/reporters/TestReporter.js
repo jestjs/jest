@@ -10,18 +10,18 @@
 
 /**
  * TestReporter
- * Reporter for testing the outputs, without any extra 
+ * Reporter for testing the outputs, without any extra
  * hassle. Uses a JSON like syntax for testing the reporters
- * instead of outputting the text to stdout and using match functions 
+ * instead of outputting the text to stdout and using match functions
  * to get the output.
  */
 class TestReporter {
-  constructor(options) {
+  constructor(globalConfig, options) {
     this._options = options;
 
     /**
      * statsCollected property
-     * contains most of the statistics 
+     * contains most of the statistics
      * related to the object to be called,
      * This here helps us in avoiding the string match
      * statements nothing else
@@ -45,35 +45,32 @@ class TestReporter {
     }
   }
 
-  onTestStart(config, path) {
+  onTestStart(path) {
     const onTestStart = this._statsCollected.onTestStart;
 
     onTestStart.called = true;
-    onTestStart.config = config === undefined;
     onTestStart.path = typeof path === 'string';
   }
 
-  onTestResult(config, testResult, results) {
+  onTestResult(test, testResult, results) {
     const onTestResult = this._statsCollected.onTestResult;
 
     onTestResult.called = true;
     onTestResult.times++;
   }
 
-  onRunStart(config, results, options) {
+  onRunStart(results, options) {
     this.clearLine();
     const onRunStart = this._statsCollected.onRunStart;
 
     onRunStart.called = true;
-    onRunStart.config = typeof config;
     onRunStart.options = typeof options;
   }
 
-  onRunComplete(config, results) {
+  onRunComplete(contexts, results) {
     const onRunComplete = this._statsCollected.onRunComplete;
 
     onRunComplete.called = true;
-    onRunComplete.config = typeof config;
 
     onRunComplete.numPassedTests = results.numPassedTests;
     onRunComplete.numFailedTests = results.numFailedTests;

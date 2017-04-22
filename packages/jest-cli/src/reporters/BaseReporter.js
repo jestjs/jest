@@ -10,7 +10,6 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
@@ -24,11 +23,7 @@ class BaseReporter {
     process.stderr.write(message + '\n');
   }
 
-  onRunStart(
-    globalConfig: GlobalConfig,
-    results: AggregatedResult,
-    options: ReporterOnStartOptions,
-  ) {
+  onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
     preRunMessage.remove(process.stderr);
   }
 
@@ -38,9 +33,8 @@ class BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
-  ): ?Promise<any> {}
+  ): ?Promise<void> {}
 
   _setError(error: Error) {
     this._error = error;

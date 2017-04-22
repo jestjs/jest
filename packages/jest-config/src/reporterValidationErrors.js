@@ -4,7 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ * @flow
  */
+
+'use strict';
+
+import type {ReporterConfig, StringReporter, ArrayReporter} from 'types/Config';
+
 const {ValidationError} = require('jest-validate');
 const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
 
@@ -16,17 +22,18 @@ const ERROR = `${BULLET} Reporter Validation Error`;
 
 /**
  * Reporter Vaidation Error is thrown if the given arguments
- * within the reporter are not valid
- * 
+ * within the reporter are not valid.
+ *
  * This is a highly specific reporter error and in the future will be
  * merged with jest-validate. Till then, we can make use of it. It works
- * and that's what counts most at this time
+ * and that's what counts most at this time.
  */
 function createReporterError(
   reporterIndex: number,
-  reporterValue: any,
+  reporterValue: Array<ReporterConfig> | StringReporter,
 ): ValidationError {
-  const errorMessage = `Reporter at index ${reporterIndex} must be of type:\n` +
+  const errorMessage =
+    `Reporter at index ${reporterIndex} must be of type:\n` +
     `   ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
     ` but instead received:\n` +
     `   ${chalk.bold.red(getType(reporterValue))}`;
@@ -34,31 +41,30 @@ function createReporterError(
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
-/**
- * Reporter Error specific to Array configuration
- */
 function createArrayReporterError(
+  arrayReporter: ArrayReporter,
   reporterIndex: number,
   valueIndex: number,
-  value: any,
+  value: StringReporter | Object,
   expectedType: string,
   valueName: string,
 ): ValidationError {
-  const errorMessage = `Unexpected value for ${valueName} ` +
+  const errorMessage =
+    `Unexpected value for ${valueName} ` +
     `at index ${valueIndex} of reporter at index ${reporterIndex}\n` +
     ' Expected:\n' +
     `   ${chalk.bold.red(expectedType)}\n` +
     ' Got:\n' +
-    `   ${chalk.bold.green(getType(value))}`;
+    `   ${chalk.bold.green(getType(value))}\n` +
+    ` Reporters config:\n` +
+    `   ${chalk.bold.green(JSON.stringify(arrayReporter, null, 2)
+        .split('\n')
+        .join('\n    '))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
-/**
- * validates each reporter provided in the configuration
- * @private
- */
-function validateReporters(reporterConfig: Array<mixed>): boolean {
+function validateReporters(reporterConfig: Array<ReporterConfig>): boolean {
   return reporterConfig.every((reporter, index) => {
     if (Array.isArray(reporter)) {
       validateArrayReporter(reporter, index);
@@ -70,21 +76,23 @@ function validateReporters(reporterConfig: Array<mixed>): boolean {
   });
 }
 
-/**
- * validates values within the array reporter
- * 
- * @param   {Array<mixed>} arrayReporter reporter to be validated
- * @returns {boolean} true if the reporter was validated
- */
 function validateArrayReporter(
-  arrayReporter: Array<mixed>,
+  arrayReporter: ArrayReporter,
   reporterIndex: number,
 ) {
   const [path, options] = arrayReporter;
   if (typeof path !== 'string') {
-    throw createArrayReporterError(reporterIndex, 0, path, 'string', 'Path');
+    throw createArrayReporterError(
+      arrayReporter,
+      reporterIndex,
+      0,
+      path,
+      'string',
+      'Path',
+    );
   } else if (typeof options !== 'object') {
     throw createArrayReporterError(
+      arrayReporter,
       reporterIndex,
       1,
       options,
