@@ -102,7 +102,6 @@ export type ProjectConfig = {
   transform: Array<[string, Path]>,
   transformIgnorePatterns: Array<Glob>,
   unmockedModulePathPatterns: ?Array<string>,
-  updateSnapshot: boolean,
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,

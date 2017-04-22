@@ -178,10 +178,6 @@ const runJest = async (
     setConfig(contexts, {verbose: true});
   }
 
-  if (globalConfig.updateSnapshot === true) {
-    setConfig(contexts, {updateSnapshot: true});
-  }
-
   // When using more than one context, make all printed paths relative to the
   // current cwd.
   if (contexts.length > 1) {

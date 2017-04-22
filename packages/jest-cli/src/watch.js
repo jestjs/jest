@@ -32,7 +32,7 @@ const {KEYS, CLEAR} = require('./constants');
 let hasExitListener = false;
 
 const watch = (
-  globalConfig: GlobalConfig,
+  initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
@@ -63,7 +63,11 @@ const watch = (
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) => {
-        return isValidPath(contexts[index].config, filePath);
+        return isValidPath(
+          initialGlobalConfig,
+          contexts[index].config,
+          filePath,
+        );
       });
 
       if (validPaths.length) {
@@ -105,17 +109,15 @@ const watch = (
     isInteractive && pipe.write(CLEAR);
     preRunMessage.print(pipe);
     isRunning = true;
+    const globalConfig = Object.freeze(
+      Object.assign({}, initialGlobalConfig, overrideConfig),
+    );
     contexts.forEach(context => {
       context.config = Object.freeze(
-        // $FlowFixMe
-        Object.assign(
-          {
-            testNamePattern: argv.testNamePattern,
-            testPathPattern: argv.testPathPattern,
-          },
-          context.config,
-          overrideConfig,
-        ),
+        Object.assign({}, context.config, {
+          testNamePattern: argv.testNamePattern,
+          testPathPattern: argv.testPathPattern,
+        }),
       );
     });
     return runJest(

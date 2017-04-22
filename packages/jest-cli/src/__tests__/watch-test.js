@@ -142,11 +142,15 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.U);
 
-    expect(runJestMock.mock.calls[0][1][0].config).toEqual({
-      roots: [],
-      testPathIgnorePatterns: [],
-      testRegex: '',
+    expect(runJestMock.mock.calls[0][0]).toEqual({
       updateSnapshot: true,
+      watch: true,
+    });
+
+    stdin.emit(KEYS.A);
+    // updateSnapshot is not sticky after a run.
+    expect(runJestMock.mock.calls[1][0]).toEqual({
+      watch: true,
     });
   });
 });
