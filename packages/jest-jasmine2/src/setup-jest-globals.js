@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 
 const {getState, setState} = require('jest-matchers');
 const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
@@ -100,7 +100,7 @@ const patchJasmine = () => {
 
 type Options = {
   testPath: Path,
-  config: Config,
+  config: ProjectConfig,
 };
 
 module.exports = ({testPath, config}: Options) => {
