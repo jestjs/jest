@@ -87,6 +87,7 @@ const getConfigs = (
       rootDir: options.rootDir,
       silent: options.silent,
       testNamePattern: options.testNamePattern,
+      testPathPattern: '',
       testResultsProcessor: options.testResultsProcessor,
       updateSnapshot: options.updateSnapshot,
       useStderr: options.useStderr,

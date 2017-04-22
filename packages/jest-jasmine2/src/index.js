@@ -83,8 +83,8 @@ function jasmine2(
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
 
-  if (config.testNamePattern) {
-    const testNameRegex = new RegExp(config.testNamePattern, 'i');
+  if (globalConfig.testNamePattern) {
+    const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
 

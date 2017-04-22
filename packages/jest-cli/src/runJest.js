@@ -93,12 +93,12 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
   );
 };
 
-const getTestPaths = async (context, pattern, argv, pipe) => {
+const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
   const source = new SearchSource(context);
   let data = await source.getTestPaths(pattern);
   if (!data.tests.length) {
     if (pattern.onlyChanged && data.noSCM) {
-      if (context.config.watch) {
+      if (globalConfig.watch) {
         // Run all the tests
         setState(argv, 'watchAll', {
           noSCM: true,
@@ -158,7 +158,13 @@ const runJest = async (
   let allTests = [];
   const testRunData = await Promise.all(
     contexts.map(async context => {
-      const matches = await getTestPaths(context, pattern, argv, pipe);
+      const matches = await getTestPaths(
+        globalConfig,
+        context,
+        pattern,
+        argv,
+        pipe,
+      );
       allTests = allTests.concat(matches.tests);
       return {context, matches};
     }),
@@ -172,10 +178,10 @@ const runJest = async (
     globalConfig.silent !== true &&
     globalConfig.verbose !== false
   ) {
+    // $FlowFixMe
     globalConfig = Object.freeze(
       Object.assign({}, globalConfig, {verbose: true}),
     );
-    setConfig(contexts, {verbose: true});
   }
 
   // When using more than one context, make all printed paths relative to the

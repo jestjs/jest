@@ -54,7 +54,7 @@ module.exports = async (
           console: new Console(pipe, pipe),
           maxWorkers: getMaxWorkers(argv),
           resetCache: !config.cache,
-          watch: config.watch,
+          watch: globalConfig.watch,
         });
         hasteMapInstances[index] = hasteMapInstance;
         return createContext(config, await hasteMapInstance.build());

@@ -82,7 +82,6 @@ const getCacheKey = (
   if (transformer && typeof transformer.getCacheKey === 'function') {
     return transformer.getCacheKey(fileData, filename, configString, {
       instrument,
-      watch: config.watch,
     });
   } else {
     return crypto
@@ -200,7 +199,7 @@ const getTransformer = (
     return transformFileData;
   }
 
-  let transform;
+  let transform: ?Transformer;
   if (!config.transform || !config.transform.length) {
     transform = null;
   } else {
@@ -213,11 +212,14 @@ const getTransformer = (
     }
     if (transformPath) {
       // $FlowFixMe
-      transform = require(transformPath);
+      transform = (require(transformPath): Transformer);
       if (typeof transform.process !== 'function') {
         throw new TypeError(
           'Jest: a transform must export a `process` function.',
         );
+      }
+      if (typeof transform.createTransformer === 'function') {
+        transform = transform.createTransformer();
       }
     }
   }
@@ -298,7 +300,6 @@ const transformSource = (
   if (transform && shouldTransform(filename, config)) {
     const processed = transform.process(content, filename, config, {
       instrument,
-      watch: config.watch,
     });
 
     if (typeof processed === 'string') {

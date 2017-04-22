@@ -24,11 +24,11 @@ export type BuiltTransformResult = {|
 
 export type TransformOptions = {|
   instrument: boolean,
-  watch: boolean,
 |};
 
 export type Transformer = {|
   canInstrument?: boolean,
+  createTransformer(options: any): Transformer,
 
   getCacheKey: (
     fileData: string,

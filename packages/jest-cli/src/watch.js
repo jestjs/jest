@@ -110,17 +110,13 @@ const watch = (
     preRunMessage.print(pipe);
     isRunning = true;
     const globalConfig = Object.freeze(
-      Object.assign({}, initialGlobalConfig, overrideConfig),
+      Object.assign({}, initialGlobalConfig, overrideConfig, {
+        testNamePattern: argv.testNamePattern,
+        testPathPattern: argv.testPathPattern,
+      }),
     );
-    contexts.forEach(context => {
-      context.config = Object.freeze(
-        Object.assign({}, context.config, {
-          testNamePattern: argv.testNamePattern,
-          testPathPattern: argv.testPathPattern,
-        }),
-      );
-    });
     return runJest(
+      // $FlowFixMe
       globalConfig,
       contexts,
       argv,

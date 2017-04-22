@@ -32,21 +32,20 @@ jest.doMock(
 );
 
 const watch = require('../watch');
-const globalConfig = {
-  watch: true,
-};
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
   let pipe;
   let hasteMapInstances;
   let argv;
+  let globalConfig;
   let contexts;
   let stdin;
 
   beforeEach(() => {
     const config = {roots: [], testPathIgnorePatterns: [], testRegex: ''};
     pipe = {write: jest.fn()};
+    globalConfig = {watch: true};
     hasteMapInstances = [{on: () => {}}];
     argv = {};
     contexts = [{config}];
@@ -55,7 +54,7 @@ describe('Watch mode flows', () => {
 
   it('Correctly passing test path pattern', () => {
     argv.testPathPattern = 'test-*';
-    contexts[0].config.testPathPattern = 'test-*';
+    globalConfig.testPathPattern = 'test-*';
 
     watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
@@ -72,7 +71,7 @@ describe('Watch mode flows', () => {
 
   it('Correctly passing test name pattern', () => {
     argv.testNamePattern = 'test-*';
-    contexts[0].config.testNamePattern = 'test-*';
+    globalConfig.testNamePattern = 'test-*';
 
     watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
