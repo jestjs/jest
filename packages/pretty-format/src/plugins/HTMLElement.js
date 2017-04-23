@@ -57,17 +57,17 @@ function printAttributes(attributes, print, indent, colors, opts) {
 }
 
 const print = (
-  element: any,
+  element: HTMLElement | Text | Comment,
   print: Print,
   indent: Indent,
   opts: Options,
   colors: Colors,
-) => {
-  if (element.nodeType === 3) {
+): string => {
+  if (element instanceof Text) {
     return element.data;
   }
 
-  if (element.nodeType === 8) {
+  if (element instanceof Comment) {
     return (
       colors.comment.open + '<!--' + element.data + '-->' + colors.comment.close
     );
