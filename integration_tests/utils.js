@@ -77,13 +77,13 @@ const createEmptyPackage = (directory, packageJson) => {
   packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),
-    JSON.stringify(packageJson, null, 2)
+    JSON.stringify(packageJson, null, 2),
   );
 };
 
 const extractSummary = stdout => {
   const match = stdout.match(
-    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all test suites.*\n*$/gm
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all test suites.*\n*$/gm,
   );
   if (!match) {
     throw new Error(
@@ -91,7 +91,7 @@ const extractSummary = stdout => {
       Could not find test summary in the output.
       OUTPUT:
         ${stdout}
-    `
+    `,
     );
   }
 

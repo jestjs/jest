@@ -21,7 +21,7 @@ afterAll(() => cleanup(TESTS_DIR));
 test('basic support', () => {
   const filename = 'basic-support-test.js';
   const template = makeTemplate(
-    `test('snapshots', () => expect($1).toMatchSnapshot());`
+    `test('snapshots', () => expect($1).toMatchSnapshot());`,
   );
 
   {
@@ -58,7 +58,7 @@ test('error thrown before snapshot', () => {
     `test('snapshots', () => {
       expect($1).toBeTruthy();
       expect($2).toMatchSnapshot();
-    });`
+    });`,
   );
 
   {
@@ -88,7 +88,7 @@ test('first snapshot fails, second passes', () => {
     `test('snapshots', () => {
       expect($1).toMatchSnapshot();
       expect($2).toMatchSnapshot();
-    });`
+    });`,
   );
 
   {
@@ -118,7 +118,7 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
     $1('will be skipped', () => {
       expect({a: 6}).toMatchSnapshot();
     });
-    `
+    `,
   );
 
   {
@@ -142,7 +142,7 @@ test('accepts custom snapshot name', () => {
     `test('accepts custom snapshot name', () => {
       expect(true).toMatchSnapshot('custom-name');
     });
-    `
+    `,
   );
 
   {

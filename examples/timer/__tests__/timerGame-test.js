@@ -46,5 +46,4 @@ describe('timerGame', () => {
     expect(callback).toBeCalled();
     expect(callback.mock.calls.length).toBe(1);
   });
-
 });

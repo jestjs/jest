@@ -23,7 +23,7 @@ it('maps code coverage against original source', () => {
 
   const coverageMapFile = path.join(
     __dirname,
-    '../coverage-remapping/coverage/coverage-final.json'
+    '../coverage-remapping/coverage/coverage-final.json',
   );
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));
 

@@ -6,11 +6,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,14 +30,14 @@ const styles = StyleSheet.create({
 export default class Intro extends Component {
   render() {
     return (
-    <View style={styles.container}>
-      <Text style={styles.welcome}>
-        Welcome to React Native!
-      </Text>
-      <Text style={styles.instructions}>
-        This is a React Native snapshot test.
-      </Text>
-    </View>
+      <View style={styles.container}>
+        <Text style={styles.welcome}>
+          Welcome to React Native!
+        </Text>
+        <Text style={styles.instructions}>
+          This is a React Native snapshot test.
+        </Text>
+      </View>
     );
   }
 }
