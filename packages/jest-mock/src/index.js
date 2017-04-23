@@ -274,6 +274,8 @@ class ModuleMockerClass {
           if (returnValue === undefined) {
             returnValue = mockConfig.defaultReturnValue;
           }
+
+          return returnValue;
         }
 
         // If mockImplementationOnce()/mockImplementation() is last set,
