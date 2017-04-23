@@ -24,14 +24,24 @@ const defaultOptions = {
 const config = {
   default: {
     ignore: ['**/node_modules/**'],
-    patterns: ['packages/*/src/**/', 'types/', 'integration_tests/**/'],
+    patterns: [
+      'packages/*/src/**/',
+      'types/',
+      'integration_tests/',
+      'integration_tests/__tests__/',
+    ],
   },
   es5Compatible: {
-    ignore: ['**/node_modules/**', '**/coverage/**'],
+    ignore: [
+      '**/node_modules/**',
+      '**/coverage/**',
+      'integration_tests/*',
+      'integration_tests/__tests__/*',
+    ],
     options: {
       'trailing-comma': 'es5',
     },
-    patterns: ['examples/**/', 'scripts/**/'],
+    patterns: ['examples/**/', 'scripts/**/', 'integration_tests/**/'],
   },
 };
 
