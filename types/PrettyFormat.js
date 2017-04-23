@@ -27,6 +27,7 @@ export type Options = {|
   printFunctionName: boolean,
   spacing: string,
   theme: {|
+    comment: string,
     content: string,
     prop: string,
     tag: string,

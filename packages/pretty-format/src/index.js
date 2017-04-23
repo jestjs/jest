@@ -22,6 +22,7 @@ import type {
 const style = require('ansi-styles');
 
 type Theme = {|
+  comment?: string,
   content?: string,
   prop?: string,
   tag?: string,
@@ -799,6 +800,7 @@ const DEFAULTS: Options = {
   printFunctionName: true,
   spacing: '\n',
   theme: {
+    comment: 'gray',
     content: 'reset',
     prop: 'yellow',
     tag: 'cyan',

@@ -68,7 +68,9 @@ const print = (
   }
 
   if (element.nodeType === 8) {
-    return '<!--' + element.data + '-->';
+    return (
+      colors.comment.open + '<!--' + element.data + '-->' + colors.comment.close
+    );
   }
 
   let result = colors.tag.open + '<';
