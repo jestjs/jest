@@ -122,4 +122,17 @@ describe('HTMLElement Plugin', () => {
       '</div>',
     ].join('\n'));
   });
+
+  it('supports comment node', () => {
+    const parent = document.createElement('div');
+    parent.innerHTML = 'some <!-- comments -->';
+
+    // prettier-ignore
+    expect(parent).toPrettyPrintTo([
+      '<div>',
+      '  some ',
+      '  <!-- comments -->',
+      '</div>',
+    ].join('\n'));
+  });
 });

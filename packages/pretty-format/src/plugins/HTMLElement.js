@@ -13,14 +13,14 @@
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
 const escapeHTML = require('./lib/escapeHTML');
-const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text/;
+const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
 const test = isHTMLElement;
 
 function isHTMLElement(value: any) {
   return (
     value !== undefined &&
     value !== null &&
-    (value.nodeType === 1 || value.nodeType === 3) &&
+    (value.nodeType === 1 || value.nodeType === 3 || value.nodeType === 8) &&
     value.constructor !== undefined &&
     value.constructor.name !== undefined &&
     HTML_ELEMENT_REGEXP.test(value.constructor.name)
@@ -65,6 +65,10 @@ const print = (
 ) => {
   if (element.nodeType === 3) {
     return element.data;
+  }
+
+  if (element.nodeType === 8) {
+    return '<!--' + element.data + '-->';
   }
 
   let result = colors.tag.open + '<';
