@@ -190,17 +190,17 @@ describe('prettyFormat()', () => {
   });
 
   it('prints regular expressions from literals', () => {
-    const val = /regexp/ig;
+    const val = /regexp/gi;
     expect(prettyFormat(val)).toEqual('/regexp/gi');
   });
 
   it('escapes regular expressions', () => {
-    const val = /regexp\d/ig;
+    const val = /regexp\d/gi;
     expect(prettyFormat(val, {escapeRegex: true})).toEqual('/regexp\\\\d/gi');
   });
 
   it('escapes regular expressions nested inside object', () => {
-    const obj = {test: /regexp\d/ig};
+    const obj = {test: /regexp\d/gi};
     expect(prettyFormat(obj, {escapeRegex: true})).toEqual(
       'Object {\n  "test": /regexp\\\\d/gi,\n}',
     );

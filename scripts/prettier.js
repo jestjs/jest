@@ -23,14 +23,14 @@ const defaultOptions = {
 };
 const config = {
   default: {
+    ignore: ['**/node_modules/**'],
     patterns: [
       'packages/*/src/**/',
       'types/',
-      'integration_tests/',
-      'integration_tests/__tests__/',
     ],
   },
   integrationTests: {
+    ignore: ['**/node_modules/**'],
     options: {
       'trailing-comma': 'es5',
     },
@@ -41,17 +41,19 @@ const config = {
 Object.keys(config).forEach(key => {
   const patterns = config[key].patterns;
   const options = config[key].options;
-  const files = glob
-    .sync(`{${patterns.join(',')}}*.js`)
-    .filter(file => !file.includes(path.sep + 'node_modules' + path.sep));
+  const ignore = config[key].ignore;
 
-  const args = Object.keys(defaultOptions).map(
-    key => `--${key}=${(options && options[key]) || defaultOptions[key]}`
-  );
-  args.push(`--${shouldWrite ? 'write' : 'l'} {${files.join(' ')}}`);
+  const globPattern = patterns.length > 1
+    ? `{${patterns.join(',')}}*.js`
+    : `${patterns.join(',')}*.js`;
+  const files = glob.sync(globPattern, {ignore});
+
+  const args = Object.keys(defaultOptions)
+    .map(key => `--${key}=${(options && options[key]) || defaultOptions[key]}`)
+    .concat(`--${shouldWrite ? 'write' : 'l'}`, files);
 
   try {
-    runCommand(prettierCmd, args.join(' '), path.resolve(__dirname, '..'));
+    runCommand(prettierCmd, args, path.resolve(__dirname, '..'));
   } catch (e) {
     console.log(e);
     if (!shouldWrite) {

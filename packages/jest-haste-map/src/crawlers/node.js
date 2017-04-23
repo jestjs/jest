@@ -94,7 +94,7 @@ function findNative(
   const child = spawn('find', args);
   let stdout = '';
   child.stdout.setEncoding('utf-8');
-  child.stdout.on('data', data => stdout += data);
+  child.stdout.on('data', data => (stdout += data));
 
   child.stdout.on('close', () => {
     const lines = stdout.trim().split('\n').filter(x => !ignore(x));

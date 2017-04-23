@@ -43,7 +43,7 @@ const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
-const NEWLINE_REGEXP = /\n/ig;
+const NEWLINE_REGEXP = /\n/gi;
 
 const getSymbols = Object.getOwnPropertySymbols || (obj => []);
 
@@ -539,7 +539,10 @@ function printComplexValue(
   const hitMaxDepth = currentDepth > maxDepth;
 
   if (
-    callToJSON && !hitMaxDepth && val.toJSON && typeof val.toJSON === 'function'
+    callToJSON &&
+    !hitMaxDepth &&
+    val.toJSON &&
+    typeof val.toJSON === 'function'
   ) {
     return print(
       val.toJSON(),
@@ -816,9 +819,9 @@ function normalizeOptions(opts: InitialOptions): Options {
 
   Object.keys(DEFAULTS).forEach(
     key =>
-      result[key] = opts.hasOwnProperty(key)
+      (result[key] = opts.hasOwnProperty(key)
         ? key === 'theme' ? normalizeTheme(opts.theme) : opts[key]
-        : DEFAULTS[key],
+        : DEFAULTS[key]),
   );
 
   if (result.min) {

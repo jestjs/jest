@@ -17,44 +17,44 @@ const runJest = require('../runJest');
 const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir = path.resolve(
   __dirname,
-  '../snapshot/__tests__/__snapshots__',
+  '../snapshot/__tests__/__snapshots__'
 );
 const snapshotFile = path.resolve(snapshotDir, 'snapshot-test.js.snap');
 const secondSnapshotFile = path.resolve(
   snapshotDir,
-  'second-snapshot-test.js.snap',
+  'second-snapshot-test.js.snap'
 );
 const snapshotOfCopy = path.resolve(snapshotDir, 'snapshot-test_copy.js.snap');
 const originalTestPath = path.resolve(
   __dirname,
-  '../snapshot/__tests__/snapshot-test.js',
+  '../snapshot/__tests__/snapshot-test.js'
 );
 const originalTestContent = fs.readFileSync(originalTestPath, 'utf8');
 const copyOfTestPath = originalTestPath.replace('.js', '_copy.js');
 
 const snapshotEscapeDir = path.resolve(
   __dirname,
-  '../snapshot-escape/__tests__/',
+  '../snapshot-escape/__tests__/'
 );
 const snapshotEscapeTestFile = path.resolve(
   snapshotEscapeDir,
-  'snapshot-test.js',
+  'snapshot-test.js'
 );
 const snapshotEscapeSnapshotDir = path.resolve(
   snapshotEscapeDir,
-  '__snapshots__',
+  '__snapshots__'
 );
 const snapshotEscapeFile = path.resolve(
   snapshotEscapeSnapshotDir,
-  'snapshot-test.js.snap',
+  'snapshot-test.js.snap'
 );
 const snapshotEscapeRegexFile = path.resolve(
   snapshotEscapeSnapshotDir,
-  'snapshot-escape-regex.js.snap',
+  'snapshot-escape-regex.js.snap'
 );
 const snapshotEscapeSubstitutionFile = path.resolve(
   snapshotEscapeSnapshotDir,
-  'snapshot-escape-substitution-test.js.snap',
+  'snapshot-escape-substitution-test.js.snap'
 );
 
 const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
@@ -112,7 +112,7 @@ describe('Snapshot', () => {
 
     const content = require(snapshotFile);
     expect(
-      content['snapshot is not influenced by previous counter 1'],
+      content['snapshot is not influenced by previous counter 1']
     ).not.toBe(undefined);
 
     const info = result.stderr.toString();
@@ -267,8 +267,8 @@ describe('Snapshot', () => {
         copyOfTestPath,
         originalTestContent.replace(
           '.toMatchSnapshot()',
-          '.not.toBe(undefined)',
-        ),
+          '.not.toBe(undefined)'
+        )
       );
       const secondRun = runJest.json('snapshot', ['-u']);
       fs.unlinkSync(copyOfTestPath);
@@ -279,7 +279,7 @@ describe('Snapshot', () => {
       const afterRemovingSnapshot = getSnapshotOfCopy();
 
       expect(Object.keys(beforeRemovingSnapshot).length - 1).toBe(
-        Object.keys(afterRemovingSnapshot).length,
+        Object.keys(afterRemovingSnapshot).length
       );
       const keyToCheck =
         'snapshot works with plain objects and the ' +

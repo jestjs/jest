@@ -28,6 +28,6 @@ test('mocks async functions', () => {
   // --no-cache because babel can cache stuff and result in false green
   const {stderr} = runJest(dir, ['--no-cache']);
   expect(extractSummary(stderr).summary).toMatch(
-    'Test Suites: 1 passed, 1 total',
+    'Test Suites: 1 passed, 1 total'
   );
 });

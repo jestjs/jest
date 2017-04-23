@@ -25,7 +25,7 @@ test('works fine when function throws error', () => {
        expect(() => { throw new Error('apple'); })
          .toThrowErrorMatchingSnapshot();
     });
-    `,
+    `
   );
 
   {
@@ -42,7 +42,7 @@ test(`throws the error if tested function didn't throw error`, () => {
     `test('throws the error if tested function did not throw error', () => {
       expect(() => {}).toThrowErrorMatchingSnapshot();
     });
-    `,
+    `
   );
 
   {
@@ -60,7 +60,7 @@ test('does not accept arguments', () => {
       expect(() => { throw new Error('apple'); })
         .toThrowErrorMatchingSnapshot('foobar');
     });
-    `,
+    `
   );
 
   {
@@ -77,14 +77,14 @@ test('cannot be used with .not', () => {
     `test('cannot be used with .not', () => {
        expect('').not.toThrowErrorMatchingSnapshot();
     });
-    `,
+    `
   );
 
   {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch(
-      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
+      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.'
     );
     expect(status).toBe(1);
   }

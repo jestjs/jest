@@ -63,7 +63,7 @@ describe('custom transformer', () => {
   const dir = path.resolve(
     __dirname,
     '..',
-    'transform/custom-instrumenting-preprocessor',
+    'transform/custom-instrumenting-preprocessor'
   );
 
   it('proprocesses files', () => {

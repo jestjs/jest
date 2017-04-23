@@ -30,7 +30,7 @@ function runJest(dir, args) {
         "${localPackageJson}".
       Otherwise Jest will try to traverse the directory tree and find the
       the global package.json, which will send Jest into infinite loop.
-    `,
+    `
     );
   }
 
@@ -60,7 +60,7 @@ runJest.json = function(dir, args) {
       ERROR: ${e.name} ${e.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
-    `,
+    `
     );
   }
   return result;

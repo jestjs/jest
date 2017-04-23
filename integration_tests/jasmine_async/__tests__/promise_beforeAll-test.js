@@ -17,12 +17,9 @@ describe('promise beforeAll', () => {
     });
   });
 
-  beforeAll(
-    () => {
-      return new Promise(resolve => setTimeout(resolve, 10));
-    },
-    500
-  );
+  beforeAll(() => {
+    return new Promise(resolve => setTimeout(resolve, 10));
+  }, 500);
 
   // passing tests
   it('runs tests after beforeAll asynchronously completes', () => {
@@ -31,12 +28,9 @@ describe('promise beforeAll', () => {
 
   describe('with failing timeout', () => {
     // failing before hook
-    beforeAll(
-      () => {
-        return new Promise(resolve => setTimeout(resolve, 100));
-      },
-      10
-    );
+    beforeAll(() => {
+      return new Promise(resolve => setTimeout(resolve, 100));
+    }, 10);
 
     it('fails', () => {});
   });
