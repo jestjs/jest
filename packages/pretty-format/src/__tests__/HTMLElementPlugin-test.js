@@ -4,10 +4,9 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- * 
+ *
  * @jest-environment jsdom
  */
-/* eslint-disable max-len */
 /* eslint-env browser*/
 
 'use strict';
@@ -50,10 +49,7 @@ describe('HTMLElement Plugin', () => {
     parent.setAttribute('id', 123);
     parent.setAttribute('class', 'classy');
 
-    expect(parent).toPrettyPrintTo(
-      '<div\n  id="123"\n  class="classy"\n/>',
-      {},
-    );
+    expect(parent).toPrettyPrintTo('<div\n  id="123"\n  class="classy"\n/>');
   });
 
   it('supports an element with text content', () => {
@@ -92,5 +88,38 @@ describe('HTMLElement Plugin', () => {
     expect(parent).toPrettyPrintTo(
       '<div>\n  <span>\n    texty texty\n  </span>\n</div>',
     );
+  });
+
+  it('supports siblings', () => {
+    const parent = document.createElement('div');
+    parent.innerHTML = '<span>some </span><span>text</span>';
+
+    expect(parent).toPrettyPrintTo(
+      [
+        '<div>',
+        '  <span>',
+        '    some ',
+        '  </span>',
+        '  <span>',
+        '    text',
+        '  </span>',
+        '</div>',
+      ].join('\n'),
+    );
+  });
+
+  it('supports text node', () => {
+    const parent = document.createElement('div');
+    parent.innerHTML = 'some <span>text</span>';
+
+    // prettier-ignore
+    expect(parent).toPrettyPrintTo([
+      '<div>',
+      '  some ',
+      '  <span>',
+      '    text',
+      '  </span>',
+      '</div>',
+    ].join('\n'));
   });
 });
