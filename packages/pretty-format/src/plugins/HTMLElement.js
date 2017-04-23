@@ -41,7 +41,7 @@ function printChildren(flatChildren, print, indent, colors, opts) {
     .join(opts.edgeSpacing);
 }
 
-function printAttributes(attributes, print, indent, colors, opts) {
+function printAttributes(attributes, indent, colors, opts) {
   return attributes
     .sort()
     .map(attribute => {
@@ -80,7 +80,7 @@ const print = (
   const hasAttributes = element.attributes && element.attributes.length;
   if (hasAttributes) {
     const attributes = Array.prototype.slice.call(element.attributes);
-    result += printAttributes(attributes, print, indent, colors, opts);
+    result += printAttributes(attributes, indent, colors, opts);
   }
 
   const flatChildren = Array.prototype.slice.call(element.childNodes);
