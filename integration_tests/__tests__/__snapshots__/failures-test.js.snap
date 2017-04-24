@@ -63,6 +63,7 @@ Object {
       false
       
       at Object.throws (__tests__/assertion-count-test.js:14:17)
+      at process._tickCallback (internal/process/next_tick.js:103:7)
 
   ● .assertions() › throws
 
@@ -71,6 +72,7 @@ Object {
     Expected two assertions to be called but only received one assertion call.
       
       at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
+      at process._tickCallback (internal/process/next_tick.js:103:7)
 
   ● .assertions() › throws on redeclare of assertion count
 
@@ -80,6 +82,7 @@ Object {
       false
       
       at Object.redeclare (__tests__/assertion-count-test.js:18:17)
+      at process._tickCallback (internal/process/next_tick.js:103:7)
 
   ● .assertions() › throws on assertion
 
@@ -88,6 +91,7 @@ Object {
     Expected zero assertions to be called but only received one assertion call.
       
       at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
+      at process._tickCallback (internal/process/next_tick.js:103:7)
 
   .assertions()
     ✕ throws
