@@ -15,6 +15,9 @@ import type {
   HasteMap as HasteMapObject,
   InternalHasteMap,
   ModuleMetaData,
+  ModuleMapData,
+  HasteRegExp,
+  MockData,
 } from 'types/HasteMap';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof HType from './constants';
@@ -43,7 +46,7 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp | Function,
+  ignorePattern: HasteRegExp,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -62,7 +65,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp | Function,
+  ignorePattern: HasteRegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -294,8 +297,8 @@ class HasteMap extends EventEmitter {
    */
   _processFile(
     hasteMap: InternalHasteMap,
-    map: Object,
-    mocks: Object,
+    map: ModuleMapData,
+    mocks: MockData,
     filePath: Path,
     workerOptions: ?{forceInBand: boolean},
   ): ?Promise<void> {
