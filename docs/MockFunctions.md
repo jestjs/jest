@@ -138,7 +138,7 @@ module.exports = function() {
 };
 
 // test.js
-jest.mock('../foo'); // this happens automatically with automocking
+jest.mock('../foo');
 const foo = require('../foo');
 
 // foo is a mock function
