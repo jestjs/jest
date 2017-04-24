@@ -20,6 +20,7 @@ export type FileData = {[filepath: Path]: FileMetaData};
 export type MockData = {[id: string]: Path};
 export type ModuleMapData = {[id: string]: ModuleMapItem};
 export type WatchmanClocks = {[filepath: Path]: string};
+export type HasteRegExp = RegExp | ((str: string) => boolean);
 
 export type InternalHasteMap = {|
   clocks: WatchmanClocks,
