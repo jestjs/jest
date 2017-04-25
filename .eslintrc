@@ -2,6 +2,7 @@
   "extends": "./packages/eslint-config-fb-strict/index.js",
   "parser": "babel-eslint",
   "rules": {
+    "computed-property-spacing": 0,
     "no-multiple-empty-lines": 1,
     "flowtype/require-valid-file-annotation": 2,
     "flowtype/boolean-style": 2,
