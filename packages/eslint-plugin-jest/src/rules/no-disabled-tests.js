@@ -37,8 +37,7 @@ module.exports = (context: EslintContext) => ({
     }
 
     if (
-      callee.type === 'MemberExpression' &&
-      isCallToTestSkipFunction(callee)
+      callee.type === 'MemberExpression' && isCallToTestSkipFunction(callee)
     ) {
       context.report({
         message: 'Unexpected disabled test.',

@@ -26,7 +26,7 @@ const TestSequencer = require('./TestSequencer');
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
-    context => (context.config = Object.assign({}, context.config, newConfig)),
+    context => context.config = Object.assign({}, context.config, newConfig),
   );
 
 const formatTestPathPattern = pattern => {

@@ -57,8 +57,7 @@ const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: ProjectConfig) => {
   if (
-    Array.isArray(config.moduleNameMapper) &&
-    config.moduleNameMapper.length
+    Array.isArray(config.moduleNameMapper) && config.moduleNameMapper.length
   ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => {
       return {moduleName, regex: new RegExp(regex)};
@@ -127,9 +126,7 @@ class Runtime {
 
     this._unmockList = unmockRegExpCache.get(config);
     if (
-      !this._unmockList &&
-      config.automock &&
-      config.unmockedModulePathPatterns
+      !this._unmockList && config.automock && config.unmockedModulePathPatterns
     ) {
       this._unmockList = new RegExp(
         config.unmockedModulePathPatterns.join('|'),

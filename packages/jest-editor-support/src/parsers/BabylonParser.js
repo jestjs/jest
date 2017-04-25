@@ -145,8 +145,7 @@ const parse = (file: string) => {
       ) {
         searchNodes(element.expression.right.body, file);
       } else if (
-        element.type === 'ReturnStatement' &&
-        element.argument.arguments
+        element.type === 'ReturnStatement' && element.argument.arguments
       ) {
         element.argument.arguments
           .filter(argument => isFunctionDeclaration(argument.type))
