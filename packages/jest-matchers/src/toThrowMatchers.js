@@ -179,11 +179,16 @@ const printActualErrorMessage = error => {
       RECEIVED_COLOR(
         '  ' +
           highlightTrailingWhitespace(message, RECEIVED_BG) +
-          formatStackTrace(stack, {
-            noStackTrace: false,
-            rootDir: process.cwd(),
-            testMatch: [],
-          }),
+          formatStackTrace(
+            stack,
+            {
+              rootDir: process.cwd(),
+              testMatch: [],
+            },
+            {
+              noStackTrace: false,
+            },
+          ),
       )
     );
   }

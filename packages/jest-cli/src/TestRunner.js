@@ -125,6 +125,7 @@ class TestRunner {
       testResult.failureMessage = formatExecError(
         testResult,
         test.context.config,
+        this._config,
         test.path,
       );
       addResult(aggregatedResults, testResult);
@@ -196,6 +197,7 @@ class TestRunner {
               this._dispatcher.onTestStart(test);
               return runTest(
                 test.path,
+                this._config,
                 test.context.config,
                 test.context.resolver,
               );
@@ -235,6 +237,7 @@ class TestRunner {
         this._dispatcher.onTestStart(test);
         return worker({
           config: test.context.config,
+          globalConfig: this._config,
           path: test.path,
           rawModuleMap: watcher.isWatchMode()
             ? test.context.moduleMap.getRawModuleMap()
@@ -274,15 +277,15 @@ class TestRunner {
   }
 
   _setupReporters() {
-    const config = this._config;
+    const {collectCoverage, expand, notify, verbose} = this._config;
 
     this.addReporter(
-      config.verbose
-        ? new VerboseReporter({expand: config.expand})
-        : new DefaultReporter(),
+      verbose
+        ? new VerboseReporter({expand})
+        : new DefaultReporter({verbose: !!verbose}),
     );
 
-    if (config.collectCoverage) {
+    if (collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't
       // want to require it if we're not in the `--coverage` mode
       const CoverageReporter = require('./reporters/CoverageReporter');
@@ -290,7 +293,7 @@ class TestRunner {
     }
 
     this.addReporter(new SummaryReporter(this._options));
-    if (config.notify) {
+    if (notify) {
       this.addReporter(new NotifyReporter(this._options.startRun));
     }
   }

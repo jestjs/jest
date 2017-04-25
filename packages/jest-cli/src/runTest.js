@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Path, Config} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 import type {Resolver} from 'types/Resolve';
 
@@ -21,7 +21,12 @@ const fs = require('fs');
 const docblock = require('jest-docblock');
 const getConsoleOutput = require('./reporters/getConsoleOutput');
 
-function runTest(path: Path, config: Config, resolver: Resolver) {
+function runTest(
+  path: Path,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+  resolver: Resolver,
+) {
   let testSource;
 
   try {
@@ -68,7 +73,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
   setGlobal(env.global, 'console', testConsole);
   const runtime = new ModuleLoader(config, env, resolver, cacheFS);
   const start = Date.now();
-  return TestRunner(config, env, runtime, path)
+  return TestRunner(globalConfig, config, env, runtime, path)
     .then((result: TestResult) => {
       const testCount =
         result.numPassingTests +

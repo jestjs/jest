@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {SerializableError, TestResult} from 'types/TestResult';
 import type {RawModuleMap} from 'types/HasteMap';
 
@@ -26,7 +26,8 @@ const Runtime = require('jest-runtime');
 const runTest = require('./runTest');
 
 type WorkerData = {|
-  config: Config,
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
   path: Path,
   rawModuleMap?: RawModuleMap,
 |};
@@ -74,7 +75,7 @@ const getResolver = (config, rawModuleMap) => {
 };
 
 module.exports = (
-  {config, path, rawModuleMap}: WorkerData,
+  {config, globalConfig, path, rawModuleMap}: WorkerData,
   callback: WorkerCallback,
 ) => {
   let parentExited = false;
@@ -84,7 +85,7 @@ module.exports = (
   process.on('disconnect', disconnectCallback);
 
   try {
-    runTest(path, config, getResolver(config, rawModuleMap)).then(
+    runTest(path, globalConfig, config, getResolver(config, rawModuleMap)).then(
       result => {
         removeListener();
         if (!parentExited) {

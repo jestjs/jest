@@ -10,13 +10,22 @@
 
 'use strict';
 
-import type {Config, Glob, Path} from 'types/Config';
+import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const path = require('path');
 const slash = require('slash');
+
+type StackTraceConfig = {
+  rootDir: string,
+  testMatch: Array<Glob>,
+};
+
+type StackTraceOptions = {
+  noStackTrace: boolean,
+};
 
 // filter for noisy stack trace lines
 /* eslint-disable max-len */
@@ -47,7 +56,8 @@ const trimPaths = string =>
 // are executed.
 const formatExecError = (
   testResult: TestResult,
-  config: Config,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
   testPath: Path,
 ) => {
   let error = testResult.testExecError;
@@ -73,8 +83,8 @@ const formatExecError = (
   }
 
   message = message.split(/\n/).map(line => MESSAGE_INDENT + line).join('\n');
-  stack = stack && !config.noStackTrace
-    ? '\n' + formatStackTrace(stack, config, testPath)
+  stack = stack && !options.noStackTrace
+    ? '\n' + formatStackTrace(stack, config, options, testPath)
     : '';
 
   if (message.match(/^\s*$/) && stack.match(/^\s*$/)) {
@@ -93,7 +103,7 @@ const formatExecError = (
   );
 };
 
-const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
+const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
   let pathCounter = 0;
 
   return lines.filter(line => {
@@ -109,11 +119,16 @@ const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
       return true; // always keep the first line even if it's from Jest
     }
 
-    return !(STACK_TRACE_IGNORE.test(line) || config.noStackTrace);
+    return !(STACK_TRACE_IGNORE.test(line) || options.noStackTrace);
   });
 };
 
-const formatPaths = (config: StackTraceOptions, relativeTestPath, line) => {
+const formatPaths = (
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  relativeTestPath,
+  line,
+) => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
@@ -133,32 +148,28 @@ const formatPaths = (config: StackTraceOptions, relativeTestPath, line) => {
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-type StackTraceOptions = {
-  noStackTrace: boolean,
-  rootDir: string,
-  testMatch: Array<Glob>,
-};
-
 const formatStackTrace = (
   stack: string,
-  config: StackTraceOptions,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
   testPath: ?Path,
 ) => {
   let lines = stack.split(/\n/);
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
-  lines = removeInternalStackEntries(lines, config);
+  lines = removeInternalStackEntries(lines, options);
   return lines
     .map(trimPaths)
-    .map(formatPaths.bind(null, config, relativeTestPath))
+    .map(formatPaths.bind(null, config, options, relativeTestPath))
     .map(line => STACK_INDENT + line)
     .join('\n');
 };
 
 const formatResultsErrors = (
   testResults: Array<AssertionResult>,
-  config: Config,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
   testPath: ?Path,
 ): ?string => {
   const failedResults = testResults.reduce((errors, result) => {
@@ -173,9 +184,11 @@ const formatResultsErrors = (
   return failedResults
     .map(({result, content}) => {
       let {message, stack} = separateMessageFromStack(content);
-      stack = config.noStackTrace
+      stack = options.noStackTrace
         ? ''
-        : STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath)) + '\n';
+        : STACK_TRACE_COLOR(
+            formatStackTrace(stack, config, options, testPath),
+          ) + '\n';
 
       message = message
         .split(/\n/)

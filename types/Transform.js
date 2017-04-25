@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {Script} from 'vm';
 
 export type TransformedSource = {|
@@ -40,7 +40,7 @@ export type Transformer = {|
   process: (
     sourceText: string,
     sourcePath: Path,
-    config: Config,
+    config: ProjectConfig,
     options?: TransformOptions,
   ) => string | TransformedSource,
 |};

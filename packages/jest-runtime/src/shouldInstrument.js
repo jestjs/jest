@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 
 const {escapePathForRegex} = require('jest-regex-util');
 const micromatch = require('micromatch');
@@ -19,7 +19,7 @@ const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
 );
 
-const shouldInstrument = (filename: Path, config: Config): boolean => {
+const shouldInstrument = (filename: Path, config: ProjectConfig): boolean => {
   if (!config.collectCoverage) {
     return false;
   }
