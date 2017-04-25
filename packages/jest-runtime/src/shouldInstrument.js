@@ -39,7 +39,8 @@ const shouldInstrument = (filename: Path, config: ProjectConfig): boolean => {
   if (
     // This configuration field contains an object in the form of:
     // {'path/to/file.js': true}
-    config.collectCoverageOnlyFrom && !config.collectCoverageOnlyFrom[filename]
+    config.collectCoverageOnlyFrom &&
+    !config.collectCoverageOnlyFrom[filename]
   ) {
     return false;
   }

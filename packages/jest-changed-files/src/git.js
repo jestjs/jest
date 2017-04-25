@@ -31,8 +31,8 @@ function findChangedFiles(
     const child = childProcess.spawn('git', args, {cwd});
     let stdout = '';
     let stderr = '';
-    child.stdout.on('data', data => stdout += data);
-    child.stderr.on('data', data => stderr += data);
+    child.stdout.on('data', data => (stdout += data));
+    child.stderr.on('data', data => (stderr += data));
     child.on('error', e => reject(e));
     child.on('close', code => {
       if (code === 0) {
@@ -59,7 +59,7 @@ function isGitRepository(cwd: string): Promise<?string> {
       let stdout = '';
       const options = ['rev-parse', '--show-toplevel'];
       const child = childProcess.spawn('git', options, {cwd});
-      child.stdout.on('data', data => stdout += data);
+      child.stdout.on('data', data => (stdout += data));
       child.on('error', () => resolve(null));
       child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
     } catch (e) {
