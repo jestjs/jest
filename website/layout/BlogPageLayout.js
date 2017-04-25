@@ -29,9 +29,11 @@ const BlogPageLayout = React.createClass({
     return (
       <Site
         section="blog"
-        title="Blog">
+        title="Blog"
+        language="en"
+        >
         <div className="docMainWrapper wrapper">
-          <BlogSidebar />
+          <BlogSidebar language={this.props.language} />
           <Container
             className="mainContainer documentContainer postContainer blogContainer"
           >
