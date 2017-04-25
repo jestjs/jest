@@ -3,7 +3,7 @@ id: tutorial-async
 title: An Async Example
 layout: docs
 category: Guides
-permalink: docs/tutorial-async.html
+permalink: docs/en/tutorial-async.html
 previous: tutorial-react-native
 next: timer-mocks
 ---

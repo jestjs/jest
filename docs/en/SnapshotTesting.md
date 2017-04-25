@@ -3,7 +3,7 @@ id: snapshot-testing
 title: Snapshot Testing
 layout: docs
 category: Guides
-permalink: docs/snapshot-testing.html
+permalink: docs/en/snapshot-testing.html
 next: tutorial-react
 ---
 
