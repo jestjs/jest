@@ -13,7 +13,6 @@ function infiniteTimerGame(callback) {
     setTimeout(() => {
       infiniteTimerGame(callback);
     }, 10000);
-
   }, 1000);
 }
 

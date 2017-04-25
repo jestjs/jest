@@ -44,7 +44,7 @@ examples.forEach(exampleDirectory => {
   }
 
   if (INSTALL.indexOf(exampleName) !== -1) {
-    runCommand('yarn', '--production', exampleDirectory);
+    runCommand('yarn', ['--production'], exampleDirectory);
   }
 
   link(exampleDirectory, BABEL_JEST_PATH);
@@ -52,6 +52,6 @@ examples.forEach(exampleDirectory => {
 
 runCommand(
   JEST_BIN_PATH,
-  '--experimentalProjects ' + examples.join(' '),
+  ['--experimentalProjects'].concat(examples),
   EXAMPLES_DIR
 );

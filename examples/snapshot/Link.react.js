@@ -8,7 +8,6 @@ const STATUS = {
 };
 
 export default class Link extends React.Component {
-
   constructor() {
     super();
 
@@ -34,10 +33,10 @@ export default class Link extends React.Component {
         className={this.state.class}
         href={this.props.page || '#'}
         onMouseEnter={this._onMouseEnter}
-        onMouseLeave={this._onMouseLeave}>
+        onMouseLeave={this._onMouseLeave}
+      >
         {this.props.children}
       </a>
     );
   }
-
 }

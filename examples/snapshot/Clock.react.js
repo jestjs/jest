@@ -3,7 +3,6 @@
 import React from 'react';
 
 export default class Clock extends React.Component {
-
   constructor() {
     super();
 
@@ -11,10 +10,7 @@ export default class Clock extends React.Component {
   }
 
   componentDidMount() {
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
-    );
+    this.timerID = setInterval(() => this.tick(), 1000);
   }
 
   componentWillUnmount() {

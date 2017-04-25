@@ -25,7 +25,7 @@ class CustomConsole extends Console {
 
   constructor(
     stdout: stream$Writable,
-    stderr: stream$Writable, 
+    stderr: stream$Writable,
     formatBuffer: ?Formatter,
   ) {
     super(stdout, stderr);

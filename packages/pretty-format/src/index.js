@@ -43,7 +43,7 @@ const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
-const NEWLINE_REGEXP = /\n/ig;
+const NEWLINE_REGEXP = /\n/gi;
 
 const getSymbols = Object.getOwnPropertySymbols || (obj => []);
 
