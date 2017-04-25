@@ -3,7 +3,7 @@ id: tutorial-jquery
 title: DOM Manipulation
 layout: docs
 category: Guides
-permalink: docs/tutorial-jquery.html
+permalink: docs/en/tutorial-jquery.html
 next: mock-functions
 ---
 

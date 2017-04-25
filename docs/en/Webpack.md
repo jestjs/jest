@@ -3,7 +3,7 @@ id: webpack
 title: Using with webpack
 layout: docs
 category: Guides
-permalink: docs/webpack.html
+permalink: docs/en/webpack.html
 previous: manual-mocks
 next: migration-guide
 ---
