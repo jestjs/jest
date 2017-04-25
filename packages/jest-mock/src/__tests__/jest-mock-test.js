@@ -330,6 +330,26 @@ describe('moduleMocker', () => {
         expect(fn2()).not.toEqual('abcd');
       });
     });
+
+    it('supports mock value returning undefined', () => {
+      const obj = {
+        func: () => 'some text',
+      };
+
+      moduleMocker.spyOn(obj, 'func').mockReturnValue(undefined);
+
+      expect(obj.func()).not.toEqual('some text');
+    });
+
+    it('supports mock value once returning undefined', () => {
+      const obj = {
+        func: () => 'some text',
+      };
+
+      moduleMocker.spyOn(obj, 'func').mockReturnValueOnce(undefined);
+
+      expect(obj.func()).not.toEqual('some text');
+    });
   });
 
   describe('getMockImplementation', () => {
