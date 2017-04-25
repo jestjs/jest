@@ -62,7 +62,6 @@ if (process.platform !== 'win32') {
     config = normalizeConfig({
       rootDir,
       roots: [],
-      updateSnapshot: true,
     }).config;
     const Runtime = require('jest-runtime');
     return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
@@ -90,6 +89,16 @@ test('passes updateSnapshot to context.config', async () => {
   const argv = {};
   const pipe = process.stdout;
   const testWatcher = new TestWatcher({isWatchMode: true});
-  await runJest(contexts, argv, pipe, testWatcher, noop, noop);
+  await runJest(
+    {
+      updateSnapshot: true,
+    },
+    contexts,
+    argv,
+    pipe,
+    testWatcher,
+    noop,
+    noop,
+  );
   expect(contexts.every(({config}) => config.updateSnapshot)).toBe(true);
 });

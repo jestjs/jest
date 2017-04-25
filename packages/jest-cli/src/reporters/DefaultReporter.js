@@ -13,7 +13,7 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, GlobalConfig, Path} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
@@ -28,6 +28,10 @@ const isCI = require('is-ci');
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 
+type Options = {|
+  verbose: boolean,
+|};
+
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
 const isInteractive = process.stdin.isTTY && !isCI;
@@ -35,11 +39,13 @@ const isInteractive = process.stdin.isTTY && !isCI;
 class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
+  _options: Options;
   _out: write;
   _status: Status;
 
-  constructor() {
+  constructor(options: Options) {
     super();
+    this._options = options;
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
@@ -143,7 +149,11 @@ class DefaultReporter extends BaseReporter {
     );
   }
 
-  _printTestFileSummary(testPath: Path, config: Config, result: TestResult) {
+  _printTestFileSummary(
+    testPath: Path,
+    config: ProjectConfig,
+    result: TestResult,
+  ) {
     if (!result.skipped) {
       this.log(getResultHeader(result, config));
 
@@ -153,7 +163,11 @@ class DefaultReporter extends BaseReporter {
           '  ' +
             TITLE_BULLET +
             'Console\n\n' +
-            getConsoleOutput(config.rootDir, !!config.verbose, consoleBuffer),
+            getConsoleOutput(
+              config.rootDir,
+              !!this._options.verbose,
+              consoleBuffer,
+            ),
         );
       }
 

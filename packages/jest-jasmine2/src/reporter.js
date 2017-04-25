@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {
   AssertionResult,
@@ -38,14 +38,21 @@ type Microseconds = number;
 
 class Jasmine2Reporter {
   _testResults: Array<AssertionResult>;
-  _config: Config;
+  _globalConfig: GlobalConfig;
+  _config: ProjectConfig;
   _currentSuites: Array<string>;
   _resolve: any;
   _resultsPromise: Promise<TestResult>;
   _startTimes: Map<string, Microseconds>;
   _testPath: Path;
 
-  constructor(config: Config, environment: Environment, testPath: Path) {
+  constructor(
+    globalConfig: GlobalConfig,
+    config: ProjectConfig,
+    environment: Environment,
+    testPath: Path,
+  ) {
+    this._globalConfig = globalConfig;
     this._config = config;
     this._testPath = testPath;
     this._testResults = [];
@@ -93,6 +100,7 @@ class Jasmine2Reporter {
       failureMessage: formatResultsErrors(
         testResults,
         this._config,
+        this._globalConfig,
         this._testPath,
       ),
       numFailingTests,

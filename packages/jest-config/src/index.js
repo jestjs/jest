@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Config, GlobalConfig, ProjectConfig} from 'types/Config';
+
 const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
@@ -17,11 +19,20 @@ const normalize = require('./normalize');
 const setFromArgv = require('./setFromArgv');
 const {getTestEnvironment} = require('./utils');
 
-async function readConfig(argv: Object, packageRoot: string) {
+async function readConfig(
+  argv: Object,
+  packageRoot: string,
+): Promise<{
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
+  hasDeprecationWarnings: boolean,
+}> {
   const rawConfig = await readRawConfig(argv, packageRoot);
   const {config, hasDeprecationWarnings} = normalize(rawConfig, argv);
+  const {globalConfig, projectConfig} = getConfigs(setFromArgv(config, argv));
   return {
-    config: Object.freeze(setFromArgv(config, argv)),
+    config: projectConfig,
+    globalConfig,
     hasDeprecationWarnings,
   };
 }
@@ -50,6 +61,41 @@ const readRawConfig = (argv, root) => {
   }
 
   return loadFromPackage(root).then(config => config || {rootDir: root});
+};
+
+const getConfigs = (
+  config: Config,
+): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => {
+  return {
+    globalConfig: Object.freeze({
+      bail: config.bail,
+      collectCoverage: config.collectCoverage,
+      collectCoverageFrom: config.collectCoverageFrom,
+      collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
+      coverageDirectory: config.coverageDirectory,
+      coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
+      coverageReporters: config.coverageReporters,
+      coverageThreshold: config.coverageThreshold,
+      expand: config.expand,
+      forceExit: config.forceExit,
+      logHeapUsage: config.logHeapUsage,
+      logTransformErrors: config.logTransformErrors,
+      mapCoverage: config.mapCoverage,
+      noStackTrace: config.noStackTrace,
+      notify: config.notify,
+      replname: config.replname,
+      rootDir: config.rootDir,
+      silent: config.silent,
+      testNamePattern: config.testNamePattern,
+      testResultsProcessor: config.testResultsProcessor,
+      updateSnapshot: config.updateSnapshot,
+      useStderr: config.useStderr,
+      verbose: config.verbose,
+      watch: config.watch,
+      watchman: config.watchman,
+    }),
+    projectConfig: config,
+  };
 };
 
 module.exports = {

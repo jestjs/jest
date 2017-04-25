@@ -10,12 +10,13 @@
 
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const VERSION = require('../../package.json').version;
 
 const logDebugMessages = (
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   pipe: stream$Writable | tty$WriteStream,
 ): void => {
   /* $FlowFixMe */
@@ -23,6 +24,7 @@ const logDebugMessages = (
   const output = {
     config,
     framework: testFramework.name,
+    globalConfig,
     version: VERSION,
   };
   pipe.write(JSON.stringify(output, null, '  ') + '\n');
