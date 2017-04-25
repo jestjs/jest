@@ -1,9 +1,9 @@
 /* This is a generated file */
 const React = require('React');
-const JestIndex = require('JestIndex');
+const JestUsers = require('JestUsers');
 const index = React.createClass({
     render() {
-        return <JestIndex language={'en'} />;
+        return <JestUsers language={'en'} />;
     },
 });
 module.exports = index;
