@@ -76,14 +76,18 @@ Be sure to return the promise - if you omit this `return` statement, your test w
 
 ### Async/Await
 
-If your code uses `async` and `await`, you can use these in your tests as well. To write an async test, just use the `async` keyword in front of the function passed to `test`. For example, the same `fetchData` scenario can be tested with:
+This is a *ES2016* feature so you'll need to be running Node.js 7 or higher for native support. If your code uses `async` and `await`, you can use these in your tests as well. To write an async test, just use the `async` keyword in front of the function passed to `test`. Then use `await` to wait for a Promise-based library to complete.
+
+For example, the same `fetchData` scenario can be tested with:
 
 ```js
 test('the data is peanut butter', async () => {
-  await expect(fetchData()).resolves.toBe('peanut butter');
+  const data = await fetchData();
+  expect(data).toBe('peanut butter');
 });
 ```
 
-In this case, `async` and `await` are effectively just syntactic sugar for the same logic as the promises example uses.
+In this case, `async` and `await` are effectively just syntactic sugar for the same logic as the promises example uses. Errors that are thrown within the library will make the test to fail naturally.
+
 
 None of these forms is particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style makes your tests the simplest.
