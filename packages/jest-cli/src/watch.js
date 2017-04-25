@@ -103,21 +103,23 @@ const watch = (
     isInteractive && pipe.write(CLEAR);
     preRunMessage.print(pipe);
     isRunning = true;
-    contexts.forEach(context => {
-      // $FlowFixMe
-      context.config = Object.freeze(
+    const newContexts = contexts.map(context =>
+      Object.assign({}, context, {
         // $FlowFixMe
-        Object.assign(
-          {
-            testNamePattern: argv.testNamePattern,
-            testPathPattern: argv.testPathPattern,
-          },
-          context.config,
-          overrideConfig,
+        config: Object.freeze(
+          // $FlowFixMe
+          Object.assign(
+            {
+              testNamePattern: argv.testNamePattern,
+              testPathPattern: argv.testPathPattern,
+            },
+            context.config,
+            overrideConfig,
+          ),
         ),
-      );
-    });
-    return runJest(contexts, argv, pipe, testWatcher, startRun, results => {
+      }),
+    );
+    return runJest(newContexts, argv, pipe, testWatcher, startRun, results => {
       isRunning = false;
       hasSnapshotFailure = !!results.snapshot.failure;
       // Create a new testWatcher instance so that re-runs won't be blocked.
