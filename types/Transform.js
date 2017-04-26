@@ -17,7 +17,7 @@ export type TransformedSource = {|
   map: ?Object | string,
 |};
 
-export type BuiltTransformResult = {|
+export type TransformResult = {|
   script: Script,
   sourceMapPath: ?string,
 |};

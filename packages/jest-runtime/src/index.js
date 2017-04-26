@@ -19,6 +19,7 @@ import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
+const ScriptTransformer = require('./ScriptTransformer');
 
 const {createDirectory} = require('jest-util');
 const {escapePathForRegex} = require('jest-regex-util');
@@ -26,7 +27,6 @@ const fs = require('graceful-fs');
 const path = require('path');
 const shouldInstrument = require('./shouldInstrument');
 const stripBOM = require('strip-bom');
-const transform = require('./transform');
 
 type Module = {|
   children?: Array<any>,
@@ -76,6 +76,8 @@ const mockParentModule = {
 const unmockRegExpCache = new WeakMap();
 
 class Runtime {
+  static ScriptTransformer: Class<ScriptTransformer>;
+
   _cacheFS: CacheFS;
   _config: ProjectConfig;
   _currentlyExecutingModulePath: string;
@@ -93,6 +95,7 @@ class Runtime {
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
   _sourceMapRegistry: {[key: string]: string};
+  _scriptTransformer: ScriptTransformer;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
@@ -103,21 +106,21 @@ class Runtime {
     resolver: Resolver,
     cacheFS?: CacheFS,
   ) {
-    this._moduleRegistry = Object.create(null);
-    this._internalModuleRegistry = Object.create(null);
-    this._mockRegistry = Object.create(null);
-    this._sourceMapRegistry = Object.create(null);
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
-    this._environment = environment;
-    this._resolver = resolver;
-    this._moduleMocker = this._environment.moduleMocker;
-
     this._currentlyExecutingModulePath = '';
+    this._environment = environment;
     this._explicitShouldMock = Object.create(null);
+    this._internalModuleRegistry = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
+    this._mockRegistry = Object.create(null);
+    this._moduleMocker = this._environment.moduleMocker;
+    this._moduleRegistry = Object.create(null);
+    this._resolver = resolver;
+    this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
+    this._sourceMapRegistry = Object.create(null);
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -160,15 +163,6 @@ class Runtime {
 
   static shouldInstrument(filename: Path, config: ProjectConfig) {
     return shouldInstrument(filename, config);
-  }
-
-  static transformSource(
-    filename: Path,
-    config: ProjectConfig,
-    content: string,
-    instrument: boolean,
-  ) {
-    return transform.transformSource(filename, config, content, instrument);
   }
 
   static createContext(
@@ -471,9 +465,8 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
 
-    const transformedFile = transform(
+    const transformedFile = this._scriptTransformer.transform(
       filename,
-      this._config,
       {
         isInternalModule,
       },
@@ -485,7 +478,7 @@ class Runtime {
     }
 
     const wrapper = this._environment.runScript(transformedFile.script)[
-      transform.EVAL_RESULT_VARIABLE
+      ScriptTransformer.EVAL_RESULT_VARIABLE
     ];
     wrapper.call(
       localModule.exports, // module context
@@ -738,4 +731,5 @@ class Runtime {
   }
 }
 
+Runtime.ScriptTransformer = ScriptTransformer;
 module.exports = Runtime;
