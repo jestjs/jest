@@ -14,4 +14,4 @@
 import type {Global} from 'types/Global';
 
 module.exports = (global: Global, key: string, value: any) =>
-  global[key] = value;
+  (global[key] = value);

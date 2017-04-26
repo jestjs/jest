@@ -58,7 +58,7 @@ class Jasmine2Reporter {
     this._testResults = [];
     this._currentSuites = [];
     this._resolve = null;
-    this._resultsPromise = new Promise(resolve => this._resolve = resolve);
+    this._resultsPromise = new Promise(resolve => (this._resolve = resolve));
     this._startTimes = new Map();
   }
 

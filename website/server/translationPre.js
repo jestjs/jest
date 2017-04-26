@@ -89,11 +89,11 @@ function generateBaseFiles() {
           "const React = require('React');\n" +
           "const JestIndex = require('JestIndex');\n" +
           'const index = React.createClass({\n' +
-          '    render() {\n' +
-          "        return <JestIndex language={'\n" +
+          '  render() {\n' +
+          "    return <JestIndex language={'\n" +
           folder +
           "'} />;\n" +
-          '    },\n' +
+          '  },\n' +
           '});\n' +
           'module.exports = index;\n';
         const helpTemplate =
@@ -101,11 +101,11 @@ function generateBaseFiles() {
           "const React = require('React');\n" +
           "const JestHelp = require('JestHelp');\n" +
           'const help = React.createClass({\n' +
-          '    render() {\n' +
-          "        return <JestHelp language={'\n" +
+          '  render() {\n' +
+          "    return <JestHelp language={'\n" +
           folder +
           "'} />;\n" +
-          '    },\n' +
+          '  },\n' +
           '});\n' +
           'module.exports = help;\n';
         const usersTemplate =
@@ -113,8 +113,8 @@ function generateBaseFiles() {
           "const React = require('React');\n" +
           "const JestUsers = require('JestUsers');\n" +
           'const users = React.createClass({\n' +
-          '    render() {\n' +
-          "        return <JestUsers language={'\n" +
+          '  render() {\n' +
+          "    return <JestUsers language={'\n" +
           folder +
           "'} />;\n" +
           '    },\n' +
@@ -125,16 +125,16 @@ function generateBaseFiles() {
           "const React = require('React');\n" +
           "const RedirectLayout = require('RedirectLayout');\n" +
           'class Support extends React.Component {\n' +
-          '    render() {\n' +
-          '        const metadata = {\n' +
-          "            destinationUrl: 'help.html',\n" +
-          "            id: 'support',\n" +
-          "            layout: 'redirect',\n" +
-          "            permalink: '/jest/support.html',\n" +
-          "            source: 'support.md',\n" +
-          '        };\n' +
-          '        return <RedirectLayout metadata={metadata} />;\n' +
-          '    }\n' +
+          '  render() {\n' +
+          '    const metadata = {\n' +
+          "      destinationUrl: 'help.html',\n" +
+          "      id: 'support',\n" +
+          "      layout: 'redirect',\n" +
+          "      permalink: '/jest/support.html',\n" +
+          "      source: 'support.md',\n" +
+          '    };\n' +
+          '    return <RedirectLayout metadata={metadata} />;\n' +
+          '  }\n' +
           '}\n' +
           'module.exports = Support;\n';
 
@@ -161,9 +161,9 @@ function generateBaseFiles() {
       "const React = require('React');\n" +
       "const JestIndex = require('JestIndex');\n" +
       'const index = React.createClass({\n' +
-      '    render() {\n' +
-      "        return <JestIndex language={'en'} />;\n" +
-      '    },\n' +
+      '  render() {\n' +
+      "    return <JestIndex language={'en'} />;\n" +
+      '  },\n' +
       '});\n' +
       'module.exports = index;\n';
     const helpTemplate =
@@ -171,9 +171,9 @@ function generateBaseFiles() {
       "const React = require('React');\n" +
       "const JestHelp = require('JestHelp');\n" +
       'const help = React.createClass({\n' +
-      '    render() {\n' +
-      "        return <JestHelp language={'en'} />;\n" +
-      '    },\n' +
+      '  render() {\n' +
+      "    return <JestHelp language={'en'} />;\n" +
+      '  },\n' +
       '});\n' +
       'module.exports = help;\n';
     const usersTemplate =
@@ -181,9 +181,9 @@ function generateBaseFiles() {
       "const React = require('React');\n" +
       "const JestUsers = require('JestUsers');\n" +
       'const users = React.createClass({\n' +
-      '    render() {\n' +
-      "        return <JestUsers language={'en'} />;\n" +
-      '    },\n' +
+      '  render() {\n' +
+      "    return <JestUsers language={'en'} />;\n" +
+      '  },\n' +
       '});\n' +
       'module.exports = users;\n';
     const supportTemplate =
@@ -191,16 +191,16 @@ function generateBaseFiles() {
       "const React = require('React');\n" +
       "const RedirectLayout = require('RedirectLayout');\n" +
       'class Support extends React.Component {\n' +
-      '    render() {\n' +
-      '        const metadata = {\n' +
-      "            destinationUrl: 'help.html',\n" +
-      "            id: 'support',\n" +
-      "            layout: 'redirect',\n" +
-      "            permalink: '/jest/support.html',\n" +
-      "            source: 'support.md',\n" +
-      '        };\n' +
-      '        return <RedirectLayout metadata={metadata} />;\n' +
-      '    }\n' +
+      '  render() {\n' +
+      '    const metadata = {\n' +
+      "      destinationUrl: 'help.html',\n" +
+      "      id: 'support',\n" +
+      "      layout: 'redirect',\n" +
+      "      permalink: '/jest/support.html',\n" +
+      "      source: 'support.md',\n" +
+      '    };\n' +
+      '    return <RedirectLayout metadata={metadata} />;\n' +
+      '  }\n' +
       '}\n' +
       'module.exports = Support;\n';
 
@@ -243,8 +243,6 @@ function generateJS() {
             semi: true,
           }
         );
-
-        console.log('// prettier-ignore\n' + prettyFileContent);
 
         fs.writeFileSync('./i18n/' + outputFileName + '.js', prettyFileContent);
       }

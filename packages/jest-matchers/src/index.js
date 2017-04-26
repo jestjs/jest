@@ -200,7 +200,7 @@ const makeThrowingMatcher = (
       // matcher throws, test execution is normally stopped immediately. The
       // snapshot matcher uses it because we want to log all snapshot
       // failures in a test.
-      {dontThrow: () => throws = false},
+      {dontThrow: () => (throws = false)},
       global[GLOBAL_STATE].state,
       {
         isNot,
@@ -276,7 +276,7 @@ expect.extend(spyMatchers);
 expect.extend(toThrowMatchers);
 
 expect.assertions = (expected: number) =>
-  global[GLOBAL_STATE].state.assertionsExpected = expected;
+  (global[GLOBAL_STATE].state.assertionsExpected = expected);
 
 expect.setState = (state: MatcherState) => {
   Object.assign(global[GLOBAL_STATE].state, state);
