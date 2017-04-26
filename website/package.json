@@ -7,15 +7,16 @@
     "crowdin-download": "crowdin-cli --config ../crowdin.yaml download -b master"
   },
   "dependencies": {
-    "prettier": "^1.2.2",
     "classnames": "2.2.4",
     "connect": "2.8.3",
+    "crowdin-cli": "^0.3.0",
     "feed": "0.3.0",
     "fs.extra": "*",
     "glob": "*",
     "mkdirp": "*",
     "object-assign": "^2.0.0",
     "optimist": "0.6.0",
+    "prettier": "^1.2.2",
     "react": "0.13.2",
     "react-page-middleware": "git://github.com/facebook/react-page-middleware.git",
     "request": "*"

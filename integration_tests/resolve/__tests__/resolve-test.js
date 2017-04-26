@@ -10,7 +10,7 @@
 let platform;
 
 function testRequire(filename) {
-  return () => platform = require(filename);
+  return () => (platform = require(filename));
 }
 
 test('should explicitly resolve filename.<platform>.js', () => {

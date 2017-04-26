@@ -53,7 +53,9 @@ const getBabelRC = (filename, {useCache}) => {
       // $FlowFixMe
       const packageJsonFileContents = require(packageJsonFilePath);
       if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
-        cache[directory] = JSON.stringify(packageJsonFileContents[BABEL_CONFIG_KEY]);
+        cache[directory] = JSON.stringify(
+          packageJsonFileContents[BABEL_CONFIG_KEY],
+        );
         break;
       }
     }
