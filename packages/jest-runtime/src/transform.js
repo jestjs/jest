@@ -99,7 +99,7 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
     fs.writeFileSync(cachePath, fileData, 'utf8');
   } catch (e) {
     e.message = 'jest: failed to cache transform results in: ' + cachePath +
-      '\nInner error: ' + e.message;
+      '\nFailure message: ' + e.message;
     removeFile(cachePath);
     throw e;
   }
