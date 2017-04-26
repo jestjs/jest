@@ -57,6 +57,7 @@ if (!global[GLOBAL_STATE]) {
       state: {
         assertionCalls: 0,
         assertionsExpected: null,
+        expectedAssertions: false,
         suppressedErrors: [],
       },
     },
@@ -277,6 +278,9 @@ expect.extend(toThrowMatchers);
 
 expect.assertions = (expected: number) =>
   (global[GLOBAL_STATE].state.assertionsExpected = expected);
+
+expect.hasAssertions = () =>
+  (global[GLOBAL_STATE].state.expectedAssertions = true);
 
 expect.setState = (state: MatcherState) => {
   Object.assign(global[GLOBAL_STATE].state, state);
