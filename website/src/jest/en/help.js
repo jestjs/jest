@@ -1,9 +1,10 @@
 /* This is a generated file */
 const React = require('React');
 const JestHelp = require('JestHelp');
-const support = React.createClass({
+const help = React.createClass({
   render() {
-    return <JestHelp language={'en'} />;
+    return <JestHelp language={
+'en'} />;
   },
 });
-module.exports = support;
+module.exports = help;
