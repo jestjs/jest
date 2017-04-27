@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Path, ProjectConfig} from 'types/Config';
+import type {Glob, Path, ProjectConfig} from 'types/Config';
 import type {
   Transformer,
   TransformedSource,
@@ -28,7 +28,10 @@ const slash = require('slash');
 
 const VERSION = require('../package.json').version;
 
-type Options = {|
+export type Options = {|
+  collectCoverage: boolean,
+  collectCoverageFrom: Array<Glob>,
+  collectCoverageOnlyFrom: ?{[key: string]: boolean},
   isInternalModule?: boolean,
 |};
 
@@ -268,16 +271,6 @@ class ScriptTransformer {
         e.stack = e.codeFrame;
       }
 
-      if (this._config.logTransformErrors) {
-        console.error(
-          `FILENAME: ${filename}\n` +
-            `TRANSFORM: ${willTransform.toString()}\n` +
-            `INSTRUMENT: ${instrument.toString()}\n` +
-            `SOURCE:\n` +
-            String(wrappedCode),
-        );
-      }
-
       throw e;
     }
   }
@@ -287,7 +280,7 @@ class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): TransformResult {
-    const instrument = shouldInstrument(filename, this._config);
+    const instrument = shouldInstrument(filename, options, this._config);
     const scriptCacheKey = getScriptCacheKey(
       filename,
       this._config,

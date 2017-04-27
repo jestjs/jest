@@ -9,8 +9,8 @@
  */
 'use strict';
 
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {Environment} from 'types/Environment';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
@@ -77,7 +77,11 @@ function jasmine2(
 
   const snapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
-  )({config, testPath, updateSnapshot: globalConfig.updateSnapshot});
+  )({
+    config,
+    globalConfig,
+    testPath,
+  });
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);

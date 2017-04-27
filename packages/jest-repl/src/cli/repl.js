@@ -11,7 +11,10 @@
 
 'use strict';
 
-declare var jestConfig: Object;
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
+
+declare var jestGlobalConfig: GlobalConfig;
+declare var jestProjectConfig: ProjectConfig;
 declare var jest: Object;
 
 const path = require('path');
@@ -26,8 +29,8 @@ const evalCommand = (cmd, context, filename, callback, config) => {
     if (transformer) {
       cmd = transformer.process(
         cmd,
-        jestConfig.replname || 'jest.js',
-        jestConfig,
+        jestGlobalConfig.replname || 'jest.js',
+        jestProjectConfig,
       );
     }
     result = vm.runInThisContext(cmd);
@@ -50,11 +53,11 @@ const isRecoverableError = error => {
   return false;
 };
 
-if (jestConfig.transform) {
+if (jestProjectConfig.transform) {
   let transformerPath = null;
-  for (let i = 0; i < jestConfig.transform.length; i++) {
-    if (new RegExp(jestConfig.transform[i][0]).test('foobar.js')) {
-      transformerPath = jestConfig.transform[i][1];
+  for (let i = 0; i < jestProjectConfig.transform.length; i++) {
+    if (new RegExp(jestProjectConfig.transform[i][0]).test('foobar.js')) {
+      transformerPath = jestProjectConfig.transform[i][1];
       break;
     }
   }

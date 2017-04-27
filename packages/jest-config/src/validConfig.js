@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {InitialConfig} from 'types/Config';
+import type {InitialOptions} from 'types/Config';
 
 const constants = require('./constants');
 const {replacePathSepForRegex} = require('jest-regex-util');
@@ -44,7 +44,6 @@ module.exports = ({
     providesModuleNodeModules: ['react', 'react-native'],
   },
   logHeapUsage: true,
-  logTransformErrors: true,
   mapCoverage: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
@@ -86,4 +85,4 @@ module.exports = ({
   verbose: false,
   watch: false,
   watchman: true,
-}: InitialConfig);
+}: InitialOptions);

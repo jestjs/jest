@@ -52,14 +52,14 @@ function runTest(
   /* $FlowFixMe */
   const TestRunner = require(config.testRunner);
   /* $FlowFixMe */
-  const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
+  const Runtime = require(config.moduleLoader || 'jest-runtime');
 
   const env = new TestEnvironment(config);
   const TestConsole = globalConfig.verbose
     ? Console
-    : config.silent ? NullConsole : BufferedConsole;
+    : globalConfig.silent ? NullConsole : BufferedConsole;
   const testConsole = new TestConsole(
-    config.useStderr ? process.stderr : process.stdout,
+    globalConfig.useStderr ? process.stderr : process.stdout,
     process.stderr,
     (type, message) =>
       getConsoleOutput(
@@ -71,7 +71,11 @@ function runTest(
   );
   const cacheFS = {[path]: testSource};
   setGlobal(env.global, 'console', testConsole);
-  const runtime = new ModuleLoader(config, env, resolver, cacheFS);
+  const runtime = new Runtime(config, env, resolver, cacheFS, {
+    collectCoverage: globalConfig.collectCoverage,
+    collectCoverageFrom: globalConfig.collectCoverageFrom,
+    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+  });
   const start = Date.now();
   return TestRunner(globalConfig, config, env, runtime, path)
     .then((result: TestResult) => {
