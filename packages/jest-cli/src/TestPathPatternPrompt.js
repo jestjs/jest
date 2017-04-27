@@ -12,12 +12,12 @@
 
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {ScrollOptions} from './lib/scroll-list';
+import type {ScrollOptions} from './lib/scrollList';
 import type SearchSource from './SearchSource';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const scroll = require('./lib/scroll-list');
+const scroll = require('./lib/scrollList');
 const {getTerminalWidth} = require('./lib/terminalUtils');
 const highlight = require('./lib/highlight');
 const stringLength = require('string-length');

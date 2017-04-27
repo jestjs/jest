@@ -11,11 +11,11 @@
 'use strict';
 
 import type {TestResult} from 'types/TestResult';
-import type {ScrollOptions} from './lib/scroll-list';
+import type {ScrollOptions} from './lib/scrollList';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const scroll = require('./lib/scroll-list');
+const scroll = require('./lib/scrollList');
 const {getTerminalWidth} = require('./lib/terminalUtils');
 const stringLength = require('string-length');
 const Prompt = require('./lib/Prompt');

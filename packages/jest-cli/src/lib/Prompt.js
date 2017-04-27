@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {ScrollOptions} from './scroll-list';
+import type {ScrollOptions} from './scrollList';
 
 const {KEYS} = require('../constants');
 
