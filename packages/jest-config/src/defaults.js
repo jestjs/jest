@@ -23,7 +23,14 @@ module.exports = ({
   automock: false,
   bail: false,
   browser: false,
-  cacheDirectory: path.join(os.tmpdir(), 'jest'),
+  cacheDirectory: (() => {
+    if (process.getuid == null) {
+      return path.join(os.tmpdir(), 'jest');
+    }
+    // On some platforms tmpdir() is `/tmp`, causing conflicts between different users and
+    // permission issues. Adding an additional subdivision by UID can help.
+    return path.join(os.tmpdir(), 'jest', process.getuid().toString(36));
+  })(),
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
