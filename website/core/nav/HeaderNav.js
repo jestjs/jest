@@ -57,7 +57,7 @@ class LanguageDropDown extends React.Component {
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(){
-          if(languagesDropDown.className == "hide") { 
+          if(languagesDropDown.className == "hide") {
             languagesDropDown.className = "visible";
           } else {
             languagesDropDown.className = "hide";
@@ -88,8 +88,7 @@ class HeaderNav extends React.Component {
       <li key={link.section}>
         <a
           href={link.href}
-          className={link.section === this.props.section ? 'active' : ''}
-        >
+          className={link.section === this.props.section ? 'active' : ''}>
           {siteConfig[this.props.language]['localized-strings'][link.text]}
         </a>
       </li>

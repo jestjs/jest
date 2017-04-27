@@ -10,8 +10,7 @@ const githubButton = (
     data-count-href="/facebook/jest/stargazers"
     data-count-api="/repos/facebook/jest#stargazers_count"
     data-count-aria-label="# stargazers on GitHub"
-    aria-label="Star facebook/jest on GitHub"
-  >
+    aria-label="Star facebook/jest on GitHub">
     Star
   </a>
 );
@@ -262,7 +261,7 @@ const languages = require('./languages.js');
 
 const enabledLanguages = [];
 languages.filter(lang => lang.enabled).map(lang => {
-  enabledLanguages.push(lang);
+  enabledLanguages.push(lang.tag);
 });
 siteConfig['languages'] = enabledLanguages;
 
