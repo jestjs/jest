@@ -27,10 +27,10 @@ type SearchSources = Array<{|
   searchSource: SearchSource,
 |}>;
 
-const pluralizeFile = (total: number) => (total === 1 ? 'file' : 'files');
+const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
 const usage = () =>
-  `\n ${chalk.bold('Pattern Mode Usage')}\n` +
+  `\n${chalk.bold('Pattern Mode Usage')}\n` +
   ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
   ` ${chalk.dim('\u203A Press')} Enter ` +
   `${chalk.dim('to apply pattern to all filenames.')}\n` +
@@ -48,9 +48,12 @@ module.exports = class TestPathPatternPrompt {
     this._prompt = prompt;
   }
 
-  run(onSuccess: Function, onCancel: Function) {
+  run(onSuccess: Function, onCancel: Function, options?: {header: string}) {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(ansiEscapes.clearScreen);
+    if (options && options.header) {
+      this._pipe.write(options.header);
+    }
     this._pipe.write(usage());
     this._pipe.write(ansiEscapes.cursorShow);
 
@@ -109,8 +112,7 @@ module.exports = class TestPathPatternPrompt {
           return highlight(path, filePath, pattern, context.config.rootDir);
         })
         .forEach(filePath =>
-          this._pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`),
-        );
+          this._pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
 
       if (total > max) {
         const more = total - max;
