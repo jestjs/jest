@@ -27,10 +27,7 @@ const cacheDirectory = (() => {
   // On some platforms tmpdir() is `/tmp`, causing conflicts between different
   // users and permission issues. Adding an additional subdivision by UID can
   // help.
-  return path.join(
-    os.tmpdir(),
-    'jest_' + getuid.call(process).toString(36),
-  );
+  return path.join(os.tmpdir(), 'jest_' + getuid.call(process).toString(36));
 })();
 
 module.exports = ({
