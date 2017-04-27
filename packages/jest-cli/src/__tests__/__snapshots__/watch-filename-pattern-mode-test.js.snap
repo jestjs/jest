@@ -212,8 +212,6 @@ exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
 "[MOCK - cursorHide]
 [MOCK - clearScreen]
 
-
-
 Pattern Mode Usage
  › Press Esc to exit pattern mode.
  › Press Enter to apply pattern to all filenames.
@@ -358,7 +356,7 @@ Pattern Mode Usage
 
 
  Start typing to filter by a test name regex pattern.
-[MOCK - cursorTo(11, 5)]
+[MOCK - cursorTo(11, 7)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -383,7 +381,7 @@ Pattern Mode Usage
 
 
  Start typing to filter by a filename regex pattern.
-[MOCK - cursorTo(11, 5)]
+[MOCK - cursorTo(11, 7)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -408,7 +406,7 @@ Pattern Mode Usage
 
 
  Start typing to filter by a filename regex pattern.
-[MOCK - cursorTo(11, 5)]
+[MOCK - cursorTo(11, 7)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -433,7 +431,7 @@ Pattern Mode Usage
 
 
  Start typing to filter by a test name regex pattern.
-[MOCK - cursorTo(11, 5)]
+[MOCK - cursorTo(11, 7)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -458,6 +456,6 @@ Pattern Mode Usage
 
 
  Start typing to filter by a test name regex pattern.
-[MOCK - cursorTo(11, 5)]
+[MOCK - cursorTo(11, 7)]
 [MOCK - cursorRestorePosition]"
 `;

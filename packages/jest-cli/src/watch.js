@@ -210,7 +210,7 @@ const watch = (
             startRun();
           },
           onCancelPatternPrompt,
-          {header: activeFilters(argv) + '\n'},
+          {header: activeFilters(argv)},
         );
         break;
       case KEYS.T:
@@ -224,7 +224,7 @@ const watch = (
             startRun();
           },
           onCancelPatternPrompt,
-          {header: activeFilters(argv) + '\n'},
+          {header: activeFilters(argv)},
         );
         break;
       case KEYS.QUESTION_MARK:
