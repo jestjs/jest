@@ -208,6 +208,30 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
 [MOCK - cursorRestorePosition]"
 `;
 
+exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all filenames.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a filename regex pattern.
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
 exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`] = `
 "
 
@@ -310,5 +334,130 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 3`
 
   › and 1 more file
 [MOCK - cursorTo(12, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when both filters are active 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: filename /p.*10/, test name /test/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all tests.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a test name regex pattern.
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the filename filter is active 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: filename /p.*10/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all filenames.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a filename regex pattern.
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the filename filter is active 2`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: filename /p/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all filenames.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a filename regex pattern.
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the test name filter is active 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: test name /test/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all tests.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a test name regex pattern.
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the test name filter is active 2`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: test name /t/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all tests.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a test name regex pattern.
+[MOCK - cursorTo(11, 5)]
 [MOCK - cursorRestorePosition]"
 `;

@@ -21,6 +21,7 @@ const KEYS = {
   ARROW_RIGHT: '1b5b43',
   ARROW_UP: '1b5b41',
   BACKSPACE: isWindows ? '08' : '7f',
+  C: '63',
   CONTROL_C: '03',
   CONTROL_D: '04',
   ENTER: '0d',

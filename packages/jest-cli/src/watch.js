@@ -185,6 +185,13 @@ const watch = (
         });
         startRun();
         break;
+      case KEYS.C:
+        setState(argv, 'watch', {
+          testNamePattern: '',
+          testPathPattern: '',
+        });
+        startRun();
+        break;
       case KEYS.O:
         setState(argv, 'watch', {
           testNamePattern: '',
@@ -193,24 +200,32 @@ const watch = (
         startRun();
         break;
       case KEYS.P:
-        testPathPatternPrompt.run(testPathPattern => {
-          setState(argv, 'watch', {
-            testNamePattern: '',
-            testPathPattern,
-          });
+        testPathPatternPrompt.run(
+          testPathPattern => {
+            setState(argv, 'watch', {
+              testNamePattern: '',
+              testPathPattern,
+            });
 
-          startRun();
-        }, onCancelPatternPrompt);
+            startRun();
+          },
+          onCancelPatternPrompt,
+          {header: activeFilters(argv) + '\n'},
+        );
         break;
       case KEYS.T:
-        testNamePatternPrompt.run(testNamePattern => {
-          setState(argv, 'watch', {
-            testNamePattern,
-            testPathPattern: '',
-          });
+        testNamePatternPrompt.run(
+          testNamePattern => {
+            setState(argv, 'watch', {
+              testNamePattern,
+              testPathPattern: argv.testPathPattern,
+            });
 
-          startRun();
-        }, onCancelPatternPrompt);
+            startRun();
+          },
+          onCancelPatternPrompt,
+          {header: activeFilters(argv) + '\n'},
+        );
         break;
       case KEYS.QUESTION_MARK:
         break;
@@ -244,9 +259,34 @@ const watch = (
   return Promise.resolve();
 };
 
+const activeFilters = (argv, delimiter = '\n') => {
+  const {testNamePattern, testPathPattern} = argv;
+  if (testNamePattern || testPathPattern) {
+    const filters = [
+      testPathPattern
+        ? chalk.dim('filename ') + chalk.yellow('/' + testPathPattern + '/')
+        : null,
+      testNamePattern
+        ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
+        : null,
+    ]
+      .filter(f => !!f)
+      .join(', ');
+
+    const messages = ['\n' + chalk.bold('Active Filters: ') + filters];
+
+    return messages.filter(message => !!message).join(delimiter);
+  }
+
+  return '';
+};
+
 const usage = (argv, snapshotFailure, delimiter = '\n') => {
-  /* eslint-disable max-len */
   const messages = [
+    activeFilters(argv),
+    argv.testPathPattern || argv.testNamePattern
+      ? chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to clear filters.')
+      : null,
     '\n' + chalk.bold('Watch Usage'),
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
@@ -265,12 +305,15 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
     chalk.dim(' \u203A Press ') +
       'p' +
       chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') +
+      't' +
+      chalk.dim(' to filter by a test name regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') +
       'Enter' +
       chalk.dim(' to trigger a test run.'),
   ];
-  /* eslint-enable max-len */
+
   return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 
