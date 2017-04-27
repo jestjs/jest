@@ -77,14 +77,14 @@ function jasmine2(
 
   const snapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
-  )({config, testPath});
+  )({config, testPath, updateSnapshot: globalConfig.updateSnapshot});
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
 
-  if (config.testNamePattern) {
-    const testNameRegex = new RegExp(config.testNamePattern, 'i');
+  if (globalConfig.testNamePattern) {
+    const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
 
@@ -92,10 +92,12 @@ function jasmine2(
   env.execute();
   return reporter
     .getResults()
-    .then(results => addSnapshotData(results, config, snapshotState));
+    .then(results =>
+      addSnapshotData(results, snapshotState, globalConfig.updateSnapshot),
+    );
 }
 
-const addSnapshotData = (results, config, snapshotState) => {
+const addSnapshotData = (results, snapshotState, updateSnapshot) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
@@ -104,7 +106,6 @@ const addSnapshotData = (results, config, snapshotState) => {
     }
   });
 
-  const updateSnapshot = config.updateSnapshot;
   const uncheckedCount = snapshotState.getUncheckedCount();
   if (updateSnapshot) {
     snapshotState.removeUncheckedKeys();

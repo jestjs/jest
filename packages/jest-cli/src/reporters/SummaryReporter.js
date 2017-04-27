@@ -80,17 +80,17 @@ class SummaryReporter extends BaseReporter {
   }
 
   onRunStart(
-    config: GlobalConfig,
+    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
-    super.onRunStart(config, aggregatedResults, options);
+    super.onRunStart(globalConfig, aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
   onRunComplete(
     contexts: Set<Context>,
-    config: GlobalConfig,
+    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ) {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
@@ -99,7 +99,7 @@ class SummaryReporter extends BaseReporter {
       // Print a newline if the last test did not fail to line up newlines
       // similar to when an error would have been thrown in the test.
       if (
-        !config.verbose &&
+        !globalConfig.verbose &&
         lastResult &&
         !lastResult.numFailingTests &&
         !lastResult.testExecError
@@ -107,8 +107,8 @@ class SummaryReporter extends BaseReporter {
         this.log('');
       }
 
-      this._printSummary(aggregatedResults, config);
-      this._printSnapshotSummary(aggregatedResults.snapshot, config);
+      this._printSummary(aggregatedResults, globalConfig);
+      this._printSnapshotSummary(aggregatedResults.snapshot, globalConfig);
 
       if (numTotalTestSuites) {
         const testSummary = wasInterrupted
@@ -130,7 +130,10 @@ class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSnapshotSummary(snapshots: SnapshotSummary, config: GlobalConfig) {
+  _printSnapshotSummary(
+    snapshots: SnapshotSummary,
+    globalConfig: GlobalConfig,
+  ) {
     if (
       snapshots.added ||
       snapshots.filesRemoved ||
@@ -145,7 +148,7 @@ class SummaryReporter extends BaseReporter {
         process.env.npm_config_user_agent.match('yarn') !== null
         ? 'yarn'
         : 'npm';
-      if (config.watch) {
+      if (globalConfig.watch) {
         updateCommand = 'press `u`';
       } else if (event) {
         updateCommand = `run with \`${client + ' ' + prefix + event} -- -u\``;
@@ -215,7 +218,10 @@ class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSummary(aggregatedResults: AggregatedResult, config: GlobalConfig) {
+  _printSummary(
+    aggregatedResults: AggregatedResult,
+    globalConfig: GlobalConfig,
+  ) {
     // If there were any failing tests and there was a large number of tests
     // executed, re-print the failing results at the end of execution output.
     const failedTests = aggregatedResults.numFailedTests;
@@ -229,7 +235,10 @@ class SummaryReporter extends BaseReporter {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
-            getResultHeader(testResult, config) + '\n' + failureMessage + '\n',
+            getResultHeader(testResult, globalConfig) +
+              '\n' +
+              failureMessage +
+              '\n',
           );
         }
       });

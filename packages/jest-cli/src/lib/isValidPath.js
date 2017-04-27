@@ -9,15 +9,19 @@
  */
 'use strict';
 
-import type {GlobalConfig} from 'types/Config';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const path = require('path');
 
 const SNAPSHOT_EXTENSION = 'snap';
 
-function isValidPath(config: GlobalConfig, filePath: string) {
+function isValidPath(
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+  filePath: string,
+) {
   const coverageDirectory =
-    config.coverageDirectory || path.resolve(config.rootDir, 'coverage');
+    globalConfig.coverageDirectory || path.resolve(config.rootDir, 'coverage');
 
   return (
     !filePath.includes(coverageDirectory) &&
