@@ -12,6 +12,7 @@ dependencies:
       fi
     - nvm install 4
     - nvm install 6
+    - wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb; sudo dpkg -i crowdin.deb
 
   cache_directories:
     - ~/.yarn

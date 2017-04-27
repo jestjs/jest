@@ -44,21 +44,19 @@ queue.push(cb => {
 
 glob('src/**/*.*', (er, files) => {
   files.forEach(file => {
-    console.log('debug', file);
     let targetFile = file.replace(/^src/, 'build');
 
     if (file.match(/\.js$/)) {
       targetFile = targetFile.replace(/\.js$/, '.html');
       queue.push(cb => {
-        request('http://localhost:8079/' + targetFile.replace(/^build\//, ''), (
-          error,
-          response,
-          body
-        ) => {
-          mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
-          fs.writeFileSync(targetFile, body);
-          cb();
-        });
+        request(
+          'http://localhost:8079/' + targetFile.replace(/^build\//, ''),
+          (error, response, body) => {
+            mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
+            fs.writeFileSync(targetFile, body);
+            cb();
+          }
+        );
       });
     } else {
       queue.push(cb => {

@@ -15,6 +15,8 @@ const optimist = require('optimist');
 const path = require('path');
 const toSlug = require('../core/toSlug');
 
+const languages = require('../languages.js');
+
 const argv = optimist.argv;
 
 console.log('convert.js triggered...');
@@ -161,6 +163,11 @@ function execute() {
 
   const regexSubFolder = /..\/docs\/(.*)\/.*/;
 
+  const enabledLanguages = [];
+  languages.filter(lang => lang.enabled).map(lang => {
+    enabledLanguages.push(lang.tag);
+  });
+
   // for docs
   glob(DOCS_MD_DIR + '**', (er, files) => {
     const metadatas = {
@@ -173,6 +180,10 @@ function execute() {
       const match = regexSubFolder.exec(file);
       if (match) {
         language = match[1];
+      }
+
+      if (enabledLanguages.indexOf(language) === -1) {
+        return; // this language is not enabled, don't process file
       }
 
       const extension = path.extname(file);

@@ -9,7 +9,6 @@
   "dependencies": {
     "classnames": "2.2.4",
     "connect": "2.8.3",
-    "crowdin-cli": "^0.3.0",
     "feed": "0.3.0",
     "fs.extra": "*",
     "glob": "*",
@@ -22,6 +21,7 @@
     "request": "*"
   },
   "devDependencies": {
+    "crowdin-cli": "^0.3.0",
     "shelljs": "^0.7.5"
   }
 }
