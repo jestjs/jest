@@ -32,7 +32,7 @@ class NotifyReporter extends BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    config: GlobalConfig,
+    globalConfig: GlobalConfig,
     result: AggregatedResult,
   ): void {
     const success =

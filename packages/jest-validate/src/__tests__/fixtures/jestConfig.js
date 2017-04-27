@@ -86,7 +86,6 @@ const validConfig = {
     providesModuleNodeModules: ['react', 'react-native'],
   },
   logHeapUsage: true,
-  logTransformErrors: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',

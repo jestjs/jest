@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Path, ProjectConfig} from 'types/Config';
+import type {Glob, Path, ProjectConfig} from 'types/Config';
 import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {Context} from 'types/Context';
@@ -43,11 +43,19 @@ type HasteMapOptions = {|
   maxWorkers: number,
   resetCache: boolean,
   watch?: boolean,
+  watchman: boolean,
 |};
 
 type InternalModuleOptions = {|
   isInternalModule: boolean,
 |};
+
+type CoverageOptions = {
+  collectCoverage: boolean,
+  collectCoverageFrom: Array<Glob>,
+  collectCoverageOnlyFrom: ?{[key: string]: boolean},
+  mapCoverage: boolean,
+};
 
 type BooleanObject = {[key: string]: boolean};
 type CacheFS = {[path: Path]: string};
@@ -80,16 +88,17 @@ class Runtime {
 
   _cacheFS: CacheFS;
   _config: ProjectConfig;
+  _coverageOptions: CoverageOptions;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
+  _internalModuleRegistry: {[key: string]: Module};
   _isCurrentlyExecutingManualMock: ?string;
   _mockFactories: {[key: string]: () => any};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: {[key: string]: Module};
-  _internalModuleRegistry: {[key: string]: Module};
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -105,9 +114,16 @@ class Runtime {
     environment: Environment,
     resolver: Resolver,
     cacheFS?: CacheFS,
+    coverageOptions?: CoverageOptions,
   ) {
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
+    this._coverageOptions = coverageOptions || {
+      collectCoverage: false,
+      collectCoverageFrom: [],
+      collectCoverageOnlyFrom: null,
+      mapCoverage: false,
+    };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
@@ -161,8 +177,21 @@ class Runtime {
     }
   }
 
-  static shouldInstrument(filename: Path, config: ProjectConfig) {
-    return shouldInstrument(filename, config);
+  static shouldInstrument(
+    filename: Path,
+    options: CoverageOptions,
+    config: ProjectConfig,
+  ) {
+    return shouldInstrument(
+      filename,
+      {
+        collectCoverage: options.collectCoverage,
+        collectCoverageFrom: options.collectCoverageFrom,
+        collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
+        mapCoverage: options.mapCoverage,
+      },
+      config,
+    );
   }
 
   static createContext(
@@ -171,6 +200,7 @@ class Runtime {
       console?: Console,
       maxWorkers: number,
       watch?: boolean,
+      watchman: boolean,
     },
   ): Promise<Context> {
     createDirectory(config.cacheDirectory);
@@ -179,6 +209,7 @@ class Runtime {
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
       watch: options.watch,
+      watchman: options.watchman,
     });
     return instance.build().then(
       hasteMap => ({
@@ -215,7 +246,7 @@ class Runtime {
       resetCache: options && options.resetCache,
       retainAllFiles: false,
       roots: config.roots,
-      useWatchman: config.watchman,
+      useWatchman: options && options.watchman,
       watch: options && options.watch,
     });
   }
@@ -468,7 +499,11 @@ class Runtime {
     const transformedFile = this._scriptTransformer.transform(
       filename,
       {
+        collectCoverage: this._coverageOptions.collectCoverage,
+        collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
+        collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
         isInternalModule,
+        mapCoverage: this._coverageOptions.mapCoverage,
       },
       this._cacheFS[filename],
     );

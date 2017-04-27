@@ -61,25 +61,25 @@ class CoverageReporter extends BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    config: GlobalConfig,
+    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ) {
-    this._addUntestedFiles(contexts);
+    this._addUntestedFiles(globalConfig, contexts);
     let map = this._coverageMap;
     let sourceFinder: Object;
-    if (config.mapCoverage) {
+    if (globalConfig.mapCoverage) {
       ({map, sourceFinder} = this._sourceMapStore.transformCoverage(map));
     }
 
     const reporter = createReporter();
     try {
-      if (config.coverageDirectory) {
-        reporter.dir = config.coverageDirectory;
+      if (globalConfig.coverageDirectory) {
+        reporter.dir = globalConfig.coverageDirectory;
       }
 
-      let coverageReporters = config.coverageReporters || [];
+      let coverageReporters = globalConfig.coverageReporters || [];
       if (
-        !config.useStderr &&
+        !globalConfig.useStderr &&
         coverageReporters.length &&
         coverageReporters.indexOf('text') === -1
       ) {
@@ -101,16 +101,19 @@ class CoverageReporter extends BaseReporter {
       );
     }
 
-    this._checkThreshold(map, config);
+    this._checkThreshold(globalConfig, map);
   }
 
-  _addUntestedFiles(contexts: Set<Context>) {
+  _addUntestedFiles(globalConfig: GlobalConfig, contexts: Set<Context>) {
     const files = [];
     contexts.forEach(context => {
       const config = context.config;
-      if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
+      if (
+        globalConfig.collectCoverageFrom &&
+        globalConfig.collectCoverageFrom.length
+      ) {
         context.hasteFS
-          .matchFilesWithGlob(config.collectCoverageFrom, config.rootDir)
+          .matchFilesWithGlob(globalConfig.collectCoverageFrom, config.rootDir)
           .forEach(filePath =>
             files.push({
               config,
@@ -129,7 +132,12 @@ class CoverageReporter extends BaseReporter {
         if (!this._coverageMap.data[path]) {
           try {
             const source = fs.readFileSync(path).toString();
-            const result = generateEmptyCoverage(source, path, config);
+            const result = generateEmptyCoverage(
+              source,
+              path,
+              globalConfig,
+              config,
+            );
             if (result) {
               this._coverageMap.addFileCoverage(result.coverage);
               if (result.sourceMapPath) {
@@ -155,8 +163,8 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  _checkThreshold(map: CoverageMap, config: GlobalConfig) {
-    if (config.coverageThreshold) {
+  _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {
+    if (globalConfig.coverageThreshold) {
       const results = map.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
@@ -188,7 +196,11 @@ class CoverageReporter extends BaseReporter {
           return errors;
         }, []);
       }
-      const errors = check('global', config.coverageThreshold.global, results);
+      const errors = check(
+        'global',
+        globalConfig.coverageThreshold.global,
+        results,
+      );
 
       if (errors.length > 0) {
         this.log(`${FAIL_COLOR(errors.join('\n'))}`);

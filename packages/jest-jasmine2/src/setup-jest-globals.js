@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Path, ProjectConfig} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
 const {getState, setState} = require('jest-matchers');
 const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
@@ -20,6 +20,12 @@ const {
   matcherHint,
   pluralize,
 } = require('jest-matcher-utils');
+
+export type SetupOptions = {|
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
+  testPath: Path,
+|};
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -98,13 +104,7 @@ const patchJasmine = () => {
   })(global.jasmine.Spec);
 };
 
-type Options = {
-  testPath: Path,
-  config: ProjectConfig,
-  updateSnapshot: boolean,
-};
-
-module.exports = ({config, testPath, updateSnapshot}: Options) => {
+module.exports = ({config, globalConfig, testPath}: SetupOptions) => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers.concat().reverse().forEach(path => {
@@ -115,9 +115,9 @@ module.exports = ({config, testPath, updateSnapshot}: Options) => {
   patchJasmine();
   const snapshotState = initializeSnapshotState(
     testPath,
-    updateSnapshot,
+    globalConfig.updateSnapshot,
     '',
-    config.expand,
+    globalConfig.expand,
   );
   setState({snapshotState});
   // Return it back to the outer scope (test runner outside the VM).
