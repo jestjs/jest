@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {TransformOptions} from 'types/Transform';
 
 const crypto = require('crypto');
@@ -104,7 +104,7 @@ const createTransformer = (options: any) => {
     process(
       src: string,
       filename: Path,
-      config: Config,
+      config: ProjectConfig,
       transformOptions: TransformOptions,
     ): string {
       if (!babel) {

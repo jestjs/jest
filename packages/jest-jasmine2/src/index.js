@@ -71,9 +71,9 @@ function jasmine2(
 
   env.addReporter(reporter);
 
-  runtime.requireInternalModule(path.resolve(__dirname, './jest-expect.js'))(
-    config,
-  );
+  runtime.requireInternalModule(path.resolve(__dirname, './jest-expect.js'))({
+    expand: globalConfig.expand,
+  });
 
   const snapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
