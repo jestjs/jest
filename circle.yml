@@ -43,6 +43,8 @@ deployment:
       - git config --global user.email "jest-bot@users.noreply.github.com"
       - git config --global user.name "Website Deployment Script"
       - echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
-      - cd website && yarn crowdin-upload
-      - cd website && yarn crowdin-download
+      # removed calls to "yarn crowdin-upload" and "yarn crowdin-download" because of an issue
+      # with yarn not inheriting environment variables
+      - cd website && crowdin-cli --config ../crowdin.yaml upload sources --auto-update -b master
+      - cd website && crowdin-cli --config ../crowdin.yaml download -b master
       - cd website && GIT_USER=jest-bot npm run gh-pages
