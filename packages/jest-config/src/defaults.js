@@ -20,7 +20,8 @@ const {replacePathSepForRegex} = require('jest-regex-util');
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
 const cacheDirectory = (() => {
-  if (process.getuid == null) {
+  const {getuid} = process;
+  if (getuid == null) {
     return path.join(os.tmpdir(), 'jest');
   }
   // On some platforms tmpdir() is `/tmp`, causing conflicts between different
@@ -28,8 +29,7 @@ const cacheDirectory = (() => {
   // help.
   return path.join(
     os.tmpdir(),
-    'jest',
-    (process.getuid && process.getuid().toString(36)) || '',
+    'jest_' + getuid().toString(36),
   );
 })();
 
