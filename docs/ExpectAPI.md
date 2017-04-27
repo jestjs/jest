@@ -202,6 +202,24 @@ test('prepareState prepares a valid state', () => {
 
 The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
 
+### `expect.hasAssertions()`
+
+`expect.hasAssertions()` verifies that at least one assertion is called during a test. This is often useful when testing asynchronous code, in order to make sure that assertions in a callback actually got called.
+
+For example, let's say that we have a few functions that all deal with state. `prepareState` calls a callback with a state object, `validateState` runs on that state object, and `waitOnState` returns a promise that waits until all `prepareState` callbacks complete. We can test this with:
+
+```js
+test('prepareState prepares a valid state', () => {
+  expect.hasAssertions();
+  prepareState(state => {
+    expect(validateState(state)).toBeTruthy();
+  });
+  return waitOnState();
+});
+```
+
+The `expect.hasAssertions()` call ensures that the `prepareState` callback actually gets called.
+
 ### `expect.objectContaining(object)`
 
 `expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that are **not** in the expected object.

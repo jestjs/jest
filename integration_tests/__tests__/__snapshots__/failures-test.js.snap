@@ -89,14 +89,24 @@ Object {
       
       at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:64:21)
 
+  ● .hasAssertions() › throws when there are not assertions
+
+    expect.hasAssertions()
+    
+    Expected at least one assertion to be called but no assertions were called.
+      
+      at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:75:21)
+
   .assertions()
     ✕ throws
     ✕ throws on redeclare of assertion count
     ✕ throws on assertion
+  .hasAssertions()
+    ✕ throws when there are not assertions
 
 ",
   "summary": "Test Suites: 1 failed, 1 total
-Tests:       3 failed, 3 total
+Tests:       4 failed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching \\"assertion-count-test.js\\".
