@@ -24,50 +24,47 @@ const BABEL_CONFIG_KEY = 'babel';
 const PACAKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
 
-const cache = Object.create(null);
-
 let babel;
 
-const getBabelRC = (filename, {useCache}) => {
-  const paths = [];
-  let directory = filename;
-  while (directory !== (directory = path.dirname(directory))) {
-    if (useCache && cache[directory]) {
-      break;
-    }
+const createTransformer = (options: any) => {
+  const cache = Object.create(null);
 
-    paths.push(directory);
-    const configFilePath = path.join(directory, BABELRC_FILENAME);
-    if (fs.existsSync(configFilePath)) {
-      cache[directory] = fs.readFileSync(configFilePath, 'utf8');
-      break;
-    }
-    const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
-    if (fs.existsSync(configJsFilePath)) {
-      // $FlowFixMe
-      cache[directory] = JSON.stringify(require(configJsFilePath));
-      break;
-    }
-    const packageJsonFilePath = path.join(directory, PACAKAGE_JSON);
-    if (fs.existsSync(packageJsonFilePath)) {
-      // $FlowFixMe
-      const packageJsonFileContents = require(packageJsonFilePath);
-      if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
-        cache[directory] = JSON.stringify(
-          packageJsonFileContents[BABEL_CONFIG_KEY],
-        );
+  const getBabelRC = filename => {
+    const paths = [];
+    let directory = filename;
+    while (directory !== (directory = path.dirname(directory))) {
+      if (cache[directory]) {
         break;
       }
+
+      paths.push(directory);
+      const configFilePath = path.join(directory, BABELRC_FILENAME);
+      if (fs.existsSync(configFilePath)) {
+        cache[directory] = fs.readFileSync(configFilePath, 'utf8');
+        break;
+      }
+      const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
+      if (fs.existsSync(configJsFilePath)) {
+        // $FlowFixMe
+        cache[directory] = JSON.stringify(require(configJsFilePath));
+        break;
+      }
+      const packageJsonFilePath = path.join(directory, PACAKAGE_JSON);
+      if (fs.existsSync(packageJsonFilePath)) {
+        // $FlowFixMe
+        const packageJsonFileContents = require(packageJsonFilePath);
+        if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
+          cache[directory] = JSON.stringify(
+            packageJsonFileContents[BABEL_CONFIG_KEY],
+          );
+          break;
+        }
+      }
     }
-  }
-  paths.forEach(directoryPath => {
-    cache[directoryPath] = cache[directory];
-  });
+    paths.forEach(directoryPath => (cache[directoryPath] = cache[directory]));
+    return cache[directory] || '';
+  };
 
-  return cache[directory] || '';
-};
-
-const createTransformer = (options: any) => {
   options = Object.assign({}, options, {
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
@@ -82,24 +79,20 @@ const createTransformer = (options: any) => {
       fileData: string,
       filename: Path,
       configString: string,
-      {instrument, watch}: TransformOptions,
+      {instrument}: TransformOptions,
     ): string {
-      return (
-        crypto
-          .createHash('md5')
-          .update(THIS_FILE)
-          .update('\0', 'utf8')
-          .update(fileData)
-          .update('\0', 'utf8')
-          .update(configString)
-          .update('\0', 'utf8')
-          // Don't use the in-memory cache in watch mode because the .babelrc
-          // file may be modified.
-          .update(getBabelRC(filename, {useCache: !watch}))
-          .update('\0', 'utf8')
-          .update(instrument ? 'instrument' : '')
-          .digest('hex')
-      );
+      return crypto
+        .createHash('md5')
+        .update(THIS_FILE)
+        .update('\0', 'utf8')
+        .update(fileData)
+        .update('\0', 'utf8')
+        .update(configString)
+        .update('\0', 'utf8')
+        .update(getBabelRC(filename))
+        .update('\0', 'utf8')
+        .update(instrument ? 'instrument' : '')
+        .digest('hex');
     },
     process(
       src: string,
@@ -116,7 +109,6 @@ const createTransformer = (options: any) => {
       }
 
       const theseOptions = Object.assign({filename}, options);
-
       if (transformOptions && transformOptions.instrument) {
         theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js

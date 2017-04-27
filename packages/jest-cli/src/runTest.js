@@ -55,7 +55,7 @@ function runTest(
   const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
 
   const env = new TestEnvironment(config);
-  const TestConsole = config.verbose
+  const TestConsole = globalConfig.verbose
     ? Console
     : config.silent ? NullConsole : BufferedConsole;
   const testConsole = new TestConsole(
@@ -64,7 +64,7 @@ function runTest(
     (type, message) =>
       getConsoleOutput(
         config.rootDir,
-        !!config.verbose,
+        !!globalConfig.verbose,
         // 4 = the console call is buried 4 stack frames deep
         BufferedConsole.write([], type, message, 4),
       ),

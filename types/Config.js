@@ -21,7 +21,7 @@ export type HasteConfig = {|
 
 export type ConfigGlobals = Object;
 
-export type GlobalConfig = {
+export type GlobalConfig = {|
   bail: boolean,
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
@@ -41,15 +41,16 @@ export type GlobalConfig = {
   rootDir: Path,
   silent: boolean,
   testNamePattern: string,
+  testPathPattern: string,
   testResultsProcessor: ?string,
   updateSnapshot: boolean,
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
   watchman: boolean,
-};
+|};
 
-export type ProjectConfig = {
+export type ProjectConfig = {|
   automock: boolean,
   bail: boolean,
   browser: boolean,
@@ -92,7 +93,6 @@ export type ProjectConfig = {
   snapshotSerializers: Array<Path>,
   testEnvironment: string,
   testMatch: Array<Glob>,
-  testNamePattern: string,
   testPathIgnorePatterns: Array<string>,
   testRegex: string,
   testResultsProcessor: ?string,
@@ -102,12 +102,9 @@ export type ProjectConfig = {
   transform: Array<[string, Path]>,
   transformIgnorePatterns: Array<Glob>,
   unmockedModulePathPatterns: ?Array<string>,
-  updateSnapshot: boolean,
   useStderr: boolean,
-  verbose: ?boolean,
-  watch: boolean,
   watchman: boolean,
-};
+|};
 
 export type DefaultConfig = {|
   automock: boolean,

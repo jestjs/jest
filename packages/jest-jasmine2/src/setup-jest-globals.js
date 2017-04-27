@@ -101,9 +101,10 @@ const patchJasmine = () => {
 type Options = {
   testPath: Path,
   config: ProjectConfig,
+  updateSnapshot: boolean,
 };
 
-module.exports = ({testPath, config}: Options) => {
+module.exports = ({config, testPath, updateSnapshot}: Options) => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers.concat().reverse().forEach(path => {
@@ -114,7 +115,7 @@ module.exports = ({testPath, config}: Options) => {
   patchJasmine();
   const snapshotState = initializeSnapshotState(
     testPath,
-    config.updateSnapshot,
+    updateSnapshot,
     '',
     config.expand,
   );

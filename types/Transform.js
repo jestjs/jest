@@ -17,18 +17,18 @@ export type TransformedSource = {|
   map: ?Object | string,
 |};
 
-export type BuiltTransformResult = {|
+export type TransformResult = {|
   script: Script,
   sourceMapPath: ?string,
 |};
 
 export type TransformOptions = {|
   instrument: boolean,
-  watch: boolean,
 |};
 
 export type Transformer = {|
   canInstrument?: boolean,
+  createTransformer(options: any): Transformer,
 
   getCacheKey: (
     fileData: string,
