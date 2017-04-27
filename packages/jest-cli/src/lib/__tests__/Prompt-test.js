@@ -18,7 +18,7 @@ KEYS = Object.assign({}, KEYS, {
 });
 
 it('calls handler on change value', () => {
-  const options = {offset: -1};
+  const options = {max: 10, offset: -1};
   const prompt = new Prompt();
   const onChange = jest.fn();
 
