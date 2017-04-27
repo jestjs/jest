@@ -277,10 +277,10 @@ expect.extend(spyMatchers);
 expect.extend(toThrowMatchers);
 
 expect.assertions = (expected: number) =>
-  (global[GLOBAL_STATE].state.assertionsExpected = expected);
+  (global[GLOBAL_STATE].state.expectedAssertionsNumber = expected);
 
 expect.hasAssertions = () =>
-  (global[GLOBAL_STATE].state.expectedAssertions = true);
+  (global[GLOBAL_STATE].state.isExpectingAssertions = true);
 
 expect.setState = (state: MatcherState) => {
   Object.assign(global[GLOBAL_STATE].state, state);

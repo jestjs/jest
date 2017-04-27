@@ -51,18 +51,24 @@ const addSuppressedErrors = result => {
 };
 
 function addAssertionErrors(result) {
-  const {assertionCalls, assertionsExpected, expectedAssertions} = getState();
+  const {
+    assertionCalls,
+    expectedAssertionsNumber,
+    isExpectingAssertions,
+  } = getState();
   setState({
     assertionCalls: 0,
-    assertionsExpected: null,
+    expectedAssertionsNumber: null,
   });
   if (
-    typeof assertionsExpected === 'number' &&
-    assertionCalls !== assertionsExpected
+    typeof expectedAssertionsNumber === 'number' &&
+    assertionCalls !== expectedAssertionsNumber
   ) {
-    const expected = EXPECTED_COLOR(pluralize('assertion', assertionsExpected));
+    const expected = EXPECTED_COLOR(
+      pluralize('assertion', expectedAssertionsNumber),
+    );
     const message = new Error(
-      matcherHint('.assertions', '', assertionsExpected, {
+      matcherHint('.assertions', '', expectedAssertionsNumber, {
         isDirectExpectCall: true,
       }) +
         '\n\n' +
@@ -72,14 +78,14 @@ function addAssertionErrors(result) {
     result.status = 'failed';
     result.failedExpectations.push({
       actual: assertionCalls,
-      expected: assertionsExpected,
+      expected: expectedAssertionsNumber,
       message,
       passed: false,
     });
   }
-  if (expectedAssertions && assertionCalls === 0) {
+  if (isExpectingAssertions && assertionCalls === 0) {
     const expected = EXPECTED_COLOR('at least one assertion');
-    const received = RECEIVED_COLOR('no assertions were called');
+    const received = RECEIVED_COLOR('received none');
     const message = new Error(
       matcherHint('.hasAssertions', '', '', {
         isDirectExpectCall: true,
