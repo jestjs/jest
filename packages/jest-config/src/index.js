@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config, GlobalConfig, ProjectConfig} from 'types/Config';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const path = require('path');
 const loadFromFile = require('./loadFromFile');
@@ -28,8 +28,8 @@ async function readConfig(
   hasDeprecationWarnings: boolean,
 }> {
   const rawConfig = await readRawConfig(argv, packageRoot);
-  const {config, hasDeprecationWarnings} = normalize(rawConfig, argv);
-  const {globalConfig, projectConfig} = getConfigs(setFromArgv(config, argv));
+  const {options, hasDeprecationWarnings} = normalize(rawConfig, argv);
+  const {globalConfig, projectConfig} = getConfigs(setFromArgv(options, argv));
   return {
     config: projectConfig,
     globalConfig,
@@ -64,37 +64,37 @@ const readRawConfig = (argv, root) => {
 };
 
 const getConfigs = (
-  config: Config,
+  options,
 ): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => {
   return {
     globalConfig: Object.freeze({
-      bail: config.bail,
-      collectCoverage: config.collectCoverage,
-      collectCoverageFrom: config.collectCoverageFrom,
-      collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
-      coverageDirectory: config.coverageDirectory,
-      coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
-      coverageReporters: config.coverageReporters,
-      coverageThreshold: config.coverageThreshold,
-      expand: config.expand,
-      forceExit: config.forceExit,
-      logHeapUsage: config.logHeapUsage,
-      logTransformErrors: config.logTransformErrors,
-      mapCoverage: config.mapCoverage,
-      noStackTrace: config.noStackTrace,
-      notify: config.notify,
-      replname: config.replname,
-      rootDir: config.rootDir,
-      silent: config.silent,
-      testNamePattern: config.testNamePattern,
-      testResultsProcessor: config.testResultsProcessor,
-      updateSnapshot: config.updateSnapshot,
-      useStderr: config.useStderr,
-      verbose: config.verbose,
-      watch: config.watch,
-      watchman: config.watchman,
+      bail: options.bail,
+      collectCoverage: options.collectCoverage,
+      collectCoverageFrom: options.collectCoverageFrom,
+      collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
+      coverageDirectory: options.coverageDirectory,
+      coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+      coverageReporters: options.coverageReporters,
+      coverageThreshold: options.coverageThreshold,
+      expand: options.expand,
+      forceExit: options.forceExit,
+      logHeapUsage: options.logHeapUsage,
+      logTransformErrors: options.logTransformErrors,
+      mapCoverage: options.mapCoverage,
+      noStackTrace: options.noStackTrace,
+      notify: options.notify,
+      replname: options.replname,
+      rootDir: options.rootDir,
+      silent: options.silent,
+      testNamePattern: options.testNamePattern,
+      testResultsProcessor: options.testResultsProcessor,
+      updateSnapshot: options.updateSnapshot,
+      useStderr: options.useStderr,
+      verbose: options.verbose,
+      watch: options.watch,
+      watchman: options.watchman,
     }),
-    projectConfig: config,
+    projectConfig: options,
   };
 };
 

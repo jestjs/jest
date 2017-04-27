@@ -22,7 +22,7 @@ module.exports = function createRuntime(filename, config) {
       },
       config,
     ),
-  ).config;
+  ).options;
 
   const environment = new NodeEnvironment(config);
   environment.global.console = console;

@@ -29,7 +29,7 @@ beforeEach(() => {
   config = normalizeConfig({
     rootDir: '.',
     roots: ['./packages/jest-resolve-dependencies'],
-  }).config;
+  }).options;
   return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
     dependencyResolver = new DependencyResolver(
       hasteMap.resolver,

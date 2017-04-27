@@ -9,7 +9,6 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
 import type {RawMatcherFn} from 'types/Matchers';
 
 const expect = require('jest-matchers');
@@ -27,7 +26,7 @@ type JasmineMatcher = {
 };
 type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
-module.exports = (config: Config) => {
+module.exports = (config: {expand: boolean}) => {
   global.expect = expect;
   expect.setState({
     expand: config.expand,
