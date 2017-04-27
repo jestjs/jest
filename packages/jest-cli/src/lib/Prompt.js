@@ -10,15 +10,19 @@
 
 'use strict';
 
+import type {ScrollOptions} from './scroll-list';
+
 const {KEYS} = require('../constants');
+
 
 class Prompt {
   _entering: boolean;
   _value: string;
-  _onChange: Function;
+  _onChange: (Function);
   _onSuccess: Function;
   _onCancel: Function;
-  _offset: number;
+  _typeaheadOffset: number;
+  _typeaheadLength: number;
   _selected: string|null;
 
   constructor() {
@@ -29,17 +33,29 @@ class Prompt {
     this._onChange(this._value);
   }
 
-  enter(onChange: Function, onSuccess: Function, onCancel: Function) {
+  enter(
+    onChange: (pattern: string, options: ScrollOptions) => void,
+    onSuccess: Function,
+    onCancel: Function,
+  ) {
     this._entering = true;
     this._value = '';
     this._onSuccess = onSuccess;
     this._onCancel = onCancel;
-    this._offset = -1;
-    this._onChange = () => onChange(this._value, { offset: this._offset });
+    this._typeaheadOffset = -1;
+    this._typeaheadLength = 0;
+    this._onChange = () => onChange(this._value, {
+      max: 10,
+      offset: this._typeaheadOffset,
+    });
 
     this._onChange();
 
     process.stdout.on('resize', this._onResize);
+  }
+
+  setTypeaheadLength(length: number) {
+    this._typeaheadLength = length;
   }
 
   setSelected(selected: string) {
@@ -59,11 +75,11 @@ class Prompt {
         this.abort();
         break;
       case KEYS.ARROW_DOWN:
-        this._offset += 1;
+        this._typeaheadOffset = Math.min(this._typeaheadOffset + 1, this._typeaheadLength - 1);
         this._onChange();
         break;
       case KEYS.ARROW_UP:
-        this._offset = Math.max(this._offset - 1, -1);
+        this._typeaheadOffset = Math.max(this._typeaheadOffset - 1, -1);
         this._onChange();
         break;
       case KEYS.ARROW_LEFT:
@@ -75,7 +91,7 @@ class Prompt {
         this._value = key === KEYS.BACKSPACE
           ? this._value.slice(0, -1)
           : this._value + char;
-        this._offset = -1;
+        this._typeaheadOffset = -1;
         this._selected = null;
         this._onChange();
         break;

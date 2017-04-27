@@ -10,7 +10,12 @@
 
 'use strict';
 
-const scroll = (size, { offset, max }) => {
+export type ScrollOptions = {
+  offset: number,
+  max: number,
+}
+
+const scroll = (size: number, { offset, max }: ScrollOptions) => {
   let start = 0;
   let index = Math.min(offset, size);
 

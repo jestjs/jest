@@ -12,6 +12,7 @@
 
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
+import type {ScrollOptions} from './lib/scroll-list';
 import type SearchSource from './SearchSource';
 
 const ansiEscapes = require('ansi-escapes');
@@ -66,7 +67,7 @@ module.exports = class TestPathPatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  _onChange(pattern: string, options) {
+  _onChange(pattern: string, options: ScrollOptions) {
     let regex;
 
     try {
@@ -82,10 +83,10 @@ module.exports = class TestPathPatternPrompt {
 
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this._printTypeahead(pattern, tests, Object.assign({max: 10}, options));
+    this._printTypeahead(pattern, tests, options);
   }
 
-  _printTypeahead(pattern: string, allResults: Array<Test>, options) {
+  _printTypeahead(pattern: string, allResults: Array<Test>, options: ScrollOptions) {
     const { max } = options;
     const total = allResults.length;
     const results = allResults.slice(0, max);
@@ -108,8 +109,9 @@ module.exports = class TestPathPatternPrompt {
       const prefix = `  ${chalk.dim('\u203A')} `;
       const padding = stringLength(prefix) + 2;
 
-      const { start, end, index } = scroll(allResults.length, options);
+      const { start, end, index } = scroll(total, options);
 
+      this._prompt.setTypeaheadLength(total);
       allResults.slice(start, end)
         .map(({path, context}) => {
           const filePath = trimAndFormatPath(

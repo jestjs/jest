@@ -11,6 +11,7 @@
 'use strict';
 
 import type {TestResult} from 'types/TestResult';
+import type {ScrollOptions} from './lib/scroll-list';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
@@ -58,13 +59,13 @@ module.exports = class TestNamePatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  _onChange(pattern: string, options) {
+  _onChange(pattern: string, options: ScrollOptions) {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this._printTypeahead(pattern, Object.assign({max: 10}, options));
+    this._printTypeahead(pattern, options);
   }
 
-  _printTypeahead(pattern: string, options) {
+  _printTypeahead(pattern: string, options: ScrollOptions) {
     const { max } = options;
     const matchedTests = this._getMatchedTests(pattern);
 
@@ -87,13 +88,15 @@ module.exports = class TestNamePatternPrompt {
       this._pipe.write(' from cached test suites.');
 
       const width = getTerminalWidth();
-      const { start, end, index } = scroll(matchedTests.length, options);
+      const { start, end, index } = scroll(total, options);
+
+      this._prompt.setTypeaheadLength(total);
 
       matchedTests.slice(start, end)
       .map(name => formatTestNameByPattern(name, pattern, width - 4))
       .map((item, i) => {
         if (i === index) {
-          this._prompt.setSelected('^' + chalk.stripColor(item) + '$');
+          this._prompt.setSelected(chalk.stripColor(item));
           return chalk.black.bgYellow(chalk.stripColor(item));
         }
         return item;
