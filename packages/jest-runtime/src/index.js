@@ -54,6 +54,7 @@ type CoverageOptions = {
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean},
+  mapCoverage: boolean,
 };
 
 type BooleanObject = {[key: string]: boolean};
@@ -121,6 +122,7 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: null,
+      mapCoverage: false,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -186,6 +188,7 @@ class Runtime {
         collectCoverage: options.collectCoverage,
         collectCoverageFrom: options.collectCoverageFrom,
         collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
+        mapCoverage: options.mapCoverage,
       },
       config,
     );
@@ -500,6 +503,7 @@ class Runtime {
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
         isInternalModule,
+        mapCoverage: this._coverageOptions.mapCoverage,
       },
       this._cacheFS[filename],
     );

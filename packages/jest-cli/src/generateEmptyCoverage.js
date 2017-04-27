@@ -26,6 +26,7 @@ module.exports = function(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    mapCoverage: globalConfig.mapCoverage,
   };
   if (shouldInstrument(filename, coverageOptions, config)) {
     // Transform file without instrumentation first, to make sure produced
@@ -34,6 +35,7 @@ module.exports = function(
       filename,
       source,
       false,
+      globalConfig.mapCoverage,
     );
     const instrumenter = IstanbulInstrument.createInstrumenter();
     instrumenter.instrumentSync(transformResult.code, filename);

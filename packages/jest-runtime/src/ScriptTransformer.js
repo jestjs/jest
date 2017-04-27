@@ -33,6 +33,7 @@ export type Options = {|
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean},
   isInternalModule?: boolean,
+  mapCoverage: boolean,
 |};
 
 const cache: Map<string, TransformResult> = new Map();
@@ -50,7 +51,12 @@ class ScriptTransformer {
     this._transformCache = new Map();
   }
 
-  _getCacheKey(fileData: string, filename: Path, instrument: boolean): string {
+  _getCacheKey(
+    fileData: string,
+    filename: Path,
+    instrument: boolean,
+    mapCoverage: boolean,
+  ): string {
     if (!configToJsonMap.has(this._config)) {
       // We only need this set of config options that can likely influence
       // cached output instead of all config options.
@@ -69,6 +75,7 @@ class ScriptTransformer {
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
+        .update(mapCoverage ? 'mapCoverage' : '')
         .digest('hex');
     }
   }
@@ -77,13 +84,19 @@ class ScriptTransformer {
     filename: Path,
     content: string,
     instrument: boolean,
+    mapCoverage: boolean,
   ): Path {
     const baseCacheDir = getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
       VERSION,
     );
-    const cacheKey = this._getCacheKey(content, filename, instrument);
+    const cacheKey = this._getCacheKey(
+      content,
+      filename,
+      instrument,
+      mapCoverage,
+    );
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
@@ -160,9 +173,19 @@ class ScriptTransformer {
     }).code;
   }
 
-  transformSource(filename: Path, content: string, instrument: boolean) {
+  transformSource(
+    filename: Path,
+    content: string,
+    instrument: boolean,
+    mapCoverage: boolean,
+  ) {
     const transform = this._getTransformer(filename);
-    const cacheFilePath = this._getFileCachePath(filename, content, instrument);
+    const cacheFilePath = this._getFileCachePath(
+      filename,
+      content,
+      instrument,
+      mapCoverage,
+    );
     let sourceMapPath = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache
@@ -193,7 +216,7 @@ class ScriptTransformer {
       }
     }
 
-    if (this._config.mapCoverage) {
+    if (mapCoverage) {
       if (!transformed.map) {
         const convert = require('convert-source-map');
         const inlineSourceMap = convert.fromSource(transformed.code);
@@ -215,7 +238,7 @@ class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (instrument && transformed.map && this._config.mapCoverage) {
+    if (instrument && transformed.map && mapCoverage) {
       const sourceMapContent = typeof transformed.map === 'string'
         ? transformed.map
         : JSON.stringify(transformed.map);
@@ -254,6 +277,7 @@ class ScriptTransformer {
           filename,
           content,
           instrument,
+          !!(options && options.mapCoverage),
         );
 
         wrappedCode = wrap(transformedSource.code);

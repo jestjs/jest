@@ -220,7 +220,6 @@ describe('ScriptTransformer', () => {
 
   it('writes source map if preprocessor supplies it', () => {
     config = Object.assign(config, {
-      mapCoverage: true,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
     const scriptTransformer = new ScriptTransformer(config);
@@ -237,6 +236,7 @@ describe('ScriptTransformer', () => {
 
     const result = scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
+      mapCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(fs.writeFileSync).toBeCalledWith(
@@ -248,7 +248,6 @@ describe('ScriptTransformer', () => {
 
   it('writes source map if preprocessor inlines it', () => {
     config = Object.assign(config, {
-      mapCoverage: true,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
     const scriptTransformer = new ScriptTransformer(config);
@@ -267,6 +266,7 @@ describe('ScriptTransformer', () => {
 
     const result = scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
+      mapCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(fs.writeFileSync).toBeCalledWith(
@@ -276,9 +276,8 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('does not write source map if mapCoverage config option is false', () => {
+  it('does not write source map if mapCoverage option is false', () => {
     config = Object.assign(config, {
-      mapCoverage: false,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
     const scriptTransformer = new ScriptTransformer(config);
@@ -295,6 +294,7 @@ describe('ScriptTransformer', () => {
 
     const result = scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
+      mapCoverage: false,
     });
     expect(result.sourceMapPath).toBeFalsy();
     expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
