@@ -124,7 +124,7 @@ module.exports = class TestPathPatternPrompt {
         })
         .map((item, i) => {
           if (i === index) {
-            this._prompt.setSelected(chalk.stripColor(item));
+            this._prompt.setTypheadheadSelection(chalk.stripColor(item));
             return chalk.black.bgYellow(chalk.stripColor(item));
           }
           return item;

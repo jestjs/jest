@@ -14,7 +14,6 @@ import type {ScrollOptions} from './scrollList';
 
 const {KEYS} = require('../constants');
 
-
 class Prompt {
   _entering: boolean;
   _value: string;
@@ -23,7 +22,7 @@ class Prompt {
   _onCancel: Function;
   _typeaheadOffset: number;
   _typeaheadLength: number;
-  _selected: string|null;
+  _typeaheadSelection: string|null;
 
   constructor() {
     (this: any)._onResize = this._onResize.bind(this);
@@ -42,6 +41,7 @@ class Prompt {
     this._value = '';
     this._onSuccess = onSuccess;
     this._onCancel = onCancel;
+    this._typeaheadSelection = null;
     this._typeaheadOffset = -1;
     this._typeaheadLength = 0;
     this._onChange = () => onChange(this._value, {
@@ -58,15 +58,15 @@ class Prompt {
     this._typeaheadLength = length;
   }
 
-  setSelected(selected: string) {
-    this._selected = selected;
+  setTypheadheadSelection(selected: string) {
+    this._typeaheadSelection = selected;
   }
 
   put(key: string) {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
-        this._onSuccess(this._selected || this._value);
+        this._onSuccess(this._typeaheadSelection || this._value);
         this.abort();
         break;
       case KEYS.ESCAPE:
@@ -92,7 +92,7 @@ class Prompt {
           ? this._value.slice(0, -1)
           : this._value + char;
         this._typeaheadOffset = -1;
-        this._selected = null;
+        this._typeaheadSelection = null;
         this._onChange();
         break;
     }
