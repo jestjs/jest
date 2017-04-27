@@ -1,6 +1,6 @@
-project_identifier: jest
-api_key_env: CROWDIN_API_KEY
-base_path: ..
+project_identifier: 'jest'
+api_key_env: 'CROWDIN_API_KEY'
+base_path: '..'
 
 files:
   -
