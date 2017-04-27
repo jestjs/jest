@@ -10,19 +10,19 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Config, Path} from 'types/Config';
+import type {Path} from 'types/Config';
 
 const Runtime = require('jest-runtime');
 
 const {Console, clearLine} = require('jest-util');
 const {createDirectory} = require('jest-util');
+const {readConfig} = require('jest-config');
 const chalk = require('chalk');
 const createContext = require('../lib/createContext');
 const getMaxWorkers = require('../lib/getMaxWorkers');
 const handleDeprecationWarnings = require('../lib/handleDeprecationWarnings');
 const logDebugMessages = require('../lib/logDebugMessages');
 const preRunMessage = require('../preRunMessage');
-const readConfig = require('jest-config').readConfig;
 const runJest = require('../runJest');
 const TestWatcher = require('../TestWatcher');
 const watch = require('../watch');
@@ -45,17 +45,7 @@ module.exports = async (
     return;
   }
 
-  const _run = async (
-    configs: Array<{config: Config, hasDeprecationWarnings: boolean}>,
-  ) => {
-    if (argv.debug || argv.showConfig) {
-      logDebugMessages(configs[0].config, pipe);
-    }
-
-    if (argv.showConfig) {
-      process.exit(0);
-    }
-
+  const _run = async (globalConfig, configs) => {
     const hasteMapInstances = Array(configs.length);
     const contexts = await Promise.all(
       configs.map(async ({config}, index) => {
@@ -75,17 +65,18 @@ module.exports = async (
       if (configs.some(({hasDeprecationWarnings}) => hasDeprecationWarnings)) {
         try {
           await handleDeprecationWarnings(pipe, process.stdin);
-          return watch(contexts, argv, pipe, hasteMapInstances);
+          return watch(globalConfig, contexts, argv, pipe, hasteMapInstances);
         } catch (e) {
           process.exit(0);
         }
       }
 
-      return watch(contexts, argv, pipe, hasteMapInstances);
+      return watch(globalConfig, contexts, argv, pipe, hasteMapInstances);
     } else {
       const startRun = () => {
         preRunMessage.print(pipe);
         runJest(
+          globalConfig,
           contexts,
           argv,
           pipe,
@@ -99,7 +90,19 @@ module.exports = async (
   };
 
   try {
-    await _run(await Promise.all(roots.map(root => readConfig(argv, root))));
+    const configs = await Promise.all(
+      roots.map(root => readConfig(argv, root)),
+    );
+
+    if (argv.debug || argv.showConfig) {
+      logDebugMessages(configs[0].globalConfig, configs[0].config, pipe);
+    }
+
+    if (argv.showConfig) {
+      process.exit(0);
+    }
+
+    await _run(configs[0].globalConfig, configs);
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
 import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
@@ -25,7 +25,7 @@ class NodeEnvironment {
   global: ?Global;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: Config) {
+  constructor(config: ProjectConfig) {
     this.context = vm.createContext();
     const global = (this.global = vm.runInContext('this', this.context));
     global.global = global;

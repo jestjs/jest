@@ -14,51 +14,13 @@ const {readFileSync} = require('fs');
 const babylon = require('babylon');
 const {Expect, ItBlock} = require('./ParserNodes');
 
-const path = require('path');
-const fs = require('fs');
-
-const BABELRC_FILENAME = '.babelrc';
-const cache = Object.create(null);
-
-// This is a copy of babel-jest's parser, but it takes create-react-app
-// into account, and will return an empty JSON object instead of "".
-const getBabelRC = (filename, {useCache}) => {
-  // Special case for create-react-app, which hides the .babelrc
-  const paths: string[] = ['node_modules/react-scripts/'];
-  let directory = filename;
-  while (directory !== (directory = path.dirname(directory))) {
-    if (useCache && cache[directory]) {
-      break;
-    }
-
-    paths.push(directory);
-    const configFilePath = path.join(directory, BABELRC_FILENAME);
-    if (fs.existsSync(configFilePath)) {
-      cache[directory] = fs.readFileSync(configFilePath, 'utf8');
-      break;
-    }
-  }
-  paths.forEach(directoryPath => {
-    cache[directoryPath] = cache[directory];
-  });
-
-  // return an empy JSON parse compatible string
-  return cache[directory] || '{}';
-};
-
 const parse = (file: string) => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
 
   const data = readFileSync(file).toString();
-  const babelRC = getBabelRC(file, {useCache: true});
-  const babel = JSON.parse(babelRC);
 
-  const plugins = Array.isArray(babel.plugins)
-    ? babel.plugins.concat(['*'])
-    : ['*'];
-
-  const config = {plugins, sourceType: 'module'};
+  const config = {plugins: ['*'], sourceType: 'module'};
   const ast = babylon.parse(data, config);
 
   // An `it`/`test` was found in the AST
@@ -183,7 +145,8 @@ const parse = (file: string) => {
       ) {
         searchNodes(element.expression.right.body, file);
       } else if (
-        element.type === 'ReturnStatement' && element.argument.arguments
+        element.type === 'ReturnStatement' &&
+        element.argument.arguments
       ) {
         element.argument.arguments
           .filter(argument => isFunctionDeclaration(argument.type))

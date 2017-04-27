@@ -37,10 +37,7 @@ getPackages().forEach(p => {
     fs.watch(path.resolve(p, 'src'), {recursive: true}, (event, filename) => {
       const filePath = path.resolve(srcDir, filename);
 
-      if (
-        (event === 'change' || event === 'rename') &&
-        exists(filePath)
-      ) {
+      if ((event === 'change' || event === 'rename') && exists(filePath)) {
         console.log(chalk.green('->'), `${event}: ${filename}`);
         rebuild(filePath);
       } else {
@@ -49,9 +46,9 @@ getPackages().forEach(p => {
           fs.unlinkSync(buildFile);
           process.stdout.write(
             chalk.red('  \u2022 ') +
-            path.relative(path.resolve(srcDir, '..', '..'), buildFile) +
-            ' (deleted)' +
-            '\n'
+              path.relative(path.resolve(srcDir, '..', '..'), buildFile) +
+              ' (deleted)' +
+              '\n'
           );
         } catch (e) {}
       }

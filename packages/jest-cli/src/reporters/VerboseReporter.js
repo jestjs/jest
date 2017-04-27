@@ -26,11 +26,11 @@ type Options = {|
 |};
 
 class VerboseReporter extends DefaultReporter {
-  _options: Options;
+  _verboseOptions: Options;
 
   constructor(options: Options) {
-    super();
-    this._options = options;
+    super({verbose: true});
+    this._verboseOptions = options;
   }
 
   static filterTestResults(testResults: Array<AssertionResult>) {
@@ -101,7 +101,7 @@ class VerboseReporter extends DefaultReporter {
   }
 
   _logTests(tests: Array<AssertionResult>, indentLevel: number) {
-    if (this._options.expand) {
+    if (this._verboseOptions.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
       const skippedCount = tests.reduce((result, test) => {

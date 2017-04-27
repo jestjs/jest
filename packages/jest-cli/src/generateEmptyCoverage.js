@@ -10,13 +10,17 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {ProjectConfig, Path} from 'types/Config';
 
 const IstanbulInstrument = require('istanbul-lib-instrument');
 
 const {transformSource, shouldInstrument} = require('jest-runtime');
 
-module.exports = function(source: string, filename: Path, config: Config) {
+module.exports = function(
+  source: string,
+  filename: Path,
+  config: ProjectConfig,
+) {
   if (shouldInstrument(filename, config)) {
     // Transform file without instrumentation first, to make sure produced
     // source code is ES6 (no flowtypes etc.) and can be instrumented

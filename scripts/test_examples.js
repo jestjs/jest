@@ -11,8 +11,8 @@ const runCommand = require('./_runCommand');
 
 const fs = require('graceful-fs');
 const path = require('path');
-const chalk = require('chalk');
 const mkdirp = require('mkdirp');
+const rimraf = require('rimraf');
 
 const ROOT = path.resolve(__dirname, '..');
 const BABEL_JEST_PATH = path.resolve(ROOT, 'packages/babel-jest');
@@ -30,13 +30,13 @@ const examples = fs
 
 const link = (exampleDirectory, from) => {
   const nodeModules = exampleDirectory + path.sep + 'node_modules' + path.sep;
+  const localBabelJest = path.join(nodeModules, 'babel-jest');
   mkdirp.sync(nodeModules);
+  rimraf.sync(localBabelJest);
   runCommand('ln', ['-fs', from, nodeModules], exampleDirectory);
 };
 
 examples.forEach(exampleDirectory => {
-  console.log(chalk.bold(chalk.cyan('Testing example: ') + exampleDirectory));
-
   const exampleName = path.basename(exampleDirectory);
   if (NODE_VERSION < 6 && SKIP_ON_OLD_NODE.indexOf(exampleName) !== -1) {
     console.log(`Skipping ${exampleName} on node ${process.version}.`);
@@ -44,9 +44,14 @@ examples.forEach(exampleDirectory => {
   }
 
   if (INSTALL.indexOf(exampleName) !== -1) {
-    runCommand('yarn', '--production', exampleDirectory);
+    runCommand('yarn', ['--production'], exampleDirectory);
   }
 
   link(exampleDirectory, BABEL_JEST_PATH);
-  runCommand(JEST_BIN_PATH, '', exampleDirectory);
 });
+
+runCommand(
+  JEST_BIN_PATH,
+  ['--experimentalProjects'].concat(examples),
+  EXAMPLES_DIR
+);

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {
   Transformer,
   TransformedSource,
@@ -31,12 +31,15 @@ type Options = {|
   isInternalModule?: boolean,
 |};
 
+type TransformerMap = Map<Path, ?Transformer>;
+
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
 const cache: Map<string, BuiltTransformResult> = new Map();
 const configToJsonMap = new Map();
 // Cache regular expressions to test whether the file needs to be preprocessed
-const ignoreCache: WeakMap<Config, ?RegExp> = new WeakMap();
+const ignoreCache: WeakMap<ProjectConfig, ?RegExp> = new WeakMap();
+const transformCache: WeakMap<ProjectConfig, TransformerMap> = new WeakMap();
 
 const removeFile = (path: Path) => {
   try {
@@ -47,7 +50,7 @@ const removeFile = (path: Path) => {
 const getCacheKey = (
   fileData: string,
   filename: Path,
-  config: Config,
+  config: ProjectConfig,
   instrument: boolean,
 ): string => {
   if (!configToJsonMap.has(config)) {
@@ -68,6 +71,7 @@ const getCacheKey = (
         roots: config.roots,
         testMatch: config.testMatch,
         testRegex: config.testRegex,
+        transform: config.transform,
         transformIgnorePatterns: config.transformIgnorePatterns,
       }),
     );
@@ -94,7 +98,8 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
     fs.writeFileSync(cachePath, fileData, 'utf8');
   } catch (e) {
-    e.message = 'jest: failed to cache transform results in: ' + cachePath;
+    e.message = 'jest: failed to cache transform results in: ' + cachePath +
+      '\nFailure message: ' + e.message;
     removeFile(cachePath);
     throw e;
   }
@@ -134,7 +139,7 @@ const getScriptCacheKey = (filename, config, instrument: boolean) => {
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
-const shouldTransform = (filename: Path, config: Config): boolean => {
+const shouldTransform = (filename: Path, config: ProjectConfig): boolean => {
   if (!ignoreCache.has(config)) {
     if (!config.transformIgnorePatterns) {
       ignoreCache.set(config, null);
@@ -157,7 +162,7 @@ const shouldTransform = (filename: Path, config: Config): boolean => {
 
 const getFileCachePath = (
   filename: Path,
-  config: Config,
+  config: ProjectConfig,
   content: string,
   instrument: boolean,
 ): Path => {
@@ -181,9 +186,10 @@ const getFileCachePath = (
   return cachePath;
 };
 
-const transformCache: WeakMap<Config, Map<Path, ?Transformer>> = new WeakMap();
-
-const getTransformer = (filename: string, config: Config): ?Transformer => {
+const getTransformer = (
+  filename: string,
+  config: ProjectConfig,
+): ?Transformer => {
   const transformData = transformCache.get(config);
   const transformFileData = transformData ? transformData.get(filename) : null;
 
@@ -237,7 +243,7 @@ const stripShebang = content => {
 const instrumentFile = (
   content: string,
   filename: Path,
-  config: Config,
+  config: ProjectConfig,
 ): string => {
   // NOTE: Keeping these requires inside this function reduces a single run
   // time by 2sec if not running in `--coverage` mode
@@ -264,7 +270,7 @@ const instrumentFile = (
 
 const transformSource = (
   filename: Path,
-  config: Config,
+  config: ProjectConfig,
   content: string,
   instrument: boolean,
 ) => {
@@ -340,7 +346,7 @@ const transformSource = (
 
 const transformAndBuildScript = (
   filename: Path,
-  config: Config,
+  config: ProjectConfig,
   options: ?Options,
   instrument: boolean,
   fileSource?: string,
@@ -392,7 +398,7 @@ const transformAndBuildScript = (
 
 module.exports = (
   filename: Path,
-  config: Config,
+  config: ProjectConfig,
   options: Options,
   fileSource?: string,
 ): BuiltTransformResult => {

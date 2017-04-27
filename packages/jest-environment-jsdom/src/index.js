@@ -8,7 +8,7 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
 import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
@@ -23,7 +23,7 @@ class JSDOMEnvironment {
   global: ?Global;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: Config): void {
+  constructor(config: ProjectConfig): void {
     // lazy require
     this.document = require('jsdom').jsdom(/* markup */ undefined, {
       url: config.testURL,

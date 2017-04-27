@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
+
 const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
@@ -17,11 +19,20 @@ const normalize = require('./normalize');
 const setFromArgv = require('./setFromArgv');
 const {getTestEnvironment} = require('./utils');
 
-async function readConfig(argv: Object, packageRoot: string) {
+async function readConfig(
+  argv: Object,
+  packageRoot: string,
+): Promise<{
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
+  hasDeprecationWarnings: boolean,
+}> {
   const rawConfig = await readRawConfig(argv, packageRoot);
-  const {config, hasDeprecationWarnings} = normalize(rawConfig, argv);
+  const {options, hasDeprecationWarnings} = normalize(rawConfig, argv);
+  const {globalConfig, projectConfig} = getConfigs(setFromArgv(options, argv));
   return {
-    config: Object.freeze(setFromArgv(config, argv)),
+    config: projectConfig,
+    globalConfig,
     hasDeprecationWarnings,
   };
 }
@@ -50,6 +61,41 @@ const readRawConfig = (argv, root) => {
   }
 
   return loadFromPackage(root).then(config => config || {rootDir: root});
+};
+
+const getConfigs = (
+  options,
+): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => {
+  return {
+    globalConfig: Object.freeze({
+      bail: options.bail,
+      collectCoverage: options.collectCoverage,
+      collectCoverageFrom: options.collectCoverageFrom,
+      collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
+      coverageDirectory: options.coverageDirectory,
+      coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+      coverageReporters: options.coverageReporters,
+      coverageThreshold: options.coverageThreshold,
+      expand: options.expand,
+      forceExit: options.forceExit,
+      logHeapUsage: options.logHeapUsage,
+      logTransformErrors: options.logTransformErrors,
+      mapCoverage: options.mapCoverage,
+      noStackTrace: options.noStackTrace,
+      notify: options.notify,
+      replname: options.replname,
+      rootDir: options.rootDir,
+      silent: options.silent,
+      testNamePattern: options.testNamePattern,
+      testResultsProcessor: options.testResultsProcessor,
+      updateSnapshot: options.updateSnapshot,
+      useStderr: options.useStderr,
+      verbose: options.verbose,
+      watch: options.watch,
+      watchman: options.watchman,
+    }),
+    projectConfig: options,
+  };
 };
 
 module.exports = {

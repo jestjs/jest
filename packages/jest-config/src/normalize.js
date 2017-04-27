@@ -4,6 +4,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
  * @flow
  */
 
@@ -90,7 +91,8 @@ const setupBabelJest = (config: InitialConfig) => {
         {basedir},
       );
       if (
-        jsTransformer && jsTransformer.includes(NODE_MODULES + 'babel-jest')
+        jsTransformer &&
+        jsTransformer.includes(NODE_MODULES + 'babel-jest')
       ) {
         babelJest = jsTransformer;
       }
@@ -230,7 +232,7 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
   if (argv.collectCoverageOnlyFrom) {
     const collectCoverageOnlyFrom = Object.create(null);
     argv.collectCoverageOnlyFrom.forEach(
-      path => collectCoverageOnlyFrom[path] = true,
+      path => (collectCoverageOnlyFrom[path] = true),
     );
     config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
   }
@@ -406,8 +408,8 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   }
 
   return {
-    config: _replaceRootDirTags(newConfig.rootDir, newConfig),
     hasDeprecationWarnings,
+    options: _replaceRootDirTags(newConfig.rootDir, newConfig),
   };
 }
 

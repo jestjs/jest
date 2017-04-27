@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {TransformOptions} from 'types/Transform';
 
 const crypto = require('crypto');
@@ -20,6 +20,8 @@ const path = require('path');
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';
+const BABEL_CONFIG_KEY = 'babel';
+const PACAKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
 
 const cache = Object.create(null);
@@ -45,6 +47,17 @@ const getBabelRC = (filename, {useCache}) => {
       // $FlowFixMe
       cache[directory] = JSON.stringify(require(configJsFilePath));
       break;
+    }
+    const packageJsonFilePath = path.join(directory, PACAKAGE_JSON);
+    if (fs.existsSync(packageJsonFilePath)) {
+      // $FlowFixMe
+      const packageJsonFileContents = require(packageJsonFilePath);
+      if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
+        cache[directory] = JSON.stringify(
+          packageJsonFileContents[BABEL_CONFIG_KEY],
+        );
+        break;
+      }
     }
   }
   paths.forEach(directoryPath => {
@@ -91,7 +104,7 @@ const createTransformer = (options: any) => {
     process(
       src: string,
       filename: Path,
-      config: Config,
+      config: ProjectConfig,
       transformOptions: TransformOptions,
     ): string {
       if (!babel) {

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
@@ -47,7 +47,7 @@ const MS_IN_A_YEAR = 31536000000;
 class FakeTimers {
   _cancelledImmediates: {[key: TimerID]: boolean};
   _cancelledTicks: {[key: TimerID]: boolean};
-  _config: Config;
+  _config: ProjectConfig;
   _disposed: boolean;
   _fakeTimerAPIs: TimerAPI;
   _global: Global;
@@ -63,7 +63,7 @@ class FakeTimers {
   constructor(
     global: Global,
     moduleMocker: ModuleMocker,
-    config: Config,
+    config: ProjectConfig,
     maxLoops?: number,
   ) {
     this._global = global;
@@ -330,7 +330,9 @@ class FakeTimers {
           `default configuration change in Jest 15.\n\n` +
           `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
           `Stack Trace:\n` +
-          formatStackTrace(new Error().stack, this._config),
+          formatStackTrace(new Error().stack, this._config, {
+            noStackTrace: false,
+          }),
       );
     }
   }

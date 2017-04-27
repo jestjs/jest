@@ -36,6 +36,9 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
     {
       rootDir: '',
     },
+    {
+      noStackTrace: false,
+    },
   );
 
   expect(messages).toMatchSnapshot();
@@ -48,6 +51,9 @@ it('.formatExecError()', () => {
         message: 'Whoops!',
       },
       testFilePath: '/test/error/file/path',
+    },
+    {
+      rootDir: '',
     },
     {
       noStackTrace: false,

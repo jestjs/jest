@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {Context} from 'types/Context';
@@ -55,9 +55,10 @@ type CacheFS = {[path: Path]: string};
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
 
-const getModuleNameMapper = (config: Config) => {
+const getModuleNameMapper = (config: ProjectConfig) => {
   if (
-    Array.isArray(config.moduleNameMapper) && config.moduleNameMapper.length
+    Array.isArray(config.moduleNameMapper) &&
+    config.moduleNameMapper.length
   ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => {
       return {moduleName, regex: new RegExp(regex)};
@@ -76,7 +77,7 @@ const unmockRegExpCache = new WeakMap();
 
 class Runtime {
   _cacheFS: CacheFS;
-  _config: Config;
+  _config: ProjectConfig;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
@@ -97,7 +98,7 @@ class Runtime {
   _virtualMocks: BooleanObject;
 
   constructor(
-    config: Config,
+    config: ProjectConfig,
     environment: Environment,
     resolver: Resolver,
     cacheFS?: CacheFS,
@@ -126,7 +127,9 @@ class Runtime {
 
     this._unmockList = unmockRegExpCache.get(config);
     if (
-      !this._unmockList && config.automock && config.unmockedModulePathPatterns
+      !this._unmockList &&
+      config.automock &&
+      config.unmockedModulePathPatterns
     ) {
       this._unmockList = new RegExp(
         config.unmockedModulePathPatterns.join('|'),
@@ -155,13 +158,13 @@ class Runtime {
     }
   }
 
-  static shouldInstrument(filename: Path, config: Config) {
+  static shouldInstrument(filename: Path, config: ProjectConfig) {
     return shouldInstrument(filename, config);
   }
 
   static transformSource(
     filename: Path,
-    config: Config,
+    config: ProjectConfig,
     content: string,
     instrument: boolean,
   ) {
@@ -169,7 +172,7 @@ class Runtime {
   }
 
   static createContext(
-    config: Config,
+    config: ProjectConfig,
     options: {
       console?: Console,
       maxWorkers: number,
@@ -196,7 +199,10 @@ class Runtime {
     );
   }
 
-  static createHasteMap(config: Config, options?: HasteMapOptions): HasteMap {
+  static createHasteMap(
+    config: ProjectConfig,
+    options?: HasteMapOptions,
+  ): HasteMap {
     const ignorePattern = new RegExp(
       [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
     );
@@ -220,7 +226,7 @@ class Runtime {
     });
   }
 
-  static createResolver(config: Config, moduleMap: ModuleMap): Resolver {
+  static createResolver(config: ProjectConfig, moduleMap: ModuleMap): Resolver {
     return new Resolver(moduleMap, {
       browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,

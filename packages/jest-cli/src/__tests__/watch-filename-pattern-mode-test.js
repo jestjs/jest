@@ -86,7 +86,10 @@ jest.doMock('../lib/terminalUtils', () => ({
 
 const watch = require('../watch');
 
+
 const toHex = char => Number(char.charCodeAt(0)).toString(16);
+
+const globalConfig = {watch: true};
 
 afterEach(runJestMock.mockReset);
 
@@ -108,7 +111,7 @@ describe('Watch mode flows', () => {
 
   it('Pressing "P" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -143,7 +146,7 @@ describe('Watch mode flows', () => {
 
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 

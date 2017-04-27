@@ -8,8 +8,7 @@ import * as user from '../user';
 
 // The promise that is being tested should be returned.
 it('works with promises', () => {
-  return user.getUserName(5)
-    .then(name => expect(name).toEqual('Paul'));
+  return user.getUserName(5).then(name => expect(name).toEqual('Paul'));
 });
 
 // async/await can also be used.
@@ -21,10 +20,11 @@ it('works with async/await', async () => {
 // Testing for async errors can be done using `catch`.
 it('tests error with promises', () => {
   expect.assertions(1);
-  return user.getUserName(3)
-    .catch(e => expect(e).toEqual({
+  return user.getUserName(3).catch(e =>
+    expect(e).toEqual({
       error: 'User with 3 not found.',
-    }));
+    })
+  );
 });
 
 // Or try-catch.

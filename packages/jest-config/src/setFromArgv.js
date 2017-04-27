@@ -25,7 +25,7 @@ function setFromArgv(config, argv) {
     config.verbose = argv.verbose;
   }
 
-  if (argv.notify) {
+  if (argv.notify !== null) {
     config.notify = argv.notify;
   }
 

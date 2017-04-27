@@ -10,11 +10,22 @@
 
 type Node = MemberExpression | CallExpression;
 
+type Location = {
+  column: number,
+  line: number,
+};
+
+type NodeLocation = {
+  end: Location,
+  start: Location,
+};
+
 export type Identifier = {
   type: 'Identifier',
   name: string,
   value: string,
   parent: Node,
+  loc: NodeLocation,
 };
 
 export type MemberExpression = {
@@ -24,6 +35,7 @@ export type MemberExpression = {
   property: Identifier,
   object: Identifier,
   parent: Node,
+  loc: NodeLocation,
 };
 
 export type Literal = {
@@ -31,15 +43,17 @@ export type Literal = {
   value?: string,
   rawValue?: string,
   parent: Node,
+  loc: NodeLocation,
 };
 
 export type CallExpression = {
   type: 'CallExpression',
-  arguments: [Literal],
+  arguments: Array<Literal>,
   callee: Identifier | MemberExpression,
   parent: Node,
+  loc: NodeLocation,
 };
 
 export type EslintContext = {|
-  report: ({message: string, node: any}) => void,
+  report: ({loc?: NodeLocation, message: string, node: any}) => void,
 |};

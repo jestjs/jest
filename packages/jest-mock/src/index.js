@@ -274,6 +274,8 @@ class ModuleMockerClass {
           if (returnValue === undefined) {
             returnValue = mockConfig.defaultReturnValue;
           }
+
+          return returnValue;
         }
 
         // If mockImplementationOnce()/mockImplementation() is last set,
@@ -436,7 +438,7 @@ class ModuleMockerClass {
     getSlots(metadata.members).forEach(slot => {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
-        callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
+        callbacks.push(() => (mock[slot] = refs[slotMetadata.ref]));
       } else {
         mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
       }

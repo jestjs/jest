@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
 const ansiEscapes = require('ansi-escapes');
@@ -31,6 +32,7 @@ const {KEYS, CLEAR} = require('./constants');
 let hasExitListener = false;
 
 const watch = (
+  globalConfig: GlobalConfig,
   contexts: Array<Context>,
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
@@ -104,7 +106,6 @@ const watch = (
     preRunMessage.print(pipe);
     isRunning = true;
     contexts.forEach(context => {
-      // $FlowFixMe
       context.config = Object.freeze(
         // $FlowFixMe
         Object.assign(
@@ -117,25 +118,33 @@ const watch = (
         ),
       );
     });
-    return runJest(contexts, argv, pipe, testWatcher, startRun, results => {
-      isRunning = false;
-      hasSnapshotFailure = !!results.snapshot.failure;
-      // Create a new testWatcher instance so that re-runs won't be blocked.
-      // The old instance that was passed to Jest will still be interrupted
-      // and prevent test runs from the previous run.
-      testWatcher = new TestWatcher({isWatchMode: true});
-      if (shouldDisplayWatchUsage) {
-        pipe.write(usage(argv, hasSnapshotFailure));
-        shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-        isWatchUsageDisplayed = true;
-      } else {
-        pipe.write(showToggleUsagePrompt());
-        shouldDisplayWatchUsage = false;
-        isWatchUsageDisplayed = false;
-      }
+    return runJest(
+      globalConfig,
+      contexts,
+      argv,
+      pipe,
+      testWatcher,
+      startRun,
+      results => {
+        isRunning = false;
+        hasSnapshotFailure = !!results.snapshot.failure;
+        // Create a new testWatcher instance so that re-runs won't be blocked.
+        // The old instance that was passed to Jest will still be interrupted
+        // and prevent test runs from the previous run.
+        testWatcher = new TestWatcher({isWatchMode: true});
+        if (shouldDisplayWatchUsage) {
+          pipe.write(usage(argv, hasSnapshotFailure));
+          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+          isWatchUsageDisplayed = true;
+        } else {
+          pipe.write(showToggleUsagePrompt());
+          shouldDisplayWatchUsage = false;
+          isWatchUsageDisplayed = false;
+        }
 
-      testNamePatternPrompt.updateCachedTestResults(results.testResults);
-    }).catch(error => console.error(chalk.red(error.stack)));
+        testNamePatternPrompt.updateCachedTestResults(results.testResults);
+      },
+    ).catch(error => console.error(chalk.red(error.stack)));
   };
 
   const onKeypress = (key: string) => {

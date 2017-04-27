@@ -10,7 +10,7 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
@@ -25,7 +25,7 @@ class BaseReporter {
   }
 
   onRunStart(
-    config: Config,
+    config: GlobalConfig,
     results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
@@ -38,7 +38,7 @@ class BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    config: Config,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ): ?Promise<any> {}
 

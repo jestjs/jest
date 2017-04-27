@@ -19,9 +19,9 @@ let workerFarmMock;
 jest.mock('worker-farm', () => {
   const mock = jest.fn(
     (options, worker) =>
-      workerFarmMock = jest.fn((data, callback) =>
+      (workerFarmMock = jest.fn((data, callback) =>
         require(worker)(data, callback),
-      ),
+      )),
   );
   mock.end = jest.fn();
   return mock;
@@ -41,27 +41,27 @@ test('.addReporter() .removeReporter()', () => {
 
 describe('_createInBandTestRun()', () => {
   test('injects the rawModuleMap to each the worker in watch mode', () => {
-    const config = {watch: true};
+    const globalConfig = {watch: true};
+    const config = {rootDir: '/path/'};
     const rawModuleMap = jest.fn();
     const context = {config, moduleMap: {getRawModuleMap: () => rawModuleMap}};
-    const runner = new TestRunner(config, {maxWorkers: 2});
+    const runner = new TestRunner(globalConfig, {maxWorkers: 2});
 
     return runner
       ._createParallelTestRun(
         [{context, path: './file-test.js'}, {context, path: './file2-test.js'}],
-        new TestWatcher({isWatchMode: config.watch}),
+        new TestWatcher({isWatchMode: globalConfig.watch}),
         () => {},
         () => {},
       )
       .then(() => {
         expect(workerFarmMock.mock.calls).toEqual([
           [
-            {config, path: './file-test.js', rawModuleMap},
+            {config, globalConfig, path: './file-test.js', rawModuleMap},
             jasmine.any(Function),
           ],
-          // eslint-disable-next-line max-len
           [
-            {config, path: './file2-test.js', rawModuleMap},
+            {config, globalConfig, path: './file2-test.js', rawModuleMap},
             jasmine.any(Function),
           ],
         ]);
@@ -69,29 +69,28 @@ describe('_createInBandTestRun()', () => {
   });
 
   test('does not inject the rawModuleMap in non watch mode', () => {
-    const config = {watch: false};
+    const globalConfig = {watch: false};
+    const config = {rootDir: '/path/'};
     const context = {config};
-    const runner = new TestRunner(config, {maxWorkers: 1});
+    const runner = new TestRunner(globalConfig, {maxWorkers: 1});
 
     return runner
       ._createParallelTestRun(
         [{context, path: './file-test.js'}, {context, path: './file2-test.js'}],
-        new TestWatcher({isWatchMode: config.watch}),
+        new TestWatcher({isWatchMode: globalConfig.watch}),
         () => {},
         () => {},
       )
       .then(() => {
         expect(workerFarmMock.mock.calls).toEqual([
-          /* eslint-disable max-len */
           [
-            {config, path: './file-test.js', rawModuleMap: null},
+            {config, globalConfig, path: './file-test.js', rawModuleMap: null},
             jasmine.any(Function),
           ],
           [
-            {config, path: './file2-test.js', rawModuleMap: null},
+            {config, globalConfig, path: './file2-test.js', rawModuleMap: null},
             jasmine.any(Function),
           ],
-          /* eslint-enable max-len */
         ]);
       });
   });

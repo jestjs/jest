@@ -12,6 +12,7 @@ dependencies:
       fi
     - nvm install 4
     - nvm install 6
+    - wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb; sudo dpkg -i crowdin.deb
 
   cache_directories:
     - ~/.yarn
@@ -42,4 +43,8 @@ deployment:
       - git config --global user.email "jest-bot@users.noreply.github.com"
       - git config --global user.name "Website Deployment Script"
       - echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
+      # removed calls to "yarn crowdin-upload" and "yarn crowdin-download" because of an issue
+      # with yarn not inheriting environment variables
+      - cd website && crowdin-cli --config ../crowdin.yaml upload sources --auto-update -b master
+      - cd website && crowdin-cli --config ../crowdin.yaml download -b master
       - cd website && GIT_USER=jest-bot npm run gh-pages
