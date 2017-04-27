@@ -53,9 +53,27 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
   const formatter = (coverage, reporter) => coverageMap;
   const report = formatTestResults(results, formatter);
 
-  return Object.assign((Object.create(null): any), results, {
+  const returnPhabricatorReport: PhabricatorReport = {
+    aggregatedResult: results, 
     // Remove the coverageMap here as it uses a lot of memory.
     coverageMap: null,
+    formattedTestResults: report.testResults,
+    numFailedTestSuites: results.numFailedTestSuites,
+    numFailedTests: results.numFailedTests,
+    numPassedTestSuites: results.numPassedTestSuites,
+    numPassedTests: results.numPassedTests,
+    numPendingTestSuites: results.numPendingTestSuites,
+    numPendingTests: results.numPendingTests,
+    numRuntimeErrorTestSuites: results.numRuntimeErrorTestSuites,
+    numTotalTestSuites: results.numTotalTestSuites,
+    numTotalTests: results.numTotalTests,
     phabricatorReport: report.testResults,
-  });
+    snapshot: results.snapshot,
+    startTime: results.startTime,
+    success: results.success,
+    testResults: results.testResults,
+    wasInterrupted: results.wasInterrupted,
+  };
+
+  return returnPhabricatorReport;
 };
