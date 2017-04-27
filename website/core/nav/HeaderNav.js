@@ -18,6 +18,9 @@ class LanguageDropDown extends React.Component {
       if (lang.tag == this.props.language) {
         currentLanguage = lang.name;
       }
+      if (lang.tag == this.props.language) {
+        return;
+      }
       enabledLanguages.push(
         <li key={lang.tag}>
           <a href={'/jest/' + lang.tag}>

@@ -261,7 +261,7 @@ const languages = require('./languages.js');
 
 const enabledLanguages = [];
 languages.filter(lang => lang.enabled).map(lang => {
-  enabledLanguages.push(lang.tag);
+  enabledLanguages.push(lang);
 });
 siteConfig['languages'] = enabledLanguages;
 
