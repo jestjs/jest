@@ -19,18 +19,25 @@ const {replacePathSepForRegex} = require('jest-regex-util');
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
+const cacheDirectory = (() => {
+  if (process.getuid == null) {
+    return path.join(os.tmpdir(), 'jest');
+  }
+  // On some platforms tmpdir() is `/tmp`, causing conflicts between different
+  // users and permission issues. Adding an additional subdivision by UID can
+  // help.
+  return path.join(
+    os.tmpdir(),
+    'jest',
+    (process.getuid && process.getuid().toString(36)) || '',
+  );
+})();
+
 module.exports = ({
   automock: false,
   bail: false,
   browser: false,
-  cacheDirectory: (() => {
-    if (process.getuid == null) {
-      return path.join(os.tmpdir(), 'jest');
-    }
-    // On some platforms tmpdir() is `/tmp`, causing conflicts between different users and
-    // permission issues. Adding an additional subdivision by UID can help.
-    return path.join(os.tmpdir(), 'jest', process.getuid().toString(36));
-  })(),
+  cacheDirectory,
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
