@@ -25,7 +25,7 @@ class BaseReporter {
   }
 
   onRunStart(
-    config: GlobalConfig,
+    globalConfig: GlobalConfig,
     results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
@@ -38,7 +38,7 @@ class BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    config: GlobalConfig,
+    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ): ?Promise<any> {}
 
