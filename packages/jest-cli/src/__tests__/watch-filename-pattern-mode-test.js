@@ -161,7 +161,7 @@ describe('Watch mode flows', () => {
 
   it('Shows the appropiate header when the filename filter is active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 
@@ -183,7 +183,7 @@ describe('Watch mode flows', () => {
 
   it('Shows the appropiate header when the test name filter is active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.T);
 
@@ -205,7 +205,7 @@ describe('Watch mode flows', () => {
 
   it('Shows the appropiate header when both filters are active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 
@@ -227,7 +227,7 @@ describe('Watch mode flows', () => {
 
   it('Pressing "c" clears the filters', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 
