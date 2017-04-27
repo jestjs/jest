@@ -14,6 +14,7 @@ import type {TestResult} from 'types/TestResult';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
+const scroll = require('./lib/scroll-list');
 const {getTerminalWidth} = require('./lib/terminalUtils');
 const stringLength = require('string-length');
 const Prompt = require('./lib/Prompt');
@@ -57,17 +58,17 @@ module.exports = class TestNamePatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  _onChange(pattern: string) {
+  _onChange(pattern: string, options) {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this._printTypeahead(pattern, 10);
+    this._printTypeahead(pattern, Object.assign({max: 10}, options));
   }
 
-  _printTypeahead(pattern: string, max: number) {
+  _printTypeahead(pattern: string, options) {
+    const { max } = options;
     const matchedTests = this._getMatchedTests(pattern);
 
     const total = matchedTests.length;
-    const results = matchedTests.slice(0, max);
     const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
     this._pipe.write(ansiEscapes.eraseDown);
@@ -86,12 +87,18 @@ module.exports = class TestNamePatternPrompt {
       this._pipe.write(' from cached test suites.');
 
       const width = getTerminalWidth();
+      const { start, end, index } = scroll(matchedTests.length, options);
 
-      results.forEach(name => {
-        const testName = formatTestNameByPattern(name, pattern, width - 4);
-
-        this._pipe.write(`\n ${chalk.dim('\u203A')} ${testName}`);
-      });
+      matchedTests.slice(start, end)
+      .map(name => formatTestNameByPattern(name, pattern, width - 4))
+      .map((item, i) => {
+        if (i === index) {
+          this._prompt.setSelected('^' + chalk.stripColor(item) + '$');
+          return chalk.black.bgYellow(chalk.stripColor(item));
+        }
+        return item;
+      })
+      .forEach(output => this._pipe.write(`\n ${chalk.dim('\u203A')} ${output}`));
 
       if (total > max) {
         const more = total - max;

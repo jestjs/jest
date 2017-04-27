@@ -16,6 +16,7 @@ import type SearchSource from './SearchSource';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
+const scroll = require('./lib/scroll-list');
 const {getTerminalWidth} = require('./lib/terminalUtils');
 const highlight = require('./lib/highlight');
 const stringLength = require('string-length');
@@ -65,7 +66,7 @@ module.exports = class TestPathPatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  _onChange(pattern: string) {
+  _onChange(pattern: string, options) {
     let regex;
 
     try {
@@ -81,10 +82,11 @@ module.exports = class TestPathPatternPrompt {
 
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this._printTypeahead(pattern, tests, 10);
+    this._printTypeahead(pattern, tests, Object.assign({max: 10}, options));
   }
 
-  _printTypeahead(pattern: string, allResults: Array<Test>, max: number) {
+  _printTypeahead(pattern: string, allResults: Array<Test>, options) {
+    const { max } = options;
     const total = allResults.length;
     const results = allResults.slice(0, max);
     const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
@@ -106,7 +108,9 @@ module.exports = class TestPathPatternPrompt {
       const prefix = `  ${chalk.dim('\u203A')} `;
       const padding = stringLength(prefix) + 2;
 
-      results
+      const { start, end, index } = scroll(allResults.length, options);
+
+      allResults.slice(start, end)
         .map(({path, context}) => {
           const filePath = trimAndFormatPath(
             padding,
@@ -115,6 +119,13 @@ module.exports = class TestPathPatternPrompt {
             width,
           );
           return highlight(path, filePath, pattern, context.config.rootDir);
+        })
+        .map((item, i) => {
+          if (i === index) {
+            this._prompt.setSelected(chalk.stripColor(item));
+            return chalk.black.bgYellow(chalk.stripColor(item));
+          }
+          return item;
         })
         .forEach(filePath =>
           this._pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`),
