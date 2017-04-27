@@ -56,12 +56,12 @@ type OnTestSuccess = (test: Test, result: TestResult) => void;
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
-  _config: GlobalConfig;
+  _globalConfig: GlobalConfig;
   _options: Options;
   _dispatcher: ReporterDispatcher;
 
-  constructor(config: GlobalConfig, options: Options) {
-    this._config = config;
+  constructor(globalConfig: GlobalConfig, options: Options) {
+    this._globalConfig = globalConfig;
     this._dispatcher = new ReporterDispatcher();
     this._options = options;
     this._setupReporters();
@@ -125,7 +125,7 @@ class TestRunner {
       testResult.failureMessage = formatExecError(
         testResult,
         test.context.config,
-        this._config,
+        this._globalConfig,
         test.path,
       );
       addResult(aggregatedResults, testResult);
@@ -136,18 +136,19 @@ class TestRunner {
       contexts.forEach(context => {
         const status = snapshot.cleanup(
           context.hasteFS,
-          this._config.updateSnapshot,
+          this._globalConfig.updateSnapshot,
         );
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       });
-      aggregatedResults.snapshot.didUpdate = this._config.updateSnapshot;
-      aggregatedResults.snapshot.failure = !!(!this._config.updateSnapshot &&
+      aggregatedResults.snapshot.didUpdate = this._globalConfig.updateSnapshot;
+      aggregatedResults.snapshot.failure = !!(!this._globalConfig
+        .updateSnapshot &&
         (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
           aggregatedResults.snapshot.filesRemoved));
     };
 
-    this._dispatcher.onRunStart(this._config, aggregatedResults, {
+    this._dispatcher.onRunStart(this._globalConfig, aggregatedResults, {
       estimatedTime,
       showStatus: !runInBand,
     });
@@ -165,7 +166,11 @@ class TestRunner {
     updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
 
-    this._dispatcher.onRunComplete(contexts, this._config, aggregatedResults);
+    this._dispatcher.onRunComplete(
+      contexts,
+      this._globalConfig,
+      aggregatedResults,
+    );
 
     const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
       aggregatedResults.numRuntimeErrorTestSuites === 0);
@@ -197,7 +202,7 @@ class TestRunner {
               this._dispatcher.onTestStart(test);
               return runTest(
                 test.path,
-                this._config,
+                this._globalConfig,
                 test.context.config,
                 test.context.resolver,
               );
@@ -237,7 +242,7 @@ class TestRunner {
         this._dispatcher.onTestStart(test);
         return worker({
           config: test.context.config,
-          globalConfig: this._config,
+          globalConfig: this._globalConfig,
           path: test.path,
           rawModuleMap: watcher.isWatchMode()
             ? test.context.moduleMap.getRawModuleMap()
@@ -277,7 +282,7 @@ class TestRunner {
   }
 
   _setupReporters() {
-    const {collectCoverage, expand, notify, verbose} = this._config;
+    const {collectCoverage, expand, notify, verbose} = this._globalConfig;
 
     this.addReporter(
       verbose
@@ -303,13 +308,13 @@ class TestRunner {
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
   ) {
-    if (this._config.bail && aggregatedResults.numFailedTests !== 0) {
+    if (this._globalConfig.bail && aggregatedResults.numFailedTests !== 0) {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {
         this._dispatcher.onRunComplete(
           contexts,
-          this._config,
+          this._globalConfig,
           aggregatedResults,
         );
         process.exit(1);

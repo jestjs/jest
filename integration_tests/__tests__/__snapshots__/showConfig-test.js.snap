@@ -4,25 +4,17 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
 {
   "config": {
     "automock": false,
-    "bail": false,
     "browser": false,
+    "cache": false,
     "cacheDirectory": "/tmp/jest",
     "clearMocks": false,
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "coverageReporters": [
-      "json",
-      "text",
-      "lcov",
-      "clover"
-    ],
-    "expand": false,
     "globals": {},
     "haste": {
       "providesModuleNodeModules": []
     },
-    "mapCoverage": false,
     "moduleDirectories": [
       "node_modules"
     ],
@@ -34,13 +26,16 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     ],
     "moduleNameMapper": {},
     "modulePathIgnorePatterns": [],
-    "noStackTrace": false,
-    "notify": false,
+    "name": "[md5 hash]",
     "preset": null,
     "resetMocks": false,
     "resetModules": false,
+    "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
     "roots": [
       "/mocked/root/path/jest/integration_tests/verbose_reporter"
+    ],
+    "setupFiles": [
+      "/mocked/root/path/jest/node_modules/regenerator-runtime/runtime.js"
     ],
     "snapshotSerializers": [],
     "testEnvironment": "/mocked/root/path/jest/packages/jest-environment-node/build/index.js",
@@ -52,36 +47,22 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
       "/node_modules/"
     ],
     "testRegex": "",
-    "testResultsProcessor": null,
+    "testRunner": "/mocked/root/path/jest/packages/jest-jasmine2/build/index.js",
     "testURL": "about:blank",
     "timers": "real",
-    "transformIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "useStderr": false,
-    "verbose": null,
-    "watch": false,
-    "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
-    "name": "[md5 hash]",
-    "setupFiles": [
-      "/mocked/root/path/jest/node_modules/regenerator-runtime/runtime.js"
-    ],
-    "testRunner": "/mocked/root/path/jest/packages/jest-jasmine2/build/index.js",
     "transform": [
       [
         "^.+\\\\.jsx?$",
         "/mocked/root/path/jest/integration_tests/verbose_reporter/node_modules/babel-jest/build/index.js"
       ]
     ],
-    "cache": false,
-    "watchman": true
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "framework": "jasmine2",
   "globalConfig": {
     "bail": false,
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ],
     "coverageReporters": [
       "json",
       "text",

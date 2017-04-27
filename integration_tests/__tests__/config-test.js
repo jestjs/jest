@@ -48,5 +48,5 @@ test('watchman config option is respected over default argv', () => {
     '--debug',
   ]);
 
-  expect(stdout).toMatch('"watchman": false,');
+  expect(stdout).toMatch('"watchman": false');
 });

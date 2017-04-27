@@ -12,6 +12,7 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 import type {Resolver} from 'types/Resolve';
+import type RuntimeClass from 'jest-runtime';
 
 const BufferedConsole = require('./lib/BufferedConsole');
 const {Console, NullConsole, setGlobal} = require('jest-util');
@@ -52,14 +53,16 @@ function runTest(
   /* $FlowFixMe */
   const TestRunner = require(config.testRunner);
   /* $FlowFixMe */
-  const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
+  const Runtime = (require(config.moduleLoader || 'jest-runtime'): Class<
+    RuntimeClass
+  >);
 
   const env = new TestEnvironment(config);
   const TestConsole = globalConfig.verbose
     ? Console
-    : config.silent ? NullConsole : BufferedConsole;
+    : globalConfig.silent ? NullConsole : BufferedConsole;
   const testConsole = new TestConsole(
-    config.useStderr ? process.stderr : process.stdout,
+    globalConfig.useStderr ? process.stderr : process.stdout,
     process.stderr,
     (type, message) =>
       getConsoleOutput(
@@ -71,7 +74,12 @@ function runTest(
   );
   const cacheFS = {[path]: testSource};
   setGlobal(env.global, 'console', testConsole);
-  const runtime = new ModuleLoader(config, env, resolver, cacheFS);
+  const runtime = new Runtime(config, env, resolver, cacheFS, {
+    collectCoverage: globalConfig.collectCoverage,
+    collectCoverageFrom: globalConfig.collectCoverageFrom,
+    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    mapCoverage: globalConfig.mapCoverage,
+  });
   const start = Date.now();
   return TestRunner(globalConfig, config, env, runtime, path)
     .then((result: TestResult) => {

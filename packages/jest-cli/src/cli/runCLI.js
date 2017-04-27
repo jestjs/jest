@@ -55,6 +55,7 @@ module.exports = async (
           maxWorkers: getMaxWorkers(argv),
           resetCache: !config.cache,
           watch: globalConfig.watch,
+          watchman: globalConfig.watchman,
         });
         hasteMapInstances[index] = hasteMapInstance;
         return createContext(config, await hasteMapInstance.build());

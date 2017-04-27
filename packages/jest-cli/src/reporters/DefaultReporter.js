@@ -112,7 +112,7 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunStart(
-    config: GlobalConfig,
+    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {

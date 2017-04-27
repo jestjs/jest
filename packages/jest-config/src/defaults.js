@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {DefaultConfig} from 'types/Config';
+import type {DefaultOptions} from 'types/Config';
 
 const constants = require('./constants');
 const os = require('os');
@@ -66,4 +66,4 @@ module.exports = ({
   useStderr: false,
   verbose: null,
   watch: false,
-}: DefaultConfig);
+}: DefaultOptions);

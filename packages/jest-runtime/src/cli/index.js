@@ -57,7 +57,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
-  readConfig(argv, root).then(({config}) => {
+  readConfig(argv, root).then(({config, globalConfig}) => {
     // Always disable automocking in scripts.
     config = Object.assign({}, config, {
       automock: false,
@@ -65,6 +65,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
     });
     Runtime.createContext(config, {
       maxWorkers: os.cpus().length - 1,
+      watchman: globalConfig.watchman,
     })
       .then(hasteMap => {
         /* $FlowFixMe */
@@ -76,7 +77,8 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
           'console',
           new Console(process.stdout, process.stderr),
         );
-        env.global.jestConfig = config;
+        env.global.jestProjectConfig = config;
+        env.global.jestGlobalConfig = globalConfig;
 
         const runtime = new Runtime(config, env, hasteMap.resolver);
         runtime.requireModule(testFilePath);
