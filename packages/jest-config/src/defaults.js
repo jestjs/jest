@@ -29,7 +29,7 @@ const cacheDirectory = (() => {
   // help.
   return path.join(
     os.tmpdir(),
-    'jest_' + getuid().toString(36),
+    'jest_' + getuid.call(process).toString(36),
   );
 })();
 
