@@ -239,3 +239,5 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
 [MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
+
+exports[`Watch mode flows can select a specific test name from the typeahead results 1`] = `"should convert string to a RegExp"`;

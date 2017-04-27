@@ -459,3 +459,5 @@ Pattern Mode Usage
 [MOCK - cursorTo(11, 7)]
 [MOCK - cursorRestorePosition]"
 `;
+
+exports[`Watch mode flows can select a specific file name from the typeahead results 1`] = `"path/to/file2-test.js"`;
