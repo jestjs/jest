@@ -303,8 +303,10 @@ Default: `[]`
 A list of paths to snapshot serializer modules Jest should use for snapshot
 testing.
 
-Jest has default serializers for built-in JavaScript types and for React
-elements. See [snapshot test tutorial](/jest/docs/tutorial-react-native.html#snapshot-test) for more information.
+Jest has default serializers for built-in JavaScript types, HTML elements
+(Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See
+[snapshot test tutorial](/jest/docs/tutorial-react-native.html#snapshot-test)
+for more information.
 
 Example serializer module:
 
