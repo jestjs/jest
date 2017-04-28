@@ -22,7 +22,7 @@ test('mocks async functions', () => {
     return;
   }
   if (process.platform !== 'win32') {
-    run('yarn --no-lockfile', dir);
+    run('yarn', dir);
     linkJestPackage('babel-jest', dir);
   }
   // --no-cache because babel can cache stuff and result in false green
