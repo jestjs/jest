@@ -121,6 +121,8 @@ jest.mock('../moduleName', () => {
 
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
 
+*Warning: Importing a module in a setup file (as specified by `setupTestFrameworkScriptFile`) will prevent mocking for the module in question, as well as all the modules that it imports.*
+
 Returns the `jest` object for chaining.
 
 ### `jest.clearAllMocks()`
