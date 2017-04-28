@@ -727,6 +727,7 @@ describe('.toHaveProperty()', () => {
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
+    [Object.assign(Object.create(null), {property: 1}), 'property', 1],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(obj)}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
       jestExpect(obj).toHaveProperty(keyPath, value);

@@ -17,6 +17,9 @@ type GetPath = {
   value?: any,
 };
 
+const hasOwnProperty = (object: Object, value: string) =>
+  Object.prototype.hasOwnProperty.call(object, value);
+
 const getPath = (
   object: Object,
   propertyPath: string | Array<string>,
@@ -44,7 +47,7 @@ const getPath = (
       result.lastTraversedObject || (result.lastTraversedObject = object);
       result.traversedPath.unshift(prop);
       if (propertyPath.length === 1) {
-        result.hasEndProp = object.hasOwnProperty(prop);
+        result.hasEndProp = hasOwnProperty(object, prop);
         if (!result.hasEndProp) {
           delete result.value;
           result.traversedPath.shift();
@@ -93,4 +96,5 @@ const getObjectSubset = (object: Object, subset: Object) => {
 module.exports = {
   getObjectSubset,
   getPath,
+  hasOwnProperty,
 };
