@@ -54,7 +54,8 @@ const getBabelRC = (filename, {useCache}) => {
       const packageJsonFileContents = require(packageJsonFilePath);
       if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
         cache[directory] = JSON.stringify(
-          packageJsonFileContents[BABEL_CONFIG_KEY]);
+          packageJsonFileContents[BABEL_CONFIG_KEY],
+        );
         break;
       }
     }
