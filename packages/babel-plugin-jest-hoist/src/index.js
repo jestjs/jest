@@ -66,7 +66,7 @@ const WHITELISTED_IDENTIFIERS = {
   require: true,
   undefined: true,
 };
-Object.keys(global).forEach(name => WHITELISTED_IDENTIFIERS[name] = true);
+Object.keys(global).forEach(name => (WHITELISTED_IDENTIFIERS[name] = true));
 
 const JEST_GLOBAL = {name: 'jest'};
 const IDVisitor = {

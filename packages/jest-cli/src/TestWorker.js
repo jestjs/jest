@@ -79,7 +79,7 @@ module.exports = (
   callback: WorkerCallback,
 ) => {
   let parentExited = false;
-  const disconnectCallback = () => parentExited = true;
+  const disconnectCallback = () => (parentExited = true);
   const removeListener = () =>
     process.removeListener('disconnect', disconnectCallback);
   process.on('disconnect', disconnectCallback);

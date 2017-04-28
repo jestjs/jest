@@ -28,8 +28,8 @@ const setConfig = (contexts, newConfig) =>
   contexts.forEach(
     context =>
       (context.config = Object.freeze(
-        Object.assign({}, context.config, newConfig)
-      ))
+        Object.assign({}, context.config, newConfig),
+      )),
   );
 
 const formatTestPathPattern = pattern => {
@@ -46,12 +46,12 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
   if (pattern.onlyChanged) {
     return (
       chalk.bold(
-        'No tests found related to files changed since last commit.\n'
+        'No tests found related to files changed since last commit.\n',
       ) +
       chalk.dim(
         pattern.watch
           ? 'Press `a` to run all tests, or run Jest with `--watchAll`.'
-          : 'Run Jest without `-o` to run all tests.'
+          : 'Run Jest without `-o` to run all tests.',
       )
     );
   }
@@ -114,7 +114,7 @@ const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
             'repository. If you make your project a git or hg ' +
             'repository (`git init` or `hg init`), Jest will be able ' +
             'to only run tests related to files changed since the last ' +
-            'commit.'
+            'commit.',
         );
       }
     }
@@ -133,11 +133,11 @@ const processResults = (runResults, options) => {
 
       fs.writeFileSync(
         outputFile,
-        JSON.stringify(formatTestResults(runResults))
+        JSON.stringify(formatTestResults(runResults)),
       );
       process.stdout.write(
         `Test results written to: ` +
-          `${path.relative(process.cwd(), outputFile)}\n`
+          `${path.relative(process.cwd(), outputFile)}\n`,
       );
     } else {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
@@ -153,7 +153,7 @@ const runJest = async (
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
-  onComplete: (testResults: any) => void
+  onComplete: (testResults: any) => void,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
   const pattern = getTestPathPattern(argv);
@@ -166,11 +166,11 @@ const runJest = async (
         context,
         pattern,
         argv,
-        pipe
+        pipe,
       );
       allTests = allTests.concat(matches.tests);
       return {context, matches};
-    })
+    }),
   );
 
   allTests = sequencer.sort(allTests);
@@ -183,7 +183,7 @@ const runJest = async (
   ) {
     // $FlowFixMe
     globalConfig = Object.freeze(
-      Object.assign({}, globalConfig, {verbose: true})
+      Object.assign({}, globalConfig, {verbose: true}),
     );
   }
 

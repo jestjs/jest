@@ -65,7 +65,7 @@ class TestSequencer {
       cache[test.path] && cache[test.path][0] === FAIL;
     const time = (cache, test) => cache[test.path] && cache[test.path][1];
 
-    tests.forEach(test => test.duration = time(this._getCache(test), test));
+    tests.forEach(test => (test.duration = time(this._getCache(test), test)));
     return tests.sort((testA, testB) => {
       const cacheA = this._getCache(testA);
       const cacheB = this._getCache(testB);
@@ -87,7 +87,7 @@ class TestSequencer {
 
   cacheResults(tests: Tests, results: AggregatedResult) {
     const map = Object.create(null);
-    tests.forEach(test => map[test.path] = test);
+    tests.forEach(test => (map[test.path] = test));
     results.testResults.forEach(testResult => {
       if (testResult && map[testResult.testFilePath] && !testResult.skipped) {
         const cache = this._getCache(map[testResult.testFilePath]);
