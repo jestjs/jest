@@ -55,7 +55,7 @@ const createTransformer = (options: any) => {
         const packageJsonFileContents = require(packageJsonFilePath);
         if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
           cache[directory] = JSON.stringify(
-            packageJsonFileContents[BABEL_CONFIG_KEY],
+            packageJsonFileContents[BABEL_CONFIG_KEY]
           );
           break;
         }
@@ -79,7 +79,7 @@ const createTransformer = (options: any) => {
       fileData: string,
       filename: Path,
       configString: string,
-      {instrument}: TransformOptions,
+      {instrument}: TransformOptions
     ): string {
       return crypto
         .createHash('md5')
@@ -98,7 +98,7 @@ const createTransformer = (options: any) => {
       src: string,
       filename: Path,
       config: ProjectConfig,
-      transformOptions: TransformOptions,
+      transformOptions: TransformOptions
     ): string {
       if (!babel) {
         babel = require('babel-core');

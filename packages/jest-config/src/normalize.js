@@ -91,8 +91,7 @@ const setupBabelJest = (config: InitialOptions) => {
         {basedir},
       );
       if (
-        jsTransformer &&
-        jsTransformer.includes(NODE_MODULES + 'babel-jest')
+        jsTransformer && jsTransformer.includes(NODE_MODULES + 'babel-jest')
       ) {
         babelJest = jsTransformer;
       }
@@ -232,7 +231,7 @@ const normalizeArgv = (config: InitialOptions, argv: Object) => {
   if (argv.collectCoverageOnlyFrom) {
     const collectCoverageOnlyFrom = Object.create(null);
     argv.collectCoverageOnlyFrom.forEach(
-      path => (collectCoverageOnlyFrom[path] = true),
+      path => collectCoverageOnlyFrom[path] = true,
     );
     config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
   }

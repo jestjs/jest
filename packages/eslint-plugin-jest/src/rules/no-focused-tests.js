@@ -37,8 +37,7 @@ module.exports = (context: EslintContext) => ({
     }
 
     if (
-      callee.type === 'MemberExpression' &&
-      isCallToTestOnlyFunction(callee)
+      callee.type === 'MemberExpression' && isCallToTestOnlyFunction(callee)
     ) {
       context.report({
         message: 'Unexpected focused test.',

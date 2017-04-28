@@ -26,7 +26,6 @@ const BlogSidebar = React.createClass({
     return (
       <Container className="docsNavContainer" id="docsNav" wrapper={false}>
         <SideNav
-          language={this.props.language}
           root="/jest/blog/"
           title="Blog"
           contents={contents}

@@ -5,11 +5,17 @@
 
 const React = require('React');
 
-const Button = require('Button');
-
 const siteConfig = require('../../siteConfig.js');
 
 class HomeSplash extends React.Component {
+  makePromoElements(promoEl, index) {
+    return (
+      <div className="promoRow" key={index}>
+        {promoEl}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="homeContainer">
@@ -21,34 +27,10 @@ class HomeSplash extends React.Component {
             <div className="inner">
               <h2 className="projectTitle">
                 {siteConfig.title}
-                <small>{siteConfig[this.props.language].tagline}</small>
+                <small>{siteConfig.tagline}</small>
               </h2>
               <div className="section promoSection">
-                <div className="promoRow">
-                  <div className="pluginRowBlock">
-                    <Button href="#use">
-                      {siteConfig[this.props.language].promo.try}
-                    </Button>
-                    <Button
-                      href={
-                        '/jest/docs/' +
-                          this.props.language +
-                          '/getting-started.html'
-                      }
-                    >
-                      {siteConfig[this.props.language].promo.get}
-                    </Button>
-                    <Button
-                      href={
-                        '/jest/docs/' +
-                          this.props.language +
-                          '/snapshot-testing.html'
-                      }
-                    >
-                      {siteConfig[this.props.language].promo.learn}
-                    </Button>
-                  </div>
-                </div>
+                {siteConfig.homepagePromos.map(this.makePromoElements, this)}
               </div>
               <div className="githubButton">{siteConfig.githubButton}</div>
             </div>

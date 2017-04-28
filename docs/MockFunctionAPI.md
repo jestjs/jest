@@ -1,9 +1,9 @@
 ---
 id: mock-function-api
 title: Mock Functions
-layout: docs
+layout: reference
 category: API Reference
-permalink: docs/en/mock-function-api.html
+permalink: docs/mock-function-api.html
 previous: expect
 next: jest-object
 ---

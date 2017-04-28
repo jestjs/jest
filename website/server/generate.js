@@ -5,8 +5,6 @@ const mkdirp = require('mkdirp');
 const server = require('./server.js');
 const feed = require('./feed');
 
-console.log('Generate.js triggered...');
-
 // Sadly, our setup fatals when doing multiple concurrent requests
 // I don't have the time to dig into why, it's easier to just serialize
 // requests.
@@ -49,14 +47,11 @@ glob('src/**/*.*', (er, files) => {
     if (file.match(/\.js$/)) {
       targetFile = targetFile.replace(/\.js$/, '.html');
       queue.push(cb => {
-        request(
-          'http://localhost:8079/' + targetFile.replace(/^build\//, ''),
-          (error, response, body) => {
-            mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
-            fs.writeFileSync(targetFile, body);
-            cb();
-          }
-        );
+        request('http://localhost:8079/' + targetFile.replace(/^build\//, ''), (error, response, body) => {
+          mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
+          fs.writeFileSync(targetFile, body);
+          cb();
+        });
       });
     } else {
       queue.push(cb => {
