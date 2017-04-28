@@ -11,6 +11,7 @@
 'use strict';
 
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
+import type {TestFramework} from 'types/TestRunner';
 
 const VERSION = require('../../package.json').version;
 
@@ -20,7 +21,7 @@ const logDebugMessages = (
   pipe: stream$Writable | tty$WriteStream,
 ): void => {
   /* $FlowFixMe */
-  const testFramework = require(config.testRunner);
+  const testFramework = (require(config.testRunner): TestFramework);
   const output = {
     config,
     framework: testFramework.name,

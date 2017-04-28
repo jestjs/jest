@@ -14,7 +14,7 @@ import type {Global} from './Global';
 import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
-export type Environment = {|
+declare class $JestEnvironment {
   constructor(config: ProjectConfig): void,
   dispose(): void,
   runScript(script: Script): any,
@@ -32,4 +32,7 @@ export type Environment = {|
   },
   testFilePath: string,
   moduleMocker: ModuleMocker,
-|};
+}
+
+export type Environment = $JestEnvironment;
+export type EnvironmentClass = typeof $JestEnvironment;
