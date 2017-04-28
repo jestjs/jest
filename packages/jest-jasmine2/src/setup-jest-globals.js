@@ -51,7 +51,7 @@ const addSuppressedErrors = result => {
 };
 
 function addAssertionErrors(result) {
-  const {assertionCalls, assertionsExpected} = getState();
+  const {assertionCalls, assertionsExpected, expectedAssertions} = getState();
   setState({
     assertionCalls: 0,
     assertionsExpected: null,
@@ -73,6 +73,22 @@ function addAssertionErrors(result) {
     result.failedExpectations.push({
       actual: assertionCalls,
       expected: assertionsExpected,
+      message,
+      passed: false,
+    });
+  }
+  if (expectedAssertions && assertionCalls === 0) {
+    const expected = EXPECTED_COLOR('at least one assertion');
+    const received = RECEIVED_COLOR('no assertions were called');
+    const message = new Error(
+      matcherHint('.hasAssertions', '', '', {
+        isDirectExpectCall: true,
+      }) + '\n\n' + `Expected ${expected} to be called but ${received}.`
+    ).stack;
+    result.status = 'failed';
+    result.failedExpectations.push({
+      actual: 'none',
+      expected: 'at least one',
       message,
       passed: false,
     });
