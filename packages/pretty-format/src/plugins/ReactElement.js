@@ -4,11 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
-/* eslint-disable max-len */
+
 'use strict';
 
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
 const escapeHTML = require('./lib/escapeHTML');
 

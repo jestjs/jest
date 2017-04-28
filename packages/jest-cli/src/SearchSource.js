@@ -34,6 +34,7 @@ type StrOrRegExpPattern = RegExp | string;
 
 type Options = {|
   lastCommit?: boolean,
+  withAncestor?: boolean,
 |};
 
 export type PathPattern = {|
@@ -202,10 +203,14 @@ class SearchSource {
         };
       }
       return Promise.all(
-        Array.from(repos).map(([gitRepo, hgRepo]) => {
-          return gitRepo
-            ? git.findChangedFiles(gitRepo, options)
-            : hg.findChangedFiles(hgRepo, options);
+        repos.map(([gitRepo, hgRepo]) => {
+          if (gitRepo) {
+            return git.findChangedFiles(gitRepo, options);
+          }
+          if (hgRepo) {
+            return hg.findChangedFiles(hgRepo, options);
+          }
+          return [];
         }),
       ).then(changedPathSets =>
         this.findRelatedTests(

@@ -16,8 +16,8 @@ const path = require('path');
 const childProcess = require('child_process');
 
 type Options = {|
-  withAncestor?: boolean,
   lastCommit?: boolean,
+  withAncestor?: boolean,
 |};
 
 function findChangedFiles(
