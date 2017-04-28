@@ -22,6 +22,7 @@ import type {
 const style = require('ansi-styles');
 
 type Theme = {|
+  comment?: string,
   content?: string,
   prop?: string,
   tag?: string,
@@ -799,6 +800,7 @@ const DEFAULTS: Options = {
   printFunctionName: true,
   spacing: '\n',
   theme: {
+    comment: 'gray',
     content: 'reset',
     prop: 'yellow',
     tag: 'cyan',
@@ -873,7 +875,13 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
     opts = normalizeOptions(initialOptions);
   }
 
-  const colors: Colors = {};
+  const colors: Colors = {
+    comment: {close: '', open: ''},
+    content: {close: '', open: ''},
+    prop: {close: '', open: ''},
+    tag: {close: '', open: ''},
+    value: {close: '', open: ''},
+  };
   Object.keys(opts.theme).forEach(key => {
     if (opts.highlight) {
       const color = (colors[key] = style[opts.theme[key]]);
@@ -886,8 +894,6 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
           `pretty-format: Option "theme" has a key "${key}" whose value "${opts.theme[key]}" is undefined in ansi-styles.`,
         );
       }
-    } else {
-      colors[key] = {close: '', open: ''};
     }
   });
 
