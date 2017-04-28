@@ -27,8 +27,8 @@ const chalk = require('chalk');
 const isCI = require('is-ci');
 const istanbulCoverage = require('istanbul-lib-coverage');
 const libSourceMaps = require('istanbul-lib-source-maps');
-const workerFarm = require('worker-farm');
 const pify = require('pify');
+const workerFarm = require('worker-farm');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -40,7 +40,7 @@ class CoverageReporter extends BaseReporter {
   _maxWorkers: number;
   _sourceMapStore: any;
 
-  constructor(maxWorkers: number) {
+  constructor({maxWorkers}: {maxWorkers: number}) {
     super();
     this._maxWorkers = maxWorkers;
     this._coverageMap = istanbulCoverage.createCoverageMap({});
@@ -129,68 +129,70 @@ class CoverageReporter extends BaseReporter {
           );
       }
     });
-    if (files.length) {
-      if (isInteractive) {
-        process.stderr.write(
-          RUNNING_TEST_COLOR('Running coverage on untested files...'),
-        );
-      }
+    if (!files.length) {
+      return Promise.resolve();
+    }
 
-      const farm = workerFarm(
+    if (isInteractive) {
+      process.stderr.write(
+        RUNNING_TEST_COLOR('Running coverage on untested files...'),
+      );
+    }
+
+    let worker;
+    let farm;
+    if (this._maxWorkers <= 1) {
+      worker = pify(require('./CoverageWorker'));
+    } else {
+      farm = workerFarm(
         {
           autoStart: true,
           maxConcurrentCallsPerWorker: 1,
           maxConcurrentWorkers: this._maxWorkers,
-          maxRetries: 2, // Allow for a couple of transient errors.
+          maxRetries: 2,
         },
         require.resolve('./CoverageWorker'),
       );
-
-      const worker = pify(farm);
-      const instrumentation = [];
-
-      files.forEach(fileObj => {
-        const filename = fileObj.path;
-        const config = fileObj.config;
-        if (!this._coverageMap.data[filename]) {
-          const prom = worker({
-            config,
-            globalConfig,
-            untestedFilePath: filename,
-          })
-            .then(result => {
-              if (result) {
-                this._coverageMap.addFileCoverage(result.coverage);
-                if (result.sourceMapPath) {
-                  this._sourceMapStore.registerURL(
-                    filename,
-                    result.sourceMapPath,
-                  );
-                }
-              }
-            })
-            .catch((error: SerializableError) => {
-              console.error(chalk.red(error.message));
-            });
-          instrumentation.push(prom);
-        }
-      });
-
-      const instrumentAllFiles = Promise.all(instrumentation);
-
-      const afterInstrumentation = () => {
-        if (isInteractive) {
-          clearLine(process.stderr);
-        }
-        workerFarm.end(farm);
-      };
-
-      return instrumentAllFiles
-        .then(afterInstrumentation)
-        .catch(afterInstrumentation);
+      worker = pify(farm);
     }
+    const instrumentation = [];
+    files.forEach(fileObj => {
+      const filename = fileObj.path;
+      const config = fileObj.config;
+      if (!this._coverageMap.data[filename]) {
+        const promise = worker({
+          config,
+          globalConfig,
+          path: filename,
+        })
+          .then(result => {
+            if (result) {
+              this._coverageMap.addFileCoverage(result.coverage);
+              if (result.sourceMapPath) {
+                this._sourceMapStore.registerURL(
+                  filename,
+                  result.sourceMapPath,
+                );
+              }
+            }
+          })
+          .catch((error: SerializableError) => {
+            console.error(chalk.red(error.message));
+          });
+        instrumentation.push(promise);
+      }
+    });
 
-    return Promise.resolve();
+    const cleanup = () => {
+      if (isInteractive) {
+        clearLine(process.stderr);
+      }
+      if (farm) {
+        workerFarm.end(farm);
+      }
+    };
+
+    return Promise.all(instrumentation).then(cleanup).catch(cleanup);
   }
 
   _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {

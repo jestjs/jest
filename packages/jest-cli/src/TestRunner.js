@@ -51,7 +51,7 @@ export type Options = {|
 |};
 
 type OnTestFailure = (test: Test, err: TestError) => void;
-type OnTestSuccess = (test: Test, result: TestResult) => void;
+type OnTestSuccess = (test: Test, result: TestResult) => Promise<*>;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -102,7 +102,7 @@ class TestRunner {
 
     const onResult = (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
-        return;
+        return Promise.resolve();
       }
       if (testResult.testResults.length === 0) {
         const message = 'Your test suite must contain at least one test.';
@@ -110,11 +110,11 @@ class TestRunner {
           message,
           stack: new Error(message).stack,
         });
-        return;
+        return Promise.resolve();
       }
       addResult(aggregatedResults, testResult);
       this._dispatcher.onTestResult(test, testResult, aggregatedResults);
-      this._bailIfNeeded(contexts, aggregatedResults, watcher);
+      return this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
     const onFailure = (test: Test, error: TestError) => {
@@ -293,7 +293,9 @@ class TestRunner {
       // coverage reporter dependency graph is pretty big and we don't
       // want to require it if we're not in the `--coverage` mode
       const CoverageReporter = require('./reporters/CoverageReporter');
-      this.addReporter(new CoverageReporter(this._options.maxWorkers));
+      this.addReporter(
+        new CoverageReporter({maxWorkers: this._options.maxWorkers}),
+      );
     }
 
     this.addReporter(new SummaryReporter(this._options));
@@ -312,12 +314,13 @@ class TestRunner {
         watcher.setState({interrupted: true});
       } else {
         const exit = () => process.exit(1);
-        this._dispatcher
+        return this._dispatcher
           .onRunComplete(contexts, this._globalConfig, aggregatedResults)
           .then(exit)
           .catch(exit);
       }
     }
+    return Promise.resolve();
   }
 }
 
@@ -469,12 +472,10 @@ class ReporterDispatcher {
     );
   }
 
-  onRunComplete(contexts, config, results): Promise<Array<any>> {
-    return Promise.all(
-      this._reporters.map(reporter =>
-        reporter.onRunComplete(contexts, config, results),
-      ),
-    );
+  async onRunComplete(contexts, config, results) {
+    for (const reporter of this._reporters) {
+      await reporter.onRunComplete(contexts, config, results);
+    }
   }
 
   // Return a list of last errors for every reporter
