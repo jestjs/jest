@@ -3,14 +3,11 @@
 'use strict';
 const connect = require('connect');
 const convert = require('./convert.js');
-const translationPre = require('./translationPre.js');
 const fs = require('fs');
 const http = require('http');
 const optimist = require('optimist');
 const path = require('path');
 const reactMiddleware = require('react-page-middleware');
-
-console.log('server.js triggered...');
 
 const argv = optimist.argv;
 
@@ -38,9 +35,6 @@ const buildOptions = {
   static: true,
 };
 
-// Convert localized .json files into .js
-translationPre();
-
 const app = connect()
   .use((req, res, next) => {
     // convert all the md files on every request. This is not optimal
@@ -49,19 +43,14 @@ const app = connect()
     next();
   })
   .use('/jest/blog/feed.xml', (req, res) => {
-    res.end(
-      fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/feed.xml')) + ''
-    );
+    res.end(fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/feed.xml')) + '');
   })
   .use('/jest/blog/atom.xml', (req, res) => {
-    res.end(
-      fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + ''
-    );
-    console.log('DONE');
+    res.end(fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + '');
   })
   .use(reactMiddleware.provide(buildOptions))
   .use(connect['static'](FILE_SERVE_ROOT))
-  // .use(connect.favicon(path.join(FILE_SERVE_ROOT, 'elements', 'favicon', 'favicon.ico')))
+  .use(connect.favicon(path.join(FILE_SERVE_ROOT, 'elements', 'favicon', 'favicon.ico')))
   .use(connect.logger())
   .use(connect.compress())
   .use(connect.errorHandler());

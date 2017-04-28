@@ -3,7 +3,7 @@ id: more-resources
 title: More Resources
 layout: docs
 category: Introduction
-permalink: docs/en/more-resources.html
+permalink: docs/more-resources.html
 previous: mock-functions
 next: snapshot-testing
 ---
