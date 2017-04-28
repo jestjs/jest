@@ -9,14 +9,15 @@
  */
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 import type {SerializableError} from 'types/TestResult';
 
 const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 
 type CoverageWorkerData = {|
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   untestedFilePath: Path,
 |};
 
@@ -43,12 +44,17 @@ process.on('uncaughtException', err => {
 });
 
 module.exports = (
-  {config, untestedFilePath}: CoverageWorkerData,
+  {globalConfig, config, untestedFilePath}: CoverageWorkerData,
   callback: WorkerCallback,
 ) => {
   try {
     const source = fs.readFileSync(untestedFilePath).toString();
-    const result = generateEmptyCoverage(source, untestedFilePath, config);
+    const result = generateEmptyCoverage(
+      source,
+      untestedFilePath,
+      globalConfig,
+      config,
+    );
     callback(null, result);
   } catch (e) {
     callback(formatCoverageError(e, untestedFilePath), undefined);

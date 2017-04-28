@@ -13,9 +13,10 @@ jest.mock('fs').mock('../../generateEmptyCoverage');
 const fs = require('fs');
 const generateEmptyCoverage = require('../../generateEmptyCoverage');
 
-const config = {collectCoverage: true};
+const globalConfig = {collectCoverage: true};
+const config = {};
 const worker = require('../CoverageWorker');
-const workerOptions = {config, untestedFilePath: 'asdf'};
+const workerOptions = {config, globalConfig, untestedFilePath: 'asdf'};
 
 describe('CoverageWorker', () => {
   it('resolves to the result of generateEmptyCoverage upon success', () => {
@@ -24,7 +25,12 @@ describe('CoverageWorker', () => {
     generateEmptyCoverage.mockImplementation(() => 42);
     return new Promise(resolve => {
       worker(workerOptions, (err, result) => {
-        expect(generateEmptyCoverage).toBeCalledWith(validJS, 'asdf', config);
+        expect(generateEmptyCoverage).toBeCalledWith(
+          validJS,
+          'asdf',
+          globalConfig,
+          config,
+        );
         expect(result).toEqual(42);
         resolve();
       });

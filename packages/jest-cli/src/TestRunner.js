@@ -313,7 +313,7 @@ class TestRunner {
       } else {
         const exit = () => process.exit(1);
         this._dispatcher
-          .onRunComplete(contexts, this._config, aggregatedResults)
+          .onRunComplete(contexts, this._globalConfig, aggregatedResults)
           .then(exit)
           .catch(exit);
       }
