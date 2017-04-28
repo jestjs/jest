@@ -2618,6 +2618,18 @@ With a value of:
 "
 `;
 
+exports[`.toHaveProperty() {pass: true} expect({"property": 1}).toHaveProperty('property', 1) 1`] = `
+"<dim>expect(<red>object</><dim>).not.toHaveProperty(<green>path</>, <green>value</><dim>)
+
+Expected the object:
+  <red>{\\"property\\": 1}</>
+Not to have a nested property:
+  <green>\\"property\\"</>
+With a value of:
+  <green>1</>
+"
+`;
+
 exports[`.toMatch() {pass: true} expect(Foo bar).toMatch(/^foo/i) 1`] = `
 "<dim>expect(<red>received</><dim>).not.toMatch(<green>expected</><dim>)
 

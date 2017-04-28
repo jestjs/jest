@@ -15,7 +15,7 @@ import type {MatchersObject} from 'types/Matchers';
 
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-regex-util');
-const {getObjectSubset, getPath} = require('./utils');
+const {getObjectSubset, getPath, hasOwnProperty} = require('./utils');
 const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -77,7 +77,7 @@ const subsetEquality = (object, subset) => {
   }
   return Object.keys(subset).every(
     key =>
-      object.hasOwnProperty(key) &&
+      hasOwnProperty(object, key) &&
       equals(object[key], subset[key], [iterableEquality, subsetEquality]),
   );
 };
@@ -543,7 +543,7 @@ const matchers: MatchersObject = {
 
     let diffString;
 
-    if (valuePassed && result.hasOwnProperty('value')) {
+    if (valuePassed && hasOwnProperty(result, 'value')) {
       diffString = diff(value, result.value, {
         expand: this.expand,
       });
@@ -553,7 +553,7 @@ const matchers: MatchersObject = {
       ? equals(result.value, value, [iterableEquality])
       : hasEndProp;
 
-    if (result.hasOwnProperty('value')) {
+    if (hasOwnProperty(result, 'value')) {
       // we don't diff numbers. So instead we'll show the object that contains the resulting value.
       // And to get that object we need to go up a level.
       result.traversedPath.pop();
