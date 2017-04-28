@@ -80,6 +80,7 @@ function jasmine2(
   )({
     config,
     globalConfig,
+    localRequire: runtime.requireModule.bind(runtime),
     testPath,
   });
 

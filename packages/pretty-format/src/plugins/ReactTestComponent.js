@@ -18,7 +18,7 @@ import type {
   Plugin,
   ReactTestObject,
   ReactTestChild,
-} from '../types.js';
+} from 'types/PrettyFormat';
 
 const escapeHTML = require('./lib/escapeHTML');
 

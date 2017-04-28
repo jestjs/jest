@@ -11,7 +11,13 @@
 
 'use strict';
 
-import type {Colors, Refs, StringOrNull, Plugins, Options} from './types.js';
+import type {
+  Colors,
+  Refs,
+  StringOrNull,
+  Plugins,
+  Options,
+} from 'types/PrettyFormat';
 
 const style = require('ansi-styles');
 
@@ -948,5 +954,14 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
     colors,
   );
 }
+
+prettyFormat.plugins = {
+  AsymmetricMatcher: require('./plugins/AsymmetricMatcher'),
+  ConvertAnsi: require('./plugins/ConvertAnsi'),
+  HTMLElement: require('./plugins/HTMLElement'),
+  Immutable: require('./plugins/ImmutablePlugins'),
+  ReactElement: require('./plugins/ReactElement'),
+  ReactTestComponent: require('./plugins/ReactTestComponent'),
+};
 
 module.exports = prettyFormat;

@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
 const ansiRegex = require('ansi-regex');
 
