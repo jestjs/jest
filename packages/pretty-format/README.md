@@ -117,8 +117,8 @@ prettyFormat(obj, {
 
 ```js
 const prettyFormat = require('pretty-format');
-const reactTestPlugin = require('pretty-format/build/plugins/ReactTestComponent');
-const reactElementPlugin = require('pretty-format/build/plugins/ReactElement');
+const reactTestPlugin = require('pretty-format').plugins.ReactTestComponent;
+const reactElementPlugin = require('pretty-format').plugins.ReactElement;
 
 const React = require('react');
 const renderer = require('react-test-renderer');

@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Colors, Indent, Options, Print} from '../../types.js';
+import type {Colors, Indent, Options, Print} from 'types/PrettyFormat';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
