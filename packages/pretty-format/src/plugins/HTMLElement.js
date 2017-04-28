@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
 const escapeHTML = require('./lib/escapeHTML');
 const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)/;

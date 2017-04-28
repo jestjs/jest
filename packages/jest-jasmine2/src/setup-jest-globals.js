@@ -11,6 +11,7 @@
 'use strict';
 
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
+import type {Plugin} from 'types/PrettyFormat';
 
 const {getState, setState} = require('jest-matchers');
 const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
@@ -24,6 +25,7 @@ const {
 export type SetupOptions = {|
   config: ProjectConfig,
   globalConfig: GlobalConfig,
+  localRequire: (moduleName: string) => Plugin,
   testPath: Path,
 |};
 
@@ -104,12 +106,16 @@ const patchJasmine = () => {
   })(global.jasmine.Spec);
 };
 
-module.exports = ({config, globalConfig, testPath}: SetupOptions) => {
+module.exports = ({
+  config,
+  globalConfig,
+  localRequire,
+  testPath,
+}: SetupOptions) => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers.concat().reverse().forEach(path => {
-    // $FlowFixMe
-    addSerializer(require(path));
+    addSerializer(localRequire(path));
   });
   setState({testPath});
   patchJasmine();
