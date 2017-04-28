@@ -53,8 +53,8 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
   const formatter = (coverage, reporter) => coverageMap;
   const report = formatTestResults(results, formatter);
 
-  const returnPhabricatorReport: PhabricatorReport = {
-    aggregatedResult: results, 
+  return {
+    aggregatedResult: results,
     // Remove the coverageMap here as it uses a lot of memory.
     coverageMap: null,
     formattedTestResults: report.testResults,
@@ -74,6 +74,4 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
     testResults: results.testResults,
     wasInterrupted: results.wasInterrupted,
   };
-
-  return returnPhabricatorReport;
 };
