@@ -77,7 +77,7 @@ describe('onRunComplete', () => {
       };
     });
 
-    testReporter = new CoverageReporter();
+    testReporter = new CoverageReporter({});
     testReporter.log = jest.fn();
   });
 
