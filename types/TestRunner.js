@@ -10,7 +10,10 @@
 'use strict';
 
 import type {Context} from './Context';
-import type {Path} from './Config';
+import type {Environment} from 'types/Environment';
+import type {GlobalConfig, Path, ProjectConfig} from './Config';
+import type {TestResult} from 'types/TestResult';
+import type Runtime from 'jest-runtime';
 
 export type Test = {|
   context: Context,
@@ -19,3 +22,11 @@ export type Test = {|
 |};
 
 export type Tests = Array<Test>;
+
+export type TestFramework = (
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+  environment: Environment,
+  runtime: Runtime,
+  testPath: string,
+) => Promise<TestResult>;

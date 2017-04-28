@@ -9,9 +9,11 @@
  */
 'use strict';
 
+import type {EnvironmentClass} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {TestResult} from 'types/TestResult';
 import type {Resolver} from 'types/Resolve';
+import type {TestFramework} from 'types/TestRunner';
+import type {TestResult} from 'types/TestResult';
 import type RuntimeClass from 'jest-runtime';
 
 const BufferedConsole = require('./lib/BufferedConsole');
@@ -49,15 +51,15 @@ function runTest(
   }
 
   /* $FlowFixMe */
-  const TestEnvironment = require(testEnvironment);
+  const TestEnvironment = (require(testEnvironment): EnvironmentClass);
   /* $FlowFixMe */
-  const TestRunner = require(config.testRunner);
+  const testFramework = (require(config.testRunner): TestFramework);
   /* $FlowFixMe */
   const Runtime = (require(config.moduleLoader || 'jest-runtime'): Class<
     RuntimeClass
   >);
 
-  const env = new TestEnvironment(config);
+  const environment = new TestEnvironment(config);
   const TestConsole = globalConfig.verbose
     ? Console
     : globalConfig.silent ? NullConsole : BufferedConsole;
@@ -73,15 +75,15 @@ function runTest(
       ),
   );
   const cacheFS = {[path]: testSource};
-  setGlobal(env.global, 'console', testConsole);
-  const runtime = new Runtime(config, env, resolver, cacheFS, {
+  setGlobal(environment.global, 'console', testConsole);
+  const runtime = new Runtime(config, environment, resolver, cacheFS, {
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     mapCoverage: globalConfig.mapCoverage,
   });
   const start = Date.now();
-  return TestRunner(globalConfig, config, env, runtime, path)
+  return testFramework(globalConfig, config, environment, runtime, path)
     .then((result: TestResult) => {
       const testCount =
         result.numPassingTests +
@@ -98,7 +100,7 @@ function runTest(
     .then(
       result =>
         Promise.resolve().then(() => {
-          env.dispose();
+          environment.dispose();
           if (config.logHeapUsage) {
             if (global.gc) {
               global.gc();
@@ -111,7 +113,7 @@ function runTest(
         }),
       err =>
         Promise.resolve().then(() => {
-          env.dispose();
+          environment.dispose();
           throw err;
         }),
     );
