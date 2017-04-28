@@ -303,8 +303,10 @@ Default: `[]`
 A list of paths to snapshot serializer modules Jest should use for snapshot
 testing.
 
-Jest has default serializers for built-in JavaScript types and for React
-elements. See [snapshot test tutorial](/jest/docs/tutorial-react-native.html#snapshot-test) for more information.
+Jest has default serializers for built-in JavaScript types, HTML elements
+(Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See
+[snapshot test tutorial](/jest/docs/tutorial-react-native.html#snapshot-test)
+for more information.
 
 Example serializer module:
 
@@ -365,7 +367,7 @@ To make a dependency explicit instead of implicit, you can call [`expect.addSnap
 ### `testEnvironment` [string]
 Default: `"jsdom"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. 
+The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
 
 If some tests require another environment, you can add a `@jest-environment` docblock.
 ##### available in Jest **20.0.0+**
