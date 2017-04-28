@@ -10,41 +10,62 @@
 
 jest.mock('fs').mock('../../generateEmptyCoverage');
 
-const fs = require('fs');
-const generateEmptyCoverage = require('../../generateEmptyCoverage');
-
 const globalConfig = {collectCoverage: true};
 const config = {};
-const worker = require('../CoverageWorker');
-const workerOptions = {config, globalConfig, untestedFilePath: 'asdf'};
+const workerOptions = {config, globalConfig, path: 'banana.js'};
 
-describe('CoverageWorker', () => {
-  it('resolves to the result of generateEmptyCoverage upon success', () => {
-    const validJS = 'function(){}';
-    fs.readFileSync.mockImplementation(() => validJS);
-    generateEmptyCoverage.mockImplementation(() => 42);
-    return new Promise(resolve => {
-      worker(workerOptions, (err, result) => {
-        expect(generateEmptyCoverage).toBeCalledWith(
-          validJS,
-          'asdf',
-          globalConfig,
-          config,
-        );
-        expect(result).toEqual(42);
-        resolve();
-      });
+let fs;
+let generateEmptyCoverage;
+let worker;
+
+beforeEach(() => {
+  jest.resetModules();
+
+  fs = require('fs');
+  generateEmptyCoverage = require('../../generateEmptyCoverage');
+  worker = require('../CoverageWorker');
+});
+
+test('resolves to the result of generateEmptyCoverage upon success', () => {
+  expect.assertions(2);
+  const validJS = 'function(){}';
+  fs.readFileSync.mockImplementation(() => validJS);
+  generateEmptyCoverage.mockImplementation(() => 42);
+  return new Promise((resolve, reject) => {
+    worker(workerOptions, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      expect(generateEmptyCoverage).toBeCalledWith(
+        validJS,
+        'banana.js',
+        globalConfig,
+        config,
+      );
+      expect(result).toEqual(42);
+      resolve();
     });
   });
+});
 
-  it('surfaces a serializable error', () => {
-    fs.readFileSync.mockImplementation(() => 'invalidJs');
-    return new Promise(resolve => {
-      worker(workerOptions, (err, result) => {
-        expect(err).toEqual(JSON.parse(JSON.stringify(err)));
-        expect(result).toEqual(undefined);
-        resolve();
-      });
+test('throws errors on invalid JavaScript', () => {
+  expect.assertions(2);
+  generateEmptyCoverage.mockImplementation(() => {
+    throw new Error('SyntaxError');
+  });
+  return new Promise((resolve, reject) => {
+    worker(workerOptions, (error, result) => {
+      if (!error) {
+        reject(result);
+        return;
+      }
+
+      expect(error.message).toMatch(
+        'Failed to collect coverage from banana.js',
+      );
+      expect(result).toEqual(undefined);
+      resolve();
     });
   });
 });

@@ -18,7 +18,7 @@ const generateEmptyCoverage = require('../generateEmptyCoverage');
 type CoverageWorkerData = {|
   globalConfig: GlobalConfig,
   config: ProjectConfig,
-  untestedFilePath: Path,
+  path: Path,
 |};
 
 type WorkerCallback = (error: ?SerializableError, result: ?Object) => void;
@@ -44,19 +44,14 @@ process.on('uncaughtException', err => {
 });
 
 module.exports = (
-  {globalConfig, config, untestedFilePath}: CoverageWorkerData,
+  {config, globalConfig, path}: CoverageWorkerData,
   callback: WorkerCallback,
 ) => {
   try {
-    const source = fs.readFileSync(untestedFilePath).toString();
-    const result = generateEmptyCoverage(
-      source,
-      untestedFilePath,
-      globalConfig,
-      config,
-    );
+    const source = fs.readFileSync(path, 'utf8');
+    const result = generateEmptyCoverage(source, path, globalConfig, config);
     callback(null, result);
-  } catch (e) {
-    callback(formatCoverageError(e, untestedFilePath), undefined);
+  } catch (error) {
+    callback(formatCoverageError(error, path), undefined);
   }
 };
