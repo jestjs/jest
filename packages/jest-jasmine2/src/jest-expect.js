@@ -32,8 +32,7 @@ module.exports = (config: {expand: boolean}) => {
     expand: config.expand,
   });
   expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
-
-  expect.addSnapshotSerializer = addSerializer;
+  (expect: Object).addSnapshotSerializer = addSerializer;
 
   const jasmine = global.jasmine;
   jasmine.anything = expect.anything;

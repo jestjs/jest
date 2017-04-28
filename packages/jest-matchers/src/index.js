@@ -15,7 +15,6 @@ import type {
   ExpectationObject,
   ExpectationResult,
   MatcherContext,
-  MatcherState,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
@@ -56,15 +55,15 @@ if (!global[GLOBAL_STATE]) {
       matchers: Object.create(null),
       state: {
         assertionCalls: 0,
-        assertionsExpected: null,
-        expectedAssertions: false,
+        expectedAssertionsNumber: null,
+        isExpectingAssertions: false,
         suppressedErrors: [],
       },
     },
   });
 }
 
-const expect: Expect = (actual: any): ExpectationObject => {
+const expect = (actual: any): ExpectationObject => {
   const allMatchers = global[GLOBAL_STATE].matchers;
   const expectation = {
     not: {},
@@ -276,16 +275,16 @@ expect.extend(matchers);
 expect.extend(spyMatchers);
 expect.extend(toThrowMatchers);
 
-expect.assertions = (expected: number) =>
-  (global[GLOBAL_STATE].state.expectedAssertionsNumber = expected);
-
-expect.hasAssertions = () =>
-  (global[GLOBAL_STATE].state.isExpectingAssertions = true);
-
-expect.setState = (state: MatcherState) => {
+expect.addSnapshotSerializer = () => void 0;
+expect.assertions = (expected: number) => {
+  global[GLOBAL_STATE].state.expectedAssertionsNumber = expected;
+};
+expect.hasAssertions = () => {
+  global[GLOBAL_STATE].state.isExpectingAssertions = true;
+};
+expect.setState = (state: Object) => {
   Object.assign(global[GLOBAL_STATE].state, state);
 };
-
 expect.getState = () => global[GLOBAL_STATE].state;
 
-module.exports = expect;
+module.exports = (expect: Expect);

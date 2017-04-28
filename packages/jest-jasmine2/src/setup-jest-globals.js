@@ -68,12 +68,13 @@ function addAssertionErrors(result) {
       pluralize('assertion', expectedAssertionsNumber),
     );
     const message = new Error(
-      matcherHint('.assertions', '', expectedAssertionsNumber, {
+      matcherHint('.assertions', '', String(expectedAssertionsNumber), {
         isDirectExpectCall: true,
       }) +
         '\n\n' +
         `Expected ${expected} to be called but only received ` +
-        `${RECEIVED_COLOR(pluralize('assertion call', assertionCalls))}.`,
+        RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
+        '.',
     ).stack;
     result.status = 'failed';
     result.failedExpectations.push({

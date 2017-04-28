@@ -25,11 +25,12 @@ const stripInconsistentStackLines = summary => {
     .replace(/\n^.*process\._tickCallback.*$/gm, '')
     .replace(/\n^.*_throws.*$/gm, '')
     .replace(/\n^.*Function\..*(throws|doesNotThrow).*$/gm, '')
+    .replace(/\n^.*setup-jest-globals\.js.*$/gm, '')
     .replace(/(\n^.*Object.<anonymous>)\.test(.*$)/gm, '$1$2');
   return summary;
 };
 
-test('throwing not Error objects', () => {
+test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw-number-test.js']).stderr;
   expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
