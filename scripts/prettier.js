@@ -18,9 +18,9 @@ const prettier = isWindows ? 'prettier.cmd' : 'prettier';
 const prettierCmd = path.resolve(__dirname, '../node_modules/.bin/' + prettier);
 const defaultOptions = {
   'bracket-spacing': 'false',
+  'print-width': 80,
   'single-quote': 'true',
   'trailing-comma': 'all',
-  'print-width': 80,
 };
 const config = {
   default: {
