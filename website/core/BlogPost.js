@@ -5,7 +5,7 @@
  * @jsx React.DOM
  */
 
-/* eslint-disable sort-keys */
+ /* eslint-disable sort-keys */
 
 const Marked = require('Marked');
 const React = require('React');
@@ -20,9 +20,8 @@ class BlogPost extends React.Component {
         <article className="post-content">
           <Marked>{content}</Marked>
           <div className="read-more">
-            <a className="button" href={'/jest/blog/' + this.props.post.path}>
-              Read More
-            </a>
+            <a className="button"
+              href={'/jest/blog/' + this.props.post.path}>Read More</a>
           </div>
         </article>
       );
@@ -36,13 +35,7 @@ class BlogPost extends React.Component {
       return (
         <div className="authorPhoto">
           <a href={post.authorURL} target="_blank">
-            <img
-              src={
-                'https://graph.facebook.com/' +
-                  post.authorFBID +
-                  '/picture/?height=200&width=200'
-              }
-            />
+            <img src={'https://graph.facebook.com/' + post.authorFBID + '/picture/?height=200&width=200'} />
           </a>
         </div>
       );
@@ -66,24 +59,13 @@ class BlogPost extends React.Component {
     // Because JavaScript sucks at date handling :(
     const year = match[1];
     const month = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+      'January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December',
     ][parseInt(match[2], 10) - 1];
     const day = parseInt(match[3], 10);
 
-    const githubButton = this.props.truncate
-      ? null
-      : <p className="post-meta">{siteConfig.githubButton}</p>;
+    const githubButton = this.props.truncate ? null :
+      <p className="post-meta">{siteConfig.githubButton}</p>;
 
     return (
       <header className="postHeader">

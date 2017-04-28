@@ -1,9 +1,9 @@
 ---
 id: api
 title: Globals
-layout: docs
+layout: reference
 category: API Reference
-permalink: docs/en/api.html
+permalink: docs/api.html
 next: expect
 ---
 

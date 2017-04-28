@@ -3,7 +3,7 @@ id: tutorial-react
 title: Testing React Apps
 layout: docs
 category: Guides
-permalink: docs/en/tutorial-react.html
+permalink: docs/tutorial-react.html
 previous: snapshot-testing
 next: tutorial-react-native
 ---

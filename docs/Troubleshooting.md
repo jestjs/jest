@@ -3,10 +3,8 @@ id: troubleshooting
 title: Troubleshooting
 layout: docs
 category: Guides
-permalink: docs/en/troubleshooting.html
+permalink: docs/troubleshooting.html
 previous: testing-frameworks
-next: api
-
 ---
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.
