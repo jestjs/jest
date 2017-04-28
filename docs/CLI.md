@@ -159,7 +159,7 @@ Alias: `-i`. Run all tests serially in the current process, rather than creating
 
 ### `--setupTestFrameworkScriptFile=<file>`
 
-The path to a module that runs some code to configure or set up the testing framework before each test.
+The path to a module that runs some code to configure or set up the testing framework before each test. Beware that files imported by the setup script will not be mocked during testing.
 
 ### `--showConfig`
 
