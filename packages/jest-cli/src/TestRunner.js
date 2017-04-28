@@ -17,7 +17,7 @@ import type {
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {PathPattern} from './SearchSource';
-import type {Test, Tests} from 'types/TestRunner';
+import type {Test} from 'types/TestRunner';
 import type BaseReporter from './reporters/BaseReporter';
 
 const {formatExecError} = require('jest-message-util');
@@ -75,7 +75,7 @@ class TestRunner {
     this._dispatcher.unregister(ReporterClass);
   }
 
-  async runTests(tests: Tests, watcher: TestWatcher) {
+  async runTests(tests: Array<Test>, watcher: TestWatcher) {
     const timings = [];
     const contexts = new Set();
     tests.forEach(test => {
@@ -183,7 +183,7 @@ class TestRunner {
   }
 
   _createInBandTestRun(
-    tests: Tests,
+    tests: Array<Test>,
     watcher: TestWatcher,
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
@@ -214,7 +214,7 @@ class TestRunner {
   }
 
   _createParallelTestRun(
-    tests: Tests,
+    tests: Array<Test>,
     watcher: TestWatcher,
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,

@@ -21,8 +21,6 @@ export type Test = {|
   duration: ?number,
 |};
 
-export type Tests = Array<Test>;
-
 export type TestFramework = (
   globalConfig: GlobalConfig,
   config: ProjectConfig,

@@ -113,11 +113,6 @@ const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
-  experimentalProjects: {
-    description: 'A list of projects that use Jest to run all tests in a ' +
-      'single run.',
-    type: 'array',
-  },
   findRelatedTests: {
     description: 'Find related tests for a list of source files that were ' +
       'passed in as arguments. Useful for pre-commit hook integration to run ' +
@@ -180,6 +175,11 @@ const options = {
     description: 'Write test results to a file when the --json option is ' +
       'also specified.',
     type: 'string',
+  },
+  projects: {
+    description: 'A list of projects that use Jest to run all tests of all ' +
+      'projects in a single instance of Jest.',
+    type: 'array',
   },
   runInBand: {
     alias: 'i',
