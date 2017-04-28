@@ -13,6 +13,28 @@
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
 const escapeHTML = require('./lib/escapeHTML');
+
+type Attribute = {
+  name: string,
+  value: string,
+};
+
+type HTMLElement = {
+  attributes: Array<Attribute>,
+  childNodes: Array<HTMLElement | HTMLText | HTMLComment>,
+  nodeType: 1,
+  tagName: string,
+};
+type HTMLText = {
+  data: string,
+  nodeType: 3,
+};
+
+type HTMLComment = {
+  data: string,
+  nodeType: 8,
+};
+
 const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
 const test = isHTMLElement;
 
@@ -41,7 +63,7 @@ function printChildren(flatChildren, print, indent, colors, opts) {
     .join(opts.edgeSpacing);
 }
 
-function printAttributes(attributes, indent, colors, opts) {
+function printAttributes(attributes: Array<Attribute>, indent, colors, opts) {
   return attributes
     .sort()
     .map(attribute => {
@@ -57,17 +79,15 @@ function printAttributes(attributes, indent, colors, opts) {
 }
 
 const print = (
-  element: HTMLElement | Text | Comment,
+  element: HTMLElement | HTMLText | HTMLComment,
   print: Print,
   indent: Indent,
   opts: Options,
   colors: Colors,
 ): string => {
-  if (element instanceof Text) {
+  if (element.nodeType === 3) {
     return element.data;
-  }
-
-  if (element instanceof Comment) {
+  } else if (element.nodeType === 8) {
     return (
       colors.comment.open + '<!--' + element.data + '-->' + colors.comment.close
     );

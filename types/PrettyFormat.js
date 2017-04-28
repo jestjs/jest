@@ -9,7 +9,13 @@
  */
 'use strict';
 
-export type Colors = Object;
+export type Colors = {
+  comment: {close: string, open: string},
+  content: {close: string, open: string},
+  prop: {close: string, open: string},
+  tag: {close: string, open: string},
+  value: {close: string, open: string},
+};
 export type Indent = string => string;
 export type Refs = Array<any>;
 export type Print = any => string;
