@@ -20,6 +20,7 @@ const defaultOptions = {
   'bracket-spacing': 'false',
   'single-quote': 'true',
   'trailing-comma': 'all',
+  'print-width': 80,
 };
 const config = {
   default: {

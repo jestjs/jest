@@ -336,7 +336,8 @@ class HasteMap extends EventEmitter {
     }
 
     if (
-      this._options.mocksPattern && this._options.mocksPattern.test(filePath)
+      this._options.mocksPattern &&
+      this._options.mocksPattern.test(filePath)
     ) {
       const mockPath = getMockName(filePath);
       if (mocks[mockPath]) {
@@ -689,7 +690,7 @@ class HasteMap extends EventEmitter {
       this._watchers.map(
         watcher => new Promise(resolve => watcher.close(resolve)),
       ),
-    ).then(() => this._watchers = []);
+    ).then(() => (this._watchers = []));
   }
 
   /**

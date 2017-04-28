@@ -17,13 +17,13 @@ const micromatch = require('micromatch');
 const path = require('path');
 
 const MOCKS_PATTERN = new RegExp(
-  escapePathForRegex(path.sep + '__mocks__' + path.sep)
+  escapePathForRegex(path.sep + '__mocks__' + path.sep),
 );
 
 const shouldInstrument = (
   filename: Path,
   options: Options,
-  config: ProjectConfig
+  config: ProjectConfig,
 ): boolean => {
   if (!options.collectCoverage) {
     return false;
@@ -56,7 +56,7 @@ const shouldInstrument = (
     options.collectCoverageFrom &&
     !micromatch(
       [path.relative(config.rootDir, filename)],
-      options.collectCoverageFrom
+      options.collectCoverageFrom,
     ).length
   ) {
     return false;
