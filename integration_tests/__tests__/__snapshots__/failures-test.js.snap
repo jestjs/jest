@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`throwing not Error objects 1`] = `
+exports[`not throwing Error objects 1`] = `
 Object {
   "rest": " FAIL  __tests__/throw-number-test.js
   ● Test suite failed to run
@@ -17,7 +17,7 @@ Ran all test suites matching \\"throw-number-test.js\\".
 }
 `;
 
-exports[`throwing not Error objects 2`] = `
+exports[`not throwing Error objects 2`] = `
 Object {
   "rest": " FAIL  __tests__/throw-string-test.js
   ● Test suite failed to run
@@ -35,7 +35,7 @@ Ran all test suites matching \\"throw-string-test.js\\".
 }
 `;
 
-exports[`throwing not Error objects 3`] = `
+exports[`not throwing Error objects 3`] = `
 Object {
   "rest": " FAIL  __tests__/throw-object-test.js
   ● Test suite failed to run
@@ -52,7 +52,7 @@ Ran all test suites matching \\"throw-object-test.js\\".
 }
 `;
 
-exports[`throwing not Error objects 4`] = `
+exports[`not throwing Error objects 4`] = `
 Object {
   "rest": " FAIL  __tests__/assertion-count-test.js
   ● .assertions() › throws
@@ -70,7 +70,6 @@ Object {
     
     Expected two assertions to be called but only received one assertion call.
       
-      at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:64:21)
 
   ● .assertions() › throws on redeclare of assertion count
 
@@ -87,16 +86,24 @@ Object {
     
     Expected zero assertions to be called but only received one assertion call.
       
-      at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:64:21)
+
+  ● .hasAssertions() › throws when there are not assertions
+
+    expect.hasAssertions()
+    
+    Expected at least one assertion to be called but received none.
+      
 
   .assertions()
     ✕ throws
     ✕ throws on redeclare of assertion count
     ✕ throws on assertion
+  .hasAssertions()
+    ✕ throws when there are not assertions
 
 ",
   "summary": "Test Suites: 1 failed, 1 total
-Tests:       3 failed, 3 total
+Tests:       4 failed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching \\"assertion-count-test.js\\".

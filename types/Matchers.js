@@ -26,13 +26,34 @@ export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
-  assertionCalls?: number,
-  assertionsExpected?: ?number,
+  assertionCalls: number,
+  isExpectingAssertions: ?boolean,
+  expectedAssertionsNumber: ?number,
   currentTestName?: string,
+  expand?: boolean,
+  suppressedErrors: Array<Error>,
   testPath?: Path,
 };
+
+export type AsymmetricMatcher = Object;
 export type MatchersObject = {[id: string]: RawMatcherFn};
-export type Expect = (expected: any) => ExpectationObject;
+export type Expect = {
+  (expected: any): ExpectationObject,
+  addSnapshotSerializer(any): void,
+  assertions(number): void,
+  extend(any): void,
+  getState(): MatcherState,
+  hasAssertions(): void,
+  setState(Object): void,
+
+  any(expectedObject: any): AsymmetricMatcher,
+  anything(): AsymmetricMatcher,
+  arrayContaining(sample: Array<any>): AsymmetricMatcher,
+  objectContaining(sample: Object): AsymmetricMatcher,
+  stringContaining(expected: string): AsymmetricMatcher,
+  stringMatching(expected: string | RegExp): AsymmetricMatcher,
+};
+
 export type ExpectationObject = {
   [id: string]: ThrowingMatcherFn,
   resolves: {
