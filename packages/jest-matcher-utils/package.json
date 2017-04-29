@@ -8,6 +8,7 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
+  "browser": "build-es5/index.js",
   "dependencies": {
     "chalk": "^1.1.3",
     "pretty-format": "^19.0.0"

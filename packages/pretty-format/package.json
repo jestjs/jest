@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "description": "Stringify any JavaScript value.",
   "main": "build/index.js",
+  "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
     "ansi-styles": "^3.0.0"
