@@ -51,11 +51,12 @@ const docs = 'Documentation: https://facebook.github.io/jest/';
 const options = {
   bail: {
     alias: 'b',
+    default: undefined,
     description: 'Exit the test suite immediately upon the first failing test.',
     type: 'boolean',
   },
   cache: {
-    default: true,
+    default: undefined,
     description: 'Whether to use the transform cache. Disable the cache ' +
       'using --no-cache.',
     type: 'boolean',
@@ -70,11 +71,13 @@ const options = {
     type: 'array',
   },
   color: {
+    default: undefined,
     description: 'Forces test results output color highlighting (even if ' +
       'stdout is not a TTY). Set to false if you would like to have no colors.',
     type: 'boolean',
   },
   colors: {
+    default: undefined,
     description: 'Alias for `--color`.',
     type: 'boolean',
   },
@@ -87,21 +90,21 @@ const options = {
     type: 'string',
   },
   coverage: {
+    default: undefined,
     description: 'Indicates that test coverage information should be ' +
       'collected and reported in the output.',
     type: 'boolean',
   },
   coverageDirectory: {
-    default: undefined,
     description: 'The directory where Jest should output its coverage files.',
     type: 'string',
   },
   debug: {
+    default: undefined,
     description: 'Print debugging info about your jest config.',
     type: 'boolean',
   },
   env: {
-    default: undefined,
     description: 'The test environment used for all tests. This can point to ' +
       'any file or node module. Examples: `jsdom`, `node` or ' +
       '`path/to/my-environment.js`',
@@ -109,41 +112,45 @@ const options = {
   },
   expand: {
     alias: 'e',
-    default: false,
+    default: undefined,
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
   findRelatedTests: {
+    default: undefined,
     description: 'Find related tests for a list of source files that were ' +
       'passed in as arguments. Useful for pre-commit hook integration to run ' +
       'the minimal amount of tests necessary.',
     type: 'boolean',
   },
   forceExit: {
-    default: false,
+    default: undefined,
     description: 'Force Jest to exit after all tests have completed running. ' +
       'This is useful when resources set up by test code cannot be ' +
       'adequately cleaned up.',
     type: 'boolean',
   },
   json: {
+    default: undefined,
     description: 'Prints the test results in JSON. This mode will send all ' +
       'other test output and user messages to stderr.',
     type: 'boolean',
   },
   lastCommit: {
-    default: false,
+    default: undefined,
     description: 'Will run all tests affected by file changes in the last ' +
       'commit made.',
     type: 'boolean',
   },
   logHeapUsage: {
+    default: undefined,
     description: 'Logs the heap usage after every test. Useful to debug ' +
       'memory leaks. Use together with `--runInBand` and `--expose-gc` in ' +
       'node.',
     type: 'boolean',
   },
   mapCoverage: {
+    default: undefined,
     description: 'Maps code coverage reports against original source code ' +
       'when transformers supply source maps.',
     type: 'boolean',
@@ -157,15 +164,18 @@ const options = {
     type: 'string', // no, yargs -- its a number.. :(
   },
   noStackTrace: {
+    default: undefined,
     description: 'Disables stack trace in test results output',
     type: 'boolean',
   },
   notify: {
+    default: undefined,
     description: 'Activates notifications for test results.',
     type: 'boolean',
   },
   onlyChanged: {
     alias: 'o',
+    default: undefined,
     description: 'Attempts to identify which tests to run based on which ' +
       "files have changed in the current repository. Only works if you're " +
       'running tests in a git repository at the moment.',
@@ -183,6 +193,7 @@ const options = {
   },
   runInBand: {
     alias: 'i',
+    default: undefined,
     description: 'Run all tests serially in the current process (rather than ' +
       'creating a worker pool of child processes that run tests). This ' +
       'is sometimes useful for debugging, but such use cases are pretty ' +
@@ -195,11 +206,12 @@ const options = {
     type: 'string',
   },
   showConfig: {
+    default: undefined,
     description: 'Print your jest config and then exits.',
     type: 'boolean',
   },
   silent: {
-    default: false,
+    default: undefined,
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
@@ -214,7 +226,6 @@ const options = {
     type: 'string',
   },
   testResultsProcessor: {
-    default: undefined,
     description: 'Allows the use of a custom results processor. ' +
       'This processor must be a node module that exports ' +
       'a function expecting as the first argument the result object',
@@ -228,7 +239,7 @@ const options = {
   },
   updateSnapshot: {
     alias: 'u',
-    default: false,
+    default: undefined,
     description: 'Use this flag to re-record snapshots. ' +
       'Can be used together with a test suite pattern or with ' +
       '`--testNamePattern` to re-record snapshot for test matching ' +
@@ -236,33 +247,38 @@ const options = {
     type: 'boolean',
   },
   useStderr: {
+    default: undefined,
     description: 'Divert all output to stderr.',
     type: 'boolean',
   },
   verbose: {
+    default: undefined,
     description: 'Display individual test results with the test suite ' +
       'hierarchy.',
     type: 'boolean',
   },
   version: {
     alias: 'v',
+    default: undefined,
     description: 'Print the version and exit',
     type: 'boolean',
   },
   watch: {
+    default: undefined,
     description: 'Watch files for changes and rerun tests related to ' +
       'changed files. If you want to re-run all tests when a file has ' +
       'changed, use the `--watchAll` option.',
     type: 'boolean',
   },
   watchAll: {
+    default: undefined,
     description: 'Watch files for changes and rerun all tests. If you want ' +
       'to re-run only the tests related to the changed files, use the ' +
       '`--watch` option.',
     type: 'boolean',
   },
   watchman: {
-    default: true,
+    default: undefined,
     description: 'Whether to use watchman for file crawling. Disable using ' +
       '--no-watchman.',
     type: 'boolean',

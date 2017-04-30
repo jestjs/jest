@@ -16,7 +16,6 @@ const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
-const setFromArgv = require('./setFromArgv');
 const {getTestEnvironment} = require('./utils');
 
 async function readConfig(
@@ -29,7 +28,7 @@ async function readConfig(
 }> {
   const rawConfig = await readRawConfig(argv, packageRoot);
   const {options, hasDeprecationWarnings} = normalize(rawConfig, argv);
-  const {globalConfig, projectConfig} = getConfigs(setFromArgv(options, argv));
+  const {globalConfig, projectConfig} = getConfigs(options);
   return {
     config: projectConfig,
     globalConfig,
@@ -40,7 +39,7 @@ async function readConfig(
 const parseConfig = argv => {
   if (argv.config && typeof argv.config === 'string') {
     // If the passed in value looks like JSON, treat it as an object.
-    if (argv.config[0] === '{' && argv.config[argv.config.length - 1] === '}') {
+    if (argv.config.startsWith('{') && argv.config.endsWith('}')) {
       return JSON.parse(argv.config);
     }
   }
@@ -64,7 +63,7 @@ const readRawConfig = (argv, root) => {
 };
 
 const getConfigs = (
-  options,
+  options: Object,
 ): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => {
   return {
     globalConfig: Object.freeze({

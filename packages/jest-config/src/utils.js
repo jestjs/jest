@@ -59,27 +59,29 @@ const _replaceRootDirInPath = (rootDir: string, filePath: Path): string => {
   );
 };
 
+const _replaceRootDirInObject = (rootDir: string, config: any): Object => {
+  if (config instanceof RegExp) {
+    return config;
+  }
+  if (config !== null) {
+    const newConfig = {};
+    for (const configKey in config) {
+      newConfig[configKey] = configKey === 'rootDir'
+        ? config[configKey]
+        : _replaceRootDirTags(rootDir, config[configKey]);
+    }
+    return newConfig;
+  }
+  return config;
+};
+
 const _replaceRootDirTags = (rootDir: string, config: any) => {
   switch (typeof config) {
     case 'object':
-      if (config instanceof RegExp) {
-        return config;
-      }
-
       if (Array.isArray(config)) {
         return config.map(item => _replaceRootDirTags(rootDir, item));
       }
-
-      if (config !== null) {
-        const newConfig = {};
-        for (const configKey in config) {
-          newConfig[configKey] = configKey === 'rootDir'
-            ? config[configKey]
-            : _replaceRootDirTags(rootDir, config[configKey]);
-        }
-        return newConfig;
-      }
-      break;
+      return _replaceRootDirInObject(rootDir, config);
     case 'string':
       return _replaceRootDirInPath(rootDir, config);
   }
@@ -126,6 +128,7 @@ const getTestEnvironment = (config: Object) => {
 module.exports = {
   BULLET,
   DOCUMENTATION_NOTE,
+  _replaceRootDirInObject,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,

@@ -4,90 +4,50 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
-function setFromArgv(config, argv) {
-  if (argv.coverage) {
-    config.collectCoverage = true;
+import type {Argv, InitialOptions} from 'types/Config';
+
+const specialArgs = ['_', '$0', 'h', 'help', 'config'];
+
+function setFromArgv(config: InitialOptions, argv: Argv) {
+  let configFromArgv;
+  const argvToConfig = Object.keys(argv)
+    .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
+    .reduce((acc: Object, key) => {
+      switch (key) {
+        case 'coverage':
+          acc['collectCoverage'] = argv[key];
+          break;
+        case 'json':
+          acc['useStderr'] = argv[key];
+          break;
+        case 'watchAll':
+          acc['watch'] = argv[key];
+          break;
+        case 'env':
+          acc['testEnvironment'] = argv[key];
+          break;
+        case 'config':
+          break;
+        default:
+          acc[key] = argv[key];
+      }
+      return acc;
+    }, {});
+
+  if (argv.config && typeof argv.config === 'string') {
+    // If the passed in value looks like JSON, treat it as an object.
+    if (argv.config.startsWith('{') && argv.config.endsWith('}')) {
+      configFromArgv = JSON.parse(argv.config);
+    }
   }
 
-  if (argv.coverageDirectory) {
-    config.coverageDirectory = argv.coverageDirectory;
-  }
-
-  if (argv.mapCoverage) {
-    config.mapCoverage = true;
-  }
-
-  if (argv.verbose) {
-    config.verbose = argv.verbose;
-  }
-
-  if (argv.notify !== null) {
-    config.notify = argv.notify;
-  }
-
-  if (argv.bail) {
-    config.bail = argv.bail;
-  }
-
-  if (argv.cache !== null) {
-    config.cache = argv.cache;
-  }
-
-  if (config.watchman === undefined && argv.watchman !== null) {
-    config.watchman = argv.watchman;
-  }
-
-  if (argv.useStderr) {
-    config.useStderr = argv.useStderr;
-  }
-
-  if (argv.json) {
-    config.useStderr = true;
-  }
-
-  if (argv.logHeapUsage) {
-    config.logHeapUsage = argv.logHeapUsage;
-  }
-
-  if (argv.replname) {
-    config.replname = argv.replname;
-  }
-
-  if (argv.silent) {
-    config.silent = true;
-  }
-
-  if (argv.setupTestFrameworkScriptFile) {
-    config.setupTestFrameworkScriptFile = argv.setupTestFrameworkScriptFile;
-  }
-
-  if (argv.testNamePattern) {
-    config.testNamePattern = argv.testNamePattern;
-  }
-
-  if (argv.updateSnapshot) {
-    config.updateSnapshot = argv.updateSnapshot;
-  }
-
-  if (argv.watch || argv.watchAll) {
-    config.watch = true;
-  }
-
-  if (argv.expand) {
-    config.expand = argv.expand;
-  }
-
-  if (argv.testResultsProcessor) {
-    config.testResultsProcessor = argv.testResultsProcessor;
-  }
-
-  config.noStackTrace = argv.noStackTrace;
-
-  return config;
+  return Object.assign({}, config, argvToConfig, configFromArgv);
 }
 
 module.exports = setFromArgv;
