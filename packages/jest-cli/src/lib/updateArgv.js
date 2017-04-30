@@ -9,9 +9,18 @@
  */
 'use strict';
 
+import type {Argv} from 'types/Config';
+type Options = {
+  testPathPattern?: string,
+  testNamePattern?: string,
+};
 const getTestPathPattern = require('./getTestPathPattern');
 
-module.exports = (argv: Object, mode: 'watch' | 'watchAll', options?: {}) => {
+module.exports = (
+  argv: Argv,
+  mode: 'watch' | 'watchAll',
+  options?: Options,
+) => {
   options = options || {};
 
   if (mode === 'watch') {
