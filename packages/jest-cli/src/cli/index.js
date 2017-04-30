@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Path} from 'types/Config';
+import type {Path, Argv} from 'types/Config';
 
 const args = require('./args');
 const getJest = require('./getJest');
@@ -19,7 +19,7 @@ const runCLI = require('./runCLI');
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
 
-function run(argv?: Object, project?: Path) {
+function run(argv?: Argv, project?: Path) {
   argv = yargs(argv || process.argv.slice(2))
     .usage(args.usage)
     .help()
@@ -29,12 +29,6 @@ function run(argv?: Object, project?: Path) {
     .check(args.check).argv;
 
   validateCLIOptions(argv, args.options);
-
-  if (argv.help) {
-    yargs.showHelp();
-    process.on('exit', () => process.exit(1));
-    return;
-  }
 
   if (!project) {
     project = pkgDir.sync();
