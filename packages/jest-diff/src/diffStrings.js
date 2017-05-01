@@ -54,11 +54,13 @@ const diffLines = (a: string, b: string): Diff => {
       .diffLines(a, b)
       .map(part => {
         const {added, removed} = part;
-        if (part.added || part.removed) {
+        const value = part.value;
+
+        if (added || removed) {
           isDifferent = true;
         }
 
-        const lines = part.value.split('\n');
+        const lines = value.split('\n');
         const color = getColor(added, removed);
         const bgColor = getBgColor(added, removed);
 
@@ -69,7 +71,7 @@ const diffLines = (a: string, b: string): Diff => {
         return lines
           .map(line => {
             const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-            const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
+            const mark = color(added ? '+' : removed ? '-' : ' ');
             return mark + ' ' + color(highlightedLine) + '\n';
           })
           .join('');
