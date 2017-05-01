@@ -25,6 +25,18 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
     'expect(undefined).not.toBeDefined();',
     'expect(Promise.resolve(2)).resolves.toBeDefined();',
     'expect(Promise.reject(2)).rejects.toBeDefined();',
+    'expect.hasAssertions();',
+    'expect.anything();',
+    'expect.stringContaining("foobar");',
+    'expect.arrayContaining(["foobar"]);',
+    'expect.addSnapshotSerializer({});',
+    'expect.extend({});',
+    'expect.objectContaining({});',
+    'expect.assertions(2);',
+    'expect.stringMatching(/foobar/);',
+    'expect.stringMatching(new RegExp("foobar"));',
+    'expect.stringMatching("foobar");',
+    'expect.stringContaining(path.join("__tests__", "__fixtures__"));',
   ],
 
   invalid: [
@@ -110,6 +122,196 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
           endColumn: 18,
           column: 14,
           message: '"nope" is not a valid property of expect.',
+        },
+      ],
+    },
+    {
+      code: 'expect.somethingWeird();',
+      errors: [
+        {
+          endColumn: 22,
+          column: 8,
+          message: '"somethingWeird" is not a valid property of expect.',
+        },
+      ],
+    },
+    {
+      code: 'expect.arrayContaining("foo", "bar", "baz");',
+      errors: [
+        {
+          endColumn: 42,
+          column: 31,
+          message: 'More than one argument was passed to "arrayContaining".',
+        },
+      ],
+    },
+    {
+      code: 'expect.assertions();',
+      errors: [
+        {
+          endColumn: 18,
+          column: 8,
+          message: '"assertions" must be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.assertions("foobar");',
+      errors: [
+        {
+          endColumn: 27,
+          column: 19,
+          message: 'Argument to "assertions" must be a number.',
+        },
+      ],
+    },
+    {
+      code: 'expect.hasAssertions("foobar");',
+      errors: [
+        {
+          endColumn: 30,
+          column: 22,
+          message: '"hasAssertions" must not be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.anything("foobar");',
+      errors: [
+        {
+          endColumn: 25,
+          column: 17,
+          message: '"anything" must not be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.stringContaining();',
+      errors: [
+        {
+          endColumn: 24,
+          column: 8,
+          message: '"stringContaining" must be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.stringContaining(true);',
+      errors: [
+        {
+          endColumn: 29,
+          column: 25,
+          message: 'Argument to "stringContaining" must be a string.',
+        },
+      ],
+    },
+    {
+      code: 'expect.arrayContaining();',
+      errors: [
+        {
+          endColumn: 23,
+          column: 8,
+          message: '"arrayContaining" must be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.arrayContaining("foobar");',
+      errors: [
+        {
+          endColumn: 32,
+          column: 24,
+          message: 'Argument to "arrayContaining" must be an array.',
+        },
+      ],
+    },
+    {
+      code: 'expect.arrayContaining({});',
+      errors: [
+        {
+          endColumn: 26,
+          column: 24,
+          message: 'Argument to "arrayContaining" must be an array.',
+        },
+      ],
+    },
+    {
+      code: 'expect.addSnapshotSerializer();',
+      errors: [
+        {
+          endColumn: 29,
+          column: 8,
+          message: '"addSnapshotSerializer" must be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.addSnapshotSerializer("foobar");',
+      errors: [
+        {
+          endColumn: 38,
+          column: 30,
+          message: 'Argument to "addSnapshotSerializer" must be an object.',
+        },
+      ],
+    },
+    {
+      code: 'expect.extend();',
+      errors: [
+        {
+          endColumn: 14,
+          column: 8,
+          message: '"extend" must be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.extend("foobar");',
+      errors: [
+        {
+          endColumn: 23,
+          column: 15,
+          message: 'Argument to "extend" must be an object.',
+        },
+      ],
+    },
+    {
+      code: 'expect.objectContaining();',
+      errors: [
+        {
+          endColumn: 24,
+          column: 8,
+          message: '"objectContaining" must be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.objectContaining("foobar");',
+      errors: [
+        {
+          endColumn: 33,
+          column: 25,
+          message: 'Argument to "objectContaining" must be an object.',
+        },
+      ],
+    },
+    {
+      code: 'expect.stringMatching();',
+      errors: [
+        {
+          endColumn: 22,
+          column: 8,
+          message: '"stringMatching" must be called with arguments.',
+        },
+      ],
+    },
+    {
+      code: 'expect.stringMatching(["foobar"]);',
+      errors: [
+        {
+          endColumn: 33,
+          column: 23,
+          message: 'Argument to "stringMatching" must be a regexp.',
         },
       ],
     },

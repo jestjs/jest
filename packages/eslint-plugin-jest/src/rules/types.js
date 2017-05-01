@@ -42,6 +42,7 @@ export type Literal = {
   type: 'Literal',
   value?: string,
   rawValue?: string,
+  regex?: Object,
   parent: Node,
   loc: NodeLocation,
 };
