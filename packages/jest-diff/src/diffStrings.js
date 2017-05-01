@@ -12,6 +12,7 @@
 
 const chalk = require('chalk');
 const diff = require('diff');
+const DiffMatchPatch = require('diff-match-patch');
 
 const {NO_DIFF_MESSAGE} = require('./constants.js');
 const DIFF_CONTEXT = 5;
@@ -46,15 +47,17 @@ const getAnnotation = (options: ?DiffOptions): string =>
   '\n' +
   chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) +
   '\n\n';
-
+const diffMatchPatch = new DiffMatchPatch();
+diffMatchPatch.Diff_Timeout = 0;
 const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
+  const diffs = diffMatchPatch.diff_main(a, b);
   return {
-    diff: diff
-      .diffLines(a, b)
+    diff: diffs
       .map(part => {
-        const {added, removed} = part;
-        const value = part.value;
+        const added = part[0] === 1;
+        const removed = part[0] === -1;
+        const value = part[1];
 
         if (added || removed) {
           isDifferent = true;
