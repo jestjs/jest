@@ -81,8 +81,6 @@ describe('no visual difference', () => {
 test('oneline strings', () => {
   // oneline strings don't produce a diff currently.
   expect(stripAnsi(diff('ab', 'aa'))).toBe(null);
-  expect(diff('a', 'a')).toMatch(/no visual difference/);
-  expect(stripAnsi(diff('123456789', '234567890'))).toBe(null);
 });
 
 test('falls back to not call toJSON if objects look identical', () => {
@@ -129,6 +127,23 @@ test('booleans', () => {
   expect(result).toBe(null);
 });
 
+test('collapses big diffs to patch format', () => {
+  const result = diff(
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
+    {expand: false},
+  );
+
+  expect(result).toMatchSnapshot();
+});
+
+// Some of the following assertions seem complex, but compare to alternatives:
+// * toMatch instead of toMatchSnapshot:
+//   * to avoid visual complexity of escaped quotes in expected string
+//   * to omit Expected/Received heading which is an irrelevant detail
+// * join lines of expected string instead of multiline string:
+//   * to avoid ambiguity about indentation in diff lines
+
 test('React elements', () => {
   const result = diff(
     {
@@ -148,19 +163,208 @@ test('React elements', () => {
       type: 'div',
     },
   );
-  expect(stripAnsi(result)).toMatch(/<div\n/);
-  expect(stripAnsi(result)).toMatch(/[\s\S]+className="fun"\n/);
-  expect(stripAnsi(result)).toMatch(/>/);
-  expect(stripAnsi(result)).toMatch(/\-\s+Hello/);
-  expect(stripAnsi(result)).toMatch(/\+\s+Goodbye/);
+
+  expect(stripAnsi(result)).toMatch(
+    [
+      '- <div',
+      '-   className="fun"',
+      '- >',
+      '-   Hello',
+      '+ <div>',
+      '+   Goodbye',
+      '  </div>',
+    ].join('\n'),
+  );
 });
 
-test('collapses big diffs to patch format', () => {
-  const result = diff(
-    {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
-    {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
-    {expand: false},
-  );
+describe('does ignore indentation in JavaScript structures', () => {
+  const less = {
+    searching: '',
+    sorting: {
+      descending: false,
+      fieldKey: 'what',
+    },
+  };
+  const more = {
+    searching: '',
+    sorting: [
+      {
+        descending: false,
+        fieldKey: 'what',
+      },
+    ],
+  };
 
-  expect(result).toMatchSnapshot();
+  test('from less to more', () => {
+    // Replace unchanged chunk in the middle with received lines,
+    // which are more indented.
+    expect(stripAnsi(diff(less, more))).toMatch(
+      [
+        '  Object {',
+        '    "searching": "",',
+        '-   "sorting": Object {',
+        '+   "sorting": Array [',
+        '+     Object {',
+        '        "descending": false,',
+        '        "fieldKey": "what",',
+        '      },',
+        '+   ],',
+        '  }',
+      ].join('\n'),
+    );
+  });
+
+  test('from more to less', () => {
+    // Replace unchanged chunk in the middle with received lines,
+    // which are less indented.
+    expect(stripAnsi(diff(more, less))).toMatch(
+      [
+        '  Object {',
+        '    "searching": "",',
+        '-   "sorting": Array [',
+        '-     Object {',
+        '+   "sorting": Object {',
+        '      "descending": false,',
+        '      "fieldKey": "what",',
+        '    },',
+        '-   ],',
+        '  }',
+      ].join('\n'),
+    );
+  });
+});
+
+describe('multiline string as property of JavaScript object', () => {
+  // Without indentation is safest in multiline strings:
+  const expectedWithout = {
+    id: 'J',
+    points: `0.5,0.460
+0.25,0.875`,
+  };
+  const receivedWithout = {
+    id: 'J',
+    points: `0.5,0.460
+0.5,0.875
+0.25,0.875`,
+  };
+
+  // With indentation is confusing, as this test demonstrates :(
+  // What looks like one indent level under points is really two levels,
+  // because the test itself is indented one level!
+  const expectedWith = {
+    id: 'J',
+    points: `0.5,0.460
+      0.25,0.875`,
+  };
+  const receivedWith = {
+    id: 'J',
+    points: `0.5,0.460
+      0.5,0.875
+      0.25,0.875`,
+  };
+
+  test('without indentation', () => {
+    expect(stripAnsi(diff(expectedWithout, receivedWithout))).toMatch(
+      [
+        '  Object {',
+        '    "id": "J",',
+        '    "points": "0.5,0.460',
+        '+ 0.5,0.875',
+        '  0.25,0.875",',
+        '  }',
+      ].join('\n'),
+    );
+  });
+
+  test('with indentation', () => {
+    expect(stripAnsi(diff(expectedWith, receivedWith))).toMatch(
+      [
+        '  Object {',
+        '    "id": "J",',
+        '    "points": "0.5,0.460',
+        '+       0.5,0.875',
+        '        0.25,0.875",',
+        '  }',
+      ].join('\n'),
+    );
+  });
+
+  test('without to with indentation', () => {
+    // Don’t ignore changes to indentation in a multiline string.
+    expect(stripAnsi(diff(expectedWithout, receivedWith))).toMatch(
+      [
+        '  Object {',
+        '    "id": "J",',
+        '    "points": "0.5,0.460',
+        '- 0.25,0.875",',
+        '+       0.5,0.875',
+        '+       0.25,0.875",',
+        '  }',
+      ].join('\n'),
+    );
+  });
+});
+
+describe('does ignore indentation in React elements', () => {
+  const leaf = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: ['text'],
+    },
+    type: 'span',
+  };
+  const less = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: [leaf],
+    },
+    type: 'span',
+  };
+  const more = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: [
+        {
+          $$typeof: Symbol.for('react.element'),
+          props: {
+            children: [leaf],
+          },
+          type: 'strong',
+        },
+      ],
+    },
+    type: 'span',
+  };
+
+  test('from less to more', () => {
+    // Replace unchanged chunk in the middle with received lines,
+    // which are more indented.
+    expect(stripAnsi(diff(less, more))).toMatch(
+      [
+        '  <span>',
+        '+   <strong>',
+        '      <span>',
+        '        text',
+        '      </span>',
+        '+   </strong>',
+        '  </span>',
+      ].join('\n'),
+    );
+  });
+
+  test('from more to less', () => {
+    // Replace unchanged chunk in the middle with received lines,
+    // which are less indented.
+    expect(stripAnsi(diff(more, less))).toMatch(
+      [
+        '  <span>',
+        '-   <strong>',
+        '    <span>',
+        '      text',
+        '    </span>',
+        '-   </strong>',
+        '  </span>',
+      ].join('\n'),
+    );
+  });
 });

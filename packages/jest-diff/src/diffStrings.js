@@ -47,14 +47,109 @@ const getAnnotation = (options: ?DiffOptions): string =>
   chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) +
   '\n\n';
 
+// Given string, return array of its lines including newline characters.
+// Note: split-lines package doesn’t allow newline at end of last line :(
+const regexpNewline = /\n/g;
+function splitIntoLines(string: string): Array<string> {
+  const lines = [];
+
+  regexpNewline.lastIndex = 0;
+  let prevIndex = regexpNewline.lastIndex;
+  regexpNewline.exec(string);
+
+  while (regexpNewline.lastIndex !== 0) {
+    lines.push(string.slice(prevIndex, regexpNewline.lastIndex));
+    prevIndex = regexpNewline.lastIndex;
+    regexpNewline.exec(string);
+  }
+
+  if (prevIndex < string.length || prevIndex === 0) {
+    lines.push(string.slice(prevIndex));
+  }
+
+  return lines;
+}
+
+// Return whether line has an odd number of unescaped quotes.
+function oddCountOfQuotes(line) {
+  let oddBackslashes = false;
+  let oddQuotes = false;
+  // eslint-disable-next-line prefer-const
+  for (let char of line) {
+    if (char === '\\') {
+      oddBackslashes = !oddBackslashes;
+    } else {
+      if (char === '"' && !oddBackslashes) {
+        oddQuotes = !oddQuotes;
+      }
+      oddBackslashes = false;
+    }
+  }
+  return oddQuotes;
+}
+
+// Given array of lines, return lines without indentation,
+// except in multiline strings.
+const regexpIndentation = /^[ ]*/;
+function unindentLines(lines) {
+  let inMultilineString = false;
+
+  return lines.map(line => {
+    const oddCount = oddCountOfQuotes(line);
+
+    if (inMultilineString) {
+      inMultilineString = !oddCount;
+      return line;
+    }
+
+    inMultilineString = oddCount;
+    return line.replace(regexpIndentation, '');
+  });
+}
+
+// Given expected and received after an assertion fails,
+// return chunks from diff.diffLines with original indentation,
+// but ignoring indentation except in multiline strings.
+// diff.diffLines ignoreWhitespace option doesn’t work for 3 reasons:
+// It ignores indentation in multiline strings.
+// It ignores whitespace at the end of lines.
+// It returns chunks without original indentation.
+function diffUnindentedLines(a, b) {
+  const aLines = splitIntoLines(a);
+  const bLines = splitIntoLines(b);
+  const chunks = diff.diffLines(
+    unindentLines(aLines).join(''),
+    unindentLines(bLines).join(''),
+  );
+
+  let aIndex = 0;
+  let bIndex = 0;
+  chunks.forEach(chunk => {
+    const count = chunk.count; // number of lines in chunk
+
+    // Replace unindented lines with original lines.
+    // Assume that a is expected and b is received.
+    if (chunk.removed) {
+      chunk.value = aLines.slice(aIndex, (aIndex += count)).join('');
+    } else {
+      chunk.value = bLines.slice(bIndex, (bIndex += count)).join('');
+      if (!chunk.added) {
+        aIndex += count; // increment both if chunk is unchanged
+      }
+    }
+  });
+
+  return chunks;
+}
+
 const diffLines = (a: string, b: string): Diff => {
+  const chunks = diffUnindentedLines(a, b);
   let isDifferent = false;
   return {
-    diff: diff
-      .diffLines(a, b)
+    diff: chunks
       .map(part => {
         const {added, removed} = part;
-        if (part.added || part.removed) {
+        if (added || removed) {
           isDifferent = true;
         }
 
