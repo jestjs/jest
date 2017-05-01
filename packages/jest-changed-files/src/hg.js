@@ -20,8 +20,8 @@ const env = Object.assign({}, process.env, {
 });
 
 type Options = {|
-  withAncestor?: boolean,
   lastCommit?: boolean,
+  withAncestor?: boolean,
 |};
 
 function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
