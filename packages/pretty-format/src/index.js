@@ -518,6 +518,22 @@ function printSet(
   return result + '}';
 }
 
+// Fix for screwed up polyfills
+let safeMapToJSON;
+let safeSetToJSON;
+
+if (typeof Map === 'function' && typeof Map.prototype.toJSON === 'function') {
+  safeMapToJSON = Map.prototype.toJSON;
+} else {
+  safeMapToJSON = {};
+}
+
+if (typeof Set === 'function' && typeof Set.prototype.toJSON === 'function') {
+  safeSetToJSON = Set.prototype.toJSON;
+} else {
+  safeSetToJSON = {};
+}
+
 function printComplexValue(
   val: any,
   indent: string,
@@ -549,7 +565,9 @@ function printComplexValue(
     callToJSON &&
     !hitMaxDepth &&
     val.toJSON &&
-    typeof val.toJSON === 'function'
+    typeof val.toJSON === 'function' &&
+    val.toJSON !== safeMapToJSON &&
+    val.toJSON !== safeSetToJSON
   ) {
     return print(
       val.toJSON(),
