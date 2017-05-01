@@ -52,6 +52,8 @@ diffMatchPatch.Diff_Timeout = 0;
 const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
   const diffs = diffMatchPatch.diff_main(a, b);
+  // the following step likely needs changing
+  diffMatchPatch.diff_cleanupSemantic(diffs);
   return {
     diff: diffs
       .map(part => {
