@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -76,7 +78,7 @@ const IDVisitor = {
   blacklist: ['TypeAnnotation'],
 };
 
-const FUNCTIONS = Object.create(null);
+const FUNCTIONS: Object = Object.create(null);
 FUNCTIONS.mock = args => {
   if (args.length === 1) {
     return args[0].isStringLiteral();
@@ -136,7 +138,7 @@ FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
 
-module.exports = babel => {
+module.exports = () => {
   const isJest = callee =>
     callee.get('object').isIdentifier(JEST_GLOBAL) ||
     (callee.isMemberExpression() && isJest(callee.get('object')));
@@ -158,7 +160,7 @@ module.exports = babel => {
   };
   return {
     visitor: {
-      ExpressionStatement(path) {
+      ExpressionStatement(path: any) {
         if (shouldHoistExpression(path.get('expression'))) {
           path.node._blockHoist = Infinity;
         }
