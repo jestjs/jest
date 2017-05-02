@@ -60,9 +60,6 @@ const _replaceRootDirInPath = (rootDir: string, filePath: Path): string => {
 };
 
 const _replaceRootDirInObject = (rootDir: string, config: any): Object => {
-  if (config instanceof RegExp) {
-    return config;
-  }
   if (config !== null) {
     const newConfig = {};
     for (const configKey in config) {
@@ -80,6 +77,9 @@ const _replaceRootDirTags = (rootDir: string, config: any) => {
     case 'object':
       if (Array.isArray(config)) {
         return config.map(item => _replaceRootDirTags(rootDir, item));
+      }
+      if (config instanceof RegExp) {
+        return config;
       }
       return _replaceRootDirInObject(rootDir, config);
     case 'string':
