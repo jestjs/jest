@@ -16,8 +16,8 @@ const Site = React.createClass({
   render() {
     const title = this.props.title
       ? this.props.title + ' · ' + siteConfig.title
-      : siteConfig.title + ' · ' + siteConfig.tagline;
-    const description = this.props.description || siteConfig.tagline;
+      : siteConfig.title + ' · ' + siteConfig['en'].tagline;
+    const description = this.props.description || siteConfig['en'].tagline;
     const url =
       siteConfig.url + siteConfig.baseUrl + (this.props.url || 'index.html');
     return (
@@ -28,10 +28,11 @@ const Site = React.createClass({
             baseUrl={siteConfig.baseUrl}
             section={this.props.section}
             title={siteConfig.title}
+            language={this.props.language}
           />
           <div className="navPusher">
             {this.props.children}
-            <Footer />
+            <Footer language={this.props.language} />
           </div>
           <div id="fb-root" />
           <script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>

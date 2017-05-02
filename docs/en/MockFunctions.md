@@ -3,7 +3,7 @@ id: mock-functions
 title: Mock Functions
 layout: docs
 category: Introduction
-permalink: docs/mock-functions.html
+permalink: docs/en/mock-functions.html
 previous: setup-teardown
 next: more-resources
 ---
