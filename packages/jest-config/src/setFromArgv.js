@@ -18,26 +18,26 @@ function setFromArgv(config: InitialOptions, argv: Argv) {
   let configFromArgv;
   const argvToConfig = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
-    .reduce((acc: Object, key) => {
+    .reduce((options: Object, key) => {
       switch (key) {
         case 'coverage':
-          acc['collectCoverage'] = argv[key];
+          options['collectCoverage'] = argv[key];
           break;
         case 'json':
-          acc['useStderr'] = argv[key];
+          options['useStderr'] = argv[key];
           break;
         case 'watchAll':
-          acc['watch'] = argv[key];
+          options['watch'] = argv[key];
           break;
         case 'env':
-          acc['testEnvironment'] = argv[key];
+          options['testEnvironment'] = argv[key];
           break;
         case 'config':
           break;
         default:
-          acc[key] = argv[key];
+          options[key] = argv[key];
       }
-      return acc;
+      return options;
     }, {});
 
   if (argv.config && typeof argv.config === 'string') {
