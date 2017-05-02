@@ -1,5 +1,5 @@
 {
-  "lerna": "2.0.0-beta.38",
+  "lerna": "2.0.0-rc.4",
   "version": "19.0.2",
   "npmClient": "yarn",
   "packages": [
