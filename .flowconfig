@@ -1,6 +1,7 @@
 [ignore]
-.*/node_modules/react-native/.*
+.*/node_modules/conventional-changelog-core/.*
 .*/node_modules/fbjs/.*
+.*/node_modules/react-native/.*
 .*/vendor/jsonlint/.*
 .*/examples/.*
 .*/website/.*
