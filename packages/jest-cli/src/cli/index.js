@@ -19,7 +19,7 @@ const runCLI = require('./runCLI');
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
 
-function run(argv?: Object, root?: Path) {
+function run(argv?: Object, project?: Path) {
   argv = yargs(argv || process.argv.slice(2))
     .usage(args.usage)
     .help()
@@ -36,16 +36,15 @@ function run(argv?: Object, root?: Path) {
     return;
   }
 
-  if (!root) {
-    root = pkgDir.sync();
+  if (!project) {
+    project = pkgDir.sync();
   }
 
-  argv.projects = argv.experimentalProjects;
   if (!argv.projects) {
-    argv.projects = [root];
+    argv.projects = [project];
   }
 
-  const execute = argv.projects.length === 1 ? getJest(root).runCLI : runCLI;
+  const execute = argv.projects.length === 1 ? getJest(project).runCLI : runCLI;
   execute(argv, argv.projects, result => {
     const code = !result || result.success ? 0 : 1;
     process.on('exit', () => process.exit(code));

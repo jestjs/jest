@@ -31,7 +31,7 @@ const VERSION = require('../../package.json').version;
 
 module.exports = async (
   argv: Object,
-  roots: Array<Path>,
+  projects: Array<Path>,
   onComplete: (results: ?AggregatedResult) => void,
 ) => {
   const realFs = require('fs');
@@ -91,19 +91,43 @@ module.exports = async (
   };
 
   try {
-    const configs = await Promise.all(
-      roots.map(root => readConfig(argv, root)),
-    );
+    let globalConfig;
+    let hasDeprecationWarnings;
+    let configs = [];
+    let config;
+    if (projects.length === 1) {
+      ({config, globalConfig, hasDeprecationWarnings} = await readConfig(
+        argv,
+        projects[0],
+      ));
+      configs = [{config, globalConfig, hasDeprecationWarnings}];
+      if (globalConfig.projects && globalConfig.projects.length) {
+        projects = globalConfig.projects;
+      }
+    }
+
+    if (projects.length > 1) {
+      configs = await Promise.all(projects.map(root => readConfig(argv, root)));
+      // If no config was passed initially, use the one from the first project
+      if (!globalConfig && !config) {
+        globalConfig = configs[0].globalConfig;
+        config = configs[0].config;
+      }
+    }
+
+    if (!config || !globalConfig || !configs.length) {
+      throw new Error('jest: No configuration found for any project.');
+    }
 
     if (argv.debug || argv.showConfig) {
-      logDebugMessages(configs[0].globalConfig, configs[0].config, pipe);
+      logDebugMessages(globalConfig, config, pipe);
     }
 
     if (argv.showConfig) {
       process.exit(0);
     }
 
-    await _run(configs[0].globalConfig, configs);
+    await _run(globalConfig, configs);
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);

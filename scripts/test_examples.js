@@ -50,8 +50,4 @@ examples.forEach(exampleDirectory => {
   link(exampleDirectory, BABEL_JEST_PATH);
 });
 
-runCommand(
-  JEST_BIN_PATH,
-  ['--experimentalProjects'].concat(examples),
-  EXAMPLES_DIR
-);
+runCommand(JEST_BIN_PATH, ['--projects'].concat(examples), EXAMPLES_DIR);

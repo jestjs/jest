@@ -25,27 +25,28 @@ const {ValidationError, validate} = require('jest-validate');
 const chalk = require('chalk');
 const crypto = require('crypto');
 const DEFAULT_CONFIG = require('./defaults');
+const DEPRECATED_CONFIG = require('./deprecated');
+const ERROR = `${BULLET}Validation Error`;
+const glob = require('glob');
+const JSON_EXTENSION = '.json';
 const path = require('path');
+const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const Resolver = require('jest-resolve');
 const utils = require('jest-regex-util');
 const VALID_CONFIG = require('./validConfig');
-const DEPRECATED_CONFIG = require('./deprecated');
-const JSON_EXTENSION = '.json';
-const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
-const ERROR = `${BULLET}Validation Error`;
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const setupPreset = (config: InitialOptions, configPreset: string) => {
+const setupPreset = (options: InitialOptions, optionsPreset: string) => {
   let preset;
-  const presetPath = _replaceRootDirInPath(config.rootDir, configPreset);
+  const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
     presetPath.endsWith(JSON_EXTENSION)
       ? presetPath
       : path.join(presetPath, PRESET_NAME),
     {
-      basedir: config.rootDir,
+      basedir: options.rootDir,
     },
   );
 
@@ -56,30 +57,30 @@ const setupPreset = (config: InitialOptions, configPreset: string) => {
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
-  if (config.setupFiles) {
-    config.setupFiles = (preset.setupFiles || []).concat(config.setupFiles);
+  if (options.setupFiles) {
+    options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
   }
-  if (config.modulePathIgnorePatterns) {
-    config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
-      config.modulePathIgnorePatterns,
+  if (options.modulePathIgnorePatterns) {
+    options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
+      options.modulePathIgnorePatterns,
     );
   }
-  if (config.moduleNameMapper) {
-    config.moduleNameMapper = Object.assign(
+  if (options.moduleNameMapper) {
+    options.moduleNameMapper = Object.assign(
       {},
       preset.moduleNameMapper,
-      config.moduleNameMapper,
+      options.moduleNameMapper,
     );
   }
-  return Object.assign({}, preset, config);
+  return Object.assign({}, preset, options);
 };
 
-const setupBabelJest = (config: InitialOptions) => {
+const setupBabelJest = (options: InitialOptions) => {
   let babelJest;
-  const basedir = config.rootDir;
+  const basedir = options.rootDir;
 
-  if (config.transform) {
-    const customJSPattern = Object.keys(config.transform).find(pattern => {
+  if (options.transform) {
+    const customJSPattern = Object.keys(options.transform).find(pattern => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
     });
@@ -87,7 +88,7 @@ const setupBabelJest = (config: InitialOptions) => {
     if (customJSPattern) {
       const jsTransformer = Resolver.findNodeModule(
         //$FlowFixMe
-        config.transform[customJSPattern],
+        options.transform[customJSPattern],
         {basedir},
       );
       if (
@@ -100,7 +101,7 @@ const setupBabelJest = (config: InitialOptions) => {
   } else {
     babelJest = Resolver.findNodeModule('babel-jest', {basedir});
     if (babelJest) {
-      config.transform = {
+      options.transform = {
         [DEFAULT_JS_PATTERN]: 'babel-jest',
       };
     }
@@ -110,40 +111,40 @@ const setupBabelJest = (config: InitialOptions) => {
 };
 
 const normalizeCollectCoverageOnlyFrom = (
-  config: InitialOptions,
+  options: InitialOptions,
   key: string,
 ) => {
-  return Object.keys(config[key]).reduce((normObj, filePath) => {
+  return Object.keys(options[key]).reduce((map, filePath) => {
     filePath = path.resolve(
-      config.rootDir,
-      _replaceRootDirInPath(config.rootDir, filePath),
+      options.rootDir,
+      _replaceRootDirInPath(options.rootDir, filePath),
     );
-    normObj[filePath] = true;
-    return normObj;
+    map[filePath] = true;
+    return map;
   }, Object.create(null));
 };
 
-const normalizeCollectCoverageFrom = (config: InitialOptions, key: string) => {
+const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
   let value;
-  if (!config[key]) {
+  if (!options[key]) {
     value = [];
   }
 
-  if (!Array.isArray(config[key])) {
+  if (!Array.isArray(options[key])) {
     try {
-      value = JSON.parse(config[key]);
+      value = JSON.parse(options[key]);
     } catch (e) {}
 
-    Array.isArray(value) || (value = [config[key]]);
+    Array.isArray(value) || (value = [options[key]]);
   } else {
-    value = config[key];
+    value = options[key];
   }
 
   return value;
 };
 
 const normalizeUnmockedModulePathPatterns = (
-  config: InitialOptions,
+  options: InitialOptions,
   key: string,
 ) => {
   // _replaceRootDirTags is specifically well-suited for substituting
@@ -152,21 +153,23 @@ const normalizeUnmockedModulePathPatterns = (
   //
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
-  return config[key].map(pattern =>
-    utils.replacePathSepForRegex(pattern.replace(/<rootDir>/g, config.rootDir)),
+  return options[key].map(pattern =>
+    utils.replacePathSepForRegex(
+      pattern.replace(/<rootDir>/g, options.rootDir),
+    ),
   );
 };
 
-const normalizePreprocessor = (config: InitialOptions) => {
+const normalizePreprocessor = (options: InitialOptions) => {
   /* eslint-disable max-len */
-  if (config.scriptPreprocessor && config.transform) {
+  if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
       `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transform')}.`,
     );
   }
 
-  if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
+  if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
     throw createConfigError(
       `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
@@ -174,59 +177,62 @@ const normalizePreprocessor = (config: InitialOptions) => {
   }
   /* eslint-enable max-len */
 
-  if (config.scriptPreprocessor) {
-    config.transform = {
-      '.*': config.scriptPreprocessor,
+  if (options.scriptPreprocessor) {
+    options.transform = {
+      '.*': options.scriptPreprocessor,
     };
   }
 
-  if (config.preprocessorIgnorePatterns) {
-    config.transformIgnorePatterns = config.preprocessorIgnorePatterns;
+  if (options.preprocessorIgnorePatterns) {
+    options.transformIgnorePatterns = options.preprocessorIgnorePatterns;
   }
 
-  delete config.scriptPreprocessor;
-  delete config.preprocessorIgnorePatterns;
+  delete options.scriptPreprocessor;
+  delete options.preprocessorIgnorePatterns;
 };
 
-const normalizeMissingOptions = (config: InitialOptions) => {
-  if (!config.name) {
-    config.name = crypto.createHash('md5').update(config.rootDir).digest('hex');
+const normalizeMissingOptions = (options: InitialOptions) => {
+  if (!options.name) {
+    options.name = crypto
+      .createHash('md5')
+      .update(options.rootDir)
+      .digest('hex');
   }
 
-  if (!config.setupFiles) {
-    config.setupFiles = [];
+  if (!options.setupFiles) {
+    options.setupFiles = [];
   }
 
-  if (!config.testRunner || config.testRunner === 'jasmine2') {
-    config.testRunner = require.resolve('jest-jasmine2');
+  if (!options.testRunner || options.testRunner === 'jasmine2') {
+    options.testRunner = require.resolve('jest-jasmine2');
   } else {
-    config.testRunner = resolve(
-      config.rootDir,
+    options.testRunner = resolve(
+      options.rootDir,
       'testRunner',
-      config.testRunner,
+      options.testRunner,
     );
   }
 
-  return config;
+  return options;
 };
 
-const normalizeRootDir = (config: InitialOptions) => {
+const normalizeRootDir = (options: InitialOptions) => {
   // Assert that there *is* a rootDir
-  if (!config.hasOwnProperty('rootDir')) {
+  if (!options.hasOwnProperty('rootDir')) {
     throw createConfigError(
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
   }
-  config.rootDir = path.normalize(config.rootDir);
+  options.rootDir = path.normalize(options.rootDir);
 };
 
-const normalizeArgv = (config: InitialOptions, argv: Object) => {
+const normalizeArgv = (options: InitialOptions, argv: Object) => {
   if (argv.testRunner) {
-    config.testRunner = argv.testRunner;
+    options.testRunner = argv.testRunner;
   }
 
   if (argv.collectCoverageFrom) {
-    config.collectCoverageFrom = argv.collectCoverageFrom;
+    options.collectCoverageFrom = argv.collectCoverageFrom;
   }
 
   if (argv.collectCoverageOnlyFrom) {
@@ -234,90 +240,90 @@ const normalizeArgv = (config: InitialOptions, argv: Object) => {
     argv.collectCoverageOnlyFrom.forEach(
       path => (collectCoverageOnlyFrom[path] = true),
     );
-    config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
+    options.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
   }
 
   if (argv.env) {
-    config.testEnvironment = argv.env;
+    options.testEnvironment = argv.env;
   }
 };
 
-function normalize(config: InitialOptions, argv: Object = {}) {
-  const {hasDeprecationWarnings} = validate(config, {
+function normalize(options: InitialOptions, argv: Object = {}) {
+  const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
   });
 
-  normalizePreprocessor(config);
-  normalizeRootDir(config);
-  normalizeMissingOptions(config);
-  normalizeArgv(config, argv);
+  normalizePreprocessor(options);
+  normalizeRootDir(options);
+  normalizeMissingOptions(options);
+  normalizeArgv(options, argv);
 
-  if (config.preset) {
-    config = setupPreset(config, config.preset);
+  if (options.preset) {
+    options = setupPreset(options, options.preset);
   }
-  if (config.testEnvironment) {
-    config.testEnvironment = getTestEnvironment(config);
+  if (options.testEnvironment) {
+    options.testEnvironment = getTestEnvironment(options);
   }
-  if (!config.roots && config.testPathDirs) {
-    config.roots = config.testPathDirs;
+  if (!options.roots && options.testPathDirs) {
+    options.roots = options.testPathDirs;
   }
 
-  const babelJest = setupBabelJest(config);
-  const newConfig = Object.assign({}, DEFAULT_CONFIG);
+  const babelJest = setupBabelJest(options);
+  const newOptions = Object.assign({}, DEFAULT_CONFIG);
 
-  Object.keys(config).reduce((newConfig, key) => {
+  Object.keys(options).reduce((newOptions, key) => {
     let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(config, key);
+        value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
       case 'snapshotSerializers':
         //$FlowFixMe
-        value = config[key].map(resolve.bind(null, config.rootDir, key));
+        value = options[key].map(resolve.bind(null, options.rootDir, key));
         break;
       case 'roots':
         //$FlowFixMe
-        value = config[key].map(filePath =>
+        value = options[key].map(filePath =>
           path.resolve(
-            config.rootDir,
-            _replaceRootDirInPath(config.rootDir, filePath),
+            options.rootDir,
+            _replaceRootDirInPath(options.rootDir, filePath),
           ),
         );
         break;
       case 'collectCoverageFrom':
-        value = normalizeCollectCoverageFrom(config, key);
+        value = normalizeCollectCoverageFrom(options, key);
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
         value = path.resolve(
-          config.rootDir,
+          options.rootDir,
           //$FlowFixMe
-          _replaceRootDirInPath(config.rootDir, config[key]),
+          _replaceRootDirInPath(options.rootDir, options[key]),
         );
         break;
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'resolver':
         //$FlowFixMe
-        value = resolve(config.rootDir, key, config[key]);
+        value = resolve(options.rootDir, key, options[key]);
         break;
       case 'moduleNameMapper':
         //$FlowFixMe
-        value = Object.keys(config[key]).map(regex => [
+        value = Object.keys(options[key]).map(regex => [
           regex,
           //$FlowFixMe
-          _replaceRootDirTags(config.rootDir, config[key][regex]),
+          _replaceRootDirTags(options.rootDir, options[key][regex]),
         ]);
         break;
       case 'transform':
         //$FlowFixMe
-        value = Object.keys(config[key]).map(regex => [
+        value = Object.keys(options[key]).map(regex => [
           regex,
           //$FlowFixMe
-          resolve(config.rootDir, key, config[key][regex]),
+          resolve(options.rootDir, key, options[key][regex]),
         ]);
         break;
       case 'coveragePathIgnorePatterns':
@@ -325,17 +331,28 @@ function normalize(config: InitialOptions, argv: Object = {}) {
       case 'testPathIgnorePatterns':
       case 'transformIgnorePatterns':
       case 'unmockedModulePathPatterns':
-        value = normalizeUnmockedModulePathPatterns(config, key);
+        value = normalizeUnmockedModulePathPatterns(options, key);
         break;
       case 'haste':
-        value = Object.assign({}, config[key]);
+        value = Object.assign({}, options[key]);
         if (value.hasteImplModulePath != null) {
           value.hasteImplModulePath = resolve(
-            config.rootDir,
+            options.rootDir,
             'haste.hasteImplModulePath',
             value.hasteImplModulePath,
           );
         }
+        break;
+      case 'projects':
+        let list = [];
+        //$FlowFixMe
+        options[key].forEach(
+          filePath =>
+            (list = list.concat(
+              glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
+            )),
+        );
+        value = list;
         break;
       case 'automock':
       case 'bail':
@@ -369,46 +386,46 @@ function normalize(config: InitialOptions, argv: Object = {}) {
       case 'updateSnapshot':
       case 'verbose':
       case 'watchman':
-        value = config[key];
+        value = options[key];
         break;
     }
-    newConfig[key] = value;
-    return newConfig;
-  }, newConfig);
+    newOptions[key] = value;
+    return newOptions;
+  }, newOptions);
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(
       'regenerator-runtime/runtime',
-      {basedir: config.rootDir},
+      {basedir: options.rootDir},
     );
 
     if (regeneratorRuntimePath) {
-      newConfig.setupFiles.unshift(regeneratorRuntimePath);
+      newOptions.setupFiles.unshift(regeneratorRuntimePath);
     }
   }
 
-  if (config.testRegex && config.testMatch) {
+  if (options.testRegex && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (config.testRegex && !config.testMatch) {
+  if (options.testRegex && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
-    newConfig.testMatch = [];
+    newOptions.testMatch = [];
   }
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
-    newConfig.coverageReporters = (newConfig.coverageReporters || [])
+    newOptions.coverageReporters = (newOptions.coverageReporters || [])
       .filter(reporter => reporter !== 'text');
   }
 
   return {
     hasDeprecationWarnings,
-    options: _replaceRootDirTags(newConfig.rootDir, newConfig),
+    options: _replaceRootDirTags(newOptions.rootDir, newOptions),
   };
 }
 

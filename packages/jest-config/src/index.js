@@ -81,6 +81,7 @@ const getConfigs = (
       mapCoverage: options.mapCoverage,
       noStackTrace: options.noStackTrace,
       notify: options.notify,
+      projects: options.projects,
       replname: options.replname,
       rootDir: options.rootDir,
       silent: options.silent,
