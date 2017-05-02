@@ -118,7 +118,7 @@ test('the fetch fails with an error', async () => {
 });
 ```
 
-Of course, you can combine available `async` and `await` with `.resolves` or `.rejects` (available in Jest **20.0.0+**).
+Of course, you can combine `async` and `await` with `.resolves` or `.rejects` (available in Jest **20.0.0+**).
 
 ```js
 test('the data is peanut butter', async () => {
@@ -132,6 +132,6 @@ test('the fetch fails with an error', async () => {
 });
 ```
 
-In this cases, `async` and `await` are effectively just syntactic sugar for the same logic as the promises example uses.
+In these cases, `async` and `await` are effectively just syntactic sugar for the same logic as the promises example uses.
 
-None of these forms is particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style makes your tests the simplest.
+None of these forms is particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style makes your tests simpler.
