@@ -15,6 +15,7 @@ import type {InitialOptions, ReporterConfig} from 'types/Config';
 const {
   BULLET,
   DOCUMENTATION_NOTE,
+  _replaceRootDirInObject,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
@@ -37,13 +38,14 @@ const JSON_EXTENSION = '.json';
 const path = require('path');
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const Resolver = require('jest-resolve');
+const setFromArgv = require('./setFromArgv');
 const utils = require('jest-regex-util');
 const VALID_CONFIG = require('./validConfig');
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const setupPreset = (options: InitialOptions, optionsPreset: string) => {
+const setupPreset = (options: Object, optionsPreset: string) => {
   let preset;
   const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -80,7 +82,7 @@ const setupPreset = (options: InitialOptions, optionsPreset: string) => {
   return Object.assign({}, preset, options);
 };
 
-const setupBabelJest = (options: InitialOptions) => {
+const setupBabelJest = (options: Object) => {
   let babelJest;
   const basedir = options.rootDir;
 
@@ -92,7 +94,6 @@ const setupBabelJest = (options: InitialOptions) => {
 
     if (customJSPattern) {
       const jsTransformer = Resolver.findNodeModule(
-        //$FlowFixMe
         options.transform[customJSPattern],
         {basedir},
       );
@@ -119,7 +120,10 @@ const normalizeCollectCoverageOnlyFrom = (
   options: InitialOptions,
   key: string,
 ) => {
-  return Object.keys(options[key]).reduce((map, filePath) => {
+  const collectCoverageOnlyFrom = Array.isArray(options[key])
+    ? options[key] // passed from argv
+    : Object.keys(options[key]); // passed from options
+  return collectCoverageOnlyFrom.reduce((map, filePath) => {
     filePath = path.resolve(
       options.rootDir,
       _replaceRootDirInPath(options.rootDir, filePath),
@@ -165,7 +169,7 @@ const normalizeUnmockedModulePathPatterns = (
   );
 };
 
-const normalizePreprocessor = (options: InitialOptions) => {
+const normalizePreprocessor = (options: Object) => {
   /* eslint-disable max-len */
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
@@ -196,7 +200,7 @@ const normalizePreprocessor = (options: InitialOptions) => {
   delete options.preprocessorIgnorePatterns;
 };
 
-const normalizeMissingOptions = (options: InitialOptions) => {
+const normalizeMissingOptions = (options: Object) => {
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
@@ -221,7 +225,7 @@ const normalizeMissingOptions = (options: InitialOptions) => {
   return options;
 };
 
-const normalizeRootDir = (options: InitialOptions) => {
+const normalizeRootDir = (options: Object) => {
   // Assert that there *is* a rootDir
   if (!options.hasOwnProperty('rootDir')) {
     throw createConfigError(
@@ -229,28 +233,6 @@ const normalizeRootDir = (options: InitialOptions) => {
     );
   }
   options.rootDir = path.normalize(options.rootDir);
-};
-
-const normalizeArgv = (options: InitialOptions, argv: Object) => {
-  if (argv.testRunner) {
-    options.testRunner = argv.testRunner;
-  }
-
-  if (argv.collectCoverageFrom) {
-    options.collectCoverageFrom = argv.collectCoverageFrom;
-  }
-
-  if (argv.collectCoverageOnlyFrom) {
-    const collectCoverageOnlyFrom = Object.create(null);
-    argv.collectCoverageOnlyFrom.forEach(
-      path => (collectCoverageOnlyFrom[path] = true),
-    );
-    options.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
-  }
-
-  if (argv.env) {
-    options.testEnvironment = argv.env;
-  }
 };
 
 const normalizeReporters = (options: InitialOptions, basedir) => {
@@ -299,11 +281,11 @@ function normalize(options: InitialOptions, argv: Object = {}) {
     exampleConfig: VALID_CONFIG,
   });
 
+  options = setFromArgv(options, argv);
   normalizeReporters(options);
   normalizePreprocessor(options);
   normalizeRootDir(options);
   normalizeMissingOptions(options);
-  normalizeArgv(options, argv);
 
   if (options.preset) {
     options = setupPreset(options, options.preset);
@@ -326,11 +308,9 @@ function normalize(options: InitialOptions, argv: Object = {}) {
         break;
       case 'setupFiles':
       case 'snapshotSerializers':
-        //$FlowFixMe
         value = options[key].map(resolve.bind(null, options.rootDir, key));
         break;
       case 'roots':
-        //$FlowFixMe
         value = options[key].map(filePath =>
           path.resolve(
             options.rootDir,
@@ -345,29 +325,23 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'coverageDirectory':
         value = path.resolve(
           options.rootDir,
-          //$FlowFixMe
           _replaceRootDirInPath(options.rootDir, options[key]),
         );
         break;
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'resolver':
-        //$FlowFixMe
         value = resolve(options.rootDir, key, options[key]);
         break;
       case 'moduleNameMapper':
-        //$FlowFixMe
         value = Object.keys(options[key]).map(regex => [
           regex,
-          //$FlowFixMe
           _replaceRootDirTags(options.rootDir, options[key][regex]),
         ]);
         break;
       case 'transform':
-        //$FlowFixMe
         value = Object.keys(options[key]).map(regex => [
           regex,
-          //$FlowFixMe
           resolve(options.rootDir, key, options[key][regex]),
         ]);
         break;
@@ -390,7 +364,6 @@ function normalize(options: InitialOptions, argv: Object = {}) {
         break;
       case 'projects':
         let list = [];
-        //$FlowFixMe
         options[key].forEach(
           filePath =>
             (list = list.concat(
@@ -407,6 +380,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'collectCoverage':
       case 'coverageReporters':
       case 'coverageThreshold':
+      case 'expand':
       case 'globals':
       case 'logHeapUsage':
       case 'mapCoverage':
@@ -423,13 +397,16 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
+      case 'silent':
       case 'testMatch':
       case 'testEnvironment':
+      case 'testNamePattern':
       case 'testRegex':
       case 'testRunner':
       case 'testURL':
       case 'timers':
       case 'updateSnapshot':
+      case 'useStderr':
       case 'verbose':
       case 'watchman':
         value = options[key];
@@ -471,7 +448,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
 
   return {
     hasDeprecationWarnings,
-    options: _replaceRootDirTags(newOptions.rootDir, newOptions),
+    options: _replaceRootDirInObject(newOptions.rootDir, newOptions),
   };
 }
 

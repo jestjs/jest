@@ -21,7 +21,7 @@ const isInteractive = process.stdout.isTTY && !isCI;
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
-const setState = require('./lib/setState');
+const updateArgv = require('./lib/updateArgv');
 const SearchSource = require('./SearchSource');
 const TestWatcher = require('./TestWatcher');
 const Prompt = require('./lib/Prompt');
@@ -39,10 +39,9 @@ const watch = (
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
-  setState(argv, argv.watch ? 'watch' : 'watchAll', {
+  updateArgv(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
-    testPathPattern: argv.testPathPattern ||
-      (Array.isArray(argv._) ? argv._.join('|') : ''),
+    testPathPattern: argv.testPathPattern || (argv._ || []).join('|'),
   });
 
   const prompt = new Prompt();
@@ -177,21 +176,21 @@ const watch = (
         startRun({updateSnapshot: true});
         break;
       case KEYS.A:
-        setState(argv, 'watchAll', {
+        updateArgv(argv, 'watchAll', {
           testNamePattern: '',
           testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.C:
-        setState(argv, 'watch', {
+        updateArgv(argv, 'watch', {
           testNamePattern: '',
           testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.O:
-        setState(argv, 'watch', {
+        updateArgv(argv, 'watch', {
           testNamePattern: '',
           testPathPattern: '',
         });
@@ -200,7 +199,7 @@ const watch = (
       case KEYS.P:
         testPathPatternPrompt.run(
           testPathPattern => {
-            setState(argv, 'watch', {
+            updateArgv(argv, 'watch', {
               testNamePattern: '',
               testPathPattern,
             });
@@ -214,7 +213,7 @@ const watch = (
       case KEYS.T:
         testNamePatternPrompt.run(
           testNamePattern => {
-            setState(argv, 'watch', {
+            updateArgv(argv, 'watch', {
               testNamePattern,
               testPathPattern: argv.testPathPattern,
             });

@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Argv} from 'types/Argv';
+
 const chalk = require('chalk');
 const {
   ValidationError,
@@ -48,7 +50,7 @@ const createCLIValidationError = (
   return new ValidationError(title, message, comment);
 };
 
-const validateCLIOptions = (argv: Object, options: Object) => {
+const validateCLIOptions = (argv: Argv, options: Object) => {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),

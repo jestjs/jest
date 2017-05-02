@@ -78,6 +78,8 @@ test('outputs coverage report as json', () => {
   try {
     JSON.parse(stdout);
   } catch (err) {
-    throw new Error("Can't parse the JSON result from stdout" + err.toString());
+    throw new Error(
+      "Can't parse the JSON result from stdout. " + err.toString(),
+    );
   }
 });
