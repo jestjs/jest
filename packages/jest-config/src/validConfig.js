@@ -57,6 +57,7 @@ module.exports = ({
   noStackTrace: false,
   notify: false,
   preset: 'react-native',
+  projects: ['project-a', 'project-b/'],
   resetMocks: false,
   resetModules: false,
   resolver: '<rootDir>/resolver.js',

@@ -27,7 +27,7 @@ exports[`preset throws when preset not found 1`] = `
 </>"
 `;
 
-exports[`rootDir throws if the config is missing a rootDir property 1`] = `
+exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 "<red><bold><bold>● <bold>Validation Error:
 
   Configuration option <bold>rootDir must be specified.
