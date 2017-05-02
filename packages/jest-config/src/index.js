@@ -16,7 +16,7 @@ const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
-const {getTestEnvironment} = require('./utils');
+const {getTestEnvironment, isJSON} = require('./utils');
 
 async function readConfig(
   argv: Object,
@@ -36,15 +36,8 @@ async function readConfig(
   };
 }
 
-const parseConfig = argv => {
-  if (argv.config && typeof argv.config === 'string') {
-    // If the passed in value looks like JSON, treat it as an object.
-    if (argv.config.startsWith('{') && argv.config.endsWith('}')) {
-      return JSON.parse(argv.config);
-    }
-  }
-  return argv.config;
-};
+const parseConfig = argv =>
+  (isJSON(argv.config) ? JSON.parse(argv.config) : argv.config);
 
 const readRawConfig = (argv, root) => {
   const rawConfig = parseConfig(argv);

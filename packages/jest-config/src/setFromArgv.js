@@ -14,11 +14,7 @@ import type {InitialOptions} from 'types/Config';
 import type {Argv} from 'types/Argv';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-const isJSON = (text: ?string) =>
-  text &&
-  typeof text === 'string' &&
-  text.startsWith('{') &&
-  text.endsWith('}');
+const {isJSON} = require('./utils');
 
 function setFromArgv(options: InitialOptions, argv: Argv) {
   let configFromArgv;
