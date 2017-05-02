@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {GlobalConfig} from 'types/Config';
 import type {
   AggregatedResult,
   AssertionResult,
@@ -21,16 +22,12 @@ const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 const {ICONS} = require('../constants');
 
-type Options = {|
-  expand: boolean,
-|};
-
 class VerboseReporter extends DefaultReporter {
-  _verboseOptions: Options;
+  _globalConfig: GlobalConfig;
 
-  constructor(options: Options) {
-    super({verbose: true});
-    this._verboseOptions = options;
+  constructor(globalConfig: GlobalConfig) {
+    super(globalConfig);
+    this._globalConfig = globalConfig;
   }
 
   static filterTestResults(testResults: Array<AssertionResult>) {
@@ -101,7 +98,7 @@ class VerboseReporter extends DefaultReporter {
   }
 
   _logTests(tests: Array<AssertionResult>, indentLevel: number) {
-    if (this._verboseOptions.expand) {
+    if (this._globalConfig.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
       const skippedCount = tests.reduce((result, test) => {

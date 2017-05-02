@@ -12,9 +12,14 @@
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
-import type {Options as SummaryReporterOptions} from '../TestRunner';
 import type {PathPattern} from '../SearchSource';
 import type {ReporterOnStartOptions} from 'types/Reporters';
+
+type SummaryReporterOptions = {|
+  pattern: PathPattern,
+  testNamePattern: string,
+  testPathPattern: string,
+|};
 
 const BaseReporter = require('./BaseReporter');
 
@@ -60,12 +65,14 @@ const NPM_EVENTS = new Set([
 
 class SummaryReporter extends BaseReporter {
   _estimatedTime: number;
+  _globalConfig: GlobalConfig;
   _options: SummaryReporterOptions;
 
-  constructor(options: SummaryReporterOptions) {
-    super();
-    this._options = options;
+  constructor(globalConfig: GlobalConfig, options: SummaryReporterOptions) {
+    super(globalConfig);
+    this._globalConfig = globalConfig;
     this._estimatedTime = 0;
+    this._options = options;
   }
 
   // If we write more than one character at a time it is possible that
@@ -80,26 +87,21 @@ class SummaryReporter extends BaseReporter {
   }
 
   onRunStart(
-    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
-    super.onRunStart(globalConfig, aggregatedResults, options);
+    super.onRunStart(aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(
-    contexts: Set<Context>,
-    globalConfig: GlobalConfig,
-    aggregatedResults: AggregatedResult,
-  ) {
+  onRunComplete(contexts: Set<Context>, aggregatedResults: AggregatedResult) {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
       const lastResult = testResults[testResults.length - 1];
       // Print a newline if the last test did not fail to line up newlines
       // similar to when an error would have been thrown in the test.
       if (
-        !globalConfig.verbose &&
+        !this._globalConfig.verbose &&
         lastResult &&
         !lastResult.numFailingTests &&
         !lastResult.testExecError
@@ -107,8 +109,11 @@ class SummaryReporter extends BaseReporter {
         this.log('');
       }
 
-      this._printSummary(aggregatedResults, globalConfig);
-      this._printSnapshotSummary(aggregatedResults.snapshot, globalConfig);
+      this._printSummary(aggregatedResults, this._globalConfig);
+      this._printSnapshotSummary(
+        aggregatedResults.snapshot,
+        this._globalConfig,
+      );
 
       if (numTotalTestSuites) {
         const testSummary = wasInterrupted

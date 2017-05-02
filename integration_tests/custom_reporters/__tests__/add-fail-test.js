@@ -5,13 +5,16 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
 
 'use strict';
 
-const path = require('path');
+const add = require('../add');
 
-exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
-exports.DEFAULT_JS_PATTERN = '^.+\\.jsx?$';
-exports.DEFAULT_REPORTER_LABEL = 'default';
+describe('CustomReporters', () => {
+  test('adds fail', () => {
+    expect(add(1, 3)).toBe(231);
+    expect(add(5, 7)).toBe(120);
+    expect(add(2, 4)).toBe(6);
+  });
+});

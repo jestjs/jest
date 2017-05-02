@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {InitialOptions} from 'types/Config';
+import type {InitialOptions, ReporterConfig} from 'types/Config';
 
 const {
   BULLET,
@@ -20,7 +20,12 @@ const {
   getTestEnvironment,
   resolve,
 } = require('./utils');
-const {NODE_MODULES, DEFAULT_JS_PATTERN} = require('./constants');
+const {
+  NODE_MODULES,
+  DEFAULT_JS_PATTERN,
+  DEFAULT_REPORTER_LABEL,
+} = require('./constants');
+const {validateReporters} = require('./reporterValidationErrors');
 const {ValidationError, validate} = require('jest-validate');
 const chalk = require('chalk');
 const crypto = require('crypto');
@@ -248,6 +253,45 @@ const normalizeArgv = (options: InitialOptions, argv: Object) => {
   }
 };
 
+const normalizeReporters = (options: InitialOptions, basedir) => {
+  const reporters = options.reporters;
+  if (!reporters || !Array.isArray(reporters)) {
+    return options;
+  }
+
+  validateReporters(reporters);
+  options.reporters = reporters.map(reporterConfig => {
+    const normalizedReporterConfig: ReporterConfig = typeof reporterConfig ===
+      'string'
+      ? // if reporter config is a string, we wrap it in an array
+        // and pass an empty object for options argument, to normalize
+        // the shape.
+        [reporterConfig, {}]
+      : reporterConfig;
+
+    const reporterPath = _replaceRootDirInPath(
+      options.rootDir,
+      normalizedReporterConfig[0],
+    );
+
+    if (reporterPath !== DEFAULT_REPORTER_LABEL) {
+      const reporter = Resolver.findNodeModule(reporterPath, {
+        basedir: options.rootDir,
+      });
+      if (!reporter) {
+        throw new Error(
+          `Could not resolve a module for a custom reporter.\n` +
+            `  Module name: ${reporterPath}`,
+        );
+      }
+      normalizedReporterConfig[0] = reporter;
+    }
+    return normalizedReporterConfig;
+  });
+
+  return options;
+};
+
 function normalize(options: InitialOptions, argv: Object = {}) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
@@ -255,6 +299,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
     exampleConfig: VALID_CONFIG,
   });
 
+  normalizeReporters(options);
   normalizePreprocessor(options);
   normalizeRootDir(options);
   normalizeMissingOptions(options);
@@ -374,6 +419,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'notify':
       case 'preset':
       case 'replname':
+      case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':

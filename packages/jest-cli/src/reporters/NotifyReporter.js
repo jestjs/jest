@@ -10,7 +10,6 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
 const BaseReporter = require('./BaseReporter');
@@ -30,11 +29,7 @@ class NotifyReporter extends BaseReporter {
     this._startRun = startRun;
   }
 
-  onRunComplete(
-    contexts: Set<Context>,
-    globalConfig: GlobalConfig,
-    result: AggregatedResult,
-  ): void {
+  onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 
