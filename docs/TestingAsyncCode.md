@@ -48,12 +48,13 @@ If `done()` is never called, the test will fail, which is what you want to happe
 
 ### Promises
 
-If your code uses promises, there is a simpler way to handle asynchronous tests. Just use the `.resolves` matcher in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+If your code uses promises, there is a simpler way to handle asynchronous tests. Just return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
 
 For example, let's say that `fetchData`, instead of using a callback, returns a promise that is supposed to resolve to the string `'peanut butter'`. We could test it with:
 
 ```js
 test('the data is peanut butter', () => {
+  expect.assertions(1);
   return fetchData().then(data => {
     expect(data).toBe('peanut butter');
   });
@@ -62,12 +63,24 @@ test('the data is peanut butter', () => {
 
 Be sure to return the promise - if you omit this `return` statement, your test will complete before `fetchData` completes.
 
+If you expect a promise to be rejected use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
+
+```js
+test('the fetch fails with an error', async () => {
+  expect.assertions(1);
+  return fetchData().catch(e =>
+    expect(e).toMatch('error')
+  );
+});
+```
+
 ##### available in Jest **20.0.0+**
 
-You can also use the `resolves` keyword in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+You can also use the `.resolves` matcher in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
 
 ```js
 test('the data is peanut butter', () => {
+  expect.assertions(1);
   return expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
@@ -78,6 +91,7 @@ If you expect a promise to be rejected use the `.rejects` matcher. It works anal
 
 ```js
 test('the fetch fails with an error', () => {
+  expect.assertions(1);
   return expect(fetchData()).rejects.toMatch('error');
 });
 ```
@@ -88,10 +102,31 @@ Alternatively, you can use `async` and `await` in your tests. To write an async 
 
 ```js
 test('the data is peanut butter', async () => {
+  expect.assertions(1);
+  const data = await fetchData();
+  expect(data).toBe('peanut butter');
+});
+
+test('the fetch fails with an error', async () => {
+  expect.assertions(1);
+  try {
+    await fetchData();
+  } catch (e) {
+    expect(e).toMatch('error');
+  }
+});
+```
+
+##### available in Jest **20.0.0+**
+
+```js
+test('the data is peanut butter', async () => {
+  expect.assertions(1);
   await expect(fetchData()).resolves.toBe('peanut butter');
 });
 
 test('the fetch fails with an error', async () => {
+  expect.assertions(1);
   await expect(fetchData()).rejects.toMatch('error');
 });
 ```
