@@ -213,7 +213,7 @@ function keys(obj, isArray) {
         keys.push(key);
       }
     }
-    return keys;
+    return keys.concat(Object.getOwnPropertySymbols(o));
   })(obj);
 
   if (!isArray) {
