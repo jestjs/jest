@@ -56,7 +56,7 @@ function createArrayReporterError(
     `   ${chalk.bold.red(expectedType)}\n` +
     ' Got:\n' +
     `   ${chalk.bold.green(getType(value))}\n` +
-    ` Reporters config:\n` +
+    ` Reporter configuration:\n` +
     `    ${chalk.bold.green(JSON.stringify(arrayReporter, null, 2)
         .split('\n')
         .join('\n    '))}`;

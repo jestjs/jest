@@ -72,7 +72,7 @@ Unexpected value for Path at index 0 of reporter at index 0
    string
  Got:
    number
- Reporters config:
+ Reporter configuration:
     [
       3243242
     ]

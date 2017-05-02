@@ -32,7 +32,6 @@ const throat = require('throat');
 const workerFarm = require('worker-farm');
 const TestWatcher = require('./TestWatcher');
 const ReporterDispatcher = require('./ReporterDispatcher');
-const {DEFAULT_REPORTER_LABEL} = require('jest-config');
 
 const SLOW_TEST_TIME = 3000;
 
@@ -280,9 +279,7 @@ class TestRunner {
   _shouldAddDefaultReporters(reporters?: Array<ReporterConfig>): boolean {
     return (
       !reporters ||
-      !!reporters.find(
-        reporterConfig => reporterConfig[0] === DEFAULT_REPORTER_LABEL,
-      )
+      !!reporters.find(reporterConfig => reporterConfig[0] === 'default')
     );
   }
 

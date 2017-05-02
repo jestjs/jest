@@ -40,8 +40,6 @@ export type Reporter = {
   +getLastError: () => ?Error,
 };
 
-export type Tests = Array<Test>;
-
 export type TestFramework = (
   globalConfig: GlobalConfig,
   config: ProjectConfig,

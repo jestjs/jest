@@ -254,46 +254,40 @@ const normalizeArgv = (options: InitialOptions, argv: Object) => {
 };
 
 const normalizeReporters = (options: InitialOptions, basedir) => {
-  if (options.reporters && Array.isArray(options.reporters)) {
-    validateReporters(options.reporters);
-
-    if (!options.reporters) {
-      return options;
-    }
-
-    options.reporters = options.reporters.map(reporterConfig => {
-      const normalizedReporterConfig: ReporterConfig = typeof reporterConfig ===
-        'string'
-        ? // if reporter config is a string, we wrap it in an array
-          // and pass an empty object for options argument, to make
-          // them have the same shape.
-          [reporterConfig, {}]
-        : reporterConfig;
-
-      const reporterPath = _replaceRootDirInPath(
-        options.rootDir,
-        normalizedReporterConfig[0],
-      );
-
-      if (reporterPath !== DEFAULT_REPORTER_LABEL) {
-        const resolvedReporterPath = Resolver.findNodeModule(reporterPath, {
-          basedir: options.rootDir,
-        });
-
-        if (!resolvedReporterPath) {
-          throw new Error(
-            `
-            Could not resolve a module for a custom reporter.
-            moduleName: ${reporterPath}
-          `,
-          );
-        }
-
-        normalizedReporterConfig[0] = resolvedReporterPath;
-      }
-      return normalizedReporterConfig;
-    });
+  const reporters = options.reporters;
+  if (!reporters || !Array.isArray(reporters)) {
+    return options;
   }
+
+  validateReporters(reporters);
+  options.reporters = reporters.map(reporterConfig => {
+    const normalizedReporterConfig: ReporterConfig = typeof reporterConfig ===
+      'string'
+      ? // if reporter config is a string, we wrap it in an array
+        // and pass an empty object for options argument, to normalize
+        // the shape.
+        [reporterConfig, {}]
+      : reporterConfig;
+
+    const reporterPath = _replaceRootDirInPath(
+      options.rootDir,
+      normalizedReporterConfig[0],
+    );
+
+    if (reporterPath !== DEFAULT_REPORTER_LABEL) {
+      const reporter = Resolver.findNodeModule(reporterPath, {
+        basedir: options.rootDir,
+      });
+      if (!reporter) {
+        throw new Error(
+          `Could not resolve a module for a custom reporter.\n` +
+            `  Module name: ${reporterPath}`,
+        );
+      }
+      normalizedReporterConfig[0] = reporter;
+    }
+    return normalizedReporterConfig;
+  });
 
   return options;
 };
