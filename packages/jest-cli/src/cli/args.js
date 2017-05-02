@@ -278,6 +278,10 @@ const options = {
       'projects in a single instance of Jest.',
     type: 'array',
   },
+  reporters: {
+    description: 'A list of custom reporters for the test suite.',
+    type: 'array',
+  },
   resetMocks: {
     default: undefined,
     description: 'Automatically reset mock state between every test. ' +
