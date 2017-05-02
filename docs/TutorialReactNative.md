@@ -3,7 +3,7 @@ id: tutorial-react-native
 title: Testing React Native Apps
 layout: docs
 category: Guides
-permalink: docs/en/tutorial-react-native.html
+permalink: docs/tutorial-react-native.html
 previous: tutorial-react
 next: tutorial-async
 ---

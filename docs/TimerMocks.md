@@ -3,7 +3,7 @@ id: timer-mocks
 title: Timer Mocks
 layout: docs
 category: Guides
-permalink: docs/en/timer-mocks.html
+permalink: docs/timer-mocks.html
 previous: tutorial-async
 next: manual-mocks
 ---

@@ -1,9 +1,9 @@
 ---
 id: expect
 title: Expect
-layout: docs
+layout: reference
 category: API Reference
-permalink: docs/en/expect.html
+permalink: docs/expect.html
 previous: api
 next: mock-function-api
 ---
