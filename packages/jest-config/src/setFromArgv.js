@@ -14,10 +14,15 @@ import type {InitialOptions} from 'types/Config';
 import type {Argv} from 'types/Argv';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
+const isJSON = (text: ?string) =>
+  text &&
+  typeof text === 'string' &&
+  text.startsWith('{') &&
+  text.endsWith('}');
 
-function setFromArgv(config: InitialOptions, argv: Argv) {
+function setFromArgv(options: InitialOptions, argv: Argv) {
   let configFromArgv;
-  const argvToConfig = Object.keys(argv)
+  const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
     .reduce((options: Object, key) => {
       switch (key) {
@@ -35,20 +40,26 @@ function setFromArgv(config: InitialOptions, argv: Argv) {
           break;
         case 'config':
           break;
+        case 'coverageThreshold':
+        case 'globals':
+        case 'moduleNameMapper':
+        case 'transform':
+        case 'haste':
+          if (isJSON(argv[key])) {
+            options[key] = JSON.parse(argv[key]);
+          }
+          break;
         default:
           options[key] = argv[key];
       }
       return options;
     }, {});
 
-  if (argv.config && typeof argv.config === 'string') {
-    // If the passed in value looks like JSON, treat it as an object.
-    if (argv.config.startsWith('{') && argv.config.endsWith('}')) {
-      configFromArgv = JSON.parse(argv.config);
-    }
+  if (isJSON(argv.config)) {
+    configFromArgv = JSON.parse(argv.config);
   }
 
-  return Object.assign({}, config, argvToConfig, configFromArgv);
+  return Object.assign({}, options, argvToOptions, configFromArgv);
 }
 
 module.exports = setFromArgv;

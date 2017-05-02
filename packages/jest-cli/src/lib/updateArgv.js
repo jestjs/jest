@@ -17,11 +17,7 @@ type Options = {|
 |};
 const getTestPathPattern = require('./getTestPathPattern');
 
-module.exports = (
-  argv: Argv,
-  mode: 'watch' | 'watchAll',
-  options: Options,
-) => {
+module.exports = (argv: Argv, mode: 'watch' | 'watchAll', options: Options) => {
   if (mode === 'watch') {
     argv.watch = true;
     argv.watchAll = false;
