@@ -21,16 +21,16 @@ function setFromArgv(config: InitialOptions, argv: Argv) {
     .reduce((options: Object, key) => {
       switch (key) {
         case 'coverage':
-          options['collectCoverage'] = argv[key];
+          options.collectCoverage = argv[key];
           break;
         case 'json':
-          options['useStderr'] = argv[key];
+          options.useStderr = argv[key];
           break;
         case 'watchAll':
-          options['watch'] = argv[key];
+          options.watch = argv[key];
           break;
         case 'env':
-          options['testEnvironment'] = argv[key];
+          options.testEnvironment = argv[key];
           break;
         case 'config':
           break;
