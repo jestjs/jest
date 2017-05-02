@@ -28,10 +28,6 @@ const isCI = require('is-ci');
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 
-type Options = {|
-  verbose: boolean,
-|};
-
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
 const isInteractive = process.stdin.isTTY && !isCI;
@@ -39,13 +35,13 @@ const isInteractive = process.stdin.isTTY && !isCI;
 class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
-  _options: Options;
+  _globalConfig: GlobalConfig;
   _out: write;
   _status: Status;
 
-  constructor(options: Options) {
+  constructor(globalConfig: GlobalConfig) {
     super();
-    this._options = options;
+    this._globalConfig = globalConfig;
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
@@ -112,7 +108,6 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunStart(
-    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
@@ -165,7 +160,7 @@ class DefaultReporter extends BaseReporter {
             'Console\n\n' +
             getConsoleOutput(
               config.rootDir,
-              !!this._options.verbose,
+              !!this._globalConfig.verbose,
               consoleBuffer,
             ),
         );

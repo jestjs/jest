@@ -83,6 +83,7 @@ const getConfigs = (
       notify: options.notify,
       projects: options.projects,
       replname: options.replname,
+      reporters: options.reporters,
       rootDir: options.rootDir,
       silent: options.silent,
       testNamePattern: options.testNamePattern,
