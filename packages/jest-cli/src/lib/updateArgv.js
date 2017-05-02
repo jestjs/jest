@@ -10,12 +10,14 @@
 'use strict';
 
 import type {Argv} from 'types/Argv';
+
+const getTestPathPattern = require('./getTestPathPattern');
+
 type Options = {|
   testNamePattern?: string,
   testPathPattern?: string,
   noSCM?: boolean,
 |};
-const getTestPathPattern = require('./getTestPathPattern');
 
 module.exports = (argv: Argv, mode: 'watch' | 'watchAll', options: Options) => {
   if (mode === 'watch') {
