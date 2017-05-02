@@ -134,6 +134,7 @@ export type GlobalConfig = {|
   coverageThreshold: {global: {[key: string]: number}},
   expand: boolean,
   forceExit: boolean,
+  listTests: boolean,
   logHeapUsage: boolean,
   mapCoverage: boolean,
   noStackTrace: boolean,

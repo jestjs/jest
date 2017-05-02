@@ -85,6 +85,7 @@ const validConfig = {
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],
   },
+  listTests: true,
   logHeapUsage: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],

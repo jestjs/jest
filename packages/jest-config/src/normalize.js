@@ -376,6 +376,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'coverageThreshold':
       case 'expand':
       case 'globals':
+      case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
       case 'moduleDirectories':

@@ -175,6 +175,14 @@ const runJest = async (
   );
 
   allTests = sequencer.sort(allTests);
+
+  // With --listTests, simply print the test info as JSON and exit.
+  if (globalConfig.listTests) {
+    const testsJson = JSON.stringify(allTests, null, '  ');
+    new Console(pipe, pipe).log(testsJson);
+    process.exit(0);
+  }
+
   if (!allTests.length) {
     new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
   } else if (

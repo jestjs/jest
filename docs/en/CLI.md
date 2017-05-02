@@ -133,6 +133,10 @@ Write test results to a file when the `--json` option is also specified.
 
 Will run all tests affected by file changes in the last commit made.
 
+### `--listTests`
+
+Lists all tests Jest will run given the other arguments, and exits.
+
 ### `--logHeapUsage`
 
 Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
