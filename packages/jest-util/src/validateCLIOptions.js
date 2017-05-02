@@ -11,6 +11,7 @@
 'use strict';
 
 import type {Argv} from 'types/Argv';
+
 const chalk = require('chalk');
 const {
   ValidationError,
