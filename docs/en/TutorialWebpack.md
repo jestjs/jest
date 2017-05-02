@@ -2,6 +2,6 @@
 id: tutorial-webpack
 title: webpack
 layout: redirect
-permalink: docs/tutorial-webpack.html
+permalink: docs/en/tutorial-webpack.html
 destinationUrl: webpack.html
 ---
