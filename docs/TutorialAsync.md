@@ -68,7 +68,7 @@ export default function request(url) {
 }
 ```
 
-Now let's write a test for our async functionality. Using the `resolves` keyword (available in Jest **20.0.0+**)
+Now let's write a test for our async functionality.
 ```js
 // __tests__/user-test.js
 jest.mock('../request');
@@ -77,7 +77,8 @@ import * as user from '../user';
 
 // The assertion for a promise must be returned.
 it('works with promises', () => {
-  return expect(user.getUserName(5)).resolves.toEqual('Paul');
+  expect.assertions(1);
+  return user.getUserName(4).then(data => expect(data).toEqual('Mark'));
 });
 ```
 
@@ -85,15 +86,35 @@ We call `jest.mock('../request')` to tell Jest to use our manual mock. `it` expe
 You can chain as many Promises as you like and call `expect` at any time, as
 long as you return a Promise at the end.
 
+### `.resolves`
+##### available in Jest **20.0.0+**
+
+There is a less verbose way, use `resolves` to unwrap the value of a fulfilled promise and chained any other matcher. If the promise is rejected the assertion fails.
+
+```js
+it('works with resolves', () => {
+  expect.assertions(1);
+  return expect(user.getUserName(5)).resolves.toEqual('Paul');
+});
+```
+
 ### `async`/`await`
 
 Writing tests using the `async`/`await` syntax is easy. Here is
-how you'd write the same example from before:
+how you'd write the same examples from before:
 
 ```js
-// async/await can also be used.
+// async/await can be used.
 it('works with async/await', async () => {
-  await expect(user.getUserName(4)).resolves.toEqual('Mark');
+  expect.assertions(1);
+  const data = await user.getUserName(4);
+  expect(data).toEqual('Mark');
+});
+
+// async/await can also be used with `.resolves`.
+it('works with async/await and resolves', async () => {
+  expect.assertions(1);
+  await expect(user.getUserName(5)).resolves.toEqual('Paul');
 });
 ```
 
@@ -103,20 +124,51 @@ and enable the feature in your `.babelrc` file.
 
 ### Error handling
 
-Errors can be handled using the keyword `rejects` in your expect statement. This will verify that the promise rejects and perform an assertion on the resulting error.
+Errors can be handled using the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
 
 ```js
-// Testing for async errors can be done using `rejects`.
-it('tests error with promises', () => {
+// Testing for async errors using Promise.catch.
+test('tests error with promises', async () => {
+  expect.assertions(1);
+  return user.getUserName(2).catch(e =>
+    expect(e).toEqual({
+      error: 'User with 2 not found.',
+    })
+  );
+});
+
+// Or using async/await.
+it('tests error with async/await', async () => {
+  expect.assertions(1);
+  try {
+    await user.getUserName(1);
+  } catch (e) {
+    expect(e).toEqual({
+      error: 'User with 1 not found.',
+    });
+  }
+});
+```
+
+### `.rejects`
+##### available in Jest **20.0.0+**
+
+The`.rejects` matcher works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
+
+```js
+// Testing for async errors using `.rejects`.
+it('tests error with rejects', () => {
+  expect.assertions(1);
   return expect(user.getUserName(3)).rejects.toEqual({
     error: 'User with 3 not found.',
   });
 });
 
-// Or using async/await.
-it('tests error with async/await', async () => {
-  await expect(user.getUserName(2)).rejects.toEqual({
-    error: 'User with 2 not found.',
+// Or using async/await with `.rejects`.
+it('tests error with async/await and rejects', async () => {
+  expect.assertions(1);
+  await expect(user.getUserName(3)).rejects.toEqual({
+    error: 'User with 3 not found.',
   });
 });
 ```
