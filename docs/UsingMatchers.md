@@ -3,7 +3,7 @@ id: using-matchers
 title: Using Matchers
 layout: docs
 category: Introduction
-permalink: docs/en/using-matchers.html
+permalink: docs/using-matchers.html
 previous: getting-started
 next: asynchronous
 ---

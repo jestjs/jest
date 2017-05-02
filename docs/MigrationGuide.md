@@ -3,7 +3,7 @@ id: migration-guide
 title: Migrating to Jest
 layout: docs
 category: Guides
-permalink: docs/en/migration-guide.html
+permalink: docs/migration-guide.html
 previous: webpack
 next: testing-frameworks
 ---

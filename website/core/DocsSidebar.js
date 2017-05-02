@@ -5,7 +5,8 @@
  * @jsx React.DOM
  */
 
-/* eslint-disable sort-keys */
+ /* eslint-disable sort-keys */
+
 
 const Metadata = require('Metadata');
 const React = require('React');
@@ -13,10 +14,9 @@ const Container = require('Container');
 const SideNav = require('SideNav');
 
 class DocsSidebar extends React.Component {
-  getCategories(language) {
+  getCategories() {
     const metadatas = Metadata.files.filter(metadata => {
-      return metadata.layout === this.props.layout &&
-        metadata.language === language;
+      return metadata.layout === this.props.layout;
     });
 
     // Build a hashmap of article_id -> metadata
@@ -33,7 +33,11 @@ class DocsSidebar extends React.Component {
       if (metadata.next) {
         if (!articles[metadata.next]) {
           throw new Error(
-            '`next: ' + metadata.next + '` in ' + metadata.id + " doesn't exist"
+            '`next: ' +
+            metadata.next +
+            '` in ' +
+            metadata.id +
+            ' doesn\'t exist'
           );
         }
         previous[articles[metadata.next].id] = metadata.id;
@@ -75,10 +79,9 @@ class DocsSidebar extends React.Component {
     return (
       <Container className="docsNavContainer" id="docsNav" wrapper={false}>
         <SideNav
-          language={this.props.metadata.language}
           root={this.props.root}
           title={this.props.title}
-          contents={this.getCategories(this.props.metadata.language)}
+          contents={this.getCategories()}
           current={this.props.metadata}
         />
       </Container>
@@ -94,7 +97,7 @@ DocsSidebar.propTypes = {
 
 DocsSidebar.defaultProps = {
   layout: 'docs',
-  root: '/jest/docs/en/getting-started.html',
+  root: '/jest/docs/getting-started.html',
   title: 'Docs',
 };
 

@@ -3,7 +3,7 @@ id: setup-teardown
 title: Setup and Teardown
 layout: docs
 category: Introduction
-permalink: docs/en/setup-teardown.html
+permalink: docs/setup-teardown.html
 previous: asynchronous
 next: mock-functions
 ---

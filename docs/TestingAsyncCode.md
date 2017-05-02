@@ -3,7 +3,7 @@ id: asynchronous
 title: Testing Asynchronous Code
 layout: docs
 category: Introduction
-permalink: docs/en/asynchronous.html
+permalink: docs/asynchronous.html
 previous: using-matchers
 next: setup-teardown
 ---

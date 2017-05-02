@@ -3,7 +3,7 @@ id: manual-mocks
 title: Manual Mocks
 layout: docs
 category: Guides
-permalink: docs/en/manual-mocks.html
+permalink: docs/manual-mocks.html
 previous: timer-mocks
 next: webpack
 ---
