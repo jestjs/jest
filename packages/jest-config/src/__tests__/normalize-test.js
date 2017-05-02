@@ -729,3 +729,33 @@ describe('preset without setupFiles', () => {
     );
   });
 });
+
+describe('projects', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  test('resolves projects correctly', () => {
+    const root = '/path/to/test';
+
+    const glob = require('glob');
+    glob.sync = jest.fn(
+      pattern =>
+        (pattern.indexOf('/examples/') !== -1
+          ? [root + '/examples/async', root + '/examples/snapshot']
+          : [pattern]),
+    );
+    const normalize = require('../normalize');
+
+    const {options} = normalize({
+      projects: ['<rootDir>', '<rootDir>/examples/*'],
+      rootDir: root,
+    });
+
+    expect(options.projects).toEqual([
+      root,
+      root + '/examples/async',
+      root + '/examples/snapshot',
+    ]);
+  });
+});
