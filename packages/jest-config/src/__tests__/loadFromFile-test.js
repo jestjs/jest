@@ -14,13 +14,13 @@ const loadFromFile = require('../loadFromFile');
 
 describe('loadFromFile', () => {
   const MOCK_FILE_INFO = {
-    'brokenConfig.js': `{
+    'brokenConfig.json': `{
       "testMatch": ["match.js"
     }`,
-    'config.js': `{
+    'config.json': `{
       "testMatch": ["match.js"]
     }`,
-    'configWithRootDir.js': `{
+    'configWithRootDir.json': `{
       "rootDir": "testDir"
     }`,
   };
@@ -29,19 +29,17 @@ describe('loadFromFile', () => {
     require('fs').__setMockFiles(MOCK_FILE_INFO);
   });
 
-  it('loads configuration from a file at `filePath`.', async () => {
-    const config = await loadFromFile('config.js', {});
-    expect(config.testMatch).toEqual(['match.js']);
+  it('loads configuration from a file at `filePath`.', () => {
+    const options = loadFromFile('config.json', {});
+    expect(options.testMatch).toEqual(['match.js']);
   });
 
   it('throws if the file at `filePath` cannot be parsed as JSON.', () => {
-    return loadFromFile('brokenConfig.js', {}).catch(e =>
-      expect(e).toBeInstanceOf(Error),
-    );
+    expect(() => loadFromFile('brokenConfig.json', {})).toThrow();
   });
 
-  it('uses the current working directory if `rootDir` is not defined.', async () => {
-    const config = await loadFromFile('config.js', {});
-    expect(config.rootDir).toEqual(process.cwd());
+  it('uses the current working directory if `rootDir` is not defined.', () => {
+    const options = loadFromFile('config.json', {});
+    expect(options.rootDir).toEqual(process.cwd());
   });
 });

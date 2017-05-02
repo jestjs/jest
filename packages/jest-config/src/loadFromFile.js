@@ -15,27 +15,30 @@ import type {Path} from 'types/Config';
 const fs = require('fs');
 const jsonlint = require('./vendor/jsonlint');
 const path = require('path');
-const pify = require('pify');
 
-function loadFromFile(filePath: Path) {
-  return pify(fs.readFile)(filePath).then(data => {
-    const parse = () => {
-      try {
-        return JSON.parse(data);
-      } catch (e) {
-        const error = jsonlint.errors(data.toString());
-        throw new Error(
-          `Jest: Failed to parse config file ${filePath}\n  ${error}`,
-        );
-      }
-    };
+const parse = filePath => {
+  if (filePath.endsWith('.js')) {
+    // $FlowFixMe
+    return require(filePath);
+  }
 
-    const config = parse();
-    config.rootDir = config.rootDir
-      ? path.resolve(path.dirname(filePath), config.rootDir)
-      : process.cwd();
-    return config;
-  });
-}
+  const data = fs.readFileSync(filePath, 'utf8');
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    const error = jsonlint.errors(data);
+    throw new Error(
+      `Jest: Failed to parse config file ${filePath}\n  ${error}`,
+    );
+  }
+};
+
+const loadFromFile = (filePath: Path) => {
+  const options = parse(filePath);
+  options.rootDir = options.rootDir
+    ? path.resolve(path.dirname(filePath), options.rootDir)
+    : process.cwd();
+  return options;
+};
 
 module.exports = loadFromFile;
