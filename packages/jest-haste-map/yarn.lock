@@ -197,6 +197,10 @@ isobject@^2.0.0:
   dependencies:
     isarray "1.0.0"
 
+jest-docblock@^19.0.2:
+  version "19.1.0-alpha.eed82034"
+  resolved "https://registry.yarnpkg.com/jest-docblock/-/jest-docblock-19.1.0-alpha.eed82034.tgz#bf8718e1df92865c90d4ed33fd0546ccb8159986"
+
 kind-of@^3.0.2:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.0.tgz#b58abe4d5c044ad33726a8c1525b48cf891bff07"
