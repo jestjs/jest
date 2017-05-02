@@ -49,7 +49,6 @@
     "typescript": "^2.2.2"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
     "build-clean": "rm -rf ./packages/*/build",
     "build": "node ./scripts/build.js",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn run build-clean",
