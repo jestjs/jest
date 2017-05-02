@@ -49,16 +49,44 @@ const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
 const docs = 'Documentation: https://facebook.github.io/jest/';
 
 const options = {
+  automock: {
+    default: undefined,
+    description: 'Automock all files by default.',
+    type: 'boolean',
+  },
   bail: {
     alias: 'b',
     default: undefined,
     description: 'Exit the test suite immediately upon the first failing test.',
     type: 'boolean',
   },
+  browser: {
+    default: undefined,
+    description: 'Respect Browserify\'s "browser" field in package.json ' +
+      'when resolving modules. Some modules export different versions ' +
+      'based on whether they are operating in Node or a browser.',
+    type: 'boolean',
+  },
   cache: {
     default: undefined,
     description: 'Whether to use the transform cache. Disable the cache ' +
       'using --no-cache.',
+    type: 'boolean',
+  },
+  cacheDirectory: {
+    description: 'The directory where Jest should store its cached ' +
+      ' dependency information.',
+    type: 'string',
+  },
+  clearMocks: {
+    default: undefined,
+    description: 'Automatically clear mock calls and instances between every ' +
+      'test. Equivalent to calling jest.clearAllMocks() between each test.',
+    type: 'boolean',
+  },
+  collectCoverage: {
+    default: undefined,
+    description: 'Alias for --coverage.',
     type: 'boolean',
   },
   collectCoverageFrom: {
@@ -99,6 +127,22 @@ const options = {
     description: 'The directory where Jest should output its coverage files.',
     type: 'string',
   },
+  coveragePathIgnorePatterns: {
+    description: 'An array of regexp pattern strings that are matched ' +
+      'against all file paths before executing the test. If the file path' +
+      'matches any of the patterns, coverage information will be skipped.',
+    type: 'array',
+  },
+  coverageReporters: {
+    description: 'A list of reporter names that Jest uses when writing ' +
+      'coverage reports. Any istanbul reporter can be used.',
+    type: 'array',
+  },
+  coverageThreshold: {
+    description: 'A JSON string with which will be used to configure ' +
+      'minimum threshold enforcement for coverage results',
+    type: 'string',
+  },
   debug: {
     default: undefined,
     description: 'Print debugging info about your jest config.',
@@ -129,6 +173,16 @@ const options = {
       'This is useful when resources set up by test code cannot be ' +
       'adequately cleaned up.',
     type: 'boolean',
+  },
+  globals: {
+    description: 'A JSON string with map of global variables that need ' +
+      'to be available in all test environments.',
+    type: 'string',
+  },
+  haste: {
+    description: "A JSON string with map of variables for Facebook's " +
+      '@providesModule module system',
+    type: 'string',
   },
   json: {
     default: undefined,
@@ -161,7 +215,36 @@ const options = {
       'will spawn for running tests. This defaults to the number of the ' +
       'cores available on your machine. (its usually best not to override ' +
       'this default)',
-    type: 'string', // no, yargs -- its a number.. :(
+    type: 'number',
+  },
+  moduleDirectories: {
+    description: 'An array of directory names to be searched recursively ' +
+      "up from the requiring module's location.",
+    type: 'array',
+  },
+  moduleFileExtensions: {
+    description: 'An array of file extensions your modules use. If you ' +
+      'require modules without specifying a file extension, these are the ' +
+      'extensions Jest will look for. ',
+    type: 'array',
+  },
+  moduleNameMapper: {
+    description: 'A JSON string with a map from regular expressions to ' +
+      'module names that allow to stub out resources, like images or ' +
+      'styles with a single module',
+    type: 'string',
+  },
+  modulePathIgnorePatterns: {
+    description: 'An array of regexp pattern strings that are matched ' +
+      'against all module paths before those paths are to be considered ' +
+      '"visible" to the module loader.',
+    type: 'array',
+  },
+  modulePaths: {
+    description: 'An alternative API to setting the NODE_PATH env variable, ' +
+      'modulePaths is an array of absolute paths to additional locations to ' +
+      'search when resolving modules.',
+    type: 'array',
   },
   noStackTrace: {
     default: undefined,
@@ -186,9 +269,39 @@ const options = {
       'also specified.',
     type: 'string',
   },
+  preset: {
+    description: "A preset that is used as a base for Jest's configuration.",
+    type: 'string',
+  },
   projects: {
     description: 'A list of projects that use Jest to run all tests of all ' +
       'projects in a single instance of Jest.',
+    type: 'array',
+  },
+  resetMocks: {
+    default: undefined,
+    description: 'Automatically reset mock state between every test. ' +
+      'Equivalent to calling jest.resetAllMocks() between each test.',
+    type: 'boolean',
+  },
+  resetModules: {
+    default: undefined,
+    description: 'If enabled, the module registry for every test file will ' +
+      'be reset before running each individual test.',
+    type: 'boolean',
+  },
+  resolver: {
+    description: 'A JSON string which allows the use of a custom resolver.',
+    type: 'string',
+  },
+  rootDir: {
+    description: 'The root directory that Jest should scan for tests and ' +
+      'modules within.',
+    type: 'string',
+  },
+  roots: {
+    description: 'A list of paths to directories that Jest should use to ' +
+      'search for files in.',
     type: 'array',
   },
   runInBand: {
@@ -199,6 +312,11 @@ const options = {
       'is sometimes useful for debugging, but such use cases are pretty ' +
       'rare.',
     type: 'boolean',
+  },
+  setupFiles: {
+    description: 'The paths to modules that run some code to configure or ' +
+      'set up the testing environment before each test. ',
+    type: 'array',
   },
   setupTestFrameworkScriptFile: {
     description: 'The path to a module that runs some code to configure or ' +
@@ -215,14 +333,37 @@ const options = {
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
+  snapshotSerializers: {
+    description: 'A list of paths to snapshot serializer modules Jest should ' +
+      'use for snapshot testing.',
+    type: 'array',
+  },
+  testEnvironment: {
+    description: 'Alias for --env',
+    type: 'string',
+  },
+  testMatch: {
+    description: 'The glob patterns Jest uses to detect test files.',
+    type: 'array',
+  },
   testNamePattern: {
     alias: 't',
     description: 'Run only tests with a name that matches the regex pattern.',
     type: 'string',
   },
+  testPathIgnorePatterns: {
+    description: 'An array of regexp pattern strings that are matched ' +
+      'against all test paths before executing the test. If the test path ' +
+      'matches any of the patterns, it will be skipped.',
+    type: 'array',
+  },
   testPathPattern: {
     description: 'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
+    type: 'string',
+  },
+  testRegex: {
+    description: 'The regexp pattern Jest uses to detect test files.',
     type: 'string',
   },
   testResultsProcessor: {
@@ -236,6 +377,31 @@ const options = {
       ' `jasmine2`. A path to a custom test runner can be provided: ' +
       '`<rootDir>/path/to/testRunner.js`.',
     type: 'string',
+  },
+  testURL: {
+    description: 'This option sets the URL for the jsdom environment.',
+    type: 'string',
+  },
+  timers: {
+    description: 'Setting this value to fake allows the use of fake timers ' +
+      'for functions such as setTimeout.',
+    type: 'string',
+  },
+  transform: {
+    description: 'A JSON string which maps from regular expressions to paths ' +
+      'to transformers.',
+    type: 'string',
+  },
+  transformIgnorePatterns: {
+    description: 'An array of regexp pattern strings that are matched ' +
+      'against all source file paths before transformation.',
+    type: 'array',
+  },
+  unmockedModulePathPatterns: {
+    description: 'An array of regexp pattern strings that are matched ' +
+      'against all modules before the module loader will automatically ' +
+      'return a mock for them.',
+    type: 'array',
   },
   updateSnapshot: {
     alias: 'u',
