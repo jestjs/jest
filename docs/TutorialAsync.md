@@ -89,7 +89,7 @@ long as you return a Promise at the end.
 ### `.resolves`
 ##### available in Jest **20.0.0+**
 
-There is a less verbose way, use `resolves` to unwrap the value of a fulfilled promise and chained any other matcher. If the promise is rejected the assertion fails.
+There is a less verbose way using `resolves` to unwrap the value of a fulfilled promise together with any other matcher. If the promise is rejected, the assertion will fail.
 
 ```js
 it('works with resolves', () => {
@@ -124,7 +124,7 @@ and enable the feature in your `.babelrc` file.
 
 ### Error handling
 
-Errors can be handled using the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
+Errors can be handled using the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test:
 
 ```js
 // Testing for async errors using Promise.catch.
@@ -153,7 +153,7 @@ it('tests error with async/await', async () => {
 ### `.rejects`
 ##### available in Jest **20.0.0+**
 
-The`.rejects` matcher works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
+The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail.
 
 ```js
 // Testing for async errors using `.rejects`.
