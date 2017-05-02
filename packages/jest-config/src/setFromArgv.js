@@ -55,7 +55,7 @@ function setFromArgv(options: InitialOptions, argv: Argv) {
     configFromArgv = JSON.parse(argv.config);
   }
 
-  return Object.assign({}, options, argvToOptions, configFromArgv);
+  return Object.assign({}, options, configFromArgv, argvToOptions);
 }
 
 module.exports = setFromArgv;

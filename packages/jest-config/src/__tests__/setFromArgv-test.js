@@ -58,11 +58,11 @@ test('works with string objects', () => {
   });
 });
 
-test('--config overrides all', () => {
+test('explicit flags override those from --config', () => {
   const options = {};
   const argv = {
-    config: '{"watch": true}',
-    watch: false,
+    config: '{"watch": false}',
+    watch: true,
   };
   expect(setFromArgv(options, argv)).toMatchObject({watch: true});
 });
