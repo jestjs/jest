@@ -59,27 +59,29 @@ const _replaceRootDirInPath = (rootDir: string, filePath: Path): string => {
   );
 };
 
+const _replaceRootDirInObject = (rootDir: string, config: any): Object => {
+  if (config !== null) {
+    const newConfig = {};
+    for (const configKey in config) {
+      newConfig[configKey] = configKey === 'rootDir'
+        ? config[configKey]
+        : _replaceRootDirTags(rootDir, config[configKey]);
+    }
+    return newConfig;
+  }
+  return config;
+};
+
 const _replaceRootDirTags = (rootDir: string, config: any) => {
   switch (typeof config) {
     case 'object':
-      if (config instanceof RegExp) {
-        return config;
-      }
-
       if (Array.isArray(config)) {
         return config.map(item => _replaceRootDirTags(rootDir, item));
       }
-
-      if (config !== null) {
-        const newConfig = {};
-        for (const configKey in config) {
-          newConfig[configKey] = configKey === 'rootDir'
-            ? config[configKey]
-            : _replaceRootDirTags(rootDir, config[configKey]);
-        }
-        return newConfig;
+      if (config instanceof RegExp) {
+        return config;
       }
-      break;
+      return _replaceRootDirInObject(rootDir, config);
     case 'string':
       return _replaceRootDirInPath(rootDir, config);
   }
@@ -123,11 +125,19 @@ const getTestEnvironment = (config: Object) => {
   /* eslint-disable max-len */
 };
 
+const isJSONString = (text: ?string) =>
+  text &&
+  typeof text === 'string' &&
+  text.startsWith('{') &&
+  text.endsWith('}');
+
 module.exports = {
   BULLET,
   DOCUMENTATION_NOTE,
+  _replaceRootDirInObject,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
+  isJSONString,
   resolve,
 };

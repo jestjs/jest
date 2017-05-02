@@ -16,8 +16,7 @@ const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
-const setFromArgv = require('./setFromArgv');
-const {getTestEnvironment} = require('./utils');
+const {getTestEnvironment, isJSONString} = require('./utils');
 
 async function readConfig(
   argv: Object,
@@ -29,7 +28,7 @@ async function readConfig(
 }> {
   const rawConfig = await readRawConfig(argv, packageRoot);
   const {options, hasDeprecationWarnings} = normalize(rawConfig, argv);
-  const {globalConfig, projectConfig} = getConfigs(setFromArgv(options, argv));
+  const {globalConfig, projectConfig} = getConfigs(options);
   return {
     config: projectConfig,
     globalConfig,
@@ -37,15 +36,8 @@ async function readConfig(
   };
 }
 
-const parseConfig = argv => {
-  if (argv.config && typeof argv.config === 'string') {
-    // If the passed in value looks like JSON, treat it as an object.
-    if (argv.config[0] === '{' && argv.config[argv.config.length - 1] === '}') {
-      return JSON.parse(argv.config);
-    }
-  }
-  return argv.config;
-};
+const parseConfig = argv =>
+  (isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config);
 
 const readRawConfig = (argv, root) => {
   const rawConfig = parseConfig(argv);
@@ -64,7 +56,7 @@ const readRawConfig = (argv, root) => {
 };
 
 const getConfigs = (
-  options,
+  options: Object,
 ): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => {
   return {
     globalConfig: Object.freeze({

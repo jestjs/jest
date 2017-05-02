@@ -27,6 +27,7 @@ export type DefaultOptions = {|
   automock: boolean,
   bail: boolean,
   browser: boolean,
+  cache: boolean,
   cacheDirectory: Path,
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
@@ -57,6 +58,7 @@ export type DefaultOptions = {|
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
+  watchman: boolean,
 |};
 
 export type InitialOptions = {|

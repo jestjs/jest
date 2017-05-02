@@ -20,7 +20,7 @@ const getMaxWorkers = require('./lib/getMaxWorkers');
 const getTestPathPattern = require('./lib/getTestPathPattern');
 const path = require('path');
 const SearchSource = require('./SearchSource');
-const setState = require('./lib/setState');
+const updateArgv = require('./lib/updateArgv');
 const TestRunner = require('./TestRunner');
 const TestSequencer = require('./TestSequencer');
 
@@ -103,9 +103,7 @@ const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
     if (pattern.onlyChanged && data.noSCM) {
       if (globalConfig.watch) {
         // Run all the tests
-        setState(argv, 'watchAll', {
-          noSCM: true,
-        });
+        updateArgv(argv, 'watchAll', {noSCM: true});
         pattern = getTestPathPattern(argv);
         data = await source.getTestPaths(pattern);
       } else {
