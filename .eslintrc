@@ -6,7 +6,8 @@
     "no-multiple-empty-lines": 1,
     "flowtype/require-valid-file-annotation": 2,
     "flowtype/boolean-style": 2,
-    "flowtype/no-primitive-constructor-types": 2
+    "flowtype/no-primitive-constructor-types": 2,
+    "flowtype/no-weak-types": 2,
   },
   "plugins": [
     "markdown"
