@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Argv} from 'types/Config';
+import type {Argv} from 'types/Argv';
 type Options = {|
   testNamePattern?: string,
   testPathPattern?: string,

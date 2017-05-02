@@ -1,0 +1,83 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+'use strict';
+
+import type {Path, Glob, HasteConfig, ConfigGlobals} from 'types/Config';
+
+export type Argv = {
+  _: Array<string>,
+  $0: string,
+  automock: boolean,
+  bail: boolean,
+  browser: boolean,
+  cache: boolean,
+  cacheDirectory: Path,
+  clearMocks: boolean,
+  collectCoverage: boolean,
+  collectCoverageFrom: Array<Glob>,
+  collectCoverageOnlyFrom: Array<string>,
+  config: string,
+  coverage: boolean,
+  coverageDirectory: string,
+  coveragePathIgnorePatterns: Array<string>,
+  coverageReporters: Array<string>,
+  coverageThreshold: {global: {[key: string]: number}},
+  env: string,
+  expand: boolean,
+  forceExit: boolean,
+  globals: ConfigGlobals,
+  h: boolean,
+  haste: HasteConfig,
+  help: boolean,
+  json: boolean,
+  logHeapUsage: boolean,
+  mapCoverage: boolean,
+  moduleDirectories: Array<string>,
+  moduleFileExtensions: Array<string>,
+  moduleLoader: Path,
+  moduleNameMapper: {[key: string]: string} | Array<[string, string]>,
+  modulePathIgnorePatterns: Array<string>,
+  modulePaths: Array<string>,
+  name: string,
+  noSCM: boolean,
+  noStackTrace: boolean,
+  notify: boolean,
+  onlyChanged: boolean,
+  preset: ?string,
+  replname: ?string,
+  resetMocks: boolean,
+  resetModules: boolean,
+  resolver: ?Path,
+  rootDir: Path,
+  roots: Array<Path>,
+  setupFiles: Array<Path>,
+  setupTestFrameworkScriptFile: Path,
+  silent: boolean,
+  snapshotSerializers: Array<Path>,
+  testEnvironment: string,
+  testMatch: Array<Glob>,
+  testNamePattern: string,
+  testPathIgnorePatterns: Array<string>,
+  testPathPattern: string,
+  testRegex: string,
+  testResultsProcessor: ?string,
+  testRunner: string,
+  testURL: string,
+  timers: 'real' | 'fake',
+  transform: Array<[string, Path]>,
+  transformIgnorePatterns: Array<Glob>,
+  unmockedModulePathPatterns: ?Array<string>,
+  updateSnapshot: boolean,
+  useStderr: boolean,
+  verbose: ?boolean,
+  watch: boolean,
+  watchAll: boolean,
+  watchman: boolean,
+};

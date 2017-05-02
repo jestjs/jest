@@ -10,7 +10,8 @@
 
 'use strict';
 
-import type {Path, Argv} from 'types/Config';
+import type {Path} from 'types/Config';
+import type {Argv} from 'types/Argv';
 
 const args = require('./args');
 const getJest = require('./getJest');

@@ -10,7 +10,8 @@
 
 'use strict';
 
-import type {Argv, InitialOptions} from 'types/Config';
+import type {InitialOptions} from 'types/Config';
+import type {Argv} from 'types/Argv';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
 
