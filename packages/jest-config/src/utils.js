@@ -125,7 +125,7 @@ const getTestEnvironment = (config: Object) => {
   /* eslint-disable max-len */
 };
 
-const isJSON = (text: ?string) =>
+const isJSONString = (text: ?string) =>
   text &&
   typeof text === 'string' &&
   text.startsWith('{') &&
@@ -138,6 +138,6 @@ module.exports = {
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
-  isJSON,
+  isJSONString,
   resolve,
 };

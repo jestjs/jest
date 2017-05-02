@@ -14,7 +14,7 @@ import type {InitialOptions} from 'types/Config';
 import type {Argv} from 'types/Argv';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-const {isJSON} = require('./utils');
+const {isJSONString} = require('./utils');
 
 function setFromArgv(options: InitialOptions, argv: Argv) {
   let configFromArgv;
@@ -41,7 +41,7 @@ function setFromArgv(options: InitialOptions, argv: Argv) {
         case 'moduleNameMapper':
         case 'transform':
         case 'haste':
-          if (isJSON(argv[key])) {
+          if (isJSONString(argv[key])) {
             options[key] = JSON.parse(argv[key]);
           }
           break;
@@ -51,7 +51,7 @@ function setFromArgv(options: InitialOptions, argv: Argv) {
       return options;
     }, {});
 
-  if (isJSON(argv.config)) {
+  if (isJSONString(argv.config)) {
     configFromArgv = JSON.parse(argv.config);
   }
 

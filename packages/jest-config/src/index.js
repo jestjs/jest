@@ -16,7 +16,7 @@ const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
-const {getTestEnvironment, isJSON} = require('./utils');
+const {getTestEnvironment, isJSONString} = require('./utils');
 
 async function readConfig(
   argv: Object,
@@ -37,7 +37,7 @@ async function readConfig(
 }
 
 const parseConfig = argv =>
-  (isJSON(argv.config) ? JSON.parse(argv.config) : argv.config);
+  (isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config);
 
 const readRawConfig = (argv, root) => {
   const rawConfig = parseConfig(argv);
