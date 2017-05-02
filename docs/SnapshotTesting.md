@@ -55,7 +55,7 @@ One such situation can arise if we intentionally change the address the Link com
 
 ```javascript
 // Updated test case with a Link to a different address
-it('renders correctly', () => {  
+it('renders correctly', () => {
   const tree = renderer.create(
     <Link page="http://www.instagram.com">Instagram</Link>
   ).toJSON();
@@ -93,11 +93,38 @@ Date.now = jest.fn(() => 1482363367071);
 
 Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
 
-## React, React Native and Snapshot Testing
+## Frequently Asked Questions
 
-As you've learned, snapshot testing was built to make it easier to write tests for React and React Native. Check out the [React tutorial](/jest/docs/tutorial-react.html) and the [React Native tutorial](/jest/docs/tutorial-react-native.html) to get started with snapshot testing on your React or React Native application.
+### Should snapshot files be committed?
 
-## Additional Uses
+Yes, all snapshot files should be committed alongside the modules they are covering and their tests. They should be considered as part of a test, similar to the value of any other assertion in Jest. In fact, snapshots represent the state of the source modules at any given point in time. In this way, when the source modules are modified, Jest can tell what changed from the previous version. It can also provide a lot of additional context during code review in which reviewers can study your changes better.
 
-Snapshots can capture any serializable value. Common examples are [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console-test.js
-) or API responses.
+### Does snapshot testing only work with React components?
+
+[React](/jest/docs/tutorial-react.html) and [React Native](/jest/docs/tutorial-react-native.html) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See and example of [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console-test.js) in the Jest repo.
+
+### What's the difference between snapshot testing and visual regression testing?
+
+Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes.
+Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel.
+With Snapshot testing values are serialized, stored within text files and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+
+### Does snapshot testing substitute unit testing?
+
+Snapshot testing is only one of more than 20 assertions that ship with Jest. The aim of snapshot testing is not to replace existing unit tests, but providing additional value and making testing painless. In some scenarios, snapshot testing can potentially remove the need for unit testing for a particular set of functionalities (e.g. React components), but they can work together as well.
+
+### What is the performance of snapshot testing regarding speed and size of the generated files?
+
+Jest has been rewritten with performance in mind, and snapshot testing is not an exception. Since snapshots are stored within text files, this way of testing is fast and reliable. Jest generates a new file for each test file that invokes the `toMatchSnapshot` matcher. The size of the snapshots is pretty small: For reference, the size of all snapshot files in the  Jest codebase itself is less than 300 KB.
+
+### How do I resolve conflicts within snapshot files?
+
+Snapshot files must always represent the current state of the modules they are covering. Therefore, if you are merging two branches and encounter a conflict in the snapshot files, you can either resolve the conflict manually or to update the snapshot file by running Jest and inspecting the result.
+
+### Is it possible to apply test-driven development principles with snapshot testing?
+
+Although it is possible to write snapshot files manually, that is usually not approachable. Snapshots help figuring out whether the output of the modules covered by tests is changed, rather than giving guidance to design the code in the first place.
+
+### Does code coverage work with snapshots testing?
+
+Yes, just like with any other test.
