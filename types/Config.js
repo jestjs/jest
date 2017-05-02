@@ -19,9 +19,7 @@ export type HasteConfig = {|
   providesModuleNodeModules: Array<string>,
 |};
 
-export type ReporterConfig = StringReporter | ArrayReporter;
-export type StringReporter = string;
-export type ArrayReporter = [string, Object];
+export type ReporterConfig = [string, Object];
 
 export type ConfigGlobals = Object;
 
@@ -79,7 +77,7 @@ export type InitialOptions = {|
   forceExit?: boolean,
   globals?: ConfigGlobals,
   haste?: HasteConfig,
-  reporters?: Array<ReporterConfig>,
+  reporters?: Array<ReporterConfig | string>,
   logHeapUsage?: boolean,
   mapCoverage?: boolean,
   moduleDirectories?: Array<string>,

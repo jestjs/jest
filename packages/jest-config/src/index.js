@@ -18,6 +18,7 @@ const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
 const setFromArgv = require('./setFromArgv');
 const {getTestEnvironment} = require('./utils');
+const {DEFAULT_REPORTER_LABEL} = require('./constants');
 
 async function readConfig(
   argv: Object,
@@ -135,6 +136,7 @@ const getConfigs = (
 };
 
 module.exports = {
+  DEFAULT_REPORTER_LABEL,
   getTestEnvironment,
   normalize,
   readConfig,

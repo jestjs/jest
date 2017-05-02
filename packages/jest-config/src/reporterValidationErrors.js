@@ -9,7 +9,7 @@
 
 'use strict';
 
-import type {ReporterConfig, StringReporter, ArrayReporter} from 'types/Config';
+import type {ReporterConfig} from 'types/Config';
 
 const {ValidationError} = require('jest-validate');
 const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
@@ -30,7 +30,7 @@ const ERROR = `${BULLET} Reporter Validation Error`;
  */
 function createReporterError(
   reporterIndex: number,
-  reporterValue: Array<ReporterConfig> | StringReporter,
+  reporterValue: Array<ReporterConfig> | string,
 ): ValidationError {
   const errorMessage =
     `Reporter at index ${reporterIndex} must be of type:\n` +
@@ -42,10 +42,10 @@ function createReporterError(
 }
 
 function createArrayReporterError(
-  arrayReporter: ArrayReporter,
+  arrayReporter: ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
-  value: StringReporter | Object,
+  value: string | Object,
   expectedType: string,
   valueName: string,
 ): ValidationError {
@@ -57,14 +57,16 @@ function createArrayReporterError(
     ' Got:\n' +
     `   ${chalk.bold.green(getType(value))}\n` +
     ` Reporters config:\n` +
-    `   ${chalk.bold.green(JSON.stringify(arrayReporter, null, 2)
+    `    ${chalk.bold.green(JSON.stringify(arrayReporter, null, 2)
         .split('\n')
         .join('\n    '))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
-function validateReporters(reporterConfig: Array<ReporterConfig>): boolean {
+function validateReporters(
+  reporterConfig: Array<ReporterConfig | string>,
+): boolean {
   return reporterConfig.every((reporter, index) => {
     if (Array.isArray(reporter)) {
       validateArrayReporter(reporter, index);
@@ -77,7 +79,7 @@ function validateReporters(reporterConfig: Array<ReporterConfig>): boolean {
 }
 
 function validateArrayReporter(
-  arrayReporter: ArrayReporter,
+  arrayReporter: ReporterConfig,
   reporterIndex: number,
 ) {
   const [path, options] = arrayReporter;

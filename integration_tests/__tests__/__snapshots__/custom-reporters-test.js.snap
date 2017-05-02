@@ -73,7 +73,9 @@ Unexpected value for Path at index 0 of reporter at index 0
  Got:
    number
  Reporters config:
-   [      3243242    ]
+    [
+      3243242
+    ]
 
   Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
