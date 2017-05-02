@@ -31,6 +31,13 @@ test:
     - nvm alias default 7
     - yarn run test-ci-partial
     - DANGER_GITHUB_API_TOKEN="ab0c4d396c935d3abce""fc213176da6bb7b2996ff" yarn run danger
+    # crowdin install start
+    - sudo apt-get install default-jre
+    - wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
+    - sudo dpkg -i crowdin.deb
+    # crowdin install end
+    - crowdin --config crowdin.yaml upload sources --auto-update -b master
+    - crowdin --config crowdin.yaml download -b master
     - cd website && yarn run test
 
 deployment:
