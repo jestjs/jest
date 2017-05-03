@@ -238,8 +238,6 @@ export default class ScriptTransformer {
           transformed.map = inlineSourceMap.toJSON();
         }
       }
-    } else {
-      transformed.map = null;
     }
 
     // That means that the transform has a custom instrumentation
@@ -252,7 +250,7 @@ export default class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (instrument && transformed.map && mapCoverage) {
+    if (transformed.map) {
       const sourceMapContent =
         typeof transformed.map === 'string'
           ? transformed.map
