@@ -35,13 +35,15 @@ const findConfig = (root: Path): InitialOptions => {
       const pkg = require(packageJsonFilePath);
       if (pkg.jest) {
         options = pkg.jest;
-        break;
       }
+      // Even if there is no configuration, we stop traveling up the
+      // tree if we hit a `package.json` file.
+      break;
     }
   } while (directory !== (directory = path.dirname(directory)));
-  if (!options.rootDir) {
-    options.rootDir = root;
-  }
+  options.rootDir = options.rootDir
+    ? path.resolve(root, options.rootDir)
+    : root;
   return options;
 };
 
