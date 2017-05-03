@@ -130,7 +130,6 @@ const isJSONString = (text: ?string) =>
 module.exports = {
   BULLET,
   DOCUMENTATION_NOTE,
-  _replaceRootDirInObject,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,

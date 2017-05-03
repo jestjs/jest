@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
@@ -34,7 +35,7 @@ let hasExitListener = false;
 const watch = (
   initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
-  argv: Object,
+  argv: Argv,
   pipe: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,

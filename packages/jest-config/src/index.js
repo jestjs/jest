@@ -10,6 +10,7 @@
 
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const {getTestEnvironment, isJSONString} = require('./utils');
@@ -19,7 +20,7 @@ const normalize = require('./normalize');
 const path = require('path');
 
 function readConfig(
-  argv: Object,
+  argv: Argv,
   packageRoot: string,
 ): {
   config: ProjectConfig,
@@ -103,7 +104,6 @@ const getConfigs = (
       modulePathIgnorePatterns: options.modulePathIgnorePatterns,
       modulePaths: options.modulePaths,
       name: options.name,
-      preset: options.preset,
       resetMocks: options.resetMocks,
       resetModules: options.resetModules,
       resolver: options.resolver,

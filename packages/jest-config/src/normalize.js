@@ -10,12 +10,12 @@
 
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
 const {
   BULLET,
   DOCUMENTATION_NOTE,
-  _replaceRootDirInObject,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
@@ -45,7 +45,10 @@ const VALID_CONFIG = require('./validConfig');
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const setupPreset = (options: Object, optionsPreset: string) => {
+const setupPreset = (
+  options: InitialOptions,
+  optionsPreset: string,
+): InitialOptions => {
   let preset;
   const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -59,7 +62,7 @@ const setupPreset = (options: Object, optionsPreset: string) => {
 
   try {
     // $FlowFixMe
-    preset = require(presetModule);
+    preset = (require(presetModule): InitialOptions);
   } catch (error) {
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
@@ -67,34 +70,36 @@ const setupPreset = (options: Object, optionsPreset: string) => {
   if (options.setupFiles) {
     options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
   }
-  if (options.modulePathIgnorePatterns) {
+  if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
     options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
       options.modulePathIgnorePatterns,
     );
   }
-  if (options.moduleNameMapper) {
+  if (options.moduleNameMapper && preset.moduleNameMapper) {
     options.moduleNameMapper = Object.assign(
       {},
       preset.moduleNameMapper,
       options.moduleNameMapper,
     );
   }
+
+  // $FlowFixMe
   return Object.assign({}, preset, options);
 };
 
-const setupBabelJest = (options: Object) => {
-  let babelJest;
+const setupBabelJest = (options: InitialOptions) => {
   const basedir = options.rootDir;
-
-  if (options.transform) {
-    const customJSPattern = Object.keys(options.transform).find(pattern => {
+  const transform = options.transform;
+  let babelJest;
+  if (transform) {
+    const customJSPattern = Object.keys(transform).find(pattern => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
     });
 
     if (customJSPattern) {
       const jsTransformer = Resolver.findNodeModule(
-        options.transform[customJSPattern],
+        transform[customJSPattern],
         {basedir},
       );
       if (
@@ -169,7 +174,7 @@ const normalizeUnmockedModulePathPatterns = (
   );
 };
 
-const normalizePreprocessor = (options: Object) => {
+const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   /* eslint-disable max-len */
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
@@ -194,9 +199,10 @@ const normalizePreprocessor = (options: Object) => {
 
   delete options.scriptPreprocessor;
   delete options.preprocessorIgnorePatterns;
+  return options;
 };
 
-const normalizeMissingOptions = (options: Object) => {
+const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
@@ -208,25 +214,16 @@ const normalizeMissingOptions = (options: Object) => {
     options.setupFiles = [];
   }
 
-  if (!options.testRunner || options.testRunner === 'jasmine2') {
-    options.testRunner = require.resolve('jest-jasmine2');
-  } else {
-    options.testRunner = resolve(
-      options.rootDir,
-      'testRunner',
-      options.testRunner,
-    );
-  }
-
   return options;
 };
 
-const normalizeRootDir = (options: Object) => {
+const normalizeRootDir = (options: InitialOptions): InitialOptions => {
   // Assert that there *is* a rootDir
   if (!options.hasOwnProperty('rootDir')) {
     throw createConfigError(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
   }
   options.rootDir = path.normalize(options.rootDir);
+  return options;
 };
 
 const normalizeReporters = (options: InitialOptions, basedir) => {
@@ -268,32 +265,43 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
   return options;
 };
 
-function normalize(options: InitialOptions, argv: Object = {}) {
+function normalize(options: InitialOptions, argv: Argv) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
   });
 
-  options = setFromArgv(options, argv);
-  normalizeReporters(options);
-  normalizePreprocessor(options);
-  normalizeRootDir(options);
-  normalizeMissingOptions(options);
+  options = normalizePreprocessor(
+    normalizeReporters(
+      normalizeMissingOptions(normalizeRootDir(setFromArgv(options, argv))),
+    ),
+  );
 
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
+
   if (options.testEnvironment) {
     options.testEnvironment = getTestEnvironment(options);
   }
+
   if (!options.roots && options.testPathDirs) {
     options.roots = options.testPathDirs;
+    delete options.testPathDirs;
+  }
+  if (!options.roots) {
+    options.roots = [options.rootDir];
+  }
+
+  if (!options.testRunner || options.testRunner === 'jasmine2') {
+    options.testRunner = require.resolve('jest-jasmine2');
   }
 
   const babelJest = setupBabelJest(options);
   const newOptions = Object.assign({}, DEFAULT_CONFIG);
-
+  // Cast back to exact type
+  options = (options: InitialOptions);
   Object.keys(options).reduce((newOptions, key) => {
     let value;
     switch (key) {
@@ -302,42 +310,57 @@ function normalize(options: InitialOptions, argv: Object = {}) {
         break;
       case 'setupFiles':
       case 'snapshotSerializers':
-        value = options[key].map(resolve.bind(null, options.rootDir, key));
+        value =
+          options[key] &&
+          options[key].map(resolve.bind(null, options.rootDir, key));
         break;
+      case 'modulePaths':
       case 'roots':
-        value = options[key].map(filePath =>
-          path.resolve(
-            options.rootDir,
-            _replaceRootDirInPath(options.rootDir, filePath),
-          ),
-        );
+        value =
+          options[key] &&
+          options[key].map(filePath =>
+            path.resolve(
+              options.rootDir,
+              _replaceRootDirInPath(options.rootDir, filePath),
+            ),
+          );
         break;
       case 'collectCoverageFrom':
         value = normalizeCollectCoverageFrom(options, key);
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
-        value = path.resolve(
-          options.rootDir,
-          _replaceRootDirInPath(options.rootDir, options[key]),
-        );
+        value =
+          options[key] &&
+          path.resolve(
+            options.rootDir,
+            _replaceRootDirInPath(options.rootDir, options[key]),
+          );
         break;
+      case 'moduleLoader':
+      case 'resolver':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
-      case 'resolver':
-        value = resolve(options.rootDir, key, options[key]);
+      case 'testRunner':
+        value = options[key] && resolve(options.rootDir, key, options[key]);
         break;
       case 'moduleNameMapper':
-        value = Object.keys(options[key]).map(regex => [
-          regex,
-          _replaceRootDirTags(options.rootDir, options[key][regex]),
-        ]);
+        const moduleNameMapper = options[key];
+        value =
+          moduleNameMapper &&
+          Object.keys(moduleNameMapper).map(regex => {
+            const item = moduleNameMapper && moduleNameMapper[regex];
+            return item && [regex, _replaceRootDirTags(options.rootDir, item)];
+          });
         break;
       case 'transform':
-        value = Object.keys(options[key]).map(regex => [
-          regex,
-          resolve(options.rootDir, key, options[key][regex]),
-        ]);
+        const transform = options[key];
+        value =
+          transform &&
+          Object.keys(transform).map(regex => [
+            regex,
+            resolve(options.rootDir, key, transform[regex]),
+          ]);
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -357,13 +380,15 @@ function normalize(options: InitialOptions, argv: Object = {}) {
         }
         break;
       case 'projects':
+        const projects = options[key];
         let list = [];
-        options[key].forEach(
-          filePath =>
-            (list = list.concat(
-              glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
-            )),
-        );
+        projects &&
+          projects.forEach(
+            filePath =>
+              (list = list.concat(
+                glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
+              )),
+          );
         value = list;
         break;
       case 'automock':
@@ -380,23 +405,19 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'mapCoverage':
       case 'moduleDirectories':
       case 'moduleFileExtensions':
-      case 'moduleLoader':
-      case 'modulePaths':
       case 'name':
       case 'noStackTrace':
       case 'notify':
-      case 'preset':
       case 'replname':
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
       case 'silent':
-      case 'testMatch':
       case 'testEnvironment':
+      case 'testMatch':
       case 'testNamePattern':
       case 'testRegex':
-      case 'testRunner':
       case 'testURL':
       case 'timers':
       case 'updateSnapshot':
@@ -443,7 +464,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
 
   return {
     hasDeprecationWarnings,
-    options: _replaceRootDirInObject(newOptions.rootDir, newOptions),
+    options: newOptions,
   };
 }
 
