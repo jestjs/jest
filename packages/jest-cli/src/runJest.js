@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
 import type {GlobalConfig} from 'types/Config';
 import type TestWatcher from './TestWatcher';
@@ -150,7 +151,7 @@ const processResults = (runResults, options) => {
 const runJest = async (
   globalConfig: GlobalConfig,
   contexts: Array<Context>,
-  argv: Object,
+  argv: Argv,
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-export type Argv = {
+export type Argv = {|
   _: Array<string>,
   $0: string,
   automock: boolean,
@@ -29,12 +29,14 @@ export type Argv = {
   coverageThreshold: string,
   env: string,
   expand: boolean,
+  findRelatedTests: boolean,
   forceExit: boolean,
   globals: string,
   h: boolean,
   haste: string,
   help: boolean,
   json: boolean,
+  lastCommit: boolean,
   logHeapUsage: boolean,
   mapCoverage: boolean,
   moduleDirectories: Array<string>,
@@ -48,6 +50,7 @@ export type Argv = {
   noStackTrace: boolean,
   notify: boolean,
   onlyChanged: boolean,
+  outputFile: string,
   preset: ?string,
   replname: ?string,
   resetMocks: boolean,
@@ -78,4 +81,4 @@ export type Argv = {
   watch: boolean,
   watchAll: boolean,
   watchman: boolean,
-};
+|};
