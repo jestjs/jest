@@ -66,9 +66,7 @@ Object.keys(config).forEach(key => {
     console.log(e);
     if (!shouldWrite) {
       console.log(
-        chalk.red(
-          `  This project uses prettier to format all JavaScript code.\n`
-        ) +
+        chalk.red(`  This project uses prettier to format all JavaScript code.\n`) +
           chalk.dim(`    Please run `) +
           chalk.reset('yarn prettier') +
           chalk.dim(` and add changes to files listed above to your commit.`) +

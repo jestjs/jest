@@ -59,36 +59,36 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
-  readConfig(argv, root).then(({config, globalConfig}) => {
-    // Always disable automocking in scripts.
-    config = Object.assign({}, config, {
-      automock: false,
-      unmockedModulePathPatterns: null,
-    });
-    Runtime.createContext(config, {
-      maxWorkers: os.cpus().length - 1,
-      watchman: globalConfig.watchman,
-    })
-      .then(hasteMap => {
-        /* $FlowFixMe */
-        const Environment = (require(config.testEnvironment): EnvironmentClass);
-        const environment = new Environment(config);
-        setGlobal(
-          environment.global,
-          'console',
-          new Console(process.stdout, process.stderr),
-        );
-        environment.global.jestProjectConfig = config;
-        environment.global.jestGlobalConfig = globalConfig;
-
-        const runtime = new Runtime(config, environment, hasteMap.resolver);
-        runtime.requireModule(testFilePath);
-      })
-      .catch(e => {
-        console.error(chalk.red(e));
-        process.on('exit', () => process.exit(1));
-      });
+  const options = readConfig(argv, root);
+  const globalConfig = options.globalConfig;
+  // Always disable automocking in scripts.
+  const config = Object.assign({}, options.config, {
+    automock: false,
+    unmockedModulePathPatterns: null,
   });
+  Runtime.createContext(config, {
+    maxWorkers: os.cpus().length - 1,
+    watchman: globalConfig.watchman,
+  })
+    .then(hasteMap => {
+      /* $FlowFixMe */
+      const Environment = (require(config.testEnvironment): EnvironmentClass);
+      const environment = new Environment(config);
+      setGlobal(
+        environment.global,
+        'console',
+        new Console(process.stdout, process.stderr),
+      );
+      environment.global.jestProjectConfig = config;
+      environment.global.jestGlobalConfig = globalConfig;
+
+      const runtime = new Runtime(config, environment, hasteMap.resolver);
+      runtime.requireModule(testFilePath);
+    })
+    .catch(e => {
+      console.error(chalk.red(e));
+      process.on('exit', () => process.exit(1));
+    });
 }
 
 exports.run = run;

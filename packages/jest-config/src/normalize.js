@@ -172,17 +172,13 @@ const normalizeUnmockedModulePathPatterns = (
 const normalizePreprocessor = (options: Object) => {
   /* eslint-disable max-len */
   if (options.scriptPreprocessor && options.transform) {
-    throw createConfigError(
-      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`,
-    );
+    throw createConfigError(`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transform')}.`);
   }
 
   if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
-    throw createConfigError(
-      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
-    );
+    throw createConfigError(`  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`);
   }
   /* eslint-enable max-len */
 
@@ -228,9 +224,7 @@ const normalizeMissingOptions = (options: Object) => {
 const normalizeRootDir = (options: Object) => {
   // Assert that there *is* a rootDir
   if (!options.hasOwnProperty('rootDir')) {
-    throw createConfigError(
-      `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
-    );
+    throw createConfigError(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
   }
   options.rootDir = path.normalize(options.rootDir);
 };

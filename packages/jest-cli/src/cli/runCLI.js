@@ -96,7 +96,7 @@ module.exports = async (
     let configs = [];
     let config;
     if (projects.length === 1) {
-      ({config, globalConfig, hasDeprecationWarnings} = await readConfig(
+      ({config, globalConfig, hasDeprecationWarnings} = readConfig(
         argv,
         projects[0],
       ));
@@ -107,7 +107,7 @@ module.exports = async (
     }
 
     if (projects.length > 1) {
-      configs = await Promise.all(projects.map(root => readConfig(argv, root)));
+      configs = projects.map(root => readConfig(argv, root));
       // If no config was passed initially, use the one from the first project
       if (!globalConfig && !config) {
         globalConfig = configs[0].globalConfig;
