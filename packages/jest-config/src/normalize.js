@@ -402,6 +402,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'updateSnapshot':
       case 'useStderr':
       case 'verbose':
+      case 'watch':
       case 'watchman':
         value = options[key];
         break;
