@@ -95,8 +95,9 @@ module.exports = class TestPathPatternPrompt {
 
     if (pattern) {
       if (total) {
-        this._pipe
-          .write(`\n\n Pattern matches ${total} ${pluralizeFile(total)}.`);
+        this._pipe.write(
+          `\n\n Pattern matches ${total} ${pluralizeFile(total)}.`,
+        );
       } else {
         this._pipe.write(`\n\n Pattern matches no files.`);
       }
@@ -121,12 +122,16 @@ module.exports = class TestPathPatternPrompt {
 
       if (total > max) {
         const more = total - max;
-        this._pipe.write(// eslint-disable-next-line max-len
-        `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeFile(more)}`)}`);
+        this._pipe.write(
+          // eslint-disable-next-line max-len
+          `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeFile(more)}`)}`,
+        );
       }
     } else {
-      this._pipe.write(// eslint-disable-next-line max-len
-      `\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`);
+      this._pipe.write(
+        // eslint-disable-next-line max-len
+        `\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`,
+      );
     }
 
     this._pipe.write(

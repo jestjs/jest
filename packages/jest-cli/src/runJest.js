@@ -57,11 +57,8 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
     );
   }
 
-  const pluralize = (
-    word: string,
-    count: number,
-    ending: string,
-  ) => `${count} ${word}${count === 1 ? '' : ending}`;
+  const pluralize = (word: string, count: number, ending: string) =>
+    `${count} ${word}${count === 1 ? '' : ending}`;
   const testPathPattern = formatTestPathPattern(pattern);
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || {};

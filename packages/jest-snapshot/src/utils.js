@@ -30,7 +30,8 @@ const SNAPSHOT_VERSION_WARNING = chalk.yellow(
     `to ensure that you do not store invalid state.`,
 );
 
-const writeSnapshotVersion = () => `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
+const writeSnapshotVersion = () =>
+  `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);

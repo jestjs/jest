@@ -39,7 +39,9 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
 
   if (!module) {
     /* eslint-disable max-len */
-    throw createValidationError(`  Module ${chalk.bold(filePath)} in the ${chalk.bold(key)} option was not found.`);
+    throw createValidationError(
+      `  Module ${chalk.bold(filePath)} in the ${chalk.bold(key)} option was not found.`,
+    );
     /* eslint-disable max-len */
   }
 
@@ -117,7 +119,9 @@ const getTestEnvironment = (config: Object) => {
   } catch (e) {}
 
   /* eslint-disable max-len */
-  throw createValidationError(`  Test environment ${chalk.bold(env)} cannot be found. Make sure the ${chalk.bold('testEnvironment')} configuration option points to an existing node module.`);
+  throw createValidationError(
+    `  Test environment ${chalk.bold(env)} cannot be found. Make sure the ${chalk.bold('testEnvironment')} configuration option points to an existing node module.`,
+  );
   /* eslint-disable max-len */
 };
 
