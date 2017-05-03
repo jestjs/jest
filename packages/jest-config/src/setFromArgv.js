@@ -4,90 +4,58 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
-function setFromArgv(config, argv) {
-  if (argv.coverage) {
-    config.collectCoverage = true;
-  }
+import type {InitialOptions} from 'types/Config';
+import type {Argv} from 'types/Argv';
 
-  if (argv.coverageDirectory) {
-    config.coverageDirectory = argv.coverageDirectory;
-  }
+const specialArgs = ['_', '$0', 'h', 'help', 'config'];
+const {isJSONString} = require('./utils');
 
-  if (argv.mapCoverage) {
-    config.mapCoverage = true;
-  }
+function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
+  const argvToOptions = Object.keys(argv)
+    .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
+    .reduce((options: Object, key) => {
+      switch (key) {
+        case 'coverage':
+          options.collectCoverage = argv[key];
+          break;
+        case 'json':
+          options.useStderr = argv[key];
+          break;
+        case 'watchAll':
+          options.watch = argv[key];
+          break;
+        case 'env':
+          options.testEnvironment = argv[key];
+          break;
+        case 'config':
+          break;
+        case 'coverageThreshold':
+        case 'globals':
+        case 'moduleNameMapper':
+        case 'transform':
+        case 'haste':
+          if (isJSONString(argv[key])) {
+            options[key] = JSON.parse(argv[key]);
+          }
+          break;
+        default:
+          options[key] = argv[key];
+      }
+      return options;
+    }, {});
 
-  if (argv.verbose) {
-    config.verbose = argv.verbose;
-  }
-
-  if (argv.notify !== null) {
-    config.notify = argv.notify;
-  }
-
-  if (argv.bail) {
-    config.bail = argv.bail;
-  }
-
-  if (argv.cache !== null) {
-    config.cache = argv.cache;
-  }
-
-  if (config.watchman === undefined && argv.watchman !== null) {
-    config.watchman = argv.watchman;
-  }
-
-  if (argv.useStderr) {
-    config.useStderr = argv.useStderr;
-  }
-
-  if (argv.json) {
-    config.useStderr = true;
-  }
-
-  if (argv.logHeapUsage) {
-    config.logHeapUsage = argv.logHeapUsage;
-  }
-
-  if (argv.replname) {
-    config.replname = argv.replname;
-  }
-
-  if (argv.silent) {
-    config.silent = true;
-  }
-
-  if (argv.setupTestFrameworkScriptFile) {
-    config.setupTestFrameworkScriptFile = argv.setupTestFrameworkScriptFile;
-  }
-
-  if (argv.testNamePattern) {
-    config.testNamePattern = argv.testNamePattern;
-  }
-
-  if (argv.updateSnapshot) {
-    config.updateSnapshot = argv.updateSnapshot;
-  }
-
-  if (argv.watch || argv.watchAll) {
-    config.watch = true;
-  }
-
-  if (argv.expand) {
-    config.expand = argv.expand;
-  }
-
-  if (argv.testResultsProcessor) {
-    config.testResultsProcessor = argv.testResultsProcessor;
-  }
-
-  config.noStackTrace = argv.noStackTrace;
-
-  return config;
+  return Object.assign(
+    {},
+    options,
+    isJSONString(argv.config) ? JSON.parse(argv.config) : null,
+    argvToOptions,
+  );
 }
 
 module.exports = setFromArgv;

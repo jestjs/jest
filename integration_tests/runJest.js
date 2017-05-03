@@ -34,9 +34,7 @@ function runJest(dir, args) {
     );
   }
 
-  const result = spawnSync(JEST_PATH, args || [], {
-    cwd: dir,
-  });
+  const result = spawnSync(JEST_PATH, args || [], {cwd: dir});
 
   result.stdout = result.stdout && result.stdout.toString();
   result.stderr = result.stderr && result.stderr.toString();

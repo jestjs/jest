@@ -18,11 +18,7 @@ function __setMockFiles(newMockFiles) {
   });
 }
 
-function readFile(file, callback) {
-  callback(null, mockFiles.get(file));
-}
-
 fs.__setMockFiles = __setMockFiles;
-fs.readFile = readFile;
+fs.readFileSync = jest.fn(file => mockFiles.get(file));
 
 module.exports = fs;

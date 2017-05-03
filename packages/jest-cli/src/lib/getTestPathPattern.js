@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {PathPattern} from '../SearchSource';
 
 const {clearLine} = require('jest-util');
@@ -33,7 +34,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-module.exports = (argv: Object): PathPattern => {
+module.exports = (argv: Argv): PathPattern => {
   if (argv.onlyChanged) {
     return {
       input: '',

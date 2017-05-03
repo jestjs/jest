@@ -18,7 +18,7 @@ const SPACE = ' ';
 const addKey = (isMap: boolean, key: any) => (isMap ? key + ': ' : '');
 
 const addFinalEdgeSpacing = (length: number, edgeSpacing: string) =>
-  (length > 0 ? edgeSpacing : '');
+  length > 0 ? edgeSpacing : '';
 
 const printImmutable = (
   val: any,

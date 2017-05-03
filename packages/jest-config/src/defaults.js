@@ -34,6 +34,7 @@ module.exports = ({
   automock: false,
   bail: false,
   browser: false,
+  cache: true,
   cacheDirectory,
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
@@ -53,7 +54,6 @@ module.exports = ({
   preset: null,
   resetMocks: false,
   resetModules: false,
-  roots: ['<rootDir>'],
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
@@ -66,4 +66,5 @@ module.exports = ({
   useStderr: false,
   verbose: null,
   watch: false,
+  watchman: true,
 }: DefaultOptions);

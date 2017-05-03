@@ -19,6 +19,10 @@ import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
+type CoverageReporterOptions = {
+  maxWorkers: number,
+};
+
 const BaseReporter = require('./BaseReporter');
 
 const {clearLine} = require('jest-util');
@@ -37,14 +41,16 @@ const isInteractive = process.stdout.isTTY && !isCI;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
-  _maxWorkers: number;
+  _globalConfig: GlobalConfig;
   _sourceMapStore: any;
+  _maxWorkers: number;
 
-  constructor({maxWorkers}: {maxWorkers: number}) {
-    super();
-    this._maxWorkers = maxWorkers;
+  constructor(globalConfig: GlobalConfig, options: CoverageReporterOptions) {
+    super(globalConfig);
     this._coverageMap = istanbulCoverage.createCoverageMap({});
+    this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
+    this._maxWorkers = options.maxWorkers;
   }
 
   onTestResult(
@@ -68,25 +74,24 @@ class CoverageReporter extends BaseReporter {
 
   async onRunComplete(
     contexts: Set<Context>,
-    globalConfig: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ) {
-    await this._addUntestedFiles(globalConfig, contexts);
+    await this._addUntestedFiles(this._globalConfig, contexts);
     let map = this._coverageMap;
     let sourceFinder: Object;
-    if (globalConfig.mapCoverage) {
+    if (this._globalConfig.mapCoverage) {
       ({map, sourceFinder} = this._sourceMapStore.transformCoverage(map));
     }
 
     const reporter = createReporter();
     try {
-      if (globalConfig.coverageDirectory) {
-        reporter.dir = globalConfig.coverageDirectory;
+      if (this._globalConfig.coverageDirectory) {
+        reporter.dir = this._globalConfig.coverageDirectory;
       }
 
-      let coverageReporters = globalConfig.coverageReporters || [];
+      let coverageReporters = this._globalConfig.coverageReporters || [];
       if (
-        !globalConfig.useStderr &&
+        !this._globalConfig.useStderr &&
         coverageReporters.length &&
         coverageReporters.indexOf('text') === -1
       ) {
@@ -98,17 +103,15 @@ class CoverageReporter extends BaseReporter {
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
-        chalk.red(
-          `
+        chalk.red(`
         Failed to write coverage reports:
         ERROR: ${e.toString()}
         STACK: ${e.stack}
-      `,
-        ),
+      `),
       );
     }
 
-    this._checkThreshold(globalConfig, map);
+    this._checkThreshold(this._globalConfig, map);
   }
 
   _addUntestedFiles(globalConfig: GlobalConfig, contexts: Set<Context>) {

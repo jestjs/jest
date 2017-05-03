@@ -33,10 +33,10 @@ type Hunk = {|
 |};
 
 const getColor = (added: boolean, removed: boolean): chalk =>
-  (added ? chalk.red : removed ? chalk.green : chalk.dim);
+  added ? chalk.red : removed ? chalk.green : chalk.dim;
 
 const getBgColor = (added: boolean, removed: boolean): chalk =>
-  (added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim);
+  added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
 
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));

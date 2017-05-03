@@ -7,7 +7,7 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
+
 'use strict';
 
 import type {
@@ -76,8 +76,6 @@ function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
   let result = colors.tag.open + '<' + instance.type + colors.tag.close;
 
   if (instance.props) {
-    // If assignments are in opposite order, Flow 0.39.0 finds incorrect error:
-    // element of Object.keys. Expected object instead of possibly undefined value
     closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
     result += printProps(instance.props, print, indent, colors, opts);
   }
