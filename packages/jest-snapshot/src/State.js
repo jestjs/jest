@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Path} from 'types/Config';
+import type {Path, SnapshotUpdateState} from 'types/Config';
 
 const {
   saveSnapshotFile,
@@ -24,7 +24,7 @@ const {
 const fs = require('fs');
 
 export type SnapshotStateOptions = {|
-  shouldUpdate: boolean,
+  updateSnapshot: SnapshotUpdateState,
   snapshotPath?: string,
   expand?: boolean,
 |};
@@ -33,7 +33,7 @@ class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
   _index: number;
-  _shouldUpdate: boolean;
+  _updateSnapshot: SnapshotUpdateState;
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
   _uncheckedKeys: Set<string>;
@@ -43,14 +43,11 @@ class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(
-    testPath: Path,
-    options: SnapshotStateOptions,
-  ) {
+  constructor(testPath: Path, options: SnapshotStateOptions) {
     this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
-      options.shouldUpdate,
+      options.updateSnapshot,
     );
     this._snapshotData = data;
     this._dirty = dirty;
@@ -61,7 +58,7 @@ class SnapshotState {
     this.added = 0;
     this.matched = 0;
     this.unmatched = 0;
-    this._shouldUpdate = options.shouldUpdate;
+    this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
   }
 
@@ -78,19 +75,18 @@ class SnapshotState {
     this._snapshotData[key] = receivedSerialized;
   }
 
-  save(shouldUpdate: boolean) {
+  save(shouldUpdate: SnapshotUpdateState) {
     const status = {
       deleted: false,
       saved: false,
     };
-
     const isEmpty = Object.keys(this._snapshotData).length === 0;
 
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
       saveSnapshotFile(this._snapshotData, this._snapshotPath);
       status.saved = true;
     } else if (isEmpty && fs.existsSync(this._snapshotPath)) {
-      if (shouldUpdate) {
+      if (shouldUpdate === 'all') {
         fs.unlinkSync(this._snapshotPath);
       }
       status.deleted = true;
@@ -138,10 +134,11 @@ class SnapshotState {
 
     if (
       !fs.existsSync(this._snapshotPath) || // there's no snapshot file
-      (hasSnapshot && this._shouldUpdate) || // there is a file, but we're updating
-      !hasSnapshot // there is a file, but it doesn't have this snaphsot
+      (hasSnapshot && this._updateSnapshot === 'all') || // there is a file, but we're updating
+      (!hasSnapshot &&
+        (this._updateSnapshot === 'new' || this._updateSnapshot === 'all')) // there is a file, but it doesn't have this snaphsot
     ) {
-      if (this._shouldUpdate) {
+      if (this._updateSnapshot === 'all') {
         if (!pass) {
           if (hasSnapshot) {
             this.updated++;
@@ -169,7 +166,7 @@ class SnapshotState {
         return {
           actual: unescape(receivedSerialized),
           count,
-          expected: unescape(expected),
+          expected: expected ? unescape(expected) : null,
           pass: false,
         };
       } else {

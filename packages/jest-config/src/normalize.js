@@ -426,7 +426,6 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'testRegex':
       case 'testURL':
       case 'timers':
-      case 'updateSnapshot':
       case 'useStderr':
       case 'verbose':
       case 'watch':
@@ -437,6 +436,10 @@ function normalize(options: InitialOptions, argv: Argv) {
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  newOptions.updateSnapshot = argv.ci && !argv.updateSnapshot
+    ? 'none'
+    : argv.updateSnapshot ? 'all' : 'new';
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(

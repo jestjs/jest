@@ -34,7 +34,12 @@ describe('jest --showConfig', () => {
           .replace(/"cacheDirectory": "(.+)"/, '"cacheDirectory": "/tmp/jest"'),
       test: val => typeof val === 'string',
     });
-    const {stdout} = runJest(dir, ['--showConfig', '--no-cache']);
+    const {stdout} = runJest(dir, [
+      '--showConfig',
+      '--no-cache',
+      // Make the snapshot flag stable on CI.
+      '--updateSnapshot',
+    ]);
     expect(stdout).toMatchSnapshot();
   });
 });

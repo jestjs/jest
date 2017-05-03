@@ -142,13 +142,10 @@ module.exports = ({
   config.snapshotSerializers.concat().reverse().forEach(path => {
     addSerializer(localRequire(path));
   });
-  setState({testPath});
   patchJasmine();
-  const snapshotState = new SnapshotState(testPath, {
-    expand: globalConfig.expand,
-    shouldUpdate: globalConfig.updateSnapshot,
-  });
-  setState({snapshotState});
+  const {expand, updateSnapshot} = globalConfig;
+  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
 };

@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Path} from 'types/Config';
+import type {Path, SnapshotUpdateState} from 'types/Config';
 
 const chalk = require('chalk');
 const createDirectory = require('jest-util').createDirectory;
@@ -97,7 +97,7 @@ const getSnapshotPath = (testPath: Path) =>
     path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
   );
 
-const getSnapshotData = (snapshotPath: Path, update: boolean) => {
+const getSnapshotData = (snapshotPath: Path, update: SnapshotUpdateState) => {
   const data = Object.create(null);
   let snapshotContents = '';
   let dirty = false;
@@ -114,11 +114,11 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   const validationResult = validateSnapshotVersion(snapshotContents);
   const isInvalid = snapshotContents && validationResult;
 
-  if (!update && isInvalid) {
+  if (update === 'none' && isInvalid) {
     throw validationResult;
   }
 
-  if (update && isInvalid) {
+  if ((update === 'all' || update === 'new') && isInvalid) {
     dirty = true;
   }
 

@@ -140,7 +140,8 @@ class TestRunner {
         );
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       });
-      aggregatedResults.snapshot.didUpdate = this._globalConfig.updateSnapshot;
+      aggregatedResults.snapshot.didUpdate =
+        this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.failure = !!(!this._globalConfig
         .updateSnapshot &&
         (aggregatedResults.snapshot.unchecked ||
