@@ -7,7 +7,6 @@
  *
  * @emails oncall+jsinfra
  */
-'use strict';
 
 describe('matchers', () => {
   it('proxies matchers to jest-matchers', () => {

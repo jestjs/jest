@@ -8,8 +8,6 @@
 
 /* eslint-disable jest/no-focused-tests */
 
-'use strict';
-
 describe('promise fit', () => {
   it('fails but will be skipped', () => {
     expect(true).toBe(false);

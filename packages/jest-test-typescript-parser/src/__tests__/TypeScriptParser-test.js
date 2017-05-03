@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const {parse} = require('../TypeScriptParser');
 const {parserTests} = require('../../../../fixtures/parserTests');
 

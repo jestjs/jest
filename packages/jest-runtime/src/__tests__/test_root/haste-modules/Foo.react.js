@@ -8,8 +8,6 @@
  * @providesModule Foo.react
  */
 
-'use strict';
-
 const FooRenderUtil = require('FooRenderUtil');
 
 class Foo {

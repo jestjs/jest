@@ -8,8 +8,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 import a from '../__test_modules__/a';
 import b from '../__test_modules__/b';
 

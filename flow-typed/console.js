@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 declare module "console" {
   declare export class Console {

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {DefaultOptions} from 'types/Config';
 
 const os = require('os');

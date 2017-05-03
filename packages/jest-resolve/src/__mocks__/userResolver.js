@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
 */
 
-'use strict';
-
 module.exports = function userResolver(path, options) {
   return 'module';
 };

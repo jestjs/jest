@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {ConsoleBuffer, LogMessage, LogType} from 'types/Console';
 

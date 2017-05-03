@@ -62,7 +62,7 @@ Object {
     Expected value to be truthy, instead received
       false
       
-      at Object.throws (__tests__/assertion-count-test.js:14:17)
+      at Object.throws (__tests__/assertion-count-test.js:13:17)
 
   ● .assertions() › throws
 
@@ -78,7 +78,7 @@ Object {
     Expected value to be truthy, instead received
       false
       
-      at Object.redeclare (__tests__/assertion-count-test.js:18:17)
+      at Object.redeclare (__tests__/assertion-count-test.js:17:17)
 
   ● .assertions() › throws on assertion
 

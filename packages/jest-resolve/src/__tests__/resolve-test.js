@@ -8,8 +8,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const Resolver = require('../');

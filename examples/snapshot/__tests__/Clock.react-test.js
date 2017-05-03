@@ -1,8 +1,6 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 /* eslint-disable no-unused-vars */
 
-'use strict';
-
 import React from 'react';
 import Clock from '../Clock.react';
 import renderer from 'react-test-renderer';

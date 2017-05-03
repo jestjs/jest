@@ -10,8 +10,6 @@
 
 /* eslint-disable no-useless-concat */
 
-'use strict';
-
 import React from 'react';
 import Unmocked from '../__test_modules__/Unmocked';
 import Mocked from '../__test_modules__/Mocked';

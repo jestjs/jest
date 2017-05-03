@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const {readFileSync} = require('fs');
 const babylon = require('babylon');
 const {Expect, ItBlock} = require('./ParserNodes');

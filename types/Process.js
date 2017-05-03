@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 export interface Process {
   stdout: stream$Writable | tty$WriteStream,

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {ProjectConfig, Path} from 'types/Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';

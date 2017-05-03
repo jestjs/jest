@@ -8,8 +8,6 @@
 * @emails oncall+jsinfra
 */
 
-'use strict';
-
 const highlight = require('../highlight');
 
 const rootDir = '/Users/foo/dev/jest';

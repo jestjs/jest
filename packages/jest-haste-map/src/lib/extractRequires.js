@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 const blockCommentRe = /\/\*[^]*?\*\//g;
 const lineCommentRe = /\/\/.*/g;

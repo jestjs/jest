@@ -7,7 +7,6 @@
  *
  * @emails oncall+jsinfra
  */
-'use strict';
 
 const path = require('path');
 

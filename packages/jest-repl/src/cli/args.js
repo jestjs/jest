@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const Runtime = require('jest-runtime');
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>]';

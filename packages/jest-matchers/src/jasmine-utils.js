@@ -23,8 +23,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eslint-disable */
 
-'use strict';
-
 // Extracted out of jasmine 2.5.2
 function equals(a, b, customTesters) {
   customTesters = customTesters || [];

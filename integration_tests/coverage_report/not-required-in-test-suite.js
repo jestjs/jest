@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
 
 throw new Error(
   `this error should not be a problem because` +

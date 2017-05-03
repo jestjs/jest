@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Context} from './Context';
 import type {Environment} from 'types/Environment';

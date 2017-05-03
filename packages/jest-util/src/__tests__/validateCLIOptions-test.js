@@ -7,8 +7,6 @@
  *
  */
 
-'use strict';
-
 const validateCLIOptions = require('../validateCLIOptions');
 
 test('validates yargs special options', () => {

@@ -7,7 +7,6 @@
 *
 * @emails oncall+jsinfra
 */
-'use strict';
 
 const Prompt = require('../Prompt');
 let {KEYS} = require('../../constants');

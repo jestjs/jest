@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 /**
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */

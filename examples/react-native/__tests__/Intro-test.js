@@ -1,7 +1,6 @@
 /**
  * Sample React Native Snapshot Test
  */
-'use strict';
 
 import 'react-native';
 import React from 'react';

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 module.exports = {
   ValidationError: require('./errors').ValidationError,
   createDidYouMeanMessage: require('./utils').createDidYouMeanMessage,

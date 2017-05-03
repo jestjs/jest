@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';

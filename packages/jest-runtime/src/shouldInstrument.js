@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Path, ProjectConfig} from 'types/Config';
 import type {Options} from './ScriptTransformer';

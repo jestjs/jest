@@ -8,8 +8,6 @@
 * @emails oncall+jsinfra
 */
 
-'use strict';
-
 const formatTestNameByPattern = require('../formatTestNameByPattern');
 
 describe('for multiline test name returns', () => {

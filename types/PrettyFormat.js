@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 export type Colors = {
   comment: {close: string, open: string},

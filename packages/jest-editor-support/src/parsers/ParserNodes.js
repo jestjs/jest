@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Location} from '../types';
 
 class Node {

@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 require('../this-directory-is-covered/excluded-from-coverage');
 
 it('strips flowtypes using babel-jest and .babelrc', () => {

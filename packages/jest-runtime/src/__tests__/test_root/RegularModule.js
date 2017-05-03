@@ -8,8 +8,6 @@
  * @providesModule RegularModule
  */
 
-'use strict';
-
 // For some reason thinks it's a strict violation.
 if (exports !== this) {
   throw new Error('Invalid module context');

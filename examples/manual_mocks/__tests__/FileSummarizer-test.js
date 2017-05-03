@@ -1,7 +1,5 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-'use strict';
-
 jest.mock('fs');
 
 describe('listFilesInDirectorySync', () => {

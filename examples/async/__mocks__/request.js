@@ -1,5 +1,3 @@
-'use strict';
-
 const users = {
   4: {name: 'Mark'},
   5: {name: 'Paul'},

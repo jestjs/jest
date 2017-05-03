@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const Process = require('./Process');
 const ProjectWorkspace = require('./ProjectWorkspace');
 const Runner = require('./Runner');

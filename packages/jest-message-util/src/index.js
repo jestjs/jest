@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 

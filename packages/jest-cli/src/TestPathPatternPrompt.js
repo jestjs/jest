@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ScrollOptions} from './lib/scrollList';

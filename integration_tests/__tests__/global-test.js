@@ -7,7 +7,6 @@
  *
  * @emails oncall+jsinfra
  */
-'use strict';
 
 test('globals are properly defined', () => {
   expect(global.Object).toBe(Object);

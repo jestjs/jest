@@ -8,6 +8,4 @@
  * @providesModule ManuallyMocked
  */
 
-'use strict';
-
 exports.isManualMockModule = false;

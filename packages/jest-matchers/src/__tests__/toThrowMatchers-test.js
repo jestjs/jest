@@ -8,8 +8,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 const jestExpect = require('../');
 
 // Custom Error class because node versions have different stack trace strings.

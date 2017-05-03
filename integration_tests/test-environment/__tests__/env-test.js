@@ -7,7 +7,6 @@
  *
  * @jest-environment jsdom
  */
-'use strict';
 /* eslint-env browser*/
 
 test('stub', () => {

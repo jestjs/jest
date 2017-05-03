@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Options} from './types';
 
 const {ChildProcess} = require('child_process');

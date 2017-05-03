@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {DiffOptions} from './diffStrings';
 
 const {

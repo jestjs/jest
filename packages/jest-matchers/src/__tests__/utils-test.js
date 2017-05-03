@@ -8,8 +8,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 const {stringify} = require('jest-matcher-utils');
 const {getObjectSubset, getPath} = require('../utils');
 

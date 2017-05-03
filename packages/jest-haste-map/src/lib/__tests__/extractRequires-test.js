@@ -8,7 +8,6 @@
  *
  * @emails oncall+jsinfra
  */
-'use strict';
 
 const extractRequires = require('../extractRequires');
 

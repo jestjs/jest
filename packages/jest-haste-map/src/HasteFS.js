@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Glob, Path} from 'types/Config';
 import type {FileData, HType} from 'types/HasteMap';

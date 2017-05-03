@@ -6,7 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-'use strict';
 
 require('jest-resolve-dependencies');
 require('jest-regex-util');

@@ -8,8 +8,6 @@
  * @providesModule FooRenderUtil
  */
 
-'use strict';
-
 module.exports = {
   getBodyHeight() {
     return 5;

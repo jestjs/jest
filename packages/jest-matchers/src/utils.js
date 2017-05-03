@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 type GetPath = {
   hasEndProp?: boolean,
   lastTraversedObject: ?Object,

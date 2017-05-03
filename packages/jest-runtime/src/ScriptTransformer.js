@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Glob, Path, ProjectConfig} from 'types/Config';
 import type {

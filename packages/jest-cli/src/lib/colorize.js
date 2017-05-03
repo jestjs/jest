@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const chalk = require('chalk');
 
 module.exports = (str: string, start: number, end: number) =>

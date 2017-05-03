@@ -8,8 +8,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 const TestRunner = require('../TestRunner');
 const TestWatcher = require('../TestWatcher');
 const SummaryReporter = require('../reporters/SummaryReporter');

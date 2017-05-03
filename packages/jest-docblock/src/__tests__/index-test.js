@@ -9,8 +9,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 const os = require('os');
 const docblock = require('../');
 

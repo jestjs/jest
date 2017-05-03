@@ -6,9 +6,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const EventEmitter = require('events');
+const {EventEmitter} = require('events');
 const path = require('path');
 const {readFileSync} = require('fs');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');

@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const fs = jest.genMockFromModule('fs');
 
 const mockFiles = new Map();

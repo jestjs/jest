@@ -8,6 +8,4 @@
  * @providesModule RelativeImageStub
  */
 
-'use strict';
-
 exports.isRelativeImageStub = true;

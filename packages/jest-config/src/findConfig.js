@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {InitialOptions, Path} from 'types/Config';
 
 const fs = require('fs');

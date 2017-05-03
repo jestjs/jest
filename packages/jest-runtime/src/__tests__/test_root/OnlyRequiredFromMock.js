@@ -8,6 +8,4 @@
  * @providesModule OnlyRequiredFromMock
  */
 
-'use strict';
-
 exports.value = 'banana banana banana';

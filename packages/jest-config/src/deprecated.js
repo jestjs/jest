@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const chalk = require('chalk');
 const format = (value: mixed) => require('pretty-format')(value, {min: true});
 
