@@ -16,8 +16,7 @@ import type {Argv} from 'types/Argv';
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
 const {isJSONString} = require('./utils');
 
-function setFromArgv(options: InitialOptions, argv: Argv) {
-  let configFromArgv;
+function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
   const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
     .reduce((options: Object, key) => {
@@ -51,11 +50,12 @@ function setFromArgv(options: InitialOptions, argv: Argv) {
       return options;
     }, {});
 
-  if (isJSONString(argv.config)) {
-    configFromArgv = JSON.parse(argv.config);
-  }
-
-  return Object.assign({}, options, configFromArgv, argvToOptions);
+  return Object.assign(
+    {},
+    options,
+    isJSONString(argv.config) ? JSON.parse(argv.config) : null,
+    argvToOptions,
+  );
 }
 
 module.exports = setFromArgv;

@@ -45,7 +45,10 @@ const VALID_CONFIG = require('./validConfig');
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const setupPreset = (options: Object, optionsPreset: string) => {
+const setupPreset = (
+  options: InitialOptions,
+  optionsPreset: string,
+): InitialOptions => {
   let preset;
   const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -59,7 +62,7 @@ const setupPreset = (options: Object, optionsPreset: string) => {
 
   try {
     // $FlowFixMe
-    preset = require(presetModule);
+    preset = (require(presetModule): InitialOptions);
   } catch (error) {
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
@@ -67,7 +70,7 @@ const setupPreset = (options: Object, optionsPreset: string) => {
   if (options.setupFiles) {
     options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
   }
-  if (options.modulePathIgnorePatterns) {
+  if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
     options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
       options.modulePathIgnorePatterns,
     );
@@ -79,22 +82,24 @@ const setupPreset = (options: Object, optionsPreset: string) => {
       options.moduleNameMapper,
     );
   }
+  // $FlowFixMe
   return Object.assign({}, preset, options);
 };
 
-const setupBabelJest = (options: Object) => {
+const setupBabelJest = (options: InitialOptions) => {
   let babelJest;
   const basedir = options.rootDir;
 
-  if (options.transform) {
-    const customJSPattern = Object.keys(options.transform).find(pattern => {
+  const transform = options.transform;
+  if (transform) {
+    const customJSPattern = Object.keys(transform).find(pattern => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
     });
 
     if (customJSPattern) {
       const jsTransformer = Resolver.findNodeModule(
-        options.transform[customJSPattern],
+        transform[customJSPattern],
         {basedir},
       );
       if (
@@ -169,7 +174,7 @@ const normalizeUnmockedModulePathPatterns = (
   );
 };
 
-const normalizePreprocessor = (options: Object) => {
+const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   /* eslint-disable max-len */
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
@@ -194,9 +199,10 @@ const normalizePreprocessor = (options: Object) => {
 
   delete options.scriptPreprocessor;
   delete options.preprocessorIgnorePatterns;
+  return options;
 };
 
-const normalizeMissingOptions = (options: Object) => {
+const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
@@ -221,12 +227,13 @@ const normalizeMissingOptions = (options: Object) => {
   return options;
 };
 
-const normalizeRootDir = (options: Object) => {
+const normalizeRootDir = (options: InitialOptions): InitialOptions => {
   // Assert that there *is* a rootDir
   if (!options.hasOwnProperty('rootDir')) {
     throw createConfigError(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
   }
   options.rootDir = path.normalize(options.rootDir);
+  return options;
 };
 
 const normalizeReporters = (options: InitialOptions, basedir) => {
@@ -275,25 +282,29 @@ function normalize(options: InitialOptions, argv: Object = {}) {
     exampleConfig: VALID_CONFIG,
   });
 
-  options = setFromArgv(options, argv);
-  normalizeReporters(options);
-  normalizePreprocessor(options);
-  normalizeRootDir(options);
-  normalizeMissingOptions(options);
+  options = normalizePreprocessor(
+    normalizeReporters(
+      normalizeMissingOptions(normalizeRootDir(setFromArgv(options, argv))),
+    ),
+  );
 
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
+
   if (options.testEnvironment) {
     options.testEnvironment = getTestEnvironment(options);
   }
+
   if (!options.roots && options.testPathDirs) {
     options.roots = options.testPathDirs;
+    delete options.testPathDirs;
   }
 
   const babelJest = setupBabelJest(options);
   const newOptions = Object.assign({}, DEFAULT_CONFIG);
-
+  // Cast back to exact type
+  options = (options: InitialOptions);
   Object.keys(options).reduce((newOptions, key) => {
     let value;
     switch (key) {
@@ -302,42 +313,54 @@ function normalize(options: InitialOptions, argv: Object = {}) {
         break;
       case 'setupFiles':
       case 'snapshotSerializers':
-        value = options[key].map(resolve.bind(null, options.rootDir, key));
+        value =
+          options[key] &&
+          options[key].map(resolve.bind(null, options.rootDir, key));
         break;
       case 'roots':
-        value = options[key].map(filePath =>
-          path.resolve(
-            options.rootDir,
-            _replaceRootDirInPath(options.rootDir, filePath),
-          ),
-        );
+        value =
+          options[key] &&
+          options[key].map(filePath =>
+            path.resolve(
+              options.rootDir,
+              _replaceRootDirInPath(options.rootDir, filePath),
+            ),
+          );
         break;
       case 'collectCoverageFrom':
         value = normalizeCollectCoverageFrom(options, key);
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
-        value = path.resolve(
-          options.rootDir,
-          _replaceRootDirInPath(options.rootDir, options[key]),
-        );
+        value =
+          options[key] &&
+          path.resolve(
+            options.rootDir,
+            _replaceRootDirInPath(options.rootDir, options[key]),
+          );
         break;
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'resolver':
-        value = resolve(options.rootDir, key, options[key]);
+        value = options[key] && resolve(options.rootDir, key, options[key]);
         break;
       case 'moduleNameMapper':
-        value = Object.keys(options[key]).map(regex => [
-          regex,
-          _replaceRootDirTags(options.rootDir, options[key][regex]),
-        ]);
+        const moduleNameMapper = options[key];
+        value =
+          moduleNameMapper &&
+          Object.keys(moduleNameMapper).map(regex => {
+            const item = moduleNameMapper && moduleNameMapper[regex];
+            return item && [regex, _replaceRootDirTags(options.rootDir, item)];
+          });
         break;
       case 'transform':
-        value = Object.keys(options[key]).map(regex => [
-          regex,
-          resolve(options.rootDir, key, options[key][regex]),
-        ]);
+        const transform = options[key];
+        value =
+          transform &&
+          Object.keys(transform).map(regex => [
+            regex,
+            resolve(options.rootDir, key, transform[regex]),
+          ]);
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -357,13 +380,15 @@ function normalize(options: InitialOptions, argv: Object = {}) {
         }
         break;
       case 'projects':
+        const projects = options[key];
         let list = [];
-        options[key].forEach(
-          filePath =>
-            (list = list.concat(
-              glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
-            )),
-        );
+        projects &&
+          projects.forEach(
+            filePath =>
+              (list = list.concat(
+                glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
+              )),
+          );
         value = list;
         break;
       case 'automock':

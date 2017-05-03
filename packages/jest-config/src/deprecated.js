@@ -11,44 +11,42 @@
 'use strict';
 
 const chalk = require('chalk');
-const format = (value: string) => require('pretty-format')(value, {min: true});
+const format = (value: mixed) => require('pretty-format')(value, {min: true});
 
-/* eslint-disable max-len */
 const deprecatedOptions = {
   preprocessorIgnorePatterns: (
-    config: Object,
+    options: {preprocessorIgnorePatterns: Array<string>},
   ) => `  Option ${chalk.bold('"preprocessorIgnorePatterns"')} was replaced by ${chalk.bold('"transformIgnorePatterns"')}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(`${format(config.preprocessorIgnorePatterns)}`)}
+    ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(`${format(options.preprocessorIgnorePatterns)}`)}
   }
 
   Please update your configuration.`,
 
   scriptPreprocessor: (
-    config: Object,
+    options: {scriptPreprocessor: string},
   ) => `  Option ${chalk.bold('"scriptPreprocessor"')} was replaced by ${chalk.bold('"transform"')}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"transform"')}: ${chalk.bold(`{".*": ${format(config.scriptPreprocessor)}}`)}
+    ${chalk.bold('"transform"')}: ${chalk.bold(`{".*": ${format(options.scriptPreprocessor)}}`)}
   }
 
   Please update your configuration.`,
 
   testPathDirs: (
-    config: Object,
+    options: {testPathDirs: Array<string>},
   ) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold('"roots"')}.
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"roots"')}: ${chalk.bold(format(config.testPathDirs))}
+    ${chalk.bold('"roots"')}: ${chalk.bold(format(options.testPathDirs))}
   }
 
   Please update your configuration.
   `,
 };
-/* eslint-enable max-len */
 
 module.exports = deprecatedOptions;
