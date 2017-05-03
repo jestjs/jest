@@ -56,7 +56,7 @@ function runTest(
   const testFramework = (require(config.testRunner): TestFramework);
   /* $FlowFixMe */
   const Runtime = (require(config.moduleLoader || 'jest-runtime'): Class<
-    RuntimeClass
+    RuntimeClass,
   >);
 
   const environment = new TestEnvironment(config);

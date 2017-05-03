@@ -29,11 +29,12 @@ jest.mock('ansi-escapes', () => ({
 
 jest.mock(
   '../SearchSource',
-  () => class {
-    findMatchingTests(pattern) {
-      return {paths: []};
-    }
-  },
+  () =>
+    class {
+      findMatchingTests(pattern) {
+        return {paths: []};
+      }
+    },
 );
 
 jest.doMock('chalk', () =>

@@ -37,7 +37,7 @@ function readConfig(
 }
 
 const parseConfig = argv =>
-  (isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config);
+  isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config;
 
 const readOptions = (argv, root) => {
   const rawOptions = parseConfig(argv);

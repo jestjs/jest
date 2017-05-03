@@ -103,13 +103,11 @@ class CoverageReporter extends BaseReporter {
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
-        chalk.red(
-          `
+        chalk.red(`
         Failed to write coverage reports:
         ERROR: ${e.toString()}
         STACK: ${e.stack}
-      `,
-        ),
+      `),
       );
     }
 

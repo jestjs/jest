@@ -255,7 +255,7 @@ describe('setupTestFrameworkScriptFile', () => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(
       name =>
-        (name.startsWith('/') ? name : '/root/path/foo' + path.sep + name),
+        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
   });
 
@@ -741,9 +741,9 @@ describe('projects', () => {
     const glob = require('glob');
     glob.sync = jest.fn(
       pattern =>
-        (pattern.indexOf('/examples/') !== -1
+        pattern.indexOf('/examples/') !== -1
           ? [root + '/examples/async', root + '/examples/snapshot']
-          : [pattern]),
+          : [pattern],
     );
     const normalize = require('../normalize');
 

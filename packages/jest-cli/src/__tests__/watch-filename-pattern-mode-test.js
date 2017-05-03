@@ -29,35 +29,36 @@ jest.mock('ansi-escapes', () => ({
 
 jest.mock(
   '../SearchSource',
-  () => class {
-    constructor(context) {
-      this._context = context;
-    }
+  () =>
+    class {
+      constructor(context) {
+        this._context = context;
+      }
 
-    findMatchingTests(pattern) {
-      const paths = [
-        './path/to/file1-test.js',
-        './path/to/file2-test.js',
-        './path/to/file3-test.js',
-        './path/to/file4-test.js',
-        './path/to/file5-test.js',
-        './path/to/file6-test.js',
-        './path/to/file7-test.js',
-        './path/to/file8-test.js',
-        './path/to/file9-test.js',
-        './path/to/file10-test.js',
-        './path/to/file11-test.js',
-      ].filter(path => path.match(pattern));
+      findMatchingTests(pattern) {
+        const paths = [
+          './path/to/file1-test.js',
+          './path/to/file2-test.js',
+          './path/to/file3-test.js',
+          './path/to/file4-test.js',
+          './path/to/file5-test.js',
+          './path/to/file6-test.js',
+          './path/to/file7-test.js',
+          './path/to/file8-test.js',
+          './path/to/file9-test.js',
+          './path/to/file10-test.js',
+          './path/to/file11-test.js',
+        ].filter(path => path.match(pattern));
 
-      return {
-        tests: paths.map(path => ({
-          context: this._context,
-          duration: null,
-          path,
-        })),
-      };
-    }
-  },
+        return {
+          tests: paths.map(path => ({
+            context: this._context,
+            duration: null,
+            path,
+          })),
+        };
+      }
+    },
 );
 
 jest.doMock('chalk', () =>

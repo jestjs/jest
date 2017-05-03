@@ -76,9 +76,8 @@ module.exports = class TestNamePatternPrompt {
 
     if (pattern) {
       if (total) {
-        this._pipe.write(
-          `\n\n Pattern matches ${total} ${pluralizeTest(total)}`,
-        );
+        this._pipe
+          .write(`\n\n Pattern matches ${total} ${pluralizeTest(total)}`);
       } else {
         this._pipe.write(`\n\n Pattern matches no tests`);
       }
@@ -95,16 +94,12 @@ module.exports = class TestNamePatternPrompt {
 
       if (total > max) {
         const more = total - max;
-        this._pipe.write(
-          // eslint-disable-next-line max-len
-          `\n ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`,
-        );
+        this._pipe.write(// eslint-disable-next-line max-len
+        `\n ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`);
       }
     } else {
-      this._pipe.write(
-        // eslint-disable-next-line max-len
-        `\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`,
-      );
+      this._pipe.write(// eslint-disable-next-line max-len
+      `\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`);
     }
 
     this._pipe.write(
