@@ -83,7 +83,11 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
     case 'string':
       const multiline = a.match(/[\r\n]/) !== -1 && b.indexOf('\n') !== -1;
       if (multiline) {
-        return diffStrings(String(a), String(b), options);
+        // Need explicit arg not to ignore indentation for multiline string
+        // from toBe or toEqual assertion (which isn’t enclosed in quotes)
+        // unlike a snapshot (which is enclosed in quotes).
+        const multilineString = !options || options.aAnnotation !== 'Snapshot';
+        return diffStrings(a, b, options, multilineString);
       }
       return null;
     case 'number':

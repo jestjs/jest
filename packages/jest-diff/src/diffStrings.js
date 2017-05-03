@@ -142,8 +142,10 @@ function diffChunksUnindented(a, b) {
   return chunks;
 }
 
-const diffLines = (a: string, b: string): Diff => {
-  const chunks = diffChunksUnindented(a, b);
+const diffLines = (a: string, b: string, multilineString?: boolean): Diff => {
+  const chunks = multilineString
+    ? diff.diffLines(a, b)
+    : diffChunksUnindented(a, b);
   let isDifferent = false;
   return {
     diff: chunks
@@ -227,7 +229,7 @@ function diffHunksUnindented(a, b, options) {
   return hunks;
 }
 
-const structuredPatch = (a: string, b: string): Diff => {
+const structuredPatch = (a: string, b: string, multilineString?: boolean): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
   // Make sure the strings end with a newline.
@@ -239,7 +241,9 @@ const structuredPatch = (a: string, b: string): Diff => {
   }
 
   const oldLinesCount = (a.match(/\n/g) || []).length;
-  const hunks = diffHunksUnindented(a, b, options);
+  const hunks = multilineString
+    ? diff.structuredPatch('', '', a, b, '', '', options).hunks
+    : diffHunksUnindented(a, b, options);
 
   return {
     diff: hunks
@@ -268,14 +272,14 @@ const structuredPatch = (a: string, b: string): Diff => {
   };
 };
 
-function diffStrings(a: string, b: string, options: ?DiffOptions): string {
+function diffStrings(a: string, b: string, options: ?DiffOptions, multilineString?: boolean): string {
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
   const result = options && options.expand === false
-    ? structuredPatch(a, b)
-    : diffLines(a, b);
+    ? structuredPatch(a, b, multilineString)
+    : diffLines(a, b, multilineString);
 
   if (result.isDifferent) {
     return getAnnotation(options) + result.diff;

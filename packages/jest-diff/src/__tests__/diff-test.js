@@ -170,9 +170,42 @@ test('booleans', () => {
   expect(result).toBe(null);
 });
 
+describe('multiline string non-snapshot', () => {
+  // For example, CLI output
+  // toBe or toEqual for a string isn’t enclosed in double quotes.
+  const a = `
+Options:
+--help, -h  Show help                            [boolean]
+--bail, -b  Exit the test suite immediately upon the first
+            failing test.                        [boolean]
+`;
+  const b = `
+Options:
+  --help, -h  Show help                            [boolean]
+  --bail, -b  Exit the test suite immediately upon the first
+              failing test.                        [boolean]
+`;
+  const expected = [
+    '  Options:',
+    '- --help, -h  Show help                            [boolean]',
+    '- --bail, -b  Exit the test suite immediately upon the first',
+    '-             failing test.                        [boolean]',
+    '+   --help, -h  Show help                            [boolean]',
+    '+   --bail, -b  Exit the test suite immediately upon the first',
+    '+               failing test.                        [boolean]',
+  ];
+
+  test('expand: false', () => {
+    expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+  });
+  test('expand: true', () => {
+    expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+  });
+});
+
 describe('multiline string snapshot', () => {
   // For example, CLI output
-  // Like a snapshot test of a string which has double quotes.
+  // A snapshot of a string is enclosed in double quotes.
   const a = `
 "
 Options:
