@@ -99,7 +99,7 @@ const canUseWatchman = ((): boolean => {
 })();
 
 const escapePathSeparator = string =>
-  (path.sep === '\\' ? string.replace(/(\/|\\)/g, '\\\\') : string);
+  path.sep === '\\' ? string.replace(/(\/|\\)/g, '\\\\') : string;
 
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {

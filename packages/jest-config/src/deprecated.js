@@ -15,8 +15,9 @@ const format = (value: string) => require('pretty-format')(value, {min: true});
 
 /* eslint-disable max-len */
 const deprecatedOptions = {
-  preprocessorIgnorePatterns: (config: Object) =>
-    `  Option ${chalk.bold('"preprocessorIgnorePatterns"')} was replaced by ${chalk.bold('"transformIgnorePatterns"')}, which support multiple preprocessors.
+  preprocessorIgnorePatterns: (
+    config: Object,
+  ) => `  Option ${chalk.bold('"preprocessorIgnorePatterns"')} was replaced by ${chalk.bold('"transformIgnorePatterns"')}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
@@ -25,8 +26,9 @@ const deprecatedOptions = {
 
   Please update your configuration.`,
 
-  scriptPreprocessor: (config: Object) =>
-    `  Option ${chalk.bold('"scriptPreprocessor"')} was replaced by ${chalk.bold('"transform"')}, which support multiple preprocessors.
+  scriptPreprocessor: (
+    config: Object,
+  ) => `  Option ${chalk.bold('"scriptPreprocessor"')} was replaced by ${chalk.bold('"transform"')}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
@@ -35,8 +37,9 @@ const deprecatedOptions = {
 
   Please update your configuration.`,
 
-  testPathDirs: (config: Object) =>
-    `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold('"roots"')}.
+  testPathDirs: (
+    config: Object,
+  ) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold('"roots"')}.
 
   Jest now treats your current configuration as:
   {

@@ -49,7 +49,7 @@ const trim = string => (string || '').replace(/^\s+/, '').replace(/\s+$/, '');
 // want to trim those, because they may have pointers to the column/character
 // which will get misaligned.
 const trimPaths = string =>
-  (string.match(STACK_PATH_REGEXP) ? trim(string) : string);
+  string.match(STACK_PATH_REGEXP) ? trim(string) : string;
 
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file

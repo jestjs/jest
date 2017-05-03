@@ -12,22 +12,22 @@
 
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
-const path = require('path');
-const loadFromFile = require('./loadFromFile');
-const loadFromPackage = require('./loadFromPackage');
-const normalize = require('./normalize');
 const {getTestEnvironment, isJSONString} = require('./utils');
+const findConfig = require('./findConfig');
+const loadFromFile = require('./loadFromFile');
+const normalize = require('./normalize');
+const path = require('path');
 
-async function readConfig(
+function readConfig(
   argv: Object,
   packageRoot: string,
-): Promise<{
+): {
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   hasDeprecationWarnings: boolean,
-}> {
-  const rawConfig = await readRawConfig(argv, packageRoot);
-  const {options, hasDeprecationWarnings} = normalize(rawConfig, argv);
+} {
+  const rawOptions = readOptions(argv, packageRoot);
+  const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
   const {globalConfig, projectConfig} = getConfigs(options);
   return {
     config: projectConfig,
@@ -37,22 +37,22 @@ async function readConfig(
 }
 
 const parseConfig = argv =>
-  (isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config);
+  isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config;
 
-const readRawConfig = (argv, root) => {
-  const rawConfig = parseConfig(argv);
+const readOptions = (argv, root) => {
+  const rawOptions = parseConfig(argv);
 
-  if (typeof rawConfig === 'string') {
-    return loadFromFile(path.resolve(process.cwd(), rawConfig));
+  if (typeof rawOptions === 'string') {
+    return loadFromFile(path.resolve(process.cwd(), rawOptions));
   }
 
-  if (typeof rawConfig === 'object') {
-    const config = Object.assign({}, rawConfig);
+  if (typeof rawOptions === 'object') {
+    const config = Object.assign({}, rawOptions);
     config.rootDir = config.rootDir || root;
-    return Promise.resolve(config);
+    return config;
   }
 
-  return loadFromPackage(root).then(config => config || {rootDir: root});
+  return findConfig(root);
 };
 
 const getConfigs = (
