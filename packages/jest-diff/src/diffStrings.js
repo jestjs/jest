@@ -114,7 +114,7 @@ function unindentLines(lines) {
 // It ignores indentation in multiline strings.
 // It ignores whitespace at the end of lines.
 // It returns chunks without original indentation.
-function diffUnindentedLines(a, b) {
+function diffChunksUnindented(a, b) {
   const aLines = splitIntoLines(a);
   const bLines = splitIntoLines(b);
   const chunks = diff.diffLines(
@@ -143,7 +143,7 @@ function diffUnindentedLines(a, b) {
 }
 
 const diffLines = (a: string, b: string): Diff => {
-  const chunks = diffUnindentedLines(a, b);
+  const chunks = diffChunksUnindented(a, b);
   let isDifferent = false;
   return {
     diff: chunks
@@ -164,7 +164,7 @@ const diffLines = (a: string, b: string): Diff => {
         return lines
           .map(line => {
             const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-            const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
+            const mark = color(added ? '+' : removed ? '-' : ' ');
             return mark + ' ' + color(highlightedLine) + '\n';
           })
           .join('');
@@ -189,6 +189,44 @@ const createPatchMark = (hunk: Hunk): string => {
   return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
 };
 
+// Given expected and received after an assertion fails,
+// return hunks from diff.structuredPatch with original indentation,
+// but ignoring indentation except in multiline strings.
+function diffHunksUnindented(a, b, options) {
+  const aLines = splitIntoLines(a);
+  const bLines = splitIntoLines(b);
+  const hunks = diff.structuredPatch(
+    '',
+    '',
+    unindentLines(aLines).join(''),
+    unindentLines(bLines).join(''),
+    '',
+    '',
+    options,
+  ).hunks;
+
+  hunks.forEach(hunk => {
+    // hunk has one-based line numbers
+    let aIndex = hunk.oldStart - 1;
+    let bIndex = hunk.newStart - 1;
+
+    // Replace unindented lines with original lines.
+    // Assume that a is expected and b is received.
+    hunk.lines = hunk.lines.map(line => {
+      const mark = line[0];
+      if (mark === ' ') {
+        aIndex += 1; // increment both if line is unchanged
+      }
+      return (
+        mark +
+        (mark === '-' ? aLines[aIndex++] : bLines[bIndex++]).replace('\n', '')
+      );
+    });
+  });
+
+  return hunks;
+}
+
 const structuredPatch = (a: string, b: string): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
@@ -201,11 +239,11 @@ const structuredPatch = (a: string, b: string): Diff => {
   }
 
   const oldLinesCount = (a.match(/\n/g) || []).length;
+  const hunks = diffHunksUnindented(a, b, options);
 
   return {
-    diff: diff
-      .structuredPatch('', '', a, b, '', '', options)
-      .hunks.map((hunk: Hunk) => {
+    diff: hunks
+      .map((hunk: Hunk) => {
         const lines = hunk.lines
           .map(line => {
             const added = line[0] === '+';
