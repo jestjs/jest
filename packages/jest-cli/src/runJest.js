@@ -154,7 +154,7 @@ const runJest = async (
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
-  onComplete: (testResults: any) => void,
+  onComplete: (testResults: any) => any,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
   const pattern = getTestPathPattern(argv);
@@ -175,6 +175,13 @@ const runJest = async (
   );
 
   allTests = sequencer.sort(allTests);
+
+  if (argv.listTests) {
+    console.log(JSON.stringify(allTests.map(test => test.path)));
+    onComplete && onComplete({success: true});
+    return null;
+  }
+
   if (!allTests.length) {
     new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
   } else if (

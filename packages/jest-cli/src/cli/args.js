@@ -196,6 +196,11 @@ const options = {
       'commit made.',
     type: 'boolean',
   },
+  listTests: {
+    default: false,
+    description: 'Lists all tests Jest will run given the arguments and exits.',
+    type: 'boolean',
+  },
   logHeapUsage: {
     default: undefined,
     description: 'Logs the heap usage after every test. Useful to debug ' +

@@ -75,7 +75,9 @@ module.exports = async (
       return watch(globalConfig, contexts, argv, pipe, hasteMapInstances);
     } else {
       const startRun = () => {
-        preRunMessage.print(pipe);
+        if (!argv.listTests) {
+          preRunMessage.print(pipe);
+        }
         runJest(
           globalConfig,
           contexts,
