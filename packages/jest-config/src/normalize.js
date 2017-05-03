@@ -88,10 +88,9 @@ const setupPreset = (
 };
 
 const setupBabelJest = (options: InitialOptions) => {
-  let babelJest;
   const basedir = options.rootDir;
-
   const transform = options.transform;
+  let babelJest;
   if (transform) {
     const customJSPattern = Object.keys(transform).find(pattern => {
       const regex = new RegExp(pattern);
