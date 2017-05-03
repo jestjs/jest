@@ -85,13 +85,14 @@
     "setup-teardown": "Setup and Teardown",
     "snapshot-testing": "Snapshot Testing",
     "timer-mocks": "Timer Mocks",
+    "testing-frameworks": "Testing Other Frameworks",
     "troubleshooting": "Troubleshooting",
     "tutorial-async": "An Async Example",
     "tutorial-jquery": "DOM Manipulation",
     "tutorial-react": "Testing React Apps",
     "tutorial-react-native": "Testing React Native Apps",
     "using-matchers": "Using Matchers",
-    "webpack": "Using with webpack"
+    "webpack": "Using With Webpack"
   },
   "promo": {
     "get": "Get Started",
