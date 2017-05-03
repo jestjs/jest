@@ -69,7 +69,6 @@ const getConfigs = (
       coverageThreshold: options.coverageThreshold,
       expand: options.expand,
       forceExit: options.forceExit,
-      listTests: options.listTests,
       logHeapUsage: options.logHeapUsage,
       mapCoverage: options.mapCoverage,
       noStackTrace: options.noStackTrace,

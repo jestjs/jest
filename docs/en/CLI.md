@@ -135,7 +135,7 @@ Will run all tests affected by file changes in the last commit made.
 
 ### `--listTests`
 
-Lists all tests Jest will run given the other arguments, and exits.
+Lists all tests as JSON that Jest will run given the arguments, and exits. This can be used together with `--findRelatedTests` to know which tests Jest will run.
 
 ### `--logHeapUsage`
 

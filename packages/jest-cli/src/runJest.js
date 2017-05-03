@@ -154,7 +154,7 @@ const runJest = async (
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
-  onComplete: (testResults: any) => void,
+  onComplete: (testResults: any) => any,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
   const pattern = getTestPathPattern(argv);
@@ -176,11 +176,10 @@ const runJest = async (
 
   allTests = sequencer.sort(allTests);
 
-  // With --listTests, simply print the test info as JSON and exit.
-  if (globalConfig.listTests) {
-    const testsJson = JSON.stringify(allTests, null, '  ');
-    new Console(pipe, pipe).log(testsJson);
-    process.exit(0);
+  if (argv.listTests) {
+    console.log(JSON.stringify(allTests.map(test => test.path)));
+    onComplete && onComplete({success: true});
+    return null;
   }
 
   if (!allTests.length) {
