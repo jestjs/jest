@@ -29,7 +29,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+/* @flow */
 /* eslint-disable sort-keys */
+
+import type {Jasmine} from 'types/Jasmine';
 
 const createSpy = require('./createSpy');
 const Env = require('./Env');
@@ -45,7 +48,7 @@ exports.create = function() {
 
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-  j$.getEnv = function(options) {
+  j$.getEnv = function(options: Object) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
@@ -63,17 +66,17 @@ exports.create = function() {
   return j$;
 };
 
-exports.interface = function(jasmine, env) {
+exports.interface = function(jasmine: Jasmine, env: any) {
   const jasmineInterface = {
-    describe(description, specDefinitions) {
+    describe(description: string, specDefinitions: Function) {
       return env.describe(description, specDefinitions);
     },
 
-    xdescribe(description, specDefinitions) {
+    xdescribe(description: string, specDefinitions: Function) {
       return env.xdescribe(description, specDefinitions);
     },
 
-    fdescribe(description, specDefinitions) {
+    fdescribe(description: string, specDefinitions: Function) {
       return env.fdescribe(description, specDefinitions);
     },
 
@@ -113,7 +116,7 @@ exports.interface = function(jasmine, env) {
       return env.fail.apply(env, arguments);
     },
 
-    spyOn(obj, methodName) {
+    spyOn(obj: Object, methodName: string) {
       return env.spyOn(obj, methodName);
     },
 
