@@ -7,6 +7,8 @@
  *
  */
 
+'use strict';
+
 const validate = require('../validate');
 const jestValidateExampleConfig = require('../exampleConfig');
 const jestValidateDefaultConfig = require('../defaultConfig');

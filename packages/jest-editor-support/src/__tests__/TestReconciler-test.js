@@ -6,12 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-<<<<<<< HEAD
-'use strict';
-
-=======
-const TestReconciler = require('../TestReconciler');
->>>>>>> Remove 'use strict' from all files
 const fs = require('fs');
 const path = require('path');
 const TestReconciler = require('../TestReconciler');

@@ -8,8 +8,8 @@
  * @emails oncall+jsinfra
  */
 
-const matcherUtils = require('jest-matcher-utils');
 const {equals} = require('../jasmine-utils');
+const matcherUtils = require('jest-matcher-utils');
 const jestExpect = require('../');
 
 jestExpect.extend({

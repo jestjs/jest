@@ -8,6 +8,8 @@
  * @providesModule ModuleWithSideEffects
  */
 
+'use strict';
+
 const RegularModule = require('RegularModule');
 
 RegularModule.setModuleStateValue('Side effect value');

@@ -8,6 +8,12 @@
  * @flow
  */
 
+<<<<<<< HEAD
+=======
+'use strict';
+
+const chalk = require('chalk');
+>>>>>>> Revert removal of "use strict" in test and mock files
 const os = require('os');
 const path = require('path');
 const chalk = require('chalk');

@@ -2,6 +2,8 @@
 
 /* global document */
 
+'use strict';
+
 jest.mock('../fetchCurrentUser.js');
 
 it('displays a user after a click', () => {

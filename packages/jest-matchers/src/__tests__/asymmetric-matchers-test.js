@@ -8,6 +8,8 @@
  * @emails oncall+jsinfra
  */
 
+'use strict';
+
 const jestExpect = require('../');
 const {
   any,

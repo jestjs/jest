@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 it.concurrent('one', () => Promise.resolve());
 it.concurrent.skip('two', () => Promise.resolve());
 it.concurrent('three', () => Promise.resolve());

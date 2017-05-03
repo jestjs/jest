@@ -1,5 +1,7 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
+'use strict';
+
 jest.useFakeTimers();
 
 it('schedules a 10-second timer after 1 second', () => {

@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 const runJest = require('../runJest');
 

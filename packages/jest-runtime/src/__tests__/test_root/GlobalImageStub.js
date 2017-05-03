@@ -8,4 +8,6 @@
  * @providesModule GlobalImageStub
  */
 
+'use strict';
+
 exports.isGlobalImageStub = true;

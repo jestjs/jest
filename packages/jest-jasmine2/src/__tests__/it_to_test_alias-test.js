@@ -7,5 +7,6 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 test('global.test', () => {});

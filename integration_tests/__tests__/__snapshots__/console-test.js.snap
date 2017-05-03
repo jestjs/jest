@@ -4,13 +4,13 @@ exports[`console printing 1`] = `
 " PASS  __tests__/console-test.js
   ● Console
 
-    console.log __tests__/console-test.js:10
+    console.log __tests__/console-test.js:11
       This is a log message.
-    console.info __tests__/console-test.js:12
+    console.info __tests__/console-test.js:13
       This is an info message.
-    console.warn __tests__/console-test.js:14
+    console.warn __tests__/console-test.js:15
       This is a warning message.
-    console.error __tests__/console-test.js:16
+    console.error __tests__/console-test.js:17
       This is an error message.
 
 
@@ -27,16 +27,16 @@ Ran all test suites.
 `;
 
 exports[`console printing with --verbose 1`] = `
-"  console.log __tests__/console-test.js:10
+"  console.log __tests__/console-test.js:11
     This is a log message.
 
-  console.info __tests__/console-test.js:12
+  console.info __tests__/console-test.js:13
     This is an info message.
 
-  console.warn __tests__/console-test.js:14
+  console.warn __tests__/console-test.js:15
     This is a warning message.
 
-  console.error __tests__/console-test.js:16
+  console.error __tests__/console-test.js:17
     This is an error message.
 
 "

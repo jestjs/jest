@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 // fails because there is no `strip-flow-types` transform
 const thisFunctionIsNeverInstrumented = (a: string) => {
   return null;

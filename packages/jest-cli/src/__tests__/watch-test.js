@@ -8,6 +8,8 @@
  * @emails oncall+jsinfra
  */
 
+'use strict';
+
 const chalk = require('chalk');
 const TestWatcher = require('../TestWatcher');
 const {KEYS} = require('../constants');

@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 const moduleNameMapper = {
   '\\.css$': '<rootDir>/__mocks__/ManuallyMocked',

@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 const {readFileSync} = require('fs');
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');

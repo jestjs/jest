@@ -7,6 +7,7 @@
 *
 * @emails oncall+jsinfra
 */
+'use strict';
 
 const setState = require('../setState');
 

@@ -8,4 +8,6 @@
  * @providesModule Platform
  */
 
+'use strict';
+
 exports.platform = 'ios';

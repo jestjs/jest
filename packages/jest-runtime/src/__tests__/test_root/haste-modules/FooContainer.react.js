@@ -8,6 +8,8 @@
  * @providesModule FooContainer.react
  */
 
+'use strict';
+
 const Foo = require('Foo.react');
 
 class FooContainer {

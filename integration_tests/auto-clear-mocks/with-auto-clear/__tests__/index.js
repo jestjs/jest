@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 jest.mock('../');
 const importedFn = require('../');
 const localFn = jest.fn(() => 'abcd');

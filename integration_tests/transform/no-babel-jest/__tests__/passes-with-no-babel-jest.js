@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 require('../this-directory-is-covered/excluded-from-coverage');
 
 test('1', () => {});

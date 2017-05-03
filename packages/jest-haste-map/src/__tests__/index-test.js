@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 jest.mock('child_process', () => ({
   // If this does not throw, we'll use the (mocked) watchman crawler

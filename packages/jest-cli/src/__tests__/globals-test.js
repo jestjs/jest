@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 describe('Common globals', () => {
   it('check process', () => {

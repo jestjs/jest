@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 describe('snapshot', () => {
   it('works with plain objects and the title has `escape` characters', () => {

@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 const path = require('path');
 const {sync: spawnSync} = require('cross-spawn');

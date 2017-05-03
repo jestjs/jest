@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 

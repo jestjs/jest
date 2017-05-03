@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 const skipOnWindows = require('skipOnWindows');
 const runJest = require('../runJest');

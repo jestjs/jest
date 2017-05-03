@@ -6,12 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-<<<<<<< HEAD
-'use strict';
-
-=======
-const {makeTemplate, makeTests, cleanup} = require('../utils');
->>>>>>> Remove 'use strict' from all files
 const path = require('path');
 const {makeTemplate, writeFiles, cleanup} = require('../utils');
 const runJest = require('../runJest');

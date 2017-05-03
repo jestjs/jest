@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 it('runs this', () => {
   expect(true).toBe(true);
 });

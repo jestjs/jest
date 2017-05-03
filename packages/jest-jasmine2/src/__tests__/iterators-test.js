@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+'use strict';
 
 describe('iterators', () => {
   it('works for arrays', () => {

@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 require('../src');
 
 it('instruments by setting global.__INSTRUMENTED__', () => {

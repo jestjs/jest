@@ -6,4 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 module.exports.process = () => `throw new Error('preprocessor must not run.');`;

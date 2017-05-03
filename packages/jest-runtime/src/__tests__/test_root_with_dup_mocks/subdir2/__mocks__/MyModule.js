@@ -6,4 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 exports.modulePath = 'subdir2/__mocks__/MyModule.js';

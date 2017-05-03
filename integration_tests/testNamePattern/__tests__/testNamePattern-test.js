@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+'use strict';
 
 test('should match 1', () => expect(1).toBe(1));
 test('should match 2', () => expect(1).toBe(1));
