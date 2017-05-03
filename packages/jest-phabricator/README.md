@@ -13,7 +13,7 @@ You need to add the jest unit engine to your .arcconfig:
 ```
 ...
 
-"unit_engine" : "JestUnitTestEngine",
+"unit.engine" : "JestUnitTestEngine",
 
 ...
 ```
