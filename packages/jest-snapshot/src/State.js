@@ -27,26 +27,24 @@ class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
   _index: number;
+  _shouldUpdate: boolean;
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
   _uncheckedKeys: Set<string>;
   added: number;
   expand: boolean;
-  failedTests: Set<string>;
   matched: number;
-  skippedTests: Set<string>;
   unmatched: number;
-  update: boolean;
   updated: number;
 
   constructor(
     testPath: Path,
-    update: boolean,
+    shouldUpdate: boolean,
     snapshotPath?: string,
     expand?: boolean,
   ) {
     this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
-    const {data, dirty} = getSnapshotData(this._snapshotPath, update);
+    const {data, dirty} = getSnapshotData(this._snapshotPath, shouldUpdate);
     this._snapshotData = data;
     this._dirty = dirty;
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
@@ -56,10 +54,8 @@ class SnapshotState {
     this.added = 0;
     this.matched = 0;
     this.unmatched = 0;
-    this.update = update;
+    this._shouldUpdate = shouldUpdate;
     this.updated = 0;
-    this.skippedTests = new Set();
-    this.failedTests = new Set();
   }
 
   markSnapshotsAsCheckedForTest(testName: string) {
@@ -75,7 +71,7 @@ class SnapshotState {
     this._snapshotData[key] = receivedSerialized;
   }
 
-  save(update: boolean) {
+  save(shouldUpdate: boolean) {
     const status = {
       deleted: false,
       saved: false,
@@ -87,7 +83,7 @@ class SnapshotState {
       saveSnapshotFile(this._snapshotData, this._snapshotPath);
       status.saved = true;
     } else if (isEmpty && fs.existsSync(this._snapshotPath)) {
-      if (update) {
+      if (shouldUpdate) {
         fs.unlinkSync(this._snapshotPath);
       }
       status.deleted = true;
@@ -135,10 +131,10 @@ class SnapshotState {
 
     if (
       !fs.existsSync(this._snapshotPath) || // there's no snapshot file
-      (hasSnapshot && this.update) || // there is a file, but we're updating
+      (hasSnapshot && this._shouldUpdate) || // there is a file, but we're updating
       !hasSnapshot // there is a file, but it doesn't have this snaphsot
     ) {
-      if (this.update) {
+      if (this._shouldUpdate) {
         if (!pass) {
           if (hasSnapshot) {
             this.updated++;
@@ -154,7 +150,12 @@ class SnapshotState {
         this.added++;
       }
 
-      return {pass: true};
+      return {
+        actual: '',
+        count,
+        expected: '',
+        pass: true,
+      };
     } else {
       if (!pass) {
         this.unmatched++;
@@ -166,7 +167,12 @@ class SnapshotState {
         };
       } else {
         this.matched++;
-        return {pass: true};
+        return {
+          actual: '',
+          count,
+          expected: '',
+          pass: true,
+        };
       }
     }
   }

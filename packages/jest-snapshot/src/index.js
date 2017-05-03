@@ -65,7 +65,15 @@ const initializeSnapshotState = (
 const toMatchSnapshot = function(received: any, testName?: string) {
   this.dontThrow && this.dontThrow();
 
-  const {currentTestName, isNot, snapshotState} = this;
+  const {
+    currentTestName,
+    isNot,
+    snapshotState,
+  }: {
+    currentTestName: string,
+    isNot: boolean,
+    snapshotState: SnapshotState,
+  } = this;
 
   if (isNot) {
     throw new Error('Jest: `.not` cannot be used with `.toMatchSnapshot()`.');
@@ -75,14 +83,14 @@ const toMatchSnapshot = function(received: any, testName?: string) {
     throw new Error('Jest: snapshot state must be initialized.');
   }
 
-  const result = snapshotState.match(testName || currentTestName, received);
-  const {pass} = result;
+  const {actual, expected, count, pass} = snapshotState.match(
+    testName || currentTestName,
+    received,
+  );
 
   if (pass) {
     return {message: '', pass: true};
   } else {
-    const {count, expected, actual} = result;
-
     const expectedString = expected.trim();
     const actualString = actual.trim();
     const diffMessage = diff(expectedString, actualString, {

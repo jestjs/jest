@@ -11,6 +11,7 @@
 
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
+import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
@@ -75,7 +76,7 @@ function jasmine2(
     expand: globalConfig.expand,
   });
 
-  const snapshotState = runtime.requireInternalModule(
+  const snapshotState: SnapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
   )({
     config,
