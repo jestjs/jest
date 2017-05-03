@@ -10,6 +10,7 @@
 
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {Glob, Path, ProjectConfig} from 'types/Config';
 import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
@@ -265,7 +266,7 @@ class Runtime {
     });
   }
 
-  static runCLI(args?: Object, info?: Array<string>) {
+  static runCLI(args?: Argv, info?: Array<string>) {
     return require('./cli').run(args, info);
   }
 

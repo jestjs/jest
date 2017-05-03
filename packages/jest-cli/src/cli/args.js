@@ -10,7 +10,9 @@
 
 'use strict';
 
-const check = (argv: Object) => {
+import type {Argv} from 'types/Argv';
+
+const check = (argv: Argv) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +

@@ -10,6 +10,7 @@
 
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {EnvironmentClass} from 'types/Environment';
 
 const args = require('./args');
@@ -25,7 +26,7 @@ const Runtime = require('../');
 
 const VERSION = (require('../../package.json').version: string);
 
-function run(cliArgv?: Object, cliInfo?: Array<string>) {
+function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   let argv;
   if (cliArgv) {
     argv = cliArgv;

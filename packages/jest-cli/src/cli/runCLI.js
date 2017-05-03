@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {AggregatedResult} from 'types/TestResult';
 import type {Path} from 'types/Config';
 
@@ -30,7 +31,7 @@ const watch = require('../watch');
 const VERSION = require('../../package.json').version;
 
 module.exports = async (
-  argv: Object,
+  argv: Argv,
   projects: Array<Path>,
   onComplete: (results: ?AggregatedResult) => void,
 ) => {

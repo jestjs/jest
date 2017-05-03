@@ -10,6 +10,7 @@
 
 'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
 const {
@@ -275,7 +276,7 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
   return options;
 };
 
-function normalize(options: InitialOptions, argv: Object = {}) {
+function normalize(options: InitialOptions, argv: Argv) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
