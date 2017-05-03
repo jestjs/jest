@@ -23,6 +23,12 @@ const {
 } = require('./utils');
 const fs = require('fs');
 
+export type SnapshotStateOptions = {|
+  shouldUpdate: boolean,
+  snapshotPath?: string,
+  expand?: boolean,
+|};
+
 class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
@@ -39,22 +45,23 @@ class SnapshotState {
 
   constructor(
     testPath: Path,
-    shouldUpdate: boolean,
-    snapshotPath?: string,
-    expand?: boolean,
+    options: SnapshotStateOptions,
   ) {
-    this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
-    const {data, dirty} = getSnapshotData(this._snapshotPath, shouldUpdate);
+    this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
+    const {data, dirty} = getSnapshotData(
+      this._snapshotPath,
+      options.shouldUpdate,
+    );
     this._snapshotData = data;
     this._dirty = dirty;
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
-    this.expand = expand || false;
+    this.expand = options.expand || false;
     this.added = 0;
     this.matched = 0;
     this.unmatched = 0;
-    this._shouldUpdate = shouldUpdate;
+    this._shouldUpdate = options.shouldUpdate;
     this.updated = 0;
   }
 
