@@ -42,7 +42,7 @@ deployment:
       - git config --global user.email "jest-bot@users.noreply.github.com"
       - git config --global user.name "Website Deployment Script"
       - echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
-      # WEBSITE DEPLOY
+      # crowdin install start
       - sudo apt-get install default-jre
       - wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
       - sudo dpkg -i crowdin.deb
