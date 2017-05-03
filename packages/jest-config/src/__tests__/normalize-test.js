@@ -26,6 +26,13 @@ let expectedPathFooQux;
 let expectedPathAbs;
 let expectedPathAbsAnother;
 
+const findNodeModule = jest.fn(name => {
+  if (name.indexOf('jest-jasmine2') !== -1) {
+    return name;
+  }
+  return null;
+});
+
 // Windows uses backslashes for path separators, which need to be escaped in
 // regular expressions. This little helper function helps us generate the
 // expected strings for checking path patterns.
@@ -42,6 +49,8 @@ beforeEach(() => {
   expectedPathFooQux = path.join(root, 'root', 'path', 'foo', 'qux', 'quux');
   expectedPathAbs = path.join(root, 'an', 'abs', 'path');
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
+
+  require('jest-resolve').findNodeModule = findNodeModule;
 });
 
 it('picks a name based on the rootDir', () => {
@@ -488,19 +497,9 @@ describe('testRunner', () => {
     expect(options.testRunner).toMatch('jasmine2');
   });
 
-  it('can be changed to jasmine1', () => {
-    const {options} = normalize(
-      {
-        rootDir: '/root/path/foo',
-        testRunner: 'jasmine1',
-      },
-      {},
-    );
-
-    expect(options.testRunner).toMatch('jasmine1');
-  });
-
   it('is overwritten by argv', () => {
+    const Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => name);
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
@@ -510,7 +509,7 @@ describe('testRunner', () => {
       },
     );
 
-    expect(options.testRunner).toMatch('jasmine1');
+    expect(options.testRunner).toBe('jasmine1');
   });
 });
 
@@ -525,7 +524,7 @@ describe('testEnvironment', () => {
       if (name === 'jest-environment-jsdom') {
         return 'node_modules/jest-environment-jsdom';
       }
-      return null;
+      return findNodeModule(name);
     });
   });
 
@@ -612,7 +611,7 @@ describe('babel-jest', () => {
   });
 
   it(`doesn't use babel-jest if its not available`, () => {
-    Resolver.findNodeModule.mockImplementation(() => null);
+    Resolver.findNodeModule = findNodeModule;
 
     const {options} = normalize(
       {
@@ -656,6 +655,14 @@ describe('Upgrade help', () => {
   beforeEach(() => {
     consoleWarn = console.warn;
     console.warn = jest.fn();
+
+    const Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name == 'bar/baz') {
+        return '/node_modules/bar/baz';
+      }
+      return findNodeModule(name);
+    });
   });
 
   afterEach(() => {
@@ -726,7 +733,14 @@ describe('testMatch', () => {
 });
 
 describe('preset', () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    const Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name === 'react-native/jest-preset.json') {
+        return '/node_modules/react-native/jest-preset.json';
+      }
+      return '/node_modules/' + name;
+    });
     jest.mock(
       '/node_modules/react-native/jest-preset.json',
       () => ({
@@ -738,7 +752,7 @@ describe('preset', () => {
     );
   });
 
-  afterAll(() => {
+  afterEach(() => {
     jest.unmock('/node_modules/react-native/jest-preset.json');
   });
 
@@ -777,16 +791,14 @@ describe('preset', () => {
       },
       {},
     );
-    expect(options).toEqual(
-      expect.objectContaining({
-        moduleNameMapper: expect.arrayContaining([['a', 'a'], ['b', 'b']]),
-        modulePathIgnorePatterns: expect.arrayContaining(['a', 'b']),
-        setupFiles: expect.arrayContaining([
-          '/node_modules/a',
-          '/node_modules/b',
-        ]),
-      }),
-    );
+
+    expect(options.moduleNameMapper).toEqual([['b', 'b'], ['a', 'a']]);
+    expect(options.modulePathIgnorePatterns).toEqual(['b', 'a']);
+    expect(options.setupFiles.sort()).toEqual([
+      '/node_modules/a',
+      '/node_modules/b',
+      '/node_modules/regenerator-runtime/runtime',
+    ]);
   });
 });
 
@@ -833,11 +845,13 @@ describe('preset without setupFiles', () => {
 describe('projects', () => {
   beforeEach(() => {
     jest.resetModules();
+
+    const Resolver = require('jest-resolve');
+    Resolver.findNodeModule = findNodeModule;
   });
 
   test('resolves projects correctly', () => {
     const root = '/path/to/test';
-
     const glob = require('glob');
     glob.sync = jest.fn(
       pattern =>
@@ -846,7 +860,6 @@ describe('projects', () => {
           : [pattern],
     );
     const normalize = require('../normalize');
-
     const {options} = normalize(
       {
         projects: ['<rootDir>', '<rootDir>/examples/*'],

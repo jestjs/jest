@@ -75,13 +75,14 @@ const setupPreset = (
       options.modulePathIgnorePatterns,
     );
   }
-  if (options.moduleNameMapper) {
+  if (options.moduleNameMapper && preset.moduleNameMapper) {
     options.moduleNameMapper = Object.assign(
       {},
       preset.moduleNameMapper,
       options.moduleNameMapper,
     );
   }
+
   // $FlowFixMe
   return Object.assign({}, preset, options);
 };
@@ -213,16 +214,6 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
     options.setupFiles = [];
   }
 
-  if (!options.testRunner || options.testRunner === 'jasmine2') {
-    options.testRunner = require.resolve('jest-jasmine2');
-  } else {
-    options.testRunner = resolve(
-      options.rootDir,
-      'testRunner',
-      options.testRunner,
-    );
-  }
-
   return options;
 };
 
@@ -301,6 +292,10 @@ function normalize(options: InitialOptions, argv: Argv) {
   }
   if (!options.roots) {
     options.roots = [options.rootDir];
+  }
+
+  if (!options.testRunner || options.testRunner === 'jasmine2') {
+    options.testRunner = require.resolve('jest-jasmine2');
   }
 
   const babelJest = setupBabelJest(options);
