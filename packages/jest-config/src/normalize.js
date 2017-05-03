@@ -16,7 +16,6 @@ import type {InitialOptions, ReporterConfig} from 'types/Config';
 const {
   BULLET,
   DOCUMENTATION_NOTE,
-  _replaceRootDirInObject,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
@@ -300,6 +299,9 @@ function normalize(options: InitialOptions, argv: Argv) {
     options.roots = options.testPathDirs;
     delete options.testPathDirs;
   }
+  if (!options.roots) {
+    options.roots = [options.rootDir];
+  }
 
   const babelJest = setupBabelJest(options);
   const newOptions = Object.assign({}, DEFAULT_CONFIG);
@@ -317,6 +319,7 @@ function normalize(options: InitialOptions, argv: Argv) {
           options[key] &&
           options[key].map(resolve.bind(null, options.rootDir, key));
         break;
+      case 'modulePaths':
       case 'roots':
         value =
           options[key] &&
@@ -339,9 +342,11 @@ function normalize(options: InitialOptions, argv: Argv) {
             _replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'moduleLoader':
+      case 'resolver':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
-      case 'resolver':
+      case 'testRunner':
         value = options[key] && resolve(options.rootDir, key, options[key]);
         break;
       case 'moduleNameMapper':
@@ -405,23 +410,19 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'mapCoverage':
       case 'moduleDirectories':
       case 'moduleFileExtensions':
-      case 'moduleLoader':
-      case 'modulePaths':
       case 'name':
       case 'noStackTrace':
       case 'notify':
-      case 'preset':
       case 'replname':
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
       case 'silent':
-      case 'testMatch':
       case 'testEnvironment':
+      case 'testMatch':
       case 'testNamePattern':
       case 'testRegex':
-      case 'testRunner':
       case 'testURL':
       case 'timers':
       case 'updateSnapshot':
@@ -468,7 +469,7 @@ function normalize(options: InitialOptions, argv: Argv) {
 
   return {
     hasDeprecationWarnings,
-    options: _replaceRootDirInObject(newOptions.rootDir, newOptions),
+    options: newOptions,
   };
 }
 

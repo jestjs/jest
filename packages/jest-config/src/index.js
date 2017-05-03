@@ -104,7 +104,6 @@ const getConfigs = (
       modulePathIgnorePatterns: options.modulePathIgnorePatterns,
       modulePaths: options.modulePaths,
       name: options.name,
-      preset: options.preset,
       resetMocks: options.resetMocks,
       resetModules: options.resetModules,
       resolver: options.resolver,

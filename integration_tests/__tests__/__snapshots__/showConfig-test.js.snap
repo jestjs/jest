@@ -27,7 +27,6 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     "moduleNameMapper": {},
     "modulePathIgnorePatterns": [],
     "name": "[md5 hash]",
-    "preset": null,
     "resetMocks": false,
     "resetModules": false,
     "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
