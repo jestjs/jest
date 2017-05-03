@@ -22,7 +22,7 @@ const maxWorkers = 1;
 const toPaths = tests => tests.map(({path}) => path);
 
 let findMatchingTests;
-let normalizeConfig;
+let normalize;
 
 describe('SearchSource', () => {
   skipOnWindows.suite();
@@ -35,18 +35,21 @@ describe('SearchSource', () => {
   beforeEach(() => {
     Runtime = require('jest-runtime');
     SearchSource = require('../SearchSource');
-    normalizeConfig = require('jest-config').normalize;
+    normalize = require('jest-config').normalize;
   });
 
   describe('isTestFilePath', () => {
     let config;
 
     beforeEach(() => {
-      config = normalizeConfig({
-        name,
-        rootDir: '.',
-        roots: [],
-      }).options;
+      config = normalize(
+        {
+          name,
+          rootDir: '.',
+          roots: [],
+        },
+        {},
+      ).options;
       return Runtime.createContext(config, {maxWorkers}).then(context => {
         searchSource = new SearchSource(context);
       });
@@ -56,13 +59,16 @@ describe('SearchSource', () => {
     // infinite recursion.
     it('supports ../ paths and unix separators via testRegex', () => {
       if (process.platform !== 'win32') {
-        config = normalizeConfig({
-          name,
-          rootDir: '.',
-          roots: [],
-          testMatch: null,
-          testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
-        }).options;
+        config = normalize(
+          {
+            name,
+            rootDir: '.',
+            roots: [],
+            testMatch: null,
+            testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+          },
+          {},
+        ).options;
         return Runtime.createContext(config, {
           maxWorkers,
         }).then(context => {
@@ -100,13 +106,16 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a pattern via testRegex', () => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['js', 'jsx', 'txt'],
-        name,
-        rootDir,
-        testMatch: null,
-        testRegex: 'not-really-a-test',
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx', 'txt'],
+          name,
+          rootDir,
+          testMatch: null,
+          testRegex: 'not-really-a-test',
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
@@ -121,13 +130,16 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a pattern via testMatch', () => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['js', 'jsx', 'txt'],
-        name,
-        rootDir,
-        testMatch: ['**/not-really-a-test.txt'],
-        testRegex: '',
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx', 'txt'],
+          name,
+          rootDir,
+          testMatch: ['**/not-really-a-test.txt'],
+          testRegex: '',
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
@@ -142,13 +154,16 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a JS regex pattern', () => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['js', 'jsx'],
-        name,
-        rootDir,
-        testMatch: null,
-        testRegex: 'test\.jsx?',
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx'],
+          name,
+          rootDir,
+          testMatch: null,
+          testRegex: 'test\.jsx?',
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -161,13 +176,16 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a JS glob pattern', () => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['js', 'jsx'],
-        name,
-        rootDir,
-        testMatch: ['**/test.js?(x)'],
-        testRegex: '',
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx'],
+          name,
+          rootDir,
+          testMatch: ['**/test.js?(x)'],
+          testRegex: '',
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -180,12 +198,15 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with default file extensions using testRegex', () => {
-      const {options: config} = normalizeConfig({
-        name,
-        rootDir,
-        testMatch: null,
-        testRegex,
-      });
+      const {options: config} = normalize(
+        {
+          name,
+          rootDir,
+          testMatch: null,
+          testRegex,
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -198,12 +219,15 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with default file extensions using testMatch', () => {
-      const {options: config} = normalizeConfig({
-        name,
-        rootDir,
-        testMatch,
-        testRegex: '',
-      });
+      const {options: config} = normalize(
+        {
+          name,
+          rootDir,
+          testMatch,
+          testRegex: '',
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -216,12 +240,15 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with similar but custom file extensions', () => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['jsx'],
-        name,
-        rootDir,
-        testMatch,
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['jsx'],
+          name,
+          rootDir,
+          testMatch,
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -231,12 +258,15 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with totally custom foobar file extensions', () => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['foobar'],
-        name,
-        rootDir,
-        testMatch,
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['foobar'],
+          name,
+          rootDir,
+          testMatch,
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -246,12 +276,15 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with many kinds of file extensions', () => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['js', 'jsx'],
-        name,
-        rootDir,
-        testMatch,
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx'],
+          name,
+          rootDir,
+          testMatch,
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -264,12 +297,15 @@ describe('SearchSource', () => {
     });
 
     it('finds tests using a regex only', () => {
-      const {options: config} = normalizeConfig({
-        name,
-        rootDir,
-        testMatch: null,
-        testRegex,
-      });
+      const {options: config} = normalize(
+        {
+          name,
+          rootDir,
+          testMatch: null,
+          testRegex,
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -282,12 +318,15 @@ describe('SearchSource', () => {
     });
 
     it('finds tests using a glob only', () => {
-      const {options: config} = normalizeConfig({
-        name,
-        rootDir,
-        testMatch,
-        testRegex: '',
-      });
+      const {options: config} = normalize(
+        {
+          name,
+          rootDir,
+          testMatch,
+          testRegex: '',
+        },
+        {},
+      );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
@@ -314,10 +353,13 @@ describe('SearchSource', () => {
     const rootPath = path.join(rootDir, 'root.js');
 
     beforeEach(done => {
-      const {options: config} = normalizeConfig({
-        name: 'SearchSource-findRelatedTests-tests',
-        rootDir,
-      });
+      const {options: config} = normalize(
+        {
+          name: 'SearchSource-findRelatedTests-tests',
+          rootDir,
+        },
+        {},
+      );
       Runtime.createContext(config, {maxWorkers}).then(context => {
         searchSource = new SearchSource(context);
         done();
@@ -345,12 +387,15 @@ describe('SearchSource', () => {
 
   describe('findRelatedTestsFromPattern', () => {
     beforeEach(done => {
-      const {options: config} = normalizeConfig({
-        moduleFileExtensions: ['js', 'jsx', 'foobar'],
-        name,
-        rootDir,
-        testMatch,
-      });
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx', 'foobar'],
+          name,
+          rootDir,
+          testMatch,
+        },
+        {},
+      );
       Runtime.createContext(config, {maxWorkers}).then(context => {
         searchSource = new SearchSource(context);
         done();

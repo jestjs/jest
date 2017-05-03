@@ -14,9 +14,9 @@ const chalk = require('chalk');
 const format = (value: mixed) => require('pretty-format')(value, {min: true});
 
 const deprecatedOptions = {
-  preprocessorIgnorePatterns: (
-    options: {preprocessorIgnorePatterns: Array<string>},
-  ) => `  Option ${chalk.bold('"preprocessorIgnorePatterns"')} was replaced by ${chalk.bold('"transformIgnorePatterns"')}, which support multiple preprocessors.
+  preprocessorIgnorePatterns: (options: {
+    preprocessorIgnorePatterns: Array<string>,
+  }) => `  Option ${chalk.bold('"preprocessorIgnorePatterns"')} was replaced by ${chalk.bold('"transformIgnorePatterns"')}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
@@ -25,9 +25,9 @@ const deprecatedOptions = {
 
   Please update your configuration.`,
 
-  scriptPreprocessor: (
-    options: {scriptPreprocessor: string},
-  ) => `  Option ${chalk.bold('"scriptPreprocessor"')} was replaced by ${chalk.bold('"transform"')}, which support multiple preprocessors.
+  scriptPreprocessor: (options: {
+    scriptPreprocessor: string,
+  }) => `  Option ${chalk.bold('"scriptPreprocessor"')} was replaced by ${chalk.bold('"transform"')}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
@@ -36,9 +36,9 @@ const deprecatedOptions = {
 
   Please update your configuration.`,
 
-  testPathDirs: (
-    options: {testPathDirs: Array<string>},
-  ) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold('"roots"')}.
+  testPathDirs: (options: {
+    testPathDirs: Array<string>,
+  }) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold('"roots"')}.
 
   Jest now treats your current configuration as:
   {
