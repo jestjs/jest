@@ -73,6 +73,10 @@ These helper functions can be found on `this` inside a custom matcher:
 
 A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
 
+#### `this.equals(a, b)`
+
+This is a deep-equality function that will return `true` if two objects have the same values (recursively).
+
 #### `this.utils`
 
 There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
