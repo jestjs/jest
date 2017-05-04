@@ -3,7 +3,7 @@ id: testing-frameworks
 title: Testing other frameworks
 layout: docs
 category: Guides
-permalink: docs/testing-frameworks.html
+permalink: docs/en/testing-frameworks.html
 previous: migration-guide
 next: troubleshooting
 ---

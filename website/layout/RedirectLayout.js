@@ -2,7 +2,7 @@
  * @providesModule RedirectLayout
  * @jsx React.DOM
  */
- /* eslint-disable max-len */
+/* eslint-disable max-len */
 
 const React = require('React');
 
@@ -12,18 +12,20 @@ class RedirectLayout extends React.Component {
 
     return (
       <html>
-         <head>
-           <meta charSet="utf-8" />
-           <link rel="canonical" href={ destinationUrl } />
-           <meta httpEquiv="refresh" content={'0; url=' + destinationUrl} />
-           <title>Redirecting...</title>
-         </head>
-         <body>
-           <h1>Redirecting...</h1>
-           <a href={ destinationUrl }>Click here if you are not redirected.</a>
-           <script dangerouslySetInnerHTML={{__html: 'location=' + destinationUrl}} />
-         </body>
-       </html>
+        <head>
+          <meta charSet="utf-8" />
+          <link rel="canonical" href={destinationUrl} />
+          <meta httpEquiv="refresh" content={'0; url=' + destinationUrl} />
+          <title>Redirecting...</title>
+        </head>
+        <body>
+          <h1>Redirecting...</h1>
+          <a href={destinationUrl}>Click here if you are not redirected.</a>
+          <script
+            dangerouslySetInnerHTML={{__html: 'location=' + destinationUrl}}
+          />
+        </body>
+      </html>
     );
   }
 }
