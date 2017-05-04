@@ -66,9 +66,9 @@ const options = {
   },
   browser: {
     default: undefined,
-    description: 'Respect Browserify\'s "browser" field in package.json ' +
-      'when resolving modules. Some modules export different versions ' +
-      'based on whether they are operating in Node or a browser.',
+    description: 'Respect the "browser" field in package.json ' +
+      'when resolving modules. Some packages export different versions ' +
+      'based on whether they are operating in node.js or a browser.',
     type: 'boolean',
   },
   cache: {
@@ -106,7 +106,7 @@ const options = {
     type: 'string',
   },
   collectCoverageOnlyFrom: {
-    description: 'List of paths coverage will be restricted to.',
+    description: 'Explicit list of paths coverage will be restricted to.',
     type: 'array',
   },
   color: {
@@ -191,8 +191,8 @@ const options = {
     type: 'string',
   },
   haste: {
-    description: "A JSON string with map of variables for Facebook's " +
-      '@providesModule module system',
+    description: 'A JSON string with map of variables for the haste ' +
+      ' module system',
     type: 'string',
   },
   json: {
@@ -209,7 +209,9 @@ const options = {
   },
   listTests: {
     default: false,
-    description: 'Lists all tests Jest will run given the arguments and exits.',
+    description: 'Lists all tests Jest will run given the arguments and ' +
+      'exits. Most useful in a CI system together with `--findRelatedTests` ' +
+      'to determine the tests Jest will run based on specific files',
     type: 'boolean',
   },
   logHeapUsage: {

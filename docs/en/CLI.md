@@ -7,7 +7,9 @@ permalink: docs/en/cli.html
 previous: configuration
 ---
 
-The `jest` command line runner has a number of useful options. You can run `jest --help` to view all available options. Many of the options shown below can also be used together to run tests exactly the way you want. Here is a brief overview:
+The `jest` command line runner has a number of useful options. You can run `jest --help` to view all available options. Many of the options shown below can also be used together to run tests exactly the way you want. Every one of Jest's [Configuration](/jest/docs/configuration.html) options can also be specified through the CLI.
+
+Here is a brief overview:
 
 ## Running from the command line
 
@@ -80,6 +82,10 @@ Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
 ### `--cache`
 
 Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. *Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.*
+
+### `--ci`
+
+When this option is provided, Jest will assume it is running in a CI environment. This changes the behavior when a new snapshot is encountered. Instead of the regular behavior of storing a new snapshot automatically, it will fail the test and require Jest to be run with `--updateSnapshot`.
 
 ### `--collectCoverageFrom=<glob>`
 
