@@ -169,9 +169,14 @@ describe('Watch mode flows', () => {
 
     // Write a pattern
     ['c', 'o', 'n']
-    .map(toHex)
-    .concat([KEYS.ARROW_DOWN, KEYS.ARROW_DOWN, KEYS.ARROW_DOWN, KEYS.ARROW_UP])
-    .forEach(key => stdin.emit(key));
+      .map(toHex)
+      .concat([
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_UP,
+      ])
+      .forEach(key => stdin.emit(key));
 
     stdin.emit(KEYS.ENTER);
 

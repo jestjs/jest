@@ -13,114 +13,65 @@
 import type {TestResult} from 'types/TestResult';
 import type {ScrollOptions} from './lib/scrollList';
 
-const ansiEscapes = require('ansi-escapes');
-const chalk = require('chalk');
 const scroll = require('./lib/scrollList');
 const {getTerminalWidth} = require('./lib/terminalUtils');
-const stringLength = require('string-length');
 const Prompt = require('./lib/Prompt');
 const formatTestNameByPattern = require('./lib/formatTestNameByPattern');
+const {
+  formatTypeaheadSelection,
+  printMore,
+  printPatternCaret,
+  printPatternMatches,
+  printRestoredPatternCaret,
+  printStartTyping,
+  printTypeaheadItem,
+} = require('./lib/patternModeHelpers');
+const PatternPrompt = require('./PatternPrompt');
 
-const pluralizeTest = (total: number) => (total === 1 ? 'test' : 'tests');
-
-const usage = () =>
-  `\n${chalk.bold('Pattern Mode Usage')}\n` +
-  ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
-  ` ${chalk.dim('\u203A Press')} Enter ` +
-  `${chalk.dim('to apply pattern to all tests.')}\n` +
-  `\n`;
-
-const usageRows = usage().split('\n').length;
-
-module.exports = class TestNamePatternPrompt {
+module.exports = class TestNamePatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult>;
-  _pipe: stream$Writable | tty$WriteStream;
-  _prompt: Prompt;
-  _currentUsageRows: number;
 
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
-    this._pipe = pipe;
-    this._prompt = prompt;
-    this._currentUsageRows = usageRows;
-  }
-
-  run(onSuccess: Function, onCancel: Function, options?: {header: string}) {
-    this._pipe.write(ansiEscapes.cursorHide);
-    this._pipe.write(ansiEscapes.clearScreen);
-    if (options && options.header) {
-      this._pipe.write(options.header + '\n');
-      this._currentUsageRows = usageRows + options.header.split('\n').length;
-    } else {
-      this._currentUsageRows = usageRows;
-    }
-    this._pipe.write(usage());
-    this._pipe.write(ansiEscapes.cursorShow);
-
-    this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
+    super(pipe, prompt);
+    this._entityName = 'tests';
   }
 
   _onChange(pattern: string, options: ScrollOptions) {
-    this._pipe.write(ansiEscapes.eraseLine);
-    this._pipe.write(ansiEscapes.cursorLeft);
+    super._onChange(pattern, options);
     this._printTypeahead(pattern, options);
   }
 
   _printTypeahead(pattern: string, options: ScrollOptions) {
-    const { max } = options;
+    const {max} = options;
     const matchedTests = this._getMatchedTests(pattern);
-
     const total = matchedTests.length;
-    const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
+    const pipe = this._pipe;
+    const prompt = this._prompt;
 
-    this._pipe.write(ansiEscapes.eraseDown);
-    this._pipe.write(inputText);
-    this._pipe.write(ansiEscapes.cursorSavePosition);
+    printPatternCaret(pattern, pipe);
 
     if (pattern) {
-      if (total) {
-        this._pipe.write(
-          `\n\n Pattern matches ${total} ${pluralizeTest(total)}`,
-        );
-      } else {
-        this._pipe.write(`\n\n Pattern matches no tests`);
-      }
-
-      this._pipe.write(' from cached test suites.');
+      printPatternMatches(total, 'test', pipe, ` from cached test suites`);
 
       const width = getTerminalWidth();
-      const { start, end, index } = scroll(total, options);
+      const {start, end, index} = scroll(total, options);
 
-      this._prompt.setTypeaheadLength(total);
+      prompt.setTypeaheadLength(total);
 
-      matchedTests.slice(start, end)
-      .map(name => formatTestNameByPattern(name, pattern, width - 4))
-      .map((item, i) => {
-        if (i === index) {
-          this._prompt.setTypheadheadSelection(chalk.stripColor(item));
-          return chalk.black.bgYellow(chalk.stripColor(item));
-        }
-        return item;
-      })
-      .forEach(output => this._pipe.write(`\n ${chalk.dim('\u203A')} ${output}`));
+      matchedTests
+        .slice(start, end)
+        .map(name => formatTestNameByPattern(name, pattern, width - 4))
+        .map((item, i) => formatTypeaheadSelection(item, i, index, prompt))
+        .forEach(item => printTypeaheadItem(item, pipe));
 
       if (total > max) {
-        const more = total - max;
-        this._pipe.write(
-          // eslint-disable-next-line max-len
-          `\n ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`,
-        );
+        printMore('test', pipe, total - max);
       }
     } else {
-      this._pipe.write(
-        // eslint-disable-next-line max-len
-        `\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`,
-      );
+      printStartTyping('test name', pipe);
     }
 
-    this._pipe.write(
-      ansiEscapes.cursorTo(stringLength(inputText), this._currentUsageRows - 1),
-    );
-    this._pipe.write(ansiEscapes.cursorRestorePosition);
+    printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 
   _getMatchedTests(pattern: string) {

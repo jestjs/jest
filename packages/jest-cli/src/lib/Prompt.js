@@ -17,12 +17,12 @@ const {KEYS} = require('../constants');
 class Prompt {
   _entering: boolean;
   _value: string;
-  _onChange: (Function);
+  _onChange: Function;
   _onSuccess: Function;
   _onCancel: Function;
   _typeaheadOffset: number;
   _typeaheadLength: number;
-  _typeaheadSelection: string|null;
+  _typeaheadSelection: string | null;
 
   constructor() {
     (this: any)._onResize = this._onResize.bind(this);
@@ -44,10 +44,11 @@ class Prompt {
     this._typeaheadSelection = null;
     this._typeaheadOffset = -1;
     this._typeaheadLength = 0;
-    this._onChange = () => onChange(this._value, {
-      max: 10,
-      offset: this._typeaheadOffset,
-    });
+    this._onChange = () =>
+      onChange(this._value, {
+        max: 10,
+        offset: this._typeaheadOffset,
+      });
 
     this._onChange();
 
@@ -75,7 +76,10 @@ class Prompt {
         this.abort();
         break;
       case KEYS.ARROW_DOWN:
-        this._typeaheadOffset = Math.min(this._typeaheadOffset + 1, this._typeaheadLength - 1);
+        this._typeaheadOffset = Math.min(
+          this._typeaheadOffset + 1,
+          this._typeaheadLength - 1,
+        );
         this._onChange();
         break;
       case KEYS.ARROW_UP:
