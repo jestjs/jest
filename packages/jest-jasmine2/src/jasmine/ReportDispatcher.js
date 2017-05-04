@@ -32,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
-function ReportDispatcher(methods: Object) {
+function ReportDispatcher(methods: Array<string>) {
   const dispatchedMethods = methods || [];
 
   for (let i = 0; i < dispatchedMethods.length; i++) {
