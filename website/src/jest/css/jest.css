@@ -992,6 +992,7 @@ a:hover code {
 }
 #languages-dropdown {
   position: absolute;
+  left: 0px;
   width:100%;
 }
 #languages-dropdown.visible {
