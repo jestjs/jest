@@ -24,7 +24,9 @@ const scroll = (size: number, {offset, max}: ScrollOptions) => {
   if (index <= halfScreen) {
     start = 0;
   } else {
-    start = Math.min(index - halfScreen - 1, size - max);
+    if (size >= max) {
+      start = Math.min(index - halfScreen - 1, size - max);
+    }
     index = Math.min(index - start, size);
   }
 

@@ -55,3 +55,17 @@ it('When offset is at the end of the list', () => {
     start: 15,
   });
 });
+
+it('When offset is at the end and size is smaller than max', () => {
+  expect(scroll(8, {max: 10, offset: 6})).toEqual({
+    end: 8,
+    index: 6,
+    start: 0,
+  });
+
+  expect(scroll(5, {max: 6, offset: 4})).toEqual({
+    end: 5,
+    index: 4,
+    start: 0,
+  });
+});
