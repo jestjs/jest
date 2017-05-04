@@ -14,7 +14,7 @@ import type {
   Expect,
   ExpectationObject,
   ExpectationResult,
-  MatcherContext,
+  MatcherState,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
@@ -24,7 +24,7 @@ import type {
 const matchers = require('./matchers');
 const spyMatchers = require('./spyMatchers');
 const toThrowMatchers = require('./toThrowMatchers');
-
+const {equals} = require('./jasmine-utils');
 const utils = require('jest-matcher-utils');
 const {
   any,
@@ -194,7 +194,7 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn => {
   return function throwingMatcher(...args) {
     let throws = true;
-    const matcherContext: MatcherContext = Object.assign(
+    const matcherContext: MatcherState = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
@@ -203,6 +203,7 @@ const makeThrowingMatcher = (
       {dontThrow: () => (throws = false)},
       global[GLOBAL_STATE].state,
       {
+        equals,
         isNot,
         utils,
       },
@@ -241,8 +242,8 @@ const makeThrowingMatcher = (
   };
 };
 
-expect.extend = (matchersObj: MatchersObject): void => {
-  Object.assign(global[GLOBAL_STATE].matchers, matchersObj);
+expect.extend = (matchers: MatchersObject): void => {
+  Object.assign(global[GLOBAL_STATE].matchers, matchers);
 };
 
 expect.anything = anything;

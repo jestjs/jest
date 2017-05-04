@@ -25,10 +25,10 @@ export type RawMatcherFn = (
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
-export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
   assertionCalls: number,
   currentTestName?: string,
+  equals: (any, any) => boolean,
   expand?: boolean,
   expectedAssertionsNumber: ?number,
   isExpectingAssertions: ?boolean,
@@ -36,6 +36,7 @@ export type MatcherState = {
   snapshotState: SnapshotState,
   suppressedErrors: Array<Error>,
   testPath?: Path,
+  utils: Object,
 };
 
 export type AsymmetricMatcher = Object;
