@@ -74,10 +74,8 @@ const relativePath = (config: {rootDir: Path}, testPath: Path) => {
   return {basename, dirname};
 };
 
-const pluralize = (
-  word: string,
-  count: number,
-) => `${count} ${word}${count === 1 ? '' : 's'}`;
+const pluralize = (word: string, count: number) =>
+  `${count} ${word}${count === 1 ? '' : 's'}`;
 
 const getSummary = (
   aggregatedResults: AggregatedResult,
