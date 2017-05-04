@@ -34,6 +34,7 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
     super(pipe, prompt);
     this._entityName = 'tests';
+    this._cachedTestResults = [];
   }
 
   _onChange(pattern: string, options: ScrollOptions) {
@@ -51,7 +52,12 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
     printPatternCaret(pattern, pipe);
 
     if (pattern) {
-      printPatternMatches(total, 'test', pipe, ` from cached test suites`);
+      printPatternMatches(
+        total,
+        'test',
+        pipe,
+        ` from ${require('chalk').yellow('cached')} test suites`,
+      );
 
       const width = getTerminalWidth();
       const {start, end, index} = scroll(total, options);
@@ -96,7 +102,7 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
     return matchedTests;
   }
 
-  updateCachedTestResults(testResults: Array<TestResult>) {
-    this._cachedTestResults = testResults || [];
+  updateCachedTestResults(testResults: Array<TestResult> = []) {
+    this._cachedTestResults = testResults;
   }
 };
