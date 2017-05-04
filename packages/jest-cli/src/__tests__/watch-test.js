@@ -142,7 +142,7 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.U);
 
     expect(runJestMock.mock.calls[0][0]).toEqual({
-      updateSnapshot: true,
+      updateSnapshot: 'all',
       watch: true,
     });
 

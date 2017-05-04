@@ -75,18 +75,18 @@ class SnapshotState {
     this._snapshotData[key] = receivedSerialized;
   }
 
-  save(shouldUpdate: SnapshotUpdateState) {
+  save() {
+    const isEmpty = Object.keys(this._snapshotData).length === 0;
     const status = {
       deleted: false,
       saved: false,
     };
-    const isEmpty = Object.keys(this._snapshotData).length === 0;
 
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
       saveSnapshotFile(this._snapshotData, this._snapshotPath);
       status.saved = true;
     } else if (isEmpty && fs.existsSync(this._snapshotPath)) {
-      if (shouldUpdate === 'all') {
+      if (this._updateSnapshot === 'all') {
         fs.unlinkSync(this._snapshotPath);
       }
       status.deleted = true;
@@ -100,7 +100,7 @@ class SnapshotState {
   }
 
   removeUncheckedKeys(): void {
-    if (this._uncheckedKeys.size) {
+    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size) {
       this._dirty = true;
       this._uncheckedKeys.forEach(key => delete this._snapshotData[key]);
       this._uncheckedKeys.clear();
@@ -132,11 +132,17 @@ class SnapshotState {
       this._snapshotData[key] = receivedSerialized;
     }
 
+    // These are the conditions on when to write snapshots:
+    //  * There's no snapshot file in a non-CI environment.
+    //  * There is a snapshot file and we decided to update the snapshot.
+    //  * There is a snapshot file, but it doesn't have this snaphsot.
+    // These are the conditions on when not to write snapshots:
+    //  * The update flag is set to 'none'.
+    //  * There's no snapshot file or a file without this snapshot on a CI environment.
     if (
-      !fs.existsSync(this._snapshotPath) || // there's no snapshot file
-      (hasSnapshot && this._updateSnapshot === 'all') || // there is a file, but we're updating
-      (!hasSnapshot &&
-        (this._updateSnapshot === 'new' || this._updateSnapshot === 'all')) // there is a file, but it doesn't have this snaphsot
+      (hasSnapshot && this._updateSnapshot === 'all') ||
+      ((!hasSnapshot || !fs.existsSync(this._snapshotPath)) &&
+        (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
       if (this._updateSnapshot === 'all') {
         if (!pass) {

@@ -174,7 +174,7 @@ const watch = (
         startRun();
         break;
       case KEYS.U:
-        startRun({updateSnapshot: true});
+        startRun({updateSnapshot: 'all'});
         break;
       case KEYS.A:
         updateArgv(argv, 'watchAll', {
