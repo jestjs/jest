@@ -11,6 +11,7 @@
 
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
+import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
@@ -75,7 +76,7 @@ function jasmine2(
     expand: globalConfig.expand,
   });
 
-  const snapshotState = runtime.requireInternalModule(
+  const snapshotState: SnapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
   )({
     config,
@@ -97,12 +98,10 @@ function jasmine2(
   env.execute();
   return reporter
     .getResults()
-    .then(results =>
-      addSnapshotData(results, snapshotState, globalConfig.updateSnapshot),
-    );
+    .then(results => addSnapshotData(results, snapshotState));
 }
 
-const addSnapshotData = (results, snapshotState, updateSnapshot) => {
+const addSnapshotData = (results, snapshotState) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
@@ -112,11 +111,11 @@ const addSnapshotData = (results, snapshotState, updateSnapshot) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
-  if (updateSnapshot) {
+  if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
-  const status = snapshotState.save(updateSnapshot);
 
+  const status = snapshotState.save();
   results.snapshot.fileDeleted = status.deleted;
   results.snapshot.added = snapshotState.added;
   results.snapshot.matched = snapshotState.matched;

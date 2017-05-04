@@ -12,6 +12,8 @@
 
 import type {Argv} from 'types/Argv';
 
+const isCI = require('is-ci');
+
 const check = (argv: Argv) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
@@ -79,6 +81,13 @@ const options = {
     description: 'The directory where Jest should store its cached ' +
       ' dependency information.',
     type: 'string',
+  },
+  ci: {
+    default: isCI,
+    description: 'Whether to run Jest in continuous integration (CI) mode. ' +
+      'This option is on by default in most popular CI environments. It will ' +
+      ' prevent snapshots from being written unless explicitly requested.',
+    type: 'boolean',
   },
   clearMocks: {
     default: undefined,

@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Path} from 'types/Config';
+import type {Path, SnapshotUpdateState} from 'types/Config';
 
 const {
   saveSnapshotFile,
@@ -23,43 +23,43 @@ const {
 } = require('./utils');
 const fs = require('fs');
 
+export type SnapshotStateOptions = {|
+  updateSnapshot: SnapshotUpdateState,
+  snapshotPath?: string,
+  expand?: boolean,
+|};
+
 class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
   _index: number;
+  _updateSnapshot: SnapshotUpdateState;
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
   _uncheckedKeys: Set<string>;
   added: number;
   expand: boolean;
-  failedTests: Set<string>;
   matched: number;
-  skippedTests: Set<string>;
   unmatched: number;
-  update: boolean;
   updated: number;
 
-  constructor(
-    testPath: Path,
-    update: boolean,
-    snapshotPath?: string,
-    expand?: boolean,
-  ) {
-    this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
-    const {data, dirty} = getSnapshotData(this._snapshotPath, update);
+  constructor(testPath: Path, options: SnapshotStateOptions) {
+    this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
+    const {data, dirty} = getSnapshotData(
+      this._snapshotPath,
+      options.updateSnapshot,
+    );
     this._snapshotData = data;
     this._dirty = dirty;
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
-    this.expand = expand || false;
+    this.expand = options.expand || false;
     this.added = 0;
     this.matched = 0;
     this.unmatched = 0;
-    this.update = update;
+    this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
-    this.skippedTests = new Set();
-    this.failedTests = new Set();
   }
 
   markSnapshotsAsCheckedForTest(testName: string) {
@@ -75,19 +75,18 @@ class SnapshotState {
     this._snapshotData[key] = receivedSerialized;
   }
 
-  save(update: boolean) {
+  save() {
+    const isEmpty = Object.keys(this._snapshotData).length === 0;
     const status = {
       deleted: false,
       saved: false,
     };
 
-    const isEmpty = Object.keys(this._snapshotData).length === 0;
-
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
       saveSnapshotFile(this._snapshotData, this._snapshotPath);
       status.saved = true;
     } else if (isEmpty && fs.existsSync(this._snapshotPath)) {
-      if (update) {
+      if (this._updateSnapshot === 'all') {
         fs.unlinkSync(this._snapshotPath);
       }
       status.deleted = true;
@@ -101,7 +100,7 @@ class SnapshotState {
   }
 
   removeUncheckedKeys(): void {
-    if (this._uncheckedKeys.size) {
+    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size) {
       this._dirty = true;
       this._uncheckedKeys.forEach(key => delete this._snapshotData[key]);
       this._uncheckedKeys.clear();
@@ -133,12 +132,19 @@ class SnapshotState {
       this._snapshotData[key] = receivedSerialized;
     }
 
+    // These are the conditions on when to write snapshots:
+    //  * There's no snapshot file in a non-CI environment.
+    //  * There is a snapshot file and we decided to update the snapshot.
+    //  * There is a snapshot file, but it doesn't have this snaphsot.
+    // These are the conditions on when not to write snapshots:
+    //  * The update flag is set to 'none'.
+    //  * There's no snapshot file or a file without this snapshot on a CI environment.
     if (
-      !fs.existsSync(this._snapshotPath) || // there's no snapshot file
-      (hasSnapshot && this.update) || // there is a file, but we're updating
-      !hasSnapshot // there is a file, but it doesn't have this snaphsot
+      (hasSnapshot && this._updateSnapshot === 'all') ||
+      ((!hasSnapshot || !fs.existsSync(this._snapshotPath)) &&
+        (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
-      if (this.update) {
+      if (this._updateSnapshot === 'all') {
         if (!pass) {
           if (hasSnapshot) {
             this.updated++;
@@ -154,19 +160,29 @@ class SnapshotState {
         this.added++;
       }
 
-      return {pass: true};
+      return {
+        actual: '',
+        count,
+        expected: '',
+        pass: true,
+      };
     } else {
       if (!pass) {
         this.unmatched++;
         return {
           actual: unescape(receivedSerialized),
           count,
-          expected: unescape(expected),
+          expected: expected ? unescape(expected) : null,
           pass: false,
         };
       } else {
         this.matched++;
-        return {pass: true};
+        return {
+          actual: '',
+          count,
+          expected: '',
+          pass: true,
+        };
       }
     }
   }

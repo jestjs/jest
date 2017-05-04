@@ -18,6 +18,7 @@ export type Argv = {|
   cache: boolean,
   cacheDirectory: string,
   clearMocks: boolean,
+  ci: boolean,
   collectCoverage: boolean,
   collectCoverageFrom: Array<string>,
   collectCoverageOnlyFrom: Array<string>,
