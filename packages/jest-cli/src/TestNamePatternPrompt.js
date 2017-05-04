@@ -70,8 +70,8 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
         .map((item, i) => formatTypeaheadSelection(item, i, index, prompt))
         .forEach(item => printTypeaheadItem(item, pipe));
 
-      if (total > max) {
-        printMore('test', pipe, total - max);
+      if (total > end) {
+        printMore('test', pipe, total - end);
       }
     } else {
       printStartTyping('test name', pipe);

@@ -84,8 +84,8 @@ module.exports = class TestPathPatternPrompt extends PatternPrompt {
         .map((item, i) => formatTypeaheadSelection(item, i, index, prompt))
         .forEach(item => printTypeaheadItem(item, pipe));
 
-      if (total > max) {
-        printMore('file', pipe, total - max);
+      if (total > end) {
+        printMore('file', pipe, total - end);
       }
     } else {
       printStartTyping('filename', pipe);
