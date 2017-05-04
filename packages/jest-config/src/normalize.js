@@ -381,7 +381,7 @@ function normalize(options: InitialOptions, argv: Argv) {
           value.hasteImplModulePath = resolve(
             options.rootDir,
             'haste.hasteImplModulePath',
-            value.hasteImplModulePath,
+            _replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
           );
         }
         break;

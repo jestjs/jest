@@ -15,7 +15,6 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const {getTestEnvironment, isJSONString} = require('./utils');
 const findConfig = require('./findConfig');
-const loadFromFile = require('./loadFromFile');
 const normalize = require('./normalize');
 const path = require('path');
 
@@ -43,14 +42,14 @@ const parseConfig = argv =>
 const readOptions = (argv, root) => {
   const rawOptions = parseConfig(argv);
 
-  if (typeof rawOptions === 'string') {
-    return loadFromFile(path.resolve(process.cwd(), rawOptions));
-  }
-
   if (typeof rawOptions === 'object') {
     const config = Object.assign({}, rawOptions);
     config.rootDir = config.rootDir || root;
     return config;
+  }
+
+  if (typeof rawOptions === 'string') {
+    root = path.resolve(process.cwd(), rawOptions);
   }
 
   return findConfig(root);
