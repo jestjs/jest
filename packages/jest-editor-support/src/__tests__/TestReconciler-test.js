@@ -47,10 +47,12 @@ describe('Test Reconciler', () => {
       expect(status.line).toEqual(12);
       const errorMessage = 'Expected value to be falsy, instead received true';
       expect(status.terseMessage).toEqual(errorMessage);
-      expect(status.shortMessage).toEqual(`Error: expect(received).toBeFalsy()
+      expect(status.shortMessage).toEqual(
+        `Error: expect(received).toBeFalsy()
 
 Expected value to be falsy, instead received
-  true`);
+  true`,
+      );
     });
   });
 });

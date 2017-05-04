@@ -22,19 +22,25 @@ const prettyFormatResult = (val: string) => {
 describe('ConvertAnsi plugin', () => {
   it('supports style.red', () => {
     expect(
-      prettyFormatResult(`${ansiStyle.red.open} foo content ${ansiStyle.red.close}`),
+      prettyFormatResult(
+        `${ansiStyle.red.open} foo content ${ansiStyle.red.close}`,
+      ),
     ).toEqual('"<red> foo content </>"');
   });
 
   it('supports style.green', () => {
     expect(
-      prettyFormatResult(`${ansiStyle.green.open} foo content ${ansiStyle.green.close}`),
+      prettyFormatResult(
+        `${ansiStyle.green.open} foo content ${ansiStyle.green.close}`,
+      ),
     ).toEqual('"<green> foo content </>"');
   });
 
   it('supports style.reset', () => {
     expect(
-      prettyFormatResult(`${ansiStyle.reset.open} foo content ${ansiStyle.reset.close}`),
+      prettyFormatResult(
+        `${ansiStyle.reset.open} foo content ${ansiStyle.reset.close}`,
+      ),
     ).toEqual('"</> foo content </>"');
   });
 
