@@ -49,7 +49,7 @@
     "typescript": "^2.2.2"
   },
   "scripts": {
-    "build-clean": "rm -rf ./packages/*/build",
+    "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn run build-clean",
     "danger": "node ./danger/node_modules/.bin/danger",
@@ -57,11 +57,12 @@
     "jest-coverage": "yarn run jest --silent -- --coverage",
     "lint": "yarn run lint-prettier --silent && eslint . --cache && yarn run lint-docs --silent",
     "lint-docs": "eslint --config ./.eslintrc-docs.json --no-ignore --ext md ./docs/*.md",
+    "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
     "lint-prettier": "node scripts/prettier.js lint",
     "prettier": "node scripts/prettier.js write",
     "postinstall": "node ./scripts/postinstall.js && yarn run build --silent && (cd packages/eslint-plugin-jest && yarn link --silent) && yarn link eslint-plugin-jest --silent",
     "publish": "yarn run build-clean --silent && yarn run build --silent && lerna publish --silent",
-    "test-ci": "yarn run typecheck --silent && yarn run lint --silent && yarn run jest-coverage --silent -- -i && yarn run test-examples --silent && node scripts/mapCoverage.js && codecov",
+    "test-ci": "yarn run typecheck --silent && yarn run lint --silent && yarn run lint-es5-build && yarn run jest-coverage --silent -- -i && yarn run test-examples --silent && node scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn run jest --silent -- -i && yarn run test-examples --silent",
     "test-examples": "node scripts/test_examples.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
@@ -73,6 +74,7 @@
     "modulePathIgnorePatterns": [
       "examples/.*",
       "packages/.*/build",
+      "packages/.*/build-es5",
       "packages/jest-runtime/src/__tests__/test_root.*",
       "website/.*",
       "integration_tests/runtime-internal-module-registry/__mocks__"
@@ -104,7 +106,8 @@
       "/examples/",
       "/integration_tests/.*/__tests__",
       "\\.snap$",
-      "/packages/.*/build"
+      "/packages/.*/build",
+      "/packages/.*/build-es5"
     ],
     "testMatch": [
       "**/*-test.js"
