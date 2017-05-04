@@ -31,7 +31,7 @@
       "title": "Who's using Jest?"
     },
     "zeroConfig": {
-      "content": "Easily create code coverage reports using `--coverage`. No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.",
+      "content": "Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.",
       "title": "Zero configuration"
     }
   },
