@@ -78,6 +78,7 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
     "testPathPattern": "",
     "testResultsProcessor": null,
+    "updateSnapshot": "all",
     "useStderr": false,
     "verbose": null,
     "watch": false,

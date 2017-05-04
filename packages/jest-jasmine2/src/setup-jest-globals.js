@@ -14,7 +14,7 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
 const {getState, setState} = require('jest-matchers');
-const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
+const {SnapshotState, addSerializer} = require('jest-snapshot');
 const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -142,15 +142,10 @@ module.exports = ({
   config.snapshotSerializers.concat().reverse().forEach(path => {
     addSerializer(localRequire(path));
   });
-  setState({testPath});
   patchJasmine();
-  const snapshotState = initializeSnapshotState(
-    testPath,
-    globalConfig.updateSnapshot,
-    '',
-    globalConfig.expand,
-  );
-  setState({snapshotState});
+  const {expand, updateSnapshot} = globalConfig;
+  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
 };

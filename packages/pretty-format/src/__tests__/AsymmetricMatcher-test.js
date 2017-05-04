@@ -65,21 +65,17 @@ test(`anything()`, () => {
 
 test(`arrayContaining()`, () => {
   const result = prettyFormat(expect.arrayContaining([1, 2]), options);
-  expect(result).toEqual(
-    `ArrayContaining [
+  expect(result).toEqual(`ArrayContaining [
   1,
   2,
-]`,
-  );
+]`);
 });
 
 test(`objectContaining()`, () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
-  expect(result).toEqual(
-    `ObjectContaining {
+  expect(result).toEqual(`ObjectContaining {
   "a": "test",
-}`,
-  );
+}`);
 });
 
 test(`stringContaining(string)`, () => {
@@ -113,8 +109,7 @@ test(`supports multiple nested asymmetric matchers`, () => {
     },
     options,
   );
-  expect(result).toEqual(
-    `Object {
+  expect(result).toEqual(`Object {
   "test": Object {
     "nested": ObjectContaining {
       "a": ArrayContaining [
@@ -129,8 +124,7 @@ test(`supports multiple nested asymmetric matchers`, () => {
       },
     },
   },
-}`,
-  );
+}`);
 });
 
 test(`supports minified output`, () => {

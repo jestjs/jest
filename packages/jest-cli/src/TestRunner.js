@@ -140,9 +140,9 @@ class TestRunner {
         );
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       });
-      aggregatedResults.snapshot.didUpdate = this._globalConfig.updateSnapshot;
-      aggregatedResults.snapshot.failure = !!(!this._globalConfig
-        .updateSnapshot &&
+      const updateAll = this._globalConfig.updateSnapshot === 'all';
+      aggregatedResults.snapshot.didUpdate = updateAll;
+      aggregatedResults.snapshot.failure = !!(!updateAll &&
         (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
           aggregatedResults.snapshot.filesRemoved));

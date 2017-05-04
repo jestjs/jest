@@ -36,6 +36,15 @@ Ran all test suites.
 "
 `;
 
+exports[`Snapshot Validation does not save snapshots in CI mode by default 1`] = `
+"Test Suites: 3 failed, 3 total
+Tests:       7 failed, 2 passed, 9 total
+Snapshots:   9 failed, 9 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
 exports[`Snapshot Validation updates the snapshot when a test removes some snapshots 1`] = `
 "Test Suites: 3 passed, 3 total
 Tests:       9 passed, 9 total
@@ -72,7 +81,7 @@ Ran all test suites.
 "
 `;
 
-exports[`Snapshot works as expected 1`] = `
+exports[`Snapshot stores new snapshots on the first run 1`] = `
 "Test Suites: 2 passed, 2 total
 Tests:       5 passed, 5 total
 Snapshots:   5 added, 5 total
