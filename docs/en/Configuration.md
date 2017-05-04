@@ -241,7 +241,7 @@ Default: `undefined`
 
 ##### available in Jest **20.0.0+**
 
-Use this config option to add custom reporters to Jest. A custom reporter is a class that implements `onRunStart`, `onTestStart`, `onTestResult`, `onRunComplete` methods that will be called when any of those events occurs.
+Use this configuration option to add custom reporters to Jest. A custom reporter is a class that implements `onRunStart`, `onTestStart`, `onTestResult`, `onRunComplete` methods that will be called when any of those events occurs.
 
 If custom reporters are specified, the default Jest reporters will be overridden. To keep default reporters, `default` can be passed as a module name.
 
@@ -269,17 +269,16 @@ Additionally, custom reporters can be configured by passing an `options` object 
 {
   "reporters": [
     "default",
-    ["<rootDir>/my-custom-reporter.js", {"option1": 1, "option2": 2}]
+    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
   ]
 }
 ```
 
-Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments.
+Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments:
 
 Example reporter:
 ```js
 // my-custom-reporter.js
-
 class MyCustomReporter {
   constructor(globalConfig, options) {
     this._globalConfig = globalConfig;
@@ -296,13 +295,12 @@ class MyCustomReporter {
 module.exports = MyCustomReporter;
 ```
 
-Custom reporter can also force Jest to exit with non-0 code by returning an Error from `getLastError()` methods
-
+Custom reporters can also force Jest to exit with non-0 code by returning an Error from `getLastError()` methods
 ```js
 class MyCustomReporter {
   // ...
   getLastError() {
-    if (this.shouldFail) {
+    if (this._shouldFail) {
       return new Error('my-custom-reporter.js reported an error');
     }
   }
