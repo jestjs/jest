@@ -18,24 +18,25 @@ KEYS = Object.assign({}, KEYS, {
 });
 
 it('calls handler on change value', () => {
+  const options = {max: 10, offset: -1};
   const prompt = new Prompt();
   const onChange = jest.fn();
 
   prompt.enter(onChange, jest.fn(), jest.fn());
 
-  expect(onChange).toHaveBeenLastCalledWith('');
+  expect(onChange).toHaveBeenLastCalledWith('', options);
 
   prompt.put(KEYS.T);
-  expect(onChange).toHaveBeenLastCalledWith('t');
+  expect(onChange).toHaveBeenLastCalledWith('t', options);
 
   prompt.put(KEYS.E);
-  expect(onChange).toHaveBeenLastCalledWith('te');
+  expect(onChange).toHaveBeenLastCalledWith('te', options);
 
   prompt.put(KEYS.S);
-  expect(onChange).toHaveBeenLastCalledWith('tes');
+  expect(onChange).toHaveBeenLastCalledWith('tes', options);
 
   prompt.put(KEYS.T);
-  expect(onChange).toHaveBeenLastCalledWith('test');
+  expect(onChange).toHaveBeenLastCalledWith('test', options);
 
   expect(onChange).toHaveBeenCalledTimes(5);
 });

@@ -144,6 +144,29 @@ describe('Watch mode flows', () => {
     });
   });
 
+  it('can select a specific file name from the typeahead results', () => {
+    contexts[0].config = {rootDir: ''};
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+
+    // Write a enter pattern mode
+    stdin.emit(KEYS.P);
+
+    // Write a pattern
+    ['p', '.', '*']
+      .map(toHex)
+      .concat([
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_UP,
+      ])
+      .forEach(key => stdin.emit(key));
+
+    stdin.emit(KEYS.ENTER);
+
+    expect(argv.testPathPattern).toMatchSnapshot();
+  });
+
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
