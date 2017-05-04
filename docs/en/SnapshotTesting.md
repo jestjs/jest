@@ -93,6 +93,10 @@ Date.now = jest.fn(() => 1482363367071);
 
 Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
 
+### Snapshots are not written automatically on Continuous Integration systems (CI)
+
+As of Jest 20, snapshots in Jest are not automatically written when Jest is run in a CI system without explicitly passing `--updateSnapshot`. It is expected that all snapshots are part of the code that is run on CI and since new snapshots automatically pass, they should not pass a test run on a CI system. It is recommended to always commit all snapshots and to keep them in version control.
+
 ## Frequently Asked Questions
 
 ### Should snapshot files be committed?

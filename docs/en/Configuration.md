@@ -8,8 +8,8 @@ previous: jest-object
 next: cli
 ---
 
-Jest's configuration can be defined in the `package.json` file of your project
-or through the `--config <path/to/json>` option. If you'd like to use
+Jest's configuration can be defined in the `package.json` file of your project, through a `jest.config.js` file or
+or through the `--config <path/to/js|json>` option. If you'd like to use
 your `package.json` to store Jest's config, the "jest" key should be used on the
 top level so Jest will know how to find your settings:
 
@@ -21,6 +21,16 @@ top level so Jest will know how to find your settings:
   }
 }
 ```
+
+Or through JavaScript:
+
+```js
+module.exports = {
+  verbose: true,
+};
+```
+
+Please keep in mind that the resulting configuration must be JSON-serializable.
 
 When using the --config option, the JSON file must not contain a "jest" key:
 
@@ -230,6 +240,22 @@ Activates notifications for test results.
 Default: `undefined`
 
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
+
+### `projects` [array<string>]
+Default: `undefined`
+
+When the `projects` configuration is provided with an array of paths or glob patterns, Jest will run tests in all of the specified projects at the same time. This is great for monorepos or when working on multiple projects at the same time.
+
+```json
+{
+  "projects": [
+    "<rootDir>",
+    "<rootDir>/examples/*"
+  ]
+}
+```
+
+This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.
 
 ### `clearMocks` [boolean]
 Default: `false`
