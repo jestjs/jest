@@ -59,13 +59,13 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
   var result = true;
 
   var asymmetricResult = asymmetricMatch(a, b);
-  if (asymmetricResult !== void 0) {
+  if (asymmetricResult !== undefined) {
     return asymmetricResult;
   }
 
   for (var i = 0; i < customTesters.length; i++) {
     var customTesterResult = customTesters[i](a, b);
-    if (customTesterResult !== void 0) {
+    if (customTesterResult !== undefined) {
       return customTesterResult;
     }
   }
