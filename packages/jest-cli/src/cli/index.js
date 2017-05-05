@@ -15,7 +15,6 @@ import type {Argv} from 'types/Argv';
 
 const args = require('./args');
 const getJest = require('./getJest');
-const pkgDir = require('pkg-dir');
 const runCLI = require('./runCLI');
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
@@ -32,7 +31,7 @@ function run(argv?: Argv, project?: Path) {
   validateCLIOptions(argv, args.options);
 
   if (!project) {
-    project = pkgDir.sync();
+    project = process.cwd();
   }
 
   if (!argv.projects) {
