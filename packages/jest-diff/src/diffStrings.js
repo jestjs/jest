@@ -12,6 +12,7 @@
 
 const chalk = require('chalk');
 const diff = require('diff');
+const DiffMatchPatch = require('diff-match-patch');
 
 const {NO_DIFF_MESSAGE} = require('./constants.js');
 const DIFF_CONTEXT = 5;
@@ -46,19 +47,25 @@ const getAnnotation = (options: ?DiffOptions): string =>
   '\n' +
   chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) +
   '\n\n';
-
+const diffMatchPatch = new DiffMatchPatch();
+diffMatchPatch.Diff_Timeout = 0;
 const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
+  const diffs = diffMatchPatch.diff_main(a, b);
+  // the following step likely needs changing
+  diffMatchPatch.diff_cleanupSemantic(diffs);
   return {
-    diff: diff
-      .diffLines(a, b)
+    diff: diffs
       .map(part => {
-        const {added, removed} = part;
-        if (part.added || part.removed) {
+        const added = part[0] === 1;
+        const removed = part[0] === -1;
+        const value = part[1];
+
+        if (added || removed) {
           isDifferent = true;
         }
 
-        const lines = part.value.split('\n');
+        const lines = value.split('\n');
         const color = getColor(added, removed);
         const bgColor = getBgColor(added, removed);
 
@@ -69,7 +76,7 @@ const diffLines = (a: string, b: string): Diff => {
         return lines
           .map(line => {
             const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-            const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
+            const mark = color(added ? '+' : removed ? '-' : ' ');
             return mark + ' ' + color(highlightedLine) + '\n';
           })
           .join('');
