@@ -202,9 +202,11 @@ function execute() {
         metadata.localized_id = metadata.id;
         metadata.id = language + '-' + metadata.id;
         if (metadata.previous) {
+          metadata.previous_id = metadata.previous;
           metadata.previous = language + '-' + metadata.previous;
         }
         if (metadata.next) {
+          metadata.next_id = metadata.next;
           metadata.next = language + '-' + metadata.next;
         }
         metadata.language = language;
@@ -305,8 +307,8 @@ function execute() {
     );
   });
 
-  fs.writeFileSync('src/jest/blog/feed.xml', feed('rss'));
-  fs.writeFileSync('src/jest/blog/atom.xml', feed('atom'));
+  writeFileAndCreateFolder('src/jest/blog/feed.xml', feed('rss'));
+  writeFileAndCreateFolder('src/jest/blog/atom.xml', feed('atom'));
 }
 
 if (argv.convert) {

@@ -96,13 +96,15 @@
     "tutorial-react": "Testing React Apps",
     "tutorial-react-native": "Testing React Native Apps",
     "using-matchers": "Using Matchers",
-    "webpack": "Using With Webpack"
+    "webpack": "Using With Webpack",
+    "previous": "Previous",
+    "next": "Continue Reading"
   },
   "promo": {
     "get": "Get Started",
     "learn": "Learn More",
     "try": "Try Out Jest",
-    "watch": "Watch Talks",
+    "watch": "Watch Talks"
   },
   "repo": "facebook/jest",
   "support": {

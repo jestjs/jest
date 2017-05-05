@@ -56,8 +56,7 @@ const JestIndex = React.createClass({
           </Container>
           <div
             className="productShowcaseSection paddingBottom"
-            style={{textAlign: 'center'}}
-          >
+            style={{textAlign: 'center'}}>
             <h2>{siteConfig[language].featureCallout.title}</h2>
             <Marked>
               {siteConfig[language].featureCallout.content}
@@ -149,7 +148,13 @@ const JestIndex = React.createClass({
             <a className="hash-link" href="#watch" />
             <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="video">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/HAuXJVI_bUs?rel=0" frameborder="0" allowfullscreen></iframe>
+                <iframe
+                  width="560"
+                  height="315"
+                  src="https://www.youtube.com/embed/HAuXJVI_bUs?rel=0"
+                  frameBorder="0"
+                  allowFullScreen
+                />
               </div>
               <div className="blockContent">
                 <h2>{siteConfig[language].belowFold.watch.title}</h2>
