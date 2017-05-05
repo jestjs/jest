@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 const {fileExists} = require('./utils');
@@ -12,10 +14,18 @@ const spawnSync = require('cross-spawn').sync;
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
+type RunJestOptions = {
+  skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
+};
+
 // return the result of the spawned process:
 //  [ 'status', 'signal', 'output', 'pid', 'stdout', 'stderr',
 //    'envPairs', 'options', 'args', 'file' ]
-function runJest(dir, args) {
+function runJest(
+  dir: string,
+  args?: Array<string>,
+  options: RunJestOptions = {},
+) {
   const isRelative = dir[0] !== '/';
 
   if (isRelative) {
@@ -23,7 +33,7 @@ function runJest(dir, args) {
   }
 
   const localPackageJson = path.resolve(dir, 'package.json');
-  if (!fileExists(localPackageJson)) {
+  if (!options.skipPkgJsonCheck && !fileExists(localPackageJson)) {
     throw new Error(
       `
       Make sure you have a local package.json file at

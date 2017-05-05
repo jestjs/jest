@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`traverses directory tree up untill it finds jest.config 1`] = `
+"  console.log __tests__/a-lol.js:3
+<<REPLACED>>/jest.config.js/some/nested/directory
+
+"
+`;
+
+exports[`traverses directory tree up untill it finds jest.config 2`] = `
+" PASS  __tests__/a-lol.js
+  ✓ lol
+  ✓ abc
+
+"
+`;
+
+exports[`traverses directory tree up untill it finds jest.config 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
+exports[`works with jest.conf.js 1`] = `
+" PASS  __tests__/a-lol.js
+  ✓ lol
+
+"
+`;
+
+exports[`works with jest.conf.js 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
