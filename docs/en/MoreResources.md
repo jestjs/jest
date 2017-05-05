@@ -5,7 +5,7 @@ layout: docs
 category: Introduction
 permalink: docs/en/more-resources.html
 previous: mock-functions
-next: snapshot-testing
+next: api
 ---
 
 By now you should have a good idea of how Jest can make it easy to test your applications. If you're interested in learning more, here's some related stuff you might want to check out.
