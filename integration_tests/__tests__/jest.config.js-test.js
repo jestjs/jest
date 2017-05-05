@@ -11,8 +11,11 @@
 const {extractSummary, cleanup, writeFiles} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 const DIR = path.resolve(__dirname, '../jest.config.js');
+
+skipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -67,6 +70,6 @@ test('invalid JS in jest.config.js', () => {
   });
 
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
-  expect(stderr).toMatch('SyntaxError: Invalid or unexpected token');
+  expect(stderr).toMatch('SyntaxError: ');
   expect(status).toBe(1);
 });

@@ -7,6 +7,7 @@
  *
  * @flow
  */
+'use strict';
 
 const {fileExists} = require('./utils');
 const path = require('path');
