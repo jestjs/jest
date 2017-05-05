@@ -75,10 +75,10 @@ const writeFiles = (directory: string, files: {[filename: string]: string}) => {
     const filename = filePath.pop(); // filepath becomes dirPath (no filename)
 
     if (filePath.length) {
-      mkdirp.sync(path.join(directory, ...filePath));
+      mkdirp.sync(path.join.apply(path, [directory].concat(filePath)));
     }
     fs.writeFileSync(
-      path.resolve(directory, ...filePath, filename),
+      path.resolve.apply(path, [directory].concat(filePath, [filename])),
       files[fileOrPath],
     );
   });

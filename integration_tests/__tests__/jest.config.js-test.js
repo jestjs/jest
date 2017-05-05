@@ -12,15 +12,15 @@ const {extractSummary, cleanup, writeFiles} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
 
-const DIR = path.resolve(__dirname, '../jest.config.js');
+const DIR = path.resolve(__dirname, '../jest-config-js');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 test('works with jest.conf.js', () => {
   writeFiles(DIR, {
-    '__tests__/a-lol.js': `test('lol', () => expect(1).toBe(1));`,
-    'jest.config.js': `module.exports = {testRegex: '.*-lol.js'};`,
+    '__tests__/a-banana.js': `test('banana', () => expect(1).toBe(1));`,
+    'jest.config.js': `module.exports = {testRegex: '.*-banana.js'};`,
     'package.json': '{}',
   });
 
@@ -31,13 +31,13 @@ test('works with jest.conf.js', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('traverses directory tree up untill it finds jest.config', () => {
+test('traverses directory tree up until it finds jest.config', () => {
   writeFiles(DIR, {
-    '__tests__/a-lol.js': `
-    test('lol', () => expect(1).toBe(1));
+    '__tests__/a-banana.js': `
+    test('banana', () => expect(1).toBe(1));
     test('abc', () => console.log(process.cwd()));
     `,
-    'jest.config.js': `module.exports = {testRegex: '.*-lol.js'};`,
+    'jest.config.js': `module.exports = {testRegex: '.*-banana.js'};`,
     'package.json': '{}',
     'some/nested/directory/file.js': '// nothing special',
   });
@@ -48,7 +48,7 @@ test('traverses directory tree up untill it finds jest.config', () => {
     {skipPkgJsonCheck: true},
   );
 
-  // Snapshot the console.loged `process.jwd()` and make sure it stays the same
+  // Snapshot the console.loged `process.cwd()` and make sure it stays the same
   expect(
     stdout.replace(/^\W+(.*)integration_tests/gm, '<<REPLACED>>'),
   ).toMatchSnapshot();
@@ -61,7 +61,7 @@ test('traverses directory tree up untill it finds jest.config', () => {
 
 test('invalid JS in jest.config.js', () => {
   writeFiles(DIR, {
-    '__tests__/a-lol.js': `test('lol', () => expect(1).toBe(1));`,
+    '__tests__/a-banana.js': `test('banana', () => expect(1).toBe(1));`,
     'jest.config.js': `module.exports = i'll break this file yo`,
     'package.json': '{}',
   });
