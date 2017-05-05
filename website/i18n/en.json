@@ -30,6 +30,10 @@
       "content": "Jest is used by teams of all sizes to test web application, node.js services, mobile apps, and APIs.",
       "title": "Who's using Jest?"
     },
+    "watch": {
+      "content": "The Jest core team and contributors regularly speak about Jest and painless JavaScript Testing. Check out our talks about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at f8 2017 or our talk about [Snapshot Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf 2017.",
+      "title": "Watch Talks about Jest"
+    },
     "zeroConfig": {
       "content": "Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.",
       "title": "Zero configuration"
@@ -97,7 +101,8 @@
   "promo": {
     "get": "Get Started",
     "learn": "Learn More",
-    "try": "Try Out Jest"
+    "try": "Try Out Jest",
+    "watch": "Watch Talks",
   },
   "repo": "facebook/jest",
   "support": {

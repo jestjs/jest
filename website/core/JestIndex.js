@@ -145,10 +145,25 @@ const JestIndex = React.createClass({
           </Container>
 
           <Container padding={['bottom', 'top']}>
+            <a className="anchor" name="watch" />
+            <a className="hash-link" href="#watch" />
             <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="video">
-                <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17" />
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/HAuXJVI_bUs?rel=0" frameborder="0" allowfullscreen></iframe>
               </div>
+              <div className="blockContent">
+                <h2>{siteConfig[language].belowFold.watch.title}</h2>
+                <div>
+                  <Marked>
+                    {siteConfig[language].belowFold.watch.content}
+                  </Marked>
+                </div>
+              </div>
+            </div>
+          </Container>
+
+          <Container padding={['bottom', 'top']} background="light">
+            <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="blockContent">
                 <h2>{siteConfig[language].belowFold.learn.title}</h2>
                 <div>
@@ -156,6 +171,9 @@ const JestIndex = React.createClass({
                     {siteConfig[language].belowFold.learn.content}
                   </Marked>
                 </div>
+              </div>
+              <div className="video">
+                <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17" />
               </div>
             </div>
           </Container>

@@ -98,6 +98,17 @@ You are now set up to use all ES6 features and React specific syntax.
 keep in mind that Jest will automatically define `NODE_ENV` as `test`.
 It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
 
+> Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
+
+```json
+// package.json
+{
+  "jest": {
+    "transform": {}
+  }
+}
+```
+
 ### Using webpack
 
 Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://facebook.github.io/jest/docs/webpack.html) to get started.
