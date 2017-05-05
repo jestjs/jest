@@ -111,11 +111,11 @@ describe('HTMLElement Plugin', () => {
   it('trims unnecessary whitespace', () => {
     const parent = document.createElement('div');
     parent.innerHTML = `
-    <span>
+       <span>
          some
          apple
          pseudo-multilne text
-    </span>
+                </span>
     <span>text</span>
     `;
 
