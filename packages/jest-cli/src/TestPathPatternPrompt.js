@@ -52,7 +52,6 @@ module.exports = class TestPathPatternPrompt extends PatternPrompt {
   }
 
   _printTypeahead(pattern: string, options: ScrollOptions) {
-    const {max} = options;
     const matchedTests = this._getMatchedTests(pattern);
     const total = matchedTests.length;
     const pipe = this._pipe;

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+'use strict';
 
 const {spawnSync} = require('child_process');
 const fs = require('fs');
@@ -58,10 +59,29 @@ const makeTemplate = string => {
 
 const cleanup = (directory: string) => rimraf.sync(directory);
 
-const makeTests = (directory: string, tests: {[filename: string]: string}) => {
+/**
+ * Creates a nested directory with files and their contents
+ * writeFiles(
+ *   '/home/tmp',
+ *   {
+ *     'package.json': '{}',
+ *     '__tests__/test-test.js': 'test("lol")',
+ *   }
+ * );
+ */
+const writeFiles = (directory: string, files: {[filename: string]: string}) => {
   mkdirp.sync(directory);
-  Object.keys(tests).forEach(filename => {
-    fs.writeFileSync(path.resolve(directory, filename), tests[filename]);
+  Object.keys(files).forEach(fileOrPath => {
+    const filePath = fileOrPath.split(path.sep); // ['tmp', 'a.js']
+    const filename = filePath.pop(); // filepath becomes dirPath (no filename)
+
+    if (filePath.length) {
+      mkdirp.sync(path.join.apply(path, [directory].concat(filePath)));
+    }
+    fs.writeFileSync(
+      path.resolve.apply(path, [directory].concat(filePath, [filename])),
+      files[fileOrPath],
+    );
   });
 };
 
@@ -112,6 +132,6 @@ module.exports = {
   fileExists,
   linkJestPackage,
   makeTemplate,
-  makeTests,
   run,
+  writeFiles,
 };

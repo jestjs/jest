@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {makeTemplate, makeTests, cleanup} = require('../utils');
+const {makeTemplate, writeFiles, cleanup} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
 
@@ -27,7 +27,7 @@ test('works fine when function throws error', () => {
     `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
+    writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
@@ -42,7 +42,7 @@ test(`throws the error if tested function didn't throw error`, () => {
     `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
+    writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(`Expected the function to throw an error.`);
     expect(status).toBe(1);
@@ -58,7 +58,7 @@ test('does not accept arguments', () => {
     `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
+    writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Matcher does not accept any arguments.');
     expect(status).toBe(1);
@@ -73,7 +73,7 @@ test('cannot be used with .not', () => {
     `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
+    writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
       'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
