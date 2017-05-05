@@ -38,6 +38,9 @@ class HomeSplash extends React.Component {
                     >
                       {siteConfig[this.props.language].promo.get}
                     </Button>
+                    <Button href={'#watch'}>
+                      {siteConfig[this.props.language].promo.watch}
+                    </Button>
                     <Button
                       href={
                         '/jest/docs/' +
