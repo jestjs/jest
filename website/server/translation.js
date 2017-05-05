@@ -23,18 +23,6 @@ function writeFileAndCreateFolder(file, content) {
   fs.writeFileSync(file, content);
 }
 
-function rmFile(file) {
-  try {
-    fs.unlinkSync(file);
-  } catch (e) {
-    /* seriously, unlink throws when the file doesn't exist :( */
-  }
-}
-
-function globEach(pattern, cb) {
-  glob.sync(pattern).forEach(cb);
-}
-
 function execute() {
   writeRawFiles();
   generateJS();

@@ -261,7 +261,7 @@ function fnNameFor(func: Function) {
   return matches ? matches[1] : '<anonymous>';
 }
 
-function isUndefined(obj: any)  {
+function isUndefined(obj: any) {
   return obj === void 0;
 }
 
