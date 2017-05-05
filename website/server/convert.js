@@ -19,8 +19,6 @@ const languages = require('../languages.js');
 
 const argv = optimist.argv;
 
-console.log('convert.js triggered...');
-
 function splitHeader(content) {
   const lines = content.split('\n');
   let i = 1;
@@ -142,9 +140,6 @@ function writeFileAndCreateFolder(file, content) {
 function execute() {
   const DOCS_MD_DIR = '../docs/';
   const BLOG_MD_DIR = '../blog/';
-
-  globEach('src/jest/docs/**', rmFile);
-  globEach('src/jest/blog/*.*', rmFile);
 
   // Extracts the Getting started content from GettingStarted.md
   // and inserts into repo's README
@@ -309,11 +304,6 @@ function execute() {
 
   writeFileAndCreateFolder('src/jest/blog/feed.xml', feed('rss'));
   writeFileAndCreateFolder('src/jest/blog/atom.xml', feed('atom'));
-}
-
-if (argv.convert) {
-  console.log('convert!');
-  execute();
 }
 
 module.exports = execute;

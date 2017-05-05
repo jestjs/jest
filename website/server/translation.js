@@ -32,13 +32,7 @@ function rmFile(file) {
 }
 
 function globEach(pattern, cb) {
-  glob(pattern, (err, files) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    files.forEach(cb);
-  });
+  glob.sync(pattern).forEach(cb);
 }
 
 function execute() {
@@ -48,6 +42,7 @@ function execute() {
 
 function writeRawFiles() {
   languages.filter(lang => lang.enabled).map(lang => {
+    // console.log('writing raw ' + lang.tag + ' file');
     const folder = lang.tag;
 
     const indexTemplate =
@@ -173,12 +168,11 @@ function writeRawFiles() {
   writeFileAndCreateFolder('src/jest/support.js', supportTemplate);
 }
 
-function generateJS() {
+function generateJS(cb) {
   /* ******
     Generate JS files from JSON
   */
   const I18N_JSON_DIR = './i18n/';
-  globEach('i18n/*.js', rmFile);
 
   // crowdin doesn't accept .js files for conversion, but does
   // accept .json files convert these json files to .js so they
