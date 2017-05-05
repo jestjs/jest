@@ -13,15 +13,45 @@
 import type {InitialOptions, Path} from 'types/Config';
 
 const fs = require('fs');
+const jsonlint = require('./vendor/jsonlint');
 const path = require('path');
 
 const JEST_CONFIG = 'jest.config.js';
-const PACAKAGE_JSON = 'package.json';
+const PACKAGE_JSON = 'package.json';
 
 const findConfig = (root: Path): InitialOptions => {
-  let directory = root;
   // $FlowFixMe
   let options: InitialOptions = {};
+  let directory = root;
+  const isJS = directory.endsWith('.js');
+  if (isJS || directory.endsWith('.json')) {
+    const filePath = path.resolve(process.cwd(), directory);
+    if (isJS) {
+      // $FlowFixMe
+      options = require(filePath);
+    } else {
+      let pkg;
+      try {
+        // $FlowFixMe
+        pkg = require(filePath);
+      } catch (error) {
+        throw new Error(
+          `Jest: Failed to parse config file ${filePath}\n` +
+            `  ${jsonlint.errors(fs.readFileSync(filePath, 'utf8'))}`,
+        );
+      }
+      if (directory.endsWith(PACKAGE_JSON)) {
+        options = pkg.jest || options;
+      } else {
+        options = pkg;
+      }
+    }
+    options.rootDir = options.rootDir
+      ? path.resolve(path.dirname(directory), options.rootDir)
+      : path.dirname(directory);
+    return options;
+  }
+
   do {
     const configJsFilePath = path.join(directory, JEST_CONFIG);
     if (fs.existsSync(configJsFilePath)) {
@@ -29,7 +59,7 @@ const findConfig = (root: Path): InitialOptions => {
       options = require(configJsFilePath);
       break;
     }
-    const packageJsonFilePath = path.join(directory, PACAKAGE_JSON);
+    const packageJsonFilePath = path.join(directory, PACKAGE_JSON);
     if (fs.existsSync(packageJsonFilePath)) {
       // $FlowFixMe
       const pkg = require(packageJsonFilePath);
@@ -41,9 +71,11 @@ const findConfig = (root: Path): InitialOptions => {
       break;
     }
   } while (directory !== (directory = path.dirname(directory)));
+
   options.rootDir = options.rootDir
     ? path.resolve(root, options.rootDir)
     : root;
+
   return options;
 };
 
