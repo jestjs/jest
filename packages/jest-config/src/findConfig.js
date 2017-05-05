@@ -56,14 +56,16 @@ const findConfig = (root: Path): InitialOptions => {
   }
 
   do {
-    const configJsFilePath = path.join(directory, JEST_CONFIG);
+    const configJsFilePath = path.resolve(path.join(directory, JEST_CONFIG));
     if (isFile(configJsFilePath)) {
       // $FlowFixMe
       options = require(configJsFilePath);
       break;
     }
 
-    const packageJsonFilePath = path.join(directory, PACKAGE_JSON);
+    const packageJsonFilePath = path.resolve(
+      path.join(directory, PACKAGE_JSON),
+    );
     if (isFile(packageJsonFilePath)) {
       // $FlowFixMe
       const pkg = require(packageJsonFilePath);
@@ -78,7 +80,7 @@ const findConfig = (root: Path): InitialOptions => {
 
   options.rootDir = options.rootDir
     ? path.resolve(root, options.rootDir)
-    : directory;
+    : path.resolve(directory);
 
   return options;
 };

@@ -194,10 +194,10 @@ const runJest = async (
   }
 
   // When using more than one context, make all printed paths relative to the
-  // current cwd.
-  if (contexts.length > 1) {
-    setConfig(contexts, {rootDir: process.cwd()});
-  }
+  // current cwd. rootDir is only used as a token during normalization and
+  // has no special meaning afterwards except for printing information to the
+  // CLI.
+  setConfig(contexts, {rootDir: process.cwd()});
 
   const results = await new TestRunner(globalConfig, {
     maxWorkers,
