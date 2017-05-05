@@ -19,12 +19,15 @@ const path = require('path');
 const JEST_CONFIG = 'jest.config.js';
 const PACKAGE_JSON = 'package.json';
 
+const isFile = filePath =>
+  fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
+
 const findConfig = (root: Path): InitialOptions => {
   // $FlowFixMe
   let options: InitialOptions = {};
   let directory = root;
   const isJS = directory.endsWith('.js');
-  if (isJS || directory.endsWith('.json')) {
+  if ((isJS || directory.endsWith('.json')) && isFile(directory)) {
     const filePath = path.resolve(process.cwd(), directory);
     if (isJS) {
       // $FlowFixMe
@@ -54,13 +57,14 @@ const findConfig = (root: Path): InitialOptions => {
 
   do {
     const configJsFilePath = path.join(directory, JEST_CONFIG);
-    if (fs.existsSync(configJsFilePath)) {
+    if (isFile(configJsFilePath)) {
       // $FlowFixMe
       options = require(configJsFilePath);
       break;
     }
+
     const packageJsonFilePath = path.join(directory, PACKAGE_JSON);
-    if (fs.existsSync(packageJsonFilePath)) {
+    if (isFile(packageJsonFilePath)) {
       // $FlowFixMe
       const pkg = require(packageJsonFilePath);
       if (pkg.jest) {
@@ -74,7 +78,7 @@ const findConfig = (root: Path): InitialOptions => {
 
   options.rootDir = options.rootDir
     ? path.resolve(root, options.rootDir)
-    : root;
+    : directory;
 
   return options;
 };
