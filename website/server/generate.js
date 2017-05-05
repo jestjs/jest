@@ -5,6 +5,10 @@ const mkdirp = require('mkdirp');
 const server = require('./server.js');
 const feed = require('./feed');
 
+const convert = require('./convert.js');
+const translationPre = require('./translationPre.js');
+const translation = require('./translation.js');
+
 console.log('Generate.js triggered...');
 
 // Sadly, our setup fatals when doing multiple concurrent requests
@@ -33,6 +37,18 @@ const queue = (function() {
   }
   return {push};
 })();
+
+queue.push(cb => {
+  // clean up localization files
+  translationPre(() => {
+    // Convert localized .json files into .js
+    translation();
+    // convert all the md files on every request. This is not optimal
+    // but fast enough that we don't really need to care right now.
+    convert();
+    cb();
+  });
+});
 
 queue.push(cb => {
   mkdirp.sync('build/jest/blog/');

@@ -4,6 +4,7 @@
 const connect = require('connect');
 const convert = require('./convert.js');
 const translationPre = require('./translationPre.js');
+const translation = require('./translation.js');
 const fs = require('fs');
 const http = require('http');
 const optimist = require('optimist');
@@ -38,11 +39,17 @@ const buildOptions = {
   static: true,
 };
 
-// Convert localized .json files into .js
-translationPre();
+// clean up localization files
+translationPre(() => {
+  // Convert localized .json files into .js
+  translation();
+});
 
 const app = connect()
   .use((req, res, next) => {
+    // Convert localized .json files into .js
+    translation();
+
     // convert all the md files on every request. This is not optimal
     // but fast enough that we don't really need to care right now.
     convert();

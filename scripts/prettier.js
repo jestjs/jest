@@ -42,7 +42,13 @@ const config = {
     options: {
       'trailing-comma': 'es5',
     },
-    patterns: ['examples/**/', 'scripts/**/', 'integration_tests/**/'],
+    patterns: [
+      'examples/**/',
+      'scripts/**/',
+      'integration_tests/**/',
+      'website/server/*',
+      'website/layout/*',
+    ],
   },
 };
 
