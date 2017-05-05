@@ -992,7 +992,6 @@ a:hover code {
 }
 #languages-dropdown {
   position: absolute;
-  left: 0px;
   width:100%;
 }
 #languages-dropdown.visible {
@@ -1111,6 +1110,7 @@ ul#languages li {
 
   #languages-dropdown {
     top: 50px;
+    left: 0px;
   }
 
   ul#languages-dropdown-items {
