@@ -54,8 +54,7 @@ runCommand(
   JEST_BIN_PATH,
   ['--projects'].concat(
     examples.map(
-      (example, index) =>
-        example + (index > 3 ? path.sep + 'package.json' : '')
+      (example, index) => example + (index > 3 ? path.sep + 'package.json' : '')
     )
   ),
   EXAMPLES_DIR
