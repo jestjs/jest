@@ -41,7 +41,12 @@ const babelNodeOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
 babelNodeOptions.babelrc = false;
-const babelEs5Options = Object.assign({}, babelNodeOptions, {presets: 'env'});
+const babelEs5Options = Object.assign(
+  {},
+  babelNodeOptions,
+  {presets: 'env'},
+  {plugins: [...babelNodeOptions.plugins, 'transform-runtime']}
+);
 
 const fixedWidth = str => {
   const WIDTH = 80;
