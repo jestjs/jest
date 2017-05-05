@@ -24,6 +24,7 @@ type HTMLElement = {
   childNodes: Array<HTMLElement | HTMLText | HTMLComment>,
   nodeType: 1,
   tagName: string,
+  textContent: string,
 };
 type HTMLText = {
   data: string,
@@ -60,6 +61,7 @@ function printChildren(flatChildren, print, indent, colors, opts) {
         return print(node);
       }
     })
+    .filter(value => value.trim().length)
     .join(opts.edgeSpacing);
 }
 
@@ -86,10 +88,18 @@ const print = (
   colors: Colors,
 ): string => {
   if (element.nodeType === 3) {
-    return element.data;
+    return element.data
+      .split('\n')
+      .map(text => text.trimLeft())
+      .filter(text => text.length)
+      .join(' ');
   } else if (element.nodeType === 8) {
     return (
-      colors.comment.open + '<!--' + element.data + '-->' + colors.comment.close
+      colors.comment.open +
+      '<!-- ' +
+      element.data.trim() +
+      ' -->' +
+      colors.comment.close
     );
   }
 
