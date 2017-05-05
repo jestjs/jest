@@ -31,7 +31,7 @@
       "title": "Who's using Jest?"
     },
     "watch": {
-      "content": "The Jest core team and contributors regularly speak about Jest and painless JavaScript Testing. Check out our talks about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at f8 2017 or our talk about [Snapshot Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf 2017.",
+      "content": "The Jest core team and contributors regularly speak about Jest and Delightful JavaScript Testing. Check out our talks about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at f8 2017 or our talk about [Snapshot Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf 2017.",
       "title": "Watch Talks about Jest"
     },
     "zeroConfig": {
@@ -77,7 +77,7 @@
     "api": "Globals",
     "asynchronous": "Testing Asynchronous Code",
     "cli": "Jest CLI Options",
-    "configuration": "Configuring package.json",
+    "configuration": "Configuring Jest",
     "expect": "Expect",
     "getting-started": "Getting Started",
     "jest-object": "The Jest Object",
@@ -125,7 +125,7 @@
       "title": "Stay up to date"
     }
   },
-  "tagline": "🃏 Painless JavaScript Testing",
+  "tagline": "🃏 Delightful JavaScript Testing",
   "url": "https://facebook.github.io",
   "using": {
     "header": {

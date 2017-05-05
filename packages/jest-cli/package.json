@@ -1,6 +1,6 @@
 {
   "name": "jest-cli",
-  "description": "Painless JavaScript Testing.",
+  "description": "Delightful JavaScript Testing.",
   "version": "19.0.2",
   "main": "build/jest.js",
   "dependencies": {

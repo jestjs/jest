@@ -1,6 +1,6 @@
 ---
 id: configuration
-title: Configuring package.json
+title: Configuring Jest
 layout: docs
 category: API Reference
 permalink: docs/en/configuration.html
@@ -25,6 +25,7 @@ top level so Jest will know how to find your settings:
 Or through JavaScript:
 
 ```js
+// jest.config.js
 module.exports = {
   verbose: true,
 };
