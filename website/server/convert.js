@@ -202,10 +202,10 @@ function execute() {
         metadata.localized_id = metadata.id;
         metadata.id = language + '-' + metadata.id;
         if (metadata.previous) {
-          metadata.previous = metadata.previous;
+          metadata.previous = language + '-' + metadata.previous;
         }
         if (metadata.next) {
-          metadata.next = metadata.next;
+          metadata.next = language + '-' + metadata.next;
         }
         metadata.language = language;
         metadatas.files.push(metadata);

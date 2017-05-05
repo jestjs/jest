@@ -34,8 +34,8 @@ const DocsLayout = React.createClass({
               language={metadata.language}
             />
             <div className="docs-prevnext">
-              {metadata.previous && <a className="docs-prev button" href={metadata.previous + '.html#content'}>&larr; Previous</a>}
-              {metadata.next && <a className="docs-next button" href={metadata.next + '.html#content'}>Continue Reading &rarr;</a>}
+              {metadata.previous && <a className="docs-prev button" href={stripLang(metadata.previous) + '.html#content'}>&larr; Previous</a>}
+              {metadata.next && <a className="docs-next button" href={stripLang(metadata.next) + '.html#content'}>Continue Reading &rarr;</a>}
             </div>
           </Container>
         </div>
@@ -43,5 +43,9 @@ const DocsLayout = React.createClass({
     );
   },
 });
+
+function stripLang(s) {
+  return s.replace(/^[a-z]{2}-/, '');
+}
 
 module.exports = DocsLayout;
