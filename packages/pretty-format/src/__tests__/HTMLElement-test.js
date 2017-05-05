@@ -108,6 +108,31 @@ describe('HTMLElement Plugin', () => {
     );
   });
 
+  it('trims unnecessary whitespace', () => {
+    const parent = document.createElement('div');
+    parent.innerHTML = `
+    <span>
+         some
+         apple
+         pseudo-multilne text
+    </span>
+    <span>text</span>
+    `;
+
+    expect(parent).toPrettyPrintTo(
+      [
+        '<div>',
+        '  <span>',
+        '    some apple pseudo-multilne text',
+        '  </span>',
+        '  <span>',
+        '    text',
+        '  </span>',
+        '</div>',
+      ].join('\n'),
+    );
+  });
+
   it('supports text node', () => {
     const parent = document.createElement('div');
     parent.innerHTML = 'some <span>text</span>';
