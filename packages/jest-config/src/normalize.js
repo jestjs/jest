@@ -430,6 +430,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'verbose':
       case 'watch':
       case 'watchman':
+      case 'transformPlugins':
         value = options[key];
         break;
     }

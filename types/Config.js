@@ -54,6 +54,7 @@ export type DefaultOptions = {|
   testURL: string,
   timers: 'real' | 'fake',
   transformIgnorePatterns: Array<Glob>,
+  transformPlugins?: Array<string>,
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
@@ -115,6 +116,7 @@ export type InitialOptions = {|
   timers?: 'real' | 'fake',
   transform?: {[key: string]: string},
   transformIgnorePatterns?: Array<Glob>,
+  transformPlugins?: Array<string>,
   unmockedModulePathPatterns?: Array<string>,
   updateSnapshot?: boolean,
   useStderr?: boolean,
@@ -187,5 +189,6 @@ export type ProjectConfig = {|
   timers: 'real' | 'fake',
   transform: Array<[string, Path]>,
   transformIgnorePatterns: Array<Glob>,
+  transformPlugins?: Array<string>,
   unmockedModulePathPatterns: ?Array<string>,
 |};

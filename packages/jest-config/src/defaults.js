@@ -63,6 +63,7 @@ module.exports = ({
   testURL: 'about:blank',
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformPlugins: [],
   useStderr: false,
   verbose: null,
   watch: false,
