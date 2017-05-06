@@ -28,7 +28,7 @@ const Head = React.createClass({
         <link rel="mask-icon" href="/jest/img/favicon/safari-pinned-tab.svg" color="#5bbad5" />
         <link rel="shortcut icon" href="/jest/img/favicon/favicon.ico" />
         <meta name="msapplication-config" content="/jest/img/favicon/browserconfig.xml" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#99424f" />
 
         <link rel="alternate" type="application/atom+xml" href="/jest/blog/atom.xml" title="Jest Blog ATOM Feed" />
         <link rel="alternate" type="application/rss+xml" href="/jest/blog/feed.xml" title="Jest Blog RSS Feed" />
