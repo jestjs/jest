@@ -13,7 +13,7 @@
 
 ## Getting Started
 
-<generated_getting_started_start />
+<!-- generated_getting_started_start -->
 Install Jest using `npm`:
 
 ```
@@ -139,7 +139,7 @@ then modify your `package.json` so the `jest` section looks something like:
   }
 }
 ```
-<generated_getting_started_end />
+<!-- generated_getting_started_end -->
 
 ## Documentation
 
