@@ -42,11 +42,15 @@ We made a number of additions and improvements to the testing APIs which will he
 * **Expect <n> assertions:** Along with the existing `expect.assertions(n)`, the new `expect.hasAssertions()` can be used to ensure a test has at least one assertion.
 * **Lint Plugin:** A `valid-expect` rule was added to `eslint-plugin-jest` to ensure that an assertion is called after invoking `expect`. This will prevent mistakes like a stray `expect(banana);` with a missing assertion call.
 * **Pretty-Format Plugins:** A number of new pretty-format plugins were added to Jest. We now pretty-print [Immutable.js](https://github.com/facebook/immutable-js/) data structures and HtmlElements in assertion failures and snapshots.
-* **Custom Environment:** It is now possible to add a `@jest-environment node|jsdom` annoation to the doc-block comment of a test file to use a test environment different from the default for individual tests.
+* **Custom Environment:** It is now possible to add a `@jest-environment node|jsdom` annotation to the doc-block comment of a test file to use a test environment different from the default for individual tests.
 
 Here is an example of all how all the new APIs together will make testing more delightful:
 
 ```
+/**
+ * @jest-environment node
+ */
+
 test('compares apples and bananas', async () => {
   expect.hasAssertions(); // Ensure this test has at least one assertion.
 
@@ -75,14 +79,14 @@ As with every major release, we are making a number of breaking changes to make 
 * **Documentation:** Documentation is critical to share best practices and teach everyone how to write effective tests which will lead to better software. Over the last few weeks we have also expanded Jest's documentation to include a Snapshot Testing FAQ, a guide with information about how to use Jest with common JavaScript libraries as well as we documented the new features mentioned above.
 * **Translations:** We are now asking for your help to [translate the Jest documentation](https://crowdin.com/project/jest) to make it easier for people to learn how to use Jest.
 * **Custom Reporters:** Jest now supports custom test reporters through the `reporters` configuration option. You can finally customize the output of Jest as well as integrate it with other tools by generating reports in formats such as XML. [See documentation](https://facebook.github.io/jest/docs/en/configuration.html#reporters-array-modulename-modulename-options).
-* **Codebase Health:** It was only possible iterate so quickly in Jest because we spent a significant amount of time on the health of the codebase. We were one of the early adopters of [prettier](https://github.com/prettier/prettier), we increased flow coverage significantly, forked Jasmine to improve our test runner library and we rewrote and refactored significant portions of Jest itself to set up Jest for success in the future.
-* **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full Changelog can be found in the [Jest repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
+* **Codebase Health:** It was only possible iterate so quickly in Jest because we spent a significant amount of time on the health of the codebase. We were one of the early adopters of [prettier](https://github.com/prettier/prettier), we notably increased flow coverage, forked Jasmine to improve our test runner library and we rewrote and refactored significant portions of Jest itself to set up Jest for success in the future.
+* **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full changelog can be found in the [Jest repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
 
 ## Talks about Jest
 
 Recently the Jest core team and other contributors started to talk more about Jest and the experience of working on Jest at conferences:
 
 * Rogelio Guzman did a talk about [Jest Snapshots and Beyond](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf.
-* I spoke about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at Facebooks f8 conference.
+* I spoke about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at Facebook's F8 conference.
 
 *As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on [GitHub](https://github.com/facebook/jest) or on [Discord](https://discordapp.com/channels/102860784329052160/103622435865104384).*
