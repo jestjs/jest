@@ -148,8 +148,8 @@ function execute() {
   ).content.replace(/\(\/jest\//g, '(https://facebook.github.io/jest/');
 
   let readme = fs.readFileSync('../README.md', 'utf8');
-  const guideStart = '<generated_getting_started_start />';
-  const guideEnd = '<generated_getting_started_end />';
+  const guideStart = '<!-- generated_getting_started_start -->';
+  const guideEnd = '<!-- generated_getting_started_end -->';
   readme =
     readme.slice(0, readme.indexOf(guideStart) + guideStart.length) +
     gettingStarted +
