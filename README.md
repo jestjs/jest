@@ -3,7 +3,7 @@
 [![CircleCI Build Status](https://circleci.com/gh/facebook/jest.svg?style=shield)](https://circleci.com/gh/facebook/jest)
 [![Travis Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master) [![npm version](https://badge.fury.io/js/jest.svg)](http://badge.fury.io/js/jest)
 
-🃏 Painless JavaScript Testing
+🃏 Delightful JavaScript Testing
 
 - **👩🏻‍💻 Easy Setup**: Jest is a complete and easy to set up JavaScript testing solution. In fact, Jest works out of the box for any React project.
 
@@ -148,7 +148,7 @@ Learn more about using Jest at http://facebook.github.io/jest
 * [Getting Started](http://facebook.github.io/jest/docs/getting-started.html)
 * [Guides](http://facebook.github.io/jest/docs/snapshot-testing.html)
 * [API Reference](http://facebook.github.io/jest/docs/api.html)
-* [Configuring package.json](http://facebook.github.io/jest/docs/configuration.html)
+* [Configuring Jest](http://facebook.github.io/jest/docs/configuration.html)
 
 ## Contributing
 
