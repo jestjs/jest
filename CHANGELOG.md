@@ -26,6 +26,7 @@
 * New support for mocking native async methods. ([#3209](https://github.com/facebook/jest/pull/3209))
 * New guide on how to use Jest with any JavaScript framework. ([#3243](https://github.com/facebook/jest/pull/3243))
 * New translation system for the Jest website.
+* New collapsing watch mode usage prompt after first run. ([#3078](https://github.com/facebook/jest/pull/3078))
 * Breaking Change: Forked Jasmine 2.5 into Jest's own test runner and rewrote large parts of Jasmine. ([#3147](https://github.com/facebook/jest/pull/3147))
 * Breaking Change: Jest does not write new snapshots by default on CI. ([#3456](https://github.com/facebook/jest/pull/3456))
 * Breaking Change: Moved the typescript parser from `jest-editor-support` into a separate `jest-test-typescript-parser` package. ([#2973](https://github.com/facebook/jest/pull/2973))
@@ -57,8 +58,7 @@
 * Fixed to show reject reason when expecting resolve. ([#3134](https://github.com/facebook/jest/pull/3134))
 * Fixed toHaveProperty() to use hasOwnProperty from Object ([#3410](https://github.com/facebook/jest/pull/3410))
 * Fixed watch mode typeahead filter cursor behavior. ([#3392](https://github.com/facebook/jest/pull/3392))
-* Fixed watch mode usage prompt to collapse after first run. ([#3078](https://github.com/facebook/jest/pull/3078))
-* Fixed watch mode's screen clearing. [(#2959) ([#3294](https://github.com/facebook/jest/pull/3294))
+* Fixed watch mode's screen clearing. ([#2959](https://github.com/facebook/jest/pull/2959)) ([#3294](https://github.com/facebook/jest/pull/3294))
 * Improved and consolidated Jest's configuration file resolution. ([#3472](https://github.com/facebook/jest/pull/3472))
 * Improved documentation throughout the Jest website.
 * Improved documentation to explicitly mention that snapshots must be reviewed. ([#3203](https://github.com/facebook/jest/pull/3203))
