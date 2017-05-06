@@ -2,12 +2,34 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://facebook.github.io/jest/blog/</id>
     <title>Jest Blog</title>
-    <updated>2017-02-21T06:00:00Z</updated>
+    <updated>2017-05-06T06:00:00Z</updated>
     <link rel="alternate" href="https://facebook.github.io/jest/blog/"/>
     <subtitle>The best place to stay up-to-date with the latest Jest news and events.</subtitle>
     <logo>https://cdn.rawgit.com/facebook/jest/master/packages/jest-cli/src/assets/jest_logo.png</logo>
     <rights>Copyright © 2017 Facebook Inc.</rights>
     <generator>Feed for Node.js</generator>
+    <entry>
+        <title type="html"><![CDATA[Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner]]></title>
+        <id>https://facebook.github.io/jest/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html</id>
+        <link href="https://facebook.github.io/jest/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html">
+        </link>
+        <updated>2017-05-06T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+A few months ago we announced [Jest 19](http://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html) which came with major new features and was the biggest Jest release until today. Jest 20 has twice the amount of changes compared to the previous version, features a complete rewrite of the test runner, adds new testing APIs. The new release enables a new level of customization and configuration for projects all while making it effortless to upgrade. Beyond Painless JavaScript Testing, we believe Jest is now delivering a **Delightful JavaScript Testing experience**. Let's take a look at the best new features and changes in depth:
+
+## Multi-Project-Runner & Configuration Overhaul
+
+Until now, Jest could only operate in one project at a time. This is often cumbersome if you are working on many smaller projects that each have their own setup and configuration. With Jest 20, we rewrote the test runner completely to run many projects at the same time within a single instance of Jest, for example if you are working on a React frontend and a node.js backend. Here is a video of Jest running tests for [React](https://github.com/facebook/react), [Relay](https://github.com/facebook/relay), [Yarn](https://github.com/yarnpkg/yarn) and Jest all at the same time:
+
+![multi-runner](/jest/img/blog/20-multi-runner.gif)
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements]]></title>
         <id>https://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html</id>
