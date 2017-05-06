@@ -39,17 +39,14 @@ const buildOptions = {
   static: true,
 };
 
-// clean up localization files
-translationPre(() => {
-  // Convert localized .json files into .js
-  translation();
-});
+// clean up localization files, it can take a while to remove files so let's
+// have our next steps run in a callback
+translationPre();
 
 const app = connect()
   .use((req, res, next) => {
     // Convert localized .json files into .js
     translation();
-
     // convert all the md files on every request. This is not optimal
     // but fast enough that we don't really need to care right now.
     convert();
@@ -64,7 +61,6 @@ const app = connect()
     res.end(
       fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + ''
     );
-    console.log('DONE');
   })
   .use(reactMiddleware.provide(buildOptions))
   .use(connect['static'](FILE_SERVE_ROOT))
