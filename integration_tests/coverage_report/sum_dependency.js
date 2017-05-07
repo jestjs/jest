@@ -9,4 +9,10 @@
 
 require('path');
 
-// This module exports nothing, It will be mocked later in test
+const uncoveredFunction = () => {
+  return true ? 1 + '5' : '999';
+};
+
+module.exports = {
+  uncoveredFunction,
+};
