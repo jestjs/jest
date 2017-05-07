@@ -27,7 +27,7 @@ const ReferenceLayout = React.createClass({
             language={this.props.language}
             metadata={metadata}
             title="API"
-            root="/jest/docs/api.html"
+            root={'/jest/docs/' + this.props.language + '/api.html'}
             layout="reference"
           />
           <Container className="mainContainer referenceContainer">

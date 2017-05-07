@@ -10,7 +10,7 @@
       "title": "Learn how to test JavaScript with "
     },
     "mocking": {
-      "content": "Powerful [mocking library](/jest/docs/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.",
+      "content": "Powerful [mocking library](/jest/docs/en/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.",
       "title": "Powerful mocking library"
     },
     "parallelized": {
@@ -109,7 +109,7 @@
   "repo": "facebook/jest",
   "support": {
     "browse": {
-      "content": "Find what you're looking for in our detailed documentation and guides.\n- Learn how to [get started](/jest/docs/getting-started.html) with Jest.\n- [Troubleshoot](/jest/docs/troubleshooting.html) problems with Jest.\n- Learn how to [configure Jest](/jest/docs/configuration.html).\n- Look at the full [API Reference](/jest/docs/api.html).\n",
+      "content": "Find what you're looking for in our detailed documentation and guides.\n- Learn how to [get started](/jest/docs/en/getting-started.html) with Jest.\n- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.\n- Learn how to [configure Jest](/jest/docs/en/configuration.html).\n- Look at the full [API Reference](/jest/docs/en/api.html).\n",
       "title": "Browse the docs"
     },
     "header": {
