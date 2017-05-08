@@ -12,6 +12,7 @@ const fs = require('fs');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 const optimist = require('optimist');
+const os = require('os');
 const path = require('path');
 const toSlug = require('../core/toSlug');
 
@@ -20,7 +21,7 @@ const languages = require('../languages.js');
 const argv = optimist.argv;
 
 function splitHeader(content) {
-  const lines = content.split('\n');
+  const lines = content.split(os.EOL);
   let i = 1;
   for (; i < lines.length - 1; ++i) {
     if (lines[i] === '---') {
