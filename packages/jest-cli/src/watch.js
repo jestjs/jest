@@ -18,7 +18,7 @@ const chalk = require('chalk');
 const createContext = require('./lib/createContext');
 const HasteMap = require('jest-haste-map');
 const isCI = require('is-ci');
-const os = require('os');
+const replacePathSepForRegex = require('jest-regex-util').replacePathSepForRegex;
 const isInteractive = process.stdout.isTTY && !isCI;
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
@@ -201,13 +201,9 @@ const watch = (
       case KEYS.P:
         testPathPatternPrompt.run(
           testPathPattern => {
-            if (os.platform() === 'win32') {
-              testPathPattern = testPathPattern.replace(/\//g, '\\\\')
-            }
-
             updateArgv(argv, 'watch', {
               testNamePattern: '',
-              testPathPattern,
+              testPathPattern: replacePathSepForRegex(testPathPattern),
             });
 
             startRun();
