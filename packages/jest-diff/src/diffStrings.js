@@ -20,6 +20,12 @@ export type DiffOptions = {|
   aAnnotation?: string,
   bAnnotation?: string,
   expand?: boolean,
+  snapshot?: boolean,
+|};
+
+export type Replacement = {|
+  a: string,
+  b: string,
 |};
 
 type Diff = {diff: string, isDifferent: boolean};
@@ -47,92 +53,38 @@ const getAnnotation = (options: ?DiffOptions): string =>
   chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) +
   '\n\n';
 
-// Given string, return array of its lines including newline characters.
-// Note: split-lines package doesn’t allow newline at end of last line :(
-const regexpNewline = /\n/g;
-function splitIntoLines(string: string): Array<string> {
-  const lines = [];
+// Given string, return array of its lines.
+function splitIntoLines(string) {
+  const lines = string.split('\n');
 
-  regexpNewline.lastIndex = 0;
-  let prevIndex = regexpNewline.lastIndex;
-  regexpNewline.exec(string);
-
-  while (regexpNewline.lastIndex !== 0) {
-    lines.push(string.slice(prevIndex, regexpNewline.lastIndex));
-    prevIndex = regexpNewline.lastIndex;
-    regexpNewline.exec(string);
-  }
-
-  if (prevIndex < string.length || prevIndex === 0) {
-    lines.push(string.slice(prevIndex));
+  if (lines.length !== 0 && lines[lines.length - 1] === '') {
+    lines.pop();
   }
 
   return lines;
 }
 
-// Return whether line has an odd number of unescaped quotes.
-function oddCountOfQuotes(line) {
-  let oddBackslashes = false;
-  let oddQuotes = false;
-  // eslint-disable-next-line prefer-const
-  for (let char of line) {
-    if (char === '\\') {
-      oddBackslashes = !oddBackslashes;
-    } else {
-      if (char === '"' && !oddBackslashes) {
-        oddQuotes = !oddQuotes;
-      }
-      oddBackslashes = false;
-    }
-  }
-  return oddQuotes;
-}
-
-// Given array of lines, return lines without indentation,
-// except in multiline strings.
-const regexpIndentation = /^[ ]*/;
-function unindentLines(lines) {
-  let inMultilineString = false;
-
-  return lines.map(line => {
-    const oddCount = oddCountOfQuotes(line);
-
-    if (inMultilineString) {
-      inMultilineString = !oddCount;
-      return line;
-    }
-
-    inMultilineString = oddCount;
-    return line.replace(regexpIndentation, '');
-  });
-}
-
-// Given expected and received after an assertion fails,
-// return chunks from diff.diffLines with original indentation,
-// but ignoring indentation except in multiline strings.
-// diff.diffLines ignoreWhitespace option doesn’t work for 3 reasons:
-// It ignores indentation in multiline strings.
-// It ignores whitespace at the end of lines.
-// It returns chunks without original indentation.
-function diffChunksUnindented(a, b) {
-  const aLines = splitIntoLines(a);
-  const bLines = splitIntoLines(b);
-  const chunks = diff.diffLines(
-    unindentLines(aLines).join(''),
-    unindentLines(bLines).join(''),
-  );
+// Replace unindented lines with original lines.
+function replaceValueOfChunks(chunks, replacement) {
+  const aLines = splitIntoLines(replacement.a);
+  const bLines = splitIntoLines(replacement.b);
 
   let aIndex = 0;
   let bIndex = 0;
   chunks.forEach(chunk => {
     const count = chunk.count; // number of lines in chunk
 
-    // Replace unindented lines with original lines.
     // Assume that a is expected and b is received.
     if (chunk.removed) {
-      chunk.value = aLines.slice(aIndex, (aIndex += count)).join('');
+      chunk.value = aLines
+        .slice(aIndex, (aIndex += count))
+        .map(line => line + '\n')
+        .join('');
     } else {
-      chunk.value = bLines.slice(bIndex, (bIndex += count)).join('');
+      chunk.value = bLines
+        .slice(bIndex, (bIndex += count))
+        .map(line => line + '\n')
+        .join('');
       if (!chunk.added) {
         aIndex += count; // increment both if chunk is unchanged
       }
@@ -142,32 +94,29 @@ function diffChunksUnindented(a, b) {
   return chunks;
 }
 
-const diffLines = (a: string, b: string, multilineString?: boolean): Diff => {
-  const chunks = multilineString
-    ? diff.diffLines(a, b)
-    : diffChunksUnindented(a, b);
+const diffLines = (a: string, b: string, replacement?: Replacement): Diff => {
+  let chunks = diff.diffLines(a, b);
+  if (replacement) {
+    chunks = replaceValueOfChunks(chunks, replacement);
+  }
   let isDifferent = false;
   return {
     diff: chunks
       .map(part => {
-        const {added, removed} = part;
+        const {added, removed, value} = part;
         if (added || removed) {
           isDifferent = true;
         }
 
-        const lines = part.value.split('\n');
+        const lines = splitIntoLines(value);
         const color = getColor(added, removed);
         const bgColor = getBgColor(added, removed);
-
-        if (lines[lines.length - 1] === '') {
-          lines.pop();
-        }
 
         return lines
           .map(line => {
             const highlightedLine = highlightTrailingWhitespace(line, bgColor);
             const mark = color(added ? '+' : removed ? '-' : ' ');
-            return mark + ' ' + color(highlightedLine) + '\n';
+            return mark + color(highlightedLine) + '\n';
           })
           .join('');
       })
@@ -191,45 +140,34 @@ const createPatchMark = (hunk: Hunk): string => {
   return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
 };
 
-// Given expected and received after an assertion fails,
-// return hunks from diff.structuredPatch with original indentation,
-// but ignoring indentation except in multiline strings.
-function diffHunksUnindented(a, b, options) {
-  const aLines = splitIntoLines(a);
-  const bLines = splitIntoLines(b);
-  const hunks = diff.structuredPatch(
-    '',
-    '',
-    unindentLines(aLines).join(''),
-    unindentLines(bLines).join(''),
-    '',
-    '',
-    options,
-  ).hunks;
+// Replace unindented lines with original lines.
+function replaceLinesInHunks(hunks, replacement) {
+  const aLines = splitIntoLines(replacement.a);
+  const bLines = splitIntoLines(replacement.b);
 
   hunks.forEach(hunk => {
     // hunk has one-based line numbers
     let aIndex = hunk.oldStart - 1;
     let bIndex = hunk.newStart - 1;
 
-    // Replace unindented lines with original lines.
     // Assume that a is expected and b is received.
     hunk.lines = hunk.lines.map(line => {
       const mark = line[0];
       if (mark === ' ') {
         aIndex += 1; // increment both if line is unchanged
       }
-      return (
-        mark +
-        (mark === '-' ? aLines[aIndex++] : bLines[bIndex++]).replace('\n', '')
-      );
+      return mark + (mark === '-' ? aLines[aIndex++] : bLines[bIndex++]);
     });
   });
 
   return hunks;
 }
 
-const structuredPatch = (a: string, b: string, multilineString?: boolean): Diff => {
+const structuredPatch = (
+  a: string,
+  b: string,
+  replacement?: Replacement,
+): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
   // Make sure the strings end with a newline.
@@ -241,9 +179,10 @@ const structuredPatch = (a: string, b: string, multilineString?: boolean): Diff 
   }
 
   const oldLinesCount = (a.match(/\n/g) || []).length;
-  const hunks = multilineString
-    ? diff.structuredPatch('', '', a, b, '', '', options).hunks
-    : diffHunksUnindented(a, b, options);
+  let hunks = diff.structuredPatch('', '', a, b, '', '', options).hunks;
+  if (replacement) {
+    hunks = replaceLinesInHunks(hunks, replacement);
+  }
 
   return {
     diff: hunks
@@ -272,14 +211,19 @@ const structuredPatch = (a: string, b: string, multilineString?: boolean): Diff 
   };
 };
 
-function diffStrings(a: string, b: string, options: ?DiffOptions, multilineString?: boolean): string {
+function diffStrings(
+  a: string,
+  b: string,
+  options: ?DiffOptions,
+  replacement?: Replacement,
+): string {
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
   const result = options && options.expand === false
-    ? structuredPatch(a, b, multilineString)
-    : diffLines(a, b, multilineString);
+    ? structuredPatch(a, b, replacement)
+    : diffLines(a, b, replacement);
 
   if (result.isDifferent) {
     return getAnnotation(options) + result.diff;

@@ -13,16 +13,15 @@
 const diff = require('../');
 const stripAnsi = require('strip-ansi');
 
-// diff has no space between mark and content when {expand: false}
-// which is the default for Jest CLI but not for jest-diff
-const optFalse = {expand: false};
-const unexpanded = lines =>
-  lines.map(line => line[0] + line.slice(2)).join('\n');
+function received(a, b, options, replacement) {
+  return stripAnsi(diff(a, b, options, replacement));
+}
 
-// diff has a space between mark and content when {expand: true}
-// which requires --expand object for Jest CLI but is default for jest-diff
-const optTrue = {expand: true};
-const expanded = lines => lines.join('\n');
+const snapshot = {snapshot: true};
+const unexpanded = {expand: false};
+const unexpandedSnap = Object.assign({}, unexpanded, snapshot);
+const expanded = {expand: true};
+const expandedSnap = Object.assign({}, expanded, snapshot);
 
 const toJSON = function toJSON() {
   return 'apple';
@@ -42,7 +41,7 @@ describe('different types', () => {
     const typeB = values[3];
 
     test(`'${a}' and '${b}'`, () => {
-      expect(stripAnsi(diff(a, b))).toBe(
+      expect(received(a, b)).toBe(
         '  Comparing two different types of values. ' +
           `Expected ${typeA} but received ${typeB}.`,
       );
@@ -64,7 +63,7 @@ describe('no visual difference', () => {
     [{a: {b: 5}}, {a: {b: 5}}],
   ].forEach(values => {
     test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(values[1])}'`, () => {
-      expect(stripAnsi(diff(values[0], values[1]))).toBe(
+      expect(received(values[0], values[1])).toBe(
         'Compared values have no visual difference.',
       );
     });
@@ -74,7 +73,7 @@ describe('no visual difference', () => {
     const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
     const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
 
-    expect(stripAnsi(diff(arg1, arg2))).toBe(
+    expect(received(arg1, arg2)).toBe(
       'Compared values have no visual difference.',
     );
   });
@@ -83,7 +82,7 @@ describe('no visual difference', () => {
     const arg1 = new Set([1, 2]);
     const arg2 = new Set([2, 1]);
 
-    expect(stripAnsi(diff(arg1, arg2))).toBe(
+    expect(received(arg1, arg2)).toBe(
       'Compared values have no visual difference.',
     );
   });
@@ -91,7 +90,7 @@ describe('no visual difference', () => {
 
 test('oneline strings', () => {
   // oneline strings don't produce a diff currently.
-  expect(stripAnsi(diff('ab', 'aa'))).toBe(null);
+  expect(received('ab', 'aa')).toBe(null);
 });
 
 test('falls back to not call toJSON if objects look identical', () => {
@@ -113,6 +112,27 @@ test('prints a fallback message if two objects truly look identical', () => {
 // * join lines of expected string instead of multiline string:
 //   * to avoid ambiguity about indentation in diff lines
 
+test('falls back to not call toJSON', () => {
+  const a = {line: 2, toJSON};
+  const b = {key: {line: 2}, toJSON};
+  expect(diff(a, b)).toMatchSnapshot();
+  const expected = [
+    ' Object {',
+    '-  "key": Object {',
+    '     "line": 2,',
+    '-  },',
+    '   "toJSON": [Function toJSON],',
+    ' }',
+  ].join('\n');
+
+  test('unexpanded', () => {
+    expect(received(a, b, unexpanded)).toMatch(expected);
+  });
+  test('expanded', () => {
+    expect(received(a, b, expanded)).toMatch(expected);
+  });
+});
+
 describe('multiline strings', () => {
   const a = `line 1
 line 2
@@ -123,18 +143,18 @@ line  2
 line 3
 line 4`;
   const expected = [
-    '  line 1',
-    '- line 2',
-    '+ line  2',
-    '  line 3',
-    '  line 4',
-  ];
+    ' line 1',
+    '-line 2',
+    '+line  2',
+    ' line 3',
+    ' line 4',
+  ].join('\n');
 
-  test('expand: false', () => {
-    expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+  test('unexpanded', () => {
+    expect(received(a, b, unexpanded)).toMatch(expected);
   });
-  test('expand: true', () => {
-    expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+  test('expanded', () => {
+    expect(received(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -142,21 +162,21 @@ describe('objects', () => {
   const a = {a: {b: {c: 5}}};
   const b = {a: {b: {c: 6}}};
   const expected = [
-    '  Object {',
-    '    "a": Object {',
-    '      "b": Object {',
-    '-       "c": 5,',
-    '+       "c": 6,',
-    '      },',
-    '    },',
-    '  }',
-  ];
+    ' Object {',
+    '   "a": Object {',
+    '     "b": Object {',
+    '-      "c": 5,',
+    '+      "c": 6,',
+    '     },',
+    '   },',
+    ' }',
+  ].join('\n');
 
-  test('expand: false', () => {
-    expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+  test('unexpanded', () => {
+    expect(received(a, b, unexpanded)).toMatch(expected);
   });
-  test('expand: true', () => {
-    expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+  test('expanded', () => {
+    expect(received(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -186,20 +206,20 @@ Options:
               failing test.                        [boolean]
 `;
   const expected = [
-    '  Options:',
-    '- --help, -h  Show help                            [boolean]',
-    '- --bail, -b  Exit the test suite immediately upon the first',
-    '-             failing test.                        [boolean]',
-    '+   --help, -h  Show help                            [boolean]',
-    '+   --bail, -b  Exit the test suite immediately upon the first',
-    '+               failing test.                        [boolean]',
-  ];
+    ' Options:',
+    '---help, -h  Show help                            [boolean]',
+    '---bail, -b  Exit the test suite immediately upon the first',
+    '-            failing test.                        [boolean]',
+    '+  --help, -h  Show help                            [boolean]',
+    '+  --bail, -b  Exit the test suite immediately upon the first',
+    '+              failing test.                        [boolean]',
+  ].join('\n');
 
-  test('expand: false', () => {
-    expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+  test('unexpanded', () => {
+    expect(received(a, b, unexpanded)).toMatch(expected);
   });
-  test('expand: true', () => {
-    expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+  test('expanded', () => {
+    expect(received(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -221,21 +241,21 @@ Options:
               failing test.                        [boolean]"
 `;
   const expected = [
-    '  "',
-    '  Options:',
-    '- --help, -h  Show help                            [boolean]',
-    '- --bail, -b  Exit the test suite immediately upon the first',
-    '-             failing test.                        [boolean]"',
-    '+   --help, -h  Show help                            [boolean]',
-    '+   --bail, -b  Exit the test suite immediately upon the first',
-    '+               failing test.                        [boolean]"',
-  ];
+    ' "',
+    ' Options:',
+    '---help, -h  Show help                            [boolean]',
+    '---bail, -b  Exit the test suite immediately upon the first',
+    '-            failing test.                        [boolean]"',
+    '+  --help, -h  Show help                            [boolean]',
+    '+  --bail, -b  Exit the test suite immediately upon the first',
+    '+              failing test.                        [boolean]"',
+  ].join('\n');
 
-  test('expand: false', () => {
-    expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+  test('unexpanded', () => {
+    expect(received(a, b, unexpandedSnap)).toMatch(expected);
   });
-  test('expand: true', () => {
-    expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+  test('expanded', () => {
+    expect(received(a, b, expandedSnap)).toMatch(expected);
   });
 });
 
@@ -250,27 +270,27 @@ describe('React elements', () => {
   };
   const b = {
     $$typeof: Symbol.for('react.element'),
-    className: 'fun',
+    className: 'fun', // ignored by serializer
     props: {
       children: 'Goodbye',
     },
     type: 'div',
   };
   const expected = [
-    '- <div',
-    '-   className="fun"',
-    '- >',
-    '-   Hello',
-    '+ <div>',
-    '+   Goodbye',
-    '  </div>',
-  ];
+    '-<div',
+    '-  className="fun"',
+    '->',
+    '-  Hello',
+    '+<div>',
+    '+  Goodbye',
+    ' </div>',
+  ].join('\n');
 
-  test('expand: false', () => {
-    expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+  test('unexpanded', () => {
+    expect(received(a, b, unexpanded)).toMatch(expected);
   });
-  test('expand: true', () => {
-    expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+  test('expanded', () => {
+    expect(received(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -278,7 +298,7 @@ test('collapses big diffs to patch format', () => {
   const result = diff(
     {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
     {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
-    optFalse,
+    unexpanded,
   );
 
   expect(result).toMatchSnapshot();
@@ -301,28 +321,55 @@ describe('does ignore indentation in JavaScript structures', () => {
       },
     ],
   };
+  const aSnap = [
+    'Object {',
+    '  "searching": "",',
+    '  "sorting": Object {',
+    '    "descending": false,',
+    '    "fieldKey": "what",',
+    '  },',
+    '}',
+  ].join('\n');
+  const bSnap = [
+    'Object {',
+    '  "searching": "",',
+    '  "sorting": Array [',
+    '    Object {',
+    '      "descending": false,',
+    '      "fieldKey": "what",',
+    '    },',
+    '  ],',
+    '}',
+  ].join('\n');
 
   describe('from less to more', () => {
     // Replace unchanged chunk in the middle with received lines,
     // which are more indented.
     const expected = [
-      '  Object {',
-      '    "searching": "",',
-      '-   "sorting": Object {',
-      '+   "sorting": Array [',
-      '+     Object {',
-      '        "descending": false,',
-      '        "fieldKey": "what",',
-      '      },',
-      '+   ],',
-      '  }',
-    ];
+      ' Object {',
+      '   "searching": "",',
+      '-  "sorting": Object {',
+      '+  "sorting": Array [',
+      '+    Object {',
+      '       "descending": false,',
+      '       "fieldKey": "what",',
+      '     },',
+      '+  ],',
+      ' }',
+    ].join('\n');
 
-    test('expand: false', () => {
-      expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+    test('unexpanded', () => {
+      expect(received(a, b, unexpanded)).toMatch(expected);
     });
-    test('expand: true', () => {
-      expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+    test('expanded', () => {
+      expect(received(a, b, expanded)).toMatch(expected);
+    });
+
+    test('unexpanded snapshot', () => {
+      expect(received(aSnap, bSnap, unexpandedSnap)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(aSnap, bSnap, expandedSnap)).toMatch(expected);
     });
   });
 
@@ -330,40 +377,62 @@ describe('does ignore indentation in JavaScript structures', () => {
     // Replace unchanged chunk in the middle with received lines,
     // which are less indented.
     const expected = [
-      '  Object {',
-      '    "searching": "",',
-      '-   "sorting": Array [',
-      '-     Object {',
-      '+   "sorting": Object {',
-      '      "descending": false,',
-      '      "fieldKey": "what",',
-      '    },',
-      '-   ],',
-      '  }',
-    ];
+      ' Object {',
+      '   "searching": "",',
+      '-  "sorting": Array [',
+      '-    Object {',
+      '+  "sorting": Object {',
+      '     "descending": false,',
+      '     "fieldKey": "what",',
+      '   },',
+      '-  ],',
+      ' }',
+    ].join('\n');
 
-    test('expand: false', () => {
-      expect(stripAnsi(diff(b, a, optFalse))).toMatch(unexpanded(expected));
+    test('unexpanded', () => {
+      expect(received(b, a, unexpanded)).toMatch(expected);
     });
-    test('expand: true', () => {
-      expect(stripAnsi(diff(b, a, optTrue))).toMatch(expanded(expected));
+    test('expanded', () => {
+      expect(received(b, a, expanded)).toMatch(expected);
+    });
+
+    test('unexpanded snapshot', () => {
+      expect(received(bSnap, aSnap, unexpandedSnap)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(bSnap, aSnap, expandedSnap)).toMatch(expected);
     });
   });
 });
 
 describe('multiline string as property of JavaScript object', () => {
   // Unindented is safest in multiline strings:
-  const a = {
+  const aUn = {
     id: 'J',
     points: `0.5,0.460
 0.25,0.875`,
   };
-  const b = {
+  const bUn = {
     id: 'J',
     points: `0.5,0.460
 0.5,0.875
 0.25,0.875`,
   };
+  const aUnSnap = [
+    'Object {',
+    '  "id": "J",',
+    '  "points": "0.5,0.460',
+    '0.25,0.875",',
+    '}',
+  ].join('\n');
+  const bUnSnap = [
+    'Object {',
+    '  "id": "J",',
+    '  "points": "0.5,0.460',
+    '0.5,0.875',
+    '0.25,0.875",',
+    '}',
+  ].join('\n');
 
   // Indented is confusing, as this test demonstrates :(
   // What looks like one indent level under points is really two levels,
@@ -379,60 +448,96 @@ describe('multiline string as property of JavaScript object', () => {
       0.5,0.875
       0.25,0.875`,
   };
+  const aInSnap = [
+    'Object {',
+    '  "id": "J",',
+    '  "points": "0.5,0.460',
+    '      0.25,0.875",',
+    '}',
+  ].join('\n');
+  const bInSnap = [
+    'Object {',
+    '  "id": "J",',
+    '  "points": "0.5,0.460',
+    '      0.5,0.875',
+    '      0.25,0.875",',
+    '}',
+  ].join('\n');
 
   describe('unindented', () => {
     const expected = [
-      '  Object {',
-      '    "id": "J",',
-      '    "points": "0.5,0.460',
-      '+ 0.5,0.875',
-      '  0.25,0.875",',
-      '  }',
-    ];
+      ' Object {',
+      '   "id": "J",',
+      '   "points": "0.5,0.460',
+      '+0.5,0.875',
+      ' 0.25,0.875",',
+      ' }',
+    ].join('\n');
 
-    test('expand: false', () => {
-      expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+    test('unexpanded', () => {
+      expect(received(aUn, bUn, unexpanded)).toMatch(expected);
     });
-    test('expand: true', () => {
-      expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+    test('expanded', () => {
+      expect(received(aUn, bUn, expanded)).toMatch(expected);
+    });
+
+    test('unexpanded snapshot', () => {
+      expect(received(aUnSnap, bUnSnap, unexpandedSnap)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(aUnSnap, bUnSnap, expandedSnap)).toMatch(expected);
     });
   });
 
   describe('indented', () => {
     const expected = [
-      '  Object {',
-      '    "id": "J",',
-      '    "points": "0.5,0.460',
-      '+       0.5,0.875',
-      '        0.25,0.875",',
-      '  }',
-    ];
+      ' Object {',
+      '   "id": "J",',
+      '   "points": "0.5,0.460',
+      '+      0.5,0.875',
+      '       0.25,0.875",',
+      ' }',
+    ].join('\n');
 
-    test('expand: false', () => {
-      expect(stripAnsi(diff(aIn, bIn, optFalse))).toMatch(unexpanded(expected));
+    test('unexpanded', () => {
+      expect(received(aIn, bIn, unexpanded)).toMatch(expected);
     });
-    test('expand: true', () => {
-      expect(stripAnsi(diff(aIn, bIn, optTrue))).toMatch(expanded(expected));
+    test('expanded', () => {
+      expect(received(aIn, bIn, expanded)).toMatch(expected);
+    });
+
+    test('unexpanded snapshot', () => {
+      expect(received(aInSnap, bInSnap, unexpandedSnap)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(aInSnap, bInSnap, expandedSnap)).toMatch(expected);
     });
   });
 
   describe('unindented to indented', () => {
     // Don’t ignore changes to indentation in a multiline string.
     const expected = [
-      '  Object {',
-      '    "id": "J",',
-      '    "points": "0.5,0.460',
-      '- 0.25,0.875",',
-      '+       0.5,0.875',
-      '+       0.25,0.875",',
-      '  }',
-    ];
+      ' Object {',
+      '   "id": "J",',
+      '   "points": "0.5,0.460',
+      '-0.25,0.875",',
+      '+      0.5,0.875',
+      '+      0.25,0.875",',
+      ' }',
+    ].join('\n');
 
-    test('expand: false', () => {
-      expect(stripAnsi(diff(a, bIn, optFalse))).toMatch(unexpanded(expected));
+    test('unexpanded', () => {
+      expect(received(aUn, bIn, unexpanded)).toMatch(expected);
     });
-    test('expand: true', () => {
-      expect(stripAnsi(diff(a, bIn, optTrue))).toMatch(expanded(expected));
+    test('expanded', () => {
+      expect(received(aUn, bIn, expanded)).toMatch(expected);
+    });
+
+    test('unexpanded snapshot', () => {
+      expect(received(aUnSnap, bInSnap, unexpandedSnap)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(aUnSnap, bInSnap, expandedSnap)).toMatch(expected);
     });
   });
 });
@@ -467,25 +572,48 @@ describe('does ignore indentation in React elements', () => {
     },
     type: 'span',
   };
+  const aSnap = [
+    '<span>',
+    '  <span>',
+    '    text',
+    '  </span>',
+    '</span>',
+  ].join('\n');
+  const bSnap = [
+    '<span>',
+    '  <strong>',
+    '    <span>',
+    '      text',
+    '    </span>',
+    '  </strong>',
+    '</span>',
+  ].join('\n');
 
   describe('from less to more', () => {
     // Replace unchanged chunk in the middle with received lines,
     // which are more indented.
     const expected = [
-      '  <span>',
-      '+   <strong>',
-      '      <span>',
-      '        text',
-      '      </span>',
-      '+   </strong>',
-      '  </span>',
-    ];
+      ' <span>',
+      '+  <strong>',
+      '     <span>',
+      '       text',
+      '     </span>',
+      '+  </strong>',
+      ' </span>',
+    ].join('\n');
 
-    test('expand: false', () => {
-      expect(stripAnsi(diff(a, b, optFalse))).toMatch(unexpanded(expected));
+    test('unexpanded', () => {
+      expect(received(a, b, unexpanded)).toMatch(expected);
     });
-    test('expand: true', () => {
-      expect(stripAnsi(diff(a, b, optTrue))).toMatch(expanded(expected));
+    test('expanded', () => {
+      expect(received(a, b, expanded)).toMatch(expected);
+    });
+
+    test('unexpanded snapshot', () => {
+      expect(received(aSnap, bSnap, unexpandedSnap)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(aSnap, bSnap, expandedSnap)).toMatch(expected);
     });
   });
 
@@ -493,20 +621,27 @@ describe('does ignore indentation in React elements', () => {
     // Replace unchanged chunk in the middle with received lines,
     // which are less indented.
     const expected = [
-      '  <span>',
-      '-   <strong>',
-      '    <span>',
-      '      text',
-      '    </span>',
-      '-   </strong>',
-      '  </span>',
-    ];
+      ' <span>',
+      '-  <strong>',
+      '   <span>',
+      '     text',
+      '   </span>',
+      '-  </strong>',
+      ' </span>',
+    ].join('\n');
 
-    test('expand: false', () => {
-      expect(stripAnsi(diff(b, a, optFalse))).toMatch(unexpanded(expected));
+    test('unexpanded', () => {
+      expect(received(b, a, unexpanded)).toMatch(expected);
     });
-    test('expand: true', () => {
-      expect(stripAnsi(diff(b, a, optTrue))).toMatch(expanded(expected));
+    test('expanded', () => {
+      expect(received(b, a, expanded)).toMatch(expected);
+    });
+
+    test('unexpanded snapshot', () => {
+      expect(received(bSnap, aSnap, unexpandedSnap)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(bSnap, aSnap, expandedSnap)).toMatch(expected);
     });
   });
 });

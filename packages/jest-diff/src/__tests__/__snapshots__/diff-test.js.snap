@@ -17,6 +17,21 @@ exports[`collapses big diffs to patch format 1`] = `
 <dim> }"
 `;
 
+exports[`falls back to not call toJSON 1`] = `
+"<dim>Compared values serialize to the same structure.
+Printing internal object structure without calling \`toJSON\` instead.
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim> <dim>Object {
+<red>+</><red>  \\"key\\": Object {</>
+<dim> <dim>    \\"line\\": 2,
+<red>+</><red>  },</>
+<dim> <dim>  \\"toJSON\\": [Function toJSON],
+<dim> <dim>}"
+`;
+
 exports[`falls back to not call toJSON if objects look identical 1`] = `
 "<dim>Compared values serialize to the same structure.
 Printing internal object structure without calling \`toJSON\` instead.
@@ -24,11 +39,11 @@ Printing internal object structure without calling \`toJSON\` instead.
 <green>- Expected</>
 <red>+ Received</>
 
-<dim>  <dim>Object {
-<green>-</> <green>  \\"line\\": 1,</>
-<red>+</> <red>  \\"line\\": 2,</>
-<dim>  <dim>  \\"toJSON\\": [Function toJSON],
-<dim>  <dim>}"
+<dim> <dim>Object {
+<green>-</><green>  \\"line\\": 1,</>
+<red>+</><red>  \\"line\\": 2,</>
+<dim> <dim>  \\"toJSON\\": [Function toJSON],
+<dim> <dim>}"
 `;
 
 exports[`prints a fallback message if two objects truly look identical 1`] = `"<dim>Compared values have no visual difference."`;

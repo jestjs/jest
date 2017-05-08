@@ -205,13 +205,13 @@ Object {
     + Received
     
     Object {
-        \\"a\\": Object {
-          \\"b\\": Object {
-    -       \\"c\\": 6,
-    +       \\"c\\": 5,
-          },
-        },
-      }
+       \\"a\\": Object {
+         \\"b\\": Object {
+    -      \\"c\\": 6,
+    +      \\"c\\": 5,
+         },
+       },
+     }
       
       at Object.<anonymous> (__tests__/node-assertion-error-test.js:40:10)
 
@@ -233,13 +233,13 @@ Object {
     + Received
     
     Object {
-        \\"a\\": Object {
-          \\"b\\": Object {
-    -       \\"c\\": 7,
-    +       \\"c\\": 5,
-          },
-        },
-      }
+       \\"a\\": Object {
+         \\"b\\": Object {
+    -      \\"c\\": 7,
+    +      \\"c\\": 5,
+         },
+       },
+     }
       
       at Object.<anonymous> (__tests__/node-assertion-error-test.js:44:10)
 
@@ -302,9 +302,9 @@ Object {
     + Received
     
     Object {
-    -   \\"a\\": 2,
-    +   \\"a\\": 1,
-      }
+    -  \\"a\\": 2,
+    +  \\"a\\": 1,
+     }
       
       at Object.<anonymous> (__tests__/node-assertion-error-test.js:60:10)
 
