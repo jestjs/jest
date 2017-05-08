@@ -10,6 +10,15 @@
 require('./sum_dependency.js');
 require('./other-file');
 
-module.exports = function(a, b) {
+const uncoveredFunction = () => {
+  return 1 + 'abc';
+};
+
+const sum = (a, b) => {
   return a + b;
+};
+
+module.exports = {
+  sum,
+  uncoveredFunction,
 };
