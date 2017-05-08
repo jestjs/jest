@@ -93,6 +93,21 @@ describe('Stack Trace', () => {
     );
   });
 
+  it('prints a stack trace for errors without message in stack trace', () => {
+    const result = runJest('stack_trace', [
+      'stack-trace-without-message-test.js',
+    ]);
+    const stderr = result.stderr.toString();
+
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(result.status).toBe(1);
+
+    expect(stderr).toMatch(/important message/);
+    expect(stderr).toMatch(
+      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-without-message-test\.js/,
+    );
+  });
+
   it('does not print a stack trace for errors when --noStackTrace is given', () => {
     const result = runJest('stack_trace', [
       'test-error-test.js',
