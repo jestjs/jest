@@ -11,6 +11,7 @@
 'use strict';
 
 const chalk = require('chalk');
+const rslash = require('regex-slash');
 const {KEYS} = require('../constants');
 
 const runJestMock = jest.fn();
@@ -163,8 +164,8 @@ describe('Watch mode flows', () => {
       .forEach(key => stdin.emit(key));
 
     stdin.emit(KEYS.ENTER);
-
-    expect(argv.testPathPattern).toMatchSnapshot();
+    
+    expect(rslash(argv.testPathPattern)).toMatchSnapshot();
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
