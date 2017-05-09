@@ -13,6 +13,7 @@
     "jest-environment-jsdom": "^20.0.0",
     "jest-environment-node": "^20.0.0",
     "jest-jasmine2": "^20.0.0",
+    "jest-matcher-utils": "^20.0.0",
     "jest-regex-util": "^20.0.0",
     "jest-resolve": "^20.0.0",
     "jest-validate": "^20.0.0",
