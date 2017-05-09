@@ -35,4 +35,10 @@ describe('.hasAssertions()', () => {
     jestExpect.hasAssertions();
     jestExpect('a').toBe('a');
   });
+
+  it('throws if passed parameters', () => {
+    jestExpect(() => {
+      jestExpect.hasAssertions(2);
+    }).toThrow();
+  });
 });
