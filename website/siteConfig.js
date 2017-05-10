@@ -161,6 +161,11 @@ const users = [
     infoLink: 'http://formidable.com/',
   },
   {
+    caption: 'Giant Machines',
+    image: '/jest/img/logos/giantmachines.png',
+    infoLink: 'https://www.giantmachines.com',
+  },
+  {
     caption: 'Globo',
     image: '/jest/img/logos/globo.png',
     infoLink: 'http://www.globo.com/',
