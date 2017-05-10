@@ -730,6 +730,41 @@ describe('testMatch', () => {
       );
     }).toThrowErrorMatchingSnapshot();
   });
+
+  it('normalizes testMatch', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testMatch: ['<rootDir>/**/*.js'],
+      },
+      {},
+    );
+
+    expect(options.testMatch).toEqual(['/root/**/*.js']);
+  });
+});
+
+describe('moduleDirectories', () => {
+  it('defaults to node_modules', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.moduleDirectories).toEqual(['node_modules']);
+  });
+
+  it('normalizes moduleDirectories', () => {
+    const {options} = normalize(
+      {
+        moduleDirectories: ['<rootDir>/src', '<rootDir>/node_modules'],
+        rootDir: '/root',
+      },
+      {},
+    );
+
+    expect(options.moduleDirectories).toEqual([
+      '/root/src',
+      '/root/node_modules',
+    ]);
+  });
 });
 
 describe('preset', () => {
