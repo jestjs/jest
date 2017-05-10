@@ -397,6 +397,10 @@ function normalize(options: InitialOptions, argv: Argv) {
           );
         value = list;
         break;
+      case 'moduleDirectories':
+      case 'testMatch':
+        value = _replaceRootDirTags(options.rootDir, options[key]);
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
@@ -409,7 +413,6 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'globals':
       case 'logHeapUsage':
       case 'mapCoverage':
-      case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
@@ -421,7 +424,6 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'rootDir':
       case 'silent':
       case 'testEnvironment':
-      case 'testMatch':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':
