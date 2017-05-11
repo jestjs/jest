@@ -227,6 +227,8 @@ ES modules to CommonJS modules only in the `test` environment.
 }
 ```
 
+> Note: Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with `--no-cache`.
+
 If you use dynamic imports (`import('some-file.js').then(module => ...)`), you
 need to enable the `dynamic-import-node` plugin.
 
