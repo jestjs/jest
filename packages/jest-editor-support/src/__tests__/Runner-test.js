@@ -8,12 +8,11 @@
 
 'use strict';
 
-const {EventEmitter} = require('events');
+const EventEmitter = require('events');
 const path = require('path');
+const {readFileSync} = require('fs');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 const ProjectWorkspace = require('../ProjectWorkspace');
-
-const {readFileSync} = require('fs');
 
 // Replace `readFile` with `readFileSync` so we don't get multiple threads
 jest.doMock('fs', () => {

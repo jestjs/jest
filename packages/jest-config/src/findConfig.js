@@ -13,8 +13,8 @@
 import type {InitialOptions, Path} from 'types/Config';
 
 const fs = require('fs');
-const jsonlint = require('./vendor/jsonlint');
 const path = require('path');
+const jsonlint = require('./vendor/jsonlint');
 
 const JEST_CONFIG = 'jest.config.js';
 const PACKAGE_JSON = 'package.json';

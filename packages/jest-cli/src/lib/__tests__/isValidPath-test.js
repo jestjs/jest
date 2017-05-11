@@ -10,8 +10,6 @@
 
 'use strict';
 
-/* eslint-disable max-len */
-
 const path = require('path');
 const isValidPath = require('../isValidPath');
 

@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-/* eslint-disable max-len */
 
 'use strict';
 
-const prettyFormat = require('../');
 const ansiStyle = require('ansi-styles');
+const prettyFormat = require('../');
 const ConvertAnsiPlugin = require('../plugins/ConvertAnsi');
 
 const prettyFormatResult = (val: string) => {

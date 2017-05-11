@@ -21,11 +21,11 @@ import type {
   PromiseMatcherFn,
 } from 'types/Matchers';
 
+const utils = require('jest-matcher-utils');
 const matchers = require('./matchers');
 const spyMatchers = require('./spyMatchers');
 const toThrowMatchers = require('./toThrowMatchers');
 const {equals} = require('./jasmine-utils');
-const utils = require('jest-matcher-utils');
 const {
   any,
   anything,
@@ -280,7 +280,8 @@ expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {
   global[GLOBAL_STATE].state.expectedAssertionsNumber = expected;
 };
-expect.hasAssertions = () => {
+expect.hasAssertions = expected => {
+  utils.ensureNoExpected(expected, '.hasAssertions');
   global[GLOBAL_STATE].state.isExpectingAssertions = true;
 };
 expect.setState = (state: Object) => {

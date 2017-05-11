@@ -12,8 +12,8 @@
 
 'use strict';
 
-const {danger, fail, warn} = require('danger');
 const fs = require('fs');
+const {danger, fail, warn} = require('danger');
 // As danger's deps are inside a sub-folder, need to resolve via relative paths
 const includes = require('./danger/node_modules/lodash.includes/index');
 

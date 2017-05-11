@@ -7,18 +7,8 @@
  */
 'use strict';
 
-require('./sum_dependency.js');
-require('./other-file');
-
-const uncoveredFunction = () => {
-  return 1 + 'abc';
-};
-
-const sum = (a, b) => {
-  return a + b;
-};
-
-module.exports = {
-  sum,
-  uncoveredFunction,
-};
+test('fails with error without proper message', () => {
+  const error = new Error('important message');
+  error.stack = error.stack.replace('Error: important message', 'Error   ');
+  throw error;
+});

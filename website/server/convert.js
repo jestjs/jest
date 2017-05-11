@@ -7,20 +7,20 @@
 
 'use strict';
 
-const feed = require('./feed');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 const optimist = require('optimist');
-const path = require('path');
 const toSlug = require('../core/toSlug');
-
 const languages = require('../languages.js');
+const feed = require('./feed');
 
 const argv = optimist.argv;
 
 function splitHeader(content) {
-  const lines = content.split('\n');
+  const lines = content.split(os.EOL);
   let i = 1;
   for (; i < lines.length - 1; ++i) {
     if (lines[i] === '---') {
@@ -148,8 +148,8 @@ function execute() {
   ).content.replace(/\(\/jest\//g, '(https://facebook.github.io/jest/');
 
   let readme = fs.readFileSync('../README.md', 'utf8');
-  const guideStart = '<generated_getting_started_start />';
-  const guideEnd = '<generated_getting_started_end />';
+  const guideStart = '<!-- generated_getting_started_start -->';
+  const guideEnd = '<!-- generated_getting_started_end -->';
   readme =
     readme.slice(0, readme.indexOf(guideStart) + guideStart.length) +
     gettingStarted +

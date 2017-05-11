@@ -84,7 +84,7 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     "watch": false,
     "watchman": true
   },
-  "version": "19.0.2"
+  "version": "[version]"
 }
 
 `;

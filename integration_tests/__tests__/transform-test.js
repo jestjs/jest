@@ -8,10 +8,10 @@
 
 'use strict';
 
-const {linkJestPackage, run} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {linkJestPackage, run} = require('../utils');
+const runJest = require('../runJest');
 
 describe('babel-jest', () => {
   skipOnWindows.suite();

@@ -13,8 +13,8 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {format, ValidationError, ERROR} = require('./utils');
 const {getType} = require('jest-matcher-utils');
+const {format, ValidationError, ERROR} = require('./utils');
 
 const errorMessage = (
   option: string,

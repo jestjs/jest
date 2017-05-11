@@ -7,8 +7,8 @@
  */
 'use strict';
 
-const chalk = require('chalk');
 const spawn = require('child_process').spawnSync;
+const chalk = require('chalk');
 
 module.exports = function runCommand(cmd, args, cwd) {
   if (!cwd) {

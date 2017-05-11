@@ -16,12 +16,12 @@ import type {TestFramework} from 'types/TestRunner';
 import type {TestResult} from 'types/TestResult';
 import type RuntimeClass from 'jest-runtime';
 
-const BufferedConsole = require('./lib/BufferedConsole');
-const {Console, NullConsole, setGlobal} = require('jest-util');
-
-const {getTestEnvironment} = require('jest-config');
 const fs = require('fs');
+const {Console, NullConsole, setGlobal} = require('jest-util');
+const {getTestEnvironment} = require('jest-config');
 const docblock = require('jest-docblock');
+
+const BufferedConsole = require('./lib/BufferedConsole');
 const getConsoleOutput = require('./reporters/getConsoleOutput');
 
 function runTest(

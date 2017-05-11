@@ -82,14 +82,27 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/);
 
     // Make sure we show Jest's jest-resolve as part of the stack trace
-    /* eslint-disable max-len */
     expect(stderr).toMatch(
       /Cannot find module 'this-module-does-not-exist' from 'test-error-test\.js'/,
     );
-    /* eslint-enable max-len */
 
     expect(stderr).toMatch(
       /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/,
+    );
+  });
+
+  it('prints a stack trace for errors without message in stack trace', () => {
+    const result = runJest('stack_trace', [
+      'stack-trace-without-message-test.js',
+    ]);
+    const stderr = result.stderr.toString();
+
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(result.status).toBe(1);
+
+    expect(stderr).toMatch(/important message/);
+    expect(stderr).toMatch(
+      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-without-message-test\.js/,
     );
   });
 

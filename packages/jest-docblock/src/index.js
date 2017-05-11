@@ -14,7 +14,6 @@ const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
 const lineCommentRe = /\/\/([^\r\n]*)/g;
 const ltrimRe = /^\s*/;
-// eslint-disable-next-line max-len
 const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
 const stringStartRe = /(\r?\n|^) *\*/g;

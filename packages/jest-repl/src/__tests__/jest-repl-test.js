@@ -9,9 +9,9 @@
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
-const spawnSync = require('child_process').spawnSync;
+const {spawnSync} = require('child_process');
 const path = require('path');
+const skipOnWindows = require('skipOnWindows');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 

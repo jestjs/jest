@@ -4,7 +4,6 @@
  * @providesModule BlogPostLayout
  * @jsx React.DOM
  */
-/* eslint-disable max-len */
 
 const BlogPost = require('BlogPost');
 const BlogSidebar = require('BlogSidebar');

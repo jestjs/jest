@@ -4,8 +4,6 @@
  * @jsx React.DOM
  */
 
-/* eslint-disable max-len */
-
 const React = require('React');
 const Site = require('Site');
 const Marked = require('Marked');
@@ -13,9 +11,9 @@ const Marked = require('Marked');
 const Container = require('Container');
 const HomeSplash = require('HomeSplash');
 const GridBlock = require('GridBlock');
+const blog = require('MetadataBlog');
 
 const siteConfig = require('../../siteConfig.js');
-const blog = require('MetadataBlog');
 
 try {
   console.log('Thing.js triggered...');

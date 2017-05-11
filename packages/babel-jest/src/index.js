@@ -15,13 +15,13 @@ import type {TransformOptions} from 'types/Transform';
 
 const crypto = require('crypto');
 const fs = require('fs');
-const jestPreset = require('babel-preset-jest');
 const path = require('path');
+const jestPreset = require('babel-preset-jest');
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';
 const BABEL_CONFIG_KEY = 'babel';
-const PACAKAGE_JSON = 'package.json';
+const PACKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
 
 let babel;
@@ -49,7 +49,7 @@ const createTransformer = (options: any) => {
         cache[directory] = JSON.stringify(require(configJsFilePath));
         break;
       }
-      const packageJsonFilePath = path.join(directory, PACAKAGE_JSON);
+      const packageJsonFilePath = path.join(directory, PACKAGE_JSON);
       if (fs.existsSync(packageJsonFilePath)) {
         // $FlowFixMe
         const packageJsonFileContents = require(packageJsonFilePath);

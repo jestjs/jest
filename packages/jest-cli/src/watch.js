@@ -15,10 +15,9 @@ import type {Context} from 'types/Context';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const createContext = require('./lib/createContext');
 const HasteMap = require('jest-haste-map');
 const isCI = require('is-ci');
-const isInteractive = process.stdout.isTTY && !isCI;
+const createContext = require('./lib/createContext');
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
@@ -30,6 +29,7 @@ const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
+const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
 const watch = (

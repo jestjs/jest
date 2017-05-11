@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const Feed = require('feed');
 
 const blogFolder = path.resolve('../blog/');
@@ -31,7 +32,7 @@ const retrieveMetaData = file => {
     ? post.replace(/\n\r/g, '\n').split('.\n\n')[0]
     : post.substring(0, indexOfTruncate);
 
-  return header.split('\n').filter(x => x).reduce((metadata, str) => {
+  return header.split(os.EOL).filter(x => x).reduce((metadata, str) => {
     const matches = /(.*?): (.*)/.exec(str);
     metadata[matches[1]] = matches[2];
     return metadata;

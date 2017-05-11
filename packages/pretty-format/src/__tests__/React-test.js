@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-/* eslint-disable max-len */
 
 'use strict';
 
-const prettyFormat = require('../');
-
 const React = require('react');
+const renderer = require('react-test-renderer');
+
+const prettyFormat = require('../');
 const ReactTestComponent = require('../plugins/ReactTestComponent');
 const ReactElement = require('../plugins/ReactElement');
-const renderer = require('react-test-renderer');
 
 function assertPrintedJSX(actual, expected, opts) {
   expect(

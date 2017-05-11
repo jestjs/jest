@@ -1,15 +1,15 @@
-/* eslint-disable max-len, sort-keys */
+/* eslint-disable sort-keys */
 
 'use strict';
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const connect = require('connect');
+const optimist = require('optimist');
+const reactMiddleware = require('react-page-middleware');
 const convert = require('./convert.js');
 const translationPre = require('./translationPre.js');
 const translation = require('./translation.js');
-const fs = require('fs');
-const http = require('http');
-const optimist = require('optimist');
-const path = require('path');
-const reactMiddleware = require('react-page-middleware');
 
 console.log('server.js triggered...');
 

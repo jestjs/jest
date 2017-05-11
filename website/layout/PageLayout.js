@@ -2,7 +2,6 @@
  * @providesModule PageLayout
  * @jsx React.DOM
  */
-/* eslint-disable max-len */
 
 const React = require('React');
 const Site = require('Site');
