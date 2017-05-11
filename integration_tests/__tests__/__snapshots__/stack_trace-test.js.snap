@@ -36,6 +36,15 @@ Ran all test suites matching \\"test-error-test.js\\".
 "
 `;
 
+exports[`Stack Trace prints a stack trace for errors without message in stack trace 1`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching \\"stack-trace-without-message-test.js\\".
+"
+`;
+
 exports[`Stack Trace prints a stack trace for matching errors 1`] = `
 "Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total

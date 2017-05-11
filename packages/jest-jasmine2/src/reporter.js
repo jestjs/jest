@@ -129,6 +129,21 @@ class Jasmine2Reporter {
     return this._resultsPromise;
   }
 
+  _addMissingMessageToStack(stack: string, message: ?string) {
+    // Some errors (e.g. Angular injection error) don't prepend error.message
+    // to stack, instead the first line of the stack is just plain 'Error'
+    const ERROR_REGEX = /^Error\s*\n/;
+    if (
+      stack &&
+      message &&
+      ERROR_REGEX.test(stack) &&
+      stack.indexOf(message) === -1
+    ) {
+      return message + stack.replace(ERROR_REGEX, '\n');
+    }
+    return stack;
+  }
+
   _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
@@ -150,7 +165,7 @@ class Jasmine2Reporter {
 
     specResult.failedExpectations.forEach(failed => {
       const message = !failed.matcherName && failed.stack
-        ? failed.stack
+        ? this._addMissingMessageToStack(failed.stack, failed.message)
         : failed.message || '';
       results.failureMessages.push(message);
     });
