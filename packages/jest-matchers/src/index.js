@@ -280,7 +280,8 @@ expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {
   global[GLOBAL_STATE].state.expectedAssertionsNumber = expected;
 };
-expect.hasAssertions = () => {
+expect.hasAssertions = expected => {
+  utils.ensureNoExpected(expected, '.hasAssertions');
   global[GLOBAL_STATE].state.isExpectingAssertions = true;
 };
 expect.setState = (state: Object) => {
