@@ -10,9 +10,9 @@
 
 'use strict';
 
-const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
+const chalk = require('chalk');
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {

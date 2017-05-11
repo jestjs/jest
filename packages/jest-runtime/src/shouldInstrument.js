@@ -12,9 +12,9 @@
 import type {Path, ProjectConfig} from 'types/Config';
 import type {Options} from './ScriptTransformer';
 
+const path = require('path');
 const {escapePathForRegex} = require('jest-regex-util');
 const micromatch = require('micromatch');
-const path = require('path');
 
 const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),

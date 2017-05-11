@@ -21,11 +21,11 @@ import type {
   PromiseMatcherFn,
 } from 'types/Matchers';
 
+const utils = require('jest-matcher-utils');
 const matchers = require('./matchers');
 const spyMatchers = require('./spyMatchers');
 const toThrowMatchers = require('./toThrowMatchers');
 const {equals} = require('./jasmine-utils');
-const utils = require('jest-matcher-utils');
 const {
   any,
   anything,

@@ -7,9 +7,9 @@
  */
 'use strict';
 
+const path = require('path');
 const chalk = require('chalk');
 const glob = require('glob');
-const path = require('path');
 const runCommand = require('./_runCommand');
 
 const shouldWrite = process.argv[2] === 'write';

@@ -9,10 +9,10 @@
 'use strict';
 
 const path = require('path');
+const os = require('os');
+const skipOnWindows = require('skipOnWindows');
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
-const skipOnWindows = require('skipOnWindows');
-const os = require('os');
 const {createEmptyPackage, writeFiles, cleanup} = require('../utils');
 
 const DIR = path.resolve(os.tmpdir(), 'global-variables-test');

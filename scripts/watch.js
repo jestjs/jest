@@ -13,10 +13,10 @@
  */
 
 const fs = require('fs');
-const getPackages = require('./_getPackages');
-const execSync = require('child_process').execSync;
-const chalk = require('chalk');
+const {execSync} = require('child_process');
 const path = require('path');
+const chalk = require('chalk');
+const getPackages = require('./_getPackages');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
 

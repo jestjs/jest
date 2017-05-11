@@ -9,8 +9,8 @@
 
 'use strict';
 
-const prettyFormat = require('../');
 const ansiStyle = require('ansi-styles');
+const prettyFormat = require('../');
 const ConvertAnsiPlugin = require('../plugins/ConvertAnsi');
 
 const prettyFormatResult = (val: string) => {

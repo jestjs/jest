@@ -15,7 +15,6 @@ import type {MatchersObject} from 'types/Matchers';
 
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-regex-util');
-const {getObjectSubset, getPath, hasOwnProperty} = require('./utils');
 const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -27,6 +26,7 @@ const {
   printExpected,
   printWithType,
 } = require('jest-matcher-utils');
+const {getObjectSubset, getPath, hasOwnProperty} = require('./utils');
 const {equals} = require('./jasmine-utils');
 
 type ContainIterable =

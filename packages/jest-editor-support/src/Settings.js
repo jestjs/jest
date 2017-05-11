@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Options} from './types';
+
 const {ChildProcess} = require('child_process');
 const EventEmitter = require('events');
 const ProjectWorkspace = require('./ProjectWorkspace');
@@ -32,7 +34,6 @@ type ConfigRepresentation = {
   testRegex: string,
   testMatch: Array<Glob>,
 };
-import type {Options} from './types';
 
 module.exports = class Settings extends EventEmitter {
   debugprocess: ChildProcess;

@@ -10,9 +10,9 @@
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const childProcess = require('child_process');
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
-const childProcess = require('child_process');
 
 const tmpdir = path.resolve(os.tmpdir(), 'jest-changed-files-hg');
 const tmpfile = path.resolve(tmpdir, Date.now() + '.js');

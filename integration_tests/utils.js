@@ -9,8 +9,8 @@
 
 const {spawnSync} = require('child_process');
 const fs = require('fs');
-const mkdirp = require('mkdirp');
 const path = require('path');
+const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 
 const run = (cmd, cwd) => {

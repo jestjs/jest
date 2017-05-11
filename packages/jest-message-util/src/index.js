@@ -13,9 +13,9 @@
 import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
+const path = require('path');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
-const path = require('path');
 const slash = require('slash');
 
 type StackTraceConfig = {
