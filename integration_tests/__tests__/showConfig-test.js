@@ -29,9 +29,10 @@ describe('jest --showConfig', () => {
     expect.addSnapshotSerializer({
       print: val =>
         val
-          .replace(new RegExp(root, 'g'), '/mocked/root/path')
-          .replace(/"name": "(.+)"/, '"name": "[md5 hash]"')
-          .replace(/"cacheDirectory": "(.+)"/, '"cacheDirectory": "/tmp/jest"'),
+          .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
+          .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
+          .replace(/"version": "(.+)"/g, '"version": "[version]"')
+          .replace(new RegExp(root, 'g'), '/mocked/root/path'),
       test: val => typeof val === 'string',
     });
     const {stdout} = runJest(dir, [
