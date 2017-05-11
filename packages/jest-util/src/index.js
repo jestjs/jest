@@ -10,6 +10,7 @@
 
 'use strict';
 
+const mkdirp = require('mkdirp');
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
@@ -17,7 +18,6 @@ const NullConsole = require('./NullConsole');
 const clearLine = require('./clearLine');
 const formatTestResults = require('./formatTestResults');
 const installCommonGlobals = require('./installCommonGlobals');
-const mkdirp = require('mkdirp');
 const setGlobal = require('./setGlobal');
 const validateCLIOptions = require('./validateCLIOptions');
 

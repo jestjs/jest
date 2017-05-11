@@ -8,10 +8,10 @@
 
 'use strict';
 
-const {extractSummary, cleanup, writeFiles} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {extractSummary, cleanup, writeFiles} = require('../utils');
+const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../jest.config.js');
 

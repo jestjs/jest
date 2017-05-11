@@ -9,12 +9,12 @@
 
 'use strict';
 
-const prettyFormat = require('../');
-
 const React = require('react');
+const renderer = require('react-test-renderer');
+
+const prettyFormat = require('../');
 const ReactTestComponent = require('../plugins/ReactTestComponent');
 const ReactElement = require('../plugins/ReactElement');
-const renderer = require('react-test-renderer');
 
 function assertPrintedJSX(actual, expected, opts) {
   expect(

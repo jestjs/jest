@@ -16,20 +16,20 @@ import type {
 } from 'types/TestResult';
 import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
-import type {PathPattern} from './SearchSource';
 import type {Reporter, Test} from 'types/TestRunner';
+import type {PathPattern} from './SearchSource';
 
 const {formatExecError} = require('jest-message-util');
+const snapshot = require('jest-snapshot');
+const pify = require('pify');
+const throat = require('throat');
+const workerFarm = require('worker-farm');
 
 const DefaultReporter = require('./reporters/DefaultReporter');
 const NotifyReporter = require('./reporters/NotifyReporter');
 const SummaryReporter = require('./reporters/SummaryReporter');
 const VerboseReporter = require('./reporters/VerboseReporter');
-const pify = require('pify');
 const runTest = require('./runTest');
-const snapshot = require('jest-snapshot');
-const throat = require('throat');
-const workerFarm = require('worker-farm');
 const TestWatcher = require('./TestWatcher');
 const ReporterDispatcher = require('./ReporterDispatcher');
 

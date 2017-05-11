@@ -9,9 +9,9 @@
  */
 'use strict';
 
-const {extractSummary} = require('../utils');
 const fs = require('fs');
 const path = require('path');
+const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 
 const emptyTest = 'describe("", () => {it("", () => {})})';

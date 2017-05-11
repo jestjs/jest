@@ -12,11 +12,11 @@
 import type {InternalHasteMap} from 'types/HasteMap';
 import type {IgnoreMatcher, CrawlerOptions} from '../types';
 
-const H = require('../constants');
-
 const fs = require('fs');
 const path = require('path');
-const spawn = require('child_process').spawn;
+const {spawn} = require('child_process');
+
+const H = require('../constants');
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
 

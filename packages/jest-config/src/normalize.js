@@ -13,6 +13,14 @@
 import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
+const crypto = require('crypto');
+const path = require('path');
+const {ValidationError, validate} = require('jest-validate');
+const chalk = require('chalk');
+const glob = require('glob');
+const Resolver = require('jest-resolve');
+const utils = require('jest-regex-util');
+
 const {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -27,20 +35,13 @@ const {
   DEFAULT_REPORTER_LABEL,
 } = require('./constants');
 const {validateReporters} = require('./reporterValidationErrors');
-const {ValidationError, validate} = require('jest-validate');
-const chalk = require('chalk');
-const crypto = require('crypto');
 const DEFAULT_CONFIG = require('./defaults');
 const DEPRECATED_CONFIG = require('./deprecated');
-const ERROR = `${BULLET}Validation Error`;
-const glob = require('glob');
-const JSON_EXTENSION = '.json';
-const path = require('path');
-const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
-const Resolver = require('jest-resolve');
 const setFromArgv = require('./setFromArgv');
-const utils = require('jest-regex-util');
 const VALID_CONFIG = require('./validConfig');
+const ERROR = `${BULLET}Validation Error`;
+const JSON_EXTENSION = '.json';
+const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);

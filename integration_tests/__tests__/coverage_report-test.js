@@ -9,11 +9,11 @@
  */
 'use strict';
 
-const {extractSummary, linkJestPackage} = require('../utils');
-const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');
+const {extractSummary, linkJestPackage} = require('../utils');
+const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage_report');
 

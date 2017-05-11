@@ -29,8 +29,8 @@
  */
 
 const createReporter = require('istanbul-api').createReporter;
-const coverage = require('../coverage/coverage-final.json');
 const istanbulCoverage = require('istanbul-lib-coverage');
+const coverage = require('../coverage/coverage-final.json');
 
 const map = istanbulCoverage.createCoverageMap();
 const reporter = createReporter();

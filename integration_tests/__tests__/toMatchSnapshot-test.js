@@ -8,8 +8,8 @@
 
 'use strict';
 
-const {makeTemplate, writeFiles, cleanup} = require('../utils');
 const path = require('path');
+const {makeTemplate, writeFiles, cleanup} = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../toMatchSnapshot');

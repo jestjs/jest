@@ -12,13 +12,13 @@
 
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
-const chalk = require('chalk');
-const createDirectory = require('jest-util').createDirectory;
-const path = require('path');
-const prettyFormat = require('pretty-format');
 const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk');
+const {createDirectory} = require('jest-util');
+const prettyFormat = require('pretty-format');
 const naturalCompare = require('natural-compare');
-const getSerializers = require('./plugins').getSerializers;
+const {getSerializers} = require('./plugins');
 
 const SNAPSHOT_EXTENSION = 'snap';
 const SNAPSHOT_VERSION = '1';

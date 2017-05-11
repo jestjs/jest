@@ -16,17 +16,17 @@ import type {
   TransformResult,
 } from 'types/Transform';
 
-const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
-const fs = require('graceful-fs');
-const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
-const shouldInstrument = require('./shouldInstrument');
-const stableStringify = require('json-stable-stringify');
 const vm = require('vm');
+const {createDirectory} = require('jest-util');
+const fs = require('graceful-fs');
+const {getCacheFilePath} = require('jest-haste-map');
+const stableStringify = require('json-stable-stringify');
 const slash = require('slash');
 
 const VERSION = require('../package.json').version;
+const shouldInstrument = require('./shouldInstrument');
 
 export type Options = {|
   collectCoverage: boolean,

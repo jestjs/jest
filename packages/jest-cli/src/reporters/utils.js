@@ -13,8 +13,8 @@
 import type {Path} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
-const chalk = require('chalk');
 const path = require('path');
+const chalk = require('chalk');
 const slash = require('slash');
 
 type SummaryOptions = {|

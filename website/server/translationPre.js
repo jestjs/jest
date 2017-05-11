@@ -10,9 +10,9 @@
 const fs = require('fs');
 const glob = require('glob');
 
-const translation = require('./translation.js');
-
 const languages = require('../languages.js');
+
+const translation = require('./translation.js');
 
 console.log('translationPre.js triggered...');
 

@@ -7,16 +7,15 @@
 
 'use strict';
 
-const feed = require('./feed');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 const optimist = require('optimist');
-const os = require('os');
-const path = require('path');
 const toSlug = require('../core/toSlug');
-
 const languages = require('../languages.js');
+const feed = require('./feed');
 
 const argv = optimist.argv;
 

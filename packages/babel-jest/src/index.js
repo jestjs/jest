@@ -15,8 +15,8 @@ import type {TransformOptions} from 'types/Transform';
 
 const crypto = require('crypto');
 const fs = require('fs');
-const jestPreset = require('babel-preset-jest');
 const path = require('path');
+const jestPreset = require('babel-preset-jest');
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';

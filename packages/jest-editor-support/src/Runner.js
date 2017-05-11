@@ -10,14 +10,14 @@
 
 'use strict';
 
+import type {Options} from './types';
+
 const {ChildProcess, spawn} = require('child_process');
 const {readFile} = require('fs');
 const {tmpdir} = require('os');
 const {EventEmitter} = require('events');
 const ProjectWorkspace = require('./ProjectWorkspace');
 const {createProcess} = require('./Process');
-
-import type {Options} from './types';
 
 // This class represents the running process, and
 // passes out events when it understands what data is being
