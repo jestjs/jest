@@ -12,14 +12,12 @@
 const blockCommentRe = /\/\*[^]*?\*\//g;
 const lineCommentRe = /\/\/.*/g;
 
-/* eslint-disable max-len */
 const replacePatterns = {
   EXPORT_RE: /(\bexport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g,
   IMPORT_RE: /(\bimport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g,
   REQUIRE_EXTENSIONS_PATTERN: /(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?genMockFromModule)\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
   REQUIRE_RE: /(\brequire\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
 };
-/* eslint-enable max-len */
 
 function extractRequires(code: string): Array<string> {
   const dependencies = new Set();

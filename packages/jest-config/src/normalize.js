@@ -176,7 +176,6 @@ const normalizeUnmockedModulePathPatterns = (
 };
 
 const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
-  /* eslint-disable max-len */
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
       `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
@@ -190,7 +189,6 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
     );
   }
-  /* eslint-enable max-len */
 
   if (options.scriptPreprocessor) {
     options.transform = {

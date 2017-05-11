@@ -2,7 +2,6 @@
  * @providesModule OpenSourceGlyph
  * @jsx React.DOM
  */
- /* eslint-disable max-len */
 
 const React = require('React');
 
