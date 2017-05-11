@@ -7,7 +7,6 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
 
 'use strict';
 

@@ -5,7 +5,7 @@
  * @jsx React.DOM
  */
 
-/* eslint-disable sort-keys, max-len, no-multi-str */
+/* eslint-disable sort-keys, no-multi-str */
 
 'use strict';
 
