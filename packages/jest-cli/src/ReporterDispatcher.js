@@ -60,7 +60,8 @@ class ReporterDispatcher {
 
   async onRunComplete(contexts: Set<Context>, results: AggregatedResult) {
     for (const reporter of this._reporters) {
-      reporter.onRunComplete && await reporter.onRunComplete(contexts, results);
+      reporter.onRunComplete &&
+        (await reporter.onRunComplete(contexts, results));
     }
   }
 
