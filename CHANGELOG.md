@@ -1,5 +1,14 @@
 ## master
 
+## jest 20.0.1
+
+* Add ansi-regex to pretty-format dependencies ([#3498](https://github.com/facebook/jest/pull/3498))
+* Fix <rootDir> replacement in testMatch and moduleDirectories ([#3538](https://github.com/facebook/jest/pull/3538))
+* Fix expect.hasAssertions() to throw when passed arguments ([#3526](https://github.com/facebook/jest/pull/3526))
+* Fix stack traces without proper error messages ([#3513](https://github.com/facebook/jest/pull/3513))
+* Fix support for custom extensions through haste packages ([#3537](https://github.com/facebook/jest/pull/3537))
+* Fix test contexts between test functions ([#3506](https://github.com/facebook/jest/pull/3506))
+
 ## jest 20.0.0
 
 * New `--projects` option to run one instance of Jest in multiple projects at the same time. ([#3400](https://github.com/facebook/jest/pull/3400))
