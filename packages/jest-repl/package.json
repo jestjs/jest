@@ -1,6 +1,6 @@
 {
   "name": "jest-repl",
-  "version": "20.0.0",
+  "version": "20.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,8 +8,8 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-runtime": "^20.0.0",
-    "jest-util": "^20.0.0",
+    "jest-runtime": "^20.0.1",
+    "jest-util": "^20.0.1",
     "repl": "^0.1.3",
     "yargs": "^7.0.2"
   },
