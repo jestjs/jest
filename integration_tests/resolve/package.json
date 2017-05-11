@@ -1,4 +1,5 @@
 {
+  "name": "custom-resolve",
   "jest": {
     "haste": {
       "platforms": ["native"],
