@@ -666,6 +666,8 @@ describe('the La Croix cans on my desk', () => {
 });
 ```
 
+> Note: `.toEqual` won't perform *deep equality* check for two errors. Only `message` property of `error` is considered for equality
+
 ### `.toHaveLength(number)`
 
 Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
