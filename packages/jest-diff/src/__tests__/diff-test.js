@@ -10,8 +10,8 @@
 
 'use strict';
 
-const diff = require('../');
 const stripAnsi = require('strip-ansi');
+const diff = require('../');
 
 const toJSON = function toJSON() {
   return 'apple';

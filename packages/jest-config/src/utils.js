@@ -12,9 +12,9 @@
 
 import type {Path} from 'types/Config';
 
+const path = require('path');
 const {ValidationError} = require('jest-validate');
 const Resolver = require('jest-resolve');
-const path = require('path');
 const chalk = require('chalk');
 const BULLET: string = chalk.bold('\u25cf ');
 const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}

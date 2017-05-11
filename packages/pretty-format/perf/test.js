@@ -8,14 +8,14 @@
 
 'use strict';
 
-const prettyFormat = require('../build');
 const util = require('util');
 const chalk = require('chalk');
-const leftPad = require('left-pad');
-const worldGeoJson = require('./world.geo.json');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
+const leftPad = require('left-pad');
+const prettyFormat = require('../build');
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');
+const worldGeoJson = require('./world.geo.json');
 
 const NANOSECONDS = 1000000000;
 let TIMES_TO_RUN = 100000;

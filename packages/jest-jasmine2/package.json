@@ -17,5 +17,8 @@
     "jest-snapshot": "^20.0.1",
     "once": "^1.4.0",
     "p-map": "^1.1.1"
+  },
+  "devDependencies": {
+    "jest-runtime": "^20.0.1"
   }
 }

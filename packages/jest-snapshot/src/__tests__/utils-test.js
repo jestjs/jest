@@ -8,6 +8,9 @@
 
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk');
 const {
   getSnapshotData,
   getSnapshotPath,
@@ -19,9 +22,6 @@ const {
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
 } = require('../utils');
-const chalk = require('chalk');
-const fs = require('fs');
-const path = require('path');
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;

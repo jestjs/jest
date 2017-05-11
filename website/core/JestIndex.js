@@ -15,9 +15,9 @@ const Container = require('Container');
 const HomeSplash = require('HomeSplash');
 const GridBlock = require('GridBlock');
 
-const siteConfig = require('../siteConfig.js');
-
 const blog = require('MetadataBlog');
+
+const siteConfig = require('../siteConfig.js');
 
 console.log('JestIndex.js triggered...');
 

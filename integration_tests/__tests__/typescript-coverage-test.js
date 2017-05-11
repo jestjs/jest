@@ -8,10 +8,10 @@
 
 'use strict';
 
-const {run} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {run} = require('../utils');
+const runJest = require('../runJest');
 
 skipOnWindows.suite();
 

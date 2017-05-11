@@ -15,10 +15,11 @@ import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
+const path = require('path');
+
 const JasmineReporter = require('./reporter');
 
 const jasmineAsync = require('./jasmine-async');
-const path = require('path');
 
 const JASMINE = require.resolve('./jasmine/jasmine-light.js');
 

@@ -9,10 +9,10 @@
 'use strict';
 
 const {readFileSync} = require('fs');
-const {run} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {run} = require('../utils');
+const runJest = require('../runJest');
 
 skipOnWindows.suite();
 

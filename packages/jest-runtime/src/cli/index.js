@@ -13,17 +13,16 @@
 import type {Argv} from 'types/Argv';
 import type {EnvironmentClass} from 'types/Environment';
 
-const args = require('./args');
-const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
+const chalk = require('chalk');
 const yargs = require('yargs');
 
 const {Console, setGlobal, validateCLIOptions} = require('jest-util');
-const readConfig = require('jest-config').readConfig;
-const Runtime = require('../');
-
+const {readConfig} = require('jest-config');
 const VERSION = (require('../../package.json').version: string);
+const Runtime = require('../');
+const args = require('./args');
 
 function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   let argv;

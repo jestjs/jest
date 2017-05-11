@@ -2,8 +2,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const Feed = require('feed');
 const os = require('os');
+const Feed = require('feed');
 
 const blogFolder = path.resolve('../blog/');
 const blogRootURL = 'https://facebook.github.io/jest/blog/';

@@ -10,13 +10,13 @@
 'use strict';
 
 const validate = require('../validate');
+const jestValidateExampleConfig = require('../exampleConfig');
+const jestValidateDefaultConfig = require('../defaultConfig');
 const {
   defaultConfig,
   validConfig,
   deprecatedConfig,
 } = require('./fixtures/jestConfig');
-const jestValidateExampleConfig = require('../exampleConfig');
-const jestValidateDefaultConfig = require('../defaultConfig');
 
 test('validates default Jest config', () => {
   expect(

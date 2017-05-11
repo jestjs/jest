@@ -12,12 +12,11 @@
 import type {SerializableError} from 'types/TestResult';
 import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';
 
-const H = require('./constants');
-
-const docblock = require('jest-docblock');
-const extractRequires = require('./lib/extractRequires');
-const fs = require('graceful-fs');
 const path = require('path');
+const docblock = require('jest-docblock');
+const fs = require('graceful-fs');
+const H = require('./constants');
+const extractRequires = require('./lib/extractRequires');
 
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;

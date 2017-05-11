@@ -9,15 +9,14 @@
  */
 'use strict';
 
+import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
-import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
-const FakeTimers = require('jest-util').FakeTimers;
-const installCommonGlobals = require('jest-util').installCommonGlobals;
-const mock = require('jest-mock');
 const vm = require('vm');
+const {FakeTimers, installCommonGlobals} = require('jest-util');
+const mock = require('jest-mock');
 
 class NodeEnvironment {
   context: ?vm$Context;

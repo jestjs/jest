@@ -14,8 +14,8 @@ import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {ProjectConfig, Path} from 'types/Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-const {getSummary, trimAndFormatPath, wrapAnsiString} = require('./utils');
 const chalk = require('chalk');
+const {getSummary, trimAndFormatPath, wrapAnsiString} = require('./utils');
 
 const RUNNING_TEXT = ' RUNS ';
 const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';

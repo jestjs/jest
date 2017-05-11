@@ -13,8 +13,8 @@
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
 
-const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
+const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const isBuiltinModule = require('is-builtin-module');
 
 type ResolverConfig = {|

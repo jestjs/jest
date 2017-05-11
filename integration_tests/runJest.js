@@ -9,9 +9,9 @@
  */
 'use strict';
 
-const {fileExists} = require('./utils');
 const path = require('path');
-const spawnSync = require('cross-spawn').sync;
+const {sync: spawnSync} = require('cross-spawn');
+const {fileExists} = require('./utils');
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 

@@ -22,23 +22,26 @@ import type {
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof HType from './constants';
 
-const {EventEmitter} = require('events');
+const EventEmitter = require('events');
+const os = require('os');
+const path = require('path');
+const crypto = require('crypto');
+const {execSync} = require('child_process');
+const fs = require('graceful-fs');
+const sane = require('sane');
+const workerFarm = require('worker-farm');
+
+const VERSION = require('../package.json').version;
+
 const H = require('./constants');
 const HasteFS = require('./HasteFS');
 const HasteModuleMap = require('./ModuleMap');
 const getMockName = require('./getMockName');
 
-const crypto = require('crypto');
-const execSync = require('child_process').execSync;
-const fs = require('graceful-fs');
 const getPlatformExtension = require('./lib/getPlatformExtension');
 const nodeCrawl = require('./crawlers/node');
-const os = require('os');
-const path = require('path');
-const sane = require('sane');
 const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
-const workerFarm = require('worker-farm');
 
 type Options = {
   cacheDirectory?: string,
@@ -88,7 +91,6 @@ export type FS = HasteFS;
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const VERSION = require('../package.json').version;
 
 const canUseWatchman = ((): boolean => {
   try {
