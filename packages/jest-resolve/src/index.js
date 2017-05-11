@@ -138,8 +138,8 @@ class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    if (!skipResolution) {
-      module = Resolver.findNodeModule(moduleName, {
+    const resolveNodeModule = name => {
+      return Resolver.findNodeModule(name, {
         basedir: dirname,
         browser: this._options.browser,
         extensions,
@@ -147,6 +147,10 @@ class Resolver {
         paths,
         resolver: this._options.resolver,
       });
+    };
+
+    if (!skipResolution) {
+      module = resolveNodeModule(moduleName);
 
       if (module) {
         return (this._moduleNameCache[key] = module);
@@ -156,12 +160,17 @@ class Resolver {
     // 3. Resolve "haste packages" which are `package.json` files outside of
     // `node_modules` folders anywhere in the file system.
     const parts = moduleName.split('/');
-    module = this.getPackage(parts.shift());
-    if (module) {
+    const hastePackage = this.getPackage(parts.shift());
+    if (hastePackage) {
       try {
-        return (this._moduleNameCache[key] = require.resolve(
-          path.join.apply(path, [path.dirname(module)].concat(parts)),
-        ));
+        const module = path.join.apply(
+          path,
+          [path.dirname(hastePackage)].concat(parts),
+        );
+        // try resolving with custom resolver first to support extensions,
+        // then fallback to require.resolve
+        return (this._moduleNameCache[key] =
+          resolveNodeModule(module) || require.resolve(module));
       } catch (ignoredError) {}
     }
 
