@@ -1,4 +1,4 @@
-/* eslint-disable max-len, sort-keys */
+/* eslint-disable sort-keys */
 
 'use strict';
 const http = require('http');

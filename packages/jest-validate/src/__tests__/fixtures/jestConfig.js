@@ -128,7 +128,6 @@ const validConfig = {
 
 const format = (value: string) => require('pretty-format')(value, {min: true});
 
-/* eslint-disable max-len */
 const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Object) =>
     `  Option ${chalk.bold('preprocessorIgnorePatterns')} was replaced by ${chalk.bold('transformIgnorePatterns')}, which support multiple preprocessors.
@@ -150,7 +149,6 @@ const deprecatedConfig = {
 
   Please update your configuration.`,
 };
-/* eslint-enable max-len */
 
 module.exports = {
   defaultConfig,

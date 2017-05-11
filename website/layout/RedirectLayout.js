@@ -2,7 +2,6 @@
  * @providesModule RedirectLayout
  * @jsx React.DOM
  */
-/* eslint-disable max-len */
 
 const React = require('React');
 

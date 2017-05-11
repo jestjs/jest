@@ -3,8 +3,6 @@
  * @jsx React.DOM
  */
 
-/* eslint-disable max-len */
-
 const React = require('React');
 const HeaderNav = require('HeaderNav');
 const Head = require('Head');

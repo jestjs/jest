@@ -1,4 +1,4 @@
-/* eslint-disable sort-keys, max-len */
+/* eslint-disable sort-keys */
 
 const React = require('React');
 
