@@ -146,7 +146,7 @@ ES modules to CommonJS modules only in the <code>test</code> environment.</p><pr
       <span class="token string">&quot;plugins&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;transform-es2015-modules-commonjs&quot;</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><p>If you use dynamic imports (<code>import(&#x27;some-file.js&#x27;).then(module =&gt; ...)</code>), you
+<span class="token punctuation">}</span></pre><blockquote><p>Note: Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with <code>--no-cache</code>.</p></blockquote><p>If you use dynamic imports (<code>import(&#x27;some-file.js&#x27;).then(module =&gt; ...)</code>), you
 need to enable the <code>dynamic-import-node</code> plugin.</p><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// .babelrc</span>
 <span class="token punctuation">{</span>
