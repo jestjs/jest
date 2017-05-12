@@ -59,10 +59,10 @@ class ReporterDispatcher {
   }
 
   async onRunComplete(contexts: Set<Context>, results: AggregatedResult) {
-    this._reporters.forEach(
-      reporter =>
-        reporter.onRunComplete && reporter.onRunComplete(contexts, results),
-    );
+    for (const reporter of this._reporters) {
+      reporter.onRunComplete &&
+        (await reporter.onRunComplete(contexts, results));
+    }
   }
 
   // Return a list of last errors for every reporter
