@@ -11,7 +11,7 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {getType} = require('jest-matcher-utils');
+const getType = require('jest-get-type');
 const {format, ValidationError, ERROR} = require('./utils');
 
 const errorMessage = (

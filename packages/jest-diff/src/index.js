@@ -19,7 +19,7 @@ const {
 } = require('pretty-format').plugins;
 
 const chalk = require('chalk');
-const {getType} = require('jest-matcher-utils');
+const getType = require('jest-get-type');
 const prettyFormat = require('pretty-format');
 const diffStrings = require('./diffStrings');
 
