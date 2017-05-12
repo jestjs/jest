@@ -329,7 +329,7 @@ class TestRunner {
 
   _addCustomReporters(reporters: Array<ReporterConfig>) {
     const customReporters = reporters.filter(
-      reporter => reporter !== 'default',
+      reporterConfig => reporterConfig[0] !== 'default',
     );
 
     customReporters.forEach((reporter, index) => {
