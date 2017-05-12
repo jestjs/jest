@@ -20,6 +20,7 @@ const path = require('path');
 const vm = require('vm');
 const {createDirectory} = require('jest-util');
 const fs = require('graceful-fs');
+const lockfile = require('proper-lockfile');
 const {getCacheFilePath} = require('jest-haste-map');
 const stableStringify = require('json-stable-stringify');
 const slash = require('slash');
@@ -342,8 +343,11 @@ const stripShebang = content => {
 };
 
 const writeCacheFile = (cachePath: Path, fileData: string) => {
+  let release;
   try {
+    release = lockfile.lockSync(cachePath, {realpath: false});
     fs.writeFileSync(cachePath, fileData, 'utf8');
+    release();
   } catch (e) {
     e.message =
       'jest: failed to cache transform results in: ' +
@@ -351,6 +355,9 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
       '\nFailure message: ' +
       e.message;
     removeFile(cachePath);
+    if (release) {
+      release();
+    }
     throw e;
   }
 };

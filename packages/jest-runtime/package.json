@@ -21,6 +21,7 @@
     "jest-util": "^20.0.1",
     "json-stable-stringify": "^1.0.1",
     "micromatch": "^2.3.11",
+    "proper-lockfile": "^2.0.1",
     "strip-bom": "3.0.0",
     "yargs": "^7.0.2"
   },
