@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 import type {SerializableError} from 'types/TestResult';

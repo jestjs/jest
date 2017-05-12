@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {
   MockFunctionMetadata as _MockFunctionMetadata,

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const {
   equals,
   fnNameFor,

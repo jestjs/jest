@@ -8,7 +8,6 @@
  * @flow
  */
 /* global stream$Writable */
-'use strict';
 
 import type {LogType, LogMessage} from 'types/Console';
 

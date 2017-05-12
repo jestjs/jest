@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const chalk = require('chalk');
 const diff = require('diff');
 

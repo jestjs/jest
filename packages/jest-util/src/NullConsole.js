@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const Console = require('./Console');
 
 class NullConsole extends Console {

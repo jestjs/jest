@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Global} from 'types/Global';
 
 type Mock = any;

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 type Title = {|
   deprecation?: string,
   error?: string,

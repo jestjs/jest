@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict';
-
 require(`shelljs/global`);
 
 const GIT_USER = process.env.GIT_USER;

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {FS} from 'jest-haste-map';
 

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';

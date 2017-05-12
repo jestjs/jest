@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {HasteFS} from 'types/HasteMap';
 import type {MatcherState} from 'types/Matchers';

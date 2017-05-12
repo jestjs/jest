@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 

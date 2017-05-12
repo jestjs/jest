@@ -1,7 +1,5 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-'use strict';
-
 const $ = require('jquery');
 
 function parseJSON(user) {

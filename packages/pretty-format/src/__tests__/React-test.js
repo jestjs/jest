@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const React = require('react');
 const renderer = require('react-test-renderer');
 

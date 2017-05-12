@@ -8,8 +8,6 @@
 * @flow
 */
 
-'use strict';
-
 import type {Argv} from 'types/Argv';
 import type {EnvironmentClass} from 'types/Environment';
 

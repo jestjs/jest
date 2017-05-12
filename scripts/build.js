@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 /**
  * script to build (transpile) files.
  * By default it transpiles all files for all packages and writes them

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {EnvironmentClass} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 const once = require('once');
 const pMap = require('p-map');

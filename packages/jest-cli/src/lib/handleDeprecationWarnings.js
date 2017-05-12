@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 const chalk = require('chalk');
 const {KEYS} = require('../constants');

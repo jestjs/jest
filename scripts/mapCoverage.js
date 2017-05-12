@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 /**
  * Because we have a build step, sometimes we can test files from both
  * `packages/jest-whatever/build/*` and `packages/jest-whatever/src/*`

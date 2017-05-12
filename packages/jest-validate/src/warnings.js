@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');

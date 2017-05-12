@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {MatchersObject} from 'types/Matchers';
 
 const diff = require('jest-diff');

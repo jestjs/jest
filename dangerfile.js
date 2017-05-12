@@ -10,8 +10,6 @@
 
 // Want to make changes? Check out the README in /danger/README.md for advice
 
-'use strict';
-
 const fs = require('fs');
 const {danger, fail, warn} = require('danger');
 // As danger's deps are inside a sub-folder, need to resolve via relative paths
@@ -87,18 +85,6 @@ const noFlowFiles = newJsFiles.filter(isSourceFile).filter(filepath => {
 });
 
 raiseIssueAboutPaths(warn, noFlowFiles, '@flow');
-
-// detects the presence of ES module import/export syntax, while ignoring the
-// variant introduced by flowtype; examples here: http://regexr.com/3f64p
-const esModuleRegex = /^(import|export)\s(?!type(of\s|\s)(?!from)).*?$/gm;
-
-// Ensure the use of 'use strict' on all non-ES module files
-const noStrictFiles = newJsFiles.filter(filepath => {
-  const content = fs.readFileSync(filepath, 'utf8');
-  return !content.match(esModuleRegex) && !includes(content, 'use strict');
-});
-
-raiseIssueAboutPaths(fail, noStrictFiles, "'use strict'");
 
 // No merge from master commmits
 // TODO: blocked by https://github.com/danger/danger-js/issues/81

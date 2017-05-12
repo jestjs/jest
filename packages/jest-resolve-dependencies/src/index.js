@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';

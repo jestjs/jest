@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';

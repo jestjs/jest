@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const toString = Object.prototype.toString;
 
 const validationCondition = (option: any, validOption: any): boolean => {

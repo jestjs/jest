@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 module.exports = [
   require('./ImmutableList'),
   require('./ImmutableSet'),

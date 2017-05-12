@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestFramework} from 'types/TestRunner';
 

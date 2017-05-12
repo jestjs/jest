@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const {parse: babylonParser, ItBlock, Expect} = require('jest-editor-support');
 const TypeScriptParser = require('./TypeScriptParser');
 export type ParserReturn = {

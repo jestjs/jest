@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {InternalHasteMap} from 'types/HasteMap';
 import type {IgnoreMatcher, CrawlerOptions} from '../types';

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 const SUPPORTED_PLATFORM_EXTS = {
   android: true,

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const {ChildProcess, spawn} = require('child_process');
 const ProjectWorkspace = require('./ProjectWorkspace');
 

@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {ReporterConfig} from 'types/Config';
 
 const {ValidationError} = require('jest-validate');

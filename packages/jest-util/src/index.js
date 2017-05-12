@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const mkdirp = require('mkdirp');
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');

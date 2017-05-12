@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 function messageFormatter({error, message, passed}) {
   if (passed) {

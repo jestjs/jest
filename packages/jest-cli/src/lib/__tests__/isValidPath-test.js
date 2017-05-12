@@ -8,8 +8,6 @@
 * @emails oncall+jsinfra
 */
 
-'use strict';
-
 const path = require('path');
 const isValidPath = require('../isValidPath');
 

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
