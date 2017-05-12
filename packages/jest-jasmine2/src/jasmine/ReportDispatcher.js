@@ -29,10 +29,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+/* @flow */
 /* eslint-disable sort-keys */
-'use strict';
 
-function ReportDispatcher(methods) {
+function ReportDispatcher(methods: Array<string>) {
   const dispatchedMethods = methods || [];
 
   for (let i = 0; i < dispatchedMethods.length; i++) {

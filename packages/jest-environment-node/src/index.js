@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';

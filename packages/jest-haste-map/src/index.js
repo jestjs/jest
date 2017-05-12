@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Console} from 'console';
 import type {Path} from 'types/Config';

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Path} from 'types/Config';
 import type {TestResult} from 'types/TestResult';

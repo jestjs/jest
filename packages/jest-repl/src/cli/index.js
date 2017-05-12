@@ -9,11 +9,8 @@
  * @flow
  */
 
-'use strict';
-
 const path = require('path');
 const Runtime = require('jest-runtime');
-
 const yargs = require('yargs');
 const {validateCLIOptions} = require('jest-util');
 const VERSION = require('../../package.json').version;

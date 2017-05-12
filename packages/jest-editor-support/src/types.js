@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 export type Location = {
   column: number,
   line: number,

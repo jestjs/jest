@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 declare module "resolve" {
   declare function isCore(moduleName: string): boolean;

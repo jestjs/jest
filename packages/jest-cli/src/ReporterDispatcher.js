@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
 import type {TestResult, AggregatedResult} from 'types/TestResult';

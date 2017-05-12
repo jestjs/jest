@@ -8,8 +8,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 const path = require('path');
 const chalk = require('chalk');
 const stripAnsi = require('strip-ansi');

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 const VERSION = require('../package.json').version;
 

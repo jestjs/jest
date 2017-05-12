@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 /*
  * This implementation is ported from from eslint-plugin-jasmine.

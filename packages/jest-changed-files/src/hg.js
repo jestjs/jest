@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 
 const path = require('path');

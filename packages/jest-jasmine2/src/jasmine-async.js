@@ -13,8 +13,6 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-'use strict';
-
 import type {Global} from 'types/Global';
 
 function isPromise(obj) {

@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const ansiStyle = require('ansi-styles');
 const prettyFormat = require('../');
 const ConvertAnsiPlugin = require('../plugins/ConvertAnsi');

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 /* $FlowFixMe */
 const getTerminalWidth = (): nubmer => process.stdout.columns;
 

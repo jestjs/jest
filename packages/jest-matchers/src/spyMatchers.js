@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {MatchersObject} from 'types/Matchers';
 
 const CALL_PRINT_LIMIT = 3;

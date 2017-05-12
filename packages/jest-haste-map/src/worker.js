@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {SerializableError} from 'types/TestResult';
 import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';

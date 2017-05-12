@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {DiffOptions} from 'jest-diff/src/diffStrings';
 
 const {printReceived, printExpected} = require('jest-matcher-utils');

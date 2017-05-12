@@ -7,7 +7,6 @@
 *
 * @flow
 */
-'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';

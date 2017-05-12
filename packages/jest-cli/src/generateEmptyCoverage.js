@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
 const IstanbulInstrument = require('istanbul-lib-instrument');

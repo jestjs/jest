@@ -8,8 +8,6 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
 const stripAnsi = require('strip-ansi');
 const diff = require('../');
 

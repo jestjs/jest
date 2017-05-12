@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 declare module "graceful-fs" {
   declare class Stats {

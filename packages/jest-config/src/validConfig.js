@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {InitialOptions} from 'types/Config';
 
 const {replacePathSepForRegex} = require('jest-regex-util');

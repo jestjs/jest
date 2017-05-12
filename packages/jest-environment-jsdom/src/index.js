@@ -6,7 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  * @flow
  */
-'use strict';
 
 import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';

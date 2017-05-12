@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
 const fs = require('fs');

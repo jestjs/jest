@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Console} from 'console';
 import type {Argv} from 'types/Argv';
 import type {Glob, Path, ProjectConfig} from 'types/Config';
