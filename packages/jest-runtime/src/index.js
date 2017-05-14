@@ -16,16 +16,16 @@ import type {Context} from 'types/Context';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
-import path from 'path';
-import HasteMap from 'jest-haste-map';
-import Resolver from 'jest-resolve';
 import {createDirectory} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
+import cliArgs from './cli/args';
 import fs from 'graceful-fs';
-import stripBOM from 'strip-bom';
+import HasteMap from 'jest-haste-map';
+import path from 'path';
+import Resolver from 'jest-resolve';
 import ScriptTransformer from './ScriptTransformer';
 import shouldInstrument from './shouldInstrument';
-import cliArgs from './cli/args';
+import stripBOM from 'strip-bom';
 
 type Module = {|
   children?: Array<any>,
