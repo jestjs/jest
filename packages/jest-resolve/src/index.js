@@ -16,6 +16,8 @@ import path from 'path';
 import nodeModulesPaths from 'resolve/lib/node-modules-paths';
 import isBuiltinModule from 'is-builtin-module';
 import defaultResolver from './default_resolver.js';
+import chalk from 'chalk';
+import {ValidationError} from 'jest-validate';
 
 type ResolverConfig = {|
   browser?: boolean,
@@ -331,7 +333,8 @@ class Resolver {
               (_, index) => matches[parseInt(index, 10)],
             );
           }
-          return (
+
+          const module =
             this.getModule(moduleName) ||
             Resolver.findNodeModule(moduleName, {
               basedir: dirname,
@@ -339,8 +342,14 @@ class Resolver {
               extensions,
               moduleDirectory,
               paths,
-            })
-          );
+            });
+          if (!module) {
+            throw new ValidationError(
+              'Configuration error',
+              `Unknown module in configuration option ${chalk.bold('moduleNameMapper')}\nPlease check: ${regex.toString()}: ${chalk.bold(moduleName)}`,
+            );
+          }
+          return module;
         }
       }
     }
