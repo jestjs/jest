@@ -37,7 +37,6 @@ const SpyStrategy = require('./SpyStrategy');
 
 const formatErrorMsg = (domain: string, usage?: string) => {
   const usageDefinition = usage ? '\nUsage: ' + usage : '';
-
   return msg => domain + ' : ' + msg + usageDefinition;
 };
 
