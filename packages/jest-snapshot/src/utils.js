@@ -105,6 +105,7 @@ const getSnapshotData = (snapshotPath: Path, update: SnapshotUpdateState) => {
       snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
+      // $FlowFixMe
       populate(data);
     } catch (e) {}
   }

@@ -30,22 +30,15 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* @flow */
-/* eslint-disable sort-keys */
 
 const CallTracker = require('./CallTracker');
 const createSpy = require('./createSpy');
 const SpyStrategy = require('./SpyStrategy');
 
-const formatErrorMsg = function() {
-  function generateErrorMsg(domain, usage) {
-    const usageDefinition = usage ? '\nUsage: ' + usage : '';
+const formatErrorMsg = (domain: string, usage?: string) => {
+  const usageDefinition = usage ? '\nUsage: ' + usage : '';
 
-    return function errorMsg(msg) {
-      return domain + ' : ' + msg + usageDefinition;
-    };
-  }
-
-  return generateErrorMsg;
+  return msg => domain + ' : ' + msg + usageDefinition;
 };
 
 function isSpy(putativeSpy) {

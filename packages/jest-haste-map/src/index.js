@@ -227,11 +227,11 @@ class HasteMap extends EventEmitter {
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       `haste-map-${this._options.name}`,
-      VERSION,
-      this._options.roots.join(':'),
-      this._options.extensions.join(':'),
-      this._options.platforms.join(':'),
-      options.mocksPattern || '',
+      VERSION +
+        this._options.roots.join(':') +
+        this._options.extensions.join(':') +
+        this._options.platforms.join(':') +
+        (options.mocksPattern || ''),
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -240,9 +240,8 @@ class HasteMap extends EventEmitter {
     this._watchers = [];
   }
 
-  static getCacheFilePath(tmpdir: Path, name: string): string {
-    const hash = crypto.createHash('md5');
-    Array.from(arguments).slice(1).forEach(arg => hash.update(arg));
+  static getCacheFilePath(tmpdir: Path, name: string, extra?: string): string {
+    const hash = crypto.createHash('md5').update(name + (extra || ''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),

@@ -36,19 +36,19 @@ class CustomConsole extends Console {
     super.log(this._formatBuffer(type, message));
   }
 
-  log() {
+  log(...args: Array<mixed>) {
     this._log('log', format.apply(null, arguments));
   }
 
-  info() {
+  info(...args: Array<mixed>) {
     this._log('info', format.apply(null, arguments));
   }
 
-  warn() {
+  warn(...args: Array<mixed>) {
     this._log('warn', format.apply(null, arguments));
   }
 
-  error() {
+  error(...args: Array<mixed>) {
     this._log('error', format.apply(null, arguments));
   }
 

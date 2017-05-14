@@ -59,20 +59,20 @@ function runTest(
   >);
 
   const environment = new TestEnvironment(config);
-  const TestConsole = globalConfig.verbose
-    ? Console
-    : globalConfig.silent ? NullConsole : BufferedConsole;
-  const testConsole = new TestConsole(
-    globalConfig.useStderr ? process.stderr : process.stdout,
-    process.stderr,
-    (type, message) =>
-      getConsoleOutput(
-        config.rootDir,
-        !!globalConfig.verbose,
-        // 4 = the console call is buried 4 stack frames deep
-        BufferedConsole.write([], type, message, 4),
-      ),
-  );
+  const TestConsole = globalConfig.verbose ? Console : NullConsole;
+  const testConsole = globalConfig.silent
+    ? new TestConsole(
+        globalConfig.useStderr ? process.stderr : process.stdout,
+        process.stderr,
+        (type, message) =>
+          getConsoleOutput(
+            config.rootDir,
+            !!globalConfig.verbose,
+            // 4 = the console call is buried 4 stack frames deep
+            BufferedConsole.write([], type, message, 4),
+          ),
+      )
+    : new BufferedConsole();
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
   const runtime = new Runtime(config, environment, resolver, cacheFS, {
