@@ -10,8 +10,8 @@
 
 import type {Path} from 'types/Config';
 
-const resolve = require('resolve');
-const browserResolve = require('browser-resolve');
+import resolve from 'resolve';
+import browserResolve from 'browser-resolve';
 
 type ResolverOptions = {|
   basedir: Path,

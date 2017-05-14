@@ -12,22 +12,19 @@ import type {Argv} from 'types/Argv';
 import type {AggregatedResult} from 'types/TestResult';
 import type {Path} from 'types/Config';
 
-const Runtime = require('jest-runtime');
-
-const {Console, clearLine} = require('jest-util');
-const {createDirectory} = require('jest-util');
-const {readConfig} = require('jest-config');
-const chalk = require('chalk');
-const createContext = require('../lib/createContext');
-const getMaxWorkers = require('../lib/getMaxWorkers');
-const handleDeprecationWarnings = require('../lib/handleDeprecationWarnings');
-const logDebugMessages = require('../lib/logDebugMessages');
-const preRunMessage = require('../preRunMessage');
-const runJest = require('../runJest');
-const TestWatcher = require('../TestWatcher');
-const watch = require('../watch');
-
-const VERSION = require('../../package.json').version;
+import Runtime from 'jest-runtime';
+import {Console, clearLine, createDirectory} from 'jest-util';
+import {readConfig} from 'jest-config';
+import chalk from 'chalk';
+import createContext from '../lib/createContext';
+import getMaxWorkers from '../lib/getMaxWorkers';
+import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
+import logDebugMessages from '../lib/logDebugMessages';
+import preRunMessage from '../preRunMessage';
+import runJest from '../runJest';
+import TestWatcher from '../TestWatcher';
+import watch from '../watch';
+import {version as VERSION} from '../../package.json';
 
 module.exports = async (
   argv: Argv,

@@ -8,7 +8,7 @@
  * @flow
  */
 
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 module.exports = (str: string, start: number, end: number) =>
   chalk.dim(str.slice(0, start)) +

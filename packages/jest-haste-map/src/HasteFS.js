@@ -9,12 +9,11 @@
  */
 
 import type {Glob, Path} from 'types/Config';
-import type {FileData, HType} from 'types/HasteMap';
+import type {FileData} from 'types/HasteMap';
 
-const path = require('path');
-const micromatch = require('micromatch');
-
-const H: HType = require('./constants');
+import path from 'path';
+import micromatch from 'micromatch';
+import H from './constants';
 
 class HasteFS {
   _files: FileData;

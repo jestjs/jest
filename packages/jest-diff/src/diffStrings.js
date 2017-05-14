@@ -8,10 +8,13 @@
  * @flow
  */
 
-const chalk = require('chalk');
-const diff = require('diff');
+import chalk from 'chalk';
+import {
+  diffLines as diffLinesDiffer,
+  structuredPatch as structuredPatchDiffer,
+} from 'diff';
 
-const {NO_DIFF_MESSAGE} = require('./constants.js');
+import {NO_DIFF_MESSAGE} from './constants.js';
 const DIFF_CONTEXT = 5;
 
 export type DiffOptions = {|
@@ -48,8 +51,7 @@ const getAnnotation = (options: ?DiffOptions): string =>
 const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
   return {
-    diff: diff
-      .diffLines(a, b)
+    diff: diffLinesDiffer(a, b)
       .map(part => {
         const {added, removed} = part;
         if (part.added || part.removed) {
@@ -106,9 +108,8 @@ const structuredPatch = (a: string, b: string): Diff => {
   const oldLinesCount = (a.match(/\n/g) || []).length;
 
   return {
-    diff: diff
-      .structuredPatch('', '', a, b, '', '', options)
-      .hunks.map((hunk: Hunk) => {
+    diff: structuredPatchDiffer('', '', a, b, '', '', options).hunks
+      .map((hunk: Hunk) => {
         const lines = hunk.lines
           .map(line => {
             const added = line[0] === '+';

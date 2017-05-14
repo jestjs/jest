@@ -8,13 +8,12 @@
  * @flow
  */
 
-const VERSION = require('../package.json').version;
+import {version as VERSION} from '../package.json';
 
-const SearchSource = require('./SearchSource');
-const TestRunner = require('./TestRunner');
-const TestWatcher = require('./TestWatcher');
-
-const {run, runCLI} = require('./cli');
+import SearchSource from './SearchSource';
+import TestRunner from './TestRunner';
+import TestWatcher from './TestWatcher';
+import {run, runCLI} from './cli';
 
 module.exports = {
   SearchSource,

@@ -12,7 +12,7 @@ import type {InitialOptions} from 'types/Config';
 import type {Argv} from 'types/Argv';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-const {isJSONString} = require('./utils');
+import {isJSONString} from './utils';
 
 function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
   const argvToOptions = Object.keys(argv)

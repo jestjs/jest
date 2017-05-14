@@ -10,7 +10,7 @@
 
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-const ansiRegex = require('ansi-regex');
+import ansiRegex from 'ansi-regex';
 
 const toHumanReadableAnsi = text => {
   const style = require('ansi-styles');

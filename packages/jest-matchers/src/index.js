@@ -19,19 +19,19 @@ import type {
   PromiseMatcherFn,
 } from 'types/Matchers';
 
-const utils = require('jest-matcher-utils');
-const matchers = require('./matchers');
-const spyMatchers = require('./spyMatchers');
-const toThrowMatchers = require('./toThrowMatchers');
-const {equals} = require('./jasmine-utils');
-const {
+import utils from 'jest-matcher-utils';
+import matchers from './matchers';
+import spyMatchers from './spyMatchers';
+import toThrowMatchers from './toThrowMatchers';
+import {equals} from './jasmine-utils';
+import {
   any,
   anything,
   arrayContaining,
   objectContaining,
   stringContaining,
   stringMatching,
-} = require('./asymmetric-matchers');
+} from './asymmetric-matchers';
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 

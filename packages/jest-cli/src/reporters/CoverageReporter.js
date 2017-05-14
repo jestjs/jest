@@ -22,16 +22,15 @@ type CoverageReporterOptions = {
   maxWorkers: number,
 };
 
-const {clearLine} = require('jest-util');
-const {createReporter} = require('istanbul-api');
-const chalk = require('chalk');
-const isCI = require('is-ci');
-const istanbulCoverage = require('istanbul-lib-coverage');
-const libSourceMaps = require('istanbul-lib-source-maps');
-const pify = require('pify');
-const workerFarm = require('worker-farm');
-
-const BaseReporter = require('./BaseReporter');
+import {clearLine} from 'jest-util';
+import {createReporter} from 'istanbul-api';
+import chalk from 'chalk';
+import isCI from 'is-ci';
+import istanbulCoverage from 'istanbul-lib-coverage';
+import libSourceMaps from 'istanbul-lib-source-maps';
+import pify from 'pify';
+import workerFarm from 'worker-farm';
+import BaseReporter from './BaseReporter';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;

@@ -8,9 +8,10 @@
  * @flow
  */
 
-const path = require('path');
-const chalk = require('chalk');
-const colorize = require('./colorize');
+import path from 'path';
+
+import chalk from 'chalk';
+import colorize from './colorize';
 
 const trim = '...';
 const relativePathHead = './';

@@ -10,6 +10,7 @@
     "babel-plugin-transform-es2015-destructuring": "^6.23.0",
     "babel-plugin-transform-es2015-parameters": "^6.23.0",
     "babel-plugin-transform-flow-strip-types": "^6.18.0",
+    "babel-plugin-transform-inline-imports-commonjs": "^1.2.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-plugin-transform-strict-mode": "^6.24.1",
     "babel-preset-env": "^1.4.0",

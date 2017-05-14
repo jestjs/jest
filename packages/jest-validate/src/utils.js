@@ -8,7 +8,8 @@
  * @flow
  */
 
-const chalk = require('chalk');
+import chalk from 'chalk';
+
 const BULLET: string = chalk.bold('\u25cf');
 const DEPRECATION = `${BULLET} Deprecation Warning`;
 const ERROR = `${BULLET} Validation Error`;

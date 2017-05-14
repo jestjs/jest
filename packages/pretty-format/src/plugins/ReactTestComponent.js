@@ -18,7 +18,7 @@ import type {
   ReactTestChild,
 } from 'types/PrettyFormat';
 
-const escapeHTML = require('./lib/escapeHTML');
+import escapeHTML from './lib/escapeHTML';
 
 const reactTestInstance = Symbol.for('react.test.json');
 

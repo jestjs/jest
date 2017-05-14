@@ -10,12 +10,14 @@
 
 import type {Plugin} from 'types/PrettyFormat';
 
+import prettyFormat from 'pretty-format';
+
 const {
   HTMLElement,
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = require('pretty-format').plugins;
+} = prettyFormat.plugins;
 
 let PLUGINS = [ReactTestComponent, ReactElement, HTMLElement].concat(Immutable);
 

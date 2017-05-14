@@ -11,9 +11,9 @@
 import type {Path, ProjectConfig} from 'types/Config';
 import type {Options} from './ScriptTransformer';
 
-const path = require('path');
-const {escapePathForRegex} = require('jest-regex-util');
-const micromatch = require('micromatch');
+import path from 'path';
+import {escapePathForRegex} from 'jest-regex-util';
+import micromatch from 'micromatch';
 
 const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),

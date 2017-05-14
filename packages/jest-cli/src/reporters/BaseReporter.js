@@ -13,7 +13,7 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-const preRunMessage = require('../preRunMessage');
+import preRunMessage from '../preRunMessage';
 
 class BaseReporter {
   _error: ?Error;

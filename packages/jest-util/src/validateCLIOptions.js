@@ -10,12 +10,8 @@
 
 import type {Argv} from 'types/Argv';
 
-const chalk = require('chalk');
-const {
-  ValidationError,
-  format,
-  createDidYouMeanMessage,
-} = require('jest-validate');
+import chalk from 'chalk';
+import {ValidationError, format, createDidYouMeanMessage} from 'jest-validate';
 
 const BULLET: string = chalk.bold('\u25cf');
 

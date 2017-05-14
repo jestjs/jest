@@ -17,7 +17,7 @@ import type {
   BlockName,
   TestName,
 } from '../types';
-const {dispatch} = require('./state');
+import {dispatch} from './state';
 
 const describe = (blockName: BlockName, blockFn: BlockFn) =>
   _dispatchDescribe(blockFn, blockName);

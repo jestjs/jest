@@ -10,10 +10,10 @@
 
 'use strict';
 
-const chalk = require('chalk');
-const ansiEscapes = require('ansi-escapes');
-const stringLength = require('string-length');
-const Prompt = require('./Prompt');
+import chalk from 'chalk';
+import ansiEscapes from 'ansi-escapes';
+import stringLength from 'string-length';
+import Prompt from './Prompt';
 
 const pluralize = (count: number, text: string) =>
   count === 1 ? text : text + 's';

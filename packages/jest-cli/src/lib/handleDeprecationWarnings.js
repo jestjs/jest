@@ -8,8 +8,9 @@
  * @flow
  */
 
-const chalk = require('chalk');
-const {KEYS} = require('../constants');
+import chalk from 'chalk';
+
+import {KEYS} from '../constants';
 
 module.exports = (
   pipe: stream$Writable | tty$WriteStream,

@@ -12,13 +12,13 @@ import type {TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Event, TestEntry} from '../../types';
 
-const {getState, setState} = require('jest-matchers');
-const {formatResultsErrors} = require('jest-message-util');
-const {SnapshotState, addSerializer} = require('jest-snapshot');
-const {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} = require('../state');
-const {getTestID} = require('../utils');
-const run = require('../run');
-const globals = require('../index');
+import {getState, setState} from 'jest-matchers';
+import {formatResultsErrors} from 'jest-message-util';
+import {SnapshotState, addSerializer} from 'jest-snapshot';
+import {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
+import {getTestID} from '../utils';
+import run from '../run';
+import globals from '../index';
 
 const initialize = ({
   config,

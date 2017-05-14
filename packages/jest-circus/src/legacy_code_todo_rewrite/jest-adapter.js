@@ -14,7 +14,7 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jest-adapter-init');
-const path = require('path');
+import path from 'path';
 
 const jestAdapter = async (
   globalConfig: GlobalConfig,

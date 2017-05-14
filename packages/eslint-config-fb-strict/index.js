@@ -7,6 +7,7 @@
  *
  */
 
+// Can't be ESModules as this is not transpiled
 const fbjsConfig = require('eslint-config-fbjs');
 
 const variableNamePattern = String.raw`\s*[a-zA-Z_$][a-zA-Z_$\d]*\s*`;

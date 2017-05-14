@@ -8,7 +8,7 @@
  * @flow
  */
 
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 exports.NO_DIFF_MESSAGE = chalk.dim(
   'Compared values have no visual difference.',

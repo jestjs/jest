@@ -10,20 +10,19 @@
 
 import type {DiffOptions} from './diffStrings';
 
+import prettyFormat from 'pretty-format';
+import chalk from 'chalk';
+import getType from 'jest-get-type';
+import diffStrings from './diffStrings';
+import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
+
 const {
   ReactElement,
   ReactTestComponent,
   AsymmetricMatcher,
   HTMLElement,
   Immutable,
-} = require('pretty-format').plugins;
-
-const chalk = require('chalk');
-const getType = require('jest-get-type');
-const prettyFormat = require('pretty-format');
-const diffStrings = require('./diffStrings');
-
-const {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} = require('./constants');
+} = prettyFormat.plugins;
 
 const PLUGINS = [
   ReactTestComponent,

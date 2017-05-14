@@ -8,7 +8,7 @@
  * @flow
  */
 
-const Runtime = require('jest-runtime');
+import Runtime from 'jest-runtime';
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
 

@@ -18,11 +18,11 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-const {ModuleMap} = require('jest-haste-map');
-const {separateMessageFromStack} = require('jest-message-util');
-
-const Runtime = require('jest-runtime');
-const runTest = require('./runTest');
+// $FlowFixMe: Missing ESM export
+import {ModuleMap} from 'jest-haste-map';
+import {separateMessageFromStack} from 'jest-message-util';
+import Runtime from 'jest-runtime';
+import runTest from './runTest';
 
 type WorkerData = {|
   config: ProjectConfig,
@@ -59,6 +59,7 @@ const getResolver = (config, rawModuleMap) => {
   if (rawModuleMap) {
     return Runtime.createResolver(
       config,
+      // $FlowFixMe: Missing ESM export
       new ModuleMap(rawModuleMap.map, rawModuleMap.mocks),
     );
   } else {

@@ -31,8 +31,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-const CallTracker = require('./CallTracker');
-const SpyStrategy = require('./SpyStrategy');
+import CallTracker from './CallTracker';
+
+import SpyStrategy from './SpyStrategy';
 
 function createSpy(name, originalFn) {
   const spyStrategy = new SpyStrategy({

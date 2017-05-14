@@ -10,8 +10,8 @@
 
 import type {InitialOptions} from 'types/Config';
 
-const {replacePathSepForRegex} = require('jest-regex-util');
-const constants = require('./constants');
+import {replacePathSepForRegex} from 'jest-regex-util';
+import constants from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 

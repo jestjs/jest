@@ -16,7 +16,7 @@ import type {
   TestReconciliationState,
 } from './types';
 
-const path = require('path');
+import path from 'path';
 
 /**
  *  You have a Jest test runner watching for changes, and you have

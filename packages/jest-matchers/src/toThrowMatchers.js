@@ -10,21 +10,18 @@
 
 import type {MatchersObject} from 'types/Matchers';
 
-const getType = require('jest-get-type');
-const {escapeStrForRegex} = require('jest-regex-util');
-const {
-  formatStackTrace,
-  separateMessageFromStack,
-} = require('jest-message-util');
-const {
+import getType from 'jest-get-type';
+import {escapeStrForRegex} from 'jest-regex-util';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import {
   RECEIVED_BG,
   RECEIVED_COLOR,
   highlightTrailingWhitespace,
   matcherHint,
   printExpected,
   printWithType,
-} = require('jest-matcher-utils');
-const {equals} = require('./jasmine-utils');
+} from 'jest-matcher-utils';
+import {equals} from './jasmine-utils';
 
 const createMatcher = matcherName => (
   actual: Function,

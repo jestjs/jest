@@ -12,9 +12,9 @@
 
 import type {ScrollOptions} from './lib/scrollList';
 
-const chalk = require('chalk');
-const ansiEscapes = require('ansi-escapes');
-const Prompt = require('./lib/Prompt');
+import chalk from 'chalk';
+import ansiEscapes from 'ansi-escapes';
+import Prompt from './lib/Prompt';
 
 const usage = (entity: string) =>
   `\n${chalk.bold('Pattern Mode Usage')}\n` +

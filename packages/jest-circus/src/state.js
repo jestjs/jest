@@ -10,8 +10,8 @@
 
 import type {Event, State, EventHandler} from '../types';
 
-const {makeDescribe} = require('./utils');
-const eventHandler = require('./eventHandler');
+import {makeDescribe} from './utils';
+import eventHandler from './eventHandler';
 
 const eventHandlers: Array<EventHandler> = [eventHandler];
 

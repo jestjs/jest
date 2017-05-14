@@ -9,11 +9,10 @@
 
 import type {ReporterConfig} from 'types/Config';
 
-const {ValidationError} = require('jest-validate');
-
-const chalk = require('chalk');
-const getType = require('jest-get-type');
-const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
+import {ValidationError} from 'jest-validate';
+import chalk from 'chalk';
+import getType from 'jest-get-type';
+import {DOCUMENTATION_NOTE, BULLET} from './utils';
 
 const validReporterTypes = ['array', 'string'];
 const ERROR = `${BULLET}Reporter Validation Error`;

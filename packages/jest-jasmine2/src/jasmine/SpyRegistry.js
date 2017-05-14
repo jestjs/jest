@@ -31,9 +31,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* @flow */
 
-const CallTracker = require('./CallTracker');
-const createSpy = require('./createSpy');
-const SpyStrategy = require('./SpyStrategy');
+import CallTracker from './CallTracker';
+
+import createSpy from './createSpy';
+import SpyStrategy from './SpyStrategy';
 
 const formatErrorMsg = (domain: string, usage?: string) => {
   const usageDefinition = usage ? '\nUsage: ' + usage : '';
