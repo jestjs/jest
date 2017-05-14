@@ -25,6 +25,7 @@ import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './ScriptTransformer';
 import shouldInstrument from './shouldInstrument';
+import cli from './cli';
 import cliArgs from './cli/args';
 
 type Module = {|
@@ -261,8 +262,7 @@ class Runtime {
   }
 
   static runCLI(args?: Argv, info?: Array<string>) {
-    // TODO: If this is not inline, the repl test fails
-    return require('./cli').run(args, info);
+    return cli.run(args, info);
   }
 
   static getCLIOptions() {
