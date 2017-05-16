@@ -6,8 +6,12 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
+jest.mock('../');
 const importedFn = require('../');
 
 test('moduleNameMapping correct configuration', () => {
-  expect(importedFn).toBeDefined();
+  importedFn();
+  expect(importedFn.mock.calls.length).toBe(1);
 });
