@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
 
 'use strict';
 // Inlcude style so moduleNameMapping triggers
 const style = require('./style.css');
-module.exports = () => {};
+module.exports = () => 'test';
