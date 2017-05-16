@@ -1,23 +1,19 @@
-/**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @emails oncall+jsinfra
- */
-'use strict';
-
 const runJest = require('../runJest');
+const {extractSummary} = require('../utils');
 
 test('moduleNameMapper wrong configuration', () => {
-  const result = runJest('moduleNameMapper-wrong-config');
-  // Should fail because that wrong configuration will throw
-  expect(result.status).toBe(1);
+  const {stderr, status} = runJest('moduleNameMapper-wrong-config');
+  const {summary, rest} = extractSummary(stderr);
+
+  expect(status).toBe(1);
+  expect(rest).toMatchSnapshot();
+
 });
 
 test('moduleNameMapper correct configuration', () => {
-  const result = runJest('moduleNameMapper-correct-config');
-  expect(result.status).toBe(0);
+  const {stderr, status} = runJest('moduleNameMapper-correct-config');
+  const {summary, rest} = extractSummary(stderr);
+
+  expect(status).toBe(0);
+  expect(rest).toMatchSnapshot();
 });
