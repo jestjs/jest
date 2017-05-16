@@ -261,7 +261,7 @@ This example configuration will run Jest in the root directory as well as in eve
 ### `clearMocks` [boolean]
 Default: `false`
 
-Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test.
+Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test. This does not remove any mock implementation that may have been provided.
 
 ### `reporters` [array<moduleName | [moduleName, options]>]
 Default: `undefined`
@@ -339,7 +339,7 @@ For the full list of methods and argument types see `Reporter` type in [types/Te
 ### `resetMocks` [boolean]
 Default: `false`
 
-Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test.
+Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
 
 ### `resetModules` [boolean]
 Default: `false`
