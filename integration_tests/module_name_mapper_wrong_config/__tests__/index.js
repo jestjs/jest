@@ -6,8 +6,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+<<<<<<< c8e99b03e4b1fab39a2491dfbd8a9380bdf1053a:integration_tests/module_name_mapper_wrong_config/__tests__/index.js
 'use strict';
 
+=======
+>>>>>>> Refactored test to use snapshot:integration_tests/moduleNameMapper-wrong-config/__tests__/index.js
 const importedFn = require('../');
 
 test('moduleNameMapping wrong configuration', () => {
