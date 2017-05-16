@@ -164,7 +164,7 @@ describe('Watch mode flows', () => {
       .forEach(key => stdin.emit(key));
 
     stdin.emit(KEYS.ENTER);
-    
+
     expect(rslash(argv.testPathPattern)).toMatchSnapshot();
   });
 
