@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-
 'use strict';
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
 
 test('moduleNameMapper wrong configuration', () => {
-  const {stderr, status} = runJest('moduleNameMapper-wrong-config');
+  const {stderr, status} = runJest('module_name_mapper_wrong_config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
@@ -20,7 +19,7 @@ test('moduleNameMapper wrong configuration', () => {
 });
 
 test('moduleNameMapper correct configuration', () => {
-  const {stderr, status} = runJest('moduleNameMapper-correct-config');
+  const {stderr, status} = runJest('module_name_mapper_correct_config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);
