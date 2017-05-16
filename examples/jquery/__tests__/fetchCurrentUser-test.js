@@ -33,13 +33,13 @@ it('calls the callback when $.ajax requests are finished', () => {
   // callback
   $.ajax.mock.calls[0 /*first call*/][0 /*first argument*/].success({
     firstName: 'Bobby',
-    lastName: '");DROP TABLE Users;--',
+    lastName: 'Marley',
   });
 
   // And finally we assert that this emulated call by `$.ajax` incurred a
   // call back into the mock function we provided as a callback
   expect(callback.mock.calls[0 /*first call*/][0 /*first arg*/]).toEqual({
-    fullName: 'Bobby ");DROP TABLE Users;--',
+    fullName: 'Bobby Marley',
     loggedIn: true,
   });
 });
