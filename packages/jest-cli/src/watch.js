@@ -14,12 +14,12 @@ import type {Context} from 'types/Context';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const createContext = require('./lib/createContext');
+const {replacePathSepForRegex} = require('jest-regex-util');
 const HasteMap = require('jest-haste-map');
 const isCI = require('is-ci');
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
-const { replacePathSepForRegex } = require('jest-regex-util');
+const createContext = require('./lib/createContext');
 const runJest = require('./runJest');
 const updateArgv = require('./lib/updateArgv');
 const SearchSource = require('./SearchSource');
