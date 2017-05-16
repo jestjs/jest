@@ -43,7 +43,7 @@
     "react": "15.4.2",
     "react-addons-test-utils": "15.4.2",
     "react-dom": "15.4.2",
-    "react-test-renderer": "^15.5.4",
+    "react-test-renderer": "15.4.2",
     "regenerator-runtime": "^0.10.3",
     "rimraf": "^2.5.4",
     "slash": "^1.0.0",
