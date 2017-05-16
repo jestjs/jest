@@ -9,5 +9,5 @@
 
 'use strict';
 // Inlcude style so moduleNameMapping triggers
-const style = require('./style.css');
+require('./style.css');
 module.exports = () => 'test';

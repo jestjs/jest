@@ -3,7 +3,7 @@ const {extractSummary} = require('../utils');
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('moduleNameMapper-wrong-config');
-  const {summary, rest} = extractSummary(stderr);
+  const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
   expect(rest).toMatchSnapshot();
@@ -11,7 +11,7 @@ test('moduleNameMapper wrong configuration', () => {
 
 test('moduleNameMapper correct configuration', () => {
   const {stderr, status} = runJest('moduleNameMapper-correct-config');
-  const {summary, rest} = extractSummary(stderr);
+  const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);
   expect(rest).toMatchSnapshot();
