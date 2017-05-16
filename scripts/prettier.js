@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
 
+const path = require('path');
 const chalk = require('chalk');
 const glob = require('glob');
-const path = require('path');
 const runCommand = require('./_runCommand');
 
 const shouldWrite = process.argv[2] === 'write';

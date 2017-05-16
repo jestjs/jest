@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
 const escapeHTML = require('./lib/escapeHTML');

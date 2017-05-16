@@ -38,6 +38,11 @@ test('should resolve filename.<platform>.js', () => {
   expect(platform.extension).toBe('android.js');
 });
 
+test('should resolve filename.<platform>.js from haste package', () => {
+  expect(testRequire('custom-resolve/test1')).not.toThrow();
+  expect(platform.extension).toBe('android.js');
+});
+
 test('should resolve filename.native.js', () => {
   expect(testRequire('../test2')).not.toThrow();
   expect(platform.extension).toBe('native.js');

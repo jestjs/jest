@@ -7,12 +7,11 @@
  *
  * @flow
  */
-'use strict';
 
 import type {ConsoleBuffer} from 'types/Console';
 
-const chalk = require('chalk');
 const path = require('path');
+const chalk = require('chalk');
 
 module.exports = (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
   const TITLE_INDENT = verbose ? '  ' : '    ';

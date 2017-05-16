@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const chalk = require('chalk');
 const colorize = require('./colorize');
 

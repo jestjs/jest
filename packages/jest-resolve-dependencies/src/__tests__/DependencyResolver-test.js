@@ -8,9 +8,9 @@
  */
 'use strict';
 
-const DependencyResolver = require('../index');
-const {normalize} = require('jest-config');
 const path = require('path');
+const {normalize} = require('jest-config');
+const DependencyResolver = require('../index');
 
 const maxWorkers = 1;
 let dependencyResolver;

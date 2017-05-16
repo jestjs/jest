@@ -6,12 +6,10 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const {linkJestPackage} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {linkJestPackage} = require('../utils');
+const runJest = require('../runJest');
 
 describe('jest --debug', () => {
   skipOnWindows.suite();

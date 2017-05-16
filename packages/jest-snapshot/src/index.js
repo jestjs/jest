@@ -7,24 +7,23 @@
  *
  * @flow
  */
-'use strict';
 
 import type {HasteFS} from 'types/HasteMap';
 import type {MatcherState} from 'types/Matchers';
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
-const diff = require('jest-diff');
 const fs = require('fs');
 const path = require('path');
-const SnapshotState = require('./State');
-const {addSerializer, getSerializers} = require('./plugins');
-
+const diff = require('jest-diff');
 const {
   EXPECTED_COLOR,
   ensureNoExpected,
   matcherHint,
   RECEIVED_COLOR,
 } = require('jest-matcher-utils');
+
+const SnapshotState = require('./State');
+const {addSerializer, getSerializers} = require('./plugins');
 const {SNAPSHOT_EXTENSION} = require('./utils');
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>

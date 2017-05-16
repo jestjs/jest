@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {ProjectConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {HasteMap} from 'types/HasteMap';

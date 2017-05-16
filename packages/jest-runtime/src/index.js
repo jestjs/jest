@@ -8,26 +8,24 @@
  * @flow
  */
 
-'use strict';
-
+import type {Console} from 'console';
 import type {Argv} from 'types/Argv';
 import type {Glob, Path, ProjectConfig} from 'types/Config';
-import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {Context} from 'types/Context';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
+const path = require('path');
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
-const ScriptTransformer = require('./ScriptTransformer');
 
 const {createDirectory} = require('jest-util');
 const {escapePathForRegex} = require('jest-regex-util');
 const fs = require('graceful-fs');
-const path = require('path');
-const shouldInstrument = require('./shouldInstrument');
 const stripBOM = require('strip-bom');
+const ScriptTransformer = require('./ScriptTransformer');
+const shouldInstrument = require('./shouldInstrument');
 
 type Module = {|
   children?: Array<any>,

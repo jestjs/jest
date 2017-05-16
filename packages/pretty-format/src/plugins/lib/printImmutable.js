@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Colors, Indent, Options, Print} from 'types/PrettyFormat';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';

@@ -10,21 +10,19 @@
 
 /* global stream$Writable, tty$WriteStream */
 
-'use strict';
-
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-const BaseReporter = require('./BaseReporter');
-const Status = require('./Status');
-
 const {clearLine} = require('jest-util');
 const chalk = require('chalk');
+const isCI = require('is-ci');
+
+const BaseReporter = require('./BaseReporter');
+const Status = require('./Status');
 const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
-const isCI = require('is-ci');
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 

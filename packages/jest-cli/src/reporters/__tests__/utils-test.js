@@ -8,12 +8,10 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
-const {wrapAnsiString, trimAndFormatPath} = require('../utils');
-const chalk = require('chalk');
 const path = require('path');
+const chalk = require('chalk');
 const stripAnsi = require('strip-ansi');
+const {wrapAnsiString, trimAndFormatPath} = require('../utils');
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {

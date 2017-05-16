@@ -8,14 +8,12 @@
  * @flow
  */
 
-'use strict';
-
 import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
+const path = require('path');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
-const path = require('path');
 const slash = require('slash');
 
 type StackTraceConfig = {
@@ -28,10 +26,8 @@ type StackTraceOptions = {
 };
 
 // filter for noisy stack trace lines
-/* eslint-disable max-len */
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
 const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
-/* eslint-enable max-len */
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';

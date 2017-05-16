@@ -7,13 +7,12 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Path} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 
-const {formatTestPath} = require('./utils');
 const chalk = require('chalk');
+const {formatTestPath} = require('./utils');
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the

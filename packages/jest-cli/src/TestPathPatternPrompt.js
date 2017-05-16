@@ -8,18 +8,17 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ScrollOptions} from './lib/scrollList';
+// eslint-disable-next-line import/default
 import type SearchSource from './SearchSource';
 
 const chalk = require('chalk');
+const stringLength = require('string-length');
 const scroll = require('./lib/scrollList');
 const {getTerminalWidth} = require('./lib/terminalUtils');
 const highlight = require('./lib/highlight');
-const stringLength = require('string-length');
 const {trimAndFormatPath} = require('./reporters/utils');
 const Prompt = require('./lib/Prompt');
 const {

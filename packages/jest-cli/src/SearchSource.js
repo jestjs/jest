@@ -8,19 +8,17 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
 import type {Test} from 'types/TestRunner';
 
+const path = require('path');
+
 const micromatch = require('micromatch');
 
 const DependencyResolver = require('jest-resolve-dependencies');
-
 const changedFiles = require('jest-changed-files');
-const path = require('path');
 const {escapePathForRegex, replacePathSepForRegex} = require('jest-regex-util');
 
 type SearchResult = {|

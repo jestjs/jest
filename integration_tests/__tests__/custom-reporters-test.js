@@ -7,8 +7,9 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {extractSummary} = require('../utils');
+const runJest = require('../runJest');
 
 describe('Custom Reporters Integration', () => {
   skipOnWindows.suite();
@@ -56,6 +57,24 @@ describe('Custom Reporters Integration', () => {
 
     expect(status).toBe(1);
     expect(stderr).toMatchSnapshot();
+  });
+
+  test('default reporters enabled', () => {
+    const {stderr, stdout, status} = runJest('custom_reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: ['default', '<rootDir>/reporters/TestReporter.js'],
+      }),
+      'add-test.js',
+    ]);
+
+    const {summary, rest} = extractSummary(stderr);
+    const parsedJSON = JSON.parse(stdout);
+
+    expect(status).toBe(0);
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+    expect(parsedJSON).toMatchSnapshot();
   });
 
   test('TestReporter with all tests passing', () => {

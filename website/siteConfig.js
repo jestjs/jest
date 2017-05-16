@@ -1,4 +1,4 @@
-/* eslint-disable sort-keys, max-len */
+/* eslint-disable sort-keys */
 
 const React = require('React');
 
@@ -159,6 +159,11 @@ const users = [
     caption: 'Formidable',
     image: '/jest/img/logos/formidablelabs.png',
     infoLink: 'http://formidable.com/',
+  },
+  {
+    caption: 'Giant Machines',
+    image: '/jest/img/logos/giantmachines.png',
+    infoLink: 'https://www.giantmachines.com',
   },
   {
     caption: 'Globo',

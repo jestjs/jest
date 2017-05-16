@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Argv} from 'types/Argv';
 import type {PathPattern} from '../SearchSource';
@@ -25,7 +24,6 @@ const DEFAULT_PATTERN_INFO = {
 const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
-  // eslint-disable-next-line max-len
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +

@@ -1,10 +1,10 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "20.0.0",
+  "version": "20.0.1",
   "main": "build/jest.js",
   "dependencies": {
-    "jest-cli": "^20.0.0"
+    "jest-cli": "^20.0.1"
   },
   "bin": {
     "jest": "./bin/jest.js"

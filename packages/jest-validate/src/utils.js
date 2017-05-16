@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const chalk = require('chalk');
 const BULLET: string = chalk.bold('\u25cf');
 const DEPRECATION = `${BULLET} Deprecation Warning`;

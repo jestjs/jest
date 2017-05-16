@@ -8,10 +8,8 @@
  * @flow
  */
 
-'use strict';
-
-const ts = require('typescript');
 const {readFileSync} = require('fs');
+const ts = require('typescript');
 const {Expect, ItBlock, Node} = require('jest-editor-support');
 
 function parse(file: string) {

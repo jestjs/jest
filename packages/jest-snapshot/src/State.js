@@ -8,10 +8,9 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
+const fs = require('fs');
 const {
   saveSnapshotFile,
   getSnapshotData,
@@ -21,7 +20,6 @@ const {
   testNameToKey,
   unescape,
 } = require('./utils');
-const fs = require('fs');
 
 export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,

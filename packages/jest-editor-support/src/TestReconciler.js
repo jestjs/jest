@@ -8,10 +8,6 @@
  * @flow
  */
 
-'use strict';
-
-const path = require('path');
-
 import type {
   JestTotalResults,
   JestAssertionResults,
@@ -19,6 +15,8 @@ import type {
   TestAssertionStatus,
   TestReconciliationState,
 } from './types';
+
+const path = require('path');
 
 /**
  *  You have a Jest test runner watching for changes, and you have

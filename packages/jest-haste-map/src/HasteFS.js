@@ -7,15 +7,14 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Glob, Path} from 'types/Config';
 import type {FileData, HType} from 'types/HasteMap';
 
-const H: HType = require('./constants');
-
-const micromatch = require('micromatch');
 const path = require('path');
+const micromatch = require('micromatch');
+
+const H: HType = require('./constants');
 
 class HasteFS {
   _files: FileData;

@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
 
-const chalk = require('chalk');
 const spawn = require('child_process').spawnSync;
+const chalk = require('chalk');
 
 module.exports = function runCommand(cmd, args, cwd) {
   if (!cwd) {

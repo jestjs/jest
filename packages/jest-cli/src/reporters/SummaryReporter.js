@@ -7,13 +7,12 @@
  *
  * @flow
  */
-'use strict';
 
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
-import type {PathPattern} from '../SearchSource';
 import type {ReporterOnStartOptions} from 'types/Reporters';
+import type {PathPattern} from '../SearchSource';
 
 type SummaryReporterOptions = {|
   pattern: PathPattern,
@@ -21,10 +20,10 @@ type SummaryReporterOptions = {|
   testPathPattern: string,
 |};
 
-const BaseReporter = require('./BaseReporter');
-
-const {getSummary, pluralize} = require('./utils');
 const chalk = require('chalk');
+
+const BaseReporter = require('./BaseReporter');
+const {getSummary, pluralize} = require('./utils');
 const getResultHeader = require('./getResultHeader');
 
 const ARROW = ' \u203A ';

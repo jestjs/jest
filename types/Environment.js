@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {ProjectConfig} from './Config';
 import type {Global} from './Global';

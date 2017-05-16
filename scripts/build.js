@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 /**
  * script to build (transpile) files.
  * By default it transpiles all files for all packages and writes them
@@ -20,9 +18,9 @@
  */
 
 const fs = require('fs');
+const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const path = require('path');
 
 const babel = require('babel-core');
 const chalk = require('chalk');

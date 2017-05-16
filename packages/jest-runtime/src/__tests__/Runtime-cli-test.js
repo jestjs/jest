@@ -9,8 +9,8 @@
  */
 'use strict';
 
-const spawnSync = require('cross-spawn').sync;
 const path = require('path');
+const {sync: spawnSync} = require('cross-spawn');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {DiffOptions} from './diffStrings';
 
 const {
@@ -21,9 +19,9 @@ const {
 } = require('pretty-format').plugins;
 
 const chalk = require('chalk');
-const diffStrings = require('./diffStrings');
 const {getType} = require('jest-matcher-utils');
 const prettyFormat = require('pretty-format');
+const diffStrings = require('./diffStrings');
 
 const {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} = require('./constants');
 

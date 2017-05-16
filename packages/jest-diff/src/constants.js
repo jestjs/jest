@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const chalk = require('chalk');
 
 exports.NO_DIFF_MESSAGE = chalk.dim(

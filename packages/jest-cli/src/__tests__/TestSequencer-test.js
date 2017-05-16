@@ -9,10 +9,10 @@
 
 jest.mock('fs');
 
-const TestSequencer = require('../TestSequencer');
-
 const fs = require('fs');
 const path = require('path');
+
+const TestSequencer = require('../TestSequencer');
 
 const FAIL = 0;
 const SUCCESS = 1;

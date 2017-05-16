@@ -8,16 +8,14 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 import type {Argv} from 'types/Argv';
 
+const {validateCLIOptions} = require('jest-util');
+const yargs = require('yargs');
 const args = require('./args');
 const getJest = require('./getJest');
 const runCLI = require('./runCLI');
-const validateCLIOptions = require('jest-util').validateCLIOptions;
-const yargs = require('yargs');
 
 function run(argv?: Argv, project?: Path) {
   argv = yargs(argv || process.argv.slice(2))

@@ -7,15 +7,14 @@
 *
 * @flow
 */
-'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 
-const BaseReporter = require('./BaseReporter');
-const notifier = require('node-notifier');
 const path = require('path');
 const util = require('util');
+const notifier = require('node-notifier');
+const BaseReporter = require('./BaseReporter');
 
 const isDarwin = process.platform === 'darwin';
 

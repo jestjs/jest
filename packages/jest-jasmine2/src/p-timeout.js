@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 // A specialized version of `p-timeout` that does not touch globals.
 // It does not throw on timeout.

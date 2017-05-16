@@ -8,10 +8,16 @@
  * @flow
  */
 
-'use strict';
-
 import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
+
+const crypto = require('crypto');
+const path = require('path');
+const {ValidationError, validate} = require('jest-validate');
+const chalk = require('chalk');
+const glob = require('glob');
+const Resolver = require('jest-resolve');
+const utils = require('jest-regex-util');
 
 const {
   BULLET,
@@ -27,20 +33,13 @@ const {
   DEFAULT_REPORTER_LABEL,
 } = require('./constants');
 const {validateReporters} = require('./reporterValidationErrors');
-const {ValidationError, validate} = require('jest-validate');
-const chalk = require('chalk');
-const crypto = require('crypto');
 const DEFAULT_CONFIG = require('./defaults');
 const DEPRECATED_CONFIG = require('./deprecated');
-const ERROR = `${BULLET}Validation Error`;
-const glob = require('glob');
-const JSON_EXTENSION = '.json';
-const path = require('path');
-const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
-const Resolver = require('jest-resolve');
 const setFromArgv = require('./setFromArgv');
-const utils = require('jest-regex-util');
 const VALID_CONFIG = require('./validConfig');
+const ERROR = `${BULLET}Validation Error`;
+const JSON_EXTENSION = '.json';
+const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -175,7 +174,6 @@ const normalizeUnmockedModulePathPatterns = (
 };
 
 const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
-  /* eslint-disable max-len */
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
       `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
@@ -189,7 +187,6 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
     );
   }
-  /* eslint-enable max-len */
 
   if (options.scriptPreprocessor) {
     options.transform = {
@@ -397,6 +394,10 @@ function normalize(options: InitialOptions, argv: Argv) {
           );
         value = list;
         break;
+      case 'moduleDirectories':
+      case 'testMatch':
+        value = _replaceRootDirTags(options.rootDir, options[key]);
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
@@ -409,7 +410,6 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'globals':
       case 'logHeapUsage':
       case 'mapCoverage':
-      case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
@@ -421,7 +421,6 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'rootDir':
       case 'silent':
       case 'testEnvironment':
-      case 'testMatch':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':

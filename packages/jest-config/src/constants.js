@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const path = require('path');
 
 exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;

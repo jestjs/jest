@@ -8,11 +8,9 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
+const matcherUtils = require('jest-matcher-utils');
 const {equals} = require('../jasmine-utils');
 const jestExpect = require('../');
-const matcherUtils = require('jest-matcher-utils');
 
 jestExpect.extend({
   toBeDivisibleBy(actual, expected) {

@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 module.exports = {
   configs: {
     recommended: {

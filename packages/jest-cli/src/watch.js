@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig} from 'types/Config';
@@ -18,10 +17,9 @@ const chalk = require('chalk');
 const createContext = require('./lib/createContext');
 const HasteMap = require('jest-haste-map');
 const isCI = require('is-ci');
-const replacePathSepForRegex = require('jest-regex-util').replacePathSepForRegex;
-const isInteractive = process.stdout.isTTY && !isCI;
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
+const replacePathSepForRegex = require('jest-regex-util').replacePathSepForRegex;
 const runJest = require('./runJest');
 const updateArgv = require('./lib/updateArgv');
 const SearchSource = require('./SearchSource');
@@ -31,6 +29,7 @@ const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
+const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
 const watch = (

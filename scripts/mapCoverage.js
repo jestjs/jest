@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 /**
  * Because we have a build step, sometimes we can test files from both
  * `packages/jest-whatever/build/*` and `packages/jest-whatever/src/*`
@@ -29,8 +27,8 @@
  */
 
 const createReporter = require('istanbul-api').createReporter;
-const coverage = require('../coverage/coverage-final.json');
 const istanbulCoverage = require('istanbul-lib-coverage');
+const coverage = require('../coverage/coverage-final.json');
 
 const map = istanbulCoverage.createCoverageMap();
 const reporter = createReporter();

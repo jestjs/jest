@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 export type Path = string;
 export type Glob = string;

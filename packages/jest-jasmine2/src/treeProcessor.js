@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 type Options = {
   nodeComplete: (suite: TreeNode) => void,

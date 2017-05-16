@@ -8,9 +8,9 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const path = require('path');
 
 const prettier = require('prettier');
 
@@ -21,18 +21,6 @@ console.log('translation.js triggered...');
 function writeFileAndCreateFolder(file, content) {
   mkdirp.sync(file.replace(new RegExp('/[^/]*$'), ''));
   fs.writeFileSync(file, content);
-}
-
-function rmFile(file) {
-  try {
-    fs.unlinkSync(file);
-  } catch (e) {
-    /* seriously, unlink throws when the file doesn't exist :( */
-  }
-}
-
-function globEach(pattern, cb) {
-  glob.sync(pattern).forEach(cb);
 }
 
 function execute() {

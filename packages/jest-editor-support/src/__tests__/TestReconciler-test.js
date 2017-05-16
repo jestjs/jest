@@ -6,11 +6,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const TestReconciler = require('../TestReconciler');
 const fs = require('fs');
 const path = require('path');
+const TestReconciler = require('../TestReconciler');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 
 const reconcilerWithFile = (file: string): TestReconciler => {

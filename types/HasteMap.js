@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {ModuleMap as _ModuleMap, FS} from 'jest-haste-map';
 import type {Path} from 'types/Config';

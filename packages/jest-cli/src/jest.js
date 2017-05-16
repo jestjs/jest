@@ -7,15 +7,14 @@
  *
  * @flow
  */
-'use strict';
+
+const VERSION = require('../package.json').version;
 
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 const TestWatcher = require('./TestWatcher');
 
 const {run, runCLI} = require('./cli');
-
-const VERSION = require('../package.json').version;
 
 module.exports = {
   SearchSource,

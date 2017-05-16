@@ -7,9 +7,6 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
-
-'use strict';
 
 import type {MatchersObject} from 'types/Matchers';
 

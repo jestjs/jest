@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type _Resolver, {
   ResolveModuleConfig as _ResolveModuleConfig,

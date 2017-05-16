@@ -7,15 +7,13 @@
  * @flow
  */
 
-'use strict';
-
 import type {ReporterConfig} from 'types/Config';
 
 const {ValidationError} = require('jest-validate');
-const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
 
 const chalk = require('chalk');
 const {getType} = require('jest-matcher-utils');
+const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
 
 const validReporterTypes = ['array', 'string'];
 const ERROR = `${BULLET} Reporter Validation Error`;

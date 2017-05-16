@@ -4,7 +4,8 @@
     "transform-flow-strip-types",
     "transform-es2015-destructuring",
     "transform-es2015-parameters",
-    "transform-async-to-generator"
+    "transform-async-to-generator",
+    "transform-strict-mode"
   ],
   "retainLines": true
 }

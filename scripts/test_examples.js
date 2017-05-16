@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
 
-const runCommand = require('./_runCommand');
-
-const fs = require('graceful-fs');
 const path = require('path');
+const fs = require('graceful-fs');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
+
+const runCommand = require('./_runCommand');
 
 const ROOT = path.resolve(__dirname, '..');
 const BABEL_JEST_PATH = path.resolve(ROOT, 'packages/babel-jest');

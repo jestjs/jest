@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 module.exports = {
   git: require('./git'),
   hg: require('./hg'),

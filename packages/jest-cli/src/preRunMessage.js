@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const {clearLine} = require('jest-util');
 const chalk = require('chalk');
 const isCI = require('is-ci');

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 class ExpectationFailed extends Error {}
 

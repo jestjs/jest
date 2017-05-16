@@ -7,12 +7,9 @@
  *
  * @emails oncall+jsinfra
  */
-/* eslint-disable max-len */
 
-'use strict';
-
-const jestExpect = require('../');
 const {stringify} = require('jest-matcher-utils');
+const jestExpect = require('../');
 
 describe('.rejects', () => {
   it('should reject', async () => {

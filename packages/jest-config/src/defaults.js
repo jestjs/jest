@@ -8,14 +8,12 @@
  * @flow
  */
 
-'use strict';
-
 import type {DefaultOptions} from 'types/Config';
 
-const constants = require('./constants');
 const os = require('os');
 const path = require('path');
 const {replacePathSepForRegex} = require('jest-regex-util');
+const constants = require('./constants');
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 

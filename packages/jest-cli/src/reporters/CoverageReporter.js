@@ -7,7 +7,6 @@
 *
 * @flow
 */
-'use strict';
 
 import type {
   AggregatedResult,
@@ -23,8 +22,6 @@ type CoverageReporterOptions = {
   maxWorkers: number,
 };
 
-const BaseReporter = require('./BaseReporter');
-
 const {clearLine} = require('jest-util');
 const {createReporter} = require('istanbul-api');
 const chalk = require('chalk');
@@ -33,6 +30,8 @@ const istanbulCoverage = require('istanbul-lib-coverage');
 const libSourceMaps = require('istanbul-lib-source-maps');
 const pify = require('pify');
 const workerFarm = require('worker-farm');
+
+const BaseReporter = require('./BaseReporter');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;

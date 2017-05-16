@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const path = require('path');
 
 const escapePathForRegex = (dir: string) => {

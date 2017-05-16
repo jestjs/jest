@@ -5,20 +5,14 @@
 
 /* eslint-disable sort-keys */
 
-'use strict';
-
-const feed = require('./feed');
 const fs = require('fs');
-const glob = require('glob');
-const mkdirp = require('mkdirp');
-const optimist = require('optimist');
 const os = require('os');
 const path = require('path');
+const glob = require('glob');
+const mkdirp = require('mkdirp');
 const toSlug = require('../core/toSlug');
-
 const languages = require('../languages.js');
-
-const argv = optimist.argv;
+const feed = require('./feed');
 
 function splitHeader(content) {
   const lines = content.split(os.EOL);
@@ -32,24 +26,6 @@ function splitHeader(content) {
     header: lines.slice(1, i + 1).join('\n'),
     content: lines.slice(i + 1).join('\n'),
   };
-}
-
-function globEach(pattern, cb) {
-  glob(pattern, (err, files) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    files.forEach(cb);
-  });
-}
-
-function rmFile(file) {
-  try {
-    fs.unlinkSync(file);
-  } catch (e) {
-    /* seriously, unlink throws when the file doesn't exist :( */
-  }
 }
 
 function backtickify(str) {
