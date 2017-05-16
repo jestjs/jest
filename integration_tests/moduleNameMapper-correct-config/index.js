@@ -8,6 +8,5 @@
  */
 
 'use strict';
-// Inlcude style so moduleNameMapping triggers
 require('./style.css');
 module.exports = () => 'test';

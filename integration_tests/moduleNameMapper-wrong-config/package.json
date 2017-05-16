@@ -1,7 +1,7 @@
 {
-    "jest": {
-        "moduleNameMapper": {
-                "\\.(css|less)$": "module-that-dont-exist"
-        }
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less)$": "no-such-module"
     }
+  }
 }
