@@ -250,6 +250,11 @@ const users = [
     image: '/jest/img/logos/xing.png',
     infoLink: 'https://www.xing.com/',
   },
+  {
+    caption: 'AirHelp',
+    image: '/jest/img/logos/airhelp.png',
+    infoLink: 'https://www.airhelp.com/',
+  },
 ];
 
 const siteConfig = {
