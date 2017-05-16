@@ -7,7 +7,6 @@ test('moduleNameMapper wrong configuration', () => {
 
   expect(status).toBe(1);
   expect(rest).toMatchSnapshot();
-
 });
 
 test('moduleNameMapper correct configuration', () => {
