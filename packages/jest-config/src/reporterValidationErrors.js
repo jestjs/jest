@@ -16,7 +16,7 @@ const {getType} = require('jest-matcher-utils');
 const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
 
 const validReporterTypes = ['array', 'string'];
-const ERROR = `${BULLET} Reporter Validation Error`;
+const ERROR = `${BULLET}Reporter Validation Error`;
 
 /**
  * Reporter Vaidation Error is thrown if the given arguments
@@ -31,10 +31,10 @@ function createReporterError(
   reporterValue: Array<ReporterConfig> | string,
 ): ValidationError {
   const errorMessage =
-    `Reporter at index ${reporterIndex} must be of type:\n` +
-    `   ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
-    ` but instead received:\n` +
-    `   ${chalk.bold.red(getType(reporterValue))}`;
+    `  Reporter at index ${reporterIndex} must be of type:\n` +
+    `    ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
+    `  but instead received:\n` +
+    `    ${chalk.bold.red(getType(reporterValue))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
@@ -48,13 +48,13 @@ function createArrayReporterError(
   valueName: string,
 ): ValidationError {
   const errorMessage =
-    `Unexpected value for ${valueName} ` +
+    `  Unexpected value for ${valueName} ` +
     `at index ${valueIndex} of reporter at index ${reporterIndex}\n` +
-    ' Expected:\n' +
-    `   ${chalk.bold.red(expectedType)}\n` +
-    ' Got:\n' +
-    `   ${chalk.bold.green(getType(value))}\n` +
-    ` Reporter configuration:\n` +
+    '  Expected:\n' +
+    `    ${chalk.bold.red(expectedType)}\n` +
+    '  Got:\n' +
+    `    ${chalk.bold.green(getType(value))}\n` +
+    `  Reporter configuration:\n` +
     `    ${chalk.bold.green(JSON.stringify(arrayReporter, null, 2)
         .split('\n')
         .join('\n    '))}`;
