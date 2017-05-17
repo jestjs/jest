@@ -1,6 +1,6 @@
 {
   "name": "jest-matchers",
-  "version": "20.0.1",
+  "version": "20.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,9 +9,9 @@
   "main": "build/index.js",
   "browser": "build-es5/index.js",
   "dependencies": {
-    "jest-diff": "^20.0.1",
-    "jest-matcher-utils": "^20.0.1",
-    "jest-message-util": "^20.0.1",
-    "jest-regex-util": "^20.0.1"
+    "jest-diff": "^20.0.2",
+    "jest-matcher-utils": "^20.0.2",
+    "jest-message-util": "^20.0.2",
+    "jest-regex-util": "^20.0.2"
   }
 }
