@@ -180,6 +180,10 @@ Print your Jest config and then exits.
 
 Prevent tests from printing messages through the console.
 
+### `--testDescriptionPattern=<regex>`
+
+Run only tests with a 'describe' function surrounding them which matches the regex.
+
 ### `--testNamePattern=<regex>`
 
 Alias: `-t`. Run only tests with a name that matches the regex.
