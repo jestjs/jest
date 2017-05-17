@@ -87,6 +87,7 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
     }
 
     const matchedTests = [];
+
     this._cachedTestResults.forEach(({testResults}) =>
       testResults.forEach(({title}) => {
         if (regex.test(title)) {
