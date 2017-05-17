@@ -27,7 +27,6 @@ class ValidationError extends Error {
     super();
     comment = comment ? '\n\n' + comment : '\n';
     this.name = '';
-    this.stack = '';
     this.message = chalk.red(chalk.bold(name) + ':\n\n' + message + comment);
     Error.captureStackTrace(this, () => {});
   }
