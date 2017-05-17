@@ -156,7 +156,7 @@ By default the jest-react-native preset only processes the project's own source 
 
 ```json
 "transformIgnorePatterns": [
-  "node_modules/(?!react-native|my-project|react-native-button)/"
+  "node_modules/(?!(react-native|my-project|react-native-button)/)"
 ]
 ```
 
