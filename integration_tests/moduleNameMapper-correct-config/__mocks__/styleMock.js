@@ -7,4 +7,5 @@
  */
 
 'use strict';
+
 module.exports = {};
