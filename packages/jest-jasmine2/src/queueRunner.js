@@ -8,7 +8,6 @@
  * @flow
  */
 
-const once = require('once');
 const pMap = require('p-map');
 const pTimeout = require('./p-timeout');
 
@@ -29,13 +28,12 @@ type QueueableFn = {
 function queueRunner(options: Options) {
   const mapper = ({fn, timeout}) => {
     const promise = new Promise(resolve => {
-      const next = once(resolve);
-      next.fail = function() {
+      resolve.fail = function() {
         options.fail.apply(null, arguments);
         resolve();
       };
       try {
-        fn.call(options.userContext, next);
+        fn.call(options.userContext, resolve);
       } catch (e) {
         options.onException(e);
         resolve();
