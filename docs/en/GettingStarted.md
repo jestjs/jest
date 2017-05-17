@@ -13,6 +13,12 @@ Install Jest using `npm`:
 npm install --save-dev jest
 ```
 
+Or via [`yarn`](https://yarnpkg.com/en/package/jest):
+
+```
+yarn add --dev jest
+```
+
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
 ```javascript
