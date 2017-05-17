@@ -1,5 +1,11 @@
 ## master
 
+## jest 20.0.3
+
+* Fix arrow typeahead on Windows. ([#3563](https://github.com/facebook/jest/pull/3563))
+* Fix reporters 'default' setting. ([#3562](https://github.com/facebook/jest/pull/3562))
+* Fix to make Jest fail when the coverage threshold not met. ([#3554](https://github.com/facebook/jest/pull/3554))
+
 ## jest 20.0.1
 
 * Add ansi-regex to pretty-format dependencies ([#3498](https://github.com/facebook/jest/pull/3498))
