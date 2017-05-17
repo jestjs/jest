@@ -145,6 +145,8 @@ describe('Watch mode flows', () => {
   });
 
   it('can select a specific file name from the typeahead results', () => {
+    const toUnixPathPattern = pathPattern => pathPattern.replace(/\\\\/g, '/');
+
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
@@ -164,7 +166,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.ENTER);
 
-    expect(argv.testPathPattern).toMatchSnapshot();
+    expect(toUnixPathPattern(argv.testPathPattern)).toMatchSnapshot();
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
