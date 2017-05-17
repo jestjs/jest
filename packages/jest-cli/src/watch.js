@@ -14,11 +14,12 @@ import type {Context} from 'types/Context';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
+const {replacePathSepForRegex} = require('jest-regex-util');
 const HasteMap = require('jest-haste-map');
 const isCI = require('is-ci');
-const createContext = require('./lib/createContext');
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
+const createContext = require('./lib/createContext');
 const runJest = require('./runJest');
 const updateArgv = require('./lib/updateArgv');
 const SearchSource = require('./SearchSource');
@@ -201,7 +202,7 @@ const watch = (
           testPathPattern => {
             updateArgv(argv, 'watch', {
               testNamePattern: '',
-              testPathPattern,
+              testPathPattern: replacePathSepForRegex(testPathPattern),
             });
 
             startRun();
