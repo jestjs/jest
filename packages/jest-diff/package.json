@@ -1,6 +1,6 @@
 {
   "name": "jest-diff",
-  "version": "20.0.1",
+  "version": "20.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -11,7 +11,7 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "diff": "^3.2.0",
-    "jest-matcher-utils": "^20.0.1",
-    "pretty-format": "^20.0.1"
+    "jest-matcher-utils": "^20.0.2",
+    "pretty-format": "^20.0.2"
   }
 }
