@@ -7,10 +7,15 @@ permalink: docs/en/getting-started.html
 next: using-matchers
 ---
 
-Install Jest using `npm` or [`yarn`](https://yarnpkg.com/en/package/jest):
+Install Jest using `npm`:
 
 ```
 npm install --save-dev jest
+```
+
+Or via [`yarn`](https://yarnpkg.com/en/package/jest):
+
+```
 yarn add --dev jest
 ```
 
