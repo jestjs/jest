@@ -7,10 +7,11 @@ permalink: docs/en/getting-started.html
 next: using-matchers
 ---
 
-Install Jest using `npm`:
+Install Jest using `npm` or [`yarn`](https://yarnpkg.com/en/package/jest):
 
 ```
 npm install --save-dev jest
+yarn add --dev jest
 ```
 
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
