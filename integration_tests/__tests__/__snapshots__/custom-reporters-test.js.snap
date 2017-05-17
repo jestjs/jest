@@ -106,14 +106,14 @@ Object {
 `;
 
 exports[`Custom Reporters Integration invalid format for adding reporters 1`] = `
-"●  Reporter Validation Error:
+"● Reporter Validation Error:
 
-Unexpected value for Path at index 0 of reporter at index 0
- Expected:
-   string
- Got:
-   number
- Reporter configuration:
+  Unexpected value for Path at index 0 of reporter at index 0
+  Expected:
+    string
+  Got:
+    number
+  Reporter configuration:
     [
       3243242
     ]
