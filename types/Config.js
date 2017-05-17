@@ -103,6 +103,7 @@ export type InitialOptions = {|
   setupTestFrameworkScriptFile?: Path,
   silent?: boolean,
   snapshotSerializers?: Array<Path>,
+  testDescriptionPattern?: string,
   testEnvironment?: string,
   testMatch?: Array<Glob>,
   testNamePattern?: string,

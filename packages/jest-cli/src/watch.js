@@ -168,7 +168,9 @@ const watch = (
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.D].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.D].indexOf(
+        key,
+      ) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -296,7 +298,8 @@ const activeFilters = (argv, delimiter = '\n') => {
         ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
         : null,
       testDescriptionPattern
-        ? chalk.dim('description name ') + chalk.yellow('/' + testDescriptionPattern + '/')
+        ? chalk.dim('description name ') +
+            chalk.yellow('/' + testDescriptionPattern + '/')
         : null,
     ]
       .filter(f => !!f)
@@ -320,7 +323,10 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv.testPathPattern || argv.testNamePattern || argv.testDescriptionPattern) &&
+    (argv.watchAll ||
+      argv.testPathPattern ||
+      argv.testNamePattern ||
+      argv.testDescriptionPattern) &&
       !argv.noSCM
       ? chalk.dim(' \u203A Press ') +
           'o' +

@@ -174,6 +174,7 @@ const runJest = async (
   allTests = sequencer.sort(allTests);
 
   if (argv.listTests) {
+    console.log(JSON.stringify(allTests.map(test => test.path)));
     onComplete && onComplete({success: true});
     return null;
   }

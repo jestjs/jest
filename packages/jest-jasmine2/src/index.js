@@ -95,12 +95,15 @@ function jasmine2(
   }
 
   if (globalConfig.testDescriptionPattern) {
-    const descriptionNameRegex = new RegExp(globalConfig.testDescriptionPattern, 'i');
+    const descriptionNameRegex = new RegExp(
+      globalConfig.testDescriptionPattern,
+      'i',
+    );
     env.specFilter = spec => {
       // console.log(spec);
       // console.log('suitename', spec.getSuiteName());
       // console.log(descriptionNameRegex.test(spec.getSuiteName()));
-      return descriptionNameRegex.test(spec.getSuiteName())
+      return descriptionNameRegex.test(spec.getSuiteName());
     };
   }
 

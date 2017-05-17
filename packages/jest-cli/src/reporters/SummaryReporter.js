@@ -267,7 +267,7 @@ class SummaryReporter extends BaseReporter {
       ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
       : '';
 
-    const join = (testDescriptionPattern && (testNamePattern || testPathPattern))
+    const join = testDescriptionPattern && (testNamePattern || testPathPattern)
       ? chalk.dim(' and')
       : '';
 

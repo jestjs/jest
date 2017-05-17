@@ -85,7 +85,6 @@ class TestRunner {
       }
     });
 
-
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
       getEstimatedTime(timings, this._options.maxWorkers) / 1000,
