@@ -94,6 +94,16 @@ function jasmine2(
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
 
+  if (globalConfig.testDescriptionPattern) {
+    const descriptionNameRegex = new RegExp(globalConfig.testDescriptionPattern, 'i');
+    env.specFilter = spec => {
+      // console.log(spec);
+      // console.log('suitename', spec.getSuiteName());
+      // console.log(descriptionNameRegex.test(spec.getSuiteName()));
+      return descriptionNameRegex.test(spec.getSuiteName())
+    };
+  }
+
   runtime.requireModule(testPath);
   env.execute();
   return reporter

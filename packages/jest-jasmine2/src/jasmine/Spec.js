@@ -56,6 +56,11 @@ function Spec(attrs: Object) {
     function() {
       return '';
     };
+  this.getDescribeName =
+    attrs.getDescribeName ||
+    function() {
+      return '';
+    };
   this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
   this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
@@ -179,6 +184,10 @@ Spec.prototype.isExecutable = function() {
 
 Spec.prototype.getFullName = function() {
   return this.getSpecName(this);
+};
+
+Spec.prototype.getSuiteName = function() {
+  return this.getDescribeName();
 };
 
 const extractCustomPendingMessage = function(e) {

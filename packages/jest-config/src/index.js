@@ -76,6 +76,7 @@ const getConfigs = (
       reporters: options.reporters,
       rootDir: options.rootDir,
       silent: options.silent,
+      testDescriptionPattern: options.testDescriptionPattern,
       testNamePattern: options.testNamePattern,
       testPathPattern: '',
       testResultsProcessor: options.testResultsProcessor,

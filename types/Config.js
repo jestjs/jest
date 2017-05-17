@@ -145,6 +145,7 @@ export type GlobalConfig = {|
   silent: boolean,
   testNamePattern: string,
   testPathPattern: string,
+  testDescriptionPattern: string,
   testResultsProcessor: ?string,
   updateSnapshot: SnapshotUpdateState,
   useStderr: boolean,

@@ -26,12 +26,12 @@ const {
 } = require('./lib/patternModeHelpers');
 const PatternPrompt = require('./PatternPrompt');
 
-module.exports = class TestNamePatternPrompt extends PatternPrompt {
+module.exports = class TestDescriptionPatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult>;
 
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
     super(pipe, prompt);
-    this._entityName = 'tests';
+    this._entityName = 'descriptions';
     this._cachedTestResults = [];
   }
 
@@ -51,7 +51,7 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
     if (pattern) {
       printPatternMatches(
         total,
-        'test',
+        'description',
         pipe,
         ` from ${require('chalk').yellow('cached')} test suites`,
       );
@@ -71,7 +71,7 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
         printMore('test', pipe, total - end);
       }
     } else {
-      printStartTyping('test name', pipe);
+      printStartTyping('description name', pipe);
     }
 
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
@@ -88,10 +88,10 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
 
     const matchedTests = [];
     this._cachedTestResults.forEach(({testResults}) =>
-      testResults.forEach(({title}) => {
-        if (regex.test(title)) {
-          matchedTests.push(title);
-        }
+      testResults.forEach(({ancestorTitles, title}) => {
+        ancestorTitles
+          .filter(title => regex.test(title) && !matchedTests.includes(title))
+          .forEach(title => matchedTests.push(title));
       }),
     );
 
