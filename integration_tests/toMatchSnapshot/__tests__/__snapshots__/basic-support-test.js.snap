@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`snapshots 1`] = `
-Object {
-  "apple": "original value",
-}
-`;
