@@ -74,7 +74,7 @@ CLI options take precedence over values from the [Configuration](/jest/docs/conf
 
 ### `jest <regexForTestFiles>`
 
-When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Note: depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern`.
+When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Note: depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern"`.
 
 ### `--bail`
 
