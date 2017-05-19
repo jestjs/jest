@@ -108,12 +108,12 @@ module.exports = class TestReconciler {
 
   // Do everything we can to try make a one-liner from the error report
   sanitizeShortErrorMessage(string: string): string {
-    if (string.includes("does not match stored snapshot")) {
-      return "Snapshot has changed"
+    if (string.includes('does not match stored snapshot')) {
+      return 'Snapshot has changed';
     }
 
-    if (string.includes("New snapshot was not written")) {
-      return "New snapshot is ready to write"
+    if (string.includes('New snapshot was not written')) {
+      return 'New snapshot is ready to write';
     }
 
     return string
@@ -124,7 +124,6 @@ module.exports = class TestReconciler {
       .replace('Received:', ', Received:')
       .split('Difference:')[0];
   }
-
 
   // Pull the line out from the stack trace
   lineOfError(message: string, filePath: string): ?number {
