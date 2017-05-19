@@ -7,5 +7,10 @@
     "**/.git": true,
     "**/node_modules": true,
     "**/build": true
-  }
+  },
+  "prettier.parser": "flow",
+  "prettier.printWidth": 80,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+  "prettier.semi": true
 }
