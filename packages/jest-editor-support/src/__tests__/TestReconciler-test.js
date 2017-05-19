@@ -54,39 +54,40 @@ Expected value to be falsy, instead received
 });
 
 describe('Terse Messages', () => {
-  it("handles shrinking a snapshot message", () => {
-      const parser = reconcilerWithFile('failing_expects.json');
-      const file = '/Users/orta/dev/projects/artsy/js/' +
-                   'libs/jest-snapshots-svg/src/_tests/example.test.ts'
+  it('handles shrinking a snapshot message', () => {
+    const parser = reconcilerWithFile('failing_expects.json');
+    const file =
+      '/Users/orta/dev/projects/artsy/js/' +
+      'libs/jest-snapshots-svg/src/_tests/example.test.ts';
 
-      const terseForTest = (name) => parser.stateForTestAssertion(file, name);
+    const terseForTest = name => parser.stateForTestAssertion(file, name);
 
-      let message = "Expected value to equal: 2, Received: 1"
-      let testName = "numbers"
-      expect(terseForTest(testName).terseMessage).toEqual(message)
+    let message = 'Expected value to equal: 2, Received: 1';
+    let testName = 'numbers';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
 
-      message = "Expected value to equal: 2, Received: \"1\""
-      testName = "string to numbers: numbers"
-      expect(terseForTest(testName).terseMessage).toEqual(message)
+    message = 'Expected value to equal: 2, Received: "1"';
+    testName = 'string to numbers: numbers';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
 
-      message = "Expected value to equal: {\"a\": 2}, Received: {}"
-      testName = "objects"
-      expect(terseForTest(testName).terseMessage).toEqual(message)
+    message = 'Expected value to equal: {"a": 2}, Received: {}';
+    testName = 'objects';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
 
-      message = "Snapshot has changed"
-      testName = "snapshots"
-      expect(terseForTest(testName).terseMessage).toEqual(message)
+    message = 'Snapshot has changed';
+    testName = 'snapshots';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
 
-      message = "Expected value to be greater than: 3, Received: 2"
-      testName = "greater than"
-      expect(terseForTest(testName).terseMessage).toEqual(message)
+    message = 'Expected value to be greater than: 3, Received: 2';
+    testName = 'greater than';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
 
-      message = "Expected value to be falsy, instead received 2"
-      testName = "falsy"
-      expect(terseForTest(testName).terseMessage).toEqual(message)
+    message = 'Expected value to be falsy, instead received 2';
+    testName = 'falsy';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
 
-      message = "Expected value to be truthy, instead received null"
-      testName = "truthy"
-      expect(terseForTest(testName).terseMessage).toEqual(message)
-  })
-})
+    message = 'Expected value to be truthy, instead received null';
+    testName = 'truthy';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
+  });
+});
