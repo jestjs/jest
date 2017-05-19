@@ -228,7 +228,9 @@ class Runtime {
     options?: HasteMapOptions,
   ): HasteMap {
     const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
+      ['^' + config.cacheDirectory]
+        .concat(config.modulePathIgnorePatterns)
+        .join('|'),
     );
 
     return new HasteMap({
