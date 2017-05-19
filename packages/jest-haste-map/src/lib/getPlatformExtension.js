@@ -13,6 +13,7 @@ const SUPPORTED_PLATFORM_EXTS = {
   ios: true,
   native: true,
   web: true,
+  windows: true
 };
 
 // Extract platform extension: index.ios.js -> ios
