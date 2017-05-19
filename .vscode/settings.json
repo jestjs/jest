@@ -1,5 +1,5 @@
 {
-  "jest.pathToJest": "npm run jest --",
+  "jest.pathToJest": "yarn jest --",
   "editor.rulers": [
     80
   ],
