@@ -7,7 +7,7 @@
  */
 
 const path = require('path');
-const {makeTemplate, writeFiles, cleanup} = require('../utils');
+const { makeTemplate, writeFiles, cleanup } = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../toMatchSnapshot');
@@ -26,27 +26,32 @@ test('basic support', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['{apple: "original value"}']),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 
   {
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 
+  // This test below also covers how jest-editor-support creates terse messages
+  // for letting a Snapshot update, so if the wording is updated, please edit
+  // /packages/jest-editor-support/src/TestReconciler.js
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['{apple: "updated value"}'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['{apple: "updated value"}']),
+    });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Received value does not match stored snapshot');
     expect(status).toBe(1);
   }
 
   {
-    const {stderr, status} = runJest(DIR, [
+    const { stderr, status } = runJest(DIR, [
       '-w=1',
       '--ci=false',
       filename,
@@ -65,21 +70,25 @@ test('error thrown before snapshot', () => {
     });`);
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['true', '{a: "original"}'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['true', '{a: "original"}']),
+    });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 
   {
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(status).toBe(0);
   }
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['false', '{a: "original"}'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['false', '{a: "original"}']),
+    });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(1);
   }
@@ -93,15 +102,15 @@ test('first snapshot fails, second passes', () => {
     });`);
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template([`'apple'`, `'banana'`])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, { [filename]: template([`'apple'`, `'banana'`]) });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('2 snapshots written in 1 test suite.');
     expect(status).toBe(0);
   }
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, { [filename]: template([`'kiwi'`, `'banana'`]) });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Received value does not match stored snapshot');
     expect(stderr).toMatch('- "apple"\n    + "kiwi"');
     expect(stderr).not.toMatch('1 obsolete snapshot found');
@@ -121,15 +130,15 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
     `);
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['test'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, { [filename]: template(['test']) });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['test.skip'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, { [filename]: template(['test.skip']) });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(0);
   }
@@ -143,8 +152,8 @@ test('accepts custom snapshot name', () => {
     `);
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    writeFiles(TESTS_DIR, { [filename]: template() });
+    const { stderr, status } = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
