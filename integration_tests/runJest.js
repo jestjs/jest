@@ -17,6 +17,7 @@ const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
   skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
+  nodePath?: string,
 };
 
 // return the result of the spawned process:
@@ -45,7 +46,15 @@ function runJest(
     );
   }
 
-  const result = spawnSync(JEST_PATH, args || [], {cwd: dir});
+  const env = options.nodePath
+    ? Object.assign({}, process.env, {
+        NODE_PATH: options.nodePath,
+      })
+    : process.env;
+  const result = spawnSync(JEST_PATH, args || [], {
+    cwd: dir,
+    env,
+  });
 
   result.stdout = result.stdout && result.stdout.toString();
   result.stderr = result.stderr && result.stderr.toString();
