@@ -1,5 +1,5 @@
 {
-  "jest.pathToJest": "npm run jest --",
+  "jest.pathToJest": "yarn jest --",
   "editor.rulers": [
     80
   ],
@@ -12,5 +12,6 @@
   "prettier.printWidth": 80,
   "prettier.singleQuote": true,
   "prettier.trailingComma": "all",
-  "prettier.semi": true
+  "prettier.semi": true,
+  "editor.formatOnSave": true
 }
