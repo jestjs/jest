@@ -662,6 +662,49 @@ describe('HasteMap', () => {
     );
   });
 
+  describe('file system changes processing', () => {
+    function waitForItToChange(hasteMap) {
+      return new Promise((resolve, reject) => {
+        hasteMap.once('change', resolve);
+      });
+    }
+
+    function mockDeleteFile(dirPath, filePath) {
+      const e = mockEmitters[dirPath];
+      e.emit('all', 'delete', filePath, dirPath, undefined);
+    }
+
+    function hm_it(title, fn) {
+      it(title, async () => {
+        const watchConfig = Object.assign({}, defaultConfig, {watch: true});
+        const hm = new HasteMap(watchConfig);
+        try {
+          await fn(hm);
+        } finally {
+          hm.end();
+        }
+      });
+    }
+
+    hm_it('provides a new set of hasteHS and moduleMap', async hm => {
+      const initialResult = await hm.build();
+      const filePath = '/fruits/banana.js';
+      expect(initialResult.hasteFS.getModuleName(filePath)).toBeDefined();
+      expect(initialResult.moduleMap.getModule('Banana')).toBe(filePath);
+      mockDeleteFile('/fruits', 'banana.js');
+      mockDeleteFile('/fruits', 'banana.js');
+      const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
+      expect(eventsQueue).toHaveLength(1);
+      const deletedBanana = {filePath, stat: undefined, type: 'delete'};
+      expect(eventsQueue).toEqual([deletedBanana]);
+      // Verify we didn't change the original map.
+      expect(initialResult.hasteFS.getModuleName(filePath)).toBeDefined();
+      expect(initialResult.moduleMap.getModule('Banana')).toBe(filePath);
+      expect(hasteFS.getModuleName(filePath)).toBeNull();
+      expect(moduleMap.getModule('Banana')).toBeNull();
+    });
+  });
+
   it('watches for file system changes', done => {
     const hasteMap = new HasteMap(
       Object.assign({}, defaultConfig, {
@@ -683,10 +726,6 @@ describe('HasteMap', () => {
     hasteMap
       .build()
       .then(({hasteFS: initialHasteFS, moduleMap: initialModuleMap}) => {
-        const filePath = '/fruits/banana.js';
-        expect(initialHasteFS.getModuleName(filePath)).toBeDefined();
-        expect(initialModuleMap.getModule('Banana')).toBe(filePath);
-
         const next = () => {
           if (!tests.length) {
             hasteMap.end();
@@ -699,46 +738,6 @@ describe('HasteMap', () => {
 
         const statObject = {mtime: {getTime: () => 45}};
         const tests = [
-          () => {
-            // Tests that the change event works correctly.
-            mockEmitters['/fruits'].emit(
-              'all',
-              'delete',
-              'banana.js',
-              '/fruits',
-              undefined,
-            );
-            mockEmitters['/fruits'].emit(
-              'all',
-              'delete',
-              'banana.js',
-              '/fruits',
-              undefined,
-            );
-
-            hasteMap.once(
-              'change',
-              addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
-                expect(eventsQueue).toHaveLength(1);
-
-                expect(eventsQueue).toEqual([
-                  {
-                    filePath,
-                    stat: undefined,
-                    type: 'delete',
-                  },
-                ]);
-                // Verify we didn't change the original map.
-                expect(initialHasteFS.getModuleName(filePath)).toBeDefined();
-                expect(initialModuleMap.getModule('Banana')).toBe(filePath);
-
-                expect(hasteFS.getModuleName(filePath)).toBeNull();
-                expect(moduleMap.getModule('Banana')).toBeNull();
-
-                next();
-              }),
-            );
-          },
           () => {
             // Ensures the event queue can receive multiple events.
             mockFs['/fruits/tomato.js'] = [
