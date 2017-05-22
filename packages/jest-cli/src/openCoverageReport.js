@@ -21,7 +21,7 @@ const openFileInBrowser = async (url: string) => {
   } catch (err) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    console.error(chalk.red(err.stack));
+    console.error(chalk.red('No coverage report found.'));
   }
 };
 
