@@ -55,6 +55,7 @@ const resolvedCwd = fs.realpathSync(process.cwd());
 const nodePaths = process.env.NODE_PATH
   ? process.env.NODE_PATH
       .split(path.delimiter)
+      .filter(Boolean)
       // The resolver expects absolute paths.
       .map(p => path.resolve(resolvedCwd, p))
   : null;

@@ -46,6 +46,7 @@ describe('findNodeModule', () => {
     const nodePaths = process.env.NODE_PATH
       ? process.env.NODE_PATH
           .split(path.delimiter)
+          .filter(Boolean)
           .map(p => path.resolve(resolvedCwd, p))
       : null;
 
