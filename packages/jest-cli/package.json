@@ -27,6 +27,7 @@
     "jest-util": "^20.0.3",
     "micromatch": "^2.3.11",
     "node-notifier": "^5.0.2",
+    "opn": "^5.0.0",
     "pify": "^2.3.0",
     "slash": "^1.0.0",
     "string-length": "^1.0.1",

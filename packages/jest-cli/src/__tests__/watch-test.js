@@ -100,6 +100,27 @@ describe('Watch mode flows', () => {
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
 
+  it('Runs Jest once with collectCoverage enabled in globalConfig', () => {
+    watch(
+      Object.assign(globalConfig, {collectCoverage: true}),
+      contexts,
+      argv,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+    expect(runJestMock).toBeCalledWith(
+      globalConfig,
+      contexts,
+      argv,
+      pipe,
+      new TestWatcher({isWatchMode: true}),
+      jasmine.any(Function),
+      jasmine.any(Function),
+    );
+    expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
+  });
+
   it('Pressing "o" runs test in "only changed files" mode', () => {
     watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();

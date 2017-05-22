@@ -27,6 +27,7 @@ const TestWatcher = require('./TestWatcher');
 const Prompt = require('./lib/Prompt');
 const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
+const openCoverageReportInBrowser = require('./openCoverageReport');
 const {KEYS, CLEAR} = require('./constants');
 
 const isInteractive = process.stdout.isTTY && !isCI;
@@ -131,7 +132,9 @@ const watch = (
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
         if (shouldDisplayWatchUsage) {
-          pipe.write(usage(argv, hasSnapshotFailure));
+          pipe.write(
+            usage(argv, hasSnapshotFailure, globalConfig.collectCoverage),
+          );
           shouldDisplayWatchUsage = false; // hide Watch Usage after first run
           isWatchUsageDisplayed = true;
         } else {
@@ -160,7 +163,9 @@ const watch = (
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.R].indexOf(
+        key,
+      ) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -225,13 +230,22 @@ const watch = (
           {header: activeFilters(argv)},
         );
         break;
+      case KEYS.R:
+        openCoverageReportInBrowser(initialGlobalConfig.coverageDirectory);
+        break;
       case KEYS.QUESTION_MARK:
         break;
       case KEYS.W:
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           pipe.write(ansiEscapes.cursorUp());
           pipe.write(ansiEscapes.eraseDown);
-          pipe.write(usage(argv, hasSnapshotFailure));
+          pipe.write(
+            usage(
+              argv,
+              hasSnapshotFailure,
+              initialGlobalConfig.collectCoverage,
+            ),
+          );
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
         }
@@ -242,7 +256,9 @@ const watch = (
   const onCancelPatternPrompt = () => {
     pipe.write(ansiEscapes.cursorHide);
     pipe.write(ansiEscapes.clearScreen);
-    pipe.write(usage(argv, hasSnapshotFailure));
+    pipe.write(
+      usage(argv, hasSnapshotFailure, initialGlobalConfig.collectCoverage),
+    );
     pipe.write(ansiEscapes.cursorShow);
   };
 
@@ -279,7 +295,12 @@ const activeFilters = (argv, delimiter = '\n') => {
   return '';
 };
 
-const usage = (argv, snapshotFailure, delimiter = '\n') => {
+const usage = (
+  argv,
+  snapshotFailure,
+  isCollectCoverageEnabled,
+  delimiter = '\n',
+) => {
   const messages = [
     activeFilters(argv),
     argv.testPathPattern || argv.testNamePattern
@@ -306,6 +327,11 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
     chalk.dim(' \u203A Press ') +
       't' +
       chalk.dim(' to filter by a test name regex pattern.'),
+    isCollectCoverageEnabled
+      ? chalk.dim(' \u203A Press ') +
+          'r' +
+          chalk.dim(' to open coverage report.')
+      : null,
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') +
       'Enter' +
