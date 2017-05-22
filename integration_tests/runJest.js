@@ -16,8 +16,8 @@ const {fileExists} = require('./utils');
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
-  skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
   nodePath?: string,
+  skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
 };
 
 // return the result of the spawned process:
