@@ -38,8 +38,13 @@ test('basic support', () => {
     expect(status).toBe(0);
   }
 
+  // This test below also covers how jest-editor-support creates terse messages
+  // for letting a Snapshot update, so if the wording is updated, please edit
+  // /packages/jest-editor-support/src/TestReconciler.js
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['{apple: "updated value"}'])});
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['{apple: "updated value"}']),
+    });
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Received value does not match stored snapshot');
     expect(status).toBe(1);
@@ -65,7 +70,9 @@ test('error thrown before snapshot', () => {
     });`);
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['true', '{a: "original"}'])});
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['true', '{a: "original"}']),
+    });
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
@@ -78,7 +85,9 @@ test('error thrown before snapshot', () => {
   }
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['false', '{a: "original"}'])});
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['false', '{a: "original"}']),
+    });
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(1);
