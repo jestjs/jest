@@ -51,7 +51,8 @@ export type ResolveModuleConfig = {|
 const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
-const resolvedCwd = fs.realpathSync(process.cwd());
+const cwd = process.cwd();
+const resolvedCwd = fs.realpathSync(cwd) || cwd;
 const nodePaths = process.env.NODE_PATH
   ? process.env.NODE_PATH
       .split(path.delimiter)
