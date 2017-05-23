@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "19.0.3",
+  "version": "19.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"

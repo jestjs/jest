@@ -119,7 +119,6 @@ class Runtime {
     this._unmockList = unmockRegExpCache.get(config);
     if (
       !this._unmockList &&
-      config.automock &&
       config.unmockedModulePathPatterns
     ) {
       this._unmockList =
