@@ -776,7 +776,7 @@ describe('HasteMap', () => {
         const e = mockEmitters['/fruits'];
         e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT);
         e.emit('all', 'add', 'blueberry.js', '/fruits', MOCK_STAT);
-        let {hasteFS, moduleMap} = await waitForItToChange(hm);
+        const {hasteFS, moduleMap} = await waitForItToChange(hm);
         expect(hasteFS.exists('/fruits/blueberry.js')).toBe(true);
         // should be `null`
         expect(moduleMap.getModule('Pear')).not.toBe(null);
