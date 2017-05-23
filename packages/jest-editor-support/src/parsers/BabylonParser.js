@@ -104,8 +104,8 @@ const parse = (file: string) => {
     let element = node && node.expression ? node.expression.callee : undefined;
     while (!name && element) {
       name = element.name;
-      // Because expect may have acccessors taked on (.to.be) or
-      // nothing (expect()) we have to check mulitple levels for the name
+      // Because expect may have accessors taked on (.to.be) or
+      // nothing (expect()) we have to check multiple levels for the name
       element = element.object || element.callee;
     }
     return name === 'expect';
