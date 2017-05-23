@@ -340,7 +340,7 @@ class TestRunner {
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error) {
         throw new Error(
-          'An error occured while adding the reporter at path "' +
+          'An error occurred while adding the reporter at path "' +
             path +
             '".' +
             error.message,
