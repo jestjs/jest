@@ -1,0 +1,16 @@
+{
+  "name": "jest-framework",
+  "version": "20.0.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "BSD-3-Clause",
+  "main": "build/index.js",
+  "dependencies": {
+    "jest-snapshot": "^20.0.3"
+  },
+  "devDependencies": {
+    "jest-runtime": "^20.0.3"
+  }
+}
