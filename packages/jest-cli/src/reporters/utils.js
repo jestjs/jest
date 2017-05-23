@@ -160,8 +160,8 @@ const renderTime = (runTime, estimatedTime, width) => {
     if (availableWidth >= 2) {
       time +=
         '\n' +
-        chalk.green.inverse(' ').repeat(length) +
-        chalk.white.inverse(' ').repeat(availableWidth - length);
+        chalk.green('█').repeat(length) +
+        chalk.white('█').repeat(availableWidth - length);
     }
   }
   return time;
