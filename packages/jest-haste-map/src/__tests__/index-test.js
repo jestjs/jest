@@ -760,5 +760,61 @@ describe('HasteMap', () => {
         expect(hasteFS.getModuleName(filePath)).toBeDefined();
       },
     );
+
+    describe('recovery from duplicate module IDs (broken right now)', () => {
+      async function setupDuplicates(hm) {
+        mockFs['/fruits/pear.js'] = [
+          '/**',
+          ' * @providesModule Pear',
+          ' */',
+        ].join('\n');
+        mockFs['/fruits/blueberry.js'] = [
+          '/**',
+          ' * @providesModule Pear',
+          ' */',
+        ].join('\n');
+        const e = mockEmitters['/fruits'];
+        e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT);
+        e.emit('all', 'add', 'blueberry.js', '/fruits', MOCK_STAT);
+        let {hasteFS, moduleMap} = await waitForItToChange(hm);
+        expect(hasteFS.exists('/fruits/blueberry.js')).toBe(true);
+        // should be `null`
+        expect(moduleMap.getModule('Pear')).not.toBe(null);
+      }
+
+      hm_it(
+        'recovers when the oldest version of the duplicates is fixed',
+        async hm => {
+          await setupDuplicates(hm);
+          mockFs['/fruits/pear.js'] = [
+            '/**',
+            ' * @providesModule OldPear',
+            ' */',
+          ].join('\n');
+          const e = mockEmitters['/fruits'];
+          e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT);
+          const {moduleMap} = await waitForItToChange(hm);
+          // should be "/fruits/blueberry.js"
+          expect(moduleMap.getModule('Pear')).toBe(null);
+          expect(moduleMap.getModule('OldPear')).toBe('/fruits/pear.js');
+          expect(moduleMap.getModule('Blueberry')).toBe(null);
+        },
+      );
+
+      hm_it('recovers when the most recent duplicate is fixed', async hm => {
+        await setupDuplicates(hm);
+        mockFs['/fruits/blueberry.js'] = [
+          '/**',
+          ' * @providesModule Blueberry',
+          ' */',
+        ].join('\n');
+        const e = mockEmitters['/fruits'];
+        e.emit('all', 'change', 'blueberry.js', '/fruits', MOCK_STAT);
+        const {moduleMap} = await waitForItToChange(hm);
+        // should be "/fruits/pear.js"
+        expect(moduleMap.getModule('Pear')).toBe(null);
+        expect(moduleMap.getModule('Blueberry')).toBe('/fruits/blueberry.js');
+      });
+    });
   });
 });

@@ -144,10 +144,7 @@ class Runtime {
     this._transitiveShouldMock = Object.create(null);
 
     this._unmockList = unmockRegExpCache.get(config);
-    if (
-      !this._unmockList &&
-      config.unmockedModulePathPatterns
-    ) {
+    if (!this._unmockList && config.unmockedModulePathPatterns) {
       this._unmockList = new RegExp(
         config.unmockedModulePathPatterns.join('|'),
       );
