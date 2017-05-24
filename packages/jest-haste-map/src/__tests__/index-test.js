@@ -355,7 +355,7 @@ describe('HasteMap', () => {
       .then(({__hasteMapForTest: data}) => {
         // duplicate modules are removed so that it doesn't cause
         // non-determinism later on.
-        expect(data.map.Strawberry[H.GENERIC_PLATFORM]).toBe(null);
+        expect(data.map.Strawberry[H.GENERIC_PLATFORM]).not.toBeDefined();
 
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
       });

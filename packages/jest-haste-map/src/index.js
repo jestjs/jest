@@ -326,20 +326,23 @@ class HasteMap extends EventEmitter {
         }
         this._console.warn(message);
         // We do NOT want consumers to use a module that is ambiguous.
-        moduleMap[platform] = null;
+        delete moduleMap[platform];
+        if (Object.keys(moduleMap).length === 1) {
+          delete map[id];
+        }
         let dupsByPl = hasteMap.duplicates[id];
         if (dupsByPl == null) {
-          dupsByPl = hasteMap.duplicates[id] = Object.create(null);
+          dupsByPl = hasteMap.duplicates[id] = (Object.create(null): any);
         }
-        const dups = (dupsByPl[platform] = Object.create(null));
+        const dups = (dupsByPl[platform] = (Object.create(null): any));
         dups[module[H.PATH]] = module[H.TYPE];
         dups[existingModule[H.PATH]] = existingModule[H.TYPE];
         return;
       }
 
-      let dupsByPl = hasteMap.duplicates[id];
+      const dupsByPl = hasteMap.duplicates[id];
       if (dupsByPl != null) {
-        let dups = dupsByPl[platform];
+        const dups = dupsByPl[platform];
         if (dups != null) {
           dups[module[H.PATH]] = module[H.TYPE];
         }
@@ -635,8 +638,8 @@ class HasteMap extends EventEmitter {
           if (mustCopy) {
             mustCopy = false;
             hasteMap = {
-              duplicates: copy(hasteMap.duplicates),
               clocks: copy(hasteMap.clocks),
+              duplicates: copy(hasteMap.duplicates),
               files: copy(hasteMap.files),
               map: copy(hasteMap.map),
               mocks: copy(hasteMap.mocks),
@@ -727,8 +730,8 @@ class HasteMap extends EventEmitter {
     if (dups == null) {
       return;
     }
-    dupsByPl = hasteMap.duplicates[moduleName] = copy(dupsByPl);
-    dups = dupsByPl[platform] = copy(dups);
+    dupsByPl = hasteMap.duplicates[moduleName] = (copy(dupsByPl): any);
+    dups = dupsByPl[platform] = (copy(dups): any);
     const dedupType = dups[filePath];
     delete dups[filePath];
     const filePaths = Object.keys(dups);
@@ -737,7 +740,7 @@ class HasteMap extends EventEmitter {
     }
     let dedupMap = hasteMap.map[moduleName];
     if (dedupMap == null) {
-      dedupMap = hasteMap.map[moduleName] = Object.create(null);
+      dedupMap = hasteMap.map[moduleName] = (Object.create(null): any);
     }
     dedupMap[platform] = [filePaths[0], dedupType];
     delete dupsByPl[platform];
@@ -789,8 +792,8 @@ class HasteMap extends EventEmitter {
 
   _createEmptyMap(): InternalHasteMap {
     return {
-      duplicates: Object.create(null),
       clocks: Object.create(null),
+      duplicates: Object.create(null),
       files: Object.create(null),
       map: Object.create(null),
       mocks: Object.create(null),
