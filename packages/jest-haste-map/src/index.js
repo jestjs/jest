@@ -331,7 +331,7 @@ class HasteMap extends EventEmitter {
         if (dupsByPl == null) {
           dupsByPl = hasteMap.duplicates[id] = Object.create(null);
         }
-        const dups = dupsByPl[platform] = Object.create(null);
+        const dups = (dupsByPl[platform] = Object.create(null));
         dups[module[H.PATH]] = module[H.TYPE];
         dups[existingModule[H.PATH]] = existingModule[H.TYPE];
         return;
@@ -689,7 +689,9 @@ class HasteMap extends EventEmitter {
           return null;
         })
         .catch(error => {
-          this._console.error(`jest-haste-map: watch error:\n  ${error.stack}\n`);
+          this._console.error(
+            `jest-haste-map: watch error:\n  ${error.stack}\n`,
+          );
         });
     };
 
