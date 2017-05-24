@@ -27,7 +27,7 @@
     },
     "using": {
       "button": "More Jest Users",
-      "content": "Jest is used by teams of all sizes to test web application, node.js services, mobile apps, and APIs.",
+      "content": "Jest is used by teams of all sizes to test web applications, node.js services, mobile apps, and APIs.",
       "title": "Who's using Jest?"
     },
     "watch": {

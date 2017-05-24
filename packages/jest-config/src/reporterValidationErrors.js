@@ -19,7 +19,7 @@ const validReporterTypes = ['array', 'string'];
 const ERROR = `${BULLET}Reporter Validation Error`;
 
 /**
- * Reporter Vaidation Error is thrown if the given arguments
+ * Reporter Validation Error is thrown if the given arguments
  * within the reporter are not valid.
  *
  * This is a highly specific reporter error and in the future will be
