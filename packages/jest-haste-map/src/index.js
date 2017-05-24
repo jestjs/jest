@@ -325,7 +325,24 @@ class HasteMap extends EventEmitter {
           throw new Error(message);
         }
         this._console.warn(message);
+        // We do NOT want consumers to use a module that is ambiguous.
         moduleMap[platform] = null;
+        let dupsByPl = hasteMap.duplicates[id];
+        if (dupsByPl == null) {
+          dupsByPl = hasteMap.duplicates[id] = Object.create(null);
+        }
+        const dups = dupsByPl[platform] = Object.create(null);
+        dups[module[H.PATH]] = true;
+        dups[existingModule[H.PATH]] = true;
+        return;
+      }
+
+      let dupsByPl = hasteMap.duplicates[id];
+      if (dupsByPl != null) {
+        let dups = dupsByPl[platform];
+        if (dups != null) {
+          dups[module[H.PATH]] = true;
+        }
         return;
       }
 
@@ -620,6 +637,7 @@ class HasteMap extends EventEmitter {
           if (mustCopy) {
             mustCopy = false;
             hasteMap = {
+              duplicates: copy(hasteMap.duplicates),
               clocks: copy(hasteMap.clocks),
               files: copy(hasteMap.files),
               map: copy(hasteMap.map),
@@ -726,6 +744,7 @@ class HasteMap extends EventEmitter {
 
   _createEmptyMap(): InternalHasteMap {
     return {
+      duplicates: Object.create(null),
       clocks: Object.create(null),
       files: Object.create(null),
       map: Object.create(null),
