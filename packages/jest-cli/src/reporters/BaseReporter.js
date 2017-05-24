@@ -39,7 +39,7 @@ class BaseReporter {
     this._error = error;
   }
 
-  // Return an error that occured during reporting. This error will
+  // Return an error that occurred during reporting. This error will
   // define whether the test run was successful or failed.
   getLastError(): ?Error {
     return this._error;
