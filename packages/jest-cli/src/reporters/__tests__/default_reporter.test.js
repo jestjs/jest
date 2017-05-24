@@ -16,6 +16,14 @@ const testCase = {
   path: '/foo',
 };
 const testResult = {
+  snapshot: {
+    added: 0,
+    fileDeleted: true,
+    matched: 1,
+    unchecked: 0,
+    unmatched: 0,
+    updated: 0,
+  },
   testFilePath: '/foo',
 };
 
