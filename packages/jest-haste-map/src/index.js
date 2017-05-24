@@ -325,6 +325,28 @@ class HasteMap extends EventEmitter {
           throw new Error(message);
         }
         this._console.warn(message);
+        // We do NOT want consumers to use a module that is ambiguous.
+        delete moduleMap[platform];
+        if (Object.keys(moduleMap).length === 1) {
+          delete map[id];
+        }
+        let dupsByPlatform = hasteMap.duplicates[id];
+        if (dupsByPlatform == null) {
+          dupsByPlatform = hasteMap.duplicates[id] = (Object.create(null): any);
+        }
+        const dups = (dupsByPlatform[platform] = (Object.create(null): any));
+        dups[module[H.PATH]] = module[H.TYPE];
+        dups[existingModule[H.PATH]] = existingModule[H.TYPE];
+        return;
+      }
+
+      const dupsByPlatform = hasteMap.duplicates[id];
+      if (dupsByPlatform != null) {
+        const dups = dupsByPlatform[platform];
+        if (dups != null) {
+          dups[module[H.PATH]] = module[H.TYPE];
+        }
+        return;
       }
 
       moduleMap[platform] = module;
@@ -549,8 +571,6 @@ class HasteMap extends EventEmitter {
     // We only need to copy the entire haste map once on every "frame".
     let mustCopy = true;
 
-    const copy = object => Object.assign(Object.create(null), object);
-
     const createWatcher = root => {
       const watcher = new Watcher(root, {
         dot: false,
@@ -619,6 +639,7 @@ class HasteMap extends EventEmitter {
             mustCopy = false;
             hasteMap = {
               clocks: copy(hasteMap.clocks),
+              duplicates: copy(hasteMap.duplicates),
               files: copy(hasteMap.files),
               map: copy(hasteMap.map),
               mocks: copy(hasteMap.mocks),
@@ -639,6 +660,8 @@ class HasteMap extends EventEmitter {
             const mockName = getMockName(filePath);
             delete hasteMap.mocks[mockName];
           }
+
+          this._recoverDuplicates(hasteMap, filePath, moduleName);
 
           // If the file was added or changed,
           // parse it and update the haste map.
@@ -669,7 +692,9 @@ class HasteMap extends EventEmitter {
           return null;
         })
         .catch(error => {
-          this._console.error(`jest-haste-map: watch error:\n  ${error}\n`);
+          this._console.error(
+            `jest-haste-map: watch error:\n  ${error.stack}\n`,
+          );
         });
     };
 
@@ -679,6 +704,51 @@ class HasteMap extends EventEmitter {
     ).then(watchers => {
       this._watchers = watchers;
     });
+  }
+
+  /**
+   * This function should be called when the file under `filePath` is removed
+   * or changed. When that happens, we want to figure out if that file was
+   * part of a group of files that had the same ID. If it was, we want to
+   * remove it from the group. Furthermore, if there is only one file
+   * remaining in the group, then we want to restore that single file as the
+   * correct resolution for its ID, and cleanup the duplicates index.
+   */
+  _recoverDuplicates(
+    hasteMap: InternalHasteMap,
+    filePath: string,
+    moduleName: string,
+  ) {
+    let dupsByPlatform = hasteMap.duplicates[moduleName];
+    if (dupsByPlatform == null) {
+      return;
+    }
+    const platform =
+      getPlatformExtension(filePath, this._options.platforms) ||
+      H.GENERIC_PLATFORM;
+    let dups = dupsByPlatform[platform];
+    if (dups == null) {
+      return;
+    }
+    dupsByPlatform = hasteMap.duplicates[moduleName] = (copy(
+      dupsByPlatform,
+    ): any);
+    dups = dupsByPlatform[platform] = (copy(dups): any);
+    const dedupType = dups[filePath];
+    delete dups[filePath];
+    const filePaths = Object.keys(dups);
+    if (filePaths.length > 1) {
+      return;
+    }
+    let dedupMap = hasteMap.map[moduleName];
+    if (dedupMap == null) {
+      dedupMap = hasteMap.map[moduleName] = (Object.create(null): any);
+    }
+    dedupMap[platform] = [filePaths[0], dedupType];
+    delete dupsByPlatform[platform];
+    if (Object.keys(dupsByPlatform).length === 0) {
+      delete hasteMap.duplicates[moduleName];
+    }
   }
 
   end() {
@@ -725,6 +795,7 @@ class HasteMap extends EventEmitter {
   _createEmptyMap(): InternalHasteMap {
     return {
       clocks: Object.create(null),
+      duplicates: Object.create(null),
       files: Object.create(null),
       map: Object.create(null),
       mocks: Object.create(null),
@@ -734,6 +805,8 @@ class HasteMap extends EventEmitter {
   static H: HType;
   static ModuleMap: Class<HasteModuleMap>;
 }
+
+const copy = object => Object.assign(Object.create(null), object);
 
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;
