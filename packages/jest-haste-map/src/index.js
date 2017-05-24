@@ -330,19 +330,19 @@ class HasteMap extends EventEmitter {
         if (Object.keys(moduleMap).length === 1) {
           delete map[id];
         }
-        let dupsByPl = hasteMap.duplicates[id];
-        if (dupsByPl == null) {
-          dupsByPl = hasteMap.duplicates[id] = (Object.create(null): any);
+        let dupsByPlatform = hasteMap.duplicates[id];
+        if (dupsByPlatform == null) {
+          dupsByPlatform = hasteMap.duplicates[id] = (Object.create(null): any);
         }
-        const dups = (dupsByPl[platform] = (Object.create(null): any));
+        const dups = (dupsByPlatform[platform] = (Object.create(null): any));
         dups[module[H.PATH]] = module[H.TYPE];
         dups[existingModule[H.PATH]] = existingModule[H.TYPE];
         return;
       }
 
-      const dupsByPl = hasteMap.duplicates[id];
-      if (dupsByPl != null) {
-        const dups = dupsByPl[platform];
+      const dupsByPlatform = hasteMap.duplicates[id];
+      if (dupsByPlatform != null) {
+        const dups = dupsByPlatform[platform];
         if (dups != null) {
           dups[module[H.PATH]] = module[H.TYPE];
         }
@@ -719,19 +719,21 @@ class HasteMap extends EventEmitter {
     filePath: string,
     moduleName: string,
   ) {
-    let dupsByPl = hasteMap.duplicates[moduleName];
-    if (dupsByPl == null) {
+    let dupsByPlatform = hasteMap.duplicates[moduleName];
+    if (dupsByPlatform == null) {
       return;
     }
     const platform =
       getPlatformExtension(filePath, this._options.platforms) ||
       H.GENERIC_PLATFORM;
-    let dups = dupsByPl[platform];
+    let dups = dupsByPlatform[platform];
     if (dups == null) {
       return;
     }
-    dupsByPl = hasteMap.duplicates[moduleName] = (copy(dupsByPl): any);
-    dups = dupsByPl[platform] = (copy(dups): any);
+    dupsByPlatform = hasteMap.duplicates[moduleName] = (copy(
+      dupsByPlatform,
+    ): any);
+    dups = dupsByPlatform[platform] = (copy(dups): any);
     const dedupType = dups[filePath];
     delete dups[filePath];
     const filePaths = Object.keys(dups);
@@ -743,8 +745,8 @@ class HasteMap extends EventEmitter {
       dedupMap = hasteMap.map[moduleName] = (Object.create(null): any);
     }
     dedupMap[platform] = [filePaths[0], dedupType];
-    delete dupsByPl[platform];
-    if (Object.keys(dupsByPl).length === 0) {
+    delete dupsByPlatform[platform];
+    if (Object.keys(dupsByPlatform).length === 0) {
       delete hasteMap.duplicates[moduleName];
     }
   }

@@ -353,7 +353,7 @@ describe('HasteMap', () => {
     return new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: data}) => {
-        // duplicate modules are removed so that it doesn't cause
+        // Duplicate modules are removed so that it doesn't cause
         // non-determinism later on.
         expect(data.map.Strawberry[H.GENERIC_PLATFORM]).not.toBeDefined();
 
