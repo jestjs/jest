@@ -1,5 +1,11 @@
 ## master
 
+## jest 20.0.4
+
+* Fix jest-haste-map's handling of duplicate module IDs. ([#3647](https://github.com/facebook/jest/pull/3647)
+* Fix behavior of `enableAutomock()` when automock is set to false. ([#3624](https://github.com/facebook/jest/pull/3624)
+* Fix progress bar in windows. ([#3626](https://github.com/facebook/jest/pull/3626)
+
 ## jest 20.0.3
 
 * Fix arrow typeahead on Windows. ([#3563](https://github.com/facebook/jest/pull/3563))
