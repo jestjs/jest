@@ -105,7 +105,7 @@ const parse = (file: string) => {
     while (!name && element) {
       name = element.name;
       // Because expect may have acccessors taked on (.to.be) or
-      // nothing (expect()) we have to check mulitple levels for the name
+      // nothing (expect()) we have to check multiple levels for the name
       element = element.object || element.callee;
     }
     return name === 'expect';
