@@ -325,6 +325,8 @@ class HasteMap extends EventEmitter {
           throw new Error(message);
         }
         this._console.warn(message);
+        moduleMap[platform] = null;
+        return;
       }
 
       moduleMap[platform] = module;

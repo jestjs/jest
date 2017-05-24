@@ -353,9 +353,9 @@ describe('HasteMap', () => {
     return new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: data}) => {
-        expect(data.map.Strawberry[H.GENERIC_PLATFORM][0]).toEqual(
-          '/fruits/raspberry.js',
-        );
+        // duplicate modules are removed so that it doesn't cause
+        // non-determinism later on.
+        expect(data.map.Strawberry[H.GENERIC_PLATFORM]).toBe(null);
 
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
       });
@@ -778,8 +778,7 @@ describe('HasteMap', () => {
         e.emit('all', 'add', 'blueberry.js', '/fruits', MOCK_STAT);
         const {hasteFS, moduleMap} = await waitForItToChange(hm);
         expect(hasteFS.exists('/fruits/blueberry.js')).toBe(true);
-        // should be `null`
-        expect(moduleMap.getModule('Pear')).not.toBe(null);
+        expect(moduleMap.getModule('Pear')).toBe(null);
       }
 
       hm_it(
