@@ -332,8 +332,8 @@ class HasteMap extends EventEmitter {
           dupsByPl = hasteMap.duplicates[id] = Object.create(null);
         }
         const dups = dupsByPl[platform] = Object.create(null);
-        dups[module[H.PATH]] = true;
-        dups[existingModule[H.PATH]] = true;
+        dups[module[H.PATH]] = module[H.TYPE];
+        dups[existingModule[H.PATH]] = existingModule[H.TYPE];
         return;
       }
 
@@ -341,7 +341,7 @@ class HasteMap extends EventEmitter {
       if (dupsByPl != null) {
         let dups = dupsByPl[platform];
         if (dups != null) {
-          dups[module[H.PATH]] = true;
+          dups[module[H.PATH]] = module[H.TYPE];
         }
         return;
       }
@@ -568,8 +568,6 @@ class HasteMap extends EventEmitter {
     // We only need to copy the entire haste map once on every "frame".
     let mustCopy = true;
 
-    const copy = object => Object.assign(Object.create(null), object);
-
     const createWatcher = root => {
       const watcher = new Watcher(root, {
         dot: false,
@@ -660,6 +658,8 @@ class HasteMap extends EventEmitter {
             delete hasteMap.mocks[mockName];
           }
 
+          this._recoverDuplicates(hasteMap, filePath, moduleName);
+
           // If the file was added or changed,
           // parse it and update the haste map.
           if (type === 'add' || type === 'change') {
@@ -689,7 +689,7 @@ class HasteMap extends EventEmitter {
           return null;
         })
         .catch(error => {
-          this._console.error(`jest-haste-map: watch error:\n  ${error}\n`);
+          this._console.error(`jest-haste-map: watch error:\n  ${error.stack}\n`);
         });
     };
 
@@ -699,6 +699,49 @@ class HasteMap extends EventEmitter {
     ).then(watchers => {
       this._watchers = watchers;
     });
+  }
+
+  /**
+   * This function should be called when the file under `filePath` is removed
+   * or changed. When that happens, we want to figure out if that file was
+   * part of a group of files that had the same ID. If it was, we want to
+   * remove it from the group. Furthermore, if there is only one file
+   * remaining in the group, then we want to restore that single file as the
+   * correct resolution for its ID, and cleanup the duplicates index.
+   */
+  _recoverDuplicates(
+    hasteMap: InternalHasteMap,
+    filePath: string,
+    moduleName: string,
+  ) {
+    let dupsByPl = hasteMap.duplicates[moduleName];
+    if (dupsByPl == null) {
+      return;
+    }
+    const platform =
+      getPlatformExtension(filePath, this._options.platforms) ||
+      H.GENERIC_PLATFORM;
+    let dups = dupsByPl[platform];
+    if (dups == null) {
+      return;
+    }
+    dupsByPl = hasteMap.duplicates[moduleName] = copy(dupsByPl);
+    dups = dupsByPl[platform] = copy(dups);
+    const dedupType = dups[filePath];
+    delete dups[filePath];
+    const filePaths = Object.keys(dups);
+    if (filePaths.length > 1) {
+      return;
+    }
+    let dedupMap = hasteMap.map[moduleName];
+    if (dedupMap == null) {
+      dedupMap = hasteMap.map[moduleName] = Object.create(null);
+    }
+    dedupMap[platform] = [filePaths[0], dedupType];
+    delete dupsByPl[platform];
+    if (Object.keys(dupsByPl).length === 0) {
+      delete hasteMap.duplicates[moduleName];
+    }
   }
 
   end() {
@@ -755,6 +798,8 @@ class HasteMap extends EventEmitter {
   static H: HType;
   static ModuleMap: Class<HasteModuleMap>;
 }
+
+const copy = object => Object.assign(Object.create(null), object);
 
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;

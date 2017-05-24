@@ -761,7 +761,7 @@ describe('HasteMap', () => {
       },
     );
 
-    describe('recovery from duplicate module IDs (broken right now)', () => {
+    describe('recovery from duplicate module IDs', () => {
       async function setupDuplicates(hm) {
         mockFs['/fruits/pear.js'] = [
           '/**',
@@ -793,8 +793,7 @@ describe('HasteMap', () => {
           const e = mockEmitters['/fruits'];
           e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT);
           const {moduleMap} = await waitForItToChange(hm);
-          // should be "/fruits/blueberry.js"
-          expect(moduleMap.getModule('Pear')).toBe(null);
+          expect(moduleMap.getModule('Pear')).toBe('/fruits/blueberry.js');
           expect(moduleMap.getModule('OldPear')).toBe('/fruits/pear.js');
           expect(moduleMap.getModule('Blueberry')).toBe(null);
         },
@@ -810,8 +809,7 @@ describe('HasteMap', () => {
         const e = mockEmitters['/fruits'];
         e.emit('all', 'change', 'blueberry.js', '/fruits', MOCK_STAT);
         const {moduleMap} = await waitForItToChange(hm);
-        // should be "/fruits/pear.js"
-        expect(moduleMap.getModule('Pear')).toBe(null);
+        expect(moduleMap.getModule('Pear')).toBe('/fruits/pear.js');
         expect(moduleMap.getModule('Blueberry')).toBe('/fruits/blueberry.js');
       });
     });
