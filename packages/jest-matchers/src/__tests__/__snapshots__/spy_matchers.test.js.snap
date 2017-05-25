@@ -16,6 +16,13 @@ Expected mock function to have been last called with:
 But it was <red>not called</>."
 `;
 
+exports[`lastCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+
+Expected mock function to not have been last called with:
+  <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
+`;
+
 exports[`lastCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
 
@@ -205,6 +212,13 @@ Expected mock function to have been called with:
 But it was <red>not called</>."
 `;
 
+exports[`toHaveBeenCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+
+Expected mock function not to have been called with:
+  <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
+`;
+
 exports[`toHaveBeenCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
@@ -251,6 +265,13 @@ exports[`toHaveBeenLastCalledWith works when not called 1`] = `
 Expected mock function to have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>
 But it was <red>not called</>."
+`;
+
+exports[`toHaveBeenLastCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+
+Expected mock function to not have been last called with:
+  <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that don't match 1`] = `

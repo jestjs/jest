@@ -8,6 +8,7 @@
  * @emails oncall+jsinfra
  */
 
+const Immutable = require('immutable');
 const jestExpect = require('../');
 
 ['toHaveBeenCalled', 'toBeCalled'].forEach(called => {
@@ -165,6 +166,19 @@ describe('toHaveBeenCalledTimes', () => {
 
     expect(() =>
       jestExpect(fn).not[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with Immutable.js objects`, () => {
+    const fn = jest.fn();
+    const directlyCreated = new Immutable.Map([['a', {b: 'c'}]]);
+    const indirectlyCreated = new Immutable.Map().set('a', {b: 'c'});
+    fn(directlyCreated, indirectlyCreated);
+
+    jestExpect(fn)[calledWith](indirectlyCreated, directlyCreated);
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](indirectlyCreated, directlyCreated),
     ).toThrowErrorMatchingSnapshot();
   });
 });

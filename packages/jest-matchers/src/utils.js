@@ -8,6 +8,8 @@
  * @flow
  */
 
+import {equals} from './jasmine_utils';
+
 type GetPath = {
   hasEndProp?: boolean,
   lastTraversedObject: ?Object,
@@ -91,8 +93,40 @@ const getObjectSubset = (object: Object, subset: Object) => {
   return object;
 };
 
+const IteratorSymbol = Symbol.iterator;
+
+const hasIterator = object => !!(object != null && object[IteratorSymbol]);
+const iterableEquality = (a: any, b: any) => {
+  if (
+    typeof a !== 'object' ||
+    typeof b !== 'object' ||
+    Array.isArray(a) ||
+    Array.isArray(b) ||
+    !hasIterator(a) ||
+    !hasIterator(b)
+  ) {
+    return undefined;
+  }
+  if (a.constructor !== b.constructor) {
+    return false;
+  }
+  const bIterator = b[IteratorSymbol]();
+
+  for (const aValue of a) {
+    const nextB = bIterator.next();
+    if (nextB.done || !equals(aValue, nextB.value, [iterableEquality])) {
+      return false;
+    }
+  }
+  if (!bIterator.next().done) {
+    return false;
+  }
+  return true;
+};
+
 module.exports = {
   getObjectSubset,
   getPath,
   hasOwnProperty,
+  iterableEquality,
 };
