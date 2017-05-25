@@ -10,6 +10,7 @@
 
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const Resolver = require('../');
@@ -41,8 +42,13 @@ describe('isCoreModule', () => {
 
 describe('findNodeModule', () => {
   it('is possible to override the default resolver', () => {
+    const cwd = process.cwd();
+    const resolvedCwd = fs.realpathSync(cwd) || cwd;
     const nodePaths = process.env.NODE_PATH
-      ? process.env.NODE_PATH.split(path.delimiter)
+      ? process.env.NODE_PATH
+          .split(path.delimiter)
+          .filter(Boolean)
+          .map(p => path.resolve(resolvedCwd, p))
       : null;
 
     jest.mock('../__mocks__/userResolver');
