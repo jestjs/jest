@@ -11,6 +11,7 @@
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
 
+const fs = require('fs');
 const path = require('path');
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const isBuiltinModule = require('is-builtin-module');
@@ -49,8 +50,15 @@ export type ResolveModuleConfig = {|
 
 const NATIVE_PLATFORM = 'native';
 
+// We might be inside a symlink.
+const cwd = process.cwd();
+const resolvedCwd = fs.realpathSync(cwd) || cwd;
 const nodePaths = process.env.NODE_PATH
-  ? process.env.NODE_PATH.split(path.delimiter)
+  ? process.env.NODE_PATH
+      .split(path.delimiter)
+      .filter(Boolean)
+      // The resolver expects absolute paths.
+      .map(p => path.resolve(resolvedCwd, p))
   : null;
 
 class Resolver {
