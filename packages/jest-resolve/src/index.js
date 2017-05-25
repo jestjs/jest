@@ -187,7 +187,7 @@ class Resolver {
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
-    (err: any).code = 'MODULE_NOT_FOUND';
+    (err: Error & {code?: string}).code = 'MODULE_NOT_FOUND';
     throw err;
   }
 
