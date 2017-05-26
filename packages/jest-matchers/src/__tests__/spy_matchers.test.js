@@ -169,6 +169,42 @@ describe('toHaveBeenCalledTimes', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  test(`${calledWith} works with Map`, () => {
+    const fn = jest.fn();
+
+    const m1 = new Map([[1, 2], [2, 1]]);
+    const m2 = new Map([[1, 2], [2, 1]]);
+    const m3 = new Map([['a', 'b'], ['b', 'a']]);
+
+    fn(m1);
+
+    jestExpect(fn)[calledWith](m2);
+    jestExpect(fn).not[calledWith](m3);
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](m2),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect(fn)[calledWith](m3)).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with Set`, () => {
+    const fn = jest.fn();
+
+    const s1 = new Set([1, 2]);
+    const s2 = new Set([1, 2]);
+    const s3 = new Set([3, 4]);
+
+    fn(s1);
+
+    jestExpect(fn)[calledWith](s2);
+    jestExpect(fn).not[calledWith](s3);
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](s2),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect(fn)[calledWith](s3)).toThrowErrorMatchingSnapshot();
+  });
+
   test(`${calledWith} works with Immutable.js objects`, () => {
     const fn = jest.fn();
     const directlyCreated = new Immutable.Map([['a', {b: 'c'}]]);

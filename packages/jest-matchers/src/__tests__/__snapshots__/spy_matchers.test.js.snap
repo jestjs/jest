@@ -23,6 +23,38 @@ Expected mock function to not have been last called with:
   <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
 `;
 
+exports[`lastCalledWith works with Map 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+
+Expected mock function to not have been last called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`lastCalledWith works with Map 2`] = `
+"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
+
+Expected mock function to have been last called with:
+  <green>[Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}]</>
+But it was last called with:
+  <red>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`lastCalledWith works with Set 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+
+Expected mock function to not have been last called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`lastCalledWith works with Set 2`] = `
+"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
+
+Expected mock function to have been last called with:
+  <green>[Set {3, 4}]</>
+But it was last called with:
+  <red>[Set {1, 2}]</>"
+`;
+
 exports[`lastCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
 
@@ -219,6 +251,38 @@ Expected mock function not to have been called with:
   <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
 `;
 
+exports[`toHaveBeenCalledWith works with Map 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+
+Expected mock function not to have been called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with Map 2`] = `
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
+
+Expected mock function to have been called with:
+  <green>[Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}]</>
+But it was called with:
+  <red>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with Set 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+
+Expected mock function not to have been called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with Set 2`] = `
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
+
+Expected mock function to have been called with:
+  <green>[Set {3, 4}]</>
+But it was called with:
+  <red>[Set {1, 2}]</>"
+`;
+
 exports[`toHaveBeenCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
@@ -272,6 +336,38 @@ exports[`toHaveBeenLastCalledWith works with Immutable.js objects 1`] = `
 
 Expected mock function to not have been last called with:
   <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Map 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+
+Expected mock function to not have been last called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Map 2`] = `
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
+
+Expected mock function to have been last called with:
+  <green>[Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}]</>
+But it was last called with:
+  <red>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Set 1`] = `
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+
+Expected mock function to not have been last called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Set 2`] = `
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
+
+Expected mock function to have been last called with:
+  <green>[Set {3, 4}]</>
+But it was last called with:
+  <red>[Set {1, 2}]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that don't match 1`] = `
