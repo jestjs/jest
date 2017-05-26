@@ -45,7 +45,10 @@ class NodeEnvironment {
     this.fakeTimers = null;
   }
 
+  // Disabling rule as return type depends on script's return type.
+  /* eslint-disable flowtype/no-weak-types */
   runScript(script: Script): ?any {
+    /* eslint-enable flowtype/no-weak-types */
     if (this.context) {
       return script.runInContext(this.context);
     }

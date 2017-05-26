@@ -15,7 +15,14 @@ import type {ModuleMocker} from 'jest-mock';
 const {formatStackTrace} = require('jest-message-util');
 const setGlobal = require('./setGlobal');
 
+/**
+ * We don't know the type of arguments for a callback ahead of time which is why
+ * we are disabling the flowtype/no-weak-types rule here.
+ */
+
+/* eslint-disable flowtype/no-weak-types */
 type Callback = (...args: any) => void;
+/* eslint-enable flowtype/no-weak-types */
 
 type TimerID = string;
 
@@ -32,13 +39,23 @@ type Timer = {|
 |};
 
 type TimerAPI = {
-  clearImmediate(timeoutId?: any): void,
+  clearImmediate(timeoutId?: number): void,
   clearInterval(intervalId?: number): void,
-  clearTimeout(timeoutId?: any): void,
+  clearTimeout(timeoutId?: number): void,
   nextTick: (callback: Callback) => void,
-  setImmediate(callback: any, ms?: number, ...args: Array<any>): number,
-  setInterval(callback: any, ms?: number, ...args: Array<any>): number,
-  setTimeout(callback: any, ms?: number, ...args: Array<any>): number,
+
+  /**
+   * The additional arguments in the following methods are passed to the
+   * callback and thus we don't know their types ahead of time as they can be
+   * anything, which  is why we are disabling the flowtype/no-weak-types rule
+   * here.
+   */
+
+  /* eslint-disable flowtype/no-weak-types */
+  setImmediate(callback: Callback, ms?: number, ...args: Array<any>): number,
+  setInterval(callback: Callback, ms?: number, ...args: Array<any>): number,
+  setTimeout(callback: Callback, ms?: number, ...args: Array<any>): number,
+  /* eslint-enable flowtype/no-weak-types */
 };
 
 const MS_IN_A_YEAR = 31536000000;

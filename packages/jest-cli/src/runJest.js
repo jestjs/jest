@@ -11,6 +11,7 @@
 import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
 import type {GlobalConfig} from 'types/Config';
+import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './TestWatcher';
 
 const path = require('path');
@@ -151,7 +152,7 @@ const runJest = async (
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
-  onComplete: (testResults: any) => any,
+  onComplete: (testResults: AggregatedResult) => any,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
   const pattern = getTestPathPattern(argv);
@@ -175,7 +176,36 @@ const runJest = async (
 
   if (argv.listTests) {
     console.log(JSON.stringify(allTests.map(test => test.path)));
-    onComplete && onComplete({success: true});
+    onComplete &&
+      onComplete({
+        numFailedTestSuites: 0,
+        numFailedTests: 0,
+        numPassedTestSuites: 0,
+        numPassedTests: 0,
+        numPendingTestSuites: 0,
+        numPendingTests: 0,
+        numRuntimeErrorTestSuites: 0,
+        numTotalTestSuites: 0,
+        numTotalTests: 0,
+        snapshot: {
+          added: 0,
+          didUpdate: false,
+          failure: false,
+          filesAdded: 0,
+          filesRemoved: 0,
+          filesUnmatched: 0,
+          filesUpdated: 0,
+          matched: 0,
+          total: 0,
+          unchecked: 0,
+          unmatched: 0,
+          updated: 0,
+        },
+        startTime: 0,
+        success: true,
+        testResults: [],
+        wasInterrupted: false,
+      });
     return null;
   }
 
