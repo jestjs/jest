@@ -126,9 +126,18 @@ const runJest = async ({
   }
 
   if (!allTests.length) {
-    new Console(outputStream, outputStream).log(
-      getNoTestsFoundMessage(testRunData, globalConfig),
+    const noTestsFoundMessage = getNoTestsFoundMessage(
+      testRunData,
+      globalConfig,
     );
+
+    if (globalConfig.failWithNoTests) {
+      new Console(outputStream, outputStream).error(noTestsFoundMessage);
+
+      process.exit(1);
+    } else {
+      new Console(outputStream, outputStream).log(noTestsFoundMessage);
+    }
   } else if (
     allTests.length === 1 &&
     globalConfig.silent !== true &&

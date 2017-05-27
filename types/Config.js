@@ -150,6 +150,7 @@ export type GlobalConfig = {|
   coverageReporters: Array<string>,
   coverageThreshold: {global: {[key: string]: number}},
   expand: boolean,
+  failWithNoTests: boolean,
   findRelatedTests: boolean,
   forceExit: boolean,
   json: boolean,

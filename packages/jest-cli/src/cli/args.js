@@ -208,6 +208,12 @@ const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
+  failWithNoTests: {
+    default: false,
+    description:
+      'Will fail if no tests are found (for example while using `--testPathPattern`.)',
+    type: 'boolean',
+  },
   findRelatedTests: {
     default: undefined,
     description:

@@ -22,6 +22,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   coverageReporters: [],
   coverageThreshold: {global: {}},
   expand: false,
+  failWithNoTests: false,
   findRelatedTests: false,
   forceExit: false,
   json: false,
