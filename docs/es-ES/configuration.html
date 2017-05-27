@@ -100,7 +100,7 @@ module<span class="token punctuation">.</span>exports <span class="token operato
     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;Custom reporter output:&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;GlobalConfig: &#x27;</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_globalConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;Options: &#x27;</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_options<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
 module<span class="token punctuation">.</span>exports <span class="token operator">=</span> MyCustomReporter<span class="token punctuation">;</span></pre><p>Los reporters personalizados pueden forzar a Jest a terminar con un código diferente a cero si regresan un Error en los métodos <code>getLastError()</code></p><pre class="prism language-javascript">

@@ -108,7 +108,7 @@ additional locations to search when resolving modules. Use the <code>&lt;rootDir
     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;Custom reporter output:&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;GlobalConfig: &#x27;</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_globalConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;Options: &#x27;</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_options<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
 module<span class="token punctuation">.</span>exports <span class="token operator">=</span> MyCustomReporter<span class="token punctuation">;</span></pre><p>Custom reporters can also force Jest to exit with non-0 code by returning an Error from <code>getLastError()</code> methods</p><pre class="prism language-javascript">
