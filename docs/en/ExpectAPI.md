@@ -737,8 +737,7 @@ test('the house has my desired features', () => {
 Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object.
 For checking deeply nested properties in an object use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) for deep references.
 
-Optionally, you can provide a value to check if it's strictly equal to the `value` present
-at `keyPath` on the target object.
+Optionally, you can provide a `value` to check if it's equal to the value present at `keyPath` on the target object. This matcher uses 'deep equality' (like `toEqual()`) and recursively checks the equality of all fields.
 
 The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty`
 to check for the existence and values of various properties in the object.
