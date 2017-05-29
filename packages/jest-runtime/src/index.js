@@ -518,7 +518,7 @@ class Runtime {
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
-      this._createRuntimeFor(filename), // jest object
+      this._createJestObjectFor(filename), // jest object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -643,7 +643,7 @@ class Runtime {
     return moduleRequire;
   }
 
-  _createRuntimeFor(from: Path) {
+  _createJestObjectFor(from: Path) {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
       return runtime;
@@ -715,6 +715,10 @@ class Runtime {
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
+    const setTestTimeout = (timeout: number) => {
+      this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout;
+    };
+
     const runtime = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
@@ -750,6 +754,7 @@ class Runtime {
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
+      setTestTimeout,
       spyOn,
 
       unmock,
