@@ -39,21 +39,17 @@ const printImmutable = (
 
   const immutableArray = [];
 
+  const pushToImmutableArray = (item: any, key: string) => {
+    immutableArray.push(
+      indent(addKey(isMap, key) + print(item, print, indent, opts, colors)),
+    );
+  };
+
   if (Array.isArray(val._keys)) {
     // if we have a record, we can not iterate on it directly
-    val._keys.forEach(key =>
-      immutableArray.push(
-        indent(
-          addKey(isMap, key) + print(val.get(key), print, indent, opts, colors),
-        ),
-      ),
-    );
+    val._keys.forEach(key => pushToImmutableArray(val.get(key), key));
   } else {
-    val.forEach((item, key) =>
-      immutableArray.push(
-        indent(addKey(isMap, key) + print(item, print, indent, opts, colors)),
-      ),
-    );
+    val.forEach((item, key) => pushToImmutableArray(item, key));
   }
 
   result += immutableArray.join(',' + opts.spacing);
