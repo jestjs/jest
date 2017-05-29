@@ -64,8 +64,8 @@ describe('Watch mode flows', () => {
       argv,
       pipe,
       new TestWatcher({isWatchMode: true}),
-      jasmine.any(Function),
-      jasmine.any(Function),
+      expect.any(Function),
+      expect.any(Function),
     );
   });
 
@@ -81,8 +81,8 @@ describe('Watch mode flows', () => {
       argv,
       pipe,
       new TestWatcher({isWatchMode: true}),
-      jasmine.any(Function),
-      jasmine.any(Function),
+      expect.any(Function),
+      expect.any(Function),
     );
   });
 
@@ -94,8 +94,8 @@ describe('Watch mode flows', () => {
       argv,
       pipe,
       new TestWatcher({isWatchMode: true}),
-      jasmine.any(Function),
-      jasmine.any(Function),
+      expect.any(Function),
+      expect.any(Function),
     );
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });

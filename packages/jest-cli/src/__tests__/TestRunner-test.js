@@ -58,11 +58,11 @@ describe('_createInBandTestRun()', () => {
         expect(workerFarmMock.mock.calls).toEqual([
           [
             {config, globalConfig, path: './file-test.js', rawModuleMap},
-            jasmine.any(Function),
+            expect.any(Function),
           ],
           [
             {config, globalConfig, path: './file2-test.js', rawModuleMap},
-            jasmine.any(Function),
+            expect.any(Function),
           ],
         ]);
       });
@@ -85,11 +85,11 @@ describe('_createInBandTestRun()', () => {
         expect(workerFarmMock.mock.calls).toEqual([
           [
             {config, globalConfig, path: './file-test.js', rawModuleMap: null},
-            jasmine.any(Function),
+            expect.any(Function),
           ],
           [
             {config, globalConfig, path: './file2-test.js', rawModuleMap: null},
-            jasmine.any(Function),
+            expect.any(Function),
           ],
         ]);
       });
