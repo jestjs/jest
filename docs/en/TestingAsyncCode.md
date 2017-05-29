@@ -66,7 +66,7 @@ Be sure to return the promise - if you omit this `return` statement, your test w
 If you expect a promise to be rejected use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
 
 ```js
-test('the fetch fails with an error', async () => {
+test('the fetch fails with an error', () => {
   expect.assertions(1);
   return fetchData().catch(e =>
     expect(e).toMatch('error')
