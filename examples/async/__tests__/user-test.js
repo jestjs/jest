@@ -4,7 +4,7 @@
 
 jest.mock('../request');
 
-import * as user from '../user';
+const user = require('../user');
 
 // Testing promise can be done using `.resolves`.
 it('works with resolves', () => {
