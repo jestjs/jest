@@ -10,6 +10,7 @@
 
 import type {MatchersObject} from 'types/Matchers';
 
+const getType = require('jest-get-type');
 const {escapeStrForRegex} = require('jest-regex-util');
 const {
   formatStackTrace,
@@ -18,7 +19,6 @@ const {
 const {
   RECEIVED_BG,
   RECEIVED_COLOR,
-  getType,
   highlightTrailingWhitespace,
   matcherHint,
   printExpected,

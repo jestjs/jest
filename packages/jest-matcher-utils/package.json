@@ -11,6 +11,7 @@
   "browser": "build-es5/index.js",
   "dependencies": {
     "chalk": "^1.1.3",
+    "jest-get-type": "^20.0.3",
     "pretty-format": "^20.0.3"
   }
 }
