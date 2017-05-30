@@ -125,9 +125,7 @@ const watch = (
       startRun,
       results => {
         isRunning = false;
-        hasSnapshotFailure = results.snapshot
-          ? !!results.snapshot.failure
-          : false;
+        hasSnapshotFailure = !!results.snapshot.failure;
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
