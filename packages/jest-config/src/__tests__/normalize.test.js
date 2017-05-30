@@ -837,9 +837,10 @@ describe('preset', () => {
   });
 
   test('merges with options and moduleNameMapper preset is overridden by options', () => {
+    // prettier-ignore
     const {options} = normalize(
       {
-        moduleNameMapper: { e: 'ee', c: 'cc', b: 'bb', a: 'aa' },
+        moduleNameMapper: {e: 'ee', c: 'cc', b: 'bb', a: 'aa'},
         preset: 'react-native',
         rootDir: '/root/path/foo',
       },
