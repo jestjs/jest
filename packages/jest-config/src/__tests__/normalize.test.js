@@ -837,6 +837,7 @@ describe('preset', () => {
   });
 
   test('merges with options and moduleNameMapper preset is overridden by options', () => {
+    /* eslint-disable sort-keys */
     // prettier-ignore
     const {options} = normalize(
       {
@@ -846,6 +847,7 @@ describe('preset', () => {
       },
       {},
     );
+    /* eslint-enable sort-keys */
 
     expect(options.moduleNameMapper).toEqual([
       ['e', 'ee'],
