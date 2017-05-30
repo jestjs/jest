@@ -28,19 +28,29 @@ const printImmutable = (
   isMap: boolean,
 ): string => {
   const [openTag, closeTag] = isMap ? ['{', '}'] : ['[', ']'];
+  const fullStructureName = val._name || immutableDataStructureName;
+
   let result =
     IMMUTABLE_NAMESPACE +
-    immutableDataStructureName +
+    fullStructureName +
     SPACE +
     openTag +
     opts.edgeSpacing;
 
   const immutableArray = [];
-  val.forEach((item, key) =>
+
+  const pushToImmutableArray = (item: any, key: string) => {
     immutableArray.push(
       indent(addKey(isMap, key) + print(item, print, indent, opts, colors)),
-    ),
-  );
+    );
+  };
+
+  if (Array.isArray(val._keys)) {
+    // if we have a record, we can not iterate on it directly
+    val._keys.forEach(key => pushToImmutableArray(val.get(key), key));
+  } else {
+    val.forEach((item, key) => pushToImmutableArray(item, key));
+  }
 
   result += immutableArray.join(',' + opts.spacing);
   if (!opts.min && immutableArray.length > 0) {
