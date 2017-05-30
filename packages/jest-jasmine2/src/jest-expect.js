@@ -27,6 +27,8 @@ type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
 module.exports = (config: {expand: boolean}) => {
   global.expect = expect;
+  // setState is not documented
+  // eslint-disable-next-line jest/valid-expect
   expect.setState({
     expand: config.expand,
   });
