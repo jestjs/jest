@@ -11,13 +11,13 @@
 import type {MatchersObject} from 'types/Matchers';
 
 const diff = require('jest-diff');
+const getType = require('jest-get-type');
 const {escapeStrForRegex} = require('jest-regex-util');
 const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   ensureNoExpected,
   ensureNumbers,
-  getType,
   matcherHint,
   printReceived,
   printExpected,

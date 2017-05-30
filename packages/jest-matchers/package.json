@@ -10,6 +10,7 @@
   "browser": "build-es5/index.js",
   "dependencies": {
     "jest-diff": "^20.0.3",
+    "jest-get-type": "^20.0.3",
     "jest-matcher-utils": "^20.0.3",
     "jest-message-util": "^20.0.3",
     "jest-regex-util": "^20.0.3"
