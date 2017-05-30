@@ -208,12 +208,6 @@ const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
-  failWithNoTests: {
-    default: false,
-    description:
-      'Will fail if no tests are found (for example while using `--testPathPattern`.)',
-    type: 'boolean',
-  },
   findRelatedTests: {
     default: undefined,
     description:
@@ -345,6 +339,12 @@ const options = {
       'Write test results to a file when the --json option is ' +
       'also specified.',
     type: 'string',
+  },
+  passWithNoTests: {
+    default: false,
+    description:
+      'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
+    type: 'boolean',
   },
   preset: {
     description: "A preset that is used as a base for Jest's configuration.",

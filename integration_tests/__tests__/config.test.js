@@ -21,7 +21,7 @@ test('config as JSON', () => {
   ]);
   const stdout = result.stdout.toString();
 
-  expect(result.status).toBe(0);
+  expect(result.status).toBe(1);
   expect(stdout).toMatch('No tests found');
 });
 

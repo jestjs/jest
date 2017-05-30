@@ -131,12 +131,12 @@ const runJest = async ({
       globalConfig,
     );
 
-    if (globalConfig.failWithNoTests) {
+    if (globalConfig.passWithNoTests) {
+      new Console(outputStream, outputStream).log(noTestsFoundMessage);
+    } else {
       new Console(outputStream, outputStream).error(noTestsFoundMessage);
 
       process.exit(1);
-    } else {
-      new Console(outputStream, outputStream).log(noTestsFoundMessage);
     }
   } else if (
     allTests.length === 1 &&
