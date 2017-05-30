@@ -101,7 +101,7 @@ describe('watchman watch', () => {
       const calls = client.command.mock.calls;
 
       expect(client.on).toBeCalled();
-      expect(client.on).toBeCalledWith('error', jasmine.any(Function));
+      expect(client.on).toBeCalledWith('error', expect.any(Function));
 
       // Call 0 and 1 are for ['watch-project']
       expect(calls[0][0][0]).toEqual('watch-project');

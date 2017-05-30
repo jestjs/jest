@@ -445,3 +445,82 @@ describe('Immutable.OrderedMap plugin', () => {
     );
   });
 });
+
+describe('Immutable.Record plugin', () => {
+  it('supports an empty record', () => {
+    const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
+
+    expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {a: 1, b: 2}', {
+      min: true,
+    });
+  });
+
+  it('supports a record without descriptive name', () => {
+    const ABRecord = Immutable.Record({a: 1, b: 2});
+
+    expect(new ABRecord()).toPrettyPrintTo('Immutable.Record {a: 1, b: 2}', {
+      min: true,
+    });
+  });
+
+  it('supports a record with values {min: true}', () => {
+    const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
+
+    expect(
+      new ABRecord({a: 3, b: 4}),
+    ).toPrettyPrintTo('Immutable.ABRecord {a: 3, b: 4}', {min: true});
+  });
+
+  it('supports a record with values {min: false}', () => {
+    const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
+
+    expect(new ABRecord({a: 3, b: 4})).toPrettyPrintTo(
+      'Immutable.ABRecord {\n  a: 3,\n  b: 4,\n}',
+    );
+  });
+
+  it('supports a record with Map value {min: true}', () => {
+    const ABRecord = Immutable.Record(
+      {a: Immutable.Map({c: 1}), b: 2},
+      'ABRecord',
+    );
+
+    expect(
+      new ABRecord(),
+    ).toPrettyPrintTo('Immutable.ABRecord {a: Immutable.Map {c: 1}, b: 2}', {
+      min: true,
+    });
+  });
+
+  it('supports a record with Map value {min: false}', () => {
+    const ABRecord = Immutable.Record(
+      {a: Immutable.Map({c: 1}), b: 2},
+      'ABRecord',
+    );
+
+    expect(new ABRecord()).toPrettyPrintTo(
+      'Immutable.ABRecord {\n  a: Immutable.Map {\n    c: 1,\n  },\n  b: 2,\n}',
+    );
+  });
+
+  it('supports imbricated Record {min: true}', () => {
+    const CDRecord = Immutable.Record({c: 3, d: 4}, 'CDRecord');
+    const ABRecord = Immutable.Record({a: new CDRecord(), b: 2}, 'ABRecord');
+
+    expect(
+      new ABRecord(),
+    ).toPrettyPrintTo(
+      'Immutable.ABRecord {a: Immutable.CDRecord {c: 3, d: 4}, b: 2}',
+      {min: true},
+    );
+  });
+
+  it('supports imbricated Record {min: false}', () => {
+    const CDRecord = Immutable.Record({c: 3, d: 4}, 'CDRecord');
+    const ABRecord = Immutable.Record({a: new CDRecord(), b: 2}, 'ABRecord');
+
+    expect(new ABRecord()).toPrettyPrintTo(
+      'Immutable.ABRecord {\n  a: Immutable.CDRecord {\n    c: 3,\n    d: 4,\n  },\n  b: 2,\n}',
+    );
+  });
+});

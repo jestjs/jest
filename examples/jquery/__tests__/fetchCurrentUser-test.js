@@ -15,7 +15,7 @@ it('calls into $.ajax with the correct params', () => {
   // Now make sure that $.ajax was properly called during the previous
   // 2 lines
   expect($.ajax).toBeCalledWith({
-    success: jasmine.any(Function),
+    success: expect.any(Function),
     type: 'GET',
     url: 'http://example.com/currentUser',
   });

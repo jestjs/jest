@@ -12,7 +12,7 @@ import type {ReporterConfig} from 'types/Config';
 const {ValidationError} = require('jest-validate');
 
 const chalk = require('chalk');
-const {getType} = require('jest-matcher-utils');
+const getType = require('jest-get-type');
 const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
 
 const validReporterTypes = ['array', 'string'];

@@ -15,4 +15,5 @@ module.exports = [
   require('./ImmutableStack'),
   require('./ImmutableOrderedSet'),
   require('./ImmutableOrderedMap'),
+  require('./ImmutableRecord'),
 ];
