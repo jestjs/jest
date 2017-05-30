@@ -12,7 +12,12 @@ const {readFileSync} = require('fs');
 const babylon = require('babylon');
 const {Expect, ItBlock} = require('./ParserNodes');
 
-const parse = (file: string) => {
+export type BabylonParserResult = {
+  expects: Array<Expect>,
+  itBlocks: Array<ItBlock>,
+};
+
+const parse = (file: string): BabylonParserResult => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
 
