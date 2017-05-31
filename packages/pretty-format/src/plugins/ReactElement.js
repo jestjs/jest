@@ -70,10 +70,7 @@ function printProps(props, print, indent, colors, opts) {
 }
 
 const print = (
-  // Disabling lint rule as we don't know inner type ahead of time.
-  /* eslint-disable flowtype/no-weak-types */
-  element: React$Element<any>,
-  /* eslint-enable flowtype/no-weak-types */
+  element: React$Element<*>,
   print: Print,
   indent: Indent,
   opts: Options,
