@@ -70,7 +70,10 @@ function printProps(props, print, indent, colors, opts) {
 }
 
 const print = (
-  element: any,
+  // Disabling lint rule as we don't know inner type ahead of time.
+  /* eslint-disable flowtype/no-weak-types */
+  element: React$Element<any>,
+  /* eslint-enable flowtype/no-weak-types */
   print: Print,
   indent: Indent,
   opts: Options,
@@ -121,6 +124,9 @@ const print = (
   return result;
 };
 
+// Disabling lint rule as we don't know type ahead of time.
+/* eslint-disable flowtype/no-weak-types */
 const test = (object: any) => object && object.$$typeof === reactElement;
+/* eslint-enable flowtype/no-weak-types */
 
 module.exports = ({print, test}: Plugin);
