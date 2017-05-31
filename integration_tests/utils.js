@@ -119,14 +119,32 @@ const extractSummary = stdout => {
     .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
-  // remove all timestamps
-  const rest = stdout.slice(0, -match[0].length).replace(/\s*\(.*ms\)/gm, '');
+  const rest = cleanupStackTrace(
+    // remove all timestamps
+    stdout.slice(0, -match[0].length).replace(/\s*\(.*ms\)/gm, ''),
+  );
 
   return {rest, summary};
 };
 
+// different versions of Node print different stack traces. This function
+// unifies their output to make it possible to snapshot them.
+const cleanupStackTrace = (output: string) => {
+  return (
+    output
+      .replace(/\n.*at.*timers\.js.*$/gm, '')
+      .replace(/\n.*at.*assert\.js.*$/gm, '')
+      .replace(/\n.*at.*node\.js.*$/gm, '')
+      .replace(/\n.*at.*next_tick\.js.*$/gm, '')
+      .replace(/\n.*at Promise \(<anonymous>\).*$/gm, '')
+      .replace(/\n.*at <anonymous>.*$/gm, '')
+      .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1')
+  );
+};
+
 module.exports = {
   cleanup,
+  cleanupStackTrace,
   createEmptyPackage,
   extractSummary,
   fileExists,
