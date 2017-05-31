@@ -45,7 +45,7 @@ class CoverageReporter extends BaseReporter {
   _maxWorkers: number;
 
   constructor(globalConfig: GlobalConfig, options: CoverageReporterOptions) {
-    super(globalConfig);
+    super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();

@@ -15,7 +15,7 @@ const pTimeout = require('./p-timeout');
 type Options = {
   clearTimeout: (timeoutID: number) => void,
   fail: () => void,
-  onException: () => void,
+  onException: (error: Error) => void,
   queueableFns: Array<QueueableFn>,
   setTimeout: (func: () => void, delay: number) => number,
   userContext: any,

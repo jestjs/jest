@@ -21,7 +21,7 @@ type TreeNode = {
   beforeAllFns: Array<any>,
   execute: (onComplete: () => void, enabled: boolean) => void,
   id: string,
-  onException: () => void,
+  onException: (error: Error) => void,
   sharedUserContext: () => any,
   children?: Array<TreeNode>,
 };

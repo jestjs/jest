@@ -40,9 +40,7 @@ const printImmutable = (
   const immutableArray = [];
 
   const pushToImmutableArray = (item: any, key: string) => {
-    immutableArray.push(
-      indent(addKey(isMap, key) + print(item, print, indent, opts, colors)),
-    );
+    immutableArray.push(indent(addKey(isMap, key) + print(item)));
   };
 
   if (Array.isArray(val._keys)) {

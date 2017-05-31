@@ -19,7 +19,7 @@ const {
 } = require('jest-snapshot');
 
 type JasmineMatcher = {
-  (): JasmineMatcher,
+  (matchersUtil: any, context: any): JasmineMatcher,
   compare: () => RawMatcherFn,
   negativeCompare: () => RawMatcherFn,
 };
@@ -27,9 +27,7 @@ type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
 module.exports = (config: {expand: boolean}) => {
   global.expect = expect;
-  expect.setState({
-    expand: config.expand,
-  });
+  expect.setState({expand: config.expand});
   expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
   (expect: Object).addSnapshotSerializer = addSerializer;
 

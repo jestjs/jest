@@ -240,9 +240,12 @@ class HasteMap extends EventEmitter {
     this._watchers = [];
   }
 
-  static getCacheFilePath(tmpdir: Path, name: string): string {
-    const hash = crypto.createHash('md5');
-    Array.from(arguments).slice(1).forEach(arg => hash.update(arg));
+  static getCacheFilePath(
+    tmpdir: Path,
+    name: string,
+    ...extra: Array<string>
+  ): string {
+    const hash = crypto.createHash('md5').update(name + extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),

@@ -62,7 +62,7 @@ class ScriptTransformer {
       configToJsonMap.set(this._config, stableStringify(this._config));
     }
     const configString = configToJsonMap.get(this._config) || '';
-    const transformer = this._getTransformer(filename, this._config);
+    const transformer = this._getTransformer(filename);
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
       return transformer.getCacheKey(fileData, filename, configString, {
