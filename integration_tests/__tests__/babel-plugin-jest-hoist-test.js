@@ -20,7 +20,7 @@ skipOnWindows.suite();
 
 if (process.platform !== 'win32') {
   beforeEach(() => {
-    run('npm i', DIR);
+    run('yarn', DIR);
     linkJestPackage('babel-plugin-jest-hoist', DIR);
     linkJestPackage('babel-jest', DIR);
   });
