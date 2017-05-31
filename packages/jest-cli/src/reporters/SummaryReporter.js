@@ -68,7 +68,7 @@ class SummaryReporter extends BaseReporter {
   _options: SummaryReporterOptions;
 
   constructor(globalConfig: GlobalConfig, options: SummaryReporterOptions) {
-    super(globalConfig);
+    super();
     this._globalConfig = globalConfig;
     this._estimatedTime = 0;
     this._options = options;
