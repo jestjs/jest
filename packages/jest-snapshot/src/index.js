@@ -97,9 +97,9 @@ const toMatchSnapshot = function(received: any, testName?: string) {
       `${RECEIVED_COLOR('Received value')} does not match ` +
       `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
       (diffMessage ||
-        RECEIVED_COLOR('- ' + (expected || '')) +
+        EXPECTED_COLOR('- ' + (expected || '')) +
           '\n' +
-          EXPECTED_COLOR('+ ' + actual));
+          RECEIVED_COLOR('+ ' + actual));
   }
   // Passing the the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
