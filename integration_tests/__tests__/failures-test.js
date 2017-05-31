@@ -13,7 +13,7 @@ const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../failures');
 
-const normalizeDots = text => text.replace(/\.{2,}$/m, '.');
+const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
 
 skipOnWindows.suite();
 
