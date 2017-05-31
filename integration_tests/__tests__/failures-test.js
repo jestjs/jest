@@ -13,21 +13,23 @@ const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../failures');
 
+const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
+
 skipOnWindows.suite();
 
 test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw-number-test.js']).stderr;
-  expect(extractSummary(stderr)).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['throw-string-test.js']).stderr;
-  expect(extractSummary(stderr)).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['throw-object-test.js']).stderr;
-  expect(extractSummary(stderr)).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['assertion-count-test.js']).stderr;
-  expect(extractSummary(stderr)).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
   const {stderr} = runJest(dir, ['node-assertion-error-test.js']);
-  expect(extractSummary(stderr)).toMatchSnapshot();
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
 });
