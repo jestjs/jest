@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`does not exceed the timeout 1`] = `
+" PASS  __tests__/a-banana.js
+  ✓ banana
+
+"
+`;
+
+exports[`does not exceed the timeout 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
+exports[`exceeds the timeout 1`] = `
+" FAIL  __tests__/a-banana.js
+  ● banana
+
+    Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.
+      
+      at ../../packages/jest-jasmine2/build/queueRunner.js:53:21
+
+  ✕ banana
+
+"
+`;
+
+exports[`exceeds the timeout 2`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
