@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+jest.setTestTimeout(15000);
 
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');

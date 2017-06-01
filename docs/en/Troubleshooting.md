@@ -64,10 +64,10 @@ Consider replacing the global promise implementation with your own, for example
 used Promise libraries to a single one.
 
 If your test is long running, you may want to consider to increase the timeout
-specified in `jasmine.DEFAULT_TIMEOUT_INTERVAL`.
+by calling  `jest.setTestTimeout`
 
 ```
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // 10 second timeout
+jest.setTestTimeout(10000); // 10 second timeout
 ```
 
 ### Watchman Issues
