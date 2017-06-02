@@ -19,8 +19,8 @@ import type {
 const {getState, dispatch} = require('./state');
 const {
   callAsyncFn,
-  getAllHooks,
-  isSharedHook,
+  getAllHooksForDescribe,
+  getEachHooksForTest,
   makeTestResults,
 } = require('./utils');
 
@@ -34,43 +34,47 @@ const run = async (): Promise<TestResults> => {
 
 const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   dispatch({describeBlock, name: 'run_describe_start'});
+  const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
+
+  for (const hook of beforeAll) {
+    _callHook(hook);
+  }
   for (const test of describeBlock.tests) {
     await _runTest(test);
   }
   for (const child of describeBlock.children) {
     await _runTestsForDescribeBlock(child);
   }
+
+  for (const hook of afterAll) {
+    _callHook(hook);
+  }
   dispatch({describeBlock, name: 'run_describe_finish'});
 };
 
 const _runTest = async (test: Test): Promise<void> => {
   const testContext = Object.create(null);
-  const {afterHooks, beforeHooks} = getAllHooks(test);
+  const {afterEach, beforeEach} = getEachHooksForTest(test);
 
-  for (const hook of beforeHooks) {
-    await callHook(hook, testContext);
+  for (const hook of beforeEach) {
+    await _callHook(hook, testContext);
   }
 
-  await callTest(test, testContext);
+  await _callTest(test, testContext);
 
-  for (const hook of afterHooks) {
-    await callHook(hook, testContext);
+  for (const hook of afterEach) {
+    await _callHook(hook, testContext);
   }
 };
 
-const callHook = (hook: Hook, testContext: TestContext): Promise<any> => {
-  const {sharedHooksThatHaveBeenExecuted} = getState();
-  if (isSharedHook(hook) && sharedHooksThatHaveBeenExecuted.has(hook)) {
-    return Promise.resolve();
-  }
-
+const _callHook = (hook: Hook, testContext?: TestContext): Promise<any> => {
   dispatch({hook, name: 'hook_start'});
   return callAsyncFn(hook.fn, testContext, {isHook: true})
     .then(() => dispatch({hook, name: 'hook_success'}))
     .catch(error => dispatch({error, hook, name: 'hook_failure'}));
 };
 
-const callTest = (test: Test, testContext: TestContext): Promise<any> => {
+const _callTest = (test: Test, testContext: TestContext): Promise<any> => {
   const isSkipped =
     test.mode === 'skip' ||
     (getState().hasFocusedTests && test.mode !== 'only');

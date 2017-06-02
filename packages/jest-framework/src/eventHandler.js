@@ -14,7 +14,6 @@ const {
   makeDescribe,
   getTestDuration,
   makeTest,
-  isSharedHook,
 } = require('./utils');
 
 // To pass this value from Runtime object to state we need to use global[sym]
@@ -22,6 +21,10 @@ const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
 
 const handler: EventHandler = (event, state): void => {
   switch (event.name) {
+    case 'hook_start': {
+      // console.log(event.hook.type)
+      break;
+    }
     case 'start_describe_definition': {
       const {blockName, mode} = event;
       const {currentDescribeBlock} = state;
@@ -54,11 +57,6 @@ const handler: EventHandler = (event, state): void => {
       const test = makeTest(fn, mode, name, currentDescribeBlock);
       test.mode === 'only' && (state.hasFocusedTests = true);
       currentDescribeBlock.tests.push(test);
-      break;
-    }
-    case 'hook_start': {
-      isSharedHook(event.hook) &&
-        state.sharedHooksThatHaveBeenExecuted.add(event.hook);
       break;
     }
     case 'test_start': {

@@ -69,44 +69,51 @@ const makeTest = (
   };
 };
 
-const getAllHooks = (
+const getAllHooksForDescribe = (
+  describe: DescribeBlock,
+): {[key: 'beforeAll' | 'afterAll']: Array<Hook>} => {
+  const result = {afterAll: [], beforeAll: []};
+
+  for (const hook of describe.hooks) {
+    switch (hook.type) {
+      case 'beforeAll':
+        result.beforeAll.push(hook);
+        break;
+      case 'afterAll':
+        result.afterAll.push(hook);
+        break;
+    }
+  }
+
+  return result;
+};
+
+const getEachHooksForTest = (
   test: Test,
-): {[key: 'beforeHooks' | 'afterHooks']: Array<Hook>} => {
-  const result = {afterHooks: [], beforeHooks: []};
+): {[key: 'beforeEach' | 'afterEach']: Array<Hook>} => {
+  const result = {afterEach: [], beforeEach: []};
   let {parent: block} = test;
 
   do {
     for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
-        case 'beforeAll':
-          result.beforeHooks.push(hook);
+          // Before hooks are executed from top to bottom, the opposite of the
+          // way we traversed it.
+          result.beforeEach.unshift(hook);
           break;
         case 'afterEach':
-        case 'afterAll':
-          result.afterHooks.push(hook);
+          result.afterEach.push(hook);
           break;
-        default:
-          throw new Error(`unexpected hook type: ${hook.type}`);
       }
     }
   } while ((block = block.parent));
-  // Before hooks are executed from top to bottom, the opposite of the way
-  // we traversed it.
-  result.beforeHooks.reverse();
   return result;
 };
 
-const SHARED_HOOK_TYPES: Set<SharedHookType> = new Set([
-  'beforeAll',
-  'afterAll',
-]);
-// $FlowFixMe flow thinks that Set.has() can only accept the values of enum.
-const isSharedHook = (hook: Hook): boolean => SHARED_HOOK_TYPES.has(hook.type);
-
 const callAsyncFn = (
   fn: AsyncFn,
-  testContext: TestContext,
+  testContext: ?TestContext,
   {isHook}: {isHook?: boolean} = {isHook: false},
 ): Promise<any> => {
   // If this fn accepts `done` callback we return a promise that fullfills as
@@ -208,10 +215,10 @@ const _formatError = (error: ?Exception): string => {
 
 module.exports = {
   callAsyncFn,
-  getAllHooks,
+  getAllHooksForDescribe,
+  getEachHooksForTest,
   getTestDuration,
   getTestID,
-  isSharedHook,
   makeDescribe,
   makeTest,
   makeTestResults,
