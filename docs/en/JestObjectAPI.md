@@ -27,6 +27,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.runTimersToTime(msToRun)`](#jestruntimerstotimemstorun)
   - [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
+  - [`jest.setTestTimeout(timeout)`](#jestsettesttimeouttimeout)
   - [`jest.unmock(moduleName)`](#jestunmockmodulename)
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
@@ -113,7 +114,7 @@ The third argument can be used to create virtual mocks – mocks of modules that
 ```js
 jest.mock('../moduleName', () => {
   /*
-   * Custom implementation of a module that doesn't exist in JS, 
+   * Custom implementation of a module that doesn't exist in JS,
    * like a generated module or a native module in react-native.
    */
 }, {virtual: true});
@@ -204,6 +205,18 @@ Returns the `jest` object for chaining.
 
 *Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
+### `jest.setTestTimeout(timeout)`
+
+Set the default timeout interval for tests in milliseconds.
+
+*Note: The default timeout interval is 5 seconds if this method is not called.*
+
+Example:
+
+```js
+jest.setTestTimeout(1000); // 1 second
+```
+
 ### `jest.unmock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
 
@@ -256,5 +269,3 @@ test('plays video', () => {
   spy.mockRestore();
 });
 ```
-
-
