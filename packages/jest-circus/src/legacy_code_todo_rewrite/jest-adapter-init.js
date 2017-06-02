@@ -12,7 +12,7 @@ import type {TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Event, TestEntry} from '../../types';
 
-import {getState, setState} from 'jest-matchers';
+import {extractExpectedAssertionsErrors, getState, setState} from 'jest-matchers';
 import {formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
@@ -157,9 +157,16 @@ const eventHandler = (event: Event) => {
     case 'test_success':
     case 'test_failure': {
       _addSuppressedErrors(event.test);
+      _addExpectedAssertionErrors(event.test);
       break;
     }
   }
+};
+
+const _addExpectedAssertionErrors = (test: TestEntry) => {
+  const errors = extractExpectedAssertionsErrors();
+  errors.length && (test.status = 'fail');
+  test.errors = test.errors.concat(errors);
 };
 
 // Get suppressed errors from ``jest-matchers`` that weren't throw during

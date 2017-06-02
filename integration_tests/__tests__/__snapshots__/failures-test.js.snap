@@ -45,7 +45,6 @@ exports[`not throwing Error objects 4`] = `
     
     Expected two assertions to be called but only received one assertion call.
       
-      at ../../packages/jest-jasmine2/build/setup-jest-globals.js:68:21
 
   ● .assertions() › throws on redeclare of assertion count
 
@@ -62,7 +61,6 @@ exports[`not throwing Error objects 4`] = `
     
     Expected zero assertions to be called but only received one assertion call.
       
-      at ../../packages/jest-jasmine2/build/setup-jest-globals.js:68:21
 
   ● .hasAssertions() › throws when there are not assertions
 
@@ -70,7 +68,6 @@ exports[`not throwing Error objects 4`] = `
     
     Expected at least one assertion to be called but received none.
       
-      at ../../packages/jest-jasmine2/build/setup-jest-globals.js:88:21
 
   .assertions()
     ✕ throws
