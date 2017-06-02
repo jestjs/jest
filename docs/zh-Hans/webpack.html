@@ -141,7 +141,7 @@ module<span class="token punctuation">.</span>exports <span class="token operato
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
-Context <span class="token operator">|</span> Request Context</pre><blockquote><p>Note: Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with <code>--no-cache</code>.</p></blockquote><p>如果你使用动态导入(<code>import(&#x27;some-file.js&#x27;).then(module =&gt; ...)</code>)， 你需要启用<code>dynamic-import-node</code>插件。</p><pre class="prism language-javascript">
+Context <span class="token operator">|</span> Request Context</pre><blockquote><p>注意：Jest会通过缓存文件来加速测试的执行。如果你更新了 .babelrc 文件，但是Jest还是不工作，尝试加入<code>--no-cache</code>参数来运行Jest。</p></blockquote><p>如果你使用动态导入(<code>import(&#x27;some-file.js&#x27;).then(module =&gt; ...)</code>)， 你需要启用<code>dynamic-import-node</code>插件。</p><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// .babelrc</span>
 <span class="token punctuation">{</span>
   <span class="token string">&quot;presets&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
