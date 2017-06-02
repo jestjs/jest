@@ -110,46 +110,59 @@ const getEachHooksForTest = (
   return result;
 };
 
+const _makeTimeoutMessage = (timeout, isHook) => {
+  const message = `Exceeded timeout of ${timeout}ms for a ${isHook ? 'hook' : 'test'}.`;
+  return new Error(message);
+};
+
 const callAsyncFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
-  {isHook}: {isHook?: boolean} = {isHook: false},
+  {
+    isHook,
+    timeout,
+    test,
+  }: {isHook?: ?boolean, timeout: number, test?: TestEntry},
 ): Promise<any> => {
-  // If this fn accepts `done` callback we return a promise that fullfills as
-  // soon as `done` called.
-  if (fn.length) {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => reject(_makeTimeoutMessage(timeout, isHook)), timeout);
+
+    // If this fn accepts `done` callback we return a promise that fullfills as
+    // soon as `done` called.
+    if (fn.length) {
       const done = (reason?: Error | string): void =>
         reason ? reject(reason) : resolve();
 
-      fn.call(testContext, done);
-    });
-  }
+      return fn.call(testContext, done);
+    }
 
-  let returnedValue;
-  try {
-    returnedValue = fn.call(testContext);
-  } catch (error) {
-    return Promise.reject(error);
-  }
+    let returnedValue;
+    try {
+      returnedValue = fn.call(testContext);
+    } catch (error) {
+      return reject(error);
+    }
 
-  // If it's a Promise, return it.
-  if (returnedValue instanceof Promise) {
-    return returnedValue;
-  }
+    // If it's a Promise, return it.
+    if (returnedValue instanceof Promise) {
+      return returnedValue.then(resolve).catch(reject);
+    }
 
-  if (!isHook && returnedValue !== void 0) {
-    throw new Error(
-      `
+    if (!isHook && returnedValue !== void 0) {
+      return reject(
+        new Error(
+          `
       test functions can only return Promise or undefined.
       Returned value: ${String(returnedValue)}
       `,
-    );
-  }
+        ),
+      );
+    }
 
-  // Otherwise this test is synchronous, and if it didn't throw it means
-  // it passed.
-  return Promise.resolve();
+    // Otherwise this test is synchronous, and if it didn't throw it means
+    // it passed.
+    return resolve();
+  });
 };
 
 const getTestDuration = (test: TestEntry): ?number => {
