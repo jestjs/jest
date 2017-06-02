@@ -10,11 +10,7 @@
 
 import type {EventHandler} from '../types';
 
-const {
-  makeDescribe,
-  getTestDuration,
-  makeTest,
-} = require('./utils');
+const {makeDescribe, getTestDuration, makeTest} = require('./utils');
 
 // To pass this value from Runtime object to state we need to use global[sym]
 const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
@@ -22,7 +18,6 @@ const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const handler: EventHandler = (event, state): void => {
   switch (event.name) {
     case 'hook_start': {
-      // console.log(event.hook.type)
       break;
     }
     case 'start_describe_definition': {
@@ -37,7 +32,7 @@ const handler: EventHandler = (event, state): void => {
       const {currentDescribeBlock} = state;
       if (!currentDescribeBlock) {
         throw new Error(
-          `currentDescribeBlock has to be there since we're finishing its definition`,
+          `"currentDescribeBlock" has to be there since we're finishing its definition.`,
         );
       }
       if (currentDescribeBlock.parent) {
@@ -79,7 +74,8 @@ const handler: EventHandler = (event, state): void => {
       break;
     }
     case 'run_start': {
-      state.testTimeout = global[TEST_TIMEOUT_SYMBOL] || state.testTimeout;
+      global[TEST_TIMEOUT_SYMBOL] &&
+        (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
       break;
     }
   }

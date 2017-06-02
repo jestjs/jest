@@ -12,6 +12,7 @@ export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
 export type BlockName = string;
 export type BlockMode = void | 'skip' | 'only';
+export type TestMode = BlockMode;
 export type TestName = string;
 export type TestFn = (done?: DoneFn) => ?Promise<any>;
 export type HookFn = (done?: DoneFn) => ?Promise<any>;
@@ -20,7 +21,6 @@ export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
 export type Hook = {fn: HookFn, type: HookType};
 export type TestContext = Object;
-export type TestMode = void | 'skip' | 'only';
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 
@@ -61,20 +61,20 @@ export type Event =
     |}
   | {|
       name: 'test_start',
-      test: Test,
+      test: TestEntry,
     |}
   | {|
       name: 'test_success',
-      test: Test,
+      test: TestEntry,
     |}
   | {|
       name: 'test_failure',
       error: Exception,
-      test: Test,
+      test: TestEntry,
     |}
   | {|
       name: 'test_skip',
-      test: Test,
+      test: TestEntry,
     |}
   | {|
       name: 'run_describe_start',
@@ -104,8 +104,7 @@ export type TestResults = Array<TestResult>;
 export type State = {|
   currentDescribeBlock: DescribeBlock,
   hasFocusedTests: boolean, // that are defined using test.only
-  sharedHooksThatHaveBeenExecuted: Set<Hook>,
-  topDescribeBlock: DescribeBlock,
+  rootDescribeBlock: DescribeBlock,
   testTimeout: number,
 |};
 
@@ -115,10 +114,10 @@ export type DescribeBlock = {|
   mode: BlockMode,
   name: BlockName,
   parent: ?DescribeBlock,
-  tests: Array<Test>,
+  tests: Array<TestEntry>,
 |};
 
-export type Test = {|
+export type TestEntry = {|
   errors: Array<Exception>,
   fn: ?TestFn,
   mode: TestMode,

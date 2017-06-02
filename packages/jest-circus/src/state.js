@@ -10,22 +10,21 @@
 
 import type {Event, State, EventHandler} from '../types';
 
-const TOP_DESCRIBE_BLOCK_NAME = 'JEST_TOP_DESCRIBE_BLOCK';
 
 const {makeDescribe} = require('./utils');
 const eventHandler = require('./eventHandler');
 
 const eventHandlers: Array<EventHandler> = [eventHandler];
 
+const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
 
-const TOP_DESCRIBE_BLOCK = makeDescribe(TOP_DESCRIBE_BLOCK_NAME);
+const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 const INITIAL_STATE: State = {
-  currentDescribeBlock: TOP_DESCRIBE_BLOCK,
+  currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
   hasFocusedTests: false,
-  sharedHooksThatHaveBeenExecuted: new Set(),
+  rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
   testTimeout: 5000,
-  topDescribeBlock: TOP_DESCRIBE_BLOCK,
 };
 
 global[STATE_SYM] = INITIAL_STATE;
@@ -44,7 +43,7 @@ const addEventHandler = (handler: EventHandler): void => {
 };
 
 module.exports = {
-  TOP_DESCRIBE_BLOCK_NAME,
+  ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,
   dispatch,
   getState,

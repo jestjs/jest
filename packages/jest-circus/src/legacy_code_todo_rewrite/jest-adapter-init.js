@@ -10,12 +10,12 @@
 
 import type {TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Event, Test} from '../../types';
+import type {Event, TestEntry} from '../../types';
 
 const {getState, setState} = require('jest-matchers');
 const {formatResultsErrors} = require('jest-message-util');
 const {SnapshotState, addSerializer} = require('jest-snapshot');
-const {addEventHandler, TOP_DESCRIBE_BLOCK_NAME} = require('../state');
+const {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} = require('../state');
 const {getTestID} = require('../utils');
 const run = require('../run');
 const globals = require('../index');
@@ -93,7 +93,7 @@ const runAndTransformResultsToJestFormat = async ({
     }
 
     const ancestorTitles = testResult.testPath.filter(
-      name => name !== TOP_DESCRIBE_BLOCK_NAME,
+      name => name !== ROOT_DESCRIBE_BLOCK_NAME,
     );
     const title = ancestorTitles.pop();
 
@@ -159,7 +159,7 @@ const eventHandler = (event: Event) => {
 // Get suppressed errors from ``jest-matchers`` that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
-const _addSuppressedErrors = (test: Test) => {
+const _addSuppressedErrors = (test: TestEntry) => {
   const {suppressedErrors} = getState();
   setState({suppressedErrors: []});
   if (suppressedErrors.length) {

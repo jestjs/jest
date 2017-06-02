@@ -9,7 +9,7 @@
  */
 
 import type {
-  Test,
+  TestEntry,
   TestResults,
   TestContext,
   Hook,
@@ -25,11 +25,11 @@ const {
 } = require('./utils');
 
 const run = async (): Promise<TestResults> => {
-  const {topDescribeBlock} = getState();
+  const {rootDescribeBlock} = getState();
   dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(topDescribeBlock);
+  await _runTestsForDescribeBlock(rootDescribeBlock);
   dispatch({name: 'run_finish'});
-  return makeTestResults(getState().topDescribeBlock);
+  return makeTestResults(getState().rootDescribeBlock);
 };
 
 const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
@@ -52,7 +52,7 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   dispatch({describeBlock, name: 'run_describe_finish'});
 };
 
-const _runTest = async (test: Test): Promise<void> => {
+const _runTest = async (test: TestEntry): Promise<void> => {
   const testContext = Object.create(null);
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
@@ -74,7 +74,7 @@ const _callHook = (hook: Hook, testContext?: TestContext): Promise<any> => {
     .catch(error => dispatch({error, hook, name: 'hook_failure'}));
 };
 
-const _callTest = (test: Test, testContext: TestContext): Promise<any> => {
+const _callTest = (test: TestEntry, testContext: TestContext): Promise<any> => {
   const isSkipped =
     test.mode === 'skip' ||
     (getState().hasFocusedTests && test.mode !== 'only');

@@ -1,5 +1,5 @@
 {
-  "name": "jest-framework",
+  "name": "jest-circus",
   "version": "20.0.3",
   "repository": {
     "type": "git",
@@ -8,7 +8,9 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-snapshot": "^20.0.3"
+    "jest-snapshot": "^20.0.3",
+    "jest-matchers": "^20.0.3",
+    "jest-message-util": "^20.0.3"
   },
   "devDependencies": {
     "jest-runtime": "^20.0.3"

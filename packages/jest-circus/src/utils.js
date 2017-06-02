@@ -15,8 +15,7 @@ import type {
   DescribeBlock,
   Exception,
   Hook,
-  SharedHookType,
-  Test,
+  TestEntry,
   TestContext,
   TestFn,
   TestMode,
@@ -49,7 +48,7 @@ const makeTest = (
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
-): Test => {
+): TestEntry => {
   if (!fn) {
     mode = 'skip'; // skip test if no fn passed
   } else if (!mode) {
@@ -89,7 +88,7 @@ const getAllHooksForDescribe = (
 };
 
 const getEachHooksForTest = (
-  test: Test,
+  test: TestEntry,
 ): {[key: 'beforeEach' | 'afterEach']: Array<Hook>} => {
   const result = {afterEach: [], beforeEach: []};
   let {parent: block} = test;
@@ -153,7 +152,7 @@ const callAsyncFn = (
   return Promise.resolve();
 };
 
-const getTestDuration = (test: Test): ?number => {
+const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
   return startedAt ? Date.now() - startedAt : null;
 };
@@ -170,8 +169,7 @@ const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
     const {status} = test;
 
     if (!status) {
-      console.log(test);
-      throw new Error('status should be present after tests are run');
+      throw new Error('Status should be present after tests are run.');
     }
     testResults.push({
       duration: test.duration,
@@ -190,7 +188,7 @@ const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
-const getTestID = (test: Test) => {
+const getTestID = (test: TestEntry) => {
   const titles = [];
   let parent = test;
   do {
