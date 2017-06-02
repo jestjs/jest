@@ -29,6 +29,7 @@ const INITIAL_STATE: State = {
   hasFocusedTests: false,
   rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
   testTimeout: 5000,
+  unhandledErrors: [],
 };
 
 global[STATE_SYM] = INITIAL_STATE;

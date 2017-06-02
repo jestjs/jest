@@ -41,8 +41,7 @@ const humanReadableOperators = {
 
 module.exports = (event: Event, state: State) => {
   switch (event.name) {
-    case 'test_failure':
-    case 'test_success': {
+    case 'test_done': {
       event.test.errors = event.test.errors.map(error => {
         return error instanceof require('assert').AssertionError
           ? assertionErrorMessage(error, {expand: state.expand})

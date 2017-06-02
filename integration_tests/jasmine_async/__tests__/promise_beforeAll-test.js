@@ -9,11 +9,13 @@
 'use strict';
 
 describe('promise beforeAll', () => {
+  let flag;
+
   beforeAll(() => {
     return new Promise(resolve => {
       process.nextTick(resolve);
     }).then(() => {
-      this.flag = 1;
+      flag = 1;
     });
   });
 
@@ -23,14 +25,14 @@ describe('promise beforeAll', () => {
 
   // passing tests
   it('runs tests after beforeAll asynchronously completes', () => {
-    expect(this.flag).toBe(1);
+    expect(flag).toBe(1);
   });
 
-  describe('with failing timeout', () => {
+  describe('with failing async', () => {
     // failing before hook
     beforeAll(() => {
       return new Promise(resolve => setTimeout(resolve, 100));
-    }, 10);
+    }, 11);
 
     it('fails', () => {});
   });

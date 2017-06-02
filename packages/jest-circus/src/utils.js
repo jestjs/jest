@@ -48,6 +48,7 @@ const makeTest = (
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
+  timeout: ?number,
 ): TestEntry => {
   if (!fn) {
     mode = 'skip'; // skip test if no fn passed
@@ -65,6 +66,7 @@ const makeTest = (
     parent,
     startedAt: null,
     status: null,
+    timeout,
   };
 };
 
@@ -244,12 +246,33 @@ const _formatError = (error: ?Exception): string => {
   }
 };
 
+const addErrorToEachTestUnderDescribe = (
+  describeBlock: DescribeBlock,
+  error: Exception,
+) => {
+  for (const test of describeBlock.tests) {
+    test.errors.push(error);
+  }
+
+  for (const child of describeBlock.children) {
+    addErrorToEachTestUnderDescribe(child, error);
+  }
+};
+
+const invariant = (condition: *, message: string) => {
+  if (!condition) {
+    throw new Error(message);
+  }
+};
+
 module.exports = {
+  addErrorToEachTestUnderDescribe,
   callAsyncFn,
   getAllHooksForDescribe,
   getEachHooksForTest,
   getTestDuration,
   getTestID,
+  invariant,
   makeDescribe,
   makeTest,
   makeTestResults,
