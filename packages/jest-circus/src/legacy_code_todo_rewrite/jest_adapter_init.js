@@ -39,6 +39,32 @@ export const initialize = ({
   global.fit = global.it.only;
   global.fdescribe = global.describe.only;
 
+  global.test.concurrent = (
+    testName: string,
+    testFn: () => Promise<any>,
+    timeout?: number,
+  ) => {
+    // For concurrent tests we first run the function that returns promise, and then register a
+    // nomral test that will be waiting on the returned promise (when we start the test, the promise
+    // will already be in the process of execution).
+    // Unfortunately at this stage there's no way to know if there are any `.only` tests in the suite
+    // that will result in this test to be skipped, so we'll be executing the promise function anyway,
+    // even if it ends up being skipped.
+    const promise = testFn();
+    global.test(testName, () => promise, timeout);
+  };
+
+  global.test.concurrent.only = (
+    testName: string,
+    testFn: () => Promise<any>,
+    timeout?: number,
+  ) => {
+    const promise = testFn();
+    global.test.only(testName, () => promise, timeout);
+  };
+
+  global.test.concurrent.skip = global.test.skip;
+
   addEventHandler(eventHandler);
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
@@ -73,31 +99,17 @@ export const runAndTransformResultsToJestFormat = async ({
   let numPassingTests = 0;
   let numPendingTests = 0;
 
-  for (const testResult of result) {
-    switch (testResult.status) {
-      case 'fail':
-        numFailingTests += 1;
-        break;
-      case 'pass':
-        numPassingTests += 1;
-        break;
-      case 'skip':
-        numPendingTests += 1;
-        break;
-    }
-  }
-
   const assertionResults = result.map(testResult => {
     let status: Status;
-    switch (testResult.status) {
-      case 'fail':
-        status = 'failed';
-        break;
-      case 'pass':
-        status = 'passed';
-        break;
-      default:
-        status = 'pending';
+    if (testResult.status === 'skip') {
+      status = 'pending';
+      numPendingTests += 1;
+    } else if (testResult.errors.length) {
+      status = 'failed';
+      numFailingTests += 1;
+    } else {
+      status = 'passed';
+      numPassingTests += 1;
     }
 
     const ancestorTitles = testResult.testPath.filter(
@@ -160,8 +172,7 @@ const eventHandler = (event: Event) => {
       setState({currentTestName: getTestID(event.test)});
       break;
     }
-    case 'test_success':
-    case 'test_failure': {
+    case 'test_done': {
       _addSuppressedErrors(event.test);
       _addExpectedAssertionErrors(event.test);
       break;
@@ -182,7 +193,6 @@ const _addSuppressedErrors = (test: TestEntry) => {
   const {suppressedErrors} = getState();
   setState({suppressedErrors: []});
   if (suppressedErrors.length) {
-    test.status = 'fail';
     test.errors = test.errors.concat(suppressedErrors);
   }
 };
