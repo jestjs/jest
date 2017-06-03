@@ -25,9 +25,7 @@ function traverseChildren(opaqueChildren, cb) {
 function printChildren(flatChildren, print, indent, colors, opts) {
   return flatChildren
     .map(node => {
-      if (typeof node === 'object') {
-        return print(node);
-      } else if (typeof node === 'string') {
+      if (typeof node === 'string') {
         return colors.content.open + escapeHTML(node) + colors.content.close;
       } else {
         return print(node);
