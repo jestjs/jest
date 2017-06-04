@@ -1165,6 +1165,7 @@ ul#languages li {
     padding: 6px 10px;
     height: auto;
     font-size: 1em;
+    white-space: nowrap;
   }
   .navigationSlider .slidingNav ul li a:hover {
     color: #fff;
