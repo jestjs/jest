@@ -170,9 +170,13 @@ const languages = [
   },
   {
     enabled: true,
-    name: '中文',
+    name: '简体中文',
     tag: 'zh-Hans',
   },
-  {enabled: false, name: '繁體中文', tag: 'zh-Hant'},
+  {
+    enabled: false,
+    name: '繁體中文',
+    tag: 'zh-Hant',
+  },
 ];
 module.exports = languages;
