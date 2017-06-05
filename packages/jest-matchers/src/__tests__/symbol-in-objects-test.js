@@ -21,7 +21,7 @@ describe('Symbol in objects', () => {
     expect(obj1).not.toEqual(obj2);
   });
 
-  test('should compare objects with mixes keys and Symbol', () => {
+  test('should compare objects with mixed keys and Symbol', () => {
     const sym = Symbol('foo2');
     const obj1 = {foo: 2, [sym]: 'one'};
     const obj2 = {foo: 2, [sym]: 'two'};
