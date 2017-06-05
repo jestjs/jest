@@ -11,7 +11,8 @@
     "regenerator-runtime": "*"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "debug": "node --debug-brk node_modules/jest/bin/jest --runInBand --no-cache link"
   },
   "jest": {
     "testEnvironment": "node"
