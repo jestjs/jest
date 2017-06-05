@@ -36,7 +36,7 @@ to ensure the callback is invoked as expected.
 
 ```javascript
 const mockCallback = jest.fn();
-each([0, 1], mockCallback);
+forEach([0, 1], mockCallback);
 
 // The mock function is called twice
 expect(mockCallback.mock.calls.length).toBe(2);
