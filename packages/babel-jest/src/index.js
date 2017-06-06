@@ -47,7 +47,10 @@ const createTransformer = (options: any) => {
         cache[directory] = JSON.stringify(require(configJsFilePath));
         break;
       }
-      const packageJsonFilePath = path.join(directory, PACKAGE_JSON);
+      const resolvedJsonFilePath = path.join(directory, PACKAGE_JSON);
+      const packageJsonFilePath = resolvedJsonFilePath === PACKAGE_JSON
+        ? path.resolve(directory, PACKAGE_JSON)
+        : resolvedJsonFilePath;
       if (fs.existsSync(packageJsonFilePath)) {
         // $FlowFixMe
         const packageJsonFileContents = require(packageJsonFilePath);
