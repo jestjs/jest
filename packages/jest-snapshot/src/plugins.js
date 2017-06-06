@@ -17,7 +17,7 @@ const {
   ReactTestComponent,
 } = require('pretty-format').plugins;
 
-let PLUGINS = [HTMLElement, ReactElement, ReactTestComponent].concat(Immutable);
+let PLUGINS = [ReactTestComponent, ReactElement, HTMLElement].concat(Immutable);
 
 // Prepend to list so the last added is the first tested.
 exports.addSerializer = (plugin: Plugin) => {
