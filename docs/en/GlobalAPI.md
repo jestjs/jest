@@ -193,26 +193,26 @@ You can also nest `describe` blocks if you have a hierarchy of tests:
 ```js
 const binaryStringToNumber = binString => {
   if (!/^[01]+$/.test(binString)) {
-    throw new CustomError("not a binary number!");
+    throw new CustomError('Not a binary number.');
   }
 
   return parseInt(binString, 2);
 };
 
-describe("binaryStringToNumber", () => {
-  describe("given an invalid binary string", () => {
-    test("composed of non-numbers throws CustomError", () => {
-      expect(() => binaryStringToNumber("abc")).toThrowError(CustomError);
+describe('binaryStringToNumber', () => {
+  describe('given an invalid binary string', () => {
+    test('composed of non-numbers throws CustomError', () => {
+      expect(() => binaryStringToNumber('abc')).toThrowError(CustomError);
     });
 
-    test("with extra whitespace throws CustomError", () => {
-      expect(() => binaryStringToNumber("  100")).toThrowError(CustomError);
+    test('with extra whitespace throws CustomError', () => {
+      expect(() => binaryStringToNumber('  100')).toThrowError(CustomError);
     });
   });
 
-  describe("given a valid binary string", () => {
-    test("returns the correct number", () => {
-      expect(binaryStringToNumber("100")).toBe(4);
+  describe('given a valid binary string', () => {
+    test('returns the correct number', () => {
+      expect(binaryStringToNumber('100')).toBe(4);
     });
   });
 });
