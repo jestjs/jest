@@ -30,7 +30,13 @@ function printChildren(
   opts,
 ) {
   return children
-    .map(child => printInstance(child, print, indent, colors, opts))
+    .map(node => {
+      if (typeof node === 'string') {
+        return colors.content.open + escapeHTML(node) + colors.content.close;
+      } else {
+        return print(node);
+      }
+    })
     .join(opts.edgeSpacing);
 }
 
@@ -63,13 +69,13 @@ function printProps(props: Object, print, indent, colors, opts) {
     .join('');
 }
 
-function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
-  if (typeof instance == 'number') {
-    return print(instance);
-  } else if (typeof instance === 'string') {
-    return colors.content.open + escapeHTML(instance) + colors.content.close;
-  }
-
+const print = (
+  instance: ReactTestObject,
+  print: Print,
+  indent: Indent,
+  opts: Options,
+  colors: Colors,
+) => {
   let closeInNewLine = false;
   let result = colors.tag.open + '<' + instance.type + colors.tag.close;
 
@@ -105,15 +111,7 @@ function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
   }
 
   return result;
-}
-
-const print = (
-  val: ReactTestObject,
-  print: Print,
-  indent: Indent,
-  opts: Options,
-  colors: Colors,
-) => printInstance(val, print, indent, colors, opts);
+};
 
 const test = (object: Object) =>
   object && object.$$typeof === reactTestInstance;
