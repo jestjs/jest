@@ -188,6 +188,36 @@ describe('my beverage', () => {
 
 This isn't required - you can just write the `test` blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.
 
+You can also nest `describe` blocks if you have a hierarchy of tests:
+
+```js
+const binaryStringToNumber = binString => {
+  if (!/^[01]+$/.test(binString)) {
+    throw new CustomError('Not a binary number.');
+  }
+
+  return parseInt(binString, 2);
+};
+
+describe('binaryStringToNumber', () => {
+  describe('given an invalid binary string', () => {
+    test('composed of non-numbers throws CustomError', () => {
+      expect(() => binaryStringToNumber('abc')).toThrowError(CustomError);
+    });
+
+    test('with extra whitespace throws CustomError', () => {
+      expect(() => binaryStringToNumber('  100')).toThrowError(CustomError);
+    });
+  });
+
+  describe('given a valid binary string', () => {
+    test('returns the correct number', () => {
+      expect(binaryStringToNumber('100')).toBe(4);
+    });
+  });
+});
+```
+
 ### `describe.only(name, fn)`
 
 Also under the alias: `fdescribe(name, fn)`
