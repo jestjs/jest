@@ -166,18 +166,6 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
         return false;
       }
     }
-  } else {
-    // Objects with different constructors are not equivalent, but `Object`s
-    // or `Array`s from different frames are.
-    // CUSTOM JEST CHANGE:
-    // TODO(cpojer): fix all tests and this and re-enable this check
-    /*
-    var aCtor = a.constructor, bCtor = b.constructor;
-    if (aCtor !== bCtor && !(isFunction(aCtor) && aCtor instanceof aCtor &&
-           isFunction(bCtor) && bCtor instanceof bCtor)) {
-      return false;
-    }
-    */
   }
 
   // Deep compare objects.
@@ -207,7 +195,6 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
 }
 
 function keys(obj, isArray) {
-  // CUSTOM JEST CHANGE: don't consider undefined keys.
   var allKeys = (function(o) {
     var keys = [];
     for (var key in o) {
@@ -215,7 +202,7 @@ function keys(obj, isArray) {
         keys.push(key);
       }
     }
-    return keys.concat(Object.getOwnPropertySymbols(o));
+    return keys.concat((Object.getOwnPropertySymbols(o): Array<any>));
   })(obj);
 
   if (!isArray) {
@@ -237,8 +224,6 @@ function keys(obj, isArray) {
 }
 
 function has(obj, key) {
-  // CUSTOM JEST CHANGE:
-  // TODO(cpojer): remove the `obj[key] !== undefined` check.
   return (
     Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined
   );
