@@ -84,7 +84,7 @@ export type Milliseconds = number;
 
 export type AssertionResult = {|
   ancestorTitles: Array<string>,
-  duration?: Milliseconds,
+  duration?: ?Milliseconds,
   failureMessages: Array<string>,
   fullName: string,
   numPassingAsserts: number,

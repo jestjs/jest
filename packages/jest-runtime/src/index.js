@@ -716,7 +716,11 @@ class Runtime {
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
     const setTestTimeout = (timeout: number) => {
-      this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout;
+      this._environment.global.jasmine
+        ? (this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout)
+        : (this._environment.global[
+            Symbol.for('TEST_TIMEOUT_SYMBOL')
+          ] = timeout);
     };
 
     const runtime = {

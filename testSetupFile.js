@@ -12,7 +12,7 @@ const jasmineReporters = require('jasmine-reporters');
 // timeouts on travis
 jest.setTestTimeout(70000);
 
-if (process.env.APPVEYOR_API_URL) {
+if (global.jasmine && process.env.APPVEYOR_API_URL) {
   // Running on AppVeyor, add the custom reporter.
   jasmine.getEnv().addReporter(new jasmineReporters.AppVeyorReporter());
 }
