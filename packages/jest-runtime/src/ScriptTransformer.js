@@ -384,7 +384,10 @@ const getScriptCacheKey = (filename, config, instrument: boolean) => {
 
 const shouldTransform = (filename: Path, config: ProjectConfig): boolean => {
   if (!ignoreCache.has(config)) {
-    if (!config.transformIgnorePatterns) {
+    if (
+      !config.transformIgnorePatterns ||
+      config.transformIgnorePatterns.length === 0
+    ) {
       ignoreCache.set(config, null);
     } else {
       ignoreCache.set(
@@ -396,11 +399,7 @@ const shouldTransform = (filename: Path, config: ProjectConfig): boolean => {
 
   const ignoreRegexp = ignoreCache.get(config);
   const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-  return (
-    !!config.transform &&
-    !!config.transform.length &&
-    (!config.transformIgnorePatterns.length || !isIgnored)
-  );
+  return !!config.transform && !!config.transform.length && !isIgnored;
 };
 
 const wrap = content =>
