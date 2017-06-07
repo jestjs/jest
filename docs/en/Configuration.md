@@ -518,7 +518,7 @@ inside of `__tests__` folders, as well as any files with a suffix of `.test` or 
 or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note
 that you cannot specify both options.
 
-The following is a visualization of the regex `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`:
+The following is a visualization of the default regex:
 
 ```
 ├── __tests__
