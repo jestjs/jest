@@ -24,7 +24,7 @@ If you have an existing application you'll need to install a few packages to mak
 Run
 
 ```bash
-npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
+npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer jest-cli
 ```
 
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
