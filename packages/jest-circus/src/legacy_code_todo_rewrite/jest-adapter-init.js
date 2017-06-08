@@ -33,6 +33,12 @@ const initialize = ({
 }) => {
   Object.assign(global, globals);
 
+  global.xit = global.it.skip;
+  global.xtest = global.it.skip;
+  global.xdescribe = global.describe.skip;
+  global.fit = global.it.only;
+  global.fdescribe = global.describe.only;
+
   addEventHandler(eventHandler);
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
@@ -88,7 +94,7 @@ const runAndTransformResultsToJestFormat = async ({
         status = 'passed';
         break;
       case 'skip':
-        status = 'skipped';
+        status = 'pending';
         break;
     }
 
