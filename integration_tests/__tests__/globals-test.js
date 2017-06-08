@@ -72,11 +72,11 @@ test('skips', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-  expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
+  expect(status).toBe(0);
 });
 
 test('only', () => {
