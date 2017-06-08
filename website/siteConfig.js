@@ -231,6 +231,11 @@ const users = [
     infoLink: 'https://sproutsocial.com/',
   },
   {
+    caption: 'Squarespace',
+    image: '/jest/img/logos/squarespace.png',
+    infoLink: 'https://squarespace.com/',
+  },
+  {
     caption: 'Trivago',
     image: '/jest/img/logos/trivago.png',
     infoLink: 'http://www.trivago.com/',
