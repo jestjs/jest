@@ -54,6 +54,16 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
 
 const _runTest = async (test: TestEntry): Promise<void> => {
   const testContext = Object.create(null);
+
+  const isSkipped =
+    test.mode === 'skip' ||
+    (getState().hasFocusedTests && test.mode !== 'only');
+
+  if (isSkipped) {
+    dispatch({name: 'test_skip', test});
+    return;
+  }
+
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
@@ -69,27 +79,24 @@ const _runTest = async (test: TestEntry): Promise<void> => {
 
 const _callHook = (hook: Hook, testContext?: TestContext): Promise<any> => {
   dispatch({hook, name: 'hook_start'});
-  return callAsyncFn(hook.fn, testContext, {isHook: true})
+  const {testTimeout: timeout} = getState();
+  return callAsyncFn(hook.fn, testContext, {isHook: true, timeout})
     .then(() => dispatch({hook, name: 'hook_success'}))
     .catch(error => dispatch({error, hook, name: 'hook_failure'}));
 };
 
-const _callTest = (test: TestEntry, testContext: TestContext): Promise<any> => {
-  const isSkipped =
-    test.mode === 'skip' ||
-    (getState().hasFocusedTests && test.mode !== 'only');
-
-  if (isSkipped) {
-    dispatch({name: 'test_skip', test});
-    return Promise.resolve();
-  }
-
+const _callTest = async (
+  test: TestEntry,
+  testContext: TestContext,
+): Promise<any> => {
   dispatch({name: 'test_start', test});
+  const {testTimeout: timeout} = getState();
+
   if (!test.fn) {
     throw Error(`Tests with no 'fn' should have 'mode' set to 'skipped'`);
   }
 
-  return callAsyncFn(test.fn, testContext)
+  return callAsyncFn(test.fn, testContext, {isHook: false, timeout})
     .then(() => dispatch({name: 'test_success', test}))
     .catch(error => dispatch({error, name: 'test_failure', test}));
 };

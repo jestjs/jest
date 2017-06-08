@@ -10,7 +10,6 @@
 
 import type {Event, State, EventHandler} from '../types';
 
-
 const {makeDescribe} = require('./utils');
 const eventHandler = require('./eventHandler');
 
