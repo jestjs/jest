@@ -25,6 +25,7 @@ const mkdirp = require('mkdirp');
 const babel = require('babel-core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
+const prettier = require('prettier');
 
 const getPackages = require('./_getPackages');
 
@@ -124,7 +125,13 @@ function buildFileFor(file, silent, env) {
       );
   } else {
     const transformed = babel.transformFileSync(file, babelOptions).code;
-    fs.writeFileSync(destPath, transformed);
+    const prettyCode = prettier.format(transformed, {
+      bracketSpacing: false,
+      printWidth: 80,
+      singleQuote: true,
+      trailingComma: 'es5',
+    });
+    fs.writeFileSync(destPath, prettyCode);
     silent ||
       process.stdout.write(
         chalk.green('  \u2022 ') +
