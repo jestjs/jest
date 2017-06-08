@@ -31,9 +31,9 @@ describe('--setupTestFrameworkScriptFile setup.js', () => {
       'runner_patch-test.js',
     ]);
 
-    expect(result.status).toBe(0);
     expect(result.json.numTotalTests).toBe(1);
     expect(result.json.numPassedTests).toBe(1);
     expect(result.json.testResults.length).toBe(1);
+    expect(result.status).toBe(0);
   });
 });
