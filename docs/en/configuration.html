@@ -179,7 +179,14 @@ cannot specify both options.</p><h3><a class="anchor" name="testpathignorepatter
 inside of <code>__tests__</code> folders, as well as any files with a suffix of <code>.test</code> or <code>.spec</code>
 (e.g. <code>Component.test.js</code> or <code>Component.spec.js</code>). It will also find files called <code>test.js</code>
 or <code>spec.js</code>. See also <a href="#testmatch-array-string" target=""><code>testMatch</code> [array&lt;string&gt;]</a>, but note
-that you cannot specify both options.</p><h3><a class="anchor" name="testresultsprocessor-string"></a><code>testResultsProcessor</code> [string] <a class="hash-link" href="#testresultsprocessor-string">#</a></h3><p>Default: <code>undefined</code></p><p>This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument:</p><pre class="prism language-javascript">
+that you cannot specify both options.</p><p>The following is a visualization of the default regex:</p><pre class="prism language-javascript">
+├── __tests__
+│   └── component<span class="token punctuation">.</span>spec<span class="token punctuation">.</span>js # test
+│   └── anything # test
+├── <span class="token keyword">package</span><span class="token punctuation">.</span>json # not test
+├── foo<span class="token punctuation">.</span>test<span class="token punctuation">.</span>js # test
+├── bar<span class="token punctuation">.</span>spec<span class="token punctuation">.</span>jsx # test
+└── component<span class="token punctuation">.</span>js # not test</pre><h3><a class="anchor" name="testresultsprocessor-string"></a><code>testResultsProcessor</code> [string] <a class="hash-link" href="#testresultsprocessor-string">#</a></h3><p>Default: <code>undefined</code></p><p>This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument:</p><pre class="prism language-javascript">
 <span class="token punctuation">{</span>
   <span class="token string">&quot;success&quot;</span><span class="token punctuation">:</span> bool<span class="token punctuation">,</span>
   <span class="token string">&quot;startTime&quot;</span><span class="token punctuation">:</span> epoch<span class="token punctuation">,</span>
