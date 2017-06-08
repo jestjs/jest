@@ -279,6 +279,43 @@ describe('moduleMocker', () => {
         expect(after).not.toEqual('abcd');
       });
 
+      it('supports resetting mock resolve values', () => {
+        const fn = moduleMocker.getMockFunction();
+        fn.mockResolveValue('abcd');
+
+        const before = fn();
+        expect(before).not.toBeUndefined();
+        expect(before.then).not.toBeUndefined();
+
+        return before.then(value => {
+          expect(value).toEqual('abcd');
+
+          fn.mockReset();
+
+          const after = fn();
+          expect(after).toBeUndefined();
+        });
+      });
+
+      it('supports resetting mock reject errors', () => {
+        const fn = moduleMocker.getMockFunction();
+        const rejectError = new Error('error');
+        fn.mockRejectError(rejectError);
+
+        const before = fn();
+        expect(before).not.toBeUndefined();
+        expect(before.catch).not.toBeUndefined();
+
+        return before.catch(error => {
+          expect(error).toEqual(rejectError);
+
+          fn.mockReset();
+
+          const after = fn();
+          expect(after).toBeUndefined();
+        });
+      });
+
       it('supports resetting single use mock return values', () => {
         const fn = moduleMocker.fn();
         fn.mockReturnValueOnce('abcd');
