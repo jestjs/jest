@@ -206,6 +206,11 @@ const users = [
     infoLink: 'https://www.nhl.com/',
   },
   {
+    caption: 'Phoenix Robotix',
+    image: '/jest/img/logos/phoenixrobotix.png',
+    infoLink: 'http://phoenixrobotix.com/',
+  },
+  {
     caption: 'Quiqup',
     image: '/jest/img/logos/quiqup.png',
     infoLink: 'https://www.quiqup.com/',
