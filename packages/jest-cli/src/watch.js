@@ -12,6 +12,9 @@ import type {Argv} from 'types/Argv';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
+const path = require('path');
+const fs = require('fs');
+const open = require('opn');
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const {replacePathSepForRegex} = require('jest-regex-util');
@@ -165,6 +168,7 @@ const watch = (
       testWatcher.setState({interrupted: true});
       return;
     }
+      console.log('Key: ', KEYS);
 
     switch (key) {
       case KEYS.Q:
@@ -184,10 +188,18 @@ const watch = (
         startRun();
         break;
       case KEYS.C:
-        updateArgv(argv, 'watch', {
-          testNamePattern: '',
-          testPathPattern: '',
-        });
+        if (initialGlobalConfig.collectCoverage) {
+          const pathToCoverage = path.resolve(initialGlobalConfig.rootDir, 'coverage');
+          const baseFolder = getDirectories(pathToCoverage)[0];
+
+          open(`${pathToCoverage}/${baseFolder}/index.html`);
+
+          function getDirectories(srcpath) {
+            return fs.readdirSync(srcpath)
+              .filter(file => fs.lstatSync(path.join(srcpath, file)).isDirectory());
+          }
+        }
+
         startRun();
         break;
       case KEYS.O:
@@ -307,6 +319,9 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
       't' +
       chalk.dim(' to filter by a test name regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
+    chalk.dim(' \u203A Press ') +
+      'c' +
+      chalk.dim(' to open coverage report.'),
     chalk.dim(' \u203A Press ') +
       'Enter' +
       chalk.dim(' to trigger a test run.'),
