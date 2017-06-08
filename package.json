@@ -33,7 +33,7 @@
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "jquery": "^3.2.1",
-    "jsdom": "^9.12.0",
+    "jsdom": "^11.0.0",
     "left-pad": "^1.1.1",
     "lerna": "2.0.0-rc.4",
     "micromatch": "^2.3.11",
