@@ -715,7 +715,7 @@ class Runtime {
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
-    const setTestTimeout = (timeout: number) => {
+    const setTimeout = (timeout: number) => {
       this._environment.global.jasmine
         ? (this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout)
         : (this._environment.global[
@@ -758,7 +758,7 @@ class Runtime {
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
-      setTestTimeout,
+      setTimeout,
       spyOn,
 
       unmock,

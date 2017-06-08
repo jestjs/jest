@@ -23,7 +23,7 @@ afterAll(() => cleanup(DIR));
 test('exceeds the timeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
-      jest.setTestTimeout(20);
+      jest.setTimeout(20);
 
       test('banana', () => {
         return new Promise(resolve => {
@@ -36,15 +36,15 @@ test('exceeds the timeout', () => {
 
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
+  expect(rest).toMatch(/(jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/);
   expect(summary).toMatchSnapshot();
+  expect(status).toBe(1);
 });
 
 test('does not exceed the timeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
-      jest.setTestTimeout(100);
+      jest.setTimeout(100);
 
       test('banana', () => {
         return new Promise(resolve => {
@@ -57,7 +57,7 @@ test('does not exceed the timeout', () => {
 
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(status).toBe(0);
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
+  expect(status).toBe(0);
 });
