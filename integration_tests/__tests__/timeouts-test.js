@@ -23,7 +23,7 @@ afterAll(() => cleanup(DIR));
 test('exceeds the timeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
-      jest.setTestTimeout(20);
+      jest.setTimeout(20);
 
       test('banana', () => {
         return new Promise(resolve => {
@@ -44,7 +44,7 @@ test('exceeds the timeout', () => {
 test('does not exceed the timeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
-      jest.setTestTimeout(100);
+      jest.setTimeout(100);
 
       test('banana', () => {
         return new Promise(resolve => {

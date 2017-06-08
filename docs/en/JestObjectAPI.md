@@ -27,7 +27,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.runTimersToTime(msToRun)`](#jestruntimerstotimemstorun)
   - [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
-  - [`jest.setTestTimeout(timeout)`](#jestsettesttimeouttimeout)
+  - [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
   - [`jest.unmock(moduleName)`](#jestunmockmodulename)
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
@@ -205,16 +205,16 @@ Returns the `jest` object for chaining.
 
 *Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
-### `jest.setTestTimeout(timeout)`
+### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests in milliseconds.
+Set the default timeout interval for tests and before/after hooks in milliseconds.
 
 *Note: The default timeout interval is 5 seconds if this method is not called.*
 
 Example:
 
 ```js
-jest.setTestTimeout(1000); // 1 second
+jest.setTimeout(1000); // 1 second
 ```
 
 ### `jest.unmock(moduleName)`

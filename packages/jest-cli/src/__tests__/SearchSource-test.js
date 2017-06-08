@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.setTestTimeout(15000);
+jest.setTimeout(15000);
 
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');

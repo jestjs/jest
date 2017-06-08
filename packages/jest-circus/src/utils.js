@@ -110,19 +110,19 @@ const getEachHooksForTest = (
   return result;
 };
 
-const _makeTimeoutMessage = (timeout, isHook) => {
-  const message = `Exceeded timeout of ${timeout}ms for a ${isHook ? 'hook' : 'test'}.`;
-  return new Error(message);
-};
+const _makeTimeoutMessage = (timeout, isHook) =>
+  new Error(
+    `Exceeded timeout of ${timeout}ms for a ${isHook ? 'hook' : 'test'}.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`,
+  );
 
 const callAsyncFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
   {
     isHook,
-    timeout,
     test,
-  }: {isHook?: ?boolean, timeout: number, test?: TestEntry},
+    timeout,
+  }: {isHook?: ?boolean, test?: TestEntry, timeout: number},
 ): Promise<any> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => reject(_makeTimeoutMessage(timeout, isHook)), timeout);
@@ -145,7 +145,7 @@ const callAsyncFn = (
 
     // If it's a Promise, return it.
     if (returnedValue instanceof Promise) {
-      return returnedValue.then(resolve).catch(reject);
+      return returnedValue.then(resolve, reject);
     }
 
     if (!isHook && returnedValue !== void 0) {
