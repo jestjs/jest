@@ -15,7 +15,6 @@
     "jest-matchers": "^20.0.3",
     "jest-message-util": "^20.0.3",
     "jest-snapshot": "^20.0.3",
-    "once": "^1.4.0",
     "p-map": "^1.1.1"
   },
   "devDependencies": {
