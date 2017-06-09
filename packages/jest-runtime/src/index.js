@@ -25,6 +25,8 @@ import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './ScriptTransformer';
 import shouldInstrument from './shouldInstrument';
+import cli from './cli';
+import cliArgs from './cli/args';
 
 type Module = {|
   children?: Array<any>,
@@ -260,11 +262,11 @@ class Runtime {
   }
 
   static runCLI(args?: Argv, info?: Array<string>) {
-    return require('./cli').run(args, info);
+    return cli.run(args, info);
   }
 
   static getCLIOptions() {
-    return require('./cli/args').options;
+    return cliArgs.options;
   }
 
   requireModule(
