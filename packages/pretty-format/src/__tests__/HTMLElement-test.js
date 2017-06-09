@@ -46,10 +46,11 @@ describe('HTMLElement Plugin', () => {
 
   it('supports an HTML element with multiple attributes', () => {
     const parent = document.createElement('div');
+    // set attributes in unsorted order by name to verify sorting
     parent.setAttribute('id', 123);
     parent.setAttribute('class', 'classy');
 
-    expect(parent).toPrettyPrintTo('<div\n  id="123"\n  class="classy"\n/>');
+    expect(parent).toPrettyPrintTo('<div\n  class="classy"\n  id="123"\n/>');
   });
 
   it('supports an element with text content', () => {
@@ -71,11 +72,12 @@ describe('HTMLElement Plugin', () => {
     const child = document.createElement('span');
     parent.appendChild(child);
 
-    child.setAttribute('id', 123);
+    // set attributes in sorted order by name
     child.setAttribute('class', 'classy');
+    child.setAttribute('id', 123);
 
     expect(parent).toPrettyPrintTo(
-      '<div>\n  <span\n    id="123"\n    class="classy"\n  />\n</div>',
+      '<div>\n  <span\n    class="classy"\n    id="123"\n  />\n</div>',
     );
   });
 

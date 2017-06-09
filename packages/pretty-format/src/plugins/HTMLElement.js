@@ -63,7 +63,12 @@ function printChildren(flatChildren, print, indent, colors, opts) {
 
 function printAttributes(attributes: Array<Attribute>, indent, colors, opts) {
   return attributes
-    .sort()
+    .sort(
+      (attributeA, attributeB) =>
+        attributeA.name === attributeB.name
+          ? 0
+          : attributeA.name < attributeB.name ? -1 : 1,
+    )
     .map(attribute => {
       return (
         opts.spacing +
