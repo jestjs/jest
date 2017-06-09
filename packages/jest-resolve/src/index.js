@@ -90,8 +90,10 @@ class Resolver {
   }
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
-    /* $FlowFixMe */
-    const resolver = options.resolver ? require(options.resolver) : defaultResolver;
+    const resolver = options.resolver
+      /* $FlowFixMe */
+      ? require(options.resolver)
+      : defaultResolver;
     const paths = options.paths;
 
     try {
