@@ -18,7 +18,7 @@ const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
 skipOnWindows.suite();
 
 const cleanupStackTrace = stderr => {
-  const STACK_REGEXP = /at.*(setup-jest-globals|extractExpectedAssertionsErrors).*\n/gm;
+  const STACK_REGEXP = /^.*at.*(setup-jest-globals|extractExpectedAssertionsErrors).*\n/gm;
   if (!STACK_REGEXP.test(stderr)) {
     throw new Error(
       `
@@ -33,7 +33,12 @@ const cleanupStackTrace = stderr => {
     );
   }
 
-  return stderr.replace(STACK_REGEXP, '');
+  return (
+    stderr
+      .replace(STACK_REGEXP, '')
+      // Also remove trailing whitespace.
+      .replace(/\s+$/gm, '')
+  );
 };
 
 test('not throwing Error objects', () => {

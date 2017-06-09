@@ -8,14 +8,14 @@
  * @flow
  */
 
-const {
+import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   matcherHint,
   pluralize,
-} = require('jest-matcher-utils');
+} from 'jest-matcher-utils';
 
-const {getState, setState} = require('./jest-matchers-object');
+import {getState, setState} from './jest-matchers-object';
 
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matchers state.
