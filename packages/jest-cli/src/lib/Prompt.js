@@ -10,7 +10,7 @@
 
 import type {ScrollOptions} from './scrollList';
 
-const {KEYS} = require('../constants');
+import {KEYS} from '../constants';
 
 class Prompt {
   _entering: boolean;

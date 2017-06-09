@@ -11,9 +11,9 @@
 import type {Argv} from 'types/Argv';
 import type {PathPattern} from '../SearchSource';
 
-const {clearLine} = require('jest-util');
-const chalk = require('chalk');
-const validatePattern = require('./validatePattern');
+import {clearLine} from 'jest-util';
+import chalk from 'chalk';
+import validatePattern from './validatePattern';
 
 const DEFAULT_PATTERN_INFO = {
   input: '',

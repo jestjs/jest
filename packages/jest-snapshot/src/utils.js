@@ -10,13 +10,13 @@
 
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const {createDirectory} = require('jest-util');
-const prettyFormat = require('pretty-format');
-const naturalCompare = require('natural-compare');
-const {getSerializers} = require('./plugins');
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import {createDirectory} from 'jest-util';
+import prettyFormat from 'pretty-format';
+import naturalCompare from 'natural-compare';
+import {getSerializers} from './plugins';
 
 const SNAPSHOT_EXTENSION = 'snap';
 const SNAPSHOT_VERSION = '1';

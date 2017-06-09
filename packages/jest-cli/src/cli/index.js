@@ -11,11 +11,11 @@
 import type {Path} from 'types/Config';
 import type {Argv} from 'types/Argv';
 
-const {validateCLIOptions} = require('jest-util');
-const yargs = require('yargs');
-const args = require('./args');
-const getJest = require('./getJest');
-const runCLI = require('./runCLI');
+import {validateCLIOptions} from 'jest-util';
+import yargs from 'yargs';
+import args from './args';
+import getJest from './getJest';
+import runCLI from './runCLI';
 
 function run(argv?: Argv, project?: Path) {
   argv = yargs(argv || process.argv.slice(2))

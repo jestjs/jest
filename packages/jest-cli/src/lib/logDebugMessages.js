@@ -11,7 +11,7 @@
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestFramework} from 'types/TestRunner';
 
-const VERSION = require('../../package.json').version;
+import {version as VERSION} from '../../package.json';
 
 const logDebugMessages = (
   globalConfig: GlobalConfig,

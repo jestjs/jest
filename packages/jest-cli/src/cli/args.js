@@ -10,7 +10,7 @@
 
 import type {Argv} from 'types/Argv';
 
-const isCI = require('is-ci');
+import isCI from 'is-ci';
 
 const check = (argv: Argv) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {

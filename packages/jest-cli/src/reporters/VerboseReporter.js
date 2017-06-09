@@ -17,9 +17,9 @@ import type {
 } from 'types/TestResult';
 import type {Test} from 'types/TestRunner';
 
-const chalk = require('chalk');
-const {ICONS} = require('../constants');
-const DefaultReporter = require('./DefaultReporter');
+import chalk from 'chalk';
+import {ICONS} from '../constants';
+import DefaultReporter from './DefaultReporter';
 
 class VerboseReporter extends DefaultReporter {
   _globalConfig: GlobalConfig;

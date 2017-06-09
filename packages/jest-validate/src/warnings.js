@@ -10,13 +10,13 @@
 
 import type {ValidationOptions} from './types';
 
-const chalk = require('chalk');
-const {
+import chalk from 'chalk';
+import {
   format,
   logValidationWarning,
   createDidYouMeanMessage,
   WARNING,
-} = require('./utils');
+} from './utils';
 
 const unknownOptionWarning = (
   config: Object,

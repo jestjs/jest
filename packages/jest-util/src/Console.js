@@ -11,10 +11,9 @@
 
 import type {LogType, LogMessage} from 'types/Console';
 
-const {format} = require('util');
-const {Console} = require('console');
-
-const clearLine = require('./clearLine');
+import {format} from 'util';
+import {Console} from 'console';
+import clearLine from './clearLine';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 

@@ -11,9 +11,9 @@
 import type {Path} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
-const path = require('path');
-const chalk = require('chalk');
-const slash = require('slash');
+import path from 'path';
+import chalk from 'chalk';
+import slash from 'slash';
 
 type SummaryOptions = {|
   estimatedTime?: number,

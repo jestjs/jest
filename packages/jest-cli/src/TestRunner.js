@@ -18,19 +18,18 @@ import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
 import type {PathPattern} from './SearchSource';
 
-const {formatExecError} = require('jest-message-util');
-const snapshot = require('jest-snapshot');
-const pify = require('pify');
-const throat = require('throat');
-const workerFarm = require('worker-farm');
-
-const DefaultReporter = require('./reporters/DefaultReporter');
-const NotifyReporter = require('./reporters/NotifyReporter');
-const SummaryReporter = require('./reporters/SummaryReporter');
-const VerboseReporter = require('./reporters/VerboseReporter');
-const runTest = require('./runTest');
-const TestWatcher = require('./TestWatcher');
-const ReporterDispatcher = require('./ReporterDispatcher');
+import {formatExecError} from 'jest-message-util';
+import snapshot from 'jest-snapshot';
+import pify from 'pify';
+import throat from 'throat';
+import workerFarm from 'worker-farm';
+import DefaultReporter from './reporters/DefaultReporter';
+import NotifyReporter from './reporters/NotifyReporter';
+import SummaryReporter from './reporters/SummaryReporter';
+import VerboseReporter from './reporters/VerboseReporter';
+import runTest from './runTest';
+import TestWatcher from './TestWatcher';
+import ReporterDispatcher from './ReporterDispatcher';
 
 const SLOW_TEST_TIME = 3000;
 

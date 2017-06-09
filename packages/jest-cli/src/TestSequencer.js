@@ -12,8 +12,9 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
-const fs = require('fs');
-const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
+import fs from 'fs';
+// $FlowFixMe: Missing ESM export
+import {getCacheFilePath} from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;

@@ -10,7 +10,7 @@
 
 import type {Argv} from 'types/Argv';
 
-const getTestPathPattern = require('./getTestPathPattern');
+import getTestPathPattern from './getTestPathPattern';
 
 type Options = {|
   testNamePattern?: string,

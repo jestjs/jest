@@ -11,32 +11,31 @@
 import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
-const crypto = require('crypto');
-const path = require('path');
-const {ValidationError, validate} = require('jest-validate');
-const chalk = require('chalk');
-const glob = require('glob');
-const Resolver = require('jest-resolve');
-const utils = require('jest-regex-util');
-
-const {
+import crypto from 'crypto';
+import path from 'path';
+import {ValidationError, validate} from 'jest-validate';
+import chalk from 'chalk';
+import glob from 'glob';
+import Resolver from 'jest-resolve';
+import utils from 'jest-regex-util';
+import {
   BULLET,
   DOCUMENTATION_NOTE,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
   resolve,
-} = require('./utils');
-const {
+} from './utils';
+import {
   NODE_MODULES,
   DEFAULT_JS_PATTERN,
   DEFAULT_REPORTER_LABEL,
-} = require('./constants');
-const {validateReporters} = require('./reporterValidationErrors');
-const DEFAULT_CONFIG = require('./defaults');
-const DEPRECATED_CONFIG = require('./deprecated');
-const setFromArgv = require('./setFromArgv');
-const VALID_CONFIG = require('./validConfig');
+} from './constants';
+import {validateReporters} from './reporterValidationErrors';
+import DEFAULT_CONFIG from './defaults';
+import DEPRECATED_CONFIG from './deprecated';
+import setFromArgv from './setFromArgv';
+import VALID_CONFIG from './validConfig';
 const ERROR = `${BULLET}Validation Error`;
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;

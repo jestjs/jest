@@ -10,7 +10,7 @@
 
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-const printImmutable = require('./lib/printImmutable');
+import printImmutable from './lib/printImmutable';
 
 const IS_LIST = '@@__IMMUTABLE_LIST__@@';
 const test = (maybeList: any) => !!(maybeList && maybeList[IS_LIST]);

@@ -8,8 +8,9 @@
  * @flow
  */
 
-const {parse: babylonParser, ItBlock, Expect} = require('jest-editor-support');
-const TypeScriptParser = require('./TypeScriptParser');
+import {parse as babylonParser, ItBlock, Expect} from 'jest-editor-support';
+import TypeScriptParser from './TypeScriptParser';
+
 export type ParserReturn = {
   itBlocks: Array<ItBlock>,
   expects: Array<Expect>,

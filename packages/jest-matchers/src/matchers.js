@@ -10,10 +10,10 @@
 
 import type {MatchersObject} from 'types/Matchers';
 
-const diff = require('jest-diff');
-const getType = require('jest-get-type');
-const {escapeStrForRegex} = require('jest-regex-util');
-const {
+import diff from 'jest-diff';
+import getType from 'jest-get-type';
+import {escapeStrForRegex} from 'jest-regex-util';
+import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   ensureNoExpected,
@@ -22,9 +22,9 @@ const {
   printReceived,
   printExpected,
   printWithType,
-} = require('jest-matcher-utils');
-const {getObjectSubset, getPath, hasOwnProperty} = require('./utils');
-const {equals} = require('./jasmine-utils');
+} from 'jest-matcher-utils';
+import {getObjectSubset, getPath, hasOwnProperty} from './utils';
+import {equals} from './jasmine-utils';
 
 type ContainIterable =
   | Array<any>

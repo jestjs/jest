@@ -13,13 +13,11 @@ import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
 import type {Test} from 'types/TestRunner';
 
-const path = require('path');
-
-const micromatch = require('micromatch');
-
-const DependencyResolver = require('jest-resolve-dependencies');
-const changedFiles = require('jest-changed-files');
-const {escapePathForRegex, replacePathSepForRegex} = require('jest-regex-util');
+import path from 'path';
+import micromatch from 'micromatch';
+import DependencyResolver from 'jest-resolve-dependencies';
+import changedFiles from 'jest-changed-files';
+import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
   noSCM?: boolean,

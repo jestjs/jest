@@ -8,8 +8,9 @@
  * @flow
  */
 
-const {ChildProcess, spawn} = require('child_process');
-const ProjectWorkspace = require('./ProjectWorkspace');
+import {ChildProcess, spawn} from 'child_process';
+
+import ProjectWorkspace from './ProjectWorkspace';
 
 /**
  * Spawns and returns a Jest process with specific args

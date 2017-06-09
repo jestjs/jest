@@ -11,11 +11,11 @@
 import type {TestResult} from 'types/TestResult';
 import type {ScrollOptions} from './lib/scrollList';
 
-const scroll = require('./lib/scrollList');
-const {getTerminalWidth} = require('./lib/terminalUtils');
-const Prompt = require('./lib/Prompt');
-const formatTestNameByPattern = require('./lib/formatTestNameByPattern');
-const {
+import scroll from './lib/scrollList';
+import {getTerminalWidth} from './lib/terminalUtils';
+import Prompt from './lib/Prompt';
+import formatTestNameByPattern from './lib/formatTestNameByPattern';
+import {
   formatTypeaheadSelection,
   printMore,
   printPatternCaret,
@@ -23,8 +23,8 @@ const {
   printRestoredPatternCaret,
   printStartTyping,
   printTypeaheadItem,
-} = require('./lib/patternModeHelpers');
-const PatternPrompt = require('./PatternPrompt');
+} from './lib/patternModeHelpers';
+import PatternPrompt from './PatternPrompt';
 
 module.exports = class TestNamePatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult>;

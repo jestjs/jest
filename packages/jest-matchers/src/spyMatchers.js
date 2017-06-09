@@ -12,7 +12,7 @@ import type {MatchersObject} from 'types/Matchers';
 
 const CALL_PRINT_LIMIT = 3;
 const LAST_CALL_PRINT_LIMIT = 1;
-const {
+import {
   ensureExpectedIsNumber,
   ensureNoExpected,
   EXPECTED_COLOR,
@@ -22,8 +22,8 @@ const {
   printReceived,
   printWithType,
   RECEIVED_COLOR,
-} = require('jest-matcher-utils');
-const {equals} = require('./jasmine-utils');
+} from 'jest-matcher-utils';
+import {equals} from './jasmine-utils';
 
 const RECEIVED_NAME = {
   'mock function': 'jest.fn()',

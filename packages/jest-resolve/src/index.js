@@ -11,10 +11,10 @@
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
 
-const fs = require('fs');
-const path = require('path');
-const nodeModulesPaths = require('resolve/lib/node-modules-paths');
-const isBuiltinModule = require('is-builtin-module');
+import fs from 'fs';
+import path from 'path';
+import nodeModulesPaths from 'resolve/lib/node-modules-paths';
+import isBuiltinModule from 'is-builtin-module';
 
 type ResolverConfig = {|
   browser?: boolean,

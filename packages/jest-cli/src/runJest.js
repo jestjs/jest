@@ -14,16 +14,16 @@ import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './TestWatcher';
 
-const path = require('path');
-const {Console, formatTestResults} = require('jest-util');
-const chalk = require('chalk');
-const fs = require('graceful-fs');
-const getMaxWorkers = require('./lib/getMaxWorkers');
-const getTestPathPattern = require('./lib/getTestPathPattern');
-const SearchSource = require('./SearchSource');
-const updateArgv = require('./lib/updateArgv');
-const TestRunner = require('./TestRunner');
-const TestSequencer = require('./TestSequencer');
+import path from 'path';
+import {Console, formatTestResults} from 'jest-util';
+import chalk from 'chalk';
+import fs from 'graceful-fs';
+import getMaxWorkers from './lib/getMaxWorkers';
+import getTestPathPattern from './lib/getTestPathPattern';
+import SearchSource from './SearchSource';
+import updateArgv from './lib/updateArgv';
+import TestRunner from './TestRunner';
+import TestSequencer from './TestSequencer';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(

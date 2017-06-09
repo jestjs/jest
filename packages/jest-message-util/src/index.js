@@ -11,10 +11,10 @@
 import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
-const path = require('path');
-const chalk = require('chalk');
-const micromatch = require('micromatch');
-const slash = require('slash');
+import path from 'path';
+import chalk from 'chalk';
+import micromatch from 'micromatch';
+import slash from 'slash';
 
 type StackTraceConfig = {
   rootDir: string,

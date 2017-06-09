@@ -8,9 +8,10 @@
  * @flow
  */
 
-const {clearLine} = require('jest-util');
-const chalk = require('chalk');
-const isCI = require('is-ci');
+import {clearLine} from 'jest-util';
+
+import chalk from 'chalk';
+import isCI from 'is-ci';
 
 const print = (stream: stream$Writable | tty$WriteStream) => {
   if (process.stdout.isTTY && !isCI) {

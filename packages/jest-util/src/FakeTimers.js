@@ -12,8 +12,8 @@ import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
-const {formatStackTrace} = require('jest-message-util');
-const setGlobal = require('./setGlobal');
+import {formatStackTrace} from 'jest-message-util';
+import setGlobal from './setGlobal';
 
 /**
  * We don't know the type of arguments for a callback ahead of time which is why

@@ -16,7 +16,7 @@ import type {
   Options,
 } from 'types/PrettyFormat';
 
-const style = require('ansi-styles');
+import style from 'ansi-styles';
 
 type Theme = {|
   comment?: string,

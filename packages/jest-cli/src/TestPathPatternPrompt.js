@@ -14,14 +14,14 @@ import type {ScrollOptions} from './lib/scrollList';
 // eslint-disable-next-line import/default
 import type SearchSource from './SearchSource';
 
-const chalk = require('chalk');
-const stringLength = require('string-length');
-const scroll = require('./lib/scrollList');
-const {getTerminalWidth} = require('./lib/terminalUtils');
-const highlight = require('./lib/highlight');
-const {trimAndFormatPath} = require('./reporters/utils');
-const Prompt = require('./lib/Prompt');
-const {
+import chalk from 'chalk';
+import stringLength from 'string-length';
+import scroll from './lib/scrollList';
+import {getTerminalWidth} from './lib/terminalUtils';
+import highlight from './lib/highlight';
+import {trimAndFormatPath} from './reporters/utils';
+import Prompt from './lib/Prompt';
+import {
   formatTypeaheadSelection,
   printMore,
   printPatternCaret,
@@ -29,8 +29,8 @@ const {
   printRestoredPatternCaret,
   printStartTyping,
   printTypeaheadItem,
-} = require('./lib/patternModeHelpers');
-const PatternPrompt = require('./PatternPrompt');
+} from './lib/patternModeHelpers';
+import PatternPrompt from './PatternPrompt';
 
 type SearchSources = Array<{|
   context: Context,

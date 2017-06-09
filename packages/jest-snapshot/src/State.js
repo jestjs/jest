@@ -10,8 +10,8 @@
 
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
-const fs = require('fs');
-const {
+import fs from 'fs';
+import {
   saveSnapshotFile,
   getSnapshotData,
   getSnapshotPath,
@@ -19,7 +19,7 @@ const {
   serialize,
   testNameToKey,
   unescape,
-} = require('./utils');
+} from './utils';
 
 export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,

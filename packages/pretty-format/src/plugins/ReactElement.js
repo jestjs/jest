@@ -10,7 +10,7 @@
 
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-const escapeHTML = require('./lib/escapeHTML');
+import escapeHTML from './lib/escapeHTML';
 
 const reactElement = Symbol.for('react.element');
 
