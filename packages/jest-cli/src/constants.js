@@ -28,6 +28,7 @@ const KEYS = {
   P: '70',
   Q: '71',
   QUESTION_MARK: '3f',
+  R: '72',
   T: '74',
   U: '75',
   W: '77',

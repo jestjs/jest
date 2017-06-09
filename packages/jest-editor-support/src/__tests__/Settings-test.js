@@ -47,7 +47,6 @@ describe('Settings', () => {
   it('calls callback even if no data is sent', () => {
     const workspace = new ProjectWorkspace('root_path', 'path_to_jest');
     const completed = jest.fn();
-
     const mockProcess: any = new EventEmitter();
     mockProcess.stdout = new EventEmitter();
     const createProcess = () => mockProcess;
