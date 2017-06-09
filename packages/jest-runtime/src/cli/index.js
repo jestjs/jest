@@ -17,9 +17,10 @@ import chalk from 'chalk';
 import yargs from 'yargs';
 import {Console, setGlobal, validateCLIOptions} from 'jest-util';
 import {readConfig} from 'jest-config';
-const VERSION = (require('../../package.json').version: string);
 import Runtime from '../';
 import args from './args';
+
+const VERSION = (require('../../package.json').version: string);
 
 function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   let argv;

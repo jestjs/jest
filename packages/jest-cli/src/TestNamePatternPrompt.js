@@ -9,6 +9,7 @@
  */
 
 import type {TestResult} from 'types/TestResult';
+import chalk from 'chalk';
 import type {ScrollOptions} from './lib/scrollList';
 
 import scroll from './lib/scrollList';
@@ -53,7 +54,7 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
         total,
         'test',
         pipe,
-        ` from ${require('chalk').yellow('cached')} test suites`,
+        ` from ${chalk.yellow('cached')} test suites`,
       );
 
       const width = getTerminalWidth();

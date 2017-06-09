@@ -8,4 +8,6 @@
  * @flow
  */
 
-module.exports = require('jest-cli');
+import cli from 'jest-cli';
+
+module.exports = cli;

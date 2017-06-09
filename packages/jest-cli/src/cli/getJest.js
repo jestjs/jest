@@ -21,6 +21,7 @@ function getJest(packageRoot: Path) {
     /* $FlowFixMe */
     return require(binPath);
   } else {
+    // TODO: Because of a dependency cycle, this can only be inlined once the babel plugin for inlining is merged
     const jest = require('../jest');
     // Check if Jest is specified in `package.json` but not installed.
     if (fs.existsSync(packageJSONPath)) {
