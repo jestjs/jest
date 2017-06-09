@@ -91,8 +91,8 @@ class Resolver {
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const resolver = options.resolver
-      /* $FlowFixMe */
-      ? require(options.resolver)
+      ? /* $FlowFixMe */
+        require(options.resolver)
       : defaultResolver;
     const paths = options.paths;
 
