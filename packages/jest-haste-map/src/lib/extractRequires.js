@@ -14,8 +14,8 @@ const lineCommentRe = /\/\/.*/g;
 const replacePatterns = {
   EXPORT_RE: /(\bexport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g,
   IMPORT_RE: /(\bimport\s+(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g,
-  REQUIRE_EXTENSIONS_PATTERN: /(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?genMockFromModule)\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
-  REQUIRE_RE: /(\brequire\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
+  REQUIRE_EXTENSIONS_PATTERN: /(?:^|[^.]\s*)(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?genMockFromModule)\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
+  REQUIRE_RE: /(?:^|[^.]\s*)(\brequire\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
 };
 
 function extractRequires(code: string): Array<string> {
