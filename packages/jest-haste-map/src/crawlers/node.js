@@ -65,7 +65,11 @@ function find(
     });
   }
 
-  roots.forEach(search);
+  if (roots.length > 0) {
+    roots.forEach(search);
+  } else {
+    callback(result);
+  }
 }
 
 function findNative(
