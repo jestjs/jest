@@ -25,6 +25,7 @@ import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './ScriptTransformer';
 import shouldInstrument from './shouldInstrument';
+import cliArgs from './cli/args';
 
 type Module = {|
   children?: Array<any>,
@@ -265,8 +266,7 @@ class Runtime {
   }
 
   static getCLIOptions() {
-    // TODO: If this is not inline, the repl test fails
-    return require('./cli/args').options;
+    return cliArgs.options;
   }
 
   requireModule(
