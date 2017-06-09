@@ -115,6 +115,10 @@ const _makeTimeoutMessage = (timeout, isHook) =>
     `Exceeded timeout of ${timeout}ms for a ${isHook ? 'hook' : 'test'}.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`,
   );
 
+// Global values can be overwritten by mocks or tests. We'll capture
+// the original values in the variables before we require any files.
+const {setTimeout, clearTimeout} = global;
+
 const callAsyncFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
@@ -124,8 +128,13 @@ const callAsyncFn = (
     timeout,
   }: {isHook?: ?boolean, test?: TestEntry, timeout: number},
 ): Promise<any> => {
+  let timeoutID;
+
   return new Promise((resolve, reject) => {
-    setTimeout(() => reject(_makeTimeoutMessage(timeout, isHook)), timeout);
+    timeoutID = setTimeout(
+      () => reject(_makeTimeoutMessage(timeout, isHook)),
+      timeout,
+    );
 
     // If this fn accepts `done` callback we return a promise that fullfills as
     // soon as `done` called.
@@ -162,7 +171,18 @@ const callAsyncFn = (
     // Otherwise this test is synchronous, and if it didn't throw it means
     // it passed.
     return resolve();
-  });
+  })
+    .then(() => {
+      // If timeout is not cleared/unrefed the node process won't exit until
+      // it's resolved.
+      timeoutID.unref && timeoutID.unref();
+      clearTimeout(timeoutID);
+    })
+    .catch(error => {
+      timeoutID.unref && timeoutID.unref();
+      clearTimeout(timeoutID);
+      throw error;
+    });
 };
 
 const getTestDuration = (test: TestEntry): ?number => {
