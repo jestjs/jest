@@ -10,9 +10,9 @@
 
 import type {DiffOptions} from 'jest-diff/src/diffStrings';
 
-const {printReceived, printExpected} = require('jest-matcher-utils');
-const chalk = require('chalk');
-const diff = require('jest-diff');
+import {printReceived, printExpected} from 'jest-matcher-utils';
+import chalk from 'chalk';
+import diff from 'jest-diff';
 
 type AssertionError = {|
   actual: ?string,

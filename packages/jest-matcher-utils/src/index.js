@@ -8,15 +8,15 @@
  * @flow
  */
 
-const chalk = require('chalk');
-const getType = require('jest-get-type');
-const prettyFormat = require('pretty-format');
+import chalk from 'chalk';
+import getType from 'jest-get-type';
+import prettyFormat from 'pretty-format';
 const {
   AsymmetricMatcher,
   ReactElement,
   HTMLElement,
   Immutable,
-} = require('pretty-format').plugins;
+} = prettyFormat.plugins;
 
 const PLUGINS = [AsymmetricMatcher, ReactElement, HTMLElement].concat(
   Immutable,

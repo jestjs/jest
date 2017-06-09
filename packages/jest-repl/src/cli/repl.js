@@ -15,9 +15,9 @@ declare var jestGlobalConfig: GlobalConfig;
 declare var jestProjectConfig: ProjectConfig;
 declare var jest: Object;
 
-const path = require('path');
-const repl = require('repl');
-const vm = require('vm');
+import path from 'path';
+import repl from 'repl';
+import vm from 'vm';
 
 let transformer;
 

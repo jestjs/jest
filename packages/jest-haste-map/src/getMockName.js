@@ -8,7 +8,7 @@
  * @flow
  */
 
-const path = require('path');
+import path from 'path';
 
 const MOCKS_PATTERN = path.sep + '__mocks__' + path.sep;
 

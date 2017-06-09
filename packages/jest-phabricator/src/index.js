@@ -17,7 +17,7 @@ type PhabricatorReport = AggregatedResult & {
   phabricatorReport: Array<FormattedTestResult>,
 };
 
-const {formatTestResults} = require('jest-util');
+import {formatTestResults} from 'jest-util';
 
 function summarize(coverageMap: CoverageMap) {
   const summaries = Object.create(null);

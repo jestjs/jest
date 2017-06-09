@@ -9,12 +9,13 @@
  * @flow
  */
 
-const path = require('path');
-const Runtime = require('jest-runtime');
-const yargs = require('yargs');
-const {validateCLIOptions} = require('jest-util');
-const VERSION = require('../../package.json').version;
-const args = require('./args');
+import path from 'path';
+
+import Runtime from 'jest-runtime';
+import yargs from 'yargs';
+import {validateCLIOptions} from 'jest-util';
+import {version as VERSION} from '../../package.json';
+import args from './args';
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 

@@ -19,28 +19,27 @@ import type {
   MockData,
 } from 'types/HasteMap';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
+// eslint-disable-next-line import/no-duplicates
 import typeof HType from './constants';
 
-const EventEmitter = require('events');
-const os = require('os');
-const path = require('path');
-const crypto = require('crypto');
-const {execSync} = require('child_process');
-const fs = require('graceful-fs');
-const sane = require('sane');
-const workerFarm = require('worker-farm');
-
-const VERSION = require('../package.json').version;
-
-const H = require('./constants');
-const HasteFS = require('./HasteFS');
-const HasteModuleMap = require('./ModuleMap');
-const getMockName = require('./getMockName');
-
-const getPlatformExtension = require('./lib/getPlatformExtension');
-const nodeCrawl = require('./crawlers/node');
-const watchmanCrawl = require('./crawlers/watchman');
-const worker = require('./worker');
+import EventEmitter from 'events';
+import os from 'os';
+import path from 'path';
+import crypto from 'crypto';
+import {execSync} from 'child_process';
+import fs from 'graceful-fs';
+import sane from 'sane';
+import workerFarm from 'worker-farm';
+import {version as VERSION} from '../package.json';
+// eslint-disable-next-line import/no-duplicates
+import H from './constants';
+import HasteFS from './HasteFS';
+import HasteModuleMap from './ModuleMap';
+import getMockName from './getMockName';
+import getPlatformExtension from './lib/getPlatformExtension';
+import nodeCrawl from './crawlers/node';
+import watchmanCrawl from './crawlers/watchman';
+import worker from './worker';
 
 type Options = {
   cacheDirectory?: string,

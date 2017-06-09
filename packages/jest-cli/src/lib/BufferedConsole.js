@@ -10,10 +10,9 @@
 
 import type {ConsoleBuffer, LogMessage, LogType} from 'types/Console';
 
-const {Console} = require('console');
-
-const {format} = require('util');
-const callsites = require('callsites');
+import {Console} from 'console';
+import {format} from 'util';
+import callsites from 'callsites';
 
 class BufferedConsole extends Console {
   _buffer: ConsoleBuffer;

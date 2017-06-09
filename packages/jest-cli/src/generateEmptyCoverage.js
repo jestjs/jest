@@ -10,9 +10,9 @@
 
 import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
-const IstanbulInstrument = require('istanbul-lib-instrument');
-
-const {ScriptTransformer, shouldInstrument} = require('jest-runtime');
+import {createInstrumenter} from 'istanbul-lib-instrument';
+// $FlowFixMe: Missing ESM export
+import {ScriptTransformer, shouldInstrument} from 'jest-runtime';
 
 module.exports = function(
   source: string,
@@ -35,7 +35,7 @@ module.exports = function(
       false,
       globalConfig.mapCoverage,
     );
-    const instrumenter = IstanbulInstrument.createInstrumenter();
+    const instrumenter = createInstrumenter();
     instrumenter.instrumentSync(transformResult.code, filename);
     return {
       coverage: instrumenter.fileCoverage,

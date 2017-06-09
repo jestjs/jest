@@ -20,11 +20,10 @@ type SummaryReporterOptions = {|
   testPathPattern: string,
 |};
 
-const chalk = require('chalk');
-
-const BaseReporter = require('./BaseReporter');
-const {getSummary, pluralize} = require('./utils');
-const getResultHeader = require('./getResultHeader');
+import chalk from 'chalk';
+import BaseReporter from './BaseReporter';
+import {getSummary, pluralize} from './utils';
+import getResultHeader from './getResultHeader';
 
 const ARROW = ' \u203A ';
 const FAIL_COLOR = chalk.bold.red;

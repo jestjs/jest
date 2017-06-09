@@ -11,10 +11,10 @@
 import type {Path, ProjectConfig} from 'types/Config';
 import type {TransformOptions} from 'types/Transform';
 
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
-const jestPreset = require('babel-preset-jest');
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import jestPreset from 'babel-preset-jest';
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';

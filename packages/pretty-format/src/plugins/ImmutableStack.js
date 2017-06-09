@@ -10,7 +10,7 @@
 
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-const printImmutable = require('./lib/printImmutable');
+import printImmutable from './lib/printImmutable';
 
 const IS_STACK = '@@__IMMUTABLE_STACK__@@';
 const test = (maybeStack: any) => !!(maybeStack && maybeStack[IS_STACK]);

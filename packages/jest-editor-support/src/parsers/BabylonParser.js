@@ -8,9 +8,10 @@
  * @flow
  */
 
-const {readFileSync} = require('fs');
-const babylon = require('babylon');
-const {Expect, ItBlock} = require('./ParserNodes');
+import {readFileSync} from 'fs';
+
+import {parse as babylonParse} from 'babylon';
+import {Expect, ItBlock} from './ParserNodes';
 
 export type BabylonParserResult = {
   expects: Array<Expect>,
@@ -24,7 +25,7 @@ const parse = (file: string): BabylonParserResult => {
   const data = readFileSync(file).toString();
 
   const config = {plugins: ['*'], sourceType: 'module'};
-  const ast = babylon.parse(data, config);
+  const ast = babylonParse(data, config);
 
   // An `it`/`test` was found in the AST
   // So take the AST node and create an object for us

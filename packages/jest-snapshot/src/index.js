@@ -12,19 +12,18 @@ import type {HasteFS} from 'types/HasteMap';
 import type {MatcherState} from 'types/Matchers';
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
-const fs = require('fs');
-const path = require('path');
-const diff = require('jest-diff');
-const {
+import fs from 'fs';
+import path from 'path';
+import diff from 'jest-diff';
+import {
   EXPECTED_COLOR,
   ensureNoExpected,
   matcherHint,
   RECEIVED_COLOR,
-} = require('jest-matcher-utils');
-
-const SnapshotState = require('./State');
-const {addSerializer, getSerializers} = require('./plugins');
-const {SNAPSHOT_EXTENSION} = require('./utils');
+} from 'jest-matcher-utils';
+import SnapshotState from './State';
+import {addSerializer, getSerializers} from './plugins';
+import {SNAPSHOT_EXTENSION} from './utils';
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);

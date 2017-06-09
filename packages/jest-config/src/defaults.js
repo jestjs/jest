@@ -10,10 +10,10 @@
 
 import type {DefaultOptions} from 'types/Config';
 
-const os = require('os');
-const path = require('path');
-const {replacePathSepForRegex} = require('jest-regex-util');
-const constants = require('./constants');
+import os from 'os';
+import path from 'path';
+import {replacePathSepForRegex} from 'jest-regex-util';
+import constants from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 

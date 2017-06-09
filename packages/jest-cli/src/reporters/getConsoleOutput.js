@@ -10,8 +10,8 @@
 
 import type {ConsoleBuffer} from 'types/Console';
 
-const path = require('path');
-const chalk = require('chalk');
+import path from 'path';
+import chalk from 'chalk';
 
 module.exports = (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
   const TITLE_INDENT = verbose ? '  ' : '    ';

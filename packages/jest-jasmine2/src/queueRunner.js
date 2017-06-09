@@ -8,9 +8,10 @@
  * @flow
  */
 
-const once = require('once');
-const pMap = require('p-map');
-const pTimeout = require('./p-timeout');
+import once from 'once';
+
+import pMap from 'p-map';
+import pTimeout from './p-timeout';
 
 type Options = {
   clearTimeout: (timeoutID: number) => void,

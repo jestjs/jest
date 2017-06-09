@@ -10,13 +10,13 @@
 
 import type {RawMatcherFn} from 'types/Matchers';
 
-const expect = require('jest-matchers');
+import expect from 'jest-matchers';
 
-const {
+import {
   addSerializer,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
-} = require('jest-snapshot');
+} from 'jest-snapshot';
 
 type JasmineMatcher = {
   (): JasmineMatcher,

@@ -11,10 +11,10 @@
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
-const path = require('path');
-const {getTestEnvironment, isJSONString} = require('./utils');
-const findConfig = require('./findConfig');
-const normalize = require('./normalize');
+import path from 'path';
+import {getTestEnvironment, isJSONString} from './utils';
+import findConfig from './findConfig';
+import normalize from './normalize';
 
 function readConfig(
   argv: Argv,

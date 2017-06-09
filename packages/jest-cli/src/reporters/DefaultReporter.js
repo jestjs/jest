@@ -15,14 +15,13 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-const {clearLine} = require('jest-util');
-const chalk = require('chalk');
-const isCI = require('is-ci');
-
-const BaseReporter = require('./BaseReporter');
-const Status = require('./Status');
-const getConsoleOutput = require('./getConsoleOutput');
-const getResultHeader = require('./getResultHeader');
+import {clearLine} from 'jest-util';
+import chalk from 'chalk';
+import isCI from 'is-ci';
+import BaseReporter from './BaseReporter';
+import Status from './Status';
+import getConsoleOutput from './getConsoleOutput';
+import getResultHeader from './getResultHeader';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 

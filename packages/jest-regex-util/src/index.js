@@ -8,7 +8,7 @@
  * @flow
  */
 
-const path = require('path');
+import path from 'path';
 
 const escapePathForRegex = (dir: string) => {
   if (path.sep === '\\') {

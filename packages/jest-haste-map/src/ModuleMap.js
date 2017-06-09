@@ -10,14 +10,13 @@
 
 import type {Path} from 'types/Config';
 import type {
-  HType,
   HTypeValue,
   MockData,
   ModuleMapData,
   RawModuleMap,
 } from 'types/HasteMap';
 
-const H: HType = require('./constants');
+import H from './constants';
 
 class ModuleMap {
   _map: ModuleMapData;

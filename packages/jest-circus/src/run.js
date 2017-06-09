@@ -16,13 +16,13 @@ import type {
   DescribeBlock,
 } from '../types';
 
-const {getState, dispatch} = require('./state');
-const {
+import {getState, dispatch} from './state';
+import {
   callAsyncFn,
   getAllHooksForDescribe,
   getEachHooksForTest,
   makeTestResults,
-} = require('./utils');
+} from './utils';
 
 const run = async (): Promise<TestResults> => {
   const {rootDescribeBlock} = getState();

@@ -8,7 +8,8 @@
  * @flow
  */
 
-const chalk = require('chalk');
+import chalk from 'chalk';
+
 const format = (value: mixed) => require('pretty-format')(value, {min: true});
 
 const deprecatedOptions = {

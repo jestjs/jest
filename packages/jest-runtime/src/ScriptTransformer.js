@@ -15,17 +15,17 @@ import type {
   TransformResult,
 } from 'types/Transform';
 
-const crypto = require('crypto');
-const path = require('path');
-const vm = require('vm');
-const {createDirectory} = require('jest-util');
-const fs = require('graceful-fs');
-const {getCacheFilePath} = require('jest-haste-map');
-const stableStringify = require('json-stable-stringify');
-const slash = require('slash');
-
-const VERSION = require('../package.json').version;
-const shouldInstrument = require('./shouldInstrument');
+import crypto from 'crypto';
+import path from 'path';
+import vm from 'vm';
+import {createDirectory} from 'jest-util';
+import fs from 'graceful-fs';
+// $FlowFixMe: Missing ESM export
+import {getCacheFilePath} from 'jest-haste-map';
+import stableStringify from 'json-stable-stringify';
+import slash from 'slash';
+import {version as VERSION} from '../package.json';
+import shouldInstrument from './shouldInstrument';
 
 export type Options = {|
   collectCoverage: boolean,

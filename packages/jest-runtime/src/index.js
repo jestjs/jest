@@ -16,16 +16,15 @@ import type {Context} from 'types/Context';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
-const path = require('path');
-const HasteMap = require('jest-haste-map');
-const Resolver = require('jest-resolve');
-
-const {createDirectory} = require('jest-util');
-const {escapePathForRegex} = require('jest-regex-util');
-const fs = require('graceful-fs');
-const stripBOM = require('strip-bom');
-const ScriptTransformer = require('./ScriptTransformer');
-const shouldInstrument = require('./shouldInstrument');
+import path from 'path';
+import HasteMap from 'jest-haste-map';
+import Resolver from 'jest-resolve';
+import {createDirectory} from 'jest-util';
+import {escapePathForRegex} from 'jest-regex-util';
+import fs from 'graceful-fs';
+import stripBOM from 'strip-bom';
+import ScriptTransformer from './ScriptTransformer';
+import shouldInstrument from './shouldInstrument';
 
 type Module = {|
   children?: Array<any>,

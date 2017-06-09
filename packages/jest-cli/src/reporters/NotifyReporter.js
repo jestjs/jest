@@ -11,10 +11,10 @@
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 
-const path = require('path');
-const util = require('util');
-const notifier = require('node-notifier');
-const BaseReporter = require('./BaseReporter');
+import path from 'path';
+import util from 'util';
+import notifier from 'node-notifier';
+import BaseReporter from './BaseReporter';
 
 const isDarwin = process.platform === 'darwin';
 

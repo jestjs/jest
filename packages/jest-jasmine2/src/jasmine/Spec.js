@@ -32,8 +32,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
-const ExpectationFailed = require('../ExpectationFailed');
-const expectationResultFactory = require('../expectationResultFactory');
+import ExpectationFailed from '../ExpectationFailed';
+
+import expectationResultFactory from '../expectationResultFactory';
 
 function Spec(attrs: Object) {
   this.resultCallback = attrs.resultCallback || function() {};

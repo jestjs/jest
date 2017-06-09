@@ -10,9 +10,9 @@
 
 import type {Path} from 'types/Config';
 
-const path = require('path');
-const chalk = require('chalk');
-const fs = require('graceful-fs');
+import path from 'path';
+import chalk from 'chalk';
+import fs from 'graceful-fs';
 
 function getJest(packageRoot: Path) {
   const packageJSONPath = path.join(packageRoot, 'package.json');

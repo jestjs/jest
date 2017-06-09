@@ -34,14 +34,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import type {Jasmine} from 'types/Jasmine';
 
-const createSpy = require('./createSpy');
-const Env = require('./Env');
-const JsApiReporter = require('./JsApiReporter');
-const ReportDispatcher = require('./ReportDispatcher');
-const Spec = require('./Spec');
-const SpyRegistry = require('./SpyRegistry');
-const Suite = require('./Suite');
-const Timer = require('./Timer');
+import createSpy from './createSpy';
+import Env from './Env';
+import JsApiReporter from './JsApiReporter';
+import ReportDispatcher from './ReportDispatcher';
+import Spec from './Spec';
+import SpyRegistry from './SpyRegistry';
+import Suite from './Suite';
+import Timer from './Timer';
 
 exports.create = function() {
   const j$ = {};
