@@ -32,8 +32,13 @@ import {
   stringContaining,
   stringMatching,
 } from './asymmetric-matchers';
-
-const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
+import {
+  getState,
+  setState,
+  getMatchers,
+  setMatchers,
+} from './jest-matchers-object';
+import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
 class JestAssertionError extends Error {
   matcherResult: any;
@@ -47,22 +52,8 @@ const isPromise = obj => {
   );
 };
 
-if (!global[GLOBAL_STATE]) {
-  Object.defineProperty(global, GLOBAL_STATE, {
-    value: {
-      matchers: Object.create(null),
-      state: {
-        assertionCalls: 0,
-        expectedAssertionsNumber: null,
-        isExpectingAssertions: false,
-        suppressedErrors: [],
-      },
-    },
-  });
-}
-
 const expect = (actual: any): ExpectationObject => {
-  const allMatchers = global[GLOBAL_STATE].matchers;
+  const allMatchers = getMatchers();
   const expectation = {
     not: {},
     rejects: {not: {}},
@@ -199,7 +190,7 @@ const makeThrowingMatcher = (
       // snapshot matcher uses it because we want to log all snapshot
       // failures in a test.
       {dontThrow: () => (throws = false)},
-      global[GLOBAL_STATE].state,
+      getState(),
       {
         equals,
         isNot,
@@ -218,7 +209,7 @@ const makeThrowingMatcher = (
 
     _validateResult(result);
 
-    global[GLOBAL_STATE].state.assertionCalls++;
+    getState().assertionCalls++;
 
     if ((result.pass && isNot) || (!result.pass && !isNot)) {
       // XOR
@@ -234,15 +225,13 @@ const makeThrowingMatcher = (
       if (throws) {
         throw error;
       } else {
-        global[GLOBAL_STATE].state.suppressedErrors.push(error);
+        getState().suppressedErrors.push(error);
       }
     }
   };
 };
 
-expect.extend = (matchers: MatchersObject): void => {
-  Object.assign(global[GLOBAL_STATE].matchers, matchers);
-};
+expect.extend = (matchers: MatchersObject): void => setMatchers(matchers);
 
 expect.anything = anything;
 expect.any = any;
@@ -276,15 +265,14 @@ expect.extend(toThrowMatchers);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {
-  global[GLOBAL_STATE].state.expectedAssertionsNumber = expected;
+  getState().expectedAssertionsNumber = expected;
 };
 expect.hasAssertions = expected => {
   utils.ensureNoExpected(expected, '.hasAssertions');
-  global[GLOBAL_STATE].state.isExpectingAssertions = true;
+  getState().isExpectingAssertions = true;
 };
-expect.setState = (state: Object) => {
-  Object.assign(global[GLOBAL_STATE].state, state);
-};
-expect.getState = () => global[GLOBAL_STATE].state;
+expect.getState = getState;
+expect.setState = setState;
+expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 module.exports = (expect: Expect);

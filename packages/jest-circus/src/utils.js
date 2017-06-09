@@ -240,7 +240,7 @@ const _formatError = (error: ?Exception): string => {
   } else if (error.message) {
     return error.message;
   } else {
-    return String(error);
+    return `${String(error)} thrown`;
   }
 };
 

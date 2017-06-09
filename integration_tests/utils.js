@@ -137,6 +137,7 @@ const cleanupStackTrace = (output: string) => {
     .replace(/\n.*at.*next_tick\.js.*$/gm, '')
     .replace(/\n.*at Promise \(<anonymous>\).*$/gm, '')
     .replace(/\n.*at <anonymous>.*$/gm, '')
+    .replace(/\n.*at Generator.next \(<anonymous>\).*$/gm, '')
     .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 };
 
