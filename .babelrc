@@ -6,7 +6,7 @@
     "transform-es2015-parameters",
     "transform-async-to-generator",
     "transform-strict-mode",
-    ["transform-inline-imports-commonjs", {"allowTopLevelThis": true}]
+    ["transform-es2015-modules-commonjs", {"allowTopLevelThis": true}]
   ],
   "retainLines": true
 }
