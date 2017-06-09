@@ -45,6 +45,7 @@ export type TestRunnerOptions = {|
   maxWorkers: number,
   pattern: PathPattern,
   startRun: () => *,
+  testDescriptionPattern: string,
   testNamePattern: string,
   testPathPattern: string,
 |};
@@ -321,6 +322,7 @@ class TestRunner {
     this.addReporter(
       new SummaryReporter(this._globalConfig, {
         pattern: this._options.pattern,
+        testDescriptionPattern: this._options.testDescriptionPattern,
         testNamePattern: this._options.testNamePattern,
         testPathPattern: this._options.testPathPattern,
       }),

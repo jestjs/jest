@@ -358,6 +358,11 @@ const options = {
       'use for snapshot testing.',
     type: 'array',
   },
+  testDescriptionPattern: {
+    alias: 'd',
+    description: 'Run only tests with a description that matches the regex pattern.',
+    type: 'string',
+  },
   testEnvironment: {
     description: 'Alias for --env',
     type: 'string',

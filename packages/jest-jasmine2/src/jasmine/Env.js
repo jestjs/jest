@@ -344,6 +344,9 @@ module.exports = function(j$) {
         getSpecName(spec) {
           return getSpecName(spec, suite);
         },
+        getDescribeName() {
+          return suite.getFullName();
+        },
         onStart: specStarted,
         description,
         queueRunnerFactory,

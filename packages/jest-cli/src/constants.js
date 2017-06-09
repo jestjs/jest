@@ -22,6 +22,7 @@ const KEYS = {
   C: '63',
   CONTROL_C: '03',
   CONTROL_D: '04',
+  D: '64',
   ENTER: '0d',
   ESCAPE: '1b',
   O: '6f',

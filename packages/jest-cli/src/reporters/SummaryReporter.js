@@ -16,6 +16,7 @@ import type {PathPattern} from '../SearchSource';
 
 type SummaryReporterOptions = {|
   pattern: PathPattern,
+  testDescriptionPattern: string,
   testNamePattern: string,
   testPathPattern: string,
 |};
@@ -120,6 +121,7 @@ class SummaryReporter extends BaseReporter {
           : this._getTestSummary(
               contexts,
               this._options.pattern,
+              this._options.testDescriptionPattern,
               this._options.testNamePattern,
               this._options.testPathPattern,
             );
@@ -253,6 +255,7 @@ class SummaryReporter extends BaseReporter {
   _getTestSummary(
     contexts: Set<Context>,
     pattern: PathPattern,
+    testDescriptionPattern: string,
     testNamePattern: string,
     testPathPattern: string,
   ) {
@@ -264,6 +267,14 @@ class SummaryReporter extends BaseReporter {
       ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
       : '';
 
+    const join = testDescriptionPattern && (testNamePattern || testPathPattern)
+      ? chalk.dim(' and')
+      : '';
+
+    const descriptionInfo = testDescriptionPattern
+      ? chalk.dim(' with description matching ') + `"${testDescriptionPattern}"`
+      : '';
+
     const contextInfo = contexts.size > 1
       ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
       : '';
@@ -272,6 +283,8 @@ class SummaryReporter extends BaseReporter {
       chalk.dim('Ran all test suites') +
       testInfo +
       nameInfo +
+      join +
+      descriptionInfo +
       contextInfo +
       chalk.dim('.')
     );

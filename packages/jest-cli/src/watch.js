@@ -27,6 +27,7 @@ const TestWatcher = require('./TestWatcher');
 const Prompt = require('./lib/Prompt');
 const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
+const TestDescriptionPatternPrompt = require('./TestDescriptionPatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
 const isInteractive = process.stdout.isTTY && !isCI;
@@ -41,6 +42,7 @@ const watch = (
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
   updateArgv(argv, argv.watch ? 'watch' : 'watchAll', {
+    testDescriptionPattern: argv.testDescriptionPattern,
     testNamePattern: argv.testNamePattern,
     testPathPattern: argv.testPathPattern || (argv._ || []).join('|'),
   });
@@ -48,6 +50,10 @@ const watch = (
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(pipe, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(pipe, prompt);
+  const testDescriptionPatternPrompt = new TestDescriptionPatternPrompt(
+    pipe,
+    prompt,
+  );
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
@@ -59,7 +65,6 @@ const watch = (
   let isWatchUsageDisplayed = false;
 
   testPathPatternPrompt.updateSearchSources(searchSources);
-
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) => {
@@ -111,6 +116,7 @@ const watch = (
     isRunning = true;
     const globalConfig = Object.freeze(
       Object.assign({}, initialGlobalConfig, overrideConfig, {
+        testDescriptionPattern: argv.testDescriptionPattern,
         testNamePattern: argv.testNamePattern,
         testPathPattern: argv.testPathPattern,
       }),
@@ -141,6 +147,9 @@ const watch = (
         }
 
         testNamePatternPrompt.updateCachedTestResults(results.testResults);
+        testDescriptionPatternPrompt.updateCachedTestResults(
+          results.testResults,
+        );
       },
     ).catch(error => console.error(chalk.red(error.stack)));
   };
@@ -160,7 +169,9 @@ const watch = (
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.D].indexOf(
+        key,
+      ) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -178,6 +189,7 @@ const watch = (
         break;
       case KEYS.A:
         updateArgv(argv, 'watchAll', {
+          testDescriptionPattern: '',
           testNamePattern: '',
           testPathPattern: '',
         });
@@ -185,13 +197,30 @@ const watch = (
         break;
       case KEYS.C:
         updateArgv(argv, 'watch', {
+          testDescriptionPattern: '',
           testNamePattern: '',
           testPathPattern: '',
         });
         startRun();
         break;
+      case KEYS.D:
+        testDescriptionPatternPrompt.run(
+          testDescriptionPattern => {
+            updateArgv(argv, 'watch', {
+              testDescriptionPattern,
+              testNamePattern: argv.testNamePattern,
+              testPathPattern: argv.testPathPattern,
+            });
+
+            startRun();
+          },
+          onCancelPatternPrompt,
+          {header: activeFilters(argv)},
+        );
+        break;
       case KEYS.O:
         updateArgv(argv, 'watch', {
+          testDescriptionPattern: '',
           testNamePattern: '',
           testPathPattern: '',
         });
@@ -201,6 +230,7 @@ const watch = (
         testPathPatternPrompt.run(
           testPathPattern => {
             updateArgv(argv, 'watch', {
+              testDescriptionPattern: '',
               testNamePattern: '',
               testPathPattern: replacePathSepForRegex(testPathPattern),
             });
@@ -215,6 +245,7 @@ const watch = (
         testNamePatternPrompt.run(
           testNamePattern => {
             updateArgv(argv, 'watch', {
+              testDescriptionPattern: argv.testDescriptionPattern,
               testNamePattern,
               testPathPattern: argv.testPathPattern,
             });
@@ -258,14 +289,18 @@ const watch = (
 };
 
 const activeFilters = (argv, delimiter = '\n') => {
-  const {testNamePattern, testPathPattern} = argv;
-  if (testNamePattern || testPathPattern) {
+  const {testNamePattern, testPathPattern, testDescriptionPattern} = argv;
+  if (testNamePattern || testPathPattern || testDescriptionPattern) {
     const filters = [
       testPathPattern
         ? chalk.dim('filename ') + chalk.yellow('/' + testPathPattern + '/')
         : null,
       testNamePattern
         ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
+        : null,
+      testDescriptionPattern
+        ? chalk.dim('description name ') +
+            chalk.yellow('/' + testDescriptionPattern + '/')
         : null,
     ]
       .filter(f => !!f)
@@ -282,14 +317,17 @@ const activeFilters = (argv, delimiter = '\n') => {
 const usage = (argv, snapshotFailure, delimiter = '\n') => {
   const messages = [
     activeFilters(argv),
-    argv.testPathPattern || argv.testNamePattern
+    argv.testPathPattern || argv.testNamePattern || argv.testDescriptionPattern
       ? chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to clear filters.')
       : null,
     '\n' + chalk.bold('Watch Usage'),
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) &&
+    (argv.watchAll ||
+      argv.testPathPattern ||
+      argv.testNamePattern ||
+      argv.testDescriptionPattern) &&
       !argv.noSCM
       ? chalk.dim(' \u203A Press ') +
           'o' +
@@ -306,12 +344,14 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
     chalk.dim(' \u203A Press ') +
       't' +
       chalk.dim(' to filter by a test name regex pattern.'),
+    chalk.dim(' \u203A Press ') +
+      'd' +
+      chalk.dim(' to filter by a description name regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') +
       'Enter' +
       chalk.dim(' to trigger a test run.'),
   ];
-
   return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 

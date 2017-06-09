@@ -15,6 +15,7 @@ const getTestPathPattern = require('./getTestPathPattern');
 type Options = {|
   testNamePattern?: string,
   testPathPattern?: string,
+  testDescriptionPattern?: string,
   noSCM?: boolean,
 |};
 
@@ -40,11 +41,18 @@ module.exports = (argv: Argv, mode: 'watch' | 'watchAll', options: Options) => {
     delete argv.testNamePattern;
   }
 
+  if (options.testDescriptionPattern) {
+    argv.testDescriptionPattern = options.testDescriptionPattern;
+  } else if (options.testDescriptionPattern === '') {
+    delete argv.testDescriptionPattern;
+  }
+
   argv.onlyChanged = false;
   argv.onlyChanged =
     getTestPathPattern(argv).input === '' &&
     !argv.watchAll &&
-    !argv.testNamePattern;
+    !argv.testNamePattern &&
+    !argv.testDescriptionPattern;
 
   if (options.noSCM) {
     argv.noSCM = true;
