@@ -20,6 +20,9 @@ import path from 'path';
 import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
+import {transform as babelTransform} from 'babel-core';
+import babelPluginIstanbul from 'babel-plugin-istanbul';
+import convertSourceMap from 'convert-source-map';
 // $FlowFixMe: Missing ESM export
 import {getCacheFilePath} from 'jest-haste-map';
 import stableStringify from 'json-stable-stringify';
@@ -148,12 +151,7 @@ class ScriptTransformer {
   }
 
   _instrumentFile(filename: Path, content: string): string {
-    // Keeping these requires inside this function reduces a single run
-    // time by 2sec if not running in `--coverage` mode
-    const babel = require('babel-core');
-    const babelPluginIstanbul = require('babel-plugin-istanbul').default;
-
-    return babel.transform(content, {
+    return babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       filename,
@@ -217,8 +215,7 @@ class ScriptTransformer {
 
     if (mapCoverage) {
       if (!transformed.map) {
-        const convert = require('convert-source-map');
-        const inlineSourceMap = convert.fromSource(transformed.code);
+        const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
         if (inlineSourceMap) {
           transformed.map = inlineSourceMap.toJSON();
         }

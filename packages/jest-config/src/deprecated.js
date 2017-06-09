@@ -9,8 +9,9 @@
  */
 
 import chalk from 'chalk';
+import prettyFormat from 'pretty-format';
 
-const format = (value: mixed) => require('pretty-format')(value, {min: true});
+const format = (value: mixed) => prettyFormat(value, {min: true});
 
 const deprecatedOptions = {
   preprocessorIgnorePatterns: (options: {

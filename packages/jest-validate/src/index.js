@@ -8,10 +8,14 @@
  * @flow
  */
 
+import {createDidYouMeanMessage, format, logValidationWarning} from './utils';
+import {ValidationError} from './errors';
+import validate from './validate';
+
 module.exports = {
-  ValidationError: require('./errors').ValidationError,
-  createDidYouMeanMessage: require('./utils').createDidYouMeanMessage,
-  format: require('./utils').format,
-  logValidationWarning: require('./utils').logValidationWarning,
-  validate: require('./validate'),
+  ValidationError,
+  createDidYouMeanMessage,
+  format,
+  logValidationWarning,
+  validate,
 };
