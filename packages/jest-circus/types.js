@@ -106,6 +106,7 @@ export type State = {|
   hasFocusedTests: boolean, // that are defined using test.only
   rootDescribeBlock: DescribeBlock,
   testTimeout: number,
+  expand?: boolean, // expand error messages
 |};
 
 export type DescribeBlock = {|

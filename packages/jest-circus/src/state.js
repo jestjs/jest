@@ -12,8 +12,12 @@ import type {Event, State, EventHandler} from '../types';
 
 import {makeDescribe} from './utils';
 import eventHandler from './eventHandler';
+import formatNodeAssertErrors from './formatNodeAssertErrors';
 
-const eventHandlers: Array<EventHandler> = [eventHandler];
+const eventHandlers: Array<EventHandler> = [
+  eventHandler,
+  formatNodeAssertErrors,
+];
 
 const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
@@ -21,6 +25,7 @@ const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 const INITIAL_STATE: State = {
   currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
+  expand: undefined,
   hasFocusedTests: false,
   rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
   testTimeout: 5000,
