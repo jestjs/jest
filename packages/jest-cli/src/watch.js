@@ -15,6 +15,7 @@ import type {Context} from 'types/Context';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import {replacePathSepForRegex} from 'jest-regex-util';
+import {getFailedSnapshotTests} from 'jest-util';
 import HasteMap from 'jest-haste-map';
 import isCI from 'is-ci';
 import isValidPath from './lib/isValidPath';
@@ -48,6 +49,10 @@ const watch = (
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(pipe, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(pipe, prompt);
+
+  let failedSnapshotTestPaths = [];
+  let snapshotInteractiveMode = false;
+
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
@@ -126,12 +131,17 @@ const watch = (
       results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;
+
+        if (hasSnapshotFailure && !snapshotInteractiveMode) {
+            failedSnapshotTestPaths = getFailedSnapshotTests(results);
+        }
+
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
         if (shouldDisplayWatchUsage) {
-          pipe.write(usage(argv, hasSnapshotFailure));
+          pipe.write(usage(argv, hasSnapshotFailure, snapshotInteractiveMode));
           shouldDisplayWatchUsage = false; // hide Watch Usage after first run
           isWatchUsageDisplayed = true;
         } else {
@@ -141,6 +151,11 @@ const watch = (
         }
 
         testNamePatternPrompt.updateCachedTestResults(results.testResults);
+
+        if (!hasSnapshotFailure && snapshotInteractiveMode) {
+            failedSnapshotTestPaths.shift();
+            updateSnapshotInteractiveTarget();
+        }
       },
     ).catch(error => console.error(chalk.red(error.stack)));
   };
@@ -176,7 +191,15 @@ const watch = (
       case KEYS.U:
         startRun({updateSnapshot: 'all'});
         break;
+      case KEYS.I:
+          if (hasSnapshotFailure && !snapshotInteractiveMode) {
+              snapshotInteractiveMode = true;
+          }
+            updateSnapshotInteractiveTarget();
+
+        break;
       case KEYS.A:
+        snapshotInteractiveMode = false;
         updateArgv(argv, 'watchAll', {
           testNamePattern: '',
           testPathPattern: '',
@@ -191,13 +214,10 @@ const watch = (
         startRun();
         break;
       case KEYS.O:
-        updateArgv(argv, 'watch', {
-          testNamePattern: '',
-          testPathPattern: '',
-        });
-        startRun();
+          resetAndRun();
         break;
       case KEYS.P:
+        snapshotInteractiveMode = false;
         testPathPatternPrompt.run(
           testPathPattern => {
             updateArgv(argv, 'watch', {
@@ -211,7 +231,14 @@ const watch = (
           {header: activeFilters(argv)},
         );
         break;
+      case KEYS.S:
+          if (snapshotInteractiveMode) {
+              failedSnapshotTestPaths.shift();
+          }
+          updateSnapshotInteractiveTarget();
+          break;
       case KEYS.T:
+        snapshotInteractiveMode = false;
         testNamePatternPrompt.run(
           testNamePattern => {
             updateArgv(argv, 'watch', {
@@ -231,7 +258,7 @@ const watch = (
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           pipe.write(ansiEscapes.cursorUp());
           pipe.write(ansiEscapes.eraseDown);
-          pipe.write(usage(argv, hasSnapshotFailure));
+          pipe.write(usage(argv, hasSnapshotFailure, snapshotInteractiveMode));
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
         }
@@ -239,10 +266,43 @@ const watch = (
     }
   };
 
+  const resetAndRun = () => {
+      snapshotInteractiveMode = false;
+      updateArgv(argv, 'watch', {
+          testNamePattern: '',
+          testPathPattern: '',
+      });
+      startRun();
+    };
+
+  const updateSnapshotInteractiveTarget = () => {
+      if (!failedSnapshotTestPaths.length) {
+          resetAndRun();
+          return;
+      }
+
+      let pattern = '';
+      searchSources.forEach(({context}) => {
+          context.config.roots.forEach(rootPath => {
+              if (failedSnapshotTestPaths[0].substr(0, rootPath.length) === rootPath) {
+                  pattern = failedSnapshotTestPaths[0].substr(rootPath.length+1);
+              }
+          })
+      });
+
+      updateArgv(argv, 'watch', {
+          testNamePattern: '',
+          testPathPattern: replacePathSepForRegex(pattern),
+      });
+
+      startRun();
+
+  };
+
   const onCancelPatternPrompt = () => {
     pipe.write(ansiEscapes.cursorHide);
     pipe.write(ansiEscapes.clearScreen);
-    pipe.write(usage(argv, hasSnapshotFailure));
+    pipe.write(usage(argv, hasSnapshotFailure, snapshotInteractiveMode));
     pipe.write(ansiEscapes.cursorShow);
   };
 
@@ -279,7 +339,7 @@ const activeFilters = (argv, delimiter = '\n') => {
   return '';
 };
 
-const usage = (argv, snapshotFailure, delimiter = '\n') => {
+const usage = (argv, snapshotFailure, snapshotInteractiveMode, delimiter = '\n') => {
   const messages = [
     activeFilters(argv),
     argv.testPathPattern || argv.testNamePattern
@@ -299,6 +359,16 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
       ? chalk.dim(' \u203A Press ') +
           'u' +
           chalk.dim(' to update failing snapshots.')
+      : null,
+    snapshotFailure && !snapshotInteractiveMode
+      ? chalk.dim(' \u203A Press ') +
+          'i' +
+          chalk.dim(' to update failing snapshots interactively.')
+      : null,
+    snapshotInteractiveMode
+      ? chalk.dim(' \u203A Press ') +
+        's' +
+        chalk.dim(' to skip.')
       : null,
     chalk.dim(' \u203A Press ') +
       'p' +

@@ -15,6 +15,7 @@ import FakeTimers from './fake_timers';
 import NullConsole from './null_console';
 import clearLine from './clear_line';
 import formatTestResults from './format_test_results';
+import getFailedSnapshotTests from './get_failed_snapshot_tests';
 import installCommonGlobals from './install_common_globals';
 import setGlobal from './set_global';
 import validateCLIOptions from './validate_cli_options';
@@ -36,6 +37,7 @@ module.exports = {
   clearLine,
   createDirectory,
   formatTestResults,
+  getFailedSnapshotTests,
   installCommonGlobals,
   setGlobal,
   validateCLIOptions,
