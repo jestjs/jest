@@ -15,6 +15,7 @@ import fs from 'fs';
 import path from 'path';
 import nodeModulesPaths from 'resolve/lib/node-modules-paths';
 import isBuiltinModule from 'is-builtin-module';
+import defaultResolver from './defaultResolver.js';
 
 type ResolverConfig = {|
   browser?: boolean,
@@ -89,8 +90,10 @@ class Resolver {
   }
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
-    /* $FlowFixMe */
-    const resolver = require(options.resolver || './defaultResolver.js');
+    const resolver = options.resolver
+      ? /* $FlowFixMe */
+        require(options.resolver)
+      : defaultResolver;
     const paths = options.paths;
 
     try {

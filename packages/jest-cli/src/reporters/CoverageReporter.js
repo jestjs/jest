@@ -31,6 +31,7 @@ import libSourceMaps from 'istanbul-lib-source-maps';
 import pify from 'pify';
 import workerFarm from 'worker-farm';
 import BaseReporter from './BaseReporter';
+import CoverageWorker from './CoverageWorker';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -143,7 +144,7 @@ class CoverageReporter extends BaseReporter {
     let worker;
     let farm;
     if (this._maxWorkers <= 1) {
-      worker = pify(require('./CoverageWorker'));
+      worker = pify(CoverageWorker);
     } else {
       farm = workerFarm(
         {

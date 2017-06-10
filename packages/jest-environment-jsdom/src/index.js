@@ -14,6 +14,7 @@ import type {ModuleMocker} from 'jest-mock';
 
 import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
+import JSDom from 'jsdom';
 
 class JSDOMEnvironment {
   document: ?Object;
@@ -23,7 +24,7 @@ class JSDOMEnvironment {
 
   constructor(config: ProjectConfig): void {
     // lazy require
-    this.document = require('jsdom').jsdom(/* markup */ undefined, {
+    this.document = JSDom.jsdom(/* markup */ undefined, {
       url: config.testURL,
     });
     const global = (this.global = this.document.defaultView);
@@ -50,7 +51,7 @@ class JSDOMEnvironment {
 
   runScript(script: Script): ?any {
     if (this.global) {
-      return require('jsdom').evalVMScript(this.global, script);
+      return JSDom.evalVMScript(this.global, script);
     }
     return null;
   }

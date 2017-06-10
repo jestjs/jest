@@ -10,7 +10,7 @@
 
 import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-const printImmutable = require('./lib/printImmutable');
+import printImmutable from './lib/printImmutable';
 
 const IS_RECORD = '@@__IMMUTABLE_RECORD__@@';
 const test = (maybeRecord: any) => !!(maybeRecord && maybeRecord[IS_RECORD]);
