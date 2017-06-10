@@ -29,6 +29,7 @@ import SummaryReporter from './reporters/SummaryReporter';
 import VerboseReporter from './reporters/VerboseReporter';
 import runTest from './runTest';
 import TestWatcher from './TestWatcher';
+import CoverageReporter from './reporters/CoverageReporter';
 import ReporterDispatcher from './ReporterDispatcher';
 
 const SLOW_TEST_TIME = 3000;
@@ -295,9 +296,6 @@ class TestRunner {
     }
 
     if (collectCoverage) {
-      // coverage reporter dependency graph is pretty big and we don't
-      // want to require it if we're not in the `--coverage` mode
-      const CoverageReporter = require('./reporters/CoverageReporter');
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           maxWorkers: this._options.maxWorkers,
