@@ -232,7 +232,7 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 `expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that are **not** in the expected object.
 
-Instead of literal property values in the expected object, you can use matchers `expect.anything()` and so on.
+Instead of literal property values in the expected object, you can use matchers, `expect.anything()`, and so on.
 
 For example, let's say that we expect an `onPress` function to be called with an `Event` object, and all we need to verify is that the event has `event.x` and `event.y` properties. We can do that with:
 
