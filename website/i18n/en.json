@@ -58,7 +58,7 @@
       "title": "Instant Feedback"
     },
     {
-      "content": "Capture snapshots of React trees or other serializable values to simplify UI testing and to analyze how state changes over time.",
+      "content": "Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.",
       "image": "/jest/img/content/camera-with-flash.png",
       "imageAlign": "top",
       "title": "Snapshot Testing"
