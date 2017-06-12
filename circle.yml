@@ -30,7 +30,7 @@ test:
     - yarn run test-ci-partial
     - nvm alias default 8
     - yarn run test-ci-partial
-    - DANGER_GITHUB_API_TOKEN="13a754886a7dafbd43c""6e2a0f256d272245f2b7c" yarn run danger
+    - DANGER_GITHUB_API_TOKEN=$DANGER_GITHUB_API_TOKEN yarn run danger
     - cd website && yarn run test
 
 deployment:
