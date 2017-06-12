@@ -17,18 +17,18 @@ import diffStrings from './diffStrings';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 
 const {
-  ReactElement,
-  ReactTestComponent,
   AsymmetricMatcher,
   HTMLElement,
   Immutable,
+  ReactElement,
+  ReactTestComponent,
 } = prettyFormat.plugins;
 
 const PLUGINS = [
   ReactTestComponent,
   ReactElement,
-  AsymmetricMatcher,
   HTMLElement,
+  AsymmetricMatcher,
 ].concat(Immutable);
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
