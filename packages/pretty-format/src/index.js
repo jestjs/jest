@@ -13,7 +13,7 @@ import type {
   Refs,
   StringOrNull,
   Plugins,
-  Options,
+  PrettyOptions,
 } from 'types/PrettyFormat';
 
 import style from 'ansi-styles';
@@ -36,14 +36,12 @@ type Theme = {|
 type InitialOptions = {|
   callToJSON?: boolean,
   escapeRegex?: boolean,
-  edgeSpacing?: string,
   highlight?: boolean,
   indent?: number,
   maxDepth?: number,
   min?: boolean,
   plugins?: Plugins,
   printFunctionName?: boolean,
-  spacing?: string,
   theme?: Theme,
 |};
 
@@ -792,9 +790,8 @@ function print(
   );
 }
 
-const DEFAULTS: Options = {
+const DEFAULTS: PrettyOptions = {
   callToJSON: true,
-  edgeSpacing: '\n',
   escapeRegex: false,
   highlight: false,
   indent: 2,
@@ -802,7 +799,6 @@ const DEFAULTS: Options = {
   min: false,
   plugins: [],
   printFunctionName: true,
-  spacing: '\n',
   theme: {
     comment: 'gray',
     content: 'reset',
@@ -826,7 +822,7 @@ function validateOptions(opts: InitialOptions) {
   }
 }
 
-function normalizeOptions(opts: InitialOptions): Options {
+function normalizeOptions(opts: InitialOptions): PrettyOptions {
   const result = {};
 
   Object.keys(DEFAULTS).forEach(
@@ -841,7 +837,7 @@ function normalizeOptions(opts: InitialOptions): Options {
   }
 
   // $FlowFixMe the type cast below means YOU are responsible to verify the code above.
-  return (result: Options);
+  return (result: PrettyOptions);
 }
 
 function normalizeTheme(themeOption: ?Theme) {
@@ -871,7 +867,7 @@ function createIndent(indent: number): string {
 }
 
 function prettyFormat(val: any, initialOptions?: InitialOptions): string {
-  let opts: Options;
+  let opts: PrettyOptions;
   if (!initialOptions) {
     opts = DEFAULTS;
   } else {
