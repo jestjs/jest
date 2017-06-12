@@ -18,8 +18,8 @@ import type {
   ThrowingMatcherFn,
   PromiseMatcherFn,
 } from 'types/Matchers';
-
-import utils from 'jest-matcher-utils';
+// jest-matcher-utils needs to be eagerly evaluated
+const utils = require('jest-matcher-utils');
 import matchers from './matchers';
 import spyMatchers from './spyMatchers';
 import toThrowMatchers from './toThrowMatchers';
