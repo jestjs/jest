@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapshotInteractiveMode updateWithResults last test success, trigger end of interactive mode 1`] = `"TEST RESULTS CONTENTS"`;
+
+exports[`SnapshotInteractiveMode updateWithResults overlay handle progress UI 1`] = `
+"TEST RESULTS CONTENTS
+
+
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(0, 0)]
+<bold>undefined</>
+[MOCK - cursorRestorePosition]
+[MOCK - cursorUp]
+[MOCK - eraseDown]
+
+<bold>Interactive Snapshot Progress
+ › <bold><red>2 suites failed</>, <bold><green>1 suite passed</>
+
+<bold>Watch Usage
+<dim> › Press u<dim> to update failing snapshots.
+<dim> › Press s<dim> to skip the current snapshot..
+<dim> › Press q<dim> to quit interactive snapshot mode.
+<dim> › Press Enter<dim> to trigger a test run.
+"
+`;
+
+exports[`SnapshotInteractiveMode updateWithResults with a test failure simply update UI 1`] = `
+"TEST RESULTS CONTENTS
+
+
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(0, 0)]
+<bold>undefined</>
+[MOCK - cursorRestorePosition]
+[MOCK - cursorUp]
+[MOCK - eraseDown]
+
+<bold>Interactive Snapshot Progress
+ › <bold><red>1 suite failed</>
+
+<bold>Watch Usage
+<dim> › Press u<dim> to update failing snapshots.
+<dim> › Press q<dim> to quit interactive snapshot mode.
+<dim> › Press Enter<dim> to trigger a test run.
+"
+`;
+
+exports[`SnapshotInteractiveMode updateWithResults with a test success, call the next test 1`] = `"TEST RESULTS CONTENTS"`;

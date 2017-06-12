@@ -143,7 +143,7 @@ const watch = (
         testNamePatternPrompt.updateCachedTestResults(results.testResults);
 
         if (snapshotInteracticeMode.isActive()) {
-          snapshotInteracticeMode.update(results);
+          snapshotInteracticeMode.updateWithResults(results);
           return;
         }
 
@@ -197,12 +197,14 @@ const watch = (
         startRun({updateSnapshot: 'all'});
         break;
       case KEYS.I:
-        snapshotInteracticeMode.run(
-          failedSnapshotTestPaths,
-          (path: string, jestRunnerOptions: Object) => {
-            updateRunnerPatternMatching('watch', '', path, jestRunnerOptions);
-          },
-        );
+        if (hasSnapshotFailure) {
+          snapshotInteracticeMode.run(
+            failedSnapshotTestPaths,
+            (path: string, jestRunnerOptions: Object) => {
+              updateRunnerPatternMatching('watch', '', path, jestRunnerOptions);
+            },
+          );
+        }
         break;
       case KEYS.A:
         updateRunnerPatternMatching('watchAll', '', '');

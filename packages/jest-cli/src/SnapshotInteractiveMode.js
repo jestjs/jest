@@ -54,9 +54,11 @@ module.exports = class SnapshotInteractiveMode {
       chalk.dim(' \u203A Press ') +
         'u' +
         chalk.dim(' to update failing snapshots.'),
-      chalk.dim(' \u203A Press ') +
-        's' +
-        chalk.dim(' to skip the current snapshot..'),
+      this._testFilePaths.length > 1
+        ? chalk.dim(' \u203A Press ') +
+            's' +
+            chalk.dim(' to skip the current snapshot..')
+        : '',
       chalk.dim(' \u203A Press ') +
         'q' +
         chalk.dim(' to quit interactive snapshot mode.'),
@@ -99,11 +101,10 @@ module.exports = class SnapshotInteractiveMode {
     this._updateTestRunnerConfig('', {});
   }
 
-  update(results: AggregatedResult) {
-    this._drawUIOverlay();
-
+  updateWithResults(results: AggregatedResult) {
     const hasSnapshotFailure = !!results.snapshot.failure;
     if (hasSnapshotFailure) {
+      this._drawUIOverlay();
       return;
     }
 
