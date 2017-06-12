@@ -35,7 +35,7 @@ Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
 jest --findRelatedTests path/to/fileA.js path/to/fileB.js
 ```
 
-Run tests that match this spec name (match against the name in describe and it, basically).
+Run tests that match this spec name (match against the name in `describe` and `test`, basically).
 ```bash
 jest -t name-of-spec
 ```
