@@ -2,24 +2,21 @@
  * @flow
  */
 
-import type {
-    AggregatedResult,
-} from 'types/TestResult';
-
+import type {AggregatedResult} from 'types/TestResult';
 
 function getFailedSnapshotTests(testResults: AggregatedResult) {
-    const res = [];
-    if (testResults.numFailedTests === 0) {
-        return res;
+  const failedTestPaths = [];
+  if (testResults.numFailedTests === 0 || !testResults.testResults) {
+    return failedTestPaths;
+  }
+
+  testResults.testResults.forEach(testResult => {
+    if (testResult.snapshot && testResult.snapshot.unmatched) {
+      failedTestPaths.push(testResult.testFilePath);
     }
+  });
 
-    testResults.testResults.forEach(testResult => {
-        if (testResult.snapshot.unmatched) {
-             res.push(testResult.testFilePath);
-        }
-    });
-
-    return res;
+  return failedTestPaths;
 }
 
 module.exports = getFailedSnapshotTests;

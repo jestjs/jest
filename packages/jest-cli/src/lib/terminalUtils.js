@@ -9,8 +9,15 @@
  */
 
 /* $FlowFixMe */
-const getTerminalWidth = (): nubmer => process.stdout.columns;
+const getTerminalWidth = (): number => process.stdout.columns;
+
+const rightPad = (input: string): string => {
+  const termWidth = getTerminalWidth();
+  input += Array(termWidth - input.length + 1).join(' ');
+  return input;
+};
 
 module.exports = {
   getTerminalWidth,
+  rightPad,
 };
