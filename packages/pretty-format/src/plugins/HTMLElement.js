@@ -61,7 +61,13 @@ function printChildren(flatChildren, print, indent, colors, opts) {
     .join(opts.edgeSpacing);
 }
 
-function printAttributes(attributes: Array<Attribute>, indent, colors, opts) {
+function printAttributes(
+  attributes: Array<Attribute>,
+  print,
+  indent,
+  colors,
+  opts,
+) {
   return attributes
     .sort()
     .map(attribute => {
@@ -69,7 +75,7 @@ function printAttributes(attributes: Array<Attribute>, indent, colors, opts) {
         opts.spacing +
         indent(colors.prop.open + attribute.name + colors.prop.close + '=') +
         colors.value.open +
-        `"${attribute.value}"` +
+        print(attribute.value) +
         colors.value.close
       );
     })
@@ -106,7 +112,7 @@ const print = (
   const hasAttributes = element.attributes && element.attributes.length;
   if (hasAttributes) {
     const attributes = Array.prototype.slice.call(element.attributes);
-    result += printAttributes(attributes, indent, colors, opts);
+    result += printAttributes(attributes, print, indent, colors, opts);
   }
 
   const flatChildren = Array.prototype.slice.call(element.childNodes);
