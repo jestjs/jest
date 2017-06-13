@@ -187,6 +187,18 @@ describe('moduleMocker', () => {
       expect(typeof multipleBoundFuncMock).toBe('function');
     });
 
+   it('mocks methods that are bound after mocking', () => {
+      const fooMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(() => {}),
+      );
+
+      const barMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(fooMock.bind(null)),
+      );
+
+      expect(barMock).not.toThrow();
+    });
+
     it('mocks regexp instances', () => {
       expect(() =>
         moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
