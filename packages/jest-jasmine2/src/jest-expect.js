@@ -41,7 +41,8 @@ module.exports = (config: {expand: boolean}) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function(): RawMatcherFn {
-        const result = jasmineMatchersObject[name](jasmine.matchersUtil, null);
+        // use "expect.extend" if you need to use equality testers (via this.equal)
+        const result = jasmineMatchersObject[name](null, null);
         // if there is no 'negativeCompare', both should be handled by `compare`
         const negativeCompare = result.negativeCompare || result.compare;
 
