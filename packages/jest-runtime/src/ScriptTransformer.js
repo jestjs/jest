@@ -208,8 +208,13 @@ class ScriptTransformer {
 
       if (typeof processed === 'string') {
         transformed.code = processed;
-      } else {
+      } else if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
+      } else {
+        throw new TypeError(
+          "Jest: a transform's `process` function must return a string, " +
+            'or an object with `code` key containing this string.',
+        );
       }
     }
 

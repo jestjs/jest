@@ -187,7 +187,7 @@ describe('moduleMocker', () => {
       expect(typeof multipleBoundFuncMock).toBe('function');
     });
 
-   it('mocks methods that are bound after mocking', () => {
+    it('mocks methods that are bound after mocking', () => {
       const fooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(() => {}),
       );
