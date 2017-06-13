@@ -377,9 +377,7 @@ class ModuleMockerClass {
     mockConstructor: () => any,
   ): any {
     let name = metadata.name;
-    // Special case functions named `mockConstructor` to guard for infinite
-    // loops.
-    if (!name || name === MOCK_CONSTRUCTOR_NAME) {
+    if (!name) {
       return mockConstructor;
     }
 
@@ -393,6 +391,12 @@ class ModuleMockerClass {
         // Call bind() just to alter the function name.
         bindCall = '.bind(null)';
       } while (name && name.startsWith(boundFunctionPrefix));
+    }
+
+    // Special case functions named `mockConstructor` to guard for infinite
+    // loops.
+    if (name === MOCK_CONSTRUCTOR_NAME) {
+      return mockConstructor;
     }
 
     // It's a syntax error to define functions with a reserved keyword
