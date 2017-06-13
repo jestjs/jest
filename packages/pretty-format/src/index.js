@@ -13,7 +13,7 @@ import type {
   Refs,
   StringOrNull,
   Plugins,
-  PrettyOptions,
+  Options,
 } from 'types/PrettyFormat';
 
 import style from 'ansi-styles';
@@ -790,7 +790,7 @@ function print(
   );
 }
 
-const DEFAULTS: PrettyOptions = {
+const DEFAULTS: Options = {
   callToJSON: true,
   escapeRegex: false,
   highlight: false,
@@ -822,7 +822,7 @@ function validateOptions(opts: InitialOptions) {
   }
 }
 
-function normalizeOptions(opts: InitialOptions): PrettyOptions {
+function normalizeOptions(opts: InitialOptions): Options {
   const result = {};
 
   Object.keys(DEFAULTS).forEach(
@@ -837,7 +837,7 @@ function normalizeOptions(opts: InitialOptions): PrettyOptions {
   }
 
   // $FlowFixMe the type cast below means YOU are responsible to verify the code above.
-  return (result: PrettyOptions);
+  return (result: Options);
 }
 
 function normalizeTheme(themeOption: ?Theme) {
@@ -867,7 +867,7 @@ function createIndent(indent: number): string {
 }
 
 function prettyFormat(val: any, initialOptions?: InitialOptions): string {
-  let opts: PrettyOptions;
+  let opts: Options;
   if (!initialOptions) {
     opts = DEFAULTS;
   } else {

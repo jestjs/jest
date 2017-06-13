@@ -8,7 +8,13 @@
  * @flow
  */
 
-import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
+import type {
+  Colors,
+  Indent,
+  PluginOptions,
+  Print,
+  Plugin,
+} from 'types/PrettyFormat';
 
 import escapeHTML from './lib/escapeHTML';
 
@@ -80,7 +86,7 @@ const print = (
   element: HTMLElement | HTMLText | HTMLComment,
   print: Print,
   indent: Indent,
-  opts: Options,
+  opts: PluginOptions,
   colors: Colors,
 ): string => {
   if (element.nodeType === 3) {

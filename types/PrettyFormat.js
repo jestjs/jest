@@ -20,7 +20,7 @@ export type Refs = Array<any>;
 export type Print = any => string;
 export type StringOrNull = string | null;
 
-export type PrettyOptions = {|
+export type Options = {|
   callToJSON: boolean,
   escapeRegex: boolean,
   highlight: boolean,
@@ -38,7 +38,7 @@ export type PrettyOptions = {|
   |},
 |};
 
-export type Options = {|
+export type PluginOptions = {|
   edgeSpacing: string,
   min: boolean,
   spacing: string,
@@ -49,7 +49,7 @@ export type Plugin = {
     val: any,
     serialize: Print,
     indent: Indent,
-    opts: Options,
+    opts: PluginOptions,
     colors: Colors,
   ) => string,
   test: any => boolean,

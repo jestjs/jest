@@ -8,7 +8,13 @@
  * @flow
  */
 
-import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
+import type {
+  Colors,
+  Indent,
+  PluginOptions,
+  Print,
+  Plugin,
+} from 'types/PrettyFormat';
 
 import escapeHTML from './lib/escapeHTML';
 
@@ -71,7 +77,7 @@ const print = (
   element: React$Element<*>,
   print: Print,
   indent: Indent,
-  opts: Options,
+  opts: PluginOptions,
   colors: Colors,
 ) => {
   let result = colors.tag.open + '<';
