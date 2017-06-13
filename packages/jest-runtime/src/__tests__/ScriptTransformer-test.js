@@ -75,6 +75,16 @@ jest.mock(
   {virtual: true},
 );
 
+jest.mock(
+  'passthrough-preprocessor',
+  () => {
+    return {
+      process: jest.fn(),
+    };
+  },
+  {virtual: true},
+);
+
 const getCachePath = (fs, config) => {
   for (const path in mockFs) {
     if (path.startsWith(config.cacheDirectory)) {
@@ -101,6 +111,9 @@ describe('ScriptTransformer', () => {
 
     mockFs = object({
       '/fruits/banana.js': ['module.exports = "banana";'].join('\n'),
+      '/fruits/grapefruit.js': [
+        'module.exports = function () { return "grapefruit"; }',
+      ].join('\n'),
       '/fruits/kiwi.js': ['module.exports = () => "kiwi";'].join('\n'),
       '/node_modules/react.js': ['module.exports = "react";'].join('\n'),
       '/styles/App.css': ['root {', '  font-family: Helvetica;', '}'].join(
@@ -179,6 +192,44 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/kiwi.js', {collectCoverage: false});
     expect(vm.Script.mock.calls[1][0]).toEqual(snapshot);
   });
+
+  it(
+    "throws an error if `process` doesn't return a string or an object" +
+      'containing `code` key with processed string',
+    () => {
+      config = Object.assign(config, {
+        transform: [['^.+\\.js$', 'passthrough-preprocessor']],
+      });
+      const scriptTransformer = new ScriptTransformer(config);
+
+      const incorrectReturnValues = [
+        [undefined, '/fruits/banana.js'],
+        [{a: 'a'}, '/fruits/kiwi.js'],
+        [[], '/fruits/grapefruit.js'],
+      ];
+
+      incorrectReturnValues.forEach(([returnValue, filePath]) => {
+        require('passthrough-preprocessor').process.mockReturnValue(
+          returnValue,
+        );
+        expect(() => scriptTransformer.transform(filePath, {})).toThrow(
+          'must return a string',
+        );
+      });
+
+      const correctReturnValues = [
+        ['code', '/fruits/banana.js'],
+        [{code: 'code'}, '/fruits/kiwi.js'],
+      ];
+
+      correctReturnValues.forEach(([returnValue, filePath]) => {
+        require('passthrough-preprocessor').process.mockReturnValue(
+          returnValue,
+        );
+        expect(() => scriptTransformer.transform(filePath, {})).not.toThrow();
+      });
+    },
+  );
 
   it('uses the supplied preprocessor', () => {
     config = Object.assign(config, {
