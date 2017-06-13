@@ -837,22 +837,27 @@ describe('preset', () => {
   });
 
   test('merges with options and moduleNameMapper preset is overridden by options', () => {
-    /* eslint-disable sort-keys */
-    // prettier-ignore
+    // Object initializer not used for properties as a workaround for 
+    //  sort-keys eslint rule while specifing properties in 
+    //  non-alphabetical order for a better test
+    const moduleNameMapper = {};
+    moduleNameMapper.e = 'ee';
+    moduleNameMapper.b = 'bb';
+    moduleNameMapper.c = 'cc';
+    moduleNameMapper.a = 'aa';
     const {options} = normalize(
       {
-        moduleNameMapper: {e: 'ee', c: 'cc', b: 'bb', a: 'aa'},
+        moduleNameMapper,
         preset: 'react-native',
         rootDir: '/root/path/foo',
       },
       {},
     );
-    /* eslint-enable sort-keys */
 
     expect(options.moduleNameMapper).toEqual([
       ['e', 'ee'],
-      ['c', 'cc'],
       ['b', 'bb'],
+      ['c', 'cc'],
       ['a', 'aa'],
     ]);
   });
