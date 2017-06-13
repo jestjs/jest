@@ -40,20 +40,20 @@ const formatError = (error: string | Error): SerializableError => {
 };
 
 module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
-  try {
-    if (
-      data.hasteImplModulePath &&
-      data.hasteImplModulePath !== hasteImplModulePath
-    ) {
-      if (hasteImpl) {
-        throw new Error('jest-haste-map: hasteImplModulePath changed');
-      }
-      hasteImplModulePath = data.hasteImplModulePath;
-      hasteImpl =
-        // $FlowFixMe: dynamic require
-        (require(hasteImplModulePath): HasteImpl);
+  if (
+    data.hasteImplModulePath &&
+    data.hasteImplModulePath !== hasteImplModulePath
+  ) {
+    if (hasteImpl) {
+      throw new Error('jest-haste-map: hasteImplModulePath changed');
     }
+    hasteImplModulePath = data.hasteImplModulePath;
+    hasteImpl =
+      // $FlowFixMe: dynamic require
+      (require(hasteImplModulePath): HasteImpl);
+  }
 
+  try {
     const filePath = data.filePath;
     const content = fs.readFileSync(filePath, 'utf8');
     let module;
