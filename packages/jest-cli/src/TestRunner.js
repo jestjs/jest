@@ -356,11 +356,12 @@ class TestRunner {
     if (typeof reporter === 'string') {
       return {path: reporter};
     } else if (Array.isArray(reporter)) {
-      const [path, options] = reporter;
+      let [path, options] = reporter;
+      options = Object.assign({}, this._options, options)
       return {options, path};
     }
 
-    throw new Error('Reproter should be either a string or an array');
+    throw new Error('Reporter should be either a string or an array');
   }
 
   _bailIfNeeded(
