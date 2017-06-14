@@ -136,7 +136,6 @@ describe('HasteMap', () => {
         return mockFs[path];
       }
 
-
       const error = new Error(`Cannot read path '${path}'.`);
       error.code = 'ENOENT';
       throw error;
