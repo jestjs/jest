@@ -39,7 +39,7 @@ const extractExpectedAssertionsErrors = () => {
         isDirectExpectCall: true,
       }) +
         '\n\n' +
-        `Expected ${numOfAssertionsExpected} to be called but only received ` +
+        `Expected ${numOfAssertionsExpected} to be called but received ` +
         RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
         '.',
     );
