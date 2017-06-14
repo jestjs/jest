@@ -26,8 +26,9 @@ const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 const INITIAL_STATE: State = {
   currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
   expand: undefined,
-  hasFocusedTests: false,
+  hasFocusedTests: false, // whether `.only` was used anywhere
   rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
+  testNameRegexp: null, // run only tests matching this regexp
   testTimeout: 5000,
   unhandledErrors: [],
 };

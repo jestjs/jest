@@ -100,6 +100,11 @@ const handler: EventHandler = (event, state): void => {
       state.unhandledErrors.push(event.error);
       break;
     }
+    case 'set_test_name_pattern': {
+      const regexp = new RegExp(event.pattern, 'i');
+      state.testNameRegexp = regexp;
+      break;
+    }
   }
 };
 

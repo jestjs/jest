@@ -19,7 +19,7 @@ import {
 } from 'jest-matchers';
 import {formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
-import {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
+import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
 import globals from '../index';
@@ -69,6 +69,12 @@ const initialize = ({
 
   global.test.concurrent.skip = global.test.skip;
 
+  if (globalConfig.testNamePattern) {
+    dispatch({
+      name: 'set_test_name_pattern',
+      pattern: globalConfig.testNamePattern,
+    });
+  }
   addEventHandler(eventHandler);
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.

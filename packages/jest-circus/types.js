@@ -122,6 +122,10 @@ export type Event =
       // an `afterAll` hook)
       name: 'error',
       error: Exception,
+    |}
+  | {|
+      name: 'set_test_name_pattern',
+      pattern: string,
     |};
 
 export type TestStatus = 'skip' | 'done';
@@ -139,6 +143,7 @@ export type State = {|
   hasFocusedTests: boolean, // that are defined using test.only
   rootDescribeBlock: DescribeBlock,
   testTimeout: number,
+  testNameRegexp: ?RegExp,
   expand?: boolean, // expand error messages
   unhandledErrors: Array<Exception>,
 |};

@@ -21,6 +21,7 @@ import {
   callAsyncFn,
   getAllHooksForDescribe,
   getEachHooksForTest,
+  getTestID,
   invariant,
   makeTestResults,
 } from './utils';
@@ -58,9 +59,11 @@ const _runTest = async (test: TestEntry): Promise<void> => {
   dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
 
+  const {hasFocusedTests, testNameRegexp} = getState();
   const isSkipped =
     test.mode === 'skip' ||
-    (getState().hasFocusedTests && test.mode !== 'only');
+    (hasFocusedTests && test.mode !== 'only') ||
+    (testNameRegexp && testNameRegexp.test(getTestID(test)));
 
   if (isSkipped) {
     dispatch({name: 'test_skip', test});
