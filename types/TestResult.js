@@ -62,6 +62,7 @@ export type CoverageMap = {|
 |};
 
 export type SerializableError = {|
+  code?: mixed,
   message: string,
   stack: ?string,
   type?: string,

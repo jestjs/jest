@@ -136,7 +136,10 @@ describe('HasteMap', () => {
         return mockFs[path];
       }
 
-      throw new Error(`Cannot read path '${path}'.`);
+
+      const error = new Error(`Cannot read path '${path}'.`);
+      error.code = 'ENOENT';
+      throw error;
     });
     fs.writeFileSync = jest.fn((path, data, options) => {
       expect(options).toBe('utf8');
