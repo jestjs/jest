@@ -407,6 +407,9 @@ class HasteMap extends EventEmitter {
         fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
       },
       error => {
+        if (['ENOENT', 'EACCES'].indexOf(error.code) < 0) {
+          throw error;
+        }
         // If a file cannot be read we remove it from the file list and
         // ignore the failure silently.
         delete hasteMap.files[filePath];

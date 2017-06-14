@@ -33,6 +33,7 @@ const formatError = (error: string | Error): SerializableError => {
   }
 
   return {
+    code: error.code || undefined,
     message: error.message,
     stack: error.stack,
     type: 'Error',
