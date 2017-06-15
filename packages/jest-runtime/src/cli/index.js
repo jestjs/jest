@@ -83,7 +83,7 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
       runtime.requireModule(filePath);
     })
     .catch(e => {
-      console.error(chalk.red(e));
+      console.error(chalk.red(e.stack || e));
       process.on('exit', () => process.exit(1));
     });
 }
