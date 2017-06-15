@@ -71,6 +71,11 @@ const users = [
     pinned: true,
   },
   {
+    caption: 'Airbnb',
+    image: '/jest/img/logos/airbnb.svg',
+    infoLink: 'https://www.airbnb.com/',
+  },
+  {
     caption: 'IBM',
     image: '/jest/img/logos/ibm.png',
     infoLink: 'http://www.ibm.com/',
