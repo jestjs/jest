@@ -128,7 +128,7 @@ In Jest 0.9.0, a new API `jest.unmock` was introduced. Together with a plugin
 for babel, this will now work properly when using `babel-jest`:
 
 ```js
-jest.unmock('foo'); // Use unmock!
+jest.unmock('./foo'); // Use unmock!
 
 import foo from './foo';
 
