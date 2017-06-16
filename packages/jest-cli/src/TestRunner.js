@@ -354,10 +354,11 @@ class TestRunner {
     reporter: ReporterConfig,
   ): {path: string, options?: Object} {
     if (typeof reporter === 'string') {
-      return {path: reporter, options: this._options};
+      return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {
-      let [path, options] = reporter;
-      options = Object.assign({}, this._options, options)
+      const [path] = reporter;
+      let [, options] = reporter;
+      options = Object.assign({}, this._options, options);
       return {options, path};
     }
 
