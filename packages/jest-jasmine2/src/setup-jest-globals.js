@@ -8,18 +8,24 @@
  * @flow
  */
 
-'use strict';
+ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
+ import type {Plugin} from 'types/PrettyFormat';
 
-import type {Config, Path} from 'types/Config';
+ import {getState, setState, extractExpectedAssertionsErrors} from 'jest-matchers';
+ import {SnapshotState, addSerializer} from 'jest-snapshot';
+ import {
+   EXPECTED_COLOR,
+   RECEIVED_COLOR,
+   matcherHint,
+   pluralize,
+ } from 'jest-matcher-utils';
 
-const {getState, setState, extractExpectedAssertionsErrors} = require('jest-matchers');
-const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
-const {
-  EXPECTED_COLOR,
-  RECEIVED_COLOR,
-  matcherHint,
-  pluralize,
-} = require('jest-matcher-utils');
+ export type SetupOptions = {|
+   config: ProjectConfig,
+   globalConfig: GlobalConfig,
+   localRequire: (moduleName: string) => Plugin,
+   testPath: Path,
+ |};
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
