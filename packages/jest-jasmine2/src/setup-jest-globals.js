@@ -8,14 +8,8 @@
  * @flow
  */
 
-<<<<<<< HEAD
  import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
  import type {Plugin} from 'types/PrettyFormat';
-=======
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Plugin} from 'types/PrettyFormat';
-
->>>>>>> origin/use-extractExpectedAssertionsErrors-in-jasmine
 
  import {getState, setState, extractExpectedAssertionsErrors} from 'jest-matchers';
  import {SnapshotState, addSerializer} from 'jest-snapshot';
@@ -26,30 +20,12 @@ import type {Plugin} from 'types/PrettyFormat';
    pluralize,
  } from 'jest-matcher-utils';
 
-<<<<<<< HEAD
  export type SetupOptions = {|
    config: ProjectConfig,
    globalConfig: GlobalConfig,
    localRequire: (moduleName: string) => Plugin,
    testPath: Path,
  |};
-=======
-const {getState, setState, extractExpectedAssertionsErrors} = require('jest-matchers');
-const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
-const {
-  EXPECTED_COLOR,
-  RECEIVED_COLOR,
-  matcherHint,
-  pluralize,
-} from 'jest-matcher-utils';
-
-export type SetupOptions = {|
-  config: ProjectConfig,
-  globalConfig: GlobalConfig,
-  localRequire: (moduleName: string) => Plugin,
-  testPath: Path,
-|};
->>>>>>> origin/use-extractExpectedAssertionsErrors-in-jasmine
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
