@@ -8,14 +8,12 @@
  * @flow
  */
 
-'use strict';
-
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, Path} from 'types/Config';
+import type {ProjectConfig, Path} from 'types/Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-const {getSummary, trimAndFormatPath, wrapAnsiString} = require('./utils');
-const chalk = require('chalk');
+import chalk from 'chalk';
+import {getSummary, trimAndFormatPath, wrapAnsiString} from './utils';
 
 const RUNNING_TEXT = ' RUNS ';
 const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
@@ -26,7 +24,7 @@ const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
  * shifting the whole list.
  */
 class CurrentTestList {
-  _array: Array<{testPath: Path, config: Config} | null>;
+  _array: Array<{testPath: Path, config: ProjectConfig} | null>;
 
   constructor() {
     this._array = [];
@@ -103,7 +101,7 @@ class Status {
     this._emit();
   }
 
-  testStarted(testPath: Path, config: Config) {
+  testStarted(testPath: Path, config: ProjectConfig) {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();
@@ -113,7 +111,7 @@ class Status {
   }
 
   testFinished(
-    config: Config,
+    config: ProjectConfig,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {

@@ -6,18 +6,16 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const {run} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {run} = require('../utils');
+const runJest = require('../runJest');
 
 skipOnWindows.suite();
 
 it('instruments and collects coverage for typescript files', () => {
   const dir = path.resolve(__dirname, '../typescript-coverage');
-  run('yarn --no-lockfile', dir);
+  run('yarn', dir);
   const {stdout} = runJest(dir, ['--coverage', '--no-cache']);
   expect(stdout).toMatchSnapshot();
 });

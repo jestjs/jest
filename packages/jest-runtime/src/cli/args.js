@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
 
 const options = {

@@ -9,16 +9,16 @@
 'use strict';
 
 const {readFileSync} = require('fs');
-const {run} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {run} = require('../utils');
+const runJest = require('../runJest');
 
 skipOnWindows.suite();
 
 it('maps code coverage against original source', () => {
   const dir = path.resolve(__dirname, '../coverage-remapping');
-  run('yarn --no-lockfile', dir);
+  run('yarn', dir);
   runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
 
   const coverageMapFile = path.join(

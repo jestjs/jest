@@ -10,7 +10,7 @@
 let platform;
 
 function testRequire(filename) {
-  return () => platform = require(filename);
+  return () => (platform = require(filename));
 }
 
 test('should explicitly resolve filename.<platform>.js', () => {
@@ -35,6 +35,11 @@ test('should explicitly resolve filename.json', () => {
 
 test('should resolve filename.<platform>.js', () => {
   expect(testRequire('../test1')).not.toThrow();
+  expect(platform.extension).toBe('android.js');
+});
+
+test('should resolve filename.<platform>.js from haste package', () => {
+  expect(testRequire('custom-resolve/test1')).not.toThrow();
   expect(platform.extension).toBe('android.js');
 });
 

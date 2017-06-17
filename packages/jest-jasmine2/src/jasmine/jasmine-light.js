@@ -29,24 +29,26 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+/* @flow */
 /* eslint-disable sort-keys */
-'use strict';
 
-const createSpy = require('./createSpy');
-const Env = require('./Env');
-const JsApiReporter = require('./JsApiReporter');
-const ReportDispatcher = require('./ReportDispatcher');
-const Spec = require('./Spec');
-const SpyRegistry = require('./SpyRegistry');
-const Suite = require('./Suite');
-const Timer = require('./Timer');
+import type {Jasmine} from 'types/Jasmine';
+
+import createSpy from './createSpy';
+import Env from './Env';
+import JsApiReporter from './JsApiReporter';
+import ReportDispatcher from './ReportDispatcher';
+import Spec from './Spec';
+import SpyRegistry from './SpyRegistry';
+import Suite from './Suite';
+import Timer from './Timer';
 
 exports.create = function() {
   const j$ = {};
 
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-  j$.getEnv = function(options) {
+  j$.getEnv = function(options: Object) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
@@ -64,17 +66,17 @@ exports.create = function() {
   return j$;
 };
 
-exports.interface = function(jasmine, env) {
+exports.interface = function(jasmine: Jasmine, env: any) {
   const jasmineInterface = {
-    describe(description, specDefinitions) {
+    describe(description: string, specDefinitions: Function) {
       return env.describe(description, specDefinitions);
     },
 
-    xdescribe(description, specDefinitions) {
+    xdescribe(description: string, specDefinitions: Function) {
       return env.xdescribe(description, specDefinitions);
     },
 
-    fdescribe(description, specDefinitions) {
+    fdescribe(description: string, specDefinitions: Function) {
       return env.fdescribe(description, specDefinitions);
     },
 
@@ -114,7 +116,7 @@ exports.interface = function(jasmine, env) {
       return env.fail.apply(env, arguments);
     },
 
-    spyOn(obj, methodName) {
+    spyOn(obj: Object, methodName: string) {
       return env.spyOn(obj, methodName);
     },
 

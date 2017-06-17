@@ -1,7 +1,5 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-'use strict';
-
 function infiniteTimerGame(callback) {
   console.log('Ready....go!');
 
@@ -13,7 +11,6 @@ function infiniteTimerGame(callback) {
     setTimeout(() => {
       infiniteTimerGame(callback);
     }, 10000);
-
   }, 1000);
 }
 

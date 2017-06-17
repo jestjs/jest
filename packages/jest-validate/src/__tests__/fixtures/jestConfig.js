@@ -8,11 +8,9 @@
  * @flow
  */
 
-'use strict';
-
-const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
+const chalk = require('chalk');
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
@@ -86,7 +84,6 @@ const validConfig = {
     providesModuleNodeModules: ['react', 'react-native'],
   },
   logHeapUsage: true,
-  logTransformErrors: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',
@@ -129,7 +126,6 @@ const validConfig = {
 
 const format = (value: string) => require('pretty-format')(value, {min: true});
 
-/* eslint-disable max-len */
 const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Object) =>
     `  Option ${chalk.bold('preprocessorIgnorePatterns')} was replaced by ${chalk.bold('transformIgnorePatterns')}, which support multiple preprocessors.
@@ -151,7 +147,6 @@ const deprecatedConfig = {
 
   Please update your configuration.`,
 };
-/* eslint-enable max-len */
 
 module.exports = {
   defaultConfig,

@@ -1,5 +1,102 @@
 ## master
 
+## jest 20.0.4
+
+* Fix jest-haste-map's handling of duplicate module IDs. ([#3647](https://github.com/facebook/jest/pull/3647)
+* Fix behavior of `enableAutomock()` when automock is set to false. ([#3624](https://github.com/facebook/jest/pull/3624)
+* Fix progress bar in windows. ([#3626](https://github.com/facebook/jest/pull/3626)
+
+## jest 20.0.3
+
+* Fix arrow typeahead on Windows. ([#3563](https://github.com/facebook/jest/pull/3563))
+* Fix reporters 'default' setting. ([#3562](https://github.com/facebook/jest/pull/3562))
+* Fix to make Jest fail when the coverage threshold not met. ([#3554](https://github.com/facebook/jest/pull/3554))
+
+## jest 20.0.1
+
+* Add ansi-regex to pretty-format dependencies ([#3498](https://github.com/facebook/jest/pull/3498))
+* Fix <rootDir> replacement in testMatch and moduleDirectories ([#3538](https://github.com/facebook/jest/pull/3538))
+* Fix expect.hasAssertions() to throw when passed arguments ([#3526](https://github.com/facebook/jest/pull/3526))
+* Fix stack traces without proper error messages ([#3513](https://github.com/facebook/jest/pull/3513))
+* Fix support for custom extensions through haste packages ([#3537](https://github.com/facebook/jest/pull/3537))
+* Fix test contexts between test functions ([#3506](https://github.com/facebook/jest/pull/3506))
+
+## jest 20.0.0
+
+* New `--projects` option to run one instance of Jest in multiple projects at the same time. ([#3400](https://github.com/facebook/jest/pull/3400))
+* New multi project runner ([#3156](https://github.com/facebook/jest/pull/3156))
+* New keyboard/arrow selection for watch mode typeaheads. ([#3386](https://github.com/facebook/jest/pull/3386))
+* New --listTests flag. ([#3441](https://github.com/facebook/jest/pull/3441))
+* New --showConfig flag. ([#3296](https://github.com/facebook/jest/pull/3296))
+* New promise support for all `expect` matchers through `.resolves` and `.rejects`. ([#3068](https://github.com/facebook/jest/pull/3068))
+* New `expect.hasAssertions()` function similar to `expect.assertions()`. ([#3379](https://github.com/facebook/jest/pull/3379))
+* New `this.equals` function exposed to custom matchers. ([#3469](https://github.com/facebook/jest/pull/3469))
+* New `valid-expect` lint rule in `eslint-plugin-jest`. ([#3067](https://github.com/facebook/jest/pull/3067))
+* New HtmlElement pretty-format plugin. ([#3230](https://github.com/facebook/jest/pull/3230))
+* New Immutable pretty-format plugins. ([#2899](https://github.com/facebook/jest/pull/2899))
+* New test environment per file setting through `@jest-environment` in the docblock. ([#2859](https://github.com/facebook/jest/pull/2859))
+* New feature that allows every configuration option to be set from the command line. ([#3424](https://github.com/facebook/jest/pull/3424))
+* New feature to add custom reporters to Jest through `reporters` in the configuration. ([#3349](https://github.com/facebook/jest/pull/3349))
+* New feature to add expected and actual values to AssertionError. ([#3217](https://github.com/facebook/jest/pull/3217))
+* New feature to map code coverage from transformers. ([#2290](https://github.com/facebook/jest/pull/2290))
+* New feature to run untested code coverage in parallel. ([#3407](https://github.com/facebook/jest/pull/3407))
+* New option to define a custom resolver. ([#2998](https://github.com/facebook/jest/pull/2998))
+* New printing support for text and comment nodes in html pretty-format. ([#3355](https://github.com/facebook/jest/pull/3355))
+* New snapshot testing FAQ ([#3425](https://github.com/facebook/jest/pull/3425))
+* New support for custom platforms on jest-haste-map. ([#3162](https://github.com/facebook/jest/pull/3162))
+* New support for mocking native async methods. ([#3209](https://github.com/facebook/jest/pull/3209))
+* New guide on how to use Jest with any JavaScript framework. ([#3243](https://github.com/facebook/jest/pull/3243))
+* New translation system for the Jest website.
+* New collapsing watch mode usage prompt after first run. ([#3078](https://github.com/facebook/jest/pull/3078))
+* Breaking Change: Forked Jasmine 2.5 into Jest's own test runner and rewrote large parts of Jasmine. ([#3147](https://github.com/facebook/jest/pull/3147))
+* Breaking Change: Jest does not write new snapshots by default on CI. ([#3456](https://github.com/facebook/jest/pull/3456))
+* Breaking Change: Moved the typescript parser from `jest-editor-support` into a separate `jest-test-typescript-parser` package. ([#2973](https://github.com/facebook/jest/pull/2973))
+* Breaking Change: Replaced auto-loading of babel-polyfill with only regenerator-runtime, fixes a major memory leak. ([#2755](https://github.com/facebook/jest/pull/2755))
+* Fixed `babel-jest` to look up the `babel` field in `package.json` as a fallback.
+* Fixed `jest-editor-support`'s parser to not crash on incomplete ASTs. ([#3259](https://github.com/facebook/jest/pull/3259))
+* Fixed `jest-resolve` to use `is-builtin-module` instead of `resolve.isCore`. ([#2997](https://github.com/facebook/jest/pull/2997))
+* Fixed `jest-snapshot` to normalize line endings in the `serialize` function. ([#3002](https://github.com/facebook/jest/pull/3002))
+* Fixed behavior of `--silent` flag. ([#3003](https://github.com/facebook/jest/pull/3003))
+* Fixed bug with watchers on macOS causing test to crash. ([#2957](https://github.com/facebook/jest/pull/2957))
+* Fixed CLI `notify` option not taking precedence over config option. ([#3340](https://github.com/facebook/jest/pull/3340))
+* Fixed detection of the npm client in SummaryReporter to support Yarn. ([#3263](https://github.com/facebook/jest/pull/3263))
+* Fixed done.fail not passing arguments ([#3241](https://github.com/facebook/jest/pull/3241))
+* Fixed fake timers to restore after resetting mocks. ([#2467](https://github.com/facebook/jest/pull/2467))
+* Fixed handling of babylon's parser options in `jest-editor-support`. ([#3344](https://github.com/facebook/jest/pull/3344))
+* Fixed Jest to properly cache transform results. ([#3334](https://github.com/facebook/jest/pull/3334))
+* Fixed Jest to use human-readable colors for Jest's own snapshots. ([#3119](https://github.com/facebook/jest/pull/3119))
+* Fixed jest-config to use UID for default cache folder. ([#3380](https://github.com/facebook/jest/pull/3380)), ([#3387](https://github.com/facebook/jest/pull/3387))
+* Fixed jest-runtime to expose inner error when it fails to write to the cache. ([#3373](https://github.com/facebook/jest/pull/3373))
+* Fixed lifecycle hooks to make afterAll hooks operate the same as afterEach. ([#3275](https://github.com/facebook/jest/pull/3275))
+* Fixed pretty-format to run plugins before serializing nested basic values. ([#3017](https://github.com/facebook/jest/pull/3017))
+* Fixed return value of mocks so they can explicitly be set to return `undefined`. ([#3354](https://github.com/facebook/jest/pull/3354))
+* Fixed runner to run tests associated with snapshots when the snapshot changes. ([#3025](https://github.com/facebook/jest/pull/3025))
+* Fixed snapshot serializer require, restructured pretty-format. ([#3399](https://github.com/facebook/jest/pull/3399))
+* Fixed spacing in test name pattern typeahead ([#3315](https://github.com/facebook/jest/pull/3315))
+* Fixed support for Babel 7 in babel-jest. ([#3271](https://github.com/facebook/jest/pull/3271))
+* Fixed testMatch to find tests in .folders. ([#3006](https://github.com/facebook/jest/pull/3006))
+* Fixed testNamePattern and testPathPattern to work better together. ([#3327](https://github.com/facebook/jest/pull/3327))
+* Fixed to show reject reason when expecting resolve. ([#3134](https://github.com/facebook/jest/pull/3134))
+* Fixed toHaveProperty() to use hasOwnProperty from Object ([#3410](https://github.com/facebook/jest/pull/3410))
+* Fixed watch mode typeahead filter cursor behavior. ([#3392](https://github.com/facebook/jest/pull/3392))
+* Fixed watch mode's screen clearing. ([#2959](https://github.com/facebook/jest/pull/2959)) ([#3294](https://github.com/facebook/jest/pull/3294))
+* Improved and consolidated Jest's configuration file resolution. ([#3472](https://github.com/facebook/jest/pull/3472))
+* Improved documentation throughout the Jest website.
+* Improved documentation to explicitly mention that snapshots must be reviewed. ([#3203](https://github.com/facebook/jest/pull/3203))
+* Improved documentation to make it clear CRA users don't need to add dependencies. ([#3312](https://github.com/facebook/jest/pull/3312))
+* Improved eslint-plugin-jest's handling of `expect`. ([#3306](https://github.com/facebook/jest/pull/3306))
+* Improved flow-coverage, eslint rules and test coverage within the Jest repository.
+* Improved printing of `expect.assertions` error. ([#3033](https://github.com/facebook/jest/pull/3033))
+* Improved Windows test coverage of Jest.
+* Refactored configs & transform ([#3376](https://github.com/facebook/jest/pull/3376))
+* Refactored reporters to pass individual Tests to reporters. ([#3289](https://github.com/facebook/jest/pull/3289))
+* Refactored TestRunner ([#3166](https://github.com/facebook/jest/pull/3166))
+* Refactored watch mode prompts. ([#3290](https://github.com/facebook/jest/pull/3290))
+* Deleted `jest-file-exists`. ([#3105](https://github.com/facebook/jest/pull/3105))
+* Removed `Config` type. ([#3366](https://github.com/facebook/jest/pull/3366))
+* Removed all usage of `jest-file-exists`. ([#3101](https://github.com/facebook/jest/pull/3101))
+* Adopted prettier on the Jest codebase.
+
 ## jest 19.0.1
 
 * Fix infinite loop when using `--watch` with `--coverage`.

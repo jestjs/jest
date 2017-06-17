@@ -29,23 +29,16 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
-'use strict';
+/* @flow */
 
-const CallTracker = require('./CallTracker');
-const createSpy = require('./createSpy');
-const SpyStrategy = require('./SpyStrategy');
+import CallTracker from './CallTracker';
 
-const formatErrorMsg = function() {
-  function generateErrorMsg(domain, usage) {
-    const usageDefinition = usage ? '\nUsage: ' + usage : '';
+import createSpy from './createSpy';
+import SpyStrategy from './SpyStrategy';
 
-    return function errorMsg(msg) {
-      return domain + ' : ' + msg + usageDefinition;
-    };
-  }
-
-  return generateErrorMsg;
+const formatErrorMsg = (domain: string, usage?: string) => {
+  const usageDefinition = usage ? '\nUsage: ' + usage : '';
+  return msg => domain + ' : ' + msg + usageDefinition;
 };
 
 function isSpy(putativeSpy) {
@@ -60,7 +53,7 @@ function isSpy(putativeSpy) {
 
 const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 
-function SpyRegistry(options) {
+function SpyRegistry(options: Object) {
   options = options || {};
   const currentSpies =
     options.currentSpies ||

@@ -2,58 +2,44 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const Feed = require('feed');
 
 const blogFolder = path.resolve('../blog/');
 const blogRootURL = 'https://facebook.github.io/jest/blog/';
-const jestImage = (
+const jestImage =
   'https://cdn.rawgit.com/facebook/jest/' +
-  'master/packages/jest-cli/src/assets/jest_logo.png'
-);
+  'master/packages/jest-cli/src/assets/jest_logo.png';
 
 const getURLFromFile = file => {
-  const url = (
+  const url =
     file.substring(0, 11).split('-').join('/') +
-    file.substring(11).replace(/\.md$/, '.html')
-  );
-  return (
-    `${blogRootURL}${url}`
-  );
+    file.substring(11).replace(/\.md$/, '.html');
+  return `${blogRootURL}${url}`;
 };
 
 const retrieveMetaData = file => {
-  const postPieces = String(
-    fs.readFileSync(
-      path.join(blogFolder, file)
-    )
-  ).split('---');
+  const postPieces = String(fs.readFileSync(path.join(blogFolder, file))).split(
+    '---'
+  );
   const header = postPieces[1];
   const post = postPieces.slice(2).join('---');
 
   const indexOfTruncate = post.indexOf('<!--truncate-->');
 
   // if there's no truncate tag just take the first paragraph.
-  const postExcerpt = (
-    indexOfTruncate === -1 ?
-    post.replace(/\n\r/g, '\n').split('.\n\n')[0] :
-    post.substring(0, indexOfTruncate)
-  );
+  const postExcerpt = indexOfTruncate === -1
+    ? post.replace(/\n\r/g, '\n').split('.\n\n')[0]
+    : post.substring(0, indexOfTruncate);
 
-  return (
-    header
-      .split('\n')
-      .filter(x => x)
-      .reduce(
-        (metadata, str) => {
-          const matches = /(.*?): (.*)/.exec(str);
-          metadata[matches[1]] = matches[2];
-          return metadata;
-        }, {
-          url: getURLFromFile(file),
-          description: postExcerpt,
-        }
-      )
-  );
+  return header.split(os.EOL).filter(x => x).reduce((metadata, str) => {
+    const matches = /(.*?): (.*)/.exec(str);
+    metadata[matches[1]] = matches[2];
+    return metadata;
+  }, {
+    url: getURLFromFile(file),
+    description: postExcerpt,
+  });
 };
 
 module.exports = function(type) {
@@ -68,8 +54,7 @@ module.exports = function(type) {
 
   const feed = new Feed({
     title: 'Jest Blog',
-    description:
-      'The best place to stay up-to-date with the latest Jest news and events.',
+    description: 'The best place to stay up-to-date with the latest Jest news and events.',
     id: blogRootURL,
     link: blogRootURL,
     image: jestImage,
@@ -82,16 +67,16 @@ module.exports = function(type) {
     feed.addItem({
       title: post.title,
       link: post.url,
-      author: [{
-        name: post.author,
-        link: post.authorURL,
-      }],
+      author: [
+        {
+          name: post.author,
+          link: post.authorURL,
+        },
+      ],
       date: new Date(key + 'T06:00:00'),
       description: post.description,
     });
   });
 
-  return (
-    type === 'rss' ? feed.render('rss-2.0') : feed.render('atom-1.0')
-  );
+  return type === 'rss' ? feed.render('rss-2.0') : feed.render('atom-1.0');
 };

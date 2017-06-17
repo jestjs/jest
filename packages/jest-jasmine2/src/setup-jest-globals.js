@@ -8,8 +8,14 @@
  * @flow
  */
 
+<<<<<<< HEAD
  import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
  import type {Plugin} from 'types/PrettyFormat';
+=======
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
+import type {Plugin} from 'types/PrettyFormat';
+
+>>>>>>> origin/use-extractExpectedAssertionsErrors-in-jasmine
 
  import {getState, setState, extractExpectedAssertionsErrors} from 'jest-matchers';
  import {SnapshotState, addSerializer} from 'jest-snapshot';
@@ -20,12 +26,30 @@
    pluralize,
  } from 'jest-matcher-utils';
 
+<<<<<<< HEAD
  export type SetupOptions = {|
    config: ProjectConfig,
    globalConfig: GlobalConfig,
    localRequire: (moduleName: string) => Plugin,
    testPath: Path,
  |};
+=======
+const {getState, setState, extractExpectedAssertionsErrors} = require('jest-matchers');
+const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
+const {
+  EXPECTED_COLOR,
+  RECEIVED_COLOR,
+  matcherHint,
+  pluralize,
+} from 'jest-matcher-utils';
+
+export type SetupOptions = {|
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
+  localRequire: (moduleName: string) => Plugin,
+  testPath: Path,
+|};
+>>>>>>> origin/use-extractExpectedAssertionsErrors-in-jasmine
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -79,27 +103,21 @@ const patchJasmine = () => {
   })(global.jasmine.Spec);
 };
 
-type Options = {
-  testPath: Path,
-  config: Config,
-};
-
-module.exports = ({testPath, config}: Options) => {
+module.exports = ({
+  config,
+  globalConfig,
+  localRequire,
+  testPath,
+}: SetupOptions) => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers.concat().reverse().forEach(path => {
-    // $FlowFixMe
-    addSerializer(require(path));
+    addSerializer(localRequire(path));
   });
-  setState({testPath});
   patchJasmine();
-  const snapshotState = initializeSnapshotState(
-    testPath,
-    config.updateSnapshot,
-    '',
-    config.expand,
-  );
-  setState({snapshotState});
+  const {expand, updateSnapshot} = globalConfig;
+  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
 };

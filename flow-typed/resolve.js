@@ -7,11 +7,10 @@
  *
  * @flow
  */
-'use strict';
 
 declare module "resolve" {
   declare function isCore(moduleName: string): boolean;
-  declare function sync(path: string): string;
+  declare function sync(path: string, opts: Object): string;
 }
 
 declare module "resolve/lib/node-modules-paths" {

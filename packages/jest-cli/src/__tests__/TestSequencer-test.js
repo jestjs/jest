@@ -9,10 +9,10 @@
 
 jest.mock('fs');
 
-const TestSequencer = require('../TestSequencer');
-
 const fs = require('fs');
 const path = require('path');
+
+const TestSequencer = require('../TestSequencer');
 
 const FAIL = 0;
 const SUCCESS = 1;
@@ -46,6 +46,7 @@ beforeEach(() => {
   sequencer = new TestSequencer();
 
   fs.readFileSync = jest.fn(() => '{}');
+  fs.existsSync = () => true;
   fs.statSync = jest.fn(filePath => ({size: filePath.length}));
   fs.writeFileSync = jest.fn();
 });
@@ -120,6 +121,45 @@ test('sorts based on failures, timing information and file size', () => {
   ]);
 });
 
+test('writes the cache based on results without existing cache', () => {
+  fs.readFileSync = jest.fn(() => {
+    throw new Error('File does not exist.');
+  });
+
+  const testPaths = ['/test-a.js', '/test-b.js', '/test-c.js'];
+  const tests = sequencer.sort(toTests(testPaths));
+  sequencer.cacheResults(tests, {
+    testResults: [
+      {
+        numFailingTests: 0,
+        perfStats: {end: 2, start: 1},
+        testFilePath: '/test-a.js',
+      },
+      {
+        numFailingTests: 0,
+        perfStats: {end: 0, start: 0},
+        skipped: true,
+        testFilePath: '/test-b.js',
+      },
+      {
+        numFailingTests: 1,
+        perfStats: {end: 4, start: 1},
+        testFilePath: '/test-c.js',
+      },
+      {
+        numFailingTests: 1,
+        perfStats: {end: 2, start: 1},
+        testFilePath: '/test-x.js',
+      },
+    ],
+  });
+  const fileData = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+  expect(fileData).toEqual({
+    '/test-a.js': [SUCCESS, 1],
+    '/test-c.js': [FAIL, 3],
+  });
+});
+
 test('writes the cache based on the results', () => {
   fs.readFileSync = jest.fn(() =>
     JSON.stringify({
@@ -167,14 +207,14 @@ test('writes the cache based on the results', () => {
 test('works with multiple contexts', () => {
   fs.readFileSync = jest.fn(
     cacheName =>
-      (cacheName.startsWith(path.sep + 'cache' + path.sep)
+      cacheName.startsWith(path.sep + 'cache' + path.sep)
         ? JSON.stringify({
             '/test-a.js': [SUCCESS, 5],
             '/test-b.js': [FAIL, 1],
           })
         : JSON.stringify({
             '/test-c.js': [FAIL],
-          })),
+          }),
   );
 
   const testPaths = [

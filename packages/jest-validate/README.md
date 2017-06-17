@@ -62,7 +62,7 @@ Almost anything can be overwritten to suite your needs.
 
 ### Options
 
-* `comment` – optional string to be rendered bellow error/warning message.
+* `comment` – optional string to be rendered below error/warning message.
 * `condition` – an optional function with validation condition.
 * `deprecate`, `error`, `unknown` – optional functions responsible for displaying warning and error messages.
 * `deprecatedConfig` – optional object with deprecated config keys.

@@ -7,12 +7,9 @@
  *
  * @emails oncall+jsinfra
  */
-/* eslint-disable max-len */
 
-'use strict';
-
-const jestExpect = require('../');
 const {stringify} = require('jest-matcher-utils');
+const jestExpect = require('../');
 
 describe('.rejects', () => {
   it('should reject', async () => {
@@ -680,10 +677,13 @@ describe('.toMatch()', () => {
 });
 
 describe('.toHaveLength', () => {
-  [[[1, 2], 2], [[], 0], [['a', 'b'], 2], ['abc', 3], ['', 0]].forEach(([
-    received,
-    length,
-  ]) => {
+  [
+    [[1, 2], 2],
+    [[], 0],
+    [['a', 'b'], 2],
+    ['abc', 3],
+    ['', 0],
+  ].forEach(([received, length]) => {
     test(`{pass: true} expect(${stringify(received)}).toHaveLength(${length})`, () => {
       jestExpect(received).toHaveLength(length);
       expect(() =>
@@ -692,10 +692,13 @@ describe('.toHaveLength', () => {
     });
   });
 
-  [[[1, 2], 3], [[], 1], [['a', 'b'], 99], ['abc', 66], ['', 1]].forEach(([
-    received,
-    length,
-  ]) => {
+  [
+    [[1, 2], 3],
+    [[], 1],
+    [['a', 'b'], 99],
+    ['abc', 66],
+    ['', 1],
+  ].forEach(([received, length]) => {
     test(`{pass: false} expect(${stringify(received)}).toHaveLength(${length})`, () => {
       jestExpect(received).not.toHaveLength(length);
       expect(() =>
@@ -721,6 +724,7 @@ describe('.toHaveProperty()', () => {
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
+    [Object.assign(Object.create(null), {property: 1}), 'property', 1],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(obj)}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
       jestExpect(obj).toHaveProperty(keyPath, value);

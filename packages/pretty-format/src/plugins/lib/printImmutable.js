@@ -8,9 +8,7 @@
  * @flow
  */
 
-'use strict';
-
-import type {Colors, Indent, Options, Print} from '../../types.js';
+import type {Colors, Indent, Options, Print} from 'types/PrettyFormat';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
@@ -18,7 +16,7 @@ const SPACE = ' ';
 const addKey = (isMap: boolean, key: any) => (isMap ? key + ': ' : '');
 
 const addFinalEdgeSpacing = (length: number, edgeSpacing: string) =>
-  (length > 0 ? edgeSpacing : '');
+  length > 0 ? edgeSpacing : '';
 
 const printImmutable = (
   val: any,
@@ -30,19 +28,27 @@ const printImmutable = (
   isMap: boolean,
 ): string => {
   const [openTag, closeTag] = isMap ? ['{', '}'] : ['[', ']'];
+  const fullStructureName = val._name || immutableDataStructureName;
+
   let result =
     IMMUTABLE_NAMESPACE +
-    immutableDataStructureName +
+    fullStructureName +
     SPACE +
     openTag +
     opts.edgeSpacing;
 
   const immutableArray = [];
-  val.forEach((item, key) =>
-    immutableArray.push(
-      indent(addKey(isMap, key) + print(item, print, indent, opts, colors)),
-    ),
-  );
+
+  const pushToImmutableArray = (item: any, key: string) => {
+    immutableArray.push(indent(addKey(isMap, key) + print(item)));
+  };
+
+  if (Array.isArray(val._keys)) {
+    // if we have a record, we can not iterate on it directly
+    val._keys.forEach(key => pushToImmutableArray(val.get(key), key));
+  } else {
+    val.forEach((item, key) => pushToImmutableArray(item, key));
+  }
 
   result += immutableArray.join(',' + opts.spacing);
   if (!opts.min && immutableArray.length > 0) {

@@ -7,12 +7,12 @@
  *
  * @flow
  */
-'use strict';
 
-const os = require('os');
+import type {Argv} from 'types/Argv';
 
-// eslint-disable-next-line arrow-parens
-const getMaxWorkers = (argv: Object): number => {
+import os from 'os';
+
+const getMaxWorkers = (argv: Argv): number => {
   if (argv.runInBand) {
     return 1;
   } else if (argv.maxWorkers) {

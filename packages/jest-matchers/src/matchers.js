@@ -7,27 +7,24 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
-
-'use strict';
 
 import type {MatchersObject} from 'types/Matchers';
 
-const diff = require('jest-diff');
-const {escapeStrForRegex} = require('jest-regex-util');
-const {getObjectSubset, getPath} = require('./utils');
-const {
+import diff from 'jest-diff';
+import getType from 'jest-get-type';
+import {escapeStrForRegex} from 'jest-regex-util';
+import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   ensureNoExpected,
   ensureNumbers,
-  getType,
   matcherHint,
   printReceived,
   printExpected,
   printWithType,
-} = require('jest-matcher-utils');
-const {equals} = require('./jasmine-utils');
+} from 'jest-matcher-utils';
+import {getObjectSubset, getPath, hasOwnProperty} from './utils';
+import {equals} from './jasmine-utils';
 
 type ContainIterable =
   | Array<any>
@@ -77,7 +74,7 @@ const subsetEquality = (object, subset) => {
   }
   return Object.keys(subset).every(
     key =>
-      object.hasOwnProperty(key) &&
+      hasOwnProperty(object, key) &&
       equals(object[key], subset[key], [iterableEquality, subsetEquality]),
   );
 };
@@ -543,7 +540,7 @@ const matchers: MatchersObject = {
 
     let diffString;
 
-    if (valuePassed && result.hasOwnProperty('value')) {
+    if (valuePassed && hasOwnProperty(result, 'value')) {
       diffString = diff(value, result.value, {
         expand: this.expand,
       });
@@ -553,7 +550,7 @@ const matchers: MatchersObject = {
       ? equals(result.value, value, [iterableEquality])
       : hasEndProp;
 
-    if (result.hasOwnProperty('value')) {
+    if (hasOwnProperty(result, 'value')) {
       // we don't diff numbers. So instead we'll show the object that contains the resulting value.
       // And to get that object we need to go up a level.
       result.traversedPath.pop();

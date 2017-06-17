@@ -6,11 +6,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const TestReconciler = require('../TestReconciler');
 const fs = require('fs');
 const path = require('path');
+const TestReconciler = require('../TestReconciler');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 
 const reconcilerWithFile = (file: string): TestReconciler => {
@@ -47,12 +45,49 @@ describe('Test Reconciler', () => {
       expect(status.line).toEqual(12);
       const errorMessage = 'Expected value to be falsy, instead received true';
       expect(status.terseMessage).toEqual(errorMessage);
-      expect(status.shortMessage).toEqual(
-        `Error: expect(received).toBeFalsy()
+      expect(status.shortMessage).toEqual(`Error: expect(received).toBeFalsy()
 
 Expected value to be falsy, instead received
-  true`,
-      );
+  true`);
     });
+  });
+});
+
+describe('Terse Messages', () => {
+  it('handles shrinking a snapshot message', () => {
+    const parser = reconcilerWithFile('failing_expects.json');
+    const file =
+      '/Users/orta/dev/projects/artsy/js/' +
+      'libs/jest-snapshots-svg/src/_tests/example.test.ts';
+
+    const terseForTest = name => parser.stateForTestAssertion(file, name);
+
+    let message = 'Expected value to equal: 2, Received: 1';
+    let testName = 'numbers';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
+
+    message = 'Expected value to equal: 2, Received: "1"';
+    testName = 'string to numbers: numbers';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
+
+    message = 'Expected value to equal: {"a": 2}, Received: {}';
+    testName = 'objects';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
+
+    message = 'Snapshot has changed';
+    testName = 'snapshots';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
+
+    message = 'Expected value to be greater than: 3, Received: 2';
+    testName = 'greater than';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
+
+    message = 'Expected value to be falsy, instead received 2';
+    testName = 'falsy';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
+
+    message = 'Expected value to be truthy, instead received null';
+    testName = 'truthy';
+    expect(terseForTest(testName).terseMessage).toEqual(message);
   });
 });

@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 const validatePattern = (pattern: string) => {
   if (pattern) {

@@ -8,14 +8,10 @@
  * @flow
  */
 
-'use strict';
+import type {Argv} from 'types/Argv';
 
-const chalk = require('chalk');
-const {
-  ValidationError,
-  format,
-  createDidYouMeanMessage,
-} = require('jest-validate');
+import chalk from 'chalk';
+import {ValidationError, format, createDidYouMeanMessage} from 'jest-validate';
 
 const BULLET: string = chalk.bold('\u25cf');
 
@@ -48,7 +44,7 @@ const createCLIValidationError = (
   return new ValidationError(title, message, comment);
 };
 
-const validateCLIOptions = (argv: Object, options: Object) => {
+const validateCLIOptions = (argv: Argv, options: Object) => {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),

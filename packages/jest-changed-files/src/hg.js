@@ -8,20 +8,18 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 
-const path = require('path');
-const childProcess = require('child_process');
+import path from 'path';
+import childProcess from 'child_process';
 
 const env = Object.assign({}, process.env, {
   HGPLAIN: 1,
 });
 
 type Options = {|
-  withAncestor?: boolean,
   lastCommit?: boolean,
+  withAncestor?: boolean,
 |};
 
 function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
@@ -35,8 +33,8 @@ function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
     const child = childProcess.spawn('hg', args, {cwd, env});
     let stdout = '';
     let stderr = '';
-    child.stdout.on('data', data => stdout += data);
-    child.stderr.on('data', data => stderr += data);
+    child.stdout.on('data', data => (stdout += data));
+    child.stderr.on('data', data => (stderr += data));
     child.on('error', e => reject(e));
     child.on('close', code => {
       if (code === 0) {
@@ -62,7 +60,7 @@ function isHGRepository(cwd: string): Promise<?string> {
     try {
       let stdout = '';
       const child = childProcess.spawn('hg', ['root'], {cwd, env});
-      child.stdout.on('data', data => stdout += data);
+      child.stdout.on('data', data => (stdout += data));
       child.on('error', () => resolve(null));
       child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
     } catch (e) {

@@ -7,9 +7,9 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Path} from 'types/Config';
+import type {SnapshotState} from 'jest-snapshot';
 
 export type ExpectationResult = {
   pass: boolean,
@@ -24,15 +24,40 @@ export type RawMatcherFn = (
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
-export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
-  assertionCalls?: number,
-  assertionsExpected?: ?number,
+  assertionCalls: number,
   currentTestName?: string,
+  equals: (any, any) => boolean,
+  expand?: boolean,
+  expectedAssertionsNumber: ?number,
+  isExpectingAssertions: ?boolean,
+  isNot: boolean,
+  snapshotState: SnapshotState,
+  suppressedErrors: Array<Error>,
   testPath?: Path,
+  utils: Object,
 };
+
+export type AsymmetricMatcher = Object;
 export type MatchersObject = {[id: string]: RawMatcherFn};
-export type Expect = (expected: any) => ExpectationObject;
+export type Expect = {
+  (expected: any): ExpectationObject,
+  addSnapshotSerializer(any): void,
+  assertions(number): void,
+  extend(any): void,
+  extractExpectedAssertionsErrors(): Array<Error>,
+  getState(): MatcherState,
+  hasAssertions(): void,
+  setState(Object): void,
+
+  any(expectedObject: any): AsymmetricMatcher,
+  anything(): AsymmetricMatcher,
+  arrayContaining(sample: Array<any>): AsymmetricMatcher,
+  objectContaining(sample: Object): AsymmetricMatcher,
+  stringContaining(expected: string): AsymmetricMatcher,
+  stringMatching(expected: string | RegExp): AsymmetricMatcher,
+};
+
 export type ExpectationObject = {
   [id: string]: ThrowingMatcherFn,
   resolves: {

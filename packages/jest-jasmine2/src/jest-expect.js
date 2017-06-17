@@ -7,34 +7,28 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Config} from 'types/Config';
 import type {RawMatcherFn} from 'types/Matchers';
 
-const expect = require('jest-matchers');
-
-const {
+import expect from 'jest-matchers';
+import {
   addSerializer,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
-} = require('jest-snapshot');
+} from 'jest-snapshot';
 
 type JasmineMatcher = {
-  (): JasmineMatcher,
+  (matchersUtil: any, context: any): JasmineMatcher,
   compare: () => RawMatcherFn,
   negativeCompare: () => RawMatcherFn,
 };
 type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
-module.exports = (config: Config) => {
+module.exports = (config: {expand: boolean}) => {
   global.expect = expect;
-  expect.setState({
-    expand: config.expand,
-  });
+  expect.setState({expand: config.expand});
   expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
-
-  expect.addSnapshotSerializer = addSerializer;
+  (expect: Object).addSnapshotSerializer = addSerializer;
 
   const jasmine = global.jasmine;
   jasmine.anything = expect.anything;
@@ -47,7 +41,8 @@ module.exports = (config: Config) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function(): RawMatcherFn {
-        const result = jasmineMatchersObject[name](jasmine.matchersUtil, null);
+        // use "expect.extend" if you need to use equality testers (via this.equal)
+        const result = jasmineMatchersObject[name](null, null);
         // if there is no 'negativeCompare', both should be handled by `compare`
         const negativeCompare = result.negativeCompare || result.compare;
 

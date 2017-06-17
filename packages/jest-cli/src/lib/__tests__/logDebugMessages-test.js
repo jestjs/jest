@@ -17,11 +17,15 @@ jest.mock('../../../package.json', () => ({version: 123}));
 jest.mock('myRunner', () => ({name: 'My Runner'}), {virtual: true});
 
 const getPipe = () => ({write: jest.fn()});
-const print = (config = {testRunner: 'myRunner'}) =>
+const print = (
+  globalConfig = {watch: true},
+  config = {testRunner: 'myRunner'},
+) =>
   JSON.stringify(
     {
       config,
       framework: 'My Runner',
+      globalConfig,
       version: 123,
     },
     null,
@@ -31,26 +35,28 @@ const print = (config = {testRunner: 'myRunner'}) =>
 describe('logDebugMessages', () => {
   it('Prints the jest version', () => {
     const pipe = getPipe();
-    logDebugMessages({testRunner: 'myRunner'}, pipe);
+    logDebugMessages({watch: true}, {testRunner: 'myRunner'}, pipe);
     expect(pipe.write).toHaveBeenCalledWith(print() + '\n');
   });
 
   it('Prints the test framework name', () => {
     const pipe = getPipe();
-    logDebugMessages({testRunner: 'myRunner'}, pipe);
+    logDebugMessages({watch: true}, {testRunner: 'myRunner'}, pipe);
     expect(pipe.write).toHaveBeenCalledWith(print() + '\n');
   });
 
   it('Prints the config object', () => {
     const pipe = getPipe();
-    const config = {
+    const globalConfig = {
       automock: false,
+      watch: true,
+    };
+    const config = {
       rootDir: '/path/to/dir',
       roots: ['path/to/dir/test'],
       testRunner: 'myRunner',
-      watch: true,
     };
-    logDebugMessages(config, pipe);
-    expect(pipe.write).toHaveBeenCalledWith(print(config) + '\n');
+    logDebugMessages(globalConfig, config, pipe);
+    expect(pipe.write).toHaveBeenCalledWith(print(globalConfig, config) + '\n');
   });
 });

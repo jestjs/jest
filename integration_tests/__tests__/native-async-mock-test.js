@@ -8,11 +8,10 @@
 
 'use strict';
 
-const {linkJestPackage, run} = require('../utils');
-const {extractSummary} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {linkJestPackage, run, extractSummary} = require('../utils');
+const runJest = require('../runJest');
 
 skipOnWindows.suite();
 const dir = path.resolve(__dirname, '..', 'native-async-mock');
@@ -22,7 +21,7 @@ test('mocks async functions', () => {
     return;
   }
   if (process.platform !== 'win32') {
-    run('yarn --no-lockfile', dir);
+    run('yarn', dir);
     linkJestPackage('babel-jest', dir);
   }
   // --no-cache because babel can cache stuff and result in false green

@@ -8,10 +8,6 @@
  * @flow
  */
 
-'use strict';
-
-const path = require('path');
-
 import type {
   JestTotalResults,
   JestAssertionResults,
@@ -19,6 +15,8 @@ import type {
   TestAssertionStatus,
   TestReconciliationState,
 } from './types';
+
+import path from 'path';
 
 /**
  *  You have a Jest test runner watching for changes, and you have
@@ -110,13 +108,21 @@ module.exports = class TestReconciler {
 
   // Do everything we can to try make a one-liner from the error report
   sanitizeShortErrorMessage(string: string): string {
+    if (string.includes('does not match stored snapshot')) {
+      return 'Snapshot has changed';
+    }
+
+    if (string.includes('New snapshot was not written')) {
+      return 'New snapshot is ready to write';
+    }
+
     return string
       .split('\n')
       .splice(2)
       .join('')
-      .replace('  ', ' ')
-      .replace('Received:', ' Received:')
-      .replace('Difference:', ' Difference:');
+      .replace(/\s\s+/g, ' ')
+      .replace('Received:', ', Received:')
+      .split('Difference:')[0];
   }
 
   // Pull the line out from the stack trace

@@ -8,22 +8,21 @@
 * @flow
 */
 
-'use strict';
+import type {Argv} from 'types/Argv';
+import type {EnvironmentClass} from 'types/Environment';
 
-const args = require('./args');
-const chalk = require('chalk');
-const os = require('os');
-const path = require('path');
-const pkgDir = require('pkg-dir');
-const yargs = require('yargs');
+import os from 'os';
+import path from 'path';
+import chalk from 'chalk';
+import yargs from 'yargs';
+import {Console, setGlobal, validateCLIOptions} from 'jest-util';
+import {readConfig} from 'jest-config';
+import Runtime from '../';
+import args from './args';
 
-const {Console, setGlobal, validateCLIOptions} = require('jest-util');
-const readConfig = require('jest-config').readConfig;
-const Runtime = require('../');
+const VERSION = (require('../../package.json').version: string);
 
-const VERSION = require('../../package.json').version;
-
-function run(cliArgv?: Object, cliInfo?: Array<string>) {
+function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   let argv;
   if (cliArgv) {
     argv = cliArgv;
@@ -50,42 +49,43 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
     return;
   }
 
-  const root = pkgDir.sync();
-  const testFilePath = path.resolve(process.cwd(), argv._[0]);
+  const root = process.cwd();
+  const filePath = path.resolve(root, argv._[0]);
 
   if (argv.debug) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
-  readConfig(argv, root).then(({config}) => {
-    // Always disable automocking in scripts.
-    config = Object.assign({}, config, {
-      automock: false,
-      unmockedModulePathPatterns: null,
-    });
-    Runtime.createContext(config, {
-      maxWorkers: os.cpus().length - 1,
-    })
-      .then(hasteMap => {
-        /* $FlowFixMe */
-        const TestEnvironment = require(config.testEnvironment);
-
-        const env = new TestEnvironment(config);
-        setGlobal(
-          env.global,
-          'console',
-          new Console(process.stdout, process.stderr),
-        );
-        env.global.jestConfig = config;
-
-        const runtime = new Runtime(config, env, hasteMap.resolver);
-        runtime.requireModule(testFilePath);
-      })
-      .catch(e => {
-        console.error(chalk.red(e));
-        process.on('exit', () => process.exit(1));
-      });
+  const options = readConfig(argv, root);
+  const globalConfig = options.globalConfig;
+  // Always disable automocking in scripts.
+  const config = Object.assign({}, options.config, {
+    automock: false,
+    unmockedModulePathPatterns: null,
   });
+  Runtime.createContext(config, {
+    maxWorkers: os.cpus().length - 1,
+    watchman: globalConfig.watchman,
+  })
+    .then(hasteMap => {
+      /* $FlowFixMe */
+      const Environment = (require(config.testEnvironment): EnvironmentClass);
+      const environment = new Environment(config);
+      setGlobal(
+        environment.global,
+        'console',
+        new Console(process.stdout, process.stderr),
+      );
+      environment.global.jestProjectConfig = config;
+      environment.global.jestGlobalConfig = globalConfig;
+
+      const runtime = new Runtime(config, environment, hasteMap.resolver);
+      runtime.requireModule(filePath);
+    })
+    .catch(e => {
+      console.error(chalk.red(e.stack || e));
+      process.on('exit', () => process.exit(1));
+    });
 }
 
 exports.run = run;

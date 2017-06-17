@@ -4,9 +4,11 @@ bin/
 docs/
 flow-typed/**
 packages/*/build/**
+packages/*/build-es5/**
 types/**
 website/build
 website/node_modules
 website/core/metadata*.js
+website/i18n/*.js
 website/src/jest/docs
 website/src/jest/blog

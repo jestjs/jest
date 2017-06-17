@@ -7,27 +7,21 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
-
-'use strict';
 
 import type {MatchersObject} from 'types/Matchers';
 
-const {escapeStrForRegex} = require('jest-regex-util');
-const {
-  formatStackTrace,
-  separateMessageFromStack,
-} = require('jest-message-util');
-const {
+import getType from 'jest-get-type';
+import {escapeStrForRegex} from 'jest-regex-util';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import {
   RECEIVED_BG,
   RECEIVED_COLOR,
-  getType,
   highlightTrailingWhitespace,
   matcherHint,
   printExpected,
   printWithType,
-} = require('jest-matcher-utils');
-const {equals} = require('./jasmine-utils');
+} from 'jest-matcher-utils';
+import {equals} from './jasmine-utils';
 
 const createMatcher = matcherName => (
   actual: Function,
@@ -179,11 +173,16 @@ const printActualErrorMessage = error => {
       RECEIVED_COLOR(
         '  ' +
           highlightTrailingWhitespace(message, RECEIVED_BG) +
-          formatStackTrace(stack, {
-            noStackTrace: false,
-            rootDir: process.cwd(),
-            testMatch: [],
-          }),
+          formatStackTrace(
+            stack,
+            {
+              rootDir: process.cwd(),
+              testMatch: [],
+            },
+            {
+              noStackTrace: false,
+            },
+          ),
       )
     );
   }

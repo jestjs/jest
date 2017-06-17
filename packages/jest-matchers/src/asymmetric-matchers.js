@@ -8,15 +8,13 @@
  * @flow
  */
 
-'use strict';
-
-const {
+import {
   equals,
   fnNameFor,
   hasProperty,
   isA,
   isUndefined,
-} = require('./jasmine-utils');
+} from './jasmine-utils';
 
 class AsymmetricMatcher {
   $$typeof: Symbol;

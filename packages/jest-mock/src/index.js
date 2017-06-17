@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Global} from 'types/Global';
 
 type Mock = any;
@@ -274,6 +272,8 @@ class ModuleMockerClass {
           if (returnValue === undefined) {
             returnValue = mockConfig.defaultReturnValue;
           }
+
+          return returnValue;
         }
 
         // If mockImplementationOnce()/mockImplementation() is last set,
@@ -377,9 +377,7 @@ class ModuleMockerClass {
     mockConstructor: () => any,
   ): any {
     let name = metadata.name;
-    // Special case functions named `mockConstructor` to guard for infinite
-    // loops.
-    if (!name || name === MOCK_CONSTRUCTOR_NAME) {
+    if (!name) {
       return mockConstructor;
     }
 
@@ -393,6 +391,12 @@ class ModuleMockerClass {
         // Call bind() just to alter the function name.
         bindCall = '.bind(null)';
       } while (name && name.startsWith(boundFunctionPrefix));
+    }
+
+    // Special case functions named `mockConstructor` to guard for infinite
+    // loops.
+    if (name === MOCK_CONSTRUCTOR_NAME) {
+      return mockConstructor;
     }
 
     // It's a syntax error to define functions with a reserved keyword
@@ -436,7 +440,7 @@ class ModuleMockerClass {
     getSlots(metadata.members).forEach(slot => {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
-        callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
+        callbacks.push(() => (mock[slot] = refs[slotMetadata.ref]));
       } else {
         mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
       }

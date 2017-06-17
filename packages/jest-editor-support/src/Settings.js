@@ -8,12 +8,12 @@
  * @flow
  */
 
-'use strict';
+import type {Options} from './types';
 
-const {ChildProcess} = require('child_process');
-const EventEmitter = require('events');
-const ProjectWorkspace = require('./ProjectWorkspace');
-const {createProcess} = require('./Process');
+import {ChildProcess} from 'child_process';
+import EventEmitter from 'events';
+import ProjectWorkspace from './ProjectWorkspace';
+import {createProcess} from './Process';
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
@@ -32,10 +32,9 @@ type ConfigRepresentation = {
   testRegex: string,
   testMatch: Array<Glob>,
 };
-import type {Options} from './types';
 
 module.exports = class Settings extends EventEmitter {
-  debugprocess: ChildProcess;
+  getConfigProcess: ChildProcess;
   jestVersionMajor: number | null;
   _createProcess: (
     workspace: ProjectWorkspace,
@@ -57,9 +56,11 @@ module.exports = class Settings extends EventEmitter {
   }
 
   getConfig(completed: any) {
-    this.debugprocess = this._createProcess(this.workspace, ['--showConfig']);
+    this.getConfigProcess = this._createProcess(this.workspace, [
+      '--showConfig',
+    ]);
 
-    this.debugprocess.stdout.on('data', (data: Buffer) => {
+    this.getConfigProcess.stdout.on('data', (data: Buffer) => {
       const {config, version} = JSON.parse(data.toString());
       // We can give warnings to versions under 17 now
       // See https://github.com/facebook/jest/issues/2343 for moving this into
@@ -67,7 +68,11 @@ module.exports = class Settings extends EventEmitter {
 
       this.jestVersionMajor = parseInt(version.split('.').shift(), 10);
       this.settings = config;
+    });
 
+    // They could have an older build of Jest which
+    // would error with `--showConfig`
+    this.getConfigProcess.on('close', () => {
       completed();
     });
   }

@@ -8,7 +8,6 @@
  * @flow
  */
 /* global stream$Writable */
-'use strict';
 
 module.exports = (stream: stream$Writable | tty$WriteStream) => {
   if (process.stdout.isTTY) {

@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
 
-const runCommand = require('./_runCommand');
-
-const fs = require('graceful-fs');
 const path = require('path');
+const fs = require('graceful-fs');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
+
+const runCommand = require('./_runCommand');
 
 const ROOT = path.resolve(__dirname, '..');
 const BABEL_JEST_PATH = path.resolve(ROOT, 'packages/babel-jest');
@@ -44,7 +43,7 @@ examples.forEach(exampleDirectory => {
   }
 
   if (INSTALL.indexOf(exampleName) !== -1) {
-    runCommand('yarn', '--production', exampleDirectory);
+    runCommand('yarn', ['--production'], exampleDirectory);
   }
 
   link(exampleDirectory, BABEL_JEST_PATH);
@@ -52,6 +51,10 @@ examples.forEach(exampleDirectory => {
 
 runCommand(
   JEST_BIN_PATH,
-  '--experimentalProjects ' + examples.join(' '),
+  ['--projects'].concat(
+    examples.map(
+      (example, index) => example + (index > 3 ? path.sep + 'package.json' : '')
+    )
+  ),
   EXAMPLES_DIR
 );

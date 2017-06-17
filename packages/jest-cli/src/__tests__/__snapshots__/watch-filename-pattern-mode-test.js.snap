@@ -8,29 +8,29 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 11 files.
+ Pattern matches 11 files
 
-  › path/to/file1-test.js
+ › path/to/file1-test.js
 
-  › path/to/file2-test.js
+ › path/to/file2-test.js
 
-  › path/to/file3-test.js
+ › path/to/file3-test.js
 
-  › path/to/file4-test.js
+ › path/to/file4-test.js
 
-  › path/to/file5-test.js
+ › path/to/file5-test.js
 
-  › path/to/file6-test.js
+ › path/to/file6-test.js
 
-  › path/to/file7-test.js
+ › path/to/file7-test.js
 
-  › path/to/file8-test.js
+ › path/to/file8-test.js
 
-  › path/to/file9-test.js
+ › path/to/file9-test.js
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 
-  › and 1 more file
+   ...and 1 more file
 [MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -43,29 +43,29 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 11 files.
+ Pattern matches 11 files
 
-  › path/to/file1-test.js
+ › path/to/file1-test.js
 
-  › path/to/file2-test.js
+ › path/to/file2-test.js
 
-  › path/to/file3-test.js
+ › path/to/file3-test.js
 
-  › path/to/file4-test.js
+ › path/to/file4-test.js
 
-  › path/to/file5-test.js
+ › path/to/file5-test.js
 
-  › path/to/file6-test.js
+ › path/to/file6-test.js
 
-  › path/to/file7-test.js
+ › path/to/file7-test.js
 
-  › path/to/file8-test.js
+ › path/to/file8-test.js
 
-  › path/to/file9-test.js
+ › path/to/file9-test.js
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 
-  › and 1 more file
+   ...and 1 more file
 [MOCK - cursorTo(13, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -78,29 +78,29 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 11 files.
+ Pattern matches 11 files
 
-  › path/to/file1-test.js
+ › path/to/file1-test.js
 
-  › path/to/file2-test.js
+ › path/to/file2-test.js
 
-  › path/to/file3-test.js
+ › path/to/file3-test.js
 
-  › path/to/file4-test.js
+ › path/to/file4-test.js
 
-  › path/to/file5-test.js
+ › path/to/file5-test.js
 
-  › path/to/file6-test.js
+ › path/to/file6-test.js
 
-  › path/to/file7-test.js
+ › path/to/file7-test.js
 
-  › path/to/file8-test.js
+ › path/to/file8-test.js
 
-  › path/to/file9-test.js
+ › path/to/file9-test.js
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 
-  › and 1 more file
+   ...and 1 more file
 [MOCK - cursorTo(14, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -113,13 +113,13 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 3 files.
+ Pattern matches 3 files
 
-  › path/to/file1-test.js
+ › path/to/file1-test.js
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 
-  › path/to/file11-test.js
+ › path/to/file11-test.js
 [MOCK - cursorTo(15, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -132,9 +132,9 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 1 file.
+ Pattern matches 1 file
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 [MOCK - cursorTo(16, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -147,13 +147,13 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 3 files.
+ Pattern matches 3 files
 
-  › path/to/file1-test.js
+ › path/to/file1-test.js
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 
-  › path/to/file11-test.js
+ › path/to/file11-test.js
 [MOCK - cursorTo(15, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -166,29 +166,29 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 11 files.
+ Pattern matches 11 files
 
-  › path/to/file1-test.js
+ › path/to/file1-test.js
 
-  › path/to/file2-test.js
+ › path/to/file2-test.js
 
-  › path/to/file3-test.js
+ › path/to/file3-test.js
 
-  › path/to/file4-test.js
+ › path/to/file4-test.js
 
-  › path/to/file5-test.js
+ › path/to/file5-test.js
 
-  › path/to/file6-test.js
+ › path/to/file6-test.js
 
-  › path/to/file7-test.js
+ › path/to/file7-test.js
 
-  › path/to/file8-test.js
+ › path/to/file8-test.js
 
-  › path/to/file9-test.js
+ › path/to/file9-test.js
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 
-  › and 1 more file
+   ...and 1 more file
 [MOCK - cursorTo(14, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -201,10 +201,32 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 1 file.
+ Pattern matches 1 file
 
-  › path/to/file3-test.js
+ › path/to/file3-test.js
 [MOCK - cursorTo(15, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all filenames.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a filename regex pattern.
+[MOCK - cursorTo(11, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -216,29 +238,29 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 11 files.
+ Pattern matches 11 files
 
-  › path/to/file1-test.js
+ › path/to/file1-test.js
 
-  › path/to/file2-test.js
+ › path/to/file2-test.js
 
-  › path/to/file3-test.js
+ › path/to/file3-test.js
 
-  › path/to/file4-test.js
+ › path/to/file4-test.js
 
-  › path/to/file5-test.js
+ › path/to/file5-test.js
 
-  › path/to/file6-test.js
+ › path/to/file6-test.js
 
-  › path/to/file7-test.js
+ › path/to/file7-test.js
 
-  › path/to/file8-test.js
+ › path/to/file8-test.js
 
-  › path/to/file9-test.js
+ › path/to/file9-test.js
 
-  › path/to/file10-test.js
+ › path/to/file10-test.js
 
-  › and 1 more file
+   ...and 1 more file
 [MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -251,29 +273,29 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 11 files.
+ Pattern matches 11 files
 
-  › ...to/file1-test.js
+ › ...to/file1-test.js
 
-  › ...to/file2-test.js
+ › ...to/file2-test.js
 
-  › ...to/file3-test.js
+ › ...to/file3-test.js
 
-  › ...to/file4-test.js
+ › ...to/file4-test.js
 
-  › ...to/file5-test.js
+ › ...to/file5-test.js
 
-  › ...to/file6-test.js
+ › ...to/file6-test.js
 
-  › ...to/file7-test.js
+ › ...to/file7-test.js
 
-  › ...to/file8-test.js
+ › ...to/file8-test.js
 
-  › ...to/file9-test.js
+ › ...to/file9-test.js
 
-  › ...o/file10-test.js
+ › ...o/file10-test.js
 
-  › and 1 more file
+   ...and 1 more file
 [MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -286,29 +308,156 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 3`
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 11 files.
+ Pattern matches 11 files
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...st.js
+ › ...st.js
 
-  › ...t.js
+ › ...t.js
 
-  › and 1 more file
+   ...and 1 more file
 [MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
+
+exports[`Watch mode flows Shows the appropiate header when both filters are active 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: filename /p.*10/, test name /test/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all tests.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a test name regex pattern.
+[MOCK - cursorTo(11, 7)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the filename filter is active 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: filename /p.*10/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all filenames.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a filename regex pattern.
+[MOCK - cursorTo(11, 7)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the filename filter is active 2`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: filename /p/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all filenames.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a filename regex pattern.
+[MOCK - cursorTo(11, 7)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the test name filter is active 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: test name /test/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all tests.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a test name regex pattern.
+[MOCK - cursorTo(11, 7)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Shows the appropiate header when the test name filter is active 2`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: test name /t/
+
+
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to apply pattern to all tests.
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+
+
+ Start typing to filter by a test name regex pattern.
+[MOCK - cursorTo(11, 7)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows can select a specific file name from the typeahead results 1`] = `"path/to/file2-test.js"`;

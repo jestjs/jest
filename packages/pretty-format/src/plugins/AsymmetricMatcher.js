@@ -4,12 +4,11 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
  * @flow
  */
 
-'use strict';
-
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
 const SPACE = ' ';

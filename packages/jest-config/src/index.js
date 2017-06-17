@@ -8,48 +8,119 @@
  * @flow
  */
 
-'use strict';
+import type {Argv} from 'types/Argv';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
-const path = require('path');
-const loadFromFile = require('./loadFromFile');
-const loadFromPackage = require('./loadFromPackage');
-const normalize = require('./normalize');
-const setFromArgv = require('./setFromArgv');
-const {getTestEnvironment} = require('./utils');
+import path from 'path';
+import {getTestEnvironment, isJSONString} from './utils';
+import findConfig from './findConfig';
+import normalize from './normalize';
 
-async function readConfig(argv: Object, packageRoot: string) {
-  const rawConfig = await readRawConfig(argv, packageRoot);
-  const {config, hasDeprecationWarnings} = normalize(rawConfig, argv);
+function readConfig(
+  argv: Argv,
+  packageRoot: string,
+): {
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
+  hasDeprecationWarnings: boolean,
+} {
+  const rawOptions = readOptions(argv, packageRoot);
+  const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
+  const {globalConfig, projectConfig} = getConfigs(options);
   return {
-    config: Object.freeze(setFromArgv(config, argv)),
+    config: projectConfig,
+    globalConfig,
     hasDeprecationWarnings,
   };
 }
 
-const parseConfig = argv => {
-  if (argv.config && typeof argv.config === 'string') {
-    // If the passed in value looks like JSON, treat it as an object.
-    if (argv.config[0] === '{' && argv.config[argv.config.length - 1] === '}') {
-      return JSON.parse(argv.config);
-    }
+const parseConfig = argv =>
+  isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config;
+
+const readOptions = (argv, root) => {
+  const rawOptions = parseConfig(argv);
+
+  if (typeof rawOptions === 'object') {
+    const config = Object.assign({}, rawOptions);
+    config.rootDir = config.rootDir || root;
+    return config;
   }
-  return argv.config;
+
+  if (typeof rawOptions === 'string') {
+    root = path.resolve(process.cwd(), rawOptions);
+  }
+
+  return findConfig(root);
 };
 
-const readRawConfig = (argv, root) => {
-  const rawConfig = parseConfig(argv);
-
-  if (typeof rawConfig === 'string') {
-    return loadFromFile(path.resolve(process.cwd(), rawConfig));
-  }
-
-  if (typeof rawConfig === 'object') {
-    const config = Object.assign({}, rawConfig);
-    config.rootDir = config.rootDir || root;
-    return Promise.resolve(config);
-  }
-
-  return loadFromPackage(root).then(config => config || {rootDir: root});
+const getConfigs = (
+  options: Object,
+): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => {
+  return {
+    globalConfig: Object.freeze({
+      bail: options.bail,
+      collectCoverage: options.collectCoverage,
+      collectCoverageFrom: options.collectCoverageFrom,
+      collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
+      coverageDirectory: options.coverageDirectory,
+      coverageReporters: options.coverageReporters,
+      coverageThreshold: options.coverageThreshold,
+      expand: options.expand,
+      forceExit: options.forceExit,
+      logHeapUsage: options.logHeapUsage,
+      mapCoverage: options.mapCoverage,
+      noStackTrace: options.noStackTrace,
+      notify: options.notify,
+      projects: options.projects,
+      replname: options.replname,
+      reporters: options.reporters,
+      rootDir: options.rootDir,
+      silent: options.silent,
+      testNamePattern: options.testNamePattern,
+      testPathPattern: '',
+      testResultsProcessor: options.testResultsProcessor,
+      updateSnapshot: options.updateSnapshot,
+      useStderr: options.useStderr,
+      verbose: options.verbose,
+      watch: options.watch,
+      watchman: options.watchman,
+    }),
+    projectConfig: Object.freeze({
+      automock: options.automock,
+      browser: options.browser,
+      cache: options.cache,
+      cacheDirectory: options.cacheDirectory,
+      clearMocks: options.clearMocks,
+      coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+      globals: options.globals,
+      haste: options.haste,
+      moduleDirectories: options.moduleDirectories,
+      moduleFileExtensions: options.moduleFileExtensions,
+      moduleLoader: options.moduleLoader,
+      moduleNameMapper: options.moduleNameMapper,
+      modulePathIgnorePatterns: options.modulePathIgnorePatterns,
+      modulePaths: options.modulePaths,
+      name: options.name,
+      resetMocks: options.resetMocks,
+      resetModules: options.resetModules,
+      resolver: options.resolver,
+      rootDir: options.rootDir,
+      roots: options.roots,
+      setupFiles: options.setupFiles,
+      setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
+      snapshotSerializers: options.snapshotSerializers,
+      testEnvironment: options.testEnvironment,
+      testMatch: options.testMatch,
+      testPathIgnorePatterns: options.testPathIgnorePatterns,
+      testRegex: options.testRegex,
+      testRunner: options.testRunner,
+      testURL: options.testURL,
+      timers: options.timers,
+      transform: options.transform,
+      transformIgnorePatterns: options.transformIgnorePatterns,
+      unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+    }),
+  };
 };
 
 module.exports = {

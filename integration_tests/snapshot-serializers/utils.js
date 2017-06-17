@@ -6,11 +6,10 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-'use strict';
 
 exports.createPlugin = prop => {
   return {
-    print: (val, serialize) => `${prop}: ${serialize(val[prop])}`,
+    print: (val, serialize) => `${prop} - ${serialize(val[prop])}`,
     test: val => val && val.hasOwnProperty(prop),
   };
 };

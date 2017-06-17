@@ -7,27 +7,30 @@
  *
  * @flow
  */
-'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
+import type {GlobalConfig} from 'types/Config';
+import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './TestWatcher';
 
-const fs = require('graceful-fs');
-
-const SearchSource = require('./SearchSource');
-const TestRunner = require('./TestRunner');
-const TestSequencer = require('./TestSequencer');
-
-const getTestPathPattern = require('./lib/getTestPathPattern');
-const chalk = require('chalk');
-const {Console, formatTestResults} = require('jest-util');
-const getMaxWorkers = require('./lib/getMaxWorkers');
-const path = require('path');
-const setState = require('./lib/setState');
+import path from 'path';
+import {Console, formatTestResults} from 'jest-util';
+import chalk from 'chalk';
+import fs from 'graceful-fs';
+import getMaxWorkers from './lib/getMaxWorkers';
+import getTestPathPattern from './lib/getTestPathPattern';
+import SearchSource from './SearchSource';
+import updateArgv from './lib/updateArgv';
+import TestRunner from './TestRunner';
+import TestSequencer from './TestSequencer';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
-    context => context.config = Object.assign({}, context.config, newConfig),
+    context =>
+      (context.config = Object.freeze(
+        Object.assign({}, context.config, newConfig),
+      )),
   );
 
 const formatTestPathPattern = pattern => {
@@ -94,16 +97,14 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
   );
 };
 
-const getTestPaths = async (context, pattern, argv, pipe) => {
+const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
   const source = new SearchSource(context);
   let data = await source.getTestPaths(pattern);
   if (!data.tests.length) {
     if (pattern.onlyChanged && data.noSCM) {
-      if (context.config.watch) {
+      if (globalConfig.watch) {
         // Run all the tests
-        setState(argv, 'watchAll', {
-          noSCM: true,
-        });
+        updateArgv(argv, 'watchAll', {noSCM: true});
         pattern = getTestPathPattern(argv);
         data = await source.getTestPaths(pattern);
       } else {
@@ -145,48 +146,89 @@ const processResults = (runResults, options) => {
 };
 
 const runJest = async (
+  globalConfig: GlobalConfig,
   contexts: Array<Context>,
-  argv: Object,
+  argv: Argv,
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
-  onComplete: (testResults: any) => void,
+  onComplete: (testResults: AggregatedResult) => any,
 ) => {
-  const context = contexts[0];
   const maxWorkers = getMaxWorkers(argv);
   const pattern = getTestPathPattern(argv);
   const sequencer = new TestSequencer();
   let allTests = [];
   const testRunData = await Promise.all(
     contexts.map(async context => {
-      const matches = await getTestPaths(context, pattern, argv, pipe);
+      const matches = await getTestPaths(
+        globalConfig,
+        context,
+        pattern,
+        argv,
+        pipe,
+      );
       allTests = allTests.concat(matches.tests);
       return {context, matches};
     }),
   );
 
   allTests = sequencer.sort(allTests);
+
+  if (argv.listTests) {
+    console.log(JSON.stringify(allTests.map(test => test.path)));
+    onComplete &&
+      onComplete({
+        numFailedTestSuites: 0,
+        numFailedTests: 0,
+        numPassedTestSuites: 0,
+        numPassedTests: 0,
+        numPendingTestSuites: 0,
+        numPendingTests: 0,
+        numRuntimeErrorTestSuites: 0,
+        numTotalTestSuites: 0,
+        numTotalTests: 0,
+        snapshot: {
+          added: 0,
+          didUpdate: false,
+          failure: false,
+          filesAdded: 0,
+          filesRemoved: 0,
+          filesUnmatched: 0,
+          filesUpdated: 0,
+          matched: 0,
+          total: 0,
+          unchecked: 0,
+          unmatched: 0,
+          updated: 0,
+        },
+        startTime: 0,
+        success: true,
+        testResults: [],
+        wasInterrupted: false,
+      });
+    return null;
+  }
+
   if (!allTests.length) {
     new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
   } else if (
     allTests.length === 1 &&
-    context.config.silent !== true &&
-    context.config.verbose !== false
+    globalConfig.silent !== true &&
+    globalConfig.verbose !== false
   ) {
-    setConfig(contexts, {verbose: true});
-  }
-
-  if (context.config.updateSnapshot === true) {
-    setConfig(contexts, {updateSnapshot: true});
+    // $FlowFixMe
+    globalConfig = Object.freeze(
+      Object.assign({}, globalConfig, {verbose: true}),
+    );
   }
 
   // When using more than one context, make all printed paths relative to the
-  // current cwd.
-  if (contexts.length > 1) {
-    setConfig(contexts, {rootDir: process.cwd()});
-  }
+  // current cwd. rootDir is only used as a token during normalization and
+  // has no special meaning afterwards except for printing information to the
+  // CLI.
+  setConfig(contexts, {rootDir: process.cwd()});
 
-  const results = await new TestRunner(context.config, {
+  const results = await new TestRunner(globalConfig, {
     maxWorkers,
     pattern,
     startRun,
@@ -200,7 +242,7 @@ const runJest = async (
     isJSON: argv.json,
     onComplete,
     outputFile: argv.outputFile,
-    testResultsProcessor: context.config.testResultsProcessor,
+    testResultsProcessor: globalConfig.testResultsProcessor,
   });
 };
 

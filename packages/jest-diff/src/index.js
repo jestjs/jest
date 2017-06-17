@@ -8,29 +8,28 @@
  * @flow
  */
 
-'use strict';
-
 import type {DiffOptions} from './diffStrings';
 
-const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
-const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
-const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
-const HTMLElementPlugin = require('pretty-format/build/plugins/HTMLElement');
-const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
+import prettyFormat from 'pretty-format';
+import chalk from 'chalk';
+import getType from 'jest-get-type';
+import diffStrings from './diffStrings';
+import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 
-const chalk = require('chalk');
-const diffStrings = require('./diffStrings');
-const {getType} = require('jest-matcher-utils');
-const prettyFormat = require('pretty-format');
-
-const {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} = require('./constants');
+const {
+  ReactElement,
+  ReactTestComponent,
+  AsymmetricMatcher,
+  HTMLElement,
+  Immutable,
+} = prettyFormat.plugins;
 
 const PLUGINS = [
-  ReactTestComponentPlugin,
-  ReactElementPlugin,
-  AsymmetricMatcherPlugin,
-  HTMLElementPlugin,
-].concat(ImmutablePlugins);
+  ReactTestComponent,
+  ReactElement,
+  AsymmetricMatcher,
+  HTMLElement,
+].concat(Immutable);
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };

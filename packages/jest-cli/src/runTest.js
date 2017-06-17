@@ -7,21 +7,27 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Path, Config} from 'types/Config';
-import type {TestResult} from 'types/TestResult';
+import type {EnvironmentClass} from 'types/Environment';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Resolver} from 'types/Resolve';
+import type {TestFramework} from 'types/TestRunner';
+import type {TestResult} from 'types/TestResult';
+import type RuntimeClass from 'jest-runtime';
 
-const BufferedConsole = require('./lib/BufferedConsole');
-const {Console, NullConsole, setGlobal} = require('jest-util');
+import fs from 'fs';
+import {Console, NullConsole, setGlobal} from 'jest-util';
+import {getTestEnvironment} from 'jest-config';
+import docblock from 'jest-docblock';
+import BufferedConsole from './lib/BufferedConsole';
+import getConsoleOutput from './reporters/getConsoleOutput';
 
-const {getTestEnvironment} = require('jest-config');
-const fs = require('fs');
-const docblock = require('jest-docblock');
-const getConsoleOutput = require('./reporters/getConsoleOutput');
-
-function runTest(path: Path, config: Config, resolver: Resolver) {
+function runTest(
+  path: Path,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+  resolver: Resolver,
+) {
   let testSource;
 
   try {
@@ -43,32 +49,49 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
   }
 
   /* $FlowFixMe */
-  const TestEnvironment = require(testEnvironment);
+  const TestEnvironment = (require(testEnvironment): EnvironmentClass);
   /* $FlowFixMe */
-  const TestRunner = require(config.testRunner);
+  const testFramework = (require(config.testRunner): TestFramework);
   /* $FlowFixMe */
-  const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
+  const Runtime = (require(config.moduleLoader || 'jest-runtime'): Class<
+    RuntimeClass,
+  >);
 
-  const env = new TestEnvironment(config);
-  const TestConsole = config.verbose
-    ? Console
-    : config.silent ? NullConsole : BufferedConsole;
-  const testConsole = new TestConsole(
-    config.useStderr ? process.stderr : process.stdout,
-    process.stderr,
-    (type, message) =>
-      getConsoleOutput(
-        config.rootDir,
-        !!config.verbose,
-        // 4 = the console call is buried 4 stack frames deep
-        BufferedConsole.write([], type, message, 4),
-      ),
-  );
+  const environment = new TestEnvironment(config);
+  const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
+  const consoleFormatter = (type, message) =>
+    getConsoleOutput(
+      config.rootDir,
+      !!globalConfig.verbose,
+      // 4 = the console call is buried 4 stack frames deep
+      BufferedConsole.write([], type, message, 4),
+    );
+
+  let testConsole;
+  if (globalConfig.verbose) {
+    testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
+  } else {
+    if (globalConfig.silent) {
+      testConsole = new NullConsole(
+        consoleOut,
+        process.stderr,
+        consoleFormatter,
+      );
+    } else {
+      testConsole = new BufferedConsole();
+    }
+  }
+
   const cacheFS = {[path]: testSource};
-  setGlobal(env.global, 'console', testConsole);
-  const runtime = new ModuleLoader(config, env, resolver, cacheFS);
+  setGlobal(environment.global, 'console', testConsole);
+  const runtime = new Runtime(config, environment, resolver, cacheFS, {
+    collectCoverage: globalConfig.collectCoverage,
+    collectCoverageFrom: globalConfig.collectCoverageFrom,
+    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    mapCoverage: globalConfig.mapCoverage,
+  });
   const start = Date.now();
-  return TestRunner(config, env, runtime, path)
+  return testFramework(globalConfig, config, environment, runtime, path)
     .then((result: TestResult) => {
       const testCount =
         result.numPassingTests +
@@ -85,7 +108,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
     .then(
       result =>
         Promise.resolve().then(() => {
-          env.dispose();
+          environment.dispose();
           if (config.logHeapUsage) {
             if (global.gc) {
               global.gc();
@@ -98,7 +121,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
         }),
       err =>
         Promise.resolve().then(() => {
-          env.dispose();
+          environment.dispose();
           throw err;
         }),
     );

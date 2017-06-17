@@ -9,17 +9,15 @@
  * @flow
  */
 
-'use strict';
+import path from 'path';
 
-const Runtime = require('jest-runtime');
-
-const args = require('./args');
-const path = require('path');
-const yargs = require('yargs');
-const {validateCLIOptions} = require('jest-util');
+import Runtime from 'jest-runtime';
+import yargs from 'yargs';
+import {validateCLIOptions} from 'jest-util';
+import {version as VERSION} from '../../package.json';
+import args from './args';
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
-const VERSION = require('../../package.json').version;
 
 module.exports = function() {
   const argv = yargs.usage(args.usage).options(args.options).argv;

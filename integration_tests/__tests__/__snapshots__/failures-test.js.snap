@@ -1,112 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`throwing not Error objects 1`] = `
-Object {
-  "rest": " FAIL  __tests__/throw-number-test.js
+exports[`not throwing Error objects 1`] = `
+" FAIL  __tests__/throw-number-test.js
   ● Test suite failed to run
 
     Expected an Error, but \\"1\\" was thrown
 
-",
-  "summary": "Test Suites: 1 failed, 1 total
-Tests:       0 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites matching \\"throw-number-test.js\\".
-",
-}
+"
 `;
 
-exports[`throwing not Error objects 2`] = `
-Object {
-  "rest": " FAIL  __tests__/throw-string-test.js
+exports[`not throwing Error objects 2`] = `
+" FAIL  __tests__/throw-string-test.js
   ● Test suite failed to run
 
     Error
       banana
 
-",
-  "summary": "Test Suites: 1 failed, 1 total
-Tests:       0 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites matching \\"throw-string-test.js\\".
-",
-}
+"
 `;
 
-exports[`throwing not Error objects 3`] = `
-Object {
-  "rest": " FAIL  __tests__/throw-object-test.js
+exports[`not throwing Error objects 3`] = `
+" FAIL  __tests__/throw-object-test.js
   ● Test suite failed to run
 
     Error: No message was provided
 
-",
-  "summary": "Test Suites: 1 failed, 1 total
-Tests:       0 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites matching \\"throw-object-test.js\\".
-",
-}
+"
 `;
 
-exports[`throwing not Error objects 4`] = `
-Object {
-  "rest": " FAIL  __tests__/assertion-count-test.js
+exports[`not throwing Error objects 4`] = `
+" FAIL  __tests__/assertion-count-test.js
   ● .assertions() › throws
-
     expect(received).toBeTruthy()
-    
     Expected value to be truthy, instead received
       false
-      
-      at Object.throws (__tests__/assertion-count-test.js:14:17)
-
+      at __tests__/assertion-count-test.js:14:17
   ● .assertions() › throws
-
     expect.assertions(2)
-    
     Expected two assertions to be called but only received one assertion call.
-      
-      at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
-
   ● .assertions() › throws on redeclare of assertion count
-
     expect(received).toBeTruthy()
-    
     Expected value to be truthy, instead received
       false
-      
-      at Object.redeclare (__tests__/assertion-count-test.js:18:17)
-
+      at __tests__/assertion-count-test.js:18:17
   ● .assertions() › throws on assertion
-
     expect.assertions(0)
-    
     Expected zero assertions to be called but only received one assertion call.
-      
-      at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
-
+  ● .hasAssertions() › throws when there are not assertions
+    expect.hasAssertions()
+    Expected at least one assertion to be called but received none.
   .assertions()
     ✕ throws
     ✕ throws on redeclare of assertion count
     ✕ throws on assertion
-
-",
-  "summary": "Test Suites: 1 failed, 1 total
-Tests:       3 failed, 3 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites matching \\"assertion-count-test.js\\".
-",
-}
+  .hasAssertions()
+    ✕ throws when there are not assertions
+"
 `;
 
 exports[`works with node assert 1`] = `
-Object {
-  "rest": " FAIL  __tests__/node-assertion-error-test.js
+" FAIL  __tests__/node-assertion-error-test.js
   ● assert
 
     assert.equal(received, expected) or assert(received) 
@@ -116,7 +69,7 @@ Object {
     Received:
       false
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:16:3)
+      at __tests__/node-assertion-error-test.js:16:3
 
   ● assert with a message
 
@@ -130,7 +83,7 @@ Object {
     Message:
       this is a message
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:20:3)
+      at __tests__/node-assertion-error-test.js:20:3
 
   ● assert.ok
 
@@ -141,7 +94,7 @@ Object {
     Received:
       false
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:24:10)
+      at __tests__/node-assertion-error-test.js:24:10
 
   ● assert.ok with a message
 
@@ -155,7 +108,7 @@ Object {
     Message:
       this is a message
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:28:10)
+      at __tests__/node-assertion-error-test.js:28:10
 
   ● assert.equal
 
@@ -166,7 +119,7 @@ Object {
     Received:
       1
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:32:10)
+      at __tests__/node-assertion-error-test.js:32:10
 
   ● assert.notEqual
 
@@ -181,7 +134,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:36:10)
+      at __tests__/node-assertion-error-test.js:36:10
 
   ● assert.deepEqual
 
@@ -206,7 +159,7 @@ Object {
         },
       }
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:40:10)
+      at __tests__/node-assertion-error-test.js:40:10
 
   ● assert.deepEqual with a message
 
@@ -234,7 +187,7 @@ Object {
         },
       }
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:44:10)
+      at __tests__/node-assertion-error-test.js:44:10
 
   ● assert.notDeepEqual
 
@@ -249,7 +202,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:48:10)
+      at __tests__/node-assertion-error-test.js:48:10
 
   ● assert.strictEqual
 
@@ -260,7 +213,7 @@ Object {
     Received:
       1
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:52:10)
+      at __tests__/node-assertion-error-test.js:52:10
 
   ● assert.notStrictEqual
 
@@ -278,7 +231,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:56:10)
+      at __tests__/node-assertion-error-test.js:56:10
 
   ● assert.deepStrictEqual
 
@@ -299,7 +252,7 @@ Object {
     +   \\"a\\": 1,
       }
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:60:10)
+      at __tests__/node-assertion-error-test.js:60:10
 
   ● assert.notDeepStrictEqual
 
@@ -314,7 +267,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:64:10)
+      at __tests__/node-assertion-error-test.js:64:10
 
   ● assert.ifError
 
@@ -330,9 +283,9 @@ Object {
       [Error: err!]
     
     Message:
-      Got unwanted exception..
+      Got unwanted exception.
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:72:10)
+      at __tests__/node-assertion-error-test.js:72:10
 
   ● assert.throws
 
@@ -342,9 +295,9 @@ Object {
     But it didn't throw anything.
     
     Message:
-      Missing expected exception..
+      Missing expected exception.
       
-      at Object.<anonymous> (__tests__/node-assertion-error-test.js:78:10)
+      at __tests__/node-assertion-error-test.js:78:10
 
   ✕ assert
   ✕ assert with a message
@@ -363,12 +316,5 @@ Object {
   ✕ assert.doesNotThrow
   ✕ assert.throws
 
-",
-  "summary": "Test Suites: 1 failed, 1 total
-Tests:       16 failed, 16 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites matching \\"node-assertion-error-test.js\\".
-",
-}
+"
 `;

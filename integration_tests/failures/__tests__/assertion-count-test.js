@@ -24,8 +24,16 @@ const noAssertions = () => {
   expect(true).toBeTruthy();
 };
 
+const hasNoAssertions = () => {
+  expect.hasAssertions();
+};
+
 describe('.assertions()', () => {
   it('throws', throws);
   it('throws on redeclare of assertion count', redeclare);
   it('throws on assertion', noAssertions);
+});
+
+describe('.hasAssertions()', () => {
+  it('throws when there are not assertions', hasNoAssertions);
 });

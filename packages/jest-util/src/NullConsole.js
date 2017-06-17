@@ -8,9 +8,7 @@
  * @flow
  */
 
-'use strict';
-
-const Console = require('./Console');
+import Console from './Console';
 
 class NullConsole extends Console {
   assert() {}

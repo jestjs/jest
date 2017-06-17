@@ -3,7 +3,7 @@ machine:
     YARN_VERSION: 0.20.3
     PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
-    version: 7
+    version: 8
 dependencies:
   pre:
     - |
@@ -17,20 +17,17 @@ dependencies:
     - ~/.yarn
     - ~/.cache/yarn
     - "website/node_modules"
-    - "danger/node_modules"
   override:
     - yarn install --no-progress
     - cd website && yarn install --no-progress
-    - cd danger && yarn install --no-progress
 test:
   override:
     - nvm alias default 6
     - yarn run test-ci
     - nvm alias default 4
     - yarn run test-ci-partial
-    - nvm alias default 7
+    - nvm alias default 8
     - yarn run test-ci-partial
-    - DANGER_GITHUB_API_TOKEN="ab0c4d396c935d3abce""fc213176da6bb7b2996ff" yarn run danger
     - cd website && yarn run test
 
 deployment:
@@ -42,4 +39,11 @@ deployment:
       - git config --global user.email "jest-bot@users.noreply.github.com"
       - git config --global user.name "Website Deployment Script"
       - echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
+      # crowdin install start
+      - sudo apt-get install default-jre
+      - wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
+      - sudo dpkg -i crowdin.deb
+      # crowdin install end
+      - crowdin --config crowdin.yaml upload sources --auto-update -b master
+      - crowdin --config crowdin.yaml download -b master
       - cd website && GIT_USER=jest-bot npm run gh-pages

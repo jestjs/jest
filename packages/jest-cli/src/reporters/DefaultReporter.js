@@ -10,21 +10,18 @@
 
 /* global stream$Writable, tty$WriteStream */
 
-'use strict';
-
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, GlobalConfig, Path} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-const BaseReporter = require('./BaseReporter');
-const Status = require('./Status');
-
-const {clearLine} = require('jest-util');
-const chalk = require('chalk');
-const getConsoleOutput = require('./getConsoleOutput');
-const getResultHeader = require('./getResultHeader');
-const isCI = require('is-ci');
+import {clearLine} from 'jest-util';
+import chalk from 'chalk';
+import isCI from 'is-ci';
+import BaseReporter from './BaseReporter';
+import Status from './Status';
+import getConsoleOutput from './getConsoleOutput';
+import getResultHeader from './getResultHeader';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 
@@ -35,11 +32,13 @@ const isInteractive = process.stdin.isTTY && !isCI;
 class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
+  _globalConfig: GlobalConfig;
   _out: write;
   _status: Status;
 
-  constructor() {
+  constructor(globalConfig: GlobalConfig) {
     super();
+    this._globalConfig = globalConfig;
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
@@ -106,7 +105,6 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunStart(
-    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
@@ -143,7 +141,11 @@ class DefaultReporter extends BaseReporter {
     );
   }
 
-  _printTestFileSummary(testPath: Path, config: Config, result: TestResult) {
+  _printTestFileSummary(
+    testPath: Path,
+    config: ProjectConfig,
+    result: TestResult,
+  ) {
     if (!result.skipped) {
       this.log(getResultHeader(result, config));
 
@@ -153,7 +155,11 @@ class DefaultReporter extends BaseReporter {
           '  ' +
             TITLE_BULLET +
             'Console\n\n' +
-            getConsoleOutput(config.rootDir, !!config.verbose, consoleBuffer),
+            getConsoleOutput(
+              config.rootDir,
+              !!this._globalConfig.verbose,
+              consoleBuffer,
+            ),
         );
       }
 

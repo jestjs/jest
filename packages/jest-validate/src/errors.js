@@ -8,13 +8,11 @@
  * @flow
  */
 
-'use strict';
-
 import type {ValidationOptions} from './types';
 
-const chalk = require('chalk');
-const {format, ValidationError, ERROR} = require('./utils');
-const {getType} = require('jest-matcher-utils');
+import chalk from 'chalk';
+import getType from 'jest-get-type';
+import {format, ValidationError, ERROR} from './utils';
 
 const errorMessage = (
   option: string,

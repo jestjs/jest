@@ -8,14 +8,15 @@
  * @flow
  */
 
-'use strict';
-
 type GetPath = {
   hasEndProp?: boolean,
   lastTraversedObject: ?Object,
   traversedPath: Array<string>,
   value?: any,
 };
+
+const hasOwnProperty = (object: Object, value: string) =>
+  Object.prototype.hasOwnProperty.call(object, value);
 
 const getPath = (
   object: Object,
@@ -44,7 +45,7 @@ const getPath = (
       result.lastTraversedObject || (result.lastTraversedObject = object);
       result.traversedPath.unshift(prop);
       if (propertyPath.length === 1) {
-        result.hasEndProp = object.hasOwnProperty(prop);
+        result.hasEndProp = hasOwnProperty(object, prop);
         if (!result.hasEndProp) {
           delete result.value;
           result.traversedPath.shift();
@@ -78,8 +79,10 @@ const getObjectSubset = (object: Object, subset: Object) => {
   ) {
     const trimmed = {};
     Object.keys(subset)
-      .filter(key => object.hasOwnProperty(key))
-      .forEach(key => trimmed[key] = getObjectSubset(object[key], subset[key]));
+      .filter(key => hasOwnProperty(object, key))
+      .forEach(
+        key => (trimmed[key] = getObjectSubset(object[key], subset[key])),
+      );
 
     if (Object.keys(trimmed).length > 0) {
       return trimmed;
@@ -91,4 +94,5 @@ const getObjectSubset = (object: Object, subset: Object) => {
 module.exports = {
   getObjectSubset,
   getPath,
+  hasOwnProperty,
 };

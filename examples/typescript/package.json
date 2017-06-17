@@ -4,6 +4,7 @@
     "react-dom": "15.4.2"
   },
   "devDependencies": {
+    "@types/jest": "^19.2.4",
     "jest": "*",
     "react-addons-test-utils": "15.4.2",
     "typescript": "*"

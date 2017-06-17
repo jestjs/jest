@@ -7,21 +7,22 @@
  *
  * @flow
  */
-'use strict';
 
-const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
-const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
-const HTMLElementPlugin = require('pretty-format/build/plugins/HTMLElement');
-const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
+import type {Plugin} from 'types/PrettyFormat';
 
-let PLUGINS = [
-  ReactElementPlugin,
-  ReactTestComponentPlugin,
-  HTMLElementPlugin,
-].concat(ImmutablePlugins);
+import prettyFormat from 'pretty-format';
+
+const {
+  HTMLElement,
+  Immutable,
+  ReactElement,
+  ReactTestComponent,
+} = prettyFormat.plugins;
+
+let PLUGINS = [ReactTestComponent, ReactElement, HTMLElement].concat(Immutable);
 
 // Prepend to list so the last added is the first tested.
-exports.addSerializer = (plugin: any) => {
+exports.addSerializer = (plugin: Plugin) => {
   PLUGINS = [plugin].concat(PLUGINS);
 };
 

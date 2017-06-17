@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 /**
  * Represents the project that the extension is running on and it's state
  */

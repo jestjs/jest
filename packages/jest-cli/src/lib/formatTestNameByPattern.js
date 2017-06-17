@@ -8,10 +8,9 @@
  * @flow
  */
 
-'use strict';
+import chalk from 'chalk';
 
-const chalk = require('chalk');
-const colorize = require('./colorize');
+import colorize from './colorize';
 
 const DOTS = '...';
 const ENTER = '⏎';

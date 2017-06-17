@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 export default class Unmocked {
   constructor() {
     this.isUnmocked = true;

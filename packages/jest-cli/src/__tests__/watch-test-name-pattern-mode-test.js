@@ -29,11 +29,12 @@ jest.mock('ansi-escapes', () => ({
 
 jest.mock(
   '../SearchSource',
-  () => class {
-    findMatchingTests(pattern) {
-      return {paths: []};
-    }
-  },
+  () =>
+    class {
+      findMatchingTests(pattern) {
+        return {paths: []};
+      }
+    },
 );
 
 jest.doMock('chalk', () =>
@@ -100,6 +101,12 @@ jest.doMock('../lib/terminalUtils', () => ({
 
 const watch = require('../watch');
 
+const toHex = char => Number(char.charCodeAt(0)).toString(16);
+
+const globalConfig = {
+  watch: true,
+};
+
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
@@ -120,7 +127,7 @@ describe('Watch mode flows', () => {
 
   it('Pressing "T" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -131,8 +138,6 @@ describe('Watch mode flows', () => {
       stdin.emit(hex);
       expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     };
-
-    const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
     // Write a pattern
     ['c', 'o', 'n', ' ', '1', '2'].map(toHex).forEach(assertPattern);
@@ -155,9 +160,32 @@ describe('Watch mode flows', () => {
     });
   });
 
+  it('can select a specific test name from the typeahead results', () => {
+    contexts[0].config = {rootDir: ''};
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+
+    // Write a enter pattern mode
+    stdin.emit(KEYS.T);
+
+    // Write a pattern
+    ['c', 'o', 'n']
+      .map(toHex)
+      .concat([
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_UP,
+      ])
+      .forEach(key => stdin.emit(key));
+
+    stdin.emit(KEYS.ENTER);
+
+    expect(argv.testNamePattern).toMatchSnapshot();
+  });
+
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.T);
 

@@ -7,27 +7,32 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Config} from 'types/Config';
 import type {Environment} from 'types/Environment';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
+import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
-const JasmineReporter = require('./reporter');
-
-const jasmineAsync = require('./jasmine-async');
-const path = require('path');
+import path from 'path';
+import JasmineReporter from './reporter';
+import jasmineAsync from './jasmine-async';
 
 const JASMINE = require.resolve('./jasmine/jasmine-light.js');
 
 function jasmine2(
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult> {
-  const reporter = new JasmineReporter(config, environment, testPath);
+  const reporter = new JasmineReporter(
+    globalConfig,
+    config,
+    environment,
+    testPath,
+  );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create();
 
@@ -65,20 +70,25 @@ function jasmine2(
 
   env.addReporter(reporter);
 
-  runtime.requireInternalModule(path.resolve(__dirname, './jest-expect.js'))(
-    config,
-  );
+  runtime.requireInternalModule(path.resolve(__dirname, './jest-expect.js'))({
+    expand: globalConfig.expand,
+  });
 
-  const snapshotState = runtime.requireInternalModule(
+  const snapshotState: SnapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
-  )({config, testPath});
+  )({
+    config,
+    globalConfig,
+    localRequire: runtime.requireModule.bind(runtime),
+    testPath,
+  });
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
 
-  if (config.testNamePattern) {
-    const testNameRegex = new RegExp(config.testNamePattern, 'i');
+  if (globalConfig.testNamePattern) {
+    const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
 
@@ -86,10 +96,10 @@ function jasmine2(
   env.execute();
   return reporter
     .getResults()
-    .then(results => addSnapshotData(results, config, snapshotState));
+    .then(results => addSnapshotData(results, snapshotState));
 }
 
-const addSnapshotData = (results, config, snapshotState) => {
+const addSnapshotData = (results, snapshotState) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
@@ -98,13 +108,12 @@ const addSnapshotData = (results, config, snapshotState) => {
     }
   });
 
-  const updateSnapshot = config.updateSnapshot;
   const uncheckedCount = snapshotState.getUncheckedCount();
-  if (updateSnapshot) {
+  if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
-  const status = snapshotState.save(updateSnapshot);
 
+  const status = snapshotState.save();
   results.snapshot.fileDeleted = status.deleted;
   results.snapshot.added = snapshotState.added;
   results.snapshot.matched = snapshotState.matched;

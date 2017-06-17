@@ -8,10 +8,10 @@
 
 'use strict';
 
-const {linkJestPackage} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {linkJestPackage} = require('../utils');
+const runJest = require('../runJest');
 
 describe('jest --showConfig', () => {
   skipOnWindows.suite();
@@ -29,12 +29,18 @@ describe('jest --showConfig', () => {
     expect.addSnapshotSerializer({
       print: val =>
         val
-          .replace(new RegExp(root, 'g'), '/mocked/root/path')
-          .replace(/"name": "(.+)"/, '"name": "[md5 hash]"')
-          .replace(/"cacheDirectory": "(.+)"/, '"cacheDirectory": "/tmp/jest"'),
+          .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
+          .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
+          .replace(/"version": "(.+)"/g, '"version": "[version]"')
+          .replace(new RegExp(root, 'g'), '/mocked/root/path'),
       test: val => typeof val === 'string',
     });
-    const {stdout} = runJest(dir, ['--showConfig', '--no-cache']);
+    const {stdout} = runJest(dir, [
+      '--showConfig',
+      '--no-cache',
+      // Make the snapshot flag stable on CI.
+      '--updateSnapshot',
+    ]);
     expect(stdout).toMatchSnapshot();
   });
 });

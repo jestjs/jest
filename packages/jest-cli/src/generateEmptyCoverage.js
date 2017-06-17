@@ -8,20 +8,34 @@
  * @flow
  */
 
-'use strict';
+import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
-import type {Config, Path} from 'types/Config';
+import {createInstrumenter} from 'istanbul-lib-instrument';
+// $FlowFixMe: Missing ESM export
+import {ScriptTransformer, shouldInstrument} from 'jest-runtime';
 
-const IstanbulInstrument = require('istanbul-lib-instrument');
-
-const {transformSource, shouldInstrument} = require('jest-runtime');
-
-module.exports = function(source: string, filename: Path, config: Config) {
-  if (shouldInstrument(filename, config)) {
+module.exports = function(
+  source: string,
+  filename: Path,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+) {
+  const coverageOptions = {
+    collectCoverage: globalConfig.collectCoverage,
+    collectCoverageFrom: globalConfig.collectCoverageFrom,
+    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    mapCoverage: globalConfig.mapCoverage,
+  };
+  if (shouldInstrument(filename, coverageOptions, config)) {
     // Transform file without instrumentation first, to make sure produced
     // source code is ES6 (no flowtypes etc.) and can be instrumented
-    const transformResult = transformSource(filename, config, source, false);
-    const instrumenter = IstanbulInstrument.createInstrumenter();
+    const transformResult = new ScriptTransformer(config).transformSource(
+      filename,
+      source,
+      false,
+      globalConfig.mapCoverage,
+    );
+    const instrumenter = createInstrumenter();
     instrumenter.instrumentSync(transformResult.code, filename);
     return {
       coverage: instrumenter.fileCoverage,

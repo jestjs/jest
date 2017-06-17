@@ -17,7 +17,11 @@ const snapshotsDir = path.resolve(testDir, '__tests__/__snapshots__');
 const snapshotPath = path.resolve(snapshotsDir, 'snapshot-test.js.snap');
 
 const runAndAssert = () => {
-  const result = runJest.json('snapshot-serializers');
+  const result = runJest.json('snapshot-serializers', [
+    '-w=1',
+    '--ci=false',
+    '--no-cache',
+  ]);
   const json = result.json;
   expect(json.numTotalTests).toBe(7);
   expect(json.numPassedTests).toBe(7);

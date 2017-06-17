@@ -1,13 +1,16 @@
-/* eslint-disable max-len, sort-keys */
+/* eslint-disable sort-keys */
 
-'use strict';
-const connect = require('connect');
-const convert = require('./convert.js');
-const fs = require('fs');
 const http = require('http');
-const optimist = require('optimist');
 const path = require('path');
+const fs = require('fs');
+const connect = require('connect');
+const optimist = require('optimist');
 const reactMiddleware = require('react-page-middleware');
+const convert = require('./convert.js');
+const translationPre = require('./translationPre.js');
+const translation = require('./translation.js');
+
+console.log('server.js triggered...');
 
 const argv = optimist.argv;
 
@@ -35,22 +38,32 @@ const buildOptions = {
   static: true,
 };
 
+// clean up localization files, it can take a while to remove files so let's
+// have our next steps run in a callback
+translationPre();
+
 const app = connect()
   .use((req, res, next) => {
+    // Convert localized .json files into .js
+    translation();
     // convert all the md files on every request. This is not optimal
     // but fast enough that we don't really need to care right now.
     convert();
     next();
   })
   .use('/jest/blog/feed.xml', (req, res) => {
-    res.end(fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/feed.xml')) + '');
+    res.end(
+      fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/feed.xml')) + ''
+    );
   })
   .use('/jest/blog/atom.xml', (req, res) => {
-    res.end(fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + '');
+    res.end(
+      fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + ''
+    );
   })
   .use(reactMiddleware.provide(buildOptions))
   .use(connect['static'](FILE_SERVE_ROOT))
-  .use(connect.favicon(path.join(FILE_SERVE_ROOT, 'elements', 'favicon', 'favicon.ico')))
+  // .use(connect.favicon(path.join(FILE_SERVE_ROOT, 'elements', 'favicon', 'favicon.ico')))
   .use(connect.logger())
   .use(connect.compress())
   .use(connect.errorHandler());
