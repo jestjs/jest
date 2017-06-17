@@ -11,14 +11,12 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
-import {getState, setState} from 'jest-matchers';
-import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {
-  EXPECTED_COLOR,
-  RECEIVED_COLOR,
-  matcherHint,
-  pluralize,
-} from 'jest-matcher-utils';
+  extractExpectedAssertionsErrors,
+  getState,
+  setState,
+} from 'jest-matchers';
+import {SnapshotState, addSerializer} from 'jest-snapshot';
 
 export type SetupOptions = {|
   config: ProjectConfig,
@@ -48,59 +46,19 @@ const addSuppressedErrors = result => {
   }
 };
 
-function addAssertionErrors(result) {
-  const {
-    assertionCalls,
-    expectedAssertionsNumber,
-    isExpectingAssertions,
-  } = getState();
-  setState({
-    assertionCalls: 0,
-    expectedAssertionsNumber: null,
-  });
-  if (
-    typeof expectedAssertionsNumber === 'number' &&
-    assertionCalls !== expectedAssertionsNumber
-  ) {
-    const expected = EXPECTED_COLOR(
-      pluralize('assertion', expectedAssertionsNumber),
-    );
-    const message = new Error(
-      matcherHint('.assertions', '', String(expectedAssertionsNumber), {
-        isDirectExpectCall: true,
-      }) +
-        '\n\n' +
-        `Expected ${expected} to be called but only received ` +
-        RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
-        '.',
-    ).stack;
+const addAssertionErrors = (result) => {
+  const assertionErrors = extractExpectedAssertionsErrors();
+  if (assertionErrors.length) {
     result.status = 'failed';
-    result.failedExpectations.push({
-      actual: assertionCalls,
-      expected: expectedAssertionsNumber,
-      message,
-      passed: false,
-    });
+    result.failedExpectations = [...result.failedExpectations, assertionErrors];
   }
-  if (isExpectingAssertions && assertionCalls === 0) {
-    const expected = EXPECTED_COLOR('at least one assertion');
-    const received = RECEIVED_COLOR('received none');
-    const message = new Error(
-      matcherHint('.hasAssertions', '', '', {
-        isDirectExpectCall: true,
-      }) +
-        '\n\n' +
-        `Expected ${expected} to be called but ${received}.`,
-    ).stack;
-    result.status = 'failed';
-    result.failedExpectations.push({
-      actual: 'none',
-      expected: 'at least one',
-      message,
-      passed: false,
-    });
-  }
-}
+  result.failedExpectations = assertionErrors.map(error => ({
+    actual: error.actual,
+    expected: error.expected,
+    message: error.message,
+    passed: false,
+  }));
+};
 
 const patchJasmine = () => {
   global.jasmine.Spec = (realSpec => {

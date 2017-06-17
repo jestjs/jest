@@ -34,7 +34,7 @@ const extractExpectedAssertionsErrors = () => {
     const numOfAssertionsExpected = EXPECTED_COLOR(
       pluralize('assertion', expectedAssertionsNumber),
     );
-    const error = new Error(
+    const message = new Error(
       matcherHint('.assertions', '', String(expectedAssertionsNumber), {
         isDirectExpectCall: true,
       }) +
@@ -43,18 +43,30 @@ const extractExpectedAssertionsErrors = () => {
         RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
         '.',
     );
+    const error = {
+      actual: assertionCalls,
+      expected: expectedAssertionsNumber,
+      message,
+      passed: false,
+    };
     result.push(error);
   }
   if (isExpectingAssertions && assertionCalls === 0) {
     const expected = EXPECTED_COLOR('at least one assertion');
     const received = RECEIVED_COLOR('received none');
-    const error = new Error(
+    const message = new Error(
       matcherHint('.hasAssertions', '', '', {
         isDirectExpectCall: true,
       }) +
         '\n\n' +
         `Expected ${expected} to be called but ${received}.`,
     );
+    const error = {
+      actual: 'none',
+      expected: 'at least one',
+      message,
+      passed: false,
+    };
     result.push(error);
   }
 
