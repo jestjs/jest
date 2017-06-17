@@ -28,36 +28,6 @@ exports[`not throwing Error objects 3`] = `
 "
 `;
 
-exports[`not throwing Error objects 4`] = `
-" FAIL  __tests__/assertion-count-test.js
-  ● .assertions() › throws
-    expect(received).toBeTruthy()
-    Expected value to be truthy, instead received
-      false
-      at __tests__/assertion-count-test.js:14:17
-  ● .assertions() › throws
-    expect.assertions(2)
-    Expected two assertions to be called but only received one assertion call.
-  ● .assertions() › throws on redeclare of assertion count
-    expect(received).toBeTruthy()
-    Expected value to be truthy, instead received
-      false
-      at __tests__/assertion-count-test.js:18:17
-  ● .assertions() › throws on assertion
-    expect.assertions(0)
-    Expected zero assertions to be called but only received one assertion call.
-  ● .hasAssertions() › throws when there are not assertions
-    expect.hasAssertions()
-    Expected at least one assertion to be called but received none.
-  .assertions()
-    ✕ throws
-    ✕ throws on redeclare of assertion count
-    ✕ throws on assertion
-  .hasAssertions()
-    ✕ throws when there are not assertions
-"
-`;
-
 exports[`works with node assert 1`] = `
 " FAIL  __tests__/node-assertion-error-test.js
   ● assert
