@@ -12,7 +12,7 @@
 
 import type {Config, Path} from 'types/Config';
 
-const {getState, setState} = require('jest-matchers');
+const {getState, setState, extractExpectedAssertionsErrors} = require('jest-matchers');
 const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
 const {
   EXPECTED_COLOR,
@@ -42,33 +42,8 @@ const addSuppressedErrors = result => {
   }
 };
 
-function addAssertionErrors(result) {
-  const {assertionCalls, assertionsExpected} = getState();
-  setState({
-    assertionCalls: 0,
-    assertionsExpected: null,
-  });
-  if (
-    typeof assertionsExpected === 'number' &&
-    assertionCalls !== assertionsExpected
-  ) {
-    const expected = EXPECTED_COLOR(pluralize('assertion', assertionsExpected));
-    const message = new Error(
-      matcherHint('.assertions', '', assertionsExpected, {
-        isDirectExpectCall: true,
-      }) +
-        '\n\n' +
-        `Expected ${expected} to be called but only received ` +
-        `${RECEIVED_COLOR(pluralize('assertion call', assertionCalls))}.`,
-    ).stack;
-    result.status = 'failed';
-    result.failedExpectations.push({
-      actual: assertionCalls,
-      expected: assertionsExpected,
-      message,
-      passed: false,
-    });
-  }
+const addAssertionErrors = () => {
+  extractExpectedAssertionsErrors();
 }
 
 const patchJasmine = () => {
@@ -77,7 +52,7 @@ const patchJasmine = () => {
       const resultCallback = attr.resultCallback;
       attr.resultCallback = function(result) {
         addSuppressedErrors(result);
-        addAssertionErrors(result);
+        addAssertionErrors();
         resultCallback.call(attr, result);
       };
       const onStart = attr.onStart;
