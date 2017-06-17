@@ -50,7 +50,7 @@ const addSuppressedErrors = result => {
 
 const addAssertionErrors = () => {
   extractExpectedAssertionsErrors();
-}
+};
 
 const patchJasmine = () => {
   global.jasmine.Spec = (realSpec => {
