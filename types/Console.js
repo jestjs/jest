@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 export type LogMessage = string;
 export type LogEntry = {|

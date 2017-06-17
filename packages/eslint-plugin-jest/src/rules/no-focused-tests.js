@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {EslintContext, CallExpression} from './types';
 
@@ -37,7 +36,8 @@ module.exports = (context: EslintContext) => ({
     }
 
     if (
-      callee.type === 'MemberExpression' && isCallToTestOnlyFunction(callee)
+      callee.type === 'MemberExpression' &&
+      isCallToTestOnlyFunction(callee)
     ) {
       context.report({
         message: 'Unexpected focused test.',

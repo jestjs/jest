@@ -7,7 +7,7 @@
  * @jsx React.DOM
  */
 
- /* eslint-disable max-len, sort-keys */
+ /* eslint-disable sort-keys */
 
 const React = require('React');
 const Prism = require('Prism');

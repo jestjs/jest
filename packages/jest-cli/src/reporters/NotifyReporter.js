@@ -7,16 +7,14 @@
 *
 * @flow
 */
-'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
-const BaseReporter = require('./BaseReporter');
-const notifier = require('node-notifier');
-const path = require('path');
-const util = require('util');
+import path from 'path';
+import util from 'util';
+import notifier from 'node-notifier';
+import BaseReporter from './BaseReporter';
 
 const isDarwin = process.platform === 'darwin';
 
@@ -30,11 +28,7 @@ class NotifyReporter extends BaseReporter {
     this._startRun = startRun;
   }
 
-  onRunComplete(
-    contexts: Set<Context>,
-    config: GlobalConfig,
-    result: AggregatedResult,
-  ): void {
+  onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 

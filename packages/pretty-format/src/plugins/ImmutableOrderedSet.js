@@ -8,11 +8,9 @@
  * @flow
  */
 
-'use strict';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
-
-const printImmutable = require('./lib/printImmutable');
+import printImmutable from './lib/printImmutable';
 
 const IS_SET = '@@__IMMUTABLE_SET__@@';
 const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';

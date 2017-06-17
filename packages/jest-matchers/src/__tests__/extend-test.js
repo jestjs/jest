@@ -8,10 +8,9 @@
  * @emails oncall+jsinfra
  */
 
-'use strict';
-
-const jestExpect = require('../');
 const matcherUtils = require('jest-matcher-utils');
+const {equals} = require('../jasmine-utils');
+const jestExpect = require('../');
 
 jestExpect.extend({
   toBeDivisibleBy(actual, expected) {
@@ -59,4 +58,17 @@ it('is ok if there is no message specified', () => {
   expect(() =>
     jestExpect(true).toFailWithoutMessage(),
   ).toThrowErrorMatchingSnapshot();
+});
+
+it('exposes an equality function to custom matchers', () => {
+  // jestExpect and expect share the same global state
+  expect.assertions(3);
+  jestExpect.extend({
+    toBeOne() {
+      expect(this.equals).toBe(equals);
+      return {pass: !!this.equals(1, 1)};
+    },
+  });
+
+  expect(() => jestExpect().toBeOne()).not.toThrow();
 });

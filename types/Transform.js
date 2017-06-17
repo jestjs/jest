@@ -7,9 +7,8 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {Script} from 'vm';
 
 export type TransformedSource = {|
@@ -17,18 +16,18 @@ export type TransformedSource = {|
   map: ?Object | string,
 |};
 
-export type BuiltTransformResult = {|
+export type TransformResult = {|
   script: Script,
   sourceMapPath: ?string,
 |};
 
 export type TransformOptions = {|
   instrument: boolean,
-  watch: boolean,
 |};
 
 export type Transformer = {|
   canInstrument?: boolean,
+  createTransformer(options: any): Transformer,
 
   getCacheKey: (
     fileData: string,
@@ -40,7 +39,7 @@ export type Transformer = {|
   process: (
     sourceText: string,
     sourcePath: Path,
-    config: Config,
+    config: ProjectConfig,
     options?: TransformOptions,
   ) => string | TransformedSource,
 |};

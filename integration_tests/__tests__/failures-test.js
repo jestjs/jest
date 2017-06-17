@@ -6,42 +6,54 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const {extractSummary} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {extractSummary} = require('../utils');
+const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../failures');
 
+const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
+
 skipOnWindows.suite();
 
-// Some node versions add an extra line to the error stack trace. This makes
-// snapshot tests fail on different machines. This function makes sure
-// this extra line is always removed.
-const stripInconsistentStackLines = summary => {
-  summary.rest = summary.rest
-    .replace(/\n^.*process\._tickCallback.*$/gm, '')
-    .replace(/\n^.*_throws.*$/gm, '')
-    .replace(/\n^.*Function\..*(throws|doesNotThrow).*$/gm, '')
-    .replace(/(\n^.*Object.<anonymous>)\.test(.*$)/gm, '$1$2');
-  return summary;
+const cleanupStackTrace = stderr => {
+  const STACK_REGEXP = /^.*at.*(setup-jest-globals|extractExpectedAssertionsErrors).*\n/gm;
+  if (!STACK_REGEXP.test(stderr)) {
+    throw new Error(
+      `
+      This function is used to remove inconsistent stack traces between
+      jest-jasmine2 and jest-circus. If you see this error, that means the
+      stack traces are no longer inconsistent and this function can be
+      safely removed.
+
+      output:
+      ${stderr}
+    `,
+    );
+  }
+
+  return (
+    stderr
+      .replace(STACK_REGEXP, '')
+      // Also remove trailing whitespace.
+      .replace(/\s+$/gm, '')
+  );
 };
 
-test('throwing not Error objects', () => {
+test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw-number-test.js']).stderr;
-  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['throw-string-test.js']).stderr;
-  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['throw-object-test.js']).stderr;
-  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['assertion-count-test.js']).stderr;
-  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
+  expect(extractSummary(cleanupStackTrace(stderr)).rest).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
   const {stderr} = runJest(dir, ['node-assertion-error-test.js']);
-  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
 });

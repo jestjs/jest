@@ -22,7 +22,7 @@ it('displays a user after a click', () => {
 
   // Tell the fetchCurrentUser mock function to automatically invoke
   // its callback with some data
-  fetchCurrentUser.mockImplementation(cb =>  {
+  fetchCurrentUser.mockImplementation(cb => {
     cb({
       fullName: 'Johnny Cash',
       loggedIn: true,

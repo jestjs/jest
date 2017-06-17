@@ -8,10 +8,7 @@
  * @flow
  */
 
-// This file must not use 'use strict'.
-// See https://github.com/facebook/jest/pull/2457#issuecomment-269518622
-
 import type {Global} from 'types/Global';
 
 module.exports = (global: Global, key: string, value: any) =>
-  global[key] = value;
+  (global[key] = value);

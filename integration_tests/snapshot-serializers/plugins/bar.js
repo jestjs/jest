@@ -6,7 +6,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-'use strict';
+
+/* eslint-disable no-unused-vars */
 
 const createPlugin = require('../utils').createPlugin;
-module.exports = createPlugin('bar');
+
+// We inject the call to "createPlugin('bar') through the transformer"

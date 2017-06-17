@@ -8,17 +8,15 @@
  * @flow
  */
 
-'use strict';
-
 import type {ValidationOptions} from './types';
 
-const chalk = require('chalk');
-const {
+import chalk from 'chalk';
+import {
   format,
   logValidationWarning,
   createDidYouMeanMessage,
   WARNING,
-} = require('./utils');
+} from './utils';
 
 const unknownOptionWarning = (
   config: Object,
@@ -30,12 +28,10 @@ const unknownOptionWarning = (
     option,
     Object.keys(exampleConfig),
   );
-  /* eslint-disable max-len */
   const message =
     `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
     (didYouMean && ` ${didYouMean}`) +
     `\n  This is probably a typing mistake. Fixing it will remove this message.`;
-  /* eslint-enable max-len */
 
   const comment = options.comment;
   const name = (options.title && options.title.warning) || WARNING;

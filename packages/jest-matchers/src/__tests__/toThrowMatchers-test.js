@@ -110,26 +110,6 @@ class Error {
       });
     });
 
-    describe('errors', () => {
-      it('works', () => {
-        it('passes', () => {
-          jestExpect(() => {
-            throw new Err();
-          })[toThrow](new Err());
-          jestExpect(() => {
-            throw new Err('Message');
-          })[toThrow](new Err('Message'));
-          jestExpect(() => {
-            throw new Err();
-          })[toThrow](new Error());
-          jestExpect(() => {
-            throw new Err();
-          }).not[toThrow](new Err2());
-          jestExpect(() => {}).not[toThrow](new Err());
-        });
-      });
-    });
-
     describe('error class', () => {
       it('passes', () => {
         jestExpect(() => {

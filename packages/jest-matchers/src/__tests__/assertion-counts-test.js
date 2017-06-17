@@ -29,3 +29,16 @@ describe('.assertions()', () => {
     jestExpect.assertions(0);
   });
 });
+
+describe('.hasAssertions()', () => {
+  it('does not throw if there is an assertion', () => {
+    jestExpect.hasAssertions();
+    jestExpect('a').toBe('a');
+  });
+
+  it('throws if passed parameters', () => {
+    jestExpect(() => {
+      jestExpect.hasAssertions(2);
+    }).toThrow();
+  });
+});

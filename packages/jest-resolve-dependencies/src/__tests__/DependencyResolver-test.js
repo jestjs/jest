@@ -8,9 +8,9 @@
  */
 'use strict';
 
-const DependencyResolver = require('../index');
-const normalizeConfig = require('jest-config').normalize;
 const path = require('path');
+const {normalize} = require('jest-config');
+const DependencyResolver = require('../index');
 
 const maxWorkers = 1;
 let dependencyResolver;
@@ -26,10 +26,13 @@ const filter = path => {
 
 beforeEach(() => {
   Runtime = require('jest-runtime');
-  config = normalizeConfig({
-    rootDir: '.',
-    roots: ['./packages/jest-resolve-dependencies'],
-  }).config;
+  config = normalize(
+    {
+      rootDir: '.',
+      roots: ['./packages/jest-resolve-dependencies'],
+    },
+    {},
+  ).options;
   return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
     dependencyResolver = new DependencyResolver(
       hasteMap.resolver,

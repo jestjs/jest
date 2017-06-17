@@ -6,12 +6,10 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const {linkJestPackage, run} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {linkJestPackage, run} = require('../utils');
+const runJest = require('../runJest');
 
 describe('babel-jest', () => {
   skipOnWindows.suite();
@@ -19,7 +17,7 @@ describe('babel-jest', () => {
 
   beforeEach(() => {
     if (process.platform !== 'win32') {
-      run('yarn --no-lockfile', dir);
+      run('yarn', dir);
       linkJestPackage('babel-jest', dir);
     }
   });
@@ -88,7 +86,7 @@ describe('multiple-transformers', () => {
 
   beforeEach(() => {
     if (process.platform !== 'win32') {
-      run('yarn --no-lockfile', dir);
+      run('yarn', dir);
       linkJestPackage('babel-jest', dir);
     }
   });

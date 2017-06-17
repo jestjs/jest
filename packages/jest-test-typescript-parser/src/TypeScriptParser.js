@@ -8,11 +8,10 @@
  * @flow
  */
 
-'use strict';
+import {readFileSync} from 'fs';
 
-const ts = require('typescript');
-const {readFileSync} = require('fs');
-const {Expect, ItBlock, Node} = require('jest-editor-support');
+import ts from 'typescript';
+import {Expect, ItBlock, Node} from 'jest-editor-support';
 
 function parse(file: string) {
   const sourceFile = ts.createSourceFile(

@@ -19,14 +19,16 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+@flow
 */
 
 /* eslint-disable */
 
-'use strict';
+type Tester = (a: any, b: any) => boolean | typeof undefined;
 
 // Extracted out of jasmine 2.5.2
-function equals(a, b, customTesters) {
+function equals(a: any, b: any, customTesters?: Array<Tester>): boolean {
   customTesters = customTesters || [];
   return eq(a, b, [], [], customTesters);
 }
@@ -53,17 +55,17 @@ function asymmetricMatch(a, b) {
 
 // Equality function lovingly adapted from isEqual in
 //   [Underscore](http://underscorejs.org)
-function eq(a, b, aStack, bStack, customTesters) {
+function eq(a, b, aStack, bStack, customTesters): boolean {
   var result = true;
 
   var asymmetricResult = asymmetricMatch(a, b);
-  if (!isUndefined(asymmetricResult)) {
+  if (asymmetricResult !== undefined) {
     return asymmetricResult;
   }
 
   for (var i = 0; i < customTesters.length; i++) {
     var customTesterResult = customTesters[i](a, b);
-    if (!isUndefined(customTesterResult)) {
+    if (customTesterResult !== undefined) {
       return customTesterResult;
     }
   }
@@ -164,18 +166,6 @@ function eq(a, b, aStack, bStack, customTesters) {
         return false;
       }
     }
-  } else {
-    // Objects with different constructors are not equivalent, but `Object`s
-    // or `Array`s from different frames are.
-    // CUSTOM JEST CHANGE:
-    // TODO(cpojer): fix all tests and this and re-enable this check
-    /*
-    var aCtor = a.constructor, bCtor = b.constructor;
-    if (aCtor !== bCtor && !(isFunction(aCtor) && aCtor instanceof aCtor &&
-           isFunction(bCtor) && bCtor instanceof bCtor)) {
-      return false;
-    }
-    */
   }
 
   // Deep compare objects.
@@ -205,7 +195,6 @@ function eq(a, b, aStack, bStack, customTesters) {
 }
 
 function keys(obj, isArray) {
-  // CUSTOM JEST CHANGE: don't consider undefined keys.
   var allKeys = (function(o) {
     var keys = [];
     for (var key in o) {
@@ -213,7 +202,7 @@ function keys(obj, isArray) {
         keys.push(key);
       }
     }
-    return keys;
+    return keys.concat((Object.getOwnPropertySymbols(o): Array<any>));
   })(obj);
 
   if (!isArray) {
@@ -235,14 +224,12 @@ function keys(obj, isArray) {
 }
 
 function has(obj, key) {
-  // CUSTOM JEST CHANGE:
-  // TODO(cpojer): remove the `obj[key] !== undefined` check.
   return (
     Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined
   );
 }
 
-function isA(typeName, value) {
+function isA(typeName: string, value: any) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
@@ -250,7 +237,7 @@ function isDomNode(obj) {
   return obj.nodeType > 0;
 }
 
-function fnNameFor(func) {
+function fnNameFor(func: Function) {
   if (func.name) {
     return func.name;
   }
@@ -259,7 +246,7 @@ function fnNameFor(func) {
   return matches ? matches[1] : '<anonymous>';
 }
 
-function isUndefined(obj) {
+function isUndefined(obj: any) {
   return obj === void 0;
 }
 
@@ -275,7 +262,7 @@ function getPrototype(obj) {
   return obj.constructor.prototype;
 }
 
-function hasProperty(obj, property) {
+function hasProperty(obj: Object | null, property: string) {
   if (!obj) {
     return false;
   }

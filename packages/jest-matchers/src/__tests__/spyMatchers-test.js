@@ -7,19 +7,12 @@
  *
  * @emails oncall+jsinfra
  */
-/* eslint-disable max-len */
-'use strict';
 
 const jestExpect = require('../');
 
-[
-  ['toHaveBeenCalled', 'jasmine.createSpy'],
-  ['toHaveBeenCalled', 'jest.fn'],
-  ['toBeCalled', 'jasmine.createSpy'],
-  ['toBeCalled', 'jest.fn'],
-].forEach(([called, mockName]) => {
-  test(`${called} works with ${mockName}`, () => {
-    const fn = mockName === 'jest.fn' ? jest.fn() : jasmine.createSpy('fn');
+['toHaveBeenCalled', 'toBeCalled'].forEach(called => {
+  test(`${called} works with jest.fn`, () => {
+    const fn = jest.fn();
 
     jestExpect(fn).not[called]();
     expect(() => jestExpect(fn)[called]()).toThrowErrorMatchingSnapshot();
@@ -34,7 +27,7 @@ const jestExpect = require('../');
 
 describe('toHaveBeenCalledTimes', () => {
   it('accepts only numbers', () => {
-    const fn = jasmine.createSpy('fn');
+    const fn = jest.fn();
     fn();
     jestExpect(fn).toHaveBeenCalledTimes(1);
 
@@ -53,16 +46,8 @@ describe('toHaveBeenCalledTimes', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  it('works both for Mock functions and Spies', () => {
-    [jasmine.createSpy('fn'), jest.fn()].forEach(fn => {
-      fn();
-      fn();
-      jestExpect(fn).toHaveBeenCalledTimes(2);
-    });
-  });
-
   it('passes if function called equal to expected times', () => {
-    const fn = jasmine.createSpy('fn');
+    const fn = jest.fn();
     fn();
     fn();
 
@@ -74,7 +59,7 @@ describe('toHaveBeenCalledTimes', () => {
   });
 
   it('fails if function called more than expected times', () => {
-    const fn = jasmine.createSpy('fn');
+    const fn = jest.fn();
     fn();
     fn();
     fn();
@@ -88,7 +73,7 @@ describe('toHaveBeenCalledTimes', () => {
   });
 
   it('fails if function called less than expected times', () => {
-    const fn = jasmine.createSpy('fn');
+    const fn = jest.fn();
     fn();
 
     jestExpect(fn).toHaveBeenCalledTimes(1);
@@ -116,19 +101,12 @@ describe('toHaveBeenCalledTimes', () => {
 });
 
 [
-  ['lastCalledWith', 'jest.fn'],
-  ['toBeCalledWith', 'jest.fn'],
-  ['toHaveBeenCalledWith', 'jasmine.createSpy'],
-  ['toHaveBeenCalledWith', 'jest.fn'],
-  ['toHaveBeenLastCalledWith', 'jasmine.createSpy'],
-  ['toHaveBeenLastCalledWith', 'jest.fn'],
-].forEach(([calledWith, mockName]) => {
-  const getFunction = () => {
-    return mockName === 'jest.fn' ? jest.fn() : jasmine.createSpy('fn');
-  };
-
-  test(`${calledWith} works with ${mockName} when not called`, () => {
-    const fn = getFunction();
+  'lastCalledWith',
+  'toHaveBeenCalledWith',
+  'toHaveBeenLastCalledWith',
+].forEach(calledWith => {
+  test(`${calledWith} works when not called`, () => {
+    const fn = jest.fn();
     jestExpect(fn).not[calledWith]('foo', 'bar');
 
     expect(() =>
@@ -136,14 +114,14 @@ describe('toHaveBeenCalledTimes', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  test(`${calledWith} works with ${mockName} and no arguments`, () => {
-    const fn = getFunction();
+  test(`${calledWith} works with no arguments`, () => {
+    const fn = jest.fn();
     fn();
     jestExpect(fn)[calledWith]();
   });
 
-  test(`${calledWith} works with ${mockName} and arguments that don't match`, () => {
-    const fn = getFunction();
+  test(`${calledWith} works with arguments that don't match`, () => {
+    const fn = jest.fn();
     fn('foo', 'bar1');
 
     jestExpect(fn).not[calledWith]('foo', 'bar');
@@ -153,8 +131,8 @@ describe('toHaveBeenCalledTimes', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  test(`${calledWith} works with ${mockName} and arguments that match`, () => {
-    const fn = getFunction();
+  test(`${calledWith} works with arguments that match`, () => {
+    const fn = jest.fn();
     fn('foo', 'bar');
 
     jestExpect(fn)[calledWith]('foo', 'bar');
@@ -164,8 +142,8 @@ describe('toHaveBeenCalledTimes', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  test(`${calledWith} works with ${mockName} and many arguments that don't match`, () => {
-    const fn = getFunction();
+  test(`${calledWith} works with many arguments that don't match`, () => {
+    const fn = jest.fn();
     fn('foo', 'bar1');
     fn('foo', 'bar2');
     fn('foo', 'bar3');
@@ -177,8 +155,8 @@ describe('toHaveBeenCalledTimes', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  test(`${calledWith} works with ${mockName} and many arguments`, () => {
-    const fn = getFunction();
+  test(`${calledWith} works with many arguments`, () => {
+    const fn = jest.fn();
     fn('foo1', 'bar');
     fn('foo', 'bar1');
     fn('foo', 'bar');

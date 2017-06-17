@@ -7,16 +7,14 @@
  *
  * @flow
  */
-'use strict';
 
 import type {InternalHasteMap} from 'types/HasteMap';
 import type {IgnoreMatcher, CrawlerOptions} from '../types';
 
-const H = require('../constants');
-
-const fs = require('fs');
-const path = require('path');
-const spawn = require('child_process').spawn;
+import fs from 'fs';
+import path from 'path';
+import {spawn} from 'child_process';
+import H from '../constants';
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
 
@@ -66,7 +64,11 @@ function find(
     });
   }
 
-  roots.forEach(search);
+  if (roots.length > 0) {
+    roots.forEach(search);
+  } else {
+    callback(result);
+  }
 }
 
 function findNative(
@@ -94,7 +96,7 @@ function findNative(
   const child = spawn('find', args);
   let stdout = '';
   child.stdout.setEncoding('utf-8');
-  child.stdout.on('data', data => stdout += data);
+  child.stdout.on('data', data => (stdout += data));
 
   child.stdout.on('close', () => {
     const lines = stdout.trim().split('\n').filter(x => !ignore(x));

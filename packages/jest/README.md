@@ -1,6 +1,6 @@
 # Jest
 
-🃏 Painless JavaScript Testing
+🃏 Delightful JavaScript Testing
 
 - **👩🏻‍💻 Easy Setup**: Jest is a complete and easy to set up JavaScript testing solution. In fact, Jest works out of the box for any React project.
 

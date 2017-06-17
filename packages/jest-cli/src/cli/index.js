@@ -8,18 +8,16 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
+import type {Argv} from 'types/Argv';
 
-const args = require('./args');
-const getJest = require('./getJest');
-const pkgDir = require('pkg-dir');
-const runCLI = require('./runCLI');
-const validateCLIOptions = require('jest-util').validateCLIOptions;
-const yargs = require('yargs');
+import {validateCLIOptions} from 'jest-util';
+import yargs from 'yargs';
+import args from './args';
+import getJest from './getJest';
+import runCLI from './runCLI';
 
-function run(argv?: Object, root?: Path) {
+function run(argv?: Argv, project?: Path) {
   argv = yargs(argv || process.argv.slice(2))
     .usage(args.usage)
     .help()
@@ -30,22 +28,15 @@ function run(argv?: Object, root?: Path) {
 
   validateCLIOptions(argv, args.options);
 
-  if (argv.help) {
-    yargs.showHelp();
-    process.on('exit', () => process.exit(1));
-    return;
+  if (!project) {
+    project = process.cwd();
   }
 
-  if (!root) {
-    root = pkgDir.sync();
-  }
-
-  argv.projects = argv.experimentalProjects;
   if (!argv.projects) {
-    argv.projects = [root];
+    argv.projects = [project];
   }
 
-  const execute = argv.projects.length === 1 ? getJest(root).runCLI : runCLI;
+  const execute = argv.projects.length === 1 ? getJest(project).runCLI : runCLI;
   execute(argv, argv.projects, result => {
     const code = !result || result.success ? 0 : 1;
     process.on('exit', () => process.exit(code));

@@ -8,14 +8,12 @@
  * @flow
  */
 
-'use strict';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
-
-const ansiRegex = require('ansi-regex');
+import ansiRegex from 'ansi-regex';
+import style from 'ansi-styles';
 
 const toHumanReadableAnsi = text => {
-  const style = require('ansi-styles');
   return text.replace(ansiRegex(), (match, offset, string) => {
     switch (match) {
       case style.red.close:

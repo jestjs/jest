@@ -7,23 +7,31 @@
 *
 * @flow
 */
-'use strict';
 
-import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
+import type {
+  AggregatedResult,
+  CoverageMap,
+  SerializableError,
+  TestResult,
+} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
-const BaseReporter = require('./BaseReporter');
+type CoverageReporterOptions = {
+  maxWorkers: number,
+};
 
-const {clearLine} = require('jest-util');
-const {createReporter} = require('istanbul-api');
-const chalk = require('chalk');
-const fs = require('fs');
-const generateEmptyCoverage = require('../generateEmptyCoverage');
-const isCI = require('is-ci');
-const istanbulCoverage = require('istanbul-lib-coverage');
-const libSourceMaps = require('istanbul-lib-source-maps');
+import {clearLine} from 'jest-util';
+import {createReporter} from 'istanbul-api';
+import chalk from 'chalk';
+import isCI from 'is-ci';
+import istanbulCoverage from 'istanbul-lib-coverage';
+import libSourceMaps from 'istanbul-lib-source-maps';
+import pify from 'pify';
+import workerFarm from 'worker-farm';
+import BaseReporter from './BaseReporter';
+import CoverageWorker from './CoverageWorker';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -32,12 +40,16 @@ const isInteractive = process.stdout.isTTY && !isCI;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
+  _globalConfig: GlobalConfig;
   _sourceMapStore: any;
+  _maxWorkers: number;
 
-  constructor() {
+  constructor(globalConfig: GlobalConfig, options: CoverageReporterOptions) {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
+    this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
+    this._maxWorkers = options.maxWorkers;
   }
 
   onTestResult(
@@ -59,27 +71,26 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  onRunComplete(
+  async onRunComplete(
     contexts: Set<Context>,
-    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ) {
-    this._addUntestedFiles(contexts);
+    await this._addUntestedFiles(this._globalConfig, contexts);
     let map = this._coverageMap;
     let sourceFinder: Object;
-    if (config.mapCoverage) {
+    if (this._globalConfig.mapCoverage) {
       ({map, sourceFinder} = this._sourceMapStore.transformCoverage(map));
     }
 
     const reporter = createReporter();
     try {
-      if (config.coverageDirectory) {
-        reporter.dir = config.coverageDirectory;
+      if (this._globalConfig.coverageDirectory) {
+        reporter.dir = this._globalConfig.coverageDirectory;
       }
 
-      let coverageReporters = config.coverageReporters || [];
+      let coverageReporters = this._globalConfig.coverageReporters || [];
       if (
-        !config.useStderr &&
+        !this._globalConfig.useStderr &&
         coverageReporters.length &&
         coverageReporters.indexOf('text') === -1
       ) {
@@ -91,26 +102,27 @@ class CoverageReporter extends BaseReporter {
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
-        chalk.red(
-          `
+        chalk.red(`
         Failed to write coverage reports:
         ERROR: ${e.toString()}
         STACK: ${e.stack}
-      `,
-        ),
+      `),
       );
     }
 
-    this._checkThreshold(map, config);
+    this._checkThreshold(this._globalConfig, map);
   }
 
-  _addUntestedFiles(contexts: Set<Context>) {
+  _addUntestedFiles(globalConfig: GlobalConfig, contexts: Set<Context>) {
     const files = [];
     contexts.forEach(context => {
       const config = context.config;
-      if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
+      if (
+        globalConfig.collectCoverageFrom &&
+        globalConfig.collectCoverageFrom.length
+      ) {
         context.hasteFS
-          .matchFilesWithGlob(config.collectCoverageFrom, config.rootDir)
+          .matchFilesWithGlob(globalConfig.collectCoverageFrom, config.rootDir)
           .forEach(filePath =>
             files.push({
               config,
@@ -119,44 +131,74 @@ class CoverageReporter extends BaseReporter {
           );
       }
     });
-    if (files.length) {
-      if (isInteractive) {
-        process.stderr.write(
-          RUNNING_TEST_COLOR('Running coverage on untested files...'),
-        );
-      }
-      files.forEach(({config, path}) => {
-        if (!this._coverageMap.data[path]) {
-          try {
-            const source = fs.readFileSync(path).toString();
-            const result = generateEmptyCoverage(source, path, config);
+    if (!files.length) {
+      return Promise.resolve();
+    }
+
+    if (isInteractive) {
+      process.stderr.write(
+        RUNNING_TEST_COLOR('Running coverage on untested files...'),
+      );
+    }
+
+    let worker;
+    let farm;
+    if (this._maxWorkers <= 1) {
+      worker = pify(CoverageWorker);
+    } else {
+      farm = workerFarm(
+        {
+          autoStart: true,
+          maxConcurrentCallsPerWorker: 1,
+          maxConcurrentWorkers: this._maxWorkers,
+          maxRetries: 2,
+        },
+        require.resolve('./CoverageWorker'),
+      );
+      worker = pify(farm);
+    }
+    const instrumentation = [];
+    files.forEach(fileObj => {
+      const filename = fileObj.path;
+      const config = fileObj.config;
+      if (!this._coverageMap.data[filename]) {
+        const promise = worker({
+          config,
+          globalConfig,
+          path: filename,
+        })
+          .then(result => {
             if (result) {
               this._coverageMap.addFileCoverage(result.coverage);
               if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(path, result.sourceMapPath);
+                this._sourceMapStore.registerURL(
+                  filename,
+                  result.sourceMapPath,
+                );
               }
             }
-          } catch (e) {
-            console.error(
-              chalk.red(
-                `
-              Failed to collect coverage from ${path}
-              ERROR: ${e}
-              STACK: ${e.stack}
-            `,
-              ),
-            );
-          }
-        }
-      });
+          })
+          .catch((error: SerializableError) => {
+            console.error(chalk.red(error.message));
+          });
+        instrumentation.push(promise);
+      }
+    });
+
+    const cleanup = () => {
       if (isInteractive) {
         clearLine(process.stderr);
       }
-    }
+      if (farm) {
+        workerFarm.end(farm);
+      }
+    };
+
+    return Promise.all(instrumentation).then(cleanup).catch(cleanup);
   }
 
-  _checkThreshold(map: CoverageMap, config: GlobalConfig) {
-    if (config.coverageThreshold) {
+  _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {
+    if (globalConfig.coverageThreshold) {
       const results = map.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
@@ -188,7 +230,11 @@ class CoverageReporter extends BaseReporter {
           return errors;
         }, []);
       }
-      const errors = check('global', config.coverageThreshold.global, results);
+      const errors = check(
+        'global',
+        globalConfig.coverageThreshold.global,
+        results,
+      );
 
       if (errors.length > 0) {
         this.log(`${FAIL_COLOR(errors.join('\n'))}`);

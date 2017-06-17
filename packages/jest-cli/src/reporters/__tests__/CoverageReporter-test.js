@@ -4,8 +4,6 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -34,7 +32,6 @@ beforeEach(() => {
 
 describe('onRunComplete', () => {
   let mockAggResults;
-  let testReporter;
 
   beforeEach(() => {
     mockAggResults = {
@@ -76,14 +73,10 @@ describe('onRunComplete', () => {
         },
       };
     });
-
-    testReporter = new CoverageReporter();
-    testReporter.log = jest.fn();
   });
 
   it('getLastError() returns an error when threshold is not met', () => {
-    testReporter.onRunComplete(
-      new Set(),
+    const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
         coverageThreshold: {
@@ -92,15 +85,20 @@ describe('onRunComplete', () => {
           },
         },
       },
-      mockAggResults,
+      {
+        maxWorkers: 2,
+      },
     );
-
-    expect(testReporter.getLastError()).toBeTruthy();
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError()).toBeTruthy();
+      });
   });
 
   it('getLastError() returns `undefined` when threshold is met', () => {
-    testReporter.onRunComplete(
-      new Set(),
+    const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
         coverageThreshold: {
@@ -109,9 +107,15 @@ describe('onRunComplete', () => {
           },
         },
       },
-      mockAggResults,
+      {
+        maxWorkers: 2,
+      },
     );
-
-    expect(testReporter.getLastError()).toBeUndefined();
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError()).toBeUndefined();
+      });
   });
 });

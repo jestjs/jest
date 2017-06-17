@@ -9,8 +9,8 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const runJest = require('../runJest');
 
 describe('Regex Char In Path', () => {
   skipOnWindows.suite();

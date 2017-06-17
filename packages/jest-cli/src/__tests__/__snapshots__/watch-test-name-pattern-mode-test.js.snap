@@ -8,8 +8,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 9 tests
- from cached test suites.
+ Pattern matches 9 tests from cached test suites
 
  › should return the correct index when
 
@@ -40,8 +39,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 8 tests
- from cached test suites.
+ Pattern matches 8 tests from cached test suites
 
  › should return the correct index when
 
@@ -70,8 +68,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 4 tests
- from cached test suites.
+ Pattern matches 4 tests from cached test suites
 
  › might get confusing
 
@@ -92,8 +89,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches no tests
- from cached test suites.
+ Pattern matches no tests from cached test suites
 [MOCK - cursorTo(15, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -106,8 +102,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches no tests
- from cached test suites.
+ Pattern matches no tests from cached test suites
 [MOCK - cursorTo(16, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -120,8 +115,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches no tests
- from cached test suites.
+ Pattern matches no tests from cached test suites
 [MOCK - cursorTo(17, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -134,8 +128,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches no tests
- from cached test suites.
+ Pattern matches no tests from cached test suites
 [MOCK - cursorTo(16, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -148,8 +141,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches no tests
- from cached test suites.
+ Pattern matches no tests from cached test suites
 [MOCK - cursorTo(15, 5)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -162,8 +154,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 4 tests
- from cached test suites.
+ Pattern matches 4 tests from cached test suites
 
  › might get confusing
 
@@ -184,8 +175,7 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 9 tests
- from cached test suites.
+ Pattern matches 9 tests from cached test suites
 
  › should return the correct index when
 
@@ -216,8 +206,7 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 9 tests
- from cached test suites.
+ Pattern matches 9 tests from cached test suites
 
  › should return the corre...
 
@@ -239,3 +228,5 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
 [MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
+
+exports[`Watch mode flows can select a specific test name from the typeahead results 1`] = `"should convert string to a RegExp"`;

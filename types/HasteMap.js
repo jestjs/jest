@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {ModuleMap as _ModuleMap, FS} from 'jest-haste-map';
 import type {Path} from 'types/Config';
@@ -20,9 +19,17 @@ export type FileData = {[filepath: Path]: FileMetaData};
 export type MockData = {[id: string]: Path};
 export type ModuleMapData = {[id: string]: ModuleMapItem};
 export type WatchmanClocks = {[filepath: Path]: string};
+export type HasteRegExp = RegExp | ((str: string) => boolean);
+
+export type DuplicatesIndex = {
+  [id: string]: {
+    [platform: string]: {[filePath: string]: /* type */ number},
+  },
+};
 
 export type InternalHasteMap = {|
   clocks: WatchmanClocks,
+  duplicates: DuplicatesIndex,
   files: FileData,
   map: ModuleMapData,
   mocks: MockData,

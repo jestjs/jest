@@ -8,14 +8,12 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 
-const {ValidationError} = require('jest-validate');
-const Resolver = require('jest-resolve');
-const path = require('path');
-const chalk = require('chalk');
+import path from 'path';
+import {ValidationError} from 'jest-validate';
+import Resolver from 'jest-resolve';
+import chalk from 'chalk';
 const BULLET: string = chalk.bold('\u25cf ');
 const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
   https://facebook.github.io/jest/docs/configuration.html
@@ -38,11 +36,9 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
   );
 
   if (!module) {
-    /* eslint-disable max-len */
     throw createValidationError(
       `  Module ${chalk.bold(filePath)} in the ${chalk.bold(key)} option was not found.`,
     );
-    /* eslint-disable max-len */
   }
 
   return module;
@@ -59,27 +55,29 @@ const _replaceRootDirInPath = (rootDir: string, filePath: Path): string => {
   );
 };
 
+const _replaceRootDirInObject = (rootDir: string, config: any): Object => {
+  if (config !== null) {
+    const newConfig = {};
+    for (const configKey in config) {
+      newConfig[configKey] = configKey === 'rootDir'
+        ? config[configKey]
+        : _replaceRootDirTags(rootDir, config[configKey]);
+    }
+    return newConfig;
+  }
+  return config;
+};
+
 const _replaceRootDirTags = (rootDir: string, config: any) => {
   switch (typeof config) {
     case 'object':
-      if (config instanceof RegExp) {
-        return config;
-      }
-
       if (Array.isArray(config)) {
         return config.map(item => _replaceRootDirTags(rootDir, item));
       }
-
-      if (config !== null) {
-        const newConfig = {};
-        for (const configKey in config) {
-          newConfig[configKey] = configKey === 'rootDir'
-            ? config[configKey]
-            : _replaceRootDirTags(rootDir, config[configKey]);
-        }
-        return newConfig;
+      if (config instanceof RegExp) {
+        return config;
       }
-      break;
+      return _replaceRootDirInObject(rootDir, config);
     case 'string':
       return _replaceRootDirInPath(rootDir, config);
   }
@@ -116,12 +114,16 @@ const getTestEnvironment = (config: Object) => {
     return require.resolve(env);
   } catch (e) {}
 
-  /* eslint-disable max-len */
   throw createValidationError(
     `  Test environment ${chalk.bold(env)} cannot be found. Make sure the ${chalk.bold('testEnvironment')} configuration option points to an existing node module.`,
   );
-  /* eslint-disable max-len */
 };
+
+const isJSONString = (text: ?string) =>
+  text &&
+  typeof text === 'string' &&
+  text.startsWith('{') &&
+  text.endsWith('}');
 
 module.exports = {
   BULLET,
@@ -129,5 +131,6 @@ module.exports = {
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
+  isJSONString,
   resolve,
 };

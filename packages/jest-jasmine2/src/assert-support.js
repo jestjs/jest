@@ -8,13 +8,11 @@
  * @flow
  */
 
-'use strict';
-
 import type {DiffOptions} from 'jest-diff/src/diffStrings';
 
-const {printReceived, printExpected} = require('jest-matcher-utils');
-const chalk = require('chalk');
-const diff = require('jest-diff');
+import {printReceived, printExpected} from 'jest-matcher-utils';
+import chalk from 'chalk';
+import diff from 'jest-diff';
 
 type AssertionError = {|
   actual: ?string,
@@ -54,11 +52,11 @@ const getOperatorName = (operator: ?string, stack: string) => {
 };
 
 const operatorMessage = (operator: ?string, negator: boolean) =>
-  (typeof operator === 'string'
+  typeof operator === 'string'
     ? operator.startsWith('!') || operator.startsWith('=')
         ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
         : `${humanReadableOperators[operator] || operator} to:\n`
-    : '');
+    : '';
 
 const assertThrowingMatcherHint = (operatorName: string) => {
   return (

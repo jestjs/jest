@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
 
+const path = require('path');
 const chalk = require('chalk');
 const glob = require('glob');
-const path = require('path');
 const runCommand = require('./_runCommand');
 
 const shouldWrite = process.argv[2] === 'write';
@@ -18,11 +17,13 @@ const prettier = isWindows ? 'prettier.cmd' : 'prettier';
 const prettierCmd = path.resolve(__dirname, '../node_modules/.bin/' + prettier);
 const defaultOptions = {
   'bracket-spacing': 'false',
+  'print-width': 80,
   'single-quote': 'true',
   'trailing-comma': 'all',
 };
 const config = {
   default: {
+    ignore: ['**/node_modules/**'],
     patterns: [
       'packages/*/src/**/',
       'types/',
@@ -30,28 +31,42 @@ const config = {
       'integration_tests/__tests__/',
     ],
   },
-  integrationTests: {
+  es5Compatible: {
+    ignore: [
+      '**/node_modules/**',
+      '**/coverage/**',
+      'integration_tests/*',
+      'integration_tests/__tests__/*',
+    ],
     options: {
       'trailing-comma': 'es5',
     },
-    patterns: ['integration_tests/**/'],
+    patterns: [
+      'examples/**/',
+      'scripts/**/',
+      'integration_tests/**/',
+      'website/server/*',
+      'website/layout/*',
+    ],
   },
 };
 
 Object.keys(config).forEach(key => {
   const patterns = config[key].patterns;
   const options = config[key].options;
-  const files = glob
-    .sync(`{${patterns.join(',')}}*.js`)
-    .filter(file => !file.includes(path.sep + 'node_modules' + path.sep));
+  const ignore = config[key].ignore;
 
-  const args = Object.keys(defaultOptions).map(
-    key => `--${key}=${(options && options[key]) || defaultOptions[key]}`
-  );
-  args.push(`--${shouldWrite ? 'write' : 'l'} {${files.join(' ')}}`);
+  const globPattern = patterns.length > 1
+    ? `{${patterns.join(',')}}*.js`
+    : `${patterns.join(',')}*.js`;
+  const files = glob.sync(globPattern, {ignore});
+
+  const args = Object.keys(defaultOptions)
+    .map(key => `--${key}=${(options && options[key]) || defaultOptions[key]}`)
+    .concat(`--${shouldWrite ? 'write' : 'l'}`, files);
 
   try {
-    runCommand(prettierCmd, args.join(' '), path.resolve(__dirname, '..'));
+    runCommand(prettierCmd, args, path.resolve(__dirname, '..'));
   } catch (e) {
     console.log(e);
     if (!shouldWrite) {

@@ -29,35 +29,36 @@ jest.mock('ansi-escapes', () => ({
 
 jest.mock(
   '../SearchSource',
-  () => class {
-    constructor(context) {
-      this._context = context;
-    }
+  () =>
+    class {
+      constructor(context) {
+        this._context = context;
+      }
 
-    findMatchingTests(pattern) {
-      const paths = [
-        './path/to/file1-test.js',
-        './path/to/file2-test.js',
-        './path/to/file3-test.js',
-        './path/to/file4-test.js',
-        './path/to/file5-test.js',
-        './path/to/file6-test.js',
-        './path/to/file7-test.js',
-        './path/to/file8-test.js',
-        './path/to/file9-test.js',
-        './path/to/file10-test.js',
-        './path/to/file11-test.js',
-      ].filter(path => path.match(pattern));
+      findMatchingTests(pattern) {
+        const paths = [
+          './path/to/file1-test.js',
+          './path/to/file2-test.js',
+          './path/to/file3-test.js',
+          './path/to/file4-test.js',
+          './path/to/file5-test.js',
+          './path/to/file6-test.js',
+          './path/to/file7-test.js',
+          './path/to/file8-test.js',
+          './path/to/file9-test.js',
+          './path/to/file10-test.js',
+          './path/to/file11-test.js',
+        ].filter(path => path.match(pattern));
 
-      return {
-        tests: paths.map(path => ({
-          context: this._context,
-          duration: null,
-          path,
-        })),
-      };
-    }
-  },
+        return {
+          tests: paths.map(path => ({
+            context: this._context,
+            duration: null,
+            path,
+          })),
+        };
+      }
+    },
 );
 
 jest.doMock('chalk', () =>
@@ -86,6 +87,10 @@ jest.doMock('../lib/terminalUtils', () => ({
 
 const watch = require('../watch');
 
+const toHex = char => Number(char.charCodeAt(0)).toString(16);
+
+const globalConfig = {watch: true};
+
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
@@ -106,7 +111,7 @@ describe('Watch mode flows', () => {
 
   it('Pressing "P" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -117,8 +122,6 @@ describe('Watch mode flows', () => {
       stdin.emit(hex);
       expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     };
-
-    const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
     // Write a pattern
     ['p', '.', '*', '1', '0'].map(toHex).forEach(assertPattern);
@@ -141,9 +144,34 @@ describe('Watch mode flows', () => {
     });
   });
 
+  it('can select a specific file name from the typeahead results', () => {
+    const toUnixPathPattern = pathPattern => pathPattern.replace(/\\\\/g, '/');
+
+    contexts[0].config = {rootDir: ''};
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+
+    // Write a enter pattern mode
+    stdin.emit(KEYS.P);
+
+    // Write a pattern
+    ['p', '.', '*']
+      .map(toHex)
+      .concat([
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_DOWN,
+        KEYS.ARROW_UP,
+      ])
+      .forEach(key => stdin.emit(key));
+
+    stdin.emit(KEYS.ENTER);
+
+    expect(toUnixPathPattern(argv.testPathPattern)).toMatchSnapshot();
+  });
+
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 
@@ -154,6 +182,96 @@ describe('Watch mode flows', () => {
       stdin.emit(KEYS.A);
       expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     });
+  });
+
+  it('Shows the appropiate header when the filename filter is active', () => {
+    contexts[0].config = {rootDir: ''};
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+
+    stdin.emit(KEYS.P);
+
+    ['p', '.', '*', '1', '0']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
+
+    pipe.write.mockReset();
+    stdin.emit(KEYS.P);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+
+    ['p'].map(toHex).concat(KEYS.ENTER).forEach(key => stdin.emit(key));
+
+    pipe.write.mockReset();
+    stdin.emit(KEYS.P);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+  });
+
+  it('Shows the appropiate header when the test name filter is active', () => {
+    contexts[0].config = {rootDir: ''};
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+
+    stdin.emit(KEYS.T);
+
+    ['t', 'e', 's', 't']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
+
+    pipe.write.mockReset();
+    stdin.emit(KEYS.T);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+
+    ['t'].map(toHex).concat(KEYS.ENTER).forEach(key => stdin.emit(key));
+
+    pipe.write.mockReset();
+    stdin.emit(KEYS.T);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+  });
+
+  it('Shows the appropiate header when both filters are active', () => {
+    contexts[0].config = {rootDir: ''};
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+
+    stdin.emit(KEYS.P);
+
+    ['p', '.', '*', '1', '0']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
+
+    stdin.emit(KEYS.T);
+    ['t', 'e', 's', 't']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
+
+    pipe.write.mockReset();
+    stdin.emit(KEYS.T);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+  });
+
+  it('Pressing "c" clears the filters', () => {
+    contexts[0].config = {rootDir: ''};
+    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+
+    stdin.emit(KEYS.P);
+
+    ['p', '.', '*', '1', '0']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
+
+    stdin.emit(KEYS.T);
+    ['t', 'e', 's', 't']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
+
+    stdin.emit(KEYS.C);
+
+    pipe.write.mockReset();
+    stdin.emit(KEYS.P);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 });
 

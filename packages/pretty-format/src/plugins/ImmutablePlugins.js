@@ -8,13 +8,20 @@
  * @flow
  */
 
-'use strict';
+import ImmutableList from './ImmutableList';
+import ImmutableSet from './ImmutableSet';
+import ImmutableMap from './ImmutableMap';
+import ImmutableStack from './ImmutableStack';
+import ImmutableOrderedSet from './ImmutableOrderedSet';
+import ImmutableOrderedMap from './ImmutableOrderedMap';
+import ImmutableRecord from './ImmutableRecord';
 
 module.exports = [
-  require('./ImmutableList'),
-  require('./ImmutableSet'),
-  require('./ImmutableMap'),
-  require('./ImmutableStack'),
-  require('./ImmutableOrderedSet'),
-  require('./ImmutableOrderedMap'),
+  ImmutableList,
+  ImmutableSet,
+  ImmutableMap,
+  ImmutableStack,
+  ImmutableOrderedSet,
+  ImmutableOrderedMap,
+  ImmutableRecord,
 ];

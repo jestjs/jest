@@ -7,15 +7,14 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Config} from './Config';
+import type {ProjectConfig} from './Config';
 import type {Global} from './Global';
 import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
-export type Environment = {|
-  constructor(config: Config): void,
+declare class $JestEnvironment {
+  constructor(config: ProjectConfig): void,
   dispose(): void,
   runScript(script: Script): any,
   global: Global,
@@ -24,7 +23,7 @@ export type Environment = {|
     runAllImmediates(): void,
     runAllTicks(): void,
     runAllTimers(): void,
-    runTimersToTime(): void,
+    runTimersToTime(msToRun: number): void,
     runOnlyPendingTimers(): void,
     runWithRealTimers(callback: any): void,
     useFakeTimers(): void,
@@ -32,4 +31,7 @@ export type Environment = {|
   },
   testFilePath: string,
   moduleMocker: ModuleMocker,
-|};
+}
+
+export type Environment = $JestEnvironment;
+export type EnvironmentClass = typeof $JestEnvironment;

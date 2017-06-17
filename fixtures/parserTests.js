@@ -6,11 +6,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const fixtures = __dirname;
 
-function parserTests(parse: (file: string) => any) {
+function parserTests(parse: (file: string) => BabylonParserResult) {
   describe('File parsing without throwing', () => {
     it('Should not throw', () => {
       expect(() => {

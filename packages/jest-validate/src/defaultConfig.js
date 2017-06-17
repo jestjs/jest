@@ -8,16 +8,14 @@
  * @flow
  */
 
-'use strict';
-
 import type {ValidationOptions} from './types';
 
-const {deprecationWarning} = require('./deprecated');
-const {unknownOptionWarning} = require('./warnings');
-const {errorMessage} = require('./errors');
-const exampleConfig = require('./exampleConfig');
-const validationCondition = require('./condition');
-const {ERROR, DEPRECATION, WARNING} = require('./utils');
+import {deprecationWarning} from './deprecated';
+import {unknownOptionWarning} from './warnings';
+import {errorMessage} from './errors';
+import exampleConfig from './exampleConfig';
+import validationCondition from './condition';
+import {ERROR, DEPRECATION, WARNING} from './utils';
 
 module.exports = ({
   comment: '',

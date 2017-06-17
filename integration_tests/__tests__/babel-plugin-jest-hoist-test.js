@@ -9,10 +9,10 @@
  */
 'use strict';
 
-const {linkJestPackage, run} = require('../utils');
 const path = require('path');
-const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {linkJestPackage, run} = require('../utils');
+const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
 
@@ -20,7 +20,7 @@ skipOnWindows.suite();
 
 if (process.platform !== 'win32') {
   beforeEach(() => {
-    run('npm i', DIR);
+    run('yarn', DIR);
     linkJestPackage('babel-plugin-jest-hoist', DIR);
     linkJestPackage('babel-jest', DIR);
   });

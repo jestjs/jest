@@ -8,17 +8,15 @@
  * @flow
  */
 
-'use strict';
+import type {Path, SnapshotUpdateState} from 'types/Config';
 
-import type {Path} from 'types/Config';
-
-const chalk = require('chalk');
-const createDirectory = require('jest-util').createDirectory;
-const path = require('path');
-const prettyFormat = require('pretty-format');
-const fs = require('fs');
-const naturalCompare = require('natural-compare');
-const getSerializers = require('./plugins').getSerializers;
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import {createDirectory} from 'jest-util';
+import prettyFormat from 'pretty-format';
+import naturalCompare from 'natural-compare';
+import {getSerializers} from './plugins';
 
 const SNAPSHOT_EXTENSION = 'snap';
 const SNAPSHOT_VERSION = '1';
@@ -97,7 +95,7 @@ const getSnapshotPath = (testPath: Path) =>
     path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
   );
 
-const getSnapshotData = (snapshotPath: Path, update: boolean) => {
+const getSnapshotData = (snapshotPath: Path, update: SnapshotUpdateState) => {
   const data = Object.create(null);
   let snapshotContents = '';
   let dirty = false;
@@ -107,6 +105,7 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
       snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
+      // $FlowFixMe
       populate(data);
     } catch (e) {}
   }
@@ -114,11 +113,11 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   const validationResult = validateSnapshotVersion(snapshotContents);
   const isInvalid = snapshotContents && validationResult;
 
-  if (!update && isInvalid) {
+  if (update === 'none' && isInvalid) {
     throw validationResult;
   }
 
-  if (update && isInvalid) {
+  if ((update === 'all' || update === 'new') && isInvalid) {
     dirty = true;
   }
 
@@ -128,7 +127,7 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
 // Extra line breaks at the beginning and at the end of the snapshot are useful
 // to make the content of the snapshot easier to read
 const addExtraLineBreaks = string =>
-  (string.includes('\n') ? `\n${string}\n` : string);
+  string.includes('\n') ? `\n${string}\n` : string;
 
 const serialize = (data: any): string => {
   return addExtraLineBreaks(

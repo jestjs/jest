@@ -7,9 +7,8 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {
   AssertionResult,
@@ -19,7 +18,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-const {formatResultsErrors} = require('jest-message-util');
+import {formatResultsErrors} from 'jest-message-util';
 
 type Suite = {
   description: string,
@@ -38,20 +37,27 @@ type Microseconds = number;
 
 class Jasmine2Reporter {
   _testResults: Array<AssertionResult>;
-  _config: Config;
+  _globalConfig: GlobalConfig;
+  _config: ProjectConfig;
   _currentSuites: Array<string>;
   _resolve: any;
   _resultsPromise: Promise<TestResult>;
   _startTimes: Map<string, Microseconds>;
   _testPath: Path;
 
-  constructor(config: Config, environment: Environment, testPath: Path) {
+  constructor(
+    globalConfig: GlobalConfig,
+    config: ProjectConfig,
+    environment: Environment,
+    testPath: Path,
+  ) {
+    this._globalConfig = globalConfig;
     this._config = config;
     this._testPath = testPath;
     this._testResults = [];
     this._currentSuites = [];
     this._resolve = null;
-    this._resultsPromise = new Promise(resolve => this._resolve = resolve);
+    this._resultsPromise = new Promise(resolve => (this._resolve = resolve));
     this._startTimes = new Map();
   }
 
@@ -93,6 +99,7 @@ class Jasmine2Reporter {
       failureMessage: formatResultsErrors(
         testResults,
         this._config,
+        this._globalConfig,
         this._testPath,
       ),
       numFailingTests,
@@ -121,6 +128,21 @@ class Jasmine2Reporter {
     return this._resultsPromise;
   }
 
+  _addMissingMessageToStack(stack: string, message: ?string) {
+    // Some errors (e.g. Angular injection error) don't prepend error.message
+    // to stack, instead the first line of the stack is just plain 'Error'
+    const ERROR_REGEX = /^Error\s*\n/;
+    if (
+      stack &&
+      message &&
+      ERROR_REGEX.test(stack) &&
+      stack.indexOf(message) === -1
+    ) {
+      return message + stack.replace(ERROR_REGEX, '\n');
+    }
+    return stack;
+  }
+
   _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
@@ -142,7 +164,7 @@ class Jasmine2Reporter {
 
     specResult.failedExpectations.forEach(failed => {
       const message = !failed.matcherName && failed.stack
-        ? failed.stack
+        ? this._addMissingMessageToStack(failed.stack, failed.message)
         : failed.message || '';
       results.failureMessages.push(message);
     });

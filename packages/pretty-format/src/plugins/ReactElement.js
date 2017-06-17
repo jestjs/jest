@@ -4,13 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
-/* eslint-disable max-len */
-'use strict';
 
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-const escapeHTML = require('./lib/escapeHTML');
+import escapeHTML from './lib/escapeHTML';
 
 const reactElement = Symbol.for('react.element');
 
@@ -25,9 +25,7 @@ function traverseChildren(opaqueChildren, cb) {
 function printChildren(flatChildren, print, indent, colors, opts) {
   return flatChildren
     .map(node => {
-      if (typeof node === 'object') {
-        return print(node, print, indent, colors, opts);
-      } else if (typeof node === 'string') {
+      if (typeof node === 'string') {
         return colors.content.open + escapeHTML(node) + colors.content.close;
       } else {
         return print(node);
@@ -70,7 +68,7 @@ function printProps(props, print, indent, colors, opts) {
 }
 
 const print = (
-  element: any,
+  element: React$Element<*>,
   print: Print,
   indent: Indent,
   opts: Options,
@@ -121,6 +119,9 @@ const print = (
   return result;
 };
 
+// Disabling lint rule as we don't know type ahead of time.
+/* eslint-disable flowtype/no-weak-types */
 const test = (object: any) => object && object.$$typeof === reactElement;
+/* eslint-enable flowtype/no-weak-types */
 
 module.exports = ({print, test}: Plugin);

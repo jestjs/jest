@@ -187,6 +187,18 @@ describe('moduleMocker', () => {
       expect(typeof multipleBoundFuncMock).toBe('function');
     });
 
+    it('mocks methods that are bound after mocking', () => {
+      const fooMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(() => {}),
+      );
+
+      const barMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(fooMock.bind(null)),
+      );
+
+      expect(barMock).not.toThrow();
+    });
+
     it('mocks regexp instances', () => {
       expect(() =>
         moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
@@ -329,6 +341,26 @@ describe('moduleMocker', () => {
         expect(fn1()).not.toEqual('abcd');
         expect(fn2()).not.toEqual('abcd');
       });
+    });
+
+    it('supports mock value returning undefined', () => {
+      const obj = {
+        func: () => 'some text',
+      };
+
+      moduleMocker.spyOn(obj, 'func').mockReturnValue(undefined);
+
+      expect(obj.func()).not.toEqual('some text');
+    });
+
+    it('supports mock value once returning undefined', () => {
+      const obj = {
+        func: () => 'some text',
+      };
+
+      moduleMocker.spyOn(obj, 'func').mockReturnValueOnce(undefined);
+
+      expect(obj.func()).not.toEqual('some text');
     });
   });
 

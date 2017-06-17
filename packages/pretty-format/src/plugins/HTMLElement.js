@@ -8,19 +8,40 @@
  * @flow
  */
 
-'use strict';
+import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
 
-import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+import escapeHTML from './lib/escapeHTML';
 
-const escapeHTML = require('./lib/escapeHTML');
-const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)/;
+type Attribute = {
+  name: string,
+  value: string,
+};
+
+type HTMLElement = {
+  attributes: Array<Attribute>,
+  childNodes: Array<HTMLElement | HTMLText | HTMLComment>,
+  nodeType: 1,
+  tagName: string,
+  textContent: string,
+};
+type HTMLText = {
+  data: string,
+  nodeType: 3,
+};
+
+type HTMLComment = {
+  data: string,
+  nodeType: 8,
+};
+
+const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
 const test = isHTMLElement;
 
 function isHTMLElement(value: any) {
   return (
     value !== undefined &&
     value !== null &&
-    value.nodeType === 1 &&
+    (value.nodeType === 1 || value.nodeType === 3 || value.nodeType === 8) &&
     value.constructor !== undefined &&
     value.constructor.name !== undefined &&
     HTML_ELEMENT_REGEXP.test(value.constructor.name)
@@ -30,18 +51,17 @@ function isHTMLElement(value: any) {
 function printChildren(flatChildren, print, indent, colors, opts) {
   return flatChildren
     .map(node => {
-      if (typeof node === 'object') {
-        return print(node, print, indent, colors, opts);
-      } else if (typeof node === 'string') {
+      if (typeof node === 'string') {
         return colors.content.open + escapeHTML(node) + colors.content.close;
       } else {
         return print(node);
       }
     })
+    .filter(value => value.trim().length)
     .join(opts.edgeSpacing);
 }
 
-function printAttributes(attributes, print, indent, colors, opts) {
+function printAttributes(attributes: Array<Attribute>, indent, colors, opts) {
   return attributes
     .sort()
     .map(attribute => {
@@ -57,12 +77,28 @@ function printAttributes(attributes, print, indent, colors, opts) {
 }
 
 const print = (
-  element: any,
+  element: HTMLElement | HTMLText | HTMLComment,
   print: Print,
   indent: Indent,
   opts: Options,
   colors: Colors,
-) => {
+): string => {
+  if (element.nodeType === 3) {
+    return element.data
+      .split('\n')
+      .map(text => text.trimLeft())
+      .filter(text => text.length)
+      .join(' ');
+  } else if (element.nodeType === 8) {
+    return (
+      colors.comment.open +
+      '<!-- ' +
+      element.data.trim() +
+      ' -->' +
+      colors.comment.close
+    );
+  }
+
   let result = colors.tag.open + '<';
   const elementName = element.tagName.toLowerCase();
   result += elementName + colors.tag.close;
@@ -70,10 +106,10 @@ const print = (
   const hasAttributes = element.attributes && element.attributes.length;
   if (hasAttributes) {
     const attributes = Array.prototype.slice.call(element.attributes);
-    result += printAttributes(attributes, print, indent, colors, opts);
+    result += printAttributes(attributes, indent, colors, opts);
   }
 
-  const flatChildren = Array.prototype.slice.call(element.children);
+  const flatChildren = Array.prototype.slice.call(element.childNodes);
   if (!flatChildren.length && element.textContent) {
     flatChildren.push(element.textContent);
   }

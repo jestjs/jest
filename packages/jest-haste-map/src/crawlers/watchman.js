@@ -7,15 +7,13 @@
  *
  * @flow
  */
-'use strict';
 
-import type {CrawlerOptions} from '../types';
 import type {InternalHasteMap} from 'types/HasteMap';
+import type {CrawlerOptions} from '../types';
 
-const H = require('../constants');
-
-const path = require('path');
-const watchman = require('fb-watchman');
+import path from 'path';
+import watchman from 'fb-watchman';
+import H from '../constants';
 
 const watchmanURL =
   'https://facebook.github.io/watchman/docs/troubleshooting.html';

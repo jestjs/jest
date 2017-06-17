@@ -8,15 +8,16 @@
  * @flow
  */
 
-'use strict';
-
-import type {Config} from 'types/Config';
+import type {ProjectConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {HasteMap} from 'types/HasteMap';
 
-const Runtime = require('jest-runtime');
+import Runtime from 'jest-runtime';
 
-module.exports = (config: Config, {hasteFS, moduleMap}: HasteMap): Context => ({
+module.exports = (
+  config: ProjectConfig,
+  {hasteFS, moduleMap}: HasteMap,
+): Context => ({
   config,
   hasteFS,
   moduleMap,

@@ -8,12 +8,13 @@
  * @flow
  */
 
-'use strict';
+import chalk from 'chalk';
+import {
+  diffLines as diffLinesDiffer,
+  structuredPatch as structuredPatchDiffer,
+} from 'diff';
 
-const chalk = require('chalk');
-const diff = require('diff');
-
-const {NO_DIFF_MESSAGE} = require('./constants.js');
+import {NO_DIFF_MESSAGE} from './constants.js';
 const DIFF_CONTEXT = 5;
 
 export type DiffOptions = {|
@@ -33,10 +34,10 @@ type Hunk = {|
 |};
 
 const getColor = (added: boolean, removed: boolean): chalk =>
-  (added ? chalk.red : removed ? chalk.green : chalk.dim);
+  added ? chalk.red : removed ? chalk.green : chalk.dim;
 
 const getBgColor = (added: boolean, removed: boolean): chalk =>
-  (added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim);
+  added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
 
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
@@ -50,8 +51,7 @@ const getAnnotation = (options: ?DiffOptions): string =>
 const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
   return {
-    diff: diff
-      .diffLines(a, b)
+    diff: diffLinesDiffer(a, b)
       .map(part => {
         const {added, removed} = part;
         if (part.added || part.removed) {
@@ -108,9 +108,8 @@ const structuredPatch = (a: string, b: string): Diff => {
   const oldLinesCount = (a.match(/\n/g) || []).length;
 
   return {
-    diff: diff
-      .structuredPatch('', '', a, b, '', '', options)
-      .hunks.map((hunk: Hunk) => {
+    diff: structuredPatchDiffer('', '', a, b, '', '', options).hunks
+      .map((hunk: Hunk) => {
         const lines = hunk.lines
           .map(line => {
             const added = line[0] === '+';

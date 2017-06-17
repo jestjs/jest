@@ -30,10 +30,10 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
-'use strict';
 
-const queueRunner = require('../queueRunner');
-const treeProcessor = require('../treeProcessor');
+import queueRunner from '../queueRunner';
+
+import treeProcessor from '../treeProcessor';
 
 module.exports = function(j$) {
   function Env(options) {

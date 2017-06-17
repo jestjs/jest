@@ -9,11 +9,11 @@
  */
 'use strict';
 
-const {extractSummary, linkJestPackage} = require('../utils');
-const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');
+const {extractSummary, linkJestPackage} = require('../utils');
+const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage_report');
 
@@ -78,6 +78,8 @@ test('outputs coverage report as json', () => {
   try {
     JSON.parse(stdout);
   } catch (err) {
-    throw new Error("Can't parse the JSON result from stdout" + err.toString());
+    throw new Error(
+      "Can't parse the JSON result from stdout. " + err.toString(),
+    );
   }
 });

@@ -8,25 +8,24 @@
  * @flow
  */
 
-'use strict';
-
-import type {Config, Path} from 'types/Config';
 import type {Console} from 'console';
+import type {Argv} from 'types/Argv';
+import type {Glob, Path, ProjectConfig} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {Context} from 'types/Context';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
-const HasteMap = require('jest-haste-map');
-const Resolver = require('jest-resolve');
-
-const {createDirectory} = require('jest-util');
-const {escapePathForRegex} = require('jest-regex-util');
-const fs = require('graceful-fs');
-const path = require('path');
-const shouldInstrument = require('./shouldInstrument');
-const stripBOM = require('strip-bom');
-const transform = require('./transform');
+import path from 'path';
+import HasteMap from 'jest-haste-map';
+import Resolver from 'jest-resolve';
+import {createDirectory} from 'jest-util';
+import {escapePathForRegex} from 'jest-regex-util';
+import fs from 'graceful-fs';
+import stripBOM from 'strip-bom';
+import ScriptTransformer from './ScriptTransformer';
+import shouldInstrument from './shouldInstrument';
+import cliArgs from './cli/args';
 
 type Module = {|
   children?: Array<any>,
@@ -43,11 +42,19 @@ type HasteMapOptions = {|
   maxWorkers: number,
   resetCache: boolean,
   watch?: boolean,
+  watchman: boolean,
 |};
 
 type InternalModuleOptions = {|
   isInternalModule: boolean,
 |};
+
+type CoverageOptions = {
+  collectCoverage: boolean,
+  collectCoverageFrom: Array<Glob>,
+  collectCoverageOnlyFrom: ?{[key: string]: boolean},
+  mapCoverage: boolean,
+};
 
 type BooleanObject = {[key: string]: boolean};
 type CacheFS = {[path: Path]: string};
@@ -55,9 +62,10 @@ type CacheFS = {[path: Path]: string};
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
 
-const getModuleNameMapper = (config: Config) => {
+const getModuleNameMapper = (config: ProjectConfig) => {
   if (
-    Array.isArray(config.moduleNameMapper) && config.moduleNameMapper.length
+    Array.isArray(config.moduleNameMapper) &&
+    config.moduleNameMapper.length
   ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => {
       return {moduleName, regex: new RegExp(regex)};
@@ -75,48 +83,59 @@ const mockParentModule = {
 const unmockRegExpCache = new WeakMap();
 
 class Runtime {
+  static ScriptTransformer: Class<ScriptTransformer>;
+
   _cacheFS: CacheFS;
-  _config: Config;
+  _config: ProjectConfig;
+  _coverageOptions: CoverageOptions;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
+  _internalModuleRegistry: {[key: string]: Module};
   _isCurrentlyExecutingManualMock: ?string;
   _mockFactories: {[key: string]: () => any};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: {[key: string]: Module};
-  _internalModuleRegistry: {[key: string]: Module};
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
   _sourceMapRegistry: {[key: string]: string};
+  _scriptTransformer: ScriptTransformer;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
 
   constructor(
-    config: Config,
+    config: ProjectConfig,
     environment: Environment,
     resolver: Resolver,
     cacheFS?: CacheFS,
+    coverageOptions?: CoverageOptions,
   ) {
-    this._moduleRegistry = Object.create(null);
-    this._internalModuleRegistry = Object.create(null);
-    this._mockRegistry = Object.create(null);
-    this._sourceMapRegistry = Object.create(null);
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
-    this._environment = environment;
-    this._resolver = resolver;
-    this._moduleMocker = this._environment.moduleMocker;
-
+    this._coverageOptions = coverageOptions || {
+      collectCoverage: false,
+      collectCoverageFrom: [],
+      collectCoverageOnlyFrom: null,
+      mapCoverage: false,
+    };
     this._currentlyExecutingModulePath = '';
+    this._environment = environment;
     this._explicitShouldMock = Object.create(null);
+    this._internalModuleRegistry = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
+    this._mockRegistry = Object.create(null);
+    this._moduleMocker = this._environment.moduleMocker;
+    this._moduleRegistry = Object.create(null);
+    this._resolver = resolver;
+    this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
+    this._sourceMapRegistry = Object.create(null);
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -125,9 +144,7 @@ class Runtime {
     this._transitiveShouldMock = Object.create(null);
 
     this._unmockList = unmockRegExpCache.get(config);
-    if (
-      !this._unmockList && config.automock && config.unmockedModulePathPatterns
-    ) {
+    if (!this._unmockList && config.unmockedModulePathPatterns) {
       this._unmockList = new RegExp(
         config.unmockedModulePathPatterns.join('|'),
       );
@@ -155,25 +172,30 @@ class Runtime {
     }
   }
 
-  static shouldInstrument(filename: Path, config: Config) {
-    return shouldInstrument(filename, config);
-  }
-
-  static transformSource(
+  static shouldInstrument(
     filename: Path,
-    config: Config,
-    content: string,
-    instrument: boolean,
+    options: CoverageOptions,
+    config: ProjectConfig,
   ) {
-    return transform.transformSource(filename, config, content, instrument);
+    return shouldInstrument(
+      filename,
+      {
+        collectCoverage: options.collectCoverage,
+        collectCoverageFrom: options.collectCoverageFrom,
+        collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
+        mapCoverage: options.mapCoverage,
+      },
+      config,
+    );
   }
 
   static createContext(
-    config: Config,
+    config: ProjectConfig,
     options: {
       console?: Console,
       maxWorkers: number,
       watch?: boolean,
+      watchman: boolean,
     },
   ): Promise<Context> {
     createDirectory(config.cacheDirectory);
@@ -182,6 +204,7 @@ class Runtime {
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
       watch: options.watch,
+      watchman: options.watchman,
     });
     return instance.build().then(
       hasteMap => ({
@@ -196,7 +219,10 @@ class Runtime {
     );
   }
 
-  static createHasteMap(config: Config, options?: HasteMapOptions): HasteMap {
+  static createHasteMap(
+    config: ProjectConfig,
+    options?: HasteMapOptions,
+  ): HasteMap {
     const ignorePattern = new RegExp(
       [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
     );
@@ -215,12 +241,12 @@ class Runtime {
       resetCache: options && options.resetCache,
       retainAllFiles: false,
       roots: config.roots,
-      useWatchman: config.watchman,
+      useWatchman: options && options.watchman,
       watch: options && options.watch,
     });
   }
 
-  static createResolver(config: Config, moduleMap: ModuleMap): Resolver {
+  static createResolver(config: ProjectConfig, moduleMap: ModuleMap): Resolver {
     return new Resolver(moduleMap, {
       browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
@@ -234,12 +260,13 @@ class Runtime {
     });
   }
 
-  static runCLI(args?: Object, info?: Array<string>) {
+  static runCLI(args?: Argv, info?: Array<string>) {
+    // TODO: If this is not inline, the repl test fails
     return require('./cli').run(args, info);
   }
 
   static getCLIOptions() {
-    return require('./cli/args').options;
+    return cliArgs.options;
   }
 
   requireModule(
@@ -465,11 +492,14 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
 
-    const transformedFile = transform(
+    const transformedFile = this._scriptTransformer.transform(
       filename,
-      this._config,
       {
+        collectCoverage: this._coverageOptions.collectCoverage,
+        collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
+        collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
         isInternalModule,
+        mapCoverage: this._coverageOptions.mapCoverage,
       },
       this._cacheFS[filename],
     );
@@ -479,7 +509,7 @@ class Runtime {
     }
 
     const wrapper = this._environment.runScript(transformedFile.script)[
-      transform.EVAL_RESULT_VARIABLE
+      ScriptTransformer.EVAL_RESULT_VARIABLE
     ];
     wrapper.call(
       localModule.exports, // module context
@@ -489,7 +519,7 @@ class Runtime {
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
-      this._createRuntimeFor(filename), // jest object
+      this._createJestObjectFor(filename), // jest object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -614,7 +644,7 @@ class Runtime {
     return moduleRequire;
   }
 
-  _createRuntimeFor(from: Path) {
+  _createJestObjectFor(from: Path) {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
       return runtime;
@@ -686,6 +716,14 @@ class Runtime {
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
+    const setTimeout = (timeout: number) => {
+      this._environment.global.jasmine
+        ? (this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout)
+        : (this._environment.global[
+            Symbol.for('TEST_TIMEOUT_SYMBOL')
+          ] = timeout);
+    };
+
     const runtime = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
@@ -721,6 +759,7 @@ class Runtime {
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
+      setTimeout,
       spyOn,
 
       unmock,
@@ -732,4 +771,5 @@ class Runtime {
   }
 }
 
+Runtime.ScriptTransformer = ScriptTransformer;
 module.exports = Runtime;

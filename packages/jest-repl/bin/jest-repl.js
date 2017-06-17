@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 if (process.env.NODE_ENV == null) {
   process.env.NODE_ENV = 'test';
 }

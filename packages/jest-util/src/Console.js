@@ -8,14 +8,12 @@
  * @flow
  */
 /* global stream$Writable */
-'use strict';
 
 import type {LogType, LogMessage} from 'types/Console';
 
-const Console = require('console').Console;
-
-const clearLine = require('./clearLine');
-const format = require('util').format;
+import {format} from 'util';
+import {Console} from 'console';
+import clearLine from './clearLine';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
@@ -23,7 +21,11 @@ class CustomConsole extends Console {
   _stdout: stream$Writable;
   _formatBuffer: Formatter;
 
-  constructor(stdout: Object, stderr: Object, formatBuffer: ?Formatter) {
+  constructor(
+    stdout: stream$Writable,
+    stderr: stream$Writable,
+    formatBuffer: ?Formatter,
+  ) {
     super(stdout, stderr);
     this._formatBuffer = formatBuffer || ((type, message) => message);
   }
@@ -33,19 +35,19 @@ class CustomConsole extends Console {
     super.log(this._formatBuffer(type, message));
   }
 
-  log() {
+  log(...args: Array<mixed>) {
     this._log('log', format.apply(null, arguments));
   }
 
-  info() {
+  info(...args: Array<mixed>) {
     this._log('info', format.apply(null, arguments));
   }
 
-  warn() {
+  warn(...args: Array<mixed>) {
     this._log('warn', format.apply(null, arguments));
   }
 
-  error() {
+  error(...args: Array<mixed>) {
     this._log('error', format.apply(null, arguments));
   }
 

@@ -9,11 +9,11 @@
 'use strict';
 
 const path = require('path');
+const os = require('os');
+const skipOnWindows = require('skipOnWindows');
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
-const skipOnWindows = require('skipOnWindows');
-const os = require('os');
-const {createEmptyPackage, makeTests, cleanup} = require('../utils');
+const {createEmptyPackage, writeFiles, cleanup} = require('../utils');
 
 const DIR = path.resolve(os.tmpdir(), 'global-variables-test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
@@ -39,7 +39,7 @@ test('basic test constructs', () => {
     });
   `;
 
-  makeTests(TEST_DIR, {[filename]: content});
+  writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
   expect(status).toBe(0);
 
@@ -70,13 +70,13 @@ test('skips', () => {
     });
   `;
 
-  makeTests(TEST_DIR, {[filename]: content});
+  writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-  expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
+  expect(status).toBe(0);
 });
 
 test('only', () => {
@@ -100,7 +100,7 @@ test('only', () => {
     });
   `;
 
-  makeTests(TEST_DIR, {[filename]: content});
+  writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
   expect(status).toBe(0);
 
@@ -117,7 +117,7 @@ test('tests with no implementation', () => {
     test('test, no implementation');
   `;
 
-  makeTests(TEST_DIR, {[filename]: content});
+  writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
   expect(status).toBe(0);
 
@@ -148,7 +148,7 @@ test('skips with expand arg', () => {
     });
   `;
 
-  makeTests(TEST_DIR, {[filename]: content});
+  writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR, ['--expand']);
   expect(status).toBe(0);
 
@@ -178,7 +178,7 @@ test('only with expand arg', () => {
     });
   `;
 
-  makeTests(TEST_DIR, {[filename]: content});
+  writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR, ['--expand']);
   expect(status).toBe(0);
 
@@ -195,7 +195,7 @@ test('tests with no implementation with expand arg', () => {
     test('test, no implementation');
   `;
 
-  makeTests(TEST_DIR, {[filename]: content});
+  writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR, ['--expand']);
   expect(status).toBe(0);
 

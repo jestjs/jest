@@ -7,13 +7,13 @@
  *
  * @flow
  */
-'use strict';
 
+import type {Argv} from 'types/Argv';
 import type {PathPattern} from '../SearchSource';
 
-const {clearLine} = require('jest-util');
-const chalk = require('chalk');
-const validatePattern = require('./validatePattern');
+import {clearLine} from 'jest-util';
+import chalk from 'chalk';
+import validatePattern from './validatePattern';
 
 const DEFAULT_PATTERN_INFO = {
   input: '',
@@ -24,7 +24,6 @@ const DEFAULT_PATTERN_INFO = {
 const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
-  // eslint-disable-next-line max-len
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
@@ -33,7 +32,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-module.exports = (argv: Object): PathPattern => {
+module.exports = (argv: Argv): PathPattern => {
   if (argv.onlyChanged) {
     return {
       input: '',

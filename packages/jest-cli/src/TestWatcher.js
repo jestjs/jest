@@ -7,9 +7,8 @@
  *
  * @flow
  */
-'use strict';
 
-const {EventEmitter} = require('events');
+import EventEmitter from 'events';
 
 type State = {|
   interrupted: boolean,

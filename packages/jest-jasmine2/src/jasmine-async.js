@@ -13,8 +13,6 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-'use strict';
-
 import type {Global} from 'types/Global';
 
 function isPromise(obj) {
@@ -37,7 +35,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
     const asyncFn = function(done) {
-      const returnValue = fn.call(this);
+      const returnValue = fn.call({});
 
       if (isPromise(returnValue)) {
         returnValue.then(done, done.fail);
@@ -67,7 +65,7 @@ function promisifyIt(originalFn, env) {
     }
 
     const asyncFn = function(done) {
-      const returnValue = fn.call(this);
+      const returnValue = fn.call({});
 
       if (isPromise(returnValue)) {
         returnValue.then(done, done.fail);

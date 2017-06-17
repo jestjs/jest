@@ -7,20 +7,24 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
+import type {Options} from './ScriptTransformer';
 
-const {escapePathForRegex} = require('jest-regex-util');
-const micromatch = require('micromatch');
-const path = require('path');
+import path from 'path';
+import {escapePathForRegex} from 'jest-regex-util';
+import micromatch from 'micromatch';
 
 const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
 );
 
-const shouldInstrument = (filename: Path, config: Config): boolean => {
-  if (!config.collectCoverage) {
+const shouldInstrument = (
+  filename: Path,
+  options: Options,
+  config: ProjectConfig,
+): boolean => {
+  if (!options.collectCoverage) {
     return false;
   }
 
@@ -39,17 +43,19 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (
     // This configuration field contains an object in the form of:
     // {'path/to/file.js': true}
-    config.collectCoverageOnlyFrom && !config.collectCoverageOnlyFrom[filename]
+    options.collectCoverageOnlyFrom &&
+    !options.collectCoverageOnlyFrom[filename]
   ) {
     return false;
   }
 
   if (
-    !config.collectCoverageOnlyFrom && // still cover if `only` is specified
-    config.collectCoverageFrom &&
+    // still cover if `only` is specified
+    !options.collectCoverageOnlyFrom &&
+    options.collectCoverageFrom &&
     !micromatch(
       [path.relative(config.rootDir, filename)],
-      config.collectCoverageFrom,
+      options.collectCoverageFrom,
     ).length
   ) {
     return false;

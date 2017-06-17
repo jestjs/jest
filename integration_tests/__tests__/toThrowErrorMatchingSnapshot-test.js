@@ -6,10 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const {makeTemplate, makeTests, cleanup} = require('../utils');
 const path = require('path');
+const {makeTemplate, writeFiles, cleanup} = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../toThrowErrorMatchingSnapshot');
@@ -20,17 +18,15 @@ afterAll(() => cleanup(TESTS_DIR));
 
 test('works fine when function throws error', () => {
   const filename = 'works-fine-when-function-throws-error-test.js';
-  const template = makeTemplate(
-    `test('works fine when function throws error', () => {
+  const template = makeTemplate(`test('works fine when function throws error', () => {
        expect(() => { throw new Error('apple'); })
          .toThrowErrorMatchingSnapshot();
     });
-    `,
-  );
+    `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, [filename]);
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
@@ -38,16 +34,14 @@ test('works fine when function throws error', () => {
 
 test(`throws the error if tested function didn't throw error`, () => {
   const filename = 'throws-if-tested-function-did-not-throw-test.js';
-  const template = makeTemplate(
-    `test('throws the error if tested function did not throw error', () => {
+  const template = makeTemplate(`test('throws the error if tested function did not throw error', () => {
       expect(() => {}).toThrowErrorMatchingSnapshot();
     });
-    `,
-  );
+    `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, [filename]);
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(`Expected the function to throw an error.`);
     expect(status).toBe(1);
   }
@@ -55,17 +49,15 @@ test(`throws the error if tested function didn't throw error`, () => {
 
 test('does not accept arguments', () => {
   const filename = 'does-not-accept-arguments-test.js';
-  const template = makeTemplate(
-    `test('does not accept arguments', () => {
+  const template = makeTemplate(`test('does not accept arguments', () => {
       expect(() => { throw new Error('apple'); })
         .toThrowErrorMatchingSnapshot('foobar');
     });
-    `,
-  );
+    `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, [filename]);
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Matcher does not accept any arguments.');
     expect(status).toBe(1);
   }
@@ -73,16 +65,14 @@ test('does not accept arguments', () => {
 
 test('cannot be used with .not', () => {
   const filename = 'cannot-be-used-with-not-test.js';
-  const template = makeTemplate(
-    `test('cannot be used with .not', () => {
+  const template = makeTemplate(`test('cannot be used with .not', () => {
        expect('').not.toThrowErrorMatchingSnapshot();
     });
-    `,
-  );
+    `);
 
   {
-    makeTests(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, [filename]);
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
       'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
     );

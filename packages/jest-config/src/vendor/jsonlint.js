@@ -295,7 +295,7 @@ var jsonlint = (function() {
         newState,
         expected;
       while (true) {
-        // retreive state number from top of stack
+        // retrieve state number from top of stack
         state = stack[stack.length - 1];
 
         // use default actions if available
@@ -309,7 +309,9 @@ var jsonlint = (function() {
 
         // handle parse error
         _handle_error: if (
-          typeof action === 'undefined' || !action.length || !action[0]
+          typeof action === 'undefined' ||
+          !action.length ||
+          !action[0]
         ) {
           if (!recovering) {
             // Report error

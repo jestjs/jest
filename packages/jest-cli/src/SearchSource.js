@@ -8,20 +8,16 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
 import type {Test} from 'types/TestRunner';
 
-const micromatch = require('micromatch');
-
-const DependencyResolver = require('jest-resolve-dependencies');
-
-const changedFiles = require('jest-changed-files');
-const path = require('path');
-const {escapePathForRegex, replacePathSepForRegex} = require('jest-regex-util');
+import path from 'path';
+import micromatch from 'micromatch';
+import DependencyResolver from 'jest-resolve-dependencies';
+import changedFiles from 'jest-changed-files';
+import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -34,6 +30,7 @@ type StrOrRegExpPattern = RegExp | string;
 
 type Options = {|
   lastCommit?: boolean,
+  withAncestor?: boolean,
 |};
 
 export type PathPattern = {|
@@ -202,10 +199,14 @@ class SearchSource {
         };
       }
       return Promise.all(
-        Array.from(repos).map(([gitRepo, hgRepo]) => {
-          return gitRepo
-            ? git.findChangedFiles(gitRepo, options)
-            : hg.findChangedFiles(hgRepo, options);
+        repos.map(([gitRepo, hgRepo]) => {
+          if (gitRepo) {
+            return git.findChangedFiles(gitRepo, options);
+          }
+          if (hgRepo) {
+            return hg.findChangedFiles(hgRepo, options);
+          }
+          return [];
         }),
       ).then(changedPathSets =>
         this.findRelatedTests(

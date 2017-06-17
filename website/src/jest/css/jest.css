@@ -987,6 +987,30 @@ a:hover code {
   background: #99424f;
 }
 
+.languages-icon {
+  width: 20px;
+}
+#languages-dropdown {
+  position: absolute;
+  width:100%;
+}
+#languages-dropdown.visible {
+  display: flex;
+}
+#languages-dropdown.hide {
+  display: none;
+}
+ul#languages-dropdown-items {
+  display: flex;
+  background-color: #99424f;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+ul#languages li {
+  display: block;
+}
+
 .menuExpand {
   display: flex;
   flex-flow: column nowrap;
@@ -1083,6 +1107,17 @@ a:hover code {
     position: relative !important;
     width: 100%;
   }
+
+  #languages-dropdown {
+    top: 50px;
+    left: 0px;
+  }
+
+  ul#languages-dropdown-items {
+    display: flex;
+    background-color: #99424f;
+    flex-direction: row;
+  }
 }
 @media only screen and (min-width: 1024px) {
   .navSearchWrapper {
@@ -1130,6 +1165,7 @@ a:hover code {
     padding: 6px 10px;
     height: auto;
     font-size: 1em;
+    white-space: nowrap;
   }
   .navigationSlider .slidingNav ul li a:hover {
     color: #fff;

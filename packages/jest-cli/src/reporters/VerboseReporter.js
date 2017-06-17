@@ -7,8 +7,8 @@
  *
  * @flow
  */
-'use strict';
 
+import type {GlobalConfig} from 'types/Config';
 import type {
   AggregatedResult,
   AssertionResult,
@@ -17,20 +17,16 @@ import type {
 } from 'types/TestResult';
 import type {Test} from 'types/TestRunner';
 
-const DefaultReporter = require('./DefaultReporter');
-const chalk = require('chalk');
-const {ICONS} = require('../constants');
-
-type Options = {|
-  expand: boolean,
-|};
+import chalk from 'chalk';
+import {ICONS} from '../constants';
+import DefaultReporter from './DefaultReporter';
 
 class VerboseReporter extends DefaultReporter {
-  _options: Options;
+  _globalConfig: GlobalConfig;
 
-  constructor(options: Options) {
-    super();
-    this._options = options;
+  constructor(globalConfig: GlobalConfig) {
+    super(globalConfig);
+    this._globalConfig = globalConfig;
   }
 
   static filterTestResults(testResults: Array<AssertionResult>) {
@@ -101,7 +97,7 @@ class VerboseReporter extends DefaultReporter {
   }
 
   _logTests(tests: Array<AssertionResult>, indentLevel: number) {
-    if (this._options.expand) {
+    if (this._globalConfig.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
       const skippedCount = tests.reduce((result, test) => {

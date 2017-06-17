@@ -6,17 +6,15 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 /**
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
 const fs = require('fs');
-const getPackages = require('./_getPackages');
-const execSync = require('child_process').execSync;
-const chalk = require('chalk');
+const {execSync} = require('child_process');
 const path = require('path');
+const chalk = require('chalk');
+const getPackages = require('./_getPackages');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
 
@@ -37,10 +35,7 @@ getPackages().forEach(p => {
     fs.watch(path.resolve(p, 'src'), {recursive: true}, (event, filename) => {
       const filePath = path.resolve(srcDir, filename);
 
-      if (
-        (event === 'change' || event === 'rename') &&
-        exists(filePath)
-      ) {
+      if ((event === 'change' || event === 'rename') && exists(filePath)) {
         console.log(chalk.green('->'), `${event}: ${filename}`);
         rebuild(filePath);
       } else {
@@ -49,9 +44,9 @@ getPackages().forEach(p => {
           fs.unlinkSync(buildFile);
           process.stdout.write(
             chalk.red('  \u2022 ') +
-            path.relative(path.resolve(srcDir, '..', '..'), buildFile) +
-            ' (deleted)' +
-            '\n'
+              path.relative(path.resolve(srcDir, '..', '..'), buildFile) +
+              ' (deleted)' +
+              '\n'
           );
         } catch (e) {}
       }

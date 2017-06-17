@@ -3,8 +3,6 @@
  * @jsx React.DOM
  */
 
-/* eslint-disable max-len */
-
 const React = require('React');
 const HeaderNav = require('HeaderNav');
 const Head = require('Head');
@@ -16,8 +14,9 @@ const Site = React.createClass({
   render() {
     const title = this.props.title
       ? this.props.title + ' · ' + siteConfig.title
-      : siteConfig.title + ' · ' + siteConfig.tagline;
-    const description = this.props.description || siteConfig.tagline;
+      : siteConfig.title + ' · ' + siteConfig[this.props.language].tagline;
+    const description =
+      this.props.description || siteConfig[this.props.language].tagline;
     const url =
       siteConfig.url + siteConfig.baseUrl + (this.props.url || 'index.html');
     return (
@@ -28,14 +27,20 @@ const Site = React.createClass({
             baseUrl={siteConfig.baseUrl}
             section={this.props.section}
             title={siteConfig.title}
+            language={this.props.language}
           />
           <div className="navPusher">
             {this.props.children}
-            <Footer />
+            <Footer language={this.props.language} />
           </div>
           <div id="fb-root" />
-          <script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
-          <script dangerouslySetInnerHTML={{__html: `
+          <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -53,12 +58,13 @@ const Site = React.createClass({
               indexName: 'jest',
               inputSelector: '#search_input_react'
             });
-          `}} />
-          <script async defer src="https://buttons.github.io/buttons.js"></script>
+          `,
+            }}
+          />
+          <script async defer src="https://buttons.github.io/buttons.js" />
         </body>
       </html>
     );
   },
 });
-
 module.exports = Site;

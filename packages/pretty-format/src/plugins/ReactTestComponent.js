@@ -7,8 +7,6 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
-'use strict';
 
 import type {
   Colors,
@@ -18,9 +16,9 @@ import type {
   Plugin,
   ReactTestObject,
   ReactTestChild,
-} from '../types.js';
+} from 'types/PrettyFormat';
 
-const escapeHTML = require('./lib/escapeHTML');
+import escapeHTML from './lib/escapeHTML';
 
 const reactTestInstance = Symbol.for('react.test.json');
 
@@ -32,7 +30,13 @@ function printChildren(
   opts,
 ) {
   return children
-    .map(child => printInstance(child, print, indent, colors, opts))
+    .map(node => {
+      if (typeof node === 'string') {
+        return colors.content.open + escapeHTML(node) + colors.content.close;
+      } else {
+        return print(node);
+      }
+    })
     .join(opts.edgeSpacing);
 }
 
@@ -65,19 +69,17 @@ function printProps(props: Object, print, indent, colors, opts) {
     .join('');
 }
 
-function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
-  if (typeof instance == 'number') {
-    return print(instance);
-  } else if (typeof instance === 'string') {
-    return colors.content.open + escapeHTML(instance) + colors.content.close;
-  }
-
+const print = (
+  instance: ReactTestObject,
+  print: Print,
+  indent: Indent,
+  opts: Options,
+  colors: Colors,
+) => {
   let closeInNewLine = false;
   let result = colors.tag.open + '<' + instance.type + colors.tag.close;
 
   if (instance.props) {
-    // If assignments are in opposite order, Flow 0.39.0 finds incorrect error:
-    // element of Object.keys. Expected object instead of possibly undefined value
     closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
     result += printProps(instance.props, print, indent, colors, opts);
   }
@@ -109,15 +111,7 @@ function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
   }
 
   return result;
-}
-
-const print = (
-  val: ReactTestObject,
-  print: Print,
-  indent: Indent,
-  opts: Options,
-  colors: Colors,
-) => printInstance(val, print, indent, colors, opts);
+};
 
 const test = (object: Object) =>
   object && object.$$typeof === reactTestInstance;

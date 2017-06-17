@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-/* eslint-disable max-len */
 
 'use strict';
 
@@ -190,17 +189,17 @@ describe('prettyFormat()', () => {
   });
 
   it('prints regular expressions from literals', () => {
-    const val = /regexp/ig;
+    const val = /regexp/gi;
     expect(prettyFormat(val)).toEqual('/regexp/gi');
   });
 
   it('escapes regular expressions', () => {
-    const val = /regexp\d/ig;
+    const val = /regexp\d/gi;
     expect(prettyFormat(val, {escapeRegex: true})).toEqual('/regexp\\\\d/gi');
   });
 
   it('escapes regular expressions nested inside object', () => {
-    const obj = {test: /regexp\d/ig};
+    const obj = {test: /regexp\d/gi};
     expect(prettyFormat(obj, {escapeRegex: true})).toEqual(
       'Object {\n  "test": /regexp\\\\d/gi,\n}',
     );

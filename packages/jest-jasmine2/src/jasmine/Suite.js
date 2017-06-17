@@ -29,13 +29,14 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+/* @flow */
 /* eslint-disable sort-keys */
-'use strict';
 
-const ExpectationFailed = require('../ExpectationFailed');
-const expectationResultFactory = require('../expectationResultFactory');
+import ExpectationFailed from '../ExpectationFailed';
 
-function Suite(attrs) {
+import expectationResultFactory from '../expectationResultFactory';
+
+function Suite(attrs: Object) {
   this.id = attrs.id;
   this.parentSuite = attrs.parentSuite;
   this.description = attrs.description;

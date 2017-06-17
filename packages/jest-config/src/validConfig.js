@@ -8,12 +8,10 @@
  * @flow
  */
 
-'use strict';
+import type {InitialOptions} from 'types/Config';
 
-import type {InitialConfig} from 'types/Config';
-
-const constants = require('./constants');
-const {replacePathSepForRegex} = require('jest-regex-util');
+import {replacePathSepForRegex} from 'jest-regex-util';
+import constants from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
@@ -44,7 +42,6 @@ module.exports = ({
     providesModuleNodeModules: ['react', 'react-native'],
   },
   logHeapUsage: true,
-  logTransformErrors: true,
   mapCoverage: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
@@ -58,6 +55,12 @@ module.exports = ({
   noStackTrace: false,
   notify: false,
   preset: 'react-native',
+  projects: ['project-a', 'project-b/'],
+  reporters: [
+    'default',
+    'custom-reporter-1',
+    ['custom-reporter-2', {configValue: true}],
+  ],
   resetMocks: false,
   resetModules: false,
   resolver: '<rootDir>/resolver.js',
@@ -86,4 +89,4 @@ module.exports = ({
   verbose: false,
   watch: false,
   watchman: true,
-}: InitialConfig);
+}: InitialOptions);

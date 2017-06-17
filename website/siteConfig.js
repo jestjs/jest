@@ -1,9 +1,21 @@
-/* eslint-disable sort-keys, max-len */
+/* eslint-disable sort-keys */
 
-const Button = require('Button');
 const React = require('React');
 
-const githubButton = <a className="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a>;
+const githubButton = (
+  <a
+    className="github-button"
+    href="https://github.com/facebook/jest"
+    data-icon="octicon-star"
+    data-count-href="/facebook/jest/stargazers"
+    data-count-api="/repos/facebook/jest#stargazers_count"
+    data-count-aria-label="# stargazers on GitHub"
+    aria-label="Star facebook/jest on GitHub">
+    Star
+  </a>
+);
+
+console.log('siteConfig loaded...');
 
 /*
 Many companies use Jest, so we can't list all of them in our showcase.
@@ -57,6 +69,11 @@ const users = [
     image: '/jest/img/logos/nyt.png',
     infoLink: 'http://www.nytimes.com/',
     pinned: true,
+  },
+  {
+    caption: 'Airbnb',
+    image: '/jest/img/logos/airbnb.svg',
+    infoLink: 'https://www.airbnb.com/',
   },
   {
     caption: 'IBM',
@@ -149,6 +166,11 @@ const users = [
     infoLink: 'http://formidable.com/',
   },
   {
+    caption: 'Giant Machines',
+    image: '/jest/img/logos/giantmachines.png',
+    infoLink: 'https://www.giantmachines.com',
+  },
+  {
     caption: 'Globo',
     image: '/jest/img/logos/globo.png',
     infoLink: 'http://www.globo.com/',
@@ -237,40 +259,25 @@ const users = [
 
 const siteConfig = {
   title: 'Jest',
-  tagline: '🃏 Painless JavaScript Testing',
-  description: 'Jest is a JavaScript testing framework, used by Facebook to test all JavaScript code including React applications.',
   url: 'https://facebook.github.io',
   baseUrl: '/jest/',
   repo: 'facebook/jest',
   githubButton,
-  homepagePromos: [
-    <div className="pluginRowBlock">
-      <Button href="#use">Try out Jest</Button>
-      <Button href="/jest/docs/getting-started.html">Get Started</Button>
-      <Button href="/jest/docs/snapshot-testing.html">Learn More</Button>
-    </div>,
-  ],
-  features: [
-    {
-      image: '/jest/img/content/female-technologist.png',
-      imageAlign: 'top',
-      title: 'Easy Setup',
-      content: 'Complete and easy to set-up JavaScript testing solution. Works out of the box for any React project.',
-    },
-    {
-      image: '/jest/img/content/runner.png',
-      imageAlign: 'top',
-      title: 'Instant Feedback',
-      content: 'Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.',
-    },
-    {
-      image: '/jest/img/content/camera-with-flash.png',
-      imageAlign: 'top',
-      title: 'Snapshot Testing',
-      content: 'Capture snapshots of React trees or other serializable values to simplify UI testing and to analyze how state changes over time.',
-    },
-  ],
   users,
 };
+
+// load, parse, and filter only selected languages
+const languages = require('./languages.js');
+
+const enabledLanguages = [];
+languages.filter(lang => lang.enabled).map(lang => {
+  enabledLanguages.push(lang);
+});
+siteConfig['languages'] = enabledLanguages;
+
+siteConfig['en'] = require('./i18n/en.js');
+
+/* INJECT LOCALIZED FILES BEGIN */
+/* INJECT LOCALIZED FILES END */
 
 module.exports = siteConfig;

@@ -7,9 +7,8 @@
  *
  * @flow
  */
-'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {SerializableError, TestResult} from 'types/TestResult';
 import type {RawModuleMap} from 'types/HasteMap';
 
@@ -19,14 +18,15 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-const {ModuleMap} = require('jest-haste-map');
-const {separateMessageFromStack} = require('jest-message-util');
-
-const Runtime = require('jest-runtime');
-const runTest = require('./runTest');
+// $FlowFixMe: Missing ESM export
+import {ModuleMap} from 'jest-haste-map';
+import {separateMessageFromStack} from 'jest-message-util';
+import Runtime from 'jest-runtime';
+import runTest from './runTest';
 
 type WorkerData = {|
-  config: Config,
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
   path: Path,
   rawModuleMap?: RawModuleMap,
 |};
@@ -44,6 +44,7 @@ const formatError = (error: string | Error): SerializableError => {
   }
 
   return {
+    code: error.code || undefined,
     message: error.message,
     stack: error.stack,
     type: 'Error',
@@ -59,6 +60,7 @@ const getResolver = (config, rawModuleMap) => {
   if (rawModuleMap) {
     return Runtime.createResolver(
       config,
+      // $FlowFixMe: Missing ESM export
       new ModuleMap(rawModuleMap.map, rawModuleMap.mocks),
     );
   } else {
@@ -74,17 +76,17 @@ const getResolver = (config, rawModuleMap) => {
 };
 
 module.exports = (
-  {config, path, rawModuleMap}: WorkerData,
+  {config, globalConfig, path, rawModuleMap}: WorkerData,
   callback: WorkerCallback,
 ) => {
   let parentExited = false;
-  const disconnectCallback = () => parentExited = true;
+  const disconnectCallback = () => (parentExited = true);
   const removeListener = () =>
     process.removeListener('disconnect', disconnectCallback);
   process.on('disconnect', disconnectCallback);
 
   try {
-    runTest(path, config, getResolver(config, rawModuleMap)).then(
+    runTest(path, globalConfig, config, getResolver(config, rawModuleMap)).then(
       result => {
         removeListener();
         if (!parentExited) {

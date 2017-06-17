@@ -9,9 +9,9 @@
  */
 'use strict';
 
-const {extractSummary} = require('../utils');
 const fs = require('fs');
 const path = require('path');
+const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 
 const emptyTest = 'describe("", () => {it("", () => {})})';
@@ -100,8 +100,8 @@ describe('Snapshot', () => {
   beforeEach(cleanup);
   afterAll(cleanup);
 
-  it('works as expected', () => {
-    const result = runJest.json('snapshot', []);
+  it('stores new snapshots on the first run', () => {
+    const result = runJest.json('snapshot', ['-w=1', '--ci=false']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(5);
@@ -122,7 +122,11 @@ describe('Snapshot', () => {
 
   it('works with escaped characters', () => {
     // Write the first snapshot
-    let result = runJest('snapshot-escape', ['snapshot-test.js']);
+    let result = runJest('snapshot-escape', [
+      '-w=1',
+      '--ci=false',
+      'snapshot-test.js',
+    ]);
     let stderr = result.stderr.toString();
 
     expect(stderr).toMatch('1 snapshot written');
@@ -136,7 +140,12 @@ describe('Snapshot', () => {
     const newTestData = initialTestData + testData;
     fs.writeFileSync(snapshotEscapeTestFile, newTestData, 'utf8');
 
-    result = runJest('snapshot-escape', ['snapshot-test.js']);
+    result = runJest('snapshot-escape', [
+      '-w=1',
+      '--ci=false',
+      '--updateSnapshot',
+      'snapshot-test.js',
+    ]);
     stderr = result.stderr.toString();
 
     expect(stderr).toMatch('1 snapshot written');
@@ -145,7 +154,11 @@ describe('Snapshot', () => {
 
     // Now let's check again if everything still passes.
     // If this test doesn't pass, some snapshot data was not properly escaped.
-    result = runJest('snapshot-escape', ['snapshot-test.js']);
+    result = runJest('snapshot-escape', [
+      '-w=1',
+      '--ci=false',
+      'snapshot-test.js',
+    ]);
     stderr = result.stderr.toString();
 
     expect(stderr).not.toMatch('Snapshot Summary');
@@ -155,14 +168,22 @@ describe('Snapshot', () => {
 
   it('works with escaped regex', () => {
     // Write the first snapshot
-    let result = runJest('snapshot-escape', ['snapshot-escape-regex.js']);
+    let result = runJest('snapshot-escape', [
+      '-w=1',
+      '--ci=false',
+      'snapshot-escape-regex.js',
+    ]);
     let stderr = result.stderr.toString();
 
     expect(stderr).toMatch('2 snapshots written in 1 test suite.');
     expect(result.status).toBe(0);
     expect(extractSummary(stderr).summary).toMatchSnapshot();
 
-    result = runJest('snapshot-escape', ['snapshot-escape-regex.js']);
+    result = runJest('snapshot-escape', [
+      '-w=1',
+      '--ci=false',
+      'snapshot-escape-regex.js',
+    ]);
     stderr = result.stderr.toString();
 
     // Make sure we aren't writing a snapshot this time which would
@@ -175,6 +196,8 @@ describe('Snapshot', () => {
   it('works with template literal subsitutions', () => {
     // Write the first snapshot
     let result = runJest('snapshot-escape', [
+      '-w=1',
+      '--ci=false',
       'snapshot-escape-substitution-test.js',
     ]);
     let stderr = result.stderr.toString();
@@ -184,6 +207,8 @@ describe('Snapshot', () => {
     expect(extractSummary(stderr).summary).toMatchSnapshot();
 
     result = runJest('snapshot-escape', [
+      '-w=1',
+      '--ci=false',
       'snapshot-escape-substitution-test.js',
     ]);
     stderr = result.stderr.toString();
@@ -200,8 +225,21 @@ describe('Snapshot', () => {
       fs.writeFileSync(copyOfTestPath, originalTestContent);
     });
 
+    it('does not save snapshots in CI mode by default', () => {
+      const result = runJest.json('snapshot', ['-w=1', '--ci=true']);
+
+      expect(result.json.success).toBe(false);
+      expect(result.json.numTotalTests).toBe(9);
+      expect(result.json.snapshot.added).toBe(0);
+      expect(result.json.snapshot.total).toBe(9);
+      const {rest, summary} = extractSummary(result.stderr.toString());
+
+      expect(rest).toMatch('New snapshot was not written');
+      expect(summary).toMatchSnapshot();
+    });
+
     it('works on subsequent runs without `-u`', () => {
-      const firstRun = runJest.json('snapshot', []);
+      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
 
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
@@ -220,12 +258,12 @@ describe('Snapshot', () => {
     });
 
     it('deletes the snapshot if the test suite has been removed', () => {
-      const firstRun = runJest.json('snapshot', []);
+      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
       fs.unlinkSync(copyOfTestPath);
 
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
-      const secondRun = runJest.json('snapshot', ['-u']);
+      const secondRun = runJest.json('snapshot', ['-w=1', '--ci=false', '-u']);
 
       expect(firstRun.json.numTotalTests).toBe(9);
       expect(secondRun.json.numTotalTests).toBe(5);
@@ -240,10 +278,10 @@ describe('Snapshot', () => {
     });
 
     it('deletes a snapshot when a test does removes all the snapshots', () => {
-      const firstRun = runJest.json('snapshot', []);
+      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
 
       fs.writeFileSync(copyOfTestPath, emptyTest);
-      const secondRun = runJest.json('snapshot', ['-u']);
+      const secondRun = runJest.json('snapshot', ['-w=1', '--ci=false', '-u']);
       fs.unlinkSync(copyOfTestPath);
 
       expect(firstRun.json.numTotalTests).toBe(9);
@@ -259,7 +297,7 @@ describe('Snapshot', () => {
     });
 
     it('updates the snapshot when a test removes some snapshots', () => {
-      const firstRun = runJest.json('snapshot', []);
+      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
       fs.unlinkSync(copyOfTestPath);
       const beforeRemovingSnapshot = getSnapshotOfCopy();
 
@@ -270,7 +308,7 @@ describe('Snapshot', () => {
           '.not.toBe(undefined)',
         ),
       );
-      const secondRun = runJest.json('snapshot', ['-u']);
+      const secondRun = runJest.json('snapshot', ['-w=1', '--ci=false', '-u']);
       fs.unlinkSync(copyOfTestPath);
 
       expect(firstRun.json.numTotalTests).toBe(9);
