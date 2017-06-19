@@ -109,7 +109,7 @@
   "repo": "facebook/jest",
   "support": {
     "browse": {
-      "content": "Find what you're looking for in our detailed \n\n documentation and guides.\n\n- Learn how to [get started](/jest/docs/en/getting-started.html) with Jest.\n\n- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.\n\n- Learn how to [configure Jest](/jest/docs/en/configuration.html).\n\n- Look at the full [API Reference](/jest/docs/en/api.html).\n",
+      "content": "Find what you're looking for in our detailed documentation and guides.\n\n- Learn how to [get started](/jest/docs/en/getting-started.html) with Jest.\n- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.\n- Learn how to [configure Jest](/jest/docs/en/configuration.html).\n- Look at the full [API Reference](/jest/docs/en/api.html).",
       "title": "Browse the docs"
     },
     "header": {
@@ -117,11 +117,11 @@
       "title": "Need help?"
     },
     "join": {
-      "content": "Ask questions and find answers from other Jest users like you.\n\n- Join the [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) channel on [Reactiflux](http://www.reactiflux.com/), a Discord community.\n\n- Many members of the community use Stack Overflow.\n\n Read through the [existing questions](https://stackoverflow.com/questions/tagged/jestjs) tagged with \n\n **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!",
+      "content": "Ask questions and find answers from other Jest users like you.\n\n- Join the [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) channel on [Reactiflux](http://www.reactiflux.com/), a Discord community.\n- Many members of the community use Stack Overflow. Read through the [existing questions](https://stackoverflow.com/questions/tagged/jestjs) tagged with **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!",
       "title": "Join the community"
     },
     "uptodate": {
-      "content": "Find out what's new with Jest.\n\n- Follow [Jest](https://twitter.com/fbjest) on Twitter.\n\n- Subscribe to the [Jest blog](/jest/blog/).\n\n- Look at the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).",
+      "content": "Find out what's new with Jest.\n\n- Follow [Jest](https://twitter.com/fbjest) on Twitter.\n- Subscribe to the [Jest blog](/jest/blog/).\n- Look at the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).",
       "title": "Stay up to date"
     }
   },
