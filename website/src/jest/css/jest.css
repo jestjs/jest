@@ -811,6 +811,9 @@ a:hover code {
   margin-left: auto;
   margin-right: auto;
 }
+.threeByGridBlock {
+    margin-right: 10px;
+}
 .container .gridBlock .blockContent p {
   padding: 0;
 }
