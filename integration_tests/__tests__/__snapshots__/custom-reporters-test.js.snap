@@ -32,6 +32,16 @@ Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
+    "maxWorkers": "<<REPLACED>>",
+    "pattern": Object {
+      "input": "add-fail-test.js",
+      "paths": Array [
+        "add-fail-test.js",
+      ],
+      "shouldTreatInputAsPattern": false,
+      "testPathPattern": "add-fail-test.js",
+    },
+    "testPathPattern": "\\"add-fail-test.js\\"",
   },
 }
 `;
@@ -60,6 +70,16 @@ Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
+    "maxWorkers": "<<REPLACED>>",
+    "pattern": Object {
+      "input": "add-test.js",
+      "paths": Array [
+        "add-test.js",
+      ],
+      "shouldTreatInputAsPattern": false,
+      "testPathPattern": "add-test.js",
+    },
+    "testPathPattern": "\\"add-test.js\\"",
   },
 }
 `;
@@ -101,7 +121,18 @@ Object {
     "called": true,
     "path": false,
   },
-  "options": Object {},
+  "options": Object {
+    "maxWorkers": "<<REPLACED>>",
+    "pattern": Object {
+      "input": "add-test.js",
+      "paths": Array [
+        "add-test.js",
+      ],
+      "shouldTreatInputAsPattern": false,
+      "testPathPattern": "add-test.js",
+    },
+    "testPathPattern": "\\"add-test.js\\"",
+  },
 }
 `;
 

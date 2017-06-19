@@ -76,6 +76,10 @@ class TestReporter {
     onRunComplete.numFailedTests = results.numFailedTests;
     onRunComplete.numTotalTests = results.numTotalTests;
 
+    if (this._statsCollected.options.maxWorkers) {
+      // Since it's a different number on different machines.
+      this._statsCollected.options.maxWorkers = '<<REPLACED>>';
+    }
     // The Final Call
     process.stdout.write(JSON.stringify(this._statsCollected, null, 4));
   }
