@@ -362,6 +362,13 @@ describe('moduleMocker', () => {
 
       expect(obj.func()).not.toEqual('some text');
     });
+
+    it('mockReturnValueOnce mocks value just once', () => {
+      const fake = jest.fn(a => a + 2);
+      fake.mockReturnValueOnce(42);
+      expect(fake(2)).toEqual(42);
+      expect(fake(2)).toEqual(4);
+    });
   });
 
   describe('getMockImplementation', () => {
