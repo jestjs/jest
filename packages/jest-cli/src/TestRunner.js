@@ -315,13 +315,7 @@ class TestRunner {
         : new DefaultReporter(this._globalConfig),
     );
 
-    this.addReporter(
-      new SummaryReporter(this._globalConfig, {
-        pattern: this._options.pattern,
-        testNamePattern: this._options.testNamePattern,
-        testPathPattern: this._options.testPathPattern,
-      }),
-    );
+    this.addReporter(new SummaryReporter(this._globalConfig, this._options));
   }
 
   _addCustomReporters(reporters: Array<ReporterConfig>) {
@@ -356,10 +350,8 @@ class TestRunner {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {
-      const [path] = reporter;
-      let [, options] = reporter;
-      options = Object.assign({}, this._options, options);
-      return {options, path};
+      const [path, options] = reporter;
+      return {options: Object.assign({}, this._options, options), path};
     }
 
     throw new Error('Reporter should be either a string or an array');
