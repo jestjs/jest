@@ -16,7 +16,7 @@ import {version as VERSION} from '../../package.json';
 const logDebugMessages = (
   globalConfig: GlobalConfig,
   config: ProjectConfig,
-  pipe: stream$Writable | tty$WriteStream,
+  outputStream: stream$Writable | tty$WriteStream,
 ): void => {
   /* $FlowFixMe */
   const testFramework = (require(config.testRunner): TestFramework);
@@ -26,7 +26,7 @@ const logDebugMessages = (
     globalConfig,
     version: VERSION,
   };
-  pipe.write(JSON.stringify(output, null, '  ') + '\n');
+  outputStream.write(JSON.stringify(output, null, '  ') + '\n');
 };
 
 module.exports = logDebugMessages;
