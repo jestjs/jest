@@ -8,24 +8,24 @@
  * @flow
  */
 
- import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
- import type {Plugin} from 'types/PrettyFormat';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
+import type {Plugin} from 'types/PrettyFormat';
 
- import {getState, setState, extractExpectedAssertionsErrors} from 'jest-matchers';
- import {SnapshotState, addSerializer} from 'jest-snapshot';
- import {
-   EXPECTED_COLOR,
-   RECEIVED_COLOR,
-   matcherHint,
-   pluralize,
- } from 'jest-matcher-utils';
+import {getState, setState, extractExpectedAssertionsErrors} from 'jest-matchers';
+import {SnapshotState, addSerializer} from 'jest-snapshot';
+import {
+  EXPECTED_COLOR,
+  RECEIVED_COLOR,
+  matcherHint,
+  pluralize,
+} from 'jest-matcher-utils';
 
- export type SetupOptions = {|
-   config: ProjectConfig,
-   globalConfig: GlobalConfig,
-   localRequire: (moduleName: string) => Plugin,
-   testPath: Path,
- |};
+export type SetupOptions = {|
+  config: ProjectConfig,
+  globalConfig: GlobalConfig,
+  localRequire: (moduleName: string) => Plugin,
+  testPath: Path,
+|};
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -48,8 +48,17 @@ const addSuppressedErrors = result => {
   }
 };
 
-const addAssertionErrors = () => {
-  extractExpectedAssertionsErrors();
+const addAssertionErrors = (result) => {
+  const assertionErrors = extractExpectedAssertionsErrors();
+  if (assertionErrors.length) {
+    result.status = 'failed';
+  }
+  result.failedExpectations = assertionErrors.map(error => ({
+    actual: error.actual,
+    expected: error.expected,
+    message: error.message,
+    passed: false,
+  }));
 };
 
 const patchJasmine = () => {
@@ -58,7 +67,7 @@ const patchJasmine = () => {
       const resultCallback = attr.resultCallback;
       attr.resultCallback = function(result) {
         addSuppressedErrors(result);
-        addAssertionErrors();
+        addAssertionErrors(result);
         resultCallback.call(attr, result);
       };
       const onStart = attr.onStart;
