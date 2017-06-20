@@ -16,9 +16,14 @@ import type {
 import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
-import type {PathPattern} from './SearchSource';
+import type {TestSelectionConfig} from './SearchSource';
 
 import {formatExecError} from 'jest-message-util';
+import {
+  addResult,
+  buildFailureTestResult,
+  makeEmptyAggregatedTestResult,
+} from './testResultHelpers';
 import snapshot from 'jest-snapshot';
 import pify from 'pify';
 import throat from 'throat';
@@ -43,7 +48,7 @@ class CancelRun extends Error {
 
 export type TestRunnerOptions = {|
   maxWorkers: number,
-  pattern: PathPattern,
+  pattern: TestSelectionConfig,
   startRun: () => *,
   testNamePattern: string,
   testPathPattern: string,
@@ -378,117 +383,11 @@ class TestRunner {
 }
 
 const createAggregatedResults = (numTotalTestSuites: number) => {
-  return {
-    numFailedTestSuites: 0,
-    numFailedTests: 0,
-    numPassedTestSuites: 0,
-    numPassedTests: 0,
-    numPendingTestSuites: 0,
-    numPendingTests: 0,
-    numRuntimeErrorTestSuites: 0,
-    numTotalTestSuites,
-    numTotalTests: 0,
-    snapshot: {
-      added: 0,
-      didUpdate: false, // is set only after the full run
-      failure: false,
-      filesAdded: 0,
-      // combines individual test results + results after full run
-      filesRemoved: 0,
-      filesUnmatched: 0,
-      filesUpdated: 0,
-      matched: 0,
-      total: 0,
-      unchecked: 0,
-      unmatched: 0,
-      updated: 0,
-    },
-    startTime: Date.now(),
-    success: false,
-    testResults: [],
-    wasInterrupted: false,
-  };
-};
-
-const addResult = (
-  aggregatedResults: AggregatedResult,
-  testResult: TestResult,
-): void => {
-  aggregatedResults.testResults.push(testResult);
-  aggregatedResults.numTotalTests +=
-    testResult.numPassingTests +
-    testResult.numFailingTests +
-    testResult.numPendingTests;
-  aggregatedResults.numFailedTests += testResult.numFailingTests;
-  aggregatedResults.numPassedTests += testResult.numPassingTests;
-  aggregatedResults.numPendingTests += testResult.numPendingTests;
-
-  if (testResult.testExecError) {
-    aggregatedResults.numRuntimeErrorTestSuites++;
-  }
-
-  if (testResult.skipped) {
-    aggregatedResults.numPendingTestSuites++;
-  } else if (testResult.numFailingTests > 0 || testResult.testExecError) {
-    aggregatedResults.numFailedTestSuites++;
-  } else {
-    aggregatedResults.numPassedTestSuites++;
-  }
-
-  // Snapshot data
-  if (testResult.snapshot.added) {
-    aggregatedResults.snapshot.filesAdded++;
-  }
-  if (testResult.snapshot.fileDeleted) {
-    aggregatedResults.snapshot.filesRemoved++;
-  }
-  if (testResult.snapshot.unmatched) {
-    aggregatedResults.snapshot.filesUnmatched++;
-  }
-  if (testResult.snapshot.updated) {
-    aggregatedResults.snapshot.filesUpdated++;
-  }
-
-  aggregatedResults.snapshot.added += testResult.snapshot.added;
-  aggregatedResults.snapshot.matched += testResult.snapshot.matched;
-  aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
-  aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
-  aggregatedResults.snapshot.updated += testResult.snapshot.updated;
-  aggregatedResults.snapshot.total +=
-    testResult.snapshot.added +
-    testResult.snapshot.matched +
-    testResult.snapshot.unmatched +
-    testResult.snapshot.updated;
-};
-
-const buildFailureTestResult = (
-  testPath: string,
-  err: TestError,
-): TestResult => {
-  return {
-    console: null,
-    failureMessage: null,
-    numFailingTests: 0,
-    numPassingTests: 0,
-    numPendingTests: 0,
-    perfStats: {
-      end: 0,
-      start: 0,
-    },
-    skipped: false,
-    snapshot: {
-      added: 0,
-      fileDeleted: false,
-      matched: 0,
-      unchecked: 0,
-      unmatched: 0,
-      updated: 0,
-    },
-    sourceMaps: {},
-    testExecError: err,
-    testFilePath: testPath,
-    testResults: [],
-  };
+  const result = makeEmptyAggregatedTestResult();
+  result.numTotalTestSuites = numTotalTestSuites;
+  result.startTime = Date.now();
+  result.success = false;
+  return result;
 };
 
 const getEstimatedTime = (timings, workers) => {
