@@ -645,10 +645,18 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = equals(receivedObject, expectedObject, [
+    let pass = equals(receivedObject, expectedObject, [
       iterableEquality,
       subsetEquality,
     ]);
+
+    if (
+      receivedObject.constructor.name === 'Error' &&
+      expectedObject.constructor.name === 'Error' &&
+      receivedObject.message != expectedObject.message
+    ) {
+      pass = false;
+    }
 
     const message = pass
       ? () =>
