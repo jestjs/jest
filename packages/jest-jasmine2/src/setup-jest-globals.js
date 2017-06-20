@@ -51,9 +51,7 @@ const addAssertionErrors = result => {
   if (assertionErrors.length) {
     result.status = 'failed';
     result.failedExpectations = assertionErrors.map(error => ({
-      actual: 'none',
-      expected: 'at least one',
-      message: error,
+      error,
       passed: false,
     }));
   }
