@@ -11,14 +11,12 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
-import {getState, setState, extractExpectedAssertionsErrors} from 'jest-matchers';
-import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {
-  EXPECTED_COLOR,
-  RECEIVED_COLOR,
-  matcherHint,
-  pluralize,
-} from 'jest-matcher-utils';
+  getState,
+  setState,
+  extractExpectedAssertionsErrors,
+} from 'jest-matchers';
+import {SnapshotState, addSerializer} from 'jest-snapshot';
 
 export type SetupOptions = {|
   config: ProjectConfig,
@@ -48,17 +46,17 @@ const addSuppressedErrors = result => {
   }
 };
 
-const addAssertionErrors = (result) => {
+const addAssertionErrors = result => {
   const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     result.status = 'failed';
+    result.failedExpectations = assertionErrors.map(error => ({
+      actual: 'none',
+      expected: 'at least one',
+      message: error,
+      passed: false,
+    }));
   }
-  result.failedExpectations = assertionErrors.map(error => ({
-    actual: error.actual,
-    expected: error.expected,
-    message: error.message,
-    passed: false,
-  }));
 };
 
 const patchJasmine = () => {
