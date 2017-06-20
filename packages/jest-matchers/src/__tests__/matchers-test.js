@@ -848,6 +848,7 @@ describe('toMatchObject()', () => {
     [{}, {a: undefined}],
     [[1, 2, 3], [2, 3, 1]],
     [[1, 2, 3], [1, 2, 2]],
+    [new Error('foo'), new Error('bar')],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).not.toMatchObject(n2);

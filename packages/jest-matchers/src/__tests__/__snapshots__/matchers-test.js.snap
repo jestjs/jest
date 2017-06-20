@@ -2841,6 +2841,21 @@ Difference:
 <dim> ]"
 `;
 
+exports[`toMatchObject() {pass: false} expect([Error: foo]).toMatchObject([Error: bar]) 1`] = `
+"<dim>expect(<red>received</><dim>).toMatchObject(<green>expected</><dim>)
+
+Expected value to match object:
+  <green>[Error: bar]</>
+Received:
+  <red>[Error: foo]</>
+Difference:
+<green>- Expected</>
+<red>+ Received</>
+
+<green>-[Error: bar]</>
+<red>+[Error: foo]</>"
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObject({"a": Any<Number>}) 1`] = `
 "<dim>expect(<red>received</><dim>).toMatchObject(<green>expected</><dim>)
 
