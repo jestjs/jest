@@ -63,6 +63,10 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
     return asymmetricResult;
   }
 
+  if (a instanceof Error && b instanceof Error) {
+    return a.message == b.message;
+  }
+
   for (var i = 0; i < customTesters.length; i++) {
     var customTesterResult = customTesters[i](a, b);
     if (customTesterResult !== undefined) {
@@ -70,9 +74,6 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
     }
   }
 
-  if (a instanceof Error && b instanceof Error) {
-    return a.message == b.message;
-  }
 
   // Identical objects are equal. `0 === -0`, but they aren't identical.
   // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
