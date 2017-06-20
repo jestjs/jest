@@ -11,6 +11,7 @@
 import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
 import type {GlobalConfig} from 'types/Config';
+import type {TestSelectionConfig} from './SearchSource';
 import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './TestWatcher';
 
@@ -24,6 +25,7 @@ import SearchSource from './SearchSource';
 import updateArgv from './lib/updateArgv';
 import TestRunner from './TestRunner';
 import TestSequencer from './TestSequencer';
+import {makeEmptyAggregatedTestResult} from './testResultHelpers';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -97,7 +99,13 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
   );
 };
 
-const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
+const getTestPaths = async (
+  globalConfig,
+  context,
+  pattern,
+  argv,
+  outputStream,
+) => {
   const source = new SearchSource(context);
   let data = await source.getTestPaths(pattern);
   if (!data.tests.length) {
@@ -108,7 +116,7 @@ const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
         pattern = getTestPathPattern(argv);
         data = await source.getTestPaths(pattern);
       } else {
-        new Console(pipe, pipe).log(
+        new Console(outputStream, outputStream).log(
           'Jest can only find uncommitted changed files in a git or hg ' +
             'repository. If you make your project a git or hg ' +
             'repository (`git init` or `hg init`), Jest will be able ' +
@@ -149,13 +157,23 @@ const runJest = async (
   globalConfig: GlobalConfig,
   contexts: Array<Context>,
   argv: Argv,
-  pipe: stream$Writable | tty$WriteStream,
+  outputStream: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
   onComplete: (testResults: AggregatedResult) => any,
+  // We use this internaly at FB. Since we run multiple processes and most
+  // of them don't match any tests, we don't want to print 'no tests found'
+  // message for all of them.
+  // This will no longer be needed when we complete this:
+  // https://github.com/facebook/jest/issues/3768
+  printNoTestsMessage?: (
+    outputStream: stream$Writable,
+    testRunData: Array<*>,
+    testSelectionConfig: TestSelectionConfig,
+  ) => void,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
-  const pattern = getTestPathPattern(argv);
+  const testSelectionConfig = getTestPathPattern(argv);
   const sequencer = new TestSequencer();
   let allTests = [];
   const testRunData = await Promise.all(
@@ -163,9 +181,9 @@ const runJest = async (
       const matches = await getTestPaths(
         globalConfig,
         context,
-        pattern,
+        testSelectionConfig,
         argv,
-        pipe,
+        outputStream,
       );
       allTests = allTests.concat(matches.tests);
       return {context, matches};
@@ -176,41 +194,18 @@ const runJest = async (
 
   if (argv.listTests) {
     console.log(JSON.stringify(allTests.map(test => test.path)));
-    onComplete &&
-      onComplete({
-        numFailedTestSuites: 0,
-        numFailedTests: 0,
-        numPassedTestSuites: 0,
-        numPassedTests: 0,
-        numPendingTestSuites: 0,
-        numPendingTests: 0,
-        numRuntimeErrorTestSuites: 0,
-        numTotalTestSuites: 0,
-        numTotalTests: 0,
-        snapshot: {
-          added: 0,
-          didUpdate: false,
-          failure: false,
-          filesAdded: 0,
-          filesRemoved: 0,
-          filesUnmatched: 0,
-          filesUpdated: 0,
-          matched: 0,
-          total: 0,
-          unchecked: 0,
-          unmatched: 0,
-          updated: 0,
-        },
-        startTime: 0,
-        success: true,
-        testResults: [],
-        wasInterrupted: false,
-      });
+    onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
 
   if (!allTests.length) {
-    new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
+    if (printNoTestsMessage) {
+      printNoTestsMessage(outputStream, testRunData, testSelectionConfig);
+    } else {
+      new Console(outputStream, outputStream).log(
+        getNoTestsFoundMessage(testRunData, testSelectionConfig),
+      );
+    }
   } else if (
     allTests.length === 1 &&
     globalConfig.silent !== true &&
@@ -230,10 +225,10 @@ const runJest = async (
 
   const results = await new TestRunner(globalConfig, {
     maxWorkers,
-    pattern,
+    pattern: testSelectionConfig,
     startRun,
     testNamePattern: argv.testNamePattern,
-    testPathPattern: formatTestPathPattern(pattern),
+    testPathPattern: formatTestPathPattern(testSelectionConfig),
   }).runTests(allTests, testWatcher);
 
   sequencer.cacheResults(allTests, results);

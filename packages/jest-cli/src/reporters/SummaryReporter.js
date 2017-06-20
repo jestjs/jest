@@ -12,8 +12,8 @@ import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {ReporterOnStartOptions} from 'types/Reporters';
-import type {PathPattern} from '../SearchSource';
 import type {TestRunnerOptions} from '../TestRunner';
+import type {TestSelectionConfig} from '../SearchSource';
 
 import chalk from 'chalk';
 import BaseReporter from './BaseReporter';
@@ -246,13 +246,15 @@ class SummaryReporter extends BaseReporter {
 
   _getTestSummary(
     contexts: Set<Context>,
-    pattern: PathPattern,
+    testSelectionConfig: TestSelectionConfig,
     testNamePattern: string,
     testPathPattern: string,
   ) {
-    const testInfo = pattern.onlyChanged
+    const testInfo = testSelectionConfig.onlyChanged
       ? chalk.dim(' related to changed files')
-      : pattern.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
+      : testSelectionConfig.input !== ''
+          ? chalk.dim(' matching ') + testPathPattern
+          : '';
 
     const nameInfo = testNamePattern
       ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
