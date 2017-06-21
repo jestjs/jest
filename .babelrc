@@ -4,9 +4,15 @@
     "transform-flow-strip-types",
     "transform-es2015-destructuring",
     "transform-es2015-parameters",
+    "transform-es2015-spread",
     "transform-async-to-generator",
     "transform-strict-mode",
-    ["transform-es2015-modules-commonjs", {"allowTopLevelThis": true}]
+    [
+      "transform-es2015-modules-commonjs",
+      {
+        "allowTopLevelThis": true
+      }
+    ]
   ],
   "retainLines": true
 }
