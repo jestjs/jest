@@ -262,18 +262,17 @@ class ModuleMockerClass {
           );
         }
 
-        let returnValue;
+        const returnValue = mockConfig.defaultReturnValue;
         // If return value is last set, either specific or default, i.e.
         // mockReturnValueOnce()/mockReturnValue() is called and no
         // mockImplementationOnce()/mockImplementation() is called after that.
         // use the set return value.
-        if (mockConfig.isReturnValueLastSet) {
-          returnValue = mockConfig.specificReturnValues.shift();
-          if (returnValue === undefined) {
-            returnValue = mockConfig.defaultReturnValue;
-          }
+        if (mockConfig.specificReturnValues.length) {
+          return mockConfig.specificReturnValues.shift();
+        }
 
-          return returnValue;
+        if (mockConfig.isReturnValueLastSet) {
+          return mockConfig.defaultReturnValue;
         }
 
         // If mockImplementationOnce()/mockImplementation() is last set,
@@ -324,7 +323,6 @@ class ModuleMockerClass {
       f.mockReturnValueOnce = value => {
         // next function call will return this value or default return value
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.isReturnValueLastSet = true;
         mockConfig.specificReturnValues.push(value);
         return f;
       };
