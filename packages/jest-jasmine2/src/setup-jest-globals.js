@@ -50,10 +50,7 @@ const addAssertionErrors = result => {
   const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     result.status = 'failed';
-    result.failedExpectations = assertionErrors.map(error => ({
-      error,
-      passed: false,
-    }));
+    result.failedExpectations = [...result.failedExpectations, assertionErrors];
   }
 };
 
