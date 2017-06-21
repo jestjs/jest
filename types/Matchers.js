@@ -45,7 +45,7 @@ export type Expect = {
   addSnapshotSerializer(any): void,
   assertions(number): void,
   extend(any): void,
-  extractExpectedAssertionsErrors(): Array<Error>,
+  extractExpectedAssertionsErrors(): Array<Object>,
   getState(): MatcherState,
   hasAssertions(): void,
   setState(Object): void,
