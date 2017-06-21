@@ -50,6 +50,10 @@ function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
+  if (config.timers === 'fake') {
+    environment.fakeTimers.useFakeTimers();
+  }
+
   env.beforeEach(() => {
     if (config.resetModules) {
       runtime.resetModules();
@@ -61,10 +65,10 @@ function jasmine2(
 
     if (config.resetMocks) {
       runtime.resetAllMocks();
-    }
 
-    if (config.timers === 'fake') {
-      environment.fakeTimers.useFakeTimers();
+      if (config.timers === 'fake') {
+        environment.fakeTimers.useFakeTimers();
+      }
     }
   });
 
