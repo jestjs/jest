@@ -46,18 +46,20 @@ const addSuppressedErrors = result => {
   }
 };
 
-const addAssertionErrors = (result) => {
+const addAssertionErrors = result => {
   const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
+    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => {
+      return {
+        actual,
+        expected,
+        message: error.stack,
+        passed: false,
+      };
+    });
     result.status = 'failed';
-    result.failedExpectations = [...result.failedExpectations, assertionErrors];
+    result.failedExpectations = result.failedExpectations.concat(jasmineErrors);
   }
-  result.failedExpectations = assertionErrors.map(error => ({
-    actual: error.actual,
-    expected: error.expected,
-    message: error.message,
-    passed: false,
-  }));
 };
 
 const patchJasmine = () => {

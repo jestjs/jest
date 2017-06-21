@@ -168,8 +168,8 @@ const eventHandler = (event: Event) => {
 };
 
 const _addExpectedAssertionErrors = (test: TestEntry) => {
-  const errors = extractExpectedAssertionsErrors();
-  errors.length && (test.status = 'fail');
+  const failures = extractExpectedAssertionsErrors();
+  const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
 };
 
