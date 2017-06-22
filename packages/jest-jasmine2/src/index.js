@@ -20,7 +20,7 @@ import jasmineAsync from './jasmine-async';
 
 const JASMINE = require.resolve('./jasmine/jasmine-light.js');
 
-function jasmine2(
+async function jasmine2(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   environment: Environment,
@@ -97,7 +97,7 @@ function jasmine2(
   }
 
   runtime.requireModule(testPath);
-  env.execute();
+  await env.execute();
   return reporter
     .getResults()
     .then(results => addSnapshotData(results, snapshotState));
