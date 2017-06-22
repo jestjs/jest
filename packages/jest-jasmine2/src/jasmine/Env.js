@@ -161,7 +161,7 @@ module.exports = function(j$) {
       return seed;
     };
 
-    function queueRunnerFactory(options) {
+    async function queueRunnerFactory(options) {
       options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
       options.setTimeout = realSetTimeout;
@@ -178,7 +178,7 @@ module.exports = function(j$) {
       return topSuite;
     };
 
-    this.execute = function(runnablesToRun) {
+    this.execute = async function(runnablesToRun) {
       if (!runnablesToRun) {
         if (focusedRunnables.length) {
           runnablesToRun = focusedRunnables;
@@ -193,7 +193,7 @@ module.exports = function(j$) {
 
       currentlyExecutingSuites.push(topSuite);
 
-      treeProcessor({
+      await treeProcessor({
         nodeComplete(suite) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);
@@ -209,12 +209,11 @@ module.exports = function(j$) {
         queueRunnerFactory,
         runnableIds: runnablesToRun,
         tree: topSuite,
-      }).then(() => {
-        clearResourcesForRunnable(topSuite.id);
-        currentlyExecutingSuites.pop();
-        reporter.jasmineDone({
-          failedExpectations: topSuite.result.failedExpectations,
-        });
+      });
+      clearResourcesForRunnable(topSuite.id);
+      currentlyExecutingSuites.pop();
+      reporter.jasmineDone({
+        failedExpectations: topSuite.result.failedExpectations,
       });
     };
 
