@@ -35,6 +35,7 @@ class DefaultReporter extends BaseReporter {
   _globalConfig: GlobalConfig;
   _out: write;
   _status: Status;
+  _bufferedIO: Set<Function>;
 
   constructor(globalConfig: GlobalConfig) {
     super();
@@ -43,6 +44,7 @@ class DefaultReporter extends BaseReporter {
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
     this._status = new Status();
+    this._bufferedIO = new Set();
     this._wrapStdio(process.stdout);
     this._wrapStdio(process.stderr);
     this._status.onChange(() => {
@@ -57,25 +59,28 @@ class DefaultReporter extends BaseReporter {
     let buffer = [];
     let timeout = null;
 
-    const doFlush = () => {
+    const flushBufferedIO = () => {
       const string = buffer.join('');
       buffer = [];
       // This is to avoid conflicts between random output and status text
       this._clearStatus();
       originalWrite.call(stream, string);
       this._printStatus();
+      this._bufferedIO.delete(flushBufferedIO);
     };
 
-    const flush = () => {
+    this._bufferedIO.add(flushBufferedIO);
+
+    const debouncedFlush = () => {
       // If the process blows up no errors would be printed.
       // There should be a smart way to buffer stderr, but for now
       // we just won't buffer it.
       if (stream === process.stderr) {
-        doFlush();
+        flushBufferedIO();
       } else {
         if (!timeout) {
           timeout = setTimeout(() => {
-            doFlush();
+            flushBufferedIO();
             timeout = null;
           }, 100);
         }
@@ -85,9 +90,15 @@ class DefaultReporter extends BaseReporter {
     // $FlowFixMe
     stream.write = chunk => {
       buffer.push(chunk);
-      flush();
+      debouncedFlush();
       return true;
     };
+  }
+
+  flushDebouncedIO() {
+    for (const io of this._bufferedIO) {
+      io();
+    }
   }
 
   _clearStatus() {
@@ -116,6 +127,7 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunComplete() {
+    this.flushDebouncedIO();
     this._status.runFinished();
     // $FlowFixMe
     process.stdout.write = this._out;
@@ -129,6 +141,7 @@ class DefaultReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
+    this.flushDebouncedIO();
     this._status.testFinished(
       test.context.config,
       testResult,
