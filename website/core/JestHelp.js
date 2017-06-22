@@ -36,7 +36,7 @@ const JestHelp = React.createClass({
               <p>
                 {siteConfig[this.props.language].support.header.content}
               </p>
-              <GridBlock contents={supportLinks} layout="fourColumn" />
+              <GridBlock contents={supportLinks} layout="threeColumn" />
             </div>
           </Container>
         </div>
