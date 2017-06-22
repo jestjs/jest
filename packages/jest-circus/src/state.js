@@ -11,8 +11,8 @@
 import type {Event, State, EventHandler} from '../types';
 
 import {makeDescribe} from './utils';
-import eventHandler from './eventHandler';
-import formatNodeAssertErrors from './formatNodeAssertErrors';
+import eventHandler from './event_handler';
+import formatNodeAssertErrors from './format_node_assert_errors';
 
 const eventHandlers: Array<EventHandler> = [
   eventHandler,

@@ -15,7 +15,7 @@ import path from 'path';
 import docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import H from './constants';
-import extractRequires from './lib/extractRequires';
+import extractRequires from './lib/extract_requires';
 
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;

@@ -8,12 +8,12 @@
  * @flow
  */
 
-import type {DiffOptions} from './diffStrings';
+import type {DiffOptions} from './diff_strings';
 
 import prettyFormat from 'pretty-format';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
-import diffStrings from './diffStrings';
+import diffStrings from './diff_strings';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 
 const {

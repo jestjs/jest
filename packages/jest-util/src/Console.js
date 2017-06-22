@@ -13,7 +13,7 @@ import type {LogType, LogMessage} from 'types/Console';
 
 import {format} from 'util';
 import {Console} from 'console';
-import clearLine from './clearLine';
+import clearLine from './clear_line';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
