@@ -33,7 +33,7 @@ async function jasmine2(
     environment,
     testPath,
   );
-  const jasmineFactory = require(JASMINE);
+  const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create();
 
   const env = jasmine.getEnv();
@@ -92,7 +92,6 @@ async function jasmine2(
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
 
-  runtime.requireModule(require.resolve('p-map'));
   runtime.requireModule(testPath);
   await env.execute();
   return reporter

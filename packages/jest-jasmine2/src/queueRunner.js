@@ -8,7 +8,6 @@
  * @flow
  */
 
-import pMap from 'p-map';
 import pTimeout from './p-timeout';
 
 type Options = {
@@ -57,7 +56,11 @@ async function queueRunner(options: Options) {
       },
     );
   };
-  return pMap(options.queueableFns, mapper, {concurrency: 1});
+
+  return options.queueableFns.reduce(
+    (promise, fn) => promise.then(() => mapper(fn)),
+    Promise.resolve(),
+  );
 }
 
 module.exports = queueRunner;
