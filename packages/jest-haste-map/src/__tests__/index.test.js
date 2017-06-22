@@ -676,8 +676,12 @@ describe('HasteMap', () => {
       e.emit('all', 'delete', filePath, dirPath, undefined);
     }
 
-    function hm_it(title, fn) {
-      it(title, async () => {
+    function hm_it(title, fn, options) {
+      options = options || {};
+      (options.only ? it.only : it)(title, async () => {
+        if (options.mockFs) {
+          mockFs = options.mockFs;
+        }
         const watchConfig = Object.assign({}, defaultConfig, {watch: true});
         const hm = new HasteMap(watchConfig);
         await hm.build();
@@ -760,6 +764,46 @@ describe('HasteMap', () => {
         expect(eventsQueue).toHaveLength(1);
         expect(eventsQueue).toEqual([{filePath, stat: MOCK_STAT, type: 'add'}]);
         expect(hasteFS.getModuleName(filePath)).toBeDefined();
+      },
+    );
+
+    hm_it(
+      'correctly tracks changes to both platform-specific versions of a single module name',
+      async hm => {
+        const {moduleMap: initMM} = await hm.build();
+        expect(initMM.getModule('Orange', 'ios')).toBeTruthy();
+        expect(initMM.getModule('Orange', 'android')).toBeTruthy();
+        const e = mockEmitters['/fruits'];
+        e.emit('all', 'change', 'Orange.ios.js', '/fruits/', MOCK_STAT);
+        e.emit('all', 'change', 'Orange.android.js', '/fruits/', MOCK_STAT);
+        const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
+        expect(eventsQueue).toHaveLength(2);
+        expect(eventsQueue).toEqual([
+          {filePath: '/fruits/Orange.ios.js', stat: MOCK_STAT, type: 'change'},
+          {
+            filePath: '/fruits/Orange.android.js',
+            stat: MOCK_STAT,
+            type: 'change',
+          },
+        ]);
+        expect(hasteFS.getModuleName('/fruits/Orange.ios.js')).toBeTruthy();
+        expect(hasteFS.getModuleName('/fruits/Orange.android.js')).toBeTruthy();
+        const iosVariant = moduleMap.getModule('Orange', 'ios');
+        expect(iosVariant).toBe('/fruits/Orange.ios.js');
+        const androidVariant = moduleMap.getModule('Orange', 'android');
+        expect(androidVariant).toBe('/fruits/Orange.android.js');
+      },
+      {
+        mockFs: {
+          '/fruits/Orange.android.js': `/**
+ * @providesModule Orange
+ */
+`,
+          '/fruits/Orange.ios.js': `/**
+* @providesModule Orange
+*/
+`,
+        },
       },
     );
 
