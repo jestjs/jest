@@ -15,7 +15,7 @@ import fs from 'fs';
 import path from 'path';
 import nodeModulesPaths from 'resolve/lib/node-modules-paths';
 import isBuiltinModule from 'is-builtin-module';
-import defaultResolver from './defaultResolver.js';
+import defaultResolver from './default_resolver.js';
 
 type ResolverConfig = {|
   browser?: boolean,

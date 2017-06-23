@@ -100,7 +100,7 @@
     },
     "setupTestFrameworkScriptFile": "<rootDir>/testSetupFile.js",
     "snapshotSerializers": [
-      "<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js"
+      "<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js"
     ],
     "testEnvironment": "./packages/jest-environment-node",
     "testPathIgnorePatterns": [
@@ -112,7 +112,7 @@
       "/packages/.*/build-es5"
     ],
     "testMatch": [
-      "**/*-test.js"
+      "**/*.test.js"
     ]
   }
 }

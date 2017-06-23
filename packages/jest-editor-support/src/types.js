@@ -14,7 +14,7 @@ export type Location = {
 };
 
 import type {ChildProcess} from 'child_process';
-import type ProjectWorkspace from './ProjectWorkspace';
+import type ProjectWorkspace from './project_workspace';
 
 export type Options = {
   createProcess?: (

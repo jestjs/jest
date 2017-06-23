@@ -23,8 +23,8 @@ import {createDirectory} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
-import ScriptTransformer from './ScriptTransformer';
-import shouldInstrument from './shouldInstrument';
+import ScriptTransformer from './script_transformer';
+import shouldInstrument from './should_instrument';
 import cliArgs from './cli/args';
 
 type Module = {|
