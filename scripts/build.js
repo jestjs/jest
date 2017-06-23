@@ -48,10 +48,9 @@ const babelEs5Options = Object.assign(
 );
 
 const adjustToTerminalWidth = str => {
-  const WIDTH = process.stdout.columns - stringLength(OK) + 1;
-  console.log(process.stdout.columns, WIDTH);
+  const columns = process.stdout.columns || 80;
+  const WIDTH = columns - stringLength(OK) + 1;
   const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
-  console.log(strs);
   let lastString = strs[strs.length - 1];
   if (lastString.length < WIDTH) {
     lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
