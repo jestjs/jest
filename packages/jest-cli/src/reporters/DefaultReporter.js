@@ -24,6 +24,7 @@ import getConsoleOutput from './getConsoleOutput';
 import getResultHeader from './getResultHeader';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
+type FlushBufferedOutput = () => void;
 
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
@@ -35,7 +36,7 @@ class DefaultReporter extends BaseReporter {
   _globalConfig: GlobalConfig;
   _out: write;
   _status: Status;
-  _bufferedIO: Set<Function>;
+  _bufferedOutput: Set<FlushBufferedOutput>;
 
   constructor(globalConfig: GlobalConfig) {
     super();
@@ -44,7 +45,7 @@ class DefaultReporter extends BaseReporter {
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
     this._status = new Status();
-    this._bufferedIO = new Set();
+    this._bufferedOutput = new Set();
     this._wrapStdio(process.stdout);
     this._wrapStdio(process.stderr);
     this._status.onChange(() => {
@@ -59,28 +60,28 @@ class DefaultReporter extends BaseReporter {
     let buffer = [];
     let timeout = null;
 
-    const flushBufferedIO = () => {
+    const flushBufferedOutput = () => {
       const string = buffer.join('');
       buffer = [];
       // This is to avoid conflicts between random output and status text
       this._clearStatus();
       originalWrite.call(stream, string);
       this._printStatus();
-      this._bufferedIO.delete(flushBufferedIO);
+      this._bufferedOutput.delete(flushBufferedOutput);
     };
 
-    this._bufferedIO.add(flushBufferedIO);
+    this._bufferedOutput.add(flushBufferedOutput);
 
     const debouncedFlush = () => {
       // If the process blows up no errors would be printed.
       // There should be a smart way to buffer stderr, but for now
       // we just won't buffer it.
       if (stream === process.stderr) {
-        flushBufferedIO();
+        flushBufferedOutput();
       } else {
         if (!timeout) {
           timeout = setTimeout(() => {
-            flushBufferedIO();
+            flushBufferedOutput();
             timeout = null;
           }, 100);
         }
@@ -95,9 +96,10 @@ class DefaultReporter extends BaseReporter {
     };
   }
 
-  flushDebouncedIO() {
-    for (const io of this._bufferedIO) {
-      io();
+  // Don't wait for the debounced call and flush all output immediately.
+  forceFlushBufferedOutput() {
+    for (const flushBufferedOutput of this._bufferedOutput) {
+      flushBufferedOutput();
     }
   }
 
@@ -127,7 +129,7 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunComplete() {
-    this.flushDebouncedIO();
+    this.forceFlushBufferedOutput();
     this._status.runFinished();
     // $FlowFixMe
     process.stdout.write = this._out;
@@ -141,7 +143,6 @@ class DefaultReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    this.flushDebouncedIO();
     this._status.testFinished(
       test.context.config,
       testResult,
@@ -152,6 +153,7 @@ class DefaultReporter extends BaseReporter {
       test.context.config,
       testResult,
     );
+    this.forceFlushBufferedOutput();
   }
 
   _printTestFileSummary(
