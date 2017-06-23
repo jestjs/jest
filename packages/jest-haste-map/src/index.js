@@ -33,10 +33,10 @@ import workerFarm from 'worker-farm';
 import {version as VERSION} from '../package.json';
 // eslint-disable-next-line import/no-duplicates
 import H from './constants';
-import HasteFS from './HasteFS';
-import HasteModuleMap from './ModuleMap';
-import getMockName from './getMockName';
-import getPlatformExtension from './lib/getPlatformExtension';
+import HasteFS from './haste_fs';
+import HasteModuleMap from './module_map';
+import getMockName from './get_mock_name';
+import getPlatformExtension from './lib/get_platform_extension';
 import nodeCrawl from './crawlers/node';
 import watchmanCrawl from './crawlers/watchman';
 import worker from './worker';

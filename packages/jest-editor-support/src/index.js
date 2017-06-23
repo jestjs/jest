@@ -8,14 +8,14 @@
  * @flow
  */
 
-import Process from './Process';
+import Process from './process';
 
-import ProjectWorkspace from './ProjectWorkspace';
-import Runner from './Runner';
-import Settings from './Settings';
-import {Expect, ItBlock, Node} from './parsers/ParserNodes';
-import {parse} from './parsers/BabylonParser';
-import TestReconciler from './TestReconciler';
+import ProjectWorkspace from './project_workspace';
+import Runner from './runner';
+import Settings from './settings';
+import {Expect, ItBlock, Node} from './parsers/parser_nodes';
+import {parse} from './parsers/babylon_parser';
+import TestReconciler from './test_reconciler';
 
 module.exports = {
   Expect,

@@ -10,7 +10,7 @@
 
 import type {ValidationOptions} from './types';
 
-import defaultConfig from './defaultConfig';
+import defaultConfig from './default_config';
 
 const _validate = (config: Object, options: ValidationOptions) => {
   let hasDeprecationWarnings = false;

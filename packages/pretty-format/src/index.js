@@ -18,12 +18,12 @@ import type {
 
 import style from 'ansi-styles';
 
-import AsymmetricMatcher from './plugins/AsymmetricMatcher';
-import ConvertAnsi from './plugins/ConvertAnsi';
-import HTMLElement from './plugins/HTMLElement';
-import Immutable from './plugins/ImmutablePlugins';
-import ReactElement from './plugins/ReactElement';
-import ReactTestComponent from './plugins/ReactTestComponent';
+import AsymmetricMatcher from './plugins/asymmetric_matcher';
+import ConvertAnsi from './plugins/convert_ansi';
+import HTMLElement from './plugins/html_element';
+import Immutable from './plugins/immutable_plugins';
+import ReactElement from './plugins/react_element';
+import ReactTestComponent from './plugins/react_test_component';
 
 type Theme = {|
   comment?: string,

@@ -31,11 +31,11 @@ import {
   DEFAULT_JS_PATTERN,
   DEFAULT_REPORTER_LABEL,
 } from './constants';
-import {validateReporters} from './reporterValidationErrors';
+import {validateReporters} from './reporter_validation_errors';
 import DEFAULT_CONFIG from './defaults';
 import DEPRECATED_CONFIG from './deprecated';
-import setFromArgv from './setFromArgv';
-import VALID_CONFIG from './validConfig';
+import setFromArgv from './set_from_argv';
+import VALID_CONFIG from './valid_config';
 const ERROR = `${BULLET}Validation Error`;
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;

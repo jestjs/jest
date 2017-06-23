@@ -24,7 +24,7 @@ import {
   printWithType,
 } from 'jest-matcher-utils';
 import {getObjectSubset, getPath, hasOwnProperty} from './utils';
-import {equals} from './jasmine-utils';
+import {equals} from './jasmine_utils';
 
 type ContainIterable =
   | Array<any>

@@ -65,7 +65,7 @@ const cleanup = (directory: string) => rimraf.sync(directory);
  *   '/home/tmp',
  *   {
  *     'package.json': '{}',
- *     '__tests__/test-test.js': 'test("lol")',
+ *     '__tests__/test.test.js': 'test("lol")',
  *   }
  * );
  */
