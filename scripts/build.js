@@ -28,7 +28,6 @@ const micromatch = require('micromatch');
 const stringLength = require('string-length');
 const getPackages = require('./_getPackages');
 
-// const OK = `[ ${chalk.green.bold('OK')} ]`;
 const OK = chalk.reset.inverse.bold.green(' DONE ');
 const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
@@ -50,7 +49,9 @@ const babelEs5Options = Object.assign(
 
 const adjustToTerminalWidth = str => {
   const WIDTH = process.stdout.columns - stringLength(OK) + 1;
+  console.log(process.stdout.columns, WIDTH);
   const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
+  console.log(strs);
   let lastString = strs[strs.length - 1];
   if (lastString.length < WIDTH) {
     lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
