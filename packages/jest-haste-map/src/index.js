@@ -616,7 +616,7 @@ class HasteMap extends EventEmitter {
       root: Path,
       stat: {mtime: Date},
     ) => {
-      filePath = path.join(root, filePath);
+      filePath = path.normalize(path.join(root, filePath));
       if (
         this._ignore(filePath) ||
         !extensions.some(extension => filePath.endsWith(extension))
