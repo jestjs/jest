@@ -104,7 +104,7 @@ module.exports = function watchmanCrawl(
 
             clocks[root] = response.clock;
             response.files.forEach(fileData => {
-              const name = root + path.sep + fileData.name;
+              const name = path.normalize(path.join(root, fileData.name));
               if (!fileData.exists) {
                 delete files[name];
               } else if (!ignore(name)) {
