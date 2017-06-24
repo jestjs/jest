@@ -10,19 +10,12 @@
 
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');
-const {linkJestPackage} = require('../utils');
 const runJest = require('../runJest');
 
 describe('jest --showConfig', () => {
   skipOnWindows.suite();
 
   const dir = path.resolve(__dirname, '..', 'verbose_reporter');
-
-  beforeEach(() => {
-    if (process.platform !== 'win32') {
-      linkJestPackage('babel-jest', dir);
-    }
-  });
 
   it('outputs config info and exits', () => {
     const root = path.join(__dirname, '..', '..', '..');

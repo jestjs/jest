@@ -20,7 +20,7 @@ const babelEs5Options = Object.assign(
   {},
   {
     babelrc: false,
-    exclude: 'node_modules/**',
+    exclude: 'node_modules/!(ansi-styles)/**',
     plugins: [
       'syntax-trailing-function-commas',
       'transform-flow-strip-types',
