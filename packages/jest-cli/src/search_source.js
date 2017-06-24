@@ -63,15 +63,6 @@ const toTests = (context, tests) =>
     path,
   }));
 
-const fileExists = (filePath: string) => {
-  try {
-    fs.accessSync(filePath, fs.F_OK);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
 export default class SearchSource {
   _context: Context;
   _rootPattern: RegExp;
@@ -218,7 +209,7 @@ export default class SearchSource {
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
     } else {
-      const validTestPaths = paths && paths.filter(fileExists);
+      const validTestPaths = paths && paths.filter(fs.existsSync);
 
       if (validTestPaths && validTestPaths.length) {
         return Promise.resolve({tests: toTests(this._context, validTestPaths)});
