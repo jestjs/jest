@@ -20,31 +20,19 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const mkdirp = require('mkdirp');
 
-const babel = require('babel-core');
+const pify = require('pify');
 const chalk = require('chalk');
-const micromatch = require('micromatch');
+const workerFarm = require('worker-farm');
 
 const getPackages = require('./_getPackages');
 
 const SRC_DIR = 'src';
-const BUILD_DIR = 'build';
-const BUILD_ES5_DIR = 'build-es5';
-const JS_FILES_PATTERN = '**/*.js';
-const IGNORE_PATTERN = '**/__tests__/**';
-const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const babelNodeOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
 babelNodeOptions.babelrc = false;
-const babelEs5Options = Object.assign(
-  {},
-  babelNodeOptions,
-  {presets: 'env'},
-  {plugins: [...babelNodeOptions.plugins, 'transform-runtime']}
-);
 
 const fixedWidth = str => {
   const WIDTH = 80;
@@ -56,92 +44,39 @@ const fixedWidth = str => {
   return strs.slice(0, -1).concat(lastString).join('\n');
 };
 
-function getPackageName(file) {
-  return path.relative(PACKAGES_DIR, file).split(path.sep)[0];
-}
+const farm = workerFarm(path.resolve(__dirname, '_build_worker.js'));
+const worker = pify(farm);
 
-function getBuildPath(file, buildFolder) {
-  const pkgName = getPackageName(file);
-  const pkgSrcPath = path.resolve(PACKAGES_DIR, pkgName, SRC_DIR);
-  const pkgBuildPath = path.resolve(PACKAGES_DIR, pkgName, buildFolder);
-  const relativeToSrcPath = path.relative(pkgSrcPath, file);
-  return path.resolve(pkgBuildPath, relativeToSrcPath);
-}
+const cleanup = () => workerFarm.end(farm);
 
-function buildPackage(p) {
+const buildFiles = files =>
+  Promise.all(files.map(file => worker({file, silent: true})));
+
+const buildPackage = p => {
   const srcDir = path.resolve(p, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
   const files = glob.sync(pattern, {nodir: true});
 
-  process.stdout.write(fixedWidth(`${path.basename(p)}\n`));
-
-  files.forEach(file => buildFile(file, true));
-  process.stdout.write(`[  ${chalk.green('OK')}  ]\n`);
-}
-
-function buildFile(file, silent) {
-  buildFileFor(file, silent, 'node');
-
-  const pkgJsonPath = path.resolve(
-    PACKAGES_DIR,
-    getPackageName(file),
-    'package.json'
+  return buildFiles(files).then(
+    () =>
+      process.stdout.write(
+        `${fixedWidth(`${path.basename(p)}\n`)} [  ${chalk.green('OK')}  ]\n`
+      ),
+    err =>
+      process.stderr.write(`${path.basename(p)} build failed: ${err.message}\n`)
   );
-  const {browser} = require(pkgJsonPath);
-  if (browser) {
-    if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
-      throw new Error(
-        `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`
-      );
-    }
-    buildFileFor(file, silent, 'es5');
-  }
-}
-
-function buildFileFor(file, silent, env) {
-  const buildDir = env === 'es5' ? BUILD_ES5_DIR : BUILD_DIR;
-  const destPath = getBuildPath(file, buildDir);
-  const babelOptions = env === 'es5' ? babelEs5Options : babelNodeOptions;
-
-  mkdirp.sync(path.dirname(destPath));
-  if (micromatch.isMatch(file, IGNORE_PATTERN)) {
-    silent ||
-      process.stdout.write(
-        chalk.dim('  \u2022 ') +
-          path.relative(PACKAGES_DIR, file) +
-          ' (ignore)\n'
-      );
-  } else if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
-    fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
-    silent ||
-      process.stdout.write(
-        chalk.red('  \u2022 ') +
-          path.relative(PACKAGES_DIR, file) +
-          chalk.red(' \u21D2 ') +
-          path.relative(PACKAGES_DIR, destPath) +
-          ' (copy)' +
-          '\n'
-      );
-  } else {
-    const transformed = babel.transformFileSync(file, babelOptions).code;
-    fs.writeFileSync(destPath, transformed);
-    silent ||
-      process.stdout.write(
-        chalk.green('  \u2022 ') +
-          path.relative(PACKAGES_DIR, file) +
-          chalk.green(' \u21D2 ') +
-          path.relative(PACKAGES_DIR, destPath) +
-          '\n'
-      );
-  }
-}
+};
 
 const files = process.argv.slice(2);
 
 if (files.length) {
-  files.forEach(buildFile);
+  buildFiles(files).then(cleanup, err =>
+    process.stderr.write(`Build failed: ${err.message}\n`)
+  );
 } else {
   process.stdout.write(chalk.bold.inverse('Building packages\n'));
-  getPackages().forEach(buildPackage);
-  process.stdout.write('\n');
+  Promise.all(getPackages().map(buildPackage)).then(() => {
+    cleanup();
+    process.stdout.write('\n');
+  });
 }
