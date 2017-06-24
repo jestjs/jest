@@ -84,12 +84,12 @@ Example with slight modifications:
 ```js
 validate(config, {
   comment: '  Documentation: http://custom-docs.com',
-  exampleConfig,
   deprecatedConfig,
+  exampleConfig,
   title: {
     deprecation: 'Custom Deprecation',
     // leaving 'error' and 'warning' as default
-  }
+  },
 });
 ```
 

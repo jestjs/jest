@@ -10,24 +10,24 @@ This rule looks for every `describe.skip`, `it.skip`, `test.skip`, `xdescribe`, 
 The following patterns are considered warnings:
 
 ```js
-describe.skip("foo", function () {});
-it.skip("foo", function () {});
-describe["skip"]("bar", function () {});
-it["skip"]("bar", function () {});
-test.skip("foo", function () {});
-test["skip"]("bar", function () {});
-xdescribe("foo", function () {});
-xit("foo", function () {});
-xtest("bar", function () {});
+describe.skip('foo', () => {});
+it.skip('foo', () => {});
+describe['skip']('bar', () => {});
+it['skip']('bar', () => {});
+test.skip('foo', () => {});
+test['skip']('bar', () => {});
+xdescribe('foo', () => {});
+xit('foo', () => {});
+xtest('bar', () => {});
 ```
 
 These patterns would not be considered warnings:
 
 ```js
-describe("foo", function () {});
-it("foo", function () {});
-describe.only("bar", function () {});
-it.only("bar", function () {});
-test("foo", function () {});
-test.only("bar", function () {});
+describe('foo', () => {});
+it('foo', () => {});
+describe.only('bar', () => {});
+it.only('bar', () => {});
+test('foo', () => {});
+test.only('bar', () => {});
 ```

@@ -25,7 +25,7 @@ invokes a callback for each item in a supplied array.
 
 ```javascript
 function forEach(items, callback) {
-  for (var index = 0; index < items.length; index++) {
+  for (let index = 0; index < items.length; index++) {
     callback(items[index]);
   }
 }
