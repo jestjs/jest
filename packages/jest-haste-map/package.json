@@ -12,7 +12,7 @@
     "graceful-fs": "^4.1.11",
     "jest-docblock": "^20.0.3",
     "micromatch": "^2.3.11",
-    "sane": "~1.6.0",
+    "sane": "^2.0.0",
     "worker-farm": "^1.3.1"
   }
 }
