@@ -48,7 +48,7 @@ being recognized by Jest?
 
 Retry with [`--no-cache`](/jest/docs/cli.html#cache). Jest caches transformed module files to speed up test execution.
 If you are using your own custom transformer, consider adding a `getCacheKey`
-function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/master/scripts/jest/preprocessor.js#L63-L67).
+function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ### Unresolved Promises
 
