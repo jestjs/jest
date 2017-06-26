@@ -29,7 +29,7 @@ $ babel --plugins jest-hoist script.js
 ### Via Node API
 
 ```javascript
-require("babel-core").transform("code", {
-  plugins: ["jest-hoist"]
+require('babel-core').transform('code', {
+  plugins: ['jest-hoist'],
 });
 ```
