@@ -71,6 +71,11 @@ const users = [
     pinned: true,
   },
   {
+    caption: 'Airbnb',
+    image: '/jest/img/logos/airbnb.svg',
+    infoLink: 'https://www.airbnb.com/',
+  },
+  {
     caption: 'IBM',
     image: '/jest/img/logos/ibm.png',
     infoLink: 'http://www.ibm.com/',
@@ -229,6 +234,11 @@ const users = [
     caption: 'Sprout Social',
     image: '/jest/img/logos/sproutsocial.png',
     infoLink: 'https://sproutsocial.com/',
+  },
+  {
+    caption: 'Squarespace',
+    image: '/jest/img/logos/squarespace.png',
+    infoLink: 'https://squarespace.com/',
   },
   {
     caption: 'Trivago',

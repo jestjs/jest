@@ -30,6 +30,7 @@ function formatCoverageError(error, filename: Path): SerializableError {
   `;
 
   return {
+    code: error.code || undefined,
     message,
     stack: error.stack,
     type: 'ERROR',

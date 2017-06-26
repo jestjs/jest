@@ -13,7 +13,7 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 import path from 'path';
 import {getTestEnvironment, isJSONString} from './utils';
-import findConfig from './findConfig';
+import findConfig from './find_config';
 import normalize from './normalize';
 
 function readConfig(

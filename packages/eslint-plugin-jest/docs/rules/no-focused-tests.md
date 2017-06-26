@@ -12,31 +12,31 @@ This rule looks for every `describe.only`, `it.only`, `test.only`, `fdescribe`, 
 Of course there are some edge-cases which can’t be detected by this rule e.g.:
 
 ```js
-var describeOnly = describe.only;
+const describeOnly = describe.only;
 describeOnly.apply(describe);
 ```
 
 The following patterns are considered warnings:
 
 ```js
-describe.only("foo", function () {});
-it.only("foo", function () {});
-describe["only"]("bar", function () {});
-it["only"]("bar", function () {});
-test.only("foo", function () {});
-test["only"]("bar", function () {});
-fdescribe("foo", function () {});
-fit("foo", function () {});
-ftest("bar", function () {});
+describe.only('foo', () => {});
+it.only('foo', () => {});
+describe['only']('bar', () => {});
+it['only']('bar', () => {});
+test.only('foo', () => {});
+test['only']('bar', () => {});
+fdescribe('foo', () => {});
+fit('foo', () => {});
+ftest('bar', () => {});
 ```
 
 These patterns would not be considered warnings:
 
 ```js
-describe("foo", function () {});
-it("foo", function () {});
-describe.skip("bar", function () {});
-it.skip("bar", function () {});
-test("foo", function () {});
-test.skip("bar", function () {});
+describe('foo', () => {});
+it('foo', () => {});
+describe.skip('bar', () => {});
+it.skip('bar', () => {});
+test('foo', () => {});
+test.skip('bar', () => {});
 ```

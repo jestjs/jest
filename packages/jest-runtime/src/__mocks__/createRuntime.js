@@ -17,7 +17,7 @@ module.exports = function createRuntime(filename, config) {
   config = normalize(
     Object.assign(
       {
-        name: 'Runtime-' + filename.replace(/\W/, '-') + '-tests',
+        name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
         rootDir: path.resolve(path.dirname(filename), 'test_root'),
       },
       config,

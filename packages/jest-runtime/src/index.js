@@ -23,8 +23,9 @@ import {createDirectory} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
-import ScriptTransformer from './ScriptTransformer';
-import shouldInstrument from './shouldInstrument';
+import ScriptTransformer from './script_transformer';
+import shouldInstrument from './should_instrument';
+import cliArgs from './cli/args';
 
 type Module = {|
   children?: Array<any>,
@@ -260,11 +261,12 @@ class Runtime {
   }
 
   static runCLI(args?: Argv, info?: Array<string>) {
+    // TODO: If this is not inline, the repl test fails
     return require('./cli').run(args, info);
   }
 
   static getCLIOptions() {
-    return require('./cli/args').options;
+    return cliArgs.options;
   }
 
   requireModule(

@@ -25,7 +25,7 @@ values for its mocks member and its return values.
 
 Inspects the argument and returns its schema in the following recursive format:
 
-```js
+```
 {
   type: ...
   members : {}
@@ -40,18 +40,18 @@ prototype should always be `object`. For instance, a simple class might be
 defined like this:
 
 ```js
-{
+const classDef = {
   type: 'function',
   members: {
     staticMethod: {type: 'function'},
     prototype: {
       type: 'object',
       members: {
-        instanceMethod: {type: 'function'}
-      }
-    }
-  }
-}
+        instanceMethod: {type: 'function'},
+      },
+    },
+  },
+};
  ```
 
 Metadata may also contain references to other objects defined within the
@@ -61,13 +61,13 @@ same metadata object. The metadata for the referent must be marked with
 For instance, this metadata blob:
 
 ```js
-{
+const refID = {
   type: 'object',
   refID: 1,
   members: {
-    self: {ref: 1}
-  }
-}
+    self: {ref: 1},
+  },
+};
 ```
 
 defines an object with a slot named `self` that refers back to the object.

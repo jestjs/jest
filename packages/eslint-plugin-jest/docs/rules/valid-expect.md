@@ -15,7 +15,7 @@ expect('something');
 or when a matcher function was not called, e.g.:
 
 ```js
-expect(true).toBeDefined
+expect(true).toBeDefined;
 ```
 
 This rule is enabled by default.

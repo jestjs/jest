@@ -2,7 +2,6 @@
 .eslintcache
 *.swp
 *~
-/danger/node_modules/
 /examples/*/node_modules/
 
 /integration_tests/*/node_modules

@@ -232,7 +232,7 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 `expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that are **not** in the expected object.
 
-Instead of literal property values in the expected object, you can use matchers `expect.anything()` and so on.
+Instead of literal property values in the expected object, you can use matchers, `expect.anything()`, and so on.
 
 For example, let's say that we expect an `onPress` function to be called with an `Event` object, and all we need to verify is that the event has `event.x` and `event.y` properties. We can do that with:
 
@@ -707,7 +707,7 @@ describe('grapefruits are healthy', () => {
 
 ### `.toMatchObject(object)`
 
-Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object.
+Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object. You can match properties against values or against matchers.
 
 ```js
 const houseForSale = {
@@ -723,7 +723,7 @@ const desiredHouse = {
   bath: true,
   kitchen: {
     amenities: ['oven', 'stove', 'washer'],
-    wallColor: 'white',
+    wallColor: expect.stringMatching(/white|yellow/),
   },
 };
 
@@ -769,7 +769,7 @@ test('this house has my desired features', () => {
     'washer',
   ]);
 
-  expect(hosueForSale).not.toHaveProperty('kitchen.open');
+  expect(houseForSale).not.toHaveProperty('kitchen.open');
 });
 ```
 

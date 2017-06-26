@@ -9,7 +9,7 @@
 
 - **🏃🏽 Instant Feedback**: Failed tests run first. Fast interactive mode can switch between running all tests or only test files related to changed files.
 
-- **📸 Snapshot Testing**: Jest can [capture snapshots](http://facebook.github.io/jest/docs/en/snapshot-testing.html) of React trees or other serializable values to simplify UI testing.
+- **📸 Snapshot Testing**: Jest can [capture snapshots](http://facebook.github.io/jest/docs/en/snapshot-testing.html) of React trees or other serializable values to simplify testing.
 
 ## Getting Started
 

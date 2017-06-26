@@ -18,6 +18,13 @@ import type {
 
 import style from 'ansi-styles';
 
+import AsymmetricMatcher from './plugins/asymmetric_matcher';
+import ConvertAnsi from './plugins/convert_ansi';
+import HTMLElement from './plugins/html_element';
+import Immutable from './plugins/immutable_plugins';
+import ReactElement from './plugins/react_element';
+import ReactTestComponent from './plugins/react_test_component';
+
 type Theme = {|
   comment?: string,
   content?: string,
@@ -959,12 +966,12 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
 }
 
 prettyFormat.plugins = {
-  AsymmetricMatcher: require('./plugins/AsymmetricMatcher'),
-  ConvertAnsi: require('./plugins/ConvertAnsi'),
-  HTMLElement: require('./plugins/HTMLElement'),
-  Immutable: require('./plugins/ImmutablePlugins'),
-  ReactElement: require('./plugins/ReactElement'),
-  ReactTestComponent: require('./plugins/ReactTestComponent'),
+  AsymmetricMatcher,
+  ConvertAnsi,
+  HTMLElement,
+  Immutable,
+  ReactElement,
+  ReactTestComponent,
 };
 
 module.exports = prettyFormat;

@@ -16,11 +16,11 @@ import type Runtime from 'jest-runtime';
 
 import path from 'path';
 import JasmineReporter from './reporter';
-import jasmineAsync from './jasmine-async';
+import jasmineAsync from './jasmine_async';
 
-const JASMINE = require.resolve('./jasmine/jasmine-light.js');
+const JASMINE = require.resolve('./jasmine/jasmine_light.js');
 
-function jasmine2(
+async function jasmine2(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   environment: Environment,
@@ -50,6 +50,10 @@ function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
+  if (config.timers === 'fake') {
+    environment.fakeTimers.useFakeTimers();
+  }
+
   env.beforeEach(() => {
     if (config.resetModules) {
       runtime.resetModules();
@@ -61,21 +65,21 @@ function jasmine2(
 
     if (config.resetMocks) {
       runtime.resetAllMocks();
-    }
 
-    if (config.timers === 'fake') {
-      environment.fakeTimers.useFakeTimers();
+      if (config.timers === 'fake') {
+        environment.fakeTimers.useFakeTimers();
+      }
     }
   });
 
   env.addReporter(reporter);
 
-  runtime.requireInternalModule(path.resolve(__dirname, './jest-expect.js'))({
+  runtime.requireInternalModule(path.resolve(__dirname, './jest_expect.js'))({
     expand: globalConfig.expand,
   });
 
   const snapshotState: SnapshotState = runtime.requireInternalModule(
-    path.resolve(__dirname, './setup-jest-globals.js'),
+    path.resolve(__dirname, './setup_jest_globals.js'),
   )({
     config,
     globalConfig,
@@ -93,7 +97,7 @@ function jasmine2(
   }
 
   runtime.requireModule(testPath);
-  env.execute();
+  await env.execute();
   return reporter
     .getResults()
     .then(results => addSnapshotData(results, snapshotState));

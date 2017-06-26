@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom Reporters Integration IncompleteReporter for flexibility 1`] = `
+"onRunComplete is called
+Passed Tests: 1
+Failed Tests: 0
+Total Tests: 1
+"
+`;
+
+exports[`Custom Reporters Integration TestReporter with all tests failing 1`] = `
+Object {
+  "onRunComplete": Object {
+    "called": true,
+    "numFailedTests": 1,
+    "numPassedTests": 0,
+    "numTotalTests": 1,
+  },
+  "onRunStart": Object {
+    "called": true,
+    "options": "object",
+  },
+  "onTestResult": Object {
+    "called": true,
+    "times": 1,
+  },
+  "onTestStart": Object {
+    "called": true,
+    "path": false,
+  },
+  "options": Object {
+    "christoph": "pojer",
+    "dmitrii": "abramov",
+    "hello": "world",
+    "maxWorkers": "<<REPLACED>>",
+    "pattern": Object {
+      "input": "add_fail.test.js",
+      "paths": Array [
+        "add_fail.test.js",
+      ],
+      "shouldTreatInputAsPattern": false,
+      "testPathPattern": "add_fail.test.js",
+    },
+    "testPathPattern": "\\"add_fail.test.js\\"",
+  },
+}
+`;
+
+exports[`Custom Reporters Integration TestReporter with all tests passing 1`] = `
+Object {
+  "onRunComplete": Object {
+    "called": true,
+    "numFailedTests": 0,
+    "numPassedTests": 1,
+    "numTotalTests": 1,
+  },
+  "onRunStart": Object {
+    "called": true,
+    "options": "object",
+  },
+  "onTestResult": Object {
+    "called": true,
+    "times": 1,
+  },
+  "onTestStart": Object {
+    "called": true,
+    "path": false,
+  },
+  "options": Object {
+    "christoph": "pojer",
+    "dmitrii": "abramov",
+    "hello": "world",
+    "maxWorkers": "<<REPLACED>>",
+    "pattern": Object {
+      "input": "add.test.js",
+      "paths": Array [
+        "add.test.js",
+      ],
+      "shouldTreatInputAsPattern": false,
+      "testPathPattern": "add.test.js",
+    },
+    "testPathPattern": "\\"add.test.js\\"",
+  },
+}
+`;
+
+exports[`Custom Reporters Integration default reporters enabled 1`] = `
+" PASS  __tests__/add.test.js
+  Custom Reporters
+    ✓ adds ok
+
+"
+`;
+
+exports[`Custom Reporters Integration default reporters enabled 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching \\"add.test.js\\".
+"
+`;
+
+exports[`Custom Reporters Integration default reporters enabled 3`] = `
+Object {
+  "onRunComplete": Object {
+    "called": true,
+    "numFailedTests": 0,
+    "numPassedTests": 1,
+    "numTotalTests": 1,
+  },
+  "onRunStart": Object {
+    "called": true,
+    "options": "object",
+  },
+  "onTestResult": Object {
+    "called": true,
+    "times": 1,
+  },
+  "onTestStart": Object {
+    "called": true,
+    "path": false,
+  },
+  "options": Object {
+    "maxWorkers": "<<REPLACED>>",
+    "pattern": Object {
+      "input": "add.test.js",
+      "paths": Array [
+        "add.test.js",
+      ],
+      "shouldTreatInputAsPattern": false,
+      "testPathPattern": "add.test.js",
+    },
+    "testPathPattern": "\\"add.test.js\\"",
+  },
+}
+`;
+
+exports[`Custom Reporters Integration invalid format for adding reporters 1`] = `
+"● Reporter Validation Error:
+
+  Unexpected value for Path at index 0 of reporter at index 0
+  Expected:
+    string
+  Got:
+    number
+  Reporter configuration:
+    [
+      3243242
+    ]
+
+  Configuration Documentation:
+  https://facebook.github.io/jest/docs/configuration.html
+
+"
+`;
