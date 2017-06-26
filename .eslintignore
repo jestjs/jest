@@ -4,6 +4,7 @@ bin/
 flow-typed/**
 packages/*/build/**
 packages/*/build-es5/**
+packages/jest-jasmine-fb/vendor/jasmine-2.5.2.js
 types/**
 website/build
 website/node_modules
