@@ -17,11 +17,9 @@ dependencies:
     - ~/.yarn
     - ~/.cache/yarn
     - "website/node_modules"
-    - "danger/node_modules"
   override:
     - yarn install --no-progress
     - cd website && yarn install --no-progress
-    - cd danger && yarn install --no-progress
 test:
   override:
     - nvm alias default 6
@@ -30,7 +28,6 @@ test:
     - yarn run test-ci-partial
     - nvm alias default 8
     - yarn run test-ci-partial
-    - DANGER_GITHUB_API_TOKEN="ab0c4d396c935d3abce""fc213176da6bb7b2996ff" yarn run danger
     - cd website && yarn run test
 
 deployment:

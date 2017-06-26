@@ -11,13 +11,13 @@
 import mkdirp from 'mkdirp';
 
 import Console from './Console';
-import FakeTimers from './FakeTimers';
-import NullConsole from './NullConsole';
-import clearLine from './clearLine';
-import formatTestResults from './formatTestResults';
-import installCommonGlobals from './installCommonGlobals';
-import setGlobal from './setGlobal';
-import validateCLIOptions from './validateCLIOptions';
+import FakeTimers from './fake_timers';
+import NullConsole from './null_console';
+import clearLine from './clear_line';
+import formatTestResults from './format_test_results';
+import installCommonGlobals from './install_common_globals';
+import setGlobal from './set_global';
+import validateCLIOptions from './validate_cli_options';
 
 const createDirectory = (path: string) => {
   try {

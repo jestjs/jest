@@ -48,7 +48,7 @@ being recognized by Jest?
 
 Retry with [`--no-cache`](/jest/docs/cli.html#cache). Jest caches transformed module files to speed up test execution.
 If you are using your own custom transformer, consider adding a `getCacheKey`
-function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/master/scripts/jest/preprocessor.js#L63-L67).
+function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ### Unresolved Promises
 
@@ -96,6 +96,17 @@ jest --runInBand
 npm test -- --runInBand
 ```
 
+Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max
+worker pool to ~_4_.  Specifically on Travis-CI, this can reduce test execution time in half.  
+
+```bash
+# Using Jest CLI
+jest --maxWorkers=4
+
+# Using npm test (e.g. with create-react-app)
+npm test -- --maxWorkers=4
+```
+
 ### Tests are slow when leveraging automocking
 Whether via [`automock: true`](configuration.html#automock-boolean) in config or lots of [`jest.mock('my-module')`](jest-object.html#jestmockmodulename-factory-options) calls in tests, automocking has a performance cost that can add up in large projects. The more dependencies a module has, the more work Jest has to do to mock it. Something that can offset this performance cost significantly is adding a code transformer that moves `import` or `require` calls from the top of a module, where they are always executed, down into the body of the module, where they are usually not executed. This can lower the number of modules Jest has to load when running your tests by a considerable amount.
 
@@ -128,7 +139,7 @@ In Jest 0.9.0, a new API `jest.unmock` was introduced. Together with a plugin
 for babel, this will now work properly when using `babel-jest`:
 
 ```js
-jest.unmock('foo'); // Use unmock!
+jest.unmock('./foo'); // Use unmock!
 
 import foo from './foo';
 

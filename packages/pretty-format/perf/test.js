@@ -13,7 +13,7 @@ import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 import leftPad from 'left-pad';
 import prettyFormat from '../build';
-import ReactTestComponent from '../build/plugins/ReactTestComponent';
+import ReactTestComponent from '../build/plugins/react_test_component';
 import worldGeoJson from './world.geo.json';
 
 const NANOSECONDS = 1000000000;

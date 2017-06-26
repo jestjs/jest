@@ -15,7 +15,7 @@ import path from 'path';
 import docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import H from './constants';
-import extractRequires from './lib/extractRequires';
+import extractRequires from './lib/extract_requires';
 
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
@@ -33,6 +33,7 @@ const formatError = (error: string | Error): SerializableError => {
   }
 
   return {
+    code: error.code || undefined,
     message: error.message,
     stack: error.stack,
     type: 'Error',
@@ -40,20 +41,20 @@ const formatError = (error: string | Error): SerializableError => {
 };
 
 module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
-  try {
-    if (
-      data.hasteImplModulePath &&
-      data.hasteImplModulePath !== hasteImplModulePath
-    ) {
-      if (hasteImpl) {
-        throw new Error('jest-haste-map: hasteImplModulePath changed');
-      }
-      hasteImplModulePath = data.hasteImplModulePath;
-      hasteImpl =
-        // $FlowFixMe: dynamic require
-        (require(hasteImplModulePath): HasteImpl);
+  if (
+    data.hasteImplModulePath &&
+    data.hasteImplModulePath !== hasteImplModulePath
+  ) {
+    if (hasteImpl) {
+      throw new Error('jest-haste-map: hasteImplModulePath changed');
     }
+    hasteImplModulePath = data.hasteImplModulePath;
+    hasteImpl =
+      // $FlowFixMe: dynamic require
+      (require(hasteImplModulePath): HasteImpl);
+  }
 
+  try {
     const filePath = data.filePath;
     const content = fs.readFileSync(filePath, 'utf8');
     let module;

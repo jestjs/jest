@@ -1,7 +1,0 @@
-{
-  "rules": {
-    "babel/func-params-comma-dangle": 0,
-    "import/order": 0,
-    "import/no-unresolved": [2, { "ignore": ["^react-native$"] }]
-  }
-}

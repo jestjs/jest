@@ -8,10 +8,10 @@
  * @flow
  */
 
-import noDisabledTests from './rules/no-disabled-tests';
-import noFocusedTests from './rules/no-focused-tests';
-import noIdenticalTitle from './rules/no-identical-title';
-import validExpect from './rules/valid-expect';
+import noDisabledTests from './rules/no_disabled_tests';
+import noFocusedTests from './rules/no_focused_tests';
+import noIdenticalTitle from './rules/no_identical_title';
+import validExpect from './rules/valid_expect';
 
 module.exports = {
   configs: {

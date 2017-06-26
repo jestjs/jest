@@ -13,7 +13,7 @@ class Doc extends React.Component {
         className="edit-page-link button"
         href={
           'https://github.com/facebook/jest/edit/master/docs/' +
-            this.props.language +
+            (this.props.language || 'en') +
             '/' +
             this.props.source
         }

@@ -769,7 +769,7 @@ test('this house has my desired features', () => {
     'washer',
   ]);
 
-  expect(hosueForSale).not.toHaveProperty('kitchen.open');
+  expect(houseForSale).not.toHaveProperty('kitchen.open');
 });
 ```
 

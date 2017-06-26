@@ -9,7 +9,7 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {PathPattern} from '../SearchSource';
+import type {TestSelectionConfig} from '../SearchSource';
 
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
@@ -32,7 +32,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-module.exports = (argv: Argv): PathPattern => {
+module.exports = (argv: Argv): TestSelectionConfig => {
   if (argv.onlyChanged) {
     return {
       input: '',

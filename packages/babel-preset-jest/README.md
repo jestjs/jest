@@ -29,7 +29,7 @@ $ babel script.js --presets jest
 ### Via Node API
 
 ```javascript
-require("babel-core").transform("code", {
-  presets: ["jest"]
+require('babel-core').transform('code', {
+  presets: ['jest'],
 });
 ```
