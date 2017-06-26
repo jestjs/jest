@@ -25,9 +25,10 @@ const mkdirp = require('mkdirp');
 const babel = require('babel-core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
-
+const stringLength = require('string-length');
 const getPackages = require('./_getPackages');
 
+const OK = chalk.reset.inverse.bold.green(' DONE ');
 const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
 const BUILD_ES5_DIR = 'build-es5';
@@ -46,8 +47,9 @@ const babelEs5Options = Object.assign(
   {plugins: [...babelNodeOptions.plugins, 'transform-runtime']}
 );
 
-const fixedWidth = str => {
-  const WIDTH = 80;
+const adjustToTerminalWidth = str => {
+  const columns = process.stdout.columns || 80;
+  const WIDTH = columns - stringLength(OK) + 1;
   const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
   let lastString = strs[strs.length - 1];
   if (lastString.length < WIDTH) {
@@ -73,10 +75,10 @@ function buildPackage(p) {
   const pattern = path.resolve(srcDir, '**/*');
   const files = glob.sync(pattern, {nodir: true});
 
-  process.stdout.write(fixedWidth(`${path.basename(p)}\n`));
+  process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
 
   files.forEach(file => buildFile(file, true));
-  process.stdout.write(`[  ${chalk.green('OK')}  ]\n`);
+  process.stdout.write(`${OK}\n`);
 }
 
 function buildFile(file, silent) {
@@ -141,7 +143,7 @@ const files = process.argv.slice(2);
 if (files.length) {
   files.forEach(buildFile);
 } else {
-  process.stdout.write(chalk.bold.inverse('Building packages\n'));
+  process.stdout.write(chalk.inverse(' Building packages \n'));
   getPackages().forEach(buildPackage);
   process.stdout.write('\n');
 }
