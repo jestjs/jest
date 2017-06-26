@@ -36,14 +36,12 @@ type Theme = {|
 type InitialOptions = {|
   callToJSON?: boolean,
   escapeRegex?: boolean,
-  edgeSpacing?: string,
   highlight?: boolean,
   indent?: number,
   maxDepth?: number,
   min?: boolean,
   plugins?: Plugins,
   printFunctionName?: boolean,
-  spacing?: string,
   theme?: Theme,
 |};
 
@@ -794,7 +792,6 @@ function print(
 
 const DEFAULTS: Options = {
   callToJSON: true,
-  edgeSpacing: '\n',
   escapeRegex: false,
   highlight: false,
   indent: 2,
@@ -802,7 +799,6 @@ const DEFAULTS: Options = {
   min: false,
   plugins: [],
   printFunctionName: true,
-  spacing: '\n',
   theme: {
     comment: 'gray',
     content: 'reset',

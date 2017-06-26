@@ -11,7 +11,7 @@
 import type {
   Colors,
   Indent,
-  Options,
+  PluginOptions,
   Print,
   Plugin,
   ReactTestObject,
@@ -73,7 +73,7 @@ const print = (
   instance: ReactTestObject,
   print: Print,
   indent: Indent,
-  opts: Options,
+  opts: PluginOptions,
   colors: Colors,
 ) => {
   let closeInNewLine = false;
