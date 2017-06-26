@@ -114,5 +114,8 @@
     "testMatch": [
       "**/*.test.js"
     ]
+  },
+  "dependencies": {
+    "sane": "^2.0.0"
   }
 }
