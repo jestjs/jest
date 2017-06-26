@@ -8,7 +8,13 @@
  * @flow
  */
 
-import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
+import type {
+  Colors,
+  Indent,
+  PluginOptions,
+  Print,
+  Plugin,
+} from 'types/PrettyFormat';
 
 import ansiRegex from 'ansi-regex';
 import style from 'ansi-styles';
@@ -42,7 +48,7 @@ const print = (
   val: any,
   print: Print,
   indent: Indent,
-  opts: Options,
+  opts: PluginOptions,
   colors: Colors,
 ) => print(toHumanReadableAnsi(val));
 

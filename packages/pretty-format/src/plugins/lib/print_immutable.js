@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {Colors, Indent, Options, Print} from 'types/PrettyFormat';
+import type {Colors, Indent, PluginOptions, Print} from 'types/PrettyFormat';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
@@ -22,7 +22,7 @@ const printImmutable = (
   val: any,
   print: Print,
   indent: Indent,
-  opts: Options,
+  opts: PluginOptions,
   colors: Colors,
   immutableDataStructureName: string,
   isMap: boolean,
