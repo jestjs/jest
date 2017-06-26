@@ -21,7 +21,7 @@ import {
   matcherHint,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
-import SnapshotState from './State';
+import SnapshotState from './state';
 import {addSerializer, getSerializers} from './plugins';
 import {SNAPSHOT_EXTENSION} from './utils';
 

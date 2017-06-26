@@ -79,7 +79,7 @@ const getObjectSubset = (object: Object, subset: Object) => {
   ) {
     const trimmed = {};
     Object.keys(subset)
-      .filter(key => object.hasOwnProperty(key))
+      .filter(key => hasOwnProperty(object, key))
       .forEach(
         key => (trimmed[key] = getObjectSubset(object[key], subset[key])),
       );

@@ -21,9 +21,9 @@ import type {
 
 import utils from 'jest-matcher-utils';
 import matchers from './matchers';
-import spyMatchers from './spyMatchers';
-import toThrowMatchers from './toThrowMatchers';
-import {equals} from './jasmine-utils';
+import spyMatchers from './spy_matchers';
+import toThrowMatchers from './to_throw_matchers';
+import {equals} from './jasmine_utils';
 import {
   any,
   anything,
@@ -31,14 +31,15 @@ import {
   objectContaining,
   stringContaining,
   stringMatching,
-} from './asymmetric-matchers';
+} from './asymmetric_matchers';
 import {
   getState,
   setState,
   getMatchers,
   setMatchers,
-} from './jest-matchers-object';
-import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
+} from './jest_matchers_object';
+import extractExpectedAssertionsErrors
+  from './extract_expected_assertions_errors';
 
 class JestAssertionError extends Error {
   matcherResult: any;
