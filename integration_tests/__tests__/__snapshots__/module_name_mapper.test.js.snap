@@ -14,13 +14,11 @@ exports[`moduleNameMapper wrong configuration 1`] = `
     Configuration error:
     
     Unknown module in configuration option moduleNameMapper
-    Please check: /\\\\.(css|less)$/: no-such-module
+    Please check:
     
-      Configuration error:
-      
-      Unknown module in configuration option moduleNameMapper
-      Please check: /\\\\.(css|less)$/: no-such-module
-      
+    \\"moduleNameMapper\\": {
+      \\"/\\\\.(css|less)$/\\": \\"no-such-module\\"
+    }
 
 "
 `;
