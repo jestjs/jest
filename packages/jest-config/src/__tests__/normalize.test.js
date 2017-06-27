@@ -827,12 +827,38 @@ describe('preset', () => {
       {},
     );
 
-    expect(options.moduleNameMapper).toEqual([['b', 'b'], ['a', 'a']]);
+    expect(options.moduleNameMapper).toEqual([['a', 'a'], ['b', 'b']]);
     expect(options.modulePathIgnorePatterns).toEqual(['b', 'a']);
     expect(options.setupFiles.sort()).toEqual([
       '/node_modules/a',
       '/node_modules/b',
       '/node_modules/regenerator-runtime/runtime',
+    ]);
+  });
+
+  test('merges with options and moduleNameMapper preset is overridden by options', () => {
+    // Object initializer not used for properties as a workaround for 
+    //  sort-keys eslint rule while specifing properties in 
+    //  non-alphabetical order for a better test
+    const moduleNameMapper = {};
+    moduleNameMapper.e = 'ee';
+    moduleNameMapper.b = 'bb';
+    moduleNameMapper.c = 'cc';
+    moduleNameMapper.a = 'aa';
+    const {options} = normalize(
+      {
+        moduleNameMapper,
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    expect(options.moduleNameMapper).toEqual([
+      ['e', 'ee'],
+      ['b', 'bb'],
+      ['c', 'cc'],
+      ['a', 'aa'],
     ]);
   });
 });

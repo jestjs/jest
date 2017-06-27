@@ -76,6 +76,7 @@ const setupPreset = (
   if (options.moduleNameMapper && preset.moduleNameMapper) {
     options.moduleNameMapper = Object.assign(
       {},
+      options.moduleNameMapper,
       preset.moduleNameMapper,
       options.moduleNameMapper,
     );
