@@ -313,6 +313,7 @@ class HasteMap extends EventEmitter {
       const platform =
         getPlatformExtension(module[H.PATH], this._options.platforms) ||
         H.GENERIC_PLATFORM;
+
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
         const message =
@@ -656,8 +657,23 @@ class HasteMap extends EventEmitter {
           // Delete the file and all of its metadata.
           const moduleName =
             hasteMap.files[filePath] && hasteMap.files[filePath][H.ID];
+          const platform: string =
+            getPlatformExtension(filePath, this._options.platforms) ||
+            H.GENERIC_PLATFORM;
+
           delete hasteMap.files[filePath];
-          delete hasteMap.map[moduleName];
+          let moduleMap = hasteMap.map[moduleName];
+          if (moduleMap != null) {
+            // We are forced to copy the object because jest-haste-map exposes
+            // the map as an immutable entity.
+            moduleMap = copy(moduleMap);
+            delete moduleMap[platform];
+            if (Object.keys(moduleMap).length === 0) {
+              delete hasteMap.map[moduleName];
+            } else {
+              hasteMap.map[moduleName] = moduleMap;
+            }
+          }
           if (
             this._options.mocksPattern &&
             this._options.mocksPattern.test(filePath)
