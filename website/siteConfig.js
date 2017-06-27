@@ -260,6 +260,16 @@ const users = [
     image: '/jest/img/logos/xing.png',
     infoLink: 'https://www.xing.com/',
   },
+  {
+    caption: 'MONEI',
+    image: '/jest/img/logos/monei.png',
+    infoLink: 'https://monei.net/',
+  },
+  {
+    caption: 'MoonMail',
+    image: '/jest/img/logos/moonmail.png',
+    infoLink: 'https://moonmail.io/',
+  },
 ];
 
 const siteConfig = {
