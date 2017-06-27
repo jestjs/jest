@@ -56,16 +56,6 @@ describe('watchman watch', () => {
             mtime_ms: {toNumber: () => 32},
             name: 'pear.js',
           },
-          {
-            exists: true,
-            mtime_ms: {toNumber: () => 34},
-            /**
-             * This is to check the crawler normalizes paths. Indeed, on the
-             * Window OS, some versions of watchman use slashes, others uses
-             * backslashes. But they represent the same path.
-             */
-            name: 'some///////lemon.js',
-          },
         ],
         is_fresh_instance: true,
         version: '4.5.0',
@@ -87,7 +77,6 @@ describe('watchman watch', () => {
     mockFiles = Object.assign(Object.create(null), {
       '/fruits/strawberry.js': ['', 30, 0, []],
       '/fruits/tomato.js': ['', 31, 0, []],
-      '/fruits/some/lemon.js': ['', 34, 0, []],
       '/vegetables/melon.json': ['', 33, 0, []],
     });
   });
@@ -207,7 +196,6 @@ describe('watchman watch', () => {
       expect(data.files).toEqual({
         '/fruits/kiwi.js': ['', 42, 0, []],
         '/fruits/strawberry.js': ['', 30, 0, []],
-        '/fruits/some/lemon.js': ['', 34, 0, []],
         '/vegetables/melon.json': ['', 33, 0, []],
       });
     });

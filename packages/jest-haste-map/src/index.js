@@ -38,6 +38,7 @@ import HasteModuleMap from './module_map';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
 import nodeCrawl from './crawlers/node';
+import normalizePathSep from './lib/normalize_path_sep';
 import watchmanCrawl from './crawlers/watchman';
 import worker from './worker';
 
@@ -616,7 +617,7 @@ class HasteMap extends EventEmitter {
       root: Path,
       stat: {mtime: Date},
     ) => {
-      filePath = path.normalize(path.join(root, filePath));
+      filePath = path.join(root, normalizePathSep(filePath));
       if (
         this._ignore(filePath) ||
         !extensions.some(extension => filePath.endsWith(extension))
