@@ -24,6 +24,7 @@ import {
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
+import {iterableEquality} from './utils';
 
 const RECEIVED_NAME = {
   'mock function': 'jest.fn()',
@@ -68,7 +69,7 @@ const createToBeCalledWithMatcher = matcherName => (
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
-  const pass = calls.some(call => equals(call, expected));
+  const pass = calls.some(call => equals(call, expected, [iterableEquality]));
 
   const message = pass
     ? () =>
@@ -97,7 +98,7 @@ const createLastCalledWithMatcher = matcherName => (
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
-  const pass = equals(calls[calls.length - 1], expected);
+  const pass = equals(calls[calls.length - 1], expected, [iterableEquality]);
 
   const message = pass
     ? () =>
