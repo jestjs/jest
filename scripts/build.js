@@ -68,7 +68,9 @@ function getBuildPath(file, buildFolder) {
 function buildNodePackage(p) {
   const srcDir = path.resolve(p, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
-  const files = glob.sync(pattern, {nodir: true});
+  const files = glob.sync(pattern, {
+    nodir: true,
+  });
 
   process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
 
@@ -91,10 +93,15 @@ function buildBrowserPackage(p) {
       p.split('/').pop(),
       path.resolve(srcDir, 'index.js'),
       path.resolve(p, browser)
-    ).then(() => {
-      process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
-      process.stdout.write(`${OK}\n`);
-    });
+    )
+      .then(() => {
+        process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
+        process.stdout.write(`${OK}\n`);
+      })
+      .catch(e => {
+        console.error(e);
+        process.exit(1);
+      });
   }
 }
 

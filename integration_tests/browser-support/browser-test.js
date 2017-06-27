@@ -17,8 +17,8 @@ describe('es5 builds in browser', function() {
 
   it('runs mocks', function() {
     var someMockFunction = mock.fn();
-    expect(someMockFunction.mock.calls.length).toBe(0);
+    expect(someMockFunction).not.toHaveBeenCalled();
     someMockFunction();
-    expect(someMockFunction.mock.calls.length).toBe(1);
+    expect(someMockFunction).toHaveBeenCalledTimes(1);
   });
 });
