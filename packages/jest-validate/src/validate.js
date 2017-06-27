@@ -8,11 +8,9 @@
  * @flow
  */
 
-'use strict';
-
 import type {ValidationOptions} from './types';
 
-const defaultConfig = require('./defaultConfig');
+import defaultConfig from './default_config';
 
 const _validate = (config: Object, options: ValidationOptions) => {
   let hasDeprecationWarnings = false;

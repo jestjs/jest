@@ -119,11 +119,11 @@ class HeaderNav extends React.Component {
       <div className="navigationWrapper navigationSlider">
         <nav className="slidingNav">
           <ul className="nav-site nav-site-internal">
+            {this.props.linksInternal.map(this.makeLinks, this)}
             <LanguageDropDown
               baseUrl={this.props.baseUrl}
               language={this.props.language}
             />
-            {this.props.linksInternal.map(this.makeLinks, this)}
             <li className="navSearchWrapper reactNavSearchWrapper">
               <input id="search_input_react" type="text" placeholder="Search" />
             </li>

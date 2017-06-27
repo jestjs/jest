@@ -8,21 +8,17 @@
 * @flow
 */
 
-'use strict';
-
 import type {Argv} from 'types/Argv';
 import type {EnvironmentClass} from 'types/Environment';
 
-const args = require('./args');
-const chalk = require('chalk');
-const os = require('os');
-const path = require('path');
-const pkgDir = require('pkg-dir');
-const yargs = require('yargs');
-
-const {Console, setGlobal, validateCLIOptions} = require('jest-util');
-const readConfig = require('jest-config').readConfig;
-const Runtime = require('../');
+import os from 'os';
+import path from 'path';
+import chalk from 'chalk';
+import yargs from 'yargs';
+import {Console, setGlobal, validateCLIOptions} from 'jest-util';
+import {readConfig} from 'jest-config';
+import Runtime from '../';
+import args from './args';
 
 const VERSION = (require('../../package.json').version: string);
 
@@ -53,8 +49,8 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     return;
   }
 
-  const root = pkgDir.sync();
-  const testFilePath = path.resolve(process.cwd(), argv._[0]);
+  const root = process.cwd();
+  const filePath = path.resolve(root, argv._[0]);
 
   if (argv.debug) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
@@ -84,10 +80,10 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
       environment.global.jestGlobalConfig = globalConfig;
 
       const runtime = new Runtime(config, environment, hasteMap.resolver);
-      runtime.requireModule(testFilePath);
+      runtime.requireModule(filePath);
     })
     .catch(e => {
-      console.error(chalk.red(e));
+      console.error(chalk.red(e.stack || e));
       process.on('exit', () => process.exit(1));
     });
 }

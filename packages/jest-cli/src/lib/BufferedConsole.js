@@ -7,14 +7,12 @@
  *
  * @flow
  */
-'use strict';
 
 import type {ConsoleBuffer, LogMessage, LogType} from 'types/Console';
 
-const Console = require('console').Console;
-
-const callsites = require('callsites');
-const format = require('util').format;
+import {Console} from 'console';
+import {format} from 'util';
+import callsites from 'callsites';
 
 class BufferedConsole extends Console {
   _buffer: ConsoleBuffer;

@@ -8,15 +8,14 @@
  * @flow
  */
 
-'use strict';
+import Process from './process';
 
-const Process = require('./Process');
-const ProjectWorkspace = require('./ProjectWorkspace');
-const Runner = require('./Runner');
-const Settings = require('./Settings');
-const {Expect, ItBlock, Node} = require('./parsers/ParserNodes');
-const {parse} = require('./parsers/BabylonParser');
-const TestReconciler = require('./TestReconciler');
+import ProjectWorkspace from './project_workspace';
+import Runner from './runner';
+import Settings from './settings';
+import {Expect, ItBlock, Node} from './parsers/parser_nodes';
+import {parse} from './parsers/babylon_parser';
+import TestReconciler from './test_reconciler';
 
 module.exports = {
   Expect,

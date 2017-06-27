@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 export type Path = string;
 export type Glob = string;
@@ -123,6 +122,8 @@ export type InitialOptions = {|
   watchman?: boolean,
 |};
 
+export type SnapshotUpdateState = 'all' | 'new' | 'none';
+
 export type GlobalConfig = {|
   bail: boolean,
   collectCoverage: boolean,
@@ -145,7 +146,7 @@ export type GlobalConfig = {|
   testNamePattern: string,
   testPathPattern: string,
   testResultsProcessor: ?string,
-  updateSnapshot: boolean,
+  updateSnapshot: SnapshotUpdateState,
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,

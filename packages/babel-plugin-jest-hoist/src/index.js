@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 function invariant(condition, message) {
   if (!condition) {
     throw new Error('babel-plugin-jest-hoist: ' + message);

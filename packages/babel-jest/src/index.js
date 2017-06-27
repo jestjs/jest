@@ -8,23 +8,21 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path, ProjectConfig} from 'types/Config';
 import type {TransformOptions} from 'types/Transform';
 
-const crypto = require('crypto');
-const fs = require('fs');
-const jestPreset = require('babel-preset-jest');
-const path = require('path');
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import jestPreset from 'babel-preset-jest';
+import {transform as babelTransform, util as babelUtil} from 'babel-core';
+import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';
 const BABEL_CONFIG_KEY = 'babel';
-const PACAKAGE_JSON = 'package.json';
+const PACKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
-
-let babel;
 
 const createTransformer = (options: any) => {
   const cache = Object.create(null);
@@ -49,7 +47,10 @@ const createTransformer = (options: any) => {
         cache[directory] = JSON.stringify(require(configJsFilePath));
         break;
       }
-      const packageJsonFilePath = path.join(directory, PACAKAGE_JSON);
+      const resolvedJsonFilePath = path.join(directory, PACKAGE_JSON);
+      const packageJsonFilePath = resolvedJsonFilePath === PACKAGE_JSON
+        ? path.resolve(directory, PACKAGE_JSON)
+        : resolvedJsonFilePath;
       if (fs.existsSync(packageJsonFilePath)) {
         // $FlowFixMe
         const packageJsonFileContents = require(packageJsonFilePath);
@@ -69,6 +70,7 @@ const createTransformer = (options: any) => {
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
     retainLines: true,
+    sourceMaps: 'inline',
   });
   delete options.cacheDirectory;
   delete options.filename;
@@ -100,11 +102,7 @@ const createTransformer = (options: any) => {
       config: ProjectConfig,
       transformOptions: TransformOptions,
     ): string {
-      if (!babel) {
-        babel = require('babel-core');
-      }
-
-      if (babel.util && !babel.util.canCompile(filename)) {
+      if (babelUtil && !babelUtil.canCompile(filename)) {
         return src;
       }
 
@@ -114,7 +112,7 @@ const createTransformer = (options: any) => {
         // Copied from jest-runtime transform.js
         theseOptions.plugins = theseOptions.plugins.concat([
           [
-            require('babel-plugin-istanbul').default,
+            babelIstanbulPlugin,
             {
               // files outside `cwd` will not be instrumented
               cwd: config.rootDir,
@@ -124,7 +122,7 @@ const createTransformer = (options: any) => {
         ]);
       }
 
-      return babel.transform(src, theseOptions).code;
+      return babelTransform(src, theseOptions).code;
     },
   };
 };

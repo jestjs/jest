@@ -7,15 +7,14 @@
  *
  * @flow
  */
-'use strict';
 
-import type {CrawlerOptions} from '../types';
 import type {InternalHasteMap} from 'types/HasteMap';
+import type {CrawlerOptions} from '../types';
 
-const H = require('../constants');
-
-const path = require('path');
-const watchman = require('fb-watchman');
+import normalizePathSep from '../lib/normalize_path_sep';
+import path from 'path';
+import watchman from 'fb-watchman';
+import H from '../constants';
 
 const watchmanURL =
   'https://facebook.github.io/watchman/docs/troubleshooting.html';
@@ -106,7 +105,7 @@ module.exports = function watchmanCrawl(
 
             clocks[root] = response.clock;
             response.files.forEach(fileData => {
-              const name = root + path.sep + fileData.name;
+              const name = root + path.sep + normalizePathSep(fileData.name);
               if (!fileData.exists) {
                 delete files[name];
               } else if (!ignore(name)) {

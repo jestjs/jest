@@ -8,39 +8,37 @@
  * @flow
  */
 
-'use strict';
-
 import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
-const {
+import crypto from 'crypto';
+import path from 'path';
+import {ValidationError, validate} from 'jest-validate';
+import chalk from 'chalk';
+import glob from 'glob';
+import Resolver from 'jest-resolve';
+import utils from 'jest-regex-util';
+import {
   BULLET,
   DOCUMENTATION_NOTE,
   _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
   resolve,
-} = require('./utils');
-const {
+} from './utils';
+import {
   NODE_MODULES,
   DEFAULT_JS_PATTERN,
   DEFAULT_REPORTER_LABEL,
-} = require('./constants');
-const {validateReporters} = require('./reporterValidationErrors');
-const {ValidationError, validate} = require('jest-validate');
-const chalk = require('chalk');
-const crypto = require('crypto');
-const DEFAULT_CONFIG = require('./defaults');
-const DEPRECATED_CONFIG = require('./deprecated');
+} from './constants';
+import {validateReporters} from './reporter_validation_errors';
+import DEFAULT_CONFIG from './defaults';
+import DEPRECATED_CONFIG from './deprecated';
+import setFromArgv from './set_from_argv';
+import VALID_CONFIG from './valid_config';
 const ERROR = `${BULLET}Validation Error`;
-const glob = require('glob');
 const JSON_EXTENSION = '.json';
-const path = require('path');
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
-const Resolver = require('jest-resolve');
-const setFromArgv = require('./setFromArgv');
-const utils = require('jest-regex-util');
-const VALID_CONFIG = require('./validConfig');
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -78,6 +76,7 @@ const setupPreset = (
   if (options.moduleNameMapper && preset.moduleNameMapper) {
     options.moduleNameMapper = Object.assign(
       {},
+      options.moduleNameMapper,
       preset.moduleNameMapper,
       options.moduleNameMapper,
     );
@@ -175,17 +174,19 @@ const normalizeUnmockedModulePathPatterns = (
 };
 
 const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
-  /* eslint-disable max-len */
   if (options.scriptPreprocessor && options.transform) {
-    throw createConfigError(`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`);
+    throw createConfigError(
+      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transform')}.`,
+    );
   }
 
   if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
-    throw createConfigError(`  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`);
+    throw createConfigError(
+      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
+    );
   }
-  /* eslint-enable max-len */
 
   if (options.scriptPreprocessor) {
     options.transform = {
@@ -220,7 +221,9 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
 const normalizeRootDir = (options: InitialOptions): InitialOptions => {
   // Assert that there *is* a rootDir
   if (!options.hasOwnProperty('rootDir')) {
-    throw createConfigError(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
+    throw createConfigError(
+      `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
+    );
   }
   options.rootDir = path.normalize(options.rootDir);
   return options;
@@ -375,7 +378,7 @@ function normalize(options: InitialOptions, argv: Argv) {
           value.hasteImplModulePath = resolve(
             options.rootDir,
             'haste.hasteImplModulePath',
-            value.hasteImplModulePath,
+            _replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
           );
         }
         break;
@@ -391,6 +394,10 @@ function normalize(options: InitialOptions, argv: Argv) {
           );
         value = list;
         break;
+      case 'moduleDirectories':
+      case 'testMatch':
+        value = _replaceRootDirTags(options.rootDir, options[key]);
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
@@ -403,7 +410,6 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'globals':
       case 'logHeapUsage':
       case 'mapCoverage':
-      case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
@@ -415,12 +421,10 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'rootDir':
       case 'silent':
       case 'testEnvironment':
-      case 'testMatch':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':
       case 'timers':
-      case 'updateSnapshot':
       case 'useStderr':
       case 'verbose':
       case 'watch':
@@ -431,6 +435,10 @@ function normalize(options: InitialOptions, argv: Argv) {
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  newOptions.updateSnapshot = argv.ci && !argv.updateSnapshot
+    ? 'none'
+    : argv.updateSnapshot ? 'all' : 'new';
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(

@@ -10,23 +10,21 @@
 
 /* global stream$Writable, tty$WriteStream */
 
-'use strict';
-
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-const BaseReporter = require('./BaseReporter');
-const Status = require('./Status');
-
-const {clearLine} = require('jest-util');
-const chalk = require('chalk');
-const getConsoleOutput = require('./getConsoleOutput');
-const getResultHeader = require('./getResultHeader');
-const isCI = require('is-ci');
+import {clearLine} from 'jest-util';
+import chalk from 'chalk';
+import isCI from 'is-ci';
+import BaseReporter from './BaseReporter';
+import Status from './Status';
+import getConsoleOutput from './getConsoleOutput';
+import getResultHeader from './getResultHeader';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
+type FlushBufferedOutput = () => void;
 
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
@@ -38,6 +36,7 @@ class DefaultReporter extends BaseReporter {
   _globalConfig: GlobalConfig;
   _out: write;
   _status: Status;
+  _bufferedOutput: Set<FlushBufferedOutput>;
 
   constructor(globalConfig: GlobalConfig) {
     super();
@@ -46,6 +45,7 @@ class DefaultReporter extends BaseReporter {
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
     this._status = new Status();
+    this._bufferedOutput = new Set();
     this._wrapStdio(process.stdout);
     this._wrapStdio(process.stderr);
     this._status.onChange(() => {
@@ -60,25 +60,28 @@ class DefaultReporter extends BaseReporter {
     let buffer = [];
     let timeout = null;
 
-    const doFlush = () => {
+    const flushBufferedOutput = () => {
       const string = buffer.join('');
       buffer = [];
       // This is to avoid conflicts between random output and status text
       this._clearStatus();
       originalWrite.call(stream, string);
       this._printStatus();
+      this._bufferedOutput.delete(flushBufferedOutput);
     };
 
-    const flush = () => {
+    this._bufferedOutput.add(flushBufferedOutput);
+
+    const debouncedFlush = () => {
       // If the process blows up no errors would be printed.
       // There should be a smart way to buffer stderr, but for now
       // we just won't buffer it.
       if (stream === process.stderr) {
-        doFlush();
+        flushBufferedOutput();
       } else {
         if (!timeout) {
           timeout = setTimeout(() => {
-            doFlush();
+            flushBufferedOutput();
             timeout = null;
           }, 100);
         }
@@ -88,9 +91,16 @@ class DefaultReporter extends BaseReporter {
     // $FlowFixMe
     stream.write = chunk => {
       buffer.push(chunk);
-      flush();
+      debouncedFlush();
       return true;
     };
+  }
+
+  // Don't wait for the debounced call and flush all output immediately.
+  forceFlushBufferedOutput() {
+    for (const flushBufferedOutput of this._bufferedOutput) {
+      flushBufferedOutput();
+    }
   }
 
   _clearStatus() {
@@ -119,6 +129,7 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunComplete() {
+    this.forceFlushBufferedOutput();
     this._status.runFinished();
     // $FlowFixMe
     process.stdout.write = this._out;
@@ -142,6 +153,7 @@ class DefaultReporter extends BaseReporter {
       test.context.config,
       testResult,
     );
+    this.forceFlushBufferedOutput();
   }
 
   _printTestFileSummary(

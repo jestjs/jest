@@ -5,24 +5,17 @@
 
 /* eslint-disable sort-keys */
 
-'use strict';
-
-const feed = require('./feed');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const optimist = require('optimist');
-const path = require('path');
 const toSlug = require('../core/toSlug');
-
 const languages = require('../languages.js');
-
-const argv = optimist.argv;
-
-console.log('convert.js triggered...');
+const feed = require('./feed');
 
 function splitHeader(content) {
-  const lines = content.split('\n');
+  const lines = content.split(os.EOL);
   let i = 1;
   for (; i < lines.length - 1; ++i) {
     if (lines[i] === '---') {
@@ -33,24 +26,6 @@ function splitHeader(content) {
     header: lines.slice(1, i + 1).join('\n'),
     content: lines.slice(i + 1).join('\n'),
   };
-}
-
-function globEach(pattern, cb) {
-  glob(pattern, (err, files) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    files.forEach(cb);
-  });
-}
-
-function rmFile(file) {
-  try {
-    fs.unlinkSync(file);
-  } catch (e) {
-    /* seriously, unlink throws when the file doesn't exist :( */
-  }
 }
 
 function backtickify(str) {
@@ -143,9 +118,6 @@ function execute() {
   const DOCS_MD_DIR = '../docs/';
   const BLOG_MD_DIR = '../blog/';
 
-  globEach('src/jest/docs/**', rmFile);
-  globEach('src/jest/blog/*.*', rmFile);
-
   // Extracts the Getting started content from GettingStarted.md
   // and inserts into repo's README
   const gettingStarted = splitHeader(
@@ -153,8 +125,8 @@ function execute() {
   ).content.replace(/\(\/jest\//g, '(https://facebook.github.io/jest/');
 
   let readme = fs.readFileSync('../README.md', 'utf8');
-  const guideStart = '<generated_getting_started_start />';
-  const guideEnd = '<generated_getting_started_end />';
+  const guideStart = '<!-- generated_getting_started_start -->';
+  const guideEnd = '<!-- generated_getting_started_end -->';
   readme =
     readme.slice(0, readme.indexOf(guideStart) + guideStart.length) +
     gettingStarted +
@@ -202,9 +174,11 @@ function execute() {
         metadata.localized_id = metadata.id;
         metadata.id = language + '-' + metadata.id;
         if (metadata.previous) {
+          metadata.previous_id = metadata.previous;
           metadata.previous = language + '-' + metadata.previous;
         }
         if (metadata.next) {
+          metadata.next_id = metadata.next;
           metadata.next = language + '-' + metadata.next;
         }
         metadata.language = language;
@@ -305,13 +279,8 @@ function execute() {
     );
   });
 
-  fs.writeFileSync('src/jest/blog/feed.xml', feed('rss'));
-  fs.writeFileSync('src/jest/blog/atom.xml', feed('atom'));
-}
-
-if (argv.convert) {
-  console.log('convert!');
-  execute();
+  writeFileAndCreateFolder('src/jest/blog/feed.xml', feed('rss'));
+  writeFileAndCreateFolder('src/jest/blog/atom.xml', feed('atom'));
 }
 
 module.exports = execute;

@@ -6,7 +6,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-const path = require('path');
+import path from 'path';
 
 module.exports = function createRuntime(filename, config) {
   const NodeEnvironment = require('jest-environment-node');
@@ -17,7 +17,7 @@ module.exports = function createRuntime(filename, config) {
   config = normalize(
     Object.assign(
       {
-        name: 'Runtime-' + filename.replace(/\W/, '-') + '-tests',
+        name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
         rootDir: path.resolve(path.dirname(filename), 'test_root'),
       },
       config,

@@ -6,16 +6,15 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
+import util from 'util';
 
-const prettyFormat = require('../build');
-const util = require('util');
 const chalk = require('chalk');
-const leftPad = require('left-pad');
-const worldGeoJson = require('./world.geo.json');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
-const ReactTestComponent = require('../build/plugins/ReactTestComponent');
+const leftPad = require('left-pad');
+const prettyFormat = require('../build');
+const ReactTestComponent = require('../build/plugins/react_test_component');
+const worldGeoJson = require('./world.geo.json');
 
 const NANOSECONDS = 1000000000;
 let TIMES_TO_RUN = 100000;

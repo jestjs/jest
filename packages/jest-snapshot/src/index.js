@@ -7,29 +7,28 @@
  *
  * @flow
  */
-'use strict';
 
 import type {HasteFS} from 'types/HasteMap';
-import type {Path} from 'types/Config';
+import type {MatcherState} from 'types/Matchers';
+import type {Path, SnapshotUpdateState} from 'types/Config';
 
-const diff = require('jest-diff');
-const fs = require('fs');
-const path = require('path');
-const SnapshotState = require('./State');
-const {addSerializer, getSerializers} = require('./plugins');
-
-const {
+import fs from 'fs';
+import path from 'path';
+import diff from 'jest-diff';
+import {
   EXPECTED_COLOR,
   ensureNoExpected,
   matcherHint,
   RECEIVED_COLOR,
-} = require('jest-matcher-utils');
-const {SNAPSHOT_EXTENSION} = require('./utils');
+} from 'jest-matcher-utils';
+import SnapshotState from './state';
+import {addSerializer, getSerializers} from './plugins';
+import {SNAPSHOT_EXTENSION} from './utils';
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
-const cleanup = (hasteFS: HasteFS, update: boolean) => {
+const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
   const pattern = '\\.' + SNAPSHOT_EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
   const filesRemoved = files
@@ -45,7 +44,7 @@ const cleanup = (hasteFS: HasteFS, update: boolean) => {
         ),
     )
     .map(snapshotFile => {
-      if (update) {
+      if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
     }).length;
@@ -55,17 +54,10 @@ const cleanup = (hasteFS: HasteFS, update: boolean) => {
   };
 };
 
-const initializeSnapshotState = (
-  testFile: Path,
-  update: boolean,
-  testPath: string,
-  expand: boolean,
-) => new SnapshotState(testFile, update, testPath, expand);
-
 const toMatchSnapshot = function(received: any, testName?: string) {
   this.dontThrow && this.dontThrow();
 
-  const {currentTestName, isNot, snapshotState} = this;
+  const {currentTestName, isNot, snapshotState}: MatcherState = this;
 
   if (isNot) {
     throw new Error('Jest: `.not` cannot be used with `.toMatchSnapshot()`.');
@@ -75,46 +67,52 @@ const toMatchSnapshot = function(received: any, testName?: string) {
     throw new Error('Jest: snapshot state must be initialized.');
   }
 
-  const result = snapshotState.match(testName || currentTestName, received);
-  const {pass} = result;
+  const result = snapshotState.match(
+    testName || currentTestName || '',
+    received,
+  );
+  const {count, pass} = result;
+  let {actual, expected} = result;
 
+  let report;
   if (pass) {
     return {message: '', pass: true};
+  } else if (!expected) {
+    report = () =>
+      `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
+      `must be explicitly passed to write a new snapshot.\n\n` +
+      `This is likely because this test is run in a continuous integration ` +
+      `(CI) environment in which snapshots are not written by default.`;
   } else {
-    const {count, expected, actual} = result;
-
-    const expectedString = expected.trim();
-    const actualString = actual.trim();
-    const diffMessage = diff(expectedString, actualString, {
+    expected = (expected || '').trim();
+    actual = (actual || '').trim();
+    const diffMessage = diff(expected, actual, {
       aAnnotation: 'Snapshot',
       bAnnotation: 'Received',
       expand: snapshotState.expand,
       snapshot: true,
     });
 
-    const report = () =>
+    report = () =>
       `${RECEIVED_COLOR('Received value')} does not match ` +
       `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
       (diffMessage ||
-        RECEIVED_COLOR('- ' + expectedString) +
+        EXPECTED_COLOR('- ' + (expected || '')) +
           '\n' +
-          EXPECTED_COLOR('+ ' + actualString));
-
-    const message = () =>
-      matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' + report();
-
-    // Passing the the actual and expected objects so that a custom reporter
-    // could access them, for example in order to display a custom visual diff,
-    // or create a different error message
-    return {
-      actual: actualString,
-      expected: expectedString,
-      message,
-      name: 'toMatchSnapshot',
-      pass: false,
-      report,
-    };
+          RECEIVED_COLOR('+ ' + actual));
   }
+  // Passing the the actual and expected objects so that a custom reporter
+  // could access them, for example in order to display a custom visual diff,
+  // or create a different error message
+  return {
+    actual,
+    expected,
+    message: () =>
+      matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' + report(),
+    name: 'toMatchSnapshot',
+    pass: false,
+    report,
+  };
 };
 
 const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
@@ -155,7 +153,6 @@ module.exports = {
   addSerializer,
   cleanup,
   getSerializers,
-  initializeSnapshotState,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
 };

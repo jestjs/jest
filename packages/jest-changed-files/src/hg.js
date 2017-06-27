@@ -8,12 +8,10 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 
-const path = require('path');
-const childProcess = require('child_process');
+import path from 'path';
+import childProcess from 'child_process';
 
 const env = Object.assign({}, process.env, {
   HGPLAIN: 1,

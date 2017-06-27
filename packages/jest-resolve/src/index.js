@@ -8,14 +8,14 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
 
-const nodeModulesPaths = require('resolve/lib/node-modules-paths');
-const path = require('path');
-const isBuiltinModule = require('is-builtin-module');
+import fs from 'fs';
+import path from 'path';
+import nodeModulesPaths from 'resolve/lib/node-modules-paths';
+import isBuiltinModule from 'is-builtin-module';
+import defaultResolver from './default_resolver.js';
 
 type ResolverConfig = {|
   browser?: boolean,
@@ -51,8 +51,15 @@ export type ResolveModuleConfig = {|
 
 const NATIVE_PLATFORM = 'native';
 
+// We might be inside a symlink.
+const cwd = process.cwd();
+const resolvedCwd = fs.realpathSync(cwd) || cwd;
 const nodePaths = process.env.NODE_PATH
-  ? process.env.NODE_PATH.split(path.delimiter)
+  ? process.env.NODE_PATH
+      .split(path.delimiter)
+      .filter(Boolean)
+      // The resolver expects absolute paths.
+      .map(p => path.resolve(resolvedCwd, p))
   : null;
 
 class Resolver {
@@ -83,8 +90,10 @@ class Resolver {
   }
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
-    /* $FlowFixMe */
-    const resolver = require(options.resolver || './defaultResolver.js');
+    const resolver = options.resolver
+      ? /* $FlowFixMe */
+        require(options.resolver)
+      : defaultResolver;
     const paths = options.paths;
 
     try {
@@ -138,8 +147,8 @@ class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    if (!skipResolution) {
-      module = Resolver.findNodeModule(moduleName, {
+    const resolveNodeModule = name => {
+      return Resolver.findNodeModule(name, {
         basedir: dirname,
         browser: this._options.browser,
         extensions,
@@ -147,6 +156,10 @@ class Resolver {
         paths,
         resolver: this._options.resolver,
       });
+    };
+
+    if (!skipResolution) {
+      module = resolveNodeModule(moduleName);
 
       if (module) {
         return (this._moduleNameCache[key] = module);
@@ -156,12 +169,17 @@ class Resolver {
     // 3. Resolve "haste packages" which are `package.json` files outside of
     // `node_modules` folders anywhere in the file system.
     const parts = moduleName.split('/');
-    module = this.getPackage(parts.shift());
-    if (module) {
+    const hastePackage = this.getPackage(parts.shift());
+    if (hastePackage) {
       try {
-        return (this._moduleNameCache[key] = require.resolve(
-          path.join.apply(path, [path.dirname(module)].concat(parts)),
-        ));
+        const module = path.join.apply(
+          path,
+          [path.dirname(hastePackage)].concat(parts),
+        );
+        // try resolving with custom resolver first to support extensions,
+        // then fallback to require.resolve
+        return (this._moduleNameCache[key] =
+          resolveNodeModule(module) || require.resolve(module));
       } catch (ignoredError) {}
     }
 
@@ -172,7 +190,7 @@ class Resolver {
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
-    (err: any).code = 'MODULE_NOT_FOUND';
+    (err: Error & {code?: string}).code = 'MODULE_NOT_FOUND';
     throw err;
   }
 

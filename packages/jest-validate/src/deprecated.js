@@ -8,11 +8,9 @@
  * @flow
  */
 
-'use strict';
-
 import type {ValidationOptions} from './types';
 
-const {logValidationWarning, DEPRECATION} = require('./utils');
+import {logValidationWarning, DEPRECATION} from './utils';
 
 const deprecationMessage = (message: string, options: ValidationOptions) => {
   const comment = options.comment;

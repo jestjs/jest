@@ -8,20 +8,16 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
 import type {Test} from 'types/TestRunner';
 
-const micromatch = require('micromatch');
-
-const DependencyResolver = require('jest-resolve-dependencies');
-
-const changedFiles = require('jest-changed-files');
-const path = require('path');
-const {escapePathForRegex, replacePathSepForRegex} = require('jest-regex-util');
+import path from 'path';
+import micromatch from 'micromatch';
+import DependencyResolver from 'jest-resolve-dependencies';
+import changedFiles from 'jest-changed-files';
+import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -37,7 +33,7 @@ type Options = {|
   withAncestor?: boolean,
 |};
 
-export type PathPattern = {|
+export type TestSelectionConfig = {|
   input?: string,
   findRelatedTests?: boolean,
   lastCommit?: boolean,
@@ -220,13 +216,24 @@ class SearchSource {
     });
   }
 
-  getTestPaths(pattern: PathPattern): Promise<SearchResult> {
-    if (pattern.onlyChanged) {
-      return this.findChangedTests({lastCommit: pattern.lastCommit});
-    } else if (pattern.findRelatedTests && pattern.paths) {
-      return Promise.resolve(this.findRelatedTestsFromPattern(pattern.paths));
-    } else if (pattern.testPathPattern != null) {
-      return Promise.resolve(this.findMatchingTests(pattern.testPathPattern));
+  getTestPaths(
+    testSelectionConfig: TestSelectionConfig,
+  ): Promise<SearchResult> {
+    if (testSelectionConfig.onlyChanged) {
+      return this.findChangedTests({
+        lastCommit: testSelectionConfig.lastCommit,
+      });
+    } else if (
+      testSelectionConfig.findRelatedTests &&
+      testSelectionConfig.paths
+    ) {
+      return Promise.resolve(
+        this.findRelatedTestsFromPattern(testSelectionConfig.paths),
+      );
+    } else if (testSelectionConfig.testPathPattern != null) {
+      return Promise.resolve(
+        this.findMatchingTests(testSelectionConfig.testPathPattern),
+      );
     } else {
       return Promise.resolve({tests: []});
     }

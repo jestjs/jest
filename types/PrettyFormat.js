@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 export type Colors = {
   comment: {close: string, open: string},
@@ -23,7 +22,6 @@ export type StringOrNull = string | null;
 
 export type Options = {|
   callToJSON: boolean,
-  edgeSpacing: string,
   escapeRegex: boolean,
   highlight: boolean,
   indent: number,
@@ -31,7 +29,6 @@ export type Options = {|
   min: boolean,
   plugins: Plugins,
   printFunctionName: boolean,
-  spacing: string,
   theme: {|
     comment: string,
     content: string,
@@ -41,12 +38,18 @@ export type Options = {|
   |},
 |};
 
+export type PluginOptions = {|
+  edgeSpacing: string,
+  min: boolean,
+  spacing: string,
+|};
+
 export type Plugin = {
   print: (
     val: any,
     serialize: Print,
     indent: Indent,
-    opts: Options,
+    opts: PluginOptions,
     colors: Colors,
   ) => string,
   test: any => boolean,

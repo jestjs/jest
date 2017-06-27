@@ -9,15 +9,15 @@ This rule looks at the title of every test and test suites. It will report when 
 The following patterns are considered warnings:
 
 ```js
-describe('foo', function () {
-  it('should do bar', function() {});
-  it('should do bar', function() {}); // Has the same title as the previous test
+describe('foo', () => {
+  it('should do bar', () => {});
+  it('should do bar', () => {}); // Has the same title as the previous test
 
-  describe('baz', function() {
+  describe('baz', () => {
     // ...
   });
 
-  describe('baz', function() { // Has the same title as a previous test suite
+  describe('baz', () => { // Has the same title as a previous test suite
     // ...
   });
 });
@@ -26,20 +26,20 @@ describe('foo', function () {
 These patterns would not be considered warnings:
 
 ```js
-describe('foo', function () {
-  it('should do foo', function() {});
-  it('should do bar', function() {});
+describe('foo', () => {
+  it('should do foo', () => {});
+  it('should do bar', () => {});
 
   // Has the same name as a parent test suite, which is fine
-  describe('foo', function() {
+  describe('foo', () => {
     // Has the same name as a test in a parent test suite, which is fine
-    it('should do foo', function() {});
-    it('should work', function() {});
+    it('should do foo', () => {});
+    it('should work', () => {});
   });
 
-  describe('baz', function() { // Has the same title as a previous test suite
+  describe('baz', () => { // Has the same title as a previous test suite
     // Has the same name as a test in a sibling test suite, which is fine
-    it('should work', function() {});
+    it('should work', () => {});
   });
 });
 ```

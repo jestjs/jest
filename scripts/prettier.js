@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
 
+const path = require('path');
 const chalk = require('chalk');
 const glob = require('glob');
-const path = require('path');
 const runCommand = require('./_runCommand');
 
 const shouldWrite = process.argv[2] === 'write';
@@ -42,7 +41,13 @@ const config = {
     options: {
       'trailing-comma': 'es5',
     },
-    patterns: ['examples/**/', 'scripts/**/', 'integration_tests/**/'],
+    patterns: [
+      'examples/**/',
+      'scripts/**/',
+      'integration_tests/**/',
+      'website/server/*',
+      'website/layout/*',
+    ],
   },
 };
 
@@ -66,7 +71,9 @@ Object.keys(config).forEach(key => {
     console.log(e);
     if (!shouldWrite) {
       console.log(
-        chalk.red(`  This project uses prettier to format all JavaScript code.\n`) +
+        chalk.red(
+          `  This project uses prettier to format all JavaScript code.\n`
+        ) +
           chalk.dim(`    Please run `) +
           chalk.reset('yarn prettier') +
           chalk.dim(` and add changes to files listed above to your commit.`) +

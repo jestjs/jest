@@ -7,8 +7,7 @@
  *
  */
 
-'use strict';
-
+// Can't be ESModules as this is not compiled
 const fbjsConfig = require('eslint-config-fbjs');
 
 const variableNamePattern = String.raw`\s*[a-zA-Z_$][a-zA-Z_$\d]*\s*`;
@@ -64,7 +63,7 @@ module.exports = Object.assign({}, fbjsConfig, {
     'semi': [2, 'always'],
     'sort-keys': [2],
     'space-before-blocks': [2],
-    'space-before-function-paren': [2, 'never'],
+    'space-before-function-paren': [2, {anonymous: 'never', asyncArrow: 'always', named: 'never'}],
     'space-in-parens': [2, 'never'],
   }),
 });

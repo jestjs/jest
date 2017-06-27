@@ -8,13 +8,11 @@
  * @flow
  */
 
-'use strict';
-
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
 
-const {replacePathSepForRegex} = require('jest-regex-util');
+import {replacePathSepForRegex} from 'jest-regex-util';
 
 const snapshotDirRegex = new RegExp(
   replacePathSepForRegex('\/__snapshots__\/'),

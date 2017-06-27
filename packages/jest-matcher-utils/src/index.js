@@ -8,34 +8,23 @@
  * @flow
  */
 
-'use strict';
-
-const chalk = require('chalk');
-const prettyFormat = require('pretty-format');
+import chalk from 'chalk';
+import getType from 'jest-get-type';
+import prettyFormat from 'pretty-format';
 const {
   AsymmetricMatcher,
-  ReactElement,
   HTMLElement,
   Immutable,
-} = require('pretty-format').plugins;
+  ReactElement,
+  ReactTestComponent,
+} = prettyFormat.plugins;
 
-const PLUGINS = [AsymmetricMatcher, ReactElement, HTMLElement].concat(
-  Immutable,
-);
-
-export type ValueType =
-  | 'array'
-  | 'boolean'
-  | 'function'
-  | 'null'
-  | 'number'
-  | 'object'
-  | 'regexp'
-  | 'map'
-  | 'set'
-  | 'string'
-  | 'symbol'
-  | 'undefined';
+const PLUGINS = [
+  ReactTestComponent,
+  ReactElement,
+  HTMLElement,
+  AsymmetricMatcher,
+].concat(Immutable);
 
 const EXPECTED_COLOR = chalk.green;
 const EXPECTED_BG = chalk.bgGreen;
@@ -58,40 +47,6 @@ const NUMBERS = [
   'twelve',
   'thirteen',
 ];
-
-// get the type of a value with handling the edge cases like `typeof []`
-// and `typeof null`
-const getType = (value: any): ValueType => {
-  if (typeof value === 'undefined') {
-    return 'undefined';
-  } else if (value === null) {
-    return 'null';
-  } else if (Array.isArray(value)) {
-    return 'array';
-  } else if (typeof value === 'boolean') {
-    return 'boolean';
-  } else if (typeof value === 'function') {
-    return 'function';
-  } else if (typeof value === 'number') {
-    return 'number';
-  } else if (typeof value === 'string') {
-    return 'string';
-  } else if (typeof value === 'object') {
-    if (value.constructor === RegExp) {
-      return 'regexp';
-    } else if (value.constructor === Map) {
-      return 'map';
-    } else if (value.constructor === Set) {
-      return 'set';
-    }
-    return 'object';
-    // $FlowFixMe https://github.com/facebook/flow/issues/1015
-  } else if (typeof value === 'symbol') {
-    return 'symbol';
-  }
-
-  throw new Error(`value of unknown type: ${value}`);
-};
 
 const stringify = (object: any, maxDepth?: number = 10): string => {
   const MAX_LENGTH = 10000;
@@ -213,7 +168,6 @@ module.exports = {
   ensureExpectedIsNumber,
   ensureNoExpected,
   ensureNumbers,
-  getType,
   highlightTrailingWhitespace,
   matcherHint,
   pluralize,

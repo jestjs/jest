@@ -8,8 +8,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
 import type {TestResult, AggregatedResult} from 'types/TestResult';
@@ -59,10 +57,10 @@ class ReporterDispatcher {
   }
 
   async onRunComplete(contexts: Set<Context>, results: AggregatedResult) {
-    this._reporters.forEach(
-      reporter =>
-        reporter.onRunComplete && reporter.onRunComplete(contexts, results),
-    );
+    for (const reporter of this._reporters) {
+      reporter.onRunComplete &&
+        (await reporter.onRunComplete(contexts, results));
+    }
   }
 
   // Return a list of last errors for every reporter

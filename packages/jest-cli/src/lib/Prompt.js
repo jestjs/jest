@@ -8,9 +8,9 @@
  * @flow
  */
 
-'use strict';
+import type {ScrollOptions} from './scrollList';
 
-const {KEYS} = require('../constants');
+import {KEYS} from '../constants';
 
 class Prompt {
   _entering: boolean;
@@ -18,6 +18,9 @@ class Prompt {
   _onChange: Function;
   _onSuccess: Function;
   _onCancel: Function;
+  _typeaheadOffset: number;
+  _typeaheadLength: number;
+  _typeaheadSelection: string | null;
 
   constructor() {
     (this: any)._onResize = this._onResize.bind(this);
@@ -27,23 +30,42 @@ class Prompt {
     this._onChange(this._value);
   }
 
-  enter(onChange: Function, onSuccess: Function, onCancel: Function) {
+  enter(
+    onChange: (pattern: string, options: ScrollOptions) => void,
+    onSuccess: Function,
+    onCancel: Function,
+  ) {
     this._entering = true;
     this._value = '';
-    this._onChange = onChange;
     this._onSuccess = onSuccess;
     this._onCancel = onCancel;
+    this._typeaheadSelection = null;
+    this._typeaheadOffset = -1;
+    this._typeaheadLength = 0;
+    this._onChange = () =>
+      onChange(this._value, {
+        max: 10,
+        offset: this._typeaheadOffset,
+      });
 
-    onChange(this._value);
+    this._onChange();
 
     process.stdout.on('resize', this._onResize);
+  }
+
+  setTypeaheadLength(length: number) {
+    this._typeaheadLength = length;
+  }
+
+  setTypheadheadSelection(selected: string) {
+    this._typeaheadSelection = selected;
   }
 
   put(key: string) {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
-        this._onSuccess(this._value);
+        this._onSuccess(this._typeaheadSelection || this._value);
         this.abort();
         break;
       case KEYS.ESCAPE:
@@ -52,9 +74,18 @@ class Prompt {
         this.abort();
         break;
       case KEYS.ARROW_DOWN:
+        this._typeaheadOffset = Math.min(
+          this._typeaheadOffset + 1,
+          this._typeaheadLength - 1,
+        );
+        this._onChange();
+        break;
+      case KEYS.ARROW_UP:
+        this._typeaheadOffset = Math.max(this._typeaheadOffset - 1, -1);
+        this._onChange();
+        break;
       case KEYS.ARROW_LEFT:
       case KEYS.ARROW_RIGHT:
-      case KEYS.ARROW_UP:
         break;
       default:
         const char = new Buffer(key, 'hex').toString();
@@ -62,8 +93,9 @@ class Prompt {
         this._value = key === KEYS.BACKSPACE
           ? this._value.slice(0, -1)
           : this._value + char;
-
-        this._onChange(this._value);
+        this._typeaheadOffset = -1;
+        this._typeaheadSelection = null;
+        this._onChange();
         break;
     }
   }

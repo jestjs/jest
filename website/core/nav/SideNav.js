@@ -40,7 +40,6 @@ class SideNav extends React.Component {
       </nav>
     );
   }
-
   renderCategory(category) {
     return (
       <div className="navGroup navGroupActive" key={category.name}>
@@ -51,31 +50,30 @@ class SideNav extends React.Component {
       </div>
     );
   }
-
   getLocalizedCategoryString(category) {
-    let categoryString = siteConfig[this.props.language]['localized-strings'][
-      category
-    ];
+    let categoryString =
+      siteConfig[this.props.language]['localized-strings'][category];
     if (typeof categoryString == 'undefined') {
       categoryString = category;
     }
     return categoryString;
   }
-
   getLocalizedString(metadata) {
     let localizedString = '';
-
-    if (typeof metadata.localized_id == 'undefined') {
+    if (
+      typeof metadata.localized_id == 'undefined' ||
+      typeof siteConfig[this.props.language] == 'undefined' ||
+      typeof siteConfig[this.props.language]['localized-strings'] == 'undefined'
+    ) {
       localizedString = metadata.title;
     } else {
-      localizedString = siteConfig[this.props.language]['localized-strings'][
-        metadata.localized_id
-      ];
+      localizedString =
+        siteConfig[this.props.language]['localized-strings'][
+          metadata.localized_id
+        ];
     }
-
     return localizedString;
   }
-
   getLink(metadata) {
     if (metadata.permalink) {
       if (metadata.permalink.match(/^https?:/)) {
@@ -86,10 +84,8 @@ class SideNav extends React.Component {
     if (metadata.path) {
       return '/jest/blog/' + metadata.path;
     }
-
     return null;
   }
-
   renderItemLink(link) {
     const itemClasses = classNames('navListItem', {
       navListItemActive: link.id === this.props.current.id,
@@ -106,9 +102,7 @@ class SideNav extends React.Component {
     );
   }
 }
-
 SideNav.defaultProps = {
   contents: [],
 };
-
 module.exports = SideNav;

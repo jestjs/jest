@@ -1,14 +1,14 @@
-/* eslint-disable max-len, sort-keys */
+/* eslint-disable sort-keys */
 
-'use strict';
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const connect = require('connect');
+const optimist = require('optimist');
+const reactMiddleware = require('react-page-middleware');
 const convert = require('./convert.js');
 const translationPre = require('./translationPre.js');
-const fs = require('fs');
-const http = require('http');
-const optimist = require('optimist');
-const path = require('path');
-const reactMiddleware = require('react-page-middleware');
+const translation = require('./translation.js');
 
 console.log('server.js triggered...');
 
@@ -38,11 +38,14 @@ const buildOptions = {
   static: true,
 };
 
-// Convert localized .json files into .js
+// clean up localization files, it can take a while to remove files so let's
+// have our next steps run in a callback
 translationPre();
 
 const app = connect()
   .use((req, res, next) => {
+    // Convert localized .json files into .js
+    translation();
     // convert all the md files on every request. This is not optimal
     // but fast enough that we don't really need to care right now.
     convert();
@@ -57,7 +60,6 @@ const app = connect()
     res.end(
       fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + ''
     );
-    console.log('DONE');
   })
   .use(reactMiddleware.provide(buildOptions))
   .use(connect['static'](FILE_SERVE_ROOT))

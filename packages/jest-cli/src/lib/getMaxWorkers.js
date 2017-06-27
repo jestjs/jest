@@ -7,11 +7,10 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Argv} from 'types/Argv';
 
-const os = require('os');
+import os from 'os';
 
 const getMaxWorkers = (argv: Argv): number => {
   if (argv.runInBand) {

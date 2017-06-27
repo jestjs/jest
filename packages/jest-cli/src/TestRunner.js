@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {
   AggregatedResult,
@@ -16,22 +15,27 @@ import type {
 } from 'types/TestResult';
 import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
-import type {PathPattern} from './SearchSource';
 import type {Reporter, Test} from 'types/TestRunner';
+import type {TestSelectionConfig} from './SearchSource';
 
-const {formatExecError} = require('jest-message-util');
-
-const DefaultReporter = require('./reporters/DefaultReporter');
-const NotifyReporter = require('./reporters/NotifyReporter');
-const SummaryReporter = require('./reporters/SummaryReporter');
-const VerboseReporter = require('./reporters/VerboseReporter');
-const pify = require('pify');
-const runTest = require('./runTest');
-const snapshot = require('jest-snapshot');
-const throat = require('throat');
-const workerFarm = require('worker-farm');
-const TestWatcher = require('./TestWatcher');
-const ReporterDispatcher = require('./ReporterDispatcher');
+import {formatExecError} from 'jest-message-util';
+import {
+  addResult,
+  buildFailureTestResult,
+  makeEmptyAggregatedTestResult,
+} from './testResultHelpers';
+import snapshot from 'jest-snapshot';
+import pify from 'pify';
+import throat from 'throat';
+import workerFarm from 'worker-farm';
+import DefaultReporter from './reporters/DefaultReporter';
+import NotifyReporter from './reporters/NotifyReporter';
+import SummaryReporter from './reporters/SummaryReporter';
+import VerboseReporter from './reporters/VerboseReporter';
+import runTest from './runTest';
+import TestWatcher from './TestWatcher';
+import CoverageReporter from './reporters/CoverageReporter';
+import ReporterDispatcher from './ReporterDispatcher';
 
 const SLOW_TEST_TIME = 3000;
 
@@ -44,7 +48,7 @@ class CancelRun extends Error {
 
 export type TestRunnerOptions = {|
   maxWorkers: number,
-  pattern: PathPattern,
+  pattern: TestSelectionConfig,
   startRun: () => *,
   testNamePattern: string,
   testPathPattern: string,
@@ -140,9 +144,9 @@ class TestRunner {
         );
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       });
-      aggregatedResults.snapshot.didUpdate = this._globalConfig.updateSnapshot;
-      aggregatedResults.snapshot.failure = !!(!this._globalConfig
-        .updateSnapshot &&
+      const updateAll = this._globalConfig.updateSnapshot === 'all';
+      aggregatedResults.snapshot.didUpdate = updateAll;
+      aggregatedResults.snapshot.failure = !!(!updateAll &&
         (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
           aggregatedResults.snapshot.filesRemoved));
@@ -297,9 +301,6 @@ class TestRunner {
     }
 
     if (collectCoverage) {
-      // coverage reporter dependency graph is pretty big and we don't
-      // want to require it if we're not in the `--coverage` mode
-      const CoverageReporter = require('./reporters/CoverageReporter');
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           maxWorkers: this._options.maxWorkers,
@@ -319,18 +320,12 @@ class TestRunner {
         : new DefaultReporter(this._globalConfig),
     );
 
-    this.addReporter(
-      new SummaryReporter(this._globalConfig, {
-        pattern: this._options.pattern,
-        testNamePattern: this._options.testNamePattern,
-        testPathPattern: this._options.testPathPattern,
-      }),
-    );
+    this.addReporter(new SummaryReporter(this._globalConfig, this._options));
   }
 
   _addCustomReporters(reporters: Array<ReporterConfig>) {
     const customReporters = reporters.filter(
-      reporter => reporter !== 'default',
+      reporterConfig => reporterConfig[0] !== 'default',
     );
 
     customReporters.forEach((reporter, index) => {
@@ -341,7 +336,7 @@ class TestRunner {
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error) {
         throw new Error(
-          'An error occured while adding the reporter at path "' +
+          'An error occurred while adding the reporter at path "' +
             path +
             '".' +
             error.message,
@@ -358,13 +353,13 @@ class TestRunner {
     reporter: ReporterConfig,
   ): {path: string, options?: Object} {
     if (typeof reporter === 'string') {
-      return {path: reporter};
+      return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {
       const [path, options] = reporter;
-      return {options, path};
+      return {options: Object.assign({}, this._options, options), path};
     }
 
-    throw new Error('Reproter should be either a string or an array');
+    throw new Error('Reporter should be either a string or an array');
   }
 
   _bailIfNeeded(
@@ -388,117 +383,11 @@ class TestRunner {
 }
 
 const createAggregatedResults = (numTotalTestSuites: number) => {
-  return {
-    numFailedTestSuites: 0,
-    numFailedTests: 0,
-    numPassedTestSuites: 0,
-    numPassedTests: 0,
-    numPendingTestSuites: 0,
-    numPendingTests: 0,
-    numRuntimeErrorTestSuites: 0,
-    numTotalTestSuites,
-    numTotalTests: 0,
-    snapshot: {
-      added: 0,
-      didUpdate: false, // is set only after the full run
-      failure: false,
-      filesAdded: 0,
-      // combines individual test results + results after full run
-      filesRemoved: 0,
-      filesUnmatched: 0,
-      filesUpdated: 0,
-      matched: 0,
-      total: 0,
-      unchecked: 0,
-      unmatched: 0,
-      updated: 0,
-    },
-    startTime: Date.now(),
-    success: false,
-    testResults: [],
-    wasInterrupted: false,
-  };
-};
-
-const addResult = (
-  aggregatedResults: AggregatedResult,
-  testResult: TestResult,
-): void => {
-  aggregatedResults.testResults.push(testResult);
-  aggregatedResults.numTotalTests +=
-    testResult.numPassingTests +
-    testResult.numFailingTests +
-    testResult.numPendingTests;
-  aggregatedResults.numFailedTests += testResult.numFailingTests;
-  aggregatedResults.numPassedTests += testResult.numPassingTests;
-  aggregatedResults.numPendingTests += testResult.numPendingTests;
-
-  if (testResult.testExecError) {
-    aggregatedResults.numRuntimeErrorTestSuites++;
-  }
-
-  if (testResult.skipped) {
-    aggregatedResults.numPendingTestSuites++;
-  } else if (testResult.numFailingTests > 0 || testResult.testExecError) {
-    aggregatedResults.numFailedTestSuites++;
-  } else {
-    aggregatedResults.numPassedTestSuites++;
-  }
-
-  // Snapshot data
-  if (testResult.snapshot.added) {
-    aggregatedResults.snapshot.filesAdded++;
-  }
-  if (testResult.snapshot.fileDeleted) {
-    aggregatedResults.snapshot.filesRemoved++;
-  }
-  if (testResult.snapshot.unmatched) {
-    aggregatedResults.snapshot.filesUnmatched++;
-  }
-  if (testResult.snapshot.updated) {
-    aggregatedResults.snapshot.filesUpdated++;
-  }
-
-  aggregatedResults.snapshot.added += testResult.snapshot.added;
-  aggregatedResults.snapshot.matched += testResult.snapshot.matched;
-  aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
-  aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
-  aggregatedResults.snapshot.updated += testResult.snapshot.updated;
-  aggregatedResults.snapshot.total +=
-    testResult.snapshot.added +
-    testResult.snapshot.matched +
-    testResult.snapshot.unmatched +
-    testResult.snapshot.updated;
-};
-
-const buildFailureTestResult = (
-  testPath: string,
-  err: TestError,
-): TestResult => {
-  return {
-    console: null,
-    failureMessage: null,
-    numFailingTests: 0,
-    numPassingTests: 0,
-    numPendingTests: 0,
-    perfStats: {
-      end: 0,
-      start: 0,
-    },
-    skipped: false,
-    snapshot: {
-      added: 0,
-      fileDeleted: false,
-      matched: 0,
-      unchecked: 0,
-      unmatched: 0,
-      updated: 0,
-    },
-    sourceMaps: {},
-    testExecError: err,
-    testFilePath: testPath,
-    testResults: [],
-  };
+  const result = makeEmptyAggregatedTestResult();
+  result.numTotalTestSuites = numTotalTestSuites;
+  result.startTime = Date.now();
+  result.success = false;
+  return result;
 };
 
 const getEstimatedTime = (timings, workers) => {

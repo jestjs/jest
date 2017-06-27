@@ -4,7 +4,6 @@
  * @providesModule BlogPostLayout
  * @jsx React.DOM
  */
-/* eslint-disable max-len */
 
 const BlogPost = require('BlogPost');
 const BlogSidebar = require('BlogSidebar');
@@ -21,7 +20,8 @@ const BlogPostLayout = React.createClass({
         url={'blog/' + this.props.metadata.path}
         title={this.props.metadata.title}
         language={'en'}
-        description={this.props.children.trim().split('\n')[0]}>
+        description={this.props.children.trim().split('\n')[0]}
+      >
         <div className="docMainWrapper wrapper">
           <BlogSidebar language={'en'} current={this.props.metadata} />
           <Container className="mainContainer documentContainer postContainer blogContainer">

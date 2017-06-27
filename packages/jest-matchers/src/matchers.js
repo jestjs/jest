@@ -7,27 +7,29 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
-
-'use strict';
 
 import type {MatchersObject} from 'types/Matchers';
 
-const diff = require('jest-diff');
-const {escapeStrForRegex} = require('jest-regex-util');
-const {getObjectSubset, getPath, hasOwnProperty} = require('./utils');
-const {
+import diff from 'jest-diff';
+import getType from 'jest-get-type';
+import {escapeStrForRegex} from 'jest-regex-util';
+import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   ensureNoExpected,
   ensureNumbers,
-  getType,
   matcherHint,
   printReceived,
   printExpected,
   printWithType,
-} = require('jest-matcher-utils');
-const {equals} = require('./jasmine-utils');
+} from 'jest-matcher-utils';
+import {
+  getObjectSubset,
+  getPath,
+  hasOwnProperty,
+  iterableEquality,
+} from './utils';
+import {equals} from './jasmine_utils';
 
 type ContainIterable =
   | Array<any>
@@ -36,36 +38,6 @@ type ContainIterable =
   | DOMTokenList
   | HTMLCollection<any>;
 
-const IteratorSymbol = Symbol.iterator;
-
-const hasIterator = object => !!(object != null && object[IteratorSymbol]);
-const iterableEquality = (a, b) => {
-  if (
-    typeof a !== 'object' ||
-    typeof b !== 'object' ||
-    Array.isArray(a) ||
-    Array.isArray(b) ||
-    !hasIterator(a) ||
-    !hasIterator(b)
-  ) {
-    return undefined;
-  }
-  if (a.constructor !== b.constructor) {
-    return false;
-  }
-  const bIterator = b[IteratorSymbol]();
-
-  for (const aValue of a) {
-    const nextB = bIterator.next();
-    if (nextB.done || !equals(aValue, nextB.value, [iterableEquality])) {
-      return false;
-    }
-  }
-  if (!bIterator.next().done) {
-    return false;
-  }
-  return true;
-};
 const isObjectWithKeys = a =>
   a !== null &&
   typeof a === 'object' &&

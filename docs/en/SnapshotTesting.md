@@ -13,7 +13,7 @@ A typical snapshot test case for a mobile app renders a UI component, takes a sc
 
 ## Snapshot Testing with Jest
 
-A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/Link.react-test.js) for a simple [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
+A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js) for a simple [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
 
 ```javascript
 import React from 'react';
@@ -28,7 +28,7 @@ it('renders correctly', () => {
 });
 ```
 
-The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/Link.react-test.js.snap) that looks like this:
+The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap) that looks like this:
 
 ```javascript
 exports[`renders correctly 1`] = `
@@ -93,6 +93,10 @@ Date.now = jest.fn(() => 1482363367071);
 
 Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
 
+### Snapshots are not written automatically on Continuous Integration systems (CI)
+
+As of Jest 20, snapshots in Jest are not automatically written when Jest is run in a CI system without explicitly passing `--updateSnapshot`. It is expected that all snapshots are part of the code that is run on CI and since new snapshots automatically pass, they should not pass a test run on a CI system. It is recommended to always commit all snapshots and to keep them in version control.
+
 ## Frequently Asked Questions
 
 ### Should snapshot files be committed?
@@ -101,7 +105,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### Does snapshot testing only work with React components?
 
-[React](/jest/docs/tutorial-react.html) and [React Native](/jest/docs/tutorial-react-native.html) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See and example of [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console-test.js) in the Jest repo.
+[React](/jest/docs/tutorial-react.html) and [React Native](/jest/docs/tutorial-react-native.html) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See and example of [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console.test.js) in the Jest repo.
 
 ### What's the difference between snapshot testing and visual regression testing?
 

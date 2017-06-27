@@ -11,8 +11,6 @@
 
 /* eslint-disable jest/no-focused-tests */
 
-'use strict';
-
 const skipOnWindows = {
   suite() {
     if (process.platform === 'win32') {

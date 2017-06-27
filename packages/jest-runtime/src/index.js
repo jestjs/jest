@@ -8,26 +8,24 @@
  * @flow
  */
 
-'use strict';
-
+import type {Console} from 'console';
 import type {Argv} from 'types/Argv';
 import type {Glob, Path, ProjectConfig} from 'types/Config';
-import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {Context} from 'types/Context';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
-const HasteMap = require('jest-haste-map');
-const Resolver = require('jest-resolve');
-const ScriptTransformer = require('./ScriptTransformer');
-
-const {createDirectory} = require('jest-util');
-const {escapePathForRegex} = require('jest-regex-util');
-const fs = require('graceful-fs');
-const path = require('path');
-const shouldInstrument = require('./shouldInstrument');
-const stripBOM = require('strip-bom');
+import path from 'path';
+import HasteMap from 'jest-haste-map';
+import Resolver from 'jest-resolve';
+import {createDirectory} from 'jest-util';
+import {escapePathForRegex} from 'jest-regex-util';
+import fs from 'graceful-fs';
+import stripBOM from 'strip-bom';
+import ScriptTransformer from './script_transformer';
+import shouldInstrument from './should_instrument';
+import cliArgs from './cli/args';
 
 type Module = {|
   children?: Array<any>,
@@ -146,11 +144,7 @@ class Runtime {
     this._transitiveShouldMock = Object.create(null);
 
     this._unmockList = unmockRegExpCache.get(config);
-    if (
-      !this._unmockList &&
-      config.automock &&
-      config.unmockedModulePathPatterns
-    ) {
+    if (!this._unmockList && config.unmockedModulePathPatterns) {
       this._unmockList = new RegExp(
         config.unmockedModulePathPatterns.join('|'),
       );
@@ -267,11 +261,12 @@ class Runtime {
   }
 
   static runCLI(args?: Argv, info?: Array<string>) {
+    // TODO: If this is not inline, the repl test fails
     return require('./cli').run(args, info);
   }
 
   static getCLIOptions() {
-    return require('./cli/args').options;
+    return cliArgs.options;
   }
 
   requireModule(
@@ -524,7 +519,7 @@ class Runtime {
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
-      this._createRuntimeFor(filename), // jest object
+      this._createJestObjectFor(filename), // jest object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -649,7 +644,7 @@ class Runtime {
     return moduleRequire;
   }
 
-  _createRuntimeFor(from: Path) {
+  _createJestObjectFor(from: Path) {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
       return runtime;
@@ -721,6 +716,14 @@ class Runtime {
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
+    const setTimeout = (timeout: number) => {
+      this._environment.global.jasmine
+        ? (this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout)
+        : (this._environment.global[
+            Symbol.for('TEST_TIMEOUT_SYMBOL')
+          ] = timeout);
+    };
+
     const runtime = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
@@ -756,6 +759,7 @@ class Runtime {
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
+      setTimeout,
       spyOn,
 
       unmock,

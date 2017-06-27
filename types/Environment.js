@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {ProjectConfig} from './Config';
 import type {Global} from './Global';
@@ -24,7 +23,7 @@ declare class $JestEnvironment {
     runAllImmediates(): void,
     runAllTicks(): void,
     runAllTimers(): void,
-    runTimersToTime(): void,
+    runTimersToTime(msToRun: number): void,
     runOnlyPendingTimers(): void,
     runWithRealTimers(callback: any): void,
     useFakeTimers(): void,

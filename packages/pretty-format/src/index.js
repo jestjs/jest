@@ -7,9 +7,6 @@
  *
  * @flow
  */
-/* eslint-disable max-len */
-
-'use strict';
 
 import type {
   Colors,
@@ -19,7 +16,14 @@ import type {
   Options,
 } from 'types/PrettyFormat';
 
-const style = require('ansi-styles');
+import style from 'ansi-styles';
+
+import AsymmetricMatcher from './plugins/asymmetric_matcher';
+import ConvertAnsi from './plugins/convert_ansi';
+import HTMLElement from './plugins/html_element';
+import Immutable from './plugins/immutable_plugins';
+import ReactElement from './plugins/react_element';
+import ReactTestComponent from './plugins/react_test_component';
 
 type Theme = {|
   comment?: string,
@@ -32,14 +36,12 @@ type Theme = {|
 type InitialOptions = {|
   callToJSON?: boolean,
   escapeRegex?: boolean,
-  edgeSpacing?: string,
   highlight?: boolean,
   indent?: number,
   maxDepth?: number,
   min?: boolean,
   plugins?: Plugins,
   printFunctionName?: boolean,
-  spacing?: string,
   theme?: Theme,
 |};
 
@@ -790,7 +792,6 @@ function print(
 
 const DEFAULTS: Options = {
   callToJSON: true,
-  edgeSpacing: '\n',
   escapeRegex: false,
   highlight: false,
   indent: 2,
@@ -798,7 +799,6 @@ const DEFAULTS: Options = {
   min: false,
   plugins: [],
   printFunctionName: true,
-  spacing: '\n',
   theme: {
     comment: 'gray',
     content: 'reset',
@@ -962,12 +962,12 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
 }
 
 prettyFormat.plugins = {
-  AsymmetricMatcher: require('./plugins/AsymmetricMatcher'),
-  ConvertAnsi: require('./plugins/ConvertAnsi'),
-  HTMLElement: require('./plugins/HTMLElement'),
-  Immutable: require('./plugins/ImmutablePlugins'),
-  ReactElement: require('./plugins/ReactElement'),
-  ReactTestComponent: require('./plugins/ReactTestComponent'),
+  AsymmetricMatcher,
+  ConvertAnsi,
+  HTMLElement,
+  Immutable,
+  ReactElement,
+  ReactTestComponent,
 };
 
 module.exports = prettyFormat;

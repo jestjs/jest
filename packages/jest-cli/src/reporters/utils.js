@@ -8,14 +8,12 @@
  * @flow
  */
 
-'use strict';
-
 import type {Path} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
-const chalk = require('chalk');
-const path = require('path');
-const slash = require('slash');
+import path from 'path';
+import chalk from 'chalk';
+import slash from 'slash';
 
 type SummaryOptions = {|
   estimatedTime?: number,
@@ -74,10 +72,8 @@ const relativePath = (config: {rootDir: Path}, testPath: Path) => {
   return {basename, dirname};
 };
 
-const pluralize = (
-  word: string,
-  count: number,
-) => `${count} ${word}${count === 1 ? '' : 's'}`;
+const pluralize = (word: string, count: number) =>
+  `${count} ${word}${count === 1 ? '' : 's'}`;
 
 const getSummary = (
   aggregatedResults: AggregatedResult,
@@ -164,8 +160,8 @@ const renderTime = (runTime, estimatedTime, width) => {
     if (availableWidth >= 2) {
       time +=
         '\n' +
-        chalk.green.inverse(' ').repeat(length) +
-        chalk.white.inverse(' ').repeat(availableWidth - length);
+        chalk.green('█').repeat(length) +
+        chalk.white('█').repeat(availableWidth - length);
     }
   }
   return time;

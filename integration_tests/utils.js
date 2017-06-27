@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+'use strict';
 
 const {spawnSync} = require('child_process');
 const fs = require('fs');
-const mkdirp = require('mkdirp');
 const path = require('path');
+const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 
 const run = (cmd, cwd) => {
@@ -58,10 +59,29 @@ const makeTemplate = string => {
 
 const cleanup = (directory: string) => rimraf.sync(directory);
 
-const makeTests = (directory: string, tests: {[filename: string]: string}) => {
+/**
+ * Creates a nested directory with files and their contents
+ * writeFiles(
+ *   '/home/tmp',
+ *   {
+ *     'package.json': '{}',
+ *     '__tests__/test.test.js': 'test("lol")',
+ *   }
+ * );
+ */
+const writeFiles = (directory: string, files: {[filename: string]: string}) => {
   mkdirp.sync(directory);
-  Object.keys(tests).forEach(filename => {
-    fs.writeFileSync(path.resolve(directory, filename), tests[filename]);
+  Object.keys(files).forEach(fileOrPath => {
+    const filePath = fileOrPath.split(path.sep); // ['tmp', 'a.js']
+    const filename = filePath.pop(); // filepath becomes dirPath (no filename)
+
+    if (filePath.length) {
+      mkdirp.sync(path.join.apply(path, [directory].concat(filePath)));
+    }
+    fs.writeFileSync(
+      path.resolve.apply(path, [directory].concat(filePath, [filename])),
+      files[fileOrPath],
+    );
   });
 };
 
@@ -99,19 +119,36 @@ const extractSummary = stdout => {
     .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
-  // remove all timestamps
-  const rest = stdout.slice(0, -match[0].length).replace(/\s*\(.*ms\)/gm, '');
+  const rest = cleanupStackTrace(
+    // remove all timestamps
+    stdout.slice(0, -match[0].length).replace(/\s*\(.*ms\)/gm, ''),
+  );
 
   return {rest, summary};
 };
 
+// different versions of Node print different stack traces. This function
+// unifies their output to make it possible to snapshot them.
+const cleanupStackTrace = (output: string) => {
+  return output
+    .replace(/\n.*at.*timers\.js.*$/gm, '')
+    .replace(/\n.*at.*assert\.js.*$/gm, '')
+    .replace(/\n.*at.*node\.js.*$/gm, '')
+    .replace(/\n.*at.*next_tick\.js.*$/gm, '')
+    .replace(/\n.*at Promise \(<anonymous>\).*$/gm, '')
+    .replace(/\n.*at <anonymous>.*$/gm, '')
+    .replace(/\n.*at Generator.next \(<anonymous>\).*$/gm, '')
+    .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
+};
+
 module.exports = {
   cleanup,
+  cleanupStackTrace,
   createEmptyPackage,
   extractSummary,
   fileExists,
   linkJestPackage,
   makeTemplate,
-  makeTests,
   run,
+  writeFiles,
 };

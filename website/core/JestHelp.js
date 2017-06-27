@@ -5,7 +5,7 @@
  * @jsx React.DOM
  */
 
-/* eslint-disable sort-keys, max-len, no-multi-str */
+/* eslint-disable sort-keys, no-multi-str */
 
 'use strict';
 
@@ -36,7 +36,7 @@ const JestHelp = React.createClass({
               <p>
                 {siteConfig[this.props.language].support.header.content}
               </p>
-              <GridBlock contents={supportLinks} layout="threeColumn" />
+              <GridBlock contents={supportLinks} layout="fourColumn" />
             </div>
           </Container>
         </div>

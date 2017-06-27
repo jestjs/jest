@@ -1,6 +1,6 @@
 ---
 id: configuration
-title: Configuring package.json
+title: Configuring Jest
 layout: docs
 category: API Reference
 permalink: docs/en/configuration.html
@@ -8,8 +8,8 @@ previous: jest-object
 next: cli
 ---
 
-Jest's configuration can be defined in the `package.json` file of your project
-or through the `--config <path/to/json>` option. If you'd like to use
+Jest's configuration can be defined in the `package.json` file of your project, through a `jest.config.js` file or
+or through the `--config <path/to/js|json>` option. If you'd like to use
 your `package.json` to store Jest's config, the "jest" key should be used on the
 top level so Jest will know how to find your settings:
 
@@ -21,6 +21,17 @@ top level so Jest will know how to find your settings:
   }
 }
 ```
+
+Or through JavaScript:
+
+```js
+// jest.config.js
+module.exports = {
+  verbose: true,
+};
+```
+
+Please keep in mind that the resulting configuration must be JSON-serializable.
 
 When using the --config option, the JSON file must not contain a "jest" key:
 
@@ -231,15 +242,104 @@ Default: `undefined`
 
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
 
+### `projects` [array<string>]
+Default: `undefined`
+
+When the `projects` configuration is provided with an array of paths or glob patterns, Jest will run tests in all of the specified projects at the same time. This is great for monorepos or when working on multiple projects at the same time.
+
+```json
+{
+  "projects": [
+    "<rootDir>",
+    "<rootDir>/examples/*"
+  ]
+}
+```
+
+This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.
+
 ### `clearMocks` [boolean]
 Default: `false`
 
-Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test.
+Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test. This does not remove any mock implementation that may have been provided.
+
+### `reporters` [array<moduleName | [moduleName, options]>]
+Default: `undefined`
+
+##### available in Jest **20.0.0+**
+
+Use this configuration option to add custom reporters to Jest. A custom reporter is a class that implements `onRunStart`, `onTestStart`, `onTestResult`, `onRunComplete` methods that will be called when any of those events occurs.
+
+If custom reporters are specified, the default Jest reporters will be overridden. To keep default reporters, `default` can be passed as a module name.
+
+This will override default reporters:
+```json
+{
+  "reporters": [
+    "<rootDir>/my-custom-reporter.js"
+  ]
+}
+```
+
+This will use custom reporter in addition to default reporters that Jest provides:
+```json
+{
+  "reporters": [
+    "default",
+    "<rootDir>/my-custom-reporter.js"
+  ]
+}
+```
+
+Additionally, custom reporters can be configured by passing an `options` object as a second argument:
+```json
+{
+  "reporters": [
+    "default",
+    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
+  ]
+}
+```
+
+Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments:
+
+Example reporter:
+```js
+// my-custom-reporter.js
+class MyCustomReporter {
+  constructor(globalConfig, options) {
+    this._globalConfig = globalConfig;
+    this._options = options;
+  }
+
+  onRunComplete(contexts, results) {
+    console.log('Custom reporter output:');
+    console.log('GlobalConfig: ', this._globalConfig);
+    console.log('Options: ', this._options);
+  }
+}
+
+module.exports = MyCustomReporter;
+```
+
+Custom reporters can also force Jest to exit with non-0 code by returning an Error from `getLastError()` methods
+```js
+class MyCustomReporter {
+  // ...
+  getLastError() {
+    if (this._shouldFail) {
+      return new Error('my-custom-reporter.js reported an error');
+    }
+  }
+}
+```
+
+For the full list of methods and argument types see `Reporter` type in [types/TestRunner.js](https://github.com/facebook/jest/blob/master/types/TestRunner.js)
 
 ### `resetMocks` [boolean]
 Default: `false`
 
-Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test.
+Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
 
 ### `resetModules` [boolean]
 Default: `false`
@@ -417,6 +517,18 @@ inside of `__tests__` folders, as well as any files with a suffix of `.test` or 
 (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js`
 or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note
 that you cannot specify both options.
+
+The following is a visualization of the default regex:
+
+```
+├── __tests__
+│   └── component.spec.js # test
+│   └── anything # test
+├── package.json # not test
+├── foo.test.js # test
+├── bar.spec.jsx # test
+└── component.js # not test
+```
 
 ### `testResultsProcessor` [string]
 Default: `undefined`

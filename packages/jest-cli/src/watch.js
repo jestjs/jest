@@ -7,29 +7,29 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
-const ansiEscapes = require('ansi-escapes');
-const chalk = require('chalk');
-const createContext = require('./lib/createContext');
-const HasteMap = require('jest-haste-map');
-const isCI = require('is-ci');
-const isInteractive = process.stdout.isTTY && !isCI;
-const isValidPath = require('./lib/isValidPath');
-const preRunMessage = require('./preRunMessage');
-const runJest = require('./runJest');
-const updateArgv = require('./lib/updateArgv');
-const SearchSource = require('./SearchSource');
-const TestWatcher = require('./TestWatcher');
-const Prompt = require('./lib/Prompt');
-const TestPathPatternPrompt = require('./TestPathPatternPrompt');
-const TestNamePatternPrompt = require('./TestNamePatternPrompt');
-const {KEYS, CLEAR} = require('./constants');
+import ansiEscapes from 'ansi-escapes';
+import chalk from 'chalk';
+import {replacePathSepForRegex} from 'jest-regex-util';
+import HasteMap from 'jest-haste-map';
+import isCI from 'is-ci';
+import isValidPath from './lib/isValidPath';
+import preRunMessage from './preRunMessage';
+import createContext from './lib/createContext';
+import runJest from './runJest';
+import updateArgv from './lib/updateArgv';
+import SearchSource from './SearchSource';
+import TestWatcher from './TestWatcher';
+import Prompt from './lib/Prompt';
+import TestPathPatternPrompt from './TestPathPatternPrompt';
+import TestNamePatternPrompt from './TestNamePatternPrompt';
+import {KEYS, CLEAR} from './constants';
 
+const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
 const watch = (
@@ -174,7 +174,7 @@ const watch = (
         startRun();
         break;
       case KEYS.U:
-        startRun({updateSnapshot: true});
+        startRun({updateSnapshot: 'all'});
         break;
       case KEYS.A:
         updateArgv(argv, 'watchAll', {
@@ -202,7 +202,7 @@ const watch = (
           testPathPattern => {
             updateArgv(argv, 'watch', {
               testNamePattern: '',
-              testPathPattern,
+              testPathPattern: replacePathSepForRegex(testPathPattern),
             });
 
             startRun();

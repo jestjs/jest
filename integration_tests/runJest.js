@@ -4,18 +4,30 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
+'use strict';
 
-const {fileExists} = require('./utils');
 const path = require('path');
-const spawnSync = require('cross-spawn').sync;
+const {sync: spawnSync} = require('cross-spawn');
+const {fileExists} = require('./utils');
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
+
+type RunJestOptions = {
+  nodePath?: string,
+  skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
+};
 
 // return the result of the spawned process:
 //  [ 'status', 'signal', 'output', 'pid', 'stdout', 'stderr',
 //    'envPairs', 'options', 'args', 'file' ]
-function runJest(dir, args) {
+function runJest(
+  dir: string,
+  args?: Array<string>,
+  options: RunJestOptions = {},
+) {
   const isRelative = dir[0] !== '/';
 
   if (isRelative) {
@@ -23,7 +35,7 @@ function runJest(dir, args) {
   }
 
   const localPackageJson = path.resolve(dir, 'package.json');
-  if (!fileExists(localPackageJson)) {
+  if (!options.skipPkgJsonCheck && !fileExists(localPackageJson)) {
     throw new Error(
       `
       Make sure you have a local package.json file at
@@ -34,7 +46,15 @@ function runJest(dir, args) {
     );
   }
 
-  const result = spawnSync(JEST_PATH, args || [], {cwd: dir});
+  const env = options.nodePath
+    ? Object.assign({}, process.env, {
+        NODE_PATH: options.nodePath,
+      })
+    : process.env;
+  const result = spawnSync(JEST_PATH, args || [], {
+    cwd: dir,
+    env,
+  });
 
   result.stdout = result.stdout && result.stdout.toString();
   result.stderr = result.stderr && result.stderr.toString();

@@ -8,30 +8,27 @@
  * @flow
  */
 
-'use strict';
+import type {DiffOptions} from './diff_strings';
 
-import type {DiffOptions} from './diffStrings';
+import prettyFormat from 'pretty-format';
+import chalk from 'chalk';
+import getType from 'jest-get-type';
+import diffStrings from './diff_strings';
+import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 
 const {
-  ReactElement,
-  ReactTestComponent,
   AsymmetricMatcher,
   HTMLElement,
   Immutable,
-} = require('pretty-format').plugins;
-
-const chalk = require('chalk');
-const diffStrings = require('./diffStrings');
-const {getType} = require('jest-matcher-utils');
-const prettyFormat = require('pretty-format');
-
-const {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} = require('./constants');
+  ReactElement,
+  ReactTestComponent,
+} = prettyFormat.plugins;
 
 const PLUGINS = [
   ReactTestComponent,
   ReactElement,
-  AsymmetricMatcher,
   HTMLElement,
+  AsymmetricMatcher,
 ].concat(Immutable);
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,

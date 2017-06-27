@@ -7,11 +7,10 @@
  *
  * @flow
  */
-'use strict';
 
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
-const path = require('path');
+import path from 'path';
 
 const SNAPSHOT_EXTENSION = 'snap';
 

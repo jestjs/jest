@@ -8,15 +8,13 @@
  * @flow
  */
 
-'use strict';
-
 export type Location = {
   column: number,
   line: number,
 };
 
-import type ProjectWorkspace from './ProjectWorkspace';
 import type {ChildProcess} from 'child_process';
+import type ProjectWorkspace from './project_workspace';
 
 export type Options = {
   createProcess?: (

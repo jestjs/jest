@@ -7,9 +7,9 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Path} from 'types/Config';
+import type {SnapshotState} from 'jest-snapshot';
 
 export type ExpectationResult = {
   pass: boolean,
@@ -24,15 +24,18 @@ export type RawMatcherFn = (
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
-export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
   assertionCalls: number,
-  isExpectingAssertions: ?boolean,
-  expectedAssertionsNumber: ?number,
   currentTestName?: string,
+  equals: (any, any) => boolean,
   expand?: boolean,
+  expectedAssertionsNumber: ?number,
+  isExpectingAssertions: ?boolean,
+  isNot: boolean,
+  snapshotState: SnapshotState,
   suppressedErrors: Array<Error>,
   testPath?: Path,
+  utils: Object,
 };
 
 export type AsymmetricMatcher = Object;
@@ -42,6 +45,11 @@ export type Expect = {
   addSnapshotSerializer(any): void,
   assertions(number): void,
   extend(any): void,
+  extractExpectedAssertionsErrors: () => Array<{
+    actual: string,
+    error: Error,
+    expected: string,
+  }>,
   getState(): MatcherState,
   hasAssertions(): void,
   setState(Object): void,

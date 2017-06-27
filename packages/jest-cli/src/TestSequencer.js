@@ -7,14 +7,14 @@
  *
  * @flow
  */
-'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
-const fs = require('fs');
-const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
+import fs from 'fs';
+// $FlowFixMe: Missing ESM export
+import {getCacheFilePath} from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;
@@ -38,15 +38,24 @@ class TestSequencer {
   _getCache(test: Test) {
     const {context} = test;
     if (!this._cache.has(context) && context.config.cache) {
-      try {
-        this._cache.set(
-          context,
-          JSON.parse(fs.readFileSync(this._getCachePath(context), 'utf8')),
-        );
-      } catch (e) {}
+      const cachePath = this._getCachePath(context);
+      if (fs.existsSync(cachePath)) {
+        try {
+          this._cache.set(
+            context,
+            JSON.parse(fs.readFileSync(cachePath, 'utf8')),
+          );
+        } catch (e) {}
+      }
     }
 
-    return this._cache.get(context) || {};
+    let cache = this._cache.get(context);
+    if (!cache) {
+      cache = {};
+      this._cache.set(context, cache);
+    }
+
+    return cache;
   }
 
   // When running more tests than we have workers available, sort the tests

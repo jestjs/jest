@@ -7,6 +7,5 @@
  *
  * @flow
  */
-'use strict';
 
 export type Jasmine = Object;

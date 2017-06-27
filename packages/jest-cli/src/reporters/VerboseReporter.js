@@ -7,7 +7,6 @@
  *
  * @flow
  */
-'use strict';
 
 import type {GlobalConfig} from 'types/Config';
 import type {
@@ -18,9 +17,9 @@ import type {
 } from 'types/TestResult';
 import type {Test} from 'types/TestRunner';
 
-const DefaultReporter = require('./DefaultReporter');
-const chalk = require('chalk');
-const {ICONS} = require('../constants');
+import chalk from 'chalk';
+import {ICONS} from '../constants';
+import DefaultReporter from './DefaultReporter';
 
 class VerboseReporter extends DefaultReporter {
   _globalConfig: GlobalConfig;

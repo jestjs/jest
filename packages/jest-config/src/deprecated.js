@@ -8,10 +8,10 @@
  * @flow
  */
 
-'use strict';
+import chalk from 'chalk';
+import prettyFormat from 'pretty-format';
 
-const chalk = require('chalk');
-const format = (value: mixed) => require('pretty-format')(value, {min: true});
+const format = (value: mixed) => prettyFormat(value, {min: true});
 
 const deprecatedOptions = {
   preprocessorIgnorePatterns: (options: {

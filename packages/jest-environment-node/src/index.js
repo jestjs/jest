@@ -7,17 +7,15 @@
  *
  * @flow
  */
-'use strict';
 
+import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
-import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
-const FakeTimers = require('jest-util').FakeTimers;
-const installCommonGlobals = require('jest-util').installCommonGlobals;
-const mock = require('jest-mock');
-const vm = require('vm');
+import vm from 'vm';
+import {FakeTimers, installCommonGlobals} from 'jest-util';
+import mock from 'jest-mock';
 
 class NodeEnvironment {
   context: ?vm$Context;
@@ -47,7 +45,10 @@ class NodeEnvironment {
     this.fakeTimers = null;
   }
 
+  // Disabling rule as return type depends on script's return type.
+  /* eslint-disable flowtype/no-weak-types */
   runScript(script: Script): ?any {
+    /* eslint-enable flowtype/no-weak-types */
     if (this.context) {
       return script.runInContext(this.context);
     }

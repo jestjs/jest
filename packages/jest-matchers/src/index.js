@@ -8,34 +8,38 @@
  * @flow
  */
 
-'use strict';
-
 import type {
   Expect,
   ExpectationObject,
   ExpectationResult,
-  MatcherContext,
+  MatcherState,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
   PromiseMatcherFn,
 } from 'types/Matchers';
 
-const matchers = require('./matchers');
-const spyMatchers = require('./spyMatchers');
-const toThrowMatchers = require('./toThrowMatchers');
-
-const utils = require('jest-matcher-utils');
-const {
+import utils from 'jest-matcher-utils';
+import matchers from './matchers';
+import spyMatchers from './spy_matchers';
+import toThrowMatchers from './to_throw_matchers';
+import {equals} from './jasmine_utils';
+import {
   any,
   anything,
   arrayContaining,
   objectContaining,
   stringContaining,
   stringMatching,
-} = require('./asymmetric-matchers');
-
-const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
+} from './asymmetric_matchers';
+import {
+  getState,
+  setState,
+  getMatchers,
+  setMatchers,
+} from './jest_matchers_object';
+import extractExpectedAssertionsErrors
+  from './extract_expected_assertions_errors';
 
 class JestAssertionError extends Error {
   matcherResult: any;
@@ -49,22 +53,8 @@ const isPromise = obj => {
   );
 };
 
-if (!global[GLOBAL_STATE]) {
-  Object.defineProperty(global, GLOBAL_STATE, {
-    value: {
-      matchers: Object.create(null),
-      state: {
-        assertionCalls: 0,
-        expectedAssertionsNumber: null,
-        isExpectingAssertions: false,
-        suppressedErrors: [],
-      },
-    },
-  });
-}
-
 const expect = (actual: any): ExpectationObject => {
-  const allMatchers = global[GLOBAL_STATE].matchers;
+  const allMatchers = getMatchers();
   const expectation = {
     not: {},
     rejects: {not: {}},
@@ -194,15 +184,16 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn => {
   return function throwingMatcher(...args) {
     let throws = true;
-    const matcherContext: MatcherContext = Object.assign(
+    const matcherContext: MatcherState = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
       // snapshot matcher uses it because we want to log all snapshot
       // failures in a test.
       {dontThrow: () => (throws = false)},
-      global[GLOBAL_STATE].state,
+      getState(),
       {
+        equals,
         isNot,
         utils,
       },
@@ -219,7 +210,7 @@ const makeThrowingMatcher = (
 
     _validateResult(result);
 
-    global[GLOBAL_STATE].state.assertionCalls++;
+    getState().assertionCalls++;
 
     if ((result.pass && isNot) || (!result.pass && !isNot)) {
       // XOR
@@ -235,15 +226,13 @@ const makeThrowingMatcher = (
       if (throws) {
         throw error;
       } else {
-        global[GLOBAL_STATE].state.suppressedErrors.push(error);
+        getState().suppressedErrors.push(error);
       }
     }
   };
 };
 
-expect.extend = (matchersObj: MatchersObject): void => {
-  Object.assign(global[GLOBAL_STATE].matchers, matchersObj);
-};
+expect.extend = (matchers: MatchersObject): void => setMatchers(matchers);
 
 expect.anything = anything;
 expect.any = any;
@@ -277,14 +266,14 @@ expect.extend(toThrowMatchers);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {
-  global[GLOBAL_STATE].state.expectedAssertionsNumber = expected;
+  getState().expectedAssertionsNumber = expected;
 };
-expect.hasAssertions = () => {
-  global[GLOBAL_STATE].state.isExpectingAssertions = true;
+expect.hasAssertions = expected => {
+  utils.ensureNoExpected(expected, '.hasAssertions');
+  getState().isExpectingAssertions = true;
 };
-expect.setState = (state: Object) => {
-  Object.assign(global[GLOBAL_STATE].state, state);
-};
-expect.getState = () => global[GLOBAL_STATE].state;
+expect.getState = getState;
+expect.setState = setState;
+expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 module.exports = (expect: Expect);

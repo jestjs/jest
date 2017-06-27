@@ -5,9 +5,12 @@ layout: docs
 category: API Reference
 permalink: docs/en/cli.html
 previous: configuration
+next: snapshot-testing
 ---
 
-The `jest` command line runner has a number of useful options. You can run `jest --help` to view all available options. Many of the options shown below can also be used together to run tests exactly the way you want. Here is a brief overview:
+The `jest` command line runner has a number of useful options. You can run `jest --help` to view all available options. Many of the options shown below can also be used together to run tests exactly the way you want. Every one of Jest's [Configuration](/jest/docs/configuration.html) options can also be specified through the CLI.
+
+Here is a brief overview:
 
 ## Running from the command line
 
@@ -32,7 +35,7 @@ Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
 jest --findRelatedTests path/to/fileA.js path/to/fileB.js
 ```
 
-Run tests that match this spec name (match against the name in describe and it, basically).
+Run tests that match this spec name (match against the name in `describe` or `test`, basically).
 ```bash
 jest -t name-of-spec
 ```
@@ -71,7 +74,7 @@ CLI options take precedence over values from the [Configuration](/jest/docs/conf
 
 ### `jest <regexForTestFiles>`
 
-When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Note: depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern`.
+When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Note: depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern"`.
 
 ### `--bail`
 
@@ -80,6 +83,10 @@ Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
 ### `--cache`
 
 Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. *Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.*
+
+### `--ci`
+
+When this option is provided, Jest will assume it is running in a CI environment. This changes the behavior when a new snapshot is encountered. Instead of the regular behavior of storing a new snapshot automatically, it will fail the test and require Jest to be run with `--updateSnapshot`.
 
 ### `--collectCoverageFrom=<glob>`
 
@@ -156,6 +163,10 @@ Activates notifications for test results. Good for when you don't want your cons
 ### `--onlyChanged`
 
 Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
+
+### `--projects <project1> ... <projectN>`
+
+Run tests from one or more projects.
 
 ### `--runInBand`
 

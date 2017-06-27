@@ -5,6 +5,9 @@ const mkdirp = require('mkdirp');
 const server = require('./server.js');
 const feed = require('./feed');
 
+const convert = require('./convert.js');
+const translationPre = require('./translationPre.js');
+
 console.log('Generate.js triggered...');
 
 // Sadly, our setup fatals when doing multiple concurrent requests
@@ -35,6 +38,20 @@ const queue = (function() {
 })();
 
 queue.push(cb => {
+  // clean up localization files, it can take a while to remove files so let's
+  // have our next steps run in a callback
+  translationPre();
+  cb();
+});
+
+queue.push(cb => {
+  // convert all the md files on every request. This is not optimal
+  // but fast enough that we don't really need to care right now.
+  convert();
+  cb();
+});
+
+queue.push(cb => {
   mkdirp.sync('build/jest/blog/');
   fs.writeFileSync('build/jest/blog/feed.xml', feed('rss'));
   fs.writeFileSync('build/jest/blog/atom.xml', feed('atom'));
@@ -42,33 +59,36 @@ queue.push(cb => {
   cb();
 });
 
-glob('src/**/*.*', (er, files) => {
-  files.forEach(file => {
-    let targetFile = file.replace(/^src/, 'build');
+queue.push(maincb => {
+  glob('src/**/*.*', (er, files) => {
+    files.forEach(file => {
+      let targetFile = file.replace(/^src/, 'build');
 
-    if (file.match(/\.js$/)) {
-      targetFile = targetFile.replace(/\.js$/, '.html');
-      queue.push(cb => {
-        request(
-          'http://localhost:8079/' + targetFile.replace(/^build\//, ''),
-          (error, response, body) => {
-            mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
-            fs.writeFileSync(targetFile, body);
-            cb();
-          }
-        );
-      });
-    } else {
-      queue.push(cb => {
-        mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
-        fs.copy(file, targetFile, cb);
-      });
-    }
-  });
+      if (file.match(/\.js$/)) {
+        targetFile = targetFile.replace(/\.js$/, '.html');
+        queue.push(cb => {
+          request(
+            'http://localhost:8079/' + targetFile.replace(/^build\//, ''),
+            (error, response, body) => {
+              mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
+              fs.writeFileSync(targetFile, body);
+              cb();
+            }
+          );
+        });
+      } else {
+        queue.push(cb => {
+          mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
+          fs.copy(file, targetFile, cb);
+        });
+      }
+    });
 
-  queue.push(cb => {
-    console.log('Generated website');
-    server.close();
-    cb();
+    queue.push(cb => {
+      console.log('Generated website');
+      server.close();
+      cb();
+    });
   });
+  maincb();
 });

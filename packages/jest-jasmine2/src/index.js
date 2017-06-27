@@ -7,21 +7,20 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
+import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
-const JasmineReporter = require('./reporter');
+import path from 'path';
+import JasmineReporter from './reporter';
+import jasmineAsync from './jasmine_async';
 
-const jasmineAsync = require('./jasmine-async');
-const path = require('path');
+const JASMINE = require.resolve('./jasmine/jasmine_light.js');
 
-const JASMINE = require.resolve('./jasmine/jasmine-light.js');
-
-function jasmine2(
+async function jasmine2(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   environment: Environment,
@@ -51,6 +50,10 @@ function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
+  if (config.timers === 'fake') {
+    environment.fakeTimers.useFakeTimers();
+  }
+
   env.beforeEach(() => {
     if (config.resetModules) {
       runtime.resetModules();
@@ -62,21 +65,21 @@ function jasmine2(
 
     if (config.resetMocks) {
       runtime.resetAllMocks();
-    }
 
-    if (config.timers === 'fake') {
-      environment.fakeTimers.useFakeTimers();
+      if (config.timers === 'fake') {
+        environment.fakeTimers.useFakeTimers();
+      }
     }
   });
 
   env.addReporter(reporter);
 
-  runtime.requireInternalModule(path.resolve(__dirname, './jest-expect.js'))({
+  runtime.requireInternalModule(path.resolve(__dirname, './jest_expect.js'))({
     expand: globalConfig.expand,
   });
 
-  const snapshotState = runtime.requireInternalModule(
-    path.resolve(__dirname, './setup-jest-globals.js'),
+  const snapshotState: SnapshotState = runtime.requireInternalModule(
+    path.resolve(__dirname, './setup_jest_globals.js'),
   )({
     config,
     globalConfig,
@@ -94,15 +97,13 @@ function jasmine2(
   }
 
   runtime.requireModule(testPath);
-  env.execute();
+  await env.execute();
   return reporter
     .getResults()
-    .then(results =>
-      addSnapshotData(results, snapshotState, globalConfig.updateSnapshot),
-    );
+    .then(results => addSnapshotData(results, snapshotState));
 }
 
-const addSnapshotData = (results, snapshotState, updateSnapshot) => {
+const addSnapshotData = (results, snapshotState) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
@@ -112,11 +113,11 @@ const addSnapshotData = (results, snapshotState, updateSnapshot) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
-  if (updateSnapshot) {
+  if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
-  const status = snapshotState.save(updateSnapshot);
 
+  const status = snapshotState.save();
   results.snapshot.fileDeleted = status.deleted;
   results.snapshot.added = snapshotState.added;
   results.snapshot.matched = snapshotState.matched;

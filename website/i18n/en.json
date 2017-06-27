@@ -10,7 +10,7 @@
       "title": "Learn how to test JavaScript with "
     },
     "mocking": {
-      "content": "Powerful [mocking library](/jest/docs/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.",
+      "content": "Powerful [mocking library](/jest/docs/en/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.",
       "title": "Powerful mocking library"
     },
     "parallelized": {
@@ -27,11 +27,15 @@
     },
     "using": {
       "button": "More Jest Users",
-      "content": "Jest is used by teams of all sizes to test web application, node.js services, mobile apps, and APIs.",
+      "content": "Jest is used by teams of all sizes to test web applications, node.js services, mobile apps, and APIs.",
       "title": "Who's using Jest?"
     },
+    "watch": {
+      "content": "The Jest core team and contributors regularly speak about Jest and Delightful JavaScript Testing. Check out our talks about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at f8 2017 or our talk about [Snapshot Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf 2017.",
+      "title": "Watch Talks about Jest"
+    },
     "zeroConfig": {
-      "content": "Easily create code coverage reports using `--coverage`. No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.",
+      "content": "Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.",
       "title": "Zero configuration"
     }
   },
@@ -54,7 +58,7 @@
       "title": "Instant Feedback"
     },
     {
-      "content": "Capture snapshots of React trees or other serializable values to simplify UI testing and to analyze how state changes over time.",
+      "content": "Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.",
       "image": "/jest/img/content/camera-with-flash.png",
       "imageAlign": "top",
       "title": "Snapshot Testing"
@@ -73,7 +77,7 @@
     "api": "Globals",
     "asynchronous": "Testing Asynchronous Code",
     "cli": "Jest CLI Options",
-    "configuration": "Configuring package.json",
+    "configuration": "Configuring Jest",
     "expect": "Expect",
     "getting-started": "Getting Started",
     "jest-object": "The Jest Object",
@@ -85,23 +89,27 @@
     "setup-teardown": "Setup and Teardown",
     "snapshot-testing": "Snapshot Testing",
     "timer-mocks": "Timer Mocks",
+    "testing-frameworks": "Testing Other Frameworks",
     "troubleshooting": "Troubleshooting",
     "tutorial-async": "An Async Example",
     "tutorial-jquery": "DOM Manipulation",
     "tutorial-react": "Testing React Apps",
     "tutorial-react-native": "Testing React Native Apps",
     "using-matchers": "Using Matchers",
-    "webpack": "Using with webpack"
+    "webpack": "Using With Webpack",
+    "previous": "Previous",
+    "next": "Continue Reading"
   },
   "promo": {
     "get": "Get Started",
     "learn": "Learn More",
-    "try": "Try Out Jest"
+    "try": "Try Out Jest",
+    "watch": "Watch Talks"
   },
   "repo": "facebook/jest",
   "support": {
     "browse": {
-      "content": "Find what you're looking for in our detailed documentation and guides.\n- Learn how to [get started](/jest/docs/getting-started.html) with Jest.\n- [Troubleshoot](/jest/docs/troubleshooting.html) problems with Jest.\n- Learn how to [configure Jest](/jest/docs/configuration.html).\n- Look at the full [API Reference](/jest/docs/api.html).\n",
+      "content": "Find what you're looking for in our detailed documentation and guides.\n\n- Learn how to [get started](/jest/docs/en/getting-started.html) with Jest.\n- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.\n- Learn how to [configure Jest](/jest/docs/en/configuration.html).\n- Look at the full [API Reference](/jest/docs/en/api.html).",
       "title": "Browse the docs"
     },
     "header": {
@@ -117,7 +125,7 @@
       "title": "Stay up to date"
     }
   },
-  "tagline": "🃏 Painless JavaScript Testing",
+  "tagline": "🃏 Delightful JavaScript Testing",
   "url": "https://facebook.github.io",
   "using": {
     "header": {

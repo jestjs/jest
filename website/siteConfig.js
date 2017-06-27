@@ -1,4 +1,4 @@
-/* eslint-disable sort-keys, max-len */
+/* eslint-disable sort-keys */
 
 const React = require('React');
 
@@ -69,6 +69,11 @@ const users = [
     image: '/jest/img/logos/nyt.png',
     infoLink: 'http://www.nytimes.com/',
     pinned: true,
+  },
+  {
+    caption: 'Airbnb',
+    image: '/jest/img/logos/airbnb.svg',
+    infoLink: 'https://www.airbnb.com/',
   },
   {
     caption: 'IBM',
@@ -161,6 +166,11 @@ const users = [
     infoLink: 'http://formidable.com/',
   },
   {
+    caption: 'Giant Machines',
+    image: '/jest/img/logos/giantmachines.png',
+    infoLink: 'https://www.giantmachines.com',
+  },
+  {
     caption: 'Globo',
     image: '/jest/img/logos/globo.png',
     infoLink: 'http://www.globo.com/',
@@ -226,6 +236,11 @@ const users = [
     infoLink: 'https://sproutsocial.com/',
   },
   {
+    caption: 'Squarespace',
+    image: '/jest/img/logos/squarespace.png',
+    infoLink: 'https://squarespace.com/',
+  },
+  {
     caption: 'Trivago',
     image: '/jest/img/logos/trivago.png',
     infoLink: 'http://www.trivago.com/',
@@ -266,38 +281,8 @@ languages.filter(lang => lang.enabled).map(lang => {
 siteConfig['languages'] = enabledLanguages;
 
 siteConfig['en'] = require('./i18n/en.js');
-// siteConfig['af'] = require('./i18n/af.js');
-// siteConfig['ar'] = require('./i18n/ar.js');
-// siteConfig['bs-BA'] = require('./i18n/bs-BA.js');
-// siteConfig['ca'] = require('./i18n/ca.js');
-// siteConfig['cs'] = require('./i18n/cs.js');
-// siteConfig['da'] = require('./i18n/da.js');
-// siteConfig['de'] = require('./i18n/de.js');
-// siteConfig['el'] = require('./i18n/el.js');
-// siteConfig['es-ES'] = require('./i18n/es-ES.js');
-// siteConfig['fa-IR'] = require('./i18n/fa-IR.js');
-// siteConfig['fi'] = require('./i18n/fi.js');
-// siteConfig['fr'] = require('./i18n/fr.js');
-// siteConfig['he'] = require('./i18n/he.js');
-// siteConfig['hu'] = require('./i18n/hu.js');
-// siteConfig['id-ID'] = require('./i18n/id-ID.js');
-// siteConfig['it'] = require('./i18n/it.js');
-// siteConfig['ja'] = require('./i18n/ja.js');
-// siteConfig['ko'] = require('./i18n/ko.js');
-// siteConfig['mr-IN'] = require('./i18n/mr-IN.js');
-// siteConfig['nl'] = require('./i18n/nl.js');
-// siteConfig['no-NO'] = require('./i18n/no-NO.js');
-// siteConfig['pl'] = require('./i18n/pl.js');
-// siteConfig['pt-BR'] = require('./i18n/pt-BR.js');
-// siteConfig['pt-PT'] = require('./i18n/pt-PT.js');
-// siteConfig['ro'] = require('./i18n/ro.js');
-// siteConfig['ru'] = require('./i18n/ru.js');
-// siteConfig['sk-SK'] = require('./i18n/sk-SK.js');
-// siteConfig['sr'] = require('./i18n/sr.js');
-// siteConfig['sv-SE'] = require('./i18n/sv-SE.js');
-// siteConfig['tr'] = require('./i18n/tr.js');
-// siteConfig['uk'] = require('./i18n/uk.js');
-// siteConfig['vi'] = require('./i18n/vi.js');
-// siteConfig['zh-Hans'] = require('./i18n/zh-Hans.js');
-// siteConfig['zh-Hant'] = require('./i18n/zh-Hant.js');
+
+/* INJECT LOCALIZED FILES BEGIN */
+/* INJECT LOCALIZED FILES END */
+
 module.exports = siteConfig;

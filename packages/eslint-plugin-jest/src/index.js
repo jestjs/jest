@@ -8,7 +8,10 @@
  * @flow
  */
 
-'use strict';
+import noDisabledTests from './rules/no_disabled_tests';
+import noFocusedTests from './rules/no_focused_tests';
+import noIdenticalTitle from './rules/no_identical_title';
+import validExpect from './rules/valid_expect';
 
 module.exports = {
   configs: {
@@ -44,9 +47,9 @@ module.exports = {
     },
   },
   rules: {
-    'no-disabled-tests': require('./rules/no-disabled-tests'),
-    'no-focused-tests': require('./rules/no-focused-tests'),
-    'no-identical-title': require('./rules/no-identical-title'),
-    'valid-expect': require('./rules/valid-expect'),
+    'no-disabled-tests': noDisabledTests,
+    'no-focused-tests': noFocusedTests,
+    'no-identical-title': noIdenticalTitle,
+    'valid-expect': validExpect,
   },
 };

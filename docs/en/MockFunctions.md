@@ -14,16 +14,38 @@ parameters passed in those calls), capturing instances of constructor functions
 when instantiated with `new`, and allowing test-time configuration of return
 values.
 
-There are two ways to get your hands on mock functions: Either by
-`require()`ing a mocked component (via `jest.mock('moduleName')`)
-or by explicitly requesting one from `jest.fn()` in your test:
+There are two ways to mock functions: Either by creating a mock function to
+use in test code, or writing a [`manual mock`](/jest/docs/manual-mocks.html)
+to override a module dependency.
+
+## Using a mock function
+
+Let's imagine we're testing an implementation of a function `forEach`, which
+invokes a callback for each item in a supplied array.
 
 ```javascript
-const myMock = jest.fn();
-myMock('1');
-myMock('a', 'b');
-console.log(myMock.mock.calls);
-// > [ [1], ['a', 'b'] ]
+function forEach(items, callback) {
+  for (let index = 0; index < items.length; index++) {
+    callback(items[index]);
+  }
+}
+```
+
+To test this function, we can use a mock function, and inspect the mock's state
+to ensure the callback is invoked as expected.
+
+```javascript
+const mockCallback = jest.fn();
+forEach([0, 1], mockCallback);
+
+// The mock function is called twice
+expect(mockCallback.mock.calls.length).toBe(2);
+
+// The first argument of the first call to the function was 0
+expect(mockCallback.mock.calls[0][0]).toBe(0);
+
+// The first argument of the second call to the function was 1
+expect(mockCallback.mock.calls[1][0]).toBe(1);
 ```
 
 ## `.mock` property

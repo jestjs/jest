@@ -1,9 +1,9 @@
 **/coverage/**
 **/node_modules/**
 bin/
-docs/
 flow-typed/**
 packages/*/build/**
+packages/*/build-es5/**
 types/**
 website/build
 website/node_modules

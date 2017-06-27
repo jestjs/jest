@@ -7,23 +7,25 @@
  *
  * @flow
  */
-'use strict';
 
 import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
 import type {GlobalConfig} from 'types/Config';
+import type {TestSelectionConfig} from './SearchSource';
+import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './TestWatcher';
 
-const {Console, formatTestResults} = require('jest-util');
-const chalk = require('chalk');
-const fs = require('graceful-fs');
-const getMaxWorkers = require('./lib/getMaxWorkers');
-const getTestPathPattern = require('./lib/getTestPathPattern');
-const path = require('path');
-const SearchSource = require('./SearchSource');
-const updateArgv = require('./lib/updateArgv');
-const TestRunner = require('./TestRunner');
-const TestSequencer = require('./TestSequencer');
+import path from 'path';
+import {Console, formatTestResults} from 'jest-util';
+import chalk from 'chalk';
+import fs from 'graceful-fs';
+import getMaxWorkers from './lib/getMaxWorkers';
+import getTestPathPattern from './lib/getTestPathPattern';
+import SearchSource from './SearchSource';
+import updateArgv from './lib/updateArgv';
+import TestRunner from './TestRunner';
+import TestSequencer from './TestSequencer';
+import {makeEmptyAggregatedTestResult} from './testResultHelpers';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -57,11 +59,8 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
     );
   }
 
-  const pluralize = (
-    word: string,
-    count: number,
-    ending: string,
-  ) => `${count} ${word}${count === 1 ? '' : ending}`;
+  const pluralize = (word: string, count: number, ending: string) =>
+    `${count} ${word}${count === 1 ? '' : ending}`;
   const testPathPattern = formatTestPathPattern(pattern);
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || {};
@@ -100,7 +99,13 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
   );
 };
 
-const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
+const getTestPaths = async (
+  globalConfig,
+  context,
+  pattern,
+  argv,
+  outputStream,
+) => {
   const source = new SearchSource(context);
   let data = await source.getTestPaths(pattern);
   if (!data.tests.length) {
@@ -111,7 +116,7 @@ const getTestPaths = async (globalConfig, context, pattern, argv, pipe) => {
         pattern = getTestPathPattern(argv);
         data = await source.getTestPaths(pattern);
       } else {
-        new Console(pipe, pipe).log(
+        new Console(outputStream, outputStream).log(
           'Jest can only find uncommitted changed files in a git or hg ' +
             'repository. If you make your project a git or hg ' +
             'repository (`git init` or `hg init`), Jest will be able ' +
@@ -152,13 +157,23 @@ const runJest = async (
   globalConfig: GlobalConfig,
   contexts: Array<Context>,
   argv: Argv,
-  pipe: stream$Writable | tty$WriteStream,
+  outputStream: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
-  onComplete: (testResults: any) => any,
+  onComplete: (testResults: AggregatedResult) => any,
+  // We use this internaly at FB. Since we run multiple processes and most
+  // of them don't match any tests, we don't want to print 'no tests found'
+  // message for all of them.
+  // This will no longer be needed when we complete this:
+  // https://github.com/facebook/jest/issues/3768
+  printNoTestsMessage?: (
+    outputStream: stream$Writable,
+    testRunData: Array<*>,
+    testSelectionConfig: TestSelectionConfig,
+  ) => void,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
-  const pattern = getTestPathPattern(argv);
+  const testSelectionConfig = getTestPathPattern(argv);
   const sequencer = new TestSequencer();
   let allTests = [];
   const testRunData = await Promise.all(
@@ -166,9 +181,9 @@ const runJest = async (
       const matches = await getTestPaths(
         globalConfig,
         context,
-        pattern,
+        testSelectionConfig,
         argv,
-        pipe,
+        outputStream,
       );
       allTests = allTests.concat(matches.tests);
       return {context, matches};
@@ -179,12 +194,18 @@ const runJest = async (
 
   if (argv.listTests) {
     console.log(JSON.stringify(allTests.map(test => test.path)));
-    onComplete && onComplete({success: true});
+    onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
 
   if (!allTests.length) {
-    new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
+    if (printNoTestsMessage) {
+      printNoTestsMessage(outputStream, testRunData, testSelectionConfig);
+    } else {
+      new Console(outputStream, outputStream).log(
+        getNoTestsFoundMessage(testRunData, testSelectionConfig),
+      );
+    }
   } else if (
     allTests.length === 1 &&
     globalConfig.silent !== true &&
@@ -197,17 +218,17 @@ const runJest = async (
   }
 
   // When using more than one context, make all printed paths relative to the
-  // current cwd.
-  if (contexts.length > 1) {
-    setConfig(contexts, {rootDir: process.cwd()});
-  }
+  // current cwd. rootDir is only used as a token during normalization and
+  // has no special meaning afterwards except for printing information to the
+  // CLI.
+  setConfig(contexts, {rootDir: process.cwd()});
 
   const results = await new TestRunner(globalConfig, {
     maxWorkers,
-    pattern,
+    pattern: testSelectionConfig,
     startRun,
     testNamePattern: argv.testNamePattern,
-    testPathPattern: formatTestPathPattern(pattern),
+    testPathPattern: formatTestPathPattern(testSelectionConfig),
   }).runTests(allTests, testWatcher);
 
   sequencer.cacheResults(allTests, results);

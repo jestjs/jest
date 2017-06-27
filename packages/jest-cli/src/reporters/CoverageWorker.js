@@ -7,13 +7,12 @@
  *
  * @flow
  */
-'use strict';
 
 import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 import type {SerializableError} from 'types/TestResult';
 
-const fs = require('fs');
-const generateEmptyCoverage = require('../generateEmptyCoverage');
+import fs from 'fs';
+import generateEmptyCoverage from '../generateEmptyCoverage';
 
 type CoverageWorkerData = {|
   globalConfig: GlobalConfig,
@@ -31,6 +30,7 @@ function formatCoverageError(error, filename: Path): SerializableError {
   `;
 
   return {
+    code: error.code || undefined,
     message,
     stack: error.stack,
     type: 'ERROR',
