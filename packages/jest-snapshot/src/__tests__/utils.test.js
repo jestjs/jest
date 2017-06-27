@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+jest.mock('fs');
+
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
