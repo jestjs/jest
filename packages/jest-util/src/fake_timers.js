@@ -219,6 +219,10 @@ class FakeTimers {
       if (this._immediates.length) {
         this.runAllImmediates();
       }
+
+      if (this._ticks.length) {
+        this.runAllTicks();
+      }
     }
 
     if (i === this._maxLoops) {
