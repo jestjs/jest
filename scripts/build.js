@@ -27,6 +27,7 @@ const chalk = require('chalk');
 const micromatch = require('micromatch');
 const stringLength = require('string-length');
 const getPackages = require('./_getPackages');
+const browserBuild = require('./browserBuild');
 
 const OK = chalk.reset.inverse.bold.green(' DONE ');
 const SRC_DIR = 'src';
@@ -40,12 +41,6 @@ const babelNodeOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
 babelNodeOptions.babelrc = false;
-const babelEs5Options = Object.assign(
-  {},
-  babelNodeOptions,
-  {presets: 'env'},
-  {plugins: [...babelNodeOptions.plugins, 'transform-runtime']}
-);
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
@@ -70,7 +65,7 @@ function getBuildPath(file, buildFolder) {
   return path.resolve(pkgBuildPath, relativeToSrcPath);
 }
 
-function buildPackage(p) {
+function buildNodePackage(p) {
   const srcDir = path.resolve(p, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
   const files = glob.sync(pattern, {nodir: true});
@@ -81,14 +76,10 @@ function buildPackage(p) {
   process.stdout.write(`${OK}\n`);
 }
 
-function buildFile(file, silent) {
-  buildFileFor(file, silent, 'node');
+function buildBrowserPackage(p) {
+  const srcDir = path.resolve(p, SRC_DIR);
+  const pkgJsonPath = path.resolve(p, 'package.json');
 
-  const pkgJsonPath = path.resolve(
-    PACKAGES_DIR,
-    getPackageName(file),
-    'package.json'
-  );
   const {browser} = require(pkgJsonPath);
   if (browser) {
     if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
@@ -96,14 +87,19 @@ function buildFile(file, silent) {
         `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`
       );
     }
-    buildFileFor(file, silent, 'es5');
+    browserBuild(
+      p.split('/').pop(),
+      path.resolve(srcDir, 'index.js'),
+      path.resolve(p, browser)
+    ).then(() => {
+      process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
+      process.stdout.write(`${OK}\n`);
+    });
   }
 }
 
-function buildFileFor(file, silent, env) {
-  const buildDir = env === 'es5' ? BUILD_ES5_DIR : BUILD_DIR;
-  const destPath = getBuildPath(file, buildDir);
-  const babelOptions = env === 'es5' ? babelEs5Options : babelNodeOptions;
+function buildFile(file, silent) {
+  const destPath = getBuildPath(file, BUILD_DIR);
 
   mkdirp.sync(path.dirname(destPath));
   if (micromatch.isMatch(file, IGNORE_PATTERN)) {
@@ -125,7 +121,7 @@ function buildFileFor(file, silent, env) {
           '\n'
       );
   } else {
-    const transformed = babel.transformFileSync(file, babelOptions).code;
+    const transformed = babel.transformFileSync(file, babelNodeOptions).code;
     fs.writeFileSync(destPath, transformed);
     silent ||
       process.stdout.write(
@@ -143,7 +139,11 @@ const files = process.argv.slice(2);
 if (files.length) {
   files.forEach(buildFile);
 } else {
+  const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));
-  getPackages().forEach(buildPackage);
+  packages.forEach(buildNodePackage);
   process.stdout.write('\n');
+
+  process.stdout.write(chalk.inverse(' Building browser packages \n'));
+  packages.forEach(buildBrowserPackage);
 }
