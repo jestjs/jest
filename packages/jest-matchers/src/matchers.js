@@ -23,7 +23,12 @@ import {
   printExpected,
   printWithType,
 } from 'jest-matcher-utils';
-import {getObjectSubset, getPath, hasOwnProperty} from './utils';
+import {
+  getObjectSubset,
+  getPath,
+  hasOwnProperty,
+  iterableEquality,
+} from './utils';
 import {equals} from './jasmine_utils';
 
 type ContainIterable =
@@ -33,36 +38,6 @@ type ContainIterable =
   | DOMTokenList
   | HTMLCollection<any>;
 
-const IteratorSymbol = Symbol.iterator;
-
-const hasIterator = object => !!(object != null && object[IteratorSymbol]);
-const iterableEquality = (a, b) => {
-  if (
-    typeof a !== 'object' ||
-    typeof b !== 'object' ||
-    Array.isArray(a) ||
-    Array.isArray(b) ||
-    !hasIterator(a) ||
-    !hasIterator(b)
-  ) {
-    return undefined;
-  }
-  if (a.constructor !== b.constructor) {
-    return false;
-  }
-  const bIterator = b[IteratorSymbol]();
-
-  for (const aValue of a) {
-    const nextB = bIterator.next();
-    if (nextB.done || !equals(aValue, nextB.value, [iterableEquality])) {
-      return false;
-    }
-  }
-  if (!bIterator.next().done) {
-    return false;
-  }
-  return true;
-};
 const isObjectWithKeys = a =>
   a !== null &&
   typeof a === 'object' &&
