@@ -190,4 +190,4 @@ const printActualErrorMessage = error => {
   return `But it didn't throw anything.`;
 };
 
-module.exports = matchers;
+export default matchers;

@@ -654,4 +654,4 @@ const matchers: MatchersObject = {
   },
 };
 
-module.exports = matchers;
+export default matchers;
