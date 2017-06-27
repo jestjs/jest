@@ -37,6 +37,13 @@ describe('HTMLElement Plugin', () => {
     expect(parent).toPrettyPrintTo('<div\n  title="title text"\n/>');
   });
 
+  test('escapes double quote in attribute value', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('title', '"escape"');
+
+    expect(parent).toPrettyPrintTo('<div\n  title="\\"escape\\""\n/>');
+  });
+
   it('supports an HTML element with a single attribute', () => {
     const parent = document.createElement('div');
     parent.setAttribute('class', 'classy');
