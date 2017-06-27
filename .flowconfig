@@ -6,6 +6,7 @@
 .*/vendor/jsonlint/.*
 .*/examples/.*
 .*/website/.*
+.*/dangerfile.js
 
 [options]
 module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/src/index.js'

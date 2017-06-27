@@ -1,0 +1,7 @@
+{		
+  "private": true,		
+  "devDependencies": {		
+    "danger": "^0.10.0",		
+    "lodash.includes": "^4.3.0"		
+  }		
+}

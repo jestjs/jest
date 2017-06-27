@@ -56,6 +56,7 @@
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn run build-clean",
+    "danger": "node ./danger/node_modules/.bin/danger",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn run jest --silent -- --coverage",
     "lint": "yarn run lint-prettier --silent && eslint . --cache --ext js,md",
