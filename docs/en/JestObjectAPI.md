@@ -19,6 +19,9 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
   - [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
   - [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
+  - [`jest.unmock(moduleName)`](#jestunmockmodulename)
+  - [`jest.doMock(moduleName, factory, options)`](#jestdomockmodulename-factory-options)
+  - [`jest.dontMock(moduleName)`](#jestdontmockmodulename)
   - [`jest.clearAllMocks()`](#jestclearallmocks)
   - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.resetModules()`](#jestresetmodules)
@@ -28,7 +31,6 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
   - [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
-  - [`jest.unmock(moduleName)`](#jestunmockmodulename)
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
   - [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
@@ -120,11 +122,46 @@ jest.mock('../moduleName', () => {
 }, {virtual: true});
 ```
 
-*Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
-
 *Warning: Importing a module in a setup file (as specified by `setupTestFrameworkScriptFile`) will prevent mocking for the module in question, as well as all the modules that it imports.*
 
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if run after the test file that mocks the module.
+
+Returns the `jest` object for chaining.
+
+### `jest.unmock(moduleName)`
+Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
+
+The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
+
+Returns the `jest` object for chaining.
+
+### `jest.doMock(moduleName, factory, options)`
+When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use this method if you want to explicitly avoid this behavior.
+
+This is useful when you want to mock a module differently within a same file:
+
+```js
+test('moduleName 1', () => {
+  jest.doMock('../moduleName', () => {
+    return jest.fn(() => 1);
+  });
+  const moduleName = require('../moduleName');
+  expect(moduleName()).toEqual(1);
+});
+
+test('moduleName 2', () => {
+  jest.doMock('../moduleName', () => {
+    return jest.fn(() => 2);
+  });
+  const moduleName = require('../moduleName');
+  expect(moduleName()).toEqual(2);
+});
+```
+
+Returns the `jest` object for chaining.
+
+### `jest.dontMock(moduleName)`
+When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use this method if you want to explicitly avoid this behavior.
 
 Returns the `jest` object for chaining.
 
@@ -216,15 +253,6 @@ Example:
 ```js
 jest.setTimeout(1000); // 1 second
 ```
-
-### `jest.unmock(moduleName)`
-Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
-
-The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
-
-Returns the `jest` object for chaining.
-
-*Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use `dontMock` if you want to explicitly avoid this behavior.*
 
 ### `jest.useFakeTimers()`
 Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
