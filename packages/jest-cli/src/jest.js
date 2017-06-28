@@ -10,9 +10,9 @@
 
 import {version as VERSION} from '../package.json';
 
-import SearchSource from './SearchSource';
-import TestRunner from './TestRunner';
-import TestWatcher from './TestWatcher';
+import SearchSource from './search_source';
+import TestRunner from './test_runner';
+import TestWatcher from './test_watcher';
 import {run, runCLI} from './cli';
 
 module.exports = {

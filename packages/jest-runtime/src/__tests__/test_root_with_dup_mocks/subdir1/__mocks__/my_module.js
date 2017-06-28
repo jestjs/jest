@@ -8,4 +8,4 @@
 
 'use strict';
 
-exports.modulePath = 'subdir2/MyModule.js';
+exports.modulePath = 'subdir1/__mocks__/my_module.js';

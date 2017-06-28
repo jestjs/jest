@@ -10,7 +10,7 @@
 
 'use strict';
 
-const formatTestNameByPattern = require('../formatTestNameByPattern');
+const formatTestNameByPattern = require('../format_test_name_by_pattern');
 
 describe('for multiline test name returns', () => {
   const testNames = [

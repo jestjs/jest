@@ -28,7 +28,7 @@ jest.mock('ansi-escapes', () => ({
 }));
 
 jest.mock(
-  '../SearchSource',
+  '../search_source',
   () =>
     class {
       constructor(context) {
@@ -68,7 +68,7 @@ jest.doMock('chalk', () =>
 );
 
 jest.doMock(
-  '../runJest',
+  '../run_jest',
   () =>
     function() {
       const args = Array.from(arguments);
@@ -81,7 +81,7 @@ jest.doMock(
     },
 );
 
-jest.doMock('../lib/terminalUtils', () => ({
+jest.doMock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => terminalWidth,
 }));
 

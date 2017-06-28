@@ -9,7 +9,7 @@
 */
 
 const path = require('path');
-const isValidPath = require('../isValidPath');
+const isValidPath = require('../is_valid_path');
 
 const rootDir = path.resolve(path.sep, 'root');
 

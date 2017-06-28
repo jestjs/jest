@@ -9,7 +9,7 @@
 module.exports = {
   extends: [
     './packages/eslint-config-fb-strict/index.js',
-    'plugin:import/errors',
+    'plugin:import/errors'
   ],
   parser: 'babel-eslint',
   rules: {
@@ -20,15 +20,16 @@ module.exports = {
     'max-len': 0,
     'no-multiple-empty-lines': 1,
     'import/no-duplicates': 2,
-    'import/no-unresolved': [2, { ignore: ['^types/'] }],
+    'import/no-unresolved': [2, {ignore: ['^types/']}],
     // This has to be disabled until all type and module imports are combined
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
     // These has to be disabled until the whole code base is converted to ESM
     'import/default': 0,
     'import/named': 0,
+    'unicorn/filename-case': [2, {case: 'snakeCase'}]
   },
-  plugins: ['markdown', 'import'],
+  plugins: ['markdown', 'import', 'unicorn'],
   overrides: [
     // to make it more suitable for running on code examples in docs/ folder
     {
@@ -43,22 +44,31 @@ module.exports = {
         'no-unused-vars': 0,
         'consistent-return': 0,
         'import/no-unresolved': 0,
-        'sort-keys': 0
-      },
+        'sort-keys': 0,
+        'unicorn/filename-case': 0
+      }
     },
     {
       files: ['examples/**/*'],
       rules: {
         'babel/func-params-comma-dangle': 0,
         'import/order': 0,
-        'import/no-unresolved': [2, { 'ignore': ['^react-native$'] }]
-      },
+        'import/no-unresolved': [2, {ignore: ['^react-native$']}],
+        'unicorn/filename-case': 0
+      }
     },
     {
       files: ['scripts/**/*', 'integration_tests/**/*'],
       rules: {
         'babel/func-params-comma-dangle': 0,
-      },
+        'unicorn/filename-case': 0
+      }
     },
-  ],
+    {
+      files: ['**/__mocks__/**/*', 'website/**/*', '**/jest-runtime/**/*', '**/src/Console*'],
+      rules: {
+        'unicorn/filename-case': 0
+      }
+    }
+  ]
 };

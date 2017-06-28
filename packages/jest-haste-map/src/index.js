@@ -156,7 +156,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  * };
  *
  * // Modules can be targeted to a specific platform based on the file name.
- * // Example: Platform.ios.js and Platform.android.js will both map to the same
+ * // Example: platform.ios.js and Platform.android.js will both map to the same
  * // `Platform` module. The platform should be specified during resolution.
  * type ModuleMapItem = {[platform: string]: ModuleMetaData};
  *

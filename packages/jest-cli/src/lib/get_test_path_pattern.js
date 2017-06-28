@@ -9,11 +9,11 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {TestSelectionConfig} from '../SearchSource';
+import type {TestSelectionConfig} from '../search_source';
 
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
-import validatePattern from './validatePattern';
+import validatePattern from './validate_pattern';
 
 const DEFAULT_PATTERN_INFO = {
   input: '',

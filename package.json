@@ -114,7 +114,7 @@
     "transform": {
       "^.+\\.js$": "<rootDir>/packages/babel-jest"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/testSetupFile.js",
+    "setupTestFrameworkScriptFile": "<rootDir>/test_setup_file.js",
     "snapshotSerializers": [
       "<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js"
     ],
@@ -130,5 +130,8 @@
     "testMatch": [
       "**/*.test.js"
     ]
+  },
+  "dependencies": {
+    "eslint-plugin-unicorn": "^2.1.2"
   }
 }

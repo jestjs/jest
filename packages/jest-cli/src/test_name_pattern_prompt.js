@@ -10,12 +10,12 @@
 
 import type {TestResult} from 'types/TestResult';
 import chalk from 'chalk';
-import type {ScrollOptions} from './lib/scrollList';
+import type {ScrollOptions} from './lib/scroll_list';
 
-import scroll from './lib/scrollList';
-import {getTerminalWidth} from './lib/terminalUtils';
-import Prompt from './lib/Prompt';
-import formatTestNameByPattern from './lib/formatTestNameByPattern';
+import scroll from './lib/scroll_list';
+import {getTerminalWidth} from './lib/terminal_utils';
+import Prompt from './lib/prompt';
+import formatTestNameByPattern from './lib/format_test_name_by_pattern';
 import {
   formatTypeaheadSelection,
   printMore,
@@ -24,8 +24,8 @@ import {
   printRestoredPatternCaret,
   printStartTyping,
   printTypeaheadItem,
-} from './lib/patternModeHelpers';
-import PatternPrompt from './PatternPrompt';
+} from './lib/pattern_mode_helpers';
+import PatternPrompt from './pattern_prompt';
 
 module.exports = class TestNamePatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult>;

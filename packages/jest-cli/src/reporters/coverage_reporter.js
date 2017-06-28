@@ -30,8 +30,8 @@ import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
 import pify from 'pify';
 import workerFarm from 'worker-farm';
-import BaseReporter from './BaseReporter';
-import CoverageWorker from './CoverageWorker';
+import BaseReporter from './base_reporter';
+import CoverageWorker from './coverage_worker';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -153,7 +153,7 @@ class CoverageReporter extends BaseReporter {
           maxConcurrentWorkers: this._maxWorkers,
           maxRetries: 2,
         },
-        require.resolve('./CoverageWorker'),
+        require.resolve('./coverage_worker'),
       );
       worker = pify(farm);
     }

@@ -18,10 +18,10 @@ import type {ReporterOnStartOptions} from 'types/Reporters';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import isCI from 'is-ci';
-import BaseReporter from './BaseReporter';
-import Status from './Status';
-import getConsoleOutput from './getConsoleOutput';
-import getResultHeader from './getResultHeader';
+import BaseReporter from './base_reporter';
+import Status from './status';
+import getConsoleOutput from './get_console_output';
+import getResultHeader from './get_result_header';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;

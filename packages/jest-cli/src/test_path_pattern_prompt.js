@@ -10,17 +10,17 @@
 
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {ScrollOptions} from './lib/scrollList';
+import type {ScrollOptions} from './lib/scroll_list';
 // eslint-disable-next-line import/default
-import type SearchSource from './SearchSource';
+import type SearchSource from './search_source';
 
 import chalk from 'chalk';
 import stringLength from 'string-length';
-import scroll from './lib/scrollList';
-import {getTerminalWidth} from './lib/terminalUtils';
+import scroll from './lib/scroll_list';
+import {getTerminalWidth} from './lib/terminal_utils';
 import highlight from './lib/highlight';
 import {trimAndFormatPath} from './reporters/utils';
-import Prompt from './lib/Prompt';
+import Prompt from './lib/prompt';
 import {
   formatTypeaheadSelection,
   printMore,
@@ -29,8 +29,8 @@ import {
   printRestoredPatternCaret,
   printStartTyping,
   printTypeaheadItem,
-} from './lib/patternModeHelpers';
-import PatternPrompt from './PatternPrompt';
+} from './lib/pattern_mode_helpers';
+import PatternPrompt from './pattern_prompt';
 
 type SearchSources = Array<{|
   context: Context,

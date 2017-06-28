@@ -4,10 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule GlobalImageStub
  */
 
 'use strict';
 
-exports.isGlobalImageStub = true;
+exports.modulePath = 'module_dir/module_dir_module.js';

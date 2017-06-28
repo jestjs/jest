@@ -13,7 +13,7 @@
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import stringLength from 'string-length';
-import Prompt from './Prompt';
+import Prompt from './prompt';
 
 const pluralize = (count: number, text: string) =>
   count === 1 ? text : text + 's';
