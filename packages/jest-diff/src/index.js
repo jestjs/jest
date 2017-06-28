@@ -45,46 +45,6 @@ const FALLBACK_FORMAT_OPTIONS_0 = Object.assign({}, FALLBACK_FORMAT_OPTIONS, {
   indent: 0,
 });
 
-// Return whether line has an odd number of unescaped quotes.
-function oddCountOfQuotes(line) {
-  let oddBackslashes = false;
-  let oddQuotes = false;
-  // eslint-disable-next-line prefer-const
-  for (let char of line) {
-    if (char === '\\') {
-      oddBackslashes = !oddBackslashes;
-    } else {
-      if (char === '"' && !oddBackslashes) {
-        oddQuotes = !oddQuotes;
-      }
-      oddBackslashes = false;
-    }
-  }
-  return oddQuotes;
-}
-
-// Given array of lines, return lines without indentation,
-// except in multiline strings.
-const regexpIndentation = /^[ ]*/;
-function unindent(string) {
-  let inMultilineString = false;
-
-  return string
-    .split('\n')
-    .map(line => {
-      const oddCount = oddCountOfQuotes(line);
-
-      if (inMultilineString) {
-        inMultilineString = !oddCount;
-        return line;
-      }
-
-      inMultilineString = oddCount;
-      return line.replace(regexpIndentation, '');
-    })
-    .join('\n');
-}
-
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
 function diff(a: any, b: any, options: ?DiffOptions): ?string {
@@ -126,9 +86,7 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
     case 'string':
       const multiline = a.match(/[\r\n]/) !== -1 && b.indexOf('\n') !== -1;
       if (multiline) {
-        return options && options.snapshot
-          ? diffStrings(unindent(a), unindent(b), options, {a, b})
-          : diffStrings(a, b, options);
+        return diffStrings(a, b, options);
       }
       return null;
     case 'number':

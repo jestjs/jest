@@ -90,7 +90,6 @@ const toMatchSnapshot = function(received: any, testName?: string) {
       aAnnotation: 'Snapshot',
       bAnnotation: 'Received',
       expand: snapshotState.expand,
-      snapshot: true,
     });
 
     report = () =>

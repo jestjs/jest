@@ -15,11 +15,8 @@ function received(a, b, options, replacement) {
   return stripAnsi(diff(a, b, options, replacement));
 }
 
-const snapshot = {snapshot: true};
 const unexpanded = {expand: false};
-const unexpandedSnap = Object.assign({}, unexpanded, snapshot);
 const expanded = {expand: true};
-const expandedSnap = Object.assign({}, expanded, snapshot);
 
 const toJSON = function toJSON() {
   return 'apple';
@@ -250,10 +247,10 @@ Options:
   ].join('\n');
 
   test('unexpanded', () => {
-    expect(received(a, b, unexpandedSnap)).toMatch(expected);
+    expect(received(a, b, unexpanded)).toMatch(expected);
   });
   test('expanded', () => {
-    expect(received(a, b, expandedSnap)).toMatch(expected);
+    expect(received(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -302,7 +299,7 @@ test('collapses big diffs to patch format', () => {
   expect(result).toMatchSnapshot();
 });
 
-describe('does ignore indentation in JavaScript structures', () => {
+describe('indentation in JavaScript structures', () => {
   const a = {
     searching: '',
     sorting: {
@@ -319,26 +316,6 @@ describe('does ignore indentation in JavaScript structures', () => {
       },
     ],
   };
-  const aSnap = [
-    'Object {',
-    '  "searching": "",',
-    '  "sorting": Object {',
-    '    "descending": false,',
-    '    "fieldKey": "what",',
-    '  },',
-    '}',
-  ].join('\n');
-  const bSnap = [
-    'Object {',
-    '  "searching": "",',
-    '  "sorting": Array [',
-    '    Object {',
-    '      "descending": false,',
-    '      "fieldKey": "what",',
-    '    },',
-    '  ],',
-    '}',
-  ].join('\n');
 
   describe('from less to more', () => {
     // Replace unchanged chunk in the middle with received lines,
@@ -363,12 +340,7 @@ describe('does ignore indentation in JavaScript structures', () => {
       expect(received(a, b, expanded)).toMatch(expected);
     });
 
-    test('unexpanded snapshot', () => {
-      expect(received(aSnap, bSnap, unexpandedSnap)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(aSnap, bSnap, expandedSnap)).toMatch(expected);
-    });
+    // Snapshots cannot distinguish indentation from leading spaces in text :(
   });
 
   describe('from more to less', () => {
@@ -394,12 +366,7 @@ describe('does ignore indentation in JavaScript structures', () => {
       expect(received(b, a, expanded)).toMatch(expected);
     });
 
-    test('unexpanded snapshot', () => {
-      expect(received(bSnap, aSnap, unexpandedSnap)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(bSnap, aSnap, expandedSnap)).toMatch(expected);
-    });
+    // Snapshots cannot distinguish indentation from leading spaces in text :(
   });
 });
 
@@ -479,11 +446,12 @@ describe('multiline string as property of JavaScript object', () => {
       expect(received(aUn, bUn, expanded)).toMatch(expected);
     });
 
+    // Proposed serialization for multiline string value in objects.
     test('unexpanded snapshot', () => {
-      expect(received(aUnSnap, bUnSnap, unexpandedSnap)).toMatch(expected);
+      expect(received(aUnSnap, bUnSnap, unexpanded)).toMatch(expected);
     });
     test('expanded snapshot', () => {
-      expect(received(aUnSnap, bUnSnap, expandedSnap)).toMatch(expected);
+      expect(received(aUnSnap, bUnSnap, expanded)).toMatch(expected);
     });
   });
 
@@ -504,11 +472,13 @@ describe('multiline string as property of JavaScript object', () => {
       expect(received(aIn, bIn, expanded)).toMatch(expected);
     });
 
+    // If change to serialization for multiline string value in objects,
+    // then review the relevance of the following tests:
     test('unexpanded snapshot', () => {
-      expect(received(aInSnap, bInSnap, unexpandedSnap)).toMatch(expected);
+      expect(received(aInSnap, bInSnap, unexpanded)).toMatch(expected);
     });
     test('expanded snapshot', () => {
-      expect(received(aInSnap, bInSnap, expandedSnap)).toMatch(expected);
+      expect(received(aInSnap, bInSnap, expanded)).toMatch(expected);
     });
   });
 
@@ -531,16 +501,18 @@ describe('multiline string as property of JavaScript object', () => {
       expect(received(aUn, bIn, expanded)).toMatch(expected);
     });
 
+    // If change to serialization for multiline string value in objects,
+    // then review the relevance of the following tests:
     test('unexpanded snapshot', () => {
-      expect(received(aUnSnap, bInSnap, unexpandedSnap)).toMatch(expected);
+      expect(received(aUnSnap, bInSnap, unexpanded)).toMatch(expected);
     });
     test('expanded snapshot', () => {
-      expect(received(aUnSnap, bInSnap, expandedSnap)).toMatch(expected);
+      expect(received(aUnSnap, bInSnap, expanded)).toMatch(expected);
     });
   });
 });
 
-describe('does ignore indentation in React elements', () => {
+describe('indentation in React elements', () => {
   const leaf = {
     $$typeof: Symbol.for('react.element'),
     props: {
@@ -570,22 +542,6 @@ describe('does ignore indentation in React elements', () => {
     },
     type: 'span',
   };
-  const aSnap = [
-    '<span>',
-    '  <span>',
-    '    text',
-    '  </span>',
-    '</span>',
-  ].join('\n');
-  const bSnap = [
-    '<span>',
-    '  <strong>',
-    '    <span>',
-    '      text',
-    '    </span>',
-    '  </strong>',
-    '</span>',
-  ].join('\n');
 
   describe('from less to more', () => {
     // Replace unchanged chunk in the middle with received lines,
@@ -607,12 +563,7 @@ describe('does ignore indentation in React elements', () => {
       expect(received(a, b, expanded)).toMatch(expected);
     });
 
-    test('unexpanded snapshot', () => {
-      expect(received(aSnap, bSnap, unexpandedSnap)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(aSnap, bSnap, expandedSnap)).toMatch(expected);
-    });
+    // Snapshots cannot distinguish indentation from leading spaces in text :(
   });
 
   describe('from more to less', () => {
@@ -635,11 +586,218 @@ describe('does ignore indentation in React elements', () => {
       expect(received(b, a, expanded)).toMatch(expected);
     });
 
+    // Snapshots cannot distinguish indentation from leading spaces in text :(
+  });
+});
+
+describe('spaces as text in React elements', () => {
+  const value = 2;
+  const unit = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: ['m'],
+      title: 'meters',
+    },
+    type: 'abbr',
+  };
+  const a = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: [value, ' ', unit],
+    },
+    type: 'span',
+  };
+  const b = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: [value, '  ', unit],
+    },
+    type: 'span',
+  };
+  const aSnap = [
+    '<span>',
+    '  2',
+    '   ',
+    '  <abbr',
+    '    title="meters"',
+    '  >',
+    '    m',
+    '  </abbr>',
+    '</span>',
+  ].join('\n');
+  const bSnap = [
+    '<span>',
+    '  2',
+    '    ',
+    '  <abbr',
+    '    title="meters"',
+    '  >',
+    '    m',
+    '  </abbr>',
+    '</span>',
+  ].join('\n');
+
+  describe('from less to more', () => {
+    // Replace one space with two spaces.
+    const expected = [
+      ' <span>',
+      '   2',
+      '-   ',
+      '+    ',
+      '   <abbr',
+      '     title="meters"',
+      '   >',
+      '     m',
+      '   </abbr>',
+      //' </span>', // unexpanded does not include this line
+    ].join('\n');
+
+    test('unexpanded', () => {
+      expect(received(a, b, unexpanded)).toMatch(expected);
+    });
+    test('expanded', () => {
+      expect(received(a, b, expanded)).toMatch(expected);
+    });
+
+    // Snapshots must display differences of leading spaces in text.
     test('unexpanded snapshot', () => {
-      expect(received(bSnap, aSnap, unexpandedSnap)).toMatch(expected);
+      expect(received(aSnap, bSnap, unexpanded)).toMatch(expected);
     });
     test('expanded snapshot', () => {
-      expect(received(bSnap, aSnap, expandedSnap)).toMatch(expected);
+      expect(received(aSnap, bSnap, expanded)).toMatch(expected);
+    });
+  });
+
+  describe('from more to less', () => {
+    // Replace two spaces with one space.
+    const expected = [
+      ' <span>',
+      '   2',
+      '-    ',
+      '+   ',
+      '   <abbr',
+      '     title="meters"',
+      '   >',
+      '     m',
+      '   </abbr>',
+      //' </span>', // unexpanded does not include this line
+    ].join('\n');
+
+    test('unexpanded', () => {
+      expect(received(b, a, unexpanded)).toMatch(expected);
+    });
+    test('expanded', () => {
+      expect(received(b, a, expanded)).toMatch(expected);
+    });
+
+    // Snapshots must display differences of leading spaces in text.
+    test('unexpanded snapshot', () => {
+      expect(received(bSnap, aSnap, unexpanded)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(bSnap, aSnap, expanded)).toMatch(expected);
+    });
+  });
+});
+
+describe('spaces at beginning or end of text in React elements', () => {
+  const em = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: ['already'],
+    },
+    type: 'em',
+  };
+  const a = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: ['Jest is', em, 'configured'],
+    },
+    type: 'p',
+  };
+  const b = {
+    $$typeof: Symbol.for('react.element'),
+    props: {
+      children: ['Jest is ', em, ' configured'],
+    },
+    type: 'p',
+  };
+  const aSnap = [
+    '<p>',
+    '  Jest is',
+    '  <em>',
+    '    already',
+    '  </em>',
+    '  configured',
+    '</p>',
+  ].join('\n');
+  const bSnap = [
+    '<p>',
+    '  Jest is ',
+    '  <em>',
+    '    already',
+    '  </em>',
+    '   configured',
+    '</p>',
+  ].join('\n');
+
+  describe('from less to more', () => {
+    // Replace no space with one space at edge of text nodes.
+    const expected = [
+      ' <p>',
+      '-  Jest is',
+      '+  Jest is ',
+      '   <em>',
+      '     already',
+      '   </em>',
+      '-  configured',
+      '+   configured',
+      ' </p>',
+    ].join('\n');
+
+    test('unexpanded', () => {
+      expect(received(a, b, unexpanded)).toMatch(expected);
+    });
+    test('expanded', () => {
+      expect(received(a, b, expanded)).toMatch(expected);
+    });
+
+    // Snapshots must display differences of leading spaces in text.
+    test('unexpanded snapshot', () => {
+      expect(received(aSnap, bSnap, unexpanded)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(aSnap, bSnap, expanded)).toMatch(expected);
+    });
+  });
+
+  describe('from more to less', () => {
+    // Replace one space with no space at edge of text nodes.
+    const expected = [
+      ' <p>',
+      '-  Jest is ',
+      '+  Jest is',
+      '   <em>',
+      '     already',
+      '   </em>',
+      '-   configured',
+      '+  configured',
+      ' </p>',
+    ].join('\n');
+
+    test('unexpanded', () => {
+      expect(received(b, a, unexpanded)).toMatch(expected);
+    });
+    test('expanded', () => {
+      expect(received(b, a, expanded)).toMatch(expected);
+    });
+
+    // Snapshots must display differences of leading spaces in text.
+    test('unexpanded snapshot', () => {
+      expect(received(bSnap, aSnap, unexpanded)).toMatch(expected);
+    });
+    test('expanded snapshot', () => {
+      expect(received(bSnap, aSnap, expanded)).toMatch(expected);
     });
   });
 });
