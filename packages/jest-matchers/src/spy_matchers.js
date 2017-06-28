@@ -198,4 +198,4 @@ const formatReceivedCalls = (calls, limit, options) => {
   }
 };
 
-module.exports = spyMatchers;
+export default spyMatchers;
