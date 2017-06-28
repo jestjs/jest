@@ -138,9 +138,13 @@ Returns the `jest` object for chaining.
 ### `jest.doMock(moduleName, factory, options)`
 When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use this method if you want to explicitly avoid this behavior.
 
-This is useful when you want to mock a module differently within a same file:
+One example when this is useful is when you want to mock a module differently within the same file:
 
 ```js
+beforeEach(() => {
+  jest.resetModules();
+});
+
 test('moduleName 1', () => {
   jest.doMock('../moduleName', () => {
     return jest.fn(() => 1);
