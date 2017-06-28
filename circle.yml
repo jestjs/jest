@@ -27,6 +27,7 @@ test:
     - nvm alias default 4
     - yarn run test-ci-partial
     - nvm alias default 8
+    - yarn run test-ci-es5-build-in-browser
     - yarn run test-ci-partial
     - cd website && yarn run test
 

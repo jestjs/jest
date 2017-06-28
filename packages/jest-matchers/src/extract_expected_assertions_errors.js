@@ -69,4 +69,4 @@ const extractExpectedAssertionsErrors = () => {
   return result;
 };
 
-module.exports = extractExpectedAssertionsErrors;
+export default extractExpectedAssertionsErrors;
