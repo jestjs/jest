@@ -9,14 +9,17 @@
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
-const slash = require('slash');
+
+// To pass on Windows
+const normalizeSummaryPaths = string =>
+  string.replace('__tests__\\index.js', '__tests__/index.js');
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('module_name_mapper_wrong_config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
-  expect(slash(rest)).toMatchSnapshot();
+  expect(normalizeSummaryPaths(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {
@@ -24,5 +27,5 @@ test('moduleNameMapper correct configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);
-  expect(slash(rest)).toMatchSnapshot();
+  expect(normalizeSummaryPaths(rest)).toMatchSnapshot();
 });
