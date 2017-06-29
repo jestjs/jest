@@ -332,6 +332,30 @@ describe('SearchSource', () => {
     });
   });
 
+  describe('ignores tests', () => {
+    it('node_modules', () => {
+      const testPath =
+        path.sep +
+        path.join('node_modules', 'module-name', '__tests__', 'test.js');
+      expect(searchSource.isTestFilePath(testPath)).toEqual(false);
+    });
+
+    it('dot directories', () => {
+      const testPath =
+        path.sep +
+        path.join(
+          '.cache',
+          'yarn',
+          'v1',
+          'module-name',
+          'to',
+          '__tests__',
+          'test.js',
+        );
+      expect(searchSource.isTestFilePath(testPath)).toEqual(false);
+    });
+  });
+
   describe('findRelatedTests', () => {
     const rootDir = path.join(
       __dirname,
