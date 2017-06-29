@@ -348,6 +348,7 @@ class ModuleMockerClass {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.isReturnValueLastSet = false;
+        mockConfig.defaultReturnValue = undefined;
         mockConfig.mockImpl = fn;
         return f;
       };
