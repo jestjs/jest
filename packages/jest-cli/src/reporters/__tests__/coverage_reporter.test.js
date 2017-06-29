@@ -25,7 +25,7 @@ beforeEach(() => {
     write: jest.fn(),
   }));
 
-  CoverageReporter = require('../CoverageReporter');
+  CoverageReporter = require('../coverage_reporter');
   libCoverage = require('istanbul-lib-coverage');
   libSourceMaps = require('istanbul-lib-source-maps');
 });

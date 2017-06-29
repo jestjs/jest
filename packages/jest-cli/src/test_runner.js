@@ -16,26 +16,26 @@ import type {
 import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
-import type {TestSelectionConfig} from './SearchSource';
+import type {TestSelectionConfig} from './search_source';
 
 import {formatExecError} from 'jest-message-util';
 import {
   addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
-} from './testResultHelpers';
+} from './test_result_helpers';
 import snapshot from 'jest-snapshot';
 import pify from 'pify';
 import throat from 'throat';
 import workerFarm from 'worker-farm';
-import DefaultReporter from './reporters/DefaultReporter';
-import NotifyReporter from './reporters/NotifyReporter';
-import SummaryReporter from './reporters/SummaryReporter';
-import VerboseReporter from './reporters/VerboseReporter';
-import runTest from './runTest';
-import TestWatcher from './TestWatcher';
-import CoverageReporter from './reporters/CoverageReporter';
-import ReporterDispatcher from './ReporterDispatcher';
+import DefaultReporter from './reporters/default_reporter';
+import NotifyReporter from './reporters/notify_reporter';
+import SummaryReporter from './reporters/summary_reporter';
+import VerboseReporter from './reporters/verbose_reporter';
+import runTest from './run_test';
+import TestWatcher from './test_watcher';
+import CoverageReporter from './reporters/coverage_reporter';
+import ReporterDispatcher from './reporter_dispatcher';
 
 const SLOW_TEST_TIME = 3000;
 
@@ -57,7 +57,7 @@ export type TestRunnerOptions = {|
 type OnTestFailure = (test: Test, err: TestError) => void;
 type OnTestSuccess = (test: Test, result: TestResult) => Promise<*>;
 
-const TEST_WORKER_PATH = require.resolve('./TestWorker');
+const TEST_WORKER_PATH = require.resolve('./test_worker');
 
 class TestRunner {
   _globalConfig: GlobalConfig;

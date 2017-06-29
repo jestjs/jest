@@ -8,4 +8,4 @@
 
 'use strict';
 
-exports.modulePath = 'subdir2/module_dir/moduleDirModule.js';
+exports.modulePath = 'subdir2/my_module.js';

@@ -104,7 +104,7 @@ describe('worker', () => {
     worker(
       {
         filePath: '/fruits/strawberry.js',
-        hasteImplModulePath: path.resolve(__dirname, 'hasteImpl.js'),
+        hasteImplModulePath: path.resolve(__dirname, 'haste_impl.js'),
       },
       callback,
     );

@@ -19,7 +19,7 @@ import type {Test} from 'types/TestRunner';
 
 import chalk from 'chalk';
 import {ICONS} from '../constants';
-import DefaultReporter from './DefaultReporter';
+import DefaultReporter from './default_reporter';
 
 class VerboseReporter extends DefaultReporter {
   _globalConfig: GlobalConfig;

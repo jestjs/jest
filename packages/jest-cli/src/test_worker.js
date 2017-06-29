@@ -22,7 +22,7 @@ process.on('uncaughtException', err => {
 import {ModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
-import runTest from './runTest';
+import runTest from './run_test';
 
 type WorkerData = {|
   config: ProjectConfig,

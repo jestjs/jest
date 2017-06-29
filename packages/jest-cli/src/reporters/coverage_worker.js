@@ -12,7 +12,7 @@ import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 import type {SerializableError} from 'types/TestResult';
 
 import fs from 'fs';
-import generateEmptyCoverage from '../generateEmptyCoverage';
+import generateEmptyCoverage from '../generate_empty_coverage';
 
 type CoverageWorkerData = {|
   globalConfig: GlobalConfig,

@@ -12,13 +12,13 @@ import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {ReporterOnStartOptions} from 'types/Reporters';
-import type {TestRunnerOptions} from '../TestRunner';
-import type {TestSelectionConfig} from '../SearchSource';
+import type {TestRunnerOptions} from '../test_runner';
+import type {TestSelectionConfig} from '../search_source';
 
 import chalk from 'chalk';
-import BaseReporter from './BaseReporter';
+import BaseReporter from './base_reporter';
 import {getSummary, pluralize} from './utils';
-import getResultHeader from './getResultHeader';
+import getResultHeader from './get_result_header';
 
 const ARROW = ' \u203A ';
 const FAIL_COLOR = chalk.bold.red;

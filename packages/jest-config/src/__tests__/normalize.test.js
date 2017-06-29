@@ -272,7 +272,7 @@ describe('haste', () => {
     const {options} = normalize(
       {
         haste: {
-          hasteImplModulePath: '<rootDir>/hasteImpl.js',
+          hasteImplModulePath: '<rootDir>/haste_impl.js',
         },
         rootDir: '/root/',
       },
@@ -280,7 +280,7 @@ describe('haste', () => {
     );
 
     expect(options.haste).toEqual({
-      hasteImplModulePath: '/root/hasteImpl.js',
+      hasteImplModulePath: '/root/haste_impl.js',
     });
   });
 });

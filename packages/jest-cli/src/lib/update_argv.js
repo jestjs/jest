@@ -10,7 +10,7 @@
 
 import type {Argv} from 'types/Argv';
 
-import getTestPathPattern from './getTestPathPattern';
+import getTestPathPattern from './get_test_path_pattern';
 
 type Options = {|
   testNamePattern?: string,

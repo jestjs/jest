@@ -12,7 +12,7 @@ jest.mock('fs');
 const fs = require('fs');
 const path = require('path');
 
-const TestSequencer = require('../TestSequencer');
+const TestSequencer = require('../test_sequencer');
 
 const FAIL = 0;
 const SUCCESS = 1;

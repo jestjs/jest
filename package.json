@@ -28,6 +28,7 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-markdown": "^1.0.0-beta.6",
     "eslint-plugin-react": "^7.1.0",
+    "eslint-plugin-unicorn": "^2.1.2",
     "flow-bin": "^0.48.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
@@ -114,7 +115,7 @@
     "transform": {
       "^.+\\.js$": "<rootDir>/packages/babel-jest"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/testSetupFile.js",
+    "setupTestFrameworkScriptFile": "<rootDir>/test_setup_file.js",
     "snapshotSerializers": [
       "<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js"
     ],
@@ -130,5 +131,6 @@
     "testMatch": [
       "**/*.test.js"
     ]
-  }
+  },
+  "dependencies": {}
 }

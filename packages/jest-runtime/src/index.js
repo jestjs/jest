@@ -362,14 +362,14 @@ class Runtime {
       // If the actual module file has a __mocks__ dir sitting immediately next
       // to it, look to see if there is a manual mock for this file.
       //
-      // subDir1/MyModule.js
-      // subDir1/__mocks__/MyModule.js
-      // subDir2/MyModule.js
-      // subDir2/__mocks__/MyModule.js
+      // subDir1/my_module.js
+      // subDir1/__mocks__/my_module.js
+      // subDir2/my_module.js
+      // subDir2/__mocks__/my_module.js
       //
       // Where some other module does a relative require into each of the
       // respective subDir{1,2} directories and expects a manual mock
-      // corresponding to that particular MyModule.js file.
+      // corresponding to that particular my_module.js file.
       const moduleDir = path.dirname(modulePath);
       const moduleFileName = path.basename(modulePath);
       const potentialManualMock = path.join(

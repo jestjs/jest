@@ -13,7 +13,7 @@ const Immutable = require('immutable');
 const ReactElementPlugin = require('../plugins/react_element');
 const ReactTestComponentPlugin = require('../plugins/react_test_component');
 const ImmutablePlugins = require('../plugins/immutable_plugins');
-const toPrettyPrintTo = require('./expect-util').getPrettyPrint(
+const toPrettyPrintTo = require('./expect_util').getPrettyPrint(
   [ReactElementPlugin, ReactTestComponentPlugin].concat(ImmutablePlugins),
 );
 

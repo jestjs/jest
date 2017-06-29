@@ -11,14 +11,14 @@
 'use strict';
 
 const chalk = require('chalk');
-const TestWatcher = require('../TestWatcher');
+const TestWatcher = require('../test_watcher');
 const {KEYS} = require('../constants');
 
 const runJestMock = jest.fn();
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
 jest.doMock(
-  '../runJest',
+  '../run_jest',
   () =>
     function() {
       const args = Array.from(arguments);

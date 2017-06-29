@@ -13,7 +13,7 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-import preRunMessage from '../preRunMessage';
+import preRunMessage from '../pre_run_message';
 
 class BaseReporter {
   _error: ?Error;

@@ -17,7 +17,7 @@ require('RegularModule');
 
 // We only care about the static analysis, not about the runtime.
 const lazyRequire = () => {
-  require('image!not-really-a-module');
+  require('image!not_really_a_module');
   require('cat.png');
   require('dog.png');
 };

@@ -9,7 +9,7 @@
 */
 'use strict';
 
-const Prompt = require('../Prompt');
+const Prompt = require('../prompt');
 let {KEYS} = require('../../constants');
 
 KEYS = Object.assign({}, KEYS, {
