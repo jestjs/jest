@@ -422,6 +422,14 @@ describe('moduleMocker', () => {
     });
   });
 
+  test('mockImplementation resets the mock', () => {
+    const fn = jest.fn();
+    expect(fn()).toBeUndefined();
+    fn.mockReturnValue('returnValue');
+    fn.mockImplementation(() => 'foo');
+    expect(fn()).toBe('foo');
+  });
+
   it('should recognize a mocked function', () => {
     const mockFn = moduleMocker.fn();
 
