@@ -11,3 +11,4 @@ website/core/metadata*.js
 website/i18n/*.js
 website/src/jest/docs
 website/src/jest/blog
+!.eslintrc.js
