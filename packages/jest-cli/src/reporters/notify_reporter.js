@@ -14,7 +14,7 @@ import type {Context} from 'types/Context';
 import path from 'path';
 import util from 'util';
 import notifier from 'node-notifier';
-import BaseReporter from './BaseReporter';
+import BaseReporter from './base_reporter';
 
 const isDarwin = process.platform === 'darwin';
 

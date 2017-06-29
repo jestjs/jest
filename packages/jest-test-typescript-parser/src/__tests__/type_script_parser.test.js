@@ -9,6 +9,6 @@
 'use strict';
 
 const {parse} = require('../type_script_parser');
-const {parserTests} = require('../../../../fixtures/parserTests');
+const {parserTests} = require('../../../../fixtures/parser_tests');
 
 parserTests(parse);

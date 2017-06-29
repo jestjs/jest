@@ -101,7 +101,7 @@ const validConfig = {
   rootDir: '/',
   roots: ['<rootDir>'],
   setupFiles: ['<rootDir>/setup.js'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
+  setupTestFrameworkScriptFile: '<rootDir>/test_setup_file.js',
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',

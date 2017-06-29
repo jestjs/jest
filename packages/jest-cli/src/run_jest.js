@@ -11,21 +11,21 @@
 import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
 import type {GlobalConfig} from 'types/Config';
-import type {TestSelectionConfig} from './SearchSource';
+import type {TestSelectionConfig} from './search_source';
 import type {AggregatedResult} from 'types/TestResult';
-import type TestWatcher from './TestWatcher';
+import type TestWatcher from './test_watcher';
 
 import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
-import getMaxWorkers from './lib/getMaxWorkers';
-import getTestPathPattern from './lib/getTestPathPattern';
-import SearchSource from './SearchSource';
-import updateArgv from './lib/updateArgv';
-import TestRunner from './TestRunner';
-import TestSequencer from './TestSequencer';
-import {makeEmptyAggregatedTestResult} from './testResultHelpers';
+import getMaxWorkers from './lib/get_max_workers';
+import getTestPathPattern from './lib/get_test_path_pattern';
+import SearchSource from './search_source';
+import updateArgv from './lib/update_argv';
+import TestRunner from './test_runner';
+import TestSequencer from './test_sequencer';
+import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(

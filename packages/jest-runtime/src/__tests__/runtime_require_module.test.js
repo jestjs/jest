@@ -258,7 +258,7 @@ describe('Runtime requireModule', () => {
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        './UTF8WithBOM.js',
+        './utf8_with_bom.js',
       );
       expect(exports).toBe('isModuleEncodedInUTF8WithBOM');
     }));
@@ -267,7 +267,7 @@ describe('Runtime requireModule', () => {
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        './UTF8WithBOM.json',
+        './utf8_with_bom.json',
       );
       expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
     }));

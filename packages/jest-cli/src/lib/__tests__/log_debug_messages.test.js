@@ -10,7 +10,7 @@
 
 'use strict';
 
-const logDebugMessages = require('../logDebugMessages');
+const logDebugMessages = require('../log_debug_messages');
 
 jest.mock('../../../package.json', () => ({version: 123}));
 

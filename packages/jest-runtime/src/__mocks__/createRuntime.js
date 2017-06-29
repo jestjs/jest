@@ -41,7 +41,7 @@ module.exports = function createRuntime(filename, config) {
         config.rootDir,
         'subdir2',
         'module_dir',
-        'moduleDirModule.js',
+        'module_dir_module.js',
       );
       return runtime;
     });

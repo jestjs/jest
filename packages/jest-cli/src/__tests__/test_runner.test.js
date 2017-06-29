@@ -10,9 +10,9 @@
 
 'use strict';
 
-const TestRunner = require('../TestRunner');
-const TestWatcher = require('../TestWatcher');
-const SummaryReporter = require('../reporters/SummaryReporter');
+const TestRunner = require('../test_runner');
+const TestWatcher = require('../test_watcher');
+const SummaryReporter = require('../reporters/summary_reporter');
 
 let workerFarmMock;
 
@@ -27,8 +27,8 @@ jest.mock('worker-farm', () => {
   return mock;
 });
 
-jest.mock('../TestWorker', () => {});
-jest.mock('../reporters/DefaultReporter');
+jest.mock('../test_worker', () => {});
+jest.mock('../reporters/default_reporter');
 
 test('.addReporter() .removeReporter()', () => {
   const runner = new TestRunner({}, {});

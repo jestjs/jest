@@ -19,8 +19,8 @@ import fs from 'fs';
 import {Console, NullConsole, setGlobal} from 'jest-util';
 import {getTestEnvironment} from 'jest-config';
 import docblock from 'jest-docblock';
-import BufferedConsole from './lib/BufferedConsole';
-import getConsoleOutput from './reporters/getConsoleOutput';
+import BufferedConsole from './lib/buffered_console';
+import getConsoleOutput from './reporters/get_console_output';
 
 function runTest(
   path: Path,

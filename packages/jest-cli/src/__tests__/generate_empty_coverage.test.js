@@ -11,7 +11,7 @@
 
 const os = require('os');
 
-const generateEmptyCoverage = require('../generateEmptyCoverage');
+const generateEmptyCoverage = require('../generate_empty_coverage');
 
 jest.mock('jest-runtime', () => {
   const realRuntime = require.requireActual('jest-runtime');

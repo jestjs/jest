@@ -24,7 +24,7 @@ jest
   .mock('vm');
 
 jest.mock(
-  'test-preprocessor',
+  'test_preprocessor',
   () => {
     const escapeStrings = str => {
       return str.replace(/'/, `'`);
@@ -233,12 +233,12 @@ describe('ScriptTransformer', () => {
 
   it('uses the supplied preprocessor', () => {
     config = Object.assign(config, {
-      transform: [['^.+\\.js$', 'test-preprocessor']],
+      transform: [['^.+\\.js$', 'test_preprocessor']],
     });
     const scriptTransformer = new ScriptTransformer(config);
     scriptTransformer.transform('/fruits/banana.js', {});
 
-    expect(require('test-preprocessor').getCacheKey).toBeCalled();
+    expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
 
@@ -250,7 +250,7 @@ describe('ScriptTransformer', () => {
   it('uses multiple preprocessors', () => {
     config = Object.assign(config, {
       transform: [
-        ['^.+\\.js$', 'test-preprocessor'],
+        ['^.+\\.js$', 'test_preprocessor'],
         ['^.+\\.css$', 'css-preprocessor'],
       ],
     });
@@ -259,7 +259,7 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', {});
     scriptTransformer.transform('/styles/App.css', {});
 
-    expect(require('test-preprocessor').getCacheKey).toBeCalled();
+    expect(require('test_preprocessor').getCacheKey).toBeCalled();
     expect(require('css-preprocessor').getCacheKey).toBeCalled();
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
     expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
@@ -353,7 +353,7 @@ describe('ScriptTransformer', () => {
 
   it('reads values from the cache', () => {
     const transformConfig = Object.assign(config, {
-      transform: [['^.+\\.js$', 'test-preprocessor']],
+      transform: [['^.+\\.js$', 'test_preprocessor']],
     });
     let scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});

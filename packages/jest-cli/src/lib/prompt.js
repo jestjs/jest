@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {ScrollOptions} from './scrollList';
+import type {ScrollOptions} from './scroll_list';
 
 import {KEYS} from '../constants';
 

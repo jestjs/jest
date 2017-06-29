@@ -34,7 +34,7 @@ describe('SearchSource', () => {
 
   beforeEach(() => {
     Runtime = require('jest-runtime');
-    SearchSource = require('../SearchSource');
+    SearchSource = require('../search_source');
     normalize = require('jest-config').normalize;
   });
 
@@ -415,7 +415,7 @@ describe('SearchSource', () => {
     });
 
     it('returns empty search result if no related tests were found', () => {
-      const input = ['no tests.js'];
+      const input = ['no_tests.js'];
       const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.tests).toEqual([]);
     });
