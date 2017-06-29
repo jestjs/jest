@@ -9,13 +9,14 @@
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
+const slash = require('slash');
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('module_name_mapper_wrong_config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
+  expect(slash(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {
@@ -23,5 +24,5 @@ test('moduleNameMapper correct configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);
-  expect(rest).toMatchSnapshot();
+  expect(slash(rest)).toMatchSnapshot();
 });
