@@ -82,6 +82,10 @@ function buildBrowserPackage(p) {
   const srcDir = path.resolve(p, SRC_DIR);
   const pkgJsonPath = path.resolve(p, 'package.json');
 
+  if (!fs.existsSync(pkgJsonPath)) {
+    return;
+  }
+
   const {browser} = require(pkgJsonPath);
   if (browser) {
     if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
