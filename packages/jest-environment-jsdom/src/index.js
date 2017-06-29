@@ -24,7 +24,7 @@ class JSDOMEnvironment {
 
   constructor(config: ProjectConfig): void {
     // lazy require
-    this.document = JSDom.jsdom(/* markup */ undefined, {
+    this.document = JSDom.jsdom('<!DOCTYPE html>', {
       url: config.testURL,
     });
     const global = (this.global = this.document.defaultView);
