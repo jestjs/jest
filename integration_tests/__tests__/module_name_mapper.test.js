@@ -9,17 +9,17 @@
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
+const skipOnWindows = require('skipOnWindows');
 
-// To pass on Windows
-const normalizeSummaryPaths = string =>
-  string.replace('__tests__\\index.js', '__tests__/index.js');
+// Works on windows, we just need to adjust snapshot test output
+skipOnWindows.suite();
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('module_name_mapper_wrong_config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
-  expect(normalizeSummaryPaths(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {
@@ -27,5 +27,5 @@ test('moduleNameMapper correct configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);
-  expect(normalizeSummaryPaths(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
