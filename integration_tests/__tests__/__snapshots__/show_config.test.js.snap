@@ -9,7 +9,8 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     "cacheDirectory": "/tmp/jest",
     "clearMocks": false,
     "coveragePathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "/\\\\.[^\\\\.]+/"
     ],
     "globals": {},
     "haste": {
@@ -43,7 +44,8 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
       "**/?(*.)(spec|test).js?(x)"
     ],
     "testPathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "/\\\\.[^\\\\.]+/"
     ],
     "testRegex": "",
     "testRunner": "/mocked/root/path/jest/packages/jest-jasmine2/build/index.js",
@@ -56,7 +58,8 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
       ]
     ],
     "transformIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "/\\\\.[^\\\\.]+/"
     ]
   },
   "framework": "jasmine2",

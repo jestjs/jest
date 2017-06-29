@@ -73,7 +73,6 @@ describe('SearchSource', () => {
           maxWorkers,
         }).then(context => {
           searchSource = new SearchSource(context);
-
           const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
           expect(searchSource.isTestFilePath(path)).toEqual(true);
         });
@@ -120,12 +119,9 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
           .sort();
-        expect(relPaths).toEqual(
-          [
-            path.normalize('.hiddenFolder/not-really-a-test.txt'),
-            path.normalize('__testtests__/not-really-a-test.txt'),
-          ].sort(),
-        );
+        expect(relPaths).toEqual([
+          path.normalize('__testtests__/not-really-a-test.txt'),
+        ]);
       });
     });
 
@@ -144,12 +140,9 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
           .sort();
-        expect(relPaths).toEqual(
-          [
-            path.normalize('.hiddenFolder/not-really-a-test.txt'),
-            path.normalize('__testtests__/not-really-a-test.txt'),
-          ].sort(),
-        );
+        expect(relPaths).toEqual([
+          path.normalize('__testtests__/not-really-a-test.txt'),
+        ]);
       });
     });
 
@@ -336,6 +329,30 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.jsx'),
         ]);
       });
+    });
+  });
+
+  describe('ignores tests', () => {
+    it('node_modules', () => {
+      const testPath =
+        path.sep +
+        path.join('node_modules', 'module-name', '__tests__', 'test.js');
+      expect(searchSource.isTestFilePath(testPath)).toEqual(false);
+    });
+
+    it('dot directories', () => {
+      const testPath =
+        path.sep +
+        path.join(
+          '.cache',
+          'yarn',
+          'v1',
+          'module-name',
+          'to',
+          '__tests__',
+          'test.js',
+        );
+      expect(searchSource.isTestFilePath(testPath)).toEqual(false);
     });
   });
 
