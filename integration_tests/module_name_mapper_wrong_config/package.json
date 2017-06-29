@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less)$": "no-such-module"
+    }
+  }
+}
