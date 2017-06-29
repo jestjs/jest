@@ -14,6 +14,9 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import constants from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
+const DOT_DIRECTORIES_REGEXP = replacePathSepForRegex(
+  constants.DOT_DIRECTORIES,
+);
 
 module.exports = ({
   automock: false,
@@ -28,7 +31,7 @@ module.exports = ({
     '<rootDir>/this-directory-is-covered/covered.js': true,
   },
   coverageDirectory: 'coverage',
-  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: {
     global: {
@@ -73,7 +76,7 @@ module.exports = ({
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
   testNamePattern: 'test signature',
-  testPathIgnorePatterns: [NODE_MODULES_REGEXP],
+  testPathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
@@ -82,7 +85,7 @@ module.exports = ({
   transform: {
     '^.+\\.js$': '<rootDir>/preprocessor.js',
   },
-  transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   unmockedModulePathPatterns: ['mock'],
   updateSnapshot: true,
   useStderr: false,

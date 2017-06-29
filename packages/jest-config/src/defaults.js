@@ -16,6 +16,9 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import constants from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
+const DOT_DIRECTORIES_REGEXP = replacePathSepForRegex(
+  constants.DOT_DIRECTORIES,
+);
 
 const cacheDirectory = (() => {
   const {getuid} = process;
@@ -35,7 +38,7 @@ module.exports = ({
   cache: true,
   cacheDirectory,
   clearMocks: false,
-  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
   globals: {},
@@ -55,12 +58,12 @@ module.exports = ({
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
-  testPathIgnorePatterns: [NODE_MODULES_REGEXP],
+  testPathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   testRegex: '',
   testResultsProcessor: null,
   testURL: 'about:blank',
   timers: 'real',
-  transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   useStderr: false,
   verbose: null,
   watch: false,

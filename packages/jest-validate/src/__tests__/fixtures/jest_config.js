@@ -12,6 +12,7 @@ const os = require('os');
 const path = require('path');
 const chalk = require('chalk');
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+const DOT_DIRECTORIES = path.sep + '\\.[^\\.]+' + path.sep;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
     return string.replace(/(\/|\\(?!\.))/g, '\\\\');
@@ -20,6 +21,7 @@ const replacePathSepForRegex = (string: string) => {
 };
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
+const DOT_DIRECTORIES_REGEXP = replacePathSepForRegex(DOT_DIRECTORIES);
 
 const defaultConfig = {
   automock: false,
@@ -27,7 +29,7 @@ const defaultConfig = {
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
   clearMocks: false,
-  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
   globals: {},
@@ -46,12 +48,12 @@ const defaultConfig = {
   roots: ['<rootDir>'],
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
-  testPathIgnorePatterns: [NODE_MODULES_REGEXP],
+  testPathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   testResultsProcessor: null,
   testURL: 'about:blank',
   timers: 'real',
-  transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   useStderr: false,
   verbose: null,
   watch: false,
@@ -70,7 +72,7 @@ const validConfig = {
     '<rootDir>/this-directory-is-covered/covered.js': true,
   },
   coverageDirectory: 'coverage',
-  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coveragePathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: {
     global: {
@@ -106,7 +108,7 @@ const validConfig = {
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
   testNamePattern: 'test signature',
-  testPathIgnorePatterns: [NODE_MODULES_REGEXP],
+  testPathIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
@@ -115,7 +117,7 @@ const validConfig = {
   transform: {
     '^.+\\.js$': '<rootDir>/preprocessor.js',
   },
-  transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformIgnorePatterns: [NODE_MODULES_REGEXP, DOT_DIRECTORIES_REGEXP],
   unmockedModulePathPatterns: ['mock'],
   updateSnapshot: true,
   useStderr: false,

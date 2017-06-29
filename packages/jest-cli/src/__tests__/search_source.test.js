@@ -73,7 +73,6 @@ describe('SearchSource', () => {
           maxWorkers,
         }).then(context => {
           searchSource = new SearchSource(context);
-
           const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
           expect(searchSource.isTestFilePath(path)).toEqual(true);
         });
@@ -120,12 +119,9 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
           .sort();
-        expect(relPaths).toEqual(
-          [
-            path.normalize('.hiddenFolder/not-really-a-test.txt'),
-            path.normalize('__testtests__/not-really-a-test.txt'),
-          ].sort(),
-        );
+        expect(relPaths).toEqual([
+          path.normalize('__testtests__/not-really-a-test.txt'),
+        ]);
       });
     });
 
@@ -144,12 +140,9 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
           .sort();
-        expect(relPaths).toEqual(
-          [
-            path.normalize('.hiddenFolder/not-really-a-test.txt'),
-            path.normalize('__testtests__/not-really-a-test.txt'),
-          ].sort(),
-        );
+        expect(relPaths).toEqual([
+          path.normalize('__testtests__/not-really-a-test.txt'),
+        ]);
       });
     });
 
