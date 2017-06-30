@@ -21,7 +21,6 @@ const testResult = {
 
 let DefaultReporter;
 let stdout;
-let stderr;
 
 let oldIsTTY;
 let oldStderr;
@@ -39,16 +38,16 @@ beforeEach(() => {
   // fake reporters created while testing to mess with the real output of the
   // tests itself.
   process.stdin.isTTY = true;
+  process.stderr.write = jest.fn();
   stdout = process.stdout.write = jest.fn();
-  stderr = process.stderr.write = jest.fn();
 
   DefaultReporter = require('../default_reporter');
 });
 
 afterEach(() => {
   process.stdin.isTTY = oldIsTTY;
-  process.stdout.write = oldStdout;
   process.stderr.write = oldStderr;
+  process.stdout.write = oldStdout;
 });
 
 test('normal output, everything goes to stdout', () => {
@@ -56,7 +55,7 @@ test('normal output, everything goes to stdout', () => {
 
   reporter.onRunStart(aggregatedResults, options);
   reporter.onTestStart(testCase);
-  reporter.onTestResult(testCase, testResult, aggregatedResults);;
+  reporter.onTestResult(testCase, testResult, aggregatedResults);
   reporter.onRunComplete();
 
   jest.runAllTimers();
@@ -69,7 +68,7 @@ test('when using stderr as output, no stdout call is made', () => {
 
   reporter.onRunStart(aggregatedResults, options);
   reporter.onTestStart(testCase);
-  reporter.onTestResult(testCase, testResult, aggregatedResults);;
+  reporter.onTestResult(testCase, testResult, aggregatedResults);
   reporter.onRunComplete();
 
   jest.runAllTimers();
