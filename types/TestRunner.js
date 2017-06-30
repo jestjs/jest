@@ -17,8 +17,8 @@ import type Runtime from 'jest-runtime';
 
 export type Test = {|
   context: Context,
-  path: Path,
   duration: ?number,
+  path: Path,
 |};
 
 export type Reporter = {
