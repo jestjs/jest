@@ -1,7 +1,7 @@
 {
   "private": true,
   "devDependencies": {
-    "ansi-regex": "^2.0.0",
+    "ansi-regex": "^3.0.0",
     "ansi-styles": "^3.0.0",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
