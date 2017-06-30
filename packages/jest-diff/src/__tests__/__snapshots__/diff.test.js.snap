@@ -4,7 +4,7 @@ exports[`collapses big diffs to patch format 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-@@ -6,9 +6,9 @@
+@@ -6,9 +6,9 @@</>
 </><dim>     4,
 <dim>     5,
 <dim>     6,
@@ -19,7 +19,7 @@ exports[`collapses big diffs to patch format 1`] = `
 
 exports[`falls back to not call toJSON if objects look identical 1`] = `
 "<dim>Compared values serialize to the same structure.
-Printing internal object structure without calling \`toJSON\` instead.
+<dim>Printing internal object structure without calling \`toJSON\` instead.
 
 <green>- Expected</>
 <red>+ Received</>
