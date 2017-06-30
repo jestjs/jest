@@ -63,14 +63,10 @@ class DefaultReporter extends BaseReporter {
     const flushBufferedOutput = () => {
       const string = buffer.join('');
       buffer = [];
-
       // This is to avoid conflicts between random output and status text
       this._clearStatus();
-      if (string) {
-        originalWrite.call(stream, string);
-      }
+      originalWrite.call(stream, string);
       this._printStatus();
-
       this._bufferedOutput.delete(flushBufferedOutput);
     };
 
@@ -109,11 +105,7 @@ class DefaultReporter extends BaseReporter {
 
   _clearStatus() {
     if (isInteractive) {
-      if (this._globalConfig.useStderr) {
-        this._err(this._clear);
-      } else {
-        this._out(this._clear);
-      }
+      this._out(this._clear);
     }
   }
 
@@ -121,11 +113,7 @@ class DefaultReporter extends BaseReporter {
     const {content, clear} = this._status.get();
     this._clear = clear;
     if (isInteractive) {
-      if (this._globalConfig.useStderr) {
-        this._err(content);
-      } else {
-        this._out(content);
-      }
+      this._out(content);
     }
   }
 
