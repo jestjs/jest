@@ -6,7 +6,7 @@
   "dependencies": {
     "ansi-escapes": "^1.4.0",
     "callsites": "^2.0.0",
-    "chalk": "^1.1.3",
+    "chalk": "^2.0.1",
     "graceful-fs": "^4.1.11",
     "is-ci": "^1.0.10",
     "istanbul-api": "^1.1.1",
@@ -30,6 +30,7 @@
     "pify": "^2.3.0",
     "slash": "^1.0.0",
     "string-length": "^1.0.1",
+    "strip-ansi": "^4.0.0",
     "throat": "^3.0.0",
     "which": "^1.2.12",
     "worker-farm": "^1.3.1",

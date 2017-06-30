@@ -11,6 +11,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
+import stripAnsi from 'strip-ansi';
 import colorize from './colorize';
 
 const trim = '...';
@@ -30,8 +31,8 @@ const highlight = (
     return chalk.dim(filePath);
   }
 
-  rawPath = chalk.stripColor(rawPath);
-  filePath = chalk.stripColor(filePath);
+  rawPath = stripAnsi(rawPath);
+  filePath = stripAnsi(filePath);
   const match = rawPath.match(regexp);
 
   if (!match) {

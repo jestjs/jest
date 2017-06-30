@@ -13,6 +13,7 @@
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import stringLength from 'string-length';
+import stripAnsi from 'strip-ansi';
 import Prompt from './prompt';
 
 const pluralize = (count: number, text: string) =>
@@ -89,8 +90,8 @@ const formatTypeaheadSelection = (
   prompt: Prompt,
 ) => {
   if (index === activeIndex) {
-    prompt.setTypheadheadSelection(chalk.stripColor(item));
-    return chalk.black.bgYellow(chalk.stripColor(item));
+    prompt.setTypheadheadSelection(stripAnsi(item));
+    return chalk.black.bgYellow(stripAnsi(item));
   }
   return item;
 };
