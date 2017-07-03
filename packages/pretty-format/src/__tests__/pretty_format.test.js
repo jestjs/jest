@@ -329,6 +329,25 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val, options)).toEqual('');
   });
 
+  it('throws if plugin does not return a string', () => {
+    const val = 123;
+    const options = {
+      plugins: [
+        {
+          print(val) {
+            return val;
+          },
+          test() {
+            return true;
+          },
+        },
+      ],
+    };
+    expect(() => {
+      prettyFormat(val, options);
+    }).toThrow();
+  });
+
   it('supports plugins with deeply nested arrays (#24)', () => {
     const val = [[1, 2], [3, 4]];
     expect(
