@@ -726,6 +726,7 @@ function findPlugin(plugins: Plugins, val: any) {
       return plugins[p];
     }
   }
+
   return null;
 }
 
@@ -766,7 +767,7 @@ function print(
     );
     if (typeof pluginsResult !== 'string') {
       throw new Error(
-        `pretty-format: Plugin must return type string" but instead returned "${typeof pluginsResult}".`,
+        `pretty-format: Plugin must return type "string" but instead returned "${typeof pluginsResult}".`,
       );
     }
     return pluginsResult;
@@ -929,7 +930,7 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
       );
       if (typeof pluginsResult !== 'string') {
         throw new Error(
-          `pretty-format: Plugin must return type string" but instead returned "${typeof pluginsResult}".`,
+          `pretty-format: Plugin must return type "string" but instead returned "${typeof pluginsResult}".`,
         );
       }
       return pluginsResult;
