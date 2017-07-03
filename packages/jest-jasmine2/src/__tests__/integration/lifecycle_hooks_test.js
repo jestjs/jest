@@ -56,3 +56,34 @@ describe('test lifecycle hooks', () => {
     it('does it 1', pushMessage('outer it 1'));
   });
 });
+
+describe('shares this context between nested describe blocks', () => {
+  const actions = [];
+  function pushMessage(message) {
+    actions.push(message);
+  }
+
+  beforeEach(function() {
+    this.x = 42;
+    pushMessage('beforeEach1-' + this.x);
+  });
+
+  describe('Something', () => {
+    beforeEach(function() {
+      pushMessage('beforeEach2-' + this.x);
+    });
+
+    it('contains all actions', function() {
+      this.x = 42;
+      pushMessage('it-' + this.x);
+
+      const expected = [
+        'beforeEach1-42',
+        'beforeEach2-42',
+        'it-42',
+      ];
+
+      expect(actions).toEqual(expected);
+    });
+  });
+});
