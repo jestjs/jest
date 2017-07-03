@@ -65,7 +65,7 @@ function promisifyIt(originalFn, env) {
     }
 
     const asyncFn = function(done) {
-      const returnValue = fn.call({});
+      const returnValue = fn.call(this);
 
       if (isPromise(returnValue)) {
         returnValue.then(done, done.fail);
