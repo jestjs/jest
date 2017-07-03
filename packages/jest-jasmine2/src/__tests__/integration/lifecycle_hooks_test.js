@@ -74,7 +74,6 @@ describe('shares this context between nested describe blocks', () => {
     });
 
     it('contains all actions', function() {
-      this.x = 42;
       pushMessage('it-' + this.x);
 
       const expected = [
