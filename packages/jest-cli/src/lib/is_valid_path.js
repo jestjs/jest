@@ -10,8 +10,6 @@
 
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
-import path from 'path';
-
 const SNAPSHOT_EXTENSION = 'snap';
 
 function isValidPath(
@@ -19,11 +17,8 @@ function isValidPath(
   config: ProjectConfig,
   filePath: string,
 ) {
-  const coverageDirectory =
-    globalConfig.coverageDirectory || path.resolve(config.rootDir, 'coverage');
-
   return (
-    !filePath.includes(coverageDirectory) &&
+    !filePath.includes(globalConfig.coverageDirectory) &&
     !filePath.endsWith(`.${SNAPSHOT_EXTENSION}`)
   );
 }
