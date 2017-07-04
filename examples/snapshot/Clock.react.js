@@ -25,7 +25,9 @@ export default class Clock extends React.Component {
 
   render() {
     return (
-      <p>{this.state.seconds} seconds have ellapsed since the UNIX epoch.</p>
+      <p>
+        {this.state.seconds} seconds have ellapsed since the UNIX epoch.
+      </p>
     );
   }
 }

@@ -61,7 +61,9 @@ const printStartTyping = (
   pipe: stream$Writable | tty$WriteStream,
 ) => {
   pipe.write(
-    `\n\n ${chalk.italic.yellow(`Start typing to filter by a ${entity} regex pattern.`)}`,
+    `\n\n ${chalk.italic.yellow(
+      `Start typing to filter by a ${entity} regex pattern.`,
+    )}`,
   );
 };
 

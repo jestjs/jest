@@ -64,32 +64,37 @@ const options = {
   },
   browser: {
     default: undefined,
-    description: 'Respect the "browser" field in package.json ' +
+    description:
+      'Respect the "browser" field in package.json ' +
       'when resolving modules. Some packages export different versions ' +
       'based on whether they are operating in node.js or a browser.',
     type: 'boolean',
   },
   cache: {
     default: undefined,
-    description: 'Whether to use the transform cache. Disable the cache ' +
+    description:
+      'Whether to use the transform cache. Disable the cache ' +
       'using --no-cache.',
     type: 'boolean',
   },
   cacheDirectory: {
-    description: 'The directory where Jest should store its cached ' +
+    description:
+      'The directory where Jest should store its cached ' +
       ' dependency information.',
     type: 'string',
   },
   ci: {
     default: isCI,
-    description: 'Whether to run Jest in continuous integration (CI) mode. ' +
+    description:
+      'Whether to run Jest in continuous integration (CI) mode. ' +
       'This option is on by default in most popular CI environments. It will ' +
       ' prevent snapshots from being written unless explicitly requested.',
     type: 'boolean',
   },
   clearMocks: {
     default: undefined,
-    description: 'Automatically clear mock calls and instances between every ' +
+    description:
+      'Automatically clear mock calls and instances between every ' +
       'test. Equivalent to calling jest.clearAllMocks() between each test.',
     type: 'boolean',
   },
@@ -99,7 +104,8 @@ const options = {
     type: 'boolean',
   },
   collectCoverageFrom: {
-    description: 'relative to <rootDir> glob pattern matching the files ' +
+    description:
+      'relative to <rootDir> glob pattern matching the files ' +
       'that coverage info needs to be collected from.',
     type: 'string',
   },
@@ -109,7 +115,8 @@ const options = {
   },
   color: {
     default: undefined,
-    description: 'Forces test results output color highlighting (even if ' +
+    description:
+      'Forces test results output color highlighting (even if ' +
       'stdout is not a TTY). Set to false if you would like to have no colors.',
     type: 'boolean',
   },
@@ -120,7 +127,8 @@ const options = {
   },
   config: {
     alias: 'c',
-    description: 'The path to a jest config file specifying how to find ' +
+    description:
+      'The path to a jest config file specifying how to find ' +
       'and execute tests. If no rootDir is set in the config, the current ' +
       'directory is assumed to be the rootDir for the project. This can also ' +
       'be a JSON encoded value which Jest will use as configuration.',
@@ -128,7 +136,8 @@ const options = {
   },
   coverage: {
     default: undefined,
-    description: 'Indicates that test coverage information should be ' +
+    description:
+      'Indicates that test coverage information should be ' +
       'collected and reported in the output.',
     type: 'boolean',
   },
@@ -137,18 +146,21 @@ const options = {
     type: 'string',
   },
   coveragePathIgnorePatterns: {
-    description: 'An array of regexp pattern strings that are matched ' +
+    description:
+      'An array of regexp pattern strings that are matched ' +
       'against all file paths before executing the test. If the file path' +
       'matches any of the patterns, coverage information will be skipped.',
     type: 'array',
   },
   coverageReporters: {
-    description: 'A list of reporter names that Jest uses when writing ' +
+    description:
+      'A list of reporter names that Jest uses when writing ' +
       'coverage reports. Any istanbul reporter can be used.',
     type: 'array',
   },
   coverageThreshold: {
-    description: 'A JSON string with which will be used to configure ' +
+    description:
+      'A JSON string with which will be used to configure ' +
       'minimum threshold enforcement for coverage results',
     type: 'string',
   },
@@ -158,7 +170,8 @@ const options = {
     type: 'boolean',
   },
   env: {
-    description: 'The test environment used for all tests. This can point to ' +
+    description:
+      'The test environment used for all tests. This can point to ' +
       'any file or node module. Examples: `jsdom`, `node` or ' +
       '`path/to/my-environment.js`',
     type: 'string',
@@ -171,93 +184,107 @@ const options = {
   },
   findRelatedTests: {
     default: undefined,
-    description: 'Find related tests for a list of source files that were ' +
+    description:
+      'Find related tests for a list of source files that were ' +
       'passed in as arguments. Useful for pre-commit hook integration to run ' +
       'the minimal amount of tests necessary.',
     type: 'boolean',
   },
   forceExit: {
     default: undefined,
-    description: 'Force Jest to exit after all tests have completed running. ' +
+    description:
+      'Force Jest to exit after all tests have completed running. ' +
       'This is useful when resources set up by test code cannot be ' +
       'adequately cleaned up.',
     type: 'boolean',
   },
   globals: {
-    description: 'A JSON string with map of global variables that need ' +
+    description:
+      'A JSON string with map of global variables that need ' +
       'to be available in all test environments.',
     type: 'string',
   },
   haste: {
-    description: 'A JSON string with map of variables for the haste ' +
-      ' module system',
+    description:
+      'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
   json: {
     default: undefined,
-    description: 'Prints the test results in JSON. This mode will send all ' +
+    description:
+      'Prints the test results in JSON. This mode will send all ' +
       'other test output and user messages to stderr.',
     type: 'boolean',
   },
   lastCommit: {
     default: undefined,
-    description: 'Will run all tests affected by file changes in the last ' +
+    description:
+      'Will run all tests affected by file changes in the last ' +
       'commit made.',
     type: 'boolean',
   },
   listTests: {
     default: false,
-    description: 'Lists all tests Jest will run given the arguments and ' +
+    description:
+      'Lists all tests Jest will run given the arguments and ' +
       'exits. Most useful in a CI system together with `--findRelatedTests` ' +
       'to determine the tests Jest will run based on specific files',
     type: 'boolean',
   },
   logHeapUsage: {
     default: undefined,
-    description: 'Logs the heap usage after every test. Useful to debug ' +
+    description:
+      'Logs the heap usage after every test. Useful to debug ' +
       'memory leaks. Use together with `--runInBand` and `--expose-gc` in ' +
       'node.',
     type: 'boolean',
   },
   mapCoverage: {
     default: undefined,
-    description: 'Maps code coverage reports against original source code ' +
+    description:
+      'Maps code coverage reports against original source code ' +
       'when transformers supply source maps.',
     type: 'boolean',
   },
   maxWorkers: {
     alias: 'w',
-    description: 'Specifies the maximum number of workers the worker-pool ' +
+    description:
+      'Specifies the maximum number of workers the worker-pool ' +
       'will spawn for running tests. This defaults to the number of the ' +
       'cores available on your machine. (its usually best not to override ' +
       'this default)',
     type: 'number',
   },
   moduleDirectories: {
-    description: 'An array of directory names to be searched recursively ' +
+    description:
+      'An array of directory names to be searched recursively ' +
       "up from the requiring module's location.",
     type: 'array',
   },
   moduleFileExtensions: {
-    description: 'An array of file extensions your modules use. If you ' +
+    description:
+      'An array of file extensions your modules use. If you ' +
       'require modules without specifying a file extension, these are the ' +
       'extensions Jest will look for. ',
     type: 'array',
   },
   moduleNameMapper: {
-    description: 'A JSON string with a map from regular expressions to ' +
+    description:
+      'A JSON string with a map from regular expressions to ' +
       'module names that allow to stub out resources, like images or ' +
       'styles with a single module',
     type: 'string',
   },
   modulePathIgnorePatterns: {
-    description: 'An array of regexp pattern strings that are matched ' +
+    description:
+      'An array of regexp pattern strings that are matched ' +
       'against all module paths before those paths are to be considered ' +
       '"visible" to the module loader.',
     type: 'array',
   },
   modulePaths: {
-    description: 'An alternative API to setting the NODE_PATH env variable, ' +
+    description:
+      'An alternative API to setting the NODE_PATH env variable, ' +
       'modulePaths is an array of absolute paths to additional locations to ' +
       'search when resolving modules.',
     type: 'array',
@@ -275,13 +302,15 @@ const options = {
   onlyChanged: {
     alias: 'o',
     default: undefined,
-    description: 'Attempts to identify which tests to run based on which ' +
+    description:
+      'Attempts to identify which tests to run based on which ' +
       "files have changed in the current repository. Only works if you're " +
       'running tests in a git repository at the moment.',
     type: 'boolean',
   },
   outputFile: {
-    description: 'Write test results to a file when the --json option is ' +
+    description:
+      'Write test results to a file when the --json option is ' +
       'also specified.',
     type: 'string',
   },
@@ -290,7 +319,8 @@ const options = {
     type: 'string',
   },
   projects: {
-    description: 'A list of projects that use Jest to run all tests of all ' +
+    description:
+      'A list of projects that use Jest to run all tests of all ' +
       'projects in a single instance of Jest.',
     type: 'array',
   },
@@ -300,13 +330,15 @@ const options = {
   },
   resetMocks: {
     default: undefined,
-    description: 'Automatically reset mock state between every test. ' +
+    description:
+      'Automatically reset mock state between every test. ' +
       'Equivalent to calling jest.resetAllMocks() between each test.',
     type: 'boolean',
   },
   resetModules: {
     default: undefined,
-    description: 'If enabled, the module registry for every test file will ' +
+    description:
+      'If enabled, the module registry for every test file will ' +
       'be reset before running each individual test.',
     type: 'boolean',
   },
@@ -315,31 +347,36 @@ const options = {
     type: 'string',
   },
   rootDir: {
-    description: 'The root directory that Jest should scan for tests and ' +
+    description:
+      'The root directory that Jest should scan for tests and ' +
       'modules within.',
     type: 'string',
   },
   roots: {
-    description: 'A list of paths to directories that Jest should use to ' +
+    description:
+      'A list of paths to directories that Jest should use to ' +
       'search for files in.',
     type: 'array',
   },
   runInBand: {
     alias: 'i',
     default: undefined,
-    description: 'Run all tests serially in the current process (rather than ' +
+    description:
+      'Run all tests serially in the current process (rather than ' +
       'creating a worker pool of child processes that run tests). This ' +
       'is sometimes useful for debugging, but such use cases are pretty ' +
       'rare.',
     type: 'boolean',
   },
   setupFiles: {
-    description: 'The paths to modules that run some code to configure or ' +
+    description:
+      'The paths to modules that run some code to configure or ' +
       'set up the testing environment before each test. ',
     type: 'array',
   },
   setupTestFrameworkScriptFile: {
-    description: 'The path to a module that runs some code to configure or ' +
+    description:
+      'The path to a module that runs some code to configure or ' +
       'set up the testing framework before each test.',
     type: 'string',
   },
@@ -354,7 +391,8 @@ const options = {
     type: 'boolean',
   },
   snapshotSerializers: {
-    description: 'A list of paths to snapshot serializer modules Jest should ' +
+    description:
+      'A list of paths to snapshot serializer modules Jest should ' +
       'use for snapshot testing.',
     type: 'array',
   },
@@ -372,13 +410,15 @@ const options = {
     type: 'string',
   },
   testPathIgnorePatterns: {
-    description: 'An array of regexp pattern strings that are matched ' +
+    description:
+      'An array of regexp pattern strings that are matched ' +
       'against all test paths before executing the test. If the test path ' +
       'matches any of the patterns, it will be skipped.',
     type: 'array',
   },
   testPathPattern: {
-    description: 'A regexp pattern string that is matched against all tests ' +
+    description:
+      'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
     type: 'string',
   },
@@ -387,13 +427,15 @@ const options = {
     type: 'string',
   },
   testResultsProcessor: {
-    description: 'Allows the use of a custom results processor. ' +
+    description:
+      'Allows the use of a custom results processor. ' +
       'This processor must be a node module that exports ' +
       'a function expecting as the first argument the result object',
     type: 'string',
   },
   testRunner: {
-    description: 'Allows to specify a custom test runner. The default is ' +
+    description:
+      'Allows to specify a custom test runner. The default is ' +
       ' `jasmine2`. A path to a custom test runner can be provided: ' +
       '`<rootDir>/path/to/testRunner.js`.',
     type: 'string',
@@ -403,22 +445,26 @@ const options = {
     type: 'string',
   },
   timers: {
-    description: 'Setting this value to fake allows the use of fake timers ' +
+    description:
+      'Setting this value to fake allows the use of fake timers ' +
       'for functions such as setTimeout.',
     type: 'string',
   },
   transform: {
-    description: 'A JSON string which maps from regular expressions to paths ' +
+    description:
+      'A JSON string which maps from regular expressions to paths ' +
       'to transformers.',
     type: 'string',
   },
   transformIgnorePatterns: {
-    description: 'An array of regexp pattern strings that are matched ' +
+    description:
+      'An array of regexp pattern strings that are matched ' +
       'against all source file paths before transformation.',
     type: 'array',
   },
   unmockedModulePathPatterns: {
-    description: 'An array of regexp pattern strings that are matched ' +
+    description:
+      'An array of regexp pattern strings that are matched ' +
       'against all modules before the module loader will automatically ' +
       'return a mock for them.',
     type: 'array',
@@ -426,7 +472,8 @@ const options = {
   updateSnapshot: {
     alias: 'u',
     default: undefined,
-    description: 'Use this flag to re-record snapshots. ' +
+    description:
+      'Use this flag to re-record snapshots. ' +
       'Can be used together with a test suite pattern or with ' +
       '`--testNamePattern` to re-record snapshot for test matching ' +
       'the pattern',
@@ -439,8 +486,8 @@ const options = {
   },
   verbose: {
     default: undefined,
-    description: 'Display individual test results with the test suite ' +
-      'hierarchy.',
+    description:
+      'Display individual test results with the test suite hierarchy.',
     type: 'boolean',
   },
   version: {
@@ -451,21 +498,24 @@ const options = {
   },
   watch: {
     default: undefined,
-    description: 'Watch files for changes and rerun tests related to ' +
+    description:
+      'Watch files for changes and rerun tests related to ' +
       'changed files. If you want to re-run all tests when a file has ' +
       'changed, use the `--watchAll` option.',
     type: 'boolean',
   },
   watchAll: {
     default: undefined,
-    description: 'Watch files for changes and rerun all tests. If you want ' +
+    description:
+      'Watch files for changes and rerun all tests. If you want ' +
       'to re-run only the tests related to the changed files, use the ' +
       '`--watch` option.',
     type: 'boolean',
   },
   watchman: {
     default: undefined,
-    description: 'Whether to use watchman for file crawling. Disable using ' +
+    description:
+      'Whether to use watchman for file crawling. Disable using ' +
       '--no-watchman.',
     type: 'boolean',
   },

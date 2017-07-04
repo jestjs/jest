@@ -160,7 +160,7 @@ describe('SearchSource', () => {
           name,
           rootDir,
           testMatch: null,
-          testRegex: 'test\.jsx?',
+          testRegex: 'test.jsx?',
         },
         {},
       );

@@ -128,21 +128,31 @@ const format = (value: string) => require('pretty-format')(value, {min: true});
 
 const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Object) =>
-    `  Option ${chalk.bold('preprocessorIgnorePatterns')} was replaced by ${chalk.bold('transformIgnorePatterns')}, which support multiple preprocessors.
+    `  Option ${chalk.bold(
+      'preprocessorIgnorePatterns',
+    )} was replaced by ${chalk.bold(
+      'transformIgnorePatterns',
+    )}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(`${format(config.preprocessorIgnorePatterns)}`)}
+    ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(
+      `${format(config.preprocessorIgnorePatterns)}`,
+    )}
   }
 
   Please update your configuration.`,
 
   scriptPreprocessor: (config: Object) =>
-    `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold('transform')}, which support multiple preprocessors.
+    `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold(
+      'transform',
+    )}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"transform"')}: ${chalk.bold(`{".*": ${format(config.scriptPreprocessor)}}`)}
+    ${chalk.bold('"transform"')}: ${chalk.bold(
+      `{".*": ${format(config.scriptPreprocessor)}}`,
+    )}
   }
 
   Please update your configuration.`,

@@ -193,7 +193,8 @@ describe('docblock', () => {
       '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      class: 'A long declaration of a class goes here, ' +
+      class:
+        'A long declaration of a class goes here, ' +
         'so we can read it and enjoy',
       'preserve-whitespace': '',
     });

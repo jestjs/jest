@@ -80,7 +80,7 @@ function findNative(
   const args = [].concat(roots);
   args.push('-type', 'f');
   if (extensions.length) {
-    args.push('\(');
+    args.push('(');
   }
   extensions.forEach((ext, index) => {
     if (index) {
@@ -90,7 +90,7 @@ function findNative(
     args.push('*.' + ext);
   });
   if (extensions.length) {
-    args.push('\)');
+    args.push(')');
   }
 
   const child = spawn('find', args);

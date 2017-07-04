@@ -281,9 +281,10 @@ class Runtime {
     );
     let modulePath;
 
-    const moduleRegistry = !options || !options.isInternalModule
-      ? this._moduleRegistry
-      : this._internalModuleRegistry;
+    const moduleRegistry =
+      !options || !options.isInternalModule
+        ? this._moduleRegistry
+        : this._internalModuleRegistry;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
@@ -633,9 +634,10 @@ class Runtime {
   }
 
   _createRequireImplementation(from: Path, options: ?InternalModuleOptions) {
-    const moduleRequire = options && options.isInternalModule
-      ? (moduleName: string) => this.requireInternalModule(from, moduleName)
-      : this.requireModuleOrMock.bind(this, from);
+    const moduleRequire =
+      options && options.isInternalModule
+        ? (moduleName: string) => this.requireInternalModule(from, moduleName)
+        : this.requireModuleOrMock.bind(this, from);
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
     moduleRequire.requireActual = this.requireModule.bind(this, from);

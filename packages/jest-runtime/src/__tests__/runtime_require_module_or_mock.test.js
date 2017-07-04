@@ -11,7 +11,7 @@
 
 const moduleNameMapper = {
   '\\.css$': '<rootDir>/__mocks__/ManuallyMocked',
-  '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
+  '^[./a-zA-Z0-9$_-]+.png$': 'RelativeImageStub',
   '^image![a-zA-Z0-9$_-]+$': 'global_image_stub',
   mappedToDirectory: '<rootDir>/MyDirectoryModule',
   mappedToModule: '<rootDir>/TestModuleNameMapperResolution',

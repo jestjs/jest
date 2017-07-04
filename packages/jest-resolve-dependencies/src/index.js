@@ -14,11 +14,9 @@ import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
 
-const snapshotDirRegex = new RegExp(
-  replacePathSepForRegex('\/__snapshots__\/'),
-);
+const snapshotDirRegex = new RegExp(replacePathSepForRegex('/__snapshots__/'));
 const snapshotFileRegex = new RegExp(
-  replacePathSepForRegex('__snapshots__\/(.*)\.snap'),
+  replacePathSepForRegex('__snapshots__/(.*).snap'),
 );
 const isSnapshotPath = (path: string): boolean =>
   !!path.match(snapshotDirRegex);

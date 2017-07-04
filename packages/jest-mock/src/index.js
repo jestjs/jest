@@ -233,9 +233,11 @@ class ModuleMockerClass {
       let f;
       /* eslint-enable prefer-const */
 
-      const prototype = (metadata.members &&
-        metadata.members.prototype &&
-        metadata.members.prototype.members) || {};
+      const prototype =
+        (metadata.members &&
+          metadata.members.prototype &&
+          metadata.members.prototype.members) ||
+        {};
       const prototypeSlots = getSlots(prototype);
       const mocker = this;
       const mockConstructor = function() {

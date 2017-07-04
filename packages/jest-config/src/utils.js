@@ -37,7 +37,9 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
 
   if (!module) {
     throw createValidationError(
-      `  Module ${chalk.bold(filePath)} in the ${chalk.bold(key)} option was not found.`,
+      `  Module ${chalk.bold(filePath)} in the ${chalk.bold(
+        key,
+      )} option was not found.`,
     );
   }
 
@@ -59,9 +61,10 @@ const _replaceRootDirInObject = (rootDir: string, config: any): Object => {
   if (config !== null) {
     const newConfig = {};
     for (const configKey in config) {
-      newConfig[configKey] = configKey === 'rootDir'
-        ? config[configKey]
-        : _replaceRootDirTags(rootDir, config[configKey]);
+      newConfig[configKey] =
+        configKey === 'rootDir'
+          ? config[configKey]
+          : _replaceRootDirTags(rootDir, config[configKey]);
     }
     return newConfig;
   }
@@ -115,7 +118,11 @@ const getTestEnvironment = (config: Object) => {
   } catch (e) {}
 
   throw createValidationError(
-    `  Test environment ${chalk.bold(env)} cannot be found. Make sure the ${chalk.bold('testEnvironment')} configuration option points to an existing node module.`,
+    `  Test environment ${chalk.bold(
+      env,
+    )} cannot be found. Make sure the ${chalk.bold(
+      'testEnvironment',
+    )} configuration option points to an existing node module.`,
   );
 };
 
