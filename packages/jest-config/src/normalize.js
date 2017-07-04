@@ -176,15 +176,21 @@ const normalizeUnmockedModulePathPatterns = (
 const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
-      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
+      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
+        'transform',
+      )} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transform')}.`,
     );
   }
 
   if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
     throw createConfigError(
-      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
+      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold(
+        'transformIgnorePatterns',
+      )} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'transformIgnorePatterns',
+  )}.`,
     );
   }
 
@@ -237,13 +243,13 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
 
   validateReporters(reporters);
   options.reporters = reporters.map(reporterConfig => {
-    const normalizedReporterConfig: ReporterConfig = typeof reporterConfig ===
-      'string'
-      ? // if reporter config is a string, we wrap it in an array
-        // and pass an empty object for options argument, to normalize
-        // the shape.
-        [reporterConfig, {}]
-      : reporterConfig;
+    const normalizedReporterConfig: ReporterConfig =
+      typeof reporterConfig === 'string'
+        ? // if reporter config is a string, we wrap it in an array
+          // and pass an empty object for options argument, to normalize
+          // the shape.
+          [reporterConfig, {}]
+        : reporterConfig;
 
     const reporterPath = _replaceRootDirInPath(
       options.rootDir,
@@ -436,9 +442,10 @@ function normalize(options: InitialOptions, argv: Argv) {
     return newOptions;
   }, newOptions);
 
-  newOptions.updateSnapshot = argv.ci && !argv.updateSnapshot
-    ? 'none'
-    : argv.updateSnapshot ? 'all' : 'new';
+  newOptions.updateSnapshot =
+    argv.ci && !argv.updateSnapshot
+      ? 'none'
+      : argv.updateSnapshot ? 'all' : 'new';
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(

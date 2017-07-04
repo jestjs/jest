@@ -12,7 +12,7 @@
 let createRuntime;
 
 const moduleNameMapper = {
-  '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
+  '^[./a-zA-Z0-9$_-]+.png$': 'RelativeImageStub',
   '^image![a-zA-Z0-9$_-]+$': 'global_image_stub',
   '^testMapped/(.*)': '<rootDir>/mapped_dir/$1',
   mappedToDirectory: '<rootDir>/MyDirectoryModule',

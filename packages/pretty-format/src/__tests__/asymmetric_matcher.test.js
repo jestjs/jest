@@ -49,7 +49,9 @@ beforeEach(() => {
       options,
     );
     expect(result).toEqual(
-      `Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(type)}>,\n  },\n}`,
+      `Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(
+        type,
+      )}>,\n  },\n}`,
     );
   });
 });

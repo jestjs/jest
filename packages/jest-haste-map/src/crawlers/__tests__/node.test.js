@@ -111,13 +111,13 @@ describe('node crawler', () => {
         '/vegtables',
         '-type',
         'f',
-        '\(',
+        '(',
         '-iname',
         '*.js',
         '-o',
         '-iname',
         '*.json',
-        '\)',
+        ')',
       ]);
 
       expect(data.files).not.toBe(null);

@@ -290,15 +290,15 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
     (argv.watchAll || argv.testPathPattern || argv.testNamePattern) &&
-      !argv.noSCM
+    !argv.noSCM
       ? chalk.dim(' \u203A Press ') +
-          'o' +
-          chalk.dim(' to only run tests related to changed files.')
+        'o' +
+        chalk.dim(' to only run tests related to changed files.')
       : null,
     snapshotFailure
       ? chalk.dim(' \u203A Press ') +
-          'u' +
-          chalk.dim(' to update failing snapshots.')
+        'u' +
+        chalk.dim(' to update failing snapshots.')
       : null,
     chalk.dim(' \u203A Press ') +
       'p' +

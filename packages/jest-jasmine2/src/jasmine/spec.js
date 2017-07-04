@@ -196,9 +196,11 @@ const extractCustomPendingMessage = function(e) {
 Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
 Spec.isPendingSpecException = function(e) {
-  return !!(e &&
+  return !!(
+    e &&
     e.toString &&
-    e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1);
+    e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
+  );
 };
 
 module.exports = Spec;
