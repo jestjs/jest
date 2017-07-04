@@ -35,7 +35,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
     const asyncFn = function(done) {
-      const returnValue = fn.call({});
+      const returnValue = fn.call(this);
 
       if (isPromise(returnValue)) {
         returnValue.then(done, done.fail);
@@ -65,7 +65,7 @@ function promisifyIt(originalFn, env) {
     }
 
     const asyncFn = function(done) {
-      const returnValue = fn.call({});
+      const returnValue = fn.call(this);
 
       if (isPromise(returnValue)) {
         returnValue.then(done, done.fail);
