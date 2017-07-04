@@ -29,6 +29,9 @@ const run = (cmd, cwd) => {
     throw new Error(message);
   }
 
+  result.stdout = result.stdout && result.stdout.toString();
+  result.stderr = result.stderr && result.stderr.toString();
+
   return result;
 };
 

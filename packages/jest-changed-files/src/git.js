@@ -9,65 +9,60 @@
  */
 
 import type {Path} from 'types/Config';
+import type {Options, SCMAdapter} from '../types';
 
 import path from 'path';
 import childProcess from 'child_process';
 
-type Options = {|
-  lastCommit?: boolean,
-  withAncestor?: boolean,
-|};
-
-function findChangedFiles(
-  cwd: string,
-  options?: Options,
-): Promise<Array<Path>> {
-  return new Promise((resolve, reject) => {
-    const args =
-      options && options.lastCommit
-        ? ['show', '--name-only', '--pretty=%b', 'HEAD']
-        : ['ls-files', '--other', '--modified', '--exclude-standard'];
-    const child = childProcess.spawn('git', args, {cwd});
-    let stdout = '';
-    let stderr = '';
-    child.stdout.on('data', data => (stdout += data));
-    child.stderr.on('data', data => (stderr += data));
-    child.on('error', e => reject(e));
-    child.on('close', code => {
-      if (code === 0) {
-        stdout = stdout.trim();
-        if (stdout === '') {
-          resolve([]);
+const adapter: SCMAdapter = {
+  findChangedFiles: async (
+    cwd: string,
+    options?: Options,
+  ): Promise<Array<Path>> => {
+    return new Promise((resolve, reject) => {
+      const args =
+        options && options.lastCommit
+          ? ['show', '--name-only', '--pretty=%b', 'HEAD']
+          : ['ls-files', '--other', '--modified', '--exclude-standard'];
+      const child = childProcess.spawn('git', args, {cwd});
+      let stdout = '';
+      let stderr = '';
+      child.stdout.on('data', data => (stdout += data));
+      child.stderr.on('data', data => (stderr += data));
+      child.on('error', e => reject(e));
+      child.on('close', code => {
+        if (code === 0) {
+          stdout = stdout.trim();
+          if (stdout === '') {
+            resolve([]);
+          } else {
+            resolve(
+              stdout
+                .split('\n')
+                .map(changedPath => path.resolve(cwd, changedPath)),
+            );
+          }
         } else {
-          resolve(
-            stdout
-              .split('\n')
-              .map(changedPath => path.resolve(cwd, changedPath)),
-          );
+          reject(code + ': ' + stderr);
         }
-      } else {
-        reject(code + ': ' + stderr);
+      });
+    });
+  },
+
+  getRoot: async (cwd: string): Promise<?string> => {
+    return new Promise(resolve => {
+      try {
+        let stdout = '';
+        const options = ['rev-parse', '--show-toplevel'];
+        const child = childProcess.spawn('git', options, {cwd});
+        child.stdout.on('data', data => (stdout += data));
+        child.on('error', () => resolve(null));
+        child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
+      } catch (e) {
+        resolve(null);
       }
     });
-  });
-}
-
-function isGitRepository(cwd: string): Promise<?string> {
-  return new Promise(resolve => {
-    try {
-      let stdout = '';
-      const options = ['rev-parse', '--show-toplevel'];
-      const child = childProcess.spawn('git', options, {cwd});
-      child.stdout.on('data', data => (stdout += data));
-      child.on('error', () => resolve(null));
-      child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
-    } catch (e) {
-      resolve(null);
-    }
-  });
-}
-
-module.exports = {
-  findChangedFiles,
-  isGitRepository,
+  },
 };
+
+module.exports = adapter;
