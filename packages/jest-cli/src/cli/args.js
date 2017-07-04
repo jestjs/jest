@@ -206,7 +206,7 @@ const options = {
   },
   haste: {
     description:
-      'A JSON string with map of variables for the haste ' + ' module system',
+      'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
   json: {
@@ -487,7 +487,7 @@ const options = {
   verbose: {
     default: undefined,
     description:
-      'Display individual test results with the test suite ' + 'hierarchy.',
+      'Display individual test results with the test suite hierarchy.',
     type: 'boolean',
   },
   version: {
