@@ -62,6 +62,7 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
   "framework": "jasmine2",
   "globalConfig": {
     "bail": false,
+    "coverageDirectory": "/mocked/root/path/jest/integration_tests/verbose_reporter/coverage",
     "coverageReporters": [
       "json",
       "text",
