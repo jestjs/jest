@@ -12,6 +12,7 @@ import type {
   Colors,
   Refs,
   StringOrNull,
+  Plugin,
   Plugins,
   Options,
 } from 'types/PrettyFormat';
@@ -671,6 +672,7 @@ function printComplexValue(
 }
 
 function printPlugin(
+  plugin: Plugin,
   val,
   indent: string,
   prevIndent: string,
@@ -685,20 +687,7 @@ function printPlugin(
   printFunctionName: boolean,
   escapeRegex: boolean,
   colors: Colors,
-): StringOrNull {
-  let plugin;
-
-  for (let p = 0; p < plugins.length; p++) {
-    if (plugins[p].test(val)) {
-      plugin = plugins[p];
-      break;
-    }
-  }
-
-  if (!plugin) {
-    return null;
-  }
-
+): string {
   function boundPrint(val) {
     return print(
       val,
@@ -728,7 +717,24 @@ function printPlugin(
     min,
     spacing,
   };
-  return plugin.print(val, boundPrint, boundIndent, opts, colors);
+
+  const printed = plugin.print(val, boundPrint, boundIndent, opts, colors);
+  if (typeof printed !== 'string') {
+    throw new Error(
+      `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
+    );
+  }
+  return printed;
+}
+
+function findPlugin(plugins: Plugins, val: any) {
+  for (let p = 0; p < plugins.length; p++) {
+    if (plugins[p].test(val)) {
+      return plugins[p];
+    }
+  }
+
+  return null;
 }
 
 function print(
@@ -747,24 +753,25 @@ function print(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  const pluginsResult = printPlugin(
-    val,
-    indent,
-    prevIndent,
-    spacing,
-    edgeSpacing,
-    refs,
-    maxDepth,
-    currentDepth,
-    plugins,
-    min,
-    callToJSON,
-    printFunctionName,
-    escapeRegex,
-    colors,
-  );
-  if (typeof pluginsResult === 'string') {
-    return pluginsResult;
+  const plugin = findPlugin(plugins, val);
+  if (plugin !== null) {
+    return printPlugin(
+      plugin,
+      val,
+      indent,
+      prevIndent,
+      spacing,
+      edgeSpacing,
+      refs,
+      maxDepth,
+      currentDepth,
+      plugins,
+      min,
+      callToJSON,
+      printFunctionName,
+      escapeRegex,
+      colors,
+    );
   }
 
   const basicResult = printBasicValue(val, printFunctionName, escapeRegex);
@@ -897,34 +904,31 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
     }
   });
 
-  let indent;
-  let refs;
   const prevIndent = '';
   const currentDepth = 0;
   const spacing = opts.min ? ' ' : '\n';
   const edgeSpacing = opts.min ? '' : '\n';
 
   if (opts && opts.plugins.length) {
-    indent = createIndent(opts.indent);
-    refs = [];
-    const pluginsResult = printPlugin(
-      val,
-      indent,
-      prevIndent,
-      spacing,
-      edgeSpacing,
-      refs,
-      opts.maxDepth,
-      currentDepth,
-      opts.plugins,
-      opts.min,
-      opts.callToJSON,
-      opts.printFunctionName,
-      opts.escapeRegex,
-      colors,
-    );
-    if (typeof pluginsResult === 'string') {
-      return pluginsResult;
+    const plugin = findPlugin(opts.plugins, val);
+    if (plugin !== null) {
+      return printPlugin(
+        plugin,
+        val,
+        createIndent(opts.indent),
+        prevIndent,
+        spacing,
+        edgeSpacing,
+        [],
+        opts.maxDepth,
+        currentDepth,
+        opts.plugins,
+        opts.min,
+        opts.callToJSON,
+        opts.printFunctionName,
+        opts.escapeRegex,
+        colors,
+      );
     }
   }
 
@@ -937,19 +941,13 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
     return basicResult;
   }
 
-  if (!indent) {
-    indent = createIndent(opts.indent);
-  }
-  if (!refs) {
-    refs = [];
-  }
   return printComplexValue(
     val,
-    indent,
+    createIndent(opts.indent),
     prevIndent,
     spacing,
     edgeSpacing,
-    refs,
+    [],
     opts.maxDepth,
     currentDepth,
     opts.plugins,
