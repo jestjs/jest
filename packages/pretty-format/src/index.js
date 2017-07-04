@@ -687,7 +687,7 @@ function printPlugin(
   printFunctionName: boolean,
   escapeRegex: boolean,
   colors: Colors,
-): StringOrNull {
+): string {
   function boundPrint(val) {
     return print(
       val,
@@ -717,7 +717,14 @@ function printPlugin(
     min,
     spacing,
   };
-  return plugin.print(val, boundPrint, boundIndent, opts, colors);
+
+  const printed = plugin.print(val, boundPrint, boundIndent, opts, colors);
+  if (typeof printed !== 'string') {
+    throw new Error(
+      `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
+    );
+  }
+  return printed;
 }
 
 function findPlugin(plugins: Plugins, val: any) {
@@ -748,7 +755,7 @@ function print(
 ): string {
   const plugin = findPlugin(plugins, val);
   if (plugin !== null) {
-    const pluginsResult = printPlugin(
+    return printPlugin(
       plugin,
       val,
       indent,
@@ -765,12 +772,6 @@ function print(
       escapeRegex,
       colors,
     );
-    if (typeof pluginsResult !== 'string') {
-      throw new Error(
-        `pretty-format: Plugin must return type "string" but instead returned "${typeof pluginsResult}".`,
-      );
-    }
-    return pluginsResult;
   }
 
   const basicResult = printBasicValue(val, printFunctionName, escapeRegex);
@@ -911,7 +912,7 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
   if (opts && opts.plugins.length) {
     const plugin = findPlugin(opts.plugins, val);
     if (plugin !== null) {
-      const pluginsResult = printPlugin(
+      return printPlugin(
         plugin,
         val,
         createIndent(opts.indent),
@@ -928,12 +929,6 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
         opts.escapeRegex,
         colors,
       );
-      if (typeof pluginsResult !== 'string') {
-        throw new Error(
-          `pretty-format: Plugin must return type "string" but instead returned "${typeof pluginsResult}".`,
-        );
-      }
-      return pluginsResult;
     }
   }
 
