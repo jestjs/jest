@@ -50,7 +50,9 @@ describe('no visual difference', () => {
     [{a: 1}, {a: 1}],
     [{a: {b: 5}}, {a: {b: 5}}],
   ].forEach(values => {
-    test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(values[1])}'`, () => {
+    test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
+      values[1],
+    )}'`, () => {
       expect(stripAnsi(diff(values[0], values[1]))).toBe(
         'Compared values have no visual difference.',
       );

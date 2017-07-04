@@ -505,9 +505,8 @@ class HasteMap extends EventEmitter {
   _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
-    const crawl = canUseWatchman && this._options.useWatchman
-      ? watchmanCrawl
-      : nodeCrawl;
+    const crawl =
+      canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
 
     const retry = error => {
       if (crawl === watchmanCrawl) {
@@ -568,9 +567,10 @@ class HasteMap extends EventEmitter {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
 
-    const Watcher = canUseWatchman && this._options.useWatchman
-      ? sane.WatchmanWatcher
-      : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
+    const Watcher =
+      canUseWatchman && this._options.useWatchman
+        ? sane.WatchmanWatcher
+        : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
@@ -791,9 +791,10 @@ class HasteMap extends EventEmitter {
    */
   _ignore(filePath: Path): boolean {
     const ignorePattern = this._options.ignorePattern;
-    const ignoreMatched = ignorePattern instanceof RegExp
-      ? ignorePattern.test(filePath)
-      : ignorePattern(filePath);
+    const ignoreMatched =
+      ignorePattern instanceof RegExp
+        ? ignorePattern.test(filePath)
+        : ignorePattern(filePath);
 
     return (
       ignoreMatched ||

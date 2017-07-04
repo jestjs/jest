@@ -142,10 +142,11 @@ class SummaryReporter extends BaseReporter {
       let updateCommand;
       const event = process.env.npm_lifecycle_event;
       const prefix = NPM_EVENTS.has(event) ? '' : 'run ';
-      const client = typeof process.env.npm_config_user_agent === 'string' &&
+      const client =
+        typeof process.env.npm_config_user_agent === 'string' &&
         process.env.npm_config_user_agent.match('yarn') !== null
-        ? 'yarn'
-        : 'npm';
+          ? 'yarn'
+          : 'npm';
       if (globalConfig.watch) {
         updateCommand = 'press `u`';
       } else if (event) {
@@ -190,10 +191,10 @@ class SummaryReporter extends BaseReporter {
             (snapshots.didUpdate
               ? ' removed.'
               : ' found, ' +
-                  updateCommand +
-                  ' to remove ' +
-                  (snapshots.filesRemoved === 1 ? 'it' : 'them.') +
-                  '.'),
+                updateCommand +
+                ' to remove ' +
+                (snapshots.filesRemoved === 1 ? 'it' : 'them.') +
+                '.'),
         );
       }
 
@@ -205,10 +206,10 @@ class SummaryReporter extends BaseReporter {
             (snapshots.didUpdate
               ? ' removed.'
               : ' found, ' +
-                  updateCommand +
-                  ' to remove ' +
-                  (snapshots.filesRemoved === 1 ? 'it' : 'them') +
-                  '.'),
+                updateCommand +
+                ' to remove ' +
+                (snapshots.filesRemoved === 1 ? 'it' : 'them') +
+                '.'),
         );
       }
 
@@ -253,16 +254,17 @@ class SummaryReporter extends BaseReporter {
     const testInfo = testSelectionConfig.onlyChanged
       ? chalk.dim(' related to changed files')
       : testSelectionConfig.input !== ''
-          ? chalk.dim(' matching ') + testPathPattern
-          : '';
+        ? chalk.dim(' matching ') + testPathPattern
+        : '';
 
     const nameInfo = testNamePattern
       ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
       : '';
 
-    const contextInfo = contexts.size > 1
-      ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
-      : '';
+    const contextInfo =
+      contexts.size > 1
+        ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
+        : '';
 
     return (
       chalk.dim('Ran all test suites') +

@@ -146,10 +146,12 @@ class TestRunner {
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
-      aggregatedResults.snapshot.failure = !!(!updateAll &&
+      aggregatedResults.snapshot.failure = !!(
+        !updateAll &&
         (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
-          aggregatedResults.snapshot.filesRemoved));
+          aggregatedResults.snapshot.filesRemoved)
+      );
     };
 
     this._dispatcher.onRunStart(aggregatedResults, {
@@ -171,13 +173,17 @@ class TestRunner {
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
     await this._dispatcher.onRunComplete(contexts, aggregatedResults);
 
-    const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
-      aggregatedResults.numRuntimeErrorTestSuites === 0);
+    const anyTestFailures = !(
+      aggregatedResults.numFailedTests === 0 &&
+      aggregatedResults.numRuntimeErrorTestSuites === 0
+    );
     const anyReporterErrors = this._dispatcher.hasErrors();
 
-    aggregatedResults.success = !(anyTestFailures ||
+    aggregatedResults.success = !(
+      anyTestFailures ||
       aggregatedResults.snapshot.failure ||
-      anyReporterErrors);
+      anyReporterErrors
+    );
 
     return aggregatedResults;
   }

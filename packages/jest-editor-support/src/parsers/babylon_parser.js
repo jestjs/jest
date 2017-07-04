@@ -78,9 +78,10 @@ const parse = (file: string): BabylonParserResult => {
     if (!isFunctionCall(node)) {
       return false;
     }
-    let name = node && node.expression && node.expression.callee
-      ? node.expression.callee.name
-      : undefined;
+    let name =
+      node && node.expression && node.expression.callee
+        ? node.expression.callee.name
+        : undefined;
     if (
       !name &&
       node &&

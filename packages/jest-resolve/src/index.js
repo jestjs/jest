@@ -75,9 +75,8 @@ class Resolver {
       browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
-      hasCoreModules: options.hasCoreModules === undefined
-        ? true
-        : options.hasCoreModules,
+      hasCoreModules:
+        options.hasCoreModules === undefined ? true : options.hasCoreModules,
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
@@ -309,8 +308,9 @@ class Resolver {
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
-    return !!(this.getModule(moduleName) ||
-      this.getMockModule(from, moduleName));
+    return !!(
+      this.getModule(moduleName) || this.getMockModule(from, moduleName)
+    );
   }
 
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {

@@ -240,9 +240,10 @@ class ScriptTransformer {
     }
 
     if (instrument && transformed.map && mapCoverage) {
-      const sourceMapContent = typeof transformed.map === 'string'
-        ? transformed.map
-        : JSON.stringify(transformed.map);
+      const sourceMapContent =
+        typeof transformed.map === 'string'
+          ? transformed.map
+          : JSON.stringify(transformed.map);
       writeCacheFile(sourceMapPath, sourceMapContent);
     } else {
       sourceMapPath = null;

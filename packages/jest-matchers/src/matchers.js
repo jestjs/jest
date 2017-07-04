@@ -94,14 +94,18 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint('.not.toBeCloseTo', 'received', 'expected, precision') +
           '\n\n' +
-          `Expected value not to be close to (with ${printExpected(precision)}-digit precision):\n` +
+          `Expected value not to be close to (with ${printExpected(
+            precision,
+          )}-digit precision):\n` +
           `  ${printExpected(expected)}\n` +
           `Received:\n` +
           `  ${printReceived(actual)}`
       : () =>
           matcherHint('.toBeCloseTo', 'received', 'expected, precision') +
           '\n\n' +
-          `Expected value to be close to (with ${printExpected(precision)}-digit precision):\n` +
+          `Expected value to be close to (with ${printExpected(
+            precision,
+          )}-digit precision):\n` +
           `  ${printExpected(expected)}\n` +
           `Received:\n` +
           `  ${printReceived(actual)}`;
@@ -214,7 +218,9 @@ const matchers: MatchersObject = {
           `Received:\n` +
           `  ${printReceived(received)}\n` +
           `Constructor:\n` +
-          `  ${printReceived(received.constructor && received.constructor.name)}`;
+          `  ${printReceived(
+            received.constructor && received.constructor.name,
+          )}`;
 
     return {message, pass};
   },
@@ -345,7 +351,9 @@ const matchers: MatchersObject = {
         throw new Error(
           matcherHint('[.not].toContainEqual', 'collection', 'value') +
             '\n\n' +
-            `Expected ${RECEIVED_COLOR('collection')} to be an array-like structure.\n` +
+            `Expected ${RECEIVED_COLOR(
+              'collection',
+            )} to be an array-like structure.\n` +
             printWithType('Received', collection, printReceived),
         );
       }
@@ -384,7 +392,9 @@ const matchers: MatchersObject = {
         throw new Error(
           matcherHint('[.not].toContainEqual', 'collection', 'value') +
             '\n\n' +
-            `Expected ${RECEIVED_COLOR('collection')} to be an array-like structure.\n` +
+            `Expected ${RECEIVED_COLOR(
+              'collection',
+            )} to be an array-like structure.\n` +
             printWithType('Received', collection, printReceived),
         );
       }
@@ -536,25 +546,27 @@ const matchers: MatchersObject = {
       ? matcherHint('.not.toHaveProperty', 'object', 'path', {
           secondArgument: valuePassed ? 'value' : null,
         }) +
-          '\n\n' +
-          `Expected the object:\n` +
-          `  ${printReceived(object)}\n` +
-          `Not to have a nested property:\n` +
-          `  ${printExpected(keyPath)}\n` +
-          (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
+        '\n\n' +
+        `Expected the object:\n` +
+        `  ${printReceived(object)}\n` +
+        `Not to have a nested property:\n` +
+        `  ${printExpected(keyPath)}\n` +
+        (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
       : matcherHint('.toHaveProperty', 'object', 'path', {
           secondArgument: valuePassed ? 'value' : null,
         }) +
-          '\n\n' +
-          `Expected the object:\n` +
-          `  ${printReceived(object)}\n` +
-          `To have a nested property:\n` +
-          `  ${printExpected(keyPath)}\n` +
-          (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '') +
-          (traversedPath
-            ? `Received:\n  ${RECEIVED_COLOR('object')}.${traversedPath}: ${printReceived(lastTraversedObject)}`
-            : '') +
-          (diffString ? `\nDifference:\n\n${diffString}` : '');
+        '\n\n' +
+        `Expected the object:\n` +
+        `  ${printReceived(object)}\n` +
+        `To have a nested property:\n` +
+        `  ${printExpected(keyPath)}\n` +
+        (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '') +
+        (traversedPath
+          ? `Received:\n  ${RECEIVED_COLOR(
+              'object',
+            )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
+          : '') +
+        (diffString ? `\nDifference:\n\n${diffString}` : '');
     if (pass === undefined) {
       throw new Error('pass must be initialized');
     }
@@ -576,7 +588,9 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherHint('[.not].toMatch', 'string', 'expected') +
           '\n\n' +
-          `${EXPECTED_COLOR('expected')} value must be a string or a regular expression.\n` +
+          `${EXPECTED_COLOR(
+            'expected',
+          )} value must be a string or a regular expression.\n` +
           printWithType('Expected', expected, printExpected),
       );
     }

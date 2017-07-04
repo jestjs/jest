@@ -109,9 +109,10 @@ module.exports = function watchmanCrawl(
               if (!fileData.exists) {
                 delete files[name];
               } else if (!ignore(name)) {
-                const mtime = typeof fileData.mtime_ms === 'number'
-                  ? fileData.mtime_ms
-                  : fileData.mtime_ms.toNumber();
+                const mtime =
+                  typeof fileData.mtime_ms === 'number'
+                    ? fileData.mtime_ms
+                    : fileData.mtime_ms.toNumber();
                 const isNew =
                   !data.files[name] || data.files[name][H.MTIME] !== mtime;
                 if (isNew) {

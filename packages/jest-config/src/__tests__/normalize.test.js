@@ -631,8 +631,8 @@ describe('babel-jest', () => {
       {
         rootDir: '/root',
         transform: {
-          [DEFAULT_JS_PATTERN]: ROOT_DIR +
-            Resolver.findNodeModule('babel-jest'),
+          [DEFAULT_JS_PATTERN]:
+            ROOT_DIR + Resolver.findNodeModule('babel-jest'),
         },
       },
       {},

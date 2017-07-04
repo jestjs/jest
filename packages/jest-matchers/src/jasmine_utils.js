@@ -38,7 +38,8 @@ function isAsymmetric(obj) {
 }
 
 function asymmetricMatch(a, b) {
-  var asymmetricA = isAsymmetric(a), asymmetricB = isAsymmetric(b);
+  var asymmetricA = isAsymmetric(a),
+    asymmetricB = isAsymmetric(b);
 
   if (asymmetricA && asymmetricB) {
     return undefined;
@@ -169,7 +170,8 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
   }
 
   // Deep compare objects.
-  var aKeys = keys(a, className == '[object Array]'), key;
+  var aKeys = keys(a, className == '[object Array]'),
+    key;
   size = aKeys.length;
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.

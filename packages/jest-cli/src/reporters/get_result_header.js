@@ -22,9 +22,8 @@ const PASS = chalk.reset.inverse.bold.green(' PASS ');
 
 module.exports = (result: TestResult, config: {rootDir: Path}) => {
   const testPath = result.testFilePath;
-  const status = result.numFailingTests > 0 || result.testExecError
-    ? FAIL
-    : PASS;
+  const status =
+    result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
 
   const runTime = result.perfStats
     ? (result.perfStats.end - result.perfStats.start) / 1000

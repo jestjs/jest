@@ -404,8 +404,9 @@ function printObject(
       .filter(
         key =>
           // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
-          !(typeof key === 'symbol' ||
-            toString.call(key) === '[object Symbol]'),
+          !(
+            typeof key === 'symbol' || toString.call(key) === '[object Symbol]'
+          ),
       )
       .concat(symbols);
   }
@@ -898,7 +899,8 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
         typeof color.open !== 'string'
       ) {
         throw new Error(
-          `pretty-format: Option "theme" has a key "${key}" whose value "${opts.theme[key]}" is undefined in ansi-styles.`,
+          `pretty-format: Option "theme" has a key "${key}" whose value "${opts
+            .theme[key]}" is undefined in ansi-styles.`,
         );
       }
     }
