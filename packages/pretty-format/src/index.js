@@ -57,6 +57,10 @@ const NEWLINE_REGEXP = /\n/gi;
 
 const getSymbols = Object.getOwnPropertySymbols || (obj => []);
 
+const isSymbol = key =>
+  // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
+  typeof key === 'symbol' || toString.call(key) === '[object Symbol]';
+
 function isToStringedArrayType(toStringed: string): boolean {
   return (
     toStringed === '[object Array]' ||
@@ -400,15 +404,7 @@ function printObject(
   const symbols = getSymbols(val);
 
   if (symbols.length) {
-    keys = keys
-      .filter(
-        key =>
-          // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
-          !(
-            typeof key === 'symbol' || toString.call(key) === '[object Symbol]'
-          ),
-      )
-      .concat(symbols);
+    keys = keys.filter(key => !isSymbol(key)).concat(symbols);
   }
 
   if (keys.length) {
