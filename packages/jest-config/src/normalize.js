@@ -307,6 +307,10 @@ function normalize(options: InitialOptions, argv: Argv) {
     options.testRunner = require.resolve('jest-jasmine2');
   }
 
+  if (!options.coverageDirectory) {
+    options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
+  }
+
   const babelJest = setupBabelJest(options);
   const newOptions = Object.assign({}, DEFAULT_CONFIG);
   // Cast back to exact type

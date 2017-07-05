@@ -513,6 +513,19 @@ describe('testRunner', () => {
   });
 });
 
+describe('coverageDirectory', () => {
+  it('defaults to <rootDir>/coverage', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    expect(options.coverageDirectory).toBe('/root/path/foo/coverage');
+  });
+});
+
 describe('testEnvironment', () => {
   let Resolver;
   beforeEach(() => {

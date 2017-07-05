@@ -10,6 +10,7 @@
 
 const path = require('path');
 const isValidPath = require('../is_valid_path');
+const {normalize} = require('jest-config');
 
 const rootDir = path.resolve(path.sep, 'root');
 
@@ -61,7 +62,7 @@ it('is not valid when it is a snapshot file', () => {
 it('is not valid when it is a file in the coverage dir', () => {
   expect(
     isValidPath(
-      {},
+      normalize({rootDir}, {}).options,
       config,
       path.resolve(rootDir, 'coverage', 'lib', 'index.js'),
     ),
