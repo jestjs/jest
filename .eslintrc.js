@@ -25,6 +25,7 @@ module.exports = {
         'jest/valid-expect': 0,
         'no-undef': 0,
         'no-unused-vars': 0,
+        'prettier/prettier': 0,
         'react/jsx-no-undef': 0,
         'react/react-in-jsx-scope': 0,
         'sort-keys': 0,
