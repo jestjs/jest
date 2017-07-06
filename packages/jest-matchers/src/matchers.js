@@ -543,7 +543,8 @@ const matchers: MatchersObject = {
     const traversedPath = result.traversedPath.join('.');
 
     const message = pass
-      ? matcherHint('.not.toHaveProperty', 'object', 'path', {
+      ? () =>
+        matcherHint('.not.toHaveProperty', 'object', 'path', {
           secondArgument: valuePassed ? 'value' : null,
         }) +
         '\n\n' +
@@ -552,7 +553,8 @@ const matchers: MatchersObject = {
         `Not to have a nested property:\n` +
         `  ${printExpected(keyPath)}\n` +
         (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
-      : matcherHint('.toHaveProperty', 'object', 'path', {
+      : () =>
+        matcherHint('.toHaveProperty', 'object', 'path', {
           secondArgument: valuePassed ? 'value' : null,
         }) +
         '\n\n' +

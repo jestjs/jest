@@ -99,18 +99,10 @@ const expect = (actual: any): ExpectationObject => {
 };
 
 const getMessage = message => {
-  // for performance reasons some of the messages are evaluated
-  // lazily
-  if (typeof message === 'function') {
-    message = message();
-  }
-
-  if (!message) {
-    message = utils.RECEIVED_COLOR(
-      'No message was specified for this matcher.',
-    );
-  }
-  return message;
+  return (
+    (message && message()) ||
+    utils.RECEIVED_COLOR('No message was specified for this matcher.')
+  );
 };
 
 const makeResolveMatcher = (
