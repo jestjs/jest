@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the most recent duplicate is fixed 1`] = `
+"The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or blacklist files until there remains only one of these:
+
+  * \`/fruits/blueberry.js\` (module)
+  * \`/fruits/pear.js\` (module)
+"
+`;
+
+exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the oldest version of the duplicates is fixed 1`] = `
+"The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or blacklist files until there remains only one of these:
+
+  * \`/fruits/blueberry.js\` (module)
+  * \`/fruits/pear.js\` (module)
+"
+`;
+
 exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `
 [Error: jest-haste-map: @providesModule naming collision:
   Duplicate module name: Strawberry
