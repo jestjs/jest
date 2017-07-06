@@ -16,7 +16,7 @@ import type {Test} from 'types/TestRunner';
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
-import changedFiles from 'jest-changed-files';
+import {getChangedFilesForRoots} from 'jest-changed-files';
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
@@ -44,11 +44,6 @@ export type TestSelectionConfig = {|
   watch?: boolean,
 |};
 
-const git = changedFiles.git;
-const hg = changedFiles.hg;
-
-const determineSCM = path =>
-  Promise.all([git.isGitRepository(path), hg.isHGRepository(path)]);
 const pathToRegex = p => replacePathSepForRegex(p);
 
 const globsToMatcher = (globs: ?Array<Glob>) => {
@@ -188,32 +183,18 @@ class SearchSource {
     return {tests: []};
   }
 
-  findChangedTests(options: Options): Promise<SearchResult> {
-    return Promise.all(
-      this._context.config.roots.map(determineSCM),
-    ).then(repos => {
-      if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
-        return {
-          noSCM: true,
-          tests: [],
-        };
-      }
-      return Promise.all(
-        repos.map(([gitRepo, hgRepo]) => {
-          if (gitRepo) {
-            return git.findChangedFiles(gitRepo, options);
-          }
-          if (hgRepo) {
-            return hg.findChangedFiles(hgRepo, options);
-          }
-          return [];
-        }),
-      ).then(changedPathSets =>
-        this.findRelatedTests(
-          new Set(Array.prototype.concat.apply([], changedPathSets)),
-        ),
-      );
-    });
+  async findChangedTests(options: Options): Promise<SearchResult> {
+    const {repos, changedFiles} = await getChangedFilesForRoots(
+      this._context.config.roots,
+      options,
+    );
+
+    // no SCM (git/hg/...) is found in any of the roots.
+    const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
+
+    return noSCM
+      ? {noSCM: true, tests: []}
+      : this.findRelatedTests(changedFiles);
   }
 
   getTestPaths(
