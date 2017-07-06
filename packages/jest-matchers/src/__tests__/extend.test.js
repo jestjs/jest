@@ -16,8 +16,8 @@ jestExpect.extend({
   toBeDivisibleBy(actual, expected) {
     const pass = actual % expected === 0;
     const message = pass
-      ? `expected ${actual} not to be divisible by ${expected}`
-      : `expected ${actual} to be divisible by ${expected}`;
+      ? () => `expected ${actual} not to be divisible by ${expected}`
+      : () => `expected ${actual} to be divisible by ${expected}`;
 
     return {message, pass};
   },
@@ -38,8 +38,8 @@ it('exposes matcherUtils in context', () => {
     _shouldNotError(actual, expected) {
       const pass = this.utils === matcherUtils;
       const message = pass
-        ? `expected this.utils to be defined in an extend call`
-        : `expected this.utils not to be defined in an extend call`;
+        ? () => `expected this.utils to be defined in an extend call`
+        : () => `expected this.utils not to be defined in an extend call`;
 
       return {message, pass};
     },
