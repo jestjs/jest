@@ -98,9 +98,9 @@ const expect = (actual: any): ExpectationObject => {
   return expectation;
 };
 
-const getMessage = messageFn => {
+const getMessage = message => {
   return (
-    (messageFn && messageFn()) ||
+    (message && message()) ||
     utils.RECEIVED_COLOR('No message was specified for this matcher.')
   );
 };
