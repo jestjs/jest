@@ -824,7 +824,21 @@ describe('HasteMap', () => {
         e.emit('all', 'add', 'blueberry.js', '/fruits', MOCK_STAT);
         const {hasteFS, moduleMap} = await waitForItToChange(hm);
         expect(hasteFS.exists('/fruits/blueberry.js')).toBe(true);
-        expect(moduleMap.getModule('Pear')).toBe(null);
+        try {
+          moduleMap.getModule('Pear');
+          throw new Error('should be unreachable');
+        } catch (error) {
+          const {DuplicateHasteCandidatesError} = require('../module_map');
+          expect(error).toBeInstanceOf(DuplicateHasteCandidatesError);
+          expect(error.hasteName).toBe('Pear');
+          expect(error.platform).toBe('g');
+          expect(error.supportsNativePlatform).toBe(false);
+          expect(error.duplicatesSet).toEqual({
+            '/fruits/blueberry.js': 0,
+            '/fruits/pear.js': 0,
+          });
+          expect(error.message).toMatchSnapshot();
+        }
       }
 
       hm_it(

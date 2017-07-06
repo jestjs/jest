@@ -259,7 +259,11 @@ class HasteMap extends EventEmitter {
         .then(hasteMap => {
           this._persist(hasteMap);
           const hasteFS = new HasteFS(hasteMap.files);
-          const moduleMap = new HasteModuleMap(hasteMap.map, hasteMap.mocks);
+          const moduleMap = new HasteModuleMap({
+            duplicates: hasteMap.duplicates,
+            map: hasteMap.map,
+            mocks: hasteMap.mocks,
+          });
           const __hasteMapForTest =
             (process.env.NODE_ENV === 'test' && hasteMap) || null;
           return this._watch(hasteMap, hasteFS, moduleMap).then(() => ({
@@ -281,7 +285,11 @@ class HasteMap extends EventEmitter {
 
   readModuleMap(): ModuleMap {
     const data = this.read();
-    return new HasteModuleMap(data.map, data.mocks);
+    return new HasteModuleMap({
+      duplicates: data.duplicates,
+      map: data.map,
+      mocks: data.mocks,
+    });
   }
 
   /**
@@ -605,7 +613,11 @@ class HasteMap extends EventEmitter {
         this.emit('change', {
           eventsQueue,
           hasteFS: new HasteFS(hasteMap.files),
-          moduleMap: new HasteModuleMap(hasteMap.map, hasteMap.mocks),
+          moduleMap: new HasteModuleMap({
+            duplicates: hasteMap.duplicates,
+            map: hasteMap.map,
+            mocks: hasteMap.mocks,
+          }),
         });
         eventsQueue = [];
       }
