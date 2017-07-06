@@ -26,7 +26,7 @@ class LanguageDropDown extends React.Component {
           <a href={'/jest/' + lang.tag}>
             {lang.name}
           </a>
-        </li>,
+        </li>
       );
     });
 
@@ -35,7 +35,7 @@ class LanguageDropDown extends React.Component {
         <a href="https://crowdin.com/project/jest" target="_blank">
           Help Translate
         </a>
-      </li>,
+      </li>
     );
 
     return (
@@ -85,7 +85,7 @@ class HeaderNav extends React.Component {
   makeLinks(link) {
     link.href = link.href.replace(
       /\/LANGUAGE\//,
-      '/' + this.props.language + '/',
+      '/' + this.props.language + '/'
     );
     return (
       <li key={link.section}>

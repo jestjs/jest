@@ -544,31 +544,31 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-        matcherHint('.not.toHaveProperty', 'object', 'path', {
-          secondArgument: valuePassed ? 'value' : null,
-        }) +
-        '\n\n' +
-        `Expected the object:\n` +
-        `  ${printReceived(object)}\n` +
-        `Not to have a nested property:\n` +
-        `  ${printExpected(keyPath)}\n` +
-        (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
+          matcherHint('.not.toHaveProperty', 'object', 'path', {
+            secondArgument: valuePassed ? 'value' : null,
+          }) +
+          '\n\n' +
+          `Expected the object:\n` +
+          `  ${printReceived(object)}\n` +
+          `Not to have a nested property:\n` +
+          `  ${printExpected(keyPath)}\n` +
+          (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
       : () =>
-        matcherHint('.toHaveProperty', 'object', 'path', {
-          secondArgument: valuePassed ? 'value' : null,
-        }) +
-        '\n\n' +
-        `Expected the object:\n` +
-        `  ${printReceived(object)}\n` +
-        `To have a nested property:\n` +
-        `  ${printExpected(keyPath)}\n` +
-        (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '') +
-        (traversedPath
-          ? `Received:\n  ${RECEIVED_COLOR(
-              'object',
-            )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
-          : '') +
-        (diffString ? `\nDifference:\n\n${diffString}` : '');
+          matcherHint('.toHaveProperty', 'object', 'path', {
+            secondArgument: valuePassed ? 'value' : null,
+          }) +
+          '\n\n' +
+          `Expected the object:\n` +
+          `  ${printReceived(object)}\n` +
+          `To have a nested property:\n` +
+          `  ${printExpected(keyPath)}\n` +
+          (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '') +
+          (traversedPath
+            ? `Received:\n  ${RECEIVED_COLOR(
+                'object',
+              )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
+            : '') +
+          (diffString ? `\nDifference:\n\n${diffString}` : '');
     if (pass === undefined) {
       throw new Error('pass must be initialized');
     }
