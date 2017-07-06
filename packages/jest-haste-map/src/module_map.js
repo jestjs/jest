@@ -12,8 +12,6 @@ import type {Path} from 'types/Config';
 import type {
   DuplicatesSet,
   HTypeValue,
-  MockData,
-  ModuleMapData,
   ModuleMetaData,
   RawModuleMap,
 } from 'types/HasteMap';
@@ -123,7 +121,7 @@ class ModuleMap {
     name: string,
     platform: string,
     supportsNativePlatform: boolean,
-    set: ?DuplicatesSet
+    set: ?DuplicatesSet,
   ) {
     if (set == null) {
       return;
@@ -147,19 +145,22 @@ class DuplicateHasteCandidatesError extends Error {
     name: string,
     platform: string,
     supportsNativePlatform: boolean,
-    duplicatesSet: DuplicatesSet
+    duplicatesSet: DuplicatesSet,
   ) {
     const platformMessage = getPlatformMessage(platform);
     super(
       `The name \`${name}\` was looked up in the Haste module map. It ` +
-      `cannot be resolved, because there exists several different ` +
-      `files, or packages, that provide a module for ` +
-      `that particular name and platform. ${platformMessage} You must ` +
-      `delete or blacklist files until there remains only one of these:\n\n` +
-      Object.keys(duplicatesSet).sort().map(dupFilePath => {
-        const typeMessage = getTypeMessage(duplicatesSet[dupFilePath]);
-        return `  * \`${dupFilePath}\` (${typeMessage})\n`;
-      }).join(''),
+        `cannot be resolved, because there exists several different ` +
+        `files, or packages, that provide a module for ` +
+        `that particular name and platform. ${platformMessage} You must ` +
+        `delete or blacklist files until there remains only one of these:\n\n` +
+        Object.keys(duplicatesSet)
+          .sort()
+          .map(dupFilePath => {
+            const typeMessage = getTypeMessage(duplicatesSet[dupFilePath]);
+            return `  * \`${dupFilePath}\` (${typeMessage})\n`;
+          })
+          .join(''),
     );
     this.hasteName = name;
     this.platform = platform;
