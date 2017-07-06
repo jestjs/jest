@@ -40,7 +40,7 @@ block.item = replace(block.item, 'gm')(/bull/g, block.bullet)();
 
 block.list = replace(block.list)(/bull/g, block.bullet)(
   'hr',
-  /\n+(?=(?: *[-*_]){3,} *(?:\n+|$))/,
+  /\n+(?=(?: *[-*_]){3,} *(?:\n+|$))/
 )();
 
 block._tag =
@@ -51,15 +51,15 @@ block._tag =
 
 block.html = replace(block.html)('comment', /<!--[\s\S]*?-->/)(
   'closed',
-  /<(tag)[\s\S]+?<\/\1>/,
+  /<(tag)[\s\S]+?<\/\1>/
 )('closing', /<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)(/tag/g, block._tag)();
 
 block.paragraph = replace(block.paragraph)('hr', block.hr)(
   'heading',
-  block.heading,
+  block.heading
 )('lheading', block.lheading)('blockquote', block.blockquote)(
   'tag',
-  '<' + block._tag,
+  '<' + block._tag
 )('def', block.def)();
 
 /**
@@ -79,7 +79,7 @@ block.gfm = merge({}, block.normal, {
 
 block.gfm.paragraph = replace(block.paragraph)(
   '(?!',
-  '(?!' + block.gfm.fences.source.replace('\\1', '\\2') + '|',
+  '(?!' + block.gfm.fences.source.replace('\\1', '\\2') + '|'
 )();
 
 /**
@@ -456,7 +456,7 @@ inline._href = /\s*<?([^\s]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
 
 inline.link = replace(inline.link)('inside', inline._inside)(
   'href',
-  inline._href,
+  inline._href
 )();
 
 inline.reflink = replace(inline.reflink)('inside', inline._inside)();
@@ -592,7 +592,7 @@ InlineLexer.prototype.output = function(src) {
         this.outputLink(cap, {
           href: cap[2],
           title: cap[3],
-        }),
+        })
       );
       continue;
     }
@@ -699,7 +699,7 @@ InlineLexer.prototype.outputLink = function(cap, link) {
         title: link.title,
         target: shouldOpenInNewWindow ? '_blank' : '',
       },
-      this.output(cap[1]),
+      this.output(cap[1])
     );
   } else {
     return React.DOM.img(
@@ -708,7 +708,7 @@ InlineLexer.prototype.outputLink = function(cap, link) {
         alt: cap[1],
         title: link.title,
       },
-      null,
+      null
     );
   }
 };
@@ -836,8 +836,8 @@ Parser.prototype.tok = function() { // eslint-disable-line
             this.token.align[i]
               ? {style: {textAlign: this.token.align[i]}}
               : null,
-            heading,
-          ),
+            heading
+          )
         );
       }
       table.push(React.DOM.thead(null, React.DOM.tr(null, row)));
@@ -852,8 +852,8 @@ Parser.prototype.tok = function() { // eslint-disable-line
               this.token.align[j]
                 ? {style: {textAlign: this.token.align[j]}}
                 : null,
-              this.inline.output(cells[j]),
-            ),
+              this.inline.output(cells[j])
+            )
           );
         }
         body.push(React.DOM.tr(null, row));
@@ -910,7 +910,7 @@ Parser.prototype.tok = function() { // eslint-disable-line
       return this.options.paragraphFn
         ? this.options.paragraphFn.call(
             null,
-            this.inline.output(this.token.text),
+            this.inline.output(this.token.text)
           )
         : React.DOM.p(null, this.inline.output(this.token.text));
     }

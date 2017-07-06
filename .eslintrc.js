@@ -65,8 +65,7 @@ module.exports = {
         'examples/**/*',
         'scripts/**/*',
         'integration_tests/*/**/*',
-        'website/server/*',
-        'website/layout/*',
+        'website/*/**/*',
       ],
       rules: {
         'prettier/prettier': [

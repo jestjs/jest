@@ -34,11 +34,7 @@ class DocsSidebar extends React.Component {
       if (metadata.next) {
         if (!articles[metadata.next]) {
           throw new Error(
-            '`next: ' +
-              metadata.next +
-              '` in ' +
-              metadata.id +
-              " doesn't exist",
+            '`next: ' + metadata.next + '` in ' + metadata.id + " doesn't exist"
           );
         }
         previous[articles[metadata.next].id] = metadata.id;
