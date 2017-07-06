@@ -18,7 +18,9 @@ class BlogPost extends React.Component {
       content = content.split('<!--truncate-->')[0];
       return (
         <article className="post-content">
-          <Marked>{content}</Marked>
+          <Marked>
+            {content}
+          </Marked>
           <div className="read-more">
             <a className="button" href={'/jest/blog/' + this.props.post.path}>
               Read More
@@ -27,7 +29,11 @@ class BlogPost extends React.Component {
         </article>
       );
     }
-    return <Marked>{content}</Marked>;
+    return (
+      <Marked>
+        {content}
+      </Marked>
+    );
   }
 
   renderAuthorPhoto() {
@@ -39,8 +45,8 @@ class BlogPost extends React.Component {
             <img
               src={
                 'https://graph.facebook.com/' +
-                  post.authorFBID +
-                  '/picture/?height=200&width=200'
+                post.authorFBID +
+                '/picture/?height=200&width=200'
               }
             />
           </a>
@@ -55,7 +61,9 @@ class BlogPost extends React.Component {
     const post = this.props.post;
     return (
       <h1>
-        <a href={'/jest/blog/' + post.path}>{post.title}</a>
+        <a href={'/jest/blog/' + post.path}>
+          {post.title}
+        </a>
       </h1>
     );
   }
@@ -83,13 +91,17 @@ class BlogPost extends React.Component {
 
     const githubButton = this.props.truncate
       ? null
-      : <p className="post-meta">{siteConfig.githubButton}</p>;
+      : <p className="post-meta">
+          {siteConfig.githubButton}
+        </p>;
 
     return (
       <header className="postHeader">
         {this.renderAuthorPhoto()}
         <p className="post-authorName">
-          <a href={post.authorURL} target="_blank">{post.author}</a>
+          <a href={post.authorURL} target="_blank">
+            {post.author}
+          </a>
         </p>
         {this.renderTitle()}
         {githubButton}
