@@ -10,6 +10,8 @@ module.exports = {
   extends: [
     './packages/eslint-config-fb-strict/index.js',
     'plugin:import/errors',
+    'prettier',
+    'prettier/flowtype',
   ],
   overrides: [
     // to make it more suitable for running on code examples in docs/ folder
@@ -56,11 +58,31 @@ module.exports = {
         'unicorn/filename-case': 0,
       },
     },
+    {
+      excludedFiles: 'integration_tests/__tests__/**/*',
+      files: [
+        'examples/**/*',
+        'scripts/**/*',
+        'integration_tests/*/**/*',
+        'website/server/*',
+        'website/layout/*',
+      ],
+      rules: {
+        'prettier/prettier': [
+          2,
+          {
+            bracketSpacing: false,
+            printWidth: 80,
+            singleQuote: true,
+            trailingComma: 'es5',
+          },
+        ],
+      },
+    },
   ],
   parser: 'babel-eslint',
-  plugins: ['markdown', 'import', 'unicorn'],
+  plugins: ['markdown', 'import', 'unicorn', 'prettier'],
   rules: {
-    'computed-property-spacing': 0,
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
     'flowtype/require-valid-file-annotation': 2,
@@ -72,8 +94,15 @@ module.exports = {
     // This has to be disabled until all type and module imports are combined
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
-    'max-len': 0,
-    'no-multiple-empty-lines': 1,
+    'prettier/prettier': [
+      2,
+      {
+        bracketSpacing: false,
+        printWidth: 80,
+        singleQuote: true,
+        trailingComma: 'all',
+      },
+    ],
     'unicorn/filename-case': [2, {case: 'snakeCase'}],
   },
 };

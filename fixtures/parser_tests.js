@@ -18,7 +18,6 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
   });
 
   describe('File Parsing for it blocks', () => {
-
     it('For the simplest it cases', () => {
       const data = parse(`${fixtures}/global_its.example`);
 
@@ -122,7 +121,6 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
   });
 
   describe('File Parsing for expects', () => {
-
     it('finds Expects in a danger test file', () => {
       const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
       expect(data.expects.length).toEqual(8);

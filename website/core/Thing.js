@@ -52,7 +52,9 @@ try {
               className="productShowcaseSection paddingBottom"
               style={{textAlign: 'center'}}
             >
-              <h2>{siteConfig[language].featureCallout.title}</h2>
+              <h2>
+                {siteConfig[language].featureCallout.title}
+              </h2>
               <Marked>
                 {siteConfig[language].featureCallout.content}
               </Marked>
@@ -62,9 +64,8 @@ try {
               <GridBlock
                 contents={[
                   {
-                    content: siteConfig[
-                      language
-                    ].belowFold.parallelized.content,
+                    content:
+                      siteConfig[language].belowFold.parallelized.content,
                     image: '/jest/img/content/feature-fast.png',
                     imageAlign: 'right',
                     title: siteConfig[language].belowFold.parallelized.title,
@@ -148,7 +149,9 @@ try {
                   <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17" />
                 </div>
                 <div className="blockContent">
-                  <h2>{siteConfig[language].belowFold.learn.title}</h2>
+                  <h2>
+                    {siteConfig[language].belowFold.learn.title}
+                  </h2>
                   <div>
                     <Marked>
                       {siteConfig[language].belowFold.learn.content}
@@ -159,8 +162,12 @@ try {
             </Container>
 
             <div className="productShowcaseSection paddingBottom">
-              <h2>{siteConfig[language].belowFold.using.title}</h2>
-              <p>{siteConfig[language].belowFold.using.content}</p>
+              <h2>
+                {siteConfig[language].belowFold.using.title}
+              </h2>
+              <p>
+                {siteConfig[language].belowFold.using.content}
+              </p>
               <div className="logos">
                 {showcase}
               </div>
