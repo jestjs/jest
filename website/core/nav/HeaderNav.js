@@ -26,7 +26,7 @@ class LanguageDropDown extends React.Component {
           <a href={'/jest/' + lang.tag}>
             {lang.name}
           </a>
-        </li>
+        </li>,
       );
     });
 
@@ -35,7 +35,7 @@ class LanguageDropDown extends React.Component {
         <a href="https://crowdin.com/project/jest" target="_blank">
           Help Translate
         </a>
-      </li>
+      </li>,
     );
 
     return (
@@ -85,13 +85,14 @@ class HeaderNav extends React.Component {
   makeLinks(link) {
     link.href = link.href.replace(
       /\/LANGUAGE\//,
-      '\/' + this.props.language + '\/'
+      '/' + this.props.language + '/',
     );
     return (
       <li key={link.section}>
         <a
           href={link.href}
-          className={link.section === this.props.section ? 'active' : ''}>
+          className={link.section === this.props.section ? 'active' : ''}
+        >
           {siteConfig[this.props.language]['localized-strings'][link.text]}
         </a>
       </li>
@@ -105,7 +106,9 @@ class HeaderNav extends React.Component {
           <header>
             <a href={this.props.baseUrl}>
               <img src={this.props.baseUrl + 'img/jest-outline.svg'} />
-              <h2>{this.props.title}</h2>
+              <h2>
+                {this.props.title}
+              </h2>
             </a>
             {this.renderResponsiveNav()}
           </header>

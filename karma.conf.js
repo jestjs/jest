@@ -9,9 +9,7 @@
 module.exports = config => {
   config.set({
     browsers: ['ChromeHeadless'],
-    files: [
-      'integration_tests/browser-support/browser-test.js',
-    ],
+    files: ['integration_tests/browser-support/browser-test.js'],
     frameworks: ['mocha', 'browserify'],
     plugins: ['karma-browserify', 'karma-chrome-launcher', 'karma-mocha'],
     preprocessors: {
