@@ -2,6 +2,7 @@ machine:
   environment:
     YARN_VERSION: 0.20.3
     PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+    FORCE_COLOR: true
   node:
     version: 8
 dependencies:
