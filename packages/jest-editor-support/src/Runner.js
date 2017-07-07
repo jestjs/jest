@@ -15,7 +15,7 @@ import {readFile} from 'fs';
 import {tmpdir} from 'os';
 import EventEmitter from 'events';
 import ProjectWorkspace from './project_workspace';
-import {createProcess} from './process';
+import {createProcess} from './Process';
 
 // This class represents the running process, and
 // passes out events when it understands what data is being

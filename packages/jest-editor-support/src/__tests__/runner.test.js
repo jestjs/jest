@@ -28,13 +28,13 @@ jest.doMock('fs', () => {
 // Let's us use a per-test "jest process"
 let mockDebugProcess = {};
 const mockCreateProcess = jest.fn(() => mockDebugProcess);
-jest.doMock('../process.js', () => {
+jest.doMock('../Process.js', () => {
   return {
     createProcess: mockCreateProcess,
   };
 });
 
-const Runner = require('../runner');
+const Runner = require('../Runner');
 
 describe('events', () => {
   let runner;

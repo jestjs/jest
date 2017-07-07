@@ -13,7 +13,7 @@ import type {Options} from './types';
 import {ChildProcess} from 'child_process';
 import EventEmitter from 'events';
 import ProjectWorkspace from './project_workspace';
-import {createProcess} from './process';
+import {createProcess} from './Process';
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output

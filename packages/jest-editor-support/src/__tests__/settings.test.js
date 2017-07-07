@@ -10,7 +10,7 @@
 
 const {EventEmitter} = require('events');
 const ProjectWorkspace = require('../project_workspace');
-const Settings = require('../settings');
+const Settings = require('../Settings');
 
 describe('Settings', () => {
   it('sets itself up fom the constructor', () => {

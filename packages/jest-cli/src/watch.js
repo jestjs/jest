@@ -24,7 +24,7 @@ import runJest from './run_jest';
 import updateArgv from './lib/update_argv';
 import SearchSource from './search_source';
 import TestWatcher from './test_watcher';
-import Prompt from './lib/prompt';
+import Prompt from './lib/Prompt';
 import TestPathPatternPrompt from './test_path_pattern_prompt';
 import TestNamePatternPrompt from './test_name_pattern_prompt';
 import {KEYS, CLEAR} from './constants';
