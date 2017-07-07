@@ -27,6 +27,7 @@
     "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-flowtype": "^2.34.0",
     "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jest": "^20.0.3",
     "eslint-plugin-markdown": "^1.0.0-beta.6",
     "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-react": "^7.1.0",
@@ -45,7 +46,7 @@
     "karma-chrome-launcher": "^2.1.1",
     "karma-mocha": "^1.3.0",
     "left-pad": "^1.1.1",
-    "lerna": "2.0.0-rc.4",
+    "lerna": "2.0.0",
     "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
     "mocha": "^3.4.2",
@@ -78,7 +79,7 @@
     "jest-coverage": "yarn run jest --silent -- --coverage",
     "lint": "eslint . --cache --ext js,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
-    "postinstall": "node ./scripts/postinstall.js && yarn run build --silent && (cd packages/eslint-plugin-jest && yarn link --silent) && yarn link eslint-plugin-jest --silent",
+    "postinstall": "yarn run build --silent",
     "publish": "yarn run build-clean --silent && yarn run build --silent && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn run typecheck --silent && yarn run lint --silent && yarn run lint-es5-build && yarn run jest-coverage --silent -- -i && yarn run test-examples --silent && node scripts/mapCoverage.js && codecov",
@@ -89,6 +90,9 @@
     "typecheck": "flow check",
     "watch": "yarn run build --silent && node ./scripts/watch.js"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "jest": {
     "modulePathIgnorePatterns": [
       "examples/.*",

@@ -37,7 +37,7 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
       "/mocked/root/path/jest/node_modules/regenerator-runtime/runtime.js"
     ],
     "snapshotSerializers": [],
-    "testEnvironment": "/mocked/root/path/jest/packages/jest-environment-node/build/index.js",
+    "testEnvironment": "/mocked/root/path/jest/node_modules/jest-environment-node/build/index.js",
     "testMatch": [
       "**/__tests__/**/*.js?(x)",
       "**/?(*.)(spec|test).js?(x)"
@@ -52,7 +52,7 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     "transform": [
       [
         "^.+\\\\.jsx?$",
-        "/mocked/root/path/jest/integration_tests/verbose_reporter/node_modules/babel-jest/build/index.js"
+        "/mocked/root/path/jest/node_modules/babel-jest/build/index.js"
       ]
     ],
     "transformIgnorePatterns": [

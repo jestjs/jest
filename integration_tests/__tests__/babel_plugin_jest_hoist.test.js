@@ -11,7 +11,7 @@
 
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');
-const {linkJestPackage, run} = require('../utils');
+const {run} = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
@@ -21,8 +21,6 @@ skipOnWindows.suite();
 if (process.platform !== 'win32') {
   beforeEach(() => {
     run('yarn', DIR);
-    linkJestPackage('babel-plugin-jest-hoist', DIR);
-    linkJestPackage('babel-jest', DIR);
   });
 }
 
