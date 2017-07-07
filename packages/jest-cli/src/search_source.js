@@ -195,7 +195,7 @@ class SearchSource {
   ): Promise<SearchResult> {
     if (testSelectionConfig.onlyChanged) {
       if (!changedFilesPromise) {
-        throw new Error('This promise must be presen when running with -o');
+        throw new Error('This promise must be present when running with -o.');
       }
 
       return this.findTestRelatedToChangedFiles(changedFilesPromise);
