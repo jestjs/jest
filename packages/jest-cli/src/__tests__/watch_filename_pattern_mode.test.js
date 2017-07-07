@@ -61,11 +61,10 @@ jest.mock(
     },
 );
 
-jest.doMock('chalk', () =>
-  Object.assign(new chalk.constructor({enabled: false}), {
-    stripColor: str => str,
-  }),
-);
+jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+
+jest.doMock('strip-ansi');
+require('strip-ansi').mockImplementation(str => str);
 
 jest.doMock(
   '../run_jest',

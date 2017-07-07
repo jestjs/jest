@@ -20,7 +20,7 @@ import scroll from './lib/scroll_list';
 import {getTerminalWidth} from './lib/terminal_utils';
 import highlight from './lib/highlight';
 import {trimAndFormatPath} from './reporters/utils';
-import Prompt from './lib/prompt';
+import Prompt from './lib/Prompt';
 import {
   formatTypeaheadSelection,
   printMore,

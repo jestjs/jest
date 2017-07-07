@@ -13,7 +13,8 @@
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import stringLength from 'string-length';
-import Prompt from './prompt';
+import stripAnsi from 'strip-ansi';
+import Prompt from './Prompt';
 
 const pluralize = (count: number, text: string) =>
   count === 1 ? text : text + 's';
@@ -89,8 +90,8 @@ const formatTypeaheadSelection = (
   prompt: Prompt,
 ) => {
   if (index === activeIndex) {
-    prompt.setTypheadheadSelection(chalk.stripColor(item));
-    return chalk.black.bgYellow(chalk.stripColor(item));
+    prompt.setTypheadheadSelection(stripAnsi(item));
+    return chalk.black.bgYellow(stripAnsi(item));
   }
   return item;
 };
