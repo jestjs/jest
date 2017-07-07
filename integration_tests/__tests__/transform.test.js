@@ -8,8 +8,15 @@
 
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');
-const {linkJestPackage, run} = require('../utils');
+const {
+  run,
+  cleanup,
+  createEmptyPackage,
+  linkJestPackage,
+  copyDir,
+} = require('../utils');
 const runJest = require('../runJest');
+const os = require('os');
 
 describe('babel-jest', () => {
   skipOnWindows.suite();
@@ -18,7 +25,6 @@ describe('babel-jest', () => {
   beforeEach(() => {
     if (process.platform !== 'win32') {
       run('yarn', dir);
-      linkJestPackage('babel-jest', dir);
     }
   });
 
@@ -39,17 +45,32 @@ describe('babel-jest', () => {
   });
 });
 
+// babel-jest is automatically linked at the root because it is a workspace now
+// a way to test this in isolation is to move the test suite into a temp folder
 describe('no babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/no-babel-jest');
+  // doing test in a temp directory because we don't want jest node_modules affect it
+  const tempDir = path.resolve(os.tmpdir(), 'transform-no-babel-jest');
+
+  beforeEach(() => {
+    cleanup(tempDir);
+    createEmptyPackage(tempDir);
+    copyDir(dir, tempDir);
+    linkJestPackage('babel-jest', tempDir);
+  });
 
   it('fails with syntax error on flow types', () => {
-    const {stderr} = runJest(dir, ['--no-cache']);
+    const {stderr} = runJest(tempDir, ['--no-cache', '--no-watchman']);
     expect(stderr).toMatch(/FAIL.*fails_with_syntax_error/);
-    expect(stderr).toMatch('SyntaxError: Unexpected token :');
+    expect(stderr).toMatch('Unexpected token');
   });
 
   test('instrumentation with no babel-jest', () => {
-    const {stdout} = runJest(dir, ['--no-cache', '--coverage']);
+    const {stdout} = runJest(tempDir, [
+      '--no-cache',
+      '--coverage',
+      '--no-watchman',
+    ]);
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excluded_from_coverage.js');
     // coverage result should not change
@@ -87,7 +108,6 @@ describe('multiple-transformers', () => {
   beforeEach(() => {
     if (process.platform !== 'win32') {
       run('yarn', dir);
-      linkJestPackage('babel-jest', dir);
     }
   });
 

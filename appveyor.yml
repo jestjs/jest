@@ -5,15 +5,17 @@ environment:
 install:
   - ps: Install-Product node $env:nodejs_version x64
   - node --version
-  - yarn --version
-  - yarn install
+  - curl -fsSL -o yarn.js https://github.com/yarnpkg/yarn/releases/download/v0.27.5/yarn-0.27.5.js
+  - node ./yarn.js --version
+  - node ./yarn.js install
+  - node ./yarn.js run build
 
 cache:
   - node_modules
   - .eslintcache
 
 test_script:
-  - yarn run jest -- --color
+  - node ./yarn.js run jest -- --color
 
 # Don't actually build.
 build: off
