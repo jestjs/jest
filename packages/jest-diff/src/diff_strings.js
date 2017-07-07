@@ -33,10 +33,10 @@ type Hunk = {|
   oldStart: number,
 |};
 
-const getColor = (added: boolean, removed: boolean): chalk =>
+const getColor = (added: boolean, removed: boolean) =>
   added ? chalk.red : removed ? chalk.green : chalk.dim;
 
-const getBgColor = (added: boolean, removed: boolean): chalk =>
+const getBgColor = (added: boolean, removed: boolean) =>
   added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
 
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
