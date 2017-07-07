@@ -35,13 +35,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import type {Jasmine} from 'types/Jasmine';
 
 import createSpy from './create_spy';
-import Env from './env';
+import Env from './Env';
 import JsApiReporter from './js_api_reporter';
 import ReportDispatcher from './report_dispatcher';
-import Spec from './spec';
+import Spec from './Spec';
 import SpyRegistry from './spy_registry';
-import Suite from './suite';
-import Timer from './timer';
+import Suite from './Suite';
+import Timer from './Timer';
 
 exports.create = function() {
   const j$ = {};
