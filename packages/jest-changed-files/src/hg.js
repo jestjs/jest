@@ -9,7 +9,7 @@
  */
 
 import type {Path} from 'types/Config';
-import type {Options, SCMAdapter} from '../types';
+import type {Options, SCMAdapter} from 'types/ChangedFiles';
 
 import path from 'path';
 import childProcess from 'child_process';
