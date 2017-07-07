@@ -820,8 +820,17 @@ class HasteMap extends EventEmitter {
     }
 
     if (this._whitelist) {
-      const match = filePath.match(this._whitelist);
-      return !match || match.length > 1;
+      const whitelist = this._whitelist;
+      const match = whitelist.exec(filePath);
+      const matchEndIndex = whitelist.lastIndex;
+      whitelist.lastIndex = 0;
+
+      if (!match) {
+        return true;
+      }
+      
+      const filePathInPackage = filePath.substr(matchEndIndex);
+      return filePathInPackage.startsWith(NODE_MODULES);
     }
 
     return true;
