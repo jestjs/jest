@@ -123,3 +123,14 @@ export const iterableEquality = (a: any, b: any) => {
   }
   return true;
 };
+
+export const partition = <T>(
+  items: Array<T>,
+  predicate: T => boolean,
+): [Array<T>, Array<T>] => {
+  const result = [[], []];
+
+  items.forEach(item => result[predicate(item) ? 0 : 1].push(item));
+
+  return result;
+};
