@@ -14,6 +14,7 @@ import type {Context} from 'types/Context';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
+import getChangedFilesPromise from './get_changed_files_promise';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isCI from 'is-ci';
@@ -115,6 +116,8 @@ const watch = (
         testPathPattern: argv.testPathPattern,
       }),
     );
+    const configs = contexts.map(context => context.config);
+    const changedFilesPromise = getChangedFilesPromise(argv, configs);
     return runJest(
       // $FlowFixMe
       globalConfig,
@@ -123,6 +126,7 @@ const watch = (
       pipe,
       testWatcher,
       startRun,
+      changedFilesPromise,
       results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;
