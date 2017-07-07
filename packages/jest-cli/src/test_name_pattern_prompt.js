@@ -14,7 +14,7 @@ import type {ScrollOptions} from './lib/scroll_list';
 
 import scroll from './lib/scroll_list';
 import {getTerminalWidth} from './lib/terminal_utils';
-import Prompt from './lib/prompt';
+import Prompt from './lib/Prompt';
 import formatTestNameByPattern from './lib/format_test_name_by_pattern';
 import {
   formatTypeaheadSelection,

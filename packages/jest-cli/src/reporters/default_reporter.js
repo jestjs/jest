@@ -19,7 +19,7 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import isCI from 'is-ci';
 import BaseReporter from './base_reporter';
-import Status from './status';
+import Status from './Status';
 import getConsoleOutput from './get_console_output';
 import getResultHeader from './get_result_header';
 

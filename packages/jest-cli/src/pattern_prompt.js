@@ -14,7 +14,7 @@ import type {ScrollOptions} from './lib/scroll_list';
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
-import Prompt from './lib/prompt';
+import Prompt from './lib/Prompt';
 
 const usage = (entity: string) =>
   `\n${chalk.bold('Pattern Mode Usage')}\n` +
