@@ -23,6 +23,7 @@ import {version as VERSION} from '../../package.json';
 import args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
+import getChangedFilesPromise from '../get_changed_files_promise';
 import getJest from './get_jest';
 import getMaxWorkers from '../lib/get_max_workers';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
@@ -251,6 +252,9 @@ const _run = async (
   argv,
   onComplete,
 ) => {
+  // Queries to hg/git can take a while, so we need to start the process
+  // as soon as possible, so by the time we need the result it's already there.
+  const changedFilesPromise = getChangedFilesPromise(argv, configs);
   const {contexts, hasteMapInstances} = await _buildContextsAndHasteMaps(
     configs,
     globalConfig,
@@ -267,8 +271,16 @@ const _run = async (
         globalConfig,
         outputStream,
         hasteMapInstances,
+        changedFilesPromise,
       )
-    : _runWithoutWatch(globalConfig, contexts, argv, outputStream, onComplete);
+    : _runWithoutWatch(
+        globalConfig,
+        contexts,
+        argv,
+        outputStream,
+        onComplete,
+        changedFilesPromise,
+      );
 };
 
 const _runWatch = async (
@@ -279,6 +291,7 @@ const _runWatch = async (
   globalConfig,
   outputStream,
   hasteMapInstances,
+  changedFilesPromise,
 ) => {
   if (hasDeprecationWarnings) {
     try {
@@ -304,6 +317,7 @@ const _runWithoutWatch = async (
   argv,
   outputStream,
   onComplete,
+  changedFilesPromise,
 ) => {
   const startRun = () => {
     if (!argv.listTests) {
@@ -316,6 +330,7 @@ const _runWithoutWatch = async (
       outputStream,
       new TestWatcher({isWatchMode: false}),
       startRun,
+      changedFilesPromise,
       onComplete,
     );
   };

@@ -10,6 +10,7 @@
 
 import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
+import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
 import type {TestSelectionConfig} from './search_source';
 import type {AggregatedResult} from 'types/TestResult';
@@ -102,19 +103,23 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
 const getTestPaths = async (
   globalConfig,
   context,
-  pattern,
+  testSelectionConfig,
   argv,
   outputStream,
+  changedFilesPromise,
 ) => {
   const source = new SearchSource(context);
-  let data = await source.getTestPaths(pattern);
+  let data = await source.getTestPaths(
+    testSelectionConfig,
+    changedFilesPromise,
+  );
   if (!data.tests.length) {
-    if (pattern.onlyChanged && data.noSCM) {
+    if (testSelectionConfig.onlyChanged && data.noSCM) {
       if (globalConfig.watch) {
         // Run all the tests
         updateArgv(argv, 'watchAll', {noSCM: true});
-        pattern = getTestPathPattern(argv);
-        data = await source.getTestPaths(pattern);
+        testSelectionConfig = getTestPathPattern(argv);
+        data = await source.getTestPaths(testSelectionConfig);
       } else {
         new Console(outputStream, outputStream).log(
           'Jest can only find uncommitted changed files in a git or hg ' +
@@ -160,6 +165,7 @@ const runJest = async (
   outputStream: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
   startRun: () => *,
+  changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
   // We use this internaly at FB. Since we run multiple processes and most
   // of them don't match any tests, we don't want to print 'no tests found'
@@ -184,6 +190,7 @@ const runJest = async (
         testSelectionConfig,
         argv,
         outputStream,
+        changedFilesPromise,
       );
       allTests = allTests.concat(matches.tests);
       return {context, matches};

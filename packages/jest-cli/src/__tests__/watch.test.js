@@ -65,6 +65,7 @@ describe('Watch mode flows', () => {
       pipe,
       new TestWatcher({isWatchMode: true}),
       expect.any(Function),
+      undefined,
       expect.any(Function),
     );
   });
@@ -82,6 +83,7 @@ describe('Watch mode flows', () => {
       pipe,
       new TestWatcher({isWatchMode: true}),
       expect.any(Function),
+      undefined,
       expect.any(Function),
     );
   });
@@ -95,6 +97,7 @@ describe('Watch mode flows', () => {
       pipe,
       new TestWatcher({isWatchMode: true}),
       expect.any(Function),
+      undefined,
       expect.any(Function),
     );
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();

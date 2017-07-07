@@ -9,7 +9,7 @@
  */
 
 import type {Path} from 'types/Config';
-import type {Options, Repos} from '../types';
+import type {ChangedFilesPromise, Options, Repos} from 'types/ChangedFiles';
 
 import git from './git';
 import hg from './hg';
@@ -25,8 +25,9 @@ const findHgRoot = dir => mutex(() => hg.getRoot(dir));
 const getChangedFilesForRoots = async (
   roots: Array<Path>,
   options: Options,
-): Promise<{changedFiles: Set<Path>, repos: Repos}> => {
+): ChangedFilesPromise => {
   const repos = await findRepos(roots);
+
   const gitPromises = Array.from(repos.git).map(repo =>
     git.findChangedFiles(repo, options),
   );

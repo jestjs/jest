@@ -36,7 +36,6 @@ module.exports = (argv: Argv): TestSelectionConfig => {
   if (argv.onlyChanged) {
     return {
       input: '',
-      lastCommit: argv.lastCommit,
       onlyChanged: true,
       watch: argv.watch,
     };

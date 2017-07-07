@@ -12,11 +12,11 @@ import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
 import type {Test} from 'types/TestRunner';
+import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
-import {getChangedFilesForRoots} from 'jest-changed-files';
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
@@ -28,15 +28,9 @@ type SearchResult = {|
 
 type StrOrRegExpPattern = RegExp | string;
 
-type Options = {|
-  lastCommit?: boolean,
-  withAncestor?: boolean,
-|};
-
 export type TestSelectionConfig = {|
   input?: string,
   findRelatedTests?: boolean,
-  lastCommit?: boolean,
   onlyChanged?: boolean,
   paths?: Array<Path>,
   shouldTreatInputAsPattern?: boolean,
@@ -183,27 +177,28 @@ class SearchSource {
     return {tests: []};
   }
 
-  async findChangedTests(options: Options): Promise<SearchResult> {
-    const {repos, changedFiles} = await getChangedFilesForRoots(
-      this._context.config.roots,
-      options,
-    );
+  async findTestRelatedToChangedFiles(
+    changedFilesPromise: ChangedFilesPromise,
+  ) {
+    const {repos, changedFiles} = await changedFilesPromise;
 
     // no SCM (git/hg/...) is found in any of the roots.
     const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
-
     return noSCM
       ? {noSCM: true, tests: []}
       : this.findRelatedTests(changedFiles);
   }
 
-  getTestPaths(
+  async getTestPaths(
     testSelectionConfig: TestSelectionConfig,
+    changedFilesPromise: ?ChangedFilesPromise,
   ): Promise<SearchResult> {
     if (testSelectionConfig.onlyChanged) {
-      return this.findChangedTests({
-        lastCommit: testSelectionConfig.lastCommit,
-      });
+      if (!changedFilesPromise) {
+        throw new Error('This promise must be presen when running with -o');
+      }
+
+      return this.findTestRelatedToChangedFiles(changedFilesPromise);
     } else if (
       testSelectionConfig.findRelatedTests &&
       testSelectionConfig.paths
