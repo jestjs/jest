@@ -225,6 +225,16 @@ describe('HasteMap', () => {
       ' * @providesModule mapObject',
       ' */',
     ].join('\n');
+    mockFs['/fruits/node_modules/react/node_modules/dummy/merge.js'] = [
+      '/**',
+      ' * @providesModule merge',
+      ' */',
+    ].join('\n');
+    mockFs['/fruits/node_modules/react/node_modules/merge/package.json'] = [
+      '{',
+      '  "name": "merge"',
+      '}',
+    ].join('\n');
     mockFs['/fruits/node_modules/jest/jest.js'] = [
       '/**',
       ' * @providesModule Jest',
