@@ -340,7 +340,7 @@ test('resolves to lemon', async () => {
 
 ##### available in Jest **20.0.0+**
 
-Use `.rejects` to unwrap the reason of a rejected promise so any other matcher can be chained. If the promise is fulfilled the assertion fails.
+Use `.rejects` to unwrap the reason of a rejected promise so any other matcher can be chained. If the promise is rejected the assertion fails.
 
 For example, this code tests that the promise rejects with a reason:
 
