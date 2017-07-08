@@ -430,7 +430,7 @@ test('drinkEach drinks each drink', () => {
 
 ### `.toHaveBeenCalledWith(arg1, arg2, ...)`
 
-Also under the alias: `.toBeCalledWith`
+Also under the alias: `.toBeCalledWith()`
 
 Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
 
