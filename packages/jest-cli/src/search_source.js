@@ -10,7 +10,6 @@
 
 import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
-import type {ResolveModuleConfig} from 'types/Resolve';
 import type {Test} from 'types/TestRunner';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
@@ -67,7 +66,6 @@ const toTests = (context, tests) =>
 
 class SearchSource {
   _context: Context;
-  _options: ResolveModuleConfig;
   _rootPattern: RegExp;
   _testIgnorePattern: ?RegExp;
   _testPathCases: {
@@ -77,13 +75,9 @@ class SearchSource {
     testPathIgnorePatterns: (path: Path) => boolean,
   };
 
-  constructor(context: Context, options?: ResolveModuleConfig) {
+  constructor(context: Context) {
     const {config} = context;
     this._context = context;
-    this._options = options || {
-      skipNodeResolution: false,
-    };
-
     this._rootPattern = new RegExp(
       config.roots.map(dir => escapePathForRegex(dir)).join('|'),
     );
@@ -162,7 +156,7 @@ class SearchSource {
           allPaths,
           this.isTestFilePath.bind(this),
           {
-            skipNodeResolution: this._options.skipNodeResolution,
+            skipNodeResolution: this._context.config.skipNodeResolution,
           },
         ),
       ),

@@ -828,7 +828,7 @@ class HasteMap extends EventEmitter {
       if (!match) {
         return true;
       }
-      
+
       const filePathInPackage = filePath.substr(matchEndIndex);
       return filePathInPackage.startsWith(NODE_MODULES);
     }
