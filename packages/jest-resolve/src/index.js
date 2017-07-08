@@ -10,6 +10,7 @@
 
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
+import type {ResolveModuleConfig} from 'types/Resolve';
 
 import fs from 'fs';
 import path from 'path';
@@ -45,10 +46,6 @@ type ModuleNameMapperConfig = {|
 |};
 
 type BooleanObject = {[key: string]: boolean};
-
-export type ResolveModuleConfig = {|
-  skipNodeResolution?: boolean,
-|};
 
 const NATIVE_PLATFORM = 'native';
 
