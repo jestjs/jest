@@ -430,6 +430,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'resetModules':
       case 'rootDir':
       case 'silent':
+      case 'skipNodeResolution':
       case 'testEnvironment':
       case 'testNamePattern':
       case 'testRegex':
