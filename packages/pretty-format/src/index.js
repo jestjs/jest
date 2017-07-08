@@ -164,12 +164,6 @@ function printBasicValue(
     }
     return regExpToString.call(val);
   }
-  if (toStringed === '[object Arguments]' && val.length === 0) {
-    return 'Arguments []';
-  }
-  if (isToStringedArrayType(toStringed) && val.length === 0) {
-    return val.constructor.name + ' []';
-  }
 
   if (val instanceof Error) {
     return printError(val);
@@ -229,81 +223,7 @@ function printList(
     body += (min ? '' : ',') + edgeSpacing + prevIndent;
   }
 
-  return '[' + body + ']';
-}
-
-function printArguments(
-  val: any,
-  indent: string,
-  prevIndent: string,
-  spacing: string,
-  edgeSpacing: string,
-  refs: Refs,
-  maxDepth: number,
-  currentDepth: number,
-  plugins: Plugins,
-  min: boolean,
-  callToJSON: boolean,
-  printFunctionName: boolean,
-  escapeRegex: boolean,
-  colors: Colors,
-): string {
-  return (
-    (min ? '' : 'Arguments ') +
-    printList(
-      val,
-      indent,
-      prevIndent,
-      spacing,
-      edgeSpacing,
-      refs,
-      maxDepth,
-      currentDepth,
-      plugins,
-      min,
-      callToJSON,
-      printFunctionName,
-      escapeRegex,
-      colors,
-    )
-  );
-}
-
-function printArray(
-  val: any,
-  indent: string,
-  prevIndent: string,
-  spacing: string,
-  edgeSpacing: string,
-  refs: Refs,
-  maxDepth: number,
-  currentDepth: number,
-  plugins: Plugins,
-  min: boolean,
-  callToJSON: boolean,
-  printFunctionName: boolean,
-  escapeRegex: boolean,
-  colors: Colors,
-): string {
-  return (
-    (min ? '' : val.constructor.name + ' ') +
-    printList(
-      val,
-      indent,
-      prevIndent,
-      spacing,
-      edgeSpacing,
-      refs,
-      maxDepth,
-      currentDepth,
-      plugins,
-      min,
-      callToJSON,
-      printFunctionName,
-      escapeRegex,
-      colors,
-    )
-  );
+  return body;
 }
 
 function printMap(
@@ -322,7 +242,7 @@ function printMap(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  let result = 'Map {';
+  let result = '';
   const iterator = val.entries();
   let current = iterator.next();
 
@@ -377,7 +297,7 @@ function printMap(
     result += (min ? '' : ',') + edgeSpacing + prevIndent;
   }
 
-  return result + '}';
+  return result;
 }
 
 function printObject(
@@ -396,10 +316,7 @@ function printObject(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  const constructor = min
-    ? ''
-    : val.constructor ? val.constructor.name + ' ' : 'Object ';
-  let result = constructor + '{';
+  let result = '';
   let keys = Object.keys(val).sort();
   const symbols = getSymbols(val);
 
@@ -457,7 +374,7 @@ function printObject(
     result += (min ? '' : ',') + edgeSpacing + prevIndent;
   }
 
-  return result + '}';
+  return result;
 }
 
 function printSet(
@@ -476,7 +393,7 @@ function printSet(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  let result = 'Set {';
+  let result = '';
   const iterator = val.entries();
   let current = iterator.next();
 
@@ -515,7 +432,7 @@ function printSet(
     result += (min ? '' : ',') + edgeSpacing + prevIndent;
   }
 
-  return result + '}';
+  return result;
 }
 
 function printComplexValue(
@@ -571,9 +488,14 @@ function printComplexValue(
 
   const toStringed = toString.call(val);
   if (toStringed === '[object Arguments]') {
+    if (val.length === 0) {
+      return 'Arguments []';
+    }
     return hitMaxDepth
       ? '[Arguments]'
-      : printArguments(
+      : (min ? '' : 'Arguments ') +
+        '[' +
+        printList(
           val,
           indent,
           prevIndent,
@@ -588,11 +510,17 @@ function printComplexValue(
           printFunctionName,
           escapeRegex,
           colors,
-        );
+        ) +
+        ']';
   } else if (isToStringedArrayType(toStringed)) {
+    if (val.length === 0) {
+      return val.constructor.name + ' []';
+    }
     return hitMaxDepth
       ? '[Array]'
-      : printArray(
+      : (min ? '' : val.constructor.name + ' ') +
+        '[' +
+        printList(
           val,
           indent,
           prevIndent,
@@ -607,11 +535,13 @@ function printComplexValue(
           printFunctionName,
           escapeRegex,
           colors,
-        );
+        ) +
+        ']';
   } else if (toStringed === '[object Map]') {
     return hitMaxDepth
       ? '[Map]'
-      : printMap(
+      : 'Map {' +
+        printMap(
           val,
           indent,
           prevIndent,
@@ -626,11 +556,13 @@ function printComplexValue(
           printFunctionName,
           escapeRegex,
           colors,
-        );
+        ) +
+        '}';
   } else if (toStringed === '[object Set]') {
     return hitMaxDepth
       ? '[Set]'
-      : printSet(
+      : 'Set {' +
+        printSet(
           val,
           indent,
           prevIndent,
@@ -645,12 +577,15 @@ function printComplexValue(
           printFunctionName,
           escapeRegex,
           colors,
-        );
+        ) +
+        '}';
   }
 
   return hitMaxDepth
     ? '[Object]'
-    : printObject(
+    : (min ? '' : val.constructor ? val.constructor.name + ' ' : 'Object ') +
+      '{' +
+      printObject(
         val,
         indent,
         prevIndent,
@@ -665,7 +600,8 @@ function printComplexValue(
         printFunctionName,
         escapeRegex,
         colors,
-      );
+      ) +
+      '}';
 }
 
 function printPlugin(
