@@ -369,7 +369,7 @@ test('fetchData() rejects to be error', async () => {
 `toBe` just checks that a value is what you expect. It uses `===` to check
 strict equality.
 
-For example, this code will validate some properties of the `beverage` object:
+For example, this code will validate some properties of the `can` object:
 
 ```js
 const can = {
