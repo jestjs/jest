@@ -827,7 +827,7 @@ test('throws on octopus', () => {
 
 ### `.toThrowErrorMatchingSnapshot()`
 
-Use `.toThrowErrorMatchingSnapshot` to test that a function throws a error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
