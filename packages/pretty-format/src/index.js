@@ -488,9 +488,6 @@ function printComplexValue(
 
   const toStringed = toString.call(val);
   if (toStringed === '[object Arguments]') {
-    if (val.length === 0) {
-      return 'Arguments []';
-    }
     return hitMaxDepth
       ? '[Arguments]'
       : (min ? '' : 'Arguments ') +
@@ -513,11 +510,8 @@ function printComplexValue(
         ) +
         ']';
   } else if (isToStringedArrayType(toStringed)) {
-    if (val.length === 0) {
-      return val.constructor.name + ' []';
-    }
     return hitMaxDepth
-      ? '[Array]'
+      ? '[' + val.constructor.name + ']'
       : (min ? '' : val.constructor.name + ' ') +
         '[' +
         printList(
@@ -582,8 +576,8 @@ function printComplexValue(
   }
 
   return hitMaxDepth
-    ? '[Object]'
-    : (min ? '' : val.constructor ? val.constructor.name + ' ' : 'Object ') +
+    ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
+    : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
       '{' +
       printObject(
         val,
