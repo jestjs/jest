@@ -25,6 +25,7 @@ describe('jest --showConfig', () => {
           .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
           .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
           .replace(/"version": "(.+)"/g, '"version": "[version]"')
+          .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
           .replace(new RegExp(root, 'g'), '/mocked/root/path'),
       test: val => typeof val === 'string',
     });

@@ -69,6 +69,7 @@ const getConfigs = (
       forceExit: options.forceExit,
       logHeapUsage: options.logHeapUsage,
       mapCoverage: options.mapCoverage,
+      maxWorkers: options.maxWorkers,
       noStackTrace: options.noStackTrace,
       notify: options.notify,
       projects: options.projects,

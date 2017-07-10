@@ -15,6 +15,7 @@ import crypto from 'crypto';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
 import chalk from 'chalk';
+import getMaxWorkers from './get_max_workers';
 import glob from 'glob';
 import Resolver from 'jest-resolve';
 import utils from 'jest-regex-util';
@@ -451,6 +452,8 @@ function normalize(options: InitialOptions, argv: Argv) {
     argv.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot ? 'all' : 'new';
+
+  newOptions.maxWorkers = getMaxWorkers(argv);
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(

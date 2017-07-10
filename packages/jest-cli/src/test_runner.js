@@ -47,7 +47,6 @@ class CancelRun extends Error {
 }
 
 export type TestRunnerOptions = {|
-  maxWorkers: number,
   pattern: TestSelectionConfig,
   startRun: () => *,
   testNamePattern: string,
@@ -91,14 +90,14 @@ class TestRunner {
 
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
-      getEstimatedTime(timings, this._options.maxWorkers) / 1000,
+      getEstimatedTime(timings, this._globalConfig.maxWorkers) / 1000,
     );
 
     // Run in band if we only have one test or one worker available.
     // If we are confident from previous runs that the tests will finish quickly
     // we also run in band to reduce the overhead of spawning workers.
     const runInBand =
-      this._options.maxWorkers <= 1 ||
+      this._globalConfig.maxWorkers <= 1 ||
       tests.length <= 1 ||
       (tests.length <= 20 &&
         timings.length > 0 &&
@@ -229,12 +228,12 @@ class TestRunner {
       {
         autoStart: true,
         maxConcurrentCallsPerWorker: 1,
-        maxConcurrentWorkers: this._options.maxWorkers,
+        maxConcurrentWorkers: this._globalConfig.maxWorkers,
         maxRetries: 2, // Allow for a couple of transient errors.
       },
       TEST_WORKER_PATH,
     );
-    const mutex = throat(this._options.maxWorkers);
+    const mutex = throat(this._globalConfig.maxWorkers);
     const worker = pify(farm);
 
     // Send test suites to workers continuously instead of all at once to track
@@ -309,7 +308,7 @@ class TestRunner {
     if (collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
-          maxWorkers: this._options.maxWorkers,
+          maxWorkers: this._globalConfig.maxWorkers,
         }),
       );
     }
