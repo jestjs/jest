@@ -35,7 +35,12 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Array [\n  1,\n  2,\n  3,\n]');
   });
 
-  it('prints a typed array', () => {
+  it('prints a empty typed array', () => {
+    const val = new Uint32Array(0);
+    expect(prettyFormat(val)).toEqual('Uint32Array []');
+  });
+
+  it('prints a typed array with items', () => {
     const val = new Uint32Array(3);
     expect(prettyFormat(val)).toEqual('Uint32Array [\n  0,\n  0,\n  0,\n]');
   });
