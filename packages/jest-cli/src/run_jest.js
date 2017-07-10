@@ -21,7 +21,7 @@ import {Console, formatTestResults} from 'jest-util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
 import getMaxWorkers from './lib/get_max_workers';
-import getTestPathPattern from './lib/get_test_path_pattern';
+import getTestSelectionConfig from './lib/get_test_selection_config';
 import SearchSource from './search_source';
 import updateArgv from './lib/update_argv';
 import TestRunner from './test_runner';
@@ -118,7 +118,7 @@ const getTestPaths = async (
       if (globalConfig.watch) {
         // Run all the tests
         updateArgv(argv, 'watchAll', {noSCM: true});
-        testSelectionConfig = getTestPathPattern(argv);
+        testSelectionConfig = getTestSelectionConfig(argv);
         data = await source.getTestPaths(testSelectionConfig);
       } else {
         new Console(outputStream, outputStream).log(
@@ -179,7 +179,7 @@ const runJest = async (
   ) => void,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
-  const testSelectionConfig = getTestPathPattern(argv);
+  const testSelectionConfig = getTestSelectionConfig(argv);
   const sequencer = new TestSequencer();
   let allTests = [];
   const testRunData = await Promise.all(

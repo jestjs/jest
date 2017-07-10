@@ -10,7 +10,7 @@
 
 import type {Argv} from 'types/Argv';
 
-import getTestPathPattern from './get_test_path_pattern';
+import getTestSelectionConfig from './get_test_selection_config';
 
 type Options = {|
   testNamePattern?: string,
@@ -42,7 +42,7 @@ module.exports = (argv: Argv, mode: 'watch' | 'watchAll', options: Options) => {
 
   argv.onlyChanged = false;
   argv.onlyChanged =
-    getTestPathPattern(argv).input === '' &&
+    getTestSelectionConfig(argv).input === '' &&
     !argv.watchAll &&
     !argv.testNamePattern;
 
