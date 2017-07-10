@@ -10,7 +10,7 @@
 
 'use strict';
 
-const { stringify, ensureNumbers, pluralize, ensureNoExpected } = require('../');
+const {stringify, ensureNumbers, pluralize, ensureNoExpected} = require('../');
 
 describe('.stringify()', () => {
   [
@@ -46,11 +46,11 @@ describe('.stringify()', () => {
       },
     };
     expect(stringify(evil)).toBe('{"toJSON": [Function toJSON]}');
-    expect(stringify({ a: { b: { evil } } })).toBe(
+    expect(stringify({a: {b: {evil}}})).toBe(
       '{"a": {"b": {"evil": {"toJSON": [Function toJSON]}}}}',
     );
 
-    function Evil() { }
+    function Evil() {}
     Evil.toJSON = evil.toJSON;
     expect(stringify(Evil)).toBe('[Function Evil]');
   });
@@ -72,8 +72,8 @@ describe('.stringify()', () => {
   });
 
   test('reduces maxDepth if stringifying very large objects', () => {
-    const big = { a: 1, b: {} };
-    const small = { a: 1, b: {} };
+    const big = {a: 1, b: {}};
+    const small = {a: 1, b: {}};
     for (let i = 0; i < 10000; i += 1) {
       big.b[i] = 'test';
     }
@@ -116,13 +116,13 @@ describe('.ensureNoExpected()', () => {
 
   test('throws error when is not undefined', () => {
     expect(() => {
-      ensureNoExpected({ a: 1 });
+      ensureNoExpected({a: 1});
     }).toThrow('Matcher does not accept any arguments');
   });
 
   test('throws error when is not undefined with matcherName', () => {
     expect(() => {
-      ensureNoExpected({ a: 1 }, '.toBeDefined');
+      ensureNoExpected({a: 1}, '.toBeDefined');
     }).toThrow('Matcher does not accept any arguments');
   });
 });
