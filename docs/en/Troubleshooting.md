@@ -97,7 +97,7 @@ npm test -- --runInBand
 ```
 
 Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max
-worker pool to ~_4_.  Specifically on Travis-CI, this can reduce test execution time in half.  
+worker pool to ~_4_.  Specifically on Travis-CI, this can reduce test execution time in half. Note: The Travis CI _free_ plan available for open source projects only includes 2 CPU cores.
 
 ```bash
 # Using Jest CLI
