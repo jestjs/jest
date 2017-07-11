@@ -11,6 +11,7 @@
 import type {
   AggregatedResult,
   CoverageMap,
+  FileCoverage,
   SerializableError,
   TestResult,
 } from 'types/TestResult';
@@ -63,11 +64,11 @@ class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        let coverage: CoverageMap;
+        let coverage?: FileCoverage, inputSourceMap?: Object;
         try {
           coverage = this._coverageMap.fileCoverageFor(sourcePath);
+          ({ inputSourceMap } = coverage.toJSON());
         } finally {
-          let { data: { inputSourceMap } = {} } = coverage;
           if (inputSourceMap) {
             this._sourceMapStore.registerMap(
               sourcePath,
