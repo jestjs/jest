@@ -64,7 +64,7 @@ class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        let coverage: FileCoverage, inputSourceMap: Object;
+        let coverage: FileCoverage, inputSourceMap: ?Object;
         try {
           coverage = this._coverageMap.fileCoverageFor(sourcePath);
           ({ inputSourceMap } = coverage.toJSON());
