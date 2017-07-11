@@ -22,10 +22,11 @@ jest.doMock(
   () =>
     function() {
       const args = Array.from(arguments);
+      const [{onComplete}] = args;
       runJestMock.apply(null, args);
 
       // Call the callback
-      args[args.length - 1]({snapshot: {}});
+      onComplete({snapshot: {}});
 
       return Promise.resolve();
     },
@@ -37,7 +38,6 @@ afterEach(runJestMock.mockReset);
 describe('Watch mode flows', () => {
   let pipe;
   let hasteMapInstances;
-  let argv;
   let globalConfig;
   let contexts;
   let stdin;
@@ -47,70 +47,58 @@ describe('Watch mode flows', () => {
     pipe = {write: jest.fn()};
     globalConfig = {watch: true};
     hasteMapInstances = [{on: () => {}}];
-    argv = {};
     contexts = [{config}];
     stdin = new MockStdin();
   });
 
   it('Correctly passing test path pattern', () => {
-    argv.testPathPattern = 'test-*';
     globalConfig.testPathPattern = 'test-*';
 
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
-    expect(runJestMock).toBeCalledWith(
-      globalConfig,
+    expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
-      argv,
-      pipe,
-      new TestWatcher({isWatchMode: true}),
-      expect.any(Function),
-      undefined,
-      expect.any(Function),
-    );
+      globalConfig,
+      onComplete: expect.any(Function),
+      outputStream: pipe,
+      testWatcher: new TestWatcher({isWatchMode: true}),
+    });
   });
 
   it('Correctly passing test name pattern', () => {
-    argv.testNamePattern = 'test-*';
     globalConfig.testNamePattern = 'test-*';
 
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
-    expect(runJestMock).toBeCalledWith(
-      globalConfig,
+    expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
-      argv,
-      pipe,
-      new TestWatcher({isWatchMode: true}),
-      expect.any(Function),
-      undefined,
-      expect.any(Function),
-    );
+      globalConfig,
+      onComplete: expect.any(Function),
+      outputStream: pipe,
+      testWatcher: new TestWatcher({isWatchMode: true}),
+    });
   });
 
   it('Runs Jest once by default and shows usage', () => {
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
-    expect(runJestMock).toBeCalledWith(
-      globalConfig,
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
-      argv,
-      pipe,
-      new TestWatcher({isWatchMode: true}),
-      expect.any(Function),
-      undefined,
-      expect.any(Function),
-    );
+      globalConfig,
+      onComplete: expect.any(Function),
+      outputStream: pipe,
+      testWatcher: new TestWatcher({isWatchMode: true}),
+    });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
 
   it('Pressing "o" runs test in "only changed files" mode', () => {
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
     stdin.emit(KEYS.O);
 
     expect(runJestMock).toBeCalled();
-    expect(argv).toEqual({
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: true,
       watch: true,
       watchAll: false,
@@ -118,13 +106,13 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "a" runs test in "watch all" mode', () => {
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
     stdin.emit(KEYS.A);
 
     expect(runJestMock).toBeCalled();
-    expect(argv).toEqual({
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: false,
       watch: false,
       watchAll: true,
@@ -132,27 +120,28 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "ENTER" reruns the tests', () => {
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     expect(runJestMock).toHaveBeenCalledTimes(1);
     stdin.emit(KEYS.ENTER);
     expect(runJestMock).toHaveBeenCalledTimes(2);
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', () => {
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
     stdin.emit(KEYS.U);
 
-    expect(runJestMock.mock.calls[0][0]).toEqual({
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       updateSnapshot: 'all',
       watch: true,
     });
 
     stdin.emit(KEYS.A);
     // updateSnapshot is not sticky after a run.
-    expect(runJestMock.mock.calls[1][0]).toEqual({
-      watch: true,
+    expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
+      updateSnapshot: 'none',
+      watch: false,
     });
   });
 });

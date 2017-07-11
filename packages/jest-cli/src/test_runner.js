@@ -16,7 +16,6 @@ import type {
 import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
-import type {TestSelectionConfig} from './search_source';
 
 import {formatExecError} from 'jest-message-util';
 import {
@@ -47,10 +46,7 @@ class CancelRun extends Error {
 }
 
 export type TestRunnerOptions = {|
-  pattern: TestSelectionConfig,
-  startRun: () => *,
-  testNamePattern: string,
-  testPathPattern: string,
+  startRun: (globalConfig: GlobalConfig) => *,
 |};
 
 type OnTestFailure = (test: Test, err: TestError) => void;
@@ -306,15 +302,13 @@ class TestRunner {
     }
 
     if (collectCoverage) {
-      this.addReporter(
-        new CoverageReporter(this._globalConfig, {
-          maxWorkers: this._globalConfig.maxWorkers,
-        }),
-      );
+      this.addReporter(new CoverageReporter(this._globalConfig));
     }
 
     if (notify) {
-      this.addReporter(new NotifyReporter(this._options.startRun));
+      this.addReporter(
+        new NotifyReporter(this._globalConfig, this._options.startRun),
+      );
     }
   }
 
@@ -325,7 +319,7 @@ class TestRunner {
         : new DefaultReporter(this._globalConfig),
     );
 
-    this.addReporter(new SummaryReporter(this._globalConfig, this._options));
+    this.addReporter(new SummaryReporter(this._globalConfig));
   }
 
   _addCustomReporters(reporters: Array<ReporterConfig>) {
@@ -361,7 +355,7 @@ class TestRunner {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {
       const [path, options] = reporter;
-      return {options: Object.assign({}, this._options, options), path};
+      return {options, path};
     }
 
     throw new Error('Reporter should be either a string or an array');

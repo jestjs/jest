@@ -70,9 +70,11 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
       "clover"
     ],
     "expand": false,
+    "listTests": false,
     "mapCoverage": false,
     "maxWorkers": "[maxWorkers]",
     "noStackTrace": false,
+    "nonFlagArgs": [],
     "notify": false,
     "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
     "testPathPattern": "",

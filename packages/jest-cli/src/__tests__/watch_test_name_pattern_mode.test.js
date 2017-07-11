@@ -47,10 +47,11 @@ jest.doMock(
   () =>
     function() {
       const args = Array.from(arguments);
+      const [{onComplete}] = args;
       runJestMock.apply(null, args);
 
       // Call the callback
-      args[args.length - 1]({
+      onComplete({
         snapshot: {},
         testResults: [
           {
@@ -111,7 +112,6 @@ afterEach(runJestMock.mockReset);
 describe('Watch mode flows', () => {
   let pipe;
   let hasteMapInstances;
-  let argv;
   let contexts;
   let stdin;
 
@@ -119,14 +119,13 @@ describe('Watch mode flows', () => {
     terminalWidth = 80;
     pipe = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
-    argv = {};
     contexts = [{config: {}}];
     stdin = new MockStdin();
   });
 
   it('Pressing "T" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -150,8 +149,8 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.ENTER);
     expect(runJestMock).toBeCalled();
 
-    // Argv is updated with the current pattern
-    expect(argv).toEqual({
+    // globalConfig is updated with the current pattern
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: false,
       testNamePattern: 'con *',
       watch: true,
@@ -161,7 +160,7 @@ describe('Watch mode flows', () => {
 
   it('can select a specific test name from the typeahead results', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -179,12 +178,14 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.ENTER);
 
-    expect(argv.testNamePattern).toMatchSnapshot();
+    expect(runJestMock.mock.calls[1][0].globalConfig.testNamePattern).toBe(
+      'should convert string to a RegExp',
+    );
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.T);
 
