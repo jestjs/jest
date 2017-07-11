@@ -67,13 +67,10 @@ class CoverageReporter extends BaseReporter {
         let coverage: FileCoverage, inputSourceMap: ?Object;
         try {
           coverage = this._coverageMap.fileCoverageFor(sourcePath);
-          ({ inputSourceMap } = coverage.toJSON());
+          ({inputSourceMap} = coverage.toJSON());
         } finally {
           if (inputSourceMap) {
-            this._sourceMapStore.registerMap(
-              sourcePath,
-              inputSourceMap,
-            );
+            this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
           } else {
             this._sourceMapStore.registerURL(
               sourcePath,
