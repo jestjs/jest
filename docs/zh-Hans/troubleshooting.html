@@ -24,7 +24,7 @@ jest<span class="token punctuation">.</span><span class="token function">setTime
 jest <span class="token operator">--</span>runInBand
 
 # Using npm test <span class="token punctuation">(</span>e<span class="token punctuation">.</span>g<span class="token punctuation">.</span> <span class="token keyword">with</span> create<span class="token operator">-</span>react<span class="token operator">-</span>app<span class="token punctuation">)</span>
-npm test <span class="token operator">--</span> <span class="token operator">--</span>runInBand</pre><p>Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~<em>4</em>. Specifically on Travis-CI, this can reduce test execution time in half.</p><pre class="prism language-javascript">
+npm test <span class="token operator">--</span> <span class="token operator">--</span>runInBand</pre><p>Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~<em>4</em>. Specifically on Travis-CI, this can reduce test execution time in half. Note: The Travis CI <em>free</em> plan available for open source projects only includes 2 CPU cores.</p><pre class="prism language-javascript">
 # Using Jest CLI
 jest <span class="token operator">--</span>maxWorkers<span class="token operator">=</span><span class="token number">4</span>
 
