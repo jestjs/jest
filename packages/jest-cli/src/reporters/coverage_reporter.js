@@ -63,7 +63,7 @@ class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        let coverage;
+        let coverage: CoverageMap;
         try {
           coverage = this._coverageMap.fileCoverageFor(sourcePath);
         } finally {
