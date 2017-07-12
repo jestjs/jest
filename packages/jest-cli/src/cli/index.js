@@ -25,7 +25,6 @@ import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../get_changed_files_promise';
 import getJest from './get_jest';
-import getMaxWorkers from '../lib/get_max_workers';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
 import preRunMessage from '../pre_run_message';
@@ -231,7 +230,7 @@ const _buildContextsAndHasteMaps = async (
       createDirectory(config.cacheDirectory);
       const hasteMapInstance = Runtime.createHasteMap(config, {
         console: new Console(outputStream, outputStream),
-        maxWorkers: getMaxWorkers(argv),
+        maxWorkers: globalConfig.maxWorkers,
         resetCache: !config.cache,
         watch: globalConfig.watch,
         watchman: globalConfig.watchman,

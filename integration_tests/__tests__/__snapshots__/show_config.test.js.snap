@@ -71,6 +71,7 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     ],
     "expand": false,
     "mapCoverage": false,
+    "maxWorkers": "[maxWorkers]",
     "noStackTrace": false,
     "notify": false,
     "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
