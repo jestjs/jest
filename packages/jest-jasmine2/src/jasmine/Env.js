@@ -95,7 +95,6 @@ module.exports = function(j$) {
     };
 
     const clearResourcesForRunnable = function(id) {
-      console.log('clear resource', id)
       spyRegistry.clearSpies();
       delete runnableResources[id];
     };
@@ -162,7 +161,7 @@ module.exports = function(j$) {
       return seed;
     };
 
-    async function queueRunnerFactory(options) {
+    function queueRunnerFactory(options) {
       options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
       options.setTimeout = realSetTimeout;
@@ -189,22 +188,23 @@ module.exports = function(j$) {
       }
 
       const uncaught = (err) => {
-        let name
-        let current
+
+        let name;
+        let current;
         if (currentSpec) {
-          current = currentSpec
-          name = current.getFullName()
-          current.onException(err)
+          current = currentSpec;
+          name = current.getFullName();
+          current.onException(err);
+          current.cancel();
           // TODO: how to cancel the current running spec
         } else {
           // TODO: Handle top level failures
         }
-        console.error('caught in ' + name)
+        // console.error('caught in ' + name);
       }
 
-      console.log('START')
-      process.on('uncaughtException', uncaught)
-      process.on('unhandledRejection', uncaught)
+      process.on('uncaughtException', uncaught);
+      process.on('unhandledRejection', uncaught);
 
       reporter.jasmineStarted({
         totalSpecsDefined,

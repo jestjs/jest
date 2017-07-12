@@ -24,7 +24,17 @@ type QueueableFn = {
   timeout?: () => number,
 };
 
-async function queueRunner(options: Options) {
+function createCancelToken () {
+  let res
+  const token = new Promise(resolve => {
+    res = resolve
+  })
+
+  token.cancel = res
+  return token
+}
+
+function queueRunner(options: Options) {
   const mapper = ({fn, timeout}) => {
     const promise = new Promise(resolve => {
       const next = function(err) {
@@ -62,11 +72,18 @@ async function queueRunner(options: Options) {
       },
     );
   };
+  const token = createCancelToken();
+  const returnPromise = Promise.race([
+    options.queueableFns.reduce(
+      (promise, fn) => promise.then(() => mapper(fn)),
+      Promise.resolve(),
+    ),
+    token,
+  ]);
 
-  return options.queueableFns.reduce(
-    (promise, fn) => promise.then(() => mapper(fn)),
-    Promise.resolve(),
-  );
+  returnPromise.cancel = token.cancel;
+
+  return returnPromise;
 }
 
 module.exports = queueRunner;
