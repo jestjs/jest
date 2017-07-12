@@ -97,7 +97,7 @@ module.exports = function watchmanCrawl(
           }
 
           pairs.forEach(pair => {
-            const root = pair.root;
+            const root = normalizePathSep(pair.root);
             const response = pair.response;
             if ('warning' in response) {
               console.warn('watchman warning: ', response.warning);
