@@ -35,8 +35,10 @@ function createCancelToken () {
 }
 
 function queueRunner(options: Options) {
+  const token = createCancelToken();
+
   const mapper = ({fn, timeout}) => {
-    const promise = new Promise(resolve => {
+    let promise = new Promise(resolve => {
       const next = function(err) {
         if (err) {
           options.fail.apply(null, arguments);
@@ -55,6 +57,12 @@ function queueRunner(options: Options) {
         resolve();
       }
     });
+
+    promise = Promise.race([
+      promise,
+      token,
+    ]);
+
     if (!timeout) {
       return promise;
     }
@@ -72,14 +80,11 @@ function queueRunner(options: Options) {
       },
     );
   };
-  const token = createCancelToken();
-  const returnPromise = Promise.race([
-    options.queueableFns.reduce(
-      (promise, fn) => promise.then(() => mapper(fn)),
-      Promise.resolve(),
-    ),
-    token,
-  ]);
+
+  const returnPromise = options.queueableFns.reduce(
+    (promise, fn) => promise.then(() => mapper(fn)),
+    Promise.resolve(),
+  );
 
   returnPromise.cancel = token.cancel;
 
