@@ -32,7 +32,6 @@ Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
-    "maxWorkers": "<<REPLACED>>",
     "pattern": Object {
       "input": "add_fail.test.js",
       "paths": Array [
@@ -70,7 +69,6 @@ Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
-    "maxWorkers": "<<REPLACED>>",
     "pattern": Object {
       "input": "add.test.js",
       "paths": Array [
@@ -122,7 +120,6 @@ Object {
     "path": false,
   },
   "options": Object {
-    "maxWorkers": "<<REPLACED>>",
     "pattern": Object {
       "input": "add.test.js",
       "paths": Array [

@@ -137,6 +137,7 @@ export type GlobalConfig = {|
   forceExit: boolean,
   logHeapUsage: boolean,
   mapCoverage: boolean,
+  maxWorkers: number,
   noStackTrace: boolean,
   notify: boolean,
   projects: Array<Glob>,

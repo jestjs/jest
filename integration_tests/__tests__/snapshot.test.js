@@ -14,6 +14,9 @@ const path = require('path');
 const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 
+const skipOnWindows = require('skipOnWindows');
+skipOnWindows.suite();
+
 const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir = path.resolve(
   __dirname,

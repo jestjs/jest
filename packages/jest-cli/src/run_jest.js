@@ -20,7 +20,6 @@ import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
-import getMaxWorkers from './lib/get_max_workers';
 import getTestSelectionConfig from './lib/get_test_selection_config';
 import SearchSource from './search_source';
 import updateArgv from './lib/update_argv';
@@ -178,7 +177,6 @@ const runJest = async (
     testSelectionConfig: TestSelectionConfig,
   ) => void,
 ) => {
-  const maxWorkers = getMaxWorkers(argv);
   const testSelectionConfig = getTestSelectionConfig(argv);
   const sequencer = new TestSequencer();
   let allTests = [];
@@ -231,7 +229,6 @@ const runJest = async (
   setConfig(contexts, {rootDir: process.cwd()});
 
   const results = await new TestRunner(globalConfig, {
-    maxWorkers,
     pattern: testSelectionConfig,
     startRun,
     testNamePattern: argv.testNamePattern,
