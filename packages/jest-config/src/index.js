@@ -19,12 +19,17 @@ import normalize from './normalize';
 function readConfig(
   argv: Argv,
   packageRoot: string,
+  // Whether it needs to look into `--config` arg passed to CLI.
+  // It only used to read initial config. If the initial config contains
+  // `project` property, we don't want to read `--config` value and rather
+  // read individual configs for every project.
+  skipArgvConfigOption?: boolean,
 ): {
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   hasDeprecationWarnings: boolean,
 } {
-  const rawOptions = readOptions(argv, packageRoot);
+  const rawOptions = readOptions(argv, packageRoot, skipArgvConfigOption);
   const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
   const {globalConfig, projectConfig} = getConfigs(options);
   return {
@@ -34,22 +39,22 @@ function readConfig(
   };
 }
 
-const parseConfig = argv =>
-  isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config;
-
-const readOptions = (argv, root) => {
-  const rawOptions = parseConfig(argv);
-
-  if (typeof rawOptions === 'object') {
-    const config = Object.assign({}, rawOptions);
+const readOptions = (argv, root, skipArgvConfigOption) => {
+  // A JSON string was passed to `--config` argument and we can parse it
+  // and use as is.
+  if (isJSONString(argv.config)) {
+    const config = JSON.parse(argv.config);
     config.rootDir = config.rootDir || root;
     return config;
   }
 
-  if (typeof rawOptions === 'string') {
-    root = path.resolve(process.cwd(), rawOptions);
+  // A string passed to `--config`, which is either a direct path to the config
+  // or a path to directory containing `package.json` or `jest.conf.js`
+  if (!skipArgvConfigOption && typeof argv.config == 'string') {
+    return findConfig(path.resolve(process.cwd(), argv.config));
   }
 
+  // Otherwise just try to find config in the current rootDir.
   return findConfig(root);
 };
 

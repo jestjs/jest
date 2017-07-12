@@ -186,7 +186,7 @@ const _getConfigs = (
   }
 
   if (projects.length > 1) {
-    const parsedConfigs = projects.map(root => readConfig(argv, root));
+    const parsedConfigs = projects.map(root => readConfig(argv, root, true));
     configs = parsedConfigs.map(({config}) => config);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
