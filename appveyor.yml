@@ -2,6 +2,11 @@ environment:
   matrix:
     - nodejs_version: "8"
 
+init:
+  # debugging Appveyor build. More info:
+  # https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 install:
   - ps: Install-Product node $env:nodejs_version x64
   - node --version
