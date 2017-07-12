@@ -14,8 +14,8 @@ import type {RawModuleMap} from 'types/HasteMap';
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
-  console.error(err.stack);
-  process.exit(1);
+  // console.error(err.stack);
+  // process.exit(1);
 });
 
 import HasteMap from 'jest-haste-map';

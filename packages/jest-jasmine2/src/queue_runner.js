@@ -27,7 +27,13 @@ type QueueableFn = {
 async function queueRunner(options: Options) {
   const mapper = ({fn, timeout}) => {
     const promise = new Promise(resolve => {
-      const next = () => resolve();
+      const next = function(err) {
+        if (err) {
+          options.fail.apply(null, arguments);
+        }
+        resolve();
+      };
+
       next.fail = function() {
         options.fail.apply(null, arguments);
         resolve();
