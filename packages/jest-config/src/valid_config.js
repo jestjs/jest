@@ -55,6 +55,7 @@ module.exports = ({
   name: 'string',
   noStackTrace: false,
   notify: false,
+  onlyChanged: false,
   preset: 'react-native',
   projects: ['project-a', 'project-b/'],
   reporters: [

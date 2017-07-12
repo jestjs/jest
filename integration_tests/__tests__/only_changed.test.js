@@ -73,3 +73,63 @@ test('run only changed files', () => {
   expect(stderr).toMatch('PASS  __tests__/file2.test.js');
   expect(stderr).toMatch('PASS  __tests__/file3.test.js');
 });
+
+test('onlyChanged in config is overwritten by --all', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    'file1.js': 'module.exports = {}',
+    'package.json': JSON.stringify({jest: {onlyChanged: true}}),
+  });
+  let stderr;
+  let stdout;
+
+  ({stdout} = runJest(DIR));
+  expect(stdout).toMatch(/Jest can only find uncommitted changed files/);
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit -m "first"`, DIR);
+
+  ({stdout, stderr} = runJest(DIR));
+  expect(stdout).toMatch('No tests found related to files');
+  expect(stderr).not.toMatch(
+    'Unknown option "onlyChanged" with value true was found',
+  );
+
+  ({stderr} = runJest(DIR, ['--lastCommit']));
+  expect(stderr).toMatch('PASS  __tests__/file1.test.js');
+
+  writeFiles(DIR, {
+    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
+    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    'file2.js': 'module.exports = {}',
+    'file3.js': `require('./file2')`,
+  });
+
+  ({stderr} = runJest(DIR));
+
+  expect(stderr).not.toMatch('PASS  __tests__/file1.test.js');
+  expect(stderr).toMatch('PASS  __tests__/file2.test.js');
+  expect(stderr).toMatch('PASS  __tests__/file3.test.js');
+
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit -m "second"`, DIR);
+
+  ({stderr} = runJest(DIR));
+  expect(stdout).toMatch('No tests found related to files');
+
+  writeFiles(DIR, {
+    'file2.js': 'module.exports = {modified: true}',
+  });
+
+  ({stderr} = runJest(DIR));
+  expect(stderr).not.toMatch('PASS  __tests__/file1.test.js');
+  expect(stderr).toMatch('PASS  __tests__/file2.test.js');
+  expect(stderr).toMatch('PASS  __tests__/file3.test.js');
+
+  ({stderr} = runJest(DIR, ['--all']));
+  expect(stderr).toMatch('PASS  __tests__/file1.test.js');
+  expect(stderr).toMatch('PASS  __tests__/file2.test.js');
+  expect(stderr).toMatch('PASS  __tests__/file3.test.js');
+});
