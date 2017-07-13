@@ -11,7 +11,6 @@ module.exports = config => {
     browsers: ['ChromeHeadless'],
     files: ['integration_tests/browser-support/browser-test.js'],
     frameworks: ['mocha', 'browserify'],
-    plugins: ['karma-browserify', 'karma-chrome-launcher', 'karma-mocha'],
     preprocessors: {
       'integration_tests/browser-support/browser-test.js': ['browserify'],
     },
