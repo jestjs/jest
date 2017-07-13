@@ -52,7 +52,7 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     "transform": [
       [
         "^.+\\\\.jsx?$",
-        "/mocked/root/path/jest/node_modules/babel-jest/build/index.js"
+        "/mocked/root/path/jest/integration_tests/verbose_reporter/node_modules/babel-jest/build/index.js"
       ]
     ],
     "transformIgnorePatterns": [
