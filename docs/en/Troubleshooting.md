@@ -17,6 +17,8 @@ Place a `debugger;` statement in any of your tests, and then, in your project's 
 
 ```
 node --debug-brk ./node_modules/.bin/jest --runInBand [any other arguments here]
+or on Windows
+node --debug-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 ```
 
 This will run Jest in a Node process that an external debugger can connect to. Note that the process
