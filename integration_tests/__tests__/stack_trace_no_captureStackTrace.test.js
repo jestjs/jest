@@ -14,8 +14,19 @@ describe('Stack Trace', () => {
     const result = runJest('stack_trace_no_captureStackTrace');
     const stderr = result.stderr.toString();
 
+    const assertErrorLines = stderr
+      .split('\n')
+      .slice(3, 9)
+      .filter(s => s.trim());
+
     expect(result.status).toBe(1);
 
-    expect(stderr).toMatch(/\s+at\sJestAssertionError\s.*/);
+    expect(assertErrorLines).toEqual([
+      '    expect(received).toBe(expected)',
+      '    Expected value to be (using ===):',
+      '      2',
+      '    Received:',
+      '      1',
+    ]);
   });
 });
