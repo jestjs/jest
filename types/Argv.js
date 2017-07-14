@@ -12,6 +12,7 @@
 export type Argv = {|
   _: Array<string>,
   $0: string,
+  all: boolean,
   automock: boolean,
   bail: boolean,
   browser: boolean,

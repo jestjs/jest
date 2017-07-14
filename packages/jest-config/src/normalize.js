@@ -492,6 +492,10 @@ function normalize(options: InitialOptions, argv: Argv) {
   newOptions.json = argv.json;
   newOptions.lastCommit = argv.lastCommit;
 
+  if (argv.all) {
+    newOptions.onlyChanged = false;
+  }
+
   newOptions.updateSnapshot =
     argv.ci && !argv.updateSnapshot
       ? 'none'
