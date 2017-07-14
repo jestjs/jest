@@ -1,8 +1,6 @@
 {
   "jest.pathToJest": "yarn jest --",
-  "editor.rulers": [
-    80
-  ],
+  "editor.rulers": [80],
   "files.exclude": {
     "**/.git": true,
     "**/node_modules": true,
@@ -13,5 +11,6 @@
   "prettier.singleQuote": true,
   "prettier.trailingComma": "all",
   "prettier.semi": true,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "prettier.eslintIntegration": true
 }
