@@ -16,8 +16,6 @@ describe('Stack Trace', () => {
 
     expect(result.status).toBe(1);
 
-    console.log(stderr);
-
     expect(stderr).toMatch(/\s+at\sJestAssertionError\s.*/);
   });
 });
