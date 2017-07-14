@@ -14,10 +14,7 @@ describe('Stack Trace', () => {
     const result = runJest('stack_trace_no_captureStackTrace');
     const stderr = result.stderr.toString();
 
-    const assertErrorLines = stderr
-      .split('\n')
-      .slice(3, 9)
-      .filter(s => s.trim());
+    const assertErrorLines = stderr.split('\n').slice(3, 9);
 
     expect(result.status).toBe(1);
 
@@ -25,6 +22,7 @@ describe('Stack Trace', () => {
 
     expect(assertErrorLines).toEqual([
       '    expect(received).toBe(expected)',
+      '    ',
       '    Expected value to be (using ===):',
       '      2',
       '    Received:',
