@@ -51,6 +51,13 @@ const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
 const docs = 'Documentation: https://facebook.github.io/jest/';
 
 const options = {
+  all: {
+    default: undefined,
+    description:
+      'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
+      'default, running jest with `--all` will force Jest to run all tests ' +
+      'instead of runnig only tests related to changed files.',
+  },
   automock: {
     default: undefined,
     description: 'Automock all files by default.',
