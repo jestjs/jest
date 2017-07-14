@@ -9,7 +9,7 @@
  */
 
 import type {DiffOptions} from 'jest-diff/src/diff_strings.js';
-import type {Event, State} from '../types';
+import type {Event, State} from 'types/Circus';
 
 const {printReceived, printExpected} = require('jest-matcher-utils');
 const chalk = require('chalk');
