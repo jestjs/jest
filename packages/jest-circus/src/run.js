@@ -14,7 +14,7 @@ import type {
   TestContext,
   Hook,
   DescribeBlock,
-} from '../types';
+} from 'types/Circus';
 
 import {getState, dispatch} from './state';
 import {
