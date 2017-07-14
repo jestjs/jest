@@ -31,14 +31,14 @@ test('prints a message with path pattern at the end', () => {
   let stderr;
 
   ({stderr} = runJest(DIR, ['a']));
-  expect(stderr).toMatch('Ran all test suites matching "a"');
+  expect(stderr).toMatch('Ran all test suites matching /a/i');
 
   ({stderr} = runJest(DIR, ['a', 'b']));
-  expect(stderr).toMatch('Ran all test suites matching /a|b/');
+  expect(stderr).toMatch('Ran all test suites matching /a|b/i');
 
   ({stderr} = runJest(DIR, ['--testPathPattern', 'a']));
-  expect(stderr).toMatch('Ran all test suites matching /a/');
+  expect(stderr).toMatch('Ran all test suites matching /a/i');
 
   ({stderr} = runJest(DIR, ['--testPathPattern', 'a|b']));
-  expect(stderr).toMatch('Ran all test suites matching /a|b/');
+  expect(stderr).toMatch('Ran all test suites matching /a|b/i');
 });

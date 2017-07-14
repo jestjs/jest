@@ -18,10 +18,6 @@ import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
-type CoverageReporterOptions = {
-  maxWorkers: number,
-};
-
 import {clearLine} from 'jest-util';
 import {createReporter} from 'istanbul-api';
 import chalk from 'chalk';
@@ -42,14 +38,12 @@ class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
   _globalConfig: GlobalConfig;
   _sourceMapStore: any;
-  _maxWorkers: number;
 
-  constructor(globalConfig: GlobalConfig, options: CoverageReporterOptions) {
+  constructor(globalConfig: GlobalConfig) {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
-    this._maxWorkers = options.maxWorkers;
   }
 
   onTestResult(
@@ -143,14 +137,14 @@ class CoverageReporter extends BaseReporter {
 
     let worker;
     let farm;
-    if (this._maxWorkers <= 1) {
+    if (this._globalConfig.maxWorkers <= 1) {
       worker = pify(CoverageWorker);
     } else {
       farm = workerFarm(
         {
           autoStart: true,
           maxConcurrentCallsPerWorker: 1,
-          maxConcurrentWorkers: this._maxWorkers,
+          maxConcurrentWorkers: this._globalConfig.maxWorkers,
           maxRetries: 2,
         },
         require.resolve('./coverage_worker'),

@@ -8,11 +8,9 @@
  * @flow
  */
 
-import type {Argv} from 'types/Argv';
 import type {Context} from 'types/Context';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
-import type {TestSelectionConfig} from './search_source';
 import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './test_watcher';
 
@@ -20,9 +18,7 @@ import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
-import getTestSelectionConfig from './lib/get_test_selection_config';
 import SearchSource from './search_source';
-import updateArgv from './lib/update_argv';
 import TestRunner from './test_runner';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
@@ -35,24 +31,14 @@ const setConfig = (contexts, newConfig) =>
       )),
   );
 
-const formatTestPathPattern = pattern => {
-  const testPattern = pattern.testPathPattern;
-  const input = pattern.input;
-  const formattedPattern = `/${testPattern || ''}/`;
-  const formattedInput = pattern.shouldTreatInputAsPattern
-    ? `/${input || ''}/`
-    : `"${input || ''}"`;
-  return input === testPattern ? formattedInput : formattedPattern;
-};
-
-const getNoTestsFoundMessage = (testRunData, pattern) => {
-  if (pattern.onlyChanged) {
+const getNoTestsFoundMessage = (testRunData, globalConfig) => {
+  if (globalConfig.onlyChanged) {
     return (
       chalk.bold(
         'No tests found related to files changed since last commit.\n',
       ) +
       chalk.dim(
-        pattern.watch
+        globalConfig.watch
           ? 'Press `a` to run all tests, or run Jest with `--watchAll`.'
           : 'Run Jest without `-o` to run all tests.',
       )
@@ -61,7 +47,6 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
 
   const pluralize = (word: string, count: number, ending: string) =>
     `${count} ${word}${count === 1 ? '' : ending}`;
-  const testPathPattern = formatTestPathPattern(pattern);
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || {};
     const config = testRun.context.config;
@@ -95,30 +80,22 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
     '\n' +
     individualResults.join('\n') +
     '\n' +
-    `Pattern: ${chalk.yellow(testPathPattern)} - 0 matches`
+    `Pattern: ${chalk.yellow(globalConfig.testPathPattern)} - 0 matches`
   );
 };
 
 const getTestPaths = async (
   globalConfig,
   context,
-  testSelectionConfig,
-  argv,
   outputStream,
   changedFilesPromise,
 ) => {
   const source = new SearchSource(context);
-  let data = await source.getTestPaths(
-    testSelectionConfig,
-    changedFilesPromise,
-  );
+  let data = await source.getTestPaths(globalConfig, changedFilesPromise);
   if (!data.tests.length) {
-    if (testSelectionConfig.onlyChanged && data.noSCM) {
+    if (globalConfig.onlyChanged && data.noSCM) {
       if (globalConfig.watch) {
-        // Run all the tests
-        updateArgv(argv, 'watchAll', {noSCM: true});
-        testSelectionConfig = getTestSelectionConfig(argv);
-        data = await source.getTestPaths(testSelectionConfig);
+        data = await source.getTestPaths(globalConfig);
       } else {
         new Console(outputStream, outputStream).log(
           'Jest can only find uncommitted changed files in a git or hg ' +
@@ -134,21 +111,19 @@ const getTestPaths = async (
 };
 
 const processResults = (runResults, options) => {
+  const {outputFile} = options;
   if (options.testResultsProcessor) {
     /* $FlowFixMe */
     runResults = require(options.testResultsProcessor)(runResults);
   }
   if (options.isJSON) {
-    if (options.outputFile) {
-      const outputFile = path.resolve(process.cwd(), options.outputFile);
+    if (outputFile) {
+      const filePath = path.resolve(process.cwd(), outputFile);
 
-      fs.writeFileSync(
-        outputFile,
-        JSON.stringify(formatTestResults(runResults)),
-      );
+      fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
       process.stdout.write(
         `Test results written to: ` +
-          `${path.relative(process.cwd(), outputFile)}\n`,
+          `${path.relative(process.cwd(), filePath)}\n`,
       );
     } else {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
@@ -157,27 +132,23 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
-const runJest = async (
+const runJest = async ({
+  contexts,
+  globalConfig,
+  outputStream,
+  testWatcher,
+  startRun,
+  changedFilesPromise,
+  onComplete,
+}: {
   globalConfig: GlobalConfig,
   contexts: Array<Context>,
-  argv: Argv,
   outputStream: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
-  startRun: () => *,
+  startRun: (globalConfig: GlobalConfig) => *,
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
-  // We use this internaly at FB. Since we run multiple processes and most
-  // of them don't match any tests, we don't want to print 'no tests found'
-  // message for all of them.
-  // This will no longer be needed when we complete this:
-  // https://github.com/facebook/jest/issues/3768
-  printNoTestsMessage?: (
-    outputStream: stream$Writable,
-    testRunData: Array<*>,
-    testSelectionConfig: TestSelectionConfig,
-  ) => void,
-) => {
-  const testSelectionConfig = getTestSelectionConfig(argv);
+}) => {
   const sequencer = new TestSequencer();
   let allTests = [];
   const testRunData = await Promise.all(
@@ -185,8 +156,6 @@ const runJest = async (
       const matches = await getTestPaths(
         globalConfig,
         context,
-        testSelectionConfig,
-        argv,
         outputStream,
         changedFilesPromise,
       );
@@ -197,26 +166,21 @@ const runJest = async (
 
   allTests = sequencer.sort(allTests);
 
-  if (argv.listTests) {
+  if (globalConfig.listTests) {
     console.log(JSON.stringify(allTests.map(test => test.path)));
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
 
   if (!allTests.length) {
-    if (printNoTestsMessage) {
-      printNoTestsMessage(outputStream, testRunData, testSelectionConfig);
-    } else {
-      new Console(outputStream, outputStream).log(
-        getNoTestsFoundMessage(testRunData, testSelectionConfig),
-      );
-    }
+    new Console(outputStream, outputStream).log(
+      getNoTestsFoundMessage(testRunData, globalConfig),
+    );
   } else if (
     allTests.length === 1 &&
     globalConfig.silent !== true &&
     globalConfig.verbose !== false
   ) {
-    // $FlowFixMe
     globalConfig = Object.freeze(
       Object.assign({}, globalConfig, {verbose: true}),
     );
@@ -229,18 +193,15 @@ const runJest = async (
   setConfig(contexts, {rootDir: process.cwd()});
 
   const results = await new TestRunner(globalConfig, {
-    pattern: testSelectionConfig,
     startRun,
-    testNamePattern: argv.testNamePattern,
-    testPathPattern: formatTestPathPattern(testSelectionConfig),
   }).runTests(allTests, testWatcher);
 
   sequencer.cacheResults(allTests, results);
 
   return processResults(results, {
-    isJSON: argv.json,
+    isJSON: globalConfig.json,
     onComplete,
-    outputFile: argv.outputFile,
+    outputFile: globalConfig.outputFile,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
 };
