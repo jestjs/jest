@@ -38,12 +38,13 @@ describe('Custom Reporters Integration', () => {
       ],
     };
 
-    const {status} = runJest('custom_reporters', [
+    const {status, stdout} = runJest('custom_reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
     ]);
 
+    expect(stdout).toMatchSnapshot();
     expect(status).toBe(0);
   });
 

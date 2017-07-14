@@ -12,13 +12,12 @@ import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {ReporterOnStartOptions} from 'types/Reporters';
-import type {TestRunnerOptions} from '../test_runner';
-import type {TestSelectionConfig} from '../search_source';
 
 import chalk from 'chalk';
 import BaseReporter from './base_reporter';
 import {getSummary, pluralize} from './utils';
 import getResultHeader from './get_result_header';
+import testPathPatternToRegExp from '../test_path_pattern_to_regexp';
 
 const ARROW = ' \u203A ';
 const FAIL_COLOR = chalk.bold.red;
@@ -59,13 +58,11 @@ const NPM_EVENTS = new Set([
 class SummaryReporter extends BaseReporter {
   _estimatedTime: number;
   _globalConfig: GlobalConfig;
-  _options: TestRunnerOptions;
 
-  constructor(globalConfig: GlobalConfig, options: TestRunnerOptions) {
+  constructor(globalConfig: GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
     this._estimatedTime = 0;
-    this._options = options;
   }
 
   // If we write more than one character at a time it is possible that
@@ -111,12 +108,7 @@ class SummaryReporter extends BaseReporter {
       if (numTotalTestSuites) {
         const testSummary = wasInterrupted
           ? chalk.bold.red('Test run was interrupted.')
-          : this._getTestSummary(
-              contexts,
-              this._options.pattern,
-              this._options.testNamePattern,
-              this._options.testPathPattern,
-            );
+          : this._getTestSummary(contexts, this._globalConfig);
         this.log(
           getSummary(aggregatedResults, {
             estimatedTime: this._estimatedTime,
@@ -245,20 +237,16 @@ class SummaryReporter extends BaseReporter {
     }
   }
 
-  _getTestSummary(
-    contexts: Set<Context>,
-    testSelectionConfig: TestSelectionConfig,
-    testNamePattern: string,
-    testPathPattern: string,
-  ) {
-    const testInfo = testSelectionConfig.onlyChanged
+  _getTestSummary(contexts: Set<Context>, globalConfig: GlobalConfig) {
+    const testInfo = globalConfig.onlyChanged
       ? chalk.dim(' related to changed files')
-      : testSelectionConfig.input !== ''
-        ? chalk.dim(' matching ') + testPathPattern
+      : globalConfig.testPathPattern
+        ? chalk.dim(' matching ') +
+          testPathPatternToRegExp(globalConfig.testPathPattern).toString()
         : '';
 
-    const nameInfo = testNamePattern
-      ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
+    const nameInfo = globalConfig.testNamePattern
+      ? chalk.dim(' with tests matching ') + `"${globalConfig.testNamePattern}"`
       : '';
 
     const contextInfo =
