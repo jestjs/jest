@@ -195,6 +195,7 @@ const makeThrowingMatcher = (
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
       // Try to remove this and deeper functions from the stack trace frame.
+      // Guard for some environments (browsers) that do not support this feature.
       if (Error.captureStackTrace) {
         Error.captureStackTrace(error, throwingMatcher);
       }
@@ -214,6 +215,7 @@ const makeThrowingMatcher = (
       // for example in order to display a custom visual diff
       error.matcherResult = result;
       // Try to remove this function from the stack trace frame.
+      // Guard for some environments (browsers) that do not support this feature.
       if (Error.captureStackTrace) {
         Error.captureStackTrace(error, throwingMatcher);
       }
