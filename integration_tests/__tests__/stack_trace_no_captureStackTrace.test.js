@@ -21,6 +21,8 @@ describe('Stack Trace', () => {
 
     expect(result.status).toBe(1);
 
+    expect(stderr).toMatch(/\s+at\sJestAssertionError\s.*/);
+
     expect(assertErrorLines).toEqual([
       '    expect(received).toBe(expected)',
       '    Expected value to be (using ===):',
