@@ -150,6 +150,14 @@ Learn more about using Jest at http://facebook.github.io/jest
 * [API Reference](http://facebook.github.io/jest/docs/en/api.html)
 * [Configuring Jest](http://facebook.github.io/jest/docs/en/configuration.html)
 
+## Badge
+
+Show the world you're using *Jest* → [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+
+```md
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+```
+
 ## Contributing
 
 Send issues and pull requests with your ideas. For more information about contributing PRs and issues, see our [Contribution Guidelines](https://github.com/facebook/jest/blob/master/CONTRIBUTING.md).
