@@ -388,6 +388,14 @@ module.exports = function(j$) {
       if (currentDeclarationSuite.markedPending) {
         spec.pend();
       }
+      if (currentSpec !== null) {
+        throw new Error(
+          'Test ' +
+            spec.description +
+            'cannot run because it is nested in ' +
+            currentSpec.description
+        );
+      }
       currentDeclarationSuite.addChild(spec);
       return spec;
     };
