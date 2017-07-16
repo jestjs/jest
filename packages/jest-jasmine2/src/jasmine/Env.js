@@ -394,10 +394,11 @@ module.exports = function(j$) {
         the edge-case */
       if (currentSpec !== null) {
         throw new Error(
-          'Test ' +
+          'Test `' +
             spec.description +
-            'cannot run because it is nested in ' +
-            currentSpec.description
+            '` cannot run because it is nested in `' +
+            currentSpec.description +
+            '`',
         );
       }
       currentDeclarationSuite.addChild(spec);
