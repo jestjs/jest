@@ -388,6 +388,10 @@ module.exports = function(j$) {
       if (currentDeclarationSuite.markedPending) {
         spec.pend();
       }
+
+      /* When a test is defined inside another, jasmine will not run it
+        This check throws an error to warn the developer about
+        the edge-case */
       if (currentSpec !== null) {
         throw new Error(
           'Test ' +
