@@ -11,30 +11,35 @@
 const path = require('path');
 const skipOnWindows = require('skipOnWindows');
 const runJest = require('../runJest');
+const os = require('os');
+const {cleanup, writeFiles} = require('../utils');
 
-describe('jest --showConfig', () => {
-  skipOnWindows.suite();
+skipOnWindows.suite();
+const DIR = path.resolve(os.tmpdir(), 'show_config_test');
 
-  const dir = path.resolve(__dirname, '..', 'verbose_reporter');
+beforeEach(() => cleanup(DIR));
+afterEach(() => cleanup(DIR));
 
-  it('outputs config info and exits', () => {
-    const root = path.join(__dirname, '..', '..', '..');
-    expect.addSnapshotSerializer({
-      print: val =>
-        val
-          .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
-          .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
-          .replace(/"version": "(.+)"/g, '"version": "[version]"')
-          .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
-          .replace(new RegExp(root, 'g'), '/mocked/root/path'),
-      test: val => typeof val === 'string',
-    });
-    const {stdout} = runJest(dir, [
-      '--showConfig',
-      '--no-cache',
-      // Make the snapshot flag stable on CI.
-      '--updateSnapshot',
-    ]);
-    expect(stdout).toMatchSnapshot();
+test('--showConfig outputs config info and exits', () => {
+  writeFiles(DIR, {
+    '__tests__/test.test.js': `test('test', () => {});`,
+    'package.json': JSON.stringify({jest: {environment: 'node'}}),
   });
+
+  let {stdout} = runJest(DIR, [
+    '--showConfig',
+    '--no-cache',
+    // Make the snapshot flag stable on CI.
+    '--updateSnapshot',
+  ]);
+
+  stdout = stdout
+    .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
+    .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
+    .replace(/"version": "(.+)"/g, '"version": "[version]"')
+    .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
+    .replace(/\"\S*show_config_test/gm, '"<<REPLACED_ROOT_DIR>>')
+    .replace(/\"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
+
+  expect(stdout).toMatchSnapshot();
 });
