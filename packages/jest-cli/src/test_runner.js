@@ -49,7 +49,7 @@ export type TestRunnerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
 |};
 
-type OnTestFailure = (test: Test, err: TestError) => void;
+type OnTestFailure = (test: Test, err: TestError) => Promise<*>;
 type OnTestSuccess = (test: Test, result: TestResult) => Promise<*>;
 
 const TEST_WORKER_PATH = require.resolve('./test_worker');
@@ -99,24 +99,24 @@ class TestRunner {
         timings.length > 0 &&
         timings.every(timing => timing < SLOW_TEST_TIME));
 
-    const onResult = (test: Test, testResult: TestResult) => {
+    const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
         return Promise.resolve();
       }
       if (testResult.testResults.length === 0) {
         const message = 'Your test suite must contain at least one test.';
-        onFailure(test, {
+        await onFailure(test, {
           message,
           stack: new Error(message).stack,
         });
         return Promise.resolve();
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(test, testResult, aggregatedResults);
+      await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
-    const onFailure = (test: Test, error: TestError) => {
+    const onFailure = async (test: Test, error: TestError) => {
       if (watcher.isInterrupted()) {
         return;
       }
@@ -128,7 +128,7 @@ class TestRunner {
         test.path,
       );
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(test, testResult, aggregatedResults);
+      await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
     };
 
     const updateSnapshotState = () => {
@@ -149,7 +149,7 @@ class TestRunner {
       );
     };
 
-    this._dispatcher.onRunStart(aggregatedResults, {
+    await this._dispatcher.onRunStart(aggregatedResults, {
       estimatedTime,
       showStatus: !runInBand,
     });
@@ -194,12 +194,12 @@ class TestRunner {
       (promise, test) =>
         mutex(() =>
           promise
-            .then(() => {
+            .then(async () => {
               if (watcher.isInterrupted()) {
                 throw new CancelRun();
               }
 
-              this._dispatcher.onTestStart(test);
+              await this._dispatcher.onTestStart(test);
               return runTest(
                 test.path,
                 this._globalConfig,
@@ -235,11 +235,11 @@ class TestRunner {
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
     const runTestInWorker = test =>
-      mutex(() => {
+      mutex(async () => {
         if (watcher.isInterrupted()) {
           return Promise.reject();
         }
-        this._dispatcher.onTestStart(test);
+        await this._dispatcher.onTestStart(test);
         return worker({
           config: test.context.config,
           globalConfig: this._globalConfig,
@@ -250,8 +250,8 @@ class TestRunner {
         });
       });
 
-    const onError = (err, test) => {
-      onFailure(test, err);
+    const onError = async (err, test) => {
+      await onFailure(test, err);
       if (err.type === 'ProcessTerminatedError') {
         console.error(
           'A worker process has quit unexpectedly! ' +
