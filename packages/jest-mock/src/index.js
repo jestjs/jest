@@ -165,6 +165,7 @@ class ModuleMockerClass {
   _environmentGlobal: Global;
   _mockState: WeakMap<Function, MockFunctionState>;
   _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
+  _spyState: Set<() => void>;
   ModuleMocker: Class<ModuleMockerClass>;
 
   /**
@@ -176,6 +177,7 @@ class ModuleMockerClass {
     this._environmentGlobal = global;
     this._mockState = new WeakMap();
     this._mockConfigRegistry = new WeakMap();
+    this._spyState = new Set();
     this.ModuleMocker = ModuleMockerClass;
   }
 
@@ -301,6 +303,10 @@ class ModuleMockerClass {
       f = this._createMockFunction(metadata, mockConstructor);
       f._isMockFunction = true;
       f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl;
+
+      if (typeof restore === 'function') {
+        this._spyState.add(restore);
+      }
 
       this._mockState.set(f, this._defaultMockState());
       this._mockConfigRegistry.set(f, this._defaultMockConfig());
@@ -579,6 +585,7 @@ class ModuleMockerClass {
       object[methodName] = this._makeComponent({type: 'function'}, () => {
         object[methodName] = original;
       });
+
       object[methodName].mockImplementation(function() {
         return original.apply(this, arguments);
       });
@@ -594,6 +601,11 @@ class ModuleMockerClass {
   resetAllMocks() {
     this._mockConfigRegistry = new WeakMap();
     this._mockState = new WeakMap();
+  }
+
+  restoreAllMocks() {
+    this._spyState.forEach(restore => restore());
+    this._spyState = new Set();
   }
 }
 

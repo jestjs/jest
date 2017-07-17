@@ -462,6 +462,10 @@ class Runtime {
     this._mockFactories[moduleID] = mockFactory;
   }
 
+  restoreAllMocks() {
+    this._moduleMocker.restoreAllMocks();
+  }
+
   resetAllMocks() {
     this._moduleMocker.resetAllMocks();
   }
