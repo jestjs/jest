@@ -10,7 +10,7 @@
 
 import type {TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Event, TestEntry} from '../../types';
+import type {Event, TestEntry} from 'types/Circus';
 
 import {
   extractExpectedAssertionsErrors,

@@ -60,6 +60,34 @@ jest.mock('sane', () => {
   };
 });
 
+let mockChangedFiles;
+let mockFs;
+
+jest.mock('graceful-fs', () => ({
+  readFileSync: jest.fn((path, options) => {
+    expect(options).toBe('utf8');
+
+    // A file change can be triggered by writing into the
+    // mockChangedFiles object.
+    if (mockChangedFiles && path in mockChangedFiles) {
+      return mockChangedFiles[path];
+    }
+
+    if (mockFs[path]) {
+      return mockFs[path];
+    }
+
+    const error = new Error(`Cannot read path '${path}'.`);
+    error.code = 'ENOENT';
+    throw error;
+  }),
+  writeFileSync: jest.fn((path, data, options) => {
+    expect(options).toBe('utf8');
+    mockFs[path] = data;
+  }),
+}));
+jest.mock('fs', () => require('graceful-fs'));
+
 const skipOnWindows = require('skipOnWindows');
 
 const cacheFilePath = '/cache-file';
@@ -68,14 +96,11 @@ let defaultConfig;
 let fs;
 let H;
 let HasteMap;
-let mockChangedFiles;
 let mockClocks;
 let mockEmitters;
-let mockFs;
 let object;
-let readFileSync;
 let workerFarmMock;
-let writeFileSync;
+let getCacheFilePath;
 
 describe('HasteMap', () => {
   skipOnWindows.suite();
@@ -121,29 +146,6 @@ describe('HasteMap', () => {
     mockChangedFiles = null;
 
     fs = require('graceful-fs');
-    readFileSync = fs.readFileSync;
-    writeFileSync = fs.writeFileSync;
-    fs.readFileSync = jest.fn((path, options) => {
-      expect(options).toBe('utf8');
-
-      // A file change can be triggered by writing into the
-      // mockChangedFiles object.
-      if (mockChangedFiles && path in mockChangedFiles) {
-        return mockChangedFiles[path];
-      }
-
-      if (mockFs[path]) {
-        return mockFs[path];
-      }
-
-      const error = new Error(`Cannot read path '${path}'.`);
-      error.code = 'ENOENT';
-      throw error;
-    });
-    fs.writeFileSync = jest.fn((path, data, options) => {
-      expect(options).toBe('utf8');
-      mockFs[path] = data;
-    });
 
     consoleWarn = console.warn;
     console.warn = jest.fn();
@@ -151,6 +153,7 @@ describe('HasteMap', () => {
     HasteMap = require('../');
     H = HasteMap.H;
 
+    getCacheFilePath = HasteMap.getCacheFilePath;
     HasteMap.getCacheFilePath = jest.fn(() => cacheFilePath);
 
     defaultConfig = {
@@ -167,8 +170,6 @@ describe('HasteMap', () => {
 
   afterEach(() => {
     console.warn = consoleWarn;
-    fs.readFileSync = readFileSync;
-    fs.writeFileSync = writeFileSync;
   });
 
   it('exports constants', () => {
@@ -546,6 +547,29 @@ describe('HasteMap', () => {
             expect(data.map).toEqual(map);
           });
       });
+  });
+
+  it('discards the cache when configuration changes', () => {
+    HasteMap.getCacheFilePath = getCacheFilePath;
+    return new HasteMap(defaultConfig).build().then(() => {
+      fs.readFileSync.mockClear();
+
+      // Explicitly mock that no files have changed.
+      mockChangedFiles = Object.create(null);
+
+      // Watchman would give us different clocks.
+      mockClocks = object({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:4',
+      });
+
+      const config = Object.assign({}, defaultConfig, {
+        ignorePattern: /kiwi|pear/,
+      });
+      return new HasteMap(config).build().then(({moduleMap}) => {
+        expect(moduleMap.getModule('Pear')).toBe(null);
+      });
+    });
   });
 
   it('ignores files that do not exist', () => {

@@ -24,6 +24,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.dontMock(moduleName)`](#jestdontmockmodulename)
   - [`jest.clearAllMocks()`](#jestclearallmocks)
   - [`jest.resetAllMocks()`](#jestresetallmocks)
+  - [`jest.restoreAllMocks()`](#jestrestoreallmocks)
   - [`jest.resetModules()`](#jestresetmodules)
   - [`jest.runAllTicks()`](#jestrunallticks)
   - [`jest.runAllTimers()`](#jestrunalltimers)
@@ -179,8 +180,11 @@ Resets the state of all mocks. Equivalent to calling `.mockReset()` on every moc
 
 Returns the `jest` object for chaining.
 
-### `jest.resetModules()`
+### `jest.restoreAllMocks()`
+##### available in Jest **20.1.0+**
+Restores all mocks back to their original value. Equivalent to calling `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
+### `jest.resetModules()`
 Resets the module registry - the cache of all required modules. This is useful to isolate modules where local state might conflict between tests.
 
 Example:

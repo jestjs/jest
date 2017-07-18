@@ -69,7 +69,6 @@ const runCLI = async (
       configs,
       hasDeprecationWarnings,
       outputStream,
-      argv,
       onComplete,
     );
   } catch (error) {
@@ -186,7 +185,7 @@ const _getConfigs = (
   }
 
   if (projects.length > 1) {
-    const parsedConfigs = projects.map(root => readConfig(argv, root));
+    const parsedConfigs = projects.map(root => readConfig(argv, root, true));
     configs = parsedConfigs.map(({config}) => config);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
@@ -222,7 +221,6 @@ const _buildContextsAndHasteMaps = async (
   configs,
   globalConfig,
   outputStream,
-  argv,
 ) => {
   const hasteMapInstances = Array(configs.length);
   const contexts = await Promise.all(
@@ -248,22 +246,19 @@ const _run = async (
   configs,
   hasDeprecationWarnings,
   outputStream,
-  argv,
   onComplete,
 ) => {
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
-  const changedFilesPromise = getChangedFilesPromise(argv, configs);
+  const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
   const {contexts, hasteMapInstances} = await _buildContextsAndHasteMaps(
     configs,
     globalConfig,
     outputStream,
-    argv,
   );
 
-  argv.watch || argv.watchAll
-    ? _runWatch(
-        argv,
+  globalConfig.watch || globalConfig.watchAll
+    ? await _runWatch(
         contexts,
         configs,
         hasDeprecationWarnings,
@@ -272,10 +267,9 @@ const _run = async (
         hasteMapInstances,
         changedFilesPromise,
       )
-    : _runWithoutWatch(
+    : await _runWithoutWatch(
         globalConfig,
         contexts,
-        argv,
         outputStream,
         onComplete,
         changedFilesPromise,
@@ -283,7 +277,6 @@ const _run = async (
 };
 
 const _runWatch = async (
-  argv,
   contexts,
   configs,
   hasDeprecationWarnings,
@@ -295,45 +288,37 @@ const _runWatch = async (
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(
-        globalConfig,
-        contexts,
-        argv,
-        outputStream,
-        hasteMapInstances,
-      );
+      return watch(globalConfig, contexts, outputStream, hasteMapInstances);
     } catch (e) {
       process.exit(0);
     }
   }
 
-  return watch(globalConfig, contexts, argv, outputStream, hasteMapInstances);
+  return watch(globalConfig, contexts, outputStream, hasteMapInstances);
 };
 
 const _runWithoutWatch = async (
   globalConfig,
   contexts,
-  argv,
   outputStream,
   onComplete,
   changedFilesPromise,
 ) => {
-  const startRun = () => {
-    if (!argv.listTests) {
+  const startRun = async () => {
+    if (!globalConfig.listTests) {
       preRunMessage.print(outputStream);
     }
-    runJest(
-      globalConfig,
-      contexts,
-      argv,
-      outputStream,
-      new TestWatcher({isWatchMode: false}),
-      startRun,
+    return await runJest({
       changedFilesPromise,
+      contexts,
+      globalConfig,
       onComplete,
-    );
+      outputStream,
+      startRun,
+      testWatcher: new TestWatcher({isWatchMode: false}),
+    });
   };
-  return startRun();
+  return await startRun();
 };
 
 module.exports = {

@@ -9,13 +9,14 @@
  */
 
 import type {Context} from 'types/Context';
-import type {Glob, Path} from 'types/Config';
+import type {Glob, GlobalConfig, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
+import testPathPatternToRegExp from './test_path_pattern_to_regexp';
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
@@ -24,8 +25,6 @@ type SearchResult = {|
   tests: Array<Test>,
   total?: number,
 |};
-
-type StrOrRegExpPattern = RegExp | string;
 
 export type TestSelectionConfig = {|
   input?: string,
@@ -98,7 +97,7 @@ class SearchSource {
 
   _filterTestPathsWithStats(
     allPaths: Array<Test>,
-    testPathPattern?: StrOrRegExpPattern,
+    testPathPattern?: string,
   ): SearchResult {
     const data = {
       stats: {},
@@ -108,7 +107,7 @@ class SearchSource {
 
     const testCases = Object.assign({}, this._testPathCases);
     if (testPathPattern) {
-      const regex = new RegExp(testPathPattern, 'i');
+      const regex = testPathPatternToRegExp(testPathPattern);
       testCases.testPathPattern = path => regex.test(path);
     }
 
@@ -127,7 +126,7 @@ class SearchSource {
     return data;
   }
 
-  _getAllTestPaths(testPathPattern: StrOrRegExpPattern): SearchResult {
+  _getAllTestPaths(testPathPattern: string): SearchResult {
     return this._filterTestPathsWithStats(
       toTests(this._context, this._context.hasteFS.getAllFiles()),
       testPathPattern,
@@ -140,7 +139,7 @@ class SearchSource {
     );
   }
 
-  findMatchingTests(testPathPattern: StrOrRegExpPattern): SearchResult {
+  findMatchingTests(testPathPattern: string): SearchResult {
     return this._getAllTestPaths(testPathPattern);
   }
 
@@ -184,25 +183,21 @@ class SearchSource {
   }
 
   async getTestPaths(
-    testSelectionConfig: TestSelectionConfig,
+    globalConfig: GlobalConfig,
     changedFilesPromise: ?ChangedFilesPromise,
   ): Promise<SearchResult> {
-    if (testSelectionConfig.onlyChanged) {
+    const paths = globalConfig.nonFlagArgs;
+    if (globalConfig.onlyChanged) {
       if (!changedFilesPromise) {
         throw new Error('This promise must be present when running with -o.');
       }
 
       return this.findTestRelatedToChangedFiles(changedFilesPromise);
-    } else if (
-      testSelectionConfig.findRelatedTests &&
-      testSelectionConfig.paths
-    ) {
+    } else if (globalConfig.findRelatedTests && paths && paths.length) {
+      return Promise.resolve(this.findRelatedTestsFromPattern(paths));
+    } else if (globalConfig.testPathPattern != null) {
       return Promise.resolve(
-        this.findRelatedTestsFromPattern(testSelectionConfig.paths),
-      );
-    } else if (testSelectionConfig.testPathPattern != null) {
-      return Promise.resolve(
-        this.findMatchingTests(testSelectionConfig.testPathPattern),
+        this.findMatchingTests(globalConfig.testPathPattern),
       );
     } else {
       return Promise.resolve({tests: []});

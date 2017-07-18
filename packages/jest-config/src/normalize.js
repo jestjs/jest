@@ -14,6 +14,8 @@ import type {InitialOptions, ReporterConfig} from 'types/Config';
 import crypto from 'crypto';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
+import validatePattern from './validate_pattern';
+import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
 import glob from 'glob';
@@ -275,6 +277,39 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
   return options;
 };
 
+const buildTestPathPattern = (argv: Argv): string => {
+  if (argv.testPathPattern) {
+    if (validatePattern(argv.testPathPattern)) {
+      return argv.testPathPattern;
+    } else {
+      showTestPathPatternError(argv.testPathPattern);
+    }
+  }
+
+  if (argv._ && argv._.length) {
+    const testPathPattern = argv._.join('|');
+
+    if (validatePattern(testPathPattern)) {
+      return testPathPattern;
+    } else {
+      showTestPathPatternError(testPathPattern);
+    }
+  }
+
+  return '';
+};
+
+const showTestPathPatternError = (testPathPattern: string) => {
+  clearLine(process.stdout);
+
+  console.log(
+    chalk.red(
+      `  Invalid testPattern ${testPathPattern} supplied. ` +
+        `Running all tests instead.`,
+    ),
+  );
+};
+
 function normalize(options: InitialOptions, argv: Argv) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
@@ -419,12 +454,15 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'coverageThreshold':
       case 'expand':
       case 'globals':
+      case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
       case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
       case 'notify':
+      case 'onlyChanged':
+      case 'outputFile':
       case 'replname':
       case 'reporters':
       case 'resetMocks':
@@ -440,6 +478,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'useStderr':
       case 'verbose':
       case 'watch':
+      case 'watchAll':
       case 'watchman':
         value = options[key];
         break;
@@ -447,6 +486,15 @@ function normalize(options: InitialOptions, argv: Argv) {
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  newOptions.nonFlagArgs = argv._;
+  newOptions.testPathPattern = buildTestPathPattern(argv);
+  newOptions.json = argv.json;
+  newOptions.lastCommit = argv.lastCommit;
+
+  if (argv.all) {
+    newOptions.onlyChanged = false;
+  }
 
   newOptions.updateSnapshot =
     argv.ci && !argv.updateSnapshot

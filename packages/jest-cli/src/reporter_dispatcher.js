@@ -36,24 +36,27 @@ class ReporterDispatcher {
     );
   }
 
-  onTestResult(test: Test, testResult: TestResult, results: AggregatedResult) {
-    this._reporters.forEach(
-      reporter =>
-        reporter.onTestResult &&
-        reporter.onTestResult(test, testResult, results),
-    );
+  async onTestResult(
+    test: Test,
+    testResult: TestResult,
+    results: AggregatedResult,
+  ) {
+    for (const reporter of this._reporters) {
+      reporter.onTestResult &&
+        (await reporter.onTestResult(test, testResult, results));
+    }
   }
 
-  onTestStart(test: Test) {
-    this._reporters.forEach(
-      reporter => reporter.onTestStart && reporter.onTestStart(test),
-    );
+  async onTestStart(test: Test) {
+    for (const reporter of this._reporters) {
+      reporter.onTestStart && (await reporter.onTestStart(test));
+    }
   }
 
-  onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
-    this._reporters.forEach(
-      reporter => reporter.onRunStart && reporter.onRunStart(results, options),
-    );
+  async onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
+    for (const reporter of this._reporters) {
+      reporter.onRunStart && (await reporter.onRunStart(results, options));
+    }
   }
 
   async onRunComplete(contexts: Set<Context>, results: AggregatedResult) {

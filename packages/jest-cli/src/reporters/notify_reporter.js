@@ -8,6 +8,7 @@
 * @flow
 */
 
+import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 
@@ -21,10 +22,15 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 class NotifyReporter extends BaseReporter {
-  _startRun: () => *;
+  _startRun: (globalConfig: GlobalConfig) => *;
+  _globalConfig: GlobalConfig;
 
-  constructor(startRun: () => *) {
+  constructor(
+    globalConfig: GlobalConfig,
+    startRun: (globalConfig: GlobalConfig) => *,
+  ) {
     super();
+    this._globalConfig = globalConfig;
     this._startRun = startRun;
   }
 
@@ -72,7 +78,7 @@ class NotifyReporter extends BaseReporter {
             return;
           }
           if (metadata.activationValue === restartAnswer) {
-            this._startRun();
+            this._startRun(this._globalConfig);
           }
         },
       );

@@ -8,22 +8,21 @@
  * @flow
  */
 
-import type {Argv} from 'types/Argv';
-import type {ProjectConfig} from 'types/Config';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import {getChangedFilesForRoots} from 'jest-changed-files';
 
 module.exports = (
-  argv: Argv,
+  globalConfig: GlobalConfig,
   configs: Array<ProjectConfig>,
 ): ?ChangedFilesPromise => {
-  if (argv.onlyChanged) {
+  if (globalConfig.onlyChanged) {
     const allRootsForAllProjects = configs.reduce(
       (roots, config) => roots.concat(config.roots || []),
       [],
     );
     return getChangedFilesForRoots(allRootsForAllProjects, {
-      lastCommit: argv.lastCommit,
+      lastCommit: globalConfig.lastCommit,
     });
   }
 

@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {Event, State, EventHandler} from '../types';
+import type {Event, State, EventHandler} from 'types/Circus';
 
 import {makeDescribe} from './utils';
 import eventHandler from './event_handler';

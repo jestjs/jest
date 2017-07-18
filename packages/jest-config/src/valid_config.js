@@ -41,6 +41,7 @@ module.exports = ({
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],
   },
+  json: false,
   logHeapUsage: true,
   mapCoverage: false,
   moduleDirectories: ['node_modules'],
@@ -54,6 +55,7 @@ module.exports = ({
   name: 'string',
   noStackTrace: false,
   notify: false,
+  onlyChanged: false,
   preset: 'react-native',
   projects: ['project-a', 'project-b/'],
   reporters: [

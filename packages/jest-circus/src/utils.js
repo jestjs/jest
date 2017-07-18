@@ -21,7 +21,7 @@ import type {
   TestMode,
   TestName,
   TestResults,
-} from '../types';
+} from 'types/Circus';
 
 const makeDescribe = (
   name: BlockName,
