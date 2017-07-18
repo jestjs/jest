@@ -133,11 +133,12 @@ describe('Custom Reporters Integration', () => {
       '__tests__/test.test.js': `test('test', () => {});`,
       'package.json': JSON.stringify({
         jest: {
-          testEnvironment: 'node',
           reporters: ['default', '<rootDir>/reporter.js'],
+          testEnvironment: 'node',
         },
       }),
       'reporter.js': `
+        'use strict';
         module.exports = class Reporter {
           onRunStart() {
             throw new Error('ON_RUN_START_ERROR');
