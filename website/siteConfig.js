@@ -209,11 +209,6 @@ const users = [
     infoLink: "https://seatgeek.com/"
   },
   {
-<<<<<<< HEAD
-    caption: "SoundCloud",
-    image: "/jest/img/logos/soundcloud.png",
-    infoLink: "https://soundcloud.com/"
-=======
     caption: 'Shopify',
     image: '/jest/img/logos/shopify.svg',
     infoLink: 'https://www.shopify.com/',
@@ -222,7 +217,6 @@ const users = [
     caption: 'SoundCloud',
     image: '/jest/img/logos/soundcloud.png',
     infoLink: 'https://soundcloud.com/',
->>>>>>> 22f62351e352f78f7c99f7ca9a31a37b418d4a02
   },
   {
     caption: "Sprout Social",
