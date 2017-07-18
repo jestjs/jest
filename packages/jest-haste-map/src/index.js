@@ -227,7 +227,7 @@ class HasteMap extends EventEmitter {
     if (!(options.ignorePattern instanceof RegExp)) {
       this._console.warn(
         'jest-haste-map: the `ignorePattern` options as a function is being ' +
-        'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.'
+          'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
       );
     }
     this._cachePath = HasteMap.getCacheFilePath(
