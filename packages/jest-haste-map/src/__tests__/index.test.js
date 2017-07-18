@@ -548,33 +548,27 @@ describe('HasteMap', () => {
   });
 
   it('discards the cache when configuration changes (broken)', () => {
-    return new HasteMap(defaultConfig)
-      .build()
-      .then(() => {
-        fs.readFileSync.mockClear();
+    return new HasteMap(defaultConfig).build().then(() => {
+      fs.readFileSync.mockClear();
 
-        // Explicitly mock that no files have changed.
-        mockChangedFiles = Object.create(null);
+      // Explicitly mock that no files have changed.
+      mockChangedFiles = Object.create(null);
 
-        // Watchman would give us different clocks.
-        mockClocks = object({
-          '/fruits': 'c:fake-clock:3',
-          '/vegetables': 'c:fake-clock:4',
-        });
-
-        const config = Object.assign(
-          {},
-          defaultConfig,
-          {ignorePattern: /kiwi|pear/},
-        );
-        return new HasteMap(config)
-          .build()
-          .then(({moduleMap}) => {
-            // `getModule` should actually return `null` here, because Pear
-            // should get ignored by the pattern.
-            expect(typeof moduleMap.getModule('Pear')).toBe('string');
-          });
+      // Watchman would give us different clocks.
+      mockClocks = object({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:4',
       });
+
+      const config = Object.assign({}, defaultConfig, {
+        ignorePattern: /kiwi|pear/,
+      });
+      return new HasteMap(config).build().then(({moduleMap}) => {
+        // `getModule` should actually return `null` here, because Pear
+        // should get ignored by the pattern.
+        expect(typeof moduleMap.getModule('Pear')).toBe('string');
+      });
+    });
   });
 
   it('ignores files that do not exist', () => {
