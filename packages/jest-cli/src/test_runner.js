@@ -297,10 +297,6 @@ class TestRunner {
       this._setupDefaultReporters();
     }
 
-    if (reporters && Array.isArray(reporters)) {
-      this._addCustomReporters(reporters);
-    }
-
     if (collectCoverage) {
       this.addReporter(new CoverageReporter(this._globalConfig));
     }
@@ -309,6 +305,10 @@ class TestRunner {
       this.addReporter(
         new NotifyReporter(this._globalConfig, this._options.startRun),
       );
+    }
+
+    if (reporters && Array.isArray(reporters)) {
+      this._addCustomReporters(reporters);
     }
   }
 
