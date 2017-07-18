@@ -471,6 +471,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'silent':
       case 'skipNodeResolution':
       case 'testEnvironment':
+      case 'testFailureExitCode':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':
@@ -491,6 +492,8 @@ function normalize(options: InitialOptions, argv: Argv) {
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = argv.json;
   newOptions.lastCommit = argv.lastCommit;
+
+  newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode);
 
   if (argv.all) {
     newOptions.onlyChanged = false;
