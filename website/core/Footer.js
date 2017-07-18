@@ -1,10 +1,18 @@
-/**
- * @providesModule Footer
- * @jsx React.DOM
- */
+const React = require("React");
 
-const React = require('React');
-const siteConfig = require('../siteConfig.js');
+const githubButton = (
+  <a
+    className="github-button"
+    href="https://github.com/facebook/jest"
+    data-icon="octicon-star"
+    data-count-href="/facebook/jest/stargazers"
+    data-count-api="/repos/facebook/jest#stargazers_count"
+    data-count-aria-label="# stargazers on GitHub"
+    aria-label="Star facebook/jest on GitHub"
+  >
+    Star
+  </a>
+);
 
 class Footer extends React.Component {
   render() {
@@ -14,7 +22,7 @@ class Footer extends React.Component {
         <section className="sitemap">
           <a href="/jest" className="nav-home">
             <img
-              src="/jest/img/jest-outline.svg"
+              src={this.props.config.baseUrl + this.props.config.footerIcon}
               alt="Jest"
               width="66"
               height="58"
@@ -24,25 +32,42 @@ class Footer extends React.Component {
             <h5>Docs</h5>
             <a
               href={
-                '/jest/docs/' + this.props.language + '/getting-started.html'
+                this.props.config.baseUrl +
+                "docs/" +
+                this.props.language +
+                "/getting-started.html"
               }
             >
               Getting Started
             </a>
             <a
               href={
-                '/jest/docs/' + this.props.language + '/snapshot-testing.html'
+                this.props.config.baseUrl +
+                "docs/" +
+                this.props.language +
+                "/snapshot-testing.html"
               }
             >
               Guides
             </a>
-            <a href={'/jest/docs/' + this.props.language + '/api.html'}>
+            <a
+              href={
+                this.props.config.baseUrl +
+                "docs/" +
+                this.props.language +
+                "/api.html"
+              }
+            >
               API Reference
             </a>
           </div>
           <div>
             <h5>Community</h5>
-            <a href={'/jest/' + this.props.language + '/users.html'}>
+            <a
+              href={
+                this.props.config.baseUrl + this.props.language + "/users.html"
+              }
+            >
               User Showcase
             </a>
             <a
@@ -60,9 +85,9 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>More</h5>
-            <a href="/jest/blog">Blog</a>
+            <a href={this.props.config.baseUrl + "blog"}>Blog</a>
             <a href="https://github.com/facebook/jest">GitHub</a>
-            {siteConfig.githubButton}
+            {githubButton}
           </div>
         </section>
 
