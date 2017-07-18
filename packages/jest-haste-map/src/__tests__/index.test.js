@@ -100,6 +100,7 @@ let mockClocks;
 let mockEmitters;
 let object;
 let workerFarmMock;
+let getCacheFilePath;
 
 describe('HasteMap', () => {
   skipOnWindows.suite();
@@ -152,6 +153,7 @@ describe('HasteMap', () => {
     HasteMap = require('../');
     H = HasteMap.H;
 
+    getCacheFilePath = HasteMap.getCacheFilePath;
     HasteMap.getCacheFilePath = jest.fn(() => cacheFilePath);
 
     defaultConfig = {
@@ -547,7 +549,8 @@ describe('HasteMap', () => {
       });
   });
 
-  it('discards the cache when configuration changes (broken)', () => {
+  it('discards the cache when configuration changes', () => {
+    HasteMap.getCacheFilePath = getCacheFilePath;
     return new HasteMap(defaultConfig).build().then(() => {
       fs.readFileSync.mockClear();
 
@@ -564,9 +567,7 @@ describe('HasteMap', () => {
         ignorePattern: /kiwi|pear/,
       });
       return new HasteMap(config).build().then(({moduleMap}) => {
-        // `getModule` should actually return `null` here, because Pear
-        // should get ignored by the pattern.
-        expect(typeof moduleMap.getModule('Pear')).toBe('string');
+        expect(moduleMap.getModule('Pear')).toBe(null);
       });
     });
   });
