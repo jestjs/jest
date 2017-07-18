@@ -258,7 +258,7 @@ const _run = async (
   );
 
   globalConfig.watch || globalConfig.watchAll
-    ? _runWatch(
+    ? await _runWatch(
         contexts,
         configs,
         hasDeprecationWarnings,
@@ -267,7 +267,7 @@ const _run = async (
         hasteMapInstances,
         changedFilesPromise,
       )
-    : _runWithoutWatch(
+    : await _runWithoutWatch(
         globalConfig,
         contexts,
         outputStream,
@@ -304,11 +304,11 @@ const _runWithoutWatch = async (
   onComplete,
   changedFilesPromise,
 ) => {
-  const startRun = () => {
+  const startRun = async () => {
     if (!globalConfig.listTests) {
       preRunMessage.print(outputStream);
     }
-    runJest({
+    return await runJest({
       changedFilesPromise,
       contexts,
       globalConfig,
@@ -318,7 +318,7 @@ const _runWithoutWatch = async (
       testWatcher: new TestWatcher({isWatchMode: false}),
     });
   };
-  return startRun();
+  return await startRun();
 };
 
 module.exports = {

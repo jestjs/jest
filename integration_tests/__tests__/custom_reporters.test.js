@@ -8,8 +8,15 @@
 'use strict';
 
 const skipOnWindows = require('skipOnWindows');
-const {extractSummary} = require('../utils');
+const {cleanup, extractSummary, writeFiles} = require('../utils');
 const runJest = require('../runJest');
+const os = require('os');
+const path = require('path');
+
+const DIR = path.resolve(os.tmpdir(), 'custom_reporters_test_dir');
+
+beforeEach(() => cleanup(DIR));
+afterEach(() => cleanup(DIR));
 
 describe('Custom Reporters Integration', () => {
   skipOnWindows.suite();
@@ -119,5 +126,28 @@ describe('Custom Reporters Integration', () => {
     expect(stderr.trim()).toBe('');
 
     expect(stdout).toMatchSnapshot();
+  });
+
+  test('prints reporter errors', () => {
+    writeFiles(DIR, {
+      '__tests__/test.test.js': `test('test', () => {});`,
+      'package.json': JSON.stringify({
+        jest: {
+          testEnvironment: 'node',
+          reporters: ['default', '<rootDir>/reporter.js'],
+        },
+      }),
+      'reporter.js': `
+        module.exports = class Reporter {
+          onRunStart() {
+            throw new Error('ON_RUN_START_ERROR');
+          }
+        };
+      `,
+    });
+
+    const {stderr, status} = runJest(DIR);
+    expect(stderr).toMatch(/ON_RUN_START_ERROR/);
+    expect(status).toBe(1);
   });
 });
