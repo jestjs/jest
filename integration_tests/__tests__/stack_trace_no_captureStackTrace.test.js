@@ -9,24 +9,8 @@
 
 const runJest = require('../runJest');
 
-describe('Stack Trace', () => {
-  it('prints a usable stack trace even if no Error.captureStackTrace', () => {
-    const result = runJest('stack_trace_no_captureStackTrace');
-    const stderr = result.stderr.toString();
-
-    const assertErrorLines = stderr.split('\n').slice(3, 9);
-
-    expect(result.status).toBe(1);
-
-    expect(stderr).toMatch(/\s+at\sJestAssertionError\s.*/);
-
-    expect(assertErrorLines).toEqual([
-      '    expect(received).toBe(expected)',
-      '    ',
-      '    Expected value to be (using ===):',
-      '      2',
-      '    Received:',
-      '      1',
-    ]);
-  });
+it('prints a usable stack trace even if no Error.captureStackTrace', () => {
+  const {stderr, status} = runJest('stack_trace_no_captureStackTrace');
+  expect(stderr).not.toMatch('Error.captureStackTrace is not a function');
+  expect(status).toBe(1);
 });

@@ -1,91 +1,83 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`jest --showConfig outputs config info and exits 1`] = `
-{
-  "config": {
-    "automock": false,
-    "browser": false,
-    "cache": false,
-    "cacheDirectory": "/tmp/jest",
-    "clearMocks": false,
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
+exports[`--showConfig outputs config info and exits 1`] = `
+"{
+  \\"config\\": {
+    \\"automock\\": false,
+    \\"browser\\": false,
+    \\"cache\\": false,
+    \\"cacheDirectory\\": \\"/tmp/jest\\",
+    \\"clearMocks\\": false,
+    \\"coveragePathIgnorePatterns\\": [
+      \\"/node_modules/\\"
     ],
-    "globals": {},
-    "haste": {
-      "providesModuleNodeModules": []
+    \\"globals\\": {},
+    \\"haste\\": {
+      \\"providesModuleNodeModules\\": []
     },
-    "moduleDirectories": [
-      "node_modules"
+    \\"moduleDirectories\\": [
+      \\"node_modules\\"
     ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "jsx",
-      "node"
+    \\"moduleFileExtensions\\": [
+      \\"js\\",
+      \\"json\\",
+      \\"jsx\\",
+      \\"node\\"
     ],
-    "moduleNameMapper": {},
-    "modulePathIgnorePatterns": [],
-    "name": "[md5 hash]",
-    "resetMocks": false,
-    "resetModules": false,
-    "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
-    "roots": [
-      "/mocked/root/path/jest/integration_tests/verbose_reporter"
+    \\"moduleNameMapper\\": {},
+    \\"modulePathIgnorePatterns\\": [],
+    \\"name\\": \\"[md5 hash]\\",
+    \\"resetMocks\\": false,
+    \\"resetModules\\": false,
+    \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
+    \\"roots\\": [
+      \\"<<REPLACED_ROOT_DIR>>\\"
     ],
-    "setupFiles": [
-      "/mocked/root/path/jest/node_modules/regenerator-runtime/runtime.js"
+    \\"setupFiles\\": [],
+    \\"snapshotSerializers\\": [],
+    \\"testEnvironment\\": \\"jest-environment-jsdom\\",
+    \\"testMatch\\": [
+      \\"**/__tests__/**/*.js?(x)\\",
+      \\"**/?(*.)(spec|test).js?(x)\\"
     ],
-    "snapshotSerializers": [],
-    "testEnvironment": "/mocked/root/path/jest/node_modules/jest-environment-node/build/index.js",
-    "testMatch": [
-      "**/__tests__/**/*.js?(x)",
-      "**/?(*.)(spec|test).js?(x)"
+    \\"testPathIgnorePatterns\\": [
+      \\"/node_modules/\\"
     ],
-    "testPathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "testRegex": "",
-    "testRunner": "/mocked/root/path/jest/packages/jest-jasmine2/build/index.js",
-    "testURL": "about:blank",
-    "timers": "real",
-    "transform": [
-      [
-        "^.+\\\\.jsx?$",
-        "/mocked/root/path/jest/integration_tests/verbose_reporter/node_modules/babel-jest/build/index.js"
-      ]
-    ],
-    "transformIgnorePatterns": [
-      "/node_modules/"
+    \\"testRegex\\": \\"\\",
+    \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
+    \\"testURL\\": \\"about:blank\\",
+    \\"timers\\": \\"real\\",
+    \\"transformIgnorePatterns\\": [
+      \\"/node_modules/\\"
     ]
   },
-  "framework": "jasmine2",
-  "globalConfig": {
-    "bail": false,
-    "coverageDirectory": "/mocked/root/path/jest/integration_tests/verbose_reporter/coverage",
-    "coverageReporters": [
-      "json",
-      "text",
-      "lcov",
-      "clover"
+  \\"framework\\": \\"jasmine2\\",
+  \\"globalConfig\\": {
+    \\"bail\\": false,
+    \\"coverageDirectory\\": \\"<<REPLACED_ROOT_DIR>>/coverage\\",
+    \\"coverageReporters\\": [
+      \\"json\\",
+      \\"text\\",
+      \\"lcov\\",
+      \\"clover\\"
     ],
-    "expand": false,
-    "listTests": false,
-    "mapCoverage": false,
-    "maxWorkers": "[maxWorkers]",
-    "noStackTrace": false,
-    "nonFlagArgs": [],
-    "notify": false,
-    "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
-    "testPathPattern": "",
-    "testResultsProcessor": null,
-    "updateSnapshot": "all",
-    "useStderr": false,
-    "verbose": null,
-    "watch": false,
-    "watchman": true
+    \\"expand\\": false,
+    \\"listTests\\": false,
+    \\"mapCoverage\\": false,
+    \\"maxWorkers\\": \\"[maxWorkers]\\",
+    \\"noStackTrace\\": false,
+    \\"nonFlagArgs\\": [],
+    \\"notify\\": false,
+    \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
+    \\"testPathPattern\\": \\"\\",
+    \\"testResultsProcessor\\": null,
+    \\"updateSnapshot\\": \\"all\\",
+    \\"useStderr\\": false,
+    \\"verbose\\": null,
+    \\"watch\\": false,
+    \\"watchman\\": true
   },
-  "version": "[version]"
+  \\"version\\": \\"[version]\\"
 }
-
+"
 `;
