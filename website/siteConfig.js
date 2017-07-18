@@ -227,6 +227,11 @@ const users = [
     infoLink: 'https://seatgeek.com/',
   },
   {
+    caption: 'Shopify',
+    image: '/jest/img/logos/shopify.svg',
+    infoLink: 'https://www.shopify.com/',
+  },
+  {
     caption: 'SoundCloud',
     image: '/jest/img/logos/soundcloud.png',
     infoLink: 'https://soundcloud.com/',
