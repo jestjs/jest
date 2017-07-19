@@ -54,6 +54,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
   \\"framework\\": \\"jasmine2\\",
   \\"globalConfig\\": {
     \\"bail\\": false,
+    \\"changedFilesWithAncestor\\": false,
     \\"coverageDirectory\\": \\"<<REPLACED_ROOT_DIR>>/coverage\\",
     \\"coverageReporters\\": [
       \\"json\\",
