@@ -137,11 +137,11 @@ const _getRunCLIFn = (projects: Array<Path>) =>
 const _printDebugInfoAndExitIfNeeded = (
   argv,
   globalConfig,
-  config,
+  configs,
   outputStream,
 ) => {
   if (argv.debug || argv.showConfig) {
-    logDebugMessages(globalConfig, config, outputStream);
+    logDebugMessages(globalConfig, configs, outputStream);
   }
   if (argv.showConfig) {
     process.exit(0);
@@ -213,7 +213,7 @@ const _getConfigs = (
     throw new Error('jest: No configuration found for any project.');
   }
 
-  _printDebugInfoAndExitIfNeeded(argv, globalConfig, configs[0], outputStream);
+  _printDebugInfoAndExitIfNeeded(argv, globalConfig, configs, outputStream);
 
   return {
     configs,

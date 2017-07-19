@@ -9,20 +9,16 @@
  */
 
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
-import type {TestFramework} from 'types/TestRunner';
 
 import {version as VERSION} from '../../package.json';
 
 const logDebugMessages = (
   globalConfig: GlobalConfig,
-  config: ProjectConfig,
+  configs: Array<ProjectConfig>,
   outputStream: stream$Writable | tty$WriteStream,
 ): void => {
-  /* $FlowFixMe */
-  const testFramework = (require(config.testRunner): TestFramework);
   const output = {
-    config,
-    framework: testFramework.name,
+    configs,
     globalConfig,
     version: VERSION,
   };
