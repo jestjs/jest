@@ -492,7 +492,7 @@ function normalize(options: InitialOptions, argv: Argv) {
   newOptions.json = argv.json;
   newOptions.lastCommit = argv.lastCommit;
 
-  if (argv.all) {
+  if (argv.all || newOptions.testPathPattern) {
     newOptions.onlyChanged = false;
   }
 
