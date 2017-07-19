@@ -54,6 +54,7 @@ module.exports = ({
   resetModules: false,
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
+  testFailureExitCode: 1,
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '',

@@ -407,6 +407,10 @@ const options = {
     description: 'Alias for --env',
     type: 'string',
   },
+  testFailureExitCode: {
+    description: 'Exit code of `jest` command if the test run failed',
+    type: 'string', // number
+  },
   testMatch: {
     description: 'The glob patterns Jest uses to detect test files.',
     type: 'array',

@@ -65,6 +65,7 @@ export type Argv = {|
   silent: boolean,
   snapshotSerializers: Array<string>,
   testEnvironment: string,
+  testFailureExitCode: ?string,
   testMatch: Array<string>,
   testNamePattern: string,
   testPathIgnorePatterns: Array<string>,
