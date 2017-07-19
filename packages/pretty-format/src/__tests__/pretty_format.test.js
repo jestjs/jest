@@ -14,6 +14,14 @@ function returnArguments() {
   return arguments;
 }
 
+// Node.js 4 does not support the following:
+// class MyArray extends Array {
+// }
+
+function MyObject(value) {
+  this.name = value;
+}
+
 describe('prettyFormat()', () => {
   it('prints empty arguments', () => {
     const val = returnArguments();
@@ -286,9 +294,45 @@ describe('prettyFormat()', () => {
   });
 
   it('can customize the max depth', () => {
-    const val = {prop: {prop: {prop: {}}}};
+    const val = [
+      {
+        'arguments empty': returnArguments(),
+        'arguments non-empty': returnArguments('arg'),
+        'array literal empty': [],
+        'array literal non-empty': ['item'],
+        // Node.js 4 does not support the following:
+        // 'extended array empty': new MyArray(),
+        'map empty': new Map(),
+        'map non-empty': new Map([['name', 'value']]),
+        'object literal empty': {},
+        'object literal non-empty': {name: 'value'},
+        'object with constructor': new MyObject('value'),
+        'object without constructor': Object.create(null),
+        'set empty': new Set(),
+        'set non-empty': new Set(['value']),
+      },
+    ];
     expect(prettyFormat(val, {maxDepth: 2})).toEqual(
-      'Object {\n  "prop": Object {\n    "prop": [Object],\n  },\n}',
+      [
+        'Array [',
+        '  Object {',
+        '    "arguments empty": [Arguments],',
+        '    "arguments non-empty": [Arguments],',
+        '    "array literal empty": [Array],',
+        '    "array literal non-empty": [Array],',
+        // Node.js 4 does not support the following:
+        // '    "extended array empty": [MyArray],',
+        '    "map empty": [Map],',
+        '    "map non-empty": [Map],',
+        '    "object literal empty": [Object],',
+        '    "object literal non-empty": [Object],',
+        '    "object with constructor": [MyObject],',
+        '    "object without constructor": [Object],',
+        '    "set empty": [Set],',
+        '    "set non-empty": [Set],',
+        '  },',
+        ']',
+      ].join('\n'),
     );
   });
 
@@ -454,13 +498,72 @@ describe('prettyFormat()', () => {
   });
 
   describe('min', () => {
-    it('prints in min mode', () => {
-      const val = {prop: [1, 2, Infinity, new Set([1, 2, 3])]};
+    it('prints some basic values in min mode', () => {
+      const val = {
+        boolean: [false, true],
+        null: null,
+        number: [0, -0, 123, -123, Infinity, -Infinity, NaN],
+        string: ['', 'non-empty'],
+        undefined,
+      };
       expect(
         prettyFormat(val, {
           min: true,
         }),
-      ).toEqual('{"prop": [1, 2, Infinity, Set {1, 2, 3}]}');
+      ).toEqual(
+        '{' +
+          [
+            '"boolean": [false, true]',
+            '"null": null',
+            '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
+            '"string": ["", "non-empty"]',
+            '"undefined": undefined',
+          ].join(', ') +
+          '}',
+      );
+    });
+
+    it('prints some complex values in min mode', () => {
+      const val = {
+        'arguments empty': returnArguments(),
+        'arguments non-empty': returnArguments('arg'),
+        'array literal empty': [],
+        'array literal non-empty': ['item'],
+        // Node.js 4 does not support the following:
+        // 'extended array empty': new MyArray(),
+        'map empty': new Map(),
+        'map non-empty': new Map([['name', 'value']]),
+        'object literal empty': {},
+        'object literal non-empty': {name: 'value'},
+        'object with constructor': new MyObject('value'),
+        'object without constructor': Object.create(null),
+        'set empty': new Set(),
+        'set non-empty': new Set(['value']),
+      };
+      expect(
+        prettyFormat(val, {
+          min: true,
+        }),
+      ).toEqual(
+        '{' +
+          [
+            '"arguments empty": []',
+            '"arguments non-empty": ["arg"]',
+            '"array literal empty": []',
+            '"array literal non-empty": ["item"]',
+            // Node.js 4 does not support the following:
+            // '"extended array empty": []',
+            '"map empty": Map {}',
+            '"map non-empty": Map {"name" => "value"}',
+            '"object literal empty": {}',
+            '"object literal non-empty": {"name": "value"}',
+            '"object with constructor": {"name": "value"}',
+            '"object without constructor": {}',
+            '"set empty": Set {}',
+            '"set non-empty": Set {"value"}',
+          ].join(', ') +
+          '}',
+      );
     });
 
     it('does not allow indent !== 0 in min mode', () => {
