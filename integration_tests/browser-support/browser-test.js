@@ -9,6 +9,7 @@
 /* eslint-disable */
 var expect = require('../../packages/jest-matchers/build-es5/index.js');
 var mock = require('../../packages/jest-mock/build-es5/index.js');
+var prettyFormat = require('../../packages/pretty-format/build-es5/index.js');
 
 describe('es5 builds in browser', function() {
   it('runs assertions', function() {
@@ -20,5 +21,9 @@ describe('es5 builds in browser', function() {
     expect(someMockFunction).not.toHaveBeenCalled();
     someMockFunction();
     expect(someMockFunction).toHaveBeenCalledTimes(1);
+  });
+
+  it('pretty formats a string', function() {
+    expect(prettyFormat('obj')).toBe('"obj"');
   });
 });

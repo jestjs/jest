@@ -41,7 +41,7 @@ type HTMLComment = {
 };
 
 const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
-const test = isHTMLElement;
+export const test = isHTMLElement;
 
 function isHTMLElement(value: any) {
   return (
@@ -93,7 +93,7 @@ function printAttributes(
     .join('');
 }
 
-const print = (
+export const print = (
   element: HTMLElement | HTMLText | HTMLComment,
   print: Print,
   indent: Indent,
@@ -155,4 +155,4 @@ const print = (
   return result;
 };
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);

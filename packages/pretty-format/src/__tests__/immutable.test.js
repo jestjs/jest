@@ -8,12 +8,14 @@
 
 'use strict';
 
-const React = require('react');
-const Immutable = require('immutable');
-const ReactElementPlugin = require('../plugins/react_element');
-const ReactTestComponentPlugin = require('../plugins/react_test_component');
-const ImmutablePlugins = require('../plugins/immutable_plugins');
-const toPrettyPrintTo = require('./expect_util').getPrettyPrint(
+import React from 'react';
+import Immutable from 'immutable';
+import ReactElementPlugin from '../plugins/react_element';
+import ReactTestComponentPlugin from '../plugins/react_test_component';
+import ImmutablePlugins from '../plugins/immutable_plugins';
+import expectUtil from './expect_util';
+
+const toPrettyPrintTo = expectUtil.getPrettyPrint(
   [ReactElementPlugin, ReactTestComponentPlugin].concat(ImmutablePlugins),
 );
 

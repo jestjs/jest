@@ -22,7 +22,7 @@ const SPACE = ' ';
 class ArrayContaining extends Array {}
 class ObjectContaining extends Object {}
 
-const print = (
+export const print = (
   val: any,
   print: Print,
   indent: Indent,
@@ -56,6 +56,7 @@ const print = (
   return val.toAsymmetricMatcher();
 };
 
-const test = (object: any) => object && object.$$typeof === asymmetricMatcher;
+export const test = (object: any) =>
+  object && object.$$typeof === asymmetricMatcher;
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);

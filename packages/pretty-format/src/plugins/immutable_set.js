@@ -20,10 +20,10 @@ import printImmutable from './lib/print_immutable';
 
 const IS_SET = '@@__IMMUTABLE_SET__@@';
 const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
-const test = (maybeSet: any) =>
+export const test = (maybeSet: any) =>
   !!(maybeSet && maybeSet[IS_SET] && !maybeSet[IS_ORDERED]);
 
-const print = (
+export const print = (
   val: any,
   print: Print,
   indent: Indent,
@@ -31,4 +31,4 @@ const print = (
   colors: Colors,
 ) => printImmutable(val, print, indent, opts, colors, 'Set', false);
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);
