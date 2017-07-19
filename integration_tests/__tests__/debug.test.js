@@ -18,8 +18,7 @@ describe('jest --debug', () => {
   it('outputs debugging info before running the test', () => {
     const {stdout} = runJest(dir, ['--debug', '--no-cache']);
     expect(stdout).toMatch('"version": "');
-    expect(stdout).toMatch('"framework": "jasmine2",');
-    expect(stdout).toMatch('"config": {');
+    expect(stdout).toMatch('"configs": [');
     // config contains many file paths so we cannot do snapshot test
   });
 });
