@@ -9,12 +9,12 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
-import path from 'path';
 import {getTestEnvironment, isJSONString} from './utils';
-import findConfig from './find_config';
 import normalize from './normalize';
+import resolveConfigPath from './resolve_config_path';
+import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
 
 function readConfig(
   argv: Argv,
@@ -25,38 +25,41 @@ function readConfig(
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
 ): {
-  config: ProjectConfig,
+  configPath: ?Path,
   globalConfig: GlobalConfig,
   hasDeprecationWarnings: boolean,
+  config: ProjectConfig,
 } {
-  const rawOptions = readOptions(argv, packageRoot, skipArgvConfigOption);
-  const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
-  const {globalConfig, projectConfig} = getConfigs(options);
-  return {
-    config: projectConfig,
-    globalConfig,
-    hasDeprecationWarnings,
-  };
-}
+  let rawOptions;
+  let configPath;
 
-const readOptions = (argv, root, skipArgvConfigOption) => {
   // A JSON string was passed to `--config` argument and we can parse it
   // and use as is.
   if (isJSONString(argv.config)) {
     const config = JSON.parse(argv.config);
-    config.rootDir = config.rootDir || root;
-    return config;
+    // NOTE: we might need to resolve this dir to an absolute path in the future
+    config.rootDir = config.rootDir || packageRoot;
+    rawOptions = config;
+    // A string passed to `--config`, which is either a direct path to the config
+    // or a path to directory containing `package.json` or `jest.conf.js`
+  } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
+    configPath = resolveConfigPath(argv.config, process.cwd());
+    rawOptions = readConfigFileAndSetRootDir(configPath);
+  } else {
+    // Otherwise just try to find config in the current rootDir.
+    configPath = resolveConfigPath(packageRoot, process.cwd());
+    rawOptions = readConfigFileAndSetRootDir(configPath);
   }
 
-  // A string passed to `--config`, which is either a direct path to the config
-  // or a path to directory containing `package.json` or `jest.conf.js`
-  if (!skipArgvConfigOption && typeof argv.config == 'string') {
-    return findConfig(path.resolve(process.cwd(), argv.config));
-  }
-
-  // Otherwise just try to find config in the current rootDir.
-  return findConfig(root);
-};
+  const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
+  const {globalConfig, projectConfig} = getConfigs(options);
+  return {
+    config: projectConfig,
+    configPath,
+    globalConfig,
+    hasDeprecationWarnings,
+  };
+}
 
 const getConfigs = (
   options: Object,

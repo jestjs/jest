@@ -61,7 +61,7 @@ export type DefaultOptions = {|
   watchman: boolean,
 |};
 
-export type InitialOptions = {|
+export type InitialOptions = {
   automock?: boolean,
   bail?: boolean,
   browser?: boolean,
@@ -78,7 +78,7 @@ export type InitialOptions = {|
   coverageThreshold?: {global: {[key: string]: number}},
   expand?: boolean,
   forceExit?: boolean,
-  json: boolean,
+  json?: boolean,
   globals?: ConfigGlobals,
   haste?: HasteConfig,
   reporters?: Array<ReporterConfig | string>,
@@ -98,7 +98,7 @@ export type InitialOptions = {|
   outputFile?: Path,
   preprocessorIgnorePatterns?: Array<Glob>,
   preset?: ?string,
-  projects: ?Array<Glob>,
+  projects?: Array<Glob>,
   replname?: ?string,
   resetMocks?: boolean,
   resetModules?: boolean,
@@ -109,13 +109,14 @@ export type InitialOptions = {|
   setupFiles?: Array<Path>,
   setupTestFrameworkScriptFile?: Path,
   silent?: boolean,
-  skipNodeResolution: boolean,
+  skipNodeResolution?: boolean,
   snapshotSerializers?: Array<Path>,
   testEnvironment?: string,
   testFailureExitCode?: string | number,
   testMatch?: Array<Glob>,
   testNamePattern?: string,
   testPathIgnorePatterns?: Array<string>,
+  testPathDirs?: Array<Path>,
   testRegex?: string,
   testResultsProcessor?: ?string,
   testRunner?: string,
@@ -130,7 +131,7 @@ export type InitialOptions = {|
   watch?: boolean,
   watchAll?: boolean,
   watchman?: boolean,
-|};
+};
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
