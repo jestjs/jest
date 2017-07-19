@@ -23,6 +23,7 @@ module.exports = (
     );
     return getChangedFilesForRoots(allRootsForAllProjects, {
       lastCommit: globalConfig.lastCommit,
+      withAncestor: globalConfig.changedFilesWithAncestor,
     });
   }
 

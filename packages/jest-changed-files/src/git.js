@@ -19,6 +19,11 @@ const adapter: SCMAdapter = {
     cwd: string,
     options?: Options,
   ): Promise<Array<Path>> => {
+    if (options && options.withAncestor) {
+      throw new Error(
+        '`changedFilesWithAncestor` is not supported in git repos',
+      );
+    }
     return new Promise((resolve, reject) => {
       const args =
         options && options.lastCommit

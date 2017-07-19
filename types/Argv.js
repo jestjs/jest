@@ -18,6 +18,7 @@ export type Argv = {|
   browser: boolean,
   cache: boolean,
   cacheDirectory: string,
+  changedFilesWithAncestor: boolean,
   clearMocks: boolean,
   ci: boolean,
   collectCoverage: boolean,

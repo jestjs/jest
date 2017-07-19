@@ -64,6 +64,7 @@ const getConfigs = (
   return {
     globalConfig: Object.freeze({
       bail: options.bail,
+      changedFilesWithAncestor: options.changedFilesWithAncestor,
       collectCoverage: options.collectCoverage,
       collectCoverageFrom: options.collectCoverageFrom,
       collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,

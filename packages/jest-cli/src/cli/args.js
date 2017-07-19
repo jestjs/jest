@@ -90,6 +90,13 @@ const options = {
       ' dependency information.',
     type: 'string',
   },
+  changedFilesWithAncestor: {
+    description:
+      'When used together with `--onlyChanged`, it runs tests ' +
+      'related to the current changes and the changes made in the last commit. ' +
+      '(NOTE: this only works for hg repos)',
+    type: 'boolean',
+  },
   ci: {
     default: isCI,
     description:
