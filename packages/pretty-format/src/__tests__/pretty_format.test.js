@@ -76,10 +76,21 @@ describe('prettyFormat()', () => {
     /* eslint-disable no-new-func */
     const val = new Function();
     /* eslint-enable no-new-func */
+    // In Node 8.1.4: val.name === 'anonymous'
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
-  it('prints an anonymous function', () => {
+  it('prints an anonymous callback function', () => {
+    let val;
+    function f(cb) {
+      val = cb;
+    }
+    f(() => {});
+    // In Node 8.1.4: val.name === ''
+    expect(prettyFormat(val)).toEqual('[Function anonymous]');
+  });
+
+  it('prints an anonymous assigned function', () => {
     const val = () => {};
     const formatted = prettyFormat(val);
     // Node 6.5 infers function names
@@ -91,6 +102,15 @@ describe('prettyFormat()', () => {
   it('prints a named function', () => {
     const val = function named() {};
     expect(prettyFormat(val)).toEqual('[Function named]');
+  });
+
+  it('prints a named generator function', () => {
+    const val = function* generate() {
+      yield 1;
+      yield 2;
+      yield 3;
+    };
+    expect(prettyFormat(val)).toEqual('[Function generate]');
   });
 
   it('can customize function names', () => {
@@ -144,9 +164,24 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('null');
   });
 
-  it('prints a number', () => {
+  it('prints a positive number', () => {
     const val = 123;
     expect(prettyFormat(val)).toEqual('123');
+  });
+
+  it('prints a negative number', () => {
+    const val = -123;
+    expect(prettyFormat(val)).toEqual('-123');
+  });
+
+  it('prints zero', () => {
+    const val = 0;
+    expect(prettyFormat(val)).toEqual('0');
+  });
+
+  it('prints negative zero', () => {
+    const val = -0;
+    expect(prettyFormat(val)).toEqual('-0');
   });
 
   it('prints a date', () => {
