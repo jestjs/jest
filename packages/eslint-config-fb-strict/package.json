@@ -13,6 +13,6 @@
     "eslint-plugin-jest": "^20.0.3"
   },
   "peerDependencies": {
-    "eslint": "^3.3.0"
+    "eslint": ">=3.3.0"
   }
 }
