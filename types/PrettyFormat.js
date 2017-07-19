@@ -20,6 +20,22 @@ export type Refs = Array<any>;
 export type Print = any => string;
 export type StringOrNull = string | null;
 
+export type Theme = {|
+  comment: string,
+  content: string,
+  prop: string,
+  tag: string,
+  value: string,
+|};
+
+export type ThemeReceived = {|
+  comment?: string,
+  content?: string,
+  prop?: string,
+  tag?: string,
+  value?: string,
+|};
+
 export type Options = {|
   callToJSON: boolean,
   escapeRegex: boolean,
@@ -29,13 +45,32 @@ export type Options = {|
   min: boolean,
   plugins: Plugins,
   printFunctionName: boolean,
-  theme: {|
-    comment: string,
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
-  |},
+  theme: Theme,
+|};
+
+export type OptionsReceived = {|
+  callToJSON?: boolean,
+  escapeRegex?: boolean,
+  highlight?: boolean,
+  indent?: number,
+  maxDepth?: number,
+  min?: boolean,
+  plugins?: Plugins,
+  printFunctionName?: boolean,
+  theme?: ThemeReceived,
+|};
+
+export type Config = {|
+  callToJSON: boolean,
+  colors: Colors,
+  escapeRegex: boolean,
+  indent: string,
+  maxDepth: number,
+  min: boolean,
+  plugins: Plugins,
+  printFunctionName: boolean,
+  spacingInner: string,
+  spacingOuter: string,
 |};
 
 export type PluginOptions = {|
