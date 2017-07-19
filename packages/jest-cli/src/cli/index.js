@@ -34,21 +34,22 @@ import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 
-function run(maybeArgv?: Argv, project?: Path) {
+async function run(maybeArgv?: Argv, project?: Path) {
   const argv: Argv = _buildArgv(maybeArgv, project);
   const projects = _getProjectListFromCLIArgs(argv, project);
   // If we're running a single Jest project, we might want to use another
   // version of Jest (the one that is specified in this project's package.json)
   const runCLIFn = _getRunCLIFn(projects);
 
-  runCLIFn(argv, projects, result => _readResultsAndExit(argv, result));
+  const {results, globalConfig} = await runCLIFn(argv, projects);
+  _readResultsAndExit(argv, results, globalConfig);
 }
 
 const runCLI = async (
   argv: Argv,
   projects: Array<Path>,
-  onComplete: (results: ?AggregatedResult) => void,
-) => {
+): Promise<{results: AggregatedResult, globalConfig: GlobalConfig}> => {
+  let results;
   // Optimize 'fs' module and make it more compatible with multiple platforms.
   _patchGlobalFSModule();
 
@@ -57,7 +58,7 @@ const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  argv.version && _printVersionAndExit(outputStream, onComplete);
+  argv.version && _printVersionAndExit(outputStream);
 
   try {
     const {globalConfig, configs, hasDeprecationWarnings} = _getConfigs(
@@ -65,27 +66,37 @@ const runCLI = async (
       argv,
       outputStream,
     );
+
     await _run(
       globalConfig,
       configs,
       hasDeprecationWarnings,
       outputStream,
-      onComplete,
+      (r: AggregatedResult) => (results = r),
     );
+
+    if (!results) {
+      throw new Error(
+        'AggregatedResult must be present after test run is complete',
+      );
+    }
+
+    return Promise.resolve({globalConfig, results});
   } catch (error) {
-    _printErrorAndExit(error);
+    clearLine(process.stderr);
+    clearLine(process.stdout);
+    console.error(chalk.red(error.stack));
+    process.exit(1);
+    throw error;
   }
 };
 
-const _printErrorAndExit = error => {
-  clearLine(process.stderr);
-  clearLine(process.stdout);
-  console.error(chalk.red(error.stack));
-  process.exit(1);
-};
-
-const _readResultsAndExit = (argv: Argv, result: ?AggregatedResult) => {
-  const code = !result || result.success ? 0 : 1;
+const _readResultsAndExit = (
+  argv: Argv,
+  result: ?AggregatedResult,
+  globalConfig: GlobalConfig,
+) => {
+  const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
   process.on('exit', () => process.exit(code));
   if (argv && argv.forceExit) {
     process.exit(code);
@@ -137,10 +148,9 @@ const _printDebugInfoAndExitIfNeeded = (
   }
 };
 
-const _printVersionAndExit = (outputStream, onComplete) => {
+const _printVersionAndExit = outputStream => {
   outputStream.write(`v${VERSION}\n`);
-  onComplete && onComplete();
-  return;
+  process.exit(0);
 };
 
 // Possible scenarios:

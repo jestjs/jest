@@ -89,6 +89,7 @@ const getConfigs = (
       reporters: options.reporters,
       rootDir: options.rootDir,
       silent: options.silent,
+      testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,
       testPathPattern: options.testPathPattern,
       testResultsProcessor: options.testResultsProcessor,
