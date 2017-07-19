@@ -493,7 +493,7 @@ function normalize(options: InitialOptions, argv: Argv) {
   newOptions.json = argv.json;
   newOptions.lastCommit = argv.lastCommit;
 
-  newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode);
+  newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
 
   if (argv.all) {
     newOptions.onlyChanged = false;
