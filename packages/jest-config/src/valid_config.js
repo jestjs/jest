@@ -21,6 +21,7 @@ module.exports = ({
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
+  changedFilesWithAncestor: false,
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],

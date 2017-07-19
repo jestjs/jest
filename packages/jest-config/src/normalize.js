@@ -448,6 +448,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
       case 'coverageReporters':

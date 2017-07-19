@@ -35,7 +35,7 @@ const adapter: SCMAdapter = {
       let stderr = '';
       child.stdout.on('data', data => (stdout += data));
       child.stderr.on('data', data => (stderr += data));
-      child.on('error', e => reject(e));
+      child.on('error', (error: Error) => reject(error));
       child.on('close', code => {
         if (code === 0) {
           stdout = stdout.trim();
@@ -49,7 +49,7 @@ const adapter: SCMAdapter = {
             );
           }
         } else {
-          reject(code + ': ' + stderr);
+          reject(new Error(code + ': ' + stderr));
         }
       });
     });
