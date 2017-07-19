@@ -495,7 +495,7 @@ function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
 
-  if (argv.all) {
+  if (argv.all || newOptions.testPathPattern) {
     newOptions.onlyChanged = false;
   }
 
