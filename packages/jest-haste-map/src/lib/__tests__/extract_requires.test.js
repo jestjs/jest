@@ -80,4 +80,16 @@ describe('extractRequires', () => {
 
     expect(extractRequires(code)).toEqual(['module1']);
   });
+
+  it('ignores type imports', () => {
+    const code = [
+      "import type foo from 'bar';",
+      "import type {",
+      "  bar,",
+      "  baz,",
+      "} from 'wham'",
+    ].join('\r\n');
+
+    expect(extractRequires(code)).toEqual([]);
+  });
 });
