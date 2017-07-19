@@ -65,7 +65,7 @@ class HomeSplash extends React.Component {
               <h2 className="projectTitle">
                 {siteConfig.title}
                 <small>
-                  {translation["localized-strings"].tagline}
+                  {translation[this.props.language]["localized-strings"].tagline}
                 </small>
               </h2>
               <div className="section promoSection">
@@ -391,7 +391,7 @@ class Index extends React.Component {
               {showcase}
             </div>
             <div className="more-users">
-              <a className="button" href="/jest/users.html" target="_self">
+              <a className="button" href={siteConfig.baseUrl + this.props.language + "/users.html"} target="_self">
                 <translate>More Jest Users</translate>
               </a>
             </div>

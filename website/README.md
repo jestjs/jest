@@ -108,14 +108,6 @@
   footerIcon: "img/jest-outline.svg",
   favicon: "img/favicon/favicon.ico",
   ```
-- Add a `docsSidebarDefaults` field:
-  ```
-  docsSidebarDefaults: {
-    layout: "docs",
-    root: "/jest/docs/en/getting-started.html",
-    title: "Docs"
-  },
-  ```
 - Add a `recruitingLink` field: 
   ```
   recruitingLink: "https://crowdin.com/project/jest",

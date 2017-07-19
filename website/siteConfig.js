@@ -209,14 +209,14 @@ const users = [
     infoLink: "https://seatgeek.com/"
   },
   {
-    caption: 'Shopify',
-    image: '/jest/img/logos/shopify.svg',
-    infoLink: 'https://www.shopify.com/',
+    caption: "Shopify",
+    image: "/jest/img/logos/shopify.svg",
+    infoLink: "https://www.shopify.com/"
   },
   {
-    caption: 'SoundCloud',
-    image: '/jest/img/logos/soundcloud.png',
-    infoLink: 'https://soundcloud.com/',
+    caption: "SoundCloud",
+    image: "/jest/img/logos/soundcloud.png",
+    infoLink: "https://soundcloud.com/"
   },
   {
     caption: "Sprout Social",
@@ -279,11 +279,6 @@ const siteConfig = {
   headerIcon: "img/jest-outline.svg",
   footerIcon: "img/jest-outline.svg",
   favicon: "img/favicon/favicon.ico",
-  docsSidebarDefaults: {
-    layout: "docs",
-    root: "/jest/docs/en/getting-started.html",
-    title: "Docs"
-  },
   recruitingLink: "https://crowdin.com/project/jest",
   algolia: {
     apiKey: "833906d7486e4059359fa58823c4ef56",
