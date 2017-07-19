@@ -74,7 +74,7 @@ test('run only changed files', () => {
   expect(stderr).toMatch('PASS  __tests__/file3.test.js');
 });
 
-test('onlyChanged in config is overwritten by --all', () => {
+test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
@@ -118,6 +118,11 @@ test('onlyChanged in config is overwritten by --all', () => {
 
   ({stderr} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
+
+  ({stderr, stdout} = runJest(DIR, ['file2.test.js']));
+  expect(stdout).not.toMatch('No tests found related to files');
+  expect(stderr).toMatch('PASS  __tests__/file2.test.js');
+  expect(stderr).toMatch('1 total');
 
   writeFiles(DIR, {
     'file2.js': 'module.exports = {modified: true}',
