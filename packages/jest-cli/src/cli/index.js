@@ -54,7 +54,8 @@ const runCLI = async (
 
   // If we output a JSON object, we can't write anything to stdout, since
   // it'll break the JSON structure and it won't be valid.
-  const outputStream = argv.json ? process.stderr : process.stdout;
+  const outputStream =
+    argv.json || argv.useStderr ? process.stderr : process.stdout;
 
   argv.version && _printVersionAndExit(outputStream, onComplete);
 
