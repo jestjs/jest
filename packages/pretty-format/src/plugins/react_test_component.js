@@ -69,7 +69,7 @@ function printProps(props: Object, print, indent, colors, opts) {
     .join('');
 }
 
-const print = (
+export const print = (
   instance: ReactTestObject,
   print: Print,
   indent: Indent,
@@ -113,7 +113,7 @@ const print = (
   return result;
 };
 
-const test = (object: Object) =>
+export const test = (object: Object) =>
   object && object.$$typeof === reactTestInstance;
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);

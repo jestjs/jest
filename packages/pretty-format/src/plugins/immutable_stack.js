@@ -19,9 +19,9 @@ import type {
 import printImmutable from './lib/print_immutable';
 
 const IS_STACK = '@@__IMMUTABLE_STACK__@@';
-const test = (maybeStack: any) => !!(maybeStack && maybeStack[IS_STACK]);
+export const test = (maybeStack: any) => !!(maybeStack && maybeStack[IS_STACK]);
 
-const print = (
+export const print = (
   val: any,
   print: Print,
   indent: Indent,
@@ -29,4 +29,4 @@ const print = (
   colors: Colors,
 ) => printImmutable(val, print, indent, opts, colors, 'Stack', false);
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);

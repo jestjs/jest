@@ -41,10 +41,10 @@ const toHumanReadableAnsi = text => {
   });
 };
 
-const test = (value: any) =>
+export const test = (value: any) =>
   typeof value === 'string' && value.match(ansiRegex());
 
-const print = (
+export const print = (
   val: any,
   print: Print,
   indent: Indent,
@@ -52,4 +52,4 @@ const print = (
   colors: Colors,
 ) => print(toHumanReadableAnsi(val));
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);

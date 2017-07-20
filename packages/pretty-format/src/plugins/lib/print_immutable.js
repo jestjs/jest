@@ -62,4 +62,4 @@ const printImmutable = (
   );
 };
 
-module.exports = printImmutable;
+export default printImmutable;
