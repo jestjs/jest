@@ -75,6 +75,13 @@ const runCLI = async (
       (r: AggregatedResult) => (results = r),
     );
 
+    if (argv.watch || argv.watchAll) {
+      // If in watch mode, return the promise that will never resolve.
+      // If the watch mode is interrupted, watch should handle the process
+      // shutdown.
+      return new Promise(() => {});
+    }
+
     if (!results) {
       throw new Error(
         'AggregatedResult must be present after test run is complete',
