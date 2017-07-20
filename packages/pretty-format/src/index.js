@@ -73,7 +73,7 @@ function printFunction(val: Function, printFunctionName: boolean): string {
   if (!printFunctionName) {
     return '[Function]';
   }
-  return '[Function ' + (val.name ? val.name : 'anonymous') + ']';
+  return '[Function ' + (val.name || 'anonymous') + ']';
 }
 
 function printSymbol(val: Symbol): string {
