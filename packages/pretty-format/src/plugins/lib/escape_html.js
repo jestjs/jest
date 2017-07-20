@@ -8,8 +8,6 @@
  * @flow
  */
 
-function escapeHTML(str: string): string {
+export default function escapeHTML(str: string): string {
   return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
-
-module.exports = escapeHTML;

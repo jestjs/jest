@@ -73,7 +73,7 @@ function printProps(props, print, indent, colors, opts) {
     .join('');
 }
 
-const print = (
+export const print = (
   element: React$Element<*>,
   print: Print,
   indent: Indent,
@@ -127,7 +127,7 @@ const print = (
 
 // Disabling lint rule as we don't know type ahead of time.
 /* eslint-disable flowtype/no-weak-types */
-const test = (object: any) => object && object.$$typeof === reactElement;
+export const test = (object: any) => object && object.$$typeof === reactElement;
 /* eslint-enable flowtype/no-weak-types */
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);

@@ -16,7 +16,7 @@ import ImmutableOrderedSet from './immutable_ordered_set';
 import ImmutableOrderedMap from './immutable_ordered_map';
 import ImmutableRecord from './immutable_record';
 
-module.exports = [
+export default [
   ImmutableList,
   ImmutableSet,
   ImmutableMap,
