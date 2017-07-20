@@ -152,7 +152,7 @@ function printBasicValue(
   return null;
 }
 
-function printList(
+function printListItems(
   list: any,
   config: Config,
   indentation: string,
@@ -183,7 +183,7 @@ function printList(
   return result;
 }
 
-function printMap(
+function printMapEntries(
   val: Map<any, any>,
   config: Config,
   indentation: string,
@@ -232,7 +232,7 @@ function printMap(
   return result;
 }
 
-function printObject(
+function printObjectProperties(
   val: Object,
   config: Config,
   indentation: string,
@@ -272,7 +272,7 @@ function printObject(
   return result;
 }
 
-function printSet(
+function printSetValues(
   val: Set<any>,
   config: Config,
   indentation: string,
@@ -339,7 +339,7 @@ function printComplexValue(
       ? '[Arguments]'
       : (min ? '' : 'Arguments ') +
         '[' +
-        printList(val, config, indentation, depth, refs) +
+        printListItems(val, config, indentation, depth, refs) +
         ']';
   }
   if (isToStringedArrayType(toStringed)) {
@@ -347,25 +347,25 @@ function printComplexValue(
       ? '[' + val.constructor.name + ']'
       : (min ? '' : val.constructor.name + ' ') +
         '[' +
-        printList(val, config, indentation, depth, refs) +
+        printListItems(val, config, indentation, depth, refs) +
         ']';
   }
   if (toStringed === '[object Map]') {
     return hitMaxDepth
       ? '[Map]'
-      : 'Map {' + printMap(val, config, indentation, depth, refs) + '}';
+      : 'Map {' + printMapEntries(val, config, indentation, depth, refs) + '}';
   }
   if (toStringed === '[object Set]') {
     return hitMaxDepth
       ? '[Set]'
-      : 'Set {' + printSet(val, config, indentation, depth, refs) + '}';
+      : 'Set {' + printSetValues(val, config, indentation, depth, refs) + '}';
   }
 
   return hitMaxDepth
     ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
     : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
       '{' +
-      printObject(val, config, indentation, depth, refs) +
+      printObjectProperties(val, config, indentation, depth, refs) +
       '}';
 }
 
