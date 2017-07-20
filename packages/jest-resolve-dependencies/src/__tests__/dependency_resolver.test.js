@@ -60,7 +60,9 @@ test('resolves dependencies for scoped packages', () => {
   const resolved = dependencyResolver.resolve(
     path.resolve(__dirname, '__fixtures__', 'scoped.js'),
   );
-  expect(resolved).toEqual([expect.stringContaining('@myorg/pkg')]);
+  expect(resolved).toEqual([
+    expect.stringContaining(path.join('@myorg', 'pkg')),
+  ]);
 });
 
 test('resolves no inverse dependencies for empty paths set', () => {
