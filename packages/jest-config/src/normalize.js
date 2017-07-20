@@ -18,7 +18,6 @@ import validatePattern from './validate_pattern';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
-import glob from 'glob';
 import Resolver from 'jest-resolve';
 import utils from 'jest-regex-util';
 import {
@@ -85,7 +84,6 @@ const setupPreset = (
     );
   }
 
-  // $FlowFixMe
   return Object.assign({}, preset, options);
 };
 
@@ -429,16 +427,8 @@ function normalize(options: InitialOptions, argv: Argv) {
         }
         break;
       case 'projects':
-        const projects = options[key];
-        let list = [];
-        projects &&
-          projects.forEach(
-            filePath =>
-              (list = list.concat(
-                glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
-              )),
-          );
-        value = list;
+        value = (options[key] || [])
+          .map(project => _replaceRootDirTags(options.rootDir, project));
         break;
       case 'moduleDirectories':
       case 'testMatch':
