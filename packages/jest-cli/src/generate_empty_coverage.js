@@ -11,8 +11,7 @@
 import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
 import {createInstrumenter} from 'istanbul-lib-instrument';
-// $FlowFixMe: Missing ESM export
-import {ScriptTransformer, shouldInstrument} from 'jest-runtime';
+import Runtime from 'jest-runtime';
 
 module.exports = function(
   source: string,
@@ -26,15 +25,12 @@ module.exports = function(
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     mapCoverage: globalConfig.mapCoverage,
   };
-  if (shouldInstrument(filename, coverageOptions, config)) {
+  if (Runtime.shouldInstrument(filename, coverageOptions, config)) {
     // Transform file without instrumentation first, to make sure produced
     // source code is ES6 (no flowtypes etc.) and can be instrumented
-    const transformResult = new ScriptTransformer(config).transformSource(
-      filename,
-      source,
-      false,
-      globalConfig.mapCoverage,
-    );
+    const transformResult = new Runtime.ScriptTransformer(
+      config,
+    ).transformSource(filename, source, false, globalConfig.mapCoverage);
     const instrumenter = createInstrumenter();
     instrumenter.instrumentSync(transformResult.code, filename);
     return {

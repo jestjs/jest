@@ -23,8 +23,7 @@ import fs from 'graceful-fs';
 import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
-// $FlowFixMe: Missing ESM export
-import {getCacheFilePath} from 'jest-haste-map';
+import HasteMap from 'jest-haste-map';
 import stableStringify from 'json-stable-stringify';
 import slash from 'slash';
 import {version as VERSION} from '../package.json';
@@ -88,7 +87,7 @@ class ScriptTransformer {
     instrument: boolean,
     mapCoverage: boolean,
   ): Path {
-    const baseCacheDir = getCacheFilePath(
+    const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
       VERSION,
