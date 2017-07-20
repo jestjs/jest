@@ -18,8 +18,7 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-// $FlowFixMe: Missing ESM export
-import {ModuleMap} from 'jest-haste-map';
+import HasteMap from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
 import runTest from './run_test';
@@ -58,11 +57,7 @@ const getResolver = (config, rawModuleMap) => {
   // watch mode does not persist the haste map on disk after every file change.
   // To make this fast and consistent, we pass it from the TestRunner.
   if (rawModuleMap) {
-    return Runtime.createResolver(
-      config,
-      // $FlowFixMe: Missing ESM export
-      new ModuleMap(rawModuleMap.map, rawModuleMap.mocks),
-    );
+    return Runtime.createResolver(config, new HasteMap.ModuleMap(rawModuleMap));
   } else {
     const name = config.name;
     if (!resolvers[name]) {
