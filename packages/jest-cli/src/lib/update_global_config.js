@@ -50,7 +50,10 @@ module.exports = (
   }
 
   newConfig.onlyChanged = false;
-  newConfig.onlyChanged = !newConfig.watchAll && !newConfig.testNamePattern;
+  newConfig.onlyChanged =
+    !newConfig.watchAll &&
+    !newConfig.testNamePattern &&
+    !newConfig.testPathPattern;
 
   if (options.noSCM) {
     newConfig.noSCM = true;
