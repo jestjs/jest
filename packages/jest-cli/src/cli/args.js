@@ -56,7 +56,7 @@ const options = {
     description:
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
       'default, running jest with `--all` will force Jest to run all tests ' +
-      'instead of runnig only tests related to changed files.',
+      'instead of running only tests related to changed files.',
   },
   automock: {
     default: undefined,
