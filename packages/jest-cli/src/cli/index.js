@@ -42,7 +42,7 @@ async function run(maybeArgv?: Argv, project?: Path) {
   const runCLIFn = _getRunCLIFn(projects);
 
   const {results, globalConfig} = await runCLIFn(argv, projects);
-  _readResultsAndExit(argv, results, globalConfig);
+  _readResultsAndExit(results, globalConfig);
 }
 
 const runCLI = async (
@@ -99,13 +99,12 @@ const runCLI = async (
 };
 
 const _readResultsAndExit = (
-  argv: Argv,
   result: ?AggregatedResult,
   globalConfig: GlobalConfig,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
   process.on('exit', () => process.exit(code));
-  if (argv && argv.forceExit) {
+  if (globalConfig.forceExit) {
     process.exit(code);
   }
 };
