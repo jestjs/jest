@@ -106,16 +106,18 @@ class SummaryReporter extends BaseReporter {
       );
 
       if (numTotalTestSuites) {
-        const testSummary = wasInterrupted
-          ? chalk.bold.red('Test run was interrupted.')
-          : this._getTestSummary(contexts, this._globalConfig);
-        this.log(
-          getSummary(aggregatedResults, {
-            estimatedTime: this._estimatedTime,
-          }) +
+        let message = getSummary(aggregatedResults, {
+          estimatedTime: this._estimatedTime,
+        });
+
+        if (!this._globalConfig.silent) {
+          message +=
             '\n' +
-            testSummary,
-        );
+            (wasInterrupted
+              ? chalk.bold.red('Test run was interrupted.')
+              : this._getTestSummary(contexts, this._globalConfig));
+        }
+        this.log(message);
       }
     }
   }
