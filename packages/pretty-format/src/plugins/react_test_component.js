@@ -9,58 +9,75 @@
  */
 
 import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
+  Config,
+  Printer,
+  NewPlugin,
   ReactTestObject,
   ReactTestChild,
+  Refs,
 } from 'types/PrettyFormat';
 
 import escapeHTML from './lib/escape_html';
 
-const reactTestInstance = Symbol.for('react.test.json');
+const testSymbol = Symbol.for('react.test.json');
 
 function printChildren(
   children: Array<ReactTestChild>,
-  print,
-  indent,
-  colors,
-  opts,
-) {
+  config: Config,
+  printer: Printer,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+): string {
+  const colors = config.colors;
   return children
-    .map(node => {
-      if (typeof node === 'string') {
-        return colors.content.open + escapeHTML(node) + colors.content.close;
-      } else {
-        return print(node);
-      }
-    })
-    .join(opts.edgeSpacing);
+    .map(
+      child =>
+        config.spacingOuter +
+        indentation +
+        (typeof child === 'string'
+          ? colors.content.open + escapeHTML(child) + colors.content.close
+          : printer(child, indentation, depth, refs)),
+    )
+    .join('');
 }
 
-function printProps(props: Object, print, indent, colors, opts) {
-  return Object.keys(props)
+function printProps(
+  keys: Array<string>,
+  props: Object,
+  config: Config,
+  printer: Printer,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+): string {
+  const indentationNext = indentation + config.indent;
+  const colors = config.colors;
+  return keys
     .sort()
-    .map(name => {
-      const prop = props[name];
-      let printed = print(prop);
+    .map(key => {
+      const value = props[key];
+      let printed = printer(value, indentationNext, depth, refs);
 
-      if (typeof prop !== 'string') {
+      if (typeof value !== 'string') {
         if (printed.indexOf('\n') !== -1) {
           printed =
-            '{' +
-            opts.edgeSpacing +
-            indent(indent(printed) + opts.edgeSpacing + '}');
-        } else {
-          printed = '{' + printed + '}';
+            config.spacingOuter +
+            indentationNext +
+            printed +
+            config.spacingOuter +
+            indentation;
         }
+        printed = '{' + printed + '}';
       }
 
       return (
-        opts.spacing +
-        indent(colors.prop.open + name + colors.prop.close + '=') +
+        config.spacingInner +
+        indentation +
+        colors.prop.open +
+        key +
+        colors.prop.close +
+        '=' +
         colors.value.open +
         printed +
         colors.value.close
@@ -69,51 +86,65 @@ function printProps(props: Object, print, indent, colors, opts) {
     .join('');
 }
 
-export const print = (
+export const serialize = (
   instance: ReactTestObject,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => {
-  let closeInNewLine = false;
-  let result = colors.tag.open + '<' + instance.type + colors.tag.close;
+  config: Config,
+  printer: Printer,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+): string => {
+  const tag = config.colors.tag;
+  let result = tag.open + '<' + instance.type;
 
+  let hasProps = false;
   if (instance.props) {
-    closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
-    result += printProps(instance.props, print, indent, colors, opts);
+    const keys = Object.keys(instance.props);
+    hasProps = keys.length !== 0;
+    if (hasProps) {
+      result +=
+        tag.close +
+        printProps(
+          keys,
+          instance.props,
+          config,
+          printer,
+          indentation + config.indent,
+          depth,
+          refs,
+        ) +
+        config.spacingOuter +
+        indentation +
+        tag.open;
+    }
   }
 
   if (instance.children) {
-    const children = printChildren(
-      instance.children,
-      print,
-      indent,
-      colors,
-      opts,
-    );
     result +=
-      colors.tag.open +
-      (closeInNewLine ? '\n' : '') +
       '>' +
-      colors.tag.close +
-      opts.edgeSpacing +
-      indent(children) +
-      opts.edgeSpacing +
-      colors.tag.open +
+      tag.close +
+      printChildren(
+        instance.children,
+        config,
+        printer,
+        indentation + config.indent,
+        depth,
+        refs,
+      ) +
+      config.spacingOuter +
+      indentation +
+      tag.open +
       '</' +
       instance.type +
       '>' +
-      colors.tag.close;
+      tag.close;
   } else {
-    result +=
-      colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
+    result += (hasProps && !config.min ? '' : ' ') + '/>' + tag.close;
   }
 
   return result;
 };
 
-export const test = (object: Object) =>
-  object && object.$$typeof === reactTestInstance;
+export const test = (val: any) => val && val.$$typeof === testSymbol;
 
-export default ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);

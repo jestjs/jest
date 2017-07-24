@@ -13,29 +13,33 @@ const prettyFormat = require('../');
 const ReactTestComponent = require('../plugins/react_test_component');
 const ReactElement = require('../plugins/react_element');
 
-function assertPrintedJSX(actual, expected, opts) {
-  expect(
-    prettyFormat(
-      actual,
-      Object.assign(
-        {
-          plugins: [ReactElement],
-        },
-        opts,
-      ),
+const prettyFormatElementPlugin = (element, options) =>
+  prettyFormat(
+    element,
+    Object.assign(
+      {
+        plugins: [ReactElement],
+      },
+      options,
     ),
-  ).toEqual(expected);
-  expect(
-    prettyFormat(
-      renderer.create(actual).toJSON(),
-      Object.assign(
-        {
-          plugins: [ReactTestComponent, ReactElement],
-        },
-        opts,
-      ),
+  );
+
+const prettyFormatBothPlugins = (object, options) =>
+  prettyFormat(
+    object,
+    Object.assign(
+      {
+        plugins: [ReactTestComponent, ReactElement],
+      },
+      options,
     ),
-  ).toEqual(expected);
+  );
+
+function assertPrintedJSX(val, formatted, options) {
+  expect(prettyFormatElementPlugin(val, options)).toEqual(formatted);
+  expect(
+    prettyFormatBothPlugins(renderer.create(val).toJSON(), options),
+  ).toEqual(formatted);
 }
 
 test('supports a single element with no props or children', () => {
@@ -68,6 +72,28 @@ test('supports props with strings', () => {
     React.createElement('Mouse', {style: 'color:red'}),
     '<Mouse\n  style="color:red"\n/>',
   );
+});
+
+test('supports props with multiline strings', () => {
+  const val = React.createElement(
+    'svg',
+    null,
+    React.createElement('polyline', {
+      id: 'J',
+      points: ['0.5,0.460', '0.5,0.875', '0.25,0.875'].join('\n'),
+    }),
+  );
+  const formatted = [
+    '<svg>',
+    '  <polyline',
+    '    id="J"',
+    '    points="0.5,0.460',
+    '0.5,0.875',
+    '0.25,0.875"',
+    '  />',
+    '</svg>',
+  ].join('\n');
+  assertPrintedJSX(val, formatted);
 });
 
 test('supports props with numbers', () => {
@@ -292,7 +318,82 @@ test('supports a single element with React elements with array children', () => 
   );
 });
 
-test('uses the supplied line seperator for min mode', () => {
+test('supports array of elements', () => {
+  const val = [
+    React.createElement('dt', null, 'jest'),
+    React.createElement('dd', null, 'to talk in a playful manner'),
+    React.createElement(
+      'dd',
+      {style: {color: '#99424F'}},
+      'painless JavaScript testing',
+    ),
+  ];
+  const formatted = [
+    'Array [',
+    '  <dt>',
+    '    jest',
+    '  </dt>,',
+    '  <dd>',
+    '    to talk in a playful manner',
+    '  </dd>,',
+    '  <dd',
+    '    style={',
+    '      Object {',
+    '        "color": "#99424F",',
+    '      }',
+    '    }',
+    '  >',
+    '    painless JavaScript testing',
+    '  </dd>,',
+    ']',
+  ].join('\n');
+  expect(prettyFormatElementPlugin(val)).toEqual(formatted);
+  expect(
+    prettyFormatBothPlugins(
+      val.map(element => renderer.create(element).toJSON()),
+    ),
+  ).toEqual(formatted);
+});
+
+describe('indent option', () => {
+  const val = React.createElement(
+    'ul',
+    null,
+    React.createElement(
+      'li',
+      {style: {color: 'green', textDecoration: 'none'}},
+      'Test indent option',
+    ),
+  );
+  const formatted = [
+    '<ul>',
+    '  <li',
+    '    style={',
+    '      Object {',
+    '        "color": "green",',
+    '        "textDecoration": "none",',
+    '      }',
+    '    }',
+    '  >',
+    '    Test indent option',
+    '  </li>',
+    '</ul>',
+  ].join('\n');
+  test('default implicit: 2 spaces', () => {
+    assertPrintedJSX(val, formatted);
+  });
+  test('default explicit: 2 spaces', () => {
+    assertPrintedJSX(val, formatted, {indent: 2});
+  });
+  test('non-default: 0 spaces', () => {
+    assertPrintedJSX(val, formatted.replace(/ {2}/g, ''), {indent: 0});
+  });
+  test('non-default: 4 spaces', () => {
+    assertPrintedJSX(val, formatted.replace(/ {2}/g, '    '), {indent: 4});
+  });
+});
+
+test('min option', () => {
   assertPrintedJSX(
     React.createElement(
       'Mouse',

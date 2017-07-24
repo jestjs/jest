@@ -8,17 +8,11 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 import escapeHTML from './lib/escape_html';
 
-const reactElement = Symbol.for('react.element');
+const elementSymbol = Symbol.for('react.element');
 
 function traverseChildren(opaqueChildren, cb) {
   if (Array.isArray(opaqueChildren)) {
@@ -28,43 +22,63 @@ function traverseChildren(opaqueChildren, cb) {
   }
 }
 
-function printChildren(flatChildren, print, indent, colors, opts) {
-  return flatChildren
-    .map(node => {
-      if (typeof node === 'string') {
-        return colors.content.open + escapeHTML(node) + colors.content.close;
-      } else {
-        return print(node);
-      }
-    })
-    .join(opts.edgeSpacing);
+function printChildren(
+  children: Array<any>,
+  config: Config,
+  printer: Printer,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+): string {
+  const colors = config.colors;
+  return children
+    .map(
+      child =>
+        config.spacingOuter +
+        indentation +
+        (typeof child === 'string'
+          ? colors.content.open + escapeHTML(child) + colors.content.close
+          : printer(child, indentation, depth, refs)),
+    )
+    .join('');
 }
 
-function printProps(props, print, indent, colors, opts) {
-  return Object.keys(props)
+function printProps(
+  keys: Array<string>,
+  props: Object,
+  config: Config,
+  printer: Printer,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+): string {
+  const indentationNext = indentation + config.indent;
+  const colors = config.colors;
+  return keys
     .sort()
-    .map(name => {
-      if (name === 'children') {
-        return '';
-      }
+    .map(key => {
+      const value = props[key];
+      let printed = printer(value, indentationNext, depth, refs);
 
-      const prop = props[name];
-      let printed = print(prop);
-
-      if (typeof prop !== 'string') {
+      if (typeof value !== 'string') {
         if (printed.indexOf('\n') !== -1) {
           printed =
-            '{' +
-            opts.edgeSpacing +
-            indent(indent(printed) + opts.edgeSpacing + '}');
-        } else {
-          printed = '{' + printed + '}';
+            config.spacingOuter +
+            indentationNext +
+            printed +
+            config.spacingOuter +
+            indentation;
         }
+        printed = '{' + printed + '}';
       }
 
       return (
-        opts.spacing +
-        indent(colors.prop.open + name + colors.prop.close + '=') +
+        config.spacingInner +
+        indentation +
+        colors.prop.open +
+        key +
+        colors.prop.close +
+        '=' +
         colors.value.open +
         printed +
         colors.value.close
@@ -73,14 +87,15 @@ function printProps(props, print, indent, colors, opts) {
     .join('');
 }
 
-export const print = (
+export const serialize = (
   element: React$Element<*>,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => {
-  let result = colors.tag.open + '<';
+  config: Config,
+  printer: Printer,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+): string => {
+  const tag = config.colors.tag;
   let elementName;
   if (typeof element.type === 'string') {
     elementName = element.type;
@@ -89,45 +104,58 @@ export const print = (
   } else {
     elementName = 'Unknown';
   }
-  result += elementName + colors.tag.close;
-  result += printProps(element.props, print, indent, colors, opts);
+  let result = tag.open + '<' + elementName;
+
+  const keys = Object.keys(element.props).filter(key => key !== 'children');
+  const hasProps = keys.length !== 0;
+  if (hasProps) {
+    result +=
+      tag.close +
+      printProps(
+        keys,
+        element.props,
+        config,
+        printer,
+        indentation + config.indent,
+        depth,
+        refs,
+      ) +
+      config.spacingOuter +
+      indentation +
+      tag.open;
+  }
 
   const opaqueChildren = element.props.children;
-  const hasProps = !!Object.keys(element.props).filter(
-    propName => propName !== 'children',
-  ).length;
-  const closeInNewLine = hasProps && !opts.min;
-
   if (opaqueChildren) {
     const flatChildren = [];
     traverseChildren(opaqueChildren, child => {
       flatChildren.push(child);
     });
-    const children = printChildren(flatChildren, print, indent, colors, opts);
     result +=
-      colors.tag.open +
-      (closeInNewLine ? '\n' : '') +
       '>' +
-      colors.tag.close +
-      opts.edgeSpacing +
-      indent(children) +
-      opts.edgeSpacing +
-      colors.tag.open +
+      tag.close +
+      printChildren(
+        flatChildren,
+        config,
+        printer,
+        indentation + config.indent,
+        depth,
+        refs,
+      ) +
+      config.spacingOuter +
+      indentation +
+      tag.open +
       '</' +
       elementName +
       '>' +
-      colors.tag.close;
+      tag.close;
   } else {
-    result +=
-      colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
+    result += (hasProps && !config.min ? '' : ' ') + '/>' + tag.close;
   }
 
   return result;
 };
 
-// Disabling lint rule as we don't know type ahead of time.
-/* eslint-disable flowtype/no-weak-types */
-export const test = (object: any) => object && object.$$typeof === reactElement;
-/* eslint-enable flowtype/no-weak-types */
+export const test = (val: any) => val && val.$$typeof === elementSymbol;
 
-export default ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);

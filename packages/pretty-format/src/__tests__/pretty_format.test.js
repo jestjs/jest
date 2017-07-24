@@ -280,6 +280,45 @@ describe('prettyFormat()', () => {
     expect(prettyFormat('\\ \\\\')).toEqual('"\\\\ \\\\\\\\"');
   });
 
+  it('prints a multiline string', () => {
+    const val = ['line 1', 'line 2', 'line 3'].join('\n');
+    expect(prettyFormat(val)).toEqual('"' + val + '"');
+  });
+
+  it('prints a multiline string as value of object property', () => {
+    const polyline = {
+      props: {
+        id: 'J',
+        points: ['0.5,0.460', '0.5,0.875', '0.25,0.875'].join('\n'),
+      },
+      type: 'polyline',
+    };
+    const val = {
+      props: {
+        children: polyline,
+      },
+      type: 'svg',
+    };
+    expect(prettyFormat(val)).toEqual(
+      [
+        'Object {',
+        '  "props": Object {',
+        '    "children": Object {',
+        '      "props": Object {',
+        '        "id": "J",',
+        '        "points": "0.5,0.460',
+        '0.5,0.875',
+        '0.25,0.875",',
+        '      },',
+        '      "type": "polyline",',
+        '    },',
+        '  },',
+        '  "type": "svg",',
+        '}',
+      ].join('\n'),
+    );
+  });
+
   it('prints a symbol', () => {
     const val = Symbol('symbol');
     expect(prettyFormat(val)).toEqual('Symbol(symbol)');
@@ -321,11 +360,47 @@ describe('prettyFormat()', () => {
     );
   });
 
-  it('can customize indent', () => {
-    const val = {prop: 'value'};
-    expect(prettyFormat(val, {indent: 4})).toEqual(
-      'Object {\n    "prop": "value",\n}',
-    );
+  describe('indent option', () => {
+    const val = [
+      {
+        id: '8658c1d0-9eda-4a90-95e1-8001e8eb6036',
+        text: 'Add alternative serialize API for pretty-format plugins',
+        type: 'ADD_TODO',
+      },
+      {
+        id: '8658c1d0-9eda-4a90-95e1-8001e8eb6036',
+        type: 'TOGGLE_TODO',
+      },
+    ];
+    const expected = [
+      'Array [',
+      '  Object {',
+      '    "id": "8658c1d0-9eda-4a90-95e1-8001e8eb6036",',
+      '    "text": "Add alternative serialize API for pretty-format plugins",',
+      '    "type": "ADD_TODO",',
+      '  },',
+      '  Object {',
+      '    "id": "8658c1d0-9eda-4a90-95e1-8001e8eb6036",',
+      '    "type": "TOGGLE_TODO",',
+      '  },',
+      ']',
+    ].join('\n');
+    test('default implicit: 2 spaces', () => {
+      expect(prettyFormat(val)).toEqual(expected);
+    });
+    test('default explicit: 2 spaces', () => {
+      expect(prettyFormat(val, {indent: 2})).toEqual(expected);
+    });
+    test('non-default: 0 spaces', () => {
+      expect(prettyFormat(val, {indent: 0})).toEqual(
+        expected.replace(/ {2}/g, ''),
+      );
+    });
+    test('non-default: 4 spaces', () => {
+      expect(prettyFormat(val, {indent: 4})).toEqual(
+        expected.replace(/ {2}/g, '    '),
+      );
+    });
   });
 
   it('can customize the max depth', () => {
