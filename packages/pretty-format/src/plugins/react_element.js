@@ -125,12 +125,11 @@ export const serialize = (
       tag.open;
   }
 
-  const opaqueChildren = element.props.children;
-  if (opaqueChildren) {
-    const flatChildren = [];
-    traverseChildren(opaqueChildren, child => {
-      flatChildren.push(child);
-    });
+  const flatChildren = [];
+  traverseChildren(element.props.children, child => {
+    flatChildren.push(child);
+  });
+  if (flatChildren.length !== 0) {
     result +=
       '>' +
       tag.close +

@@ -53,10 +53,17 @@ test('supports a single element with no props', () => {
   );
 });
 
-test('supports a single element with number children', () => {
+test('supports a single element with nonzero number child', () => {
   assertPrintedJSX(
     React.createElement('Mouse', null, 4),
     '<Mouse>\n  4\n</Mouse>',
+  );
+});
+
+test('supports a single element with zero number child', () => {
+  assertPrintedJSX(
+    React.createElement('Mouse', null, 0),
+    '<Mouse>\n  0\n</Mouse>',
   );
 });
 
