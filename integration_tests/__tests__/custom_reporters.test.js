@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const {cleanup, extractSummary, writeFiles} = require('../utils');
 const runJest = require('../runJest');
 const os = require('os');

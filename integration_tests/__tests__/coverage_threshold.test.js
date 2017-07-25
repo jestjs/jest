@@ -9,7 +9,7 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const {cleanup, writeFiles} = require('../utils');
 const runJest = require('../runJest');
 

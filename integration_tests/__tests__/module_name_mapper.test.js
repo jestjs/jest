@@ -9,7 +9,7 @@
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 
 // Works on windows, we just need to adjust snapshot test output
 skipOnWindows.suite();

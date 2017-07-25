@@ -16,7 +16,7 @@ import {
   getChangedFilesForRoots,
 } from '../../packages/jest-changed-files/src';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 skipOnWindows.suite();
 
 const DIR = path.resolve(os.tmpdir(), 'jest_changed_files_test_dir');

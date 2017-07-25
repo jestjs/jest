@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const runJest = require('../runJest');
 
 describe('Regex Char In Path', () => {
