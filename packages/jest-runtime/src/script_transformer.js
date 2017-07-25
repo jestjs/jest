@@ -28,6 +28,7 @@ import stableStringify from 'json-stable-stringify';
 import slash from 'slash';
 import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
+import writeFileAtomic from 'write-file-atomic';
 
 export type Options = {|
   collectCoverage: boolean,
@@ -41,6 +42,9 @@ const cache: Map<string, TransformResult> = new Map();
 const configToJsonMap = new Map();
 // Cache regular expressions to test whether the file needs to be preprocessed
 const ignoreCache: WeakMap<ProjectConfig, ?RegExp> = new WeakMap();
+
+// To reset the cache for specific changesets (rather than package version).
+const CACHE_VERSION = '1';
 
 class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: string;
@@ -67,9 +71,15 @@ class ScriptTransformer {
     const transformer = this._getTransformer(filename);
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
-      return transformer.getCacheKey(fileData, filename, configString, {
-        instrument,
-      });
+      return crypto
+        .createHash('md5')
+        .update(
+          transformer.getCacheKey(fileData, filename, configString, {
+            instrument,
+          }),
+        )
+        .update(CACHE_VERSION)
+        .digest('hex');
     } else {
       return crypto
         .createHash('md5')
@@ -77,6 +87,7 @@ class ScriptTransformer {
         .update(configString)
         .update(instrument ? 'instrument' : '')
         .update(mapCoverage ? 'mapCoverage' : '')
+        .update(CACHE_VERSION)
         .digest('hex');
     }
   }
@@ -184,11 +195,13 @@ class ScriptTransformer {
     );
     let sourceMapPath = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
-    let code = this._config.cache
-      ? readCacheFile(filename, cacheFilePath)
-      : null;
+    let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
     if (code) {
+      // This is broken: we return the code, and a path for the source map
+      // directly from the cache. But, nothing ensures the source map actually
+      // matches that source code. They could have gotten out-of-sync in case
+      // two separate processes write concurrently to the same cache files.
       return {
         code,
         sourceMapPath,
@@ -248,7 +261,7 @@ class ScriptTransformer {
       sourceMapPath = null;
     }
 
-    writeCacheFile(cacheFilePath, code);
+    writeCodeCacheFile(cacheFilePath, code);
 
     return {
       code,
@@ -343,9 +356,46 @@ const stripShebang = content => {
   }
 };
 
+/**
+ * This is like `writeCacheFile` but with an additional sanity checksum. We
+ * cannot use the same technique for source maps because we expose source map
+ * cache file paths directly to callsites, with the expectation they can read
+ * it right away. This is not a great system, because source map cache file
+ * could get corrupted, out-of-sync, etc.
+ */
+function writeCodeCacheFile(cachePath: Path, code: string) {
+  const checksum = crypto.createHash('md5').update(code).digest('hex');
+  writeCacheFile(cachePath, checksum + '\n' + code);
+}
+
+/**
+ * Read counterpart of `writeCodeCacheFile`. We verify that the content of the
+ * file matches the checksum, in case some kind of corruption happened. This
+ * could happen if an older version of `jest-runtime` writes non-atomically to
+ * the same cache, for example.
+ */
+function readCodeCacheFile(cachePath: Path): ?string {
+  const content = readCacheFile(cachePath);
+  if (content == null) {
+    return null;
+  }
+  const code = content.substr(33);
+  const checksum = crypto.createHash('md5').update(code).digest('hex');
+  if (checksum === content.substr(0, 32)) {
+    return code;
+  }
+  return null;
+}
+
+/**
+ * Writing to the cache atomically relies on 'rename' being atomic on most
+ * file systems. Doing atomic write reduces the risk of corruption by avoiding
+ * two processes to write to the same file at the same time. It also reduces
+ * the risk of reading a file that's being overwritten at the same time.
+ */
 const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
-    fs.writeFileSync(cachePath, fileData, 'utf8');
+    writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
     e.message =
       'jest: failed to cache transform results in: ' +
@@ -357,7 +407,7 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
   }
 };
 
-const readCacheFile = (filename: Path, cachePath: Path): ?string => {
+const readCacheFile = (cachePath: Path): ?string => {
   if (!fs.existsSync(cachePath)) {
     return null;
   }
@@ -366,7 +416,11 @@ const readCacheFile = (filename: Path, cachePath: Path): ?string => {
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
   } catch (e) {
-    e.message = 'jest: failed to read cache file: ' + cachePath;
+    e.message =
+      'jest: failed to read cache file: ' +
+      cachePath +
+      '\nFailure message: ' +
+      e.message;
     removeFile(cachePath);
     throw e;
   }
