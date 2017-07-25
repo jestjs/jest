@@ -12,6 +12,7 @@ import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
 import crypto from 'crypto';
+import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validate_pattern';
@@ -428,7 +429,14 @@ function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'projects':
         value = (options[key] || [])
-          .map(project => _replaceRootDirTags(options.rootDir, project));
+          .map(project => _replaceRootDirTags(options.rootDir, project))
+          .reduce((projects, project) => {
+            // Project can be specified as globs. If a glob matches any files,
+            // We expand it to these paths. If not, we keep the original path
+            // for the future resolution.
+            const globMatches = glob.sync(project);
+            return projects.concat(globMatches.length ? globMatches : project);
+          }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':

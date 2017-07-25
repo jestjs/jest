@@ -128,6 +128,22 @@ test('resolves projects and their <rootDir> properly', () => {
   expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
   expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
 
+  // Use globs
+  writeFiles(DIR, {
+    'dir1/random_file': '',
+    'dir2/random_file': '',
+    'package.json': JSON.stringify({
+      jest: {
+        projects: ['**/*.conf.json'],
+      },
+    }),
+  });
+
+  ({stderr} = runJest(DIR));
+  expect(stderr).toMatch('Ran all test suites in 2 projects.');
+  expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
+  expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
+
   // Include two projects that will resolve to the same config
   writeFiles(DIR, {
     'dir1/random_file': '',
