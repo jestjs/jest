@@ -98,6 +98,7 @@ module.exports = class SomeClass {
 }
 
 // OtherModule.test.js
+jest.mock('SomeClass')
 const SomeClass = require('SomeClass')
 const mMock = jest.fn()
 SomeClass.mockImplementation(() => {
