@@ -14,7 +14,7 @@ const path = require('path');
 const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 skipOnWindows.suite();
 
 const emptyTest = 'describe("", () => {it("", () => {})})';

@@ -13,7 +13,7 @@ import {cleanup, run, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const DIR = path.resolve(os.tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
