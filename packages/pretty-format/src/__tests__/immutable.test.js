@@ -22,10 +22,16 @@ const toPrettyPrintTo = expectUtil.getPrettyPrint(
 expect.extend({toPrettyPrintTo});
 
 describe('Immutable.OrderedSet plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(
       Immutable.OrderedSet([]),
     ).toPrettyPrintTo('Immutable.OrderedSet []', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(
+      Immutable.OrderedSet([]),
+    ).toPrettyPrintTo('Immutable.OrderedSet [\n]', {min: false});
   });
 
   it('supports a single string element', () => {
@@ -109,9 +115,15 @@ describe('Immutable.OrderedSet plugin', () => {
 });
 
 describe('Immutable.List plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.List([])).toPrettyPrintTo('Immutable.List []', {
       min: true,
+    });
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.List([])).toPrettyPrintTo('Immutable.List [\n]', {
+      min: false,
     });
   });
 
@@ -184,9 +196,15 @@ describe('Immutable.List plugin', () => {
 });
 
 describe('Immutable.Stack plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.Stack([])).toPrettyPrintTo('Immutable.Stack []', {
       min: true,
+    });
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.Stack([])).toPrettyPrintTo('Immutable.Stack [\n]', {
+      min: false,
     });
   });
 
@@ -261,8 +279,12 @@ describe('Immutable.Stack plugin', () => {
 });
 
 describe('Immutable.Set plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set []', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set [\n]', {min: false});
   });
 
   it('supports a single string element', () => {
@@ -333,8 +355,12 @@ describe('Immutable.Set plugin', () => {
 });
 
 describe('Immutable.Map plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {}', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {\n}', {min: false});
   });
 
   it('supports an object with single key', () => {
@@ -390,10 +416,16 @@ describe('Immutable.Map plugin', () => {
 });
 
 describe('Immutable.OrderedMap plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(
       Immutable.OrderedMap({}),
     ).toPrettyPrintTo('Immutable.OrderedMap {}', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(
+      Immutable.OrderedMap({}),
+    ).toPrettyPrintTo('Immutable.OrderedMap {\n}', {min: false});
   });
 
   it('supports an object with single key', () => {
@@ -449,7 +481,23 @@ describe('Immutable.OrderedMap plugin', () => {
 });
 
 describe('Immutable.Record plugin', () => {
-  it('supports an empty record', () => {
+  it('supports an empty record {min: true}', () => {
+    const ABRecord = Immutable.Record({}, 'ABRecord');
+
+    expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {}', {
+      min: true,
+    });
+  });
+
+  it('supports an empty record {min: false}', () => {
+    const ABRecord = Immutable.Record({}, 'ABRecord');
+
+    expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {\n}', {
+      min: false,
+    });
+  });
+
+  it('supports a record with descriptive name', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
     expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {a: 1, b: 2}', {
