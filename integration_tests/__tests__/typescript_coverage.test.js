@@ -7,7 +7,7 @@
  */
 
 const path = require('path');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const {run} = require('../utils');
 const runJest = require('../runJest');
 

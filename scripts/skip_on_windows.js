@@ -6,7 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @flow
- * @providesModule skipOnWindows
  */
 
 /* eslint-disable jest/no-focused-tests */

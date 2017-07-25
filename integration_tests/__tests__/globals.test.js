@@ -10,7 +10,7 @@
 
 const path = require('path');
 const os = require('os');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
 const {createEmptyPackage, writeFiles, cleanup} = require('../utils');
