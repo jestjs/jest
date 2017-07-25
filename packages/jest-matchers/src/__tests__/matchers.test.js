@@ -837,6 +837,7 @@ describe('toMatchObject()', () => {
     [[1, 2], [1, 2]],
     [{a: undefined}, {a: undefined}],
     [[], []],
+    [new Error('foo'), new Error('foo')],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
@@ -872,6 +873,7 @@ describe('toMatchObject()', () => {
     [{}, {a: undefined}],
     [[1, 2, 3], [2, 3, 1]],
     [[1, 2, 3], [1, 2, 2]],
+    [new Error('foo'), new Error('bar')],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
