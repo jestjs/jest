@@ -43,6 +43,7 @@ module<span class="token punctuation">.</span>exports <span class="token operato
 <span class="token punctuation">}</span>
 
 <span spellcheck="true" class="token comment">// OtherModule.test.js</span>
+jest<span class="token punctuation">.</span><span class="token function">mock</span><span class="token punctuation">(</span><span class="token string">&#x27;SomeClass&#x27;</span><span class="token punctuation">)</span>
 <span class="token keyword">const</span> SomeClass <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;SomeClass&#x27;</span><span class="token punctuation">)</span>
 <span class="token keyword">const</span> mMock <span class="token operator">=</span> jest<span class="token punctuation">.</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 SomeClass<span class="token punctuation">.</span><span class="token function">mockImplementation</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
