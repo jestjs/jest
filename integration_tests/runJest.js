@@ -66,7 +66,7 @@ function runJest(
 //   'success', 'startTime', 'numTotalTests', 'numTotalTestSuites',
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
 //   'numPendingTests', 'testResults'
-runJest.json = function(dir, args) {
+runJest.json = function(dir: string, args?: Array<string>) {
   args = Array.prototype.concat(args || [], '--json');
   const result = runJest(dir, args);
   try {
