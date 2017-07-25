@@ -11,7 +11,7 @@
 'use strict';
 
 import runJest from '../runJest';
-import {cleanup, extractSummary, writeFiles} from '../utils';
+import {cleanup, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
 
