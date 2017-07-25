@@ -13,6 +13,8 @@ Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
 Try using the debugging support built into Node.
 
+> Note: Debugging support with Jest only supports `node debug`; it does yet support `node inspect` due to an upstream issue in [nodejs/node#7583](https://github.com/nodejs/node/issues/7593). Until the upstream issue is resolved, debugging with Node is not available when using Node v8.x. For more details, see [facebook/jest#1652](https://github.com/facebook/jest/issues/1652).
+
 Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
 ```
