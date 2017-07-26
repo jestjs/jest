@@ -13,7 +13,7 @@ const prettyFormat = require('../');
 const ReactTestComponent = require('../plugins/react_test_component');
 const ReactElement = require('../plugins/react_element');
 
-const prettyFormatElementPlugin = (element, options) =>
+const formatElement = (element, options) =>
   prettyFormat(
     element,
     Object.assign(
@@ -24,7 +24,7 @@ const prettyFormatElementPlugin = (element, options) =>
     ),
   );
 
-const prettyFormatBothPlugins = (object, options) =>
+const formatTestObject = (object, options) =>
   prettyFormat(
     object,
     Object.assign(
@@ -35,11 +35,11 @@ const prettyFormatBothPlugins = (object, options) =>
     ),
   );
 
-function assertPrintedJSX(val, formatted, options) {
-  expect(prettyFormatElementPlugin(val, options)).toEqual(formatted);
-  expect(
-    prettyFormatBothPlugins(renderer.create(val).toJSON(), options),
-  ).toEqual(formatted);
+function assertPrintedJSX(val, expected, options) {
+  expect(formatElement(val, options)).toEqual(expected);
+  expect(formatTestObject(renderer.create(val).toJSON(), options)).toEqual(
+    expected,
+  );
 }
 
 test('supports a single element with no props or children', () => {
@@ -50,6 +50,13 @@ test('supports a single element with non-empty string child', () => {
   assertPrintedJSX(
     React.createElement('Mouse', null, 'Hello World'),
     '<Mouse>\n  Hello World\n</Mouse>',
+  );
+});
+
+test('supports a single element with empty string child', () => {
+  assertPrintedJSX(
+    React.createElement('Mouse', null, ''),
+    '<Mouse>\n  \n</Mouse>',
   );
 });
 
@@ -64,13 +71,6 @@ test('supports a single element with zero number child', () => {
   assertPrintedJSX(
     React.createElement('Mouse', null, 0),
     '<Mouse>\n  0\n</Mouse>',
-  );
-});
-
-test('supports a single element with empty string child', () => {
-  assertPrintedJSX(
-    React.createElement('Mouse', null, ''),
-    '<Mouse>\n  \n</Mouse>',
   );
 });
 
@@ -289,11 +289,7 @@ test('supports Unknown element', () => {
   // Suppress React.createElement(undefined) console error
   const consoleError = console.error;
   console.error = jest.fn();
-  expect(
-    prettyFormat(React.createElement(undefined), {
-      plugins: [ReactElement],
-    }),
-  ).toEqual('<Unknown />');
+  expect(formatElement(React.createElement(undefined))).toEqual('<Unknown />');
   console.error = consoleError;
 });
 
@@ -361,11 +357,9 @@ test('supports array of elements', () => {
     '  </dd>,',
     ']',
   ].join('\n');
-  expect(prettyFormatElementPlugin(val)).toEqual(formatted);
+  expect(formatElement(val)).toEqual(formatted);
   expect(
-    prettyFormatBothPlugins(
-      val.map(element => renderer.create(element).toJSON()),
-    ),
+    formatTestObject(val.map(element => renderer.create(element).toJSON())),
   ).toEqual(formatted);
 });
 
@@ -437,9 +431,8 @@ test('ReactElement plugin highlights syntax', () => {
     ),
   });
   expect(
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
     }),
   ).toMatchSnapshot();
 });
@@ -454,9 +447,8 @@ test('ReactTestComponent plugin highlights syntax', () => {
     ),
   });
   expect(
-    prettyFormat(renderer.create(jsx).toJSON(), {
+    formatTestObject(renderer.create(jsx).toJSON(), {
       highlight: true,
-      plugins: [ReactTestComponent, ReactElement],
     }),
   ).toMatchSnapshot();
 });
@@ -468,9 +460,8 @@ test('throws if theme option is null', () => {
     'Hello, Mouse!',
   );
   expect(() => {
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       theme: null,
     });
   }).toThrow('pretty-format: Option "theme" must not be null.');
@@ -483,9 +474,8 @@ test('throws if theme option is not of type "object"', () => {
       {style: 'color:red'},
       'Hello, Mouse!',
     );
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       theme: 'beautiful',
     });
   }).toThrow(
@@ -500,9 +490,8 @@ test('throws if theme option has value that is undefined in ansi-styles', () => 
       {style: 'color:red'},
       'Hello, Mouse!',
     );
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       theme: {
         content: 'unknown',
         prop: 'yellow',
@@ -522,9 +511,8 @@ test('ReactElement plugin highlights syntax with color from theme option', () =>
     'Hello, Mouse!',
   );
   expect(
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       theme: {
         value: 'red',
       },
@@ -539,9 +527,8 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
     'Hello, Mouse!',
   );
   expect(
-    prettyFormat(renderer.create(jsx).toJSON(), {
+    formatTestObject(renderer.create(jsx).toJSON(), {
       highlight: true,
-      plugins: [ReactTestComponent, ReactElement],
       theme: {
         value: 'red',
       },
