@@ -455,6 +455,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'coverageThreshold':
       case 'expand':
       case 'globals':
+      case 'findRelatedTests':
       case 'forceExit':
       case 'listTests':
       case 'logHeapUsage':
