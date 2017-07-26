@@ -34,6 +34,8 @@ import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 
+console.log(require.resolve('jest-config'));
+
 async function run(maybeArgv?: Argv, project?: Path) {
   const argv: Argv = _buildArgv(maybeArgv, project);
   const projects = _getProjectListFromCLIArgs(argv, project);
