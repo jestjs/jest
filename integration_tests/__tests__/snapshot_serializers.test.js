@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
+ * @flow
  */
 'use strict';
 
@@ -36,6 +37,7 @@ describe('Snapshot serializers', () => {
 
   it('renders snapshot', () => {
     runAndAssert();
+    // $FlowFixMe dynamic require
     const snapshot = require(snapshotPath);
     expect(snapshot).toMatchSnapshot();
   });

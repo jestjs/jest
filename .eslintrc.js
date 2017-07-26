@@ -89,6 +89,12 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ['integration_tests/__tests__/**/*'],
+      rules: {
+        'flowtype/require-valid-file-annotation': [2, 'always'],
+      },
+    },
   ],
   parser: 'babel-eslint',
   plugins: ['markdown', 'import', 'unicorn', 'prettier'],

@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
+
 'use strict';
 
 const skipOnWindows = require('../../scripts/skip_on_windows');
