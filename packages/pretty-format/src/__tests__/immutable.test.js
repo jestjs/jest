@@ -284,7 +284,9 @@ describe('Immutable.Set plugin', () => {
   });
 
   it('supports an empty collection {min: false}', () => {
-    expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set [\n]', {min: false});
+    expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set [\n]', {
+      min: false,
+    });
   });
 
   it('supports a single string element', () => {
@@ -360,7 +362,9 @@ describe('Immutable.Map plugin', () => {
   });
 
   it('supports an empty collection {min: false}', () => {
-    expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {\n}', {min: false});
+    expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {\n}', {
+      min: false,
+    });
   });
 
   it('supports an object with single key', () => {
