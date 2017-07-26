@@ -4,12 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
 import runJest from '../runJest';
-import {cleanup, extractSummary, writeFiles} from '../utils';
+import {cleanup, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
 

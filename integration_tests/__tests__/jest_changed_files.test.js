@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -166,7 +168,7 @@ test('gets changed files for git', async () => {
     'file1.txt': 'modified file1',
   });
 
-  ({changedFiles: files} = await getChangedFilesForRoots(roots));
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
     Array.from(files).map(filePath => path.basename(filePath)).sort(),
   ).toEqual(['file1.txt']);
@@ -216,7 +218,7 @@ test('gets changed files for hg', async () => {
     'file1.txt': 'modified file1',
   });
 
-  ({changedFiles: files} = await getChangedFilesForRoots(roots));
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
     Array.from(files).map(filePath => path.basename(filePath)).sort(),
   ).toEqual(['file1.txt']);
