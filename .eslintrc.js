@@ -90,7 +90,20 @@ module.exports = {
       },
     },
     {
-      files: ['integration_tests/__tests__/**/*'],
+      files: [
+        'integration_tests/__tests__/**/*',
+        'packages/babel-jest/**/*.test.js',
+        'packages/babel-plugin-jest-hoist/**/*.test.js',
+        'packages/babel-preset-jest/**/*.test.js',
+        'packages/eslint-config-fb-strict/**/*.test.js',
+        'packages/eslint-plugin-jest/**/*.test.js',
+        'packages/jest/**/*.test.js',
+        'packages/jest-changed-files/**/*.test.js',
+        'packages/jest-circus/**/*.test.js',
+        'packages/jest-diff/**/*.test.js',
+        'packages/jest-docblock/**/*.test.js',
+        'packages/jest-editor-support/**/*.test.js',
+      ],
       rules: {
         'flowtype/require-valid-file-annotation': [2, 'always'],
       },

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 
 const stripAnsi = require('strip-ansi');
@@ -28,7 +28,7 @@ describe('different types', () => {
     const typeA = values[2];
     const typeB = values[3];
 
-    test(`'${a}' and '${b}'`, () => {
+    test(`'${String(a)}' and '${String(b)}'`, () => {
       expect(stripAnsi(diff(a, b))).toBe(
         '  Comparing two different types of values. ' +
           `Expected ${typeA} but received ${typeB}.`,
