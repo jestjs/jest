@@ -71,7 +71,6 @@
     "slash": "^1.0.0",
     "string-length": "^1.0.1",
     "strip-ansi": "^4.0.0",
-    "supports-color": "^4.2.1",
     "typescript": "^2.2.2"
   },
   "scripts": {
