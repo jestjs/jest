@@ -9,7 +9,6 @@
  */
 'use strict';
 
-const crypto = require('crypto');
 const slash = require('slash');
 
 jest
