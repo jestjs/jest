@@ -371,7 +371,7 @@ function printComplexValue(
 
 function printPlugin(
   plugin: Plugin,
-  val,
+  val: any,
   config: Config,
   indentation: string,
   depth: number,
