@@ -10,8 +10,10 @@ const React = require('react');
 const renderer = require('react-test-renderer');
 
 const prettyFormat = require('../');
-const ReactTestComponent = require('../plugins/react_test_component');
-const ReactElement = require('../plugins/react_element');
+const {
+  ReactElement,
+  ReactTestComponent,
+} = prettyFormat.plugins;
 
 const formatElement = (element, options) =>
   prettyFormat(
