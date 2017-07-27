@@ -198,7 +198,7 @@ export type ProjectConfig = {|
   rootDir: Path,
   roots: Array<Path>,
   setupFiles: Array<Path>,
-  setupTestFrameworkScriptFile: Path,
+  setupTestFrameworkScriptFile: ?Path,
   skipNodeResolution: boolean,
   snapshotSerializers: Array<Path>,
   testEnvironment: string,
