@@ -99,7 +99,7 @@ test('supports props with multiline strings', () => {
       points: ['0.5,0.460', '0.5,0.875', '0.25,0.875'].join('\n'),
     }),
   );
-  const formatted = [
+  const expected = [
     '<svg>',
     '  <polyline',
     '    id="J"',
@@ -109,7 +109,7 @@ test('supports props with multiline strings', () => {
     '  />',
     '</svg>',
   ].join('\n');
-  assertPrintedJSX(val, formatted);
+  assertPrintedJSX(val, expected);
 });
 
 test('supports props with numbers', () => {
@@ -340,7 +340,7 @@ test('supports array of elements', () => {
       'painless JavaScript testing',
     ),
   ];
-  const formatted = [
+  const expected = [
     'Array [',
     '  <dt>',
     '    jest',
@@ -359,10 +359,10 @@ test('supports array of elements', () => {
     '  </dd>,',
     ']',
   ].join('\n');
-  expect(formatElement(val)).toEqual(formatted);
+  expect(formatElement(val)).toEqual(expected);
   expect(
     formatTestObject(val.map(element => renderer.create(element).toJSON())),
-  ).toEqual(formatted);
+  ).toEqual(expected);
 });
 
 describe('indent option', () => {
@@ -375,7 +375,7 @@ describe('indent option', () => {
       'Test indent option',
     ),
   );
-  const formatted = [
+  const expected = [
     '<ul>',
     '  <li',
     '    style={',
@@ -390,16 +390,16 @@ describe('indent option', () => {
     '</ul>',
   ].join('\n');
   test('default implicit: 2 spaces', () => {
-    assertPrintedJSX(val, formatted);
+    assertPrintedJSX(val, expected);
   });
   test('default explicit: 2 spaces', () => {
-    assertPrintedJSX(val, formatted, {indent: 2});
+    assertPrintedJSX(val, expected, {indent: 2});
   });
   test('non-default: 0 spaces', () => {
-    assertPrintedJSX(val, formatted.replace(/ {2}/g, ''), {indent: 0});
+    assertPrintedJSX(val, expected.replace(/ {2}/g, ''), {indent: 0});
   });
   test('non-default: 4 spaces', () => {
-    assertPrintedJSX(val, formatted.replace(/ {2}/g, '    '), {indent: 4});
+    assertPrintedJSX(val, expected.replace(/ {2}/g, '    '), {indent: 4});
   });
 });
 
