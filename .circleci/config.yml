@@ -1,65 +1,51 @@
+checkout: &checkout
+  - checkout
+  - restore_cache:
+    keys:
+      - dependencies-{{ checksum "package.json" }}
+      - dependencies
+save-cache: &save-cache
+  paths:
+    - node_modules
+  key: node8-dependencies-{{ checksum "package.json" }}
+
 version: 2
 jobs:
-  test-node-8:
+  node-8:
     docker:
       - image: circleci/node:8.1.4
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - node8-dependencies-{{ checksum "package.json" }}
-          - node8-dependencies
+      <<: *checkout
       - run: sudo npm i -g yarn@^0.27.5
       - run: yarn --no-progress
-      - save_cache:
-          paths:
-            - node_modules
-          key: node8-dependencies-{{ checksum "package.json" }}
+      <<: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
       - run: yarn run test-ci-partial
 
-  test-node-6:
+  node-6:
     docker:
       - image: circleci/node:6.11.0
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - node6-dependencies-{{ checksum "package.json" }}
-          - node6-dependencies
+      <<: *checkout
       - run: sudo npm i -g yarn@^0.27.5
       - run: yarn --no-progress
-      - save_cache:
-          paths:
-            - node_modules
-          key: node6-dependencies-{{ checksum "package.json" }}
+      <<: *save-cache
       - run: yarn run test-ci
 
-  test-node-4:
+  node-4:
     docker:
       - image: circleci/node:4.8.4
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - node4-dependencies-{{ checksum "package.json" }}
-          - node4-dependencies
+      <<: *checkout
       - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: node4-dependencies-{{ checksum "package.json" }}
+      <<: *save-cache
       - run: npm run test-ci-partial
 
   website:
     docker:
       - image: circleci/node:8.1.4
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - node8-dependencies-{{ checksum "package.json" }}
-          - node8-dependencies
+      <<: *checkout
       - run: sudo npm i -g yarn@^0.27.5
       - run: |
           cd website
@@ -68,7 +54,7 @@ jobs:
           paths:
             - node_modules
             - website/node_modules
-          key: node8-dependencies-{{ checksum "package.json" }}
+          key: dependencies-{{ checksum "package.json" }}
       - run: |
           cd website
           yarn run test
@@ -90,15 +76,9 @@ jobs:
 # Workflows enables us to run multiple jobs in parallel
 workflows:
   version: 2
-  node-8:
+  main:
     jobs:
-      - test-node-8
-  node-6:
-    jobs:
-      - test-node-6
-  node-4:
-    jobs:
-      - test-node-4
-  website:
-    jobs:
+      - node-8
+      - node-6
+      - node-4
       - website
