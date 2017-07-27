@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 'use strict';
 
@@ -14,6 +14,7 @@ const os = require('os');
 const generateEmptyCoverage = require('../generate_empty_coverage');
 
 jest.mock('jest-runtime', () => {
+  // $FlowRequireActual
   const realRuntime = require.requireActual('jest-runtime');
   realRuntime.shouldInstrument = () => true;
   return realRuntime;
