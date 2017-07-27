@@ -12,5 +12,10 @@ module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/s
 module.name_mapper='^types/\(.*\)$' -> '<PROJECT_ROOT>/types/\1.js'
 module.name_mapper='\(jest-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
 
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+# This is to track usage of `require.requireActual()`, so that we can mass
+# replace it when we have a solution that is compatible with flow.
+suppress_comment= \\(.\\|\n\\)*\\$FlowRequireActual
+
 [version]
 ^0.50.0
