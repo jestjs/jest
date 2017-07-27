@@ -1,0 +1,104 @@
+version: 2
+jobs:
+  test-node-8:
+    docker:
+      - image: circleci/node:8.1.4
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node8-dependencies-{{ checksum "package.json" }}
+          - node8-dependencies
+      - run: sudo npm i -g yarn@^0.27.5
+      - run: yarn --no-progress
+      - save_cache:
+          paths:
+            - node_modules
+          key: node8-dependencies-{{ checksum "package.json" }}
+      - run: yarn run test-ci-es5-build-in-browser
+      - run: yarn run test-ci-partial
+
+  test-node-6:
+    docker:
+      - image: circleci/node:6.11.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node6-dependencies-{{ checksum "package.json" }}
+          - node6-dependencies
+      - run: sudo npm i -g yarn@^0.27.5
+      - run: yarn --no-progress
+      - save_cache:
+          paths:
+            - node_modules
+          key: node6-dependencies-{{ checksum "package.json" }}
+      - run: yarn run test-ci
+
+  test-node-4:
+    docker:
+      - image: circleci/node:4.8.4
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node4-dependencies-{{ checksum "package.json" }}
+          - node4-dependencies
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node4-dependencies-{{ checksum "package.json" }}
+      - run: npm run test-ci-partial
+
+  website:
+    docker:
+      - image: circleci/node:8.1.4
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node8-dependencies-{{ checksum "package.json" }}
+          - node8-dependencies
+      - run: sudo npm i -g yarn@^0.27.5
+      - run: |
+          cd website
+          yarn --no-progress
+      - save_cache:
+          paths:
+            - node_modules
+            - website/node_modules
+          key: node8-dependencies-{{ checksum "package.json" }}
+      - run: |
+          cd website
+          yarn run test
+      - deploy:
+          command: |
+            # Deploy Jest website
+            git config --global user.email "jest-bot@users.noreply.github.com"
+            git config --global user.name "Website Deployment Script"
+            echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
+            # crowdin install start
+            sudo apt-get install default-jre
+            wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
+            sudo dpkg -i crowdin.deb
+            # crowdin install end
+            crowdin --config crowdin.yaml upload sources --auto-update -b master
+            crowdin --config crowdin.yaml download -b master
+            cd website && GIT_USER=jest-bot npm run gh-pages
+
+# Workflows enables us to run multiple jobs in parallel
+workflows:
+  version: 2
+  node-8:
+    jobs:
+      - test-node-8
+  node-6:
+    jobs:
+      - test-node-6
+  node-4:
+    jobs:
+      - test-node-4
+  website:
+    jobs:
+      - website
