@@ -159,6 +159,29 @@ const _printVersionAndExit = outputStream => {
   process.exit(0);
 };
 
+const _ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
+  const configPathSet = new Set();
+
+  for (const {configPath} of parsedConfigs) {
+    if (configPathSet.has(configPath)) {
+      let message =
+        'One or more specified projects share the same config file\n';
+
+      parsedConfigs.forEach(({configPath}, index) => {
+        message =
+          message +
+          '\nProject: "' +
+          projects[index] +
+          '"\nConfig: "' +
+          String(configPath) +
+          '"';
+      });
+      throw new Error(message);
+    }
+    configPathSet.add(configPath);
+  }
+};
+
 // Possible scenarios:
 //  1. jest --config config.json
 //  2. jest --projects p1 p2
@@ -203,6 +226,7 @@ const _getConfigs = (
 
   if (projects.length > 1) {
     const parsedConfigs = projects.map(root => readConfig(argv, root, true));
+    _ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({config}) => config);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
