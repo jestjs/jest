@@ -72,6 +72,7 @@ const getConfigs = (
       coverageReporters: options.coverageReporters,
       coverageThreshold: options.coverageThreshold,
       expand: options.expand,
+      findRelatedTests: options.findRelatedTests,
       forceExit: options.forceExit,
       json: options.json,
       lastCommit: options.lastCommit,
