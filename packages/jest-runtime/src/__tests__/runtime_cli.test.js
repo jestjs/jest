@@ -5,12 +5,15 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 'use strict';
 
 const path = require('path');
 const {sync: spawnSync} = require('cross-spawn');
+const skipOnWindows = require('../../../../scripts/skip_on_windows');
+
+skipOnWindows.suite();
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 
