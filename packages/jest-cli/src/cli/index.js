@@ -216,7 +216,7 @@ const _getConfigs = (
 
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
-    configs = [parsedConfig.config];
+    configs = [parsedConfig.projectConfig];
     if (globalConfig.projects && globalConfig.projects.length) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
@@ -227,7 +227,7 @@ const _getConfigs = (
   if (projects.length > 1) {
     const parsedConfigs = projects.map(root => readConfig(argv, root, true));
     _ensureNoDuplicateConfigs(parsedConfigs, projects);
-    configs = parsedConfigs.map(({config}) => config);
+    configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
         ({hasDeprecationWarnings}) => !!hasDeprecationWarnings,
