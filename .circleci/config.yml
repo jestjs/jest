@@ -5,7 +5,7 @@ aliases:
       # Fallback in case checksum fails
       - dependencies-{{ .Environment.NODE_VERSION }}-
 
-  - &save-cache:
+  - &save-cache
     paths:
       - node_modules
     key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
