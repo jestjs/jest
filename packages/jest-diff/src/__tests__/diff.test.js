@@ -166,7 +166,7 @@ test('collapses big diffs to patch format', () => {
 });
 
 describe('context', () => {
-  const _test = (contextLines?: number) => {
+  const testDiffContextLines = (contextLines?: number) => {
     test(`number of lines: ${typeof contextLines === 'number'
       ? contextLines
       : 'null'} ${typeof contextLines !== 'number' || contextLines < 0
@@ -184,9 +184,9 @@ describe('context', () => {
     });
   };
 
-  _test(); // 5 by default
-  _test(2);
-  _test(1);
-  _test(0);
-  _test(-1); // Will use default
+  testDiffContextLines(); // 5 by default
+  testDiffContextLines(2);
+  testDiffContextLines(1);
+  testDiffContextLines(0);
+  testDiffContextLines(-1); // Will use default
 });
