@@ -15,12 +15,13 @@ import {
 } from 'diff';
 
 import {NO_DIFF_MESSAGE} from './constants.js';
-const DIFF_CONTEXT = 5;
+const DIFF_CONTEXT_DEFAULT = 5;
 
 export type DiffOptions = {|
   aAnnotation?: string,
   bAnnotation?: string,
   expand?: boolean,
+  contextLines?: number,
 |};
 
 type Diff = {diff: string, isDifferent: boolean};
@@ -94,8 +95,13 @@ const createPatchMark = (hunk: Hunk): string => {
   return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
 };
 
-const structuredPatch = (a: string, b: string): Diff => {
-  const options = {context: DIFF_CONTEXT};
+const structuredPatch = (a: string, b: string, contextLines?: number): Diff => {
+  const options = {
+    context:
+      typeof contextLines === 'number' && contextLines >= 0
+        ? contextLines
+        : DIFF_CONTEXT_DEFAULT,
+  };
   let isDifferent = false;
   // Make sure the strings end with a newline.
   if (!a.endsWith('\n')) {
@@ -141,7 +147,7 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
   // whenever linebreaks are involved.
   const result =
     options && options.expand === false
-      ? structuredPatch(a, b)
+      ? structuredPatch(a, b, options && options.contextLines)
       : diffLines(a, b);
 
   if (result.isDifferent) {
