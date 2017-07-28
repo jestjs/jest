@@ -8,6 +8,7 @@ aliases:
   - &save-cache
     paths:
       - node_modules
+      - website/node_modules
     key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
 
   - &yarn-install
@@ -92,11 +93,7 @@ jobs:
       - run: |
           cd website
           yarn --no-progress
-      - save-cache:
-          paths:
-            - node_modules
-            - website/node_modules
-          key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
+      - save-cache: *save-cache
       - run: |
           cd website
           yarn run test
