@@ -1,21 +1,19 @@
 aliases:
-  - &checkout-and-restore-cache
-    - checkout # git checkout
-    - restore_cache:
-        keys:
-          - dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
-          # Fallback in case checksum fails
-          - dependencies-{{ .Environment.NODE_VERSION }}-
+  - &restore-cache
+    keys:
+      - dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
+      # Fallback in case checksum fails
+      - dependencies-{{ .Environment.NODE_VERSION }}-
 
   - &save-cache:
-    save-cache:
-      paths:
-        - node_modules
-      key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
+    paths:
+      - node_modules
+    key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
 
   - &yarn-install
-    - run: sudo npm i -g yarn@^0.27.5
-    - run: yarn --no-progress
+    run: |
+      sudo npm i -g yarn@^0.27.5
+      yarn --no-progress
 
   - &deploy
     command: |
@@ -40,9 +38,10 @@ jobs:
     environment:
       NODE_VERSION: 8
     steps:
-      - *checkout-and-restore-cache
+      - checkout
+      - restore-cache: *restore-cache
       - *yarn-install
-      - *save-cache
+      - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
   test-node-8:
@@ -51,9 +50,10 @@ jobs:
     environment:
       NODE_VERSION: 8
     steps:
-      - *checkout-and-restore-cache
+      - checkout
+      - restore-cache: *restore-cache
       - *yarn-install
-      - *save-cache
+      - save-cache: *save-cache
       - run: yarn run test-ci-partial
 
   test-node-6:
@@ -62,9 +62,10 @@ jobs:
     environment:
       NODE_VERSION: 6
     steps:
-      - *checkout-and-restore-cache
+      - checkout
+      - restore-cache: *restore-cache
       - *yarn-install
-      - *save-cache
+      - save-cache: *save-cache
       - run: yarn run test-ci
 
   test-node-4:
@@ -73,9 +74,10 @@ jobs:
     environment:
       NODE_VERSION: 4
     steps:
-      - *checkout-and-restore-cache
+      - checkout
+      - restore-cache: *restore-cache
       - run: npm install
-      - *save-cache
+      - save-cache: *save-cache
       - run: npm run test-ci-partial
 
   test-and-deploy-website:
@@ -84,16 +86,17 @@ jobs:
     environment:
       NODE_VERSION: 8
     steps:
-      - *checkout-and-restore-cache
+      - checkout
+      - restore-cache: *restore-cache
       - run: sudo npm i -g yarn@^0.27.5
       - run: |
           cd website
           yarn --no-progress
       - save-cache:
-        paths:
-          - node_modules
-          - website/node_modules
-        key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+            - website/node_modules
+          key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
       - run: |
           cd website
           yarn run test
