@@ -28,7 +28,7 @@ function readConfig(
   configPath: ?Path,
   globalConfig: GlobalConfig,
   hasDeprecationWarnings: boolean,
-  config: ProjectConfig,
+  projectConfig: ProjectConfig,
 } {
   let rawOptions;
   let configPath;
@@ -54,10 +54,10 @@ function readConfig(
   const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
   const {globalConfig, projectConfig} = getConfigs(options);
   return {
-    config: projectConfig,
     configPath,
     globalConfig,
     hasDeprecationWarnings,
+    projectConfig,
   };
 }
 
