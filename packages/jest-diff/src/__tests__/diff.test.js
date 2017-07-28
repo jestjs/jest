@@ -164,3 +164,29 @@ test('collapses big diffs to patch format', () => {
 
   expect(result).toMatchSnapshot();
 });
+
+describe('context', () => {
+  const testDiffContextLines = (contextLines?: number) => {
+    test(`number of lines: ${typeof contextLines === 'number'
+      ? contextLines
+      : 'null'} ${typeof contextLines !== 'number' || contextLines < 0
+      ? '(5 default)'
+      : ''}`, () => {
+      const result = diff(
+        {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
+        {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
+        {
+          contextLines,
+          expand: false,
+        },
+      );
+      expect(result).toMatchSnapshot();
+    });
+  };
+
+  testDiffContextLines(); // 5 by default
+  testDiffContextLines(2);
+  testDiffContextLines(1);
+  testDiffContextLines(0);
+  testDiffContextLines(-1); // Will use default
+});
