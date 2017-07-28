@@ -1,15 +1,15 @@
 aliases:
   - &restore-cache
     keys:
-      - dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
+      - dependencies-{{ .Branch }}-{{ checksum "package.json" }}
       # Fallback in case checksum fails
-      - dependencies-{{ .Environment.NODE_VERSION }}-
+      - dependencies-{{ .Branch }}-
 
   - &save-cache
     paths:
       - node_modules
       - website/node_modules
-    key: dependencies-{{ .Environment.NODE_VERSION }}-{{ checksum "package.json" }}
+    key: dependencies-{{ .Branch }}-{{ checksum "package.json" }}
 
   - &yarn-install
     run: |
@@ -42,8 +42,6 @@ jobs:
     working_directory: ~/jest
     docker:
       - image: markhobson/node-chrome
-    environment:
-      NODE_VERSION: 8
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -55,8 +53,6 @@ jobs:
     working_directory: ~/jest
     docker:
       - image: circleci/node:8.1.4
-    environment:
-      NODE_VERSION: 8
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -68,8 +64,6 @@ jobs:
     working_directory: ~/jest
     docker:
       - image: circleci/node:6.11.0
-    environment:
-      NODE_VERSION: 6
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -81,8 +75,6 @@ jobs:
     working_directory: ~/jest
     docker:
       - image: circleci/node:4.8.4
-    environment:
-      NODE_VERSION: 4
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -94,8 +86,6 @@ jobs:
     working_directory: ~/jest
     docker:
       - image: circleci/node:8.1.4
-    environment:
-      NODE_VERSION: 8
     steps:
       - checkout
       - restore-cache: *restore-cache
