@@ -35,7 +35,7 @@ version: 2
 jobs:
   test-browser:
     docker:
-      - image: geekykaran/headless-chrome-node-docker:latest
+      - image: markhobson/node-chrome
     environment:
       NODE_VERSION: 8
     steps:
