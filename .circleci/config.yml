@@ -16,6 +16,11 @@ aliases:
       sudo npm i -g yarn@^0.27.5
       yarn --no-progress
 
+  - &yarn-install-no-sudo
+    run: |
+      npm i -g yarn@^0.27.5
+      yarn --no-progress
+
   - &deploy
     command: |
       # Deploy Jest website
@@ -42,7 +47,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - *yarn-install
+      - *yarn-install-no-sudo
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
