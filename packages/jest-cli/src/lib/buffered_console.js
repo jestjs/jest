@@ -19,7 +19,7 @@ class BufferedConsole extends Console {
 
   constructor() {
     const buffer = [];
-    super(process.stdout, process.stderr);	
+    super(process.stdout, process.stderr);
     this._buffer = buffer;
   }
 
