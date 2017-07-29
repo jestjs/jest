@@ -11,6 +11,7 @@
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jest-adapter-init');

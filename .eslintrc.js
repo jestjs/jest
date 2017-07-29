@@ -6,6 +6,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+const path = require('path');
+const customImportResolver = path.resolve('./eslint_import_resolver');
+
 module.exports = {
   extends: [
     './packages/eslint-config-fb-strict/index.js',
@@ -19,6 +22,7 @@ module.exports = {
       files: ['*.md'],
       rules: {
         'consistent-return': 0,
+        'import/no-extraneous-dependencies': 0,
         'import/no-unresolved': 0,
         'jest/no-focused-tests': 0,
         'jest/no-identical-title': 0,
@@ -76,6 +80,7 @@ module.exports = {
         'scripts/**/*',
         'integration_tests/*/**/*',
         'website/*/**/*',
+        'eslint_import_resolver.js',
       ],
       rules: {
         'prettier/prettier': [
@@ -108,6 +113,17 @@ module.exports = {
         'flowtype/require-valid-file-annotation': [2, 'always'],
       },
     },
+    {
+      files: [
+        'website/**',
+        '**/__tests__/**',
+        'integration_tests/**',
+        '**/pretty-format/perf/**',
+      ],
+      rules: {
+        'import/no-extraneous-dependencies': 0,
+      },
+    },
   ],
   parser: 'babel-eslint',
   plugins: ['markdown', 'import', 'unicorn', 'prettier'],
@@ -119,6 +135,19 @@ module.exports = {
     'import/default': 0,
     'import/named': 0,
     'import/no-duplicates': 2,
+    'import/no-extraneous-dependencies': [
+      2,
+      {
+        devDependencies: [
+          '**/__tests__/**',
+          '**/__mocks__/**',
+          '**/?(*.)(spec|test).js?(x)',
+          'scripts/**',
+          'eslint_import_resolver.js',
+          'test_setup_file.js',
+        ],
+      },
+    ],
     'import/no-unresolved': [2, {ignore: ['^types/']}],
     // This has to be disabled until all type and module imports are combined
     // https://github.com/benmosher/eslint-plugin-import/issues/645
@@ -134,5 +163,14 @@ module.exports = {
       },
     ],
     'unicorn/filename-case': [2, {case: 'snakeCase'}],
+  },
+  settings: {
+    'import/resolver': {
+      [customImportResolver]: {
+        moduleNameMapper: {
+          '^types/(.*)': './types/$1',
+        },
+      },
+    },
   },
 };

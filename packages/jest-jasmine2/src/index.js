@@ -12,6 +12,7 @@ import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
