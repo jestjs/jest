@@ -78,7 +78,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: npm install
+      - *yarn-install
       - save-cache: *save-cache
       - run: npm run test-ci-partial
 
