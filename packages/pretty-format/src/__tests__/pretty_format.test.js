@@ -391,14 +391,18 @@ describe('prettyFormat()', () => {
     test('default explicit: 2 spaces', () => {
       expect(prettyFormat(val, {indent: 2})).toEqual(expected);
     });
+
+    // Tests assume that no strings in val contain multiple adjacent spaces!
     test('non-default: 0 spaces', () => {
-      expect(prettyFormat(val, {indent: 0})).toEqual(
-        expected.replace(/ {2}/g, ''),
+      const indent = 0;
+      expect(prettyFormat(val, {indent})).toEqual(
+        expected.replace(/ {2}/g, ' '.repeat(indent)),
       );
     });
     test('non-default: 4 spaces', () => {
-      expect(prettyFormat(val, {indent: 4})).toEqual(
-        expected.replace(/ {2}/g, '    '),
+      const indent = 4;
+      expect(prettyFormat(val, {indent})).toEqual(
+        expected.replace(/ {2}/g, ' '.repeat(indent)),
       );
     });
   });
