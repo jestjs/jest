@@ -31,8 +31,12 @@ module.exports = {
       react: './vendor/react-master',
     },
     extensions: ['', 'js', 'jsx'],
-    modulesDirectories: ['node_modules', 'bower_components', 'shared'],
-    root: '/shared/vendor/modules',
+    modules: [
+      'node_modules', 
+      'bower_components', 
+      'shared',
+      '/shared/vendor/modules',
+    ],
   },
 };
 ```
