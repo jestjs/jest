@@ -392,11 +392,19 @@ describe('indent option', () => {
   test('default explicit: 2 spaces', () => {
     assertPrintedJSX(val, expected, {indent: 2});
   });
+
+  // Tests assume that no strings in val contain multiple adjacent spaces!
   test('non-default: 0 spaces', () => {
-    assertPrintedJSX(val, expected.replace(/ {2}/g, ''), {indent: 0});
+    const indent = 0;
+    assertPrintedJSX(val, expected.replace(/ {2}/g, ' '.repeat(indent)), {
+      indent,
+    });
   });
   test('non-default: 4 spaces', () => {
-    assertPrintedJSX(val, expected.replace(/ {2}/g, '    '), {indent: 4});
+    const indent = 4;
+    assertPrintedJSX(val, expected.replace(/ {2}/g, ' '.repeat(indent)), {
+      indent,
+    });
   });
 });
 
