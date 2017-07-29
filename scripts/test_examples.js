@@ -22,19 +22,20 @@ const INSTALL = ['react-native'];
 const examples = fs
   .readdirSync(EXAMPLES_DIR)
   .map(file => path.resolve(EXAMPLES_DIR, file))
-  .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+  .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
+  .filter(exampleDirectory => {
+    const exampleName = path.basename(exampleDirectory);
+    if (NODE_VERSION < 6 && SKIP_ON_OLD_NODE.indexOf(exampleName) !== -1) {
+      console.log(`Skipping ${exampleName} on node ${process.version}.`);
+      return false;
+    }
 
-examples.forEach(exampleDirectory => {
-  const exampleName = path.basename(exampleDirectory);
-  if (NODE_VERSION < 6 && SKIP_ON_OLD_NODE.indexOf(exampleName) !== -1) {
-    console.log(`Skipping ${exampleName} on node ${process.version}.`);
-    return;
-  }
+    if (INSTALL.indexOf(exampleName) !== -1) {
+      runCommand('yarn', ['--production'], exampleDirectory);
+    }
 
-  if (INSTALL.indexOf(exampleName) !== -1) {
-    runCommand('yarn', ['--production'], exampleDirectory);
-  }
-});
+    return true;
+  });
 
 runCommand(
   JEST_BIN_PATH,
