@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 const React = require('react');
@@ -19,6 +21,7 @@ function assertPrintedJSX(actual, expected, opts) {
       actual,
       Object.assign(
         {
+          min: undefined,
           plugins: [ReactElement],
         },
         opts,
@@ -30,6 +33,7 @@ function assertPrintedJSX(actual, expected, opts) {
       renderer.create(actual).toJSON(),
       Object.assign(
         {
+          min: undefined,
           plugins: [ReactTestComponent, ReactElement],
         },
         opts,
@@ -248,13 +252,13 @@ test('supports a single element with custom React elements with a child', () => 
 test('supports Unknown element', () => {
   // Suppress React.createElement(undefined) console error
   const consoleError = console.error;
-  console.error = jest.fn();
+  (console: Object).error = jest.fn();
   expect(
     prettyFormat(React.createElement(undefined), {
       plugins: [ReactElement],
     }),
   ).toEqual('<Unknown />');
-  console.error = consoleError;
+  (console: Object).error = consoleError;
 });
 
 test('supports a single element with React elements with a child', () => {
@@ -356,6 +360,7 @@ test('throws if theme option is null', () => {
     prettyFormat(jsx, {
       highlight: true,
       plugins: [ReactElement],
+      // $FlowFixMe
       theme: null,
     });
   }).toThrow('pretty-format: Option "theme" must not be null.');
@@ -371,6 +376,7 @@ test('throws if theme option is not of type "object"', () => {
     prettyFormat(jsx, {
       highlight: true,
       plugins: [ReactElement],
+      // $FlowFixMe
       theme: 'beautiful',
     });
   }).toThrow(
