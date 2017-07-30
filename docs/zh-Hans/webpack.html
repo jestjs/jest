@@ -31,8 +31,12 @@ module<span class="token punctuation">.</span>exports <span class="token operato
       react<span class="token punctuation">:</span> <span class="token string">&#x27;./vendor/react-master&#x27;</span><span class="token punctuation">,</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     extensions<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;js&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;jsx&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    modulesDirectories<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;node_modules&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;bower_components&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;shared&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    root<span class="token punctuation">:</span> <span class="token string">&#x27;/shared/vendor/modules&#x27;</span><span class="token punctuation">,</span>
+    modules<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+      <span class="token string">&#x27;node_modules&#x27;</span><span class="token punctuation">,</span> 
+      <span class="token string">&#x27;bower_components&#x27;</span><span class="token punctuation">,</span> 
+      <span class="token string">&#x27;shared&#x27;</span><span class="token punctuation">,</span>
+      <span class="token string">&#x27;/shared/vendor/modules&#x27;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>如果你有需要Babel转化的 Js文件，你可以通过安装<code>babel-jest</code> 插件来 <a href="/jest/docs/getting-started.html#using-babel-with-jest" target=""> 启用Babel</a> 。 无需Babel转换的js文件，可以通过Jest的<a href="/jest/docs/configuration.html#transform-object-string-string" target=""><code>transform</code></a>参数设定来处理。</p><h3><a class="anchor" name=""></a>处理静态文件 <a class="hash-link" href="#">#</a></h3><p>接下来，让我们配置Jest，使其优雅地处理资源文件，如样式表和图像。 通常，这些文件在测试中无足轻重，因为我们可以安全地mock他们。 然而， 如果你使用CSS模块，那么最好是给你的类名查找模拟一个代理。</p><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// package.json</span>
