@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -19,6 +21,7 @@ const toPrettyPrintTo = expectUtil.getPrettyPrint(
   [ReactElementPlugin, ReactTestComponentPlugin].concat(ImmutablePlugins),
 );
 
+const expect = global.expect;
 expect.extend({toPrettyPrintTo});
 
 describe('Immutable.OrderedSet plugin', () => {
@@ -488,7 +491,7 @@ describe('Immutable.Record plugin', () => {
   it('supports an empty record {min: true}', () => {
     const ABRecord = Immutable.Record({}, 'ABRecord');
 
-    expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {}', {
       min: true,
     });
   });
@@ -496,7 +499,7 @@ describe('Immutable.Record plugin', () => {
   it('supports an empty record {min: false}', () => {
     const ABRecord = Immutable.Record({}, 'ABRecord');
 
-    expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {\n}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {\n}', {
       min: false,
     });
   });
@@ -504,7 +507,7 @@ describe('Immutable.Record plugin', () => {
   it('supports a record with descriptive name', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
-    expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {a: 1, b: 2}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {a: 1, b: 2}', {
       min: true,
     });
   });
@@ -512,7 +515,7 @@ describe('Immutable.Record plugin', () => {
   it('supports a record without descriptive name', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2});
 
-    expect(new ABRecord()).toPrettyPrintTo('Immutable.Record {a: 1, b: 2}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.Record {a: 1, b: 2}', {
       min: true,
     });
   });
@@ -521,14 +524,14 @@ describe('Immutable.Record plugin', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
     expect(
-      new ABRecord({a: 3, b: 4}),
+      ABRecord({a: 3, b: 4}),
     ).toPrettyPrintTo('Immutable.ABRecord {a: 3, b: 4}', {min: true});
   });
 
   it('supports a record with values {min: false}', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
-    expect(new ABRecord({a: 3, b: 4})).toPrettyPrintTo(
+    expect(ABRecord({a: 3, b: 4})).toPrettyPrintTo(
       'Immutable.ABRecord {\n  a: 3,\n  b: 4,\n}',
     );
   });
@@ -540,7 +543,7 @@ describe('Immutable.Record plugin', () => {
     );
 
     expect(
-      new ABRecord(),
+      ABRecord(),
     ).toPrettyPrintTo('Immutable.ABRecord {a: Immutable.Map {c: 1}, b: 2}', {
       min: true,
     });
@@ -552,17 +555,17 @@ describe('Immutable.Record plugin', () => {
       'ABRecord',
     );
 
-    expect(new ABRecord()).toPrettyPrintTo(
+    expect(ABRecord()).toPrettyPrintTo(
       'Immutable.ABRecord {\n  a: Immutable.Map {\n    c: 1,\n  },\n  b: 2,\n}',
     );
   });
 
   it('supports imbricated Record {min: true}', () => {
     const CDRecord = Immutable.Record({c: 3, d: 4}, 'CDRecord');
-    const ABRecord = Immutable.Record({a: new CDRecord(), b: 2}, 'ABRecord');
+    const ABRecord = Immutable.Record({a: CDRecord(), b: 2}, 'ABRecord');
 
     expect(
-      new ABRecord(),
+      ABRecord(),
     ).toPrettyPrintTo(
       'Immutable.ABRecord {a: Immutable.CDRecord {c: 3, d: 4}, b: 2}',
       {min: true},
@@ -571,9 +574,9 @@ describe('Immutable.Record plugin', () => {
 
   it('supports imbricated Record {min: false}', () => {
     const CDRecord = Immutable.Record({c: 3, d: 4}, 'CDRecord');
-    const ABRecord = Immutable.Record({a: new CDRecord(), b: 2}, 'ABRecord');
+    const ABRecord = Immutable.Record({a: CDRecord(), b: 2}, 'ABRecord');
 
-    expect(new ABRecord()).toPrettyPrintTo(
+    expect(ABRecord()).toPrettyPrintTo(
       'Immutable.ABRecord {\n  a: Immutable.CDRecord {\n    c: 3,\n    d: 4,\n  },\n  b: 2,\n}',
     );
   });
