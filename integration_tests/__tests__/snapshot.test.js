@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 'use strict';
 
@@ -14,7 +14,7 @@ const path = require('path');
 const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 skipOnWindows.suite();
 
 const emptyTest = 'describe("", () => {it("", () => {})})';
@@ -113,6 +113,7 @@ describe('Snapshot', () => {
     expect(json.numPendingTests).toBe(0);
     expect(result.status).toBe(0);
 
+    // $FlowFixMe dynamic require
     const content = require(snapshotFile);
     expect(
       content['snapshot is not influenced by previous counter 1'],
@@ -244,6 +245,7 @@ describe('Snapshot', () => {
     it('works on subsequent runs without `-u`', () => {
       const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
 
+      // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
       const secondRun = runJest.json('snapshot', []);
@@ -264,6 +266,7 @@ describe('Snapshot', () => {
       const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
       fs.unlinkSync(copyOfTestPath);
 
+      // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
       const secondRun = runJest.json('snapshot', ['-w=1', '--ci=false', '-u']);

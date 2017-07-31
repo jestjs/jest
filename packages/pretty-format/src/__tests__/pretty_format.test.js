@@ -4,13 +4,15 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
 const prettyFormat = require('../');
 
-function returnArguments() {
+function returnArguments(...args) {
   return arguments;
 }
 
@@ -215,7 +217,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object with properties and symbols', () => {
-    const val = {};
+    const val: any = {};
     val[Symbol('symbol1')] = 'value2';
     val[Symbol('symbol2')] = 'value3';
     val.prop = 'value1';
@@ -452,6 +454,7 @@ describe('prettyFormat()', () => {
 
   it('throws on invalid options', () => {
     expect(() => {
+      // $FlowFixMe
       prettyFormat({}, {invalidOption: true});
     }).toThrow();
   });
@@ -589,7 +592,7 @@ describe('prettyFormat()', () => {
 
   it('calls toJSON on Sets', () => {
     const set = new Set([1]);
-    set.toJSON = () => 'map';
+    (set: Object).toJSON = () => 'map';
     expect(prettyFormat(set)).toEqual('"map"');
   });
 
@@ -597,7 +600,7 @@ describe('prettyFormat()', () => {
     const value = {apple: 'banana', toJSON: jest.fn(() => '1')};
     const name = value.toJSON.name || 'anonymous';
     const set = new Set([value]);
-    set.toJSON = jest.fn(() => 'map');
+    (set: Object).toJSON = jest.fn(() => 'map');
     expect(
       prettyFormat(set, {
         callToJSON: false,
@@ -607,7 +610,7 @@ describe('prettyFormat()', () => {
         name +
         '],\n  },\n}',
     );
-    expect(set.toJSON).not.toBeCalled();
+    expect((set: Object).toJSON).not.toBeCalled();
     expect(value.toJSON).not.toBeCalled();
   });
 

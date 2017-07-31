@@ -16,36 +16,27 @@ import os from 'os';
 import path from 'path';
 
 const skipOnWindows = require('../../scripts/skip_on_windows');
-const DIR = path.resolve(os.tmpdir(), 'force_exit_test');
+const DIR = path.resolve(os.tmpdir(), 'find_related_tests_test');
 
 skipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
-test('exits the process after test are done but before timers complete', () => {
+test('runs tests related to filename', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/test.test.js': `
-      test('finishes before the timer is complete', () => {
-        setTimeout(() => console.log('TIMER_DONE'), 500);
-      });
+      const a = require('../a');
+      test('a', () => {});
     `,
+    'a.js': 'module.exports = {};',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
-  let stdout;
-  let stderr;
-  ({stdout, stderr} = runJest(DIR));
-  expect(stderr).toMatch(/PASS.*test\.test\.js/);
-  expect(stdout).toMatch(/TIMER_DONE/);
-  writeFiles(DIR, {
-    'package.json': JSON.stringify({
-      jest: {forceExit: true, testEnvironment: 'node'},
-    }),
-  });
+  const {stdout} = runJest(DIR, ['a.js']);
+  expect(stdout).toMatch(/no tests found/i);
 
-  ({stdout, stderr} = runJest(DIR));
-  expect(stderr).toMatch(/PASS.*test\.test\.js/);
-  expect(stdout).not.toMatch(/TIMER_DONE/);
+  const {stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']);
+  expect(stderr).toMatch('PASS  __tests__/test.test.js');
 });

@@ -6,16 +6,19 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @jest-environment jsdom
+ * @flow
  */
 /* eslint-env browser*/
 
 'use strict';
 
-const HTMLElementPlugin = require('../plugins/html_element');
+const prettyFormat = require('../');
+const {HTMLElement} = prettyFormat.plugins;
 const toPrettyPrintTo = require('./expect_util').getPrettyPrint([
-  HTMLElementPlugin,
+  HTMLElement,
 ]);
 
+const expect: any = global.expect;
 expect.extend({toPrettyPrintTo});
 
 describe('HTMLElement Plugin', () => {
@@ -54,7 +57,7 @@ describe('HTMLElement Plugin', () => {
   it('supports an HTML element with multiple attributes', () => {
     const parent = document.createElement('div');
     // set attributes in unsorted order by name to verify sorting
-    parent.setAttribute('id', 123);
+    parent.setAttribute('id', '123');
     parent.setAttribute('class', 'classy');
 
     expect(parent).toPrettyPrintTo('<div\n  class="classy"\n  id="123"\n/>');
@@ -81,7 +84,7 @@ describe('HTMLElement Plugin', () => {
 
     // set attributes in sorted order by name
     child.setAttribute('class', 'classy');
-    child.setAttribute('id', 123);
+    child.setAttribute('id', '123');
 
     expect(parent).toPrettyPrintTo(
       '<div>\n  <span\n    class="classy"\n    id="123"\n  />\n</div>',

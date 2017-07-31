@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -19,13 +21,20 @@ const toPrettyPrintTo = expectUtil.getPrettyPrint(
   [ReactElementPlugin, ReactTestComponentPlugin].concat(ImmutablePlugins),
 );
 
+const expect = global.expect;
 expect.extend({toPrettyPrintTo});
 
 describe('Immutable.OrderedSet plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(
       Immutable.OrderedSet([]),
     ).toPrettyPrintTo('Immutable.OrderedSet []', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(
+      Immutable.OrderedSet([]),
+    ).toPrettyPrintTo('Immutable.OrderedSet [\n]', {min: false});
   });
 
   it('supports a single string element', () => {
@@ -109,9 +118,15 @@ describe('Immutable.OrderedSet plugin', () => {
 });
 
 describe('Immutable.List plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.List([])).toPrettyPrintTo('Immutable.List []', {
       min: true,
+    });
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.List([])).toPrettyPrintTo('Immutable.List [\n]', {
+      min: false,
     });
   });
 
@@ -184,9 +199,15 @@ describe('Immutable.List plugin', () => {
 });
 
 describe('Immutable.Stack plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.Stack([])).toPrettyPrintTo('Immutable.Stack []', {
       min: true,
+    });
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.Stack([])).toPrettyPrintTo('Immutable.Stack [\n]', {
+      min: false,
     });
   });
 
@@ -261,8 +282,14 @@ describe('Immutable.Stack plugin', () => {
 });
 
 describe('Immutable.Set plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set []', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set [\n]', {
+      min: false,
+    });
   });
 
   it('supports a single string element', () => {
@@ -333,8 +360,14 @@ describe('Immutable.Set plugin', () => {
 });
 
 describe('Immutable.Map plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {}', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {\n}', {
+      min: false,
+    });
   });
 
   it('supports an object with single key', () => {
@@ -390,10 +423,16 @@ describe('Immutable.Map plugin', () => {
 });
 
 describe('Immutable.OrderedMap plugin', () => {
-  it('supports an empty set', () => {
+  it('supports an empty collection {min: true}', () => {
     expect(
       Immutable.OrderedMap({}),
     ).toPrettyPrintTo('Immutable.OrderedMap {}', {min: true});
+  });
+
+  it('supports an empty collection {min: false}', () => {
+    expect(
+      Immutable.OrderedMap({}),
+    ).toPrettyPrintTo('Immutable.OrderedMap {\n}', {min: false});
   });
 
   it('supports an object with single key', () => {
@@ -449,10 +488,26 @@ describe('Immutable.OrderedMap plugin', () => {
 });
 
 describe('Immutable.Record plugin', () => {
-  it('supports an empty record', () => {
+  it('supports an empty record {min: true}', () => {
+    const ABRecord = Immutable.Record({}, 'ABRecord');
+
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {}', {
+      min: true,
+    });
+  });
+
+  it('supports an empty record {min: false}', () => {
+    const ABRecord = Immutable.Record({}, 'ABRecord');
+
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {\n}', {
+      min: false,
+    });
+  });
+
+  it('supports a record with descriptive name', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
-    expect(new ABRecord()).toPrettyPrintTo('Immutable.ABRecord {a: 1, b: 2}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {a: 1, b: 2}', {
       min: true,
     });
   });
@@ -460,7 +515,7 @@ describe('Immutable.Record plugin', () => {
   it('supports a record without descriptive name', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2});
 
-    expect(new ABRecord()).toPrettyPrintTo('Immutable.Record {a: 1, b: 2}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.Record {a: 1, b: 2}', {
       min: true,
     });
   });
@@ -469,14 +524,14 @@ describe('Immutable.Record plugin', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
     expect(
-      new ABRecord({a: 3, b: 4}),
+      ABRecord({a: 3, b: 4}),
     ).toPrettyPrintTo('Immutable.ABRecord {a: 3, b: 4}', {min: true});
   });
 
   it('supports a record with values {min: false}', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
-    expect(new ABRecord({a: 3, b: 4})).toPrettyPrintTo(
+    expect(ABRecord({a: 3, b: 4})).toPrettyPrintTo(
       'Immutable.ABRecord {\n  a: 3,\n  b: 4,\n}',
     );
   });
@@ -488,7 +543,7 @@ describe('Immutable.Record plugin', () => {
     );
 
     expect(
-      new ABRecord(),
+      ABRecord(),
     ).toPrettyPrintTo('Immutable.ABRecord {a: Immutable.Map {c: 1}, b: 2}', {
       min: true,
     });
@@ -500,17 +555,17 @@ describe('Immutable.Record plugin', () => {
       'ABRecord',
     );
 
-    expect(new ABRecord()).toPrettyPrintTo(
+    expect(ABRecord()).toPrettyPrintTo(
       'Immutable.ABRecord {\n  a: Immutable.Map {\n    c: 1,\n  },\n  b: 2,\n}',
     );
   });
 
   it('supports imbricated Record {min: true}', () => {
     const CDRecord = Immutable.Record({c: 3, d: 4}, 'CDRecord');
-    const ABRecord = Immutable.Record({a: new CDRecord(), b: 2}, 'ABRecord');
+    const ABRecord = Immutable.Record({a: CDRecord(), b: 2}, 'ABRecord');
 
     expect(
-      new ABRecord(),
+      ABRecord(),
     ).toPrettyPrintTo(
       'Immutable.ABRecord {a: Immutable.CDRecord {c: 3, d: 4}, b: 2}',
       {min: true},
@@ -519,9 +574,9 @@ describe('Immutable.Record plugin', () => {
 
   it('supports imbricated Record {min: false}', () => {
     const CDRecord = Immutable.Record({c: 3, d: 4}, 'CDRecord');
-    const ABRecord = Immutable.Record({a: new CDRecord(), b: 2}, 'ABRecord');
+    const ABRecord = Immutable.Record({a: CDRecord(), b: 2}, 'ABRecord');
 
-    expect(new ABRecord()).toPrettyPrintTo(
+    expect(ABRecord()).toPrettyPrintTo(
       'Immutable.ABRecord {\n  a: Immutable.CDRecord {\n    c: 3,\n    d: 4,\n  },\n  b: 2,\n}',
     );
   });

@@ -4,7 +4,11 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
+
+import type {OptionsReceived} from 'types/PrettyFormat';
 
 const React = require('react');
 const renderer = require('react-test-renderer');
@@ -12,29 +16,33 @@ const renderer = require('react-test-renderer');
 const prettyFormat = require('../');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
-const formatElement = (element, options) =>
+const formatElement = (element: any, options?: OptionsReceived) =>
   prettyFormat(
     element,
     Object.assign(
-      {
+      ({
         plugins: [ReactElement],
-      },
+      }: OptionsReceived),
       options,
     ),
   );
 
-const formatTestObject = (object, options) =>
+const formatTestObject = (object: any, options?: OptionsReceived) =>
   prettyFormat(
     object,
     Object.assign(
-      {
+      ({
         plugins: [ReactTestComponent, ReactElement],
-      },
+      }: OptionsReceived),
       options,
     ),
   );
 
-function assertPrintedJSX(val, expected, options) {
+function assertPrintedJSX(
+  val: any,
+  expected: string,
+  options?: OptionsReceived,
+) {
   expect(formatElement(val, options)).toEqual(expected);
   expect(formatTestObject(renderer.create(val).toJSON(), options)).toEqual(
     expected,
@@ -287,9 +295,9 @@ test('supports a single element with custom React elements with a child', () => 
 test('supports Unknown element', () => {
   // Suppress React.createElement(undefined) console error
   const consoleError = console.error;
-  console.error = jest.fn();
+  (console: Object).error = jest.fn();
   expect(formatElement(React.createElement(undefined))).toEqual('<Unknown />');
-  console.error = consoleError;
+  (console: Object).error = consoleError;
 });
 
 test('supports a single element with React elements with a child', () => {
@@ -469,6 +477,7 @@ test('throws if theme option is null', () => {
   expect(() => {
     formatElement(jsx, {
       highlight: true,
+      // $FlowFixMe
       theme: null,
     });
   }).toThrow('pretty-format: Option "theme" must not be null.');
@@ -483,6 +492,7 @@ test('throws if theme option is not of type "object"', () => {
     );
     formatElement(jsx, {
       highlight: true,
+      // $FlowFixMe
       theme: 'beautiful',
     });
   }).toThrow(

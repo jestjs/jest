@@ -10,7 +10,7 @@ init:
 install:
   - ps: Install-Product node $env:nodejs_version x64
   - node --version
-  - curl -fsSL -o yarn.js https://github.com/yarnpkg/yarn/releases/download/v0.27.5/yarn-0.27.5.js
+  - curl -fsSL -o yarn.js https://github.com/yarnpkg/yarn/releases/download/v0.28.4/yarn-0.28.4.js
   - node ./yarn.js --version
   - node ./yarn.js install
   - node ./yarn.js run build
