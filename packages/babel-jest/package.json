@@ -9,8 +9,13 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "babel-core": "^6.0.0",
     "babel-plugin-istanbul": "^4.0.0",
     "babel-preset-jest": "^20.0.3"
+  },
+  "devDependencies": {
+    "babel-core": "^7.0.0-alpha.17"
+  },
+  "peerDependencies": {
+    "babel-core": "^6.0.0 || ^7.0.0-alpha || ^7.0.0"
   }
 }
