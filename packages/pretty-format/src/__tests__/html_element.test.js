@@ -14,9 +14,7 @@
 
 const prettyFormat = require('../');
 const {HTMLElement} = prettyFormat.plugins;
-const toPrettyPrintTo = require('./expect_util').getPrettyPrint([
-  HTMLElement,
-]);
+const toPrettyPrintTo = require('./expect_util').getPrettyPrint([HTMLElement]);
 
 const expect: any = global.expect;
 expect.extend({toPrettyPrintTo});
