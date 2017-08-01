@@ -93,11 +93,6 @@ function matchArity(fn: any, length: number): any {
   let mockConstructor;
 
   switch (length) {
-    case 0:
-      mockConstructor = function() {
-        return fn.apply(this, arguments);
-      };
-      break;
     case 1:
       mockConstructor = function(a) {
         return fn.apply(this, arguments);
@@ -144,7 +139,7 @@ function matchArity(fn: any, length: number): any {
       };
       break;
     default:
-      mockConstructor = function(a, b, c, d, e, f, g, h, i, j) {
+      mockConstructor = function() {
         return fn.apply(this, arguments);
       };
       break;
