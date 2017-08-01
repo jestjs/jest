@@ -29,6 +29,7 @@ type ResolverConfig = {|
   modulePaths: Array<Path>,
   platforms?: Array<string>,
   resolver: ?Path,
+  rootDir: ?Path,
 |};
 
 type FindNodeModuleConfig = {|
@@ -38,6 +39,7 @@ type FindNodeModuleConfig = {|
   moduleDirectory?: Array<string>,
   paths?: Array<Path>,
   resolver?: ?Path,
+  rootDir?: ?Path,
 |};
 
 type ModuleNameMapperConfig = {|
@@ -368,7 +370,7 @@ Please check:
       }
     }
     if (resolver) {
-      // if moduleNameMapper didn't match anything, fallback to just the 
+      // if moduleNameMapper didn't match anything, fallback to just the
       // regular resolver
       const module =
         this.getModule(moduleName) ||
