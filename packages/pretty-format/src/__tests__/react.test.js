@@ -381,9 +381,7 @@ describe('test object for subset match', () => {
       children: ['undefined props'],
       type: 'span',
     };
-    expect(formatTestObject(val)).toEqual(
-      '<span>\n  undefined props\n</span>',
-    );
+    expect(formatTestObject(val)).toEqual('<span>\n  undefined props\n</span>');
   });
   test('undefined children', () => {
     const val = {
