@@ -37,7 +37,7 @@ const getChildren = (arg, children = []) => {
   return children;
 };
 
-const serialize = (
+export const serialize = (
   element: React$Element<*>,
   config: Config,
   printer: Printer,
