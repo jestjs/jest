@@ -92,7 +92,7 @@ export const printChildren = (
 // Separate the functions to format props, children, and element,
 // so a plugin could override a particular function, if needed.
 // Too bad, so sad: the traditional (but unnecessary) space
-// in a self-closing tag requires a second test of printedProps.
+// in a self-closing tagColor requires a second test of printedProps.
 export const printElement = (
   type: string,
   printedProps: string,
@@ -100,24 +100,28 @@ export const printElement = (
   config: Config,
   indentation: string,
 ): string => {
-  const tag = config.colors.tag;
+  const tagColor = config.colors.tag;
   return (
-    tag.open +
+    tagColor.open +
     '<' +
     type +
     (printedProps &&
-      tag.close + printedProps + config.spacingOuter + indentation + tag.open) +
+      tagColor.close +
+        printedProps +
+        config.spacingOuter +
+        indentation +
+        tagColor.open) +
     (printedChildren
       ? '>' +
-        tag.close +
+        tagColor.close +
         printedChildren +
         config.spacingOuter +
         indentation +
-        tag.open +
+        tagColor.open +
         '</' +
         type
       : (printedProps && !config.min ? '' : ' ') + '/') +
     '>' +
-    tag.close
+    tagColor.close
   );
 };
