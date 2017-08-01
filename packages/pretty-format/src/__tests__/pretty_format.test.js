@@ -243,7 +243,12 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('/regexp/gi');
   });
 
-  it('escapes regular expressions', () => {
+  it('prints regular expressions {escapeRegex: false}', () => {
+    const val = /regexp\d/gi;
+    expect(prettyFormat(val)).toEqual('/regexp\\d/gi');
+  });
+
+  it('prints regular expressions {escapeRegex: true}', () => {
     const val = /regexp\d/gi;
     expect(prettyFormat(val, {escapeRegex: true})).toEqual('/regexp\\\\d/gi');
   });
