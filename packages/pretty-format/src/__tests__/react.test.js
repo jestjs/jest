@@ -378,11 +378,11 @@ describe('test object for subset match', () => {
   test('undefined props', () => {
     const val = {
       $$typeof: testSymbol,
-      children: ['undefined', 'props'],
+      children: ['undefined props'],
       type: 'span',
     };
     expect(formatTestObject(val)).toEqual(
-      '<span>\n  undefined\n  props\n</span>',
+      '<span>\n  undefined props\n</span>',
     );
   });
   test('undefined children', () => {
