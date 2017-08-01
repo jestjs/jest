@@ -8,13 +8,7 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
 const SPACE = ' ';
@@ -22,41 +16,49 @@ const SPACE = ' ';
 class ArrayContaining extends Array {}
 class ObjectContaining extends Object {}
 
-export const print = (
+export const serialize = (
   val: any,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => {
+  config: Config,
+  print: Printer,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+): string => {
   const stringedValue = val.toString();
 
   if (stringedValue === 'ArrayContaining') {
+    if (++depth > config.maxDepth) {
+      return '[' + stringedValue + ']';
+    }
     const array = ArrayContaining.from(val.sample);
-    return opts.spacing === SPACE
-      ? stringedValue + SPACE + print(array)
-      : print(array);
+    return (
+      (config.min ? stringedValue + SPACE : '') +
+      print(array, indentation, depth, refs)
+    );
   }
 
   if (stringedValue === 'ObjectContaining') {
+    if (++depth > config.maxDepth) {
+      return '[' + stringedValue + ']';
+    }
     const object = Object.assign(new ObjectContaining(), val.sample);
-    return opts.spacing === SPACE
-      ? stringedValue + SPACE + print(object)
-      : print(object);
+    return (
+      (config.min ? stringedValue + SPACE : '') +
+      print(object, indentation, depth, refs)
+    );
   }
 
   if (stringedValue === 'StringMatching') {
-    return stringedValue + SPACE + print(val.sample);
+    return stringedValue + SPACE + print(val.sample, indentation, depth, refs);
   }
 
   if (stringedValue === 'StringContaining') {
-    return stringedValue + SPACE + print(val.sample);
+    return stringedValue + SPACE + print(val.sample, indentation, depth, refs);
   }
 
   return val.toAsymmetricMatcher();
 };
 
-export const test = (object: any) =>
-  object && object.$$typeof === asymmetricMatcher;
+export const test = (val: any) => val && val.$$typeof === asymmetricMatcher;
 
-export default ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);
