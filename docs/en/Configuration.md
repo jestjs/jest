@@ -359,7 +359,8 @@ This option allows the use of a custom resolver. This resolver must be a node mo
   "browser": bool,
   "extensions": [string],
   "moduleDirectory": [string],
-  "paths": [string]
+  "paths": [string],
+  "rootDir": [string]
 }
 ```
 

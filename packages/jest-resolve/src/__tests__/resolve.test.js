@@ -10,10 +10,17 @@
 
 'use strict';
 
+jest.mock('../__mocks__/userResolver');
+
 const fs = require('fs');
 const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const Resolver = require('../');
+const userResolver = require('../__mocks__/userResolver');
+
+beforeEach(() => {
+  userResolver.mockClear();
+});
 
 describe('isCoreModule', () => {
   it('returns false if `hasCoreModules` is false.', () => {
@@ -51,8 +58,6 @@ describe('findNodeModule', () => {
           .map(p => path.resolve(resolvedCwd, p))
       : null;
 
-    jest.mock('../__mocks__/userResolver');
-    const userResolver = require('../__mocks__/userResolver');
     userResolver.mockImplementation(() => 'module');
 
     const newPath = Resolver.findNodeModule('test', {
@@ -73,5 +78,35 @@ describe('findNodeModule', () => {
       moduleDirectory: ['node_modules'],
       paths: (nodePaths || []).concat(['/something']),
     });
+  });
+});
+
+describe('getMockModule', () => {
+  it('is possible to use custom resolver to resolve deps inside mock modules', () => {
+    userResolver.mockImplementation(() => 'module');
+
+    const moduleMap = new ModuleMap({
+      duplicates: [],
+      map: [],
+      mocks: [],
+    });
+    const resolver = new Resolver(moduleMap, {
+      moduleNameMapper: [
+        {
+          moduleName: '$1',
+          regex: /(.*)/,
+        },
+      ],
+      resolver: require.resolve('../__mocks__/userResolver'),
+    });
+    const src = require.resolve('../');
+    resolver.getMockModule(src, 'dependentModule');
+
+    expect(userResolver).toHaveBeenCalled();
+    expect(userResolver.mock.calls[0][0]).toBe('dependentModule');
+    expect(userResolver.mock.calls[0][1]).toHaveProperty(
+      'basedir',
+      path.dirname(src),
+    );
   });
 });
