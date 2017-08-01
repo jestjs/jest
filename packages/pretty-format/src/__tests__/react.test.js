@@ -8,55 +8,76 @@
  * @flow
  */
 
+import type {OptionsReceived} from 'types/PrettyFormat';
+
 const React = require('react');
 const renderer = require('react-test-renderer');
 
 const prettyFormat = require('../');
-const ReactTestComponent = require('../plugins/react_test_component');
-const ReactElement = require('../plugins/react_element');
+const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
-function assertPrintedJSX(actual, expected, opts) {
-  expect(
-    prettyFormat(
-      actual,
-      Object.assign(
-        {
-          min: undefined,
-          plugins: [ReactElement],
-        },
-        opts,
-      ),
+const formatElement = (element: any, options?: OptionsReceived) =>
+  prettyFormat(
+    element,
+    Object.assign(
+      ({
+        plugins: [ReactElement],
+      }: OptionsReceived),
+      options,
     ),
-  ).toEqual(expected);
-  expect(
-    prettyFormat(
-      renderer.create(actual).toJSON(),
-      Object.assign(
-        {
-          min: undefined,
-          plugins: [ReactTestComponent, ReactElement],
-        },
-        opts,
-      ),
+  );
+
+const formatTestObject = (object: any, options?: OptionsReceived) =>
+  prettyFormat(
+    object,
+    Object.assign(
+      ({
+        plugins: [ReactTestComponent, ReactElement],
+      }: OptionsReceived),
+      options,
     ),
-  ).toEqual(expected);
+  );
+
+function assertPrintedJSX(
+  val: any,
+  expected: string,
+  options?: OptionsReceived,
+) {
+  expect(formatElement(val, options)).toEqual(expected);
+  expect(formatTestObject(renderer.create(val).toJSON(), options)).toEqual(
+    expected,
+  );
 }
 
 test('supports a single element with no props or children', () => {
   assertPrintedJSX(React.createElement('Mouse'), '<Mouse />');
 });
 
-test('supports a single element with no props', () => {
+test('supports a single element with non-empty string child', () => {
   assertPrintedJSX(
     React.createElement('Mouse', null, 'Hello World'),
     '<Mouse>\n  Hello World\n</Mouse>',
   );
 });
 
-test('supports a single element with number children', () => {
+test('supports a single element with empty string child', () => {
+  assertPrintedJSX(
+    React.createElement('Mouse', null, ''),
+    '<Mouse>\n  \n</Mouse>',
+  );
+});
+
+test('supports a single element with non-zero number child', () => {
   assertPrintedJSX(
     React.createElement('Mouse', null, 4),
     '<Mouse>\n  4\n</Mouse>',
+  );
+});
+
+test('supports a single element with zero number child', () => {
+  assertPrintedJSX(
+    React.createElement('Mouse', null, 0),
+    '<Mouse>\n  0\n</Mouse>',
   );
 });
 
@@ -72,6 +93,28 @@ test('supports props with strings', () => {
     React.createElement('Mouse', {style: 'color:red'}),
     '<Mouse\n  style="color:red"\n/>',
   );
+});
+
+test('supports props with multiline strings', () => {
+  const val = React.createElement(
+    'svg',
+    null,
+    React.createElement('polyline', {
+      id: 'J',
+      points: ['0.5,0.460', '0.5,0.875', '0.25,0.875'].join('\n'),
+    }),
+  );
+  const expected = [
+    '<svg>',
+    '  <polyline',
+    '    id="J"',
+    '    points="0.5,0.460',
+    '0.5,0.875',
+    '0.25,0.875"',
+    '  />',
+    '</svg>',
+  ].join('\n');
+  assertPrintedJSX(val, expected);
 });
 
 test('supports props with numbers', () => {
@@ -253,11 +296,7 @@ test('supports Unknown element', () => {
   // Suppress React.createElement(undefined) console error
   const consoleError = console.error;
   (console: Object).error = jest.fn();
-  expect(
-    prettyFormat(React.createElement(undefined), {
-      plugins: [ReactElement],
-    }),
-  ).toEqual('<Unknown />');
+  expect(formatElement(React.createElement(undefined))).toEqual('<Unknown />');
   (console: Object).error = consoleError;
 });
 
@@ -296,7 +335,88 @@ test('supports a single element with React elements with array children', () => 
   );
 });
 
-test('uses the supplied line seperator for min mode', () => {
+test('supports array of elements', () => {
+  const val = [
+    React.createElement('dt', null, 'jest'),
+    React.createElement('dd', null, 'to talk in a playful manner'),
+    React.createElement(
+      'dd',
+      {style: {color: '#99424F'}},
+      'painless JavaScript testing',
+    ),
+  ];
+  const expected = [
+    'Array [',
+    '  <dt>',
+    '    jest',
+    '  </dt>,',
+    '  <dd>',
+    '    to talk in a playful manner',
+    '  </dd>,',
+    '  <dd',
+    '    style={',
+    '      Object {',
+    '        "color": "#99424F",',
+    '      }',
+    '    }',
+    '  >',
+    '    painless JavaScript testing',
+    '  </dd>,',
+    ']',
+  ].join('\n');
+  expect(formatElement(val)).toEqual(expected);
+  expect(
+    formatTestObject(val.map(element => renderer.create(element).toJSON())),
+  ).toEqual(expected);
+});
+
+describe('indent option', () => {
+  const val = React.createElement(
+    'ul',
+    null,
+    React.createElement(
+      'li',
+      {style: {color: 'green', textDecoration: 'none'}},
+      'Test indent option',
+    ),
+  );
+  const expected = [
+    '<ul>',
+    '  <li',
+    '    style={',
+    '      Object {',
+    '        "color": "green",',
+    '        "textDecoration": "none",',
+    '      }',
+    '    }',
+    '  >',
+    '    Test indent option',
+    '  </li>',
+    '</ul>',
+  ].join('\n');
+  test('default implicit: 2 spaces', () => {
+    assertPrintedJSX(val, expected);
+  });
+  test('default explicit: 2 spaces', () => {
+    assertPrintedJSX(val, expected, {indent: 2});
+  });
+
+  // Tests assume that no strings in val contain multiple adjacent spaces!
+  test('non-default: 0 spaces', () => {
+    const indent = 0;
+    assertPrintedJSX(val, expected.replace(/ {2}/g, ' '.repeat(indent)), {
+      indent,
+    });
+  });
+  test('non-default: 4 spaces', () => {
+    const indent = 4;
+    assertPrintedJSX(val, expected.replace(/ {2}/g, ' '.repeat(indent)), {
+      indent,
+    });
+  });
+});
+
+test('min option', () => {
   assertPrintedJSX(
     React.createElement(
       'Mouse',
@@ -326,9 +446,8 @@ test('ReactElement plugin highlights syntax', () => {
     ),
   });
   expect(
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
     }),
   ).toMatchSnapshot();
 });
@@ -343,9 +462,8 @@ test('ReactTestComponent plugin highlights syntax', () => {
     ),
   });
   expect(
-    prettyFormat(renderer.create(jsx).toJSON(), {
+    formatTestObject(renderer.create(jsx).toJSON(), {
       highlight: true,
-      plugins: [ReactTestComponent, ReactElement],
     }),
   ).toMatchSnapshot();
 });
@@ -357,9 +475,8 @@ test('throws if theme option is null', () => {
     'Hello, Mouse!',
   );
   expect(() => {
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       // $FlowFixMe
       theme: null,
     });
@@ -373,9 +490,8 @@ test('throws if theme option is not of type "object"', () => {
       {style: 'color:red'},
       'Hello, Mouse!',
     );
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       // $FlowFixMe
       theme: 'beautiful',
     });
@@ -391,9 +507,8 @@ test('throws if theme option has value that is undefined in ansi-styles', () => 
       {style: 'color:red'},
       'Hello, Mouse!',
     );
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       theme: {
         content: 'unknown',
         prop: 'yellow',
@@ -413,9 +528,8 @@ test('ReactElement plugin highlights syntax with color from theme option', () =>
     'Hello, Mouse!',
   );
   expect(
-    prettyFormat(jsx, {
+    formatElement(jsx, {
       highlight: true,
-      plugins: [ReactElement],
       theme: {
         value: 'red',
       },
@@ -430,9 +544,8 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
     'Hello, Mouse!',
   );
   expect(
-    prettyFormat(renderer.create(jsx).toJSON(), {
+    formatTestObject(renderer.create(jsx).toJSON(), {
       highlight: true,
-      plugins: [ReactTestComponent, ReactElement],
       theme: {
         value: 'red',
       },

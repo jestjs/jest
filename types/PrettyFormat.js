@@ -73,22 +73,45 @@ export type Config = {|
   spacingOuter: string,
 |};
 
+export type Printer = (
+  val: any,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+) => string;
+
+export type Test = any => boolean;
+
+export type NewPlugin = {|
+  serialize: (
+    val: any,
+    config: Config,
+    printer: Printer,
+    indentation: string,
+    depth: number,
+    refs: Refs,
+  ) => string,
+  test: Test,
+|};
+
 export type PluginOptions = {|
   edgeSpacing: string,
   min: boolean,
   spacing: string,
 |};
 
-export type Plugin = {
+export type OldPlugin = {|
   print: (
     val: any,
-    serialize: Print,
+    print: Print,
     indent: Indent,
-    opts: PluginOptions,
+    options: PluginOptions,
     colors: Colors,
   ) => string,
-  test: any => boolean,
-};
+  test: Test,
+|};
+
+export type Plugin = NewPlugin | OldPlugin;
 
 export type Plugins = Array<Plugin>;
 

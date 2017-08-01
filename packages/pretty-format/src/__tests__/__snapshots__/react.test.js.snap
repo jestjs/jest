@@ -3,9 +3,9 @@
 exports[`ReactElement plugin highlights syntax 1`] = `
 "<Mouse</>
   prop</>=<green>{
-    <div</>></>
+    <div></>
       </>mouse</>
-      <span</>></>
+      <span></>
         </>rat</>
       </span></>
     </div></>
@@ -24,9 +24,9 @@ exports[`ReactElement plugin highlights syntax with color from theme option 1`] 
 exports[`ReactTestComponent plugin highlights syntax 1`] = `
 "<Mouse</>
   prop</>=<green>{
-    <div</>></>
+    <div></>
       </>mouse</>
-      <span</>></>
+      <span></>
         </>rat</>
       </span></>
     </div></>
