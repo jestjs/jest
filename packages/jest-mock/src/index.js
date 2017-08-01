@@ -19,6 +19,7 @@ export type MockFunctionMetadata = {
   refID?: string | number,
   type?: string,
   value?: any,
+  length?: number,
 };
 
 type MockFunctionState = {
@@ -87,6 +88,70 @@ const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
   with: true,
   yield: true,
 });
+
+function matchArity(fn: any, length: number): any {
+  let mockConstructor;
+
+  switch (length) {
+    case 0:
+      mockConstructor = function() {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 1:
+      mockConstructor = function(a) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 2:
+      mockConstructor = function(a, b) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 3:
+      mockConstructor = function(a, b, c) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 4:
+      mockConstructor = function(a, b, c, d) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 5:
+      mockConstructor = function(a, b, c, d, e) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 6:
+      mockConstructor = function(a, b, c, d, e, f) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 7:
+      mockConstructor = function(a, b, c, d, e, f, g) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 8:
+      mockConstructor = function(a, b, c, d, e, f, g, h) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    case 9:
+      mockConstructor = function(a, b, c, d, e, f, g, h, i) {
+        return fn.apply(this, arguments);
+      };
+      break;
+    default:
+      mockConstructor = function(a, b, c, d, e, f, g, h, i, j) {
+        return fn.apply(this, arguments);
+      };
+      break;
+  }
+
+  return mockConstructor;
+}
 
 function isA(typeName: string, value: any): boolean {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
@@ -242,7 +307,7 @@ class ModuleMockerClass {
         {};
       const prototypeSlots = getSlots(prototype);
       const mocker = this;
-      const mockConstructor = function() {
+      const mockConstructor = matchArity(function() {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
@@ -298,7 +363,7 @@ class ModuleMockerClass {
         }
 
         return returnValue;
-      };
+      }, metadata.length || 0);
 
       f = this._createMockFunction(metadata, mockConstructor);
       f._isMockFunction = true;
@@ -358,6 +423,9 @@ class ModuleMockerClass {
         mockConfig.isReturnValueLastSet = false;
         mockConfig.defaultReturnValue = undefined;
         mockConfig.mockImpl = fn;
+
+        // Ensure proper arity
+
         return f;
       };
 
@@ -431,6 +499,7 @@ class ModuleMockerClass {
       MOCK_CONSTRUCTOR_NAME,
       body,
     );
+
     return createConstructor(mockConstructor);
   }
 
@@ -565,7 +634,8 @@ class ModuleMockerClass {
   }
 
   fn(implementation?: any): any {
-    const fn = this._makeComponent({type: 'function'});
+    const length = implementation ? implementation.length : 0;
+    const fn = this._makeComponent({length, type: 'function'});
     if (implementation) {
       fn.mockImplementation(implementation);
     }
