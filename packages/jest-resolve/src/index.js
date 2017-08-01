@@ -79,6 +79,7 @@ class Resolver {
       modulePaths: options.modulePaths,
       platforms: options.platforms,
       resolver: options.resolver,
+      rootDir: options.rootDir,
     };
     this._moduleMap = moduleMap;
     this._moduleIDCache = Object.create(null);
@@ -100,6 +101,7 @@ class Resolver {
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
+        rootDir: options.rootDir,
       });
     } catch (e) {}
     return null;
@@ -152,6 +154,7 @@ class Resolver {
         moduleDirectory,
         paths,
         resolver: this._options.resolver,
+        rootDir: this._options.rootDir,
       });
     };
 
@@ -316,39 +319,46 @@ class Resolver {
     const extensions = this._options.extensions;
     const moduleDirectory = this._options.moduleDirectories;
     const moduleNameMapper = this._options.moduleNameMapper;
+    const resolver = this._options.resolver;
 
     if (moduleNameMapper) {
       for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
         if (regex.test(moduleName)) {
+          // Note: once a moduleNameMapper matches the name, it must result
+          // in a module, or else an error is thrown.
           const matches = moduleName.match(regex);
-          if (!matches) {
-            moduleName = mappedModuleName;
-          } else {
-            moduleName = mappedModuleName.replace(
-              /\$([0-9]+)/g,
-              (_, index) => matches[parseInt(index, 10)],
-            );
-          }
+          const updatedName = matches
+            ? mappedModuleName.replace(
+                /\$([0-9]+)/g,
+                (_, index) => matches[parseInt(index, 10)],
+              )
+            : mappedModuleName;
 
           const module =
-            this.getModule(moduleName) ||
-            Resolver.findNodeModule(moduleName, {
+            this.getModule(updatedName) ||
+            Resolver.findNodeModule(updatedName, {
               basedir: dirname,
               browser: this._options.browser,
               extensions,
               moduleDirectory,
               paths,
+              resolver,
+              rootDir: this._options.rootDir,
             });
           if (!module) {
             const error = new Error(
               chalk.red(`${chalk.bold('Configuration error')}:
 
-Unknown module in configuration option ${chalk.bold('moduleNameMapper')}
+Could not locate module ${chalk.bold(moduleName)} (mapped as ${chalk.bold(
+                updatedName,
+              )})
+
 Please check:
 
 "moduleNameMapper": {
-  "${regex.toString()}": "${chalk.bold(moduleName)}"
-}`),
+  "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
+},
+"resolver": ${chalk.bold(resolver)}`),
             );
             error.stack = '';
             throw error;
@@ -356,6 +366,22 @@ Please check:
           return module;
         }
       }
+    }
+    if (resolver) {
+      // if moduleNameMapper didn't match anything, fallback to just the 
+      // regular resolver
+      const module =
+        this.getModule(moduleName) ||
+        Resolver.findNodeModule(moduleName, {
+          basedir: dirname,
+          browser: this._options.browser,
+          extensions,
+          moduleDirectory,
+          paths,
+          resolver,
+          rootDir: this._options.rootDir,
+        });
+      return module;
     }
     return null;
   }

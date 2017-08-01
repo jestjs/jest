@@ -13,12 +13,14 @@ exports[`moduleNameMapper wrong configuration 1`] = `
 
     Configuration error:
     
-    Unknown module in configuration option moduleNameMapper
+    Could not locate module ./style.css (mapped as no-such-module)
+    
     Please check:
     
     \\"moduleNameMapper\\": {
       \\"/\\\\.(css|less)$/\\": \\"no-such-module\\"
-    }
+    },
+    \\"resolver\\": undefined
 
 "
 `;
