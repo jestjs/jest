@@ -10,11 +10,11 @@
 
 const ansiStyle = require('ansi-styles');
 const prettyFormat = require('../');
-const ConvertAnsiPlugin = require('../plugins/convert_ansi');
+const {ConvertAnsi} = prettyFormat.plugins;
 
 const prettyFormatResult = (val: string) => {
   return prettyFormat(val, {
-    plugins: [ConvertAnsiPlugin],
+    plugins: [ConvertAnsi],
   });
 };
 

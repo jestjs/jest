@@ -371,36 +371,39 @@ function printComplexValue(
 
 function printPlugin(
   plugin: Plugin,
-  val,
+  val: any,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
 ): string {
-  function boundPrint(val) {
-    return print(val, config, indentation, depth, refs);
-  }
-
-  function boundIndent(str) {
-    const indentationNext = indentation + config.indent;
-    return (
-      indentationNext + str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
-    );
-  }
-
-  const opts = {
-    edgeSpacing: config.spacingOuter,
-    min: config.min,
-    spacing: config.spacingInner,
-  };
-
-  const printed = plugin.print(
-    val,
-    boundPrint,
-    boundIndent,
-    opts,
-    config.colors,
-  );
+  const printed = plugin.serialize
+    ? plugin.serialize(
+        val,
+        config,
+        (valChild, indentationChild, depthChild, refsChild) =>
+          print(valChild, config, indentationChild, depthChild, refsChild),
+        indentation,
+        depth,
+        refs,
+      )
+    : plugin.print(
+        val,
+        valChild => print(valChild, config, indentation, depth, refs),
+        str => {
+          const indentationNext = indentation + config.indent;
+          return (
+            indentationNext +
+            str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
+          );
+        },
+        {
+          edgeSpacing: config.spacingOuter,
+          min: config.min,
+          spacing: config.spacingInner,
+        },
+        config.colors,
+      );
   if (typeof printed !== 'string') {
     throw new Error(
       `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,

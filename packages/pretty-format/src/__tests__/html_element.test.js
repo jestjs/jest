@@ -12,10 +12,9 @@
 
 'use strict';
 
-const HTMLElementPlugin = require('../plugins/html_element');
-const toPrettyPrintTo = require('./expect_util').getPrettyPrint([
-  HTMLElementPlugin,
-]);
+const prettyFormat = require('../');
+const {HTMLElement} = prettyFormat.plugins;
+const toPrettyPrintTo = require('./expect_util').getPrettyPrint([HTMLElement]);
 
 const expect: any = global.expect;
 expect.extend({toPrettyPrintTo});
