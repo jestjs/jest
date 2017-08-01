@@ -13,6 +13,8 @@ import type {OptionsReceived} from 'types/PrettyFormat';
 const React = require('react');
 const renderer = require('react-test-renderer');
 
+const testSymbol = Symbol.for('react.test.json');
+
 const prettyFormat = require('../');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
@@ -368,6 +370,33 @@ test('supports array of elements', () => {
   expect(
     formatTestObject(val.map(element => renderer.create(element).toJSON())),
   ).toEqual(expected);
+});
+
+describe('test object for subset match', () => {
+  // Although test object returned by renderer.create(element).toJSON()
+  // has both props and children, make sure plugin allows them to be undefined.
+  test('undefined props', () => {
+    const val = {
+      $$typeof: testSymbol,
+      children: ['undefined', 'props'],
+      type: 'span',
+    };
+    expect(formatTestObject(val)).toEqual(
+      '<span>\n  undefined\n  props\n</span>',
+    );
+  });
+  test('undefined children', () => {
+    const val = {
+      $$typeof: testSymbol,
+      props: {
+        className: 'undefined children',
+      },
+      type: 'span',
+    };
+    expect(formatTestObject(val)).toEqual(
+      '<span\n  className="undefined children"\n/>',
+    );
+  });
 });
 
 describe('indent option', () => {

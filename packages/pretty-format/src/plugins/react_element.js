@@ -10,150 +10,63 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import escapeHTML from './lib/escape_html';
+import {printChildren, printElement, printProps} from './lib/markup';
 
 const elementSymbol = Symbol.for('react.element');
 
-function traverseChildren(opaqueChildren, cb) {
-  if (Array.isArray(opaqueChildren)) {
-    opaqueChildren.forEach(child => traverseChildren(child, cb));
-  } else if (opaqueChildren != null && opaqueChildren !== false) {
-    cb(opaqueChildren);
+const getType = element => {
+  if (typeof element.type === 'string') {
+    return element.type;
   }
-}
+  if (typeof element.type === 'function') {
+    return element.type.displayName || element.type.name || 'Unknown';
+  }
+  return 'Unknown';
+};
 
-function printChildren(
-  children: Array<any>,
-  config: Config,
-  printer: Printer,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-): string {
-  const colors = config.colors;
-  return children
-    .map(
-      child =>
-        config.spacingOuter +
-        indentation +
-        (typeof child === 'string'
-          ? colors.content.open + escapeHTML(child) + colors.content.close
-          : printer(child, indentation, depth, refs)),
-    )
-    .join('');
-}
+// Given element.props.children, or subtree during recursive traversal,
+// return flattened array of children.
+const getChildren = (arg, children = []) => {
+  if (Array.isArray(arg)) {
+    arg.forEach(item => {
+      getChildren(item, children);
+    });
+  } else if (arg != null && arg !== false) {
+    children.push(arg);
+  }
+  return children;
+};
 
-function printProps(
-  keys: Array<string>,
-  props: Object,
-  config: Config,
-  printer: Printer,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-): string {
-  const indentationNext = indentation + config.indent;
-  const colors = config.colors;
-  return keys
-    .sort()
-    .map(key => {
-      const value = props[key];
-      let printed = printer(value, indentationNext, depth, refs);
-
-      if (typeof value !== 'string') {
-        if (printed.indexOf('\n') !== -1) {
-          printed =
-            config.spacingOuter +
-            indentationNext +
-            printed +
-            config.spacingOuter +
-            indentation;
-        }
-        printed = '{' + printed + '}';
-      }
-
-      return (
-        config.spacingInner +
-        indentation +
-        colors.prop.open +
-        key +
-        colors.prop.close +
-        '=' +
-        colors.value.open +
-        printed +
-        colors.value.close
-      );
-    })
-    .join('');
-}
-
-export const serialize = (
+const serialize = (
   element: React$Element<*>,
   config: Config,
   printer: Printer,
   indentation: string,
   depth: number,
   refs: Refs,
-): string => {
-  const tag = config.colors.tag;
-  let elementName;
-  if (typeof element.type === 'string') {
-    elementName = element.type;
-  } else if (typeof element.type === 'function') {
-    elementName = element.type.displayName || element.type.name || 'Unknown';
-  } else {
-    elementName = 'Unknown';
-  }
-  let result = tag.open + '<' + elementName;
-
-  const keys = Object.keys(element.props).filter(key => key !== 'children');
-  const hasProps = keys.length !== 0;
-  if (hasProps) {
-    result +=
-      tag.close +
-      printProps(
-        keys,
-        element.props,
-        config,
-        printer,
-        indentation + config.indent,
-        depth,
-        refs,
-      ) +
-      config.spacingOuter +
-      indentation +
-      tag.open;
-  }
-
-  const flatChildren = [];
-  traverseChildren(element.props.children, child => {
-    flatChildren.push(child);
-  });
-  if (flatChildren.length !== 0) {
-    result +=
-      '>' +
-      tag.close +
-      printChildren(
-        flatChildren,
-        config,
-        printer,
-        indentation + config.indent,
-        depth,
-        refs,
-      ) +
-      config.spacingOuter +
-      indentation +
-      tag.open +
-      '</' +
-      elementName +
-      '>' +
-      tag.close;
-  } else {
-    result += (hasProps && !config.min ? '' : ' ') + '/>' + tag.close;
-  }
-
-  return result;
-};
+): string =>
+  printElement(
+    getType(element),
+    printProps(
+      Object.keys(element.props).filter(key => key !== 'children').sort(),
+      element.props,
+      config,
+      printer,
+      indentation + config.indent,
+      depth,
+      refs,
+    ),
+    printChildren(
+      getChildren(element.props.children),
+      config,
+      printer,
+      indentation + config.indent,
+      depth,
+      refs,
+    ),
+    config,
+    indentation,
+  );
 
 export const test = (val: any) => val && val.$$typeof === elementSymbol;
 
