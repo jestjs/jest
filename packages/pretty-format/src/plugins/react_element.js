@@ -14,16 +14,6 @@ import {printChildren, printElement, printProps} from './lib/markup';
 
 const elementSymbol = Symbol.for('react.element');
 
-const getType = element => {
-  if (typeof element.type === 'string') {
-    return element.type;
-  }
-  if (typeof element.type === 'function') {
-    return element.type.displayName || element.type.name || 'Unknown';
-  }
-  return 'Unknown';
-};
-
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
 const getChildren = (arg, children = []) => {
@@ -35,6 +25,16 @@ const getChildren = (arg, children = []) => {
     children.push(arg);
   }
   return children;
+};
+
+const getType = element => {
+  if (typeof element.type === 'string') {
+    return element.type;
+  }
+  if (typeof element.type === 'function') {
+    return element.type.displayName || element.type.name || 'Unknown';
+  }
+  return 'Unknown';
 };
 
 export const serialize = (
