@@ -142,7 +142,7 @@ export function printListItems(
 // with spacing, indentation, and separating punctuation (comma)
 // without surrounding punctuation (for example, braces)
 export function printObjectProperties(
-  keys: Array<string|Symbol>,
+  keys: Array<string | Symbol>,
   val: Object,
   config: Config,
   indentation: string,
