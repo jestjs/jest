@@ -196,7 +196,7 @@ describe(`indent option`, () => {
 
 describe(`maxDepth option`, () => {
   test(`matchers as leaf nodes`, () => {
-    options.maxDepth = 3;
+    options.maxDepth = 2;
     const val = {
       // ++depth === 1
       nested: [
@@ -229,7 +229,7 @@ describe(`maxDepth option`, () => {
 }`);
   });
   test(`matchers as internal nodes`, () => {
-    options.maxDepth = 3;
+    options.maxDepth = 2;
     const val = [
       // ++depth === 1
       expect.arrayContaining([
