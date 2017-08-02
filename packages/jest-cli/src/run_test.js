@@ -109,7 +109,7 @@ function runTest(
       result =>
         Promise.resolve().then(() => {
           environment.dispose();
-          if (config.logHeapUsage) {
+          if (globalConfig.logHeapUsage) {
             if (global.gc) {
               global.gc();
             }
