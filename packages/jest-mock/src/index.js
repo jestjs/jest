@@ -418,9 +418,6 @@ class ModuleMockerClass {
         mockConfig.isReturnValueLastSet = false;
         mockConfig.defaultReturnValue = undefined;
         mockConfig.mockImpl = fn;
-
-        // Ensure proper arity
-
         return f;
       };
 
