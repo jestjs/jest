@@ -10,8 +10,14 @@
 
 import type {Config, Printer, Refs} from 'types/PrettyFormat';
 
-// Return entries (for examples, of a map)
-// with spacing, indentation, and separating punctuation (comma)
+const getSymbols = Object.getOwnPropertySymbols || (obj => []);
+
+const isSymbol = key =>
+  // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
+  typeof key === 'symbol' || toString.call(key) === '[object Symbol]';
+
+// Return entries (for example, of a map)
+// with spacing, indentation, and comma
 // without surrounding punctuation (for example, braces)
 export function printIteratorEntries(
   iterator: Iterator<[any, any]>,
@@ -20,6 +26,9 @@ export function printIteratorEntries(
   depth: number,
   refs: Refs,
   printer: Printer,
+  // Too bad, so sad that separator for ECMAScript Map has been ' => '
+  // What a distracting diff if you change a data structure to/from
+  // ECMAScript Object or Immutable.Map/OrderedMap which use the default.
   separator: string = ': ',
 ): string {
   let result = '';
@@ -63,8 +72,8 @@ export function printIteratorEntries(
   return result;
 }
 
-// Return values (for examples, of a set)
-// with spacing, indentation, and separating punctuation (comma)
+// Return values (for example, of a set)
+// with spacing, indentation, and comma
 // without surrounding punctuation (braces or brackets)
 export function printIteratorValues(
   iterator: Iterator<any>,
@@ -102,8 +111,8 @@ export function printIteratorValues(
   return result;
 }
 
-// Return items (for examples, of an array)
-// with spacing, indentation, and separating punctuation (comma)
+// Return items (for example, of an array)
+// with spacing, indentation, and comma
 // without surrounding punctuation (for example, brackets)
 export function printListItems(
   list: any,
@@ -139,10 +148,9 @@ export function printListItems(
 }
 
 // Return properties of an object
-// with spacing, indentation, and separating punctuation (comma)
+// with spacing, indentation, and comma
 // without surrounding punctuation (for example, braces)
 export function printObjectProperties(
-  keys: Array<string | Symbol>,
   val: Object,
   config: Config,
   indentation: string,
@@ -151,6 +159,13 @@ export function printObjectProperties(
   printer: Printer,
 ): string {
   let result = '';
+  let keys = Object.keys(val).sort();
+  const symbols = getSymbols(val);
+
+  if (symbols.length) {
+    keys = keys.filter(key => !isSymbol(key)).concat(symbols);
+  }
+
   if (keys.length) {
     result += config.spacingOuter;
 

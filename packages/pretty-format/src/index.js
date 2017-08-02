@@ -45,12 +45,6 @@ const symbolToString = Symbol.prototype.toString;
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
 
-const getSymbols = Object.getOwnPropertySymbols || (obj => []);
-
-const isSymbol = key =>
-  // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
-  typeof key === 'symbol' || toString.call(key) === '[object Symbol]';
-
 function isToStringedArrayType(toStringed: string): boolean {
   return (
     toStringed === '[object Array]' ||
@@ -235,26 +229,8 @@ function printComplexValue(
     ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
     : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
       '{' +
-      printObjectProperties(
-        getKeysAndSymbols(val),
-        val,
-        config,
-        indentation,
-        depth,
-        refs,
-        printer,
-      ) +
+      printObjectProperties(val, config, indentation, depth, refs, printer) +
       '}';
-}
-
-function getKeysAndSymbols(val) {
-  const keys = Object.keys(val).sort();
-  const symbols = getSymbols(val);
-
-  if (symbols.length) {
-    return keys.filter(key => !isSymbol(key)).concat(symbols);
-  }
-  return keys;
 }
 
 function printPlugin(

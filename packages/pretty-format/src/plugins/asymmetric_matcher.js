@@ -47,7 +47,6 @@ export const serialize = (
       SPACE +
       '{' +
       printObjectProperties(
-        Object.keys(val.sample).sort(),
         val.sample,
         config,
         indentation,
