@@ -23,10 +23,10 @@ const testSymbol = Symbol.for('react.test.json');
 export const serialize = (
   object: ReactTestObject,
   config: Config,
-  printer: Printer,
   indentation: string,
   depth: number,
   refs: Refs,
+  printer: Printer,
 ): string =>
   printElement(
     object.type,
@@ -38,20 +38,20 @@ export const serialize = (
           // $FlowFixMe
           object.props,
           config,
-          printer,
           indentation + config.indent,
           depth,
           refs,
+          printer,
         )
       : '',
     object.children
       ? printChildren(
           object.children,
           config,
-          printer,
           indentation + config.indent,
           depth,
           refs,
+          printer,
         )
       : '',
     config,

@@ -40,10 +40,10 @@ const getType = element => {
 export const serialize = (
   element: React$Element<*>,
   config: Config,
-  printer: Printer,
   indentation: string,
   depth: number,
   refs: Refs,
+  printer: Printer,
 ): string =>
   printElement(
     getType(element),
@@ -51,18 +51,18 @@ export const serialize = (
       Object.keys(element.props).filter(key => key !== 'children').sort(),
       element.props,
       config,
-      printer,
       indentation + config.indent,
       depth,
       refs,
+      printer,
     ),
     printChildren(
       getChildren(element.props.children),
       config,
-      printer,
       indentation + config.indent,
       depth,
       refs,
+      printer,
     ),
     config,
     indentation,

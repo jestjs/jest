@@ -75,6 +75,7 @@ export type Config = {|
 
 export type Printer = (
   val: any,
+  config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
@@ -86,10 +87,10 @@ export type NewPlugin = {|
   serialize: (
     val: any,
     config: Config,
-    printer: Printer,
     indentation: string,
     depth: number,
     refs: Refs,
+    printer: Printer,
   ) => string,
   test: Test,
 |};

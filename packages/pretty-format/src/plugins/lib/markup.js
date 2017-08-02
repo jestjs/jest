@@ -12,69 +12,58 @@ import type {Config, Printer, Refs} from 'types/PrettyFormat';
 
 import escapeHTML from './escape_html';
 
-// Return spacing and indentation that precedes the property.
-const printProp = (
-  key: string,
-  value: any,
-  config: Config,
-  printer: Printer,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-): string => {
-  const indentationNext = indentation + config.indent;
-  let printed = printer(value, indentationNext, depth, refs);
-
-  if (typeof value !== 'string') {
-    if (printed.indexOf('\n') !== -1) {
-      printed =
-        config.spacingOuter +
-        indentationNext +
-        printed +
-        config.spacingOuter +
-        indentation;
-    }
-    printed = '{' + printed + '}';
-  }
-
-  const colors = config.colors;
-  return (
-    config.spacingInner +
-    indentation +
-    colors.prop.open +
-    key +
-    colors.prop.close +
-    '=' +
-    colors.value.open +
-    printed +
-    colors.value.close
-  );
-};
-
 // Return empty string if keys is empty.
 export const printProps = (
   keys: Array<string>,
   props: Object,
   config: Config,
-  printer: Printer,
   indentation: string,
   depth: number,
   refs: Refs,
-): string =>
-  keys
-    .map(key =>
-      printProp(key, props[key], config, printer, indentation, depth, refs),
-    )
+  printer: Printer,
+): string => {
+  const indentationNext = indentation + config.indent;
+  const colors = config.colors;
+  return keys
+    .map(key => {
+      const value = props[key];
+      let printed = printer(value, config, indentationNext, depth, refs);
+
+      if (typeof value !== 'string') {
+        if (printed.indexOf('\n') !== -1) {
+          printed =
+            config.spacingOuter +
+            indentationNext +
+            printed +
+            config.spacingOuter +
+            indentation;
+        }
+        printed = '{' + printed + '}';
+      }
+
+      return (
+        config.spacingInner +
+        indentation +
+        colors.prop.open +
+        key +
+        colors.prop.close +
+        '=' +
+        colors.value.open +
+        printed +
+        colors.value.close
+      );
+    })
     .join('');
+};
 
 // Return empty string if children is empty.
 export const printChildren = (
   children: Array<any>,
   config: Config,
-  printer: Printer,
   indentation: string,
   depth: number,
   refs: Refs,
+  printer: Printer,
 ): string => {
   const colors = config.colors;
   return children
@@ -84,7 +73,7 @@ export const printChildren = (
         indentation +
         (typeof child === 'string'
           ? colors.content.open + escapeHTML(child) + colors.content.close
-          : printer(child, indentation, depth, refs)),
+          : printer(child, config, indentation, depth, refs)),
     )
     .join('');
 };

@@ -10,19 +10,18 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
+import {printListItems, printObjectProperties} from '../collections';
+
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
 const SPACE = ' ';
-
-class ArrayContaining extends Array {}
-class ObjectContaining extends Object {}
 
 export const serialize = (
   val: any,
   config: Config,
-  print: Printer,
   indentation: string,
   depth: number,
   refs: Refs,
+  printer: Printer,
 ): string => {
   const stringedValue = val.toString();
 
@@ -30,10 +29,12 @@ export const serialize = (
     if (++depth > config.maxDepth) {
       return '[' + stringedValue + ']';
     }
-    const array = ArrayContaining.from(val.sample);
     return (
-      (config.min ? stringedValue + SPACE : '') +
-      print(array, indentation, depth, refs)
+      stringedValue +
+      SPACE +
+      '[' +
+      printListItems(val.sample, config, indentation, depth, refs, printer) +
+      ']'
     );
   }
 
@@ -41,19 +42,36 @@ export const serialize = (
     if (++depth > config.maxDepth) {
       return '[' + stringedValue + ']';
     }
-    const object = Object.assign(new ObjectContaining(), val.sample);
     return (
-      (config.min ? stringedValue + SPACE : '') +
-      print(object, indentation, depth, refs)
+      stringedValue +
+      SPACE +
+      '{' +
+      printObjectProperties(
+        val.sample,
+        config,
+        indentation,
+        depth,
+        refs,
+        printer,
+      ) +
+      '}'
     );
   }
 
   if (stringedValue === 'StringMatching') {
-    return stringedValue + SPACE + print(val.sample, indentation, depth, refs);
+    return (
+      stringedValue +
+      SPACE +
+      printer(val.sample, config, indentation, depth, refs)
+    );
   }
 
   if (stringedValue === 'StringContaining') {
-    return stringedValue + SPACE + print(val.sample, indentation, depth, refs);
+    return (
+      stringedValue +
+      SPACE +
+      printer(val.sample, config, indentation, depth, refs)
+    );
   }
 
   return val.toAsymmetricMatcher();
