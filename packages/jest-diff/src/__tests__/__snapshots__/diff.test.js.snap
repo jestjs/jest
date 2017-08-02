@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`collapses big diffs to patch format 1`] = `
-"<green>- Expected</>
+<green>- Expected</>
 <red>+ Received</>
 
-@@ -6,9 +6,9 @@</>
+@@ -6,9 +6,9 @@
 </><dim>     4,
 <dim>     5,
 <dim>     6,
@@ -14,14 +14,14 @@ exports[`collapses big diffs to patch format 1`] = `
 <dim>     9,
 <green>-    10,</>
 <dim>   ],
-<dim> }"
+<dim> }
 `;
 
 exports[`context number of lines: -1 (5 default) 1`] = `
-"<green>- Expected</>
+<green>- Expected</>
 <red>+ Received</>
 
-@@ -6,9 +6,9 @@</>
+@@ -6,9 +6,9 @@
 </><dim>     4,
 <dim>     5,
 <dim>     6,
@@ -31,50 +31,50 @@ exports[`context number of lines: -1 (5 default) 1`] = `
 <dim>     9,
 <green>-    10,</>
 <dim>   ],
-<dim> }"
+<dim> }
 `;
 
 exports[`context number of lines: 0  1`] = `
-"<green>- Expected</>
+<green>- Expected</>
 <red>+ Received</>
 
-@@ -11,0 +11,1 @@</>
+@@ -11,0 +11,1 @@
 </><red>+    10,</>
-@@ -12,1 +13,0 @@</>
-</><green>-    10,</>"
+@@ -12,1 +13,0 @@
+</><green>-    10,</>
 `;
 
 exports[`context number of lines: 1  1`] = `
-"<green>- Expected</>
+<green>- Expected</>
 <red>+ Received</>
 
-@@ -10,4 +10,4 @@</>
+@@ -10,4 +10,4 @@
 </><dim>     8,
 <red>+    10,</>
 <dim>     9,
 <green>-    10,</>
-<dim>   ],"
+<dim>   ],
 `;
 
 exports[`context number of lines: 2  1`] = `
-"<green>- Expected</>
+<green>- Expected</>
 <red>+ Received</>
 
-@@ -9,6 +9,6 @@</>
+@@ -9,6 +9,6 @@
 </><dim>     7,
 <dim>     8,
 <red>+    10,</>
 <dim>     9,
 <green>-    10,</>
 <dim>   ],
-<dim> }"
+<dim> }
 `;
 
 exports[`context number of lines: null (5 default) 1`] = `
-"<green>- Expected</>
+<green>- Expected</>
 <red>+ Received</>
 
-@@ -6,9 +6,9 @@</>
+@@ -6,9 +6,9 @@
 </><dim>     4,
 <dim>     5,
 <dim>     6,
@@ -84,21 +84,21 @@ exports[`context number of lines: null (5 default) 1`] = `
 <dim>     9,
 <green>-    10,</>
 <dim>   ],
-<dim> }"
+<dim> }
 `;
 
 exports[`falls back to not call toJSON if objects look identical 1`] = `
-"<dim>Compared values serialize to the same structure.
-<dim>Printing internal object structure without calling \`toJSON\` instead.
+<dim>Compared values serialize to the same structure.
+Printing internal object structure without calling \`toJSON\` instead.
 
 <green>- Expected</>
 <red>+ Received</>
 
 <dim>  <dim>Object {
-<green>-</> <green>  \\"line\\": 1,</>
-<red>+</> <red>  \\"line\\": 2,</>
-<dim>  <dim>  \\"toJSON\\": [Function toJSON],
-<dim>  <dim>}"
+<green>-</> <green>  "line": 1,</>
+<red>+</> <red>  "line": 2,</>
+<dim>  <dim>  "toJSON": [Function toJSON],
+<dim>  <dim>}
 `;
 
 exports[`prints a fallback message if two objects truly look identical 1`] = `"<dim>Compared values have no visual difference."`;

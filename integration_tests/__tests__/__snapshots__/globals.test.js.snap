@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`basic test constructs 1`] = `
-" PASS  __tests__/basic.test-constructs.test.js
+ PASS  __tests__/basic.test-constructs.test.js
   ✓ it
   ✓ test
   describe
     ✓ it
     ✓ test
 
-"
+
 `;
 
 exports[`basic test constructs 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
-"
+
 `;
 
 exports[`only 1`] = `
-" PASS  __tests__/only-constructs.test.js
+ PASS  __tests__/only-constructs.test.js
   ✓ test.only
   ✓ it.only
   ✓ fit
@@ -34,20 +34,20 @@ exports[`only 1`] = `
     describe
       ✓ test
 
-"
+
 `;
 
 exports[`only 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
-"
+
 `;
 
 exports[`only with expand arg 1`] = `
-" PASS  __tests__/only-constructs.test.js
+ PASS  __tests__/only-constructs.test.js
   ○ it
   ✓ test.only
   ✓ it.only
@@ -60,20 +60,20 @@ exports[`only with expand arg 1`] = `
     describe
       ✓ test
 
-"
+
 `;
 
 exports[`only with expand arg 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
-"
+
 `;
 
 exports[`skips 1`] = `
-" PASS  __tests__/skips-constructs.test.js
+ PASS  __tests__/skips-constructs.test.js
   ✓ it
   ○ skipped 4 tests
   xdescribe
@@ -83,20 +83,20 @@ exports[`skips 1`] = `
     describe
       ○ skipped 1 test
 
-"
+
 `;
 
 exports[`skips 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
-"
+
 `;
 
 exports[`skips with expand arg 1`] = `
-" PASS  __tests__/skips-constructs.test.js
+ PASS  __tests__/skips-constructs.test.js
   ✓ it
   ○ xtest
   ○ xit
@@ -110,49 +110,49 @@ exports[`skips with expand arg 1`] = `
     describe
       ○ test
 
-"
+
 `;
 
 exports[`skips with expand arg 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
-"
+
 `;
 
 exports[`tests with no implementation 1`] = `
-" PASS  __tests__/only-constructs.test.js
+ PASS  __tests__/only-constructs.test.js
   ✓ it
   ○ skipped 2 tests
 
-"
+
 `;
 
 exports[`tests with no implementation 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       2 skipped, 1 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
-"
+
 `;
 
 exports[`tests with no implementation with expand arg 1`] = `
-" PASS  __tests__/only-constructs.test.js
+ PASS  __tests__/only-constructs.test.js
   ✓ it
   ○ it, no implementation
   ○ test, no implementation
 
-"
+
 `;
 
 exports[`tests with no implementation with expand arg 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       2 skipped, 1 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
-"
+
 `;

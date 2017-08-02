@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Custom Reporters Integration IncompleteReporter for flexibility 1`] = `
-"onRunComplete is called
+onRunComplete is called
 Passed Tests: 1
 Failed Tests: 0
 Total Tests: 1
-"
+
 `;
 
 exports[`Custom Reporters Integration TestReporter with all tests failing 1`] = `
@@ -65,20 +65,20 @@ Object {
 `;
 
 exports[`Custom Reporters Integration default reporters enabled 1`] = `
-" PASS  __tests__/add.test.js
+ PASS  __tests__/add.test.js
   Custom Reporters
     ✓ adds ok
 
-"
+
 `;
 
 exports[`Custom Reporters Integration default reporters enabled 2`] = `
-"Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /add.test.js/i.
-"
+
 `;
 
 exports[`Custom Reporters Integration default reporters enabled 3`] = `
@@ -106,7 +106,7 @@ Object {
 `;
 
 exports[`Custom Reporters Integration invalid format for adding reporters 1`] = `
-"● Reporter Validation Error:
+● Reporter Validation Error:
 
   Unexpected value for Path at index 0 of reporter at index 0
   Expected:
@@ -121,31 +121,31 @@ exports[`Custom Reporters Integration invalid format for adding reporters 1`] = 
   Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
 
-"
+
 `;
 
 exports[`Custom Reporters Integration valid array format for adding reporters 1`] = `
-"{
-    \\"onRunComplete\\": {
-        \\"called\\": true,
-        \\"numPassedTests\\": 1,
-        \\"numFailedTests\\": 0,
-        \\"numTotalTests\\": 1
+{
+    "onRunComplete": {
+        "called": true,
+        "numPassedTests": 1,
+        "numFailedTests": 0,
+        "numTotalTests": 1
     },
-    \\"onRunStart\\": {
-        \\"called\\": true,
-        \\"options\\": \\"object\\"
+    "onRunStart": {
+        "called": true,
+        "options": "object"
     },
-    \\"onTestResult\\": {
-        \\"times\\": 1,
-        \\"called\\": true
+    "onTestResult": {
+        "times": 1,
+        "called": true
     },
-    \\"onTestStart\\": {
-        \\"called\\": true,
-        \\"path\\": false
+    "onTestStart": {
+        "called": true,
+        "path": false
     },
-    \\"options\\": {
-        \\"Dmitrii Abramov\\": \\"Awesome\\"
+    "options": {
+        "Dmitrii Abramov": "Awesome"
     }
-}"
+}
 `;

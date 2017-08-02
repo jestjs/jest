@@ -106,7 +106,9 @@ function printBasicValue(
     return printNumber(val);
   }
   if (typeOf === 'string') {
-    return '"' + val.replace(/"|\\/g, '\\$&') + '"';
+    return /\n/.test(val)
+      ? '`' + val + '`'
+      : '"' + val.replace(/"|\\/g, '\\$&') + '"';
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -423,13 +425,19 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
+function removeWrappingBackticks(str: string) {
+  return str.replace(/(^\s*)`|`(\s*)$/g, '$1$2');
+}
+
 function prettyFormat(val: any, options?: OptionsReceived): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
       const plugin = findPlugin(options.plugins, val);
       if (plugin !== null) {
-        return printPlugin(plugin, val, getConfig(options), '', 0, []);
+        return removeWrappingBackticks(
+          printPlugin(plugin, val, getConfig(options), '', 0, []),
+        );
       }
     }
   }
@@ -440,10 +448,12 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
     getEscapeRegex(options),
   );
   if (basicResult !== null) {
-    return basicResult;
+    return removeWrappingBackticks(basicResult);
   }
 
-  return printComplexValue(val, getConfig(options), '', 0, []);
+  return removeWrappingBackticks(
+    printComplexValue(val, getConfig(options), '', 0, []),
+  );
 }
 
 prettyFormat.plugins = {

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
-"
+
 
 
  pattern › p
@@ -32,11 +32,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
 
    ...and 1 more file
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
-"
+
 
 
  pattern › p.
@@ -67,11 +67,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
 
    ...and 1 more file
 [MOCK - cursorTo(13, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
-"
+
 
 
  pattern › p.*
@@ -102,11 +102,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
 
    ...and 1 more file
 [MOCK - cursorTo(14, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
-"
+
 
 
  pattern › p.*1
@@ -121,11 +121,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
 
  › path/to/file11-test.js
 [MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
-"
+
 
 
  pattern › p.*10
@@ -136,11 +136,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
 
  › path/to/file10-test.js
 [MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
-"
+
 
 
  pattern › p.*1
@@ -155,11 +155,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
 
  › path/to/file11-test.js
 [MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
-"
+
 
 
  pattern › p.*
@@ -190,11 +190,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
 
    ...and 1 more file
 [MOCK - cursorTo(14, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
-"
+
 
 
  pattern › p.*3
@@ -205,11 +205,11 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
 
  › path/to/file3-test.js
 [MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
-"[MOCK - cursorHide]
+[MOCK - cursorHide]
 [MOCK - clearScreen]
 
 Pattern Mode Usage
@@ -227,11 +227,11 @@ Pattern Mode Usage
 
  Start typing to filter by a filename regex pattern.
 [MOCK - cursorTo(11, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`] = `
-"
+
 
 
  pattern › a
@@ -262,11 +262,11 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`
 
    ...and 1 more file
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`] = `
-"
+
 
 
  pattern › a
@@ -297,11 +297,11 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
 
    ...and 1 more file
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Results in pattern mode get truncated appropriately 3`] = `
-"
+
 
 
  pattern › a
@@ -332,11 +332,11 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 3`
 
    ...and 1 more file
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Shows the appropiate header when both filters are active 1`] = `
-"[MOCK - cursorHide]
+[MOCK - cursorHide]
 [MOCK - clearScreen]
 
 Active Filters: filename /p.*10/, test name /test/
@@ -357,11 +357,11 @@ Pattern Mode Usage
 
  Start typing to filter by a test name regex pattern.
 [MOCK - cursorTo(11, 7)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Shows the appropiate header when the filename filter is active 1`] = `
-"[MOCK - cursorHide]
+[MOCK - cursorHide]
 [MOCK - clearScreen]
 
 Active Filters: filename /p.*10/
@@ -382,11 +382,11 @@ Pattern Mode Usage
 
  Start typing to filter by a filename regex pattern.
 [MOCK - cursorTo(11, 7)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Shows the appropiate header when the filename filter is active 2`] = `
-"[MOCK - cursorHide]
+[MOCK - cursorHide]
 [MOCK - clearScreen]
 
 Active Filters: filename /p/
@@ -407,11 +407,11 @@ Pattern Mode Usage
 
  Start typing to filter by a filename regex pattern.
 [MOCK - cursorTo(11, 7)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Shows the appropiate header when the test name filter is active 1`] = `
-"[MOCK - cursorHide]
+[MOCK - cursorHide]
 [MOCK - clearScreen]
 
 Active Filters: test name /test/
@@ -432,11 +432,11 @@ Pattern Mode Usage
 
  Start typing to filter by a test name regex pattern.
 [MOCK - cursorTo(11, 7)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Shows the appropiate header when the test name filter is active 2`] = `
-"[MOCK - cursorHide]
+[MOCK - cursorHide]
 [MOCK - clearScreen]
 
 Active Filters: test name /t/
@@ -457,7 +457,7 @@ Pattern Mode Usage
 
  Start typing to filter by a test name regex pattern.
 [MOCK - cursorTo(11, 7)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows can select a specific file name from the typeahead results 1`] = `"path/to/file2-test.js"`;
