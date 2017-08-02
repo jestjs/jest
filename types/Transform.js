@@ -25,6 +25,11 @@ export type TransformOptions = {|
   instrument: boolean,
 |};
 
+export type CacheKeyOptions = {|
+  instrument: boolean,
+  mapCoverage: boolean,
+|};
+
 export type Transformer = {|
   canInstrument?: boolean,
   createTransformer(options: any): Transformer,
@@ -33,7 +38,7 @@ export type Transformer = {|
     fileData: string,
     filePath: Path,
     configStr: string,
-    options: TransformOptions,
+    options: CacheKeyOptions,
   ) => string,
 
   process: (
