@@ -22,6 +22,13 @@ import type {
 
 import style from 'ansi-styles';
 
+import {
+  printIteratorEntries,
+  printIteratorValues,
+  printListItems,
+  printObjectProperties,
+} from './collections';
+
 import AsymmetricMatcher from './plugins/asymmetric_matcher';
 import ConvertAnsi from './plugins/convert_ansi';
 import HTMLElement from './plugins/html_element';
@@ -37,12 +44,6 @@ const symbolToString = Symbol.prototype.toString;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
-
-const getSymbols = Object.getOwnPropertySymbols || (obj => []);
-
-const isSymbol = key =>
-  // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
-  typeof key === 'symbol' || toString.call(key) === '[object Symbol]';
 
 function isToStringedArrayType(toStringed: string): boolean {
   return (
@@ -152,162 +153,6 @@ function printBasicValue(
   return null;
 }
 
-function printListItems(
-  list: any,
-  config: Config,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-): string {
-  let result = '';
-
-  if (list.length) {
-    result += config.spacingOuter;
-
-    const indentationNext = indentation + config.indent;
-
-    for (let i = 0; i < list.length; i++) {
-      result +=
-        indentationNext + print(list[i], config, indentationNext, depth, refs);
-
-      if (i < list.length - 1) {
-        result += ',' + config.spacingInner;
-      } else if (!config.min) {
-        result += ',';
-      }
-    }
-
-    result += config.spacingOuter + indentation;
-  }
-
-  return result;
-}
-
-function printMapEntries(
-  val: Map<any, any>,
-  config: Config,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-): string {
-  let result = '';
-  const iterator = val.entries();
-  let current = iterator.next();
-
-  if (!current.done) {
-    result += config.spacingOuter;
-
-    const indentationNext = indentation + config.indent;
-
-    while (!current.done) {
-      const name = print(
-        current.value[0],
-        config,
-        indentationNext,
-        depth,
-        refs,
-      );
-      const value = print(
-        current.value[1],
-        config,
-        indentationNext,
-        depth,
-        refs,
-      );
-
-      result += indentationNext + name + ' => ' + value;
-
-      current = iterator.next();
-
-      if (!current.done) {
-        result += ',' + config.spacingInner;
-      } else if (!config.min) {
-        result += ',';
-      }
-    }
-
-    result += config.spacingOuter + indentation;
-  }
-
-  return result;
-}
-
-function printObjectProperties(
-  val: Object,
-  config: Config,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-): string {
-  let result = '';
-  let keys = Object.keys(val).sort();
-  const symbols = getSymbols(val);
-
-  if (symbols.length) {
-    keys = keys.filter(key => !isSymbol(key)).concat(symbols);
-  }
-
-  if (keys.length) {
-    result += config.spacingOuter;
-
-    const indentationNext = indentation + config.indent;
-
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const name = print(key, config, indentationNext, depth, refs);
-      const value = print(val[key], config, indentationNext, depth, refs);
-
-      result += indentationNext + name + ': ' + value;
-
-      if (i < keys.length - 1) {
-        result += ',' + config.spacingInner;
-      } else if (!config.min) {
-        result += ',';
-      }
-    }
-
-    result += config.spacingOuter + indentation;
-  }
-
-  return result;
-}
-
-function printSetValues(
-  val: Set<any>,
-  config: Config,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-): string {
-  let result = '';
-  const iterator = val.values();
-  let current = iterator.next();
-
-  if (!current.done) {
-    result += config.spacingOuter;
-
-    const indentationNext = indentation + config.indent;
-
-    while (!current.done) {
-      result +=
-        indentationNext +
-        print(current.value, config, indentationNext, depth, refs);
-
-      current = iterator.next();
-
-      if (!current.done) {
-        result += ',' + config.spacingInner;
-      } else if (!config.min) {
-        result += ',';
-      }
-    }
-
-    result += config.spacingOuter + indentation;
-  }
-
-  return result;
-}
-
 function printComplexValue(
   val: any,
   config: Config,
@@ -330,7 +175,7 @@ function printComplexValue(
     val.toJSON &&
     typeof val.toJSON === 'function'
   ) {
-    return print(val.toJSON(), config, indentation, depth, refs);
+    return printer(val.toJSON(), config, indentation, depth, refs);
   }
 
   const toStringed = toString.call(val);
@@ -339,7 +184,7 @@ function printComplexValue(
       ? '[Arguments]'
       : (min ? '' : 'Arguments ') +
         '[' +
-        printListItems(val, config, indentation, depth, refs) +
+        printListItems(val, config, indentation, depth, refs, printer) +
         ']';
   }
   if (isToStringedArrayType(toStringed)) {
@@ -347,25 +192,44 @@ function printComplexValue(
       ? '[' + val.constructor.name + ']'
       : (min ? '' : val.constructor.name + ' ') +
         '[' +
-        printListItems(val, config, indentation, depth, refs) +
+        printListItems(val, config, indentation, depth, refs, printer) +
         ']';
   }
   if (toStringed === '[object Map]') {
     return hitMaxDepth
       ? '[Map]'
-      : 'Map {' + printMapEntries(val, config, indentation, depth, refs) + '}';
+      : 'Map {' +
+        printIteratorEntries(
+          val.entries(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+          ' => ',
+        ) +
+        '}';
   }
   if (toStringed === '[object Set]') {
     return hitMaxDepth
       ? '[Set]'
-      : 'Set {' + printSetValues(val, config, indentation, depth, refs) + '}';
+      : 'Set {' +
+        printIteratorValues(
+          val.values(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        ) +
+        '}';
   }
 
   return hitMaxDepth
     ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
     : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
       '{' +
-      printObjectProperties(val, config, indentation, depth, refs) +
+      printObjectProperties(val, config, indentation, depth, refs, printer) +
       '}';
 }
 
@@ -378,18 +242,10 @@ function printPlugin(
   refs: Refs,
 ): string {
   const printed = plugin.serialize
-    ? plugin.serialize(
-        val,
-        config,
-        (valChild, indentationChild, depthChild, refsChild) =>
-          print(valChild, config, indentationChild, depthChild, refsChild),
-        indentation,
-        depth,
-        refs,
-      )
+    ? plugin.serialize(val, config, indentation, depth, refs, printer)
     : plugin.print(
         val,
-        valChild => print(valChild, config, indentation, depth, refs),
+        valChild => printer(valChild, config, indentation, depth, refs),
         str => {
           const indentationNext = indentation + config.indent;
           return (
@@ -422,7 +278,7 @@ function findPlugin(plugins: Plugins, val: any) {
   return null;
 }
 
-function print(
+function printer(
   val: any,
   config: Config,
   indentation: string,
