@@ -76,6 +76,7 @@ class ScriptTransformer {
         .update(
           transformer.getCacheKey(fileData, filename, configString, {
             instrument,
+            mapCoverage,
           }),
         )
         .update(CACHE_VERSION)
