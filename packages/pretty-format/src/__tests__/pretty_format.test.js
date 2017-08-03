@@ -162,11 +162,46 @@ describe('prettyFormat()', () => {
   });
 
   it('prints a map with non-string keys', () => {
-    const val = new Map();
-    val.set({prop: 'value'}, {prop: 'value'});
-    expect(prettyFormat(val)).toEqual(
-      'Map {\n  Object {\n    "prop": "value",\n  } => Object {\n    "prop": "value",\n  },\n}',
-    );
+    const val = new Map([
+      ['multi\nline\nstring', 'multiline string'],
+      [false, 'boolean'],
+      ['false', 'string'],
+      [0, 'number'],
+      ['0', 'string'],
+      [null, 'null'],
+      ['null', 'string'],
+      [undefined, 'undefined'],
+      ['undefined', 'string'],
+      [Symbol('description'), 'symbol'],
+      ['Symbol(description)', 'string'],
+      [['array', 'key'], 'array'],
+      [{key: 'value'}, 'object'],
+    ]);
+    const expected = [
+      'Map {',
+      '  "multi',
+      'line',
+      'string" => "multiline string",',
+      '  false => "boolean",',
+      '  "false" => "string",',
+      '  0 => "number",',
+      '  "0" => "string",',
+      '  null => "null",',
+      '  "null" => "string",',
+      '  undefined => "undefined",',
+      '  "undefined" => "string",',
+      '  Symbol(description) => "symbol",',
+      '  "Symbol(description)" => "string",',
+      '  Array [',
+      '    "array",',
+      '    "key",',
+      '  ] => "array",',
+      '  Object {',
+      '    "key": "value",',
+      '  } => "object",',
+      '}',
+    ].join('\n');
+    expect(prettyFormat(val)).toEqual(expected);
   });
 
   it('prints NaN', () => {

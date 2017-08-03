@@ -8,58 +8,119 @@
  * @flow
  */
 
-import type {Colors, Indent, PluginOptions, Print} from 'types/PrettyFormat';
+import type {Config, Printer, Refs} from 'types/PrettyFormat';
+
+import {printIteratorEntries, printIteratorValues} from '../../collections';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
 
-const addKey = (isMap: boolean, key: any) => (isMap ? key + ': ' : '');
-
-const addFinalEdgeSpacing = (length: number, edgeSpacing: string) =>
-  length !== 0 ? edgeSpacing : '';
-
 const printImmutable = (
   val: any,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
   immutableDataStructureName: string,
   isMap: boolean,
 ): string => {
-  const [openTag, closeTag] = isMap ? ['{', '}'] : ['[', ']'];
-  const fullStructureName = val._name || immutableDataStructureName;
-
-  let result =
-    IMMUTABLE_NAMESPACE +
-    fullStructureName +
-    SPACE +
-    openTag +
-    opts.edgeSpacing;
-
-  const immutableArray = [];
-
-  const pushToImmutableArray = (item: any, key: string) => {
-    immutableArray.push(indent(addKey(isMap, key) + print(item)));
-  };
-
-  if (Array.isArray(val._keys)) {
-    // if we have a record, we can not iterate on it directly
-    val._keys.forEach(key => pushToImmutableArray(val.get(key), key));
-  } else {
-    val.forEach((item, key) => pushToImmutableArray(item, key));
+  const name = IMMUTABLE_NAMESPACE + (val._name || immutableDataStructureName);
+  if (++depth > config.maxDepth) {
+    return '[' + name + ']';
   }
 
-  result += immutableArray.join(',' + opts.spacing);
-  if (!opts.min && immutableArray.length !== 0) {
-    result += ',';
+  if (isMap) {
+    if (Array.isArray(val._keys)) {
+      return (
+        name +
+        SPACE +
+        '{' +
+        (val._keys.length !== 0
+          ? printRecordProperties(
+              val,
+              config,
+              indentation,
+              depth,
+              refs,
+              printer,
+            )
+          : config.spacingOuter + indentation) +
+        '}'
+      );
+    }
+    return (
+      name +
+      SPACE +
+      '{' +
+      (val.size !== 0
+        ? printIteratorEntries(
+            val.entries(),
+            config,
+            indentation,
+            depth,
+            refs,
+            printer,
+          )
+        : config.spacingOuter + indentation) +
+      '}'
+    );
   }
-
   return (
-    result +
-    addFinalEdgeSpacing(immutableArray.length, opts.edgeSpacing) +
-    closeTag
+    name +
+    SPACE +
+    '[' +
+    (val.size !== 0
+      ? printIteratorValues(
+          val.values(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )
+      : config.spacingOuter + indentation) +
+    ']'
   );
 };
+
+// Return properties of a record
+// with spacing, indentation, and comma
+// without surrounding braces
+export function printRecordProperties(
+  val: Object,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+): string {
+  let result = '';
+  const keys = val._keys;
+
+  if (keys.length) {
+    result += config.spacingOuter;
+
+    const indentationNext = indentation + config.indent;
+
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const name = printer(key, config, indentationNext, depth, refs);
+      const value = printer(val.get(key), config, indentationNext, depth, refs);
+
+      result += indentationNext + name + ': ' + value;
+
+      if (i < keys.length - 1) {
+        result += ',' + config.spacingInner;
+      } else if (!config.min) {
+        result += ',';
+      }
+    }
+
+    result += config.spacingOuter + indentation;
+  }
+
+  return result;
+}
 
 export default printImmutable;

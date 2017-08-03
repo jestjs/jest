@@ -12,13 +12,12 @@
 
 import React from 'react';
 import Immutable from 'immutable';
-import ReactElementPlugin from '../plugins/react_element';
-import ReactTestComponentPlugin from '../plugins/react_test_component';
-import ImmutablePlugins from '../plugins/immutable_plugins';
+import prettyFormat from '../';
+const {Immutable: ImmutablePlugins, ReactElement} = prettyFormat.plugins;
 import expectUtil from './expect_util';
 
 const toPrettyPrintTo = expectUtil.getPrettyPrint(
-  [ReactElementPlugin, ReactTestComponentPlugin].concat(ImmutablePlugins),
+  [ReactElement].concat(ImmutablePlugins),
 );
 
 const expect = global.expect;
@@ -97,19 +96,19 @@ describe('Immutable.OrderedSet plugin', () => {
     );
   });
 
-  it('supports React components {min: true}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: true}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.OrderedSet([reactComponent, reactComponent]),
+      Immutable.OrderedSet([reactElement, reactElement]),
     ).toPrettyPrintTo('Immutable.OrderedSet [<Mouse>Hello World</Mouse>]', {
       min: true,
     });
   });
 
-  it('supports React components {min: false}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: false}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.OrderedSet([reactComponent, reactComponent]),
+      Immutable.OrderedSet([reactElement, reactElement]),
     ).toPrettyPrintTo(
       'Immutable.OrderedSet [\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
       {min: false},
@@ -180,19 +179,19 @@ describe('Immutable.List plugin', () => {
     );
   });
 
-  it('supports React components {min: true}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: true}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.List([reactComponent, reactComponent]),
+      Immutable.List([reactElement, reactElement]),
     ).toPrettyPrintTo(
       'Immutable.List [<Mouse>Hello World</Mouse>, <Mouse>Hello World</Mouse>]',
       {min: true},
     );
   });
 
-  it('supports React components {min: false}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
-    expect(Immutable.List([reactComponent, reactComponent])).toPrettyPrintTo(
+  it('supports React elements {min: false}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
+    expect(Immutable.List([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.List [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
     );
   });
@@ -263,19 +262,19 @@ describe('Immutable.Stack plugin', () => {
     );
   });
 
-  it('supports React components {min: true}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: true}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.Stack([reactComponent, reactComponent]),
+      Immutable.Stack([reactElement, reactElement]),
     ).toPrettyPrintTo(
       'Immutable.Stack [<Mouse>Hello World</Mouse>, <Mouse>Hello World</Mouse>]',
       {min: true},
     );
   });
 
-  it('supports React components {min: false}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
-    expect(Immutable.Stack([reactComponent, reactComponent])).toPrettyPrintTo(
+  it('supports React elements {min: false}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
+    expect(Immutable.Stack([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.Stack [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
     );
   });
@@ -342,18 +341,18 @@ describe('Immutable.Set plugin', () => {
     );
   });
 
-  it('supports React components {min: true}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: true}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.Set([reactComponent, reactComponent]),
+      Immutable.Set([reactElement, reactElement]),
     ).toPrettyPrintTo('Immutable.Set [<Mouse>Hello World</Mouse>]', {
       min: true,
     });
   });
 
-  it('supports React components {min: false}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
-    expect(Immutable.Set([reactComponent, reactComponent])).toPrettyPrintTo(
+  it('supports React elements {min: false}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
+    expect(Immutable.Set([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.Set [\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
     );
   });
@@ -371,7 +370,7 @@ describe('Immutable.Map plugin', () => {
   });
 
   it('supports an object with single key', () => {
-    expect(Immutable.Map({a: 1})).toPrettyPrintTo('Immutable.Map {a: 1}', {
+    expect(Immutable.Map({a: 1})).toPrettyPrintTo('Immutable.Map {"a": 1}', {
       min: true,
     });
   });
@@ -379,45 +378,43 @@ describe('Immutable.Map plugin', () => {
   it('supports an object with multiple keys {min: true}', () => {
     expect(
       Immutable.Map({a: 1, b: 2, c: 3}),
-    ).toPrettyPrintTo('Immutable.Map {a: 1, b: 2, c: 3}', {min: true});
+    ).toPrettyPrintTo('Immutable.Map {"a": 1, "b": 2, "c": 3}', {min: true});
   });
 
   it('supports an object with multiple keys {min: false}', () => {
     expect(Immutable.Map({a: 1, b: 2, c: 3})).toPrettyPrintTo(
-      'Immutable.Map {\n  a: 1,\n  b: 2,\n  c: 3,\n}',
+      'Immutable.Map {\n  "a": 1,\n  "b": 2,\n  "c": 3,\n}',
     );
   });
 
   it('supports object elements {min: true}', () => {
     expect(
       Immutable.Map({key: {a: 1, b: 2, c: 3}}),
-    ).toPrettyPrintTo('Immutable.Map {key: {"a": 1, "b": 2, "c": 3}}', {
+    ).toPrettyPrintTo('Immutable.Map {"key": {"a": 1, "b": 2, "c": 3}}', {
       min: true,
     });
   });
 
   it('supports object elements {min: false}', () => {
     expect(Immutable.Map({key: {a: 1, b: 2, c: 3}})).toPrettyPrintTo(
-      'Immutable.Map {\n  key: Object {\n    "a": 1,\n    "b": 2,\n    "c": 3,\n  },\n}',
+      'Immutable.Map {\n  "key": Object {\n    "a": 1,\n    "b": 2,\n    "c": 3,\n  },\n}',
     );
   });
 
-  it('supports React components {min: true}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: true}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.Map({a: reactComponent, b: reactComponent}),
+      Immutable.Map({a: reactElement, b: reactElement}),
     ).toPrettyPrintTo(
-      'Immutable.Map {a: <Mouse>Hello World</Mouse>, b: <Mouse>Hello World</Mouse>}',
+      'Immutable.Map {"a": <Mouse>Hello World</Mouse>, "b": <Mouse>Hello World</Mouse>}',
       {min: true},
     );
   });
 
-  it('supports React components {min: false}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
-    expect(
-      Immutable.Map({a: reactComponent, b: reactComponent}),
-    ).toPrettyPrintTo(
-      'Immutable.Map {\n  a: <Mouse>\n    Hello World\n  </Mouse>,\n  b: <Mouse>\n    Hello World\n  </Mouse>,\n}',
+  it('supports React elements {min: false}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
+    expect(Immutable.Map({a: reactElement, b: reactElement})).toPrettyPrintTo(
+      'Immutable.Map {\n  "a": <Mouse>\n    Hello World\n  </Mouse>,\n  "b": <Mouse>\n    Hello World\n  </Mouse>,\n}',
     );
   });
 });
@@ -438,52 +435,104 @@ describe('Immutable.OrderedMap plugin', () => {
   it('supports an object with single key', () => {
     expect(
       Immutable.OrderedMap({a: 1}),
-    ).toPrettyPrintTo('Immutable.OrderedMap {a: 1}', {min: true});
+    ).toPrettyPrintTo('Immutable.OrderedMap {"a": 1}', {min: true});
   });
 
   it('supports an object with multiple keys {min: true}', () => {
     expect(
       Immutable.OrderedMap({a: 1, b: 2, c: 3}),
-    ).toPrettyPrintTo('Immutable.OrderedMap {a: 1, b: 2, c: 3}', {min: true});
+    ).toPrettyPrintTo('Immutable.OrderedMap {"a": 1, "b": 2, "c": 3}', {
+      min: true,
+    });
   });
 
   it('supports an object with multiple keys {min: false}', () => {
     expect(Immutable.OrderedMap({a: 1, b: 2, c: 3})).toPrettyPrintTo(
-      'Immutable.OrderedMap {\n  a: 1,\n  b: 2,\n  c: 3,\n}',
+      'Immutable.OrderedMap {\n  "a": 1,\n  "b": 2,\n  "c": 3,\n}',
     );
   });
 
   it('supports object elements {min: true}', () => {
     expect(
       Immutable.OrderedMap({key: {a: 1, b: 2, c: 3}}),
-    ).toPrettyPrintTo('Immutable.OrderedMap {key: {"a": 1, "b": 2, "c": 3}}', {
-      min: true,
-    });
+    ).toPrettyPrintTo(
+      'Immutable.OrderedMap {"key": {"a": 1, "b": 2, "c": 3}}',
+      {
+        min: true,
+      },
+    );
   });
 
   it('supports object elements {min: false}', () => {
     expect(Immutable.OrderedMap({key: {a: 1, b: 2, c: 3}})).toPrettyPrintTo(
-      'Immutable.OrderedMap {\n  key: Object {\n    "a": 1,\n    "b": 2,\n    "c": 3,\n  },\n}',
+      'Immutable.OrderedMap {\n  "key": Object {\n    "a": 1,\n    "b": 2,\n    "c": 3,\n  },\n}',
     );
   });
 
-  it('supports React components {min: true}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: true}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.OrderedMap({a: reactComponent, b: reactComponent}),
+      Immutable.OrderedMap({a: reactElement, b: reactElement}),
     ).toPrettyPrintTo(
-      'Immutable.OrderedMap {a: <Mouse>Hello World</Mouse>, b: <Mouse>Hello World</Mouse>}',
+      'Immutable.OrderedMap {"a": <Mouse>Hello World</Mouse>, "b": <Mouse>Hello World</Mouse>}',
       {min: true},
     );
   });
 
-  it('supports React components {min: false}', () => {
-    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+  it('supports React elements {min: false}', () => {
+    const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
-      Immutable.OrderedMap({a: reactComponent, b: reactComponent}),
+      Immutable.OrderedMap({a: reactElement, b: reactElement}),
     ).toPrettyPrintTo(
-      'Immutable.OrderedMap {\n  a: <Mouse>\n    Hello World\n  </Mouse>,\n  b: <Mouse>\n    Hello World\n  </Mouse>,\n}',
+      'Immutable.OrderedMap {\n  "a": <Mouse>\n    Hello World\n  </Mouse>,\n  "b": <Mouse>\n    Hello World\n  </Mouse>,\n}',
     );
+  });
+
+  it('supports non-string keys', () => {
+    const val = Immutable.OrderedMap([
+      ['multi\nline\nstring', 'multiline string'],
+      [false, 'boolean'],
+      ['false', 'string'],
+      [0, 'number'],
+      ['0', 'string'],
+      [null, 'null'],
+      ['null', 'string'],
+      [undefined, 'undefined'],
+      ['undefined', 'string'],
+      [Symbol('description'), 'symbol'],
+      ['Symbol(description)', 'string'],
+      [['array', 'key'], 'array'],
+      [{key: 'value'}, 'object'],
+      [Immutable.Map({key: 'value'}), 'immutable map'],
+    ]);
+    const expected = [
+      'Immutable.OrderedMap {',
+      '  "multi',
+      'line',
+      'string": "multiline string",',
+      '  false: "boolean",',
+      '  "false": "string",',
+      '  0: "number",',
+      '  "0": "string",',
+      '  null: "null",',
+      '  "null": "string",',
+      '  undefined: "undefined",',
+      '  "undefined": "string",',
+      '  Symbol(description): "symbol",',
+      '  "Symbol(description)": "string",',
+      '  Array [',
+      '    "array",',
+      '    "key",',
+      '  ]: "array",',
+      '  Object {',
+      '    "key": "value",',
+      '  }: "object",',
+      '  Immutable.Map {',
+      '    "key": "value",',
+      '  }: "immutable map",',
+      '}',
+    ].join('\n');
+    expect(val).toPrettyPrintTo(expected);
   });
 });
 
@@ -507,7 +556,7 @@ describe('Immutable.Record plugin', () => {
   it('supports a record with descriptive name', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
-    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {a: 1, b: 2}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {"a": 1, "b": 2}', {
       min: true,
     });
   });
@@ -515,7 +564,7 @@ describe('Immutable.Record plugin', () => {
   it('supports a record without descriptive name', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2});
 
-    expect(ABRecord()).toPrettyPrintTo('Immutable.Record {a: 1, b: 2}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.Record {"a": 1, "b": 2}', {
       min: true,
     });
   });
@@ -525,14 +574,14 @@ describe('Immutable.Record plugin', () => {
 
     expect(
       ABRecord({a: 3, b: 4}),
-    ).toPrettyPrintTo('Immutable.ABRecord {a: 3, b: 4}', {min: true});
+    ).toPrettyPrintTo('Immutable.ABRecord {"a": 3, "b": 4}', {min: true});
   });
 
   it('supports a record with values {min: false}', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
     expect(ABRecord({a: 3, b: 4})).toPrettyPrintTo(
-      'Immutable.ABRecord {\n  a: 3,\n  b: 4,\n}',
+      'Immutable.ABRecord {\n  "a": 3,\n  "b": 4,\n}',
     );
   });
 
@@ -544,9 +593,12 @@ describe('Immutable.Record plugin', () => {
 
     expect(
       ABRecord(),
-    ).toPrettyPrintTo('Immutable.ABRecord {a: Immutable.Map {c: 1}, b: 2}', {
-      min: true,
-    });
+    ).toPrettyPrintTo(
+      'Immutable.ABRecord {"a": Immutable.Map {"c": 1}, "b": 2}',
+      {
+        min: true,
+      },
+    );
   });
 
   it('supports a record with Map value {min: false}', () => {
@@ -556,7 +608,7 @@ describe('Immutable.Record plugin', () => {
     );
 
     expect(ABRecord()).toPrettyPrintTo(
-      'Immutable.ABRecord {\n  a: Immutable.Map {\n    c: 1,\n  },\n  b: 2,\n}',
+      'Immutable.ABRecord {\n  "a": Immutable.Map {\n    "c": 1,\n  },\n  "b": 2,\n}',
     );
   });
 
@@ -567,7 +619,7 @@ describe('Immutable.Record plugin', () => {
     expect(
       ABRecord(),
     ).toPrettyPrintTo(
-      'Immutable.ABRecord {a: Immutable.CDRecord {c: 3, d: 4}, b: 2}',
+      'Immutable.ABRecord {"a": Immutable.CDRecord {"c": 3, "d": 4}, "b": 2}',
       {min: true},
     );
   });
@@ -577,7 +629,192 @@ describe('Immutable.Record plugin', () => {
     const ABRecord = Immutable.Record({a: CDRecord(), b: 2}, 'ABRecord');
 
     expect(ABRecord()).toPrettyPrintTo(
-      'Immutable.ABRecord {\n  a: Immutable.CDRecord {\n    c: 3,\n    d: 4,\n  },\n  b: 2,\n}',
+      'Immutable.ABRecord {\n  "a": Immutable.CDRecord {\n    "c": 3,\n    "d": 4,\n  },\n  "b": 2,\n}',
     );
+  });
+});
+
+describe('indentation of heterogeneous collections', () => {
+  // Don’t interpret tests that pretty-format and plugins are compatible
+  // as recommendation to compose immutable and non-immutable collections.
+  test('empty Immutable.List as child of Object', () => {
+    const val = {
+      filter: 'all',
+      todos: Immutable.List([]),
+    };
+    expect(val).toPrettyPrintTo(
+      [
+        'Object {',
+        '  "filter": "all",',
+        '  "todos": Immutable.List [',
+        '  ],',
+        '}',
+      ].join('\n'),
+    );
+  });
+  test('empty Immutable.Map as child of Array', () => {
+    const val = [Immutable.Map({})];
+    expect(val).toPrettyPrintTo(
+      ['Array [', '  Immutable.Map {', '  },', ']'].join('\n'),
+    );
+  });
+
+  test('non-empty Array as child of Immutable.Map', () => {
+    const val = Immutable.Map({
+      filter: 'completed',
+      todos: [
+        Immutable.Map({
+          completed: true,
+          text: 'Replace print with serialize',
+        }),
+      ],
+    });
+    expect(val).toPrettyPrintTo(
+      [
+        'Immutable.Map {',
+        '  "filter": "completed",',
+        '  "todos": Array [',
+        '    Immutable.Map {',
+        '      "completed": true,',
+        '      "text": "Replace print with serialize",',
+        '    },',
+        '  ],',
+        '}',
+      ].join('\n'),
+    );
+  });
+  test('non-empty Object as child of Immutable.List', () => {
+    const val = Immutable.List([
+      {
+        completed: true,
+        text: 'Replace print with serialize',
+      },
+    ]);
+    expect(val).toPrettyPrintTo(
+      [
+        'Immutable.List [',
+        '  Object {',
+        '    "completed": true,',
+        '    "text": "Replace print with serialize",',
+        '  },',
+        ']',
+      ].join('\n'),
+    );
+  });
+});
+
+describe('indent option', () => {
+  const val = Immutable.Map({
+    filter: 'completed',
+    todos: Immutable.List([
+      Immutable.Map({
+        completed: true,
+        text: 'Replace print with serialize',
+      }),
+      Immutable.Map({
+        completed: false,
+        text: 'Return if depth exceeds max',
+      }),
+    ]),
+  });
+  const expected = [
+    'Immutable.Map {',
+    '  "filter": "completed",',
+    '  "todos": Immutable.List [',
+    '    Immutable.Map {',
+    '      "completed": true,',
+    '      "text": "Replace print with serialize",',
+    '    },',
+    '    Immutable.Map {',
+    '      "completed": false,',
+    '      "text": "Return if depth exceeds max",',
+    '    },',
+    '  ],',
+    '}',
+  ].join('\n');
+  test('default implicit: 2 spaces', () => {
+    expect(val).toPrettyPrintTo(expected);
+  });
+  test('default explicit: 2 spaces', () => {
+    expect(val).toPrettyPrintTo(expected, {indent: 2});
+  });
+
+  // Tests assume that no strings in val contain multiple adjacent spaces!
+  test('non-default: 0 spaces', () => {
+    const indent = 0;
+    expect(val).toPrettyPrintTo(expected.replace(/ {2}/g, ' '.repeat(indent)), {
+      indent,
+    });
+  });
+  test('non-default: 4 spaces', () => {
+    const indent = 4;
+    expect(val).toPrettyPrintTo(expected.replace(/ {2}/g, ' '.repeat(indent)), {
+      indent,
+    });
+  });
+});
+
+describe('maxDepth option', () => {
+  // Don’t interpret tests that pretty-format and plugins are compatible
+  // as recommendation to compose immutable and non-immutable collections.
+  test('Immutable.List as child of Object', () => {
+    const val = {
+      // ++depth === 1
+      filter: 'all',
+      todos: Immutable.List([
+        Immutable.Map({
+          completed: true,
+          text: 'Return if depth exceeds max',
+        }),
+      ]),
+    };
+    const expected = [
+      'Object {',
+      '  "filter": "all",',
+      '  "todos": [Immutable.List],',
+      '}',
+    ].join('\n');
+    expect(val).toPrettyPrintTo(expected, {maxDepth: 1});
+  });
+  test('Immutable.Map as child of Array', () => {
+    const val = [
+      // ++depth === 1
+      Immutable.Map({
+        completed: false,
+        text: 'Return if depth exceeds max',
+      }),
+    ];
+    const expected = ['Array [', '  [Immutable.Map],', ']'].join('\n');
+    expect(val).toPrettyPrintTo(expected, {maxDepth: 1});
+  });
+
+  test('Immutable.Map as descendants in immutable collection', () => {
+    const val = Immutable.Map({
+      // ++depth === 1
+      filter: 'uncompleted',
+      todos: Immutable.List([
+        // ++depth === 2
+        Immutable.Map({
+          // ++depth === 3
+          completed: true,
+          text: 'Replace print with serialize',
+        }),
+        Immutable.Map({
+          // ++depth === 3
+          completed: true,
+          text: 'Return if depth exceeds max',
+        }),
+      ]),
+    });
+    const expected = [
+      'Immutable.Map {',
+      '  "filter": "uncompleted",',
+      '  "todos": Immutable.List [',
+      '    [Immutable.Map],',
+      '    [Immutable.Map],',
+      '  ],',
+      '}',
+    ].join('\n');
+    expect(val).toPrettyPrintTo(expected, {maxDepth: 2});
   });
 });

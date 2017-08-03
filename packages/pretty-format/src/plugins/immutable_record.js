@@ -8,13 +8,7 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 import printImmutable from './lib/print_immutable';
 
@@ -22,12 +16,23 @@ const IS_RECORD = '@@__IMMUTABLE_RECORD__@@';
 export const test = (maybeRecord: any) =>
   !!(maybeRecord && maybeRecord[IS_RECORD]);
 
-export const print = (
+export const serialize = (
   val: any,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => printImmutable(val, print, indent, opts, colors, 'Record', true);
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+) =>
+  printImmutable(
+    val,
+    config,
+    indentation,
+    depth,
+    refs,
+    printer,
+    'Record',
+    true,
+  );
 
-export default ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);

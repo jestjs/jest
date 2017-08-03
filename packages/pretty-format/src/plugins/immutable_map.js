@@ -8,13 +8,7 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 import printImmutable from './lib/print_immutable';
 
@@ -23,12 +17,14 @@ const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
 export const test = (maybeMap: any) =>
   !!(maybeMap && maybeMap[IS_MAP] && !maybeMap[IS_ORDERED]);
 
-export const print = (
+export const serialize = (
   val: any,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => printImmutable(val, print, indent, opts, colors, 'Map', true);
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+) =>
+  printImmutable(val, config, indentation, depth, refs, printer, 'Map', true);
 
-export default ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);

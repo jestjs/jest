@@ -8,25 +8,21 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 import printImmutable from './lib/print_immutable';
 
 const IS_LIST = '@@__IMMUTABLE_LIST__@@';
 export const test = (maybeList: any) => !!(maybeList && maybeList[IS_LIST]);
 
-export const print = (
+export const serialize = (
   val: any,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => printImmutable(val, print, indent, opts, colors, 'List', false);
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+) =>
+  printImmutable(val, config, indentation, depth, refs, printer, 'List', false);
 
-export default ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);
