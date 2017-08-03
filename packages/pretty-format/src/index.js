@@ -425,19 +425,13 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
-function removeWrappingBackticks(str: string) {
-  return str.replace(/(^\s*)`|`(\s*)$/g, '$1$2');
-}
-
 function prettyFormat(val: any, options?: OptionsReceived): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
       const plugin = findPlugin(options.plugins, val);
       if (plugin !== null) {
-        return removeWrappingBackticks(
-          printPlugin(plugin, val, getConfig(options), '', 0, []),
-        );
+        return printPlugin(plugin, val, getConfig(options), '', 0, []);
       }
     }
   }
@@ -448,12 +442,10 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
     getEscapeRegex(options),
   );
   if (basicResult !== null) {
-    return removeWrappingBackticks(basicResult);
+    return basicResult;
   }
 
-  return removeWrappingBackticks(
-    printComplexValue(val, getConfig(options), '', 0, []),
-  );
+  return printComplexValue(val, getConfig(options), '', 0, []);
 }
 
 prettyFormat.plugins = {
