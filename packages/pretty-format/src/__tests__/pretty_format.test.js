@@ -163,7 +163,6 @@ describe('prettyFormat()', () => {
 
   it('prints a map with non-string keys', () => {
     const val = new Map([
-      ['multi\nline\nstring', 'multiline string'],
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],
@@ -179,9 +178,6 @@ describe('prettyFormat()', () => {
     ]);
     const expected = [
       'Map {',
-      '  "multi',
-      'line',
-      'string" => "multiline string",',
       '  false => "boolean",',
       '  "false" => "string",',
       '  0 => "number",',

@@ -490,7 +490,6 @@ describe('Immutable.OrderedMap plugin', () => {
 
   it('supports non-string keys', () => {
     const val = Immutable.OrderedMap([
-      ['multi\nline\nstring', 'multiline string'],
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],
@@ -507,9 +506,6 @@ describe('Immutable.OrderedMap plugin', () => {
     ]);
     const expected = [
       'Immutable.OrderedMap {',
-      '  "multi',
-      'line',
-      'string": "multiline string",',
       '  false: "boolean",',
       '  "false": "string",',
       '  0: "number",',
