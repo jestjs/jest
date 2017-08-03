@@ -37,8 +37,8 @@ const printImmutable = (
         SPACE +
         '{' +
         (val._keys.length !== 0
-          ? printRecordProperties(
-              val,
+          ? printIteratorEntries(
+              getRecordIterator(val),
               config,
               indentation,
               depth,
@@ -84,43 +84,19 @@ const printImmutable = (
   );
 };
 
-// Return properties of a record
-// with spacing, indentation, and comma
-// without surrounding braces
-export function printRecordProperties(
-  val: Object,
-  config: Config,
-  indentation: string,
-  depth: number,
-  refs: Refs,
-  printer: Printer,
-): string {
-  let result = '';
+function getRecordIterator(val) {
   const keys = val._keys;
-
-  if (keys.length) {
-    result += config.spacingOuter;
-
-    const indentationNext = indentation + config.indent;
-
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const name = printer(key, config, indentationNext, depth, refs);
-      const value = printer(val.get(key), config, indentationNext, depth, refs);
-
-      result += indentationNext + name + ': ' + value;
-
-      if (i < keys.length - 1) {
-        result += ',' + config.spacingInner;
-      } else if (!config.min) {
-        result += ',';
+  let i = 0;
+  return {
+    next() {
+      const done = i >= keys.length;
+      if (done) {
+        return {done: true};
       }
-    }
-
-    result += config.spacingOuter + indentation;
-  }
-
-  return result;
+      const key = keys[i++];
+      return {done: false, value: [key, val.get(key)]};
+    },
+  };
 }
 
 export default printImmutable;
