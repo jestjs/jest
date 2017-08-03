@@ -359,6 +359,21 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
   });
 
+  it('passes expected transform options to getCacheKey', () => {
+    config = Object.assign(config, {
+      transform: [['^.+\\.js$', 'test_preprocessor']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+
+    scriptTransformer.transform('/fruits/banana.js', {
+      collectCoverage: true,
+      mapCoverage: true,
+    });
+
+    const {getCacheKey} = require('test_preprocessor');
+    expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();
+  });
+
   it('reads values from the cache', () => {
     const transformConfig = Object.assign(config, {
       transform: [['^.+\\.js$', 'test_preprocessor']],
