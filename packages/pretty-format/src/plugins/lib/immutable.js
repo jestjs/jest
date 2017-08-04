@@ -57,8 +57,6 @@ const getRecordEntries = val => {
   };
 };
 
-// _name property is defined only for an Immutable Record instance
-// which was constructed with a second optional descriptive name arg
 export const printImmutableRecord = (
   val: any,
   config: Config,
@@ -67,6 +65,8 @@ export const printImmutableRecord = (
   refs: Refs,
   printer: Printer,
 ): string => {
+  // _name property is defined only for an Immutable Record instance
+  // which was constructed with a second optional descriptive name arg
   const name = IMMUTABLE_NAMESPACE + (val._name || 'Record');
   return ++depth > config.maxDepth
     ? '[' + name + ']'
