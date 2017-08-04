@@ -28,7 +28,7 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
       $raw_results = json_decode(
         Filesystem::readFile($output_JSON),
         true
-      )['phabricatorReport'];
+      )['coverageMap'];
       Filesystem::remove($output_JSON);
     } else {
       $raw_results = json_decode($stdout, true);
