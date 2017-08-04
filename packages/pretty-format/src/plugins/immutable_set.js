@@ -10,7 +10,7 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import printImmutable from './lib/print_immutable';
+import {printImmutableValues} from './lib/immutable';
 
 const IS_SET = '@@__IMMUTABLE_SET__@@';
 const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
@@ -25,6 +25,6 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ) =>
-  printImmutable(val, config, indentation, depth, refs, printer, 'Set', false);
+  printImmutableValues(val, config, indentation, depth, refs, printer, 'Set');
 
 export default ({serialize, test}: NewPlugin);

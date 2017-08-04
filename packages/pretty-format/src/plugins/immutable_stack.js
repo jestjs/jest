@@ -10,7 +10,7 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import printImmutable from './lib/print_immutable';
+import {printImmutableValues} from './lib/immutable';
 
 const IS_STACK = '@@__IMMUTABLE_STACK__@@';
 export const test = (maybeStack: any) => !!(maybeStack && maybeStack[IS_STACK]);
@@ -23,15 +23,6 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ) =>
-  printImmutable(
-    val,
-    config,
-    indentation,
-    depth,
-    refs,
-    printer,
-    'Stack',
-    false,
-  );
+  printImmutableValues(val, config, indentation, depth, refs, printer, 'Stack');
 
 export default ({serialize, test}: NewPlugin);

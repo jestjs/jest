@@ -21,7 +21,7 @@ const isSymbol = key =>
 // without surrounding punctuation (for example, braces)
 export function printIteratorEntries(
   // Flow 0.51.0: property `@@iterator` of $Iterator not found in Object
-  // To allow simplistic getRecordIterator in print_immutable.js
+  // To allow simplistic getRecordIterator in immutable.js
   // replaced Iterator<[any, any]> with any
   iterator: any,
   config: Config,

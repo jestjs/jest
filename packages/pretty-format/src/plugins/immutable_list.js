@@ -10,7 +10,7 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import printImmutable from './lib/print_immutable';
+import {printImmutableValues} from './lib/immutable';
 
 const IS_LIST = '@@__IMMUTABLE_LIST__@@';
 export const test = (maybeList: any) => !!(maybeList && maybeList[IS_LIST]);
@@ -23,6 +23,6 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ) =>
-  printImmutable(val, config, indentation, depth, refs, printer, 'List', false);
+  printImmutableValues(val, config, indentation, depth, refs, printer, 'List');
 
 export default ({serialize, test}: NewPlugin);

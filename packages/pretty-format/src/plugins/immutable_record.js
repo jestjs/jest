@@ -10,7 +10,7 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import printImmutable from './lib/print_immutable';
+import {printImmutableRecord} from './lib/immutable';
 
 const IS_RECORD = '@@__IMMUTABLE_RECORD__@@';
 export const test = (maybeRecord: any) =>
@@ -23,16 +23,6 @@ export const serialize = (
   depth: number,
   refs: Refs,
   printer: Printer,
-) =>
-  printImmutable(
-    val,
-    config,
-    indentation,
-    depth,
-    refs,
-    printer,
-    'Record',
-    true,
-  );
+) => printImmutableRecord(val, config, indentation, depth, refs, printer);
 
 export default ({serialize, test}: NewPlugin);
