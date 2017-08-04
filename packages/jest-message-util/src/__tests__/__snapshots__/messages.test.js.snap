@@ -12,7 +12,7 @@ exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
 
       at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
 <dim>      
-      <dim>at Object.addResult (<dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)<dim>
-      <dim>at Object.it (<dim>build/__tests__/messages-test.js<dim>:45:41)<dim>
+<dim>      <dim>at Object.addResult (<dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)<dim>
+<dim>      <dim>at Object.it (<dim>build/__tests__/messages-test.js<dim>:45:41)<dim>
 
 `;

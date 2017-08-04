@@ -1,58 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`preprocessorIgnorePatterns\` are used 1`] = `
-<bold><bold>●<bold> Deprecation Warning:
-
-  Option <bold>"preprocessorIgnorePatterns" was replaced by <bold>"transformIgnorePatterns", which support multiple preprocessors.
-
-  Jest now treats your current configuration as:
-  {
-    <bold>"transformIgnorePatterns": <bold>["bar/baz", "qux/quux"]
-  }
-
-  Please update your configuration.
-
-  <bold>Configuration Documentation:
-  https://facebook.github.io/jest/docs/configuration.html
+<bold><bold>●<bold> Deprecation Warning:</>
+</>
+  Option <bold>"preprocessorIgnorePatterns" was replaced by <bold>"transformIgnorePatterns", which support multiple preprocessors.</>
+</>
+  Jest now treats your current configuration as:</>
+  {</>
+    <bold>"transformIgnorePatterns": <bold>["bar/baz", "qux/quux"]</>
+  }</>
+</>
+  Please update your configuration.</>
+</>
+  <bold>Configuration Documentation:</>
+  https://facebook.github.io/jest/docs/configuration.html</>
 </>
 `;
 
 exports[`preset throws when preset not found 1`] = `
-<red><bold><bold>● <bold>Validation Error:
-
-  Preset <bold>doesnt-exist not found.
-
-  <bold>Configuration Documentation:
-  https://facebook.github.io/jest/docs/configuration.html
-</>
+<red><bold><bold>● <bold>Validation Error:</>
+<red></>
+<red>  Preset <bold>doesnt-exist not found.</>
+<red></>
+<red>  <bold>Configuration Documentation:</>
+<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red></>
 `;
 
 exports[`rootDir throws if the options is missing a rootDir property 1`] = `
-<red><bold><bold>● <bold>Validation Error:
-
-  Configuration option <bold>rootDir must be specified.
-
-  <bold>Configuration Documentation:
-  https://facebook.github.io/jest/docs/configuration.html
-</>
+<red><bold><bold>● <bold>Validation Error:</>
+<red></>
+<red>  Configuration option <bold>rootDir must be specified.</>
+<red></>
+<red>  <bold>Configuration Documentation:</>
+<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red></>
 `;
 
 exports[`testEnvironment throws on invalid environment names 1`] = `
-<red><bold><bold>● <bold>Validation Error:
-
-  Test environment <bold>phantom cannot be found. Make sure the <bold>testEnvironment configuration option points to an existing node module.
-
-  <bold>Configuration Documentation:
-  https://facebook.github.io/jest/docs/configuration.html
-</>
+<red><bold><bold>● <bold>Validation Error:</>
+<red></>
+<red>  Test environment <bold>phantom cannot be found. Make sure the <bold>testEnvironment configuration option points to an existing node module.</>
+<red></>
+<red>  <bold>Configuration Documentation:</>
+<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red></>
 `;
 
 exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
-<red><bold><bold>● <bold>Validation Error:
-
-  Configuration options <bold>testMatch and <bold>testRegex cannot be used together.
-
-  <bold>Configuration Documentation:
-  https://facebook.github.io/jest/docs/configuration.html
-</>
+<red><bold><bold>● <bold>Validation Error:</>
+<red></>
+<red>  Configuration options <bold>testMatch and <bold>testRegex cannot be used together.</>
+<red></>
+<red>  <bold>Configuration Documentation:</>
+<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red></>
 `;

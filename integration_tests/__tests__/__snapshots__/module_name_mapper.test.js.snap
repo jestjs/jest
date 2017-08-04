@@ -17,7 +17,7 @@ exports[`moduleNameMapper wrong configuration 1`] = `
     Please check:
     
     "moduleNameMapper": {
-      "/\\.(css|less)$/": "no-such-module"
+      "/\\\\.(css|less)$/": "no-such-module"
     }
 
 

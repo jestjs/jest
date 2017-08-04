@@ -22,7 +22,7 @@ exports[`ScriptTransformer uses multiple preprocessors 1`] = `
           const TRANSFORMED = {
             filename: '/fruits/banana.js',
             script: 'module.exports = "banana";',
-            config: '{"cache":true,"cacheDirectory":"/cache/","name":"test","rootDir":"/","transformIgnorePatterns":["/node_modules/"],"transform":[["^.+\\\\.js$","test_preprocessor"],["^.+\\\\.css$","css-preprocessor"]]}',
+            config: '{"cache":true,"cacheDirectory":"/cache/","name":"test","rootDir":"/","transformIgnorePatterns":["/node_modules/"],"transform":[["^.+\\\\\\\\.js$","test_preprocessor"],["^.+\\\\\\\\.css$","css-preprocessor"]]}',
           };
         
 }});
@@ -48,7 +48,7 @@ exports[`ScriptTransformer uses the supplied preprocessor 1`] = `
           const TRANSFORMED = {
             filename: '/fruits/banana.js',
             script: 'module.exports = "banana";',
-            config: '{"cache":true,"cacheDirectory":"/cache/","name":"test","rootDir":"/","transformIgnorePatterns":["/node_modules/"],"transform":[["^.+\\\\.js$","test_preprocessor"]]}',
+            config: '{"cache":true,"cacheDirectory":"/cache/","name":"test","rootDir":"/","transformIgnorePatterns":["/node_modules/"],"transform":[["^.+\\\\\\\\.js$","test_preprocessor"]]}',
           };
         
 }});

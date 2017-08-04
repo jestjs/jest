@@ -107,7 +107,7 @@ function printBasicValue(
   }
   if (typeOf === 'string') {
     return /\n/.test(val)
-      ? '`' + val + '`'
+      ? '`' + val.replace(/\\/g, '\\$&') + '`'
       : '"' + val.replace(/"|\\/g, '\\$&') + '"';
   }
   if (typeOf === 'function') {
