@@ -9,7 +9,7 @@ next: cli
 ---
 
 Jest's configuration can be defined in the `package.json` file of your project, through a `jest.config.js` file or
-or through the `--config <path/to/js|json>` option. If you'd like to use
+through the `--config <path/to/js|json>` option. If you'd like to use
 your `package.json` to store Jest's config, the "jest" key should be used on the
 top level so Jest will know how to find your settings:
 
