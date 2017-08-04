@@ -125,6 +125,7 @@ const getSnapshotData = (snapshotPath: Path, update: SnapshotUpdateState) => {
 };
 
 const removeWrappingBackticks = (str: string) => {
+  console.log(str); // debug windows
   return str.replace(/(^\s*)`|`(\s*)$/g, '$1$2');
 };
 

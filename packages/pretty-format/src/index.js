@@ -106,7 +106,7 @@ function printBasicValue(
     return printNumber(val);
   }
   if (typeOf === 'string') {
-    return /\r\n|\n|\r/g.test(val)
+    return /\r\n?|\n/gm.test(val)
       ? '`' + val.replace(/\\/g, '\\$&') + '`'
       : '"' + val.replace(/"|\\/g, '\\$&') + '"';
   }
