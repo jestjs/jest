@@ -28,7 +28,6 @@ export type DefaultOptions = {|
   browser: boolean,
   cache: boolean,
   cacheDirectory: Path,
-  changedFilesWithAncestor: boolean,
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
   coverageReporters: Array<string>,
