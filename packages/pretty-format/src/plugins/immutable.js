@@ -9,20 +9,16 @@
  */
 
 import type {Config, Printer, NewPlugin, Refs} from 'types/PrettyFormat';
-
 import {printIteratorEntries, printIteratorValues} from '../collections';
 
 // SENTINEL constants are from https://github.com/facebook/immutable-js
-
 const IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
 const IS_RECORD_SENTINEL = '@@__IMMUTABLE_RECORD__@@'; // v4 or later
-
 const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
 const IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
 const IS_SEQ_SENTINEL = '@@__IMMUTABLE_SEQ__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
-
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
 
 const getImmutableName = name => 'Immutable.' + name;
