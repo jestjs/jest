@@ -23,7 +23,7 @@ const toPrettyPrintTo = expectUtil.getPrettyPrint(
 const expect = global.expect;
 expect.extend({toPrettyPrintTo});
 
-describe('Immutable.OrderedSet plugin', () => {
+describe('Immutable.OrderedSet', () => {
   it('supports an empty collection {min: true}', () => {
     expect(
       Immutable.OrderedSet([]),
@@ -116,7 +116,7 @@ describe('Immutable.OrderedSet plugin', () => {
   });
 });
 
-describe('Immutable.List plugin', () => {
+describe('Immutable.List', () => {
   it('supports an empty collection {min: true}', () => {
     expect(Immutable.List([])).toPrettyPrintTo('Immutable.List []', {
       min: true,
@@ -197,7 +197,7 @@ describe('Immutable.List plugin', () => {
   });
 });
 
-describe('Immutable.Stack plugin', () => {
+describe('Immutable.Stack', () => {
   it('supports an empty collection {min: true}', () => {
     expect(Immutable.Stack([])).toPrettyPrintTo('Immutable.Stack []', {
       min: true,
@@ -280,7 +280,7 @@ describe('Immutable.Stack plugin', () => {
   });
 });
 
-describe('Immutable.Set plugin', () => {
+describe('Immutable.Set', () => {
   it('supports an empty collection {min: true}', () => {
     expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set []', {min: true});
   });
@@ -358,7 +358,7 @@ describe('Immutable.Set plugin', () => {
   });
 });
 
-describe('Immutable.Map plugin', () => {
+describe('Immutable.Map', () => {
   it('supports an empty collection {min: true}', () => {
     expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {}', {min: true});
   });
@@ -419,7 +419,7 @@ describe('Immutable.Map plugin', () => {
   });
 });
 
-describe('Immutable.OrderedMap plugin', () => {
+describe('Immutable.OrderedMap', () => {
   it('supports an empty collection {min: true}', () => {
     expect(
       Immutable.OrderedMap({}),
@@ -532,7 +532,7 @@ describe('Immutable.OrderedMap plugin', () => {
   });
 });
 
-describe('Immutable.Record plugin', () => {
+describe('Immutable.Record', () => {
   it('supports an empty record {min: true}', () => {
     const ABRecord = Immutable.Record({}, 'ABRecord');
 
@@ -812,5 +812,37 @@ describe('maxDepth option', () => {
       '}',
     ].join('\n');
     expect(val).toPrettyPrintTo(expected, {maxDepth: 2});
+  });
+});
+
+describe('Immutable.Seq', () => {
+  const expected = '[Immutable.Seq]';
+  it('supports an empty sequence from array {min: true}', () => {
+    expect(Immutable.Seq([])).toPrettyPrintTo(expected, {min: true});
+  });
+  it('supports an empty sequence from array {min: false}', () => {
+    expect(Immutable.Seq([])).toPrettyPrintTo(expected, {min: false});
+  });
+  it('supports a non-empty sequence from array {min: true}', () => {
+    expect(Immutable.Seq([0, 1, 2])).toPrettyPrintTo(expected, {min: true});
+  });
+  it('supports a non-empty sequence from array {min: false}', () => {
+    expect(Immutable.Seq([0, 1, 2])).toPrettyPrintTo(expected, {min: false});
+  });
+  it('supports an empty sequence from object {min: true}', () => {
+    expect(Immutable.Seq({})).toPrettyPrintTo(expected, {min: true});
+  });
+  it('supports an empty sequence from object {min: false}', () => {
+    expect(Immutable.Seq({})).toPrettyPrintTo(expected, {min: false});
+  });
+  it('supports a non-empty sequence from object {min: true}', () => {
+    expect(Immutable.Seq({key: 'value'})).toPrettyPrintTo(expected, {
+      min: true,
+    });
+  });
+  it('supports a non-empty sequence from object {min: false}', () => {
+    expect(Immutable.Seq({key: 'value'})).toPrettyPrintTo(expected, {
+      min: false,
+    });
   });
 });
