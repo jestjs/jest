@@ -25,7 +25,7 @@ const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
 
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
 
-const getName = name => 'Immutable.' + name;
+const getImmutableName = name => 'Immutable.' + name;
 const SPACE = ' ';
 
 const printImmutableEntries = (
@@ -38,8 +38,8 @@ const printImmutableEntries = (
   type: string,
 ): string =>
   ++depth > config.maxDepth
-    ? '[' + getName(type) + ']'
-    : getName(type) +
+    ? '[' + getImmutableName(type) + ']'
+    : getImmutableName(type) +
       SPACE +
       '{' +
       (val.size !== 0
@@ -78,7 +78,7 @@ const printImmutableRecord = (
 ): string => {
   // _name property is defined only for an Immutable Record instance
   // which was constructed with a second optional descriptive name arg
-  const name = getName(val._name || 'Record');
+  const name = getImmutableName(val._name || 'Record');
   const size = Array.isArray(val._keys) ? val._keys.length : val.size;
   const entries = typeof Array.isArray(val._keys)
     ? getRecordEntries(val) // v4 or later
@@ -111,8 +111,8 @@ const printImmutableValues = (
   type: string,
 ): string =>
   ++depth > config.maxDepth
-    ? '[' + getName(type) + ']'
-    : getName(type) +
+    ? '[' + getImmutableName(type) + ']'
+    : getImmutableName(type) +
       SPACE +
       '[' +
       (val.size !== 0
@@ -136,7 +136,7 @@ export const serialize = (
   printer: Printer,
 ): string => {
   if (val[IS_SEQ_SENTINEL]) {
-    return '[' + getName('Seq') + ']';
+    return '[' + getImmutableName('Seq') + ']';
   }
 
   if (val[IS_MAP_SENTINEL]) {
