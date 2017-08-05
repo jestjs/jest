@@ -135,10 +135,6 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string => {
-  if (val[IS_SEQ_SENTINEL]) {
-    return '[' + getImmutableName('Seq') + ']';
-  }
-
   if (val[IS_MAP_SENTINEL]) {
     return printImmutableEntries(
       val,
@@ -183,6 +179,10 @@ export const serialize = (
       printer,
       'Stack',
     );
+  }
+
+  if (val[IS_SEQ_SENTINEL]) {
+    return '[' + getImmutableName('Seq') + ']';
   }
 
   // For compatibility with immutable v3 and v4, let record be the default.

@@ -845,4 +845,18 @@ describe('Immutable.Seq', () => {
       min: false,
     });
   });
+  it('supports a sequence from Immutable.Map', () => {
+    expect(Immutable.Seq(Immutable.Map({key: 'value'}))).toPrettyPrintTo(
+      expected,
+    );
+  });
+  it('supports a sequence from Immutable.List', () => {
+    expect(Immutable.Seq(Immutable.List([0, 1, 2]))).toPrettyPrintTo(expected);
+  });
+  it('supports a sequence from Immutable.Set', () => {
+    expect(Immutable.Seq(Immutable.Set([0, 1, 2]))).toPrettyPrintTo(expected);
+  });
+  it('supports a sequence from Immutable.Stack', () => {
+    expect(Immutable.Seq(Immutable.Stack([0, 1, 2]))).toPrettyPrintTo(expected);
+  });
 });
