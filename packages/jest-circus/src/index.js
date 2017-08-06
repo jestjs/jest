@@ -16,7 +16,7 @@ import type {
   BlockMode,
   BlockName,
   TestName,
-} from '../types';
+} from 'types/Circus';
 import {dispatch} from './state';
 
 const describe = (blockName: BlockName, blockFn: BlockFn) =>

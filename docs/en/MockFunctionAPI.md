@@ -52,6 +52,8 @@ Often this is useful when you want to clean up a mock's usage data between two a
 
 Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
+The [`clearMocks`](configuration.html#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
+
 ### `mockFn.mockReset()`
 Resets all information stored in the mock, including any inital implementation given.
 
@@ -69,7 +71,7 @@ Beware that `mockFn.mockRestore` only works when mock was created with `jest.spy
 ### `mockFn.mockImplementation(fn)`
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
-*Note: `jest.fn(implementation)` is a shorthand for `mockImplementation`.*
+*Note: `jest.fn(implementation)` is a shorthand for `jest.fn().mockImplementation(implementation)`.*
 
 For example:
 
@@ -96,6 +98,7 @@ module.exports = class SomeClass {
 }
 
 // OtherModule.test.js
+jest.mock('SomeClass')
 const SomeClass = require('SomeClass')
 const mMock = jest.fn()
 SomeClass.mockImplementation(() => {
@@ -145,26 +148,25 @@ jest.fn(function() {
 ```
 
 ### `mockFn.mockReturnValue(value)`
-
-Deprecated: Use `jest.fn(() => value)` instead.
+Accepts a value that will be returned whenever the mock function is called.
 
 ```js
-const mockNumberFn = jest.fn(() => 42);
-mockNumberFn(); // 42
-
-// Deprecated behavior:
-jest.genMockFunction().mockImplementation(() => value);
+const mock = jest.fn();
+mock.mockReturnValue(42);
+mock(); // 42
+mock.mockReturnValue(43);
+mock(); // 43
 ```
 
 ### `mockFn.mockReturnValueOnce(value)`
-Just a simple sugar function for:
+Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 
-```js
-let valueReturned = false;
-jest.fn(() => {
-  if (!valueReturned) {
-    valueReturned = true;
-    return value;
-  }
-});
+```
+const myMockFn = jest.fn()
+  .mockReturnValue('default')
+  .mockReturnValueOnce('first call')
+  .mockReturnValueOnce('second call');
+
+console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+> 'first call', 'second call', 'default', 'default'
 ```

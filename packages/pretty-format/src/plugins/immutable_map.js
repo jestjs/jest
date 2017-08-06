@@ -8,21 +8,27 @@
  * @flow
  */
 
-import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
+import type {
+  Colors,
+  Indent,
+  PluginOptions,
+  Print,
+  Plugin,
+} from 'types/PrettyFormat';
 
 import printImmutable from './lib/print_immutable';
 
 const IS_MAP = '@@__IMMUTABLE_MAP__@@';
 const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
-const test = (maybeMap: any) =>
+export const test = (maybeMap: any) =>
   !!(maybeMap && maybeMap[IS_MAP] && !maybeMap[IS_ORDERED]);
 
-const print = (
+export const print = (
   val: any,
   print: Print,
   indent: Indent,
-  opts: Options,
+  opts: PluginOptions,
   colors: Colors,
 ) => printImmutable(val, print, indent, opts, colors, 'Map', true);
 
-module.exports = ({print, test}: Plugin);
+export default ({print, test}: Plugin);

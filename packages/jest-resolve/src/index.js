@@ -10,12 +10,14 @@
 
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
+import type {ResolveModuleConfig} from 'types/Resolve';
 
 import fs from 'fs';
 import path from 'path';
 import nodeModulesPaths from 'resolve/lib/node-modules-paths';
 import isBuiltinModule from 'is-builtin-module';
 import defaultResolver from './default_resolver.js';
+import chalk from 'chalk';
 
 type ResolverConfig = {|
   browser?: boolean,
@@ -45,10 +47,6 @@ type ModuleNameMapperConfig = {|
 
 type BooleanObject = {[key: string]: boolean};
 
-export type ResolveModuleConfig = {|
-  skipNodeResolution?: boolean,
-|};
-
 const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
@@ -74,9 +72,8 @@ class Resolver {
       browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
-      hasCoreModules: options.hasCoreModules === undefined
-        ? true
-        : options.hasCoreModules,
+      hasCoreModules:
+        options.hasCoreModules === undefined ? true : options.hasCoreModules,
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
@@ -308,8 +305,9 @@ class Resolver {
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
-    return !!(this.getModule(moduleName) ||
-      this.getMockModule(from, moduleName));
+    return !!(
+      this.getModule(moduleName) || this.getMockModule(from, moduleName)
+    );
   }
 
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
@@ -317,8 +315,8 @@ class Resolver {
     const paths = this._options.modulePaths;
     const extensions = this._options.extensions;
     const moduleDirectory = this._options.moduleDirectories;
-
     const moduleNameMapper = this._options.moduleNameMapper;
+
     if (moduleNameMapper) {
       for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
         if (regex.test(moduleName)) {
@@ -331,7 +329,8 @@ class Resolver {
               (_, index) => matches[parseInt(index, 10)],
             );
           }
-          return (
+
+          const module =
             this.getModule(moduleName) ||
             Resolver.findNodeModule(moduleName, {
               basedir: dirname,
@@ -339,8 +338,22 @@ class Resolver {
               extensions,
               moduleDirectory,
               paths,
-            })
-          );
+            });
+          if (!module) {
+            const error = new Error(
+              chalk.red(`${chalk.bold('Configuration error')}:
+
+Unknown module in configuration option ${chalk.bold('moduleNameMapper')}
+Please check:
+
+"moduleNameMapper": {
+  "${regex.toString()}": "${chalk.bold(moduleName)}"
+}`),
+            );
+            error.stack = '';
+            throw error;
+          }
+          return module;
         }
       }
     }

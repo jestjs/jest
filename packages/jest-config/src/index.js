@@ -9,49 +9,57 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
+import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
-import path from 'path';
 import {getTestEnvironment, isJSONString} from './utils';
-import findConfig from './find_config';
 import normalize from './normalize';
+import resolveConfigPath from './resolve_config_path';
+import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
 
 function readConfig(
   argv: Argv,
   packageRoot: string,
+  // Whether it needs to look into `--config` arg passed to CLI.
+  // It only used to read initial config. If the initial config contains
+  // `project` property, we don't want to read `--config` value and rather
+  // read individual configs for every project.
+  skipArgvConfigOption?: boolean,
 ): {
-  config: ProjectConfig,
+  configPath: ?Path,
   globalConfig: GlobalConfig,
   hasDeprecationWarnings: boolean,
+  projectConfig: ProjectConfig,
 } {
-  const rawOptions = readOptions(argv, packageRoot);
+  let rawOptions;
+  let configPath;
+
+  // A JSON string was passed to `--config` argument and we can parse it
+  // and use as is.
+  if (isJSONString(argv.config)) {
+    const config = JSON.parse(argv.config);
+    // NOTE: we might need to resolve this dir to an absolute path in the future
+    config.rootDir = config.rootDir || packageRoot;
+    rawOptions = config;
+    // A string passed to `--config`, which is either a direct path to the config
+    // or a path to directory containing `package.json` or `jest.conf.js`
+  } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
+    configPath = resolveConfigPath(argv.config, process.cwd());
+    rawOptions = readConfigFileAndSetRootDir(configPath);
+  } else {
+    // Otherwise just try to find config in the current rootDir.
+    configPath = resolveConfigPath(packageRoot, process.cwd());
+    rawOptions = readConfigFileAndSetRootDir(configPath);
+  }
+
   const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
   const {globalConfig, projectConfig} = getConfigs(options);
   return {
-    config: projectConfig,
+    configPath,
     globalConfig,
     hasDeprecationWarnings,
+    projectConfig,
   };
 }
-
-const parseConfig = argv =>
-  isJSONString(argv.config) ? JSON.parse(argv.config) : argv.config;
-
-const readOptions = (argv, root) => {
-  const rawOptions = parseConfig(argv);
-
-  if (typeof rawOptions === 'object') {
-    const config = Object.assign({}, rawOptions);
-    config.rootDir = config.rootDir || root;
-    return config;
-  }
-
-  if (typeof rawOptions === 'string') {
-    root = path.resolve(process.cwd(), rawOptions);
-  }
-
-  return findConfig(root);
-};
 
 const getConfigs = (
   options: Object,
@@ -59,6 +67,7 @@ const getConfigs = (
   return {
     globalConfig: Object.freeze({
       bail: options.bail,
+      changedFilesWithAncestor: options.changedFilesWithAncestor,
       collectCoverage: options.collectCoverage,
       collectCoverageFrom: options.collectCoverageFrom,
       collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
@@ -66,23 +75,34 @@ const getConfigs = (
       coverageReporters: options.coverageReporters,
       coverageThreshold: options.coverageThreshold,
       expand: options.expand,
+      findRelatedTests: options.findRelatedTests,
       forceExit: options.forceExit,
+      json: options.json,
+      lastCommit: options.lastCommit,
+      listTests: options.listTests,
       logHeapUsage: options.logHeapUsage,
       mapCoverage: options.mapCoverage,
+      maxWorkers: options.maxWorkers,
+      noSCM: undefined,
       noStackTrace: options.noStackTrace,
+      nonFlagArgs: options.nonFlagArgs,
       notify: options.notify,
+      onlyChanged: options.onlyChanged,
+      outputFile: options.outputFile,
       projects: options.projects,
       replname: options.replname,
       reporters: options.reporters,
       rootDir: options.rootDir,
       silent: options.silent,
+      testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,
-      testPathPattern: '',
+      testPathPattern: options.testPathPattern,
       testResultsProcessor: options.testResultsProcessor,
       updateSnapshot: options.updateSnapshot,
       useStderr: options.useStderr,
       verbose: options.verbose,
       watch: options.watch,
+      watchAll: options.watchAll,
       watchman: options.watchman,
     }),
     projectConfig: Object.freeze({
@@ -108,6 +128,7 @@ const getConfigs = (
       roots: options.roots,
       setupFiles: options.setupFiles,
       setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
+      skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,
       testEnvironment: options.testEnvironment,
       testMatch: options.testMatch,

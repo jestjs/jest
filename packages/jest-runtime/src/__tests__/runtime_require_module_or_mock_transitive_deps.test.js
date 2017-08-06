@@ -12,11 +12,11 @@
 let createRuntime;
 
 const moduleNameMapper = {
-  '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
-  '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+  '^[./a-zA-Z0-9$_-]+.png$': 'RelativeImageStub',
+  '^image![a-zA-Z0-9$_-]+$': 'global_image_stub',
   '^testMapped/(.*)': '<rootDir>/mapped_dir/$1',
   mappedToDirectory: '<rootDir>/MyDirectoryModule',
-  mappedToPath: '<rootDir>/GlobalImageStub.js',
+  mappedToPath: '<rootDir>/global_image_stub.js',
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
 };
 
@@ -47,7 +47,7 @@ describe('transitive dependencies', () => {
 
       const parentDep = runtime.requireModule(
         runtime.__mockRootPath,
-        './depOnMappedModule.js',
+        './dep_on_mapped_module.js',
       );
       expect(parentDep).toEqual({result: 'mocked_in_mapped'});
     }));

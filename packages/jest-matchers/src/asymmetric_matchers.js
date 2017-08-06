@@ -231,11 +231,13 @@ class StringMatching extends AsymmetricMatcher {
   }
 }
 
-module.exports = {
-  any: (expectedObject: any) => new Any(expectedObject),
-  anything: () => new Anything(),
-  arrayContaining: (sample: Array<any>) => new ArrayContaining(sample),
-  objectContaining: (sample: Object) => new ObjectContaining(sample),
-  stringContaining: (expected: string) => new StringContaining(expected),
-  stringMatching: (expected: string | RegExp) => new StringMatching(expected),
-};
+export const any = (expectedObject: any) => new Any(expectedObject);
+export const anything = () => new Anything();
+export const arrayContaining = (sample: Array<any>) =>
+  new ArrayContaining(sample);
+export const objectContaining = (sample: Object) =>
+  new ObjectContaining(sample);
+export const stringContaining = (expected: string) =>
+  new StringContaining(expected);
+export const stringMatching = (expected: string | RegExp) =>
+  new StringMatching(expected);

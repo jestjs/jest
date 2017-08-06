@@ -4,11 +4,15 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
+import type {OptionsReceived} from 'types/PrettyFormat';
+
 const prettyFormat = require('../');
-const AsymmetricMatcher = require('../plugins/asymmetric_matcher');
-let options;
+const {AsymmetricMatcher} = prettyFormat.plugins;
+let options: OptionsReceived;
 
 function fnNameFor(func) {
   if (func.name) {
@@ -49,7 +53,9 @@ beforeEach(() => {
       options,
     );
     expect(result).toEqual(
-      `Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(type)}>,\n  },\n}`,
+      `Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(
+        type,
+      )}>,\n  },\n}`,
     );
   });
 });
@@ -89,6 +95,17 @@ test(`stringMatching(regexp)`, () => {
   expect(result).toEqual('StringMatching /(jest|niema).*/');
 });
 
+test(`stringMatching(regexp) {escapeRegex: false}`, () => {
+  const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
+  expect(result).toEqual('StringMatching /regexp\\d/gi');
+});
+
+test(`stringMatching(regexp) {escapeRegex: true}`, () => {
+  options.escapeRegex = true;
+  const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
+  expect(result).toEqual('StringMatching /regexp\\\\d/gi');
+});
+
 test(`supports multiple nested asymmetric matchers`, () => {
   const result = prettyFormat(
     {
@@ -123,7 +140,132 @@ test(`supports multiple nested asymmetric matchers`, () => {
 }`);
 });
 
-test(`supports minified output`, () => {
+describe(`indent option`, () => {
+  const val = {
+    nested: expect.objectContaining({
+      a: expect.arrayContaining([1]),
+      b: expect.anything(),
+      c: expect.any(String),
+      d: expect.stringContaining('jest'),
+      e: expect.stringMatching('jest'),
+      f: expect.objectContaining({
+        composite: ['exact', 'match'],
+        primitive: 'string',
+      }),
+    }),
+  };
+  const result = `Object {
+  "nested": ObjectContaining {
+    "a": ArrayContaining [
+      1,
+    ],
+    "b": Anything,
+    "c": Any<String>,
+    "d": StringContaining "jest",
+    "e": StringMatching /jest/,
+    "f": ObjectContaining {
+      "composite": Array [
+        "exact",
+        "match",
+      ],
+      "primitive": "string",
+    },
+  },
+}`;
+
+  test(`default implicit: 2 spaces`, () => {
+    expect(prettyFormat(val, options)).toEqual(result);
+  });
+  test(`default explicit: 2 spaces`, () => {
+    options.indent = 2;
+    expect(prettyFormat(val, options)).toEqual(result);
+  });
+
+  // Tests assume that no strings in val contain multiple adjacent spaces!
+  test(`non-default: 0 spaces`, () => {
+    options.indent = 0;
+    expect(prettyFormat(val, options)).toEqual(result.replace(/ {2}/g, ''));
+  });
+  test('non-default: 4 spaces', () => {
+    options.indent = 4;
+    expect(prettyFormat(val, options)).toEqual(
+      result.replace(/ {2}/g, ' '.repeat(4)),
+    );
+  });
+});
+
+describe(`maxDepth option`, () => {
+  test(`matchers as leaf nodes`, () => {
+    options.maxDepth = 2;
+    const val = {
+      // ++depth === 1
+      nested: [
+        // ++depth === 2
+        expect.arrayContaining(
+          // ++depth === 3
+          [1],
+        ),
+        expect.objectContaining({
+          // ++depth === 3
+          composite: ['exact', 'match'],
+          primitive: 'string',
+        }),
+        expect.stringContaining('jest'),
+        expect.stringMatching('jest'),
+        expect.any(String),
+        expect.anything(),
+      ],
+    };
+    const result = prettyFormat(val, options);
+    expect(result).toEqual(`Object {
+  "nested": Array [
+    [ArrayContaining],
+    [ObjectContaining],
+    StringContaining "jest",
+    StringMatching /jest/,
+    Any<String>,
+    Anything,
+  ],
+}`);
+  });
+  test(`matchers as internal nodes`, () => {
+    options.maxDepth = 2;
+    const val = [
+      // ++depth === 1
+      expect.arrayContaining([
+        // ++depth === 2
+        'printed',
+        {
+          // ++depth === 3
+          properties: 'not printed',
+        },
+      ]),
+      expect.objectContaining({
+        // ++depth === 2
+        array: [
+          // ++depth === 3
+          'items',
+          'not',
+          'printed',
+        ],
+        primitive: 'printed',
+      }),
+    ];
+    const result = prettyFormat(val, options);
+    expect(result).toEqual(`Array [
+  ArrayContaining [
+    "printed",
+    [Object],
+  ],
+  ObjectContaining {
+    "array": [Array],
+    "primitive": "printed",
+  },
+]`);
+  });
+});
+
+test(`min option`, () => {
   options.min = true;
   const result = prettyFormat(
     {

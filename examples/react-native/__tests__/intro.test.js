@@ -51,7 +51,10 @@ it('renders the ListView component', () => {
     .create(
       <ListView
         dataSource={dataSource}
-        renderRow={rowData => <Text>{rowData}</Text>}
+        renderRow={rowData =>
+          <Text>
+            {rowData}
+          </Text>}
       />
     )
     .toJSON();

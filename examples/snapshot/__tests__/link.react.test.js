@@ -21,7 +21,11 @@ it('renders as an anchor when no page is set', () => {
 
 it('properly escapes quotes', () => {
   const tree = renderer
-    .create(<Link>{"\"Facebook\" \\'is \\ 'awesome'"}</Link>)
+    .create(
+      <Link>
+        {"\"Facebook\" \\'is \\ 'awesome'"}
+      </Link>
+    )
     .toJSON();
   expect(tree).toMatchSnapshot();
 });

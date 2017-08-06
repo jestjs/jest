@@ -8,27 +8,27 @@
  * @flow
  */
 
-import type {Argv} from 'types/Argv';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
+import getChangedFilesPromise from './get_changed_files_promise';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {getFailedSnapshotTests} from 'jest-util';
 import HasteMap from 'jest-haste-map';
 import isCI from 'is-ci';
-import isValidPath from './lib/isValidPath';
-import preRunMessage from './preRunMessage';
-import createContext from './lib/createContext';
-import runJest from './runJest';
-import updateArgv from './lib/updateArgv';
-import SearchSource from './SearchSource';
-import SnapshotInteractiveMode from './SnapshotInteractiveMode';
-import TestWatcher from './TestWatcher';
+import isValidPath from './lib/is_valid_path';
+import preRunMessage from './pre_run_message';
+import createContext from './lib/create_context';
+import runJest from './run_jest';
+import updateGlobalConfig from './lib/update_global_config';
+import SearchSource from './search_source';
+import SnapshotInteractiveMode from './snapshot_interactive_mode';
+import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
-import TestPathPatternPrompt from './TestPathPatternPrompt';
-import TestNamePatternPrompt from './TestNamePatternPrompt';
+import TestPathPatternPrompt from './test_path_pattern_prompt';
+import TestNamePatternPrompt from './test_name_pattern_prompt';
 import {KEYS, CLEAR} from './constants';
 
 const isInteractive = process.stdout.isTTY && !isCI;
@@ -37,24 +37,23 @@ let hasExitListener = false;
 const watch = (
   initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
-  argv: Argv,
-  pipe: stream$Writable | tty$WriteStream,
+  outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
-  updateArgv(argv, argv.watch ? 'watch' : 'watchAll', {
-    testNamePattern: argv.testNamePattern,
-    testPathPattern: argv.testPathPattern || (argv._ || []).join('|'),
+  // `globalConfig` will be consantly updated and reassigned as a result of
+  // watch mode interactions.
+  let globalConfig = initialGlobalConfig;
+
+  globalConfig = updateGlobalConfig(globalConfig, {
+    mode: globalConfig.watch ? 'watch' : 'watchAll',
   });
 
   const prompt = new Prompt();
-  const testPathPatternPrompt = new TestPathPatternPrompt(pipe, prompt);
-  const testNamePatternPrompt = new TestNamePatternPrompt(pipe, prompt);
-
+  const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
+  const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
   const snapshotInteracticeMode = new SnapshotInteractiveMode(pipe);
-
   let failedSnapshotTestPaths = [];
-
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
@@ -70,11 +69,7 @@ const watch = (
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) => {
-        return isValidPath(
-          initialGlobalConfig,
-          contexts[index].config,
-          filePath,
-        );
+        return isValidPath(globalConfig, contexts[index].config, filePath);
       });
 
       if (validPaths.length) {
@@ -92,7 +87,7 @@ const watch = (
           searchSource: new SearchSource(context),
         };
         testPathPatternPrompt.updateSearchSources(searchSources);
-        startRun();
+        startRun(globalConfig);
       }
     });
   });
@@ -101,36 +96,28 @@ const watch = (
     hasExitListener = true;
     process.on('exit', () => {
       if (prompt.isEntering()) {
-        pipe.write(ansiEscapes.cursorDown());
-        pipe.write(ansiEscapes.eraseDown);
+        outputStream.write(ansiEscapes.cursorDown());
+        outputStream.write(ansiEscapes.eraseDown);
       }
     });
   }
 
-  const startRun = (overrideConfig: Object = {}) => {
+  const startRun = (globalConfig: GlobalConfig) => {
     if (isRunning) {
       return null;
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
-    isInteractive && pipe.write(CLEAR);
-    preRunMessage.print(pipe);
+    isInteractive && outputStream.write(CLEAR);
+    preRunMessage.print(outputStream);
     isRunning = true;
-    const globalConfig = Object.freeze(
-      Object.assign({}, initialGlobalConfig, overrideConfig, {
-        testNamePattern: argv.testNamePattern,
-        testPathPattern: argv.testPathPattern,
-      }),
-    );
-    return runJest(
-      // $FlowFixMe
-      globalConfig,
+    const configs = contexts.map(context => context.config);
+    const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+    return runJest({
+      changedFilesPromise,
       contexts,
-      argv,
-      pipe,
-      testWatcher,
-      startRun,
-      results => {
+      globalConfig,
+      onComplete: results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;
         failedSnapshotTestPaths = getFailedSnapshotTests(results);
@@ -148,16 +135,19 @@ const watch = (
         }
 
         if (shouldDisplayWatchUsage) {
-          pipe.write(usage(argv, hasSnapshotFailure));
+          outputStream.write(usage(globalConfig, hasSnapshotFailure));
           shouldDisplayWatchUsage = false; // hide Watch Usage after first run
           isWatchUsageDisplayed = true;
         } else {
-          pipe.write(showToggleUsagePrompt());
+          outputStream.write(showToggleUsagePrompt());
           shouldDisplayWatchUsage = false;
           isWatchUsageDisplayed = false;
         }
       },
-    ).catch(error => console.error(chalk.red(error.stack)));
+      outputStream,
+      startRun,
+      testWatcher,
+    }).catch(error => console.error(chalk.red(error.stack)));
   };
 
   const onKeypress = (key: string) => {
@@ -191,10 +181,17 @@ const watch = (
         process.exit(0);
         return;
       case KEYS.ENTER:
-        startRun();
+        startRun(globalConfig);
         break;
       case KEYS.U:
-        startRun({updateSnapshot: 'all'});
+        globalConfig = updateGlobalConfig(globalConfig, {
+          updateSnapshot: 'all',
+        });
+        startRun(globalConfig);
+        globalConfig = updateGlobalConfig(globalConfig, {
+          // updateSnapshot is not sticky after a run.
+          updateSnapshot: 'none',
+        });
         break;
       case KEYS.I:
         if (hasSnapshotFailure) {
@@ -207,43 +204,66 @@ const watch = (
         }
         break;
       case KEYS.A:
-        updateRunnerPatternMatching('watchAll', '', '');
+        globalConfig = updateGlobalConfig(globalConfig, {
+          mode: 'watchAll',
+          testNamePattern: '',
+          testPathPattern: '',
+        });
+        startRun(globalConfig);
         break;
       case KEYS.C:
-        updateRunnerPatternMatching('watch', '', '');
+        globalConfig = updateGlobalConfig(globalConfig, {
+          mode: 'watch',
+          testNamePattern: '',
+          testPathPattern: '',
+        });
+        startRun(globalConfig);
         break;
       case KEYS.O:
-        updateRunnerPatternMatching('watch', '', '');
+        globalConfig = updateGlobalConfig(globalConfig, {
+          mode: 'watch',
+          testNamePattern: '',
+          testPathPattern: '',
+        });
+        startRun(globalConfig);
         break;
       case KEYS.P:
         testPathPatternPrompt.run(
           testPathPattern => {
-            updateRunnerPatternMatching('watch', '', testPathPattern);
+            globalConfig = updateGlobalConfig(globalConfig, {
+              mode: 'watch',
+              testNamePattern: '',
+              testPathPattern: replacePathSepForRegex(testPathPattern),
+            });
+
+            startRun(globalConfig);
           },
           onCancelPatternPrompt,
-          {header: activeFilters(argv)},
+          {header: activeFilters(globalConfig)},
         );
         break;
       case KEYS.T:
         testNamePatternPrompt.run(
           testNamePattern => {
-            updateRunnerPatternMatching(
-              'watch',
+            globalConfig = updateGlobalConfig(globalConfig, {
+              mode: 'watch',
               testNamePattern,
-              argv.testPathPattern,
-            );
+              testPathPattern: globalConfig.testPathPattern,
+            });
+
+            startRun(globalConfig);
           },
           onCancelPatternPrompt,
-          {header: activeFilters(argv)},
+          {header: activeFilters(globalConfig)},
         );
         break;
       case KEYS.QUESTION_MARK:
         break;
       case KEYS.W:
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
-          pipe.write(ansiEscapes.cursorUp());
-          pipe.write(ansiEscapes.eraseDown);
-          pipe.write(usage(argv, hasSnapshotFailure));
+          outputStream.write(ansiEscapes.cursorUp());
+          outputStream.write(ansiEscapes.eraseDown);
+          outputStream.write(usage(globalConfig, hasSnapshotFailure));
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
         }
@@ -252,10 +272,10 @@ const watch = (
   };
 
   const onCancelPatternPrompt = () => {
-    pipe.write(ansiEscapes.cursorHide);
-    pipe.write(ansiEscapes.clearScreen);
-    pipe.write(usage(argv, hasSnapshotFailure));
-    pipe.write(ansiEscapes.cursorShow);
+    outputStream.write(ansiEscapes.cursorHide);
+    outputStream.write(ansiEscapes.clearScreen);
+    outputStream.write(usage(globalConfig, hasSnapshotFailure));
+    outputStream.write(ansiEscapes.cursorShow);
   };
 
   const updateRunnerPatternMatching = (
@@ -278,12 +298,12 @@ const watch = (
     stdin.on('data', onKeypress);
   }
 
-  startRun();
+  startRun(globalConfig);
   return Promise.resolve();
 };
 
-const activeFilters = (argv, delimiter = '\n') => {
-  const {testNamePattern, testPathPattern} = argv;
+const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
+  const {testNamePattern, testPathPattern} = globalConfig;
   if (testNamePattern || testPathPattern) {
     const filters = [
       testPathPattern
@@ -304,39 +324,50 @@ const activeFilters = (argv, delimiter = '\n') => {
   return '';
 };
 
-const usage = (argv, snapshotFailure, delimiter = '\n') => {
+const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
   const messages = [
-    activeFilters(argv),
-    argv.testPathPattern || argv.testNamePattern
+    activeFilters(globalConfig),
+
+    globalConfig.testPathPattern || globalConfig.testNamePattern
       ? chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to clear filters.')
       : null,
     '\n' + chalk.bold('Watch Usage'),
-    argv.watch
+
+    globalConfig.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) &&
-      !argv.noSCM
+
+    (globalConfig.watchAll ||
+      globalConfig.testPathPattern ||
+      globalConfig.testNamePattern) &&
+    !globalConfig.noSCM
       ? chalk.dim(' \u203A Press ') +
-          'o' +
-          chalk.dim(' to only run tests related to changed files.')
+        'o' +
+        chalk.dim(' to only run tests related to changed files.')
       : null,
+
     snapshotFailure
       ? chalk.dim(' \u203A Press ') +
-          'u' +
-          chalk.dim(' to update failing snapshots.')
+        'u' +
+        chalk.dim(' to update failing snapshots.')
       : null,
+
     snapshotFailure
       ? chalk.dim(' \u203A Press ') +
           'i' +
           chalk.dim(' to update failing snapshots interactively.')
       : null,
+
     chalk.dim(' \u203A Press ') +
       'p' +
       chalk.dim(' to filter by a filename regex pattern.'),
+
     chalk.dim(' \u203A Press ') +
       't' +
       chalk.dim(' to filter by a test name regex pattern.'),
+
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
+
     chalk.dim(' \u203A Press ') +
       'Enter' +
       chalk.dim(' to trigger a test run.'),

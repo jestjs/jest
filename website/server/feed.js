@@ -28,9 +28,10 @@ const retrieveMetaData = file => {
   const indexOfTruncate = post.indexOf('<!--truncate-->');
 
   // if there's no truncate tag just take the first paragraph.
-  const postExcerpt = indexOfTruncate === -1
-    ? post.replace(/\n\r/g, '\n').split('.\n\n')[0]
-    : post.substring(0, indexOfTruncate);
+  const postExcerpt =
+    indexOfTruncate === -1
+      ? post.replace(/\n\r/g, '\n').split('.\n\n')[0]
+      : post.substring(0, indexOfTruncate);
 
   return header.split(os.EOL).filter(x => x).reduce((metadata, str) => {
     const matches = /(.*?): (.*)/.exec(str);
@@ -54,7 +55,8 @@ module.exports = function(type) {
 
   const feed = new Feed({
     title: 'Jest Blog',
-    description: 'The best place to stay up-to-date with the latest Jest news and events.',
+    description:
+      'The best place to stay up-to-date with the latest Jest news and events.',
     id: blogRootURL,
     link: blogRootURL,
     image: jestImage,

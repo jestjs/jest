@@ -4,14 +4,24 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
 const prettyFormat = require('../');
 
-function returnArguments() {
+function returnArguments(...args) {
   return arguments;
+}
+
+// Node.js 4 does not support the following:
+// class MyArray extends Array {
+// }
+
+function MyObject(value) {
+  this.name = value;
 }
 
 describe('prettyFormat()', () => {
@@ -35,7 +45,12 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Array [\n  1,\n  2,\n  3,\n]');
   });
 
-  it('prints a typed array', () => {
+  it('prints a empty typed array', () => {
+    const val = new Uint32Array(0);
+    expect(prettyFormat(val)).toEqual('Uint32Array []');
+  });
+
+  it('prints a typed array with items', () => {
     const val = new Uint32Array(3);
     expect(prettyFormat(val)).toEqual('Uint32Array [\n  0,\n  0,\n  0,\n]');
   });
@@ -76,10 +91,21 @@ describe('prettyFormat()', () => {
     /* eslint-disable no-new-func */
     const val = new Function();
     /* eslint-enable no-new-func */
+    // In Node 8.1.4: val.name === 'anonymous'
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
-  it('prints an anonymous function', () => {
+  it('prints an anonymous callback function', () => {
+    let val;
+    function f(cb) {
+      val = cb;
+    }
+    f(() => {});
+    // In Node 8.1.4: val.name === ''
+    expect(prettyFormat(val)).toEqual('[Function anonymous]');
+  });
+
+  it('prints an anonymous assigned function', () => {
     const val = () => {};
     const formatted = prettyFormat(val);
     // Node 6.5 infers function names
@@ -91,6 +117,15 @@ describe('prettyFormat()', () => {
   it('prints a named function', () => {
     const val = function named() {};
     expect(prettyFormat(val)).toEqual('[Function named]');
+  });
+
+  it('prints a named generator function', () => {
+    const val = function* generate() {
+      yield 1;
+      yield 2;
+      yield 3;
+    };
+    expect(prettyFormat(val)).toEqual('[Function generate]');
   });
 
   it('can customize function names', () => {
@@ -144,9 +179,24 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('null');
   });
 
-  it('prints a number', () => {
+  it('prints a positive number', () => {
     const val = 123;
     expect(prettyFormat(val)).toEqual('123');
+  });
+
+  it('prints a negative number', () => {
+    const val = -123;
+    expect(prettyFormat(val)).toEqual('-123');
+  });
+
+  it('prints zero', () => {
+    const val = 0;
+    expect(prettyFormat(val)).toEqual('0');
+  });
+
+  it('prints negative zero', () => {
+    const val = -0;
+    expect(prettyFormat(val)).toEqual('-0');
   });
 
   it('prints a date', () => {
@@ -167,7 +217,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object with properties and symbols', () => {
-    const val = {};
+    const val: any = {};
     val[Symbol('symbol1')] = 'value2';
     val[Symbol('symbol2')] = 'value3';
     val.prop = 'value1';
@@ -193,7 +243,12 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('/regexp/gi');
   });
 
-  it('escapes regular expressions', () => {
+  it('prints regular expressions {escapeRegex: false}', () => {
+    const val = /regexp\d/gi;
+    expect(prettyFormat(val)).toEqual('/regexp\\d/gi');
+  });
+
+  it('prints regular expressions {escapeRegex: true}', () => {
     const val = /regexp\d/gi;
     expect(prettyFormat(val, {escapeRegex: true})).toEqual('/regexp\\\\d/gi');
   });
@@ -230,6 +285,45 @@ describe('prettyFormat()', () => {
   it('prints a string with escapes', () => {
     expect(prettyFormat('"-"')).toEqual('"\\"-\\""');
     expect(prettyFormat('\\ \\\\')).toEqual('"\\\\ \\\\\\\\"');
+  });
+
+  it('prints a multiline string', () => {
+    const val = ['line 1', 'line 2', 'line 3'].join('\n');
+    expect(prettyFormat(val)).toEqual('"' + val + '"');
+  });
+
+  it('prints a multiline string as value of object property', () => {
+    const polyline = {
+      props: {
+        id: 'J',
+        points: ['0.5,0.460', '0.5,0.875', '0.25,0.875'].join('\n'),
+      },
+      type: 'polyline',
+    };
+    const val = {
+      props: {
+        children: polyline,
+      },
+      type: 'svg',
+    };
+    expect(prettyFormat(val)).toEqual(
+      [
+        'Object {',
+        '  "props": Object {',
+        '    "children": Object {',
+        '      "props": Object {',
+        '        "id": "J",',
+        '        "points": "0.5,0.460',
+        '0.5,0.875',
+        '0.25,0.875",',
+        '      },',
+        '      "type": "polyline",',
+        '    },',
+        '  },',
+        '  "type": "svg",',
+        '}',
+      ].join('\n'),
+    );
   });
 
   it('prints a symbol', () => {
@@ -273,22 +367,99 @@ describe('prettyFormat()', () => {
     );
   });
 
-  it('can customize indent', () => {
-    const val = {prop: 'value'};
-    expect(prettyFormat(val, {indent: 4})).toEqual(
-      'Object {\n    "prop": "value",\n}',
-    );
+  describe('indent option', () => {
+    const val = [
+      {
+        id: '8658c1d0-9eda-4a90-95e1-8001e8eb6036',
+        text: 'Add alternative serialize API for pretty-format plugins',
+        type: 'ADD_TODO',
+      },
+      {
+        id: '8658c1d0-9eda-4a90-95e1-8001e8eb6036',
+        type: 'TOGGLE_TODO',
+      },
+    ];
+    const expected = [
+      'Array [',
+      '  Object {',
+      '    "id": "8658c1d0-9eda-4a90-95e1-8001e8eb6036",',
+      '    "text": "Add alternative serialize API for pretty-format plugins",',
+      '    "type": "ADD_TODO",',
+      '  },',
+      '  Object {',
+      '    "id": "8658c1d0-9eda-4a90-95e1-8001e8eb6036",',
+      '    "type": "TOGGLE_TODO",',
+      '  },',
+      ']',
+    ].join('\n');
+    test('default implicit: 2 spaces', () => {
+      expect(prettyFormat(val)).toEqual(expected);
+    });
+    test('default explicit: 2 spaces', () => {
+      expect(prettyFormat(val, {indent: 2})).toEqual(expected);
+    });
+
+    // Tests assume that no strings in val contain multiple adjacent spaces!
+    test('non-default: 0 spaces', () => {
+      const indent = 0;
+      expect(prettyFormat(val, {indent})).toEqual(
+        expected.replace(/ {2}/g, ' '.repeat(indent)),
+      );
+    });
+    test('non-default: 4 spaces', () => {
+      const indent = 4;
+      expect(prettyFormat(val, {indent})).toEqual(
+        expected.replace(/ {2}/g, ' '.repeat(indent)),
+      );
+    });
   });
 
   it('can customize the max depth', () => {
-    const val = {prop: {prop: {prop: {}}}};
+    const val = [
+      {
+        'arguments empty': returnArguments(),
+        'arguments non-empty': returnArguments('arg'),
+        'array literal empty': [],
+        'array literal non-empty': ['item'],
+        // Node.js 4 does not support the following:
+        // 'extended array empty': new MyArray(),
+        'map empty': new Map(),
+        'map non-empty': new Map([['name', 'value']]),
+        'object literal empty': {},
+        'object literal non-empty': {name: 'value'},
+        'object with constructor': new MyObject('value'),
+        'object without constructor': Object.create(null),
+        'set empty': new Set(),
+        'set non-empty': new Set(['value']),
+      },
+    ];
     expect(prettyFormat(val, {maxDepth: 2})).toEqual(
-      'Object {\n  "prop": Object {\n    "prop": [Object],\n  },\n}',
+      [
+        'Array [',
+        '  Object {',
+        '    "arguments empty": [Arguments],',
+        '    "arguments non-empty": [Arguments],',
+        '    "array literal empty": [Array],',
+        '    "array literal non-empty": [Array],',
+        // Node.js 4 does not support the following:
+        // '    "extended array empty": [MyArray],',
+        '    "map empty": [Map],',
+        '    "map non-empty": [Map],',
+        '    "object literal empty": [Object],',
+        '    "object literal non-empty": [Object],',
+        '    "object with constructor": [MyObject],',
+        '    "object without constructor": [Object],',
+        '    "set empty": [Set],',
+        '    "set non-empty": [Set],',
+        '  },',
+        ']',
+      ].join('\n'),
     );
   });
 
   it('throws on invalid options', () => {
     expect(() => {
+      // $FlowFixMe
       prettyFormat({}, {invalidOption: true});
     }).toThrow();
   });
@@ -327,6 +498,25 @@ describe('prettyFormat()', () => {
       ],
     };
     expect(prettyFormat(val, options)).toEqual('');
+  });
+
+  it('throws if plugin does not return a string', () => {
+    const val = 123;
+    const options = {
+      plugins: [
+        {
+          print(val) {
+            return val;
+          },
+          test() {
+            return true;
+          },
+        },
+      ],
+    };
+    expect(() => {
+      prettyFormat(val, options);
+    }).toThrow();
   });
 
   it('supports plugins with deeply nested arrays (#24)', () => {
@@ -407,7 +597,7 @@ describe('prettyFormat()', () => {
 
   it('calls toJSON on Sets', () => {
     const set = new Set([1]);
-    set.toJSON = () => 'map';
+    (set: Object).toJSON = () => 'map';
     expect(prettyFormat(set)).toEqual('"map"');
   });
 
@@ -415,7 +605,7 @@ describe('prettyFormat()', () => {
     const value = {apple: 'banana', toJSON: jest.fn(() => '1')};
     const name = value.toJSON.name || 'anonymous';
     const set = new Set([value]);
-    set.toJSON = jest.fn(() => 'map');
+    (set: Object).toJSON = jest.fn(() => 'map');
     expect(
       prettyFormat(set, {
         callToJSON: false,
@@ -425,18 +615,77 @@ describe('prettyFormat()', () => {
         name +
         '],\n  },\n}',
     );
-    expect(set.toJSON).not.toBeCalled();
+    expect((set: Object).toJSON).not.toBeCalled();
     expect(value.toJSON).not.toBeCalled();
   });
 
   describe('min', () => {
-    it('prints in min mode', () => {
-      const val = {prop: [1, 2, Infinity, new Set([1, 2, 3])]};
+    it('prints some basic values in min mode', () => {
+      const val = {
+        boolean: [false, true],
+        null: null,
+        number: [0, -0, 123, -123, Infinity, -Infinity, NaN],
+        string: ['', 'non-empty'],
+        undefined,
+      };
       expect(
         prettyFormat(val, {
           min: true,
         }),
-      ).toEqual('{"prop": [1, 2, Infinity, Set {1, 2, 3}]}');
+      ).toEqual(
+        '{' +
+          [
+            '"boolean": [false, true]',
+            '"null": null',
+            '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
+            '"string": ["", "non-empty"]',
+            '"undefined": undefined',
+          ].join(', ') +
+          '}',
+      );
+    });
+
+    it('prints some complex values in min mode', () => {
+      const val = {
+        'arguments empty': returnArguments(),
+        'arguments non-empty': returnArguments('arg'),
+        'array literal empty': [],
+        'array literal non-empty': ['item'],
+        // Node.js 4 does not support the following:
+        // 'extended array empty': new MyArray(),
+        'map empty': new Map(),
+        'map non-empty': new Map([['name', 'value']]),
+        'object literal empty': {},
+        'object literal non-empty': {name: 'value'},
+        'object with constructor': new MyObject('value'),
+        'object without constructor': Object.create(null),
+        'set empty': new Set(),
+        'set non-empty': new Set(['value']),
+      };
+      expect(
+        prettyFormat(val, {
+          min: true,
+        }),
+      ).toEqual(
+        '{' +
+          [
+            '"arguments empty": []',
+            '"arguments non-empty": ["arg"]',
+            '"array literal empty": []',
+            '"array literal non-empty": ["item"]',
+            // Node.js 4 does not support the following:
+            // '"extended array empty": []',
+            '"map empty": Map {}',
+            '"map non-empty": Map {"name" => "value"}',
+            '"object literal empty": {}',
+            '"object literal non-empty": {"name": "value"}',
+            '"object with constructor": {"name": "value"}',
+            '"object without constructor": {}',
+            '"set empty": Set {}',
+            '"set non-empty": Set {"value"}',
+          ].join(', ') +
+          '}',
+      );
     });
 
     it('does not allow indent !== 0 in min mode', () => {

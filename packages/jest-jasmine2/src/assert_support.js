@@ -54,8 +54,8 @@ const getOperatorName = (operator: ?string, stack: string) => {
 const operatorMessage = (operator: ?string, negator: boolean) =>
   typeof operator === 'string'
     ? operator.startsWith('!') || operator.startsWith('=')
-        ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
-        : `${humanReadableOperators[operator] || operator} to:\n`
+      ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
+      : `${humanReadableOperators[operator] || operator} to:\n`
     : '';
 
 const assertThrowingMatcherHint = (operatorName: string) => {

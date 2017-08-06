@@ -28,21 +28,14 @@ if (!global[JEST_MATCHERS_OBJECT]) {
   });
 }
 
-const getState = () => global[JEST_MATCHERS_OBJECT].state;
+export const getState = () => global[JEST_MATCHERS_OBJECT].state;
 
-const setState = (state: Object) => {
+export const setState = (state: Object) => {
   Object.assign(global[JEST_MATCHERS_OBJECT].state, state);
 };
 
-const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
 
-const setMatchers = (matchers: MatchersObject) => {
+export const setMatchers = (matchers: MatchersObject) => {
   Object.assign(global[JEST_MATCHERS_OBJECT].matchers, matchers);
-};
-
-module.exports = {
-  getMatchers,
-  getState,
-  setMatchers,
-  setState,
 };

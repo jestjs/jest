@@ -4,11 +4,11 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ * @flow
  */
 
 const path = require('path');
-const skipOnWindows = require('skipOnWindows');
-const {linkJestPackage} = require('../utils');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const runJest = require('../runJest');
 
 describe('jest --debug', () => {
@@ -16,17 +16,10 @@ describe('jest --debug', () => {
 
   const dir = path.resolve(__dirname, '..', 'verbose_reporter');
 
-  beforeEach(() => {
-    if (process.platform !== 'win32') {
-      linkJestPackage('babel-jest', dir);
-    }
-  });
-
   it('outputs debugging info before running the test', () => {
     const {stdout} = runJest(dir, ['--debug', '--no-cache']);
     expect(stdout).toMatch('"version": "');
-    expect(stdout).toMatch('"framework": "jasmine2",');
-    expect(stdout).toMatch('"config": {');
+    expect(stdout).toMatch('"configs": [');
     // config contains many file paths so we cannot do snapshot test
   });
 });

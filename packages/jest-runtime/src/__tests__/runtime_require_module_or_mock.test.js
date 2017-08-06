@@ -11,11 +11,11 @@
 
 const moduleNameMapper = {
   '\\.css$': '<rootDir>/__mocks__/ManuallyMocked',
-  '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
-  '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+  '^[./a-zA-Z0-9$_-]+.png$': 'RelativeImageStub',
+  '^image![a-zA-Z0-9$_-]+$': 'global_image_stub',
   mappedToDirectory: '<rootDir>/MyDirectoryModule',
   mappedToModule: '<rootDir>/TestModuleNameMapperResolution',
-  mappedToPath: '<rootDir>/GlobalImageStub.js',
+  mappedToPath: '<rootDir>/global_image_stub.js',
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
 };
 
@@ -106,7 +106,7 @@ it('resolves mapped module names and unmocks them by default', () =>
   }).then(runtime => {
     let exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
-      'image!not-really-a-module',
+      'image!not_really_a_module',
     );
     expect(exports.isGlobalImageStub).toBe(true);
 

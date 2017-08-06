@@ -4,59 +4,42 @@
 * This source code is licensed under the BSD-style license found in the
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
-*
-* @emails oncall+jsinfra
 */
 
 'use strict';
 
-const logDebugMessages = require('../logDebugMessages');
+const logDebugMessages = require('../log_debug_messages');
 
 jest.mock('../../../package.json', () => ({version: 123}));
 
 jest.mock('myRunner', () => ({name: 'My Runner'}), {virtual: true});
 
-const getPipe = () => ({write: jest.fn()});
-const print = (
-  globalConfig = {watch: true},
-  config = {testRunner: 'myRunner'},
-) =>
-  JSON.stringify(
-    {
-      config,
-      framework: 'My Runner',
-      globalConfig,
-      version: 123,
-    },
-    null,
-    '  ',
-  );
+const getOutputStream = () => ({
+  write(message) {
+    expect(message).toMatchSnapshot();
+  },
+});
 
-describe('logDebugMessages', () => {
-  it('Prints the jest version', () => {
-    const pipe = getPipe();
-    logDebugMessages({watch: true}, {testRunner: 'myRunner'}, pipe);
-    expect(pipe.write).toHaveBeenCalledWith(print() + '\n');
-  });
+it('prints the jest version', () => {
+  expect.assertions(1);
+  logDebugMessages({watch: true}, {testRunner: 'myRunner'}, getOutputStream());
+});
 
-  it('Prints the test framework name', () => {
-    const pipe = getPipe();
-    logDebugMessages({watch: true}, {testRunner: 'myRunner'}, pipe);
-    expect(pipe.write).toHaveBeenCalledWith(print() + '\n');
-  });
+it('prints the test framework name', () => {
+  expect.assertions(1);
+  logDebugMessages({watch: true}, {testRunner: 'myRunner'}, getOutputStream());
+});
 
-  it('Prints the config object', () => {
-    const pipe = getPipe();
-    const globalConfig = {
-      automock: false,
-      watch: true,
-    };
-    const config = {
-      rootDir: '/path/to/dir',
-      roots: ['path/to/dir/test'],
-      testRunner: 'myRunner',
-    };
-    logDebugMessages(globalConfig, config, pipe);
-    expect(pipe.write).toHaveBeenCalledWith(print(globalConfig, config) + '\n');
-  });
+it('prints the config object', () => {
+  expect.assertions(1);
+  const globalConfig = {
+    automock: false,
+    watch: true,
+  };
+  const config = {
+    rootDir: '/path/to/dir',
+    roots: ['path/to/dir/test'],
+    testRunner: 'myRunner',
+  };
+  logDebugMessages(globalConfig, config, getOutputStream());
 });

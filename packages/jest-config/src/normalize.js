@@ -12,10 +12,13 @@ import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
 import crypto from 'crypto';
+import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
+import validatePattern from './validate_pattern';
+import {clearLine} from 'jest-util';
 import chalk from 'chalk';
-import glob from 'glob';
+import getMaxWorkers from './get_max_workers';
 import Resolver from 'jest-resolve';
 import utils from 'jest-regex-util';
 import {
@@ -76,12 +79,12 @@ const setupPreset = (
   if (options.moduleNameMapper && preset.moduleNameMapper) {
     options.moduleNameMapper = Object.assign(
       {},
+      options.moduleNameMapper,
       preset.moduleNameMapper,
       options.moduleNameMapper,
     );
   }
 
-  // $FlowFixMe
   return Object.assign({}, preset, options);
 };
 
@@ -175,15 +178,21 @@ const normalizeUnmockedModulePathPatterns = (
 const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
-      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
+      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
+        'transform',
+      )} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transform')}.`,
     );
   }
 
   if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
     throw createConfigError(
-      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
+      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold(
+        'transformIgnorePatterns',
+      )} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'transformIgnorePatterns',
+  )}.`,
     );
   }
 
@@ -236,13 +245,13 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
 
   validateReporters(reporters);
   options.reporters = reporters.map(reporterConfig => {
-    const normalizedReporterConfig: ReporterConfig = typeof reporterConfig ===
-      'string'
-      ? // if reporter config is a string, we wrap it in an array
-        // and pass an empty object for options argument, to normalize
-        // the shape.
-        [reporterConfig, {}]
-      : reporterConfig;
+    const normalizedReporterConfig: ReporterConfig =
+      typeof reporterConfig === 'string'
+        ? // if reporter config is a string, we wrap it in an array
+          // and pass an empty object for options argument, to normalize
+          // the shape.
+          [reporterConfig, {}]
+        : reporterConfig;
 
     const reporterPath = _replaceRootDirInPath(
       options.rootDir,
@@ -265,6 +274,39 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
   });
 
   return options;
+};
+
+const buildTestPathPattern = (argv: Argv): string => {
+  if (argv.testPathPattern) {
+    if (validatePattern(argv.testPathPattern)) {
+      return argv.testPathPattern;
+    } else {
+      showTestPathPatternError(argv.testPathPattern);
+    }
+  }
+
+  if (argv._ && argv._.length) {
+    const testPathPattern = argv._.join('|');
+
+    if (validatePattern(testPathPattern)) {
+      return testPathPattern;
+    } else {
+      showTestPathPatternError(testPathPattern);
+    }
+  }
+
+  return '';
+};
+
+const showTestPathPatternError = (testPathPattern: string) => {
+  clearLine(process.stdout);
+
+  console.log(
+    chalk.red(
+      `  Invalid testPattern ${testPathPattern} supplied. ` +
+        `Running all tests instead.`,
+    ),
+  );
 };
 
 function normalize(options: InitialOptions, argv: Argv) {
@@ -298,6 +340,10 @@ function normalize(options: InitialOptions, argv: Argv) {
 
   if (!options.testRunner || options.testRunner === 'jasmine2') {
     options.testRunner = require.resolve('jest-jasmine2');
+  }
+
+  if (!options.coverageDirectory) {
+    options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
 
   const babelJest = setupBabelJest(options);
@@ -382,16 +428,15 @@ function normalize(options: InitialOptions, argv: Argv) {
         }
         break;
       case 'projects':
-        const projects = options[key];
-        let list = [];
-        projects &&
-          projects.forEach(
-            filePath =>
-              (list = list.concat(
-                glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
-              )),
-          );
-        value = list;
+        value = (options[key] || [])
+          .map(project => _replaceRootDirTags(options.rootDir, project))
+          .reduce((projects, project) => {
+            // Project can be specified as globs. If a glob matches any files,
+            // We expand it to these paths. If not, we keep the original path
+            // for the future resolution.
+            const globMatches = glob.sync(project);
+            return projects.concat(globMatches.length ? globMatches : project);
+          }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -401,25 +446,33 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'expand':
       case 'globals':
+      case 'findRelatedTests':
+      case 'forceExit':
+      case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
       case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
       case 'notify':
+      case 'onlyChanged':
+      case 'outputFile':
       case 'replname':
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
       case 'silent':
+      case 'skipNodeResolution':
       case 'testEnvironment':
+      case 'testFailureExitCode':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':
@@ -427,6 +480,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'useStderr':
       case 'verbose':
       case 'watch':
+      case 'watchAll':
       case 'watchman':
         value = options[key];
         break;
@@ -435,9 +489,23 @@ function normalize(options: InitialOptions, argv: Argv) {
     return newOptions;
   }, newOptions);
 
-  newOptions.updateSnapshot = argv.ci && !argv.updateSnapshot
-    ? 'none'
-    : argv.updateSnapshot ? 'all' : 'new';
+  newOptions.nonFlagArgs = argv._;
+  newOptions.testPathPattern = buildTestPathPattern(argv);
+  newOptions.json = argv.json;
+  newOptions.lastCommit = argv.lastCommit;
+
+  newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
+
+  if (argv.all || newOptions.testPathPattern) {
+    newOptions.onlyChanged = false;
+  }
+
+  newOptions.updateSnapshot =
+    argv.ci && !argv.updateSnapshot
+      ? 'none'
+      : argv.updateSnapshot ? 'all' : 'new';
+
+  newOptions.maxWorkers = getMaxWorkers(argv);
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(

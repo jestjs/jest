@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 
 'use strict';
@@ -193,7 +193,8 @@ describe('docblock', () => {
       '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      class: 'A long declaration of a class goes here, ' +
+      class:
+        'A long declaration of a class goes here, ' +
         'so we can read it and enjoy',
       'preserve-whitespace': '',
     });

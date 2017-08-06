@@ -9,7 +9,7 @@
  */
 
 import type {DiffOptions} from 'jest-diff/src/diff_strings.js';
-import type {Event, State} from '../types';
+import type {Event, State} from 'types/Circus';
 
 const {printReceived, printExpected} = require('jest-matcher-utils');
 const chalk = require('chalk');
@@ -69,8 +69,8 @@ const getOperatorName = (operator: ?string, stack: string) => {
 const operatorMessage = (operator: ?string, negator: boolean) =>
   typeof operator === 'string'
     ? operator.startsWith('!') || operator.startsWith('=')
-        ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
-        : `${humanReadableOperators[operator] || operator} to:\n`
+      ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
+      : `${humanReadableOperators[operator] || operator} to:\n`
     : '';
 
 const assertThrowingMatcherHint = (operatorName: string) => {

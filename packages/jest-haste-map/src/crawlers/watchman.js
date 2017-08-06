@@ -11,6 +11,7 @@
 import type {InternalHasteMap} from 'types/HasteMap';
 import type {CrawlerOptions} from '../types';
 
+import normalizePathSep from '../lib/normalize_path_sep';
 import path from 'path';
 import watchman from 'fb-watchman';
 import H from '../constants';
@@ -96,7 +97,7 @@ module.exports = function watchmanCrawl(
           }
 
           pairs.forEach(pair => {
-            const root = pair.root;
+            const root = normalizePathSep(pair.root);
             const response = pair.response;
             if ('warning' in response) {
               console.warn('watchman warning: ', response.warning);
@@ -104,13 +105,14 @@ module.exports = function watchmanCrawl(
 
             clocks[root] = response.clock;
             response.files.forEach(fileData => {
-              const name = root + path.sep + fileData.name;
+              const name = root + path.sep + normalizePathSep(fileData.name);
               if (!fileData.exists) {
                 delete files[name];
               } else if (!ignore(name)) {
-                const mtime = typeof fileData.mtime_ms === 'number'
-                  ? fileData.mtime_ms
-                  : fileData.mtime_ms.toNumber();
+                const mtime =
+                  typeof fileData.mtime_ms === 'number'
+                    ? fileData.mtime_ms
+                    : fileData.mtime_ms.toNumber();
                 const isNew =
                   !data.files[name] || data.files[name][H.MTIME] !== mtime;
                 if (isNew) {

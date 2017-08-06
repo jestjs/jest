@@ -8,48 +8,75 @@
  * @flow
  */
 
-import type {Colors, Indent, Options, Print, Plugin} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
+
+import {printListItems, printObjectProperties} from '../collections';
 
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
 const SPACE = ' ';
 
-class ArrayContaining extends Array {}
-class ObjectContaining extends Object {}
-
-const print = (
+export const serialize = (
   val: any,
-  print: Print,
-  indent: Indent,
-  opts: Options,
-  colors: Colors,
-) => {
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+): string => {
   const stringedValue = val.toString();
 
   if (stringedValue === 'ArrayContaining') {
-    const array = ArrayContaining.from(val.sample);
-    return opts.spacing === SPACE
-      ? stringedValue + SPACE + print(array)
-      : print(array);
+    if (++depth > config.maxDepth) {
+      return '[' + stringedValue + ']';
+    }
+    return (
+      stringedValue +
+      SPACE +
+      '[' +
+      printListItems(val.sample, config, indentation, depth, refs, printer) +
+      ']'
+    );
   }
 
   if (stringedValue === 'ObjectContaining') {
-    const object = Object.assign(new ObjectContaining(), val.sample);
-    return opts.spacing === SPACE
-      ? stringedValue + SPACE + print(object)
-      : print(object);
+    if (++depth > config.maxDepth) {
+      return '[' + stringedValue + ']';
+    }
+    return (
+      stringedValue +
+      SPACE +
+      '{' +
+      printObjectProperties(
+        val.sample,
+        config,
+        indentation,
+        depth,
+        refs,
+        printer,
+      ) +
+      '}'
+    );
   }
 
   if (stringedValue === 'StringMatching') {
-    return stringedValue + SPACE + print(val.sample);
+    return (
+      stringedValue +
+      SPACE +
+      printer(val.sample, config, indentation, depth, refs)
+    );
   }
 
   if (stringedValue === 'StringContaining') {
-    return stringedValue + SPACE + print(val.sample);
+    return (
+      stringedValue +
+      SPACE +
+      printer(val.sample, config, indentation, depth, refs)
+    );
   }
 
   return val.toAsymmetricMatcher();
 };
 
-const test = (object: any) => object && object.$$typeof === asymmetricMatcher;
+export const test = (val: any) => val && val.$$typeof === asymmetricMatcher;
 
-module.exports = ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);

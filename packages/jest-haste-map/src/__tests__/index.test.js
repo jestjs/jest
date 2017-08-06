@@ -60,7 +60,35 @@ jest.mock('sane', () => {
   };
 });
 
-const skipOnWindows = require('skipOnWindows');
+let mockChangedFiles;
+let mockFs;
+
+jest.mock('graceful-fs', () => ({
+  readFileSync: jest.fn((path, options) => {
+    expect(options).toBe('utf8');
+
+    // A file change can be triggered by writing into the
+    // mockChangedFiles object.
+    if (mockChangedFiles && path in mockChangedFiles) {
+      return mockChangedFiles[path];
+    }
+
+    if (mockFs[path]) {
+      return mockFs[path];
+    }
+
+    const error = new Error(`Cannot read path '${path}'.`);
+    error.code = 'ENOENT';
+    throw error;
+  }),
+  writeFileSync: jest.fn((path, data, options) => {
+    expect(options).toBe('utf8');
+    mockFs[path] = data;
+  }),
+}));
+jest.mock('fs', () => require('graceful-fs'));
+
+const skipOnWindows = require('../../../../scripts/skip_on_windows');
 
 const cacheFilePath = '/cache-file';
 let consoleWarn;
@@ -68,14 +96,11 @@ let defaultConfig;
 let fs;
 let H;
 let HasteMap;
-let mockChangedFiles;
 let mockClocks;
 let mockEmitters;
-let mockFs;
 let object;
-let readFileSync;
 let workerFarmMock;
-let writeFileSync;
+let getCacheFilePath;
 
 describe('HasteMap', () => {
   skipOnWindows.suite();
@@ -121,29 +146,6 @@ describe('HasteMap', () => {
     mockChangedFiles = null;
 
     fs = require('graceful-fs');
-    readFileSync = fs.readFileSync;
-    writeFileSync = fs.writeFileSync;
-    fs.readFileSync = jest.fn((path, options) => {
-      expect(options).toBe('utf8');
-
-      // A file change can be triggered by writing into the
-      // mockChangedFiles object.
-      if (mockChangedFiles && path in mockChangedFiles) {
-        return mockChangedFiles[path];
-      }
-
-      if (mockFs[path]) {
-        return mockFs[path];
-      }
-
-      const error = new Error(`Cannot read path '${path}'.`);
-      error.code = 'ENOENT';
-      throw error;
-    });
-    fs.writeFileSync = jest.fn((path, data, options) => {
-      expect(options).toBe('utf8');
-      mockFs[path] = data;
-    });
 
     consoleWarn = console.warn;
     console.warn = jest.fn();
@@ -151,6 +153,7 @@ describe('HasteMap', () => {
     HasteMap = require('../');
     H = HasteMap.H;
 
+    getCacheFilePath = HasteMap.getCacheFilePath;
     HasteMap.getCacheFilePath = jest.fn(() => cacheFilePath);
 
     defaultConfig = {
@@ -167,8 +170,6 @@ describe('HasteMap', () => {
 
   afterEach(() => {
     console.warn = consoleWarn;
-    fs.readFileSync = readFileSync;
-    fs.writeFileSync = writeFileSync;
   });
 
   it('exports constants', () => {
@@ -224,6 +225,16 @@ describe('HasteMap', () => {
       '/**',
       ' * @providesModule mapObject',
       ' */',
+    ].join('\n');
+    mockFs['/fruits/node_modules/react/node_modules/dummy/merge.js'] = [
+      '/**',
+      ' * @providesModule merge',
+      ' */',
+    ].join('\n');
+    mockFs['/fruits/node_modules/react/node_modules/merge/package.json'] = [
+      '{',
+      '  "name": "merge"',
+      '}',
     ].join('\n');
     mockFs['/fruits/node_modules/jest/jest.js'] = [
       '/**',
@@ -538,6 +549,29 @@ describe('HasteMap', () => {
       });
   });
 
+  it('discards the cache when configuration changes', () => {
+    HasteMap.getCacheFilePath = getCacheFilePath;
+    return new HasteMap(defaultConfig).build().then(() => {
+      fs.readFileSync.mockClear();
+
+      // Explicitly mock that no files have changed.
+      mockChangedFiles = Object.create(null);
+
+      // Watchman would give us different clocks.
+      mockClocks = object({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:4',
+      });
+
+      const config = Object.assign({}, defaultConfig, {
+        ignorePattern: /kiwi|pear/,
+      });
+      return new HasteMap(config).build().then(({moduleMap}) => {
+        expect(moduleMap.getModule('Pear')).toBe(null);
+      });
+    });
+  });
+
   it('ignores files that do not exist', () => {
     const watchman = require('../crawlers/watchman');
     const mockImpl = watchman.getMockImplementation();
@@ -676,8 +710,12 @@ describe('HasteMap', () => {
       e.emit('all', 'delete', filePath, dirPath, undefined);
     }
 
-    function hm_it(title, fn) {
-      it(title, async () => {
+    function hm_it(title, fn, options) {
+      options = options || {};
+      (options.only ? it.only : it)(title, async () => {
+        if (options.mockFs) {
+          mockFs = options.mockFs;
+        }
         const watchConfig = Object.assign({}, defaultConfig, {watch: true});
         const hm = new HasteMap(watchConfig);
         await hm.build();
@@ -763,6 +801,46 @@ describe('HasteMap', () => {
       },
     );
 
+    hm_it(
+      'correctly tracks changes to both platform-specific versions of a single module name',
+      async hm => {
+        const {moduleMap: initMM} = await hm.build();
+        expect(initMM.getModule('Orange', 'ios')).toBeTruthy();
+        expect(initMM.getModule('Orange', 'android')).toBeTruthy();
+        const e = mockEmitters['/fruits'];
+        e.emit('all', 'change', 'Orange.ios.js', '/fruits/', MOCK_STAT);
+        e.emit('all', 'change', 'Orange.android.js', '/fruits/', MOCK_STAT);
+        const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
+        expect(eventsQueue).toHaveLength(2);
+        expect(eventsQueue).toEqual([
+          {filePath: '/fruits/Orange.ios.js', stat: MOCK_STAT, type: 'change'},
+          {
+            filePath: '/fruits/Orange.android.js',
+            stat: MOCK_STAT,
+            type: 'change',
+          },
+        ]);
+        expect(hasteFS.getModuleName('/fruits/Orange.ios.js')).toBeTruthy();
+        expect(hasteFS.getModuleName('/fruits/Orange.android.js')).toBeTruthy();
+        const iosVariant = moduleMap.getModule('Orange', 'ios');
+        expect(iosVariant).toBe('/fruits/Orange.ios.js');
+        const androidVariant = moduleMap.getModule('Orange', 'android');
+        expect(androidVariant).toBe('/fruits/Orange.android.js');
+      },
+      {
+        mockFs: {
+          '/fruits/Orange.android.js': `/**
+ * @providesModule Orange
+ */
+`,
+          '/fruits/Orange.ios.js': `/**
+* @providesModule Orange
+*/
+`,
+        },
+      },
+    );
+
     describe('recovery from duplicate module IDs', () => {
       async function setupDuplicates(hm) {
         mockFs['/fruits/pear.js'] = [
@@ -780,7 +858,21 @@ describe('HasteMap', () => {
         e.emit('all', 'add', 'blueberry.js', '/fruits', MOCK_STAT);
         const {hasteFS, moduleMap} = await waitForItToChange(hm);
         expect(hasteFS.exists('/fruits/blueberry.js')).toBe(true);
-        expect(moduleMap.getModule('Pear')).toBe(null);
+        try {
+          moduleMap.getModule('Pear');
+          throw new Error('should be unreachable');
+        } catch (error) {
+          const {DuplicateHasteCandidatesError} = require('../module_map');
+          expect(error).toBeInstanceOf(DuplicateHasteCandidatesError);
+          expect(error.hasteName).toBe('Pear');
+          expect(error.platform).toBe('g');
+          expect(error.supportsNativePlatform).toBe(false);
+          expect(error.duplicatesSet).toEqual({
+            '/fruits/blueberry.js': 0,
+            '/fruits/pear.js': 0,
+          });
+          expect(error.message).toMatchSnapshot();
+        }
       }
 
       hm_it(

@@ -369,7 +369,7 @@ test('fetchData() rejects to be error', async () => {
 `toBe` just checks that a value is what you expect. It uses `===` to check
 strict equality.
 
-For example, this code will validate some properties of the `beverage` object:
+For example, this code will validate some properties of the `can` object:
 
 ```js
 const can = {
@@ -430,7 +430,7 @@ test('drinkEach drinks each drink', () => {
 
 ### `.toHaveBeenCalledWith(arg1, arg2, ...)`
 
-Also under the alias: `.toBeCalledWith`
+Also under the alias: `.toBeCalledWith()`
 
 Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
 
@@ -707,7 +707,11 @@ describe('grapefruits are healthy', () => {
 
 ### `.toMatchObject(object)`
 
-Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object. You can match properties against values or against matchers.
+Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object. It will match received objects with properties that are **not** in the expected object.
+
+You can also pass an array of objects, in which case the method will return true only if each object in the received array matches (in the `toMatchObject` sense described above) the corresponding object in the expected array. This is useful if you want to check that two arrays match in their number of elements, as opposed to `arrayContaining`, which allows for extra elements in the received array.
+
+You can match properties against values or against matchers.
 
 ```js
 const houseForSale = {
@@ -729,6 +733,40 @@ const desiredHouse = {
 
 test('the house has my desired features', () => {
   expect(houseForSale).toMatchObject(desiredHouse);
+});
+```
+
+```js
+describe('toMatchObject applied to arrays arrays', () => {
+  test('the number of elements must match exactly', () => {
+    expect([
+      { foo: 'bar' },
+      { baz: 1 }
+    ]).toMatchObject([
+      { foo: 'bar' },
+      { baz: 1 }
+    ]);
+  });
+
+  // .arrayContaining "matches a received array which contains elements that are *not* in the expected array"
+  test('.toMatchObject does not allow extra elements', () => {
+    expect([
+      { foo: 'bar' },
+      { baz: 1 }
+    ]).toMatchObject([
+      { foo: 'bar' }
+    ]);
+  });
+
+  test('.toMatchObject is called for each elements, so extra object properties are okay', () => {
+    expect([
+      { foo: 'bar' },
+      { baz: 1, extra: 'quux' }
+    ]).toMatchObject([
+      { foo: 'bar' },
+      { baz: 1 }
+    ]);
+  });
 });
 ```
 
@@ -827,7 +865,7 @@ test('throws on octopus', () => {
 
 ### `.toThrowErrorMatchingSnapshot()`
 
-Use `.toThrowErrorMatchingSnapshot` to test that a function throws a error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
 
 ```js
 function drinkFlavor(flavor) {

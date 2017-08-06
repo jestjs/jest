@@ -13,14 +13,18 @@ import getType from 'jest-get-type';
 import prettyFormat from 'pretty-format';
 const {
   AsymmetricMatcher,
-  ReactElement,
   HTMLElement,
   Immutable,
+  ReactElement,
+  ReactTestComponent,
 } = prettyFormat.plugins;
 
-const PLUGINS = [AsymmetricMatcher, ReactElement, HTMLElement].concat(
-  Immutable,
-);
+const PLUGINS = [
+  ReactTestComponent,
+  ReactElement,
+  HTMLElement,
+  AsymmetricMatcher,
+].concat(Immutable);
 
 const EXPECTED_COLOR = chalk.green;
 const EXPECTED_BG = chalk.bgGreen;

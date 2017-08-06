@@ -18,7 +18,7 @@ $ yarn add pretty-format
 ```js
 const prettyFormat = require('pretty-format');
 
-var obj = { property: {} };
+const obj = {property: {}};
 obj.circularReference = obj;
 obj[Symbol('foo')] = 'foo';
 obj.map = new Map();
@@ -30,7 +30,7 @@ console.log(prettyFormat(obj));
 
 **Result:**
 
-```js
+```
 Object {
   "property": Object {},
   "circularReference": [Circular],
@@ -100,13 +100,13 @@ const fooPlugin = {
   },
   print(val, print, indent) {
     return 'Foo: ' + print(val.foo);
-  }
+  },
 };
 
 const obj = {foo: {bar: {}}};
 
 prettyFormat(obj, {
-  plugins: [fooPlugin]
+  plugins: [fooPlugin],
 });
 // Foo: Object {
 //   "bar": Object {}
@@ -126,7 +126,7 @@ const renderer = require('react-test-renderer');
 const element = React.createElement('h1', null, 'Hello World');
 
 prettyFormat(renderer.create(element).toJSON(), {
-  plugins: [reactTestPlugin, reactElementPlugin]
+  plugins: [reactTestPlugin, reactElementPlugin],
 });
 // <h1>
 //   Hello World

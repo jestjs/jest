@@ -38,8 +38,7 @@ import {
   getMatchers,
   setMatchers,
 } from './jest_matchers_object';
-import extractExpectedAssertionsErrors
-  from './extract_expected_assertions_errors';
+import extractExpectedAssertionsErrors from './extract_expected_assertions_errors';
 
 class JestAssertionError extends Error {
   matcherResult: any;
@@ -100,18 +99,10 @@ const expect = (actual: any): ExpectationObject => {
 };
 
 const getMessage = message => {
-  // for performance reasons some of the messages are evaluated
-  // lazily
-  if (typeof message === 'function') {
-    message = message();
-  }
-
-  if (!message) {
-    message = utils.RECEIVED_COLOR(
-      'No message was specified for this matcher.',
-    );
-  }
-  return message;
+  return (
+    (message && message()) ||
+    utils.RECEIVED_COLOR('No message was specified for this matcher.')
+  );
 };
 
 const makeResolveMatcher = (
@@ -203,8 +194,11 @@ const makeThrowingMatcher = (
     try {
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
-      // Remove this and deeper functions from the stack trace frame.
-      Error.captureStackTrace(error, throwingMatcher);
+      // Try to remove this and deeper functions from the stack trace frame.
+      // Guard for some environments (browsers) that do not support this feature.
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, throwingMatcher);
+      }
       throw error;
     }
 
@@ -220,8 +214,11 @@ const makeThrowingMatcher = (
       // reporter could access the actual and expected objects of the result
       // for example in order to display a custom visual diff
       error.matcherResult = result;
-      // Remove this function from the stack trace frame.
-      Error.captureStackTrace(error, throwingMatcher);
+      // Try to remove this function from the stack trace frame.
+      // Guard for some environments (browsers) that do not support this feature.
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, throwingMatcher);
+      }
 
       if (throws) {
         throw error;

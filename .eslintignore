@@ -1,7 +1,6 @@
 **/coverage/**
 **/node_modules/**
 bin/
-docs/
 flow-typed/**
 packages/*/build/**
 packages/*/build-es5/**
@@ -12,3 +11,4 @@ website/core/metadata*.js
 website/i18n/*.js
 website/src/jest/docs
 website/src/jest/blog
+!.eslintrc.js

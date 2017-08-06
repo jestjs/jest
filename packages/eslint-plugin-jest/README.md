@@ -61,7 +61,7 @@ This plugin exports a recommended configuration that enforces good testing pract
 
 To enable this configuration use the `extends` property in your `.eslintrc` config file:
 
-```js
+```json
 {
   "extends": ["plugin:jest/recommended"]
 }

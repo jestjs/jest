@@ -11,7 +11,7 @@
 
 const path = require('path');
 const fs = require('graceful-fs');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../../../scripts/skip_on_windows');
 
 const H = require('../constants');
 const worker = require('../worker');
@@ -104,7 +104,7 @@ describe('worker', () => {
     worker(
       {
         filePath: '/fruits/strawberry.js',
-        hasteImplModulePath: path.resolve(__dirname, 'hasteImpl.js'),
+        hasteImplModulePath: path.resolve(__dirname, 'haste_impl.js'),
       },
       callback,
     );

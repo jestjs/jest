@@ -29,7 +29,9 @@ const unknownOptionWarning = (
     Object.keys(exampleConfig),
   );
   const message =
-    `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
+    `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(
+      format(config[option]),
+    )} was found.` +
     (didYouMean && ` ${didYouMean}`) +
     `\n  This is probably a typing mistake. Fixing it will remove this message.`;
 

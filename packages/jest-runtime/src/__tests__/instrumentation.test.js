@@ -16,7 +16,7 @@ const os = require('os');
 
 const FILE_PATH_TO_INSTRUMENT = path.resolve(
   __dirname,
-  './module_dir/to-be-instrumented.js',
+  './module_dir/to_be_instrumented.js',
 );
 
 it('instruments files', () => {

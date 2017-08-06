@@ -28,7 +28,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 type Tester = (a: any, b: any) => boolean | typeof undefined;
 
 // Extracted out of jasmine 2.5.2
-function equals(a: any, b: any, customTesters?: Array<Tester>): boolean {
+export function equals(a: any, b: any, customTesters?: Array<Tester>): boolean {
   customTesters = customTesters || [];
   return eq(a, b, [], [], customTesters);
 }
@@ -38,7 +38,8 @@ function isAsymmetric(obj) {
 }
 
 function asymmetricMatch(a, b) {
-  var asymmetricA = isAsymmetric(a), asymmetricB = isAsymmetric(b);
+  var asymmetricA = isAsymmetric(a),
+    asymmetricB = isAsymmetric(b);
 
   if (asymmetricA && asymmetricB) {
     return undefined;
@@ -169,7 +170,8 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
   }
 
   // Deep compare objects.
-  var aKeys = keys(a, className == '[object Array]'), key;
+  var aKeys = keys(a, className == '[object Array]'),
+    key;
   size = aKeys.length;
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
@@ -229,7 +231,7 @@ function has(obj, key) {
   );
 }
 
-function isA(typeName: string, value: any) {
+export function isA(typeName: string, value: any) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
@@ -237,7 +239,7 @@ function isDomNode(obj) {
   return obj.nodeType > 0;
 }
 
-function fnNameFor(func: Function) {
+export function fnNameFor(func: Function) {
   if (func.name) {
     return func.name;
   }
@@ -246,7 +248,7 @@ function fnNameFor(func: Function) {
   return matches ? matches[1] : '<anonymous>';
 }
 
-function isUndefined(obj: any) {
+export function isUndefined(obj: any) {
   return obj === void 0;
 }
 
@@ -262,7 +264,7 @@ function getPrototype(obj) {
   return obj.constructor.prototype;
 }
 
-function hasProperty(obj: Object | null, property: string) {
+export function hasProperty(obj: Object | null, property: string) {
   if (!obj) {
     return false;
   }
@@ -273,11 +275,3 @@ function hasProperty(obj: Object | null, property: string) {
 
   return hasProperty(getPrototype(obj), property);
 }
-
-module.exports = {
-  equals,
-  fnNameFor,
-  hasProperty,
-  isA,
-  isUndefined,
-};

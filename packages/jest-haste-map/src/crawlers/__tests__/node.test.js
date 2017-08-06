@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../../../../scripts/skip_on_windows');
 
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {
@@ -111,13 +111,13 @@ describe('node crawler', () => {
         '/vegtables',
         '-type',
         'f',
-        '\(',
+        '(',
         '-iname',
         '*.js',
         '-o',
         '-iname',
         '*.json',
-        '\)',
+        ')',
       ]);
 
       expect(data.files).not.toBe(null);

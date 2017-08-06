@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {Colors, Indent, Options, Print} from 'types/PrettyFormat';
+import type {Colors, Indent, PluginOptions, Print} from 'types/PrettyFormat';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
@@ -16,13 +16,13 @@ const SPACE = ' ';
 const addKey = (isMap: boolean, key: any) => (isMap ? key + ': ' : '');
 
 const addFinalEdgeSpacing = (length: number, edgeSpacing: string) =>
-  length > 0 ? edgeSpacing : '';
+  length !== 0 ? edgeSpacing : '';
 
 const printImmutable = (
   val: any,
   print: Print,
   indent: Indent,
-  opts: Options,
+  opts: PluginOptions,
   colors: Colors,
   immutableDataStructureName: string,
   isMap: boolean,
@@ -51,7 +51,7 @@ const printImmutable = (
   }
 
   result += immutableArray.join(',' + opts.spacing);
-  if (!opts.min && immutableArray.length > 0) {
+  if (!opts.min && immutableArray.length !== 0) {
     result += ',';
   }
 
@@ -62,4 +62,4 @@ const printImmutable = (
   );
 };
 
-module.exports = printImmutable;
+export default printImmutable;

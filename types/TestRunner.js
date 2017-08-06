@@ -17,8 +17,8 @@ import type Runtime from 'jest-runtime';
 
 export type Test = {|
   context: Context,
-  path: Path,
   duration: ?number,
+  path: Path,
 |};
 
 export type Reporter = {
@@ -26,12 +26,12 @@ export type Reporter = {
     test: Test,
     testResult: TestResult,
     aggregatedResult: AggregatedResult,
-  ) => void,
+  ) => ?Promise<void>,
   +onRunStart: (
     results: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) => void,
-  +onTestStart: (test: Test) => void,
+  ) => ?Promise<void>,
+  +onTestStart: (test: Test) => ?Promise<void>,
   +onRunComplete: (
     contexts: Set<Context>,
     results: AggregatedResult,

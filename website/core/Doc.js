@@ -13,9 +13,9 @@ class Doc extends React.Component {
         className="edit-page-link button"
         href={
           'https://github.com/facebook/jest/edit/master/docs/' +
-            this.props.language +
-            '/' +
-            this.props.source
+          (this.props.language || 'en') +
+          '/' +
+          this.props.source
         }
         target="_blank"
       >
@@ -38,10 +38,14 @@ class Doc extends React.Component {
       <div className="post">
         <header className="postHeader">
           {editLink}
-          <h1>{this.props.title}</h1>
+          <h1>
+            {this.props.title}
+          </h1>
         </header>
         <article>
-          <Marked>{this.props.content}</Marked>
+          <Marked>
+            {this.props.content}
+          </Marked>
         </article>
       </div>
     );

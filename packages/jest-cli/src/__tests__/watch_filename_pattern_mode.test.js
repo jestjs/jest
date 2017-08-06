@@ -28,7 +28,7 @@ jest.mock('ansi-escapes', () => ({
 }));
 
 jest.mock(
-  '../SearchSource',
+  '../search_source',
   () =>
     class {
       constructor(context) {
@@ -61,27 +61,27 @@ jest.mock(
     },
 );
 
-jest.doMock('chalk', () =>
-  Object.assign(new chalk.constructor({enabled: false}), {
-    stripColor: str => str,
-  }),
-);
+jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+
+jest.doMock('strip-ansi');
+require('strip-ansi').mockImplementation(str => str);
 
 jest.doMock(
-  '../runJest',
+  '../run_jest',
   () =>
     function() {
       const args = Array.from(arguments);
+      const [{onComplete}] = args;
       runJestMock.apply(null, args);
 
       // Call the callback
-      args[args.length - 1]({snapshot: {}});
+      onComplete({snapshot: {}});
 
       return Promise.resolve();
     },
 );
 
-jest.doMock('../lib/terminalUtils', () => ({
+jest.doMock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => terminalWidth,
 }));
 
@@ -96,7 +96,6 @@ afterEach(runJestMock.mockReset);
 describe('Watch mode flows', () => {
   let pipe;
   let hasteMapInstances;
-  let argv;
   let contexts;
   let stdin;
 
@@ -104,14 +103,13 @@ describe('Watch mode flows', () => {
     terminalWidth = 80;
     pipe = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
-    argv = {};
     contexts = [{config: {}}];
     stdin = new MockStdin();
   });
 
   it('Pressing "P" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -135,9 +133,10 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.ENTER);
     expect(runJestMock).toBeCalled();
 
-    // Argv is updated with the current pattern
-    expect(argv).toEqual({
+    // globalConfig is updated with the current pattern
+    expect(runJestMock.mock.calls[0][0].globalConfig).toEqual({
       onlyChanged: false,
+      testNamePattern: '',
       testPathPattern: 'p.*3',
       watch: true,
       watchAll: false,
@@ -148,7 +147,7 @@ describe('Watch mode flows', () => {
     const toUnixPathPattern = pathPattern => pathPattern.replace(/\\\\/g, '/');
 
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -166,12 +165,16 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.ENTER);
 
-    expect(toUnixPathPattern(argv.testPathPattern)).toMatchSnapshot();
+    expect(
+      toUnixPathPattern(
+        runJestMock.mock.calls[1][0].globalConfig.testPathPattern,
+      ),
+    ).toMatchSnapshot();
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 
@@ -186,7 +189,7 @@ describe('Watch mode flows', () => {
 
   it('Shows the appropiate header when the filename filter is active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 
@@ -208,7 +211,7 @@ describe('Watch mode flows', () => {
 
   it('Shows the appropiate header when the test name filter is active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.T);
 
@@ -230,7 +233,7 @@ describe('Watch mode flows', () => {
 
   it('Shows the appropiate header when both filters are active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 
@@ -252,7 +255,7 @@ describe('Watch mode flows', () => {
 
   it('Pressing "c" clears the filters', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 

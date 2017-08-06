@@ -141,9 +141,10 @@ const getSummary = (
 
 const renderTime = (runTime, estimatedTime, width) => {
   // If we are more than one second over the estimated time, highlight it.
-  const renderedTime = estimatedTime && runTime >= estimatedTime + 1
-    ? chalk.bold.yellow(runTime + 's')
-    : runTime + 's';
+  const renderedTime =
+    estimatedTime && runTime >= estimatedTime + 1
+      ? chalk.bold.yellow(runTime + 's')
+      : runTime + 's';
   let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
   if (runTime < estimatedTime) {
     time += `, estimated ${estimatedTime}s`;

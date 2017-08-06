@@ -12,7 +12,7 @@
 jest.setTimeout(15000);
 
 const path = require('path');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../../../scripts/skip_on_windows');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
@@ -34,7 +34,7 @@ describe('SearchSource', () => {
 
   beforeEach(() => {
     Runtime = require('jest-runtime');
-    SearchSource = require('../SearchSource');
+    SearchSource = require('../search_source');
     normalize = require('jest-config').normalize;
   });
 
@@ -160,7 +160,7 @@ describe('SearchSource', () => {
           name,
           rootDir,
           testMatch: null,
-          testRegex: 'test\.jsx?',
+          testRegex: 'test.jsx?',
         },
         {},
       );
@@ -415,7 +415,7 @@ describe('SearchSource', () => {
     });
 
     it('returns empty search result if no related tests were found', () => {
-      const input = ['no tests.js'];
+      const input = ['no_tests.js'];
       const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.tests).toEqual([]);
     });

@@ -15,8 +15,9 @@ const SideNav = require('SideNav');
 class DocsSidebar extends React.Component {
   getCategories(language) {
     const metadatas = Metadata.files.filter(metadata => {
-      return metadata.layout === this.props.layout &&
-        metadata.language === language;
+      return (
+        metadata.layout === this.props.layout && metadata.language === language
+      );
     });
 
     // Build a hashmap of article_id -> metadata
