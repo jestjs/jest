@@ -1,4 +1,4 @@
-const getFailedSnapshotTests = require('../getFailedSnapshotTests');
+const getFailedSnapshotTests = require('../get_failed_snapshot_tests');
 
 test('return a list of path', () => {
   const targetFilename = 'somewhere.js';

@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
  * @flow
  */
 
@@ -7,13 +13,13 @@ import type {AggregatedResult} from 'types/TestResult';
 const chalk = require('chalk');
 const ansiEscapes = require('ansi-escapes');
 const {pluralize} = require('./reporters/utils');
-const {rightPad} = require('./lib/terminalUtils');
+const {rightPad} = require('./lib/terminal_utils');
 const {KEYS} = require('./constants');
 
 module.exports = class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;
   _isActive: boolean;
-  _updateTestRunnerConfig: (a: string, jestRunnerOptions: Object) => *;
+  _updateTestRunnerConfig: (path: string, shouldUpdateSnapshot: boolean) => *;
   _testFilePaths: Array<string>;
   _countPaths: number;
 
@@ -30,13 +36,13 @@ module.exports = class SnapshotInteractiveMode {
     this._pipe.write(ansiEscapes.scrollDown);
     this._pipe.write(ansiEscapes.scrollDown);
 
-    this._pipe.write(ansiEscapes.cursorSavePosition);
-    this._pipe.write(ansiEscapes.cursorTo(0, 0));
-
-    const title = rightPad(' -> Interactive Snapshot Update Activated <-');
-    this._pipe.write(chalk.black.bold.bgYellow(title));
-
-    this._pipe.write(ansiEscapes.cursorRestorePosition);
+    // this._pipe.write(ansiEscapes.cursorSavePosition);
+    // this._pipe.write(ansiEscapes.cursorTo(0, 0));
+    //
+    // const title = rightPad(' -> Interactive Snapshot Update Activated <-');
+    // this._pipe.write(chalk.black.bold.bgYellow(title));
+    //
+    // this._pipe.write(ansiEscapes.cursorRestorePosition);
     this._pipe.write(ansiEscapes.cursorUp(6));
     this._pipe.write(ansiEscapes.eraseDown);
 
@@ -51,17 +57,21 @@ module.exports = class SnapshotInteractiveMode {
       '\n' + chalk.bold('Interactive Snapshot Progress'),
       ' \u203A ' + stats,
       '\n' + chalk.bold('Watch Usage'),
+
       chalk.dim(' \u203A Press ') +
         'u' +
-        chalk.dim(' to update failing snapshots.'),
+        chalk.dim(' to update failing snapshots for this test.'),
+
       this._testFilePaths.length > 1
         ? chalk.dim(' \u203A Press ') +
-            's' +
-            chalk.dim(' to skip the current snapshot..')
+          's' +
+          chalk.dim(' to skip the current snapshot.')
         : '',
+
       chalk.dim(' \u203A Press ') +
         'q' +
-        chalk.dim(' to quit interactive snapshot mode.'),
+        chalk.dim(' to quit Interactive Snapshot Update Mode.'),
+
       chalk.dim(' \u203A Press ') +
         'Enter' +
         chalk.dim(' to trigger a test run.'),
@@ -75,30 +85,26 @@ module.exports = class SnapshotInteractiveMode {
       case KEYS.S:
         const testFilePath = this._testFilePaths.shift();
         this._testFilePaths.push(testFilePath);
-        this._run({});
+        this._run(false);
         break;
-
       case KEYS.U:
-        this._run({updateSnapshot: 'all'});
+        this._run(true);
         break;
-
       case KEYS.Q:
       case KEYS.ESCAPE:
         this.abort();
         break;
-
       case KEYS.ENTER:
-        this._run({});
+        this._run(false);
         break;
       default:
-        console.log('got key event', key);
         break;
     }
   }
 
   abort() {
     this._isActive = false;
-    this._updateTestRunnerConfig('', {});
+    this._updateTestRunnerConfig('', false);
   }
 
   updateWithResults(results: AggregatedResult) {
@@ -113,17 +119,17 @@ module.exports = class SnapshotInteractiveMode {
       this.abort();
       return;
     }
-    this._run({});
+    this._run(false);
   }
 
-  _run(jestRunnerOptions: Object) {
+  _run(shouldUpdateSnapshot: boolean) {
     const testFilePath = this._testFilePaths[0];
-    this._updateTestRunnerConfig(testFilePath, jestRunnerOptions);
+    this._updateTestRunnerConfig(testFilePath, shouldUpdateSnapshot);
   }
 
   run(
     failedSnapshotTestPaths: Array<string>,
-    onConfigChange: (path: string, jestRunnerOptions: Object) => *,
+    onConfigChange: (path: string, shouldUpdateSnapshot: boolean) => *,
   ) {
     if (!failedSnapshotTestPaths.length) {
       return;
@@ -133,6 +139,6 @@ module.exports = class SnapshotInteractiveMode {
     this._countPaths = this._testFilePaths.length;
     this._updateTestRunnerConfig = onConfigChange;
     this._isActive = true;
-    this._run({});
+    this._run(false);
   }
 };

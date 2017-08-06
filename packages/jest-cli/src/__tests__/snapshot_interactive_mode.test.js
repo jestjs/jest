@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 import {KEYS} from '../constants';
-import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
+import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
 jest.mock('../lib/terminalUtils', () => ({
   getTerminalWidth: () => 80,

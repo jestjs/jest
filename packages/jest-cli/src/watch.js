@@ -52,7 +52,7 @@ const watch = (
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
-  const snapshotInteracticeMode = new SnapshotInteractiveMode(pipe);
+  const snapshotInteracticeMode = new SnapshotInteractiveMode(outputStream);
   let failedSnapshotTestPaths = [];
   let searchSources = contexts.map(context => ({
     context,
@@ -197,8 +197,19 @@ const watch = (
         if (hasSnapshotFailure) {
           snapshotInteracticeMode.run(
             failedSnapshotTestPaths,
-            (path: string, jestRunnerOptions: Object) => {
-              updateRunnerPatternMatching('watch', '', path, jestRunnerOptions);
+            (path: string, shouldUpdateSnapshot: boolean) => {
+              // updateRunnerPatternMatching('watch', '', path, jestRunnerOptions);
+              globalConfig = updateGlobalConfig(globalConfig, {
+                mode: 'watch',
+                testNamePattern: '',
+                testPathPattern: replacePathSepForRegex(path),
+                updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
+              });
+              startRun(globalConfig);
+              globalConfig = updateGlobalConfig(globalConfig, {
+                // updateSnapshot is not sticky after a run.
+                updateSnapshot: 'none',
+              });
             },
           );
         }
@@ -284,11 +295,12 @@ const watch = (
     filePattern: string,
     jestRunnerOptions = {},
   ) => {
-    updateArgv(argv, watchMode, {
+    globalConfig = updateGlobalConfig(globalConfig, {
+      mode: watchMode,
       testNamePattern: namePattern,
       testPathPattern: replacePathSepForRegex(filePattern),
     });
-    startRun(jestRunnerOptions);
+    startRun(globalConfig);
   };
 
   if (typeof stdin.setRawMode === 'function') {
@@ -354,8 +366,8 @@ const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
 
     snapshotFailure
       ? chalk.dim(' \u203A Press ') +
-          'i' +
-          chalk.dim(' to update failing snapshots interactively.')
+        'i' +
+        chalk.dim(' to update failing snapshots interactively.')
       : null,
 
     chalk.dim(' \u203A Press ') +
