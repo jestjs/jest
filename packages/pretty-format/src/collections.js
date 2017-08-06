@@ -20,7 +20,10 @@ const isSymbol = key =>
 // with spacing, indentation, and comma
 // without surrounding punctuation (for example, braces)
 export function printIteratorEntries(
-  iterator: Iterator<[any, any]>,
+  // Flow 0.51.0: property `@@iterator` of $Iterator not found in Object
+  // To allow simplistic getRecordIterator in immutable.js
+  // replaced Iterator<[any, any]> with any
+  iterator: any,
   config: Config,
   indentation: string,
   depth: number,
