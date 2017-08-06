@@ -5,7 +5,7 @@
  * of a module's exports have been mocked and the rest
  * keep their actual implementation.
  */
-import DefaultExport, {apple, strawberry} from '../fruit';
+import defaultExport, {apple, strawberry} from '../fruit';
 
 jest.mock('../fruit', () => {
   const originalModule = require.requireActual('../fruit');
@@ -18,13 +18,11 @@ jest.mock('../fruit', () => {
   });
 });
 
-describe('test', () => {
-  it('calls', () => {
-    const defaultExportResult = DefaultExport();
-    expect(defaultExportResult).toBe('mocked fruit');
-    expect(DefaultExport).toHaveBeenCalled();
+it('does a partial mock', () => {
+  const defaultExportResult = defaultExport();
+  expect(defaultExportResult).toBe('mocked fruit');
+  expect(defaultExport).toHaveBeenCalled();
 
-    expect(apple).toBe('mocked apple');
-    expect(strawberry()).toBe('strawberry');
-  });
+  expect(apple).toBe('mocked apple');
+  expect(strawberry()).toBe('strawberry');
 });
