@@ -2,7 +2,7 @@ const chalk = require('chalk');
 import {KEYS} from '../constants';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
-jest.mock('../lib/terminalUtils', () => ({
+jest.mock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => 80,
   rightPad: () => {
     '';
@@ -41,7 +41,7 @@ describe('SnapshotInteractiveMode', () => {
     const mockCallback = jest.fn();
     instance.run(['first.js', 'second.js'], mockCallback);
     expect(instance.isActive()).toBeTruthy();
-    expect(mockCallback).toBeCalledWith('first.js', {});
+    expect(mockCallback).toBeCalledWith('first.js', false);
   });
 
   test('call to abort', () => {
@@ -50,35 +50,35 @@ describe('SnapshotInteractiveMode', () => {
     expect(instance.isActive()).toBeTruthy();
     instance.abort();
     expect(instance.isActive()).toBeFalsy();
-    expect(mockCallback).toBeCalledWith('', {});
+    expect(mockCallback).toBeCalledWith('', false);
   });
   describe('key press handler', () => {
     test('call to skip trigger a processing of next file', () => {
       const mockCallback = jest.fn();
       instance.run(['first.js', 'second.js'], mockCallback);
-      expect(mockCallback.mock.calls[0]).toEqual(['first.js', {}]);
+      expect(mockCallback.mock.calls[0]).toEqual(['first.js', false]);
       instance.put(KEYS.S);
-      expect(mockCallback.mock.calls[1]).toEqual(['second.js', {}]);
+      expect(mockCallback.mock.calls[1]).toEqual(['second.js', false]);
       instance.put(KEYS.S);
-      expect(mockCallback.mock.calls[2]).toEqual(['first.js', {}]);
+      expect(mockCallback.mock.calls[2]).toEqual(['first.js', false]);
     });
 
     test('call to skip works with 1 file', () => {
       const mockCallback = jest.fn();
       instance.run(['first.js'], mockCallback);
-      expect(mockCallback.mock.calls[0]).toEqual(['first.js', {}]);
+      expect(mockCallback.mock.calls[0]).toEqual(['first.js', false]);
       instance.put(KEYS.S);
-      expect(mockCallback.mock.calls[1]).toEqual(['first.js', {}]);
+      expect(mockCallback.mock.calls[1]).toEqual(['first.js', false]);
     });
 
     test('press U trigger a snapshot update call', () => {
       const mockCallback = jest.fn();
       instance.run(['first.js'], mockCallback);
-      expect(mockCallback.mock.calls[0]).toEqual(['first.js', {}]);
+      expect(mockCallback.mock.calls[0]).toEqual(['first.js', false]);
       instance.put(KEYS.U);
       expect(mockCallback.mock.calls[1]).toEqual([
         'first.js',
-        {updateSnapshot: 'all'},
+        true,
       ]);
     });
 
@@ -94,7 +94,7 @@ describe('SnapshotInteractiveMode', () => {
       instance.run(['first.js'], mockCallback);
       instance.put(KEYS.ENTER);
       expect(mockCallback).toHaveBeenCalledTimes(2);
-      expect(mockCallback).toHaveBeenCalledWith('first.js', {});
+      expect(mockCallback).toHaveBeenCalledWith('first.js', false);
     });
   });
   describe('updateWithResults', () => {
@@ -113,7 +113,7 @@ describe('SnapshotInteractiveMode', () => {
       pipe.write('TEST RESULTS CONTENTS');
       instance.updateWithResults({snapshot: {failure: false}});
       expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-      expect(mockCallback.mock.calls[1]).toEqual(['second.js', {}]);
+      expect(mockCallback.mock.calls[1]).toEqual(['second.js', false]);
     });
 
     test('overlay handle progress UI', () => {
