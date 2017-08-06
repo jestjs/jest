@@ -66,3 +66,7 @@ lerna-debug.log
 npm-debug.log
 npm-debug.log*
 yarn-error.log*
+
+
+# JetBrains IDE
+.idea/*
