@@ -60,6 +60,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,
   coveragePathIgnorePatterns: [],
+  cwd: '/test_root_dir/',
   displayName: undefined,
   globals: {},
   haste: {

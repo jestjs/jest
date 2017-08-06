@@ -140,10 +140,13 @@ const runJest = async ({
   }
 
   // When using more than one context, make all printed paths relative to the
-  // current cwd. rootDir is only used as a token during normalization and
-  // has no special meaning afterwards except for printing information to the
-  // CLI.
-  setConfig(contexts, {rootDir: process.cwd()});
+  // current cwd. Do not modify rootDir, since will be used by custom resolvers.
+  // If --runInBand is true, the resolver saved a copy during initialization,
+  // however, if it is running on spawned processes, the initiation of the
+  // custom resolvers is done within each spawned process and it needs the
+  // original value of rootDir. Instead, use the {cwd: Path} property to resolve
+  // paths when printing.
+  setConfig(contexts, {cwd: process.cwd()});
 
   const results = await new TestScheduler(globalConfig, {
     startRun,

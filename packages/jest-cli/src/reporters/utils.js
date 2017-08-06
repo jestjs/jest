@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {Path, ProjectConfig} from 'types/Config';
+import type {Path, ProjectConfig, GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
 import path from 'path';
@@ -37,7 +37,7 @@ const printDisplayName = (config: ProjectConfig) => {
 
 const trimAndFormatPath = (
   pad: number,
-  config: {rootDir: Path},
+  config: ProjectConfig | GlobalConfig,
   testPath: Path,
   columns: number,
 ): string => {
@@ -72,13 +72,19 @@ const trimAndFormatPath = (
   );
 };
 
-const formatTestPath = (config: {rootDir: Path}, testPath: Path) => {
+const formatTestPath = (
+  config: GlobalConfig | ProjectConfig,
+  testPath: Path,
+) => {
   const {dirname, basename} = relativePath(config, testPath);
   return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const relativePath = (config: {rootDir: Path}, testPath: Path) => {
-  testPath = path.relative(config.rootDir, testPath);
+const relativePath = (config: GlobalConfig | ProjectConfig, testPath: Path) => {
+  // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
+  // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback
+  // to config.rootDir. (Also, some unit just use config.rootDir, which is ok)
+  testPath = path.relative(config.cwd || config.rootDir, testPath);
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
   return {basename, dirname};

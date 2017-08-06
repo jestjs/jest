@@ -183,7 +183,7 @@ class DefaultReporter extends BaseReporter {
             TITLE_BULLET +
             'Console\n\n' +
             getConsoleOutput(
-              config.rootDir,
+              config.cwd,
               !!this._globalConfig.verbose,
               consoleBuffer,
             ),
