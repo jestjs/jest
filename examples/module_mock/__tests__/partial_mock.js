@@ -9,22 +9,22 @@ import DefaultExport, {apple, strawberry} from '../fruit';
 
 jest.mock('../fruit', () => {
   const originalModule = require.requireActual('../fruit');
-
   const mockedModule = jest.genMockFromModule('../fruit');
 
-  const module = Object.assign(mockedModule, originalModule);
-
-  // Module the default export and named export 'apple'
-  module.default = jest.fn(() => 'mocked fruit');
-  module.apple = 'mocked apple';
-  return module;
+  //Mock the default export and named export 'apple'.
+  return Object.assign({}, mockedModule, originalModule, {
+    apple: 'mocked apple',
+    default: jest.fn(() => 'mocked fruit'),
+  });
 });
 
 describe('test', () => {
   it('calls', () => {
-    expect(DefaultExport()).toBe('mocked fruit');
+    const defaultExportResult = DefaultExport();
+    expect(defaultExportResult).toBe('mocked fruit');
+    expect(DefaultExport).toHaveBeenCalled();
+
     expect(apple).toBe('mocked apple');
     expect(strawberry()).toBe('strawberry');
-    expect(DefaultExport).toHaveBeenCalled();
   });
 });
