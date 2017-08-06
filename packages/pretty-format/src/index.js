@@ -32,7 +32,7 @@ import {
 import AsymmetricMatcher from './plugins/asymmetric_matcher';
 import ConvertAnsi from './plugins/convert_ansi';
 import HTMLElement from './plugins/html_element';
-import Immutable from './plugins/immutable_plugins';
+import Immutable from './plugins/immutable';
 import ReactElement from './plugins/react_element';
 import ReactTestComponent from './plugins/react_test_component';
 
