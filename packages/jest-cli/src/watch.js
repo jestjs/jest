@@ -198,7 +198,6 @@ const watch = (
           snapshotInteracticeMode.run(
             failedSnapshotTestPaths,
             (path: string, shouldUpdateSnapshot: boolean) => {
-              // updateRunnerPatternMatching('watch', '', path, jestRunnerOptions);
               globalConfig = updateGlobalConfig(globalConfig, {
                 mode: 'watch',
                 testNamePattern: '',
@@ -287,20 +286,6 @@ const watch = (
     outputStream.write(ansiEscapes.clearScreen);
     outputStream.write(usage(globalConfig, hasSnapshotFailure));
     outputStream.write(ansiEscapes.cursorShow);
-  };
-
-  const updateRunnerPatternMatching = (
-    watchMode: 'watch' | 'watchAll',
-    namePattern: string,
-    filePattern: string,
-    jestRunnerOptions = {},
-  ) => {
-    globalConfig = updateGlobalConfig(globalConfig, {
-      mode: watchMode,
-      testNamePattern: namePattern,
-      testPathPattern: replacePathSepForRegex(filePattern),
-    });
-    startRun(globalConfig);
   };
 
   if (typeof stdin.setRawMode === 'function') {
