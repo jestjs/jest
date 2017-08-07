@@ -16,7 +16,12 @@ import type {
   Refs,
 } from 'types/PrettyFormat';
 
-import {printChildren, printElement, printProps} from './lib/markup';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
 const testSymbol = Symbol.for('react.test.json');
 
@@ -28,35 +33,37 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string =>
-  printElement(
-    object.type,
-    object.props
-      ? printProps(
-          Object.keys(object.props).sort(),
-          // Despite ternary expression, Flow 0.51.0 found incorrect error:
-          // undefined is incompatible with the expected param type of Object
-          // $FlowFixMe
-          object.props,
-          config,
-          indentation + config.indent,
-          depth,
-          refs,
-          printer,
-        )
-      : '',
-    object.children
-      ? printChildren(
-          object.children,
-          config,
-          indentation + config.indent,
-          depth,
-          refs,
-          printer,
-        )
-      : '',
-    config,
-    indentation,
-  );
+  ++depth > config.maxDepth
+    ? printElementAsLeaf(object.type, config)
+    : printElement(
+        object.type,
+        object.props
+          ? printProps(
+              Object.keys(object.props).sort(),
+              // Despite ternary expression, Flow 0.51.0 found incorrect error:
+              // undefined is incompatible with the expected param type of Object
+              // $FlowFixMe
+              object.props,
+              config,
+              indentation + config.indent,
+              depth,
+              refs,
+              printer,
+            )
+          : '',
+        object.children
+          ? printChildren(
+              object.children,
+              config,
+              indentation + config.indent,
+              depth,
+              refs,
+              printer,
+            )
+          : '',
+        config,
+        indentation,
+      );
 
 export const test = (val: any) => val && val.$$typeof === testSymbol;
 
