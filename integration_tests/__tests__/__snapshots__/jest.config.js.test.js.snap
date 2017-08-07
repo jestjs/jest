@@ -24,14 +24,14 @@ Ran all test suites.
 
 `;
 
-exports[`works with jest.conf.js 1`] = `
+exports[`works with jest.config.js 1`] = `
  PASS  __tests__/a-banana.js
   ✓ banana
 
 
 `;
 
-exports[`works with jest.conf.js 2`] = `
+exports[`works with jest.config.js 2`] = `
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
