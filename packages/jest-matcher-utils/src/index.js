@@ -23,8 +23,9 @@ const PLUGINS = [
   ReactTestComponent,
   ReactElement,
   HTMLElement,
+  Immutable,
   AsymmetricMatcher,
-].concat(Immutable);
+];
 
 const EXPECTED_COLOR = chalk.green;
 const EXPECTED_BG = chalk.bgGreen;
