@@ -443,6 +443,119 @@ describe('indent option', () => {
   });
 });
 
+describe('maxDepth option', () => {
+  test('elements', () => {
+    const maxDepth = 2;
+    const val = React.createElement(
+      // ++depth === 1
+      'dl',
+      null,
+      React.createElement('dt', {id: 'jest'}, 'jest'), // ++depth === 2
+      React.createElement(
+        // ++depth === 2
+        'dd',
+        {
+          id: 'jest-1',
+        },
+        'to talk in a ',
+        React.createElement('em', null, 'playful'), // ++depth === 3
+        ' manner',
+      ),
+      React.createElement(
+        // ++ depth === 2
+        'dd',
+        {
+          id: 'jest-2',
+          style: {
+            // ++depth === 3
+            color: '#99424F',
+          },
+        },
+        React.createElement('em', null, 'painless'), // ++depth === 3
+        ' JavaScript testing',
+      ),
+    );
+    const expected = [
+      '<dl>',
+      '  <dt',
+      '    id="jest"',
+      '  >',
+      '    jest',
+      '  </dt>',
+      '  <dd',
+      '    id="jest-1"',
+      '  >',
+      '    to talk in a ',
+      '    <em … />',
+      '     manner',
+      '  </dd>',
+      '  <dd',
+      '    id="jest-2"',
+      '    style={[Object]}',
+      '  >',
+      '    <em … />',
+      '     JavaScript testing',
+      '  </dd>',
+      '</dl>',
+    ].join('\n');
+    assertPrintedJSX(val, expected, {maxDepth});
+  });
+  test('array of elements', () => {
+    const maxDepth = 2;
+    const array = [
+      // ++depth === 1
+      React.createElement(
+        // ++depth === 2
+        'dd',
+        {
+          id: 'jest-1',
+        },
+        'to talk in a ',
+        React.createElement('em', null, 'playful'), // ++depth === 3
+        ' manner',
+      ),
+      React.createElement(
+        // ++ depth === 2
+        'dd',
+        {
+          id: 'jest-2',
+          style: {
+            // ++depth === 3
+            color: '#99424F',
+          },
+        },
+        React.createElement('em', null, 'painless'), // ++depth === 3
+        ' JavaScript testing',
+      ),
+    ];
+    const expected = [
+      'Array [',
+      '  <dd',
+      '    id="jest-1"',
+      '  >',
+      '    to talk in a ',
+      '    <em … />',
+      '     manner',
+      '  </dd>,',
+      '  <dd',
+      '    id="jest-2"',
+      '    style={[Object]}',
+      '  >',
+      '    <em … />',
+      '     JavaScript testing',
+      '  </dd>,',
+      ']',
+    ].join('\n');
+    expect(formatElement(array, {maxDepth})).toEqual(expected);
+    expect(
+      formatTestObject(
+        array.map(element => renderer.create(element).toJSON()),
+        {maxDepth},
+      ),
+    ).toEqual(expected);
+  });
+});
+
 test('min option', () => {
   assertPrintedJSX(
     React.createElement(
