@@ -10,7 +10,12 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import {printChildren, printElement, printProps} from './lib/markup';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
 const elementSymbol = Symbol.for('react.element');
 
@@ -45,28 +50,30 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string =>
-  printElement(
-    getType(element),
-    printProps(
-      Object.keys(element.props).filter(key => key !== 'children').sort(),
-      element.props,
-      config,
-      indentation + config.indent,
-      depth,
-      refs,
-      printer,
-    ),
-    printChildren(
-      getChildren(element.props.children),
-      config,
-      indentation + config.indent,
-      depth,
-      refs,
-      printer,
-    ),
-    config,
-    indentation,
-  );
+  ++depth > config.maxDepth
+    ? printElementAsLeaf(getType(element), config)
+    : printElement(
+        getType(element),
+        printProps(
+          Object.keys(element.props).filter(key => key !== 'children').sort(),
+          element.props,
+          config,
+          indentation + config.indent,
+          depth,
+          refs,
+          printer,
+        ),
+        printChildren(
+          getChildren(element.props.children),
+          config,
+          indentation + config.indent,
+          depth,
+          refs,
+          printer,
+        ),
+        config,
+        indentation,
+      );
 
 export const test = (val: any) => val && val.$$typeof === elementSymbol;
 

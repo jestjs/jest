@@ -114,3 +114,17 @@ export const printElement = (
     tagColor.close
   );
 };
+
+export const printElementAsLeaf = (type: string, config: Config) => {
+  const tagColor = config.colors.tag;
+  return (
+    tagColor.open +
+    '<' +
+    type +
+    tagColor.close +
+    ' …' +
+    tagColor.open +
+    ' />' +
+    tagColor.close
+  );
+};
