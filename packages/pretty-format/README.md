@@ -16,34 +16,36 @@ $ yarn add pretty-format
 ## Usage
 
 ```js
-const prettyFormat = require('pretty-format');
-
-const obj = {property: {}};
-obj.circularReference = obj;
-obj[Symbol('foo')] = 'foo';
-obj.map = new Map();
-obj.map.set('prop', 'value');
-obj.array = [1, NaN, Infinity];
-
-console.log(prettyFormat(obj));
+const prettyFormat = require('pretty-format'); // Common JS
 ```
 
-**Result:**
-
+```js
+import prettyFormat from 'pretty-format'; // ES 2015 modules
 ```
+
+```js
+const val = {object: {}};
+val.circularReference = val;
+val[Symbol('foo')] = 'foo';
+val.map = new Map([['prop', 'value']]);
+val.array = [1, NaN, Infinity];
+
+console.log(prettyFormat(val));
+/*
 Object {
-  "property": Object {},
-  "circularReference": [Circular],
-  "map": Map {
-    "prop" => "value"
-  },
   "array": Array [
     1,
     NaN,
-    Infinity
+    Infinity,
   ],
-  Symbol(foo): "foo"
+  "circularReference": [Circular],
+  "map": Map {
+    "prop" => "value",
+  },
+  "object": Object {},
+  Symbol(foo): "foo",
 }
+*/
 ```
 
 #### Type Support
@@ -53,41 +55,20 @@ Object {
 ### API
 
 ```js
-console.log(prettyFormat(object));
-console.log(prettyFormat(object, options));
+console.log(prettyFormat(val, options));
 ```
 
-Options:
-
-* **`callToJSON`**<br>
-  Type: `boolean`, default: `true`<br>
-  Call `toJSON()` on passed object.
-* **`indent`**<br>
-  Type: `number`, default: `2`<br>
-  Number of spaces for indentation.
-* **`maxDepth`**<br>
-  Type: `number`, default: `Infinity`<br>
-  Print only this number of levels.
-* **`min`**<br>
-  Type: `boolean`, default: `false`<br>
-  Print without whitespace.
-* **`plugins`**<br>
-  Type: `array`, default: `[]`<br>
-  Plugins (see the next section).
-* **`printFunctionName`**<br>
-  Type: `boolean`, default: `true`<br>
-  Print function names or just `[Function]`.
-* **`escapeRegex`**<br>
-  Type: `boolean`, default: `false`<br>
-  Escape special characters in regular expressions.
-* **`highlight`**<br>
-  Type: `boolean`, default: `false`<br>
-  Highlight syntax for terminal (works only with `ReactTestComponent` and `ReactElement` plugins.
-* **`theme`**<br>
-  Type: `object`, default: `{tag: 'cyan', content: 'reset'...}`<br>
-  Syntax highlight theme.<br>
-  Uses [ansi-styles colors](https://github.com/chalk/ansi-styles#colors) + `reset` for no color.<br>
-  Available types: `tag`, `content`, `prop` and `value`.
+| key | type | default | description |
+| --- | --- | --- | --- |
+| `callToJSON` | `boolean` | `true` | call `toJSON` method (if it exists) on objects |
+| `escapeRegex` | `boolean` | `false` | escape special characters in regular expressions |
+| `highlight` | `boolean` | `false` | highlight syntax with colors in terminal (for some plugins) |
+| `indent` | `number` | `2` | spaces in each level of indentation |
+| `maxDepth` | `number` | `Infinity` | levels to print in arrays, objects, elements, and so on |
+| `min` | `boolean` | `false` | minimize added space: no indentation nor line breaks |
+| `plugins` | `array` | `[]` | plugins to serialize application-specific data types |
+| `printFunctionName` | `boolean` | `true` | include or omit the name of a function |
+| `theme` | `object` | `{/* see below */}` | colors to highlight syntax in terminal (for some plugins) |
 
 ### Plugins
 
