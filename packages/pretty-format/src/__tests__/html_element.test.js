@@ -61,6 +61,16 @@ describe('HTMLElement Plugin', () => {
     expect(parent).toPrettyPrintTo('<div\n  class="classy"\n  id="123"\n/>');
   });
 
+  it('supports an HTML element with attribute and text content', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('style', 'color: #99424F');
+    parent.innerHTML = 'Jest';
+
+    expect(parent).toPrettyPrintTo(
+      '<div\n  style="color: #99424F"\n>\n  Jest\n</div>',
+    );
+  });
+
   it('supports an element with text content', () => {
     const parent = document.createElement('div');
     parent.innerHTML = 'texty texty';
@@ -169,5 +179,69 @@ describe('HTMLElement Plugin', () => {
       '  <!-- comments -->',
       '</div>',
     ].join('\n'));
+  });
+
+  it('supports indentation for array of elements', () => {
+    // For example, Array.prototype.slice.call(document.getElementsByTagName(…))
+    const dd1 = document.createElement('dd');
+    dd1.innerHTML = 'to talk in a playful manner';
+
+    const dd2 = document.createElement('dd');
+    dd2.innerHTML = 'painless JavaScript testing';
+    dd2.setAttribute('style', 'color: #99424F');
+
+    expect([dd1, dd2]).toPrettyPrintTo(
+      [
+        'Array [',
+        '  <dd>',
+        '    to talk in a playful manner',
+        '  </dd>,',
+        '  <dd',
+        '    style="color: #99424F"',
+        '  >',
+        '    painless JavaScript testing',
+        '  </dd>,',
+        ']',
+      ].join('\n'),
+    );
+  });
+
+  it('supports maxDepth option', () => {
+    const dt = document.createElement('dt');
+    dt.innerHTML = 'jest';
+
+    const dd1 = document.createElement('dd');
+    dd1.innerHTML = 'to talk in a <em>playful</em> manner';
+
+    const dd2 = document.createElement('dd');
+    dd2.innerHTML = '<em>painless</em> JavaScript testing';
+    dd2.setAttribute('style', 'color: #99424F');
+
+    const dl = document.createElement('dl');
+    dl.appendChild(dt);
+    dl.appendChild(dd1);
+    dl.appendChild(dd2);
+
+    expect(dl).toPrettyPrintTo(
+      [
+        '<dl>',
+        '  <dt>',
+        '    jest',
+        '  </dt>',
+        '  <dd>',
+        '    to talk in a ',
+        '    <em … />',
+        '    manner', // plugin incorrectly trims preceding space
+        '  </dd>',
+        '  <dd',
+        '    style="color: #99424F"',
+        '  >',
+        '    <em … />',
+        '    JavaScript testing', // plugin incorrectly trims preceding space
+        '  </dd>',
+        '</dl>',
+      ].join('\n'),
+      {maxDepth: 2},
+    );
   });
 });
