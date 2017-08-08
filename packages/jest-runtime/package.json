@@ -21,6 +21,7 @@
     "jest-util": "^20.0.3",
     "json-stable-stringify": "^1.0.1",
     "micromatch": "^2.3.11",
+    "slash": "^1.0.0",
     "strip-bom": "3.0.0",
     "write-file-atomic": "^2.1.0",
     "yargs": "^7.0.2"
