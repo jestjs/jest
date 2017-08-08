@@ -75,7 +75,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"testPathPattern\\": \\"\\",
     \\"testResultsProcessor\\": null,
     \\"updateSnapshot\\": \\"all\\",
-    \\"useStderr\\": false,
     \\"verbose\\": null,
     \\"watch\\": false,
     \\"watchman\\": true

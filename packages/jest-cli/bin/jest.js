@@ -11,4 +11,9 @@ if (process.env.NODE_ENV == null) {
   process.env.NODE_ENV = 'test';
 }
 
-require('../build/cli').run();
+const stdout = process.stdout;
+// Prevent any code from printing to stdout because it will break JSON
+// output if we run jest with `--json` or `--listTests` flags.
+Object.defineProperty(process, 'stdout', {value: process.stderr});
+
+require('../build/cli').run(undefined, undefined, stdout);

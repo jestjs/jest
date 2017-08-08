@@ -121,12 +121,12 @@ const processResults = (runResults, options) => {
       const filePath = path.resolve(process.cwd(), outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
-      process.stdout.write(
+      options.stdout.write(
         `Test results written to: ` +
           `${path.relative(process.cwd(), filePath)}\n`,
       );
     } else {
-      process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+      options.stdout.write(JSON.stringify(formatTestResults(runResults)));
     }
   }
   return options.onComplete && options.onComplete(runResults);
@@ -140,6 +140,7 @@ const runJest = async ({
   startRun,
   changedFilesPromise,
   onComplete,
+  stdout,
 }: {
   globalConfig: GlobalConfig,
   contexts: Array<Context>,
@@ -148,6 +149,7 @@ const runJest = async ({
   startRun: (globalConfig: GlobalConfig) => *,
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
+  stdout: stream$Writable | tty$WriteStream,
 }) => {
   const sequencer = new TestSequencer();
   let allTests = [];
@@ -167,7 +169,7 @@ const runJest = async ({
   allTests = sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    console.log(JSON.stringify(allTests.map(test => test.path)));
+    stdout.write(JSON.stringify(allTests.map(test => test.path)));
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
@@ -202,6 +204,7 @@ const runJest = async ({
     isJSON: globalConfig.json,
     onComplete,
     outputFile: globalConfig.outputFile,
+    stdout,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
 };
