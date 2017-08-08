@@ -61,8 +61,8 @@ function printChildren(children, config, indentation, depth, refs, printer) {
 
 const getType = element => element.tagName.toLowerCase();
 
+// Convert array of attribute objects to keys array and props object.
 const keysMapper = attribute => attribute.name;
-
 const propsReducer = (props, attribute) => {
   props[attribute.name] = attribute.value;
   return props;
