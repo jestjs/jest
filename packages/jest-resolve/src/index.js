@@ -185,7 +185,7 @@ class Resolver {
     //    current module name available.
     const relativePath = path.relative(dirname, from);
     const err = new Error(
-      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
+      `Cannot find module '${moduleName}'`,
     );
     (err: Error & {code?: string}).code = 'MODULE_NOT_FOUND';
     throw err;
