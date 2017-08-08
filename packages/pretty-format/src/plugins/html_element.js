@@ -8,15 +8,10 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 import escapeHTML from './lib/escape_html';
+import {printElement, printElementAsLeaf, printProps} from './lib/markup';
 
 type Attribute = {
   name: string,
@@ -34,71 +29,52 @@ type HTMLText = {
   data: string,
   nodeType: 3,
 };
-
 type HTMLComment = {
   data: string,
   nodeType: 8,
 };
 
 const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
-export const test = isHTMLElement;
 
-function isHTMLElement(value: any) {
-  return (
-    value !== undefined &&
-    value !== null &&
-    (value.nodeType === 1 || value.nodeType === 3 || value.nodeType === 8) &&
-    value.constructor !== undefined &&
-    value.constructor.name !== undefined &&
-    HTML_ELEMENT_REGEXP.test(value.constructor.name)
-  );
-}
+export const test = (val: any) =>
+  val !== undefined &&
+  val !== null &&
+  (val.nodeType === 1 || val.nodeType === 3 || val.nodeType === 8) &&
+  val.constructor !== undefined &&
+  val.constructor.name !== undefined &&
+  HTML_ELEMENT_REGEXP.test(val.constructor.name);
 
-function printChildren(flatChildren, print, indent, colors, opts) {
-  return flatChildren
-    .map(node => {
-      if (typeof node === 'string') {
-        return colors.content.open + escapeHTML(node) + colors.content.close;
-      } else {
-        return print(node);
-      }
-    })
-    .filter(value => value.trim().length)
-    .join(opts.edgeSpacing);
-}
-
-function printAttributes(
-  attributes: Array<Attribute>,
-  print,
-  indent,
-  colors,
-  opts,
-) {
-  return attributes
-    .sort(
-      (attributeA, attributeB) =>
-        attributeA.name === attributeB.name
-          ? 0
-          : attributeA.name < attributeB.name ? -1 : 1,
+// Return empty string if children is empty.
+function printChildren(children, config, indentation, depth, refs, printer) {
+  const colors = config.colors;
+  return children
+    .map(
+      node =>
+        typeof node === 'string'
+          ? colors.content.open + escapeHTML(node) + colors.content.close
+          : printer(node, config, indentation, depth, refs),
     )
-    .map(attribute => {
-      return (
-        opts.spacing +
-        indent(colors.prop.open + attribute.name + colors.prop.close + '=') +
-        colors.value.open +
-        print(attribute.value) +
-        colors.value.close
-      );
-    })
+    .filter(value => value.trim().length)
+    .map(value => config.spacingOuter + indentation + value)
     .join('');
 }
 
-export const print = (
+const getType = element => element.tagName.toLowerCase();
+
+const keysMapper = attribute => attribute.name;
+
+const propsReducer = (props, attribute) => {
+  props[attribute.name] = attribute.value;
+  return props;
+};
+
+export const serialize = (
   element: HTMLElement | HTMLText | HTMLComment,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
 ): string => {
   if (element.nodeType === 3) {
     return element.data
@@ -106,7 +82,10 @@ export const print = (
       .map(text => text.trimLeft())
       .filter(text => text.length)
       .join(' ');
-  } else if (element.nodeType === 8) {
+  }
+
+  const colors = config.colors;
+  if (element.nodeType === 8) {
     return (
       colors.comment.open +
       '<!-- ' +
@@ -116,43 +95,32 @@ export const print = (
     );
   }
 
-  let result = colors.tag.open + '<';
-  const elementName = element.tagName.toLowerCase();
-  result += elementName + colors.tag.close;
-
-  const hasAttributes = element.attributes && element.attributes.length;
-  if (hasAttributes) {
-    const attributes = Array.prototype.slice.call(element.attributes);
-    result += printAttributes(attributes, print, indent, colors, opts);
+  if (++depth > config.maxDepth) {
+    return printElementAsLeaf(getType(element), config);
   }
 
-  const flatChildren = Array.prototype.slice.call(element.childNodes);
-  if (!flatChildren.length && element.textContent) {
-    flatChildren.push(element.textContent);
-  }
-
-  const closeInNewLine = hasAttributes && !opts.min;
-  if (flatChildren.length) {
-    const children = printChildren(flatChildren, print, indent, colors, opts);
-    result +=
-      colors.tag.open +
-      (closeInNewLine ? '\n' : '') +
-      '>' +
-      colors.tag.close +
-      opts.edgeSpacing +
-      indent(children) +
-      opts.edgeSpacing +
-      colors.tag.open +
-      '</' +
-      elementName +
-      '>' +
-      colors.tag.close;
-  } else {
-    result +=
-      colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
-  }
-
-  return result;
+  return printElement(
+    getType(element),
+    printProps(
+      Array.prototype.map.call(element.attributes, keysMapper).sort(),
+      Array.prototype.reduce.call(element.attributes, propsReducer, {}),
+      config,
+      indentation + config.indent,
+      depth,
+      refs,
+      printer,
+    ),
+    printChildren(
+      Array.prototype.slice.call(element.childNodes),
+      config,
+      indentation + config.indent,
+      depth,
+      refs,
+      printer,
+    ),
+    config,
+    indentation,
+  );
 };
 
-export default ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);
