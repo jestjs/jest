@@ -76,10 +76,7 @@ describe('SnapshotInteractiveMode', () => {
       instance.run(['first.js'], mockCallback);
       expect(mockCallback.mock.calls[0]).toEqual(['first.js', false]);
       instance.put(KEYS.U);
-      expect(mockCallback.mock.calls[1]).toEqual([
-        'first.js',
-        true,
-      ]);
+      expect(mockCallback.mock.calls[1]).toEqual(['first.js', true]);
     });
 
     test('press Q or ESC triggers an abort', () => {
