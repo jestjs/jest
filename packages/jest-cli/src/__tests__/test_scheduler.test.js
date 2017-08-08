@@ -10,7 +10,7 @@
 
 'use strict';
 
-const TestRunner = require('../test_runner');
+const TestScheduler = require('../test_scheduler');
 const TestWatcher = require('../test_watcher');
 const SummaryReporter = require('../reporters/summary_reporter');
 
@@ -31,12 +31,12 @@ jest.mock('../test_worker', () => {});
 jest.mock('../reporters/default_reporter');
 
 test('.addReporter() .removeReporter()', () => {
-  const runner = new TestRunner({}, {});
+  const scheduler = new TestScheduler({}, {});
   const reporter = new SummaryReporter();
-  runner.addReporter(reporter);
-  expect(runner._dispatcher._reporters).toContain(reporter);
-  runner.removeReporter(SummaryReporter);
-  expect(runner._dispatcher._reporters).not.toContain(reporter);
+  scheduler.addReporter(reporter);
+  expect(scheduler._dispatcher._reporters).toContain(reporter);
+  scheduler.removeReporter(SummaryReporter);
+  expect(scheduler._dispatcher._reporters).not.toContain(reporter);
 });
 
 describe('_createInBandTestRun()', () => {
@@ -48,9 +48,9 @@ describe('_createInBandTestRun()', () => {
       config,
       moduleMap: {getRawModuleMap: () => rawModuleMap},
     };
-    const runner = new TestRunner(globalConfig, {});
+    const scheduler = new TestScheduler(globalConfig, {});
 
-    return runner
+    return scheduler
       ._createParallelTestRun(
         [{context, path: './file.test.js'}, {context, path: './file2.test.js'}],
         new TestWatcher({isWatchMode: globalConfig.watch}),
@@ -75,9 +75,9 @@ describe('_createInBandTestRun()', () => {
     const globalConfig = {maxWorkers: 1, watch: false};
     const config = {rootDir: '/path/'};
     const context = {config};
-    const runner = new TestRunner(globalConfig, {});
+    const scheduler = new TestScheduler(globalConfig, {});
 
-    return runner
+    return scheduler
       ._createParallelTestRun(
         [{context, path: './file.test.js'}, {context, path: './file2.test.js'}],
         new TestWatcher({isWatchMode: globalConfig.watch}),

@@ -11,13 +11,13 @@
 import {version as VERSION} from '../package.json';
 
 import SearchSource from './search_source';
-import TestRunner from './test_runner';
+import TestScheduler from './test_scheduler';
 import TestWatcher from './test_watcher';
 import {run, runCLI} from './cli';
 
 module.exports = {
   SearchSource,
-  TestRunner,
+  TestScheduler,
   TestWatcher,
   getVersion: () => VERSION,
   run,
