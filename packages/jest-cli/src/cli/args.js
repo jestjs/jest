@@ -10,6 +10,7 @@
 
 import type {Argv} from 'types/Argv';
 
+import {isJSONString} from 'jest-config';
 import isCI from 'is-ci';
 
 const check = (argv: Argv) => {
@@ -41,6 +42,13 @@ const check = (argv: Argv) => {
       'The --findRelatedTests option requires file paths to be specified.\n' +
         'Example usage: jest --findRelatedTests ./src/source.js ' +
         './src/index.js.',
+    );
+  }
+
+  if (!isJSONString(argv.config) && !argv.config.match(/\.js(on)?$/)) {
+    throw new Error(
+      'The --config option requires a JSON string literal, or a file path with a .js or .json extension.\n' +
+        'Example usage: jest --config ./jest.config.js',
     );
   }
 
