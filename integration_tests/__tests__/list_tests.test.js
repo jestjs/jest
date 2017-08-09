@@ -12,8 +12,15 @@
 const runJest = require('../runJest');
 
 describe('--listTests flag', () => {
-  it('causes tests to be printed out as JSON', () => {
+  it('causes tests to be printed in different lines', () => {
     const {status, stdout} = runJest('list_tests', ['--listTests']);
+
+    expect(status).toBe(0);
+    expect(() => JSON.parse(stdout)).not.toThrow();
+  });
+
+  it('causes tests to be printed out as JSON when using the --json flag', () => {
+    const {status, stdout} = runJest('list_tests', ['--listTests', '--json']);
 
     expect(status).toBe(0);
     expect(() => JSON.parse(stdout)).not.toThrow();

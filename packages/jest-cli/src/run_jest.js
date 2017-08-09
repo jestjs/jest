@@ -167,7 +167,13 @@ const runJest = async ({
   allTests = sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    console.log(JSON.stringify(allTests.map(test => test.path)));
+    const testsPaths = allTests.map(test => test.path);
+    if (globalConfig.json) {
+      outputStream.write(JSON.stringify(testsPaths));
+    } else {
+      outputStream.write(testsPaths.join('\n'));
+    }
+
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
