@@ -45,7 +45,11 @@ const check = (argv: Argv) => {
     );
   }
 
-  if (!isJSONString(argv.config) && !argv.config.match(/\.js(on)?$/)) {
+  if (
+    argv.config &&
+    !isJSONString(argv.config) &&
+    !argv.config.match(/\.js(on)?$/)
+  ) {
     throw new Error(
       'The --config option requires a JSON string literal, or a file path with a .js or .json extension.\n' +
         'Example usage: jest --config ./jest.config.js',
