@@ -125,9 +125,8 @@ describe('Custom Reporters Integration', () => {
     ]);
 
     expect(status).toBe(0);
-    expect(stderr.trim()).toBe('');
-
     expect(stdout).toMatchSnapshot();
+    expect(stderr.trim()).toBe('');
   });
 
   test('prints reporter errors', () => {

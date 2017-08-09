@@ -18,6 +18,7 @@ import {
   createDirectory,
   validateCLIOptions,
 } from 'jest-util';
+import {Console as NativeConsole} from 'console';
 import {readConfig} from 'jest-config';
 import {version as VERSION} from '../../package.json';
 import args from './args';
@@ -34,38 +35,45 @@ import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 
-async function run(maybeArgv?: Argv, project?: Path) {
+async function run(
+  maybeArgv?: Argv,
+  project?: Path,
+  stdout?: stream$Writable | tty$WriteStream,
+) {
   const argv: Argv = _buildArgv(maybeArgv, project);
   const projects = _getProjectListFromCLIArgs(argv, project);
   // If we're running a single Jest project, we might want to use another
   // version of Jest (the one that is specified in this project's package.json)
   const runCLIFn = _getRunCLIFn(projects);
 
-  const {results, globalConfig} = await runCLIFn(argv, projects);
+  const {results, globalConfig} = await runCLIFn(argv, projects, stdout);
   _readResultsAndExit(results, globalConfig);
 }
 
 const runCLI = async (
   argv: Argv,
   projects: Array<Path>,
+  stdout?: stream$Writable | tty$WriteStream = process.stdout,
 ): Promise<{results: AggregatedResult, globalConfig: GlobalConfig}> => {
   let results;
   // Optimize 'fs' module and make it more compatible with multiple platforms.
   _patchGlobalFSModule();
 
-  // If we output a JSON object, we can't write anything to stdout, since
-  // it'll break the JSON structure and it won't be valid.
-  const outputStream =
-    argv.json || argv.useStderr ? process.stderr : process.stdout;
-
-  argv.version && _printVersionAndExit(outputStream);
+  argv.version && _printVersionAndExit(stdout);
 
   try {
     const {globalConfig, configs, hasDeprecationWarnings} = _getConfigs(
       projects,
       argv,
-      outputStream,
+      stdout,
     );
+
+    _restoreStdoutIfNeeded(globalConfig, stdout);
+
+    // If we output a JSON object, we can't write anything to stdout, since
+    // it'll break the JSON structure and it won't be valid.
+    const outputStream =
+      argv.json || argv.useStderr ? process.stderr : process.stdout;
 
     await _run(
       globalConfig,
@@ -73,6 +81,7 @@ const runCLI = async (
       hasDeprecationWarnings,
       outputStream,
       (r: AggregatedResult) => (results = r),
+      stdout,
     );
 
     if (argv.watch || argv.watchAll) {
@@ -95,6 +104,24 @@ const runCLI = async (
     console.error(chalk.red(error.stack));
     process.exit(1);
     throw error;
+  }
+};
+
+// We hijack `process.stdout` and redirect everything to `process.stderr`
+// very early in the Jest process to prevent any of required code to pollute
+// stdout with any `console.log`s (this will break JSON output in stdout). If
+// we aren't planning to output JSON (or --useStderr) we will reassign
+// stdout back to its original value here.
+const _restoreStdoutIfNeeded = (globalConfig: GlobalConfig, stdout) => {
+  if (
+    !globalConfig.json &&
+    !globalConfig.listTests &&
+    !globalConfig.useStderr
+  ) {
+    Object.defineProperty(process, 'stdout', {value: stdout});
+    Object.defineProperty(global, 'console', {
+      value: new NativeConsole(process.stdout, process.stderr),
+    });
   }
 };
 
@@ -144,10 +171,10 @@ const _printDebugInfoAndExitIfNeeded = (
   argv,
   globalConfig,
   configs,
-  outputStream,
+  stdout,
 ) => {
   if (argv.debug || argv.showConfig) {
-    logDebugMessages(globalConfig, configs, outputStream);
+    logDebugMessages(globalConfig, configs, stdout);
   }
   if (argv.showConfig) {
     process.exit(0);
@@ -194,7 +221,7 @@ const _ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
 const _getConfigs = (
   projectsFromCLIArgs: Array<Path>,
   argv: Argv,
-  outputStream,
+  stdout,
 ): {
   globalConfig: GlobalConfig,
   configs: Array<ProjectConfig>,
@@ -243,7 +270,7 @@ const _getConfigs = (
     throw new Error('jest: No configuration found for any project.');
   }
 
-  _printDebugInfoAndExitIfNeeded(argv, globalConfig, configs, outputStream);
+  _printDebugInfoAndExitIfNeeded(argv, globalConfig, configs, stdout);
 
   return {
     configs,
@@ -288,6 +315,7 @@ const _run = async (
   hasDeprecationWarnings,
   outputStream,
   onComplete,
+  stdout,
 ) => {
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
@@ -307,6 +335,7 @@ const _run = async (
         outputStream,
         hasteMapInstances,
         changedFilesPromise,
+        stdout,
       )
     : await _runWithoutWatch(
         globalConfig,
@@ -314,6 +343,7 @@ const _run = async (
         outputStream,
         onComplete,
         changedFilesPromise,
+        stdout,
       );
 };
 
@@ -325,17 +355,30 @@ const _runWatch = async (
   outputStream,
   hasteMapInstances,
   changedFilesPromise,
+  stdout,
 ) => {
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+      return watch({
+        contexts,
+        globalConfig,
+        hasteMapInstances,
+        outputStream,
+        stdout,
+      });
     } catch (e) {
       process.exit(0);
     }
   }
 
-  return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+  return watch({
+    contexts,
+    globalConfig,
+    hasteMapInstances,
+    outputStream,
+    stdout,
+  });
 };
 
 const _runWithoutWatch = async (
@@ -344,6 +387,7 @@ const _runWithoutWatch = async (
   outputStream,
   onComplete,
   changedFilesPromise,
+  stdout,
 ) => {
   const startRun = async () => {
     if (!globalConfig.listTests) {
@@ -356,6 +400,7 @@ const _runWithoutWatch = async (
       onComplete,
       outputStream,
       startRun,
+      stdout,
       testWatcher: new TestWatcher({isWatchMode: false}),
     });
   };

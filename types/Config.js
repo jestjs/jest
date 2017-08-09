@@ -54,7 +54,6 @@ export type DefaultOptions = {|
   testURL: string,
   timers: 'real' | 'fake',
   transformIgnorePatterns: Array<Glob>,
-  useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
   watchman: boolean,

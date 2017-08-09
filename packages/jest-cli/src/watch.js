@@ -32,17 +32,28 @@ import {KEYS, CLEAR} from './constants';
 const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
-const watch = (
-  initialGlobalConfig: GlobalConfig,
+const watch = ({
+  globalConfig: initialGlobalConfig,
+  contexts,
+  outputStream,
+  hasteMapInstances,
+  stdin,
+  stdout,
+}: {
+  globalConfig: GlobalConfig,
   contexts: Array<Context>,
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
-  stdin?: stream$Readable | tty$ReadStream = process.stdin,
-) => {
+  stdin?: stream$Readable | tty$ReadStream,
+  stdout: stream$Writable | tty$WriteStream,
+}) => {
   // `globalConfig` will be consantly updated and reassigned as a result of
   // watch mode interactions.
   let globalConfig = initialGlobalConfig;
 
+  if (!stdin) {
+    stdin = process.stdin;
+  }
   globalConfig = updateGlobalConfig(globalConfig, {
     mode: globalConfig.watch ? 'watch' : 'watchAll',
   });
@@ -134,6 +145,7 @@ const watch = (
       },
       outputStream,
       startRun,
+      stdout,
       testWatcher,
     }).catch(error => console.error(chalk.red(error.stack)));
   };

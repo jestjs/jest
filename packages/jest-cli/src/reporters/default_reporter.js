@@ -8,8 +8,6 @@
  * @flow
  */
 
-/* global stream$Writable, tty$WriteStream */
-
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';

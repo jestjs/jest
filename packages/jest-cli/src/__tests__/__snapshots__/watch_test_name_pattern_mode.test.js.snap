@@ -20,7 +20,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
 
  › should recognize null and undefined
 
- › should not output colors to pipe
+ › should not output colors to outputStream
 
  › should convert string to a RegExp
 
@@ -49,7 +49,7 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
 
  › should recognize null and undefined
 
- › should not output colors to pipe
+ › should not output colors to outputStream
 
  › should convert string to a RegExp
 
@@ -187,7 +187,7 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`
 
  › should recognize various types
 
- › should not output colors to pipe
+ › should not output colors to outputStream
 
  › should convert string to a RegExp
 
