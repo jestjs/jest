@@ -45,7 +45,7 @@ class CancelRun extends Error {
   }
 }
 
-export type TestRunnerOptions = {|
+export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
 |};
 
@@ -54,12 +54,12 @@ type OnTestSuccess = (test: Test, result: TestResult) => Promise<*>;
 
 const TEST_WORKER_PATH = require.resolve('./test_worker');
 
-class TestRunner {
+class TestScheduler {
   _globalConfig: GlobalConfig;
-  _options: TestRunnerOptions;
+  _options: TestSchedulerOptions;
   _dispatcher: ReporterDispatcher;
 
-  constructor(globalConfig: GlobalConfig, options: TestRunnerOptions) {
+  constructor(globalConfig: GlobalConfig, options: TestSchedulerOptions) {
     this._globalConfig = globalConfig;
     this._dispatcher = new ReporterDispatcher();
     this._options = options;
@@ -400,4 +400,4 @@ const getEstimatedTime = (timings, workers) => {
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
 };
 
-module.exports = TestRunner;
+module.exports = TestScheduler;
