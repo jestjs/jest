@@ -2,10 +2,17 @@
 
 > Stringify any JavaScript value.
 
-- Supports [all built-in JavaScript types](#type-support)
-- [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd) (similar performance to v8's `JSON.stringify` and significantly faster than Node's `util.format`)
-- Plugin system for extending with custom types (i.e. [`ReactTestComponent`](#reacttestcomponent-plugin))
-
+- Supports all built-in JavaScript types
+    * primitive types: `Boolean`, `null`, `Number`, `String`, `Symbol`, `undefined`
+    * other non-collection types: `Date`, `Error`, `Function`, `RegExp`
+    * collection types:
+        * `arguments`, `Array`, `ArrayBuffer`, `DataView`, `Float32Array`, `Float64Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Uint8Array`, `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`,
+        * `Map`, `Set`, `WeakMap`, `WeakSet`
+        * `Object`
+- [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
+    * similar performance to `JSON.stringify` in v8
+    * significantly faster than `util.format` in Node.js
+- Serialize application-specific data types with built-in or user-defined plugins
 
 ## Installation
 
@@ -28,15 +35,15 @@ const val = {object: {}};
 val.circularReference = val;
 val[Symbol('foo')] = 'foo';
 val.map = new Map([['prop', 'value']]);
-val.array = [1, NaN, Infinity];
+val.array = [-0, Infinity, NaN];
 
 console.log(prettyFormat(val));
 /*
 Object {
   "array": Array [
-    1,
-    NaN,
+    -0,
     Infinity,
+    NaN,
   ],
   "circularReference": [Circular],
   "map": Map {
@@ -48,27 +55,95 @@ Object {
 */
 ```
 
-#### Type Support
-
-`Object`, `Array`, `ArrayBuffer`, `DataView`, `Float32Array`, `Float64Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Uint8Array`, `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`, `arguments`, `Boolean`, `Date`, `Error`, `Function`, `Infinity`, `Map`, `NaN`, `null`, `Number`, `RegExp`, `Set`, `String`, `Symbol`, `undefined`, `WeakMap`, `WeakSet`
-
-### API
+## Usage with options
 
 ```js
-console.log(prettyFormat(val, options));
+function onClick() {}
+
+console.log(prettyFormat(onClick));
+/*
+[Function onClick]
+*/
+
+const options = {
+  printFunctionName: false,
+};
+console.log(prettyFormat(onClick, options));
+/*
+[Function]
+*/
 ```
 
 | key | type | default | description |
-| --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- |
 | `callToJSON` | `boolean` | `true` | call `toJSON` method (if it exists) on objects |
 | `escapeRegex` | `boolean` | `false` | escape special characters in regular expressions |
-| `highlight` | `boolean` | `false` | highlight syntax with colors in terminal (for some plugins) |
+| `highlight` | `boolean` | `false` | highlight syntax with colors in terminal (some plugins) |
 | `indent` | `number` | `2` | spaces in each level of indentation |
 | `maxDepth` | `number` | `Infinity` | levels to print in arrays, objects, elements, and so on |
 | `min` | `boolean` | `false` | minimize added space: no indentation nor line breaks |
 | `plugins` | `array` | `[]` | plugins to serialize application-specific data types |
 | `printFunctionName` | `boolean` | `true` | include or omit the name of a function |
-| `theme` | `object` | `{/* see below */}` | colors to highlight syntax in terminal (for some plugins) |
+| `theme` | `object` | | colors to highlight syntax in terminal |
+
+Property values of `theme` are from [ansi-styles colors](https://github.com/chalk/ansi-styles#colors)
+
+```js
+const DEFAULT_THEME = {
+  comment: 'gray',
+  content: 'reset',
+  prop: 'yellow',
+  tag: 'cyan',
+  value: 'green',
+};
+```
+
+## Usage with plugins
+
+The `pretty-format` package provides some built-in plugins, including:
+
+* `ReactElement` for elements from `react`
+* `ReactTestComponent` for test objects from `react-test-renderer`
+
+```js
+// CommonJS
+const prettyFormat = require('pretty-format');
+const ReactElement = prettyFormat.plugins.ReactElement;
+const ReactTestComponent = prettyFormat.plugins.ReactTestComponent;
+
+const React = require('react');
+const renderer = require('react-test-renderer');
+```
+
+```js
+// ES2015 modules and destructuring assignment
+import prettyFormat from 'pretty-format';
+const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
+
+import React from 'react';
+import renderer from 'react-test-renderer';
+```
+
+```js
+const onClick = () => {};
+const element = React.createElement('button', {onClick}, 'Hello World');
+
+const formatted1 = prettyFormat(element, {
+  plugins: [ReactElement],
+  printFunctionName: false,
+});
+const formatted2 = prettyFormat(renderer.create(element).toJSON(), {
+  plugins: [ReactTestComponent],
+  printFunctionName: false,
+});
+/*
+<button
+  onClick=[Function]
+>
+  Hello World
+</button>
+*/
+```
 
 ### Plugins
 
@@ -92,24 +167,4 @@ prettyFormat(obj, {
 // Foo: Object {
 //   "bar": Object {}
 // }
-```
-
-#### `ReactTestComponent` and `ReactElement` plugins
-
-```js
-const prettyFormat = require('pretty-format');
-const reactTestPlugin = require('pretty-format').plugins.ReactTestComponent;
-const reactElementPlugin = require('pretty-format').plugins.ReactElement;
-
-const React = require('react');
-const renderer = require('react-test-renderer');
-
-const element = React.createElement('h1', null, 'Hello World');
-
-prettyFormat(renderer.create(element).toJSON(), {
-  plugins: [reactTestPlugin, reactElementPlugin],
-});
-// <h1>
-//   Hello World
-// </h1>
 ```
