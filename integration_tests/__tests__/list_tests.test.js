@@ -10,19 +10,27 @@
 'use strict';
 
 const runJest = require('../runJest');
+const path = require('path');
+
+const testRootDir = path.resolve(__dirname, '..', '..');
+expect.addSnapshotSerializer({
+  print: val => val.replace(new RegExp(testRootDir, 'g'), '/MOCK_ABOLUTE_PATH'),
+  test: val => typeof val === 'string' && val.includes(testRootDir),
+});
 
 describe('--listTests flag', () => {
   it('causes tests to be printed in different lines', () => {
     const {status, stdout} = runJest('list_tests', ['--listTests']);
 
     expect(status).toBe(0);
-    expect(() => JSON.parse(stdout)).not.toThrow();
+    expect(stdout).toMatchSnapshot();
   });
 
   it('causes tests to be printed out as JSON when using the --json flag', () => {
-    const {status, stdout} = runJest('list_tests', ['--listTests', '--json']);
+    const {status, stderr} = runJest('list_tests', ['--listTests', '--json']);
 
     expect(status).toBe(0);
-    expect(() => JSON.parse(stdout)).not.toThrow();
+    expect(() => JSON.parse(stderr)).not.toThrow();
+    expect(stderr).toMatchSnapshot();
   });
 });
