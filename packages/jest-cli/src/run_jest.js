@@ -19,7 +19,7 @@ import {Console, formatTestResults} from 'jest-util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
 import SearchSource from './search_source';
-import TestRunner from './test_runner';
+import TestScheduler from './test_scheduler';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 
@@ -192,7 +192,7 @@ const runJest = async ({
   // CLI.
   setConfig(contexts, {rootDir: process.cwd()});
 
-  const results = await new TestRunner(globalConfig, {
+  const results = await new TestScheduler(globalConfig, {
     startRun,
   }).runTests(allTests, testWatcher);
 
