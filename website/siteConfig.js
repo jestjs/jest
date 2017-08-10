@@ -259,22 +259,14 @@ const siteConfig = {
   repo: "facebook/jest",
   users,
   editUrl: "https://github.com/facebook/jest/edit/master/docs/",
-  headerLinksInternal: [
-    {
-      section: "docs",
-      href: "/jest/docs/LANGUAGE/getting-started.html",
-      text: "Docs"
-    },
-    { section: "api", href: "/jest/docs/LANGUAGE/api.html", text: "API" },
-    { section: "help", href: "/jest/LANGUAGE/help.html", text: "Help" },
-    { section: "blog", href: "/jest/blog/", text: "Blog" }
-  ],
-  headerLinksExternal: [
-    {
-      section: "github",
-      href: "https://github.com/facebook/jest",
-      text: "GitHub"
-    }
+  headerLinks: [
+    { doc: "getting-started", label: "Docs" },
+    { doc: "api", label: "API" },
+    { page: "help", label: "Help" },
+    { blog: true, label: "Blog" },
+    { languages: true },
+    { search: true },
+    { href: "https://github.com/facebook/jest", label: "GitHub" }
   ],
   headerIcon: "img/jest-outline.svg",
   footerIcon: "img/jest-outline.svg",
