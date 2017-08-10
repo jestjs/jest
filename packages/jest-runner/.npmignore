@@ -1,0 +1,4 @@
+**/__mocks__/**
+**/__tests__/**
+src
+yarn.lock

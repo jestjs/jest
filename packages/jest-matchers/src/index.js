@@ -52,7 +52,11 @@ const isPromise = obj => {
   );
 };
 
-const expect = (actual: any): ExpectationObject => {
+const expect = (actual: any, ...rest): ExpectationObject => {
+  if (rest.length !== 0) {
+    throw new Error('Expect takes at most one argument.');
+  }
+
   const allMatchers = getMatchers();
   const expectation = {
     not: {},

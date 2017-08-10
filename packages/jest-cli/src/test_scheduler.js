@@ -8,11 +8,7 @@
  * @flow
  */
 
-import type {
-  AggregatedResult,
-  SerializableError as TestError,
-  TestResult,
-} from 'types/TestResult';
+import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
@@ -23,45 +19,32 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from './test_result_helpers';
-import snapshot from 'jest-snapshot';
-import pify from 'pify';
-import throat from 'throat';
-import workerFarm from 'worker-farm';
+import CoverageReporter from './reporters/coverage_reporter';
 import DefaultReporter from './reporters/default_reporter';
 import NotifyReporter from './reporters/notify_reporter';
-import SummaryReporter from './reporters/summary_reporter';
-import VerboseReporter from './reporters/verbose_reporter';
-import runTest from './run_test';
-import TestWatcher from './test_watcher';
-import CoverageReporter from './reporters/coverage_reporter';
 import ReporterDispatcher from './reporter_dispatcher';
+import snapshot from 'jest-snapshot';
+import SummaryReporter from './reporters/summary_reporter';
+import TestRunner from 'jest-runner';
+import TestWatcher from './test_watcher';
+import VerboseReporter from './reporters/verbose_reporter';
 
 const SLOW_TEST_TIME = 3000;
-
-class CancelRun extends Error {
-  constructor(message: ?string) {
-    super(message);
-    this.name = 'CancelRun';
-  }
-}
 
 export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
 |};
 
-type OnTestFailure = (test: Test, err: TestError) => Promise<*>;
-type OnTestSuccess = (test: Test, result: TestResult) => Promise<*>;
-
-const TEST_WORKER_PATH = require.resolve('./test_worker');
-
 class TestScheduler {
+  _dispatcher: ReporterDispatcher;
   _globalConfig: GlobalConfig;
   _options: TestSchedulerOptions;
-  _dispatcher: ReporterDispatcher;
+  _testRunner: TestRunner;
 
   constructor(globalConfig: GlobalConfig, options: TestSchedulerOptions) {
-    this._globalConfig = globalConfig;
     this._dispatcher = new ReporterDispatcher();
+    this._globalConfig = globalConfig;
+    this._testRunner = new TestRunner(globalConfig);
     this._options = options;
     this._setupReporters();
   }
@@ -75,6 +58,7 @@ class TestScheduler {
   }
 
   async runTests(tests: Array<Test>, watcher: TestWatcher) {
+    const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
     const timings = [];
     const contexts = new Set();
     tests.forEach(test => {
@@ -116,7 +100,7 @@ class TestScheduler {
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
-    const onFailure = async (test: Test, error: TestError) => {
+    const onFailure = async (test, error) => {
       if (watcher.isInterrupted()) {
         return;
       }
@@ -155,9 +139,16 @@ class TestScheduler {
     });
 
     try {
-      await (runInBand
-        ? this._createInBandTestRun(tests, watcher, onResult, onFailure)
-        : this._createParallelTestRun(tests, watcher, onResult, onFailure));
+      await this._testRunner.runTests(
+        tests,
+        watcher,
+        onStart,
+        onResult,
+        onFailure,
+        {
+          serial: runInBand,
+        },
+      );
     } catch (error) {
       if (!watcher.isInterrupted()) {
         throw error;
@@ -183,104 +174,6 @@ class TestScheduler {
     return aggregatedResults;
   }
 
-  _createInBandTestRun(
-    tests: Array<Test>,
-    watcher: TestWatcher,
-    onResult: OnTestSuccess,
-    onFailure: OnTestFailure,
-  ) {
-    const mutex = throat(1);
-    return tests.reduce(
-      (promise, test) =>
-        mutex(() =>
-          promise
-            .then(async () => {
-              if (watcher.isInterrupted()) {
-                throw new CancelRun();
-              }
-
-              await this._dispatcher.onTestStart(test);
-              return runTest(
-                test.path,
-                this._globalConfig,
-                test.context.config,
-                test.context.resolver,
-              );
-            })
-            .then(result => onResult(test, result))
-            .catch(err => onFailure(test, err)),
-        ),
-      Promise.resolve(),
-    );
-  }
-
-  _createParallelTestRun(
-    tests: Array<Test>,
-    watcher: TestWatcher,
-    onResult: OnTestSuccess,
-    onFailure: OnTestFailure,
-  ) {
-    const farm = workerFarm(
-      {
-        autoStart: true,
-        maxConcurrentCallsPerWorker: 1,
-        maxConcurrentWorkers: this._globalConfig.maxWorkers,
-        maxRetries: 2, // Allow for a couple of transient errors.
-      },
-      TEST_WORKER_PATH,
-    );
-    const mutex = throat(this._globalConfig.maxWorkers);
-    const worker = pify(farm);
-
-    // Send test suites to workers continuously instead of all at once to track
-    // the start time of individual tests.
-    const runTestInWorker = test =>
-      mutex(async () => {
-        if (watcher.isInterrupted()) {
-          return Promise.reject();
-        }
-        await this._dispatcher.onTestStart(test);
-        return worker({
-          config: test.context.config,
-          globalConfig: this._globalConfig,
-          path: test.path,
-          rawModuleMap: watcher.isWatchMode()
-            ? test.context.moduleMap.getRawModuleMap()
-            : null,
-        });
-      });
-
-    const onError = async (err, test) => {
-      await onFailure(test, err);
-      if (err.type === 'ProcessTerminatedError') {
-        console.error(
-          'A worker process has quit unexpectedly! ' +
-            'Most likely this is an initialization error.',
-        );
-        process.exit(1);
-      }
-    };
-
-    const onInterrupt = new Promise((_, reject) => {
-      watcher.on('change', state => {
-        if (state.interrupted) {
-          reject(new CancelRun());
-        }
-      });
-    });
-
-    const runAllTests = Promise.all(
-      tests.map(test =>
-        runTestInWorker(test)
-          .then(testResult => onResult(test, testResult))
-          .catch(error => onError(error, test)),
-      ),
-    );
-
-    const cleanup = () => workerFarm.end(farm);
-    return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
-  }
-
   _shouldAddDefaultReporters(reporters?: Array<ReporterConfig>): boolean {
     return (
       !reporters ||
@@ -290,7 +183,6 @@ class TestScheduler {
 
   _setupReporters() {
     const {collectCoverage, notify, reporters} = this._globalConfig;
-
     const isDefault = this._shouldAddDefaultReporters(reporters);
 
     if (isDefault) {
@@ -331,6 +223,7 @@ class TestScheduler {
       const {options, path} = this._getReporterProps(reporter);
 
       try {
+        // $FlowFixMe
         const Reporter = require(path);
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error) {
