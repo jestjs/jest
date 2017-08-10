@@ -4,7 +4,7 @@
  */
 const languages = [
   {
-    enabled: false,
+    enabled: true,
     name: '日本語',
     tag: 'ja',
   },
