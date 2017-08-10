@@ -69,6 +69,7 @@ module.exports = ({
   resolver: '<rootDir>/resolver.js',
   rootDir: '/',
   roots: ['<rootDir>'],
+  runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
   setupTestFrameworkScriptFile: '<rootDir>/test_setup_file.js',
   silent: true,
