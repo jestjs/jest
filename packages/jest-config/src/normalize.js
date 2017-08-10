@@ -387,6 +387,7 @@ function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'moduleLoader':
       case 'resolver':
+      case 'runner':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'testRunner':

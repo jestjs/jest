@@ -52,6 +52,7 @@ module.exports = ({
   preset: null,
   resetMocks: false,
   resetModules: false,
+  runner: 'jest-runner',
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
   testFailureExitCode: 1,
