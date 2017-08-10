@@ -25,7 +25,7 @@ import NotifyReporter from './reporters/notify_reporter';
 import ReporterDispatcher from './reporter_dispatcher';
 import snapshot from 'jest-snapshot';
 import SummaryReporter from './reporters/summary_reporter';
-import TestRunner from './test_runner';
+import TestRunner from 'jest-runner';
 import TestWatcher from './test_watcher';
 import VerboseReporter from './reporters/verbose_reporter';
 

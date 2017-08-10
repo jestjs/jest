@@ -16,11 +16,15 @@ import type {TestResult} from 'types/TestResult';
 import type RuntimeClass from 'jest-runtime';
 
 import fs from 'fs';
-import {Console, NullConsole, setGlobal} from 'jest-util';
+import {
+  BufferedConsole,
+  Console,
+  NullConsole,
+  getConsoleOutput,
+  setGlobal,
+} from 'jest-util';
 import {getTestEnvironment} from 'jest-config';
 import docblock from 'jest-docblock';
-import BufferedConsole from './lib/buffered_console';
-import getConsoleOutput from './reporters/get_console_output';
 
 function runTest(
   path: Path,

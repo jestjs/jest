@@ -10,12 +10,14 @@
 
 import mkdirp from 'mkdirp';
 
+import BufferedConsole from './buffered_console';
+import clearLine from './clear_line';
 import Console from './Console';
 import FakeTimers from './fake_timers';
-import NullConsole from './null_console';
-import clearLine from './clear_line';
 import formatTestResults from './format_test_results';
+import getConsoleOutput from './get_console_output';
 import installCommonGlobals from './install_common_globals';
+import NullConsole from './null_console';
 import setGlobal from './set_global';
 import validateCLIOptions from './validate_cli_options';
 
@@ -30,12 +32,14 @@ const createDirectory = (path: string) => {
 };
 
 module.exports = {
+  BufferedConsole,
   Console,
   FakeTimers,
   NullConsole,
   clearLine,
   createDirectory,
   formatTestResults,
+  getConsoleOutput,
   installCommonGlobals,
   setGlobal,
   validateCLIOptions,

@@ -18,13 +18,15 @@ import type {
   TestResult,
 } from 'types/TestResult';
 import type Runtime from 'jest-runtime';
-import type TestWatcher from 'jest-cli/src/test_watcher';
+import type {TestWatcher as _TestWatcher} from 'jest-cli';
 
 export type Test = {|
   context: Context,
   duration: ?number,
   path: Path,
 |};
+
+export type TestWatcher = _TestWatcher;
 
 export type OnTestStart = Test => Promise<void>;
 export type OnTestFailure = (Test, SerializableError) => Promise<*>;
