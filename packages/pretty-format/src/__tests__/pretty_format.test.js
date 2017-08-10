@@ -320,7 +320,7 @@ describe('prettyFormat()', () => {
 
   it('prints a multiline string', () => {
     const val = ['line 1', 'line 2', 'line 3'].join('\n');
-    expect(prettyFormat(val)).toEqual('"' + val + '"');
+    expect(prettyFormat(val)).toEqual('`' + val + '`');
   });
 
   it('prints a multiline string as value of object property', () => {
@@ -344,9 +344,9 @@ describe('prettyFormat()', () => {
         '    "children": Object {',
         '      "props": Object {',
         '        "id": "J",',
-        '        "points": "0.5,0.460',
+        '        "points": `0.5,0.460',
         '0.5,0.875',
-        '0.25,0.875",',
+        '0.25,0.875`,',
         '      },',
         '      "type": "polyline",',
         '    },',

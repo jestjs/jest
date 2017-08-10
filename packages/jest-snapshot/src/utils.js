@@ -124,6 +124,10 @@ const getSnapshotData = (snapshotPath: Path, update: SnapshotUpdateState) => {
   return {data, dirty};
 };
 
+const removeWrappingBackticks = (str: string) => {
+  return str.replace(/(^\s*)`|`(\s*)$/g, '$1$2');
+};
+
 // Extra line breaks at the beginning and at the end of the snapshot are useful
 // to make the content of the snapshot easier to read
 const addExtraLineBreaks = string =>
@@ -131,12 +135,14 @@ const addExtraLineBreaks = string =>
 
 const serialize = (data: any): string => {
   return addExtraLineBreaks(
-    normalizeNewlines(
-      prettyFormat(data, {
-        escapeRegex: true,
-        plugins: getSerializers(),
-        printFunctionName: false,
-      }),
+    removeWrappingBackticks(
+      normalizeNewlines(
+        prettyFormat(data, {
+          escapeRegex: true,
+          plugins: getSerializers(),
+          printFunctionName: false,
+        }),
+      ),
     ),
   );
 };

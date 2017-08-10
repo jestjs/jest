@@ -1,35 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`not throwing Error objects 1`] = `
-" FAIL  __tests__/throw_number.test.js
+ FAIL  __tests__/throw_number.test.js
   ● Test suite failed to run
 
-    Expected an Error, but \\"1\\" was thrown
+    Expected an Error, but "1" was thrown
 
-"
+
 `;
 
 exports[`not throwing Error objects 2`] = `
-" FAIL  __tests__/throw_string.test.js
+ FAIL  __tests__/throw_string.test.js
   ● Test suite failed to run
 
     Error
       banana
 
-"
+
 `;
 
 exports[`not throwing Error objects 3`] = `
-" FAIL  __tests__/throw_object.test.js
+ FAIL  __tests__/throw_object.test.js
   ● Test suite failed to run
 
     Error: No message was provided
 
-"
+
 `;
 
 exports[`not throwing Error objects 4`] = `
-" FAIL  __tests__/assertion_count.test.js
+ FAIL  __tests__/assertion_count.test.js
   ● .assertions() › throws
     expect(received).toBeTruthy()
     Expected value to be truthy, instead received
@@ -55,11 +55,11 @@ exports[`not throwing Error objects 4`] = `
     ✕ throws on assertion
   .hasAssertions()
     ✕ throws when there are not assertions
-"
+
 `;
 
 exports[`works with node assert 1`] = `
-" FAIL  __tests__/node_assertion_error.test.js
+ FAIL  __tests__/node_assertion_error.test.js
   ● assert
 
     assert.equal(received, expected) or assert(received) 
@@ -141,9 +141,9 @@ exports[`works with node assert 1`] = `
     assert.deepEqual(received, expected)
     
     Expected value to deeply equal to:
-      {\\"a\\": {\\"b\\": {\\"c\\": 6}}}
+      {"a": {"b": {"c": 6}}}
     Received:
-      {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
+      {"a": {"b": {"c": 5}}}
     
     Difference:
     
@@ -151,10 +151,10 @@ exports[`works with node assert 1`] = `
     + Received
     
     Object {
-        \\"a\\": Object {
-          \\"b\\": Object {
-    -       \\"c\\": 6,
-    +       \\"c\\": 5,
+        "a": Object {
+          "b": Object {
+    -       "c": 6,
+    +       "c": 5,
           },
         },
       }
@@ -166,9 +166,9 @@ exports[`works with node assert 1`] = `
     assert.deepEqual(received, expected)
     
     Expected value to deeply equal to:
-      {\\"a\\": {\\"b\\": {\\"c\\": 7}}}
+      {"a": {"b": {"c": 7}}}
     Received:
-      {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
+      {"a": {"b": {"c": 5}}}
     
     Message:
       this is a message
@@ -179,10 +179,10 @@ exports[`works with node assert 1`] = `
     + Received
     
     Object {
-        \\"a\\": Object {
-          \\"b\\": Object {
-    -       \\"c\\": 7,
-    +       \\"c\\": 5,
+        "a": Object {
+          "b": Object {
+    -       "c": 7,
+    +       "c": 5,
           },
         },
       }
@@ -194,9 +194,9 @@ exports[`works with node assert 1`] = `
     assert.notDeepEqual(received, expected)
     
     Expected value not to deeply equal to:
-      {\\"a\\": 1}
+      {"a": 1}
     Received:
-      {\\"a\\": 1}
+      {"a": 1}
     
     Difference:
     
@@ -238,9 +238,9 @@ exports[`works with node assert 1`] = `
     assert.deepStrictEqual(received, expected)
     
     Expected value to deeply and strictly equal to:
-      {\\"a\\": 2}
+      {"a": 2}
     Received:
-      {\\"a\\": 1}
+      {"a": 1}
     
     Difference:
     
@@ -248,8 +248,8 @@ exports[`works with node assert 1`] = `
     + Received
     
     Object {
-    -   \\"a\\": 2,
-    +   \\"a\\": 1,
+    -   "a": 2,
+    +   "a": 1,
       }
       
       at __tests__/node_assertion_error.test.js:60:10
@@ -259,9 +259,9 @@ exports[`works with node assert 1`] = `
     assert.notDeepStrictEqual(received, expected)
     
     Expected value not to deeply and strictly equal to:
-      {\\"a\\": 1}
+      {"a": 1}
     Received:
-      {\\"a\\": 1}
+      {"a": 1}
     
     Difference:
     
@@ -316,5 +316,5 @@ exports[`works with node assert 1`] = `
   ✕ assert.doesNotThrow
   ✕ assert.throws
 
-"
+
 `;

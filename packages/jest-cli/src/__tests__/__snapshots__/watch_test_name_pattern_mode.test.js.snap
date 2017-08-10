@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
-"
+
 
 
  pattern › c
@@ -28,11 +28,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
 
  › should convert grep string to a RegExp
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
-"
+
 
 
  pattern › co
@@ -57,11 +57,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
 
  › should convert grep string to a RegExp
 [MOCK - cursorTo(13, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
-"
+
 
 
  pattern › con
@@ -78,11 +78,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
 
  › should convert grep string to a RegExp
 [MOCK - cursorTo(14, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
-"
+
 
 
  pattern › con 
@@ -91,11 +91,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
 
  Pattern matches no tests from cached test suites
 [MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
-"
+
 
 
  pattern › con 1
@@ -104,11 +104,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
 
  Pattern matches no tests from cached test suites
 [MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
-"
+
 
 
  pattern › con 12
@@ -117,11 +117,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
 
  Pattern matches no tests from cached test suites
 [MOCK - cursorTo(17, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
-"
+
 
 
  pattern › con 1
@@ -130,11 +130,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
 
  Pattern matches no tests from cached test suites
 [MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
-"
+
 
 
  pattern › con 
@@ -143,11 +143,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
 
  Pattern matches no tests from cached test suites
 [MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
-"
+
 
 
  pattern › con *
@@ -164,11 +164,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
 
  › should convert grep string to a RegExp
 [MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`] = `
-"
+
 
 
  pattern › t
@@ -195,11 +195,11 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`
 
  › should convert grep string to a RegExp
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`] = `
-"
+
 
 
  pattern › t
@@ -226,5 +226,5 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
 
  › should convert grep str...
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;

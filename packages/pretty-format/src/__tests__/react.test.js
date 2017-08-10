@@ -110,9 +110,9 @@ test('supports props with multiline strings', () => {
     '<svg>',
     '  <polyline',
     '    id="J"',
-    '    points="0.5,0.460',
+    '    points=`0.5,0.460',
     '0.5,0.875',
-    '0.25,0.875"',
+    '0.25,0.875`',
     '  />',
     '</svg>',
   ].join('\n');

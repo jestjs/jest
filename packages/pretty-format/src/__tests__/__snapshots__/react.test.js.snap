@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ReactElement plugin highlights syntax 1`] = `
-"<Mouse</>
+<Mouse</>
   prop</>=<green>{
     <div></>
       </>mouse</>
@@ -10,19 +10,19 @@ exports[`ReactElement plugin highlights syntax 1`] = `
       </span></>
     </div></>
   }</>
-/></>"
+/></>
 `;
 
 exports[`ReactElement plugin highlights syntax with color from theme option 1`] = `
-"<Mouse</>
-  style</>=<red>\\"color:red\\"</>
+<Mouse</>
+  style</>=<red>"color:red"</>
 ></>
   </>Hello, Mouse!</>
-</Mouse></>"
+</Mouse></>
 `;
 
 exports[`ReactTestComponent plugin highlights syntax 1`] = `
-"<Mouse</>
+<Mouse</>
   prop</>=<green>{
     <div></>
       </>mouse</>
@@ -31,13 +31,13 @@ exports[`ReactTestComponent plugin highlights syntax 1`] = `
       </span></>
     </div></>
   }</>
-/></>"
+/></>
 `;
 
 exports[`ReactTestComponent plugin highlights syntax with color from theme option 1`] = `
-"<Mouse</>
-  style</>=<red>\\"color:red\\"</>
+<Mouse</>
+  style</>=<red>"color:red"</>
 ></>
   </>Hello, Mouse!</>
-</Mouse></>"
+</Mouse></>
 `;

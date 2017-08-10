@@ -22,7 +22,7 @@ skipOnWindows.suite();
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('works with jest.conf.js', () => {
+test('works with jest.config.js', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `test('banana', () => expect(1).toBe(1));`,
     'jest.config.js': `module.exports = {testRegex: '.*-banana.js'};`,
@@ -55,7 +55,9 @@ test('traverses directory tree up until it finds jest.config', () => {
 
   // Snapshot the console.loged `process.cwd()` and make sure it stays the same
   expect(
-    stdout.replace(/^\W+(.*)integration_tests/gm, '<<REPLACED>>'),
+    stdout
+      .replace(/^\W+(.*)integration_tests/gm, '<<REPLACED>>')
+      .replace(/ \(\d+.*\)/g, ''),
   ).toMatchSnapshot();
 
   const {rest, summary} = extractSummary(stderr);
