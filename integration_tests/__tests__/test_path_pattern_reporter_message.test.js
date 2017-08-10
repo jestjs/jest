@@ -4,6 +4,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ * @flow
  */
 
 'use strict';
@@ -13,7 +14,7 @@ import {cleanup, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const DIR = path.resolve(os.tmpdir(), 'jest_path_pattern_reporter_message');
 
 skipOnWindows.suite();

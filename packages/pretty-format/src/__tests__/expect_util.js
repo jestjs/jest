@@ -5,23 +5,26 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
+ * @flow
  */
 
 'use strict';
+
+import type {OptionsReceived, Plugins} from 'types/PrettyFormat';
 
 const diff = require('jest-diff');
 const prettyFormat = require('../');
 
 module.exports = {
-  getPrettyPrint: plugins =>
-    function(received, expected, opts) {
+  getPrettyPrint: (plugins: Plugins) =>
+    function(received: any, expected: any, options?: OptionsReceived) {
       const prettyFormatted = prettyFormat(
         received,
         Object.assign(
-          {
+          ({
             plugins,
-          },
-          opts,
+          }: OptionsReceived),
+          options,
         ),
       );
       const pass = prettyFormatted === expected;

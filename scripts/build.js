@@ -15,7 +15,11 @@
  * Example:
  *  node ./scripts/build.js
  *  node ./scripts/build.js /users/123/jest/packages/jest-111/src/111.js
+ *
+ * NOTE: this script is node@4 compatible
  */
+
+'use strict';
 
 const fs = require('fs');
 const path = require('path');
@@ -86,7 +90,7 @@ function buildBrowserPackage(p) {
     return;
   }
 
-  const {browser} = require(pkgJsonPath);
+  const browser = require(pkgJsonPath).browser;
   if (browser) {
     if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
       throw new Error(

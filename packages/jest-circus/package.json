@@ -8,8 +8,10 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "chalk": "^2.0.1",
     "jest-snapshot": "^20.0.3",
     "jest-matchers": "^20.0.3",
+    "jest-matcher-utils": "^20.0.3",
     "jest-message-util": "^20.0.3",
     "jest-diff": "^20.0.3"
   },

@@ -2,58 +2,60 @@
 
 exports[`--showConfig outputs config info and exits 1`] = `
 "{
-  \\"config\\": {
-    \\"automock\\": false,
-    \\"browser\\": false,
-    \\"cache\\": false,
-    \\"cacheDirectory\\": \\"/tmp/jest\\",
-    \\"clearMocks\\": false,
-    \\"coveragePathIgnorePatterns\\": [
-      \\"/node_modules/\\"
-    ],
-    \\"globals\\": {},
-    \\"haste\\": {
-      \\"providesModuleNodeModules\\": []
-    },
-    \\"moduleDirectories\\": [
-      \\"node_modules\\"
-    ],
-    \\"moduleFileExtensions\\": [
-      \\"js\\",
-      \\"json\\",
-      \\"jsx\\",
-      \\"node\\"
-    ],
-    \\"moduleNameMapper\\": {},
-    \\"modulePathIgnorePatterns\\": [],
-    \\"name\\": \\"[md5 hash]\\",
-    \\"resetMocks\\": false,
-    \\"resetModules\\": false,
-    \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
-    \\"roots\\": [
-      \\"<<REPLACED_ROOT_DIR>>\\"
-    ],
-    \\"setupFiles\\": [],
-    \\"snapshotSerializers\\": [],
-    \\"testEnvironment\\": \\"jest-environment-jsdom\\",
-    \\"testMatch\\": [
-      \\"**/__tests__/**/*.js?(x)\\",
-      \\"**/?(*.)(spec|test).js?(x)\\"
-    ],
-    \\"testPathIgnorePatterns\\": [
-      \\"/node_modules/\\"
-    ],
-    \\"testRegex\\": \\"\\",
-    \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
-    \\"testURL\\": \\"about:blank\\",
-    \\"timers\\": \\"real\\",
-    \\"transformIgnorePatterns\\": [
-      \\"/node_modules/\\"
-    ]
-  },
-  \\"framework\\": \\"jasmine2\\",
+  \\"configs\\": [
+    {
+      \\"automock\\": false,
+      \\"browser\\": false,
+      \\"cache\\": false,
+      \\"cacheDirectory\\": \\"/tmp/jest\\",
+      \\"clearMocks\\": false,
+      \\"coveragePathIgnorePatterns\\": [
+        \\"/node_modules/\\"
+      ],
+      \\"globals\\": {},
+      \\"haste\\": {
+        \\"providesModuleNodeModules\\": []
+      },
+      \\"moduleDirectories\\": [
+        \\"node_modules\\"
+      ],
+      \\"moduleFileExtensions\\": [
+        \\"js\\",
+        \\"json\\",
+        \\"jsx\\",
+        \\"node\\"
+      ],
+      \\"moduleNameMapper\\": {},
+      \\"modulePathIgnorePatterns\\": [],
+      \\"name\\": \\"[md5 hash]\\",
+      \\"resetMocks\\": false,
+      \\"resetModules\\": false,
+      \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
+      \\"roots\\": [
+        \\"<<REPLACED_ROOT_DIR>>\\"
+      ],
+      \\"setupFiles\\": [],
+      \\"snapshotSerializers\\": [],
+      \\"testEnvironment\\": \\"jest-environment-jsdom\\",
+      \\"testMatch\\": [
+        \\"**/__tests__/**/*.js?(x)\\",
+        \\"**/?(*.)(spec|test).js?(x)\\"
+      ],
+      \\"testPathIgnorePatterns\\": [
+        \\"/node_modules/\\"
+      ],
+      \\"testRegex\\": \\"\\",
+      \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
+      \\"testURL\\": \\"about:blank\\",
+      \\"timers\\": \\"real\\",
+      \\"transformIgnorePatterns\\": [
+        \\"/node_modules/\\"
+      ]
+    }
+  ],
   \\"globalConfig\\": {
     \\"bail\\": false,
+    \\"changedFilesWithAncestor\\": false,
     \\"coverageDirectory\\": \\"<<REPLACED_ROOT_DIR>>/coverage\\",
     \\"coverageReporters\\": [
       \\"json\\",
@@ -69,6 +71,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"nonFlagArgs\\": [],
     \\"notify\\": false,
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
+    \\"testFailureExitCode\\": 1,
     \\"testPathPattern\\": \\"\\",
     \\"testResultsProcessor\\": null,
     \\"updateSnapshot\\": \\"all\\",

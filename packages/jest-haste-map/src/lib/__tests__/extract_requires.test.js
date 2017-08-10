@@ -80,4 +80,26 @@ describe('extractRequires', () => {
 
     expect(extractRequires(code)).toEqual(['module1']);
   });
+
+  it('ignores type imports', () => {
+    const code = [
+      "import type foo from 'bar';",
+      'import type {',
+      '  bar,',
+      '  baz,',
+      "} from 'wham'",
+    ].join('\r\n');
+
+    expect(extractRequires(code)).toEqual([]);
+  });
+
+  it('ignores type exports', () => {
+    const code = [
+      'export type Foo = number;',
+      'export default {}',
+      "export * from 'module1'",
+    ].join('\r\n');
+
+    expect(extractRequires(code)).toEqual(['module1']);
+  });
 });

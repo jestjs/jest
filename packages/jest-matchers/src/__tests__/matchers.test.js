@@ -11,6 +11,12 @@
 const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
 
+it('should throw if passed two arguments', () => {
+  expect(() => jestExpect('foo', 'bar')).toThrow(
+    new Error('Expect takes at most one argument.'),
+  );
+});
+
 describe('.rejects', () => {
   it('should reject', async () => {
     await jestExpect(Promise.reject(4)).rejects.toBe(4);

@@ -5,15 +5,17 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 'use strict';
 
 const os = require('os');
 
 const generateEmptyCoverage = require('../generate_empty_coverage');
+const {makeGlobalConfig, makeProjectConfig} = require('../../../../test_utils');
 
 jest.mock('jest-runtime', () => {
+  // $FlowFixMe requireActual
   const realRuntime = require.requireActual('jest-runtime');
   realRuntime.shouldInstrument = () => true;
   return realRuntime;
@@ -35,15 +37,14 @@ module.exports = {
 };`;
 
 it('generates an empty coverage object for a file without running it', () => {
-  expect(
-    generateEmptyCoverage(
-      src,
-      '/sum.js',
-      {},
-      {
-        cacheDirectory: os.tmpdir(),
-        rootDir: os.tmpdir(),
-      },
-    ).coverage,
-  ).toMatchSnapshot();
+  const emptyCoverage = generateEmptyCoverage(
+    src,
+    '/sum.js',
+    makeGlobalConfig(),
+    makeProjectConfig({
+      cacheDirectory: os.tmpdir(),
+      rootDir: os.tmpdir(),
+    }),
+  );
+  expect(emptyCoverage && emptyCoverage.coverage).toMatchSnapshot();
 });

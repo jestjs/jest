@@ -19,7 +19,7 @@ import {Console, formatTestResults} from 'jest-util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
 import SearchSource from './search_source';
-import TestRunner from './test_runner';
+import TestScheduler from './test_scheduler';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 
@@ -40,7 +40,7 @@ const getNoTestsFoundMessage = (testRunData, globalConfig) => {
       chalk.dim(
         globalConfig.watch
           ? 'Press `a` to run all tests, or run Jest with `--watchAll`.'
-          : 'Run Jest without `-o` to run all tests.',
+          : 'Run Jest without `-o` or with `--all` to run all tests.',
       )
     );
   }
@@ -167,7 +167,13 @@ const runJest = async ({
   allTests = sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    console.log(JSON.stringify(allTests.map(test => test.path)));
+    const testsPaths = allTests.map(test => test.path);
+    if (globalConfig.json) {
+      outputStream.write(JSON.stringify(testsPaths));
+    } else {
+      outputStream.write(testsPaths.join('\n'));
+    }
+
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
@@ -192,7 +198,7 @@ const runJest = async ({
   // CLI.
   setConfig(contexts, {rootDir: process.cwd()});
 
-  const results = await new TestRunner(globalConfig, {
+  const results = await new TestScheduler(globalConfig, {
     startRun,
   }).runTests(allTests, testWatcher);
 

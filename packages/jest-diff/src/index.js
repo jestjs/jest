@@ -28,8 +28,9 @@ const PLUGINS = [
   ReactTestComponent,
   ReactElement,
   HTMLElement,
+  Immutable,
   AsymmetricMatcher,
-].concat(Immutable);
+];
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };

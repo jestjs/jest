@@ -4,12 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 
 // Works on windows, we just need to adjust snapshot test output
 skipOnWindows.suite();

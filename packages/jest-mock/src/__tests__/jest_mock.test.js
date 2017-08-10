@@ -341,6 +341,14 @@ describe('moduleMocker', () => {
         expect(fn1()).not.toEqual('abcd');
         expect(fn2()).not.toEqual('abcd');
       });
+
+      it('maintains function arity', () => {
+        const mockFunctionArity1 = moduleMocker.fn(x => x);
+        const mockFunctionArity2 = moduleMocker.fn((x, y) => y);
+
+        expect(mockFunctionArity1.length).toBe(1);
+        expect(mockFunctionArity2.length).toBe(2);
+      });
     });
 
     it('supports mock value returning undefined', () => {

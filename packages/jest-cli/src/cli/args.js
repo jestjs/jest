@@ -10,6 +10,7 @@
 
 import type {Argv} from 'types/Argv';
 
+import {isJSONString} from 'jest-config';
 import isCI from 'is-ci';
 
 const check = (argv: Argv) => {
@@ -44,6 +45,17 @@ const check = (argv: Argv) => {
     );
   }
 
+  if (
+    argv.config &&
+    !isJSONString(argv.config) &&
+    !argv.config.match(/\.js(on)?$/)
+  ) {
+    throw new Error(
+      'The --config option requires a JSON string literal, or a file path with a .js or .json extension.\n' +
+        'Example usage: jest --config ./jest.config.js',
+    );
+  }
+
   return true;
 };
 
@@ -56,7 +68,7 @@ const options = {
     description:
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
       'default, running jest with `--all` will force Jest to run all tests ' +
-      'instead of runnig only tests related to changed files.',
+      'instead of running only tests related to changed files.',
   },
   automock: {
     default: undefined,
@@ -89,6 +101,13 @@ const options = {
       'The directory where Jest should store its cached ' +
       ' dependency information.',
     type: 'string',
+  },
+  changedFilesWithAncestor: {
+    description:
+      'When used together with `--onlyChanged`, it runs tests ' +
+      'related to the current changes and the changes made in the last commit. ' +
+      '(NOTE: this only works for hg repos)',
+    type: 'boolean',
   },
   ci: {
     default: isCI,
@@ -406,6 +425,10 @@ const options = {
   testEnvironment: {
     description: 'Alias for --env',
     type: 'string',
+  },
+  testFailureExitCode: {
+    description: 'Exit code of `jest` command if the test run failed',
+    type: 'string', // number
   },
   testMatch: {
     description: 'The glob patterns Jest uses to detect test files.',

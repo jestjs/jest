@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prints the config object 1`] = `
+"{
+  \\"configs\\": {
+    \\"rootDir\\": \\"/path/to/dir\\",
+    \\"roots\\": [
+      \\"path/to/dir/test\\"
+    ],
+    \\"testRunner\\": \\"myRunner\\"
+  },
+  \\"globalConfig\\": {
+    \\"automock\\": false,
+    \\"watch\\": true
+  },
+  \\"version\\": 123
+}
+"
+`;
+
+exports[`prints the jest version 1`] = `
+"{
+  \\"configs\\": {
+    \\"testRunner\\": \\"myRunner\\"
+  },
+  \\"globalConfig\\": {
+    \\"watch\\": true
+  },
+  \\"version\\": 123
+}
+"
+`;
+
+exports[`prints the test framework name 1`] = `
+"{
+  \\"configs\\": {
+    \\"testRunner\\": \\"myRunner\\"
+  },
+  \\"globalConfig\\": {
+    \\"watch\\": true
+  },
+  \\"version\\": 123
+}
+"
+`;

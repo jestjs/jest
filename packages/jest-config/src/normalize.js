@@ -12,13 +12,13 @@ import type {Argv} from 'types/Argv';
 import type {InitialOptions, ReporterConfig} from 'types/Config';
 
 import crypto from 'crypto';
+import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validate_pattern';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
-import glob from 'glob';
 import Resolver from 'jest-resolve';
 import utils from 'jest-regex-util';
 import {
@@ -85,7 +85,6 @@ const setupPreset = (
     );
   }
 
-  // $FlowFixMe
   return Object.assign({}, preset, options);
 };
 
@@ -429,16 +428,15 @@ function normalize(options: InitialOptions, argv: Argv) {
         }
         break;
       case 'projects':
-        const projects = options[key];
-        let list = [];
-        projects &&
-          projects.forEach(
-            filePath =>
-              (list = list.concat(
-                glob.sync(_replaceRootDirInPath(options.rootDir, filePath)),
-              )),
-          );
-        value = list;
+        value = (options[key] || [])
+          .map(project => _replaceRootDirTags(options.rootDir, project))
+          .reduce((projects, project) => {
+            // Project can be specified as globs. If a glob matches any files,
+            // We expand it to these paths. If not, we keep the original path
+            // for the future resolution.
+            const globMatches = glob.sync(project);
+            return projects.concat(globMatches.length ? globMatches : project);
+          }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -448,12 +446,15 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'expand':
       case 'globals':
+      case 'findRelatedTests':
+      case 'forceExit':
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
@@ -471,6 +472,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'silent':
       case 'skipNodeResolution':
       case 'testEnvironment':
+      case 'testFailureExitCode':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':
@@ -492,7 +494,9 @@ function normalize(options: InitialOptions, argv: Argv) {
   newOptions.json = argv.json;
   newOptions.lastCommit = argv.lastCommit;
 
-  if (argv.all) {
+  newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
+
+  if (argv.all || newOptions.testPathPattern) {
     newOptions.onlyChanged = false;
   }
 

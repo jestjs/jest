@@ -17,6 +17,7 @@
     "jest-matcher-utils": "^20.0.3",
     "jest-regex-util": "^20.0.3",
     "jest-resolve": "^20.0.4",
+    "jest-util": "^20.0.3",
     "jest-validate": "^20.0.3",
     "pretty-format": "^20.0.3"
   }

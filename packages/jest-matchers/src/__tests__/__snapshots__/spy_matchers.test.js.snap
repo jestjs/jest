@@ -20,7 +20,7 @@ exports[`lastCalledWith works with Immutable.js objects 1`] = `
 "<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
 
 Expected mock function to not have been last called with:
-  <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
 `;
 
 exports[`lastCalledWith works with Map 1`] = `
@@ -97,7 +97,7 @@ exports[`toBeCalled works with jest.fn 2`] = `
 "<dim>expect(<red>jest.fn()</><dim>).not.toBeCalled(<dim>)
 
 Expected mock function not to be called but it was called with:
-  <red>Array []</>"
+  <red>[]</>"
 `;
 
 exports[`toBeCalled works with jest.fn 3`] = `
@@ -134,7 +134,7 @@ exports[`toHaveBeenCalled works with jest.fn 2`] = `
 "<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalled(<dim>)
 
 Expected mock function not to be called but it was called with:
-  <red>Array []</>"
+  <red>[]</>"
 `;
 
 exports[`toHaveBeenCalled works with jest.fn 3`] = `
@@ -158,7 +158,7 @@ exports[`toHaveBeenCalledTimes accepts only numbers 2`] = `
 
 Expected value must be a number.
 Got:
-  array: <green>Array []</>"
+  array: <green>[]</>"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 3`] = `
@@ -239,7 +239,7 @@ exports[`toHaveBeenCalledWith works with Immutable.js objects 1`] = `
 "<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected mock function not to have been called with:
-  <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Map 1`] = `
@@ -322,7 +322,7 @@ exports[`toHaveBeenLastCalledWith works with Immutable.js objects 1`] = `
 "<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected mock function to not have been last called with:
-  <green>[Immutable.Map {a: {\\"b\\": \\"c\\"}}, Immutable.Map {a: {\\"b\\": \\"c\\"}}]</>"
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Map 1`] = `

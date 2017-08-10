@@ -88,7 +88,7 @@ jest.mock('graceful-fs', () => ({
 }));
 jest.mock('fs', () => require('graceful-fs'));
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../../../scripts/skip_on_windows');
 
 const cacheFilePath = '/cache-file';
 let consoleWarn;
