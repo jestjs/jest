@@ -34,7 +34,7 @@ describe('Immutable.OrderedSet', () => {
   it('supports an empty collection {min: false}', () => {
     expect(
       Immutable.OrderedSet([]),
-    ).toPrettyPrintTo('Immutable.OrderedSet [\n]', {min: false});
+    ).toPrettyPrintTo('Immutable.OrderedSet []', {min: false});
   });
 
   it('supports a single string element', () => {
@@ -125,7 +125,7 @@ describe('Immutable.List', () => {
   });
 
   it('supports an empty collection {min: false}', () => {
-    expect(Immutable.List([])).toPrettyPrintTo('Immutable.List [\n]', {
+    expect(Immutable.List([])).toPrettyPrintTo('Immutable.List []', {
       min: false,
     });
   });
@@ -206,7 +206,7 @@ describe('Immutable.Stack', () => {
   });
 
   it('supports an empty collection {min: false}', () => {
-    expect(Immutable.Stack([])).toPrettyPrintTo('Immutable.Stack [\n]', {
+    expect(Immutable.Stack([])).toPrettyPrintTo('Immutable.Stack []', {
       min: false,
     });
   });
@@ -287,7 +287,7 @@ describe('Immutable.Set', () => {
   });
 
   it('supports an empty collection {min: false}', () => {
-    expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set [\n]', {
+    expect(Immutable.Set([])).toPrettyPrintTo('Immutable.Set []', {
       min: false,
     });
   });
@@ -365,7 +365,7 @@ describe('Immutable.Map', () => {
   });
 
   it('supports an empty collection {min: false}', () => {
-    expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {\n}', {
+    expect(Immutable.Map({})).toPrettyPrintTo('Immutable.Map {}', {
       min: false,
     });
   });
@@ -430,7 +430,7 @@ describe('Immutable.OrderedMap', () => {
   it('supports an empty collection {min: false}', () => {
     expect(
       Immutable.OrderedMap({}),
-    ).toPrettyPrintTo('Immutable.OrderedMap {\n}', {min: false});
+    ).toPrettyPrintTo('Immutable.OrderedMap {}', {min: false});
   });
 
   it('supports an object with single key', () => {
@@ -545,7 +545,7 @@ describe('Immutable.Record', () => {
   it('supports an empty record {min: false}', () => {
     const ABRecord = Immutable.Record({}, 'ABRecord');
 
-    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {\n}', {
+    expect(ABRecord()).toPrettyPrintTo('Immutable.ABRecord {}', {
       min: false,
     });
   });
@@ -643,8 +643,7 @@ describe('indentation of heterogeneous collections', () => {
       [
         'Object {',
         '  "filter": "all",',
-        '  "todos": Immutable.List [',
-        '  ],',
+        '  "todos": Immutable.List [],',
         '}',
       ].join('\n'),
     );
@@ -652,7 +651,7 @@ describe('indentation of heterogeneous collections', () => {
   test('empty Immutable.Map as child of Array', () => {
     const val = [Immutable.Map({})];
     expect(val).toPrettyPrintTo(
-      ['Array [', '  Immutable.Map {', '  },', ']'].join('\n'),
+      ['Array [', '  Immutable.Map {},', ']'].join('\n'),
     );
   });
 
@@ -785,6 +784,27 @@ describe('maxDepth option', () => {
     expect(val).toPrettyPrintTo(expected, {maxDepth: 1});
   });
 
+  test('Immutable.Seq as child of Immutable.Map', () => {
+    const val = {
+      // ++depth === 1
+      filter: 'all',
+      todos: Immutable.Seq(
+        Immutable.List([
+          Immutable.Map({
+            completed: true,
+            text: 'Return if depth exceeds max',
+          }),
+        ]),
+      ),
+    };
+    const expected = [
+      'Object {',
+      '  "filter": "all",',
+      '  "todos": [Immutable.Seq],',
+      '}',
+    ].join('\n');
+    expect(val).toPrettyPrintTo(expected, {maxDepth: 1});
+  });
   test('Immutable.Map as descendants in immutable collection', () => {
     const val = Immutable.Map({
       // ++depth === 1
@@ -817,47 +837,110 @@ describe('maxDepth option', () => {
 });
 
 describe('Immutable.Seq', () => {
-  const expected = '[Immutable.Seq]';
   it('supports an empty sequence from array {min: true}', () => {
-    expect(Immutable.Seq([])).toPrettyPrintTo(expected, {min: true});
+    expect(Immutable.Seq([])).toPrettyPrintTo('Immutable.Seq []', {min: true});
   });
   it('supports an empty sequence from array {min: false}', () => {
-    expect(Immutable.Seq([])).toPrettyPrintTo(expected, {min: false});
+    expect(Immutable.Seq([])).toPrettyPrintTo('Immutable.Seq []', {min: false});
   });
   it('supports a non-empty sequence from array {min: true}', () => {
-    expect(Immutable.Seq([0, 1, 2])).toPrettyPrintTo(expected, {min: true});
+    expect(
+      Immutable.Seq([0, 1, 2]),
+    ).toPrettyPrintTo('Immutable.Seq [0, 1, 2]', {min: true});
   });
   it('supports a non-empty sequence from array {min: false}', () => {
-    expect(Immutable.Seq([0, 1, 2])).toPrettyPrintTo(expected, {min: false});
+    expect(
+      Immutable.Seq([0, 1, 2]),
+    ).toPrettyPrintTo('Immutable.Seq [\n  0,\n  1,\n  2,\n]', {min: false});
   });
+
   it('supports an empty sequence from object {min: true}', () => {
-    expect(Immutable.Seq({})).toPrettyPrintTo(expected, {min: true});
+    expect(Immutable.Seq({})).toPrettyPrintTo('Immutable.Seq {}', {min: true});
   });
   it('supports an empty sequence from object {min: false}', () => {
-    expect(Immutable.Seq({})).toPrettyPrintTo(expected, {min: false});
+    expect(Immutable.Seq({})).toPrettyPrintTo('Immutable.Seq {}', {min: false});
   });
   it('supports a non-empty sequence from object {min: true}', () => {
-    expect(Immutable.Seq({key: 'value'})).toPrettyPrintTo(expected, {
+    expect(
+      Immutable.Seq({key: 'value'}),
+    ).toPrettyPrintTo('Immutable.Seq {"key": "value"}', {
       min: true,
     });
   });
   it('supports a non-empty sequence from object {min: false}', () => {
-    expect(Immutable.Seq({key: 'value'})).toPrettyPrintTo(expected, {
+    expect(
+      Immutable.Seq({key: 'value'}),
+    ).toPrettyPrintTo('Immutable.Seq {\n  "key": "value",\n}', {
       min: false,
     });
   });
-  it('supports a sequence from Immutable.Map', () => {
+
+  it('supports a sequence of entries from Immutable.Map', () => {
     expect(Immutable.Seq(Immutable.Map({key: 'value'}))).toPrettyPrintTo(
-      expected,
+      'Immutable.Seq {\n  "key": "value",\n}',
     );
   });
-  it('supports a sequence from Immutable.List', () => {
-    expect(Immutable.Seq(Immutable.List([0, 1, 2]))).toPrettyPrintTo(expected);
+
+  it('supports a sequence of values from ECMAScript Set', () => {
+    expect(Immutable.Seq(new Set([0, 1, 2]))).toPrettyPrintTo(
+      'Immutable.Seq [\n  0,\n  1,\n  2,\n]',
+    );
   });
-  it('supports a sequence from Immutable.Set', () => {
-    expect(Immutable.Seq(Immutable.Set([0, 1, 2]))).toPrettyPrintTo(expected);
+  it('supports a sequence of values from Immutable.List', () => {
+    expect(Immutable.Seq(Immutable.List([0, 1, 2]))).toPrettyPrintTo(
+      'Immutable.Seq [\n  0,\n  1,\n  2,\n]',
+    );
   });
-  it('supports a sequence from Immutable.Stack', () => {
-    expect(Immutable.Seq(Immutable.Stack([0, 1, 2]))).toPrettyPrintTo(expected);
+  it('supports a sequence of values from Immutable.Set', () => {
+    expect(Immutable.Seq(Immutable.Set([0, 1, 2]))).toPrettyPrintTo(
+      'Immutable.Seq [\n  0,\n  1,\n  2,\n]',
+    );
+  });
+  it('supports a sequence of values from Immutable.Stack', () => {
+    expect(Immutable.Seq(Immutable.Stack([0, 1, 2]))).toPrettyPrintTo(
+      'Immutable.Seq [\n  0,\n  1,\n  2,\n]',
+    );
+  });
+});
+
+describe('Immutable.Seq lazy entries', () => {
+  const expected = 'Immutable.Seq {…}';
+  const object = {key0: '', key1: '1'};
+  const filterer = value => value.length !== 0;
+
+  test('from object properties', () => {
+    const val = Immutable.Seq(object).filter(filterer);
+    expect(val).toPrettyPrintTo(expected);
+  });
+
+  test('from Immutable.Map entries', () => {
+    const val = Immutable.Seq(Immutable.Map(object)).filter(filterer);
+    expect(val).toPrettyPrintTo(expected);
+  });
+});
+
+describe('Immutable.Seq lazy values', () => {
+  const expected = 'Immutable.Seq […]';
+  const array = ['', '1', '22'];
+  const filterer = item => item.length !== 0;
+
+  test('from Immutable.Range', () => {
+    const val = Immutable.Range(1, Infinity);
+    expect(val).toPrettyPrintTo(expected);
+  });
+
+  test('from array items', () => {
+    const val = Immutable.Seq(array).filter(filterer);
+    expect(val).toPrettyPrintTo(expected);
+  });
+
+  test('from Immutable.List values', () => {
+    const val = Immutable.Seq(Immutable.List(array)).filter(filterer);
+    expect(val).toPrettyPrintTo(expected);
+  });
+
+  test('from ECMAScript Set values', () => {
+    const val = Immutable.Seq(new Set(array)).filter(filterer);
+    expect(val).toPrettyPrintTo(expected);
   });
 });

@@ -13,16 +13,19 @@ import {printIteratorEntries, printIteratorValues} from '../collections';
 
 // SENTINEL constants are from https://github.com/facebook/immutable-js
 const IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
-const IS_RECORD_SENTINEL = '@@__IMMUTABLE_RECORD__@@'; // v4 or later
 const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
+const IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
 const IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
+const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+const IS_RECORD_SENTINEL = '@@__IMMUTABLE_RECORD__@@'; // v4 or later
 const IS_SEQ_SENTINEL = '@@__IMMUTABLE_SEQ__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
-const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
 
 const getImmutableName = name => 'Immutable.' + name;
+const printAsLeaf = name => '[' + name + ']';
 const SPACE = ' ';
+const LAZY = '…'; // Seq is lazy if it calls a method like filter
 
 const printImmutableEntries = (
   val: any,
@@ -34,20 +37,18 @@ const printImmutableEntries = (
   type: string,
 ): string =>
   ++depth > config.maxDepth
-    ? '[' + getImmutableName(type) + ']'
+    ? printAsLeaf(getImmutableName(type))
     : getImmutableName(type) +
       SPACE +
       '{' +
-      (val.size !== 0
-        ? printIteratorEntries(
-            val.entries(),
-            config,
-            indentation,
-            depth,
-            refs,
-            printer,
-          )
-        : config.spacingOuter + indentation) +
+      printIteratorEntries(
+        val.entries(),
+        config,
+        indentation,
+        depth,
+        refs,
+        printer,
+      ) +
       '}';
 
 // Return an iterator for Immutable Record in v4 or later.
@@ -75,26 +76,71 @@ const printImmutableRecord = (
   // _name property is defined only for an Immutable Record instance
   // which was constructed with a second optional descriptive name arg
   const name = getImmutableName(val._name || 'Record');
-  const size = Array.isArray(val._keys) ? val._keys.length : val.size;
   const entries = typeof Array.isArray(val._keys)
-    ? getRecordEntries(val) // v4 or later
-    : val.entries(); // v3 or earlier
+    ? getRecordEntries(val) // immutable v4
+    : val.entries(); // Record is a collection in immutable v3
   return ++depth > config.maxDepth
-    ? '[' + name + ']'
+    ? printAsLeaf(name)
     : name +
       SPACE +
       '{' +
-      (size !== 0
+      printIteratorEntries(entries, config, indentation, depth, refs, printer) +
+      '}';
+};
+
+const printImmutableSeq = (
+  val: any,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+): string => {
+  const name = getImmutableName('Seq');
+
+  if (++depth > config.maxDepth) {
+    return printAsLeaf(name);
+  }
+
+  if (val[IS_KEYED_SENTINEL]) {
+    return (
+      name +
+      SPACE +
+      '{' +
+      // from Immutable collection of entries or from ECMAScript object
+      (val._iter || val._object
         ? printIteratorEntries(
-            entries,
+            val.entries(),
             config,
             indentation,
             depth,
             refs,
             printer,
           )
-        : config.spacingOuter + indentation) +
-      '}';
+        : LAZY) +
+      '}'
+    );
+  }
+
+  return (
+    name +
+    SPACE +
+    '[' +
+    (val._iter || // from Immutable collection of values
+    val._array || // from ECMAScript array
+    val._collection || // from ECMAScript collection in immutable v4
+    val._iterable // from ECMAScript collection in immutable v3
+      ? printIteratorValues(
+          val.values(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )
+      : LAZY) +
+    ']'
+  );
 };
 
 const printImmutableValues = (
@@ -107,20 +153,18 @@ const printImmutableValues = (
   type: string,
 ): string =>
   ++depth > config.maxDepth
-    ? '[' + getImmutableName(type) + ']'
+    ? printAsLeaf(getImmutableName(type))
     : getImmutableName(type) +
       SPACE +
       '[' +
-      (val.size !== 0
-        ? printIteratorValues(
-            val.values(),
-            config,
-            indentation,
-            depth,
-            refs,
-            printer,
-          )
-        : config.spacingOuter + indentation) +
+      printIteratorValues(
+        val.values(),
+        config,
+        indentation,
+        depth,
+        refs,
+        printer,
+      ) +
       ']';
 
 export const serialize = (
@@ -178,7 +222,7 @@ export const serialize = (
   }
 
   if (val[IS_SEQ_SENTINEL]) {
-    return '[' + getImmutableName('Seq') + ']';
+    return printImmutableSeq(val, config, indentation, depth, refs, printer);
   }
 
   // For compatibility with immutable v3 and v4, let record be the default.
