@@ -10,8 +10,8 @@
 
 'use strict';
 
-const TestRunner = require('../test_runner');
-const TestWatcher = require('../test_watcher');
+const TestRunner = require('../index');
+const {TestWatcher} = require('jest-cli');
 
 let workerFarmMock;
 
