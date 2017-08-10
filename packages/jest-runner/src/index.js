@@ -9,13 +9,13 @@
  */
 
 import type {GlobalConfig} from 'types/Config';
-import type TestWatcher from './test_watcher';
 import type {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
   Test,
   TestRunnerOptions,
+  TestWatcher,
 } from 'types/TestRunner';
 
 import pify from 'pify';
