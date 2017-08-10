@@ -36,7 +36,15 @@ function readConfig(
   // A JSON string was passed to `--config` argument and we can parse it
   // and use as is.
   if (isJSONString(argv.config)) {
-    const config = JSON.parse(argv.config);
+    let config;
+    try {
+      config = JSON.parse(argv.config);
+    } catch (e) {
+      throw new Error(
+        'There was an error while parsing the `--config` argument as a JSON string.',
+      );
+    }
+
     // NOTE: we might need to resolve this dir to an absolute path in the future
     config.rootDir = config.rootDir || packageRoot;
     rawOptions = config;
@@ -146,6 +154,7 @@ const getConfigs = (
 
 module.exports = {
   getTestEnvironment,
+  isJSONString,
   normalize,
   readConfig,
 };
