@@ -147,7 +147,7 @@ const formatted2 = prettyFormat(renderer.create(element).toJSON(), {
 
 ## Usage in Jest
 
-For snapshot tests, Jest uses `pretty-format` with options that include some of it built-in plugins. For this purpose, plugins are also known as **snapshot serializers**.
+For snapshot tests, Jest uses `pretty-format` with options that include some of its built-in plugins. For this purpose, plugins are also known as **snapshot serializers**.
 
 To serialize application-specific data types, you can add modules to `devDependencies` of a project, and then:
 
