@@ -271,6 +271,7 @@ const siteConfig = {
   headerIcon: "img/jest-outline.svg",
   footerIcon: "img/jest-outline.svg",
   favicon: "img/favicon/favicon.ico",
+  ogImage: "img/opengraph.png",
   recruitingLink: "https://crowdin.com/project/jest",
   algolia: {
     apiKey: "833906d7486e4059359fa58823c4ef56",
