@@ -97,6 +97,18 @@ You are now set up to use all ES6 features and React specific syntax.
 keep in mind that Jest will automatically define `NODE_ENV` as `test`.
 It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
 
+> Note: If you've turned off transpilation of ES2015 modules with the option `{ "modules": false }`, you have to make sure to turn this on in your test enviornment.
+```json
+{
+  "presets": [["es2015", { "modules": false }], "react"],
+  "env": {
+    "test": {
+      "presets": [["es2015"], "react"]
+    }
+  }
+}
+```
+
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
 ```json
