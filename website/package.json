@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0",
-    "docusaurus": "^1.0.0-alpha.17"
+    "docusaurus": "^1.0.0-alpha.35"
   }
 }
