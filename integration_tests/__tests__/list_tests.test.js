@@ -13,6 +13,7 @@ const runJest = require('../runJest');
 const path = require('path');
 
 const testRootDir = path.resolve(__dirname, '..', '..');
+// $FlowFixMe
 expect.addSnapshotSerializer({
   print: val => val.replace(new RegExp(testRootDir, 'g'), '/MOCK_ABOLUTE_PATH'),
   test: val => typeof val === 'string' && val.includes(testRootDir),
