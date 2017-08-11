@@ -854,6 +854,15 @@ describe('Immutable.Seq', () => {
     ).toPrettyPrintTo('Immutable.Seq [\n  0,\n  1,\n  2,\n]', {min: false});
   });
 
+  it('supports a non-empty sequence from arguments', () => {
+    function returnArguments(...args) {
+      return arguments;
+    }
+    expect(Immutable.Seq(returnArguments(0, 1, 2))).toPrettyPrintTo(
+      'Immutable.Seq [\n  0,\n  1,\n  2,\n]',
+    );
+  });
+
   it('supports an empty sequence from object {min: true}', () => {
     expect(Immutable.Seq({})).toPrettyPrintTo('Immutable.Seq {}', {min: true});
   });
@@ -926,6 +935,21 @@ describe('Immutable.Seq lazy values', () => {
 
   test('from Immutable.Range', () => {
     const val = Immutable.Range(1, Infinity);
+    expect(val).toPrettyPrintTo(expected);
+  });
+
+  test('from iterator', () => {
+    function returnIterator(values) {
+      let i = 0;
+      return {
+        next() {
+          return i < values.length
+            ? {done: false, value: values[i++]}
+            : {done: true};
+        },
+      };
+    }
+    const val = Immutable.Seq(returnIterator(array));
     expect(val).toPrettyPrintTo(expected);
   });
 
