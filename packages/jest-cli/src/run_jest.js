@@ -200,7 +200,7 @@ const runJest = async ({
 
   const results = await new TestScheduler(globalConfig, {
     startRun,
-  }).runTests(allTests, testWatcher);
+  }).scheduleTests(allTests, testWatcher);
 
   sequencer.cacheResults(allTests, results);
 

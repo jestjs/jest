@@ -76,6 +76,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   resolver: null,
   rootDir: '/test_root_dir/',
   roots: [],
+  runner: 'jest-runner',
   setupFiles: [],
   setupTestFrameworkScriptFile: null,
   skipNodeResolution: false,

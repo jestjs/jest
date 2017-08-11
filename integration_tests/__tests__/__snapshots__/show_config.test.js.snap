@@ -34,6 +34,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"roots\\": [
         \\"<<REPLACED_ROOT_DIR>>\\"
       ],
+      \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",

@@ -134,6 +134,7 @@ const getConfigs = (
       resolver: options.resolver,
       rootDir: options.rootDir,
       roots: options.roots,
+      runner: options.runner,
       setupFiles: options.setupFiles,
       setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
       skipNodeResolution: options.skipNodeResolution,

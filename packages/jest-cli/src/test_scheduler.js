@@ -31,6 +31,10 @@ import VerboseReporter from './reporters/verbose_reporter';
 
 const SLOW_TEST_TIME = 3000;
 
+// The default jest-runner is required because it is the default test runner
+// and required implicitly through the `runner` ProjectConfig option.
+TestRunner;
+
 export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
 |};
@@ -39,12 +43,10 @@ class TestScheduler {
   _dispatcher: ReporterDispatcher;
   _globalConfig: GlobalConfig;
   _options: TestSchedulerOptions;
-  _testRunner: TestRunner;
 
   constructor(globalConfig: GlobalConfig, options: TestSchedulerOptions) {
     this._dispatcher = new ReporterDispatcher();
     this._globalConfig = globalConfig;
-    this._testRunner = new TestRunner(globalConfig);
     this._options = options;
     this._setupReporters();
   }
@@ -57,7 +59,7 @@ class TestScheduler {
     this._dispatcher.unregister(ReporterClass);
   }
 
-  async runTests(tests: Array<Test>, watcher: TestWatcher) {
+  async scheduleTests(tests: Array<Test>, watcher: TestWatcher) {
     const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
     const timings = [];
     const contexts = new Set();
@@ -138,20 +140,36 @@ class TestScheduler {
       showStatus: !runInBand,
     });
 
-    try {
-      await this._testRunner.runTests(
-        tests,
-        watcher,
-        onStart,
-        onResult,
-        onFailure,
-        {
-          serial: runInBand,
-        },
-      );
-    } catch (error) {
-      if (!watcher.isInterrupted()) {
-        throw error;
+    const testRunners = Object.create(null);
+    contexts.forEach(({config}) => {
+      if (!testRunners[config.runner]) {
+        // $FlowFixMe
+        testRunners[config.runner] = new (require(config.runner): TestRunner)(
+          this._globalConfig,
+        );
+      }
+    });
+
+    const testsByRunner = this._partitionTests(testRunners, tests);
+
+    if (testsByRunner) {
+      try {
+        for (const runner of Object.keys(testRunners)) {
+          await testRunners[runner].runTests(
+            testsByRunner[runner],
+            watcher,
+            onStart,
+            onResult,
+            onFailure,
+            {
+              serial: runInBand,
+            },
+          );
+        }
+      } catch (error) {
+        if (!watcher.isInterrupted()) {
+          throw error;
+        }
       }
     }
 
@@ -172,6 +190,29 @@ class TestScheduler {
     );
 
     return aggregatedResults;
+  }
+
+  _partitionTests(
+    testRunners: {[key: string]: TestRunner},
+    tests: Array<Test>,
+  ) {
+    if (Object.keys(testRunners).length > 1) {
+      return tests.reduce((testRuns, test) => {
+        const runner = test.context.config.runner;
+        if (!testRuns[runner]) {
+          testRuns[runner] = [];
+        }
+        testRuns[runner].push(test);
+        return testRuns;
+      }, Object.create(null));
+    } else if (tests.length > 0 && tests[0] != null) {
+      // If there is only one runner, don't partition the tests.
+      return Object.assign(Object.create(null), {
+        [tests[0].context.config.runner]: tests,
+      });
+    } else {
+      return null;
+    }
   }
 
   _shouldAddDefaultReporters(reporters?: Array<ReporterConfig>): boolean {
