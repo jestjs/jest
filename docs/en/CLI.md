@@ -174,6 +174,10 @@ Run tests from one or more projects.
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
 
+### `--setupFiles=<file>`
+
+The path to a module that runs some code to configure or set up the testing environment before each test. The option can be used multiple times to run more than one file in sequence. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+
 ### `--setupTestFrameworkScriptFile=<file>`
 
 The path to a module that runs some code to configure or set up the testing framework before each test. Beware that files imported by the setup script will not be mocked during testing.
