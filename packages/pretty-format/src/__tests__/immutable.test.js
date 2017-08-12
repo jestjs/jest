@@ -917,13 +917,15 @@ describe('Immutable.Seq lazy entries', () => {
   const object = {key0: '', key1: '1'};
   const filterer = value => value.length !== 0;
 
+  // undefined size confirms correct criteria for lazy Seq
   test('from object properties', () => {
     const val = Immutable.Seq(object).filter(filterer);
+    expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });
-
   test('from Immutable.Map entries', () => {
     const val = Immutable.Seq(Immutable.Map(object)).filter(filterer);
+    expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });
 });
@@ -935,9 +937,11 @@ describe('Immutable.Seq lazy values', () => {
 
   test('from Immutable.Range', () => {
     const val = Immutable.Range(1, Infinity);
+    expect(val.size).toBe(Infinity);
     expect(val).toPrettyPrintTo(expected);
   });
 
+  // undefined size confirms correct criteria for lazy Seq
   test('from iterator', () => {
     function returnIterator(values) {
       let i = 0;
@@ -950,21 +954,22 @@ describe('Immutable.Seq lazy values', () => {
       };
     }
     const val = Immutable.Seq(returnIterator(array));
+    expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });
-
   test('from array items', () => {
     const val = Immutable.Seq(array).filter(filterer);
+    expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });
-
   test('from Immutable.List values', () => {
     const val = Immutable.Seq(Immutable.List(array)).filter(filterer);
+    expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });
-
   test('from ECMAScript Set values', () => {
     const val = Immutable.Seq(new Set(array)).filter(filterer);
+    expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });
 });
