@@ -25,7 +25,7 @@ import {
 } from 'jest-util';
 import jasmine2 from 'jest-jasmine2';
 import {getTestEnvironment} from 'jest-config';
-import docblock from 'jest-docblock';
+import Docblock from 'jest-docblock';
 
 // The default jest-runner is required because it is the default test runner
 // and required implicitly through the `testRunner` ProjectConfig option.
@@ -45,8 +45,10 @@ function runTest(
     return Promise.reject(e);
   }
 
-  const parsedDocblock = docblock.parse(docblock.extract(testSource));
-  const customEnvironment = parsedDocblock['jest-environment'];
+  const customEnvironment = new Docblock(testSource).getDirectives()[
+    'jest-environment'
+  ];
+
   let testEnvironment = config.testEnvironment;
 
   if (customEnvironment) {
