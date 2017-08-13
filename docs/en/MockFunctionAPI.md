@@ -98,8 +98,8 @@ module.exports = class SomeClass {
 }
 
 // OtherModule.test.js
-jest.mock('SomeClass')
-const SomeClass = require('SomeClass')
+jest.mock('./SomeClass');  // this happens automatically with automocking
+const SomeClass = require('./SomeClass')
 const mMock = jest.fn()
 SomeClass.mockImplementation(() => {
   return {
