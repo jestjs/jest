@@ -13,6 +13,7 @@ import type {Argv} from 'types/Argv';
 import type {Glob, Path, ProjectConfig} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {Context} from 'types/Context';
+import type {Jest, LocalModuleRequire} from 'types/Jest';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
@@ -524,7 +525,11 @@ class Runtime {
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
-      this._createJestObjectFor(filename), // jest object
+      this._createJestObjectFor(
+        filename,
+        // $FlowFixMe
+        (localModule.require: LocalModuleRequire),
+      ), // jest object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -637,7 +642,10 @@ class Runtime {
     return (this._shouldMockModuleCache[moduleID] = true);
   }
 
-  _createRequireImplementation(from: Path, options: ?InternalModuleOptions) {
+  _createRequireImplementation(
+    from: Path,
+    options: ?InternalModuleOptions,
+  ): LocalModuleRequire {
     const moduleRequire =
       options && options.isInternalModule
         ? (moduleName: string) => this.requireInternalModule(from, moduleName)
@@ -650,14 +658,14 @@ class Runtime {
     return moduleRequire;
   }
 
-  _createJestObjectFor(from: Path) {
+  _createJestObjectFor(from: Path, localRequire: LocalModuleRequire): Jest {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
-      return runtime;
+      return jestObject;
     };
     const enableAutomock = () => {
       this._shouldAutoMock = true;
-      return runtime;
+      return jestObject;
     };
     const unmock = (moduleName: string) => {
       const moduleID = this._resolver.getModuleID(
@@ -666,7 +674,7 @@ class Runtime {
         moduleName,
       );
       this._explicitShouldMock[moduleID] = false;
-      return runtime;
+      return jestObject;
     };
     const deepUnmock = (moduleName: string) => {
       const moduleID = this._resolver.getModuleID(
@@ -676,12 +684,12 @@ class Runtime {
       );
       this._explicitShouldMock[moduleID] = false;
       this._transitiveShouldMock[moduleID] = false;
-      return runtime;
+      return jestObject;
     };
     const mock = (
       moduleName: string,
-      mockFactory: Object,
-      options: {virtual: boolean},
+      mockFactory?: Object,
+      options?: {virtual: boolean},
     ) => {
       if (mockFactory !== undefined) {
         return setMockFactory(moduleName, mockFactory, options);
@@ -693,31 +701,31 @@ class Runtime {
         moduleName,
       );
       this._explicitShouldMock[moduleID] = true;
-      return runtime;
+      return jestObject;
     };
     const setMockFactory = (moduleName, mockFactory, options) => {
       this.setMock(from, moduleName, mockFactory, options);
-      return runtime;
+      return jestObject;
     };
     const clearAllMocks = () => {
       this.clearAllMocks();
-      return runtime;
+      return jestObject;
     };
     const resetAllMocks = () => {
       this.resetAllMocks();
-      return runtime;
+      return jestObject;
     };
     const useFakeTimers = () => {
       this._environment.fakeTimers.useFakeTimers();
-      return runtime;
+      return jestObject;
     };
     const useRealTimers = () => {
       this._environment.fakeTimers.useRealTimers();
-      return runtime;
+      return jestObject;
     };
     const resetModules = () => {
       this.resetModules();
-      return runtime;
+      return jestObject;
     };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
@@ -728,9 +736,10 @@ class Runtime {
         : (this._environment.global[
             Symbol.for('TEST_TIMEOUT_SYMBOL')
           ] = timeout);
+      return jestObject;
     };
 
-    const runtime = {
+    const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
 
@@ -751,6 +760,7 @@ class Runtime {
       isMockFunction: this._moduleMocker.isMockFunction,
 
       mock,
+      requireActual: localRequire.requireActual,
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
@@ -773,7 +783,7 @@ class Runtime {
       useFakeTimers,
       useRealTimers,
     };
-    return runtime;
+    return jestObject;
   }
 }
 
