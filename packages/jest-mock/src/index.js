@@ -9,6 +9,7 @@
  */
 
 import type {Global} from 'types/Global';
+import type {MockData} from 'types/Mock';
 
 type Mock = any;
 export type MockFunctionMetadata = {
@@ -668,6 +669,33 @@ class ModuleMockerClass {
   restoreAllMocks() {
     this._spyState.forEach(restore => restore());
     this._spyState = new Set();
+  }
+
+  stub(object: Object, propertyName: string, mockImplementation?: Function) {
+    if (!object) {
+      throw new Error('object argument must be present');
+    }
+
+    if (!propertyName || typeof propertyName !== 'string') {
+      throw new Error(
+        'propertyName argument must be present and must be a string',
+      );
+    }
+
+    object[propertyName] = this.fn(mockImplementation);
+    return object[propertyName];
+  }
+
+  getMock(mockFn: Function): MockData {
+    if (!mockFn._isMockFunction) {
+      throw new Error(
+        'Cannot get a mock data for the object that is not a mock',
+      );
+    }
+
+    const result = Object.assign({}, mockFn.mock, mockFn);
+    delete result.mock;
+    return result;
   }
 }
 
