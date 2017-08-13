@@ -757,6 +757,7 @@ class Runtime {
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
       genMockFunction: fn,
+      getMock: this._moduleMocker.getMock,
       isMockFunction: this._moduleMocker.isMockFunction,
 
       mock,
@@ -777,6 +778,7 @@ class Runtime {
         setMockFactory(moduleName, () => mock),
       setTimeout,
       spyOn,
+      stub: this._moduleMocker.stub,
 
       unmock,
 

@@ -15,3 +15,16 @@ import type {
 
 export type MockFunctionMetadata = _MockFunctionMetadata;
 export type ModuleMocker = _ModuleMocker;
+
+export type MockData = {
+  _isMockFunction: true,
+  getMockImplementation: () => Function,
+  mockClear: Function,
+  mockReset: Function,
+  mockReturnValueOnce: Function,
+  mockReturnValue: Function,
+  mockImplementationOnce: Function,
+  mockImplementation: Function,
+  mockReturnThis: Function,
+  mockRestore: Function,
+};

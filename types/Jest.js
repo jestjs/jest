@@ -8,6 +8,7 @@
  * @flow
  */
 
+import type {MockData} from 'types/Mock';
 type GenMockFn = (implementation?: Function) => JestMockFn;
 type JestMockFn = Function;
 
@@ -28,6 +29,7 @@ export type Jest = {|
   genMockFn: GenMockFn,
   genMockFromModule(moduleName: string): any,
   genMockFunction: GenMockFn,
+  getMock(mockFn: JestMockFn): MockData,
   isMockFunction(fn: Function): boolean,
   mock(moduleName: string, moduleFactory?: any, options?: Object): Jest,
   requireActual: LocalModuleRequire,
@@ -42,6 +44,7 @@ export type Jest = {|
   setMock(moduleName: string, moduleExports: any): Jest,
   setTimeout(timeout: number): Jest,
   spyOn(object: Object, methodName: string): JestMockFn,
+  stub(object: Object, propertyName: string, impl?: Function): JestMockFn,
   unmock(moduleName: string): Jest,
   useFakeTimers(): Jest,
   useRealTimers(): Jest,
