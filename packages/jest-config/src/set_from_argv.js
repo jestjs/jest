@@ -26,7 +26,8 @@ function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
           options.useStderr = argv[key];
           break;
         case 'watchAll':
-          options.watch = argv[key];
+          options.watch = false;
+          options.watchAll = argv[key];
           break;
         case 'env':
           options.testEnvironment = argv[key];
