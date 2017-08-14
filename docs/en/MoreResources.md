@@ -20,7 +20,7 @@ By now you should have a good idea of how Jest can make it easy to test your app
 
 ### Learn by example
 
-You will find a number of example test cases in the [`examples`](https://github.com/facebook/jest/tree/master/examples) folder on GitHub. You can also learn from the excellent tests used by the [React](https://github.com/facebook/react/tree/master/src/renderers/shared/stack/reconciler/__tests__), [Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__), and [React Native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__) projects.
+You will find a number of example test cases in the [`examples`](https://github.com/facebook/jest/tree/master/examples) folder on GitHub. You can also learn from the excellent tests used by the [React](https://github.com/facebook/react/tree/master/src/renderers/shared/stack/reconciler/__tests__), [Relay](https://github.com/facebook/relay/tree/master/packages/react-relay/modern/__tests__), and [React Native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__) projects.
 
 ### Join the community
 
