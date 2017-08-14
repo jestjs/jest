@@ -31,6 +31,7 @@ aliases:
       # install Docusaurus and generate file of English strings
       cd website && npm install && npm run write-translations && cd ..
       # crowdin install
+      sudo apt-get update
       sudo apt-get install default-jre
       wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
       sudo dpkg -i crowdin.deb
@@ -86,7 +87,7 @@ jobs:
       - save-cache: *save-cache
       - run: npm run test-ci-partial
 
-  test-and-deploy-website:
+  deploy-website:
     working_directory: ~/jest
     docker:
       - image: circleci/node:8.1.4
@@ -98,9 +99,6 @@ jobs:
           cd website
           yarn --no-progress
       - save-cache: *save-cache
-      - run: |
-          cd website
-          yarn run test
       - deploy: *deploy
 
 # Workflows enables us to run multiple jobs in parallel
@@ -112,4 +110,4 @@ workflows:
       - test-node-6
       - test-node-4
       - test-browser
-      - test-and-deploy-website
+      - deploy-website
