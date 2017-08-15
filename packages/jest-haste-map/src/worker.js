@@ -12,7 +12,7 @@ import type {SerializableError} from 'types/TestResult';
 import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';
 
 import path from 'path';
-import docblock from 'jest-docblock';
+import Docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import H from './constants';
 import extractRequires from './lib/extract_requires';
@@ -71,8 +71,8 @@ module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
       if (hasteImpl) {
         id = hasteImpl.getHasteName(filePath);
       } else {
-        const doc = docblock.parse(docblock.extract(content));
-        id = doc.providesModule || doc.provides;
+        const directives = new Docblock(content).getDirectives();
+        id = directives.providesModule || directives.provides;
       }
       dependencies = extractRequires(content);
       if (id) {

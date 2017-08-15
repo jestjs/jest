@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`retain newlines in the middle but not trailing/leading 1`] = `
+"/**
+ * Copyright (c) 2015-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ *
+ * @test
+ * @providesModule meatballs
+ */
+
+"
+`;
+
+exports[`setting and deleting directives 1`] = `
+"/**
+ * @hey
+ */
+
+module.exports = {}"
+`;
+
+exports[`setting and deleting directives 2`] = `
+"/**
+ * @hey
+ * @pizza cheese crust
+ */
+
+module.exports = {}"
+`;
+
+exports[`setting and deleting directives 3`] = `
+"/**
+ * @hey
+ * @pizza cheese crust
+ * @beef a lot of
+ *   multiline
+ *   beef
+ */
+
+module.exports = {}"
+`;
+
+exports[`setting and deleting directives 4`] = `
+"/**
+ * @hey
+ * @pizza cheese crust
+ */
+
+module.exports = {}"
+`;
