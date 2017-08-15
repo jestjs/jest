@@ -64,7 +64,8 @@ describe('HTMLElement Plugin', () => {
   it('supports an HTML element with attribute and text content', () => {
     const parent = document.createElement('div');
     parent.setAttribute('style', 'color: #99424F');
-    parent.innerHTML = 'Jest';
+    const child = document.createTextNode('Jest');
+    parent.appendChild(child);
 
     expect(parent).toPrettyPrintTo(
       '<div\n  style="color: #99424F"\n>\n  Jest\n</div>',
@@ -73,7 +74,8 @@ describe('HTMLElement Plugin', () => {
 
   it('supports an element with text content', () => {
     const parent = document.createElement('div');
-    parent.innerHTML = 'texty texty';
+    const child = document.createTextNode('texty texty');
+    parent.appendChild(child);
 
     expect(parent).toPrettyPrintTo('<div>\n  texty texty\n</div>');
   });
@@ -96,6 +98,19 @@ describe('HTMLElement Plugin', () => {
 
     expect(parent).toPrettyPrintTo(
       '<div>\n  <span\n    class="classy"\n    id="123"\n  />\n</div>',
+    );
+  });
+
+  it('supports nested elements with attribute and text content', () => {
+    const parent = document.createElement('div');
+    const child = document.createElement('span');
+    parent.appendChild(child);
+
+    child.setAttribute('style', 'color: #99424F');
+    child.innerHTML = 'Jest';
+
+    expect(parent).toPrettyPrintTo(
+      '<div>\n  <span\n    style="color: #99424F"\n  >\n    Jest\n  </span>\n</div>',
     );
   });
 
@@ -128,57 +143,162 @@ describe('HTMLElement Plugin', () => {
     );
   });
 
-  it('trims unnecessary whitespace', () => {
-    const parent = document.createElement('div');
-    parent.innerHTML = `
-       <span>
-         some
-         apple
-         pseudo-multilne text
-                </span>
-    <span>text</span>
-    `;
+  it('supports multiline text node in pre', () => {
+    const parent = document.createElement('pre');
+    parent.innerHTML = [
+      // prettier-ignore
+      'function sum(a, b) {',
+      '  return a + b;',
+      '}',
+    ].join('\n');
 
+    // Ouch. Two lines of text have same indentation for different reason:
+    // First line of text node because it is at child level.
+    // Second line of text node because they are in its content.
     expect(parent).toPrettyPrintTo(
+      // prettier-ignore
       [
-        '<div>',
-        '  <span>',
-        '    some apple pseudo-multilne text',
-        '  </span>',
-        '  <span>',
-        '    text',
-        '  </span>',
-        '</div>',
+        '<pre>',
+        '  function sum(a, b) {',
+        '  return a + b;',
+        '}',
+        '</pre>'
       ].join('\n'),
     );
   });
 
-  it('supports text node', () => {
-    const parent = document.createElement('div');
-    parent.innerHTML = 'some <span>text</span>';
+  it('supports multiline text node preceding span in pre', () => {
+    const parent = document.createElement('pre');
+    parent.innerHTML = [
+      '<span class="token keyword">function</span> sum(a, b) {',
+      '  <span class="token keyword">return</span> a + b;',
+      '}',
+    ].join('\n');
 
-    // prettier-ignore
-    expect(parent).toPrettyPrintTo([
-      '<div>',
-      '  some ',
-      '  <span>',
-      '    text',
-      '  </span>',
-      '</div>',
-    ].join('\n'));
+    expect(parent).toPrettyPrintTo(
+      [
+        '<pre>',
+        '  <span',
+        '    class="token keyword"',
+        '  >',
+        '    function',
+        '  </span>',
+        '   sum(a, b) {',
+        '  ',
+        '  <span',
+        '    class="token keyword"',
+        '  >',
+        '    return',
+        '  </span>',
+        '   a + b;',
+        '}',
+        '</pre>',
+      ].join('\n'),
+    );
+  });
+
+  it('supports multiline text node in textarea', () => {
+    const textarea = document.createElement('textarea');
+    textarea.setAttribute('name', 'tagline');
+    textarea.innerHTML = `Painless.
+JavaScript.
+Testing.`;
+
+    expect(textarea).toPrettyPrintTo(
+      [
+        '<textarea',
+        '  name="tagline"',
+        '>',
+        '  Painless.',
+        'JavaScript.',
+        'Testing.',
+        '</textarea>',
+      ].join('\n'),
+    );
+  });
+
+  it('supports empty text node', () => {
+    // React 16 does not render text in comments (see below)
+    const parent = document.createElement('span');
+    const text = document.createTextNode('');
+    parent.appendChild(text);
+    const abbr = document.createElement('abbr');
+    abbr.setAttribute('title', 'meter');
+    abbr.innerHTML = 'm';
+    parent.appendChild(abbr);
+
+    expect(parent).toPrettyPrintTo(
+      [
+        '<span>',
+        '  ',
+        '  <abbr',
+        '    title="meter"',
+        '  >',
+        '    m',
+        '  </abbr>',
+        '</span>',
+      ].join('\n'),
+    );
+  });
+
+  it('supports non-empty text node', () => {
+    // React 16 does not render text in comments (see below)
+    const parent = document.createElement('p');
+    parent.innerHTML = [
+      '<strong>Jest</strong>',
+      ' means ',
+      '<em>painless</em>',
+      ' Javascript testing',
+    ].join('');
+
+    expect(parent).toPrettyPrintTo(
+      [
+        '<p>',
+        '  <strong>',
+        '    Jest',
+        '  </strong>',
+        '   means ',
+        '  <em>',
+        '    painless',
+        '  </em>',
+        '   Javascript testing',
+        '</p>',
+      ].join('\n'),
+    );
   });
 
   it('supports comment node', () => {
-    const parent = document.createElement('div');
-    parent.innerHTML = 'some <!-- comments -->';
+    // React 15 does render text in comments
+    const parent = document.createElement('p');
+    parent.innerHTML = [
+      '<strong>Jest</strong>',
+      '<!-- react-text: 3 -->',
+      ' means ',
+      '<!-- /react-text -->',
+      '<em>painless</em>',
+      '<!-- react-text: 5 -->',
+      ' Javascript testing',
+      '<!-- /react-text -->',
+    ].join('');
 
-    // prettier-ignore
-    expect(parent).toPrettyPrintTo([
-      '<div>',
-      '  some ',
-      '  <!-- comments -->',
-      '</div>',
-    ].join('\n'));
+    expect(parent).toPrettyPrintTo(
+      [
+        '<p>',
+        '  <strong>',
+        '    Jest',
+        '  </strong>',
+        '  <!-- react-text: 3 -->',
+        '   means ',
+        '  <!-- /react-text -->',
+        '  <em>',
+        '    painless',
+        '  </em>',
+        '  <!-- react-text: 5 -->',
+        '   Javascript testing',
+        '  <!-- /react-text -->',
+        '</p>',
+      ].join('\n'),
+    );
   });
 
   it('supports indentation for array of elements', () => {
@@ -231,13 +351,13 @@ describe('HTMLElement Plugin', () => {
         '  <dd>',
         '    to talk in a ',
         '    <em … />',
-        '    manner', // plugin incorrectly trims preceding space
+        '     manner',
         '  </dd>',
         '  <dd',
         '    style="color: #99424F"',
         '  >',
         '    <em … />',
-        '    JavaScript testing', // plugin incorrectly trims preceding space
+        '     JavaScript testing',
         '  </dd>',
         '</dl>',
       ].join('\n'),

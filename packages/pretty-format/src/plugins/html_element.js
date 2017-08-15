@@ -11,7 +11,12 @@
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 import escapeHTML from './lib/escape_html';
-import {printElement, printElementAsLeaf, printProps} from './lib/markup';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
 type Attribute = {
   name: string,
@@ -34,30 +39,21 @@ type HTMLComment = {
   nodeType: 8,
 };
 
+const ELEMENT_NODE = 1;
+const TEXT_NODE = 3;
+const COMMENT_NODE = 8;
+
 const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
 
 export const test = (val: any) =>
   val !== undefined &&
   val !== null &&
-  (val.nodeType === 1 || val.nodeType === 3 || val.nodeType === 8) &&
+  (val.nodeType === ELEMENT_NODE ||
+    val.nodeType === TEXT_NODE ||
+    val.nodeType === COMMENT_NODE) &&
   val.constructor !== undefined &&
   val.constructor.name !== undefined &&
   HTML_ELEMENT_REGEXP.test(val.constructor.name);
-
-// Return empty string if children is empty.
-function printChildren(children, config, indentation, depth, refs, printer) {
-  const colors = config.colors;
-  return children
-    .map(
-      node =>
-        typeof node === 'string'
-          ? colors.content.open + escapeHTML(node) + colors.content.close
-          : printer(node, config, indentation, depth, refs),
-    )
-    .filter(value => value.trim().length)
-    .map(value => config.spacingOuter + indentation + value)
-    .join('');
-}
 
 const getType = element => element.tagName.toLowerCase();
 
@@ -76,21 +72,19 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string => {
-  if (element.nodeType === 3) {
-    return element.data
-      .split('\n')
-      .map(text => text.trimLeft())
-      .filter(text => text.length)
-      .join(' ');
+  const colors = config.colors;
+  if (element.nodeType === TEXT_NODE) {
+    return (
+      colors.content.open + escapeHTML(element.data) + colors.content.close
+    );
   }
 
-  const colors = config.colors;
-  if (element.nodeType === 8) {
+  if (element.nodeType === COMMENT_NODE) {
     return (
       colors.comment.open +
-      '<!-- ' +
-      element.data.trim() +
-      ' -->' +
+      '<!--' +
+      escapeHTML(element.data) +
+      '-->' +
       colors.comment.close
     );
   }
