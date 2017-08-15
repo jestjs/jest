@@ -64,8 +64,8 @@ describe('HTMLElement Plugin', () => {
   it('supports an HTML element with attribute and text content', () => {
     const parent = document.createElement('div');
     parent.setAttribute('style', 'color: #99424F');
-    const child = document.createTextNode('Jest');
-    parent.appendChild(child);
+    const text = document.createTextNode('Jest');
+    parent.appendChild(text);
 
     expect(parent).toPrettyPrintTo(
       '<div\n  style="color: #99424F"\n>\n  Jest\n</div>',
@@ -107,7 +107,8 @@ describe('HTMLElement Plugin', () => {
     parent.appendChild(child);
 
     child.setAttribute('style', 'color: #99424F');
-    child.innerHTML = 'Jest';
+    const text = document.createTextNode('Jest');
+    child.appendChild(text);
 
     expect(parent).toPrettyPrintTo(
       '<div>\n  <span\n    style="color: #99424F"\n  >\n    Jest\n  </span>\n</div>',
