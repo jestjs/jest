@@ -9,7 +9,7 @@
 
 'use strict';
 
-const formatTestResults = require('../formatTestResults');
+const formatTestResults = require('../format_test_results');
 
 describe('formatTestResults', () => {
   const assertion = {
