@@ -94,9 +94,10 @@ export type AssertionResult = {|
 |};
 
 export type FormattedAssertionResult = {
+  failureMessages: Array<string> | null,
+  fullName: string,
   status: Status,
   title: string,
-  failureMessages: Array<string> | null,
 };
 
 export type AggregatedResultWithoutCoverage = {
