@@ -132,7 +132,7 @@ describe('queueRunner', () => {
   });
 
   it('calls `fail` when done(error) is invoked', async () => {
-    const error = new Error('I am an error')
+    const error = new Error('I am an error');
     const fail = jest.fn();
     const fnOne = jest.fn(next => next(error));
     const fnTwo = jest.fn(next => next());

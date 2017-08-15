@@ -187,8 +187,7 @@ module.exports = function(j$) {
         }
       }
 
-      const uncaught = (err) => {
-
+      const uncaught = err => {
         let name;
         let current;
         if (currentSpec) {
@@ -201,14 +200,12 @@ module.exports = function(j$) {
           // TODO: Handle top level failures
         }
         // console.error('caught in ' + name);
-      }
+      };
 
       process.on('uncaughtException', uncaught);
       process.on('unhandledRejection', uncaught);
 
-      reporter.jasmineStarted({
-        totalSpecsDefined,
-      });
+      reporter.jasmineStarted({totalSpecsDefined});
 
       currentlyExecutingSuites.push(topSuite);
 
@@ -235,8 +232,8 @@ module.exports = function(j$) {
         failedExpectations: topSuite.result.failedExpectations,
       });
 
-      process.removeListener('uncaughtException', uncaught)
-      process.removeListener('unhandledRejection', uncaught)
+      process.removeListener('uncaughtException', uncaught);
+      process.removeListener('unhandledRejection', uncaught);
     };
 
     this.addReporter = function(reporterToAdd) {

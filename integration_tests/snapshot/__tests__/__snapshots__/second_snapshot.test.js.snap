@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot works with plain objects and the title has \`escape\` characters 1`] = `
+Object {
+  "a": 1,
+  "b": "2",
+  "c": "three\`",
+  "d": "vier",
+}
+`;

@@ -52,31 +52,31 @@ describe('promise it', () => {
 
   it('works with done(error)', done => {
     done(new Error('done was called with error'));
-  })
+  });
 
   it('fails if failed expectation with done', done => {
     expect(true).toEqual(false);
     done();
-  })
+  });
 
   it('fails if failed expectation with done - async', done => {
     setTimeout(() => {
-      expect(true).toEqual(false)
-      done()
-    }, 1)
-  })
+      expect(true).toEqual(false);
+      done();
+    }, 1);
+  });
 
   it('fails with thrown error with done - sync', done => {
     throw new Error('sync fail');
-    done();
-  })
+    done(); // eslint-disable-line
+  });
 
   it('fails with thrown error with done - async', done => {
     setTimeout(() => {
       throw new Error('async fail');
-      done();
+      done(); // eslint-disable-line
     }, 1);
-  })
+  });
 
   // I wish it was possible to catch this but I do not see a way.
   // Currently both jest and mocha will pass this test.
@@ -84,7 +84,7 @@ describe('promise it', () => {
     setTimeout(() => {
       throw new Error('async fail - no done');
     }, 1);
-  })
+  });
 
   it('fails a sync test', () => {
     expect('sync').toBe('failed');

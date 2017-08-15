@@ -24,14 +24,16 @@ type QueueableFn = {
   timeout?: () => number,
 };
 
-function createCancelToken () {
-  let res
-  const token = new Promise(resolve => {
-    res = resolve
-  })
+function createCancelToken() {
+  let cancel;
+  const promise = new Promise(resolve => {
+    cancel = resolve;
+  });
 
-  token.cancel = res
-  return token
+  return {
+    cancel,
+    promise,
+  };
 }
 
 function queueRunner(options: Options) {
@@ -58,10 +60,7 @@ function queueRunner(options: Options) {
       }
     });
 
-    promise = Promise.race([
-      promise,
-      token,
-    ]);
+    promise = Promise.race([promise, token.promise]);
 
     if (!timeout) {
       return promise;
@@ -86,9 +85,11 @@ function queueRunner(options: Options) {
     Promise.resolve(),
   );
 
-  returnPromise.cancel = token.cancel;
-
-  return returnPromise;
+  return {
+    cancel: token.cancel,
+    catch: returnPromise.catch.bind(returnPromise),
+    then: returnPromise.then.bind(returnPromise),
+  };
 }
 
 module.exports = queueRunner;
