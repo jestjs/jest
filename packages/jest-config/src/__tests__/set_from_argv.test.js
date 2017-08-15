@@ -23,7 +23,8 @@ test('maps special values to valid options', () => {
     collectCoverage: true,
     testEnvironment: 'node',
     useStderr: true,
-    watch: true,
+    watch: false,
+    watchAll: true,
   });
 });
 
