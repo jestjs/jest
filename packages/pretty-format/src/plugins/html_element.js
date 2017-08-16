@@ -43,17 +43,18 @@ const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
 const COMMENT_NODE = 8;
 
-const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
+const ELEMENT_REGEXP = /^HTML\w*?Element$/;
+
+const testNode = (type: any, name: any) =>
+  (type === ELEMENT_NODE && ELEMENT_REGEXP.test(name)) ||
+  (type === TEXT_NODE && name === 'Text') ||
+  (type === COMMENT_NODE && name === 'Comment');
 
 export const test = (val: any) =>
-  val !== undefined &&
-  val !== null &&
-  (val.nodeType === ELEMENT_NODE ||
-    val.nodeType === TEXT_NODE ||
-    val.nodeType === COMMENT_NODE) &&
-  val.constructor !== undefined &&
-  val.constructor.name !== undefined &&
-  HTML_ELEMENT_REGEXP.test(val.constructor.name);
+  val &&
+  val.constructor &&
+  val.constructor.name &&
+  testNode(val.nodeType, val.constructor.name);
 
 const getType = element => element.tagName.toLowerCase();
 
