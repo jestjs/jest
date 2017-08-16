@@ -32,16 +32,6 @@ Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
-    "maxWorkers": "<<REPLACED>>",
-    "pattern": Object {
-      "input": "add_fail.test.js",
-      "paths": Array [
-        "add_fail.test.js",
-      ],
-      "shouldTreatInputAsPattern": false,
-      "testPathPattern": "add_fail.test.js",
-    },
-    "testPathPattern": "\\"add_fail.test.js\\"",
   },
 }
 `;
@@ -70,16 +60,6 @@ Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
-    "maxWorkers": "<<REPLACED>>",
-    "pattern": Object {
-      "input": "add.test.js",
-      "paths": Array [
-        "add.test.js",
-      ],
-      "shouldTreatInputAsPattern": false,
-      "testPathPattern": "add.test.js",
-    },
-    "testPathPattern": "\\"add.test.js\\"",
   },
 }
 `;
@@ -97,7 +77,7 @@ exports[`Custom Reporters Integration default reporters enabled 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching \\"add.test.js\\".
+Ran all test suites matching /add.test.js/i.
 "
 `;
 
@@ -121,18 +101,7 @@ Object {
     "called": true,
     "path": false,
   },
-  "options": Object {
-    "maxWorkers": "<<REPLACED>>",
-    "pattern": Object {
-      "input": "add.test.js",
-      "paths": Array [
-        "add.test.js",
-      ],
-      "shouldTreatInputAsPattern": false,
-      "testPathPattern": "add.test.js",
-    },
-    "testPathPattern": "\\"add.test.js\\"",
-  },
+  "options": Object {},
 }
 `;
 
@@ -153,4 +122,30 @@ exports[`Custom Reporters Integration invalid format for adding reporters 1`] = 
   https://facebook.github.io/jest/docs/configuration.html
 
 "
+`;
+
+exports[`Custom Reporters Integration valid array format for adding reporters 1`] = `
+"{
+    \\"onRunComplete\\": {
+        \\"called\\": true,
+        \\"numPassedTests\\": 1,
+        \\"numFailedTests\\": 0,
+        \\"numTotalTests\\": 1
+    },
+    \\"onRunStart\\": {
+        \\"called\\": true,
+        \\"options\\": \\"object\\"
+    },
+    \\"onTestResult\\": {
+        \\"times\\": 1,
+        \\"called\\": true
+    },
+    \\"onTestStart\\": {
+        \\"called\\": true,
+        \\"path\\": false
+    },
+    \\"options\\": {
+        \\"Dmitrii Abramov\\": \\"Awesome\\"
+    }
+}"
 `;

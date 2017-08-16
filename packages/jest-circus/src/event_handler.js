@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {EventHandler} from '../types';
+import type {EventHandler} from 'types/Circus';
 
 import {makeDescribe, getTestDuration, makeTest} from './utils';
 

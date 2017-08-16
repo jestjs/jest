@@ -59,7 +59,7 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   const options = readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
-  const config = Object.assign({}, options.config, {
+  const config = Object.assign({}, options.projectConfig, {
     automock: false,
     unmockedModulePathPatterns: null,
   });

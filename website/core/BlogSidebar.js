@@ -5,7 +5,7 @@
  * @jsx React.DOM
  */
 
- /* eslint-disable sort-keys */
+/* eslint-disable sort-keys */
 
 const MetadataBlog = require('MetadataBlog');
 const React = require('React');
@@ -14,10 +14,12 @@ const SideNav = require('SideNav');
 
 const BlogSidebar = React.createClass({
   render() {
-    const contents = [{
-      name: 'Recent Posts',
-      links: MetadataBlog.files,
-    }];
+    const contents = [
+      {
+        name: 'Recent Posts',
+        links: MetadataBlog.files,
+      },
+    ];
     const title = this.props.current && this.props.current.title;
     const current = {
       id: title || '',

@@ -5,11 +5,16 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
 
 const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
+
+it('should throw if passed two arguments', () => {
+  expect(() => jestExpect('foo', 'bar')).toThrow(
+    new Error('Expect takes at most one argument.'),
+  );
+});
 
 describe('.rejects', () => {
   it('should reject', async () => {
@@ -180,7 +185,9 @@ describe('.toEqual()', () => {
       },
     ],
   ].forEach(([a, b]) => {
-    test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
+    test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
+      b,
+    )})`, () => {
       expect(() => jestExpect(a).toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -218,7 +225,9 @@ describe('.toEqual()', () => {
       },
     ],
   ].forEach(([a, b]) => {
-    test(`{pass: false} expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {
+    test(`{pass: false} expect(${stringify(a)}).not.toEqual(${stringify(
+      b,
+    )})`, () => {
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -555,7 +564,9 @@ describe('.toContain(), .toContainEqual()', () => {
     [new Set([1, 2, 3, 4]), 1],
     [typedArray, 1],
   ].forEach(([list, v]) => {
-    it(`'${stringify(list)}' contains a value equal to '${stringify(v)}'`, () => {
+    it(`'${stringify(list)}' contains a value equal to '${stringify(
+      v,
+    )}'`, () => {
       jestExpect(list).toContainEqual(v);
       expect(() =>
         jestExpect(list).not.toContainEqual(v),
@@ -564,7 +575,9 @@ describe('.toContain(), .toContainEqual()', () => {
   });
 
   [[[{a: 'b'}, {a: 'c'}], {a: 'd'}]].forEach(([list, v]) => {
-    it(`'${stringify(list)}' does not contain a value equal to'${stringify(v)}'`, () => {
+    it(`'${stringify(list)}' does not contain a value equal to'${stringify(
+      v,
+    )}'`, () => {
       jestExpect(list).not.toContainEqual(v);
 
       expect(() =>
@@ -684,7 +697,9 @@ describe('.toHaveLength', () => {
     ['abc', 3],
     ['', 0],
   ].forEach(([received, length]) => {
-    test(`{pass: true} expect(${stringify(received)}).toHaveLength(${length})`, () => {
+    test(`{pass: true} expect(${stringify(
+      received,
+    )}).toHaveLength(${length})`, () => {
       jestExpect(received).toHaveLength(length);
       expect(() =>
         jestExpect(received).not.toHaveLength(length),
@@ -699,7 +714,9 @@ describe('.toHaveLength', () => {
     ['abc', 66],
     ['', 1],
   ].forEach(([received, length]) => {
-    test(`{pass: false} expect(${stringify(received)}).toHaveLength(${length})`, () => {
+    test(`{pass: false} expect(${stringify(
+      received,
+    )}).toHaveLength(${length})`, () => {
       jestExpect(received).not.toHaveLength(length);
       expect(() =>
         jestExpect(received).toHaveLength(length),
@@ -726,7 +743,9 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
   ].forEach(([obj, keyPath, value]) => {
-    test(`{pass: true} expect(${stringify(obj)}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
+    test(`{pass: true} expect(${stringify(
+      obj,
+    )}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
       jestExpect(obj).toHaveProperty(keyPath, value);
       expect(() =>
         jestExpect(obj).not.toHaveProperty(keyPath, value),
@@ -745,7 +764,9 @@ describe('.toHaveProperty()', () => {
     ['abc', 'a.b.c', {a: 5}],
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
   ].forEach(([obj, keyPath, value]) => {
-    test(`{pass: false} expect(${stringify(obj)}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
+    test(`{pass: false} expect(${stringify(
+      obj,
+    )}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
       expect(() =>
         jestExpect(obj).toHaveProperty(keyPath, value),
       ).toThrowErrorMatchingSnapshot();
@@ -758,7 +779,9 @@ describe('.toHaveProperty()', () => {
     [{a: 0}, 'a'],
     [{a: {b: undefined}}, 'a.b'],
   ].forEach(([obj, keyPath]) => {
-    test(`{pass: true} expect(${stringify(obj)}).toHaveProperty('${keyPath}')'`, () => {
+    test(`{pass: true} expect(${stringify(
+      obj,
+    )}).toHaveProperty('${keyPath}')'`, () => {
       jestExpect(obj).toHaveProperty(keyPath);
       expect(() =>
         jestExpect(obj).not.toHaveProperty(keyPath),
@@ -773,7 +796,9 @@ describe('.toHaveProperty()', () => {
     [1, 'a.b.c'],
     ['abc', 'a.b.c'],
   ].forEach(([obj, keyPath]) => {
-    test(`{pass: false} expect(${stringify(obj)}).toHaveProperty('${keyPath}')`, () => {
+    test(`{pass: false} expect(${stringify(
+      obj,
+    )}).toHaveProperty('${keyPath}')`, () => {
       expect(() =>
         jestExpect(obj).toHaveProperty(keyPath),
       ).toThrowErrorMatchingSnapshot();
@@ -788,7 +813,9 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {}}}, null],
     [{a: {b: {}}}, 1],
   ].forEach(([obj, keyPath]) => {
-    test(`{error} expect(${stringify(obj)}).toHaveProperty('${keyPath}')`, () => {
+    test(`{error} expect(${stringify(
+      obj,
+    )}).toHaveProperty('${keyPath}')`, () => {
       expect(() =>
         jestExpect(obj).toHaveProperty(keyPath),
       ).toThrowErrorMatchingSnapshot();
@@ -816,7 +843,9 @@ describe('toMatchObject()', () => {
     [{a: undefined}, {a: undefined}],
     [[], []],
   ].forEach(([n1, n2]) => {
-    it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
+    it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
+      n2,
+    )})`, () => {
       jestExpect(n1).toMatchObject(n2);
       expect(() =>
         jestExpect(n1).not.toMatchObject(n2),
@@ -849,7 +878,9 @@ describe('toMatchObject()', () => {
     [[1, 2, 3], [2, 3, 1]],
     [[1, 2, 3], [1, 2, 2]],
   ].forEach(([n1, n2]) => {
-    it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
+    it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
+      n2,
+    )})`, () => {
       jestExpect(n1).not.toMatchObject(n2);
       expect(() =>
         jestExpect(n1).toMatchObject(n2),
@@ -869,7 +900,9 @@ describe('toMatchObject()', () => {
     [{}, true],
     [{}, undefined],
   ].forEach(([n1, n2]) => {
-    it(`throws expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
+    it(`throws expect(${stringify(n1)}).toMatchObject(${stringify(
+      n2,
+    )})`, () => {
       expect(() =>
         jestExpect(n1).toMatchObject(n2),
       ).toThrowErrorMatchingSnapshot();

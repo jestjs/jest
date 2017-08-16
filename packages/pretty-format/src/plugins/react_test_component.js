@@ -9,111 +9,62 @@
  */
 
 import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
+  Config,
+  Printer,
+  NewPlugin,
   ReactTestObject,
-  ReactTestChild,
+  Refs,
 } from 'types/PrettyFormat';
 
-import escapeHTML from './lib/escape_html';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
-const reactTestInstance = Symbol.for('react.test.json');
+const testSymbol = Symbol.for('react.test.json');
 
-function printChildren(
-  children: Array<ReactTestChild>,
-  print,
-  indent,
-  colors,
-  opts,
-) {
-  return children
-    .map(node => {
-      if (typeof node === 'string') {
-        return colors.content.open + escapeHTML(node) + colors.content.close;
-      } else {
-        return print(node);
-      }
-    })
-    .join(opts.edgeSpacing);
-}
-
-function printProps(props: Object, print, indent, colors, opts) {
-  return Object.keys(props)
-    .sort()
-    .map(name => {
-      const prop = props[name];
-      let printed = print(prop);
-
-      if (typeof prop !== 'string') {
-        if (printed.indexOf('\n') !== -1) {
-          printed =
-            '{' +
-            opts.edgeSpacing +
-            indent(indent(printed) + opts.edgeSpacing + '}');
-        } else {
-          printed = '{' + printed + '}';
-        }
-      }
-
-      return (
-        opts.spacing +
-        indent(colors.prop.open + name + colors.prop.close + '=') +
-        colors.value.open +
-        printed +
-        colors.value.close
+export const serialize = (
+  object: ReactTestObject,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+): string =>
+  ++depth > config.maxDepth
+    ? printElementAsLeaf(object.type, config)
+    : printElement(
+        object.type,
+        object.props
+          ? printProps(
+              Object.keys(object.props).sort(),
+              // Despite ternary expression, Flow 0.51.0 found incorrect error:
+              // undefined is incompatible with the expected param type of Object
+              // $FlowFixMe
+              object.props,
+              config,
+              indentation + config.indent,
+              depth,
+              refs,
+              printer,
+            )
+          : '',
+        object.children
+          ? printChildren(
+              object.children,
+              config,
+              indentation + config.indent,
+              depth,
+              refs,
+              printer,
+            )
+          : '',
+        config,
+        indentation,
       );
-    })
-    .join('');
-}
 
-const print = (
-  instance: ReactTestObject,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => {
-  let closeInNewLine = false;
-  let result = colors.tag.open + '<' + instance.type + colors.tag.close;
+export const test = (val: any) => val && val.$$typeof === testSymbol;
 
-  if (instance.props) {
-    closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
-    result += printProps(instance.props, print, indent, colors, opts);
-  }
-
-  if (instance.children) {
-    const children = printChildren(
-      instance.children,
-      print,
-      indent,
-      colors,
-      opts,
-    );
-    result +=
-      colors.tag.open +
-      (closeInNewLine ? '\n' : '') +
-      '>' +
-      colors.tag.close +
-      opts.edgeSpacing +
-      indent(children) +
-      opts.edgeSpacing +
-      colors.tag.open +
-      '</' +
-      instance.type +
-      '>' +
-      colors.tag.close;
-  } else {
-    result +=
-      colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
-  }
-
-  return result;
-};
-
-const test = (object: Object) =>
-  object && object.$$typeof === reactTestInstance;
-
-module.exports = ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);

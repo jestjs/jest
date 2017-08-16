@@ -5,33 +5,41 @@
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 *
-* @emails oncall+jsinfra
+* @flow
 */
 
 const path = require('path');
-const isValidPath = require('../isValidPath');
+const isValidPath = require('../is_valid_path');
+const {
+  makeGlobalConfig,
+  makeProjectConfig,
+} = require('../../../../../test_utils');
 
 const rootDir = path.resolve(path.sep, 'root');
 
-const config = {
+const config = makeProjectConfig({
   rootDir,
   roots: [path.resolve(rootDir, 'src'), path.resolve(rootDir, 'lib')],
-};
+});
 
 it('is valid when it is a file inside roots', () => {
   expect(
-    isValidPath({}, config, path.resolve(rootDir, 'src', 'index.js')),
+    isValidPath(
+      makeGlobalConfig(),
+      config,
+      path.resolve(rootDir, 'src', 'index.js'),
+    ),
   ).toBe(true);
   expect(
     isValidPath(
-      {},
+      makeGlobalConfig(),
       config,
       path.resolve(rootDir, 'src', 'components', 'Link.js'),
     ),
   ).toBe(true);
   expect(
     isValidPath(
-      {},
+      makeGlobalConfig(),
       config,
       path.resolve(rootDir, 'src', 'lib', 'something.js'),
     ),
@@ -40,18 +48,22 @@ it('is valid when it is a file inside roots', () => {
 
 it('is not valid when it is a snapshot file', () => {
   expect(
-    isValidPath({}, config, path.resolve(rootDir, 'src', 'index.js.snap')),
+    isValidPath(
+      makeGlobalConfig(),
+      config,
+      path.resolve(rootDir, 'src', 'index.js.snap'),
+    ),
   ).toBe(false);
   expect(
     isValidPath(
-      {},
+      makeGlobalConfig(),
       config,
       path.resolve(rootDir, 'src', 'components', 'Link.js.snap'),
     ),
   ).toBe(false);
   expect(
     isValidPath(
-      {},
+      makeGlobalConfig(),
       config,
       path.resolve(rootDir, 'src', 'lib', 'something.js.snap'),
     ),
@@ -61,7 +73,7 @@ it('is not valid when it is a snapshot file', () => {
 it('is not valid when it is a file in the coverage dir', () => {
   expect(
     isValidPath(
-      {},
+      makeGlobalConfig({rootDir}),
       config,
       path.resolve(rootDir, 'coverage', 'lib', 'index.js'),
     ),
@@ -69,7 +81,7 @@ it('is not valid when it is a file in the coverage dir', () => {
 
   expect(
     isValidPath(
-      {coverageDirectory: 'cov-dir'},
+      makeGlobalConfig({coverageDirectory: 'cov-dir'}),
       config,
       path.resolve(rootDir, 'src', 'cov-dir', 'lib', 'index.js'),
     ),

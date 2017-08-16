@@ -15,9 +15,11 @@ const Header = React.createClass({
 
     return (
       <Heading {...this.props}>
-        <a className="anchor" name={slug}></a>
-        {this.props.children}
-        {' '}<a className="hash-link" href={'#' + slug}>#</a>
+        <a className="anchor" name={slug} />
+        {this.props.children}{' '}
+        <a className="hash-link" href={'#' + slug}>
+          #
+        </a>
       </Heading>
     );
   },

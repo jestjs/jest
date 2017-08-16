@@ -4,12 +4,21 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
-const {extractSummary} = require('../utils');
+const skipOnWindows = require('../../scripts/skip_on_windows');
+const {cleanup, extractSummary, writeFiles} = require('../utils');
 const runJest = require('../runJest');
+const os = require('os');
+const path = require('path');
+
+const DIR = path.resolve(os.tmpdir(), 'custom_reporters_test_dir');
+
+beforeEach(() => cleanup(DIR));
+afterEach(() => cleanup(DIR));
 
 describe('Custom Reporters Integration', () => {
   skipOnWindows.suite();
@@ -38,12 +47,13 @@ describe('Custom Reporters Integration', () => {
       ],
     };
 
-    const {status} = runJest('custom_reporters', [
+    const {status, stdout} = runJest('custom_reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
     ]);
 
+    expect(stdout).toMatchSnapshot();
     expect(status).toBe(0);
   });
 
@@ -118,5 +128,29 @@ describe('Custom Reporters Integration', () => {
     expect(stderr.trim()).toBe('');
 
     expect(stdout).toMatchSnapshot();
+  });
+
+  test('prints reporter errors', () => {
+    writeFiles(DIR, {
+      '__tests__/test.test.js': `test('test', () => {});`,
+      'package.json': JSON.stringify({
+        jest: {
+          reporters: ['default', '<rootDir>/reporter.js'],
+          testEnvironment: 'node',
+        },
+      }),
+      'reporter.js': `
+        'use strict';
+        module.exports = class Reporter {
+          onRunStart() {
+            throw new Error('ON_RUN_START_ERROR');
+          }
+        };
+      `,
+    });
+
+    const {stderr, status} = runJest(DIR);
+    expect(stderr).toMatch(/ON_RUN_START_ERROR/);
+    expect(status).toBe(1);
   });
 });

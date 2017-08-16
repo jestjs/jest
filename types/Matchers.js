@@ -13,7 +13,7 @@ import type {SnapshotState} from 'jest-snapshot';
 
 export type ExpectationResult = {
   pass: boolean,
-  message: string | (() => string),
+  message: () => string,
 };
 
 export type RawMatcherFn = (

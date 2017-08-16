@@ -11,23 +11,24 @@ const Marked = require('Marked');
 class GridBlock extends React.Component {
   renderBlock(block) {
     const blockClasses = classNames('blockElement', this.props.className, {
-      'alignCenter': this.props.align === 'center',
-      'alignRight': this.props.align === 'right',
-      'fourByGridBlock': this.props.layout === 'fourColumn',
-      'imageAlignBottom': (block.image && block.imageAlign === 'bottom'),
-      'imageAlignSide': (block.image && (block.imageAlign === 'left' ||
-        block.imageAlign === 'right')),
-      'imageAlignTop': (block.image && block.imageAlign === 'top'),
-      'threeByGridBlock': this.props.layout === 'threeColumn',
-      'twoByGridBlock': this.props.layout === 'twoColumn',
+      alignCenter: this.props.align === 'center',
+      alignRight: this.props.align === 'right',
+      fourByGridBlock: this.props.layout === 'fourColumn',
+      imageAlignBottom: block.image && block.imageAlign === 'bottom',
+      imageAlignSide:
+        block.image &&
+        (block.imageAlign === 'left' || block.imageAlign === 'right'),
+      imageAlignTop: block.image && block.imageAlign === 'top',
+      threeByGridBlock: this.props.layout === 'threeColumn',
+      twoByGridBlock: this.props.layout === 'twoColumn',
     });
 
-    const topLeftImage = (block.imageAlign === 'top' ||
-      block.imageAlign === 'left') &&
+    const topLeftImage =
+      (block.imageAlign === 'top' || block.imageAlign === 'left') &&
       this.renderBlockImage(block.image);
 
-    const bottomRightImage = (block.imageAlign === 'bottom' ||
-      block.imageAlign === 'right') &&
+    const bottomRightImage =
+      (block.imageAlign === 'bottom' || block.imageAlign === 'right') &&
       this.renderBlockImage(block.image);
 
     return (
@@ -35,7 +36,9 @@ class GridBlock extends React.Component {
         {topLeftImage}
         <div className="blockContent">
           {this.renderBlockTitle(block.title)}
-          <Marked>{block.content}</Marked>
+          <Marked>
+            {block.content}
+          </Marked>
         </div>
         {bottomRightImage}
       </div>
@@ -45,7 +48,9 @@ class GridBlock extends React.Component {
   renderBlockImage(image) {
     if (image) {
       return (
-        <div className="blockImage"><img src={image} /></div>
+        <div className="blockImage">
+          <img src={image} />
+        </div>
       );
     } else {
       return null;
@@ -54,7 +59,11 @@ class GridBlock extends React.Component {
 
   renderBlockTitle(title) {
     if (title) {
-      return <h2>{title}</h2>;
+      return (
+        <h2>
+          {title}
+        </h2>
+      );
     } else {
       return null;
     }

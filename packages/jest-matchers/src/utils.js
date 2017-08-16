@@ -17,10 +17,10 @@ type GetPath = {
   value?: any,
 };
 
-const hasOwnProperty = (object: Object, value: string) =>
+export const hasOwnProperty = (object: Object, value: string) =>
   Object.prototype.hasOwnProperty.call(object, value);
 
-const getPath = (
+export const getPath = (
   object: Object,
   propertyPath: string | Array<string>,
 ): GetPath => {
@@ -66,7 +66,7 @@ const getPath = (
 
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
-const getObjectSubset = (object: Object, subset: Object) => {
+export const getObjectSubset = (object: Object, subset: Object) => {
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
       return subset.map((sub, i) => getObjectSubset(object[i], sub));
@@ -96,7 +96,7 @@ const getObjectSubset = (object: Object, subset: Object) => {
 const IteratorSymbol = Symbol.iterator;
 
 const hasIterator = object => !!(object != null && object[IteratorSymbol]);
-const iterableEquality = (a: any, b: any) => {
+export const iterableEquality = (a: any, b: any) => {
   if (
     typeof a !== 'object' ||
     typeof b !== 'object' ||
@@ -124,9 +124,13 @@ const iterableEquality = (a: any, b: any) => {
   return true;
 };
 
-module.exports = {
-  getObjectSubset,
-  getPath,
-  hasOwnProperty,
-  iterableEquality,
+export const partition = <T>(
+  items: Array<T>,
+  predicate: T => boolean,
+): [Array<T>, Array<T>] => {
+  const result = [[], []];
+
+  items.forEach(item => result[predicate(item) ? 0 : 1].push(item));
+
+  return result;
 };

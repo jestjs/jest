@@ -61,6 +61,7 @@ function formatTestAssertion(
 ): FormattedAssertionResult {
   const result: FormattedAssertionResult = {
     failureMessages: null,
+    fullName: assertion.fullName,
     status: assertion.status,
     title: assertion.title,
   };

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
 
 'use strict';
@@ -28,7 +27,7 @@ jest.mock('ansi-escapes', () => ({
 }));
 
 jest.mock(
-  '../SearchSource',
+  '../search_source',
   () =>
     class {
       findMatchingTests(pattern) {
@@ -37,21 +36,21 @@ jest.mock(
     },
 );
 
-jest.doMock('chalk', () =>
-  Object.assign(new chalk.constructor({enabled: false}), {
-    stripColor: str => str,
-  }),
-);
+jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+
+jest.doMock('strip-ansi');
+require('strip-ansi').mockImplementation(str => str);
 
 jest.doMock(
-  '../runJest',
+  '../run_jest',
   () =>
     function() {
       const args = Array.from(arguments);
+      const [{onComplete}] = args;
       runJestMock.apply(null, args);
 
       // Call the callback
-      args[args.length - 1]({
+      onComplete({
         snapshot: {},
         testResults: [
           {
@@ -95,7 +94,7 @@ jest.doMock(
     },
 );
 
-jest.doMock('../lib/terminalUtils', () => ({
+jest.doMock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => terminalWidth,
 }));
 
@@ -112,7 +111,6 @@ afterEach(runJestMock.mockReset);
 describe('Watch mode flows', () => {
   let pipe;
   let hasteMapInstances;
-  let argv;
   let contexts;
   let stdin;
 
@@ -120,14 +118,13 @@ describe('Watch mode flows', () => {
     terminalWidth = 80;
     pipe = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
-    argv = {};
     contexts = [{config: {}}];
     stdin = new MockStdin();
   });
 
   it('Pressing "T" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -151,8 +148,8 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.ENTER);
     expect(runJestMock).toBeCalled();
 
-    // Argv is updated with the current pattern
-    expect(argv).toEqual({
+    // globalConfig is updated with the current pattern
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: false,
       testNamePattern: 'con *',
       watch: true,
@@ -162,7 +159,7 @@ describe('Watch mode flows', () => {
 
   it('can select a specific test name from the typeahead results', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -180,12 +177,14 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.ENTER);
 
-    expect(argv.testNamePattern).toMatchSnapshot();
+    expect(runJestMock.mock.calls[1][0].globalConfig.testNamePattern).toBe(
+      'should convert string to a RegExp',
+    );
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, argv, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.T);
 

@@ -10,7 +10,8 @@ const githubButton = (
     data-count-href="/facebook/jest/stargazers"
     data-count-api="/repos/facebook/jest#stargazers_count"
     data-count-aria-label="# stargazers on GitHub"
-    aria-label="Star facebook/jest on GitHub">
+    aria-label="Star facebook/jest on GitHub"
+  >
     Star
   </a>
 );
@@ -224,6 +225,11 @@ const users = [
     caption: 'SeatGeek',
     image: '/jest/img/logos/seatgeek.png',
     infoLink: 'https://seatgeek.com/',
+  },
+  {
+    caption: 'Shopify',
+    image: '/jest/img/logos/shopify.svg',
+    infoLink: 'https://www.shopify.com/',
   },
   {
     caption: 'SoundCloud',

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
 
 'use strict';
@@ -14,7 +13,7 @@ const {stringify, ensureNumbers, pluralize, ensureNoExpected} = require('../');
 
 describe('.stringify()', () => {
   [
-    [[], 'Array []'],
+    [[], '[]'],
     [{}, '{}'],
     [1, '1'],
     [0, '0'],

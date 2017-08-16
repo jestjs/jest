@@ -26,13 +26,19 @@ class JestUsers extends React.Component {
           <Container padding={['bottom', 'top']}>
             <div className="showcaseSection">
               <div className="prose">
-                <h1>{siteConfig[this.props.language].using.header.title}</h1>
-                <p>{siteConfig[this.props.language].using.header.content}</p>
+                <h1>
+                  {siteConfig[this.props.language].using.header.title}
+                </h1>
+                <p>
+                  {siteConfig[this.props.language].using.header.content}
+                </p>
               </div>
               <div className="logos">
                 {showcase}
               </div>
-              <p>{siteConfig[this.props.language].using.prompt}</p>
+              <p>
+                {siteConfig[this.props.language].using.prompt}
+              </p>
               <a
                 href="https://github.com/facebook/jest/edit/master/website/siteConfig.js"
                 className="button"

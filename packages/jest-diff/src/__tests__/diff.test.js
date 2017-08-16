@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 
 const stripAnsi = require('strip-ansi');
 const diff = require('../');
 
-function received(a, b, options, replacement) {
-  return stripAnsi(diff(a, b, options, replacement));
+function received(a, b, options) {
+  return stripAnsi(diff(a, b, options));
 }
 
 const unexpanded = {expand: false};
@@ -35,7 +35,7 @@ describe('different types', () => {
     const typeA = values[2];
     const typeB = values[3];
 
-    test(`'${a}' and '${b}'`, () => {
+    test(`'${String(a)}' and '${String(b)}'`, () => {
       expect(received(a, b)).toBe(
         '  Comparing two different types of values. ' +
           `Expected ${typeA} but received ${typeB}.`,
@@ -57,7 +57,9 @@ describe('no visual difference', () => {
     [{a: 1}, {a: 1}],
     [{a: {b: 5}}, {a: {b: 5}}],
   ].forEach(values => {
-    test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(values[1])}'`, () => {
+    test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
+      values[1],
+    )}'`, () => {
       expect(received(values[0], values[1])).toBe(
         'Compared values have no visual difference.',
       );
@@ -800,4 +802,30 @@ describe('spaces at beginning or end of text in React elements', () => {
       expect(received(bSnap, aSnap, expanded)).toMatch(expected);
     });
   });
+});
+
+describe('context', () => {
+  const testDiffContextLines = (contextLines?: number) => {
+    test(`number of lines: ${typeof contextLines === 'number'
+      ? contextLines
+      : 'null'} ${typeof contextLines !== 'number' || contextLines < 0
+      ? '(5 default)'
+      : ''}`, () => {
+      const result = diff(
+        {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
+        {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
+        {
+          contextLines,
+          expand: false,
+        },
+      );
+      expect(result).toMatchSnapshot();
+    });
+  };
+
+  testDiffContextLines(); // 5 by default
+  testDiffContextLines(2);
+  testDiffContextLines(1);
+  testDiffContextLines(0);
+  testDiffContextLines(-1); // Will use default
 });

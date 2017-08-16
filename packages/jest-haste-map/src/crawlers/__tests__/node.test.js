@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../../../../scripts/skip_on_windows');
 
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {
@@ -111,13 +111,13 @@ describe('node crawler', () => {
         '/vegtables',
         '-type',
         'f',
-        '\(',
+        '(',
         '-iname',
         '*.js',
         '-o',
         '-iname',
         '*.json',
-        '\)',
+        ')',
       ]);
 
       expect(data.files).not.toBe(null);

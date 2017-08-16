@@ -24,6 +24,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.dontMock(moduleName)`](#jestdontmockmodulename)
   - [`jest.clearAllMocks()`](#jestclearallmocks)
   - [`jest.resetAllMocks()`](#jestresetallmocks)
+  - [`jest.restoreAllMocks()`](#jestrestoreallmocks)
   - [`jest.resetModules()`](#jestresetmodules)
   - [`jest.runAllTicks()`](#jestrunallticks)
   - [`jest.runAllTimers()`](#jestrunalltimers)
@@ -138,9 +139,13 @@ Returns the `jest` object for chaining.
 ### `jest.doMock(moduleName, factory, options)`
 When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use this method if you want to explicitly avoid this behavior.
 
-This is useful when you want to mock a module differently within a same file:
+One example when this is useful is when you want to mock a module differently within the same file:
 
 ```js
+beforeEach(() => {
+  jest.resetModules();
+});
+
 test('moduleName 1', () => {
   jest.doMock('../moduleName', () => {
     return jest.fn(() => 1);
@@ -175,8 +180,11 @@ Resets the state of all mocks. Equivalent to calling `.mockReset()` on every moc
 
 Returns the `jest` object for chaining.
 
-### `jest.resetModules()`
+### `jest.restoreAllMocks()`
+##### available in Jest **20.1.0+**
+Restores all mocks back to their original value. Equivalent to calling `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
+### `jest.resetModules()`
 Resets the module registry - the cache of all required modules. This is useful to isolate modules where local state might conflict between tests.
 
 Example:

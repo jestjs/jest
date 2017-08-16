@@ -94,13 +94,13 @@ export type AssertionResult = {|
 |};
 
 export type FormattedAssertionResult = {
+  failureMessages: Array<string> | null,
+  fullName: string,
   status: Status,
   title: string,
-  failureMessages: Array<string> | null,
 };
 
-export type AggregatedResult = {
-  coverageMap?: ?CoverageMap,
+export type AggregatedResultWithoutCoverage = {
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
@@ -115,6 +115,10 @@ export type AggregatedResult = {
   success: boolean,
   testResults: Array<TestResult>,
   wasInterrupted: boolean,
+};
+
+export type AggregatedResult = AggregatedResultWithoutCoverage & {
+  coverageMap?: ?CoverageMap,
 };
 
 export type Suite = {|

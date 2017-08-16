@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 const slash = require('slash');
 
 jest
+  .mock('fs')
   .mock('graceful-fs')
   .mock('jest-haste-map', () => ({
     getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
@@ -24,7 +25,7 @@ jest
   .mock('vm');
 
 jest.mock(
-  'test-preprocessor',
+  'test_preprocessor',
   () => {
     const escapeStrings = str => {
       return str.replace(/'/, `'`);
@@ -100,6 +101,14 @@ let fs;
 let mockFs;
 let object;
 let vm;
+let writeFileAtomic;
+
+jest.mock('write-file-atomic', () => ({
+  sync: jest.fn().mockImplementation((filePath, data) => {
+    const normalizedPath = require('slash')(filePath);
+    mockFs[normalizedPath] = data;
+  }),
+}));
 
 describe('ScriptTransformer', () => {
   const reset = () => {
@@ -144,6 +153,8 @@ describe('ScriptTransformer', () => {
     }));
 
     fs.existsSync = jest.fn(path => !!mockFs[path]);
+
+    writeFileAtomic = require('write-file-atomic');
 
     config = {
       cache: true,
@@ -233,12 +244,12 @@ describe('ScriptTransformer', () => {
 
   it('uses the supplied preprocessor', () => {
     config = Object.assign(config, {
-      transform: [['^.+\\.js$', 'test-preprocessor']],
+      transform: [['^.+\\.js$', 'test_preprocessor']],
     });
     const scriptTransformer = new ScriptTransformer(config);
     scriptTransformer.transform('/fruits/banana.js', {});
 
-    expect(require('test-preprocessor').getCacheKey).toBeCalled();
+    expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
 
@@ -250,7 +261,7 @@ describe('ScriptTransformer', () => {
   it('uses multiple preprocessors', () => {
     config = Object.assign(config, {
       transform: [
-        ['^.+\\.js$', 'test-preprocessor'],
+        ['^.+\\.js$', 'test_preprocessor'],
         ['^.+\\.css$', 'css-preprocessor'],
       ],
     });
@@ -259,7 +270,7 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', {});
     scriptTransformer.transform('/styles/App.css', {});
 
-    expect(require('test-preprocessor').getCacheKey).toBeCalled();
+    expect(require('test_preprocessor').getCacheKey).toBeCalled();
     expect(require('css-preprocessor').getCacheKey).toBeCalled();
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
     expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
@@ -290,11 +301,10 @@ describe('ScriptTransformer', () => {
       mapCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(fs.writeFileSync).toBeCalledWith(
-      result.sourceMapPath,
-      JSON.stringify(map),
-      'utf8',
-    );
+    const mapStr = JSON.stringify(map);
+    expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
+      encoding: 'utf8',
+    });
   });
 
   it('writes source map if preprocessor inlines it', () => {
@@ -320,11 +330,9 @@ describe('ScriptTransformer', () => {
       mapCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(fs.writeFileSync).toBeCalledWith(
-      result.sourceMapPath,
-      sourceMap,
-      'utf8',
-    );
+    expect(
+      writeFileAtomic.sync,
+    ).toBeCalledWith(result.sourceMapPath, sourceMap, {encoding: 'utf8'});
   });
 
   it('does not write source map if mapCoverage option is false', () => {
@@ -348,19 +356,34 @@ describe('ScriptTransformer', () => {
       mapCoverage: false,
     });
     expect(result.sourceMapPath).toBeFalsy();
-    expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes expected transform options to getCacheKey', () => {
+    config = Object.assign(config, {
+      transform: [['^.+\\.js$', 'test_preprocessor']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+
+    scriptTransformer.transform('/fruits/banana.js', {
+      collectCoverage: true,
+      mapCoverage: true,
+    });
+
+    const {getCacheKey} = require('test_preprocessor');
+    expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();
   });
 
   it('reads values from the cache', () => {
     const transformConfig = Object.assign(config, {
-      transform: [['^.+\\.js$', 'test-preprocessor']],
+      transform: [['^.+\\.js$', 'test_preprocessor']],
     });
     let scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});
 
     const cachePath = getCachePath(mockFs, config);
-    expect(fs.writeFileSync).toBeCalled();
-    expect(fs.writeFileSync.mock.calls[0][0]).toBe(cachePath);
+    expect(writeFileAtomic.sync).toBeCalled();
+    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
@@ -375,7 +398,7 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync.mock.calls.length).toBe(2);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
-    expect(fs.writeFileSync).not.toBeCalled();
+    expect(writeFileAtomic.sync).not.toBeCalled();
 
     // Don't read from the cache when `config.cache` is false.
     jest.resetModuleRegistry();
@@ -388,6 +411,6 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync.mock.calls.length).toBe(1);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
-    expect(fs.writeFileSync).toBeCalled();
+    expect(writeFileAtomic.sync).toBeCalled();
   });
 });

@@ -79,9 +79,10 @@ const formatExecError = (
   }
 
   message = message.split(/\n/).map(line => MESSAGE_INDENT + line).join('\n');
-  stack = stack && !options.noStackTrace
-    ? '\n' + formatStackTrace(stack, config, options, testPath)
-    : '';
+  stack =
+    stack && !options.noStackTrace
+      ? '\n' + formatStackTrace(stack, config, options, testPath)
+      : '';
 
   if (message.match(/^\s*$/) && stack.match(/^\s*$/)) {
     // this can happen if an empty object is thrown.

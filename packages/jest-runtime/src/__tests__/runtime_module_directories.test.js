@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 const path = require('path');
@@ -28,7 +28,7 @@ describe('Runtime', () => {
     }).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'moduleDirModule',
+        'module_dir_module',
       );
       expect(exports).toBeDefined();
     }));
@@ -47,11 +47,11 @@ describe('Runtime', () => {
   it('finds closest module from moduleDirectories', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
-        path.join(rootDir, 'subdir2', 'MyModule.js'),
-        'moduleDirModule',
+        path.join(rootDir, 'subdir2', 'my_module.js'),
+        'module_dir_module',
       );
       expect(exports.modulePath).toEqual(
-        'subdir2/module_dir/moduleDirModule.js',
+        'subdir2/module_dir/module_dir_module.js',
       );
     }));
 

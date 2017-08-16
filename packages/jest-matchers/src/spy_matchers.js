@@ -24,7 +24,7 @@ import {
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
-import {iterableEquality} from './utils';
+import {iterableEquality, partition} from './utils';
 
 const RECEIVED_NAME = {
   'mock function': 'jest.fn()',
@@ -69,7 +69,11 @@ const createToBeCalledWithMatcher = matcherName => (
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
-  const pass = calls.some(call => equals(call, expected, [iterableEquality]));
+
+  const [match, fail] = partition(calls, call =>
+    equals(call, expected, [iterableEquality]),
+  );
+  const pass = match.length > 0;
 
   const message = pass
     ? () =>
@@ -81,8 +85,7 @@ const createToBeCalledWithMatcher = matcherName => (
         matcherHint(matcherName, RECEIVED_NAME[type]) +
         '\n\n' +
         `Expected ${type} to have been called with:\n` +
-        `  ${printExpected(expected)}\n` +
-        formatReceivedCalls(calls, CALL_PRINT_LIMIT);
+        formatMismatchedCalls(fail, expected, CALL_PRINT_LIMIT);
 
   return {message, pass};
 };
@@ -110,8 +113,7 @@ const createLastCalledWithMatcher = matcherName => (
         matcherHint(matcherName, RECEIVED_NAME[type]) +
         '\n\n' +
         `Expected ${type} to have been last called with:\n` +
-        `  ${printExpected(expected)}\n` +
-        formatReceivedCalls(calls, LAST_CALL_PRINT_LIMIT, {isLast: true});
+        formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
 
   return {message, pass};
 };
@@ -198,4 +200,34 @@ const formatReceivedCalls = (calls, limit, options) => {
   }
 };
 
-module.exports = spyMatchers;
+const formatMismatchedCalls = (calls, expected, limit) => {
+  if (calls.length) {
+    return calls
+      .slice(-limit)
+      .reverse()
+      .map(formatMismatchedArgs.bind(null, expected))
+      .join('\n\n');
+  } else {
+    return (
+      `  ${printExpected(expected)}\n` +
+      `But it was ${RECEIVED_COLOR('not called')}.`
+    );
+  }
+};
+
+const formatMismatchedArgs = (expected, received) => {
+  const length = Math.max(expected.length, received.length);
+
+  const printedArgs = [];
+  for (let i = 0; i < length; i++) {
+    if (!equals(expected[i], received[i], [iterableEquality])) {
+      printedArgs.push(
+        `  ${printExpected(expected[i])} as argument ${i + 1}, ` +
+          `but it was called with ${printReceived(received[i])}.`,
+      );
+    }
+  }
+  return printedArgs.join('\n');
+};
+
+export default spyMatchers;

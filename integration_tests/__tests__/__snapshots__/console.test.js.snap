@@ -71,6 +71,5 @@ exports[`does not print to console with --silent 3`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
 "
 `;

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 const vm = require('vm');
@@ -341,6 +341,14 @@ describe('moduleMocker', () => {
         expect(fn1()).not.toEqual('abcd');
         expect(fn2()).not.toEqual('abcd');
       });
+
+      it('maintains function arity', () => {
+        const mockFunctionArity1 = moduleMocker.fn(x => x);
+        const mockFunctionArity2 = moduleMocker.fn((x, y) => y);
+
+        expect(mockFunctionArity1.length).toBe(1);
+        expect(mockFunctionArity2.length).toBe(2);
+      });
     });
 
     it('supports mock value returning undefined', () => {
@@ -422,6 +430,14 @@ describe('moduleMocker', () => {
     });
   });
 
+  test('mockImplementation resets the mock', () => {
+    const fn = jest.fn();
+    expect(fn()).toBeUndefined();
+    fn.mockReturnValue('returnValue');
+    fn.mockImplementation(() => 'foo');
+    expect(fn()).toBe('foo');
+  });
+
   it('should recognize a mocked function', () => {
     const mockFn = moduleMocker.fn();
 
@@ -479,6 +495,42 @@ describe('moduleMocker', () => {
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow();
+    });
+
+    it('supports restoring all spies', () => {
+      let methodOneCalls = 0;
+      let methodTwoCalls = 0;
+      const obj = {
+        methodOne() {
+          methodOneCalls++;
+        },
+        methodTwo() {
+          methodTwoCalls++;
+        },
+      };
+
+      const spy1 = moduleMocker.spyOn(obj, 'methodOne');
+      const spy2 = moduleMocker.spyOn(obj, 'methodTwo');
+
+      // First, we call with the spies: both spies and both original functions
+      // should be called.
+      obj.methodOne();
+      obj.methodTwo();
+      expect(methodOneCalls).toBe(1);
+      expect(methodTwoCalls).toBe(1);
+      expect(spy1.mock.calls.length).toBe(1);
+      expect(spy2.mock.calls.length).toBe(1);
+
+      moduleMocker.restoreAllMocks();
+
+      // Then, after resetting all mocks, we call methods again. Only the real
+      // methods should bump their count, not the spies.
+      obj.methodOne();
+      obj.methodTwo();
+      expect(methodOneCalls).toBe(2);
+      expect(methodTwoCalls).toBe(2);
+      expect(spy1.mock.calls.length).toBe(1);
+      expect(spy2.mock.calls.length).toBe(1);
     });
   });
 });

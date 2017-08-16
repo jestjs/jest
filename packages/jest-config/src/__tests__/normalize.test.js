@@ -272,7 +272,7 @@ describe('haste', () => {
     const {options} = normalize(
       {
         haste: {
-          hasteImplModulePath: '<rootDir>/hasteImpl.js',
+          hasteImplModulePath: '<rootDir>/haste_impl.js',
         },
         rootDir: '/root/',
       },
@@ -280,7 +280,7 @@ describe('haste', () => {
     );
 
     expect(options.haste).toEqual({
-      hasteImplModulePath: '/root/hasteImpl.js',
+      hasteImplModulePath: '/root/haste_impl.js',
     });
   });
 });
@@ -513,6 +513,19 @@ describe('testRunner', () => {
   });
 });
 
+describe('coverageDirectory', () => {
+  it('defaults to <rootDir>/coverage', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    expect(options.coverageDirectory).toBe('/root/path/foo/coverage');
+  });
+});
+
 describe('testEnvironment', () => {
   let Resolver;
   beforeEach(() => {
@@ -631,8 +644,8 @@ describe('babel-jest', () => {
       {
         rootDir: '/root',
         transform: {
-          [DEFAULT_JS_PATTERN]: ROOT_DIR +
-            Resolver.findNodeModule('babel-jest'),
+          [DEFAULT_JS_PATTERN]:
+            ROOT_DIR + Resolver.findNodeModule('babel-jest'),
         },
       },
       {},
@@ -837,8 +850,8 @@ describe('preset', () => {
   });
 
   test('merges with options and moduleNameMapper preset is overridden by options', () => {
-    // Object initializer not used for properties as a workaround for 
-    //  sort-keys eslint rule while specifing properties in 
+    // Object initializer not used for properties as a workaround for
+    //  sort-keys eslint rule while specifing properties in
     //  non-alphabetical order for a better test
     const moduleNameMapper = {};
     moduleNameMapper.e = 'ee';
@@ -900,39 +913,5 @@ describe('preset without setupFiles', () => {
         setupFiles: expect.arrayContaining(['/node_modules/a']),
       }),
     );
-  });
-});
-
-describe('projects', () => {
-  beforeEach(() => {
-    jest.resetModules();
-
-    const Resolver = require('jest-resolve');
-    Resolver.findNodeModule = findNodeModule;
-  });
-
-  test('resolves projects correctly', () => {
-    const root = '/path/to/test';
-    const glob = require('glob');
-    glob.sync = jest.fn(
-      pattern =>
-        pattern.indexOf('/examples/') !== -1
-          ? [root + '/examples/async', root + '/examples/snapshot']
-          : [pattern],
-    );
-    const normalize = require('../normalize');
-    const {options} = normalize(
-      {
-        projects: ['<rootDir>', '<rootDir>/examples/*'],
-        rootDir: root,
-      },
-      {},
-    );
-
-    expect(options.projects).toEqual([
-      root,
-      root + '/examples/async',
-      root + '/examples/snapshot',
-    ]);
   });
 });

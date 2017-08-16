@@ -10,14 +10,14 @@
 
 import {version as VERSION} from '../package.json';
 
-import SearchSource from './SearchSource';
-import TestRunner from './TestRunner';
-import TestWatcher from './TestWatcher';
+import SearchSource from './search_source';
+import TestScheduler from './test_scheduler';
+import TestWatcher from './test_watcher';
 import {run, runCLI} from './cli';
 
 module.exports = {
   SearchSource,
-  TestRunner,
+  TestScheduler,
   TestWatcher,
   getVersion: () => VERSION,
   run,

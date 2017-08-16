@@ -20,6 +20,22 @@ export type Refs = Array<any>;
 export type Print = any => string;
 export type StringOrNull = string | null;
 
+export type Theme = {|
+  comment: string,
+  content: string,
+  prop: string,
+  tag: string,
+  value: string,
+|};
+
+export type ThemeReceived = {|
+  comment?: string,
+  content?: string,
+  prop?: string,
+  tag?: string,
+  value?: string,
+|};
+
 export type Options = {|
   callToJSON: boolean,
   escapeRegex: boolean,
@@ -29,13 +45,54 @@ export type Options = {|
   min: boolean,
   plugins: Plugins,
   printFunctionName: boolean,
-  theme: {|
-    comment: string,
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
-  |},
+  theme: Theme,
+|};
+
+export type OptionsReceived = {|
+  callToJSON?: boolean,
+  escapeRegex?: boolean,
+  highlight?: boolean,
+  indent?: number,
+  maxDepth?: number,
+  min?: boolean,
+  plugins?: Plugins,
+  printFunctionName?: boolean,
+  theme?: ThemeReceived,
+|};
+
+export type Config = {|
+  callToJSON: boolean,
+  colors: Colors,
+  escapeRegex: boolean,
+  indent: string,
+  maxDepth: number,
+  min: boolean,
+  plugins: Plugins,
+  printFunctionName: boolean,
+  spacingInner: string,
+  spacingOuter: string,
+|};
+
+export type Printer = (
+  val: any,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+) => string;
+
+export type Test = any => boolean;
+
+export type NewPlugin = {|
+  serialize: (
+    val: any,
+    config: Config,
+    indentation: string,
+    depth: number,
+    refs: Refs,
+    printer: Printer,
+  ) => string,
+  test: Test,
 |};
 
 export type PluginOptions = {|
@@ -44,16 +101,18 @@ export type PluginOptions = {|
   spacing: string,
 |};
 
-export type Plugin = {
+export type OldPlugin = {|
   print: (
     val: any,
-    serialize: Print,
+    print: Print,
     indent: Indent,
-    opts: PluginOptions,
+    options: PluginOptions,
     colors: Colors,
   ) => string,
-  test: any => boolean,
-};
+  test: Test,
+|};
+
+export type Plugin = NewPlugin | OldPlugin;
 
 export type Plugins = Array<Plugin>;
 

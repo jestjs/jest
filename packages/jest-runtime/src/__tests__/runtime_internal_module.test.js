@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 const path = require('path');
@@ -23,7 +23,7 @@ describe('Runtime', () => {
   describe('internalModule', () => {
     it('loads modules and applies transforms', () =>
       createRuntime(__filename, {
-        transform: {'^.+\\.js$': './test-preprocessor'},
+        transform: {'^.+\\.js$': './test_preprocessor'},
       }).then(runtime => {
         const modulePath = path.resolve(
           path.dirname(runtime.__mockRootPath),
@@ -36,7 +36,7 @@ describe('Runtime', () => {
 
     it('loads internal modules without applying transforms', () =>
       createRuntime(__filename, {
-        transform: {'^.+\\.js$': './test-preprocessor'},
+        transform: {'^.+\\.js$': './test_preprocessor'},
       }).then(runtime => {
         const modulePath = path.resolve(
           path.dirname(runtime.__mockRootPath),

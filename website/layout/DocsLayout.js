@@ -46,8 +46,7 @@ const DocsLayout = React.createClass({
                   className="docs-prev button"
                   href={metadata.previous_id + '.html#content'}
                 >
-                  ←
-                  {' '}
+                  ←{' '}
                   {
                     siteConfig[this.props.metadata.language][
                       'localized-strings'
@@ -63,8 +62,7 @@ const DocsLayout = React.createClass({
                     siteConfig[this.props.metadata.language][
                       'localized-strings'
                     ]['next']
-                  }
-                  {' '}
+                  }{' '}
                   →
                 </a>}
             </div>

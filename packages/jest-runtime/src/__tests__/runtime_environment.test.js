@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 let createRuntime;
@@ -34,7 +34,7 @@ describe('Runtime', () => {
         let hasThrown = false;
         const sum = runtime.requireModule(
           runtime.__mockRootPath,
-          './throwing-fn.js',
+          './throwing_fn.js',
         );
 
         try {
@@ -43,11 +43,11 @@ describe('Runtime', () => {
           hasThrown = true;
           if (process.platform === 'win32') {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\throwing-fn.js:12:9/,
+              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\throwing_fn.js:12:9/,
             );
           } else {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/throwing-fn.js:12:9/,
+              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/throwing_fn.js:12:9/,
             );
           }
         }

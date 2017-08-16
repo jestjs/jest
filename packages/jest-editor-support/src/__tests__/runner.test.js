@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -28,13 +30,13 @@ jest.doMock('fs', () => {
 // Let's us use a per-test "jest process"
 let mockDebugProcess = {};
 const mockCreateProcess = jest.fn(() => mockDebugProcess);
-jest.doMock('../process.js', () => {
+jest.doMock('../Process.js', () => {
   return {
     createProcess: mockCreateProcess,
   };
 });
 
-const Runner = require('../runner');
+const Runner = require('../Runner');
 
 describe('events', () => {
   let runner;
@@ -42,9 +44,14 @@ describe('events', () => {
 
   beforeEach(() => {
     mockCreateProcess.mockClear();
-    const workspace = new ProjectWorkspace('.', 'node_modules/.bin/jest', 18);
+    const workspace = new ProjectWorkspace(
+      '.',
+      'node_modules/.bin/jest',
+      'test',
+      18,
+    );
     runner = new Runner(workspace);
-    fakeProcess = new EventEmitter();
+    fakeProcess = (new EventEmitter(): any);
     fakeProcess.stdout = new EventEmitter();
     fakeProcess.stderr = new EventEmitter();
     mockDebugProcess = fakeProcess;
@@ -66,7 +73,7 @@ describe('events', () => {
 
     // And lets check what we emit
     const dataAtPath = readFileSync(runner.outputPath);
-    const storedJSON = JSON.parse(dataAtPath);
+    const storedJSON = JSON.parse(dataAtPath.toString());
     expect(data.mock.calls[0][0]).toEqual(storedJSON);
   });
 

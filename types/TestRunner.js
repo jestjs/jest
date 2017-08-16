@@ -12,26 +12,37 @@ import type {Context} from './Context';
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from './Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';
-import type {TestResult, AggregatedResult} from 'types/TestResult';
+import type {
+  AggregatedResult,
+  SerializableError,
+  TestResult,
+} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
+import type {TestWatcher as _TestWatcher} from 'jest-cli';
 
 export type Test = {|
   context: Context,
-  path: Path,
   duration: ?number,
+  path: Path,
 |};
+
+export type TestWatcher = _TestWatcher;
+
+export type OnTestStart = Test => Promise<void>;
+export type OnTestFailure = (Test, SerializableError) => Promise<*>;
+export type OnTestSuccess = (Test, TestResult) => Promise<*>;
 
 export type Reporter = {
   +onTestResult: (
     test: Test,
     testResult: TestResult,
     aggregatedResult: AggregatedResult,
-  ) => void,
+  ) => ?Promise<void>,
   +onRunStart: (
     results: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) => void,
-  +onTestStart: (test: Test) => void,
+  ) => ?Promise<void>,
+  +onTestStart: (test: Test) => ?Promise<void>,
   +onRunComplete: (
     contexts: Set<Context>,
     results: AggregatedResult,
@@ -46,3 +57,7 @@ export type TestFramework = (
   runtime: Runtime,
   testPath: string,
 ) => Promise<TestResult>;
+
+export type TestRunnerOptions = {
+  serial: boolean,
+};

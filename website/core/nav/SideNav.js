@@ -15,10 +15,14 @@ class SideNav extends React.Component {
         <div className="toggleNav">
           <section className="navWrapper wrapper">
             <div className="navBreadcrumb wrapper">
-              <div className="navToggle" id="navToggler"><i /></div>
+              <div className="navToggle" id="navToggler">
+                <i />
+              </div>
               <h2>
                 <i>›</i>
-                <span>{this.props.current.category}</span>
+                <span>
+                  {this.props.current.category}
+                </span>
               </h2>
             </div>
             <div className="navGroups">
@@ -43,7 +47,9 @@ class SideNav extends React.Component {
   renderCategory(category) {
     return (
       <div className="navGroup navGroupActive" key={category.name}>
-        <h3>{this.getLocalizedCategoryString(category.name)}</h3>
+        <h3>
+          {this.getLocalizedCategoryString(category.name)}
+        </h3>
         <ul>
           {category.links.map(this.renderItemLink, this)}
         </ul>

@@ -8,126 +8,73 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import escapeHTML from './lib/escape_html';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
-const reactElement = Symbol.for('react.element');
+const elementSymbol = Symbol.for('react.element');
 
-function traverseChildren(opaqueChildren, cb) {
-  if (Array.isArray(opaqueChildren)) {
-    opaqueChildren.forEach(child => traverseChildren(child, cb));
-  } else if (opaqueChildren != null && opaqueChildren !== false) {
-    cb(opaqueChildren);
-  }
-}
-
-function printChildren(flatChildren, print, indent, colors, opts) {
-  return flatChildren
-    .map(node => {
-      if (typeof node === 'string') {
-        return colors.content.open + escapeHTML(node) + colors.content.close;
-      } else {
-        return print(node);
-      }
-    })
-    .join(opts.edgeSpacing);
-}
-
-function printProps(props, print, indent, colors, opts) {
-  return Object.keys(props)
-    .sort()
-    .map(name => {
-      if (name === 'children') {
-        return '';
-      }
-
-      const prop = props[name];
-      let printed = print(prop);
-
-      if (typeof prop !== 'string') {
-        if (printed.indexOf('\n') !== -1) {
-          printed =
-            '{' +
-            opts.edgeSpacing +
-            indent(indent(printed) + opts.edgeSpacing + '}');
-        } else {
-          printed = '{' + printed + '}';
-        }
-      }
-
-      return (
-        opts.spacing +
-        indent(colors.prop.open + name + colors.prop.close + '=') +
-        colors.value.open +
-        printed +
-        colors.value.close
-      );
-    })
-    .join('');
-}
-
-const print = (
-  element: React$Element<*>,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => {
-  let result = colors.tag.open + '<';
-  let elementName;
-  if (typeof element.type === 'string') {
-    elementName = element.type;
-  } else if (typeof element.type === 'function') {
-    elementName = element.type.displayName || element.type.name || 'Unknown';
-  } else {
-    elementName = 'Unknown';
-  }
-  result += elementName + colors.tag.close;
-  result += printProps(element.props, print, indent, colors, opts);
-
-  const opaqueChildren = element.props.children;
-  const hasProps = !!Object.keys(element.props).filter(
-    propName => propName !== 'children',
-  ).length;
-  const closeInNewLine = hasProps && !opts.min;
-
-  if (opaqueChildren) {
-    const flatChildren = [];
-    traverseChildren(opaqueChildren, child => {
-      flatChildren.push(child);
+// Given element.props.children, or subtree during recursive traversal,
+// return flattened array of children.
+const getChildren = (arg, children = []) => {
+  if (Array.isArray(arg)) {
+    arg.forEach(item => {
+      getChildren(item, children);
     });
-    const children = printChildren(flatChildren, print, indent, colors, opts);
-    result +=
-      colors.tag.open +
-      (closeInNewLine ? '\n' : '') +
-      '>' +
-      colors.tag.close +
-      opts.edgeSpacing +
-      indent(children) +
-      opts.edgeSpacing +
-      colors.tag.open +
-      '</' +
-      elementName +
-      '>' +
-      colors.tag.close;
-  } else {
-    result +=
-      colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
+  } else if (arg != null && arg !== false) {
+    children.push(arg);
   }
-
-  return result;
+  return children;
 };
 
-// Disabling lint rule as we don't know type ahead of time.
-/* eslint-disable flowtype/no-weak-types */
-const test = (object: any) => object && object.$$typeof === reactElement;
-/* eslint-enable flowtype/no-weak-types */
+const getType = element => {
+  if (typeof element.type === 'string') {
+    return element.type;
+  }
+  if (typeof element.type === 'function') {
+    return element.type.displayName || element.type.name || 'Unknown';
+  }
+  return 'Unknown';
+};
 
-module.exports = ({print, test}: Plugin);
+export const serialize = (
+  element: React$Element<*>,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+): string =>
+  ++depth > config.maxDepth
+    ? printElementAsLeaf(getType(element), config)
+    : printElement(
+        getType(element),
+        printProps(
+          Object.keys(element.props).filter(key => key !== 'children').sort(),
+          element.props,
+          config,
+          indentation + config.indent,
+          depth,
+          refs,
+          printer,
+        ),
+        printChildren(
+          getChildren(element.props.children),
+          config,
+          indentation + config.indent,
+          depth,
+          refs,
+          printer,
+        ),
+        config,
+        indentation,
+      );
+
+export const test = (val: any) => val && val.$$typeof === elementSymbol;
+
+export default ({serialize, test}: NewPlugin);

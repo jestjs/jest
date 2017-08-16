@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../../../../scripts/skip_on_windows');
 
 jest.mock('fb-watchman', () => {
   const Client = jest.fn();

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @flow
  */
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('skipOnWindows');
-const {linkJestPackage, run} = require('../utils');
+const skipOnWindows = require('../../scripts/skip_on_windows');
+const {run} = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
@@ -21,8 +21,6 @@ skipOnWindows.suite();
 if (process.platform !== 'win32') {
   beforeEach(() => {
     run('yarn', DIR);
-    linkJestPackage('babel-plugin-jest-hoist', DIR);
-    linkJestPackage('babel-jest', DIR);
   });
 }
 

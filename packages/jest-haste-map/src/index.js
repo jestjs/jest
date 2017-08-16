@@ -156,7 +156,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  * };
  *
  * // Modules can be targeted to a specific platform based on the file name.
- * // Example: Platform.ios.js and Platform.android.js will both map to the same
+ * // Example: platform.ios.js and Platform.android.js will both map to the same
  * // `Platform` module. The platform should be specified during resolution.
  * type ModuleMapItem = {[platform: string]: ModuleMetaData};
  *
@@ -224,6 +224,12 @@ class HasteMap extends EventEmitter {
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
+    if (!(options.ignorePattern instanceof RegExp)) {
+      this._console.warn(
+        'jest-haste-map: the `ignorePattern` options as a function is being ' +
+          'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
+      );
+    }
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       `haste-map-${this._options.name}`,
@@ -232,6 +238,7 @@ class HasteMap extends EventEmitter {
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
       options.mocksPattern || '',
+      options.ignorePattern.toString(),
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -259,7 +266,11 @@ class HasteMap extends EventEmitter {
         .then(hasteMap => {
           this._persist(hasteMap);
           const hasteFS = new HasteFS(hasteMap.files);
-          const moduleMap = new HasteModuleMap(hasteMap.map, hasteMap.mocks);
+          const moduleMap = new HasteModuleMap({
+            duplicates: hasteMap.duplicates,
+            map: hasteMap.map,
+            mocks: hasteMap.mocks,
+          });
           const __hasteMapForTest =
             (process.env.NODE_ENV === 'test' && hasteMap) || null;
           return this._watch(hasteMap, hasteFS, moduleMap).then(() => ({
@@ -281,7 +292,11 @@ class HasteMap extends EventEmitter {
 
   readModuleMap(): ModuleMap {
     const data = this.read();
-    return new HasteModuleMap(data.map, data.mocks);
+    return new HasteModuleMap({
+      duplicates: data.duplicates,
+      map: data.map,
+      mocks: data.mocks,
+    });
   }
 
   /**
@@ -505,9 +520,8 @@ class HasteMap extends EventEmitter {
   _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
-    const crawl = canUseWatchman && this._options.useWatchman
-      ? watchmanCrawl
-      : nodeCrawl;
+    const crawl =
+      canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
 
     const retry = error => {
       if (crawl === watchmanCrawl) {
@@ -568,9 +582,10 @@ class HasteMap extends EventEmitter {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
 
-    const Watcher = canUseWatchman && this._options.useWatchman
-      ? sane.WatchmanWatcher
-      : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
+    const Watcher =
+      canUseWatchman && this._options.useWatchman
+        ? sane.WatchmanWatcher
+        : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
@@ -605,7 +620,11 @@ class HasteMap extends EventEmitter {
         this.emit('change', {
           eventsQueue,
           hasteFS: new HasteFS(hasteMap.files),
-          moduleMap: new HasteModuleMap(hasteMap.map, hasteMap.mocks),
+          moduleMap: new HasteModuleMap({
+            duplicates: hasteMap.duplicates,
+            map: hasteMap.map,
+            mocks: hasteMap.mocks,
+          }),
         });
         eventsQueue = [];
       }
@@ -791,9 +810,10 @@ class HasteMap extends EventEmitter {
    */
   _ignore(filePath: Path): boolean {
     const ignorePattern = this._options.ignorePattern;
-    const ignoreMatched = ignorePattern instanceof RegExp
-      ? ignorePattern.test(filePath)
-      : ignorePattern(filePath);
+    const ignoreMatched =
+      ignorePattern instanceof RegExp
+        ? ignorePattern.test(filePath)
+        : ignorePattern(filePath);
 
     return (
       ignoreMatched ||
@@ -807,8 +827,17 @@ class HasteMap extends EventEmitter {
     }
 
     if (this._whitelist) {
-      const match = filePath.match(this._whitelist);
-      return !match || match.length > 1;
+      const whitelist = this._whitelist;
+      const match = whitelist.exec(filePath);
+      const matchEndIndex = whitelist.lastIndex;
+      whitelist.lastIndex = 0;
+
+      if (!match) {
+        return true;
+      }
+
+      const filePathInPackage = filePath.substr(matchEndIndex);
+      return filePathInPackage.startsWith(NODE_MODULES);
     }
 
     return true;

@@ -97,7 +97,7 @@ module.exports = function watchmanCrawl(
           }
 
           pairs.forEach(pair => {
-            const root = pair.root;
+            const root = normalizePathSep(pair.root);
             const response = pair.response;
             if ('warning' in response) {
               console.warn('watchman warning: ', response.warning);
@@ -109,9 +109,10 @@ module.exports = function watchmanCrawl(
               if (!fileData.exists) {
                 delete files[name];
               } else if (!ignore(name)) {
-                const mtime = typeof fileData.mtime_ms === 'number'
-                  ? fileData.mtime_ms
-                  : fileData.mtime_ms.toNumber();
+                const mtime =
+                  typeof fileData.mtime_ms === 'number'
+                    ? fileData.mtime_ms
+                    : fileData.mtime_ms.toNumber();
                 const isNew =
                   !data.files[name] || data.files[name][H.MTIME] !== mtime;
                 if (isNew) {

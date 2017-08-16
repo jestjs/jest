@@ -22,41 +22,43 @@ import {readConfig} from 'jest-config';
 import {version as VERSION} from '../../package.json';
 import args from './args';
 import chalk from 'chalk';
-import createContext from '../lib/createContext';
-import getJest from './getJest';
-import getMaxWorkers from '../lib/getMaxWorkers';
-import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
-import logDebugMessages from '../lib/logDebugMessages';
-import preRunMessage from '../preRunMessage';
-import runJest from '../runJest';
+import createContext from '../lib/create_context';
+import getChangedFilesPromise from '../get_changed_files_promise';
+import getJest from './get_jest';
+import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
+import logDebugMessages from '../lib/log_debug_messages';
+import preRunMessage from '../pre_run_message';
+import runJest from '../run_jest';
 import Runtime from 'jest-runtime';
-import TestWatcher from '../TestWatcher';
+import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 
-function run(maybeArgv?: Argv, project?: Path) {
+async function run(maybeArgv?: Argv, project?: Path) {
   const argv: Argv = _buildArgv(maybeArgv, project);
   const projects = _getProjectListFromCLIArgs(argv, project);
   // If we're running a single Jest project, we might want to use another
   // version of Jest (the one that is specified in this project's package.json)
   const runCLIFn = _getRunCLIFn(projects);
 
-  runCLIFn(argv, projects, result => _readResultsAndExit(argv, result));
+  const {results, globalConfig} = await runCLIFn(argv, projects);
+  _readResultsAndExit(results, globalConfig);
 }
 
 const runCLI = async (
   argv: Argv,
   projects: Array<Path>,
-  onComplete: (results: ?AggregatedResult) => void,
-) => {
+): Promise<{results: AggregatedResult, globalConfig: GlobalConfig}> => {
+  let results;
   // Optimize 'fs' module and make it more compatible with multiple platforms.
   _patchGlobalFSModule();
 
   // If we output a JSON object, we can't write anything to stdout, since
   // it'll break the JSON structure and it won't be valid.
-  const outputStream = argv.json ? process.stderr : process.stdout;
+  const outputStream =
+    argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  argv.version && _printVersionAndExit(outputStream, onComplete);
+  argv.version && _printVersionAndExit(outputStream);
 
   try {
     const {globalConfig, configs, hasDeprecationWarnings} = _getConfigs(
@@ -64,30 +66,45 @@ const runCLI = async (
       argv,
       outputStream,
     );
+
     await _run(
       globalConfig,
       configs,
       hasDeprecationWarnings,
       outputStream,
-      argv,
-      onComplete,
+      (r: AggregatedResult) => (results = r),
     );
+
+    if (argv.watch || argv.watchAll) {
+      // If in watch mode, return the promise that will never resolve.
+      // If the watch mode is interrupted, watch should handle the process
+      // shutdown.
+      return new Promise(() => {});
+    }
+
+    if (!results) {
+      throw new Error(
+        'AggregatedResult must be present after test run is complete',
+      );
+    }
+
+    return Promise.resolve({globalConfig, results});
   } catch (error) {
-    _printErrorAndExit(error);
+    clearLine(process.stderr);
+    clearLine(process.stdout);
+    console.error(chalk.red(error.stack));
+    process.exit(1);
+    throw error;
   }
 };
 
-const _printErrorAndExit = error => {
-  clearLine(process.stderr);
-  clearLine(process.stdout);
-  console.error(chalk.red(error.stack));
-  process.exit(1);
-};
-
-const _readResultsAndExit = (argv: Argv, result: ?AggregatedResult) => {
-  const code = !result || result.success ? 0 : 1;
+const _readResultsAndExit = (
+  result: ?AggregatedResult,
+  globalConfig: GlobalConfig,
+) => {
+  const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
   process.on('exit', () => process.exit(code));
-  if (argv && argv.forceExit) {
+  if (globalConfig.forceExit) {
     process.exit(code);
   }
 };
@@ -126,21 +143,43 @@ const _getRunCLIFn = (projects: Array<Path>) =>
 const _printDebugInfoAndExitIfNeeded = (
   argv,
   globalConfig,
-  config,
+  configs,
   outputStream,
 ) => {
   if (argv.debug || argv.showConfig) {
-    logDebugMessages(globalConfig, config, outputStream);
+    logDebugMessages(globalConfig, configs, outputStream);
   }
   if (argv.showConfig) {
     process.exit(0);
   }
 };
 
-const _printVersionAndExit = (outputStream, onComplete) => {
+const _printVersionAndExit = outputStream => {
   outputStream.write(`v${VERSION}\n`);
-  onComplete && onComplete();
-  return;
+  process.exit(0);
+};
+
+const _ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
+  const configPathSet = new Set();
+
+  for (const {configPath} of parsedConfigs) {
+    if (configPathSet.has(configPath)) {
+      let message =
+        'One or more specified projects share the same config file\n';
+
+      parsedConfigs.forEach(({configPath}, index) => {
+        message =
+          message +
+          '\nProject: "' +
+          projects[index] +
+          '"\nConfig: "' +
+          String(configPath) +
+          '"';
+      });
+      throw new Error(message);
+    }
+    configPathSet.add(configPath);
+  }
 };
 
 // Possible scenarios:
@@ -177,7 +216,7 @@ const _getConfigs = (
 
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
-    configs = [parsedConfig.config];
+    configs = [parsedConfig.projectConfig];
     if (globalConfig.projects && globalConfig.projects.length) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
@@ -186,8 +225,9 @@ const _getConfigs = (
   }
 
   if (projects.length > 1) {
-    const parsedConfigs = projects.map(root => readConfig(argv, root));
-    configs = parsedConfigs.map(({config}) => config);
+    const parsedConfigs = projects.map(root => readConfig(argv, root, true));
+    _ensureNoDuplicateConfigs(parsedConfigs, projects);
+    configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
         ({hasDeprecationWarnings}) => !!hasDeprecationWarnings,
@@ -203,7 +243,7 @@ const _getConfigs = (
     throw new Error('jest: No configuration found for any project.');
   }
 
-  _printDebugInfoAndExitIfNeeded(argv, globalConfig, configs[0], outputStream);
+  _printDebugInfoAndExitIfNeeded(argv, globalConfig, configs, outputStream);
 
   return {
     configs,
@@ -222,7 +262,6 @@ const _buildContextsAndHasteMaps = async (
   configs,
   globalConfig,
   outputStream,
-  argv,
 ) => {
   const hasteMapInstances = Array(configs.length);
   const contexts = await Promise.all(
@@ -230,7 +269,7 @@ const _buildContextsAndHasteMaps = async (
       createDirectory(config.cacheDirectory);
       const hasteMapInstance = Runtime.createHasteMap(config, {
         console: new Console(outputStream, outputStream),
-        maxWorkers: getMaxWorkers(argv),
+        maxWorkers: globalConfig.maxWorkers,
         resetCache: !config.cache,
         watch: globalConfig.watch,
         watchman: globalConfig.watchman,
@@ -248,78 +287,79 @@ const _run = async (
   configs,
   hasDeprecationWarnings,
   outputStream,
-  argv,
   onComplete,
 ) => {
+  // Queries to hg/git can take a while, so we need to start the process
+  // as soon as possible, so by the time we need the result it's already there.
+  const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
   const {contexts, hasteMapInstances} = await _buildContextsAndHasteMaps(
     configs,
     globalConfig,
     outputStream,
-    argv,
   );
 
-  argv.watch || argv.watchAll
-    ? _runWatch(
-        argv,
+  globalConfig.watch || globalConfig.watchAll
+    ? await _runWatch(
         contexts,
         configs,
         hasDeprecationWarnings,
         globalConfig,
         outputStream,
         hasteMapInstances,
+        changedFilesPromise,
       )
-    : _runWithoutWatch(globalConfig, contexts, argv, outputStream, onComplete);
+    : await _runWithoutWatch(
+        globalConfig,
+        contexts,
+        outputStream,
+        onComplete,
+        changedFilesPromise,
+      );
 };
 
 const _runWatch = async (
-  argv,
   contexts,
   configs,
   hasDeprecationWarnings,
   globalConfig,
   outputStream,
   hasteMapInstances,
+  changedFilesPromise,
 ) => {
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(
-        globalConfig,
-        contexts,
-        argv,
-        outputStream,
-        hasteMapInstances,
-      );
+      return watch(globalConfig, contexts, outputStream, hasteMapInstances);
     } catch (e) {
       process.exit(0);
     }
   }
 
-  return watch(globalConfig, contexts, argv, outputStream, hasteMapInstances);
+  return watch(globalConfig, contexts, outputStream, hasteMapInstances);
 };
 
 const _runWithoutWatch = async (
   globalConfig,
   contexts,
-  argv,
   outputStream,
   onComplete,
+  changedFilesPromise,
 ) => {
-  const startRun = () => {
-    if (!argv.listTests) {
+  const startRun = async () => {
+    if (!globalConfig.listTests) {
       preRunMessage.print(outputStream);
     }
-    runJest(
-      globalConfig,
+    return await runJest({
+      changedFilesPromise,
       contexts,
-      argv,
-      outputStream,
-      new TestWatcher({isWatchMode: false}),
-      startRun,
+      globalConfig,
       onComplete,
-    );
+      outputStream,
+      startRun,
+      testWatcher: new TestWatcher({isWatchMode: false}),
+    });
   };
-  return startRun();
+  return await startRun();
 };
 
 module.exports = {

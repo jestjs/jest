@@ -76,7 +76,9 @@ const createMatcher = matcherName => (
       matcherHint('.not' + matcherName, 'function', getType(value)) +
         '\n\n' +
         'Unexpected argument passed.\nExpected: ' +
-        `${printExpected('string')}, ${printExpected('Error (type)')} or ${printExpected('regexp')}.\n` +
+        `${printExpected('string')}, ${printExpected(
+          'Error (type)',
+        )} or ${printExpected('regexp')}.\n` +
         printWithType('Got', String(expected), printExpected),
     );
   }
@@ -190,4 +192,4 @@ const printActualErrorMessage = error => {
   return `But it didn't throw anything.`;
 };
 
-module.exports = matchers;
+export default matchers;

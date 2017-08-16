@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 const path = require('path');
@@ -31,7 +31,7 @@ describe('Runtime', () => {
     return createLocalRuntime(nodePath).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'RegularModuleInNodePath',
+        'regular_module_in_node_path',
       );
       expect(exports).toBeDefined();
     });
@@ -42,7 +42,7 @@ describe('Runtime', () => {
     return createLocalRuntime(null, {modulePaths: [nodePath]}).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'RegularModuleInNodePath',
+        'regular_module_in_node_path',
       );
       expect(exports).toBeDefined();
     });
@@ -54,7 +54,7 @@ describe('Runtime', () => {
     return createLocalRuntime(nodePath).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'RegularModuleInNodePath',
+        'regular_module_in_node_path',
       );
       expect(exports).toBeDefined();
     });
@@ -67,11 +67,11 @@ describe('Runtime', () => {
       expect(() => {
         runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'RegularModuleInNodePath',
+          'regular_module_in_node_path',
         );
       }).toThrow(
         new Error(
-          `Cannot find module 'RegularModuleInNodePath' from 'root.js'`,
+          `Cannot find module 'regular_module_in_node_path' from 'root.js'`,
         ),
       );
     });

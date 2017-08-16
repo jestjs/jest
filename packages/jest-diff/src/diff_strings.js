@@ -12,13 +12,13 @@ import chalk from 'chalk';
 import {diffLines, structuredPatch} from 'diff';
 
 import {NO_DIFF_MESSAGE} from './constants.js';
-const DIFF_CONTEXT = 5;
+const DIFF_CONTEXT_DEFAULT = 5;
 
 export type DiffOptions = {|
   aAnnotation?: string,
   bAnnotation?: string,
   expand?: boolean,
-  snapshot?: boolean,
+  contextLines?: number,
 |};
 
 export type Replacement = {|
@@ -36,10 +36,10 @@ type Hunk = {|
   oldStart: number,
 |};
 
-const getColor = (added: boolean, removed: boolean): chalk =>
+const getColor = (added: boolean, removed: boolean) =>
   added ? chalk.red : removed ? chalk.green : chalk.dim;
 
-const getBgColor = (added: boolean, removed: boolean): chalk =>
+const getBgColor = (added: boolean, removed: boolean) =>
   added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
 
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
@@ -117,8 +117,8 @@ const diffLinesWithReplacement = (
         return lines
           .map(line => {
             const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-            const mark = color(added ? '+' : removed ? '-' : ' ');
-            return mark + color(highlightedLine) + '\n';
+            const mark = added ? '+' : removed ? '-' : ' ';
+            return color(mark + highlightedLine) + '\n';
           })
           .join('');
       })
@@ -168,9 +168,15 @@ function replaceLinesInHunks(hunks, replacement) {
 const structuredPatchWithReplacement = (
   a: string,
   b: string,
+  contextLines?: number,
   replacement?: Replacement,
 ): Diff => {
-  const options = {context: DIFF_CONTEXT};
+  const options = {
+    context:
+      typeof contextLines === 'number' && contextLines >= 0
+        ? contextLines
+        : DIFF_CONTEXT_DEFAULT,
+  };
   let isDifferent = false;
   // Make sure the strings end with a newline.
   if (!a.endsWith('\n')) {
@@ -223,9 +229,15 @@ function diffStrings(
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
-  const result = options && options.expand === false
-    ? structuredPatchWithReplacement(a, b, replacement)
-    : diffLinesWithReplacement(a, b, replacement);
+  const result =
+    options && options.expand === false
+      ? structuredPatchWithReplacement(
+          a,
+          b,
+          options && options.contextLines,
+          replacement,
+        )
+      : diffLinesWithReplacement(a, b, replacement);
 
   if (result.isDifferent) {
     return getAnnotation(options) + result.diff;

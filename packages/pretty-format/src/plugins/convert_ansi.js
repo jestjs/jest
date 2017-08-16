@@ -8,13 +8,7 @@
  * @flow
  */
 
-import type {
-  Colors,
-  Indent,
-  PluginOptions,
-  Print,
-  Plugin,
-} from 'types/PrettyFormat';
+import type {Config, Printer, NewPlugin, Refs} from 'types/PrettyFormat';
 
 import ansiRegex from 'ansi-regex';
 import style from 'ansi-styles';
@@ -41,15 +35,16 @@ const toHumanReadableAnsi = text => {
   });
 };
 
-const test = (value: any) =>
-  typeof value === 'string' && value.match(ansiRegex());
+export const test = (val: any) =>
+  typeof val === 'string' && val.match(ansiRegex());
 
-const print = (
-  val: any,
-  print: Print,
-  indent: Indent,
-  opts: PluginOptions,
-  colors: Colors,
-) => print(toHumanReadableAnsi(val));
+export const serialize = (
+  val: string,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  printer: Printer,
+) => printer(toHumanReadableAnsi(val), config, indentation, depth, refs);
 
-module.exports = ({print, test}: Plugin);
+export default ({serialize, test}: NewPlugin);

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 const path = require('path');
 const fs = require('graceful-fs');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../../../scripts/skip_on_windows');
 
 const H = require('../constants');
 const worker = require('../worker');
@@ -104,7 +104,7 @@ describe('worker', () => {
     worker(
       {
         filePath: '/fruits/strawberry.js',
-        hasteImplModulePath: path.resolve(__dirname, 'hasteImpl.js'),
+        hasteImplModulePath: path.resolve(__dirname, 'haste_impl.js'),
       },
       callback,
     );
