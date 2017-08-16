@@ -117,7 +117,6 @@ describe('async jasmine', () => {
     expect(message).toMatch('fails with thrown error with done - async');
     expect(message).toMatch('fails a sync test');
     expect(message).toMatch('fails if a custom timeout is exceeded');
-
   });
 
   it('works with concurrent', () => {
