@@ -67,6 +67,18 @@ const matchers: MatchersObject = {
           `Received:\n` +
           `  ${printReceived(received)}`
       : () => {
+          if (
+            getType(received) === getType(expected) &&
+            (getType(received) === 'object' || getType(expected) === 'array') &&
+            equals(received, expected, [iterableEquality])
+          ) {
+            return (
+              matcherHint('.toBe') +
+              '\n\n' +
+              'Looks like you wanted to test for object/array equity with strict `toBe` matcher. You probably need to use `toEqual` instead.'
+            );
+          }
+
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
