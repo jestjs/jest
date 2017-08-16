@@ -36,8 +36,8 @@ aliases:
       wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
       sudo dpkg -i crowdin.deb
       # translations upload/download
-      crowdin --config crowdin.yaml upload sources --auto-update -b master
-      crowdin --config crowdin.yaml download -b master
+      crowdin --config crowdin.yaml upload sources --auto-update -b docusaurus-test
+      crowdin --config crowdin.yaml download -b docusaurus-test
       # build and publish website
       cd website && GIT_USER=jest-bot npm run publish-gh-pages
 
