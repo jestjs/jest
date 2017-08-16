@@ -188,18 +188,13 @@ module.exports = function(j$) {
       }
 
       const uncaught = err => {
-        let name;
-        let current;
         if (currentSpec) {
-          current = currentSpec;
-          name = current.getFullName();
-          current.onException(err);
-          current.cancel();
-          // TODO: how to cancel the current running spec
+          currentSpec.onException(err);
+          currentSpec.cancel();
         } else {
-          // TODO: Handle top level failures
+          console.error('Unhandled error');
+          console.error(err.stack);
         }
-        // console.error('caught in ' + name);
       };
 
       process.on('uncaughtException', uncaught);
