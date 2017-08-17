@@ -16,6 +16,7 @@ import {escapeStrForRegex} from 'jest-regex-util';
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
+  SUGGEST_TO_EQUAL,
   ensureNoExpected,
   ensureNumbers,
   matcherHint,
@@ -67,9 +68,15 @@ const matchers: MatchersObject = {
           `Received:\n` +
           `  ${printReceived(received)}`
       : () => {
+          const suggestToEqual =
+            getType(received) === getType(expected) &&
+            (getType(received) === 'object' || getType(expected) === 'array') &&
+            equals(received, expected, [iterableEquality]);
+
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
+
           return (
             matcherHint('.toBe') +
             '\n\n' +
@@ -77,7 +84,8 @@ const matchers: MatchersObject = {
             `  ${printExpected(expected)}\n` +
             `Received:\n` +
             `  ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+            (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
+            (suggestToEqual ? ` ${SUGGEST_TO_EQUAL}` : '')
           );
         };
 
