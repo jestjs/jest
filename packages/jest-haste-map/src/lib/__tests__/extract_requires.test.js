@@ -111,3 +111,13 @@ it('understands jest.requireActual', () => {
   const code = `jest.requireActual('whiskey');`;
   expect(extractRequires(code)).toEqual(['whiskey']);
 });
+
+it('understands require.requireMock', () => {
+  const code = `require.requireMock('cheeseburger');`;
+  expect(extractRequires(code)).toEqual(['cheeseburger']);
+});
+
+it('understands jest.requireMock', () => {
+  const code = `jest.requireMock('scotch');`;
+  expect(extractRequires(code)).toEqual(['scotch']);
+});
