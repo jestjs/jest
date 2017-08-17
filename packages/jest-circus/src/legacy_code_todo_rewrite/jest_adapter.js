@@ -14,7 +14,7 @@ import type {TestResult} from 'types/TestResult';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
-const FRAMEWORK_INITIALIZER = require.resolve('./jest-adapter-init');
+const FRAMEWORK_INITIALIZER = require.resolve('./jest_adapter_init');
 import path from 'path';
 
 const jestAdapter = async (
