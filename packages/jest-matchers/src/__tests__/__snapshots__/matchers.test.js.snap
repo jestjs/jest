@@ -232,13 +232,27 @@ Received:
 exports[`.toBe() fails for: [] and [] 1`] = `
 "<dim>expect(<red>received</><dim>).toBe(<green>expected</><dim>)
 
-Looks like you wanted to test for object/array equity with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
+Expected value to be (using ===):
+  <green>[]</>
+Received:
+  <red>[]</>
+
+Difference:
+
+<dim>Compared values have no visual difference. <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
 "<dim>expect(<red>received</><dim>).toBe(<green>expected</><dim>)
 
-Looks like you wanted to test for object/array equity with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
+Expected value to be (using ===):
+  <green>{\\"a\\": 1}</>
+Received:
+  <red>{\\"a\\": 1}</>
+
+Difference:
+
+<dim>Compared values have no visual difference. <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
@@ -263,7 +277,14 @@ Difference:
 exports[`.toBe() fails for: {} and {} 1`] = `
 "<dim>expect(<red>received</><dim>).toBe(<green>expected</><dim>)
 
-Looks like you wanted to test for object/array equity with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
+Expected value to be (using ===):
+  <green>{}</>
+Received:
+  <red>{}</>
+
+Difference:
+
+<dim>Compared values have no visual difference. <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `
