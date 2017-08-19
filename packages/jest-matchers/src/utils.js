@@ -110,6 +110,15 @@ export const iterableEquality = (a: any, b: any) => {
   if (a.constructor !== b.constructor) {
     return false;
   }
+
+  if (a.size === b.size) {
+    const merged = new a.constructor([...a, ...b]);
+
+    if (merged.size === a.size) {
+      return true;
+    }
+  }
+
   const bIterator = b[IteratorSymbol]();
 
   for (const aValue of a) {
