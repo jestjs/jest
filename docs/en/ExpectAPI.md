@@ -618,9 +618,9 @@ You could write `expect(bestDrinkForFlavor('octopus')).toBe(undefined)`, but it'
 
 ### `.toContain(item)`
 
-Use `.toContain` when you want to check that an item is in a list. For testing the items in the list, this uses `===`, a strict equality check.
+Use `.toContain` when you want to check that an item is in an array. For testing the items in the array, this uses `===`, a strict equality check.  `.toContain` can also check whether a string is a substring of another string.
 
-For example, if `getAllFlavors()` returns a list of flavors and you want to be sure that `lime` is in there, you can write:
+For example, if `getAllFlavors()` returns an array of flavors and you want to be sure that `lime` is in there, you can write:
 
 ```js
 test('the flavor list contains lime', () => {
@@ -630,8 +630,8 @@ test('the flavor list contains lime', () => {
 
 ### `.toContainEqual(item)`
 
-Use `.toContainEqual` when you want to check that an item is in a list.
-For testing the items in the list, this  matcher recursively checks the equality of all fields, rather than checking for object identity.
+Use `.toContainEqual` when you want to check that an item with a specific structure and values is contained in an array.
+For testing the items in the array, this matcher recursively checks the equality of all fields, rather than checking for object identity.
 
 ```js
 describe('my beverage', () => {
