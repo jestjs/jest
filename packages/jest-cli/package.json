@@ -19,7 +19,7 @@
     "jest-message-util": "^20.0.3",
     "jest-regex-util": "^20.0.3",
     "jest-resolve-dependencies": "^20.0.3",
-    "jest-runner": "^20.0.4",
+    "jest-runner": "test",
     "jest-runtime": "^20.0.4",
     "jest-snapshot": "^20.0.3",
     "jest-util": "^20.0.3",
