@@ -111,11 +111,14 @@ export const iterableEquality = (a: any, b: any) => {
     return false;
   }
 
-  if (a.size !== undefined && a.size === b.size) {
-    const merged = new a.constructor([...a, ...b]);
-
-    if (merged.size === a.size) {
-      return true;
+  if (a.size !== undefined) {
+    if (a.size !== b.size) {
+      return false;
+    } else {
+      const merged = new a.constructor([...a, ...b]);
+      if (merged.size === a.size) {
+        return true;
+      }
     }
   }
 
