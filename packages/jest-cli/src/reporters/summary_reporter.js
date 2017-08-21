@@ -240,12 +240,20 @@ class SummaryReporter extends BaseReporter {
   }
 
   _getTestSummary(contexts: Set<Context>, globalConfig: GlobalConfig) {
+    const getMatchingTestsInfo = () => {
+      const prefix = globalConfig.findRelatedTests
+        ? ' related to files matching '
+        : ' matching ';
+
+      return (
+        chalk.dim(prefix) +
+        testPathPatternToRegExp(globalConfig.testPathPattern).toString()
+      );
+    };
+
     const testInfo = globalConfig.onlyChanged
       ? chalk.dim(' related to changed files')
-      : globalConfig.testPathPattern
-        ? chalk.dim(' matching ') +
-          testPathPatternToRegExp(globalConfig.testPathPattern).toString()
-        : '';
+      : globalConfig.testPathPattern ? getMatchingTestsInfo() : '';
 
     const nameInfo = globalConfig.testNamePattern
       ? chalk.dim(' with tests matching ') + `"${globalConfig.testNamePattern}"`
