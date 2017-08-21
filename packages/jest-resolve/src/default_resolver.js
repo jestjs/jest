@@ -111,8 +111,8 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     return loadAsFileSync(path.join(x, '/index'));
   }
 
-  function loadNodeModulesSync(x: Path, basedir: Path): ?Path {
-    const dirs = nodeModulesPaths(basedir);
+  function loadNodeModulesSync(x: Path): ?Path {
+    const dirs = nodeModulesPaths();
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       const m = loadAsFileSync(path.join(dir, '/', x));
@@ -124,22 +124,22 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     return undefined;
   }
 
-  function nodeModulesPaths(basedir: Path): Path[] {
+  function nodeModulesPaths(): Path[] {
     const modules = ['node_modules'];
 
     // ensure that `basedir` is an absolute path at this point,
     // resolving against the process' current working directory
-    basedir = path.resolve(basedir);
+    const basedirAbs = path.resolve(basedir);
 
     let prefix = '/';
-    if (/^([A-Za-z]:)/.test(basedir)) {
+    if (/^([A-Za-z]:)/.test(basedirAbs)) {
       prefix = '';
-    } else if (/^\\\\/.test(basedir)) {
+    } else if (/^\\\\/.test(basedirAbs)) {
       prefix = '\\\\';
     }
 
-    const paths = [basedir];
-    let parsed = path.parse(basedir);
+    const paths = [basedirAbs];
+    let parsed = path.parse(basedirAbs);
     while (parsed.dir !== paths[paths.length - 1]) {
       paths.push(parsed.dir);
       parsed = path.parse(parsed.dir);
