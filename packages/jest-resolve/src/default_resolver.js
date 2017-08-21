@@ -10,7 +10,6 @@
 
 import type {Path} from 'types/Config';
 
-import resolve from 'resolve';
 import browserResolve from 'browser-resolve';
 
 type ResolverOptions = {|
@@ -22,9 +21,9 @@ type ResolverOptions = {|
 |};
 
 function defaultResolver(path: Path, options: ResolverOptions) {
-  const resv = options.browser ? browserResolve : resolve;
+  const resolve = options.browser ? browserResolve.sync : resolveSync;
 
-  return resv.sync(path, {
+  return resolve(path, {
     basedir: options.basedir,
     extensions: options.extensions,
     moduleDirectory: options.moduleDirectory,
