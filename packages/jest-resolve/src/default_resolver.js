@@ -124,8 +124,6 @@ function resolveSync(x, options) {
  * node-modules-path, taken directly from resolve.sync
  */
 
-var parse = path.parse || require('path-parse');
-
 function nodeModulesPaths(start, opts) {
   var modules = opts && opts.moduleDirectory
     ? [].concat(opts.moduleDirectory)
@@ -144,10 +142,10 @@ function nodeModulesPaths(start, opts) {
   }
 
   var paths = [start];
-  var parsed = parse(start);
+  var parsed = path.parse(start);
   while (parsed.dir !== paths[paths.length - 1]) {
     paths.push(parsed.dir);
-    parsed = parse(parsed.dir);
+    parsed = path.parse(parsed.dir);
   }
 
   var dirs = paths.reduce(function (dirs, aPath) {
