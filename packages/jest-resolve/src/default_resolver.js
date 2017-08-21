@@ -20,7 +20,7 @@ type ResolverOptions = {|
   paths?: ?Array<Path>,
 |};
 
-function defaultResolver(path: Path, options: ResolverOptions) {
+function defaultResolver(path: Path, options: ResolverOptions): Path {
   const resolve = options.browser ? browserResolve.sync : resolveSync;
 
   return resolve(path, {
@@ -42,25 +42,22 @@ type ErrorWithCode = Error & {code?: string};
 const fs = require('fs');
 const path = require('path');
 
-function resolveSync(x, options) {
-  const opts = options || {};
-  const isFile =
-    opts.isFile ||
-    function(file) {
-      try {
-        const stat = fs.statSync(file);
-        return stat.isFile() || stat.isFIFO();
-      } catch (e) {
-        if (e && e.code === 'ENOENT') return false;
-        throw e;
-      }
-    };
-  const readFileSync = opts.readFileSync || fs.readFileSync;
+function resolveSync(x: Path, options: ResolverOptions): Path {
+  function isFile(file: Path): boolean {
+    try {
+      const stat = fs.statSync(file);
+      return stat.isFile() || stat.isFIFO();
+    } catch (e) {
+      if (e && e.code === 'ENOENT') return false;
+      throw e;
+    }
+  }
+  const readFileSync = fs.readFileSync;
 
-  const extensions = opts.extensions || ['.js'];
-  const y = opts.basedir;
+  const extensions = options.extensions || ['.js'];
+  const y = options.basedir;
 
-  opts.paths = opts.paths || [];
+  options.paths = options.paths || [];
 
   if (/^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/.test(x)) {
     let res = path.resolve(y, x);
@@ -78,7 +75,7 @@ function resolveSync(x, options) {
   err.code = 'MODULE_NOT_FOUND';
   throw err;
 
-  function loadAsFileSync(x) {
+  function loadAsFileSync(x: Path): ?Path {
     if (isFile(x)) {
       return x;
     }
@@ -89,22 +86,20 @@ function resolveSync(x, options) {
         return file;
       }
     }
+
+    return undefined;
   }
 
-  function loadAsDirectorySync(x) {
+  function loadAsDirectorySync(x: Path): ?Path {
     const pkgfile = path.join(x, '/package.json');
     if (isFile(pkgfile)) {
       const body = readFileSync(pkgfile, 'utf8');
       try {
-        let pkg = JSON.parse(body);
-        if (opts.packageFilter) {
-          pkg = opts.packageFilter(pkg, x);
-        }
-
-        if (pkg.main) {
-          const m = loadAsFileSync(path.resolve(x, pkg.main));
+        const pkgmain = JSON.parse(body).main;
+        if (pkgmain) {
+          const m = loadAsFileSync(path.resolve(x, pkgmain));
           if (m) return m;
-          const n = loadAsDirectorySync(path.resolve(x, pkg.main));
+          const n = loadAsDirectorySync(path.resolve(x, pkgmain));
           if (n) return n;
         }
       } catch (e) {}
@@ -113,8 +108,8 @@ function resolveSync(x, options) {
     return loadAsFileSync(path.join(x, '/index'));
   }
 
-  function loadNodeModulesSync(x, start) {
-    const dirs = nodeModulesPaths(start, opts);
+  function loadNodeModulesSync(x: Path, start: Path): ?Path {
+    const dirs = nodeModulesPaths(start, options);
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       const m = loadAsFileSync(path.join(dir, '/', x));
@@ -122,6 +117,8 @@ function resolveSync(x, options) {
       const n = loadAsDirectorySync(path.join(dir, '/', x));
       if (n) return n;
     }
+
+    return undefined;
   }
 }
 
@@ -129,11 +126,8 @@ function resolveSync(x, options) {
  * node-modules-path, taken directly from resolve.sync
  */
 
-function nodeModulesPaths(start, opts) {
-  const modules =
-    opts && opts.moduleDirectory
-      ? [].concat(opts.moduleDirectory)
-      : ['node_modules'];
+function nodeModulesPaths(start: Path, options: ResolverOptions): Path[] {
+  const modules = ['node_modules'];
 
   // ensure that `start` is an absolute path at this point,
   // resolving against the process' current working directory
@@ -161,5 +155,5 @@ function nodeModulesPaths(start, opts) {
     );
   }, []);
 
-  return opts && opts.paths ? dirs.concat(opts.paths) : dirs;
+  return options.paths ? dirs.concat(options.paths) : dirs;
 }
