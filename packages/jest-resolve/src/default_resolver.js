@@ -53,19 +53,18 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
 
   if (REGEX_RELATIVE_IMPORT.test(x)) {
     // resolve relative import
-    let res = path.resolve(basedir, x);
-    if (x === '..') res += '/';
-    const m = loadAsFileSync(res) || loadAsDirectorySync(res);
+    let target = path.resolve(basedir, x);
+    if (x === '..') target += '/';
+    const m = loadAsFileSync(target) || loadAsDirectorySync(target);
     if (m) return m;
   } else {
     // otherwise search for node_modules
     const dirs = nodeModulesPaths();
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
-      const m = loadAsFileSync(path.join(dir, '/', x));
+      const target = path.join(dir, '/', x);
+      const m = loadAsFileSync(target) || loadAsDirectorySync(target);
       if (m) return m;
-      const n = loadAsDirectorySync(path.join(dir, '/', x));
-      if (n) return n;
     }
   }
 
@@ -89,15 +88,11 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
   }
 
   function loadAsFileSync(x: Path): ?Path {
-    if (isFile(x)) {
-      return x;
-    }
+    if (isFile(x)) return x;
 
     for (let i = 0; i < extensions.length; i++) {
       const file = x + extensions[i];
-      if (isFile(file)) {
-        return file;
-      }
+      if (isFile(file)) return file;
     }
 
     return undefined;
@@ -110,10 +105,9 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
       try {
         const pkgmain = JSON.parse(body).main;
         if (pkgmain) {
-          const m = loadAsFileSync(path.resolve(x, pkgmain));
+          const target = path.resolve(x, pkgmain);
+          const m = loadAsFileSync(target) || loadAsDirectorySync(target);
           if (m) return m;
-          const n = loadAsDirectorySync(path.resolve(x, pkgmain));
-          if (n) return n;
         }
       } catch (e) {}
     }
