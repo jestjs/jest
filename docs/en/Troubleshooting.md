@@ -13,14 +13,12 @@ Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
 Try using the debugging support built into Node.
 
-> Note: Debugging support with Jest only supports `node debug`; it does yet support `node inspect` due to an upstream issue in [nodejs/node#7583](https://github.com/nodejs/node/issues/7593). Until the upstream issue is resolved, debugging with Node is not available when using Node v8.x. For more details, see [facebook/jest#1652](https://github.com/facebook/jest/issues/1652).
-
 Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
 ```
-node --debug-brk ./node_modules/.bin/jest --runInBand [any other arguments here]
+node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
-node --debug-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
+node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 ```
 
 This will run Jest in a Node process that an external debugger can connect to. Note that the process
@@ -42,6 +40,60 @@ node-inspector
 This will output a link that you can open in Chrome. After opening that link, the Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done simply to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
 
 > Note: the `--runInBand` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+
+### Debuggin in VS Code
+
+There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
+
+To automatically launch and attach to a process running your tests, use the following configuration:
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/jest",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
+```
+
+If you are using Facebook's [`create-react-app`](https://github.com/facebookincubator/create-react-app), you can debug your Jest tests with the following configuration:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug CRA Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot/node_modules/.bin/react-scripts",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "test"
+      ],
+      "args": [
+        "--runInBand",
+        "--no-cache",
+        "--env=jsdom"
+      ],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
+```
 
 More information on Node debugging can be found [here](https://nodejs.org/api/debugger.html).
 
