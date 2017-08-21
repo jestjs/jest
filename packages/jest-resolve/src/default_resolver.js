@@ -45,22 +45,22 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
   const readFileSync = fs.readFileSync;
 
   const extensions = options.extensions || ['.js'];
-  const y = options.basedir;
+  const basedir = options.basedir;
 
   options.paths = options.paths || [];
 
   if (/^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/.test(x)) {
-    let res = path.resolve(y, x);
+    let res = path.resolve(basedir, x);
     if (x === '..') res += '/';
     const m = loadAsFileSync(res) || loadAsDirectorySync(res);
     if (m) return m;
   } else {
-    const n = loadNodeModulesSync(x, y);
+    const n = loadNodeModulesSync(x, basedir);
     if (n) return n;
   }
 
   const err: ErrorWithCode = new Error(
-    "Cannot find module '" + x + "' from '" + y + "'",
+    "Cannot find module '" + x + "' from '" + basedir + "'",
   );
   err.code = 'MODULE_NOT_FOUND';
   throw err;
@@ -111,8 +111,8 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     return loadAsFileSync(path.join(x, '/index'));
   }
 
-  function loadNodeModulesSync(x: Path, start: Path): ?Path {
-    const dirs = nodeModulesPaths(start);
+  function loadNodeModulesSync(x: Path, basedir: Path): ?Path {
+    const dirs = nodeModulesPaths(basedir);
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       const m = loadAsFileSync(path.join(dir, '/', x));
@@ -124,22 +124,22 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     return undefined;
   }
 
-  function nodeModulesPaths(start: Path): Path[] {
+  function nodeModulesPaths(basedir: Path): Path[] {
     const modules = ['node_modules'];
 
-    // ensure that `start` is an absolute path at this point,
+    // ensure that `basedir` is an absolute path at this point,
     // resolving against the process' current working directory
-    start = path.resolve(start);
+    basedir = path.resolve(basedir);
 
     let prefix = '/';
-    if (/^([A-Za-z]:)/.test(start)) {
+    if (/^([A-Za-z]:)/.test(basedir)) {
       prefix = '';
-    } else if (/^\\\\/.test(start)) {
+    } else if (/^\\\\/.test(basedir)) {
       prefix = '\\\\';
     }
 
-    const paths = [start];
-    let parsed = path.parse(start);
+    const paths = [basedir];
+    let parsed = path.parse(basedir);
     while (parsed.dir !== paths[paths.length - 1]) {
       paths.push(parsed.dir);
       parsed = path.parse(parsed.dir);
