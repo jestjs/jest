@@ -71,11 +71,11 @@ const diffLines = (a: string, b: string): Diff => {
           .map(line => {
             const highlightedLine = highlightTrailingWhitespace(line, bgColor);
             const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
-            return mark + ' ' + color(highlightedLine) + '\n';
+            return mark + ' ' + color(highlightedLine);
           })
-          .join('');
+          .join('\n');
       })
-      .join('')
+      .join('\n')
       .trim(),
     isDifferent,
   };
@@ -125,16 +125,16 @@ const structuredPatch = (a: string, b: string, contextLines?: number): Diff => {
             const bgColor = getBgColor(added, removed);
 
             const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-            return color(highlightedLine) + '\n';
+            return color(highlightedLine);
           })
-          .join('');
+          .join('\n');
 
         isDifferent = true;
         return shouldShowPatchMarks(hunk, oldLinesCount)
           ? createPatchMark(hunk) + lines
           : lines;
       })
-      .join('')
+      .join('\n')
       .trim(),
     isDifferent,
   };
