@@ -40,6 +40,7 @@ type ErrorWithCode = Error & {code?: string};
 
 import fs from 'fs';
 import path from 'path';
+import isBuiltinModule from 'is-builtin-module';
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
@@ -67,6 +68,8 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
       if (m) return m;
     }
   }
+
+  if (isBuiltinModule(x)) return x;
 
   const err: ErrorWithCode = new Error(
     "Cannot find module '" + x + "' from '" + basedir + "'",
@@ -116,7 +119,10 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
   }
 
   function nodeModulesPaths(): Path[] {
-    const modules = ['node_modules'];
+    const modules =
+      options && options.moduleDirectory
+        ? [].concat(options.moduleDirectory)
+        : ['node_modules'];
 
     // ensure that `basedir` is an absolute path at this point,
     // resolving against the process' current working directory
