@@ -41,7 +41,7 @@ This will output a link that you can open in Chrome. After opening that link, th
 
 > Note: the `--runInBand` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
 
-### Debuggin in VS Code
+### Debugging in VS Code
 
 There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
