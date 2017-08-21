@@ -37,6 +37,8 @@ module.exports = defaultResolver;
  * resolve logic, taken directly from resolve.sync
  */
 
+type ErrorWithCode = Error & {code?: string};
+
 const fs = require('fs');
 const path = require('path');
 
@@ -70,7 +72,9 @@ function resolveSync(x, options) {
     if (n) return n;
   }
 
-  const err = new Error("Cannot find module '" + x + "' from '" + y + "'");
+  const err: ErrorWithCode = new Error(
+    "Cannot find module '" + x + "' from '" + y + "'",
+  );
   err.code = 'MODULE_NOT_FOUND';
   throw err;
 
