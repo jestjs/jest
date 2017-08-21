@@ -56,10 +56,10 @@ describe('test lifecycle hooks', () => {
     it('does it 1', pushMessage('outer it 1'));
   });
 
-  describe('Hooks validatios', () => {
-    it('throw an error when the first element is an string', () => {
+  describe('Hooks validation', () => {
+    it('throws when the first element is not a function', () => {
       expect(beforeAll('setup')).toThrowError(
-        "First argument in the beforeAll hook can't be a string",
+        'First argument in the beforeAll hook must be a function',
       );
     });
   });

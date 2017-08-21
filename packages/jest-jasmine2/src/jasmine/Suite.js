@@ -85,7 +85,8 @@ Suite.prototype.beforeEach = function(fn) {
 };
 
 Suite.prototype.beforeAll = function(fn) {
-  this.beforeAllFns.push(isFunction(fn, 'beforeAll'));
+  validateFunction(fn, 'beforeAll');
+  this.beforeAllFns.push(fn);
 };
 
 Suite.prototype.afterEach = function(fn) {
@@ -93,7 +94,8 @@ Suite.prototype.afterEach = function(fn) {
 };
 
 Suite.prototype.afterAll = function(fn) {
-  this.afterAllFns.unshift(isFunction(fn, 'afterAll'));
+  validateFunction(fn, 'afterAll');
+  this.afterAllFns.unshift(fn);
 };
 
 Suite.prototype.addChild = function(child) {
@@ -190,11 +192,9 @@ function isFailure(args) {
   return !args[0];
 }
 
-function isFunction(fn, fnName) {
-  if (typeof fn.fn === 'string') {
-    throw new Error(`First argument in the ${fnName} hook cant't be a string`);
-  } else {
-    return fn;
+function validateFunction(fn, fnName) {
+  if (typeof fn.fn !== 'function') {
+    throw new Error(`First argument in the ${fnName} hook must be a function`);
   }
 }
 
