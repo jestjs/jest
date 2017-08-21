@@ -40,6 +40,7 @@ type ErrorWithCode = Error & {code?: string};
 
 const fs = require('fs');
 const path = require('path');
+const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
 function resolveSync(x: Path, options: ResolverOptions): Path {
   const readFileSync = fs.readFileSync;
@@ -49,12 +50,14 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
 
   options.paths = options.paths || [];
 
-  if (/^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/.test(x)) {
+  if (REGEX_RELATIVE_IMPORT.test(x)) {
+    // resolve relative import
     let res = path.resolve(basedir, x);
     if (x === '..') res += '/';
     const m = loadAsFileSync(res) || loadAsDirectorySync(res);
     if (m) return m;
   } else {
+    // otherwise search for node_modules
     const dirs = nodeModulesPaths();
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
