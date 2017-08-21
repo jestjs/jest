@@ -80,9 +80,12 @@ describe('no visual difference', () => {
 
 test('oneline strings', () => {
   // oneline strings don't produce a diff currently.
-  expect(stripAnsi(diff('ab', 'aa'))).toBe(null);
+  expect(diff('ab', 'aa')).toBe(null);
   expect(diff('a', 'a')).toMatch(/no visual difference/);
-  expect(stripAnsi(diff('123456789', '234567890'))).toBe(null);
+  expect(diff('123456789', '234567890')).toBe(null);
+  // if either string is oneline
+  expect(diff('oneline', 'multi\nline')).toBe(null);
+  expect(diff('multi\nline', 'oneline')).toBe(null);
 });
 
 test('falls back to not call toJSON if objects look identical', () => {
