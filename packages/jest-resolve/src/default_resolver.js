@@ -38,10 +38,8 @@ module.exports = defaultResolver;
  * resolve logic, taken directly from resolve.sync
  */
 
-var core = require('./core');
 var fs = require('fs');
 var path = require('path');
-var caller = require('./caller.js');
 var nodeModulesPaths = require('./node-modules-paths.js');
 
 function resolveSync(x, options) {
@@ -58,7 +56,7 @@ function resolveSync(x, options) {
   var readFileSync = opts.readFileSync || fs.readFileSync;
 
   var extensions = opts.extensions || ['.js'];
-  var y = opts.basedir || path.dirname(caller());
+  var y = opts.basedir;
 
   opts.paths = opts.paths || [];
 
@@ -71,8 +69,6 @@ function resolveSync(x, options) {
     var n = loadNodeModulesSync(x, y);
     if (n) return n;
   }
-
-  if (core[x]) return x;
 
   var err = new Error("Cannot find module '" + x + "' from '" + y + "'");
   err.code = 'MODULE_NOT_FOUND';
