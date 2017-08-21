@@ -42,6 +42,8 @@ import fs from 'fs';
 import path from 'path';
 import isBuiltinModule from 'is-builtin-module';
 
+import nodeModulesPaths from './node_modules_paths';
+
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
 function resolveSync(x: Path, options: ResolverOptions): Path {
@@ -60,7 +62,7 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     if (m) return m;
   } else {
     // otherwise search for node_modules
-    const dirs = nodeModulesPaths();
+    const dirs = nodeModulesPaths(basedir, options);
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       const target = path.join(dir, '/', x);
@@ -116,40 +118,5 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     }
 
     return loadAsFileSync(path.join(x, '/index'));
-  }
-
-  function nodeModulesPaths(): Path[] {
-    const modules =
-      options && options.moduleDirectory
-        ? [].concat(options.moduleDirectory)
-        : ['node_modules'];
-
-    // ensure that `basedir` is an absolute path at this point,
-    // resolving against the process' current working directory
-    const basedirAbs = path.resolve(basedir);
-
-    let prefix = '/';
-    if (/^([A-Za-z]:)/.test(basedirAbs)) {
-      prefix = '';
-    } else if (/^\\\\/.test(basedirAbs)) {
-      prefix = '\\\\';
-    }
-
-    const paths = [basedirAbs];
-    let parsed = path.parse(basedirAbs);
-    while (parsed.dir !== paths[paths.length - 1]) {
-      paths.push(parsed.dir);
-      parsed = path.parse(parsed.dir);
-    }
-
-    const dirs = paths.reduce((dirs, aPath) => {
-      return dirs.concat(
-        modules.map(moduleDir => {
-          return path.join(prefix, aPath, moduleDir);
-        }),
-      );
-    }, []);
-
-    return options.paths ? dirs.concat(options.paths) : dirs;
   }
 }
