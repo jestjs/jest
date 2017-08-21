@@ -34,7 +34,7 @@ function defaultResolver(path: Path, options: ResolverOptions): Path {
 module.exports = defaultResolver;
 
 /*
- * resolve logic, adapted from resolve.sync
+ * Adapted from: https://github.com/substack/node-resolve
  */
 type ErrorWithCode = Error & {code?: string};
 
