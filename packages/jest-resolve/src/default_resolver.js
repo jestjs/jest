@@ -33,25 +33,15 @@ function defaultResolver(path: Path, options: ResolverOptions): Path {
 
 module.exports = defaultResolver;
 
-/**
- * resolve logic, taken directly from resolve.sync
+/*
+ * resolve logic, adapted from resolve.sync
  */
-
 type ErrorWithCode = Error & {code?: string};
 
 const fs = require('fs');
 const path = require('path');
 
 function resolveSync(x: Path, options: ResolverOptions): Path {
-  function isFile(file: Path): boolean {
-    try {
-      const stat = fs.statSync(file);
-      return stat.isFile() || stat.isFIFO();
-    } catch (e) {
-      if (e && e.code === 'ENOENT') return false;
-      throw e;
-    }
-  }
   const readFileSync = fs.readFileSync;
 
   const extensions = options.extensions || ['.js'];
@@ -74,6 +64,19 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
   );
   err.code = 'MODULE_NOT_FOUND';
   throw err;
+
+  /*
+   * helper functions
+   */
+  function isFile(file: Path): boolean {
+    try {
+      const stat = fs.statSync(file);
+      return stat.isFile() || stat.isFIFO();
+    } catch (e) {
+      if (e && e.code === 'ENOENT') return false;
+      throw e;
+    }
+  }
 
   function loadAsFileSync(x: Path): ?Path {
     if (isFile(x)) {
@@ -109,7 +112,7 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
   }
 
   function loadNodeModulesSync(x: Path, start: Path): ?Path {
-    const dirs = nodeModulesPaths(start, options);
+    const dirs = nodeModulesPaths(start);
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       const m = loadAsFileSync(path.join(dir, '/', x));
@@ -120,40 +123,36 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
 
     return undefined;
   }
-}
 
-/**
- * node-modules-path, taken directly from resolve.sync
- */
+  function nodeModulesPaths(start: Path): Path[] {
+    const modules = ['node_modules'];
 
-function nodeModulesPaths(start: Path, options: ResolverOptions): Path[] {
-  const modules = ['node_modules'];
+    // ensure that `start` is an absolute path at this point,
+    // resolving against the process' current working directory
+    start = path.resolve(start);
 
-  // ensure that `start` is an absolute path at this point,
-  // resolving against the process' current working directory
-  start = path.resolve(start);
+    let prefix = '/';
+    if (/^([A-Za-z]:)/.test(start)) {
+      prefix = '';
+    } else if (/^\\\\/.test(start)) {
+      prefix = '\\\\';
+    }
 
-  let prefix = '/';
-  if (/^([A-Za-z]:)/.test(start)) {
-    prefix = '';
-  } else if (/^\\\\/.test(start)) {
-    prefix = '\\\\';
+    const paths = [start];
+    let parsed = path.parse(start);
+    while (parsed.dir !== paths[paths.length - 1]) {
+      paths.push(parsed.dir);
+      parsed = path.parse(parsed.dir);
+    }
+
+    const dirs = paths.reduce((dirs, aPath) => {
+      return dirs.concat(
+        modules.map(moduleDir => {
+          return path.join(prefix, aPath, moduleDir);
+        }),
+      );
+    }, []);
+
+    return options.paths ? dirs.concat(options.paths) : dirs;
   }
-
-  const paths = [start];
-  let parsed = path.parse(start);
-  while (parsed.dir !== paths[paths.length - 1]) {
-    paths.push(parsed.dir);
-    parsed = path.parse(parsed.dir);
-  }
-
-  const dirs = paths.reduce((dirs, aPath) => {
-    return dirs.concat(
-      modules.map(moduleDir => {
-        return path.join(prefix, aPath, moduleDir);
-      }),
-    );
-  }, []);
-
-  return options.paths ? dirs.concat(options.paths) : dirs;
 }
