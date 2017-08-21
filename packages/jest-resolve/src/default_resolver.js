@@ -55,8 +55,14 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     const m = loadAsFileSync(res) || loadAsDirectorySync(res);
     if (m) return m;
   } else {
-    const n = loadNodeModulesSync(x, basedir);
-    if (n) return n;
+    const dirs = nodeModulesPaths();
+    for (let i = 0; i < dirs.length; i++) {
+      const dir = dirs[i];
+      const m = loadAsFileSync(path.join(dir, '/', x));
+      if (m) return m;
+      const n = loadAsDirectorySync(path.join(dir, '/', x));
+      if (n) return n;
+    }
   }
 
   const err: ErrorWithCode = new Error(
@@ -109,19 +115,6 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     }
 
     return loadAsFileSync(path.join(x, '/index'));
-  }
-
-  function loadNodeModulesSync(x: Path): ?Path {
-    const dirs = nodeModulesPaths();
-    for (let i = 0; i < dirs.length; i++) {
-      const dir = dirs[i];
-      const m = loadAsFileSync(path.join(dir, '/', x));
-      if (m) return m;
-      const n = loadAsDirectorySync(path.join(dir, '/', x));
-      if (n) return n;
-    }
-
-    return undefined;
   }
 
   function nodeModulesPaths(): Path[] {
