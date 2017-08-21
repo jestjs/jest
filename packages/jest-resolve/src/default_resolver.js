@@ -37,38 +37,40 @@ module.exports = defaultResolver;
  * resolve logic, taken directly from resolve.sync
  */
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 function resolveSync(x, options) {
-  var opts = options || {};
-  var isFile = opts.isFile || function (file) {
-    try {
-      var stat = fs.statSync(file);
-    } catch (e) {
-      if (e && e.code === 'ENOENT') return false;
-      throw e;
-    }
-    return stat.isFile() || stat.isFIFO();
-  };
-  var readFileSync = opts.readFileSync || fs.readFileSync;
+  const opts = options || {};
+  const isFile =
+    opts.isFile ||
+    function(file) {
+      try {
+        const stat = fs.statSync(file);
+        return stat.isFile() || stat.isFIFO();
+      } catch (e) {
+        if (e && e.code === 'ENOENT') return false;
+        throw e;
+      }
+    };
+  const readFileSync = opts.readFileSync || fs.readFileSync;
 
-  var extensions = opts.extensions || ['.js'];
-  var y = opts.basedir;
+  const extensions = opts.extensions || ['.js'];
+  const y = opts.basedir;
 
   opts.paths = opts.paths || [];
 
   if (/^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/.test(x)) {
-    var res = path.resolve(y, x);
+    let res = path.resolve(y, x);
     if (x === '..') res += '/';
-    var m = loadAsFileSync(res) || loadAsDirectorySync(res);
+    const m = loadAsFileSync(res) || loadAsDirectorySync(res);
     if (m) return m;
   } else {
-    var n = loadNodeModulesSync(x, y);
+    const n = loadNodeModulesSync(x, y);
     if (n) return n;
   }
 
-  var err = new Error("Cannot find module '" + x + "' from '" + y + "'");
+  const err = new Error("Cannot find module '" + x + "' from '" + y + "'");
   err.code = 'MODULE_NOT_FOUND';
   throw err;
 
@@ -77,8 +79,8 @@ function resolveSync(x, options) {
       return x;
     }
 
-    for (var i = 0; i < extensions.length; i++) {
-      var file = x + extensions[i];
+    for (let i = 0; i < extensions.length; i++) {
+      const file = x + extensions[i];
       if (isFile(file)) {
         return file;
       }
@@ -86,19 +88,19 @@ function resolveSync(x, options) {
   }
 
   function loadAsDirectorySync(x) {
-    var pkgfile = path.join(x, '/package.json');
+    const pkgfile = path.join(x, '/package.json');
     if (isFile(pkgfile)) {
-      var body = readFileSync(pkgfile, 'utf8');
+      const body = readFileSync(pkgfile, 'utf8');
       try {
-        var pkg = JSON.parse(body);
+        let pkg = JSON.parse(body);
         if (opts.packageFilter) {
           pkg = opts.packageFilter(pkg, x);
         }
 
         if (pkg.main) {
-          var m = loadAsFileSync(path.resolve(x, pkg.main));
+          const m = loadAsFileSync(path.resolve(x, pkg.main));
           if (m) return m;
-          var n = loadAsDirectorySync(path.resolve(x, pkg.main));
+          const n = loadAsDirectorySync(path.resolve(x, pkg.main));
           if (n) return n;
         }
       } catch (e) {}
@@ -108,50 +110,52 @@ function resolveSync(x, options) {
   }
 
   function loadNodeModulesSync(x, start) {
-    var dirs = nodeModulesPaths(start, opts);
-    for (var i = 0; i < dirs.length; i++) {
-      var dir = dirs[i];
-      var m = loadAsFileSync(path.join(dir, '/', x));
+    const dirs = nodeModulesPaths(start, opts);
+    for (let i = 0; i < dirs.length; i++) {
+      const dir = dirs[i];
+      const m = loadAsFileSync(path.join(dir, '/', x));
       if (m) return m;
-      var n = loadAsDirectorySync(path.join(dir, '/', x));
+      const n = loadAsDirectorySync(path.join(dir, '/', x));
       if (n) return n;
     }
   }
-};
+}
 
 /**
  * node-modules-path, taken directly from resolve.sync
  */
 
 function nodeModulesPaths(start, opts) {
-  var modules = opts && opts.moduleDirectory
-    ? [].concat(opts.moduleDirectory)
-    : ['node_modules']
-  ;
+  const modules =
+    opts && opts.moduleDirectory
+      ? [].concat(opts.moduleDirectory)
+      : ['node_modules'];
 
   // ensure that `start` is an absolute path at this point,
   // resolving against the process' current working directory
   start = path.resolve(start);
 
-  var prefix = '/';
+  let prefix = '/';
   if (/^([A-Za-z]:)/.test(start)) {
     prefix = '';
   } else if (/^\\\\/.test(start)) {
     prefix = '\\\\';
   }
 
-  var paths = [start];
-  var parsed = path.parse(start);
+  const paths = [start];
+  let parsed = path.parse(start);
   while (parsed.dir !== paths[paths.length - 1]) {
     paths.push(parsed.dir);
     parsed = path.parse(parsed.dir);
   }
 
-  var dirs = paths.reduce(function (dirs, aPath) {
-    return dirs.concat(modules.map(function (moduleDir) {
-      return path.join(prefix, aPath, moduleDir);
-    }));
+  const dirs = paths.reduce((dirs, aPath) => {
+    return dirs.concat(
+      modules.map(moduleDir => {
+        return path.join(prefix, aPath, moduleDir);
+      }),
+    );
   }, []);
 
   return opts && opts.paths ? dirs.concat(opts.paths) : dirs;
-};
+}
