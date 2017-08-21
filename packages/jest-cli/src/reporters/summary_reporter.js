@@ -246,14 +246,14 @@ class SummaryReporter extends BaseReporter {
         : ' matching ';
 
       return (
-        prefix +
+        chalk.dim(prefix) +
         testPathPatternToRegExp(globalConfig.testPathPattern).toString()
       );
     };
 
     const testInfo = globalConfig.onlyChanged
       ? chalk.dim(' related to changed files')
-      : globalConfig.testPathPattern ? getMatchingTestsInfo() : '';
+      : globalConfig.testPathPattern ? chalk.dim(getMatchingTestsInfo()) : '';
 
     const nameInfo = globalConfig.testNamePattern
       ? chalk.dim(' with tests matching ') + `"${globalConfig.testNamePattern}"`
