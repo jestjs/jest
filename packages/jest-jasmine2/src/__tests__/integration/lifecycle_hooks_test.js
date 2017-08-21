@@ -55,4 +55,12 @@ describe('test lifecycle hooks', () => {
     afterEach(pushMessage('afterEach2'));
     it('does it 1', pushMessage('outer it 1'));
   });
+
+  describe('Hooks validatios', () => {
+    it('throw an error when the first element is an string', () => {
+      expect(beforeAll('setup')).toThrowError(
+        "First argument in the beforeAll hook can't be a string",
+      );
+    });
+  });
 });

@@ -85,7 +85,7 @@ Suite.prototype.beforeEach = function(fn) {
 };
 
 Suite.prototype.beforeAll = function(fn) {
-  this.beforeAllFns.push(fn);
+  this.beforeAllFns.push(isFunction(fn, 'beforeAll'));
 };
 
 Suite.prototype.afterEach = function(fn) {
@@ -93,7 +93,7 @@ Suite.prototype.afterEach = function(fn) {
 };
 
 Suite.prototype.afterAll = function(fn) {
-  this.afterAllFns.unshift(fn);
+  this.afterAllFns.unshift(isFunction(fn, 'afterAll'));
 };
 
 Suite.prototype.addChild = function(child) {
@@ -188,6 +188,14 @@ function isAfterAll(children) {
 
 function isFailure(args) {
   return !args[0];
+}
+
+function isFunction(fn, fnName) {
+  if (typeof fn.fn === 'string') {
+    throw new Error(`First argument in the ${fnName} hook cant't be a string`);
+  } else {
+    return fn;
+  }
 }
 
 module.exports = Suite;
