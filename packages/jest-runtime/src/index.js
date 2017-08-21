@@ -761,6 +761,7 @@ class Runtime {
 
       mock,
       requireActual: localRequire.requireActual,
+      requireMock: localRequire.requireMock,
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
