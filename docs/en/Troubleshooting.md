@@ -45,6 +45,28 @@ This will output a link that you can open in Chrome. After opening that link, th
 
 There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
+To attach the built-in debugger, run your tests as aforementioned:
+```
+node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
+or on Windows
+node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
+```
+
+Then attach VS Code's debugger using the following `launch.json` config:
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "type": "node",
+        "request": "attach",
+        "name": "Attach",
+        "port": 9229
+      },
+  ]
+}
+```
+
 To automatically launch and attach to a process running your tests, use the following configuration:
 ```json
 {
