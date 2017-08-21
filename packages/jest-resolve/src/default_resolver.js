@@ -38,8 +38,9 @@ module.exports = defaultResolver;
  */
 type ErrorWithCode = Error & {code?: string};
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
 function resolveSync(x: Path, options: ResolverOptions): Path {
