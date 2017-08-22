@@ -43,14 +43,13 @@ module.exports = (
     testDetail.push(`${toMB(result.memoryUsage)} MB heap size`);
   }
 
-  const projectDisplayName = projectConfig
-    ? printDisplayName(projectConfig)
-    : '';
+  const projectDisplayName =
+    projectConfig && projectConfig.displayName
+      ? printDisplayName(projectConfig) + ' '
+      : '';
 
   return (
-    `${status} ${projectDisplayName} ${formatTestPath(
-      globalConfig,
-      testPath,
-    )}` + (testDetail.length ? ` (${testDetail.join(', ')})` : '')
+    `${status} ${projectDisplayName}${formatTestPath(globalConfig, testPath)}` +
+    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
   );
 };
