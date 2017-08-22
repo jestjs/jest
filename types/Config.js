@@ -15,7 +15,7 @@ export type HasteConfig = {|
   defaultPlatform?: ?string,
   hasteImplModulePath?: string,
   platforms?: Array<string>,
-  providesModuleNodeModules: Array<string>,
+  providesModuleNodeModules: Array<string>
 |};
 
 export type ReporterConfig = [string, Object];
@@ -37,7 +37,7 @@ export type DefaultOptions = {|
   mapCoverage: boolean,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
-  moduleNameMapper: {[key: string]: string},
+  moduleNameMapper: { [key: string]: string },
   modulePathIgnorePatterns: Array<string>,
   noStackTrace: boolean,
   notify: boolean,
@@ -58,7 +58,7 @@ export type DefaultOptions = {|
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
-  watchman: boolean,
+  watchman: boolean
 |};
 
 export type InitialOptions = {
@@ -71,11 +71,12 @@ export type InitialOptions = {
   changedFilesWithAncestor?: boolean,
   collectCoverage?: boolean,
   collectCoverageFrom?: Array<Glob>,
-  collectCoverageOnlyFrom?: {[key: string]: boolean},
+  collectCoverageOnlyFrom?: { [key: string]: boolean },
   coverageDirectory?: string,
   coveragePathIgnorePatterns?: Array<string>,
   coverageReporters?: Array<string>,
-  coverageThreshold?: {global: {[key: string]: number}},
+  coverageThreshold?: { global: { [key: string]: number } },
+  displayName?: string,
   expand?: boolean,
   findRelatedTests?: boolean,
   forceExit?: boolean,
@@ -89,7 +90,7 @@ export type InitialOptions = {
   moduleDirectories?: Array<string>,
   moduleFileExtensions?: Array<string>,
   moduleLoader?: Path,
-  moduleNameMapper?: {[key: string]: string},
+  moduleNameMapper?: { [key: string]: string },
   modulePathIgnorePatterns?: Array<string>,
   modulePaths?: Array<string>,
   name?: string,
@@ -124,7 +125,7 @@ export type InitialOptions = {
   testRunner?: string,
   testURL?: string,
   timers?: 'real' | 'fake',
-  transform?: {[key: string]: string},
+  transform?: { [key: string]: string },
   transformIgnorePatterns?: Array<Glob>,
   unmockedModulePathPatterns?: Array<string>,
   updateSnapshot?: boolean,
@@ -132,7 +133,7 @@ export type InitialOptions = {
   verbose?: ?boolean,
   watch?: boolean,
   watchAll?: boolean,
-  watchman?: boolean,
+  watchman?: boolean
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -142,10 +143,10 @@ export type GlobalConfig = {|
   changedFilesWithAncestor: boolean,
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{[key: string]: boolean},
+  collectCoverageOnlyFrom: ?{ [key: string]: boolean },
   coverageDirectory: string,
   coverageReporters: Array<string>,
-  coverageThreshold: {global: {[key: string]: number}},
+  coverageThreshold: { global: { [key: string]: number } },
   expand: boolean,
   findRelatedTests: boolean,
   forceExit: boolean,
@@ -175,7 +176,7 @@ export type GlobalConfig = {|
   verbose: ?boolean,
   watch: boolean,
   watchAll: boolean,
-  watchman: boolean,
+  watchman: boolean
 |};
 
 export type ProjectConfig = {|
@@ -185,6 +186,7 @@ export type ProjectConfig = {|
   cacheDirectory: Path,
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
+  displayName: ?string,
   globals: ConfigGlobals,
   haste: HasteConfig,
   moduleDirectories: Array<string>,
@@ -213,5 +215,5 @@ export type ProjectConfig = {|
   timers: 'real' | 'fake',
   transform: Array<[string, Path]>,
   transformIgnorePatterns: Array<Glob>,
-  unmockedModulePathPatterns: ?Array<string>,
+  unmockedModulePathPatterns: ?Array<string>
 |};

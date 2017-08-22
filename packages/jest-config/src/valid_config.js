@@ -36,6 +36,7 @@ module.exports = ({
       branches: 50,
     },
   },
+  displayName: 'project-name',
   expand: false,
   forceExit: false,
   globals: {},
