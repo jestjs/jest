@@ -14,7 +14,8 @@
     "jest-matcher-utils": "^20.0.3",
     "jest-matchers": "^20.0.3",
     "jest-message-util": "^20.0.3",
-    "jest-snapshot": "^20.0.3"
+    "jest-snapshot": "^20.0.3",
+    "p-cancelable": "^0.3.0"
   },
   "devDependencies": {
     "jest-runtime": "^20.0.4"
