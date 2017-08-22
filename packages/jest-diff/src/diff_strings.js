@@ -21,7 +21,7 @@ export type DiffOptions = {|
   contextLines?: number,
 |};
 
-export type Replacement = {|
+export type Original = {|
   a: string,
   b: string,
 |};
@@ -36,14 +36,33 @@ type Hunk = {|
   oldStart: number,
 |};
 
-const getColor = (added: boolean, removed: boolean) =>
-  added ? chalk.red : removed ? chalk.green : chalk.dim;
+type DIFF_D = -1 | 1 | 0; // diff digit: removed | added | equal
 
-const getBgColor = (added: boolean, removed: boolean) =>
-  added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
+// Given a chunk, return the diff character.
+const getC = (chunk): string => (chunk.removed ? '-' : chunk.added ? '+' : ' ');
 
+// Given a diff character, return the diff digit.
+const getD = (c: string): DIFF_D => (c === '-' ? -1 : c === '+' ? 1 : 0);
+
+// Return foreground color for line.
+// If compared lines are equal and were formatted with `indent: 0` option,
+// then delta is difference in length of original lines.
+const getColor = (d: DIFF_D, delta?: number) =>
+  d === 1 ? chalk.red : d === -1 ? chalk.green : delta ? chalk.cyan : chalk.dim;
+
+// Return background color for leading or trailing spaces.
+// Do NOT call if original lines are equal.
+const getBgColor = (d: DIFF_D) =>
+  d === 1 ? chalk.bgRed : d === -1 ? chalk.bgGreen : chalk.bgCyan;
+
+// Highlight trailing ONLY if compared lines from snapshot or multiline string.
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
+
+// Highlight BOTH leading AND trailing if compared lines from data structure,
+// therefore expected and received were formatted with `indent: 0` option.
+const highlightWhitespace = (line: string, bgColor: Function): string =>
+  highlightTrailingWhitespace(line.replace(/^\s+/, bgColor('$&')), bgColor);
 
 const getAnnotation = (options: ?DiffOptions): string =>
   chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) +
@@ -52,7 +71,7 @@ const getAnnotation = (options: ?DiffOptions): string =>
   '\n\n';
 
 // Given string, return array of its lines.
-function splitIntoLines(string) {
+const splitIntoLines = string => {
   const lines = string.split('\n');
 
   if (lines.length !== 0 && lines[lines.length - 1] === '') {
@@ -60,69 +79,81 @@ function splitIntoLines(string) {
   }
 
   return lines;
-}
+};
 
-// Replace unindented lines with original lines.
-function replaceValueOfChunks(chunks, replacement) {
-  const aLines = splitIntoLines(replacement.a);
-  const bLines = splitIntoLines(replacement.b);
+// Given a diff character and the corresponding compared line, return a line.
+// There is a getOriginal callback function if from data structure,
+// therefore expected and received were formatted with `indent: 0` option.
+const formatLine = (
+  c: string,
+  lineCompared: string,
+  getOriginal?: Function,
+) => {
+  const d = getD(c);
 
-  let aIndex = 0;
-  let bIndex = 0;
-  chunks.forEach(chunk => {
-    const count = chunk.count; // number of lines in chunk
-
-    // Assume that a is expected and b is received.
-    if (chunk.removed) {
-      chunk.value = aLines
-        .slice(aIndex, (aIndex += count))
-        .map(line => line + '\n')
-        .join('');
-    } else {
-      chunk.value = bLines
-        .slice(bIndex, (bIndex += count))
-        .map(line => line + '\n')
-        .join('');
-      if (!chunk.added) {
-        aIndex += count; // increment both if chunk is unchanged
-      }
-    }
-  });
-
-  return chunks;
-}
-
-const diffLinesWithReplacement = (
-  a: string,
-  b: string,
-  replacement?: Replacement,
-): Diff => {
-  let chunks = diffLines(a, b);
-  if (replacement) {
-    chunks = replaceValueOfChunks(chunks, replacement);
+  if (getOriginal) {
+    const gotOriginal = getOriginal(d);
+    const lineOriginal = d === 0 ? gotOriginal[1] : gotOriginal;
+    const indentation = lineOriginal.slice(
+      0,
+      lineOriginal.length - lineCompared.length,
+    );
+    // If compared lines are equal,
+    // then delta is difference in length of original lines.
+    const delta = d === 0 ? gotOriginal[1].length - gotOriginal[0].length : 0;
+    return getColor(d, delta)(
+      c +
+        indentation +
+        (d === 0 && delta === 0
+          ? lineCompared
+          : highlightWhitespace(lineCompared, getBgColor(d))),
+    );
   }
+
+  return getColor(d)(
+    c +
+      (d === 0
+        ? lineCompared
+        : highlightTrailingWhitespace(lineCompared, getBgColor(d))),
+  );
+};
+
+// Given original lines, return callback function which given diff digit,
+// returns either the corresponding expected OR received line,
+// or if compared lines are equal, array of expected AND received line.
+const getterForChunks = (original: Original) => {
+  const linesExpected = splitIntoLines(original.a);
+  const linesReceived = splitIntoLines(original.b);
+
+  let indexExpected = 0;
+  let indexReceived = 0;
+
+  return (d: DIFF_D) =>
+    d === -1
+      ? linesExpected[indexExpected++]
+      : d === 1
+        ? linesReceived[indexReceived++]
+        : [linesExpected[indexExpected++], linesReceived[indexReceived++]];
+};
+
+const formatChunks = (a: string, b: string, original?: Original): Diff => {
+  const getOriginal = original && getterForChunks(original);
   let isDifferent = false;
+
   return {
-    diff: chunks
-      .map(part => {
-        const {added, removed, value} = part;
+    diff: diffLines(a, b)
+      .map(chunk => {
+        const {added, removed, value} = chunk;
         if (added || removed) {
           isDifferent = true;
         }
+        const c = getC(chunk);
 
-        const lines = splitIntoLines(value);
-        const color = getColor(added, removed);
-        const bgColor = getBgColor(added, removed);
-
-        return lines
-          .map(line => {
-            const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-            const mark = added ? '+' : removed ? '-' : ' ';
-            return color(mark + highlightedLine) + '\n';
-          })
-          .join('');
+        return splitIntoLines(value)
+          .map(lineCompared => formatLine(c, lineCompared, getOriginal))
+          .join('\n');
       })
-      .join('')
+      .join('\n')
       .trim(),
     isDifferent,
   };
@@ -142,35 +173,29 @@ const createPatchMark = (hunk: Hunk): string => {
   return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
 };
 
-// Replace unindented lines with original lines.
-function replaceLinesInHunks(hunks, replacement) {
-  const aLines = splitIntoLines(replacement.a);
-  const bLines = splitIntoLines(replacement.b);
+// Given original lines, return callback function which given indexes for hunk,
+// returns another callback function which given diff digit,
+// returns either the corresponding expected OR received line,
+// or if compared lines are equal, array of expected AND received line.
+const getterForHunks = (original: Original) => {
+  const linesExpected = splitIntoLines(original.a);
+  const linesReceived = splitIntoLines(original.b);
 
-  hunks.forEach(hunk => {
-    // hunk has one-based line numbers
-    let aIndex = hunk.oldStart - 1;
-    let bIndex = hunk.newStart - 1;
+  return (indexExpected: number, indexReceived: number) => (d: DIFF_D) =>
+    d === -1
+      ? linesExpected[indexExpected++]
+      : d === 1
+        ? linesReceived[indexReceived++]
+        : [linesExpected[indexExpected++], linesReceived[indexReceived++]];
+};
 
-    // Assume that a is expected and b is received.
-    hunk.lines = hunk.lines.map(line => {
-      const mark = line[0];
-      if (mark === ' ') {
-        aIndex += 1; // increment both if line is unchanged
-      }
-      return mark + (mark === '-' ? aLines[aIndex++] : bLines[bIndex++]);
-    });
-  });
-
-  return hunks;
-}
-
-const structuredPatchWithReplacement = (
+const formatHunks = (
   a: string,
   b: string,
   contextLines?: number,
-  replacement?: Replacement,
+  original?: Original,
 ): Diff => {
+  const getter = original && getterForHunks(original);
   const options = {
     context:
       typeof contextLines === 'number' && contextLines >= 0
@@ -187,33 +212,22 @@ const structuredPatchWithReplacement = (
   }
 
   const oldLinesCount = (a.match(/\n/g) || []).length;
-  let hunks = structuredPatch('', '', a, b, '', '', options).hunks;
-  if (replacement) {
-    hunks = replaceLinesInHunks(hunks, replacement);
-  }
 
   return {
-    diff: hunks
+    diff: structuredPatch('', '', a, b, '', '', options).hunks
       .map((hunk: Hunk) => {
+        const getOriginal =
+          getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
         const lines = hunk.lines
-          .map(line => {
-            const added = line[0] === '+';
-            const removed = line[0] === '-';
-
-            const color = getColor(added, removed);
-            const bgColor = getBgColor(added, removed);
-
-            const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-            return color(highlightedLine) + '\n';
-          })
-          .join('');
+          .map(line => formatLine(line[0], line.slice(1), getOriginal))
+          .join('\n');
 
         isDifferent = true;
         return shouldShowPatchMarks(hunk, oldLinesCount)
           ? createPatchMark(hunk) + lines
           : lines;
       })
-      .join('')
+      .join('\n')
       .trim(),
     isDifferent,
   };
@@ -223,7 +237,7 @@ function diffStrings(
   a: string,
   b: string,
   options: ?DiffOptions,
-  replacement?: Replacement,
+  original?: Original,
 ): string {
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
   // (where "d" is the edit distance) and can get very slow for large edit
@@ -231,13 +245,8 @@ function diffStrings(
   // whenever linebreaks are involved.
   const result =
     options && options.expand === false
-      ? structuredPatchWithReplacement(
-          a,
-          b,
-          options && options.contextLines,
-          replacement,
-        )
-      : diffLinesWithReplacement(a, b, replacement);
+      ? formatHunks(a, b, options && options.contextLines, original)
+      : formatChunks(a, b, original);
 
   if (result.isDifferent) {
     return getAnnotation(options) + result.diff;

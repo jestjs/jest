@@ -56,6 +56,6 @@ describe('ConvertAnsi plugin', () => {
   });
 
   it('does not support other colors', () => {
-    expect(prettyFormatResult(`${ansiStyle.cyan.open}`)).toEqual('""');
+    expect(prettyFormatResult(`${ansiStyle.blue.open}`)).toEqual('""');
   });
 });

@@ -96,7 +96,7 @@ exports[`falls back to not call toJSON 1`] = `
 
 <dim> Object {
 <red>+  \\"key\\": Object {</>
-<dim>     \\"line\\": 2,
+<cyan>     \\"line\\": 2,</>
 <red>+  },</>
 <dim>   \\"toJSON\\": [Function toJSON],
 <dim> }"
