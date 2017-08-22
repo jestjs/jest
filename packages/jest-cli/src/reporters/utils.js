@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {Path} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
 import path from 'path';
@@ -22,6 +22,11 @@ type SummaryOptions = {|
 |};
 
 const PROGRESS_BAR_WIDTH = 40;
+
+const printDisplayName = (config: ProjectConfig) =>
+  config.displayName
+    ? chalk.reset.inverse.white.dim(` ${config.displayName} `)
+    : '';
 
 const trimAndFormatPath = (
   pad: number,
@@ -235,6 +240,7 @@ module.exports = {
   formatTestPath,
   getSummary,
   pluralize,
+  printDisplayName,
   relativePath,
   trimAndFormatPath,
   wrapAnsiString,

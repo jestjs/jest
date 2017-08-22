@@ -8,11 +8,11 @@
  * @flow
  */
 
-import type {Path} from 'types/Config';
+import type {Path, GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 
 import chalk from 'chalk';
-import {formatTestPath} from './utils';
+import {formatTestPath, printDisplayName} from './utils';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the
@@ -20,7 +20,11 @@ const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 const FAIL = chalk.reset.inverse.bold.red(' FAIL ');
 const PASS = chalk.reset.inverse.bold.green(' PASS ');
 
-module.exports = (result: TestResult, config: {rootDir: Path}) => {
+module.exports = (
+  result: TestResult,
+  globalConfig: GlobalConfig,
+  projectConfig?: ProjectConfig,
+) => {
   const testPath = result.testFilePath;
   const status =
     result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
@@ -39,8 +43,14 @@ module.exports = (result: TestResult, config: {rootDir: Path}) => {
     testDetail.push(`${toMB(result.memoryUsage)} MB heap size`);
   }
 
+  const projectDisplayName = projectConfig
+    ? printDisplayName(projectConfig)
+    : '';
+
   return (
-    `${status} ${formatTestPath(config, testPath)}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
+    `${status} ${projectDisplayName} ${formatTestPath(
+      globalConfig,
+      testPath,
+    )}` + (testDetail.length ? ` (${testDetail.join(', ')})` : '')
   );
 };
