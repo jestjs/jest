@@ -29,6 +29,7 @@ aliases:
       echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
       # crowdin install start
       sudo apt-get update
+      sudo apt-get install default-jre
       wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
       sudo dpkg -i crowdin.deb
       # crowdin install end
