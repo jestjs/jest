@@ -68,9 +68,11 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     });
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
-      const target = path.join(dir, '/', x);
-      const m = loadAsFileSync(target) || loadAsDirectorySync(target);
-      if (m) return m;
+      if (isDirectory(dir)) {
+        const target = path.join(dir, '/', x);
+        const m = loadAsFileSync(target) || loadAsDirectorySync(target);
+        if (m) return m;
+      }
     }
   }
 
@@ -85,16 +87,6 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
   /*
    * helper functions
    */
-  function isFile(file: Path): boolean {
-    try {
-      const stat = fs.statSync(file);
-      return stat.isFile() || stat.isFIFO();
-    } catch (e) {
-      if (e && e.code === 'ENOENT') return false;
-      throw e;
-    }
-  }
-
   function loadAsFileSync(x: Path): ?Path {
     if (isFile(x)) return x;
 
@@ -107,6 +99,8 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
   }
 
   function loadAsDirectorySync(x: Path): ?Path {
+    if (!isDirectory(x)) return undefined;
+
     const pkgfile = path.join(x, '/package.json');
     if (isFile(pkgfile)) {
       const body = readFileSync(pkgfile, 'utf8');
@@ -122,4 +116,39 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
 
     return loadAsFileSync(path.join(x, '/index'));
   }
+}
+
+/*
+ * helper functions
+ */
+const memoIsFile: {[Path]: boolean} = {};
+function isFile(file: Path): boolean {
+  let result = memoIsFile[file];
+  if (result !== undefined) return result;
+
+  try {
+    const stat = fs.statSync(file);
+    result = stat.isFile() || stat.isFIFO();
+  } catch (e) {
+    if (!(e && e.code === 'ENOENT')) throw e;
+    result = false;
+  }
+
+  return (memoIsFile[file] = result);
+}
+
+const memoIsDirectory: {[Path]: boolean} = {};
+function isDirectory(dir: Path): boolean {
+  let result = memoIsDirectory[dir];
+  if (result !== undefined) return result;
+
+  try {
+    const stat = fs.statSync(dir);
+    result = stat.isDirectory();
+  } catch (e) {
+    if (!(e && e.code === 'ENOENT')) throw e;
+    result = false;
+  }
+
+  return (memoIsDirectory[dir] = result);
 }
