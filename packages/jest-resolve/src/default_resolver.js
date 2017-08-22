@@ -124,7 +124,7 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
 const memoIsFile: {[Path]: boolean} = {};
 function isFile(file: Path): boolean {
   let result = memoIsFile[file];
-  if (result != null) return result;
+  if (result !== undefined) return result;
 
   try {
     const stat = fs.statSync(file);
@@ -140,7 +140,7 @@ function isFile(file: Path): boolean {
 const memoIsDirectory: {[Path]: boolean} = {};
 function isDirectory(dir: Path): boolean {
   let result = memoIsDirectory[dir];
-  if (result != null) return result;
+  if (result !== undefined) return result;
 
   try {
     const stat = fs.statSync(dir);
