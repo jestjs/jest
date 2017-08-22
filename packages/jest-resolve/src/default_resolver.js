@@ -62,7 +62,10 @@ function resolveSync(x: Path, options: ResolverOptions): Path {
     if (m) return m;
   } else {
     // otherwise search for node_modules
-    const dirs = nodeModulesPaths(basedir, options);
+    const dirs = nodeModulesPaths(basedir, {
+      moduleDirectory: options.moduleDirectory,
+      paths: options.paths,
+    });
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       const target = path.join(dir, '/', x);
