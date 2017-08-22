@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {Path, GlobalConfig, ProjectConfig} from 'types/Config';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 
 import chalk from 'chalk';
