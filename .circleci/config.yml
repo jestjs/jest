@@ -28,9 +28,7 @@ aliases:
       git config --global user.name "Website Deployment Script"
       echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
       # crowdin install start
-      sudo apt-get install default-jre
-      wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
-      sudo dpkg -i crowdin.deb
+      sudo apt-get update && sudo apt-get install crowdin
       # crowdin install end
       crowdin --config crowdin.yaml upload sources --auto-update -b master
       crowdin --config crowdin.yaml download -b master
