@@ -14,7 +14,7 @@ import type {ResolveModuleConfig} from 'types/Resolve';
 
 import fs from 'fs';
 import path from 'path';
-import nodeModulesPaths from 'resolve/lib/node-modules-paths';
+import nodeModulesPaths from './node_modules_paths';
 import isBuiltinModule from 'is-builtin-module';
 import defaultResolver from './default_resolver.js';
 import chalk from 'chalk';
