@@ -98,7 +98,7 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
       "name": "Debug CRA Tests",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "${workspaceRoot/node_modules/.bin/react-scripts",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
       "runtimeArgs": [
         "--inspect-brk",
         "test"
