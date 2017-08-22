@@ -119,6 +119,13 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 
 More information on Node debugging can be found [here](https://nodejs.org/api/debugger.html).
 
+### Debugging in WebStorm
+The easiest way to debug Jest tests in [WebStorm](https://www.jetbrains.com/webstorm/) is using `Jest run/debug configuration`. It will launch tests and automatically attach debugger.
+
+In the WebStorm menu `Run` select `Edit Configurations...`. Then click `+` and select `Jest`. Optionally specify the Jest configuration file, additional options, and environment variables. Save the configuration, put the breakpoints in the code, then click the green debug icon to start debugging. 
+
+If you are using Facebook's [`create-react-app`](https://github.com/facebookincubator/create-react-app), in the Jest run/debug configuration specify the path to the `react-scripts` package in the Jest package field and add `--env=jsdom` to the Jest options field.
+
 ### Caching Issues
 
 The transform script was changed or babel was updated and the changes aren't

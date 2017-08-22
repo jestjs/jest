@@ -31,6 +31,7 @@ export type Jest = {|
   isMockFunction(fn: Function): boolean,
   mock(moduleName: string, moduleFactory?: any, options?: Object): Jest,
   requireActual: LocalModuleRequire,
+  requireMock: LocalModuleRequire,
   resetAllMocks(): Jest,
   resetModuleRegistry(): Jest,
   resetModules(): Jest,
