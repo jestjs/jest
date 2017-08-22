@@ -142,7 +142,12 @@ class Status {
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
-        const prefix = RUNNING + printDisplayName(config) + ' ';
+
+        const projectDisplayName = config.displayName
+          ? printDisplayName(config) + ' '
+          : '';
+        const prefix = RUNNING + projectDisplayName;
+
         content +=
           wrapAnsiString(
             prefix +

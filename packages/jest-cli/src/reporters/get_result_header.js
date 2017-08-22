@@ -49,7 +49,9 @@ module.exports = (
       : '';
 
   return (
-    `${status} ${projectDisplayName}${formatTestPath(globalConfig, testPath)}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
+    `${status} ${projectDisplayName}${formatTestPath(
+      projectConfig ? projectConfig : globalConfig,
+      testPath,
+    )}` + (testDetail.length ? ` (${testDetail.join(', ')})` : '')
   );
 };
