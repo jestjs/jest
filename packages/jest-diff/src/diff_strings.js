@@ -75,8 +75,7 @@ const diffLines = (a: string, b: string): Diff => {
           })
           .join('\n');
       })
-      .join('\n')
-      .trim(),
+      .join('\n'),
     isDifferent,
   };
 };
@@ -134,8 +133,7 @@ const structuredPatch = (a: string, b: string, contextLines?: number): Diff => {
           ? createPatchMark(hunk) + lines
           : lines;
       })
-      .join('\n')
-      .trim(),
+      .join('\n'),
     isDifferent,
   };
 };
