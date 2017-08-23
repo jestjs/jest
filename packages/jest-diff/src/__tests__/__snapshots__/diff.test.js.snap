@@ -87,21 +87,6 @@ exports[`context number of lines: null (5 default) 1`] = `
 <dim> }"
 `;
 
-exports[`falls back to not call toJSON 1`] = `
-"<dim>Compared values serialize to the same structure.
-<dim>Printing internal object structure without calling \`toJSON\` instead.
-
-<green>- Expected</>
-<red>+ Received</>
-
-<dim> Object {
-<red>+  \\"key\\": Object {</>
-<cyan>     \\"line\\": 2,</>
-<red>+  },</>
-<dim>   \\"toJSON\\": [Function toJSON],
-<dim> }"
-`;
-
 exports[`falls back to not call toJSON if objects look identical 1`] = `
 "<dim>Compared values serialize to the same structure.
 <dim>Printing internal object structure without calling \`toJSON\` instead.

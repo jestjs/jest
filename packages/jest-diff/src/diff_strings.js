@@ -109,7 +109,7 @@ const formatLine = (
     );
   }
 
-  // Format compared line from snapshot or multiline string.
+  // Format compared line when expected is snapshot or multiline string.
   return getColor(d)(
     c +
       (d === 0
@@ -153,8 +153,7 @@ const formatChunks = (a: string, b: string, original?: Original): Diff => {
           .map(line => formatLine(c, line, getOriginal))
           .join('\n');
       })
-      .join('\n')
-      .trim(),
+      .join('\n'),
     isDifferent,
   };
 };
@@ -216,7 +215,7 @@ const formatHunks = (
   return {
     diff: structuredPatch('', '', a, b, '', '', options).hunks
       .map((hunk: Hunk) => {
-        // oldStart and newStart are one-based but args are zero-based
+        // Hunk properties are one-based but index args are zero-based.
         const getOriginal =
           getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
         const lines = hunk.lines
@@ -228,8 +227,7 @@ const formatHunks = (
           ? createPatchMark(hunk) + lines
           : lines;
       })
-      .join('\n')
-      .trim(),
+      .join('\n'),
     isDifferent,
   };
 };

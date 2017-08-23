@@ -87,7 +87,12 @@ describe('no visual difference', () => {
 
 test('oneline strings', () => {
   // oneline strings don't produce a diff currently.
-  expect(received('ab', 'aa')).toBe(null);
+  expect(diff('ab', 'aa')).toBe(null);
+  expect(diff('a', 'a')).toMatch(/no visual difference/);
+  expect(diff('123456789', '234567890')).toBe(null);
+  // if either string is oneline
+  expect(diff('oneline', 'multi\nline')).toBe(null);
+  expect(diff('multi\nline', 'oneline')).toBe(null);
 });
 
 test('falls back to not call toJSON if objects look identical', () => {
@@ -108,27 +113,6 @@ test('prints a fallback message if two objects truly look identical', () => {
 //   * to omit Expected/Received heading which is an irrelevant detail
 // * join lines of expected string instead of multiline string:
 //   * to avoid ambiguity about indentation in diff lines
-
-test('falls back to not call toJSON', () => {
-  const a = {line: 2, toJSON};
-  const b = {key: {line: 2}, toJSON};
-  expect(diff(a, b)).toMatchSnapshot();
-  const expected = [
-    ' Object {',
-    '-  "key": Object {',
-    '     "line": 2,',
-    '-  },',
-    '   "toJSON": [Function toJSON],',
-    ' }',
-  ].join('\n');
-
-  test('unexpanded', () => {
-    expect(received(a, b, unexpanded)).toMatch(expected);
-  });
-  test('expanded', () => {
-    expect(received(a, b, expanded)).toMatch(expected);
-  });
-});
 
 describe('multiline strings', () => {
   const a = `line 1

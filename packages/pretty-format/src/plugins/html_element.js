@@ -11,55 +11,49 @@
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
 import escapeHTML from './lib/escape_html';
-import {printElement, printElementAsLeaf, printProps} from './lib/markup';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
 type Attribute = {
   name: string,
   value: string,
 };
 
-type HTMLElement = {
+type Element = {
   attributes: Array<Attribute>,
-  childNodes: Array<HTMLElement | HTMLText | HTMLComment>,
+  childNodes: Array<Element | Text | Comment>,
   nodeType: 1,
   tagName: string,
-  textContent: string,
 };
-type HTMLText = {
+type Text = {
   data: string,
   nodeType: 3,
 };
-type HTMLComment = {
+type Comment = {
   data: string,
   nodeType: 8,
 };
 
-const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)|Text|Comment/;
+const ELEMENT_NODE = 1;
+const TEXT_NODE = 3;
+const COMMENT_NODE = 8;
+
+const ELEMENT_REGEXP = /^HTML\w*?Element$/;
+
+const testNode = (nodeType: any, name: any) =>
+  (nodeType === ELEMENT_NODE && ELEMENT_REGEXP.test(name)) ||
+  (nodeType === TEXT_NODE && name === 'Text') ||
+  (nodeType === COMMENT_NODE && name === 'Comment');
 
 export const test = (val: any) =>
-  val !== undefined &&
-  val !== null &&
-  (val.nodeType === 1 || val.nodeType === 3 || val.nodeType === 8) &&
-  val.constructor !== undefined &&
-  val.constructor.name !== undefined &&
-  HTML_ELEMENT_REGEXP.test(val.constructor.name);
-
-// Return empty string if children is empty.
-function printChildren(children, config, indentation, depth, refs, printer) {
-  const colors = config.colors;
-  return children
-    .map(
-      node =>
-        typeof node === 'string'
-          ? colors.content.open + escapeHTML(node) + colors.content.close
-          : printer(node, config, indentation, depth, refs),
-    )
-    .filter(value => value.trim().length)
-    .map(value => config.spacingOuter + indentation + value)
-    .join('');
-}
-
-const getType = element => element.tagName.toLowerCase();
+  val &&
+  val.constructor &&
+  val.constructor.name &&
+  testNode(val.nodeType, val.constructor.name);
 
 // Convert array of attribute objects to keys array and props object.
 const keysMapper = attribute => attribute.name;
@@ -69,41 +63,38 @@ const propsReducer = (props, attribute) => {
 };
 
 export const serialize = (
-  element: HTMLElement | HTMLText | HTMLComment,
+  node: Element | Text | Comment,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
 ): string => {
-  if (element.nodeType === 3) {
-    return element.data
-      .split('\n')
-      .map(text => text.trimLeft())
-      .filter(text => text.length)
-      .join(' ');
+  const colors = config.colors;
+  if (node.nodeType === TEXT_NODE) {
+    return colors.content.open + escapeHTML(node.data) + colors.content.close;
   }
 
-  const colors = config.colors;
-  if (element.nodeType === 8) {
+  if (node.nodeType === COMMENT_NODE) {
     return (
       colors.comment.open +
-      '<!-- ' +
-      element.data.trim() +
-      ' -->' +
+      '<!--' +
+      escapeHTML(node.data) +
+      '-->' +
       colors.comment.close
     );
   }
 
+  const type = node.tagName.toLowerCase();
   if (++depth > config.maxDepth) {
-    return printElementAsLeaf(getType(element), config);
+    return printElementAsLeaf(type, config);
   }
 
   return printElement(
-    getType(element),
+    type,
     printProps(
-      Array.prototype.map.call(element.attributes, keysMapper).sort(),
-      Array.prototype.reduce.call(element.attributes, propsReducer, {}),
+      Array.prototype.map.call(node.attributes, keysMapper).sort(),
+      Array.prototype.reduce.call(node.attributes, propsReducer, {}),
       config,
       indentation + config.indent,
       depth,
@@ -111,7 +102,7 @@ export const serialize = (
       printer,
     ),
     printChildren(
-      Array.prototype.slice.call(element.childNodes),
+      Array.prototype.slice.call(node.childNodes),
       config,
       indentation + config.indent,
       depth,

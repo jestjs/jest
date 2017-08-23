@@ -10,7 +10,6 @@
 
 import type {Path} from 'types/Config';
 
-import resolve from 'resolve';
 import browserResolve from 'browser-resolve';
 
 type ResolverOptions = {|
@@ -21,10 +20,10 @@ type ResolverOptions = {|
   paths?: ?Array<Path>,
 |};
 
-function defaultResolver(path: Path, options: ResolverOptions) {
-  const resv = options.browser ? browserResolve : resolve;
+function defaultResolver(path: Path, options: ResolverOptions): Path {
+  const resolve = options.browser ? browserResolve.sync : resolveSync;
 
-  return resv.sync(path, {
+  return resolve(path, {
     basedir: options.basedir,
     extensions: options.extensions,
     moduleDirectory: options.moduleDirectory,
@@ -33,3 +32,139 @@ function defaultResolver(path: Path, options: ResolverOptions) {
 }
 
 module.exports = defaultResolver;
+
+/*
+ * Adapted from: https://github.com/substack/node-resolve
+ */
+type ErrorWithCode = Error & {code?: string};
+
+import fs from 'fs';
+import path from 'path';
+import isBuiltinModule from 'is-builtin-module';
+
+import nodeModulesPaths from './node_modules_paths';
+
+const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
+
+function resolveSync(target: Path, options: ResolverOptions): Path {
+  const basedir = options.basedir;
+  const extensions = options.extensions || ['.js'];
+  const paths = options.paths || [];
+
+  if (REGEX_RELATIVE_IMPORT.test(target)) {
+    // resolve relative import
+    const resolveTarget = path.resolve(basedir, target);
+    const result = tryResolve(resolveTarget);
+    if (result) {
+      return result;
+    }
+  } else {
+    // otherwise search for node_modules
+    const dirs = nodeModulesPaths(basedir, {
+      moduleDirectory: options.moduleDirectory,
+      paths,
+    });
+    for (let i = 0; i < dirs.length; i++) {
+      const resolveTarget = path.join(dirs[i], target);
+      const result = tryResolve(resolveTarget);
+      if (result) {
+        return result;
+      }
+    }
+  }
+
+  if (isBuiltinModule(target)) {
+    return target;
+  }
+
+  const err: ErrorWithCode = new Error(
+    "Cannot find module '" + target + "' from '" + basedir + "'",
+  );
+  err.code = 'MODULE_NOT_FOUND';
+  throw err;
+
+  /*
+   * contextual helper functions
+   */
+  function tryResolve(name: Path): ?Path {
+    const dir = path.dirname(name);
+    let result;
+    if (isDirectory(dir)) {
+      result = resolveAsFile(name) || resolveAsDirectory(name);
+    }
+    return result;
+  }
+
+  function resolveAsFile(name: Path): ?Path {
+    if (isFile(name)) {
+      return name;
+    }
+
+    for (let i = 0; i < extensions.length; i++) {
+      const file = name + extensions[i];
+      if (isFile(file)) {
+        return file;
+      }
+    }
+
+    return undefined;
+  }
+
+  function resolveAsDirectory(name: Path): ?Path {
+    if (!isDirectory(name)) {
+      return undefined;
+    }
+
+    const pkgfile = path.join(name, 'package.json');
+    let pkgmain;
+    try {
+      const body = fs.readFileSync(pkgfile, 'utf8');
+      pkgmain = JSON.parse(body).main;
+    } catch (e) {}
+
+    if (pkgmain) {
+      const resolveTarget = path.resolve(name, pkgmain);
+      const result = tryResolve(resolveTarget);
+      if (result) {
+        return result;
+      }
+    }
+
+    return resolveAsFile(path.join(name, 'index'));
+  }
+}
+
+/*
+ * helper functions
+ */
+function isFile(file: Path): boolean {
+  let result;
+
+  try {
+    const stat = fs.statSync(file);
+    result = stat.isFile() || stat.isFIFO();
+  } catch (e) {
+    if (!(e && e.code === 'ENOENT')) {
+      throw e;
+    }
+    result = false;
+  }
+
+  return result;
+}
+
+function isDirectory(dir: Path): boolean {
+  let result;
+
+  try {
+    const stat = fs.statSync(dir);
+    result = stat.isDirectory();
+  } catch (e) {
+    if (!(e && e.code === 'ENOENT')) {
+      throw e;
+    }
+    result = false;
+  }
+
+  return result;
+}

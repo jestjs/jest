@@ -46,6 +46,8 @@ const FALLBACK_FORMAT_OPTIONS_0 = Object.assign({}, FALLBACK_FORMAT_OPTIONS, {
   indent: 0,
 });
 
+const MULTILINE_REGEXP = /[\r\n]/;
+
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
 function diff(a: any, b: any, options: ?DiffOptions): ?string {
@@ -85,7 +87,7 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
 
   switch (aType) {
     case 'string':
-      const multiline = a.match(/[\r\n]/) !== -1 && b.indexOf('\n') !== -1;
+      const multiline = MULTILINE_REGEXP.test(a) && b.indexOf('\n') !== -1;
       if (multiline) {
         return diffStrings(a, b, options);
       }

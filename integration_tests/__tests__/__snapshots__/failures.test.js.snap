@@ -150,7 +150,7 @@ exports[`works with node assert 1`] = `
     - Expected
     + Received
     
-    Object {
+     Object {
        \\"a\\": Object {
          \\"b\\": Object {
     -      \\"c\\": 6,
@@ -178,7 +178,7 @@ exports[`works with node assert 1`] = `
     - Expected
     + Received
     
-    Object {
+     Object {
        \\"a\\": Object {
          \\"b\\": Object {
     -      \\"c\\": 7,
@@ -247,7 +247,7 @@ exports[`works with node assert 1`] = `
     - Expected
     + Received
     
-    Object {
+     Object {
     -  \\"a\\": 2,
     +  \\"a\\": 1,
      }

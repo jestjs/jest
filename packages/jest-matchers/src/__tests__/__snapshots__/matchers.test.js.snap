@@ -239,7 +239,7 @@ Received:
 
 Difference:
 
-<dim>Compared values have no visual difference."
+<dim>Compared values have no visual difference. <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
@@ -252,7 +252,7 @@ Received:
 
 Difference:
 
-<dim>Compared values have no visual difference."
+<dim>Compared values have no visual difference. <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
@@ -284,7 +284,7 @@ Received:
 
 Difference:
 
-<dim>Compared values have no visual difference."
+<dim>Compared values have no visual difference. <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead."
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `
@@ -2095,6 +2095,43 @@ Difference:
   Comparing two different types of values. Expected <green>array</> but received <red>number</>."
 `;
 
+exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {1 => "one", 2 => "two"}) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>Map {1 => \\"one\\", 2 => \\"two\\"}</>
+Received:
+  <red>Map {1 => \\"one\\", 2 => \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {2 => "two", 1 => "one"}) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>Map {2 => \\"two\\", 1 => \\"one\\"}</>
+Received:
+  <red>Map {1 => \\"one\\", 2 => \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).toEqual(Map {1 => "one"}) 1`] = `
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
+
+Expected value to equal:
+  <green>Map {1 => \\"one\\"}</>
+Received:
+  <red>Map {1 => \\"one\\", 2 => \\"two\\"}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim> Map {
+<dim>   1 => \\"one\\",
+<red>+  2 => \\"two\\",</>
+<dim> }"
+`;
+
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `
 "<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
 
@@ -2104,17 +2141,53 @@ Received:
   <red>Set {1, 2}</>"
 `;
 
-exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {2, 1}) 1`] = `
+exports[`.toEqual() {pass: false} expect(Set {1, 2}).not.toEqual(Set {2, 1}) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>Set {2, 1}</>
+Received:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {}) 1`] = `
 "<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
 
 Expected value to equal:
-  <green>Set {2, 1}</>
+  <green>Set {}</>
 Received:
   <red>Set {1, 2}</>
 
 Difference:
 
-<dim>Compared values have no visual difference."
+<green>- Expected</>
+<red>+ Received</>
+
+<green>-Set {}</>
+<red>+Set {</>
+<red>+  1,</>
+<red>+  2,</>
+<red>+}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {1, 2, 3}) 1`] = `
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
+
+Expected value to equal:
+  <green>Set {1, 2, 3}</>
+Received:
+  <red>Set {1, 2}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim> Set {
+<dim>   1,
+<dim>   2,
+<green>-  3,</>
+<dim> }"
 `;
 
 exports[`.toEqual() {pass: false} expect(false).toEqual(ObjectContaining {"a": 2}) 1`] = `
@@ -3187,15 +3260,21 @@ Difference:
 <red>+2015-11-30T00:00:00.000Z</>"
 `;
 
-exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2, 1}) 1`] = `
+exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2}) 1`] = `
 "<dim>expect(<red>received</><dim>).toMatchObject(<green>expected</><dim>)
 
 Expected value to match object:
-  <green>Set {2, 1}</>
+  <green>Set {2}</>
 Received:
   <red>Set {1, 2}</>
 Difference:
-<dim>Compared values have no visual difference."
+<green>- Expected</>
+<red>+ Received</>
+
+<dim> Set {
+<red>+  1,</>
+<dim>   2,
+<dim> }"
 `;
 
 exports[`toMatchObject() {pass: true} expect([]).toMatchObject([]) 1`] = `
@@ -3347,6 +3426,15 @@ exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {1, 2
 
 Expected value not to match object:
   <green>Set {1, 2}</>
+Received:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {2, 1}) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toMatchObject(<green>expected</><dim>)
+
+Expected value not to match object:
+  <green>Set {2, 1}</>
 Received:
   <red>Set {1, 2}</>"
 `;
