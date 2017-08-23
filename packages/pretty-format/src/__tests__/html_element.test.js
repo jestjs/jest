@@ -304,8 +304,8 @@ Testing.`;
 
   it('matches constructor name of SVG elements', () => {
     // Too bad, so sad, element.constructor.name of SVG elements
-    // is HTMLUnknownElementin in jsdom v9
-    // instead of SVGSVGElement, SVGTitleElement, and so on, in actual DOM
+    // is HTMLUnknownElement in jsdom v9
+    // instead of SVG…Element in browser DOM
     // Mock element objects to make sure the plugin really matches them.
     function SVGSVGElement(attributes, ...children) {
       this.nodeType = 1;
