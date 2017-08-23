@@ -542,19 +542,19 @@ const options = {
       '`--watch` option.',
     type: 'boolean',
   },
-  watchman: {
-    default: undefined,
-    description:
-      'Whether to use watchman for file crawling. Disable using ' +
-      '--no-watchman.',
-    type: 'boolean',
-  },
   watchPathIgnorePatterns: {
     description:
       'An array of regexp pattern strings that are matched ' +
       'against all paths before trigger test re-run in watch mode. ' +
       'If the test path matches any of the patterns, it will be skipped.',
     type: 'array',
+  },
+  watchman: {
+    default: undefined,
+    description:
+      'Whether to use watchman for file crawling. Disable using ' +
+      '--no-watchman.',
+    type: 'boolean',
   },
 };
 

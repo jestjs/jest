@@ -90,8 +90,8 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   timers: 'real',
   transform: [],
   transformIgnorePatterns: [],
-  watchPathIgnorePatterns: [],
   unmockedModulePathPatterns: null,
+  watchPathIgnorePatterns: [],
 };
 
 const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {

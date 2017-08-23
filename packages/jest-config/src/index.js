@@ -148,8 +148,8 @@ const getConfigs = (
       timers: options.timers,
       transform: options.transform,
       transformIgnorePatterns: options.transformIgnorePatterns,
-      watchPathIgnorePatterns: options.watchPathIgnorePatterns,
       unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+      watchPathIgnorePatterns: options.watchPathIgnorePatterns,
     }),
   };
 };
