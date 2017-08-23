@@ -306,12 +306,12 @@ Testing.`;
     // Too bad, so sad, element.constructor.name of SVG elements
     // is HTMLUnknownElementin in jsdom v9
     // instead of SVGSVGElement, SVGTitleElement, and so on, in actual DOM
-    // So mock elements enough to make sure the plugin really matches them.
+    // Mock element objects to make sure the plugin really matches them.
     function SVGSVGElement(attributes, ...children) {
       this.nodeType = 1;
       this.tagName = 'svg'; // lower case
-      this.attributes = attributes.slice();
-      this.childNodes = children.slice();
+      this.attributes = attributes;
+      this.childNodes = children;
     }
     function SVGTitleElement(title) {
       this.nodeType = 1;
