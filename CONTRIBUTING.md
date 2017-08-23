@@ -64,7 +64,7 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
    using [homebrew](http://brew.sh/): `brew install hg`.
 
    ```sh
-   brew install hg # maybe
+   brew install mercurial
    yarn test
    ```
 
