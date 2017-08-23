@@ -52,6 +52,7 @@ const defaultConfig = {
   testURL: 'about:blank',
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  watchPathIgnorePatterns: [],
   useStderr: false,
   verbose: null,
   watch: false,

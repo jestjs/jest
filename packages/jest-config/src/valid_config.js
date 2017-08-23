@@ -89,6 +89,7 @@ module.exports = ({
     '^.+\\.js$': '<rootDir>/preprocessor.js',
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  watchPathIgnorePatterns: [],
   unmockedModulePathPatterns: ['mock'],
   updateSnapshot: true,
   useStderr: false,

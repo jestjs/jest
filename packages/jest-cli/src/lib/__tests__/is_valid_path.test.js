@@ -20,6 +20,7 @@ const rootDir = path.resolve(path.sep, 'root');
 const config = makeProjectConfig({
   rootDir,
   roots: [path.resolve(rootDir, 'src'), path.resolve(rootDir, 'lib')],
+  watchPathIgnorePatterns: ['pacts/']
 });
 
 it('is valid when it is a file inside roots', () => {
@@ -84,6 +85,16 @@ it('is not valid when it is a file in the coverage dir', () => {
       makeGlobalConfig({coverageDirectory: 'cov-dir'}),
       config,
       path.resolve(rootDir, 'src', 'cov-dir', 'lib', 'index.js'),
+    ),
+  ).toBe(false);
+});
+
+it('is not valid when it is a file match one of the watchPathIgnorePatterns', () => {
+  expect(
+    isValidPath(
+      makeGlobalConfig({rootDir}),
+      config,
+      path.resolve(rootDir, 'pacts', 'todoapp-todoservice.json'),
     ),
   ).toBe(false);
 });

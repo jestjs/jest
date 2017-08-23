@@ -549,6 +549,13 @@ const options = {
       '--no-watchman.',
     type: 'boolean',
   },
+  watchPathIgnorePatterns: {
+    description:
+      'An array of regexp pattern strings that are matched ' +
+      'against all paths before trigger test re-run in watch mode. ' +
+      'If the test path matches any of the patterns, it will be skipped.',
+    type: 'array',
+  },
 };
 
 module.exports = {
