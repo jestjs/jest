@@ -224,6 +224,12 @@ const options = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  generateCoverageForFiles: {
+    description:
+      'Run related tests for a list of source files that were passed in as ' +
+      'arguments and collect coverage for them',
+    type: 'boolean',
+  },
   globals: {
     description:
       'A JSON string with map of global variables that need ' +

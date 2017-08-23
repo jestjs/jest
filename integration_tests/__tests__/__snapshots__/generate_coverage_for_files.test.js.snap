@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`--generateCoverageForFiles 1`] = `
+"Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
+exports[`--generateCoverageForFiles 2`] = `
+"
+
+PASS  __tests__/a.test.js
+PASS  __tests__/b.test.js"
+`;
+
+exports[`--generateCoverageForFiles 3`] = `
+"----------|----------|----------|----------|----------|----------------|
+File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+----------|----------|----------|----------|----------|----------------|
+All files |      100 |      100 |      100 |      100 |                |
+ a.js     |      100 |      100 |      100 |      100 |                |
+ b.js     |      100 |      100 |      100 |      100 |                |
+----------|----------|----------|----------|----------|----------------|
+"
+`;
+
+exports[`--generateCoverageForFiles 4`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /a.js/i.
+"
+`;
+
+exports[`--generateCoverageForFiles 5`] = `
+" PASS  __tests__/a.test.js
+  ✓ a
+
+"
+`;
+
+exports[`--generateCoverageForFiles 6`] = `
+"----------|----------|----------|----------|----------|----------------|
+File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+----------|----------|----------|----------|----------|----------------|
+All files |      100 |      100 |      100 |      100 |                |
+ a.js     |      100 |      100 |      100 |      100 |                |
+----------|----------|----------|----------|----------|----------------|
+"
+`;

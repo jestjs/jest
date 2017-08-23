@@ -538,6 +538,21 @@ function normalize(options: InitialOptions, argv: Argv) {
       .filter(reporter => reporter !== 'text');
   }
 
+  // generateCoverageForFiles is an alias for
+  // `--findRelatedTests '/rootDir/file1.js' --coverage --collectCoverageFrom 'file1.js'`
+  // where arguments to `--collectCoverageFrom` should be globs (or relative
+  // paths to the rootDir)
+  if (argv.generateCoverageForFiles) {
+    newOptions.findRelatedTests = true;
+    newOptions.collectCoverage = true;
+    newOptions.collectCoverageFrom = argv._.map(filename => {
+      filename = _replaceRootDirInPath(options.rootDir, filename);
+      return path.isAbsolute(filename)
+        ? path.relative(options.rootDir, filename)
+        : filename;
+    });
+  }
+
   return {
     hasDeprecationWarnings,
     options: newOptions,
