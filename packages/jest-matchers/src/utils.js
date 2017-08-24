@@ -150,7 +150,7 @@ const isObjectWithKeys = a =>
   !(a instanceof Array) &&
   !(a instanceof Date);
 
-export const subsetEquality = (object, subset) => {
+export const subsetEquality = (object: Object, subset: Object) => {
   if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
     return undefined;
   }
