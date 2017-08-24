@@ -12,6 +12,7 @@ import type {
   AggregatedResult,
   CoverageMap,
   FileCoverage,
+  CoverageSummary,
   SerializableError,
   TestResult,
 } from 'types/TestResult';
@@ -29,6 +30,8 @@ import pify from 'pify';
 import workerFarm from 'worker-farm';
 import BaseReporter from './base_reporter';
 import CoverageWorker from './coverage_worker';
+import path from 'path';
+import glob from 'glob';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -204,8 +207,6 @@ class CoverageReporter extends BaseReporter {
 
   _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {
     if (globalConfig.coverageThreshold) {
-      const results = map.getCoverageSummary().toJSON();
-
       function check(name, thresholds, actuals) {
         return [
           'statements',
@@ -235,10 +236,67 @@ class CoverageReporter extends BaseReporter {
           return errors;
         }, []);
       }
-      const errors = check(
-        'global',
-        globalConfig.coverageThreshold.global,
-        results,
+
+      const expandedThresholds = {};
+      Object.keys(globalConfig.coverageThreshold).forEach(filePathOrGlob => {
+        if (filePathOrGlob !== 'global') {
+          const pathArray = glob.sync(filePathOrGlob);
+          pathArray.forEach(filePath => {
+            expandedThresholds[path.resolve(filePath)] =
+              globalConfig.coverageThreshold[filePathOrGlob];
+          });
+        } else {
+          expandedThresholds.global = globalConfig.coverageThreshold.global;
+        }
+      });
+
+      const filteredCoverageSummary = map
+        .files()
+        .filter(
+          filePath => Object.keys(expandedThresholds).indexOf(filePath) === -1,
+        )
+        .map(filePath => map.fileCoverageFor(filePath))
+        .reduce((summary: ?CoverageSummary, fileCov: FileCoverage) => {
+          return summary === undefined || summary === null
+            ? (summary = fileCov.toSummary())
+            : summary.merge(fileCov.toSummary());
+        }, undefined);
+
+      const errors = [].concat.apply(
+        [],
+        Object.keys(expandedThresholds)
+          .map(thresholdKey => {
+            if (thresholdKey === 'global') {
+              if (filteredCoverageSummary !== undefined) {
+                return check(
+                  'global',
+                  expandedThresholds.global,
+                  filteredCoverageSummary,
+                );
+              } else {
+                return [];
+              }
+            } else {
+              if (map.files().indexOf(thresholdKey) !== -1) {
+                return check(
+                  thresholdKey,
+                  expandedThresholds[thresholdKey],
+                  map.fileCoverageFor(thresholdKey).toSummary(),
+                );
+              } else {
+                return [
+                  `Jest: Coverage data for ${thresholdKey} was not found.`,
+                ];
+              }
+            }
+          })
+          .filter(errorArray => {
+            return (
+              errorArray !== undefined &&
+              errorArray !== null &&
+              errorArray.length > 0
+            );
+          }),
       );
 
       if (errors.length > 0) {

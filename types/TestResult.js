@@ -30,14 +30,15 @@ type FileCoverageTotal = {|
   total: number,
   covered: number,
   skipped: number,
-  pct?: number,
+  pct: number,
 |};
 
-type CoverageSummary = {|
+export type CoverageSummary = {|
   lines: FileCoverageTotal,
   statements: FileCoverageTotal,
   branches: FileCoverageTotal,
   functions: FileCoverageTotal,
+  merge: (other: CoverageSummary) => void,
 |};
 
 export type FileCoverage = {|
