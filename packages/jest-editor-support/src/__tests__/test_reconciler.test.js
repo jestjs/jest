@@ -58,6 +58,17 @@ describe('Test Reconciler', () => {
 Expected value to be falsy, instead received
   true`);
     });
+
+    it('skips a skipped method', () => {
+      parser = reconcilerWithFile('failing_jest_json.json');
+      const testName = 'does not pull it out of the env';
+      const status: any = parser.stateForTestAssertion(
+        dangerFilePath,
+        testName,
+      );
+      expect(status.status).toEqual('KnownSkip');
+      expect(status.line).toBeNull();
+    });
   });
 });
 

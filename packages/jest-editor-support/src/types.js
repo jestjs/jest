@@ -58,7 +58,8 @@ export type JestTotalResults = {
 export type TestReconciliationState =
   | 'Unknown' // The file has not changed, so the watcher didn't hit it
   | 'KnownFail' // Definitely failed
-  | 'KnownSuccess'; // Definitely passed
+  | 'KnownSuccess' // Definitely passed
+  | 'KnownSkip'; // Definitely skipped
 
 /**
  * The Jest Extension's version of a status for
