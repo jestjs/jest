@@ -10,12 +10,13 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import escapeHTML from './lib/escape_html';
 import {
   printChildren,
+  printComment,
   printElement,
   printElementAsLeaf,
   printProps,
+  printText,
 } from './lib/markup';
 
 type Attribute = {
@@ -70,19 +71,12 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string => {
-  const colors = config.colors;
   if (node.nodeType === TEXT_NODE) {
-    return colors.content.open + escapeHTML(node.data) + colors.content.close;
+    return printText(node.data, config);
   }
 
   if (node.nodeType === COMMENT_NODE) {
-    return (
-      colors.comment.open +
-      '<!--' +
-      escapeHTML(node.data) +
-      '-->' +
-      colors.comment.close
-    );
+    return printComment(node.data, config);
   }
 
   const type = node.tagName.toLowerCase();
