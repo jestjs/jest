@@ -635,6 +635,6 @@ Indicates whether each individual test should be reported during the run. All er
 ### `watchPathIgnorePatterns` [array<string>]
 Default: `[]`
 
-An array of regexp pattern strings that are matched against all source file paths before re-run test in watch mode. If the test path matches any of the patterns, when it is updated, it will not trigger the test re-run.
+An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
+These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
