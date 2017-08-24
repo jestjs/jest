@@ -251,18 +251,17 @@ describe('React elements', () => {
   };
   const b = {
     $$typeof: Symbol.for('react.element'),
-    className: 'fun', // ignored by serializer
     props: {
       children: 'Goodbye',
+      className: 'fun',
     },
     type: 'div',
   };
   const expected = [
-    '-<div',
-    '-  className="fun"',
-    '->',
+    ' <div',
+    '   className="fun"',
+    ' >',
     '-  Hello',
-    '+<div>',
     '+  Goodbye',
     ' </div>',
   ].join('\n');
