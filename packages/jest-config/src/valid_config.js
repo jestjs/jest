@@ -94,5 +94,6 @@ module.exports = ({
   useStderr: false,
   verbose: false,
   watch: false,
+  watchPathIgnorePatterns: [],
   watchman: true,
 }: InitialOptions);

@@ -66,5 +66,6 @@ module.exports = ({
   useStderr: false,
   verbose: null,
   watch: false,
+  watchPathIgnorePatterns: [],
   watchman: true,
 }: DefaultOptions);

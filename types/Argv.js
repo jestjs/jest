@@ -78,6 +78,7 @@ export type Argv = {|
   timers: 'real' | 'fake',
   transform: string,
   transformIgnorePatterns: Array<string>,
+  watchPathIgnorePatterns: Array<string>,
   unmockedModulePathPatterns: ?Array<string>,
   updateSnapshot: boolean,
   useStderr: boolean,
