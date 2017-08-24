@@ -141,9 +141,15 @@ function buildFile(file, silent) {
     const options = Object.assign({}, transformOptions);
     options.plugins = options.plugins.slice();
 
-    if (INLINE_REQUIRE_BLACKLIST.test(file)) {
-      options.plugins.push('transform-es2015-modules-commonjs');
-    } else {
+    if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
+      // Remove normal plugin.
+      options.plugins = options.plugins.filter(
+        plugin =>
+          !(
+            Array.isArray(plugin) &&
+            plugin[0] === 'transform-es2015-modules-commonjs'
+          )
+      );
       options.plugins.push([
         'transform-inline-imports-commonjs',
         {
