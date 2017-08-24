@@ -21,4 +21,20 @@ describe('promise beforeEach', () => {
   it('runs tests after beforeEach asynchronously completes', () => {
     expect(this.flag).toBe(1);
   });
+
+  // failing tests
+  describe('done - with error thrown', () => {
+    beforeEach(done => {
+      throw new Error('fail');
+      done(); // eslint-disable-line
+    });
+    it('fails', () => {});
+  });
+
+  describe('done - with error called back', () => {
+    beforeEach(done => {
+      done(new Error('fail'));
+    });
+    it('fails', () => {});
+  });
 });

@@ -96,13 +96,15 @@ Spec.prototype.execute = function(onComplete, enabled) {
   const fns = this.beforeAndAfterFns();
   const allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
 
-  this.queueRunnerFactory({
+  this.currentRun = this.queueRunnerFactory({
     queueableFns: allFns,
     onException() {
       self.onException.apply(self, arguments);
     },
     userContext: this.userContext(),
-  }).then(() => complete(true));
+  });
+
+  this.currentRun.then(() => complete(true));
 
   function complete(enabledAgain) {
     self.result.status = self.status(enabledAgain);
@@ -111,6 +113,12 @@ Spec.prototype.execute = function(onComplete, enabled) {
     if (onComplete) {
       onComplete();
     }
+  }
+};
+
+Spec.prototype.cancel = function cancel() {
+  if (this.currentRun) {
+    this.currentRun.cancel();
   }
 };
 

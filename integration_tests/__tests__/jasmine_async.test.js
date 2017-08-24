@@ -19,14 +19,16 @@ describe('async jasmine', () => {
     ]);
     const json = result.json;
 
-    expect(json.numTotalTests).toBe(2);
+    expect(json.numTotalTests).toBe(4);
     expect(json.numPassedTests).toBe(1);
-    expect(json.numFailedTests).toBe(1);
+    expect(json.numFailedTests).toBe(3);
     expect(json.numPendingTests).toBe(0);
 
     const {message} = json.testResults[0];
     expect(message).toMatch('with failing timeout');
     expect(message).toMatch('Async callback was not invoked within timeout');
+    expect(message).toMatch('done - with error thrown');
+    expect(message).toMatch('done - with error called back');
   });
 
   it('works with beforeEach', () => {
@@ -35,11 +37,14 @@ describe('async jasmine', () => {
     ]);
     const json = result.json;
 
-    expect(json.numTotalTests).toBe(1);
+    expect(json.numTotalTests).toBe(3);
     expect(json.numPassedTests).toBe(1);
-    expect(json.numFailedTests).toBe(0);
+    expect(json.numFailedTests).toBe(2);
     expect(json.numPendingTests).toBe(0);
-    expect(json.testResults[0].message).toBe('');
+
+    const {message} = json.testResults[0];
+    expect(message).toMatch('done - with error thrown');
+    expect(message).toMatch('done - with error called back');
   });
 
   it('works with afterAll', () => {
@@ -104,12 +109,17 @@ describe('async jasmine', () => {
     const json = result.json;
     const message = json.testResults[0].message;
 
-    expect(json.numTotalTests).toBe(9);
-    expect(json.numPassedTests).toBe(5);
-    expect(json.numFailedTests).toBe(4);
+    expect(json.numTotalTests).toBe(16);
+    expect(json.numPassedTests).toBe(6);
+    expect(json.numFailedTests).toBe(9);
 
     expect(message).toMatch('fails if promise is rejected');
     expect(message).toMatch('works with done.fail');
+    expect(message).toMatch('works with done(error)');
+    expect(message).toMatch('fails if failed expectation with done');
+    expect(message).toMatch('fails if failed expectation with done - async');
+    expect(message).toMatch('fails with thrown error with done - sync');
+    expect(message).toMatch('fails with thrown error with done - async');
     expect(message).toMatch('fails a sync test');
     expect(message).toMatch('fails if a custom timeout is exceeded');
   });
