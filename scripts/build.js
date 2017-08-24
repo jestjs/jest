@@ -41,10 +41,12 @@ const JS_FILES_PATTERN = '**/*.js';
 const IGNORE_PATTERN = '**/__tests__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
-const babelNodeOptions = JSON.parse(
+const INLINE_REQUIRE_BLACKLIST = /packages\/(jest-(circus|diff|get-type|jasmine2|matcher-utils|matchers|message-util|regex-util|snapshot))|pretty-format\//;
+
+const transformOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
-babelNodeOptions.babelrc = false;
+transformOptions.babelrc = false;
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
@@ -136,7 +138,21 @@ function buildFile(file, silent) {
           '\n'
       );
   } else {
-    const transformed = babel.transformFileSync(file, babelNodeOptions).code;
+    const options = Object.assign({}, transformOptions);
+    options.plugins = options.plugins.slice();
+
+    if (INLINE_REQUIRE_BLACKLIST.test(file)) {
+      options.plugins.push('transform-es2015-modules-commonjs');
+    } else {
+      options.plugins.push([
+        'transform-inline-imports-commonjs',
+        {
+          allowTopLevelThis: true,
+        },
+      ]);
+    }
+
+    const transformed = babel.transformFileSync(file, options).code;
     fs.writeFileSync(destPath, transformed);
     silent ||
       process.stdout.write(
