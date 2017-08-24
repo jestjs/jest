@@ -72,10 +72,26 @@ export const printChildren = (
         config.spacingOuter +
         indentation +
         (typeof child === 'string'
-          ? colors.content.open + escapeHTML(child) + colors.content.close
+          ? printText(child, config)
           : printer(child, config, indentation, depth, refs)),
     )
     .join('');
+};
+
+export const printText = (text: string, config: Config): string => {
+  const contentColor = config.colors.content;
+  return contentColor.open + escapeHTML(text) + contentColor.close;
+};
+
+export const printComment = (comment: string, config: Config): string => {
+  const commentColor = config.colors.comment;
+  return (
+    commentColor.open +
+    '<!--' +
+    escapeHTML(comment) +
+    '-->' +
+    commentColor.close
+  );
 };
 
 // Separate the functions to format props, children, and element,
