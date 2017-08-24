@@ -38,14 +38,14 @@ type Hunk = {|
 
 type DIFF_D = -1 | 1 | 0; // diff digit: removed | added | equal
 
-// Given a chunk, return the diff character.
+// Given chunk, return diff character.
 const getC = (chunk): string => (chunk.removed ? '-' : chunk.added ? '+' : ' ');
 
-// Given a diff character, return the diff digit.
+// Given diff character by getC from chunk or line from hunk, return diff digit.
 const getD = (c: string): DIFF_D => (c === '-' ? -1 : c === '+' ? 1 : 0);
 
-// Text color for line.
-// If compared lines are equal and were formatted with `indent: 0` option,
+// Color for text of line.
+// If compared lines are equal and expected and received are data structures,
 // then delta is difference in length of original lines.
 const getColor = (d: DIFF_D, delta?: number) =>
   d === 1 ? chalk.red : d === -1 ? chalk.green : delta ? chalk.cyan : chalk.dim;
@@ -56,7 +56,7 @@ const getColor = (d: DIFF_D, delta?: number) =>
 const getBgColor = (d: DIFF_D) =>
   d === 1 ? chalk.bgRed : d === -1 ? chalk.bgGreen : chalk.bgCyan;
 
-// Trailing ONLY if expected is snapshot or multiline string.
+// ONLY trailing if expected is snapshot or multiline string.
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
@@ -81,7 +81,8 @@ const splitIntoLines = string => {
   return lines;
 };
 
-// Given a diff character and the corresponding compared line, return a line.
+// Given diff character and corresponding compared line, return line with colors
+// and original indentation if compared with `indent: 0` option.
 const formatLine = (
   c: string,
   lineCompared: string,
@@ -93,16 +94,14 @@ const formatLine = (
     // getOriginal callback function if expected and received are data structures.
     const gotOriginal = getOriginal(d);
     const lineOriginal = d === 0 ? gotOriginal[1] : gotOriginal;
-    const indentation = lineOriginal.slice(
-      0,
-      lineOriginal.length - lineCompared.length,
-    );
+    const lengthOriginal = lineOriginal.length;
     // If compared lines are equal,
     // then delta is difference in length of original lines.
-    const delta = d === 0 ? gotOriginal[1].length - gotOriginal[0].length : 0;
+    const delta = d === 0 ? lengthOriginal - gotOriginal[0].length : 0;
     return getColor(d, delta)(
       c +
-        indentation +
+        // Line was compared without its original indentation.
+        lineOriginal.slice(0, lengthOriginal - lineCompared.length) +
         (d === 0 && delta === 0
           ? lineCompared
           : highlightWhitespace(lineCompared, getBgColor(d))),
@@ -194,13 +193,13 @@ const formatHunks = (
   contextLines?: number,
   original?: Original,
 ): Diff => {
-  const getter = original && getterForHunks(original);
   const options = {
     context:
       typeof contextLines === 'number' && contextLines >= 0
         ? contextLines
         : DIFF_CONTEXT_DEFAULT,
   };
+  const getter = original && getterForHunks(original);
   let isDifferent = false;
   // Make sure the strings end with a newline.
   if (!a.endsWith('\n')) {
