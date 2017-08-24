@@ -143,6 +143,25 @@ export const iterableEquality = (a: any, b: any) => {
   return true;
 };
 
+const isObjectWithKeys = a =>
+  a !== null &&
+  typeof a === 'object' &&
+  !(a instanceof Error) &&
+  !(a instanceof Array) &&
+  !(a instanceof Date);
+
+export const subsetEquality = (object, subset) => {
+  if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
+    return undefined;
+  }
+
+  return Object.keys(subset).every(
+    key =>
+      hasOwnProperty(object, key) &&
+      equals(object[key], subset[key], [iterableEquality, subsetEquality]),
+  );
+};
+
 export const partition = <T>(
   items: Array<T>,
   predicate: T => boolean,
