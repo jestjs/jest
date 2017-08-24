@@ -11,11 +11,7 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
-import {
-  extractExpectedAssertionsErrors,
-  getState,
-  setState,
-} from 'expect';
+import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 
 export type SetupOptions = {|
