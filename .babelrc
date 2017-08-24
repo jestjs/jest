@@ -6,7 +6,20 @@
     "transform-es2015-parameters",
     "transform-async-to-generator",
     "transform-strict-mode",
-    ["transform-es2015-modules-commonjs", {"allowTopLevelThis": true}]
+    ["transform-inline-imports-commonjs", {"allowTopLevelThis": true, "excludeModules": [
+      "jest-circus",
+      "jest-diff",
+      "jest-get-type",
+      "jest-jasmine2",
+      "jest-matcher-utils",
+      "jest-matchers",
+      "jest-message-util",
+      "jest-regex-util",
+      "jest-snapshot",
+      "jest-util",
+      "jest-validate",
+      "pretty-format"
+    ]}]
   ],
   "retainLines": true
 }
