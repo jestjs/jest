@@ -302,6 +302,108 @@ Testing.`;
     );
   });
 
+  it('matches constructor name of SVG elements', () => {
+    // Too bad, so sad, element.constructor.name of SVG elements
+    // is HTMLUnknownElement in jsdom v9
+    // instead of SVG…Element in browser DOM
+    // Mock element objects to make sure the plugin really matches them.
+    function SVGSVGElement(attributes, ...children) {
+      this.nodeType = 1;
+      this.tagName = 'svg'; // lower case
+      this.attributes = attributes;
+      this.childNodes = children;
+    }
+    function SVGTitleElement(title) {
+      this.nodeType = 1;
+      this.tagName = 'title'; // lower case
+      this.attributes = [];
+      this.childNodes = [document.createTextNode(title)];
+    }
+
+    const title = new SVGTitleElement('JS community logo');
+    const svg = new SVGSVGElement([{name: 'viewBox', value: '0 0 1 1'}], title);
+
+    expect(svg).toPrettyPrintTo(
+      [
+        '<svg',
+        '  viewBox="0 0 1 1"',
+        '>',
+        '  <title>',
+        '    JS community logo',
+        '  </title>',
+        '</svg>',
+      ].join('\n'),
+    );
+  });
+
+  it('supports SVG elements', () => {
+    // In jsdom v9, this is NOT a regression test. See above.
+    const namespace = 'http://www.w3.org/2000/svg';
+
+    const title = document.createElementNS(namespace, 'title');
+    title.appendChild(document.createTextNode('JS community logo'));
+
+    const rect = document.createElementNS(namespace, 'rect');
+    // printProps sorts attributes in order by name
+    rect.setAttribute('width', '1');
+    rect.setAttribute('height', '1');
+    rect.setAttribute('fill', '#f7df1e');
+
+    const polyline = document.createElementNS(namespace, 'polyline');
+    polyline.setAttribute('id', 'J');
+    polyline.setAttribute('points', '0.5,0.460 0.5,0.875 0.25,0.875');
+    const comment = document.createComment('polyline for S');
+
+    const g = document.createElementNS(namespace, 'g');
+    g.setAttribute('fill', 'none');
+    g.setAttribute('stroke', '#000000');
+    g.setAttribute('stroke-width', '0.095');
+    g.appendChild(polyline);
+    g.appendChild(comment);
+
+    const svg = document.createElementNS(namespace, 'svg');
+    svg.setAttribute('viewBox', '0 0 1 1');
+    svg.appendChild(title);
+    svg.appendChild(rect);
+    svg.appendChild(g);
+
+    const parent = document.createElement('div');
+    parent.setAttribute('id', 'JS');
+    parent.appendChild(svg);
+
+    expect(parent).toPrettyPrintTo(
+      [
+        '<div',
+        '  id="JS"',
+        '>',
+        '  <svg',
+        '    viewBox="0 0 1 1"',
+        '  >',
+        '    <title>',
+        '      JS community logo',
+        '    </title>',
+        '    <rect',
+        '      fill="#f7df1e"',
+        '      height="1"',
+        '      width="1"',
+        '    />',
+        '    <g',
+        '      fill="none"',
+        '      stroke="#000000"',
+        '      stroke-width="0.095"',
+        '    >',
+        '      <polyline',
+        '        id="J"',
+        '        points="0.5,0.460 0.5,0.875 0.25,0.875"',
+        '      />',
+        '      <!--polyline for S-->',
+        '    </g>',
+        '  </svg>',
+        '</div>',
+      ].join('\n'),
+    );
+  });
+
   it('supports indentation for array of elements', () => {
     // For example, Array.prototype.slice.call(document.getElementsByTagName(…))
     const dd1 = document.createElement('dd');
