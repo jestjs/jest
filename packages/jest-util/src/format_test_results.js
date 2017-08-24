@@ -60,6 +60,7 @@ function formatTestAssertion(
   assertion: AssertionResult,
 ): FormattedAssertionResult {
   const result: FormattedAssertionResult = {
+    ancestorTitles: assertion.ancestorTitles,
     failureMessages: null,
     fullName: assertion.fullName,
     status: assertion.status,
