@@ -20,7 +20,7 @@ const rootDir = path.resolve(path.sep, 'root');
 const config = makeProjectConfig({
   rootDir,
   roots: [path.resolve(rootDir, 'src'), path.resolve(rootDir, 'lib')],
-  watchPathIgnorePatterns: ['pacts/'],
+  watchPathIgnorePatterns: ['pacts'],
 });
 
 it('is valid when it is a file inside roots', () => {
