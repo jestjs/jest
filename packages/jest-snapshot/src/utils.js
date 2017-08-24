@@ -10,13 +10,13 @@
 
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
-import fs from 'fs';
-import path from 'path';
-import chalk from 'chalk';
-import {createDirectory} from 'jest-util';
-import prettyFormat from 'pretty-format';
-import naturalCompare from 'natural-compare';
 import {getSerializers} from './plugins';
+import chalk from 'chalk';
+import fs from 'fs';
+import mkdirp from 'mkdirp';
+import naturalCompare from 'natural-compare';
+import path from 'path';
+import prettyFormat from 'pretty-format';
 
 const SNAPSHOT_EXTENSION = 'snap';
 const SNAPSHOT_VERSION = '1';
@@ -150,7 +150,7 @@ const printBacktickString = (str: string) => {
 
 const ensureDirectoryExists = (filePath: Path) => {
   try {
-    createDirectory(path.join(path.dirname(filePath)));
+    mkdirp.sync(path.join(path.dirname(filePath)), '777');
   } catch (e) {}
 };
 
