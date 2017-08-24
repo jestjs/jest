@@ -7,7 +7,7 @@
  */
 
 /* eslint-disable */
-var expect = require('../../packages/jest-matchers/build-es5/index.js');
+var expect = require('../../packages/expect/build-es5/index.js');
 var mock = require('../../packages/jest-mock/build-es5/index.js');
 var prettyFormat = require('../../packages/pretty-format/build-es5/index.js');
 

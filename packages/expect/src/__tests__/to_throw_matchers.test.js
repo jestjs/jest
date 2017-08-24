@@ -19,7 +19,7 @@ class Error {
     this.stack =
       'Error\n' +
       '  at jestExpect' +
-      ' (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)';
+      ' (packages/expect/src/__tests__/toThrowMatchers-test.js:24:74)';
   }
 }
 

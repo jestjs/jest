@@ -16,7 +16,7 @@ import {
   extractExpectedAssertionsErrors,
   getState,
   setState,
-} from 'jest-matchers';
+} from 'expect';
 import {formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} from '../state';

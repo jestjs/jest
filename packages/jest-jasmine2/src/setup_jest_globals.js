@@ -15,7 +15,7 @@ import {
   extractExpectedAssertionsErrors,
   getState,
   setState,
-} from 'jest-matchers';
+} from 'expect';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 
 export type SetupOptions = {|
