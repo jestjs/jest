@@ -389,16 +389,15 @@ module.exports = function(j$) {
         spec.pend();
       }
 
-      /* When a test is defined inside another, jasmine will not run it
-        This check throws an error to warn the developer about
-        the edge-case */
+      // When a test is defined inside another, jasmine will not run it.
+      // This check throws an error to warn the user about the edge-case.
       if (currentSpec !== null) {
         throw new Error(
-          'Test `' +
+          'Tests cannot be nested. Test `' +
             spec.description +
-            '` cannot run because it is nested in `' +
+            '` cannot run because it is nested within `' +
             currentSpec.description +
-            '`',
+            '`.',
         );
       }
       currentDeclarationSuite.addChild(spec);
