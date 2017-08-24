@@ -12,6 +12,12 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {SerializableError, TestResult} from 'types/TestResult';
 import type {RawModuleMap} from 'types/HasteMap';
 
+// Make sure uncaught errors are logged before we exit.
+process.on('uncaughtException', err => {
+  console.error(err.stack);
+  process.exit(1);
+});
+
 import HasteMap from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';

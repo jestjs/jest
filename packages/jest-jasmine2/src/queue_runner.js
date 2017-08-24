@@ -71,15 +71,15 @@ function queueRunner(options: Options) {
     );
   };
 
-  const res = options.queueableFns.reduce(
+  const result = options.queueableFns.reduce(
     (promise, fn) => promise.then(() => mapper(fn)),
     Promise.resolve(),
   );
 
   return {
     cancel: token.cancel.bind(token),
-    catch: res.catch.bind(res),
-    then: res.then.bind(res),
+    catch: result.catch.bind(result),
+    then: result.then.bind(result),
   };
 }
 

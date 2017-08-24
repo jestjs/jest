@@ -37,6 +37,12 @@ function formatCoverageError(error, filename: Path): SerializableError {
   };
 }
 
+// Make sure uncaught errors are logged before we exit.
+process.on('uncaughtException', err => {
+  console.error(err.stack);
+  process.exit(1);
+});
+
 module.exports = (
   {config, globalConfig, path}: CoverageWorkerData,
   callback: WorkerCallback,

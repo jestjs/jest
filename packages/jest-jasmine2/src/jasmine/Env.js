@@ -197,6 +197,17 @@ module.exports = function(j$) {
         }
       };
 
+      // Need to ensure we are the only ones handling these exceptions.
+      const oldListenersException = process
+        .listeners('uncaughtException')
+        .slice();
+      const oldListenersRejection = process
+        .listeners('unhandledRejection')
+        .slice();
+
+      process.removeAllListeners('uncaughtException');
+      process.removeAllListeners('unhandledRejection');
+
       process.on('uncaughtException', uncaught);
       process.on('unhandledRejection', uncaught);
 
@@ -229,6 +240,15 @@ module.exports = function(j$) {
 
       process.removeListener('uncaughtException', uncaught);
       process.removeListener('unhandledRejection', uncaught);
+
+      // restore previous exception handlers
+      oldListenersException.forEach(listener => {
+        process.on('uncaughtException', listener);
+      });
+
+      oldListenersRejection.forEach(listener => {
+        process.on('unhandledRejection', listener);
+      });
     };
 
     this.addReporter = function(reporterToAdd) {
