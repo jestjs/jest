@@ -11,9 +11,9 @@
 import type {DiffOptions} from 'jest-diff/src/diff_strings.js';
 import type {Event, State} from 'types/Circus';
 
-const {printReceived, printExpected} = require('jest-matcher-utils');
-const chalk = require('chalk');
-const diff = require('jest-diff');
+import {printExpected, printReceived} from 'jest-matcher-utils';
+import chalk from 'chalk';
+import diff from 'jest-diff';
 
 type AssertionError = {|
   actual: ?string,
