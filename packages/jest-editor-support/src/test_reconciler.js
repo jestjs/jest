@@ -30,6 +30,7 @@ module.exports = class TestReconciler {
   fileStatuses: any;
   fails: Array<TestFileAssertionStatus>;
   passes: Array<TestFileAssertionStatus>;
+  skips: Array<TestFileAssertionStatus>;
 
   constructor() {
     this.fileStatuses = {};
@@ -38,6 +39,7 @@ module.exports = class TestReconciler {
   updateFileWithJestStatus(results: JestTotalResults) {
     this.fails = [];
     this.passes = [];
+    this.skips = [];
 
     // Loop through all files inside the report from Jest
     results.testResults.forEach(file => {
@@ -56,6 +58,8 @@ module.exports = class TestReconciler {
         this.fails.push(fileStatus);
       } else if (status === 'KnownSuccess') {
         this.passes.push(fileStatus);
+      } else if (status === 'KnownSkip') {
+        this.skips.push(fileStatus);
       }
     });
   }
@@ -66,6 +70,10 @@ module.exports = class TestReconciler {
 
   passedStatuses(): Array<TestFileAssertionStatus> {
     return this.passes || [];
+  }
+
+  skipedStatuses(): Array<TestFileAssertionStatus> {
+    return this.skips || [];
   }
 
   // A failed test also contains the stack trace for an `expect`
@@ -138,6 +146,8 @@ module.exports = class TestReconciler {
         return 'KnownSuccess';
       case 'failed':
         return 'KnownFail';
+      case 'pending':
+        return 'KnownSkip';
       default:
         return 'Unknown';
     }
