@@ -65,7 +65,6 @@ export const printChildren = (
   refs: Refs,
   printer: Printer,
 ): string => {
-  const colors = config.colors;
   return children
     .map(
       child =>
