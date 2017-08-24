@@ -42,12 +42,15 @@ type ContainIterable =
 const isObjectWithKeys = a =>
   a !== null &&
   typeof a === 'object' &&
+  !(a instanceof Error) &&
   !(a instanceof Array) &&
   !(a instanceof Date);
+
 const subsetEquality = (object, subset) => {
   if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
     return undefined;
   }
+
   return Object.keys(subset).every(
     key =>
       hasOwnProperty(object, key) &&
