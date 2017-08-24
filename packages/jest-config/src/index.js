@@ -150,6 +150,7 @@ const getConfigs = (
       transform: options.transform,
       transformIgnorePatterns: options.transformIgnorePatterns,
       unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+      watchPathIgnorePatterns: options.watchPathIgnorePatterns,
     }),
   };
 };

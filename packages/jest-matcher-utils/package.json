@@ -1,6 +1,6 @@
 {
   "name": "jest-matcher-utils",
-  "description": "A set of utility functions for jest-matchers and related packages",
+  "description": "A set of utility functions for expect and related packages",
   "version": "20.0.3",
   "repository": {
     "type": "git",

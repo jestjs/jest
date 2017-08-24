@@ -8,6 +8,7 @@
  * @flow
  */
 
+import PCancelable from 'p-cancelable';
 import pTimeout from './p_timeout';
 
 type Options = {
@@ -24,10 +25,20 @@ type QueueableFn = {
   timeout?: () => number,
 };
 
-async function queueRunner(options: Options) {
+function queueRunner(options: Options) {
+  const token = new PCancelable((onCancel, resolve) => {
+    onCancel(resolve);
+  });
+
   const mapper = ({fn, timeout}) => {
-    const promise = new Promise(resolve => {
-      const next = () => resolve();
+    let promise = new Promise(resolve => {
+      const next = function(err) {
+        if (err) {
+          options.fail.apply(null, arguments);
+        }
+        resolve();
+      };
+
       next.fail = function() {
         options.fail.apply(null, arguments);
         resolve();
@@ -39,6 +50,9 @@ async function queueRunner(options: Options) {
         resolve();
       }
     });
+
+    promise = Promise.race([promise, token]);
+
     if (!timeout) {
       return promise;
     }
@@ -57,10 +71,16 @@ async function queueRunner(options: Options) {
     );
   };
 
-  return options.queueableFns.reduce(
+  const result = options.queueableFns.reduce(
     (promise, fn) => promise.then(() => mapper(fn)),
     Promise.resolve(),
   );
+
+  return {
+    cancel: token.cancel.bind(token),
+    catch: result.catch.bind(result),
+    then: result.then.bind(result),
+  };
 }
 
 module.exports = queueRunner;

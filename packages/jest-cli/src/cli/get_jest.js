@@ -13,6 +13,7 @@ import type {Path} from 'types/Config';
 import path from 'path';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
+import jest from '../jest';
 
 function getJest(packageRoot: Path) {
   const packageJSONPath = path.join(packageRoot, 'package.json');
@@ -21,8 +22,6 @@ function getJest(packageRoot: Path) {
     /* $FlowFixMe */
     return require(binPath);
   } else {
-    // TODO: Because of a dependency cycle, this can only be inlined once the babel plugin for inlining is merged
-    const jest = require('../jest');
     // Check if Jest is specified in `package.json` but not installed.
     if (fs.existsSync(packageJSONPath)) {
       /* $FlowFixMe */

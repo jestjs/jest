@@ -69,7 +69,8 @@ export class TestReconciler {
 
 export type TestReconcilationState = "Unknown" |
   "KnownSuccess" |
-  "KnownFail";
+  "KnownFail" |
+  "KnownSkip";
 
 export interface TestFileAssertionStatus {
   file: string;

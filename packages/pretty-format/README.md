@@ -145,26 +145,309 @@ const formatted2 = prettyFormat(renderer.create(element).toJSON(), {
 */
 ```
 
-### Plugins
+## Usage in Jest
 
-Pretty format also supports adding plugins:
+For snapshot tests, Jest uses `pretty-format` with options that include some of its built-in plugins. For this purpose, plugins are also known as **snapshot serializers**.
+
+To serialize application-specific data types, you can add modules to `devDependencies` of a project, and then:
+
+In an **individual** test file, you can add a module as follows. It precedes any modules from Jest configuration.
 
 ```js
-const fooPlugin = {
+import serializer from 'my-serializer-module';
+expect.addSnapshotSerializer(serializer);
+
+// tests which have `expect(value).toMatchSnapshot()` assertions
+```
+
+For **all** test files, you can specify modules in Jest configuration. They precede built-in plugins for React, HTML, and Immutable.js data types. For example, in a `package.json` file:
+
+```json
+{
+  "jest": {
+    "snapshotSerializers": ["my-serializer-module"]
+  }
+}
+```
+
+## Writing plugins
+
+A plugin is a JavaScript object.
+
+If `options` has a `plugins` array: for the first plugin whose `test(val)` method returns a truthy value, then `prettyFormat(val, options)` returns the result from either:
+
+* `serialize(val, …)` method of the **improved** interface (available in **version 21** or later)
+* `print(val, …)` method of the **original** interface (if plugin does not have `serialize` method)
+
+### test
+
+Write `test` so it can receive `val` argument of any type. To serialize **objects** which have certain properties, then a guarded expression like `val != null && …` or more concise `val && …` prevents the following errors:
+
+* `TypeError: Cannot read property 'whatever' of null`
+* `TypeError: Cannot read property 'whatever' of undefined`
+
+For example, `test` method of built-in `ReactElement` plugin:
+
+```js
+const elementSymbol = Symbol.for('react.element');
+const test = val => val && val.$$typeof === elementSymbol;
+```
+
+Pay attention to efficiency in `test` because `pretty-format` calls it often.
+
+### serialize
+
+The **improved** interface is available in **version 21** or later.
+
+Write `serialize` to return a string, given the arguments:
+
+* `val` which “passed the test”
+* unchanging `config` object: derived from `options`
+* current `indentation` string: concatenate to `indent` from `config`
+* current `depth` number: compare to `maxDepth` from `config`
+* current `refs` array: find circular references in objects
+* `printer` callback function: serialize children
+
+### config
+
+| key | type | description |
+| :--- | :--- | :--- |
+| `callToJSON` | `boolean` | call `toJSON` method (if it exists) on objects |
+| `colors` | `Object` | escape codes for colors to highlight syntax  |
+| `escapeRegex` | `boolean` | escape special characters in regular expressions |
+| `indent` | `string` | spaces in each level of indentation |
+| `maxDepth` | `number` | levels to print in arrays, objects, elements, and so on |
+| `min` | `boolean` | minimize added space: no indentation nor line breaks |
+| `plugins` | `array` | plugins to serialize application-specific data types |
+| `printFunctionName` | `boolean` | include or omit the name of a function |
+| `spacingInner` | `strong` | spacing to separate items in a list |
+| `spacingOuter` | `strong` | spacing to enclose a list of items |
+
+Each property of `colors` in `config` corresponds to a property of `theme` in `options`:
+
+* the key is the same (for example, `tag`)
+* the value in `colors` is a object with `open` and `close` properties whose values are escape codes from  [ansi-styles](https://github.com/chalk/ansi-styles) for the color value in `theme` (for example, `'cyan'`)
+
+Some properties in `config` are derived from `min` in `options`:
+
+* `spacingInner` and `spacingOuter` are **newline** if `min` is `false`
+* `spacingInner` is **space** and `spacingOuter` is **empty string** if `min` is `true`
+
+### Example of serialize and test
+
+This plugin is a pattern you can apply to serialize composite data types. Of course, `pretty-format` does not need a plugin to serialize arrays :)
+
+```js
+// We reused more code when we factored out a function for child items
+// that is independent of depth, name, and enclosing punctuation (see below).
+const SEPARATOR = ',';
+function serializeItems(items, config, indentation, depth, refs, printer) {
+  if (items.length === 0) {
+    return '';
+  }
+  const indentationItems = indentation + config.indent;
+  return (
+    config.spacingOuter +
+    items
+      .map(
+        item =>
+          indentationItems +
+          printer(item, config, indentationItems, depth, refs), // callback
+      )
+      .join(SEPARATOR + config.spacingInner) +
+    (config.min ? '' : SEPARATOR) + // following the last item
+    config.spacingOuter +
+    indentation
+  );
+}
+
+const plugin = {
   test(val) {
-    return val && val.hasOwnProperty('foo');
+    return Array.isArray(val);
   },
-  print(val, print, indent) {
-    return 'Foo: ' + print(val.foo);
+  serialize(array, config, indentation, depth, refs, printer) {
+    const name = array.constructor.name;
+    return ++depth > config.maxDepth
+      ? '[' + name + ']'
+      : (config.min ? '' : name + ' ') +
+        '[' +
+        serializeItems(array, config, indentation, depth, refs, printer) +
+        ']';
   },
 };
+```
 
-const obj = {foo: {bar: {}}};
+```js
+const val = {
+  filter: 'completed',
+  items: [
+    {
+      text: 'Write test',
+      completed: true,
+    },
+    {
+      text: 'Write serialize',
+      completed: true,
+    },
+  ],
+};
+```
 
-prettyFormat(obj, {
-  plugins: [fooPlugin],
+```js
+console.log(prettyFormat(val, {
+  plugins: [plugin],
+}));
+/*
+Object {
+  "filter": "completed",
+  "items": Array [
+    Object {
+      "completed": true,
+      "text": "Write test",
+    },
+    Object {
+      "completed": true,
+      "text": "Write serialize",
+    },
+  ],
+}
+*/
+```
+
+```js
+console.log(prettyFormat(val, {
+  indent: 4,
+  plugins: [plugin],
+}));
+/*
+Object {
+    "filter": "completed",
+    "items": Array [
+        Object {
+            "completed": true,
+            "text": "Write test",
+        },
+        Object {
+            "completed": true,
+            "text": "Write serialize",
+        },
+    ],
+}
+*/
+```
+
+```js
+console.log(prettyFormat(val, {
+  maxDepth: 1,
+  plugins: [plugin],
+}));
+/*
+Object {
+  "filter": "completed",
+  "items": [Array],
+}
+*/
+```
+
+```js
+console.log(prettyFormat(val, {
+  min: true,
+  plugins: [plugin],
+}));
+/*
+{"filter": "completed", "items": [{"completed": true, "text": "Write test"}, {"completed": true, "text": "Write serialize"}]}
+*/
+```
+
+### print
+
+The **original** interface is adequate for plugins:
+
+* that **do not** depend on options other than `highlight` or `min`
+* that **do not** depend on `depth` or `refs` in recursive traversal, and
+* if values either
+    * do **not** require indentation, or
+    * do **not** occur as children of JavaScript data structures (for example, array)
+
+Write `print` to return a string, given the arguments:
+
+* `val` which “passed the test”
+* current `printer(valChild)` callback function: serialize children
+* current `indenter(lines)` callback function: indent lines at the next level
+* unchanging `config` object: derived from `options`
+* unchanging `colors` object: derived from `options`
+
+The 3 properties of `config` are `min` in `options` and:
+
+* `spacing` and `edgeSpacing` are **newline** if `min` is `false`
+* `spacing` is **space** and `edgeSpacing` is **empty string** if `min` is `true`
+
+Each property of `colors` corresponds to a property of `theme` in `options`:
+
+* the key is the same (for example, `tag`)
+* the value in `colors` is a object with `open` and `close` properties whose values are escape codes from  [ansi-styles](https://github.com/chalk/ansi-styles) for the color value in `theme` (for example, `'cyan'`)
+
+### Example of print and test
+
+This plugin prints functions with the **number of named arguments** excluding rest argument.
+
+```js
+const plugin = {
+  print(val) {
+    return `[Function ${val.name || 'anonymous'} ${val.length}]`;
+  },
+  test(val) {
+    return typeof val === 'function';
+  },
+};
+```
+
+```js
+const val = {
+  onClick(event) {},
+  render() {},
+};
+
+prettyFormat(val, {
+  plugins: [plugin],
 });
-// Foo: Object {
-//   "bar": Object {}
-// }
+/*
+Object {
+  "onClick": [Function onClick 1],
+  "render": [Function render 0],
+}
+*/
+
+prettyFormat(val);
+/*
+Object {
+  "onClick": [Function onClick],
+  "render": [Function render],
+}
+*/
+```
+
+This plugin **ignores** the `printFunctionName` option. That limitation of the original `print` interface is a reason to use the improved `serialize` interface, described above.
+
+```js
+prettyFormat(val, {
+  plugins: [pluginOld],
+  printFunctionName: false,
+});
+/*
+Object {
+  "onClick": [Function onClick 1],
+  "render": [Function render 0],
+}
+*/
+
+prettyFormat(val, {
+  printFunctionName: false,
+});
+/*
+Object {
+  "onClick": [Function],
+  "render": [Function],
+}
+*/
 ```

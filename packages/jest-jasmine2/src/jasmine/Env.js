@@ -161,7 +161,7 @@ module.exports = function(j$) {
       return seed;
     };
 
-    async function queueRunnerFactory(options) {
+    function queueRunnerFactory(options) {
       options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
       options.setTimeout = realSetTimeout;
@@ -187,9 +187,31 @@ module.exports = function(j$) {
         }
       }
 
-      reporter.jasmineStarted({
-        totalSpecsDefined,
-      });
+      const uncaught = err => {
+        if (currentSpec) {
+          currentSpec.onException(err);
+          currentSpec.cancel();
+        } else {
+          console.error('Unhandled error');
+          console.error(err.stack);
+        }
+      };
+
+      // Need to ensure we are the only ones handling these exceptions.
+      const oldListenersException = process
+        .listeners('uncaughtException')
+        .slice();
+      const oldListenersRejection = process
+        .listeners('unhandledRejection')
+        .slice();
+
+      process.removeAllListeners('uncaughtException');
+      process.removeAllListeners('unhandledRejection');
+
+      process.on('uncaughtException', uncaught);
+      process.on('unhandledRejection', uncaught);
+
+      reporter.jasmineStarted({totalSpecsDefined});
 
       currentlyExecutingSuites.push(topSuite);
 
@@ -214,6 +236,18 @@ module.exports = function(j$) {
       currentlyExecutingSuites.pop();
       reporter.jasmineDone({
         failedExpectations: topSuite.result.failedExpectations,
+      });
+
+      process.removeListener('uncaughtException', uncaught);
+      process.removeListener('unhandledRejection', uncaught);
+
+      // restore previous exception handlers
+      oldListenersException.forEach(listener => {
+        process.on('uncaughtException', listener);
+      });
+
+      oldListenersRejection.forEach(listener => {
+        process.on('unhandledRejection', listener);
       });
     };
 
@@ -387,6 +421,18 @@ module.exports = function(j$) {
       );
       if (currentDeclarationSuite.markedPending) {
         spec.pend();
+      }
+
+      // When a test is defined inside another, jasmine will not run it.
+      // This check throws an error to warn the user about the edge-case.
+      if (currentSpec !== null) {
+        throw new Error(
+          'Tests cannot be nested. Test `' +
+            spec.description +
+            '` cannot run because it is nested within `' +
+            currentSpec.description +
+            '`.',
+        );
       }
       currentDeclarationSuite.addChild(spec);
       return spec;

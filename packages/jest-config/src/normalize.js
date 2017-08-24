@@ -415,6 +415,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'modulePathIgnorePatterns':
       case 'testPathIgnorePatterns':
       case 'transformIgnorePatterns':
+      case 'watchPathIgnorePatterns':
       case 'unmockedModulePathPatterns':
         value = normalizeUnmockedModulePathPatterns(options, key);
         break;

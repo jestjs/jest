@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`matchers proxies matchers to jest-matchers 1`] = `
+exports[`matchers proxies matchers to expect 1`] = `
 "<dim>expect(<red>received</><dim>).toBe(<green>expected</><dim>)
 
 Expected value to be (using ===):

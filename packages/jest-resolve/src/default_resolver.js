@@ -46,80 +46,125 @@ import nodeModulesPaths from './node_modules_paths';
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
-function resolveSync(x: Path, options: ResolverOptions): Path {
-  const readFileSync = fs.readFileSync;
-
-  const extensions = options.extensions || ['.js'];
+function resolveSync(target: Path, options: ResolverOptions): Path {
   const basedir = options.basedir;
+  const extensions = options.extensions || ['.js'];
+  const paths = options.paths || [];
 
-  options.paths = options.paths || [];
-
-  if (REGEX_RELATIVE_IMPORT.test(x)) {
+  if (REGEX_RELATIVE_IMPORT.test(target)) {
     // resolve relative import
-    let target = path.resolve(basedir, x);
-    if (x === '..') target += '/';
-    const m = loadAsFileSync(target) || loadAsDirectorySync(target);
-    if (m) return m;
+    const resolveTarget = path.resolve(basedir, target);
+    const result = tryResolve(resolveTarget);
+    if (result) {
+      return result;
+    }
   } else {
     // otherwise search for node_modules
     const dirs = nodeModulesPaths(basedir, {
       moduleDirectory: options.moduleDirectory,
-      paths: options.paths,
+      paths,
     });
     for (let i = 0; i < dirs.length; i++) {
-      const dir = dirs[i];
-      const target = path.join(dir, '/', x);
-      const m = loadAsFileSync(target) || loadAsDirectorySync(target);
-      if (m) return m;
+      const resolveTarget = path.join(dirs[i], target);
+      const result = tryResolve(resolveTarget);
+      if (result) {
+        return result;
+      }
     }
   }
 
-  if (isBuiltinModule(x)) return x;
+  if (isBuiltinModule(target)) {
+    return target;
+  }
 
   const err: ErrorWithCode = new Error(
-    "Cannot find module '" + x + "' from '" + basedir + "'",
+    "Cannot find module '" + target + "' from '" + basedir + "'",
   );
   err.code = 'MODULE_NOT_FOUND';
   throw err;
 
   /*
-   * helper functions
+   * contextual helper functions
    */
-  function isFile(file: Path): boolean {
-    try {
-      const stat = fs.statSync(file);
-      return stat.isFile() || stat.isFIFO();
-    } catch (e) {
-      if (e && e.code === 'ENOENT') return false;
-      throw e;
+  function tryResolve(name: Path): ?Path {
+    const dir = path.dirname(name);
+    let result;
+    if (isDirectory(dir)) {
+      result = resolveAsFile(name) || resolveAsDirectory(name);
     }
+    return result;
   }
 
-  function loadAsFileSync(x: Path): ?Path {
-    if (isFile(x)) return x;
+  function resolveAsFile(name: Path): ?Path {
+    if (isFile(name)) {
+      return name;
+    }
 
     for (let i = 0; i < extensions.length; i++) {
-      const file = x + extensions[i];
-      if (isFile(file)) return file;
+      const file = name + extensions[i];
+      if (isFile(file)) {
+        return file;
+      }
     }
 
     return undefined;
   }
 
-  function loadAsDirectorySync(x: Path): ?Path {
-    const pkgfile = path.join(x, '/package.json');
-    if (isFile(pkgfile)) {
-      const body = readFileSync(pkgfile, 'utf8');
-      try {
-        const pkgmain = JSON.parse(body).main;
-        if (pkgmain) {
-          const target = path.resolve(x, pkgmain);
-          const m = loadAsFileSync(target) || loadAsDirectorySync(target);
-          if (m) return m;
-        }
-      } catch (e) {}
+  function resolveAsDirectory(name: Path): ?Path {
+    if (!isDirectory(name)) {
+      return undefined;
     }
 
-    return loadAsFileSync(path.join(x, '/index'));
+    const pkgfile = path.join(name, 'package.json');
+    let pkgmain;
+    try {
+      const body = fs.readFileSync(pkgfile, 'utf8');
+      pkgmain = JSON.parse(body).main;
+    } catch (e) {}
+
+    if (pkgmain) {
+      const resolveTarget = path.resolve(name, pkgmain);
+      const result = tryResolve(resolveTarget);
+      if (result) {
+        return result;
+      }
+    }
+
+    return resolveAsFile(path.join(name, 'index'));
   }
+}
+
+/*
+ * helper functions
+ */
+function isFile(file: Path): boolean {
+  let result;
+
+  try {
+    const stat = fs.statSync(file);
+    result = stat.isFile() || stat.isFIFO();
+  } catch (e) {
+    if (!(e && e.code === 'ENOENT')) {
+      throw e;
+    }
+    result = false;
+  }
+
+  return result;
+}
+
+function isDirectory(dir: Path): boolean {
+  let result;
+
+  try {
+    const stat = fs.statSync(dir);
+    result = stat.isDirectory();
+  } catch (e) {
+    if (!(e && e.code === 'ENOENT')) {
+      throw e;
+    }
+    result = false;
+  }
+
+  return result;
 }

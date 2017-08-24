@@ -92,6 +92,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: null,
+  watchPathIgnorePatterns: [],
 };
 
 const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {

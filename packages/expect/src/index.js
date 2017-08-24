@@ -19,7 +19,7 @@ import type {
   PromiseMatcherFn,
 } from 'types/Matchers';
 
-import utils from 'jest-matcher-utils';
+import * as utils from 'jest-matcher-utils';
 import matchers from './matchers';
 import spyMatchers from './spy_matchers';
 import toThrowMatchers from './to_throw_matchers';

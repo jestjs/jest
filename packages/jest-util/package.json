@@ -14,7 +14,6 @@
     "jest-message-util": "^20.0.3",
     "jest-mock": "^20.0.3",
     "jest-validate": "^20.0.3",
-    "leven": "^2.1.0",
     "mkdirp": "^0.5.1"
   }
 }

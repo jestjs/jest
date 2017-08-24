@@ -38,7 +38,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
       const returnValue = fn.call({});
 
       if (isPromise(returnValue)) {
-        returnValue.then(done, done.fail);
+        returnValue.then(done.bind(null, null), done.fail);
       } else {
         done();
       }
@@ -68,7 +68,7 @@ function promisifyIt(originalFn, env) {
       const returnValue = fn.call({});
 
       if (isPromise(returnValue)) {
-        returnValue.then(done, done.fail);
+        returnValue.then(done.bind(null, null), done.fail);
       } else if (returnValue === undefined) {
         done();
       } else {
