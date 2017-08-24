@@ -11,6 +11,7 @@
 import type {
   AggregatedResult,
   CoverageMap,
+  FileCoverage,
   SerializableError,
   TestResult,
 } from 'types/TestResult';
@@ -57,10 +58,20 @@ class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        this._sourceMapStore.registerURL(
-          sourcePath,
-          testResult.sourceMaps[sourcePath],
-        );
+        let coverage: FileCoverage, inputSourceMap: ?Object;
+        try {
+          coverage = this._coverageMap.fileCoverageFor(sourcePath);
+          ({inputSourceMap} = coverage.toJSON());
+        } finally {
+          if (inputSourceMap) {
+            this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
+          } else {
+            this._sourceMapStore.registerURL(
+              sourcePath,
+              testResult.sourceMaps[sourcePath],
+            );
+          }
+        }
       });
     }
   }
