@@ -11,7 +11,7 @@
     "chalk": "^2.0.1",
     "jest-diff": "^20.0.3",
     "jest-matcher-utils": "^20.0.3",
-    "jest-util": "^20.0.3",
+    "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
     "pretty-format": "^20.0.3"
   }
