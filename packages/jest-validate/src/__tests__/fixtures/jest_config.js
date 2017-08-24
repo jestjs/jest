@@ -122,6 +122,7 @@ const validConfig = {
   useStderr: false,
   verbose: false,
   watch: false,
+  watchPathIgnorePatterns: [],
   watchman: true,
   watchPathIgnorePatterns: [],
 };
