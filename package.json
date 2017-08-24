@@ -54,6 +54,7 @@
     "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
     "mocha": "^3.4.2",
+    "mock-fs": "^4.4.1",
     "prettier": "^1.5.2",
     "progress": "^1.1.8",
     "react": "^15.4.2",
