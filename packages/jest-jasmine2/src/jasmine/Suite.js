@@ -85,6 +85,7 @@ Suite.prototype.beforeEach = function(fn) {
 };
 
 Suite.prototype.beforeAll = function(fn) {
+  validateFunction(fn, 'beforeAll');
   this.beforeAllFns.push(fn);
 };
 
@@ -93,6 +94,7 @@ Suite.prototype.afterEach = function(fn) {
 };
 
 Suite.prototype.afterAll = function(fn) {
+  validateFunction(fn, 'afterAll');
   this.afterAllFns.unshift(fn);
 };
 
@@ -188,6 +190,12 @@ function isAfterAll(children) {
 
 function isFailure(args) {
   return !args[0];
+}
+
+function validateFunction(fn, fnName) {
+  if (typeof fn.fn !== 'function') {
+    throw new Error(`First argument in the ${fnName} hook must be a function`);
+  }
 }
 
 module.exports = Suite;
