@@ -1,5 +1,5 @@
 {
-  "name": "jest-matchers",
+  "name": "expect",
   "version": "20.0.3",
   "repository": {
     "type": "git",
