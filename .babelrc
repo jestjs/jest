@@ -16,8 +16,6 @@
       "jest-message-util",
       "jest-regex-util",
       "jest-snapshot",
-      "jest-util",
-      "jest-validate",
       "pretty-format"
     ]}]
   ],
