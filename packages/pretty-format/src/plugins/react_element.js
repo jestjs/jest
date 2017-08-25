@@ -39,7 +39,7 @@ const getType = element => {
   if (typeof element.type === 'function') {
     return element.type.displayName || element.type.name || 'Unknown';
   }
-  return 'Unknown';
+  return 'UNDEFINED';
 };
 
 export const serialize = (
