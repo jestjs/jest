@@ -36,7 +36,7 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "0.0.8",
     "eslint-plugin-unicorn": "^2.1.2",
-    "flow-bin": "^0.50.0",
+    "flow-bin": "^0.52.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
     "immutable": "^4.0.0-rc.1",
