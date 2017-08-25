@@ -13,13 +13,13 @@
 'use strict';
 
 const prettyFormat = require('../');
-const {HTMLElement} = prettyFormat.plugins;
-const toPrettyPrintTo = require('./expect_util').getPrettyPrint([HTMLElement]);
+const {DOMElement} = prettyFormat.plugins;
+const toPrettyPrintTo = require('./expect_util').getPrettyPrint([DOMElement]);
 
 const expect: any = global.expect;
 expect.extend({toPrettyPrintTo});
 
-describe('HTMLElement Plugin', () => {
+describe('DOMElement Plugin', () => {
   it('supports a single HTML element', () => {
     expect(document.createElement('div')).toPrettyPrintTo('<div />');
   });
