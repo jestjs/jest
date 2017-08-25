@@ -119,7 +119,7 @@ class ScriptTransformer {
         path.basename(filename, path.extname(filename)) + '_' + cacheKey,
       ),
     );
-    createDirectory(cacheDir);
+    this._config.cache && createDirectory(cacheDir);
 
     return cachePath;
   }
@@ -257,12 +257,12 @@ class ScriptTransformer {
         typeof transformed.map === 'string'
           ? transformed.map
           : JSON.stringify(transformed.map);
-      writeCacheFile(sourceMapPath, sourceMapContent);
+      this._config.cache && writeCacheFile(sourceMapPath, sourceMapContent);
     } else {
       sourceMapPath = null;
     }
 
-    writeCodeCacheFile(cacheFilePath, code);
+    this._config.cache && writeCodeCacheFile(cacheFilePath, code);
 
     return {
       code,

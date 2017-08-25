@@ -102,6 +102,7 @@ let mockFs;
 let object;
 let vm;
 let writeFileAtomic;
+let jestUtil;
 
 jest.mock('write-file-atomic', () => ({
   sync: jest.fn().mockImplementation((filePath, data) => {
@@ -117,6 +118,7 @@ describe('ScriptTransformer', () => {
     object = data => Object.assign(Object.create(null), data);
 
     vm = require('vm');
+    jestUtil = require('jest-util');
 
     mockFs = object({
       '/fruits/banana.js': ['module.exports = "banana";'].join('\n'),
@@ -411,6 +413,20 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync.mock.calls.length).toBe(1);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toBeCalled();
+  });
+
+  it('does not write cache directory and files when config.cache is false', () => {
+    const transformConfig = Object.assign(config, {
+      cache: false,
+      transform: [['^.+\\.js$', 'test_preprocessor']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+
+    scriptTransformer.transform('/fruits/banana.js', {
+      collectCoverage: true,
+      mapCoverage: true,
+    });
+    expect(writeFileAtomic.sync).not.toBeCalled();
+    expect(jestUtil.createDirectory).not.toBeCalled();
   });
 });
