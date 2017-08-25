@@ -43,7 +43,7 @@ const getType = element => {
 };
 
 export const serialize = (
-  element: React$Element<*>,
+  element: React$Element<any>,
   config: Config,
   indentation: string,
   depth: number,

@@ -10,7 +10,7 @@
 
 'use strict';
 
-import React from 'react';
+import * as React from 'react';
 import Immutable from 'immutable';
 import prettyFormat from '../';
 const {Immutable: ImmutablePlugin, ReactElement} = prettyFormat.plugins;
