@@ -118,6 +118,11 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
       const data = parse(`${fixtures}/metaphysics/partner_show.example`);
       expect(data.itBlocks.length).toEqual(8);
     });
+
+    it('For a call expression without text test file', () => {
+      const data = parse(`${fixtures}/callExpressionWithoutText.example`);
+      expect(data.itBlocks.length).toEqual(1);
+    });
   });
 
   describe('File Parsing for expects', () => {
@@ -142,6 +147,11 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
     it('finds Expects in a metaphysics test file', () => {
       const data = parse(`${fixtures}/metaphysics/partner_show.example`);
       expect(data.expects.length).toEqual(10);
+    });
+
+    it('finds Expects in a call expression without text test file', () => {
+      const data = parse(`${fixtures}/callExpressionWithoutText.example`);
+      expect(data.expects.length).toEqual(1);
     });
   });
 }
