@@ -124,7 +124,6 @@ const validConfig = {
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,
-  watchPathIgnorePatterns: [],
 };
 
 const format = (value: string) => require('pretty-format')(value, {min: true});
