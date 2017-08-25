@@ -137,8 +137,8 @@ test('resolves projects and their <rootDir> properly', () => {
   ({stderr} = runJest(DIR));
 
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
-  expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
 
   // Use globs
   writeFiles(DIR, {
@@ -153,8 +153,8 @@ test('resolves projects and their <rootDir> properly', () => {
 
   ({stderr} = runJest(DIR));
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
-  expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
 
   // Include two projects that will resolve to the same config
   writeFiles(DIR, {

@@ -19,9 +19,9 @@ Ran all test suites in 3 projects.
 `;
 
 exports[`can pass projects or global config 3`] = `
-"PASS   BACKEND  project1/__tests__/file1.test.js
-PASS   UI  project3/__tests__/file1.test.js
-PASS  project2/__tests__/file1.test.js"
+"PASS BACKEND project1/__tests__/file1.test.js
+PASS UI project3/__tests__/file1.test.js
+PASS project2/__tests__/file1.test.js"
 `;
 
 exports[`can pass projects or global config 4`] = `
@@ -34,7 +34,7 @@ Ran all test suites in 3 projects.
 `;
 
 exports[`can pass projects or global config 5`] = `
-"PASS   BACKEND  project1/__tests__/file1.test.js
-PASS   UI  project3/__tests__/file1.test.js
-PASS  project2/__tests__/file1.test.js"
+"PASS BACKEND project1/__tests__/file1.test.js
+PASS UI project3/__tests__/file1.test.js
+PASS project2/__tests__/file1.test.js"
 `;

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`not throwing Error objects 1`] = `
-" FAIL  __tests__/throw_number.test.js
+"FAIL __tests__/throw_number.test.js
   ● Test suite failed to run
 
     Expected an Error, but \\"1\\" was thrown
@@ -10,7 +10,7 @@ exports[`not throwing Error objects 1`] = `
 `;
 
 exports[`not throwing Error objects 2`] = `
-" FAIL  __tests__/throw_string.test.js
+"FAIL __tests__/throw_string.test.js
   ● Test suite failed to run
 
     Error
@@ -20,7 +20,7 @@ exports[`not throwing Error objects 2`] = `
 `;
 
 exports[`not throwing Error objects 3`] = `
-" FAIL  __tests__/throw_object.test.js
+"FAIL __tests__/throw_object.test.js
   ● Test suite failed to run
 
     Error: No message was provided
@@ -29,7 +29,7 @@ exports[`not throwing Error objects 3`] = `
 `;
 
 exports[`not throwing Error objects 4`] = `
-" FAIL  __tests__/assertion_count.test.js
+"FAIL __tests__/assertion_count.test.js
   ● .assertions() › throws
     expect(received).toBeTruthy()
     Expected value to be truthy, instead received
@@ -59,7 +59,7 @@ exports[`not throwing Error objects 4`] = `
 `;
 
 exports[`works with node assert 1`] = `
-" FAIL  __tests__/node_assertion_error.test.js
+"FAIL __tests__/node_assertion_error.test.js
   ● assert
 
     assert.equal(received, expected) or assert(received) 
