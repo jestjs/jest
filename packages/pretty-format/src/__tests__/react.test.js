@@ -57,6 +57,7 @@ test('supports a single element with no props or children', () => {
 
 test('supports a single element with non-empty string child', () => {
   assertPrintedJSX(
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     React.createElement('Mouse', null, 'Hello World'),
     '<Mouse>\n  Hello World\n</Mouse>',
   );
@@ -64,6 +65,7 @@ test('supports a single element with non-empty string child', () => {
 
 test('supports a single element with empty string child', () => {
   assertPrintedJSX(
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     React.createElement('Mouse', null, ''),
     '<Mouse>\n  \n</Mouse>',
   );
@@ -71,6 +73,7 @@ test('supports a single element with empty string child', () => {
 
 test('supports a single element with non-zero number child', () => {
   assertPrintedJSX(
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     React.createElement('Mouse', null, 4),
     '<Mouse>\n  4\n</Mouse>',
   );
@@ -78,6 +81,7 @@ test('supports a single element with non-zero number child', () => {
 
 test('supports a single element with zero number child', () => {
   assertPrintedJSX(
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     React.createElement('Mouse', null, 0),
     '<Mouse>\n  0\n</Mouse>',
   );
@@ -85,6 +89,7 @@ test('supports a single element with zero number child', () => {
 
 test('supports a single element with mixed children', () => {
   assertPrintedJSX(
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     React.createElement('Mouse', null, [[1, null], 2, undefined, [false, [3]]]),
     '<Mouse>\n  1\n  2\n  3\n</Mouse>',
   );
@@ -100,6 +105,7 @@ test('supports props with strings', () => {
 test('supports props with multiline strings', () => {
   const val = React.createElement(
     'svg',
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     null,
     React.createElement('polyline', {
       id: 'J',
@@ -168,6 +174,7 @@ test('escapes children properly', () => {
   assertPrintedJSX(
     React.createElement(
       'Mouse',
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       null,
       '"-"',
       React.createElement('Mouse'),
@@ -307,6 +314,7 @@ test('supports Unknown element', () => {
 test('supports a single element with React elements with a child', () => {
   assertPrintedJSX(
     React.createElement('Mouse', {
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       prop: React.createElement('div', null, 'mouse'),
     }),
     '<Mouse\n  prop={\n    <div>\n      mouse\n    </div>\n  }\n/>',
@@ -318,8 +326,10 @@ test('supports a single element with React elements with children', () => {
     React.createElement('Mouse', {
       prop: React.createElement(
         'div',
+        // $FlowFixMe: https://github.com/facebook/flow/issues/4658
         null,
         'mouse',
+        // $FlowFixMe: https://github.com/facebook/flow/issues/4658
         React.createElement('span', null, 'rat'),
       ),
     }),
@@ -330,6 +340,7 @@ test('supports a single element with React elements with children', () => {
 test('supports a single element with React elements with array children', () => {
   assertPrintedJSX(
     React.createElement('Mouse', {
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       prop: React.createElement('div', null, 'mouse', [
         React.createElement('span', {key: 1}, 'rat'),
         React.createElement('span', {key: 2}, 'cat'),
@@ -341,7 +352,9 @@ test('supports a single element with React elements with array children', () => 
 
 test('supports array of elements', () => {
   const val = [
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     React.createElement('dt', null, 'jest'),
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     React.createElement('dd', null, 'to talk in a playful manner'),
     React.createElement(
       'dd',
@@ -402,6 +415,7 @@ describe('test object for subset match', () => {
 describe('indent option', () => {
   const val = React.createElement(
     'ul',
+    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     null,
     React.createElement(
       'li',
@@ -451,6 +465,7 @@ describe('maxDepth option', () => {
     const val = React.createElement(
       // ++depth === 1
       'dl',
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       null,
       React.createElement('dt', {id: 'jest'}, 'jest'), // ++depth === 2
       React.createElement(
@@ -460,6 +475,7 @@ describe('maxDepth option', () => {
           id: 'jest-1',
         },
         'to talk in a ',
+        // $FlowFixMe: https://github.com/facebook/flow/issues/4658
         React.createElement('em', null, 'playful'), // ++depth === 3
         ' manner',
       ),
@@ -473,6 +489,7 @@ describe('maxDepth option', () => {
             color: '#99424F',
           },
         },
+        // $FlowFixMe: https://github.com/facebook/flow/issues/4658
         React.createElement('em', null, 'painless'), // ++depth === 3
         ' JavaScript testing',
       ),
@@ -513,6 +530,7 @@ describe('maxDepth option', () => {
           id: 'jest-1',
         },
         'to talk in a ',
+        // $FlowFixMe: https://github.com/facebook/flow/issues/4658
         React.createElement('em', null, 'playful'), // ++depth === 3
         ' manner',
       ),
@@ -526,6 +544,7 @@ describe('maxDepth option', () => {
             color: '#99424F',
           },
         },
+        // $FlowFixMe: https://github.com/facebook/flow/issues/4658
         React.createElement('em', null, 'painless'), // ++depth === 3
         ' JavaScript testing',
       ),
@@ -582,8 +601,10 @@ test('ReactElement plugin highlights syntax', () => {
   const jsx = React.createElement('Mouse', {
     prop: React.createElement(
       'div',
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       null,
       'mouse',
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       React.createElement('span', null, 'rat'),
     ),
   });
@@ -598,8 +619,10 @@ test('ReactTestComponent plugin highlights syntax', () => {
   const jsx = React.createElement('Mouse', {
     prop: React.createElement(
       'div',
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       null,
       'mouse',
+      // $FlowFixMe: https://github.com/facebook/flow/issues/4658
       React.createElement('span', null, 'rat'),
     ),
   });
