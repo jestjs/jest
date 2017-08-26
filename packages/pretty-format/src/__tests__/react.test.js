@@ -13,6 +13,7 @@ import type {OptionsReceived} from 'types/PrettyFormat';
 const React = require('react');
 const renderer = require('react-test-renderer');
 
+const elementSymbol = Symbol.for('react.element');
 const testSymbol = Symbol.for('react.test.json');
 
 const prettyFormat = require('../');
@@ -301,14 +302,10 @@ test('supports a single element with custom React elements with a child', () => 
   );
 });
 
-test('supports Unknown element', () => {
-  // Suppress React.createElement(undefined) console error
-  const consoleError = console.error;
-  (console: Object).error = jest.fn();
-  expect(formatElement(React.createElement(undefined))).toEqual(
+test('supports undefined element type', () => {
+  expect(formatElement({$$typeof: elementSymbol, props: {}})).toEqual(
     '<UNDEFINED />',
   );
-  (console: Object).error = consoleError;
 });
 
 test('supports a single element with React elements with a child', () => {
