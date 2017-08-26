@@ -48,6 +48,13 @@ function browserBuild(pkgName, entryPath, destination) {
     entry: entryPath,
     onwarn: () => {},
     plugins: [
+      {
+        resolveId(id) {
+          return id === 'chalk'
+            ? require.resolve('../packages/jest-fake-chalk')
+            : undefined;
+        },
+      },
       rollupFlow(),
       rollupJson(),
       rollupCommonjs(),
