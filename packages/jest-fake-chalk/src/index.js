@@ -7,8 +7,7 @@
  * @flow
  */
 
-// import ansiStyles from 'ansi-styles';
-const ansiStyles = require('ansi-styles');
+import ansiStyles from 'ansi-styles';
 
 const returnInput = str => str;
 
