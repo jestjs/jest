@@ -1,5 +1,6 @@
 {
   "name": "jest-fake-chalk",
+  "private": true,
   "version": "20.0.3",
   "repository": {
     "type": "git",
