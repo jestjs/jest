@@ -12,7 +12,6 @@ import type {Path, ProjectConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
 import path from 'path';
-import isCI from 'is-ci';
 import chalk from 'chalk';
 import slash from 'slash';
 
@@ -24,13 +23,11 @@ type SummaryOptions = {|
 
 const PROGRESS_BAR_WIDTH = 40;
 
-const isInteractive = process.stdout.isTTY && !isCI;
-
 const printDisplayName = (config: ProjectConfig) => {
   const {displayName} = config;
 
   if (displayName) {
-    return isInteractive
+    return chalk.supportsColor
       ? chalk.reset.inverse.white.dim(` ${displayName} `)
       : displayName;
   }
