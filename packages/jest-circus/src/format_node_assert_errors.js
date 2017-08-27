@@ -43,8 +43,19 @@ module.exports = (event: Event, state: State) => {
   switch (event.name) {
     case 'test_failure':
     case 'test_success': {
+      let assert;
+      try {
+        assert = require('assert');
+      } catch (error) {
+        // We are running somewhere where `assert` isn't available, like a
+        // browser or React Native. Since assert isn't available, presumably
+        // none of the errors we get through this event listener will be
+        // `AssertionError`s, so we don't need to do anything.
+        break;
+      }
+
       event.test.errors = event.test.errors.map(error => {
-        return error instanceof require('assert').AssertionError
+        return error instanceof assert.AssertionError
           ? assertionErrorMessage(error, {expand: state.expand})
           : error;
       });
