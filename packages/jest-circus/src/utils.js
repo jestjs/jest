@@ -154,8 +154,14 @@ const callAsyncFn = (
       return reject(error);
     }
 
-    // If it's a Promise, return it.
-    if (returnedValue instanceof Promise) {
+    // If it's a Promise, return it. Test for an object with a `then` function
+    // on it to support Promise implementations that aren't global.Promise, so
+    // users can use bluebird, Q, etc.
+    if (
+      typeof returnedValue === 'object' &&
+      returnedValue !== null &&
+      typeof returnedValue.then === 'function'
+    ) {
       return returnedValue.then(resolve, reject);
     }
 
