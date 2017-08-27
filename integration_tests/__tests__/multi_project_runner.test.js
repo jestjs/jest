@@ -102,6 +102,42 @@ test('can pass projects or global config', () => {
   expect(sortLines(result1.rest)).toBe(sortLines(result2.rest));
 });
 
+test('"No tests found" message for projects', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    'package.json': '{}',
+    'project1/__tests__/file1.test.js': `
+      const file1 = require('file1');
+      test('file1', () => {});
+    `,
+    'project1/file1.js': fileContentWithProvidesModule('file1'),
+    'project1/jest.config.js': `module.exports = {rootDir: './'}`,
+    'project2/__tests__/file1.test.js': `
+      const file1 = require('file1');
+      test('file1', () => {});
+    `,
+    'project2/file1.js': fileContentWithProvidesModule('file1'),
+    'project2/jest.config.js': `module.exports = {rootDir: './'}`,
+  });
+  const {stdout: verboseOutput} = runJest(DIR, [
+    'xyz321',
+    '--verbose',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+  expect(verboseOutput).toContain('Pattern: xyz321 - 0 matches');
+  const {stdout} = runJest(DIR, [
+    'xyz321',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+  expect(stdout).toContain(
+    '  6 files checked across 2 projects. for more details run with `--verbose`',
+  );
+});
+
 test('resolves projects and their <rootDir> properly', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',

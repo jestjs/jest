@@ -298,7 +298,9 @@ test('supports Unknown element', () => {
   // Suppress React.createElement(undefined) console error
   const consoleError = console.error;
   (console: Object).error = jest.fn();
-  expect(formatElement(React.createElement(undefined))).toEqual('<Unknown />');
+  expect(formatElement(React.createElement(undefined))).toEqual(
+    '<UNDEFINED />',
+  );
   (console: Object).error = consoleError;
 });
 

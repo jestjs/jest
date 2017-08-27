@@ -13,13 +13,13 @@ import type {Plugin} from 'types/PrettyFormat';
 import prettyFormat from 'pretty-format';
 
 const {
-  HTMLElement,
+  DOMElement,
   Immutable,
   ReactElement,
   ReactTestComponent,
 } = prettyFormat.plugins;
 
-let PLUGINS = [ReactTestComponent, ReactElement, HTMLElement, Immutable];
+let PLUGINS = [ReactTestComponent, ReactElement, DOMElement, Immutable];
 
 // Prepend to list so the last added is the first tested.
 exports.addSerializer = (plugin: Plugin) => {
