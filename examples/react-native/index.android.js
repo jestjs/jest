@@ -8,7 +8,7 @@ import Intro from './Intro';
 import React, {AppRegistry} from 'react-native';
 import {Component} from 'react';
 
-class App extends Component {
+class App extends Component<{}> {
   render() {
     return <Intro />;
   }
