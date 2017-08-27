@@ -28,7 +28,7 @@ const printDisplayName = (config: ProjectConfig) => {
 
   if (displayName) {
     return chalk.supportsColor
-      ? chalk.reset.inverse.white.dim(` ${displayName} `)
+      ? chalk.reset.inverse.white(` ${displayName} `)
       : displayName;
   }
 
