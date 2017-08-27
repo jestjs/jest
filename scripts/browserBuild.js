@@ -7,6 +7,7 @@
  */
 'use strict';
 
+const path = require('path');
 const rollup = require('rollup').rollup;
 const rollupResolve = require('rollup-plugin-node-resolve');
 const rollupCommonjs = require('rollup-plugin-commonjs');
@@ -48,6 +49,13 @@ function browserBuild(pkgName, entryPath, destination) {
     entry: entryPath,
     onwarn: () => {},
     plugins: [
+      {
+        resolveId(id) {
+          return id === 'chalk'
+            ? path.resolve(__dirname, '../packages/expect/build/fake_chalk.js')
+            : undefined;
+        },
+      },
       rollupFlow(),
       rollupJson(),
       rollupCommonjs(),
