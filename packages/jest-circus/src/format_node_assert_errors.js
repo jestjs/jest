@@ -45,7 +45,11 @@ module.exports = (event: Event, state: State) => {
     case 'test_success': {
       let assert;
       try {
-        assert = require('assert');
+        // Use require.call(null, 'assert') instead of require('assert') because
+        // the React Native packager does not add 'assert' as a dependency when
+        // the former is used.
+        // eslint-disable-next-line no-useless-call
+        assert = require.call(null, 'assert');
       } catch (error) {
         // We are running somewhere where `assert` isn't available, like a
         // browser or React Native. Since assert isn't available, presumably
