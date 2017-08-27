@@ -155,8 +155,7 @@ const callAsyncFn = (
     }
 
     // If it's a Promise, return it. Test for an object with a `then` function
-    // on it to support Promise implementations that aren't global.Promise, so
-    // users can use bluebird, Q, etc.
+    // to support custom Promise implementations.
     if (
       typeof returnedValue === 'object' &&
       returnedValue !== null &&
