@@ -15,17 +15,11 @@ import type {ReporterOnStartOptions} from 'types/Reporters';
 
 import chalk from 'chalk';
 import BaseReporter from './base_reporter';
-import {getSummary, pluralize} from './utils';
+import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
+import getSnapshotSummary from './get_snapshot_summary';
 import testPathPatternToRegExp from '../test_path_pattern_to_regexp';
 
-const ARROW = ' \u203A ';
-const FAIL_COLOR = chalk.bold.red;
-const SNAPSHOT_ADDED = chalk.bold.green;
-const SNAPSHOT_NOTE = chalk.dim;
-const SNAPSHOT_REMOVED = chalk.bold.red;
-const SNAPSHOT_SUMMARY = chalk.bold;
-const SNAPSHOT_UPDATED = chalk.bold.green;
 const TEST_SUMMARY_THRESHOLD = 20;
 
 const NPM_EVENTS = new Set([
@@ -149,63 +143,8 @@ class SummaryReporter extends BaseReporter {
         updateCommand = 're-run with `-u`';
       }
 
-      this.log(SNAPSHOT_SUMMARY('Snapshot Summary'));
-      if (snapshots.added) {
-        this.log(
-          SNAPSHOT_ADDED(ARROW + pluralize('snapshot', snapshots.added)) +
-            ` written in ${pluralize('test suite', snapshots.filesAdded)}.`,
-        );
-      }
-
-      if (snapshots.unmatched) {
-        this.log(
-          FAIL_COLOR(ARROW + pluralize('snapshot test', snapshots.unmatched)) +
-            ` failed in ` +
-            `${pluralize('test suite', snapshots.filesUnmatched)}. ` +
-            SNAPSHOT_NOTE(
-              'Inspect your code changes or ' +
-                updateCommand +
-                ' to update them.',
-            ),
-        );
-      }
-
-      if (snapshots.updated) {
-        this.log(
-          SNAPSHOT_UPDATED(ARROW + pluralize('snapshot', snapshots.updated)) +
-            ` updated in ${pluralize('test suite', snapshots.filesUpdated)}.`,
-        );
-      }
-
-      if (snapshots.filesRemoved) {
-        this.log(
-          SNAPSHOT_REMOVED(
-            ARROW + pluralize('obsolete snapshot file', snapshots.filesRemoved),
-          ) +
-            (snapshots.didUpdate
-              ? ' removed.'
-              : ' found, ' +
-                updateCommand +
-                ' to remove ' +
-                (snapshots.filesRemoved === 1 ? 'it' : 'them.') +
-                '.'),
-        );
-      }
-
-      if (snapshots.unchecked) {
-        this.log(
-          FAIL_COLOR(
-            ARROW + pluralize('obsolete snapshot', snapshots.unchecked),
-          ) +
-            (snapshots.didUpdate
-              ? ' removed.'
-              : ' found, ' +
-                updateCommand +
-                ' to remove ' +
-                (snapshots.filesRemoved === 1 ? 'it' : 'them') +
-                '.'),
-        );
-      }
+      const snapshotSummary = getSnapshotSummary(snapshots, updateCommand);
+      snapshotSummary.forEach(this.log);
 
       this.log(''); // print empty line
     }
