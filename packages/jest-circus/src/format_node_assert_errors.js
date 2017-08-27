@@ -45,9 +45,8 @@ module.exports = (event: Event, state: State) => {
     case 'test_success': {
       let assert;
       try {
-        // Use require.call(null, 'assert') instead of require('assert') because
-        // the React Native packager does not add 'assert' as a dependency when
-        // the former is used.
+        // Use indirect require so that Metro Bundler does not attempt to
+        // bundle `assert`, which does not exist in React Native.
         // eslint-disable-next-line no-useless-call
         assert = require.call(null, 'assert');
       } catch (error) {
