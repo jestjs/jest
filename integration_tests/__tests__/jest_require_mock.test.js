@@ -41,8 +41,8 @@ test('understands dependencies using require.requireMock', () => {
   ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']));
 
   expect(stdout).not.toMatch('No tests found');
-  expect(stderr).toMatch('PASS  __tests__/a.test.js');
-  expect(stderr).not.toMatch('PASS  __tests__/b.test.js');
+  expect(stderr).toMatch('PASS __tests__/a.test.js');
+  expect(stderr).not.toMatch('PASS __tests__/b.test.js');
 
   // change to jest.requireMock
   writeFiles(DIR, {
@@ -55,6 +55,6 @@ test('understands dependencies using require.requireMock', () => {
 
   ({stderr, stdout} = runJest(DIR, ['--findRelatedTests', 'a.js']));
   expect(stdout).not.toMatch('No tests found');
-  expect(stderr).toMatch('PASS  __tests__/a.test.js');
-  expect(stderr).not.toMatch('PASS  __tests__/b.test.js');
+  expect(stderr).toMatch('PASS __tests__/a.test.js');
+  expect(stderr).not.toMatch('PASS __tests__/b.test.js');
 });

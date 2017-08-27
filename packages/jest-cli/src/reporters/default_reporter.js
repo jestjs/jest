@@ -174,7 +174,7 @@ class DefaultReporter extends BaseReporter {
     result: TestResult,
   ) {
     if (!result.skipped) {
-      this.log(getResultHeader(result, config));
+      this.log(getResultHeader(result, this._globalConfig, config));
 
       const consoleBuffer = result.console;
       if (consoleBuffer && consoleBuffer.length) {

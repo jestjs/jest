@@ -453,6 +453,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'collectCoverage':
       case 'coverageReporters':
       case 'coverageThreshold':
+      case 'displayName':
       case 'expand':
       case 'globals':
       case 'findRelatedTests':

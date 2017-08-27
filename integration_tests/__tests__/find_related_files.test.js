@@ -38,7 +38,7 @@ test('runs tests related to filename', () => {
   expect(stdout).toMatch(/no tests found/i);
 
   const {stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']);
-  expect(stderr).toMatch('PASS  __tests__/test.test.js');
+  expect(stderr).toMatch('PASS __tests__/test.test.js');
 
   const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
   expect(stderr).toMatch(summaryMsg);

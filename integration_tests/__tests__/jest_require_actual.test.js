@@ -41,8 +41,8 @@ test('understands dependencies using require.requireActual', () => {
   ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']));
 
   expect(stdout).not.toMatch('No tests found');
-  expect(stderr).toMatch('PASS  __tests__/a.test.js');
-  expect(stderr).not.toMatch('PASS  __tests__/b.test.js');
+  expect(stderr).toMatch('PASS __tests__/a.test.js');
+  expect(stderr).not.toMatch('PASS __tests__/b.test.js');
 
   // change to jest.requireActual
   writeFiles(DIR, {
@@ -55,6 +55,6 @@ test('understands dependencies using require.requireActual', () => {
 
   ({stderr, stdout} = runJest(DIR, ['--findRelatedTests', 'a.js']));
   expect(stdout).not.toMatch('No tests found');
-  expect(stderr).toMatch('PASS  __tests__/a.test.js');
-  expect(stderr).not.toMatch('PASS  __tests__/b.test.js');
+  expect(stderr).toMatch('PASS __tests__/a.test.js');
+  expect(stderr).not.toMatch('PASS __tests__/b.test.js');
 });

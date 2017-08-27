@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`does not exceed the timeout 1`] = `
-" PASS  __tests__/a-banana.js
+"PASS __tests__/a-banana.js
   ✓ banana
 
 "

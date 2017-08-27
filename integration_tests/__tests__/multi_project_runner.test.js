@@ -48,13 +48,19 @@ test('can pass projects or global config', () => {
       test('file1', () => {});
     `,
     'project1/file1.js': fileContentWithProvidesModule('file1'),
-    'project1/jest.config.js': `module.exports = {rootDir: './'}`,
+    'project1/jest.config.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
     'project2/__tests__/file1.test.js': `
       const file1 = require('file1');
       test('file1', () => {});
     `,
     'project2/file1.js': fileContentWithProvidesModule('file1'),
     'project2/jest.config.js': `module.exports = {rootDir: './'}`,
+    'project3/__tests__/file1.test.js': `
+      const file1 = require('file1');
+      test('file1', () => {});
+    `,
+    'project3/file1.js': fileContentWithProvidesModule('file1'),
+    'project3/jest.config.js': `module.exports = {rootDir: './', displayName: 'UI'}`,
   });
   let stderr;
 
@@ -68,12 +74,18 @@ test('can pass projects or global config', () => {
   writeFiles(DIR, {
     'global_config.js': `
       module.exports = {
-        projects: ['project1/', 'project2/'],
+        projects: ['project1/', 'project2/', 'project3/'],
       };
     `,
   });
 
-  ({stderr} = runJest(DIR, ['-i', '--projects', 'project1', 'project2']));
+  ({stderr} = runJest(DIR, [
+    '-i',
+    '--projects',
+    'project1',
+    'project2',
+    'project3',
+  ]));
 
   const result1 = extractSummary(stderr);
   expect(result1.summary).toMatchSnapshot();
@@ -161,8 +173,8 @@ test('resolves projects and their <rootDir> properly', () => {
   ({stderr} = runJest(DIR));
 
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
-  expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
 
   // Use globs
   writeFiles(DIR, {
@@ -177,8 +189,8 @@ test('resolves projects and their <rootDir> properly', () => {
 
   ({stderr} = runJest(DIR));
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
-  expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
 
   // Include two projects that will resolve to the same config
   writeFiles(DIR, {
