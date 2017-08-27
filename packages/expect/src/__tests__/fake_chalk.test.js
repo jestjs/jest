@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const fakeChalk = require.requireActual('../');
+const fakeChalk = require.requireActual('../fake_chalk');
 
 describe('Fake Chalk', () => {
   it('returns input when invoked', () => {
