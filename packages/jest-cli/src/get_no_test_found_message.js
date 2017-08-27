@@ -6,7 +6,7 @@ const getNoTestsFoundMessage = (testRunData, globalConfig): string => {
   if (globalConfig.onlyChanged) {
     return getNoTestFoundRelatedToChangedFiles(globalConfig);
   }
-  return globalConfig.verbose
+  return testRunData.length === 1 || globalConfig.verbose
     ? getNoTestFoundVerbose(testRunData, globalConfig)
     : getNoTestFound(testRunData, globalConfig);
 };
