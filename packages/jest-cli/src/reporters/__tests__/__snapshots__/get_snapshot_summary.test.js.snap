@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`creates a snapshot summary 1`] = `
+Array [
+  "<bold>Snapshot Summary",
+  "<bold><green> › 1 snapshot</> written in 1 test suite.",
+  "<bold><red> › 1 snapshot test</> failed in 1 test suite. <dim>Inspect your code changes or press --u to update them.",
+  "<bold><green> › 1 snapshot</> updated in 1 test suite.",
+  "<bold><red> › 1 obsolete snapshot file</> found, press --u to remove it.",
+  "<bold><red> › 1 obsolete snapshot</> found, press --u to remove it.",
+]
+`;
+
+exports[`creates a snapshot summary after an update 1`] = `
+Array [
+  "<bold>Snapshot Summary",
+  "<bold><green> › 1 snapshot</> written in 1 test suite.",
+  "<bold><red> › 1 snapshot test</> failed in 1 test suite. <dim>Inspect your code changes or press --u to update them.",
+  "<bold><green> › 1 snapshot</> updated in 1 test suite.",
+  "<bold><red> › 1 obsolete snapshot file</> removed.",
+  "<bold><red> › 1 obsolete snapshot</> removed.",
+]
+`;
+
+exports[`creates a snapshot summary with multiple snapshot being written/updated 1`] = `
+Array [
+  "<bold>Snapshot Summary",
+  "<bold><green> › 2 snapshots</> written in 2 test suites.",
+  "<bold><red> › 2 snapshot tests</> failed in 2 test suites. <dim>Inspect your code changes or press --u to update them.",
+  "<bold><green> › 2 snapshots</> updated in 2 test suites.",
+  "<bold><red> › 2 obsolete snapshot files</> found, press --u to remove them..",
+  "<bold><red> › 2 obsolete snapshots</> found, press --u to remove them.",
+]
+`;
+
+exports[`returns nothing if there are no updates 1`] = `
+Array [
+  "<bold>Snapshot Summary",
+]
+`;
