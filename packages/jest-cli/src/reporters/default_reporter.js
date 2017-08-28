@@ -21,6 +21,7 @@ import isCI from 'is-ci';
 import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
+import getSnapshotStatus from './get_snapshot_status';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;
@@ -173,7 +174,7 @@ class DefaultReporter extends BaseReporter {
     result: TestResult,
   ) {
     if (!result.skipped) {
-      this.log(getResultHeader(result, config));
+      this.log(getResultHeader(result, this._globalConfig, config));
 
       const consoleBuffer = result.console;
       if (consoleBuffer && consoleBuffer.length) {
@@ -192,6 +193,10 @@ class DefaultReporter extends BaseReporter {
       if (result.failureMessage) {
         this.log(result.failureMessage);
       }
+
+      const didUpdate = this._globalConfig.updateSnapshot === 'all';
+      const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
+      snapshotStatuses.forEach(this.log);
     }
   }
 }

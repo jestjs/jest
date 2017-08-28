@@ -12,11 +12,7 @@ import type {TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Event, TestEntry} from 'types/Circus';
 
-import {
-  extractExpectedAssertionsErrors,
-  getState,
-  setState,
-} from 'jest-matchers';
+import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} from '../state';

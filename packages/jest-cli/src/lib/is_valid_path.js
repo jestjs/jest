@@ -19,6 +19,7 @@ function isValidPath(
 ) {
   return (
     !filePath.includes(globalConfig.coverageDirectory) &&
+    !config.watchPathIgnorePatterns.some(pattern => filePath.match(pattern)) &&
     !filePath.endsWith(`.${SNAPSHOT_EXTENSION}`)
   );
 }

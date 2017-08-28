@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`basic test constructs 1`] = `
-" PASS  __tests__/basic.test-constructs.test.js
+"PASS __tests__/basic.test-constructs.test.js
   ✓ it
   ✓ test
   describe
@@ -21,7 +21,7 @@ Ran all test suites.
 `;
 
 exports[`only 1`] = `
-" PASS  __tests__/only-constructs.test.js
+"PASS __tests__/only-constructs.test.js
   ✓ test.only
   ✓ it.only
   ✓ fit
@@ -47,7 +47,7 @@ Ran all test suites.
 `;
 
 exports[`only with expand arg 1`] = `
-" PASS  __tests__/only-constructs.test.js
+"PASS __tests__/only-constructs.test.js
   ○ it
   ✓ test.only
   ✓ it.only
@@ -73,7 +73,7 @@ Ran all test suites.
 `;
 
 exports[`skips 1`] = `
-" PASS  __tests__/skips-constructs.test.js
+"PASS __tests__/skips-constructs.test.js
   ✓ it
   ○ skipped 4 tests
   xdescribe
@@ -96,7 +96,7 @@ Ran all test suites.
 `;
 
 exports[`skips with expand arg 1`] = `
-" PASS  __tests__/skips-constructs.test.js
+"PASS __tests__/skips-constructs.test.js
   ✓ it
   ○ xtest
   ○ xit
@@ -123,7 +123,7 @@ Ran all test suites.
 `;
 
 exports[`tests with no implementation 1`] = `
-" PASS  __tests__/only-constructs.test.js
+"PASS __tests__/only-constructs.test.js
   ✓ it
   ○ skipped 2 tests
 
@@ -140,7 +140,7 @@ Ran all test suites.
 `;
 
 exports[`tests with no implementation with expand arg 1`] = `
-" PASS  __tests__/only-constructs.test.js
+"PASS __tests__/only-constructs.test.js
   ✓ it
   ○ it, no implementation
   ○ test, no implementation

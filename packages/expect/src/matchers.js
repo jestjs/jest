@@ -29,6 +29,7 @@ import {
   getPath,
   hasOwnProperty,
   iterableEquality,
+  subsetEquality,
 } from './utils';
 import {equals} from './jasmine_utils';
 
@@ -38,22 +39,6 @@ type ContainIterable =
   | NodeList<any>
   | DOMTokenList
   | HTMLCollection<any>;
-
-const isObjectWithKeys = a =>
-  a !== null &&
-  typeof a === 'object' &&
-  !(a instanceof Array) &&
-  !(a instanceof Date);
-const subsetEquality = (object, subset) => {
-  if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
-    return undefined;
-  }
-  return Object.keys(subset).every(
-    key =>
-      hasOwnProperty(object, key) &&
-      equals(object[key], subset[key], [iterableEquality, subsetEquality]),
-  );
-};
 
 const matchers: MatchersObject = {
   toBe(received: any, expected: number) {

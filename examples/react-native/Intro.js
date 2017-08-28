@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Intro extends Component {
+export default class Intro extends Component<{}> {
   render() {
     return (
       <View style={styles.container}>

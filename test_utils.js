@@ -60,6 +60,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,
   coveragePathIgnorePatterns: [],
+  displayName: undefined,
   globals: {},
   haste: {
     providesModuleNodeModules: [],
@@ -91,6 +92,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: null,
+  watchPathIgnorePatterns: [],
 };
 
 const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
@@ -104,7 +106,6 @@ const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
     `);
   }
 
-  // $FlowFixMe Object.assign
   return Object.assign({}, DEFAULT_GLOBAL_CONFIG, overrides);
 };
 
@@ -119,7 +120,6 @@ const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
     `);
   }
 
-  // $FlowFixMe Object.assign
   return Object.assign({}, DEFAULT_PROJECT_CONFIG, overrides);
 };
 

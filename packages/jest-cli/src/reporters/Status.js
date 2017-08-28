@@ -13,7 +13,13 @@ import type {ProjectConfig, Path} from 'types/Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
 import chalk from 'chalk';
-import {getSummary, trimAndFormatPath, wrapAnsiString} from './utils';
+import stringLength from 'string-length';
+import {
+  getSummary,
+  trimAndFormatPath,
+  wrapAnsiString,
+  printDisplayName,
+} from './utils';
 
 const RUNNING_TEXT = ' RUNS ';
 const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
@@ -136,15 +142,16 @@ class Status {
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
+
+        const projectDisplayName = config.displayName
+          ? printDisplayName(config) + ' '
+          : '';
+        const prefix = RUNNING + projectDisplayName;
+
         content +=
           wrapAnsiString(
-            RUNNING +
-              trimAndFormatPath(
-                RUNNING_TEXT.length + 1,
-                config,
-                testPath,
-                width,
-              ),
+            prefix +
+              trimAndFormatPath(stringLength(prefix), config, testPath, width),
             width,
           ) + '\n';
       }

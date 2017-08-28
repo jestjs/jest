@@ -36,7 +36,7 @@ function parse(file: string) {
       } else {
         let element = node.expression;
         let expectText = '';
-        while (!expectText) {
+        while (element && !expectText) {
           expectText = element.text;
           element = element.expression;
         }

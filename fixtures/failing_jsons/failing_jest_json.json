@@ -1,10 +1,10 @@
 {
     "numFailedTests": 1,
     "numPassedTests": 29,
-    "numPendingTests": 0,
+    "numPendingTests": 1,
     "numRuntimeErrorTestSuites": 0,
     "numTotalTestSuites": 5,
-    "numTotalTests": 30,
+    "numTotalTests": 31,
     "startTime": 1479634620590,
     "success": false,
     "testResults": [
@@ -61,6 +61,11 @@
                 {
                     "status": "passed",
                     "title": "pulls it out of the env",
+                    "failureMessages": []
+                },
+                {
+                    "status": "pending",
+                    "title": "does not pull it out of the env",
                     "failureMessages": []
                 }
             ]

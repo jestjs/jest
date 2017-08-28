@@ -55,6 +55,7 @@ const defaultConfig = {
   useStderr: false,
   verbose: null,
   watch: false,
+  watchPathIgnorePatterns: [],
 };
 
 const validConfig = {
@@ -121,6 +122,7 @@ const validConfig = {
   useStderr: false,
   verbose: false,
   watch: false,
+  watchPathIgnorePatterns: [],
   watchman: true,
 };
 

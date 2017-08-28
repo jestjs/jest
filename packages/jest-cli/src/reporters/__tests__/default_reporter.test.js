@@ -16,6 +16,14 @@ const testCase = {
   path: '/foo',
 };
 const testResult = {
+  snapshot: {
+    added: 0,
+    fileDeleted: true,
+    matched: 1,
+    unchecked: 0,
+    unmatched: 0,
+    updated: 0,
+  },
   testFilePath: '/foo',
 };
 
@@ -54,7 +62,7 @@ afterEach(() => {
 });
 
 test('normal output, everything goes to stdout', () => {
-  const reporter = new DefaultReporter({useStderr: false});
+  const reporter = new DefaultReporter({rootDir: '', useStderr: false});
 
   reporter.onRunStart(aggregatedResults, options);
   reporter.onTestStart(testCase);
@@ -67,7 +75,7 @@ test('normal output, everything goes to stdout', () => {
 });
 
 test('when using stderr as output, no stdout call is made', () => {
-  const reporter = new DefaultReporter({useStderr: true});
+  const reporter = new DefaultReporter({rootDir: '', useStderr: true});
 
   reporter.onRunStart(aggregatedResults, options);
   reporter.onTestStart(testCase);

@@ -34,4 +34,19 @@ describe('promise beforeAll', () => {
 
     it('fails', () => {});
   });
+
+  describe('done - with error thrown', () => {
+    beforeAll(done => {
+      throw new Error('fail');
+      done(); // eslint-disable-line
+    });
+    it('fails', () => {});
+  });
+
+  describe('done - with error called back', () => {
+    beforeAll(done => {
+      done(new Error('fail'));
+    });
+    it('fails', () => {});
+  });
 });

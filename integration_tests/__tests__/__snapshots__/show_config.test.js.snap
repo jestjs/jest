@@ -51,7 +51,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"timers\\": \\"real\\",
       \\"transformIgnorePatterns\\": [
         \\"/node_modules/\\"
-      ]
+      ],
+      \\"watchPathIgnorePatterns\\": []
     }
   ],
   \\"globalConfig\\": {

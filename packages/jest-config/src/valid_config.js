@@ -36,6 +36,7 @@ module.exports = ({
       branches: 50,
     },
   },
+  displayName: 'project-name',
   expand: false,
   forceExit: false,
   globals: {},
@@ -94,5 +95,6 @@ module.exports = ({
   useStderr: false,
   verbose: false,
   watch: false,
+  watchPathIgnorePatterns: [],
   watchman: true,
 }: InitialOptions);

@@ -130,4 +130,30 @@ describe('queueRunner', () => {
 
     expect(options.fail).toHaveBeenCalledWith('miserably', 'failed');
   });
+
+  it('calls `fail` when done(error) is invoked', async () => {
+    const error = new Error('I am an error');
+    const fail = jest.fn();
+    const fnOne = jest.fn(next => next(error));
+    const fnTwo = jest.fn(next => next());
+    const options = {
+      clearTimeout,
+      fail,
+      onException: () => {},
+      queueableFns: [
+        {
+          fn: fnOne,
+        },
+        {
+          fn: fnTwo,
+        },
+      ],
+      setTimeout,
+    };
+    await queueRunner(options);
+    expect(fnOne).toHaveBeenCalled();
+    expect(fail).toHaveBeenCalledWith(error);
+    // Even if `fail` is called, the queue keeps running.
+    expect(fnTwo).toHaveBeenCalled();
+  });
 });

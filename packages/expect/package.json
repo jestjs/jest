@@ -1,5 +1,5 @@
 {
-  "name": "jest-matchers",
+  "name": "expect",
   "version": "20.0.3",
   "repository": {
     "type": "git",
@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "browser": "build-es5/index.js",
   "dependencies": {
+    "ansi-styles": "^3.2.0",
     "jest-diff": "^20.0.3",
     "jest-get-type": "^20.0.3",
     "jest-matcher-utils": "^20.0.3",

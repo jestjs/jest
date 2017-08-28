@@ -30,5 +30,5 @@ test('logs memory usage', () => {
   });
 
   const {stderr} = runJest(DIR, ['--logHeapUsage']);
-  expect(stderr).toMatch(/PASS\s{2}__tests__\/a-banana.js.*\d+ MB heap size/);
+  expect(stderr).toMatch(/PASS\s__tests__\/a-banana.js.*\d+ MB heap size/);
 });

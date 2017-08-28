@@ -2,16 +2,17 @@
   "private": true,
   "devDependencies": {
     "ansi-regex": "^3.0.0",
-    "ansi-styles": "^3.0.0",
+    "ansi-styles": "^3.2.0",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.2.3",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-syntax-trailing-function-commas": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
     "babel-plugin-transform-es2015-destructuring": "^6.23.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-plugin-transform-es2015-parameters": "^6.23.0",
     "babel-plugin-transform-flow-strip-types": "^6.18.0",
+    "babel-plugin-transform-inline-imports-commonjs": "^1.2.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-plugin-transform-strict-mode": "^6.24.1",
     "babel-preset-env": "^1.4.0",
@@ -35,7 +36,7 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "0.0.8",
     "eslint-plugin-unicorn": "^2.1.2",
-    "flow-bin": "^0.50.0",
+    "flow-bin": "^0.53.1",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
     "immutable": "^4.0.0-rc.1",
@@ -53,6 +54,7 @@
     "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
     "mocha": "^3.4.2",
+    "mock-fs": "^4.4.1",
     "prettier": "^1.5.2",
     "progress": "^1.1.8",
     "react": "^15.4.2",
@@ -73,7 +75,8 @@
     "slash": "^1.0.0",
     "string-length": "^1.0.1",
     "strip-ansi": "^4.0.0",
-    "typescript": "^2.2.2"
+    "typescript": "^2.2.2",
+    "watchify": "^3.9.0"
   },
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
@@ -139,6 +142,5 @@
     "testMatch": [
       "**/*.test.js"
     ]
-  },
-  "dependencies": {}
+  }
 }

@@ -10,7 +10,7 @@
 
 import type {RawMatcherFn} from 'types/Matchers';
 
-import expect from 'jest-matchers';
+import expect from 'expect';
 
 import {
   addSerializer,

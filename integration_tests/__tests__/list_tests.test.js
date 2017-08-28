@@ -11,20 +11,25 @@
 
 const runJest = require('../runJest');
 const path = require('path');
+const {EOL} = require('os');
 
 const testRootDir = path.resolve(__dirname, '..', '..');
-// $FlowFixMe
-expect.addSnapshotSerializer({
-  print: val => val.replace(new RegExp(testRootDir, 'g'), '/MOCK_ABOLUTE_PATH'),
-  test: val => typeof val === 'string' && val.includes(testRootDir),
-});
+
+const normalizePaths = rawPaths =>
+  rawPaths
+    .split(testRootDir)
+    .join(`${path.sep}MOCK_ABOLUTE_PATH`)
+    .split('\\')
+    .join('/');
 
 describe('--listTests flag', () => {
   it('causes tests to be printed in different lines', () => {
     const {status, stdout} = runJest('list_tests', ['--listTests']);
 
     expect(status).toBe(0);
-    expect(stdout.split('\n').sort().join('\n')).toMatchSnapshot();
+    expect(
+      normalizePaths(stdout).split(EOL).sort().join(EOL),
+    ).toMatchSnapshot();
   });
 
   it('causes tests to be printed out as JSON when using the --json flag', () => {
@@ -32,6 +37,8 @@ describe('--listTests flag', () => {
 
     expect(status).toBe(0);
     expect(() => JSON.parse(stderr)).not.toThrow();
-    expect(JSON.stringify(JSON.parse(stderr).sort())).toMatchSnapshot();
+    expect(
+      JSON.stringify(JSON.parse(stderr).map(normalizePaths).sort()),
+    ).toMatchSnapshot();
   });
 });

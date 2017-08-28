@@ -125,9 +125,9 @@ A list of reporter names that Jest uses when writing coverage reports. Any [ista
 ### `coverageThreshold` [object]
 Default: `undefined`
 
-This will be used to configure minimum threshold enforcement for coverage results. If the thresholds are not met, jest will return failure. Thresholds, when specified as a positive number are taken to be the minimum percentage required. When a threshold is specified as a negative number it represents the maximum number of uncovered entities allowed.
+This will be used to configure minimum threshold enforcement for coverage results. If the thresholds are not met, jest will return failure. Thresholds, when specified as a positive number are taken to be the minimum percentage required. When a threshold is specified as a negative number it represents the maximum number of uncovered entities allowed. Thresholds can be specified as `global`, as `glob` paths or just paths. If globs or paths are specified alongside `global`, coverage data for matching paths will be subtracted from overal coverage and thresholds will be applied independently. Threshold for globs is applied to all files matching the glob. If the file specified by path is not found, error is returned.
 
-For example, statements: 90 implies minimum statement coverage is 90%. statements: -10 implies that no more than 10 uncovered statements are allowed.
+For example, statements: 90 implies minimum statement coverage is 90%. statements: -10 implies that no more than 10 uncovered statements are allowed. `global` branch threshold 50 will be applied to all files minus matching `./src/components/**/*.js` and `./src/api/very-important-module.js`.
 
 ```json
 {
@@ -139,6 +139,16 @@ For example, statements: 90 implies minimum statement coverage is 90%. statement
         "functions": 50,
         "lines": 50,
         "statements": 50
+      },
+      "./src/components/**/*.js": {
+        "branches": 40,
+        "statements": 40
+      },
+      "./src/api/very-important-module.js": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
       }
     }
   }
@@ -631,3 +641,10 @@ It is possible to override this setting in individual tests by explicitly callin
 Default: `false`
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+
+### `watchPathIgnorePatterns` [array<string>]
+Default: `[]`
+
+An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
+
+These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.

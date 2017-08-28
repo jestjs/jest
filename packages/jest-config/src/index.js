@@ -120,6 +120,7 @@ const getConfigs = (
       cacheDirectory: options.cacheDirectory,
       clearMocks: options.clearMocks,
       coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+      displayName: options.displayName,
       globals: options.globals,
       haste: options.haste,
       moduleDirectories: options.moduleDirectories,
@@ -149,6 +150,7 @@ const getConfigs = (
       transform: options.transform,
       transformIgnorePatterns: options.transformIgnorePatterns,
       unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+      watchPathIgnorePatterns: options.watchPathIgnorePatterns,
     }),
   };
 };
