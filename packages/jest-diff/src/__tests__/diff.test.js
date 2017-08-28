@@ -18,6 +18,8 @@ function received(a, b, options) {
 const unexpanded = {expand: false};
 const expanded = {expand: true};
 
+const elementSymbol = Symbol.for('react.element');
+
 const toJSON = function toJSON() {
   return 'apple';
 };
@@ -242,7 +244,7 @@ Options:
 
 describe('React elements', () => {
   const a = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: 'Hello',
       className: 'fun',
@@ -250,7 +252,7 @@ describe('React elements', () => {
     type: 'div',
   };
   const b = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: 'Goodbye',
       className: 'fun',
@@ -499,25 +501,25 @@ describe('multiline string as property of JavaScript object', () => {
 
 describe('indentation in React elements', () => {
   const leaf = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: ['text'],
     },
     type: 'span',
   };
   const a = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: [leaf],
     },
     type: 'span',
   };
   const b = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: [
         {
-          $$typeof: Symbol.for('react.element'),
+          $$typeof: elementSymbol,
           props: {
             children: [leaf],
           },
@@ -578,7 +580,7 @@ describe('indentation in React elements', () => {
 describe('spaces as text in React elements', () => {
   const value = 2;
   const unit = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: ['m'],
       title: 'meters',
@@ -586,14 +588,14 @@ describe('spaces as text in React elements', () => {
     type: 'abbr',
   };
   const a = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: [value, ' ', unit],
     },
     type: 'span',
   };
   const b = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: [value, '  ', unit],
     },
@@ -687,21 +689,21 @@ describe('spaces as text in React elements', () => {
 
 describe('spaces at beginning or end of text in React elements', () => {
   const em = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: ['already'],
     },
     type: 'em',
   };
   const a = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: ['Jest is', em, 'configured'],
     },
     type: 'p',
   };
   const b = {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: elementSymbol,
     props: {
       children: ['Jest is ', em, ' configured'],
     },
