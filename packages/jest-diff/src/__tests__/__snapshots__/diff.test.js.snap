@@ -1,5 +1,137 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`background color of spaces (expanded) added is red 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<dim>   <span>
+<green>-    </>
+<red>+    following string consists of a space:</>
+<red>+    <bgRed> </></>
+<red>+    <bgRed> </>line has preceding space only</>
+<red>+    <bgRed> </>line has both preceding and following space<bgRed> </></>
+<red>+    line has following space only<bgRed> </></>
+<dim>   </span>
+<dim> </div>"
+`;
+
+exports[`background color of spaces (expanded) inchanged is cyan 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<red>+  <p></>
+<cyan>     <span></>
+<cyan>       following string consists of a space:</>
+<cyan>       <bgCyan> </></>
+<cyan>       <bgCyan> </>line has preceding space only</>
+<cyan>       <bgCyan> </>line has both preceding and following space<bgCyan> </></>
+<cyan>       line has following space only<bgCyan> </></>
+<cyan>     </span></>
+<red>+  </p></>
+<dim> </div>"
+`;
+
+exports[`background color of spaces (expanded) removed is green 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<dim>   <span>
+<green>-    following string consists of a space:</>
+<green>-    <bgGreen> </></>
+<green>-    <bgGreen> </>line has preceding space only</>
+<green>-    <bgGreen> </>line has both preceding and following space<bgGreen> </></>
+<green>-    line has following space only<bgGreen> </></>
+<red>+    </>
+<dim>   </span>
+<dim> </div>"
+`;
+
+exports[`background color of spaces (expanded) unchanged has no color 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<green>-  <span></>
+<red>+  <p></>
+<dim>     following string consists of a space:
+<dim>      
+<dim>      line has preceding space only
+<dim>      line has both preceding and following space 
+<dim>     line has following space only 
+<green>-  </span></>
+<red>+  </p></>
+<dim> </div>"
+`;
+
+exports[`background color of spaces (unexpanded) added is red 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<dim>   <span>
+<green>-    </>
+<red>+    following string consists of a space:</>
+<red>+    <bgRed> </></>
+<red>+    <bgRed> </>line has preceding space only</>
+<red>+    <bgRed> </>line has both preceding and following space<bgRed> </></>
+<red>+    line has following space only<bgRed> </></>
+<dim>   </span>
+<dim> </div>"
+`;
+
+exports[`background color of spaces (unexpanded) inchanged is cyan 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<red>+  <p></>
+<cyan>     <span></>
+<cyan>       following string consists of a space:</>
+<cyan>       <bgCyan> </></>
+<cyan>       <bgCyan> </>line has preceding space only</>
+<cyan>       <bgCyan> </>line has both preceding and following space<bgCyan> </></>
+<cyan>       line has following space only<bgCyan> </></>
+<cyan>     </span></>
+<red>+  </p></>
+<dim> </div>"
+`;
+
+exports[`background color of spaces (unexpanded) removed is green 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<dim>   <span>
+<green>-    following string consists of a space:</>
+<green>-    <bgGreen> </></>
+<green>-    <bgGreen> </>line has preceding space only</>
+<green>-    <bgGreen> </>line has both preceding and following space<bgGreen> </></>
+<green>-    line has following space only<bgGreen> </></>
+<red>+    </>
+<dim>   </span>
+<dim> </div>"
+`;
+
+exports[`background color of spaces (unexpanded) unchanged has no color 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> <div>
+<green>-  <span></>
+<red>+  <p></>
+<dim>     following string consists of a space:
+<dim>      
+<dim>      line has preceding space only
+<dim>      line has both preceding and following space 
+<dim>     line has following space only 
+<green>-  </span></>
+<red>+  </p></>
+<dim> </div>"
+`;
+
 exports[`collapses big diffs to patch format 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
@@ -14,6 +146,38 @@ exports[`collapses big diffs to patch format 1`] = `
 <dim>     9,
 <green>-    10,</>
 <dim>   ],
+<dim> }"
+`;
+
+exports[`color of text (expanded) 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> Object {
+<dim>   \\"searching\\": \\"\\",
+<green>-  \\"sorting\\": Object {</>
+<red>+  \\"sorting\\": Array [</>
+<red>+    Object {</>
+<cyan>       \\"descending\\": false,</>
+<cyan>       \\"fieldKey\\": \\"what\\",</>
+<cyan>     },</>
+<red>+  ],</>
+<dim> }"
+`;
+
+exports[`color of text (unexpanded) 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim> Object {
+<dim>   \\"searching\\": \\"\\",
+<green>-  \\"sorting\\": Object {</>
+<red>+  \\"sorting\\": Array [</>
+<red>+    Object {</>
+<cyan>       \\"descending\\": false,</>
+<cyan>       \\"fieldKey\\": \\"what\\",</>
+<cyan>     },</>
+<red>+  ],</>
 <dim> }"
 `;
 

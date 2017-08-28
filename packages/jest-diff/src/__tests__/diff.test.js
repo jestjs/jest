@@ -11,9 +11,7 @@
 const stripAnsi = require('strip-ansi');
 const diff = require('../');
 
-function received(a, b, options) {
-  return stripAnsi(diff(a, b, options));
-}
+const stripped = (a, b, options) => stripAnsi(diff(a, b, options));
 
 const unexpanded = {expand: false};
 const expanded = {expand: true};
@@ -38,7 +36,7 @@ describe('different types', () => {
     const typeB = values[3];
 
     test(`'${String(a)}' and '${String(b)}'`, () => {
-      expect(received(a, b)).toBe(
+      expect(stripped(a, b)).toBe(
         '  Comparing two different types of values. ' +
           `Expected ${typeA} but received ${typeB}.`,
       );
@@ -62,7 +60,7 @@ describe('no visual difference', () => {
     test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
       values[1],
     )}'`, () => {
-      expect(received(values[0], values[1])).toBe(
+      expect(stripped(values[0], values[1])).toBe(
         'Compared values have no visual difference.',
       );
     });
@@ -72,7 +70,7 @@ describe('no visual difference', () => {
     const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
     const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
 
-    expect(received(arg1, arg2)).toBe(
+    expect(stripped(arg1, arg2)).toBe(
       'Compared values have no visual difference.',
     );
   });
@@ -81,7 +79,7 @@ describe('no visual difference', () => {
     const arg1 = new Set([1, 2]);
     const arg2 = new Set([2, 1]);
 
-    expect(received(arg1, arg2)).toBe(
+    expect(stripped(arg1, arg2)).toBe(
       'Compared values have no visual difference.',
     );
   });
@@ -133,11 +131,11 @@ line 4`;
     ' line 4',
   ].join('\n');
 
-  test('unexpanded', () => {
-    expect(received(a, b, unexpanded)).toMatch(expected);
+  test('(unexpanded)', () => {
+    expect(stripped(a, b, unexpanded)).toMatch(expected);
   });
-  test('expanded', () => {
-    expect(received(a, b, expanded)).toMatch(expected);
+  test('(expanded)', () => {
+    expect(stripped(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -155,11 +153,11 @@ describe('objects', () => {
     ' }',
   ].join('\n');
 
-  test('unexpanded', () => {
-    expect(received(a, b, unexpanded)).toMatch(expected);
+  test('(unexpanded)', () => {
+    expect(stripped(a, b, unexpanded)).toMatch(expected);
   });
-  test('expanded', () => {
-    expect(received(a, b, expanded)).toMatch(expected);
+  test('(expanded)', () => {
+    expect(stripped(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -198,11 +196,11 @@ Options:
     '+              failing test.                        [boolean]',
   ].join('\n');
 
-  test('unexpanded', () => {
-    expect(received(a, b, unexpanded)).toMatch(expected);
+  test('(unexpanded)', () => {
+    expect(stripped(a, b, unexpanded)).toMatch(expected);
   });
-  test('expanded', () => {
-    expect(received(a, b, expanded)).toMatch(expected);
+  test('(expanded)', () => {
+    expect(stripped(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -234,11 +232,11 @@ Options:
     '+              failing test.                        [boolean]"',
   ].join('\n');
 
-  test('unexpanded', () => {
-    expect(received(a, b, unexpanded)).toMatch(expected);
+  test('(unexpanded)', () => {
+    expect(stripped(a, b, unexpanded)).toMatch(expected);
   });
-  test('expanded', () => {
-    expect(received(a, b, expanded)).toMatch(expected);
+  test('(expanded)', () => {
+    expect(stripped(a, b, expanded)).toMatch(expected);
   });
 });
 
@@ -268,51 +266,89 @@ describe('React elements', () => {
     ' </div>',
   ].join('\n');
 
-  test('unexpanded', () => {
-    expect(received(a, b, unexpanded)).toMatch(expected);
+  test('(unexpanded)', () => {
+    expect(stripped(a, b, unexpanded)).toMatch(expected);
   });
-  test('expanded', () => {
-    expect(received(a, b, expanded)).toMatch(expected);
+  test('(expanded)', () => {
+    expect(stripped(a, b, expanded)).toMatch(expected);
   });
 });
 
-test('collapses big diffs to patch format', () => {
-  const result = diff(
-    {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
-    {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
-    unexpanded,
-  );
+describe('multiline string as value of object property', () => {
+  const expected = [
+    ' Object {',
+    '   "id": "J",',
+    '   "points": "0.5,0.460',
+    '+0.5,0.875',
+    ' 0.25,0.875",',
+    ' }',
+  ].join('\n');
 
-  expect(result).toMatchSnapshot();
+  describe('(non-snapshot)', () => {
+    const a = {
+      id: 'J',
+      points: '0.5,0.460\n0.25,0.875',
+    };
+    const b = {
+      id: 'J',
+      points: '0.5,0.460\n0.5,0.875\n0.25,0.875',
+    };
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
+    });
+  });
+
+  describe('(snapshot)', () => {
+    const a = [
+      'Object {',
+      '  "id": "J",',
+      '  "points": "0.5,0.460',
+      '0.25,0.875",',
+      '}',
+    ].join('\n');
+    const b = [
+      'Object {',
+      '  "id": "J",',
+      '  "points": "0.5,0.460',
+      '0.5,0.875',
+      '0.25,0.875",',
+      '}',
+    ].join('\n');
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
+    });
+  });
 });
 
 describe('indentation in JavaScript structures', () => {
+  const searching = '';
+  const object = {
+    descending: false,
+    fieldKey: 'what',
+  };
   const a = {
-    searching: '',
-    sorting: {
-      descending: false,
-      fieldKey: 'what',
-    },
+    searching,
+    sorting: object,
   };
   const b = {
-    searching: '',
-    sorting: [
-      {
-        descending: false,
-        fieldKey: 'what',
-      },
-    ],
+    searching,
+    sorting: [object],
   };
 
   describe('from less to more', () => {
-    // Replace unchanged chunk in the middle with received lines,
-    // which are more indented.
     const expected = [
       ' Object {',
       '   "searching": "",',
       '-  "sorting": Object {',
       '+  "sorting": Array [',
       '+    Object {',
+      // following 3 lines are unchanged, except for more indentation
       '       "descending": false,',
       '       "fieldKey": "what",',
       '     },',
@@ -320,25 +356,22 @@ describe('indentation in JavaScript structures', () => {
       ' }',
     ].join('\n');
 
-    test('unexpanded', () => {
-      expect(received(a, b, unexpanded)).toMatch(expected);
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
     });
-    test('expanded', () => {
-      expect(received(a, b, expanded)).toMatch(expected);
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
     });
-
-    // Snapshots cannot distinguish indentation from leading spaces in text :(
   });
 
   describe('from more to less', () => {
-    // Replace unchanged chunk in the middle with received lines,
-    // which are less indented.
     const expected = [
       ' Object {',
       '   "searching": "",',
       '-  "sorting": Array [',
       '-    Object {',
       '+  "sorting": Object {',
+      // following 3 lines are unchanged, except for less indentation
       '     "descending": false,',
       '     "fieldKey": "what",',
       '   },',
@@ -346,160 +379,39 @@ describe('indentation in JavaScript structures', () => {
       ' }',
     ].join('\n');
 
-    test('unexpanded', () => {
-      expect(received(b, a, unexpanded)).toMatch(expected);
+    test('(unexpanded)', () => {
+      expect(stripped(b, a, unexpanded)).toMatch(expected);
     });
-    test('expanded', () => {
-      expect(received(b, a, expanded)).toMatch(expected);
-    });
-
-    // Snapshots cannot distinguish indentation from leading spaces in text :(
-  });
-});
-
-describe('multiline string as property of JavaScript object', () => {
-  // Unindented is safest in multiline strings:
-  const aUn = {
-    id: 'J',
-    points: `0.5,0.460
-0.25,0.875`,
-  };
-  const bUn = {
-    id: 'J',
-    points: `0.5,0.460
-0.5,0.875
-0.25,0.875`,
-  };
-  const aUnSnap = [
-    'Object {',
-    '  "id": "J",',
-    '  "points": "0.5,0.460',
-    '0.25,0.875",',
-    '}',
-  ].join('\n');
-  const bUnSnap = [
-    'Object {',
-    '  "id": "J",',
-    '  "points": "0.5,0.460',
-    '0.5,0.875',
-    '0.25,0.875",',
-    '}',
-  ].join('\n');
-
-  // Indented is confusing, as this test demonstrates :(
-  // What looks like one indent level under points is really two levels,
-  // because the test itself is indented one level!
-  const aIn = {
-    id: 'J',
-    points: `0.5,0.460
-      0.25,0.875`,
-  };
-  const bIn = {
-    id: 'J',
-    points: `0.5,0.460
-      0.5,0.875
-      0.25,0.875`,
-  };
-  const aInSnap = [
-    'Object {',
-    '  "id": "J",',
-    '  "points": "0.5,0.460',
-    '      0.25,0.875",',
-    '}',
-  ].join('\n');
-  const bInSnap = [
-    'Object {',
-    '  "id": "J",',
-    '  "points": "0.5,0.460',
-    '      0.5,0.875',
-    '      0.25,0.875",',
-    '}',
-  ].join('\n');
-
-  describe('unindented', () => {
-    const expected = [
-      ' Object {',
-      '   "id": "J",',
-      '   "points": "0.5,0.460',
-      '+0.5,0.875',
-      ' 0.25,0.875",',
-      ' }',
-    ].join('\n');
-
-    test('unexpanded', () => {
-      expect(received(aUn, bUn, unexpanded)).toMatch(expected);
-    });
-    test('expanded', () => {
-      expect(received(aUn, bUn, expanded)).toMatch(expected);
-    });
-
-    // Proposed serialization for multiline string value in objects.
-    test('unexpanded snapshot', () => {
-      expect(received(aUnSnap, bUnSnap, unexpanded)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(aUnSnap, bUnSnap, expanded)).toMatch(expected);
-    });
-  });
-
-  describe('indented', () => {
-    const expected = [
-      ' Object {',
-      '   "id": "J",',
-      '   "points": "0.5,0.460',
-      '+      0.5,0.875',
-      '       0.25,0.875",',
-      ' }',
-    ].join('\n');
-
-    test('unexpanded', () => {
-      expect(received(aIn, bIn, unexpanded)).toMatch(expected);
-    });
-    test('expanded', () => {
-      expect(received(aIn, bIn, expanded)).toMatch(expected);
-    });
-
-    // If change to serialization for multiline string value in objects,
-    // then review the relevance of the following tests:
-    test('unexpanded snapshot', () => {
-      expect(received(aInSnap, bInSnap, unexpanded)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(aInSnap, bInSnap, expanded)).toMatch(expected);
-    });
-  });
-
-  describe('unindented to indented', () => {
-    // Don’t ignore changes to indentation in a multiline string.
-    const expected = [
-      ' Object {',
-      '   "id": "J",',
-      '   "points": "0.5,0.460',
-      '-0.25,0.875",',
-      '+      0.5,0.875',
-      '+      0.25,0.875",',
-      ' }',
-    ].join('\n');
-
-    test('unexpanded', () => {
-      expect(received(aUn, bIn, unexpanded)).toMatch(expected);
-    });
-    test('expanded', () => {
-      expect(received(aUn, bIn, expanded)).toMatch(expected);
-    });
-
-    // If change to serialization for multiline string value in objects,
-    // then review the relevance of the following tests:
-    test('unexpanded snapshot', () => {
-      expect(received(aUnSnap, bInSnap, unexpanded)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(aUnSnap, bInSnap, expanded)).toMatch(expected);
+    test('(expanded)', () => {
+      expect(stripped(b, a, expanded)).toMatch(expected);
     });
   });
 });
 
-describe('indentation in React elements', () => {
+describe('color of text', () => {
+  const searching = '';
+  const object = {
+    descending: false,
+    fieldKey: 'what',
+  };
+  const a = {
+    searching,
+    sorting: object,
+  };
+  const b = {
+    searching,
+    sorting: [object],
+  };
+
+  test('(unexpanded)', () => {
+    expect(diff(a, b, unexpanded)).toMatchSnapshot();
+  });
+  test('(expanded)', () => {
+    expect(diff(a, b, expanded)).toMatchSnapshot();
+  });
+});
+
+describe('indentation in React elements (non-snapshot)', () => {
   const leaf = {
     $$typeof: elementSymbol,
     props: {
@@ -531,11 +443,10 @@ describe('indentation in React elements', () => {
   };
 
   describe('from less to more', () => {
-    // Replace unchanged chunk in the middle with received lines,
-    // which are more indented.
     const expected = [
       ' <span>',
       '+  <strong>',
+      // following 3 lines are unchanged, except for more indentation
       '     <span>',
       '       text',
       '     </span>',
@@ -543,22 +454,19 @@ describe('indentation in React elements', () => {
       ' </span>',
     ].join('\n');
 
-    test('unexpanded', () => {
-      expect(received(a, b, unexpanded)).toMatch(expected);
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
     });
-    test('expanded', () => {
-      expect(received(a, b, expanded)).toMatch(expected);
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
     });
-
-    // Snapshots cannot distinguish indentation from leading spaces in text :(
   });
 
   describe('from more to less', () => {
-    // Replace unchanged chunk in the middle with received lines,
-    // which are less indented.
     const expected = [
       ' <span>',
       '-  <strong>',
+      // following 3 lines are unchanged, except for less indentation
       '   <span>',
       '     text',
       '   </span>',
@@ -566,227 +474,197 @@ describe('indentation in React elements', () => {
       ' </span>',
     ].join('\n');
 
-    test('unexpanded', () => {
-      expect(received(b, a, unexpanded)).toMatch(expected);
+    test('(unexpanded)', () => {
+      expect(stripped(b, a, unexpanded)).toMatch(expected);
     });
-    test('expanded', () => {
-      expect(received(b, a, expanded)).toMatch(expected);
-    });
-
-    // Snapshots cannot distinguish indentation from leading spaces in text :(
-  });
-});
-
-describe('spaces as text in React elements', () => {
-  const value = 2;
-  const unit = {
-    $$typeof: elementSymbol,
-    props: {
-      children: ['m'],
-      title: 'meters',
-    },
-    type: 'abbr',
-  };
-  const a = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [value, ' ', unit],
-    },
-    type: 'span',
-  };
-  const b = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [value, '  ', unit],
-    },
-    type: 'span',
-  };
-  const aSnap = [
-    '<span>',
-    '  2',
-    '   ',
-    '  <abbr',
-    '    title="meters"',
-    '  >',
-    '    m',
-    '  </abbr>',
-    '</span>',
-  ].join('\n');
-  const bSnap = [
-    '<span>',
-    '  2',
-    '    ',
-    '  <abbr',
-    '    title="meters"',
-    '  >',
-    '    m',
-    '  </abbr>',
-    '</span>',
-  ].join('\n');
-
-  describe('from less to more', () => {
-    // Replace one space with two spaces.
-    const expected = [
-      ' <span>',
-      '   2',
-      '-   ',
-      '+    ',
-      '   <abbr',
-      '     title="meters"',
-      '   >',
-      '     m',
-      '   </abbr>',
-      //' </span>', // unexpanded does not include this line
-    ].join('\n');
-
-    test('unexpanded', () => {
-      expect(received(a, b, unexpanded)).toMatch(expected);
-    });
-    test('expanded', () => {
-      expect(received(a, b, expanded)).toMatch(expected);
-    });
-
-    // Snapshots must display differences of leading spaces in text.
-    test('unexpanded snapshot', () => {
-      expect(received(aSnap, bSnap, unexpanded)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(aSnap, bSnap, expanded)).toMatch(expected);
-    });
-  });
-
-  describe('from more to less', () => {
-    // Replace two spaces with one space.
-    const expected = [
-      ' <span>',
-      '   2',
-      '-    ',
-      '+   ',
-      '   <abbr',
-      '     title="meters"',
-      '   >',
-      '     m',
-      '   </abbr>',
-      //' </span>', // unexpanded does not include this line
-    ].join('\n');
-
-    test('unexpanded', () => {
-      expect(received(b, a, unexpanded)).toMatch(expected);
-    });
-    test('expanded', () => {
-      expect(received(b, a, expanded)).toMatch(expected);
-    });
-
-    // Snapshots must display differences of leading spaces in text.
-    test('unexpanded snapshot', () => {
-      expect(received(bSnap, aSnap, unexpanded)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(bSnap, aSnap, expanded)).toMatch(expected);
+    test('(expanded)', () => {
+      expect(stripped(b, a, expanded)).toMatch(expected);
     });
   });
 });
 
-describe('spaces at beginning or end of text in React elements', () => {
-  const em = {
-    $$typeof: elementSymbol,
-    props: {
-      children: ['already'],
-    },
-    type: 'em',
-  };
-  const a = {
-    $$typeof: elementSymbol,
-    props: {
-      children: ['Jest is', em, 'configured'],
-    },
-    type: 'p',
-  };
-  const b = {
-    $$typeof: elementSymbol,
-    props: {
-      children: ['Jest is ', em, ' configured'],
-    },
-    type: 'p',
-  };
-  const aSnap = [
-    '<p>',
-    '  Jest is',
-    '  <em>',
-    '    already',
-    '  </em>',
-    '  configured',
-    '</p>',
+describe('indentation in React elements (snapshot)', () => {
+  // prettier-ignore
+  const a = [
+    '<span>',
+    '  <span>',
+    '    text',
+    '  </span>',
+    '</span>',
   ].join('\n');
-  const bSnap = [
-    '<p>',
-    '  Jest is ',
-    '  <em>',
-    '    already',
-    '  </em>',
-    '   configured',
-    '</p>',
+  const b = [
+    '<span>',
+    '  <strong>',
+    '    <span>',
+    '      text',
+    '    </span>',
+    '  </strong>',
+    '</span>',
   ].join('\n');
 
   describe('from less to more', () => {
-    // Replace no space with one space at edge of text nodes.
+    // We intend to improve snapshot diff in the next version of Jest.
     const expected = [
-      ' <p>',
-      '-  Jest is',
-      '+  Jest is ',
-      '   <em>',
-      '     already',
-      '   </em>',
-      '-  configured',
-      '+   configured',
-      ' </p>',
+      ' <span>',
+      '-  <span>',
+      '-    text',
+      '-  </span>',
+      '+  <strong>',
+      '+    <span>',
+      '+      text',
+      '+    </span>',
+      '+  </strong>',
+      ' </span>',
     ].join('\n');
 
-    test('unexpanded', () => {
-      expect(received(a, b, unexpanded)).toMatch(expected);
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
     });
-    test('expanded', () => {
-      expect(received(a, b, expanded)).toMatch(expected);
-    });
-
-    // Snapshots must display differences of leading spaces in text.
-    test('unexpanded snapshot', () => {
-      expect(received(aSnap, bSnap, unexpanded)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(aSnap, bSnap, expanded)).toMatch(expected);
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
     });
   });
 
   describe('from more to less', () => {
-    // Replace one space with no space at edge of text nodes.
+    // We intend to improve snapshot diff in the next version of Jest.
     const expected = [
-      ' <p>',
-      '-  Jest is ',
-      '+  Jest is',
-      '   <em>',
-      '     already',
-      '   </em>',
-      '-   configured',
-      '+  configured',
-      ' </p>',
+      ' <span>',
+      '-  <strong>',
+      '-    <span>',
+      '-      text',
+      '-    </span>',
+      '-  </strong>',
+      '+  <span>',
+      '+    text',
+      '+  </span>',
+      ' </span>',
     ].join('\n');
 
-    test('unexpanded', () => {
-      expect(received(b, a, unexpanded)).toMatch(expected);
+    test('(unexpanded)', () => {
+      expect(stripped(b, a, unexpanded)).toMatch(expected);
     });
-    test('expanded', () => {
-      expect(received(b, a, expanded)).toMatch(expected);
-    });
-
-    // Snapshots must display differences of leading spaces in text.
-    test('unexpanded snapshot', () => {
-      expect(received(bSnap, aSnap, unexpanded)).toMatch(expected);
-    });
-    test('expanded snapshot', () => {
-      expect(received(bSnap, aSnap, expanded)).toMatch(expected);
+    test('(expanded)', () => {
+      expect(stripped(b, a, expanded)).toMatch(expected);
     });
   });
+});
+
+describe('background color of spaces', () => {
+  const baseline = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        {
+          $$typeof: elementSymbol,
+          props: {
+            children: [''],
+          },
+          type: 'span',
+        },
+      ],
+    },
+    type: 'div',
+  };
+  const lines = [
+    'following string consists of a space:',
+    ' ',
+    ' line has preceding space only',
+    ' line has both preceding and following space ',
+    'line has following space only ',
+  ];
+  const examples = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        {
+          $$typeof: elementSymbol,
+          props: {
+            children: lines,
+          },
+          type: 'span',
+        },
+      ],
+    },
+    type: 'div',
+  };
+  const unchanged = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        {
+          $$typeof: elementSymbol,
+          props: {
+            children: lines,
+          },
+          type: 'p',
+        },
+      ],
+    },
+    type: 'div',
+  };
+  const inchanged = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        {
+          $$typeof: elementSymbol,
+          props: {
+            children: [
+              {
+                $$typeof: elementSymbol,
+                props: {
+                  children: [lines],
+                },
+                type: 'span',
+              },
+            ],
+          },
+          type: 'p',
+        },
+      ],
+    },
+    type: 'div',
+  };
+
+  describe('(unexpanded)', () => {
+    test('added is red', () => {
+      expect(diff(baseline, examples, unexpanded)).toMatchSnapshot();
+    });
+    test('removed is green', () => {
+      expect(diff(examples, baseline, unexpanded)).toMatchSnapshot();
+    });
+    test('unchanged has no color', () => {
+      expect(diff(examples, unchanged, unexpanded)).toMatchSnapshot();
+    });
+    test('inchanged is cyan', () => {
+      expect(diff(examples, inchanged, unexpanded)).toMatchSnapshot();
+    });
+  });
+
+  describe('(expanded)', () => {
+    test('added is red', () => {
+      expect(diff(baseline, examples, expanded)).toMatchSnapshot();
+    });
+    test('removed is green', () => {
+      expect(diff(examples, baseline, expanded)).toMatchSnapshot();
+    });
+    test('unchanged has no color', () => {
+      expect(diff(examples, unchanged, expanded)).toMatchSnapshot();
+    });
+    test('inchanged is cyan', () => {
+      expect(diff(examples, inchanged, expanded)).toMatchSnapshot();
+    });
+  });
+});
+
+test('collapses big diffs to patch format', () => {
+  const result = diff(
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
+    unexpanded,
+  );
+
+  expect(result).toMatchSnapshot();
 });
 
 describe('context', () => {
