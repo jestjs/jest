@@ -402,12 +402,14 @@ describe('color of text', () => {
     searching,
     sorting: [object],
   };
+  const received = diff(a, b, expanded);
 
-  test('(unexpanded)', () => {
-    expect(diff(a, b, unexpanded)).toMatchSnapshot();
-  });
   test('(expanded)', () => {
-    expect(diff(a, b, expanded)).toMatchSnapshot();
+    expect(received).toMatchSnapshot();
+  });
+  test('(unexpanded)', () => {
+    // Expect same result, unless diff is long enough to require patch marks.
+    expect(diff(a, b, unexpanded)).toBe(received);
   });
 });
 
@@ -626,33 +628,41 @@ describe('background color of spaces', () => {
     type: 'div',
   };
 
-  describe('(unexpanded)', () => {
-    test('added is red', () => {
-      expect(diff(baseline, examples, unexpanded)).toMatchSnapshot();
+  // Expect same results, unless diff is long enough to require patch marks.
+  describe('cyan for inchanged', () => {
+    const received = diff(examples, inchanged, expanded);
+    test('(expanded)', () => {
+      expect(received).toMatchSnapshot();
     });
-    test('removed is green', () => {
-      expect(diff(examples, baseline, unexpanded)).toMatchSnapshot();
-    });
-    test('unchanged has no color', () => {
-      expect(diff(examples, unchanged, unexpanded)).toMatchSnapshot();
-    });
-    test('inchanged is cyan', () => {
-      expect(diff(examples, inchanged, unexpanded)).toMatchSnapshot();
+    test('(unexpanded)', () => {
+      expect(diff(examples, inchanged, unexpanded)).toBe(received);
     });
   });
-
-  describe('(expanded)', () => {
-    test('added is red', () => {
-      expect(diff(baseline, examples, expanded)).toMatchSnapshot();
+  describe('green for removed', () => {
+    const received = diff(examples, baseline, expanded);
+    test('(expanded)', () => {
+      expect(received).toMatchSnapshot();
     });
-    test('removed is green', () => {
-      expect(diff(examples, baseline, expanded)).toMatchSnapshot();
+    test('(unexpanded)', () => {
+      expect(diff(examples, baseline, unexpanded)).toBe(received);
     });
-    test('unchanged has no color', () => {
-      expect(diff(examples, unchanged, expanded)).toMatchSnapshot();
+  });
+  describe('no color for unchanged', () => {
+    const received = diff(examples, unchanged, expanded);
+    test('(expanded)', () => {
+      expect(received).toMatchSnapshot();
     });
-    test('inchanged is cyan', () => {
-      expect(diff(examples, inchanged, expanded)).toMatchSnapshot();
+    test('(unexpanded)', () => {
+      expect(diff(examples, unchanged, unexpanded)).toBe(received);
+    });
+  });
+  describe('red for added', () => {
+    const received = diff(baseline, examples, expanded);
+    test('(expanded)', () => {
+      expect(received).toMatchSnapshot();
+    });
+    test('(unexpanded)', () => {
+      expect(diff(baseline, examples, unexpanded)).toBe(received);
     });
   });
 });
