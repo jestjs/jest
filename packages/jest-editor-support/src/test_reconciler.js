@@ -9,12 +9,15 @@
  */
 
 import type {
-  JestTotalResults,
-  JestAssertionResults,
   TestFileAssertionStatus,
   TestAssertionStatus,
   TestReconciliationState,
 } from './types';
+
+import type {
+  FormattedAssertionResult,
+  FormattedTestResults,
+} from 'types/TestResult';
 
 import path from 'path';
 
@@ -36,7 +39,7 @@ module.exports = class TestReconciler {
     this.fileStatuses = {};
   }
 
-  updateFileWithJestStatus(results: JestTotalResults) {
+  updateFileWithJestStatus(results: FormattedTestResults) {
     this.fails = [];
     this.passes = [];
     this.skips = [];
@@ -82,7 +85,7 @@ module.exports = class TestReconciler {
 
   mapAssertions(
     filename: string,
-    assertions: Array<JestAssertionResults>,
+    assertions: Array<FormattedAssertionResult>,
   ): Array<TestAssertionStatus> {
     // Is it jest < 17? e.g. Before I added this to the JSON
     if (!assertions) {

@@ -15,11 +15,6 @@ export type Location = {
 
 import type {ChildProcess} from 'child_process';
 import type ProjectWorkspace from './project_workspace';
-import type {
-  FormattedAssertionResult,
-  FormattedTestResult,
-  FormattedTestResults,
-} from 'types/TestResult';
 
 export type Options = {
   createProcess?: (
@@ -27,10 +22,6 @@ export type Options = {
     args: Array<string>,
   ) => ChildProcess,
 };
-
-export type JestTotalResults = FormattedTestResults;
-export type JestAssertionResults = FormattedAssertionResult;
-export type JestFileResults = FormattedTestResult;
 
 /**
  *  Did the thing pass, fail or was it not run?
