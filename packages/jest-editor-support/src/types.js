@@ -23,35 +23,6 @@ export type Options = {
   ) => ChildProcess,
 };
 
-export type JestFileResults = {
-  name: string,
-  summary: string,
-  message: string,
-  status: 'failed' | 'passed',
-  startTime: number,
-  endTime: number,
-  assertionResults: Array<JestAssertionResults>,
-};
-
-export type JestAssertionResults = {
-  name: string,
-  title: string,
-  status: 'failed' | 'passed',
-  failureMessages: string[],
-};
-
-export type JestTotalResults = {
-  success: boolean,
-  startTime: number,
-  numTotalTests: number,
-  numTotalTestSuites: number,
-  numRuntimeErrorTestSuites: number,
-  numPassedTests: number,
-  numFailedTests: number,
-  numPendingTests: number,
-  testResults: Array<JestFileResults>,
-};
-
 /**
  *  Did the thing pass, fail or was it not run?
  */
@@ -70,7 +41,7 @@ export type TestFileAssertionStatus = {
   file: string,
   message: string,
   status: TestReconciliationState,
-  assertions: Array<TestAssertionStatus>,
+  assertions: Array<TestAssertionStatus> | null,
 };
 
 /**
