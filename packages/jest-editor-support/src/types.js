@@ -15,6 +15,11 @@ export type Location = {
 
 import type {ChildProcess} from 'child_process';
 import type ProjectWorkspace from './project_workspace';
+import type {
+  FormattedAssertionResult,
+  FormattedTestResult,
+  FormattedTestResults,
+} from 'types/TestResult';
 
 export type Options = {
   createProcess?: (
@@ -23,34 +28,9 @@ export type Options = {
   ) => ChildProcess,
 };
 
-export type JestFileResults = {
-  name: string,
-  summary: string,
-  message: string,
-  status: 'failed' | 'passed',
-  startTime: number,
-  endTime: number,
-  assertionResults: Array<JestAssertionResults>,
-};
-
-export type JestAssertionResults = {
-  name: string,
-  title: string,
-  status: 'failed' | 'passed',
-  failureMessages: string[],
-};
-
-export type JestTotalResults = {
-  success: boolean,
-  startTime: number,
-  numTotalTests: number,
-  numTotalTestSuites: number,
-  numRuntimeErrorTestSuites: number,
-  numPassedTests: number,
-  numFailedTests: number,
-  numPendingTests: number,
-  testResults: Array<JestFileResults>,
-};
+export type JestTotalResults = FormattedTestResults;
+export type JestAssertionResults = FormattedAssertionResult;
+export type JestFileResults = FormattedTestResult;
 
 /**
  *  Did the thing pass, fail or was it not run?
@@ -70,7 +50,7 @@ export type TestFileAssertionStatus = {
   file: string,
   message: string,
   status: TestReconciliationState,
-  assertions: Array<TestAssertionStatus>,
+  assertions: Array<TestAssertionStatus> | null,
 };
 
 /**

@@ -92,7 +92,7 @@ module.exports = class TestReconciler {
     // Change all failing assertions into structured data
     return assertions.map(assertion => {
       // Failure messages seems to always be an array of one item
-      const message = assertion.failureMessages[0];
+      const message = assertion.failureMessages && assertion.failureMessages[0];
       let short = null;
       let terse = null;
       let line = null;
@@ -105,7 +105,7 @@ module.exports = class TestReconciler {
       }
       return {
         line,
-        message,
+        message: message || '',
         shortMessage: short,
         status: this.statusToReconcilationState(assertion.status),
         terseMessage: terse,
