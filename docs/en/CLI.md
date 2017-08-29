@@ -122,6 +122,10 @@ Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
 Find and run the tests that cover a space separated list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary.
 
+### `--followSymlinks`
+
+Whether to follow symbolic linked files for file crawling. Linux/MacOSX only. Defaults to false.
+
 ### `--forceExit`
 
 Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up. *Note: This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly.*

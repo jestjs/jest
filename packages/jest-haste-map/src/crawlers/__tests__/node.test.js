@@ -132,6 +132,59 @@ describe('node crawler', () => {
     return promise;
   });
 
+  it('crawl symlinks if followSymlinks flag is enabled', () => {
+    process.platform = 'linux';
+
+    childProcess = require('child_process');
+    nodeCrawl = require('../node');
+
+    mockResponse = [
+      '/fruits/pear.js',
+      '/fruits/strawberry.js',
+      '/fruits/tomato.js',
+      '/vegetables/melon.json',
+    ].join('\n');
+
+    const promise = nodeCrawl({
+      data: {
+        files: Object.create(null),
+      },
+      extensions: ['js', 'json'],
+      followSymlinks: true,
+      ignore: pearMatcher,
+      roots: ['/fruits', '/vegtables'],
+    }).then(data => {
+      expect(childProcess.spawn).lastCalledWith('find', [
+        '/fruits',
+        '/vegtables',
+        '(',
+        '-type',
+        'f', // regular files
+        '-o',
+        '-type',
+        'l', // symbolic links
+        ')',
+        '(',
+        '-iname',
+        '*.js',
+        '-o',
+        '-iname',
+        '*.json',
+        ')',
+      ]);
+
+      expect(data.files).not.toBe(null);
+
+      expect(data.files).toEqual({
+        '/fruits/strawberry.js': ['', 32, 0, []],
+        '/fruits/tomato.js': ['', 33, 0, []],
+        '/vegetables/melon.json': ['', 34, 0, []],
+      });
+    });
+
+    return promise;
+  });
+
   it('updates only changed files', () => {
     process.platform = 'linux';
 
