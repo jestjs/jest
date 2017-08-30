@@ -615,7 +615,7 @@ Default: `undefined`
 
 A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16) example or the [webpack tutorial](/jest/docs/tutorial-webpack.html).
 
-Examples of such compilers include [babel](https://babeljs.io/), [typescript](http://www.typescriptlang.org/), and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
+Examples of such compilers include [Babel](https://babeljs.io/), [TypeScript](http://www.typescriptlang.org/) and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
 
 *Note: a transformer is only ran once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](/jest/docs/troubleshooting.html#caching-issues).*
 

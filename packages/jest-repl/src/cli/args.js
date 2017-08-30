@@ -17,7 +17,7 @@ const options = Object.assign({}, Runtime.getCLIOptions(), {
     alias: 'r',
     description:
       'The "name" of the file given to transformers to be ' +
-      'transformed. For example, "repl.ts" if using a Typescript transformer.',
+      'transformed. For example, "repl.ts" if using a TypeScript transformer.',
     type: 'string',
   },
 });
