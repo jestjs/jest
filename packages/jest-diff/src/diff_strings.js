@@ -21,7 +21,7 @@ export type DiffOptions = {|
   contextLines?: number,
 |};
 
-export type Original = {|
+type Original = {|
   a: string,
   b: string,
 |};
@@ -36,31 +36,50 @@ type Hunk = {|
   oldStart: number,
 |};
 
-type DIFF_D = -1 | 1 | 0; // diff digit: removed | added | equal
+type DIFF_DIGIT = -1 | 1 | 0; // removed | added | equal
+
+// Given diff digit, return array which consists of:
+// if compared line is removed or added: corresponding original line
+// if compared line is equal: original received and expected lines
+type GetOriginal = (digit: DIFF_DIGIT) => Array<string>;
 
 // Given chunk, return diff character.
-const getC = (chunk): string => (chunk.removed ? '-' : chunk.added ? '+' : ' ');
+const getDiffChar = (chunk): string =>
+  chunk.removed ? '-' : chunk.added ? '+' : ' ';
 
-// Given diff character by getC from chunk or line from hunk, return diff digit.
-const getD = (c: string): DIFF_D => (c === '-' ? -1 : c === '+' ? 1 : 0);
+// Given diff character in line of hunk or computed from properties of chunk.
+const getDiffDigit = (char: string): DIFF_DIGIT =>
+  char === '-' ? -1 : char === '+' ? 1 : 0;
 
 // Color for text of line.
-// If compared lines are equal and expected and received are data structures,
-// then delta is difference in length of original lines.
-const getColor = (d: DIFF_D, delta?: number) =>
-  d === 1 ? chalk.red : d === -1 ? chalk.green : delta ? chalk.cyan : chalk.dim;
+const getColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) => {
+  if (digit === -1) {
+    return chalk.green; // removed
+  }
+  if (digit === 1) {
+    return chalk.red; // added
+  }
+  return onlyIndentationChanged ? chalk.cyan : chalk.dim;
+};
 
 // Do NOT color leading or trailing spaces if original lines are equal:
 
 // Background color for leading or trailing spaces.
-const getBgColor = (d: DIFF_D) =>
-  d === 1 ? chalk.bgRed : d === -1 ? chalk.bgGreen : chalk.bgCyan;
+const getBgColor = (digit: DIFF_DIGIT) => {
+  if (digit === -1) {
+    return chalk.bgGreen; // removed
+  }
+  if (digit === 1) {
+    return chalk.bgRed; // added
+  }
+  return chalk.bgCyan; // only indentation changed
+};
 
-// ONLY trailing if expected is snapshot or multiline string.
+// ONLY trailing if expected value is snapshot or multiline string.
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
-// BOTH leading AND trailing if expected and received are data structures.
+// BOTH leading AND trailing if expected value is data structure.
 const highlightWhitespace = (line: string, bgColor: Function): string =>
   highlightTrailingWhitespace(line.replace(/^\s+/, bgColor('$&')), bgColor);
 
@@ -81,39 +100,39 @@ const splitIntoLines = string => {
   return lines;
 };
 
-// Given diff character and corresponding compared line, return line with colors
-// and original indentation if compared with `indent: 0` option.
+// Given diff character and compared line, return original line with colors.
 const formatLine = (
-  c: string,
+  char: string,
   lineCompared: string,
-  getOriginal?: Function,
+  getOriginal?: GetOriginal,
 ) => {
-  const d = getD(c);
+  const digit = getDiffDigit(char);
 
   if (getOriginal) {
-    // getOriginal callback function if expected and received are data structures.
-    const gotOriginal = getOriginal(d);
-    const lineOriginal = d === 0 ? gotOriginal[1] : gotOriginal;
-    const lengthOriginal = lineOriginal.length;
-    // If compared lines are equal,
-    // then delta is difference in length of original lines.
-    const delta = d === 0 ? lengthOriginal - gotOriginal[0].length : 0;
-    return getColor(d, delta)(
-      c +
-        // Line was compared without its original indentation.
-        lineOriginal.slice(0, lengthOriginal - lineCompared.length) +
-        (d === 0 && delta === 0
-          ? lineCompared
-          : highlightWhitespace(lineCompared, getBgColor(d))),
+    // Compared without indentation if expected value is data structure.
+    const lineArray = getOriginal(digit);
+    const lineOriginal = lineArray[0];
+    const onlyIndentationChanged =
+      digit === 0 && lineOriginal.length !== lineArray[1].length;
+
+    return getColor(digit, onlyIndentationChanged)(
+      char +
+        ' ' +
+        // Prepend indentation spaces from original to compared line.
+        lineOriginal.slice(0, lineOriginal.length - lineCompared.length) +
+        (digit !== 0 || onlyIndentationChanged
+          ? highlightWhitespace(lineCompared, getBgColor(digit))
+          : lineCompared),
     );
   }
 
   // Format compared line when expected is snapshot or multiline string.
-  return getColor(d)(
-    c +
-      (d === 0
-        ? lineCompared
-        : highlightTrailingWhitespace(lineCompared, getBgColor(d))),
+  return getColor(digit)(
+    char +
+      ' ' +
+      (digit !== 0
+        ? highlightTrailingWhitespace(lineCompared, getBgColor(digit))
+        : lineCompared),
   );
 };
 
@@ -124,17 +143,22 @@ const getterForChunks = (original: Original) => {
   const linesExpected = splitIntoLines(original.a);
   const linesReceived = splitIntoLines(original.b);
 
-  let indexExpected = 0;
-  let indexReceived = 0;
+  let iExpected = 0;
+  let iReceived = 0;
 
-  return (d: DIFF_D) =>
-    d === -1
-      ? linesExpected[indexExpected++]
-      : d === 1
-        ? linesReceived[indexReceived++]
-        : [linesExpected[indexExpected++], linesReceived[indexReceived++]];
+  return (digit: DIFF_DIGIT) => {
+    if (digit === -1) {
+      return [linesExpected[iExpected++]];
+    }
+    if (digit === 1) {
+      return [linesReceived[iReceived++]];
+    }
+    // Because compared line is equal: original received and expected lines.
+    return [linesReceived[iReceived++], linesExpected[iExpected++]];
+  };
 };
 
+// jest --expand
 const formatChunks = (a: string, b: string, original?: Original): Diff => {
   const getOriginal = original && getterForChunks(original);
   let isDifferent = false;
@@ -146,10 +170,10 @@ const formatChunks = (a: string, b: string, original?: Original): Diff => {
         if (added || removed) {
           isDifferent = true;
         }
-        const c = getC(chunk);
+        const char = getDiffChar(chunk);
 
         return splitIntoLines(value)
-          .map(line => formatLine(c, line, getOriginal))
+          .map(line => formatLine(char, line, getOriginal))
           .join('\n');
       })
       .join('\n'),
@@ -179,14 +203,19 @@ const getterForHunks = (original: Original) => {
   const linesExpected = splitIntoLines(original.a);
   const linesReceived = splitIntoLines(original.b);
 
-  return (indexExpected: number, indexReceived: number) => (d: DIFF_D) =>
-    d === -1
-      ? linesExpected[indexExpected++]
-      : d === 1
-        ? linesReceived[indexReceived++]
-        : [linesExpected[indexExpected++], linesReceived[indexReceived++]];
+  return (iExpected: number, iReceived: number) => (digit: DIFF_DIGIT) => {
+    if (digit === -1) {
+      return [linesExpected[iExpected++]];
+    }
+    if (digit === 1) {
+      return [linesReceived[iReceived++]];
+    }
+    // Because compared line is equal: original received and expected lines.
+    return [linesReceived[iReceived++], linesExpected[iExpected++]];
+  };
 };
 
+// jest --no-expand
 const formatHunks = (
   a: string,
   b: string,

@@ -124,11 +124,11 @@ line  2
 line 3
 line 4`;
   const expected = [
-    ' line 1',
-    '-line 2',
-    '+line  2',
-    ' line 3',
-    ' line 4',
+    '  line 1',
+    '- line 2',
+    '+ line  2',
+    '  line 3',
+    '  line 4',
   ].join('\n');
 
   test('(unexpanded)', () => {
@@ -143,14 +143,14 @@ describe('objects', () => {
   const a = {a: {b: {c: 5}}};
   const b = {a: {b: {c: 6}}};
   const expected = [
-    ' Object {',
-    '   "a": Object {',
-    '     "b": Object {',
-    '-      "c": 5,',
-    '+      "c": 6,',
-    '     },',
-    '   },',
-    ' }',
+    '  Object {',
+    '    "a": Object {',
+    '      "b": Object {',
+    '-       "c": 5,',
+    '+       "c": 6,',
+    '      },',
+    '    },',
+    '  }',
   ].join('\n');
 
   test('(unexpanded)', () => {
@@ -187,13 +187,13 @@ Options:
               failing test.                        [boolean]
 `;
   const expected = [
-    ' Options:',
-    '---help, -h  Show help                            [boolean]',
-    '---bail, -b  Exit the test suite immediately upon the first',
-    '-            failing test.                        [boolean]',
-    '+  --help, -h  Show help                            [boolean]',
-    '+  --bail, -b  Exit the test suite immediately upon the first',
-    '+              failing test.                        [boolean]',
+    '  Options:',
+    '- --help, -h  Show help                            [boolean]',
+    '- --bail, -b  Exit the test suite immediately upon the first',
+    '-             failing test.                        [boolean]',
+    '+   --help, -h  Show help                            [boolean]',
+    '+   --bail, -b  Exit the test suite immediately upon the first',
+    '+               failing test.                        [boolean]',
   ].join('\n');
 
   test('(unexpanded)', () => {
@@ -223,13 +223,13 @@ Options:
 `;
   const expected = [
     ' "',
-    ' Options:',
-    '---help, -h  Show help                            [boolean]',
-    '---bail, -b  Exit the test suite immediately upon the first',
-    '-            failing test.                        [boolean]"',
-    '+  --help, -h  Show help                            [boolean]',
-    '+  --bail, -b  Exit the test suite immediately upon the first',
-    '+              failing test.                        [boolean]"',
+    '  Options:',
+    '- --help, -h  Show help                            [boolean]',
+    '- --bail, -b  Exit the test suite immediately upon the first',
+    '-             failing test.                        [boolean]"',
+    '+   --help, -h  Show help                            [boolean]',
+    '+   --bail, -b  Exit the test suite immediately upon the first',
+    '+               failing test.                        [boolean]"',
   ].join('\n');
 
   test('(unexpanded)', () => {
@@ -258,12 +258,12 @@ describe('React elements', () => {
     type: 'div',
   };
   const expected = [
-    ' <div',
-    '   className="fun"',
-    ' >',
-    '-  Hello',
-    '+  Goodbye',
-    ' </div>',
+    '  <div',
+    '    className="fun"',
+    '  >',
+    '-   Hello',
+    '+   Goodbye',
+    '  </div>',
   ].join('\n');
 
   test('(unexpanded)', () => {
@@ -276,12 +276,12 @@ describe('React elements', () => {
 
 describe('multiline string as value of object property', () => {
   const expected = [
-    ' Object {',
-    '   "id": "J",',
-    '   "points": "0.5,0.460',
-    '+0.5,0.875',
-    ' 0.25,0.875",',
-    ' }',
+    '  Object {',
+    '    "id": "J",',
+    '    "points": "0.5,0.460',
+    '+ 0.5,0.875',
+    '  0.25,0.875",',
+    '  }',
   ].join('\n');
 
   describe('(non-snapshot)', () => {
@@ -343,17 +343,17 @@ describe('indentation in JavaScript structures', () => {
 
   describe('from less to more', () => {
     const expected = [
-      ' Object {',
-      '   "searching": "",',
-      '-  "sorting": Object {',
-      '+  "sorting": Array [',
-      '+    Object {',
+      '  Object {',
+      '    "searching": "",',
+      '-   "sorting": Object {',
+      '+   "sorting": Array [',
+      '+     Object {',
       // following 3 lines are unchanged, except for more indentation
-      '       "descending": false,',
-      '       "fieldKey": "what",',
-      '     },',
-      '+  ],',
-      ' }',
+      '        "descending": false,',
+      '        "fieldKey": "what",',
+      '      },',
+      '+   ],',
+      '  }',
     ].join('\n');
 
     test('(unexpanded)', () => {
@@ -366,17 +366,17 @@ describe('indentation in JavaScript structures', () => {
 
   describe('from more to less', () => {
     const expected = [
-      ' Object {',
-      '   "searching": "",',
-      '-  "sorting": Array [',
-      '-    Object {',
-      '+  "sorting": Object {',
+      '  Object {',
+      '    "searching": "",',
+      '-   "sorting": Array [',
+      '-     Object {',
+      '+   "sorting": Object {',
       // following 3 lines are unchanged, except for less indentation
-      '     "descending": false,',
-      '     "fieldKey": "what",',
-      '   },',
-      '-  ],',
-      ' }',
+      '      "descending": false,',
+      '      "fieldKey": "what",',
+      '    },',
+      '-   ],',
+      '  }',
     ].join('\n');
 
     test('(unexpanded)', () => {
@@ -446,14 +446,14 @@ describe('indentation in React elements (non-snapshot)', () => {
 
   describe('from less to more', () => {
     const expected = [
-      ' <span>',
-      '+  <strong>',
+      '  <span>',
+      '+   <strong>',
       // following 3 lines are unchanged, except for more indentation
-      '     <span>',
-      '       text',
-      '     </span>',
-      '+  </strong>',
-      ' </span>',
+      '      <span>',
+      '        text',
+      '      </span>',
+      '+   </strong>',
+      '  </span>',
     ].join('\n');
 
     test('(unexpanded)', () => {
@@ -466,14 +466,14 @@ describe('indentation in React elements (non-snapshot)', () => {
 
   describe('from more to less', () => {
     const expected = [
-      ' <span>',
-      '-  <strong>',
+      '  <span>',
+      '-   <strong>',
       // following 3 lines are unchanged, except for less indentation
-      '   <span>',
-      '     text',
-      '   </span>',
-      '-  </strong>',
-      ' </span>',
+      '    <span>',
+      '      text',
+      '    </span>',
+      '-   </strong>',
+      '  </span>',
     ].join('\n');
 
     test('(unexpanded)', () => {
@@ -507,16 +507,16 @@ describe('indentation in React elements (snapshot)', () => {
   describe('from less to more', () => {
     // We intend to improve snapshot diff in the next version of Jest.
     const expected = [
-      ' <span>',
-      '-  <span>',
-      '-    text',
-      '-  </span>',
-      '+  <strong>',
-      '+    <span>',
-      '+      text',
-      '+    </span>',
-      '+  </strong>',
-      ' </span>',
+      '  <span>',
+      '-   <span>',
+      '-     text',
+      '-   </span>',
+      '+   <strong>',
+      '+     <span>',
+      '+       text',
+      '+     </span>',
+      '+   </strong>',
+      '  </span>',
     ].join('\n');
 
     test('(unexpanded)', () => {
@@ -530,16 +530,16 @@ describe('indentation in React elements (snapshot)', () => {
   describe('from more to less', () => {
     // We intend to improve snapshot diff in the next version of Jest.
     const expected = [
-      ' <span>',
-      '-  <strong>',
-      '-    <span>',
-      '-      text',
-      '-    </span>',
-      '-  </strong>',
-      '+  <span>',
-      '+    text',
-      '+  </span>',
-      ' </span>',
+      '  <span>',
+      '-   <strong>',
+      '-     <span>',
+      '-       text',
+      '-     </span>',
+      '-   </strong>',
+      '+   <span>',
+      '+     text',
+      '+   </span>',
+      '  </span>',
     ].join('\n');
 
     test('(unexpanded)', () => {

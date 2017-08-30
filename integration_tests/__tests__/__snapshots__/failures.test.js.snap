@@ -150,14 +150,14 @@ exports[`works with node assert 1`] = `
     - Expected
     + Received
     
-     Object {
-       \\"a\\": Object {
-         \\"b\\": Object {
-    -      \\"c\\": 6,
-    +      \\"c\\": 5,
-         },
-       },
-     }
+      Object {
+        \\"a\\": Object {
+          \\"b\\": Object {
+    -       \\"c\\": 6,
+    +       \\"c\\": 5,
+          },
+        },
+      }
       
       at __tests__/node_assertion_error.test.js:40:10
 
@@ -178,14 +178,14 @@ exports[`works with node assert 1`] = `
     - Expected
     + Received
     
-     Object {
-       \\"a\\": Object {
-         \\"b\\": Object {
-    -      \\"c\\": 7,
-    +      \\"c\\": 5,
-         },
-       },
-     }
+      Object {
+        \\"a\\": Object {
+          \\"b\\": Object {
+    -       \\"c\\": 7,
+    +       \\"c\\": 5,
+          },
+        },
+      }
       
       at __tests__/node_assertion_error.test.js:44:10
 
@@ -247,10 +247,10 @@ exports[`works with node assert 1`] = `
     - Expected
     + Received
     
-     Object {
-    -  \\"a\\": 2,
-    +  \\"a\\": 1,
-     }
+      Object {
+    -   \\"a\\": 2,
+    +   \\"a\\": 1,
+      }
       
       at __tests__/node_assertion_error.test.js:60:10
 
