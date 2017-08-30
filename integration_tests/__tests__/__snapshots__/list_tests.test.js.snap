@@ -2,7 +2,8 @@
 
 exports[`--listTests flag causes tests to be printed in different lines 1`] = `
 "/MOCK_ABOLUTE_PATH/integration_tests/list_tests/__tests__/dummy.test.js
-/MOCK_ABOLUTE_PATH/integration_tests/list_tests/__tests__/other.test.js"
+/MOCK_ABOLUTE_PATH/integration_tests/list_tests/__tests__/other.test.js
+"
 `;
 
 exports[`--listTests flag causes tests to be printed out as JSON when using the --json flag 1`] = `"[\\"/MOCK_ABOLUTE_PATH/integration_tests/list_tests/__tests__/dummy.test.js\\",\\"/MOCK_ABOLUTE_PATH/integration_tests/list_tests/__tests__/other.test.js\\"]"`;
