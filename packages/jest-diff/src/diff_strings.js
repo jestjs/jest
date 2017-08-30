@@ -136,9 +136,8 @@ const formatLine = (
   );
 };
 
-// Given original lines, return callback function which given diff digit,
-// returns either the corresponding expected OR received line,
-// or if compared lines are equal, array of expected AND received line.
+// Given original lines, return callback function
+// which given diff digit, returns array.
 const getterForChunks = (original: Original) => {
   const linesExpected = splitIntoLines(original.a);
   const linesReceived = splitIntoLines(original.b);
@@ -196,9 +195,7 @@ const createPatchMark = (hunk: Hunk): string => {
 };
 
 // Given original lines, return callback function which given indexes for hunk,
-// returns another callback function which given diff digit,
-// returns either the corresponding expected OR received line,
-// or if compared lines are equal, array of expected AND received line.
+// returns another callback function which given diff digit, returns array.
 const getterForHunks = (original: Original) => {
   const linesExpected = splitIntoLines(original.a);
   const linesReceived = splitIntoLines(original.b);
