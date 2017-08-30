@@ -128,7 +128,7 @@ const createTransformer = (options: any) => {
       if (!babelResult) {
         return src;
       }
-    
+
       return babelResult.code;
     },
   };
