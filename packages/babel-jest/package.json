@@ -16,6 +16,6 @@
     "babel-core": "^6.0.0"
   },
   "peerDependencies": {
-    "babel-core": "^6.0.0 || ^7.0.0-alpha || ^7.0.0"
+    "babel-core": "^6.0.0 || ^7.0.0-alpha || ^7.0.0-beta || ^7.0.0"
   }
 }
