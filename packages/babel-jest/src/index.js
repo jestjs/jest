@@ -124,12 +124,8 @@ const createTransformer = (options: any) => {
       }
 
       // babel v7 might return null in the case when the file has been ignored.
-      const babelResult = babelTransform(src, theseOptions);
-      if (!babelResult) {
-        return src;
-      }
-
-      return babelResult.code;
+      const transformResult = babelTransform(src, theseOptions);
+      return transformResult ? transformResult.code : src;
     },
   };
 };
