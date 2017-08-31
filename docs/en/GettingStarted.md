@@ -126,4 +126,4 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-To use TypeScript in your tests, check [ts-jest](https://github.com/kulshekhar/ts-jest).
+To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
