@@ -188,6 +188,7 @@ export type ProjectConfig = {|
   cacheDirectory: Path,
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
+  cwd: Path,
   displayName: ?string,
   globals: ConfigGlobals,
   haste: HasteConfig,

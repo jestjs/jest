@@ -120,6 +120,7 @@ const getConfigs = (
       cacheDirectory: options.cacheDirectory,
       clearMocks: options.clearMocks,
       coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+      cwd: options.cwd,
       displayName: options.displayName,
       globals: options.globals,
       haste: options.haste,

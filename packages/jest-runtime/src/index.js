@@ -259,6 +259,7 @@ class Runtime {
       modulePaths: config.modulePaths,
       platforms: config.haste.platforms,
       resolver: config.resolver,
+      rootDir: config.rootDir,
     });
   }
 

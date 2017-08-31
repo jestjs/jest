@@ -70,7 +70,7 @@ function runTest(
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type, message) =>
     getConsoleOutput(
-      config.rootDir,
+      config.cwd,
       !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),

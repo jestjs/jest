@@ -18,6 +18,7 @@ type ResolverOptions = {|
   extensions?: Array<string>,
   moduleDirectory?: Array<string>,
   paths?: ?Array<Path>,
+  rootDir: ?Path,
 |};
 
 function defaultResolver(path: Path, options: ResolverOptions): Path {
@@ -28,6 +29,7 @@ function defaultResolver(path: Path, options: ResolverOptions): Path {
     extensions: options.extensions,
     moduleDirectory: options.moduleDirectory,
     paths: options.paths,
+    rootDir: options.rootDir,
   });
 }
 
