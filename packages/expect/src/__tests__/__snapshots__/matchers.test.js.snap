@@ -1954,6 +1954,35 @@ Received:
   <red>[1, 2, 3]</>"
 `;
 
+exports[`.toEqual() {pass: false} expect([1, 2]).not.toEqual([1, 2]) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>[1, 2]</>
+Received:
+  <red>[1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
+
+Expected value to equal:
+  <green>[2, 1]</>
+Received:
+  <red>[1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Array [
+<red>+   1,</>
+<dim>    2,
+<green>-   1,</>
+<dim>  ]"
+`;
+
 exports[`.toEqual() {pass: false} expect([1, 3]).toEqual(ArrayContaining [1, 2]) 1`] = `
 "<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
 
@@ -1972,6 +2001,34 @@ Difference:
 <dim>    1,
 <green>-   2,</>
 <red>+   3,</>
+<dim>  ]"
+`;
+
+exports[`.toEqual() {pass: false} expect([1]).not.toEqual([1]) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>[1]</>
+Received:
+  <red>[1]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect([1]).toEqual([2]) 1`] = `
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
+
+Expected value to equal:
+  <green>[2]</>
+Received:
+  <red>[1]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Array [
+<green>-   2,</>
+<red>+   1,</>
 <dim>  ]"
 `;
 
@@ -2051,6 +2108,15 @@ Received:
   <red>{\\"a\\": 99}</>"
 `;
 
+exports[`.toEqual() {pass: false} expect({}).not.toEqual({}) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>{}</>
+Received:
+  <red>{}</>"
+`;
+
 exports[`.toEqual() {pass: false} expect(0).toEqual(-0) 1`] = `
 "<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
 
@@ -2095,6 +2161,66 @@ Difference:
   Comparing two different types of values. Expected <green>array</> but received <red>number</>."
 `;
 
+exports[`.toEqual() {pass: false} expect(Map {"a" => 0}).toEqual(Map {"b" => 0}) 1`] = `
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
+
+Expected value to equal:
+  <green>Map {\\"b\\" => 0}</>
+Received:
+  <red>Map {\\"a\\" => 0}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {
+<green>-   \\"b\\" => 0,</>
+<red>+   \\"a\\" => 0,</>
+<dim>  }"
+`;
+
+exports[`.toEqual() {pass: false} expect(Map {"v" => 1}).toEqual(Map {"v" => 2}) 1`] = `
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
+
+Expected value to equal:
+  <green>Map {\\"v\\" => 2}</>
+Received:
+  <red>Map {\\"v\\" => 1}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {
+<green>-   \\"v\\" => 2,</>
+<red>+   \\"v\\" => 1,</>
+<dim>  }"
+`;
+
+exports[`.toEqual() {pass: false} expect(Map {}).not.toEqual(Map {}) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>Map {}</>
+Received:
+  <red>Map {}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Map {}).toEqual(Set {}) 1`] = `
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
+
+Expected value to equal:
+  <green>Set {}</>
+Received:
+  <red>Map {}</>
+
+Difference:
+
+  Comparing two different types of values. Expected <green>set</> but received <red>map</>."
+`;
+
 exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {1 => "one", 2 => "two"}) 1`] = `
 "<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
 
@@ -2130,6 +2256,15 @@ Difference:
 <dim>    1 => \\"one\\",
 <red>+   2 => \\"two\\",</>
 <dim>  }"
+`;
+
+exports[`.toEqual() {pass: false} expect(Set {}).not.toEqual(Set {}) 1`] = `
+"<dim>expect(<red>received</><dim>).not.toEqual(<green>expected</><dim>)
+
+Expected value to not equal:
+  <green>Set {}</>
+Received:
+  <red>Set {}</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `

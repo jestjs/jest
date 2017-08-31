@@ -114,16 +114,29 @@ export const iterableEquality = (a: any, b: any) => {
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
-    } else {
-      const args = [];
+    } else if (a instanceof Set) {
+      let allFound = true;
       for (const aValue of a) {
-        args.push(aValue);
+        if (!b.has(aValue)) {
+          allFound = false;
+          break;
+        }
       }
-      for (const bValue of b) {
-        args.push(bValue);
+      if (allFound) {
+        return true;
       }
-      const merged = new a.constructor(args);
-      if (merged.size === a.size) {
+    } else if (a instanceof Map) {
+      let allFound = true;
+      for (const aEntry of a) {
+        if (
+          !b.has(aEntry[0]) ||
+          !equals(aEntry[1], b.get(aEntry[0]), [iterableEquality])
+        ) {
+          allFound = false;
+          break;
+        }
+      }
+      if (allFound) {
         return true;
       }
     }
