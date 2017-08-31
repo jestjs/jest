@@ -29,6 +29,7 @@ function defaultResolver(path: Path, options: ResolverOptions): Path {
     extensions: options.extensions,
     moduleDirectory: options.moduleDirectory,
     paths: options.paths,
+    rootDir: options.rootDir,
   });
 }
 
