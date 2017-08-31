@@ -1,43 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ReactElement plugin highlights syntax 1`] = `
-"<Mouse</>
+"<cyan><Mouse</>
   prop</>=<green>{
-    <div></>
+    <cyan><div></>
       </>mouse</>
-      <span></>
+      <cyan><span></>
         </>rat</>
-      </span></>
-    </div></>
+      <cyan></span></>
+    <cyan></div></>
   }</>
-/></>"
+<cyan>/></>"
 `;
 
 exports[`ReactElement plugin highlights syntax with color from theme option 1`] = `
-"<Mouse</>
+"<cyan><Mouse</>
   style</>=<red>\\"color:red\\"</>
-></>
+<cyan>></>
   </>Hello, Mouse!</>
-</Mouse></>"
+<cyan></Mouse></>"
 `;
 
 exports[`ReactTestComponent plugin highlights syntax 1`] = `
-"<Mouse</>
+"<cyan><Mouse</>
   prop</>=<green>{
-    <div></>
+    <cyan><div></>
       </>mouse</>
-      <span></>
+      <cyan><span></>
         </>rat</>
-      </span></>
-    </div></>
+      <cyan></span></>
+    <cyan></div></>
   }</>
-/></>"
+<cyan>/></>"
 `;
 
 exports[`ReactTestComponent plugin highlights syntax with color from theme option 1`] = `
-"<Mouse</>
+"<cyan><Mouse</>
   style</>=<red>\\"color:red\\"</>
-></>
+<cyan>></>
   </>Hello, Mouse!</>
-</Mouse></>"
+<cyan></Mouse></>"
 `;

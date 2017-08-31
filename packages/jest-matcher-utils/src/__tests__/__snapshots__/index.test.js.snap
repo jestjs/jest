@@ -17,9 +17,9 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"b\\": 1,</>
-<red>+  \\"a\\": 1,</>
-<dim>   \\"toJSON\\": [Function toJSON],
-<dim> }"
+<dim>  Object {
+<green>-   \\"b\\": 1,</>
+<red>+   \\"a\\": 1,</>
+<dim>    \\"toJSON\\": [Function toJSON],
+<dim>  }"
 `;

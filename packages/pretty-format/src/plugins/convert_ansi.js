@@ -18,6 +18,10 @@ const toHumanReadableAnsi = text => {
     switch (match) {
       case style.red.close:
       case style.green.close:
+      case style.cyan.close:
+      case style.bgRed.close:
+      case style.bgGreen.close:
+      case style.bgCyan.close:
       case style.reset.open:
       case style.reset.close:
         return '</>';
@@ -25,6 +29,14 @@ const toHumanReadableAnsi = text => {
         return '<red>';
       case style.green.open:
         return '<green>';
+      case style.cyan.open:
+        return '<cyan>';
+      case style.bgRed.open:
+        return '<bgRed>';
+      case style.bgGreen.open:
+        return '<bgGreen>';
+      case style.bgCyan.open:
+        return '<bgCyan>';
       case style.dim.open:
         return '<dim>';
       case style.bold.open:

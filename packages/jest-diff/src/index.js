@@ -34,11 +34,17 @@ const PLUGINS = [
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };
+const FORMAT_OPTIONS_0 = Object.assign({}, FORMAT_OPTIONS, {
+  indent: 0,
+});
 const FALLBACK_FORMAT_OPTIONS = {
   callToJSON: false,
   maxDepth: 10,
   plugins: PLUGINS,
 };
+const FALLBACK_FORMAT_OPTIONS_0 = Object.assign({}, FALLBACK_FORMAT_OPTIONS, {
+  indent: 0,
+});
 
 const MULTILINE_REGEXP = /[\r\n]/;
 
@@ -112,9 +118,13 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
 
   try {
     diffMessage = diffStrings(
-      prettyFormat(a, FORMAT_OPTIONS),
-      prettyFormat(b, FORMAT_OPTIONS),
+      prettyFormat(a, FORMAT_OPTIONS_0),
+      prettyFormat(b, FORMAT_OPTIONS_0),
       options,
+      {
+        a: prettyFormat(a, FORMAT_OPTIONS),
+        b: prettyFormat(b, FORMAT_OPTIONS),
+      },
     );
   } catch (e) {
     hasThrown = true;
@@ -124,9 +134,13 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
   // without calling `toJSON`. It's also possible that toJSON might throw.
   if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
     diffMessage = diffStrings(
-      prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
-      prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
+      prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0),
+      prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0),
       options,
+      {
+        a: prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
+        b: prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
+      },
     );
     if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
       diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;

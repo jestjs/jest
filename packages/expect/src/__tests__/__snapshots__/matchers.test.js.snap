@@ -151,10 +151,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-Object {}</>
-<red>+Object {</>
-<red>+  \\"circular\\": [Circular],</>
-<red>+}</>"
+<green>- Object {}</>
+<red>+ Object {</>
+<red>+   \\"circular\\": [Circular],</>
+<red>+ }</>"
 `;
 
 exports[`.toBe() fails for '"a"' with '.not' 1`] = `
@@ -268,10 +268,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": 5,</>
-<red>+  \\"a\\": 1,</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": 5,</>
+<red>+   \\"a\\": 1,</>
+<dim>  }"
 `;
 
 exports[`.toBe() fails for: {} and {} 1`] = `
@@ -1967,12 +1967,12 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-ArrayContaining [</>
-<red>+Array [</>
-<dim>   1,
-<green>-  2,</>
-<red>+  3,</>
-<dim> ]"
+<green>- ArrayContaining [</>
+<red>+ Array [</>
+<dim>    1,
+<green>-   2,</>
+<red>+   3,</>
+<dim>  ]"
 `;
 
 exports[`.toEqual() {pass: false} expect([Function anonymous]).not.toEqual(Any<Function>) 1`] = `
@@ -2015,12 +2015,12 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-ObjectContaining {</>
-<green>-  \\"a\\": 2,</>
-<red>+Object {</>
-<red>+  \\"a\\": 1,</>
-<red>+  \\"b\\": 2,</>
-<dim> }"
+<green>- ObjectContaining {</>
+<green>-   \\"a\\": 2,</>
+<red>+ Object {</>
+<red>+   \\"a\\": 1,</>
+<red>+   \\"b\\": 2,</>
+<dim>  }"
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 5}).toEqual({"b": 6}) 1`] = `
@@ -2036,10 +2036,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"b\\": 6,</>
-<red>+  \\"a\\": 5,</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"b\\": 6,</>
+<red>+   \\"a\\": 5,</>
+<dim>  }"
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 99}).not.toEqual({"a": 99}) 1`] = `
@@ -2126,10 +2126,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Map {
-<dim>   1 => \\"one\\",
-<red>+  2 => \\"two\\",</>
-<dim> }"
+<dim>  Map {
+<dim>    1 => \\"one\\",
+<red>+   2 => \\"two\\",</>
+<dim>  }"
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `
@@ -2163,11 +2163,11 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-Set {}</>
-<red>+Set {</>
-<red>+  1,</>
-<red>+  2,</>
-<red>+}</>"
+<green>- Set {}</>
+<red>+ Set {</>
+<red>+   1,</>
+<red>+   2,</>
+<red>+ }</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {1, 2, 3}) 1`] = `
@@ -2183,11 +2183,11 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Set {
-<dim>   1,
-<dim>   2,
-<green>-  3,</>
-<dim> }"
+<dim>  Set {
+<dim>    1,
+<dim>    2,
+<green>-   3,</>
+<dim>  }"
 `;
 
 exports[`.toEqual() {pass: false} expect(false).toEqual(ObjectContaining {"a": 2}) 1`] = `
@@ -2523,10 +2523,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"c\\": 4,</>
-<red>+  \\"c\\": 5,</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"c\\": 4,</>
+<red>+   \\"c\\": 5,</>
+<dim>  }"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": 3}}).toHaveProperty('a.b', undefined) 1`] = `
@@ -2852,10 +2852,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Array [
-<green>-  -0,</>
-<red>+  0,</>
-<dim> ]"
+<dim>  Array [
+<green>-   -0,</>
+<red>+   0,</>
+<dim>  ]"
 `;
 
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([1, 2, 2]) 1`] = `
@@ -2869,12 +2869,12 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Array [
-<dim>   1,
-<dim>   2,
-<green>-  2,</>
-<red>+  3,</>
-<dim> ]"
+<dim>  Array [
+<dim>    1,
+<dim>    2,
+<green>-   2,</>
+<red>+   3,</>
+<dim>  ]"
 `;
 
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([2, 3, 1]) 1`] = `
@@ -2888,12 +2888,12 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Array [
-<red>+  1,</>
-<dim>   2,
-<dim>   3,
-<green>-  1,</>
-<dim> ]"
+<dim>  Array [
+<red>+   1,</>
+<dim>    2,
+<dim>    3,
+<green>-   1,</>
+<dim>  ]"
 `;
 
 exports[`toMatchObject() {pass: false} expect([1, 2]).toMatchObject([1, 3]) 1`] = `
@@ -2907,11 +2907,11 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Array [
-<dim>   1,
-<green>-  3,</>
-<red>+  2,</>
-<dim> ]"
+<dim>  Array [
+<dim>    1,
+<green>-   3,</>
+<red>+   2,</>
+<dim>  ]"
 `;
 
 exports[`toMatchObject() {pass: false} expect([Error: foo]).toMatchObject([Error: bar]) 1`] = `
@@ -2925,8 +2925,8 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-[Error: bar]</>
-<red>+[Error: foo]</>"
+<green>- [Error: bar]</>
+<red>+ [Error: foo]</>"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObject({"a": Any<Number>}) 1`] = `
@@ -2940,10 +2940,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": Any<Number>,</>
-<red>+  \\"a\\": \\"a\\",</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": Any<Number>,</>
+<red>+   \\"a\\": \\"a\\",</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b!", "c": "d"}) 1`] = `
@@ -2957,11 +2957,11 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": \\"b!\\",</>
-<red>+  \\"a\\": \\"b\\",</>
-<dim>   \\"c\\": \\"d\\",
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": \\"b!\\",</>
+<red>+   \\"a\\": \\"b\\",</>
+<dim>    \\"c\\": \\"d\\",
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"e": "b"}) 1`] = `
@@ -2975,11 +2975,11 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"e\\": \\"b\\",</>
-<red>+  \\"a\\": \\"b\\",</>
-<red>+  \\"c\\": \\"d\\",</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"e\\": \\"b\\",</>
+<red>+   \\"a\\": \\"b\\",</>
+<red>+   \\"c\\": \\"d\\",</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"a": "b", "t": {"z": [3]}}) 1`] = `
@@ -2993,15 +2993,15 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<dim>   \\"a\\": \\"b\\",
-<dim>   \\"t\\": Object {
-<green>-    \\"z\\": Array [</>
-<green>-      3,</>
-<green>-    ],</>
-<red>+    \\"z\\": \\"z\\",</>
-<dim>   },
-<dim> }"
+<dim>  Object {
+<dim>    \\"a\\": \\"b\\",
+<dim>    \\"t\\": Object {
+<green>-     \\"z\\": Array [</>
+<green>-       3,</>
+<green>-     ],</>
+<red>+     \\"z\\": \\"z\\",</>
+<dim>    },
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"t": {"l": {"r": "r"}}}) 1`] = `
@@ -3015,15 +3015,15 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<dim>   \\"t\\": Object {
-<green>-    \\"l\\": Object {</>
-<red>+    \\"x\\": Object {</>
-<dim>       \\"r\\": \\"r\\",
-<dim>     },
-<red>+    \\"z\\": \\"z\\",</>
-<dim>   },
-<dim> }"
+<dim>  Object {
+<dim>    \\"t\\": Object {
+<green>-     \\"l\\": Object {</>
+<red>+     \\"x\\": Object {</>
+<dim>        \\"r\\": \\"r\\",
+<dim>      },
+<red>+     \\"z\\": \\"z\\",</>
+<dim>    },
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "c"}]}) 1`] = `
@@ -3037,14 +3037,14 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<dim>   \\"a\\": Array [
-<dim>     Object {
-<green>-      \\"a\\": \\"c\\",</>
-<red>+      \\"a\\": \\"a\\",</>
-<dim>     },
-<dim>   ],
-<dim> }"
+<dim>  Object {
+<dim>    \\"a\\": Array [
+<dim>      Object {
+<green>-       \\"a\\": \\"c\\",</>
+<red>+       \\"a\\": \\"a\\",</>
+<dim>      },
+<dim>    ],
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, "v"], "b": "b"}).toMatchObject({"a": ["v"]}) 1`] = `
@@ -3058,13 +3058,13 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<dim>   \\"a\\": Array [
-<red>+    3,</>
-<red>+    4,</>
-<dim>     \\"v\\",
-<dim>   ],
-<dim> }"
+<dim>  Object {
+<dim>    \\"a\\": Array [
+<red>+     3,</>
+<red>+     4,</>
+<dim>      \\"v\\",
+<dim>    ],
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": [3, 4, 5, 6]}) 1`] = `
@@ -3078,14 +3078,14 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<dim>   \\"a\\": Array [
-<dim>     3,
-<dim>     4,
-<dim>     5,
-<green>-    6,</>
-<dim>   ],
-<dim> }"
+<dim>  Object {
+<dim>    \\"a\\": Array [
+<dim>      3,
+<dim>      4,
+<dim>      5,
+<green>-     6,</>
+<dim>    ],
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": [3, 4]}) 1`] = `
@@ -3099,13 +3099,13 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<dim>   \\"a\\": Array [
-<dim>     3,
-<dim>     4,
-<red>+    5,</>
-<dim>   ],
-<dim> }"
+<dim>  Object {
+<dim>    \\"a\\": Array [
+<dim>      3,
+<dim>      4,
+<red>+     5,</>
+<dim>    ],
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": 4}}) 1`] = `
@@ -3119,16 +3119,16 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": Object {</>
-<green>-    \\"b\\": 4,</>
-<green>-  },</>
-<red>+  \\"a\\": Array [</>
-<red>+    3,</>
-<red>+    4,</>
-<red>+    5,</>
-<red>+  ],</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": Object {</>
+<green>-     \\"b\\": 4,</>
+<green>-   },</>
+<red>+   \\"a\\": Array [</>
+<red>+     3,</>
+<red>+     4,</>
+<red>+     5,</>
+<red>+   ],</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": Any<String>}}) 1`] = `
@@ -3142,16 +3142,16 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": Object {</>
-<green>-    \\"b\\": Any<String>,</>
-<green>-  },</>
-<red>+  \\"a\\": Array [</>
-<red>+    3,</>
-<red>+    4,</>
-<red>+    5,</>
-<red>+  ],</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": Object {</>
+<green>-     \\"b\\": Any<String>,</>
+<green>-   },</>
+<red>+   \\"a\\": Array [</>
+<red>+     3,</>
+<red>+     4,</>
+<red>+     5,</>
+<red>+   ],</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": 1, "b": 1, "c": 1, "d": {"e": {"f": 555}}}).toMatchObject({"d": {"e": {"f": 222}}}) 1`] = `
@@ -3165,14 +3165,14 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<dim>   \\"d\\": Object {
-<dim>     \\"e\\": Object {
-<green>-      \\"f\\": 222,</>
-<red>+      \\"f\\": 555,</>
-<dim>     },
-<dim>   },
-<dim> }"
+<dim>  Object {
+<dim>    \\"d\\": Object {
+<dim>      \\"e\\": Object {
+<green>-       \\"f\\": 222,</>
+<red>+       \\"f\\": 555,</>
+<dim>      },
+<dim>    },
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": 2015-11-30T00:00:00.000Z, "b": "b"}).toMatchObject({"a": 2015-10-10T00:00:00.000Z}) 1`] = `
@@ -3186,10 +3186,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": 2015-10-10T00:00:00.000Z,</>
-<red>+  \\"a\\": 2015-11-30T00:00:00.000Z,</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": 2015-10-10T00:00:00.000Z,</>
+<red>+   \\"a\\": 2015-11-30T00:00:00.000Z,</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObject({"a": "4"}) 1`] = `
@@ -3203,10 +3203,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": \\"4\\",</>
-<red>+  \\"a\\": null,</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": \\"4\\",</>
+<red>+   \\"a\\": null,</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObject({"a": undefined}) 1`] = `
@@ -3220,10 +3220,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": undefined,</>
-<red>+  \\"a\\": null,</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": undefined,</>
+<red>+   \\"a\\": null,</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": undefined}).toMatchObject({"a": null}) 1`] = `
@@ -3237,10 +3237,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Object {
-<green>-  \\"a\\": null,</>
-<red>+  \\"a\\": undefined,</>
-<dim> }"
+<dim>  Object {
+<green>-   \\"a\\": null,</>
+<red>+   \\"a\\": undefined,</>
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: false} expect({}).toMatchObject({"a": undefined}) 1`] = `
@@ -3254,10 +3254,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-Object {</>
-<green>-  \\"a\\": undefined,</>
-<green>-}</>
-<red>+Object {}</>"
+<green>- Object {</>
+<green>-   \\"a\\": undefined,</>
+<green>- }</>
+<red>+ Object {}</>"
 `;
 
 exports[`toMatchObject() {pass: false} expect(2015-11-30T00:00:00.000Z).toMatchObject(2015-10-10T00:00:00.000Z) 1`] = `
@@ -3271,8 +3271,8 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-2015-10-10T00:00:00.000Z</>
-<red>+2015-11-30T00:00:00.000Z</>"
+<green>- 2015-10-10T00:00:00.000Z</>
+<red>+ 2015-11-30T00:00:00.000Z</>"
 `;
 
 exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2}) 1`] = `
@@ -3286,10 +3286,10 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<dim> Set {
-<red>+  1,</>
-<dim>   2,
-<dim> }"
+<dim>  Set {
+<red>+   1,</>
+<dim>    2,
+<dim>  }"
 `;
 
 exports[`toMatchObject() {pass: true} expect([]).toMatchObject([]) 1`] = `
