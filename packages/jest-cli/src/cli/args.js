@@ -394,6 +394,14 @@ const options = {
       'rare.',
     type: 'boolean',
   },
+  runTestsByPath: {
+    default: false,
+    description:
+      'Used when provided patterns are exact file paths. This avoids ' +
+      'converting them into a regular expression and matching it against ' +
+      'every single file.',
+    type: 'boolean',
+  },
   setupFiles: {
     description:
       'The paths to modules that run some code to configure or ' +

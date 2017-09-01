@@ -6,6 +6,18 @@ const getNoTestFound = (testRunData, globalConfig): string => {
     (current, testRun) => (current += testRun.matches.total),
     0,
   );
+  let dataMessage;
+
+  if (globalConfig.runTestsByPath) {
+    dataMessage = `Files: ${globalConfig.nonFlagArgs
+      .map(p => `"${p}"`)
+      .join(', ')}`;
+  } else {
+    dataMessage = `Pattern: ${chalk.yellow(
+      globalConfig.testPathPattern,
+    )} - 0 matches`;
+  }
+
   return (
     chalk.bold('No tests found') +
     '\n' +
@@ -17,7 +29,7 @@ const getNoTestFound = (testRunData, globalConfig): string => {
       's',
     )}. for more details run with \`--verbose\`` +
     '\n' +
-    `Pattern: ${chalk.yellow(globalConfig.testPathPattern)} - 0 matches`
+    dataMessage
   );
 };
 

@@ -472,6 +472,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
+      case 'runTestsByPath':
       case 'silent':
       case 'skipNodeResolution':
       case 'testEnvironment':
