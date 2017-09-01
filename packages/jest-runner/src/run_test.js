@@ -112,6 +112,7 @@ function runTest(
       result.sourceMaps = runtime.getSourceMapInfo();
       result.console = testConsole.getBuffer();
       result.skipped = testCount === result.numPendingTests;
+      result.displayName = config.displayName;
       return result;
     })
     .then(

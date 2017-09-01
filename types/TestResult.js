@@ -131,6 +131,7 @@ export type Suite = {|
 export type TestResult = {|
   console: ?ConsoleBuffer,
   coverage?: RawCoverage,
+  displayName: ?string,
   memoryUsage?: Bytes,
   failureMessage: ?string,
   numFailingTests: number,
