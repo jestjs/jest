@@ -116,9 +116,9 @@ const runJest = async ({
   if (globalConfig.listTests) {
     const testsPaths = allTests.map(test => test.path);
     if (globalConfig.json) {
-      outputStream.write(JSON.stringify(testsPaths));
+      console.log(JSON.stringify(testsPaths));
     } else {
-      outputStream.write(testsPaths.join('\n'));
+      console.log(testsPaths.join('\n'));
     }
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
