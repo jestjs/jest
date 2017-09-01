@@ -11,7 +11,6 @@
 
 const runJest = require('../runJest');
 const path = require('path');
-const {EOL} = require('os');
 
 const testRootDir = path.resolve(__dirname, '..', '..');
 
@@ -27,7 +26,9 @@ describe('--listTests flag', () => {
     const {status, stdout} = runJest('list_tests', ['--listTests']);
 
     expect(status).toBe(0);
-    expect(normalizePaths(stdout)).toMatchSnapshot();
+    expect(
+      normalizePaths(stdout).split('\n').sort().join('\n'),
+    ).toMatchSnapshot();
   });
 
   it('causes tests to be printed out as JSON when using the --json flag', () => {
