@@ -53,6 +53,7 @@ const buildFailureTestResult = (
 ): TestResult => {
   return {
     console: null,
+    displayName: '',
     failureMessage: null,
     numFailingTests: 0,
     numPassingTests: 0,

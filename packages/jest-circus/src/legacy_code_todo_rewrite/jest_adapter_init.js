@@ -124,6 +124,7 @@ const runAndTransformResultsToJestFormat = async ({
 
   return {
     console: null,
+    displayName: config.displayName,
     failureMessage,
     numFailingTests,
     numPassingTests,
