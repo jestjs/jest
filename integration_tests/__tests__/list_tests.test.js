@@ -27,9 +27,7 @@ describe('--listTests flag', () => {
     const {status, stdout} = runJest('list_tests', ['--listTests']);
 
     expect(status).toBe(0);
-    expect(
-      normalizePaths(stdout).split(EOL).sort().join(EOL),
-    ).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 
   it('causes tests to be printed out as JSON when using the --json flag', () => {
