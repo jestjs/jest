@@ -15,7 +15,7 @@ import constants from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
-module.exports = ({
+export default ({
   automock: false,
   bail: false,
   browser: false,

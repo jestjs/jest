@@ -6,7 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-'use strict';
+
+import normalize from '../normalize';
 
 jest.mock('jest-resolve');
 
@@ -15,8 +16,6 @@ jest.mock('path', () => require.requireActual('path').posix);
 const crypto = require('crypto');
 const path = require('path');
 const utils = require('jest-regex-util');
-const normalize = require('../normalize');
-
 const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 

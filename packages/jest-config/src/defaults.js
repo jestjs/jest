@@ -28,7 +28,7 @@ const cacheDirectory = (() => {
   return path.join(os.tmpdir(), 'jest_' + getuid.call(process).toString(36));
 })();
 
-module.exports = ({
+export default ({
   automock: false,
   bail: false,
   browser: false,

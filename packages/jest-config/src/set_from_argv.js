@@ -14,7 +14,10 @@ import type {Argv} from 'types/Argv';
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
 import {isJSONString} from './utils';
 
-function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
+export default function setFromArgv(
+  options: InitialOptions,
+  argv: Argv,
+): InitialOptions {
   const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
     .reduce((options: Object, key) => {
@@ -56,5 +59,3 @@ function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
     argvToOptions,
   );
 }
-
-module.exports = setFromArgv;

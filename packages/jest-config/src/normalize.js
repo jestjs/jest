@@ -309,7 +309,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-function normalize(options: InitialOptions, argv: Argv) {
+export default function normalize(options: InitialOptions, argv: Argv) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -546,5 +546,3 @@ function normalize(options: InitialOptions, argv: Argv) {
     options: newOptions,
   };
 }
-
-module.exports = normalize;

@@ -6,9 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-'use strict';
 
-const setFromArgv = require('../set_from_argv');
+import setFromArgv from '../set_from_argv';
 
 test('maps special values to valid options', () => {
   const options = {};

@@ -17,7 +17,7 @@ import {JEST_CONFIG, PACKAGE_JSON} from './constants';
 const isFile = filePath =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
-module.exports = (pathToResolve: Path, cwd: Path): Path => {
+export default (pathToResolve: Path, cwd: Path): Path => {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }

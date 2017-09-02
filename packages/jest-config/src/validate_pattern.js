@@ -8,7 +8,7 @@
  * @flow
  */
 
-const validatePattern = (pattern: string) => {
+export default function validatePattern(pattern: string) {
   if (pattern) {
     try {
       // eslint-disable-next-line no-new
@@ -19,6 +19,4 @@ const validatePattern = (pattern: string) => {
   }
 
   return true;
-};
-
-module.exports = validatePattern;
+}

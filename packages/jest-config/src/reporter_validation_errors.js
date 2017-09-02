@@ -25,7 +25,7 @@ const ERROR = `${BULLET}Reporter Validation Error`;
  * merged with jest-validate. Till then, we can make use of it. It works
  * and that's what counts most at this time.
  */
-function createReporterError(
+export function createReporterError(
   reporterIndex: number,
   reporterValue: Array<ReporterConfig> | string,
 ): ValidationError {
@@ -38,7 +38,7 @@ function createReporterError(
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
-function createArrayReporterError(
+export function createArrayReporterError(
   arrayReporter: ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
@@ -63,7 +63,7 @@ function createArrayReporterError(
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
-function validateReporters(
+export function validateReporters(
   reporterConfig: Array<ReporterConfig | string>,
 ): boolean {
   return reporterConfig.every((reporter, index) => {
@@ -102,9 +102,3 @@ function validateArrayReporter(
     );
   }
 }
-
-module.exports = {
-  createArrayReporterError,
-  createReporterError,
-  validateReporters,
-};

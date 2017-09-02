@@ -12,7 +12,7 @@ import type {Argv} from 'types/Argv';
 
 import os from 'os';
 
-const getMaxWorkers = (argv: Argv): number => {
+export default function getMaxWorkers(argv: Argv): number {
   if (argv.runInBand) {
     return 1;
   } else if (argv.maxWorkers) {
@@ -21,6 +21,4 @@ const getMaxWorkers = (argv: Argv): number => {
     const cpus = os.cpus().length;
     return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
   }
-};
-
-module.exports = getMaxWorkers;
+}
