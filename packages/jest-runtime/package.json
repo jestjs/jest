@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "20.0.4",
+  "version": "21.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,16 +9,16 @@
   "main": "build/index.js",
   "dependencies": {
     "babel-core": "^6.0.0",
-    "babel-jest": "^20.0.3",
+    "babel-jest": "^21.0.0",
     "babel-plugin-istanbul": "^4.0.0",
     "chalk": "^2.0.1",
     "convert-source-map": "^1.4.0",
     "graceful-fs": "^4.1.11",
-    "jest-config": "^20.0.4",
-    "jest-haste-map": "^20.0.4",
-    "jest-regex-util": "^20.0.3",
-    "jest-resolve": "^20.0.4",
-    "jest-util": "^20.0.3",
+    "jest-config": "^21.0.0",
+    "jest-haste-map": "^21.0.0",
+    "jest-regex-util": "^21.0.0",
+    "jest-resolve": "^21.0.0",
+    "jest-util": "^21.0.0",
     "json-stable-stringify": "^1.0.1",
     "micromatch": "^2.3.11",
     "slash": "^1.0.0",
@@ -27,8 +27,8 @@
     "yargs": "^7.0.2"
   },
   "devDependencies": {
-    "jest-environment-jsdom": "^20.0.3",
-    "jest-environment-node": "^20.0.3"
+    "jest-environment-jsdom": "^21.0.0",
+    "jest-environment-node": "^21.0.0"
   },
   "bin": {
     "jest-runtime": "./bin/jest-runtime.js"

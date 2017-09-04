@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "20.0.3",
+  "version": "21.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,13 +9,13 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "expect": "^20.0.3",
-    "jest-snapshot": "^20.0.3",
-    "jest-matcher-utils": "^20.0.3",
-    "jest-message-util": "^20.0.3",
-    "jest-diff": "^20.0.3"
+    "expect": "^21.0.0",
+    "jest-diff": "^21.0.0",
+    "jest-matcher-utils": "^21.0.0",
+    "jest-message-util": "^21.0.0",
+    "jest-snapshot": "^21.0.0"
   },
   "devDependencies": {
-    "jest-runtime": "^20.0.3"
+    "jest-runtime": "^21.0.0"
   }
 }

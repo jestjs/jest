@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-jest",
-  "version": "20.0.3",
+  "version": "21.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,6 +8,6 @@
   "license": "BSD-3-Clause",
   "main": "index.js",
   "dependencies": {
-    "babel-plugin-jest-hoist": "^20.0.3"
+    "babel-plugin-jest-hoist": "^21.0.0"
   }
 }

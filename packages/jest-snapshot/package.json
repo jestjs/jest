@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "20.0.3",
+  "version": "21.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,10 +9,10 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "jest-diff": "^20.0.3",
-    "jest-matcher-utils": "^20.0.3",
+    "jest-diff": "^21.0.0",
+    "jest-matcher-utils": "^21.0.0",
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
-    "pretty-format": "^20.0.3"
+    "pretty-format": "^21.0.0"
   }
 }
