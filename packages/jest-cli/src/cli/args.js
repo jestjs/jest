@@ -21,14 +21,6 @@ const check = (argv: Argv) => {
     );
   }
 
-  if (argv.onlyChanged && argv._.length > 0) {
-    throw new Error(
-      'Both --onlyChanged and a path pattern were specified, but these ' +
-        'two options do not make sense together. Which is it? Do you want ' +
-        'to run tests for changed files? Or for a specific set of files?',
-    );
-  }
-
   if (argv.onlyChanged && argv.watchAll) {
     throw new Error(
       'Both --onlyChanged and --watchAll were specified, but these two ' +
