@@ -101,6 +101,7 @@ const getConfigs = (
       replname: options.replname,
       reporters: options.reporters,
       rootDir: options.rootDir,
+      runTestsByPath: options.runTestsByPath,
       silent: options.silent,
       testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,

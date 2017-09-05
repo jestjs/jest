@@ -39,19 +39,18 @@ const getTestPaths = async (
 ) => {
   const source = new SearchSource(context);
   let data = await source.getTestPaths(globalConfig, changedFilesPromise);
-  if (!data.tests.length) {
-    if (globalConfig.onlyChanged && data.noSCM) {
-      if (globalConfig.watch) {
-        data = await source.getTestPaths(globalConfig);
-      } else {
-        new Console(outputStream, outputStream).log(
-          'Jest can only find uncommitted changed files in a git or hg ' +
-            'repository. If you make your project a git or hg ' +
-            'repository (`git init` or `hg init`), Jest will be able ' +
-            'to only run tests related to files changed since the last ' +
-            'commit.',
-        );
-      }
+
+  if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
+    if (globalConfig.watch) {
+      data = await source.getTestPaths(globalConfig);
+    } else {
+      new Console(outputStream, outputStream).log(
+        'Jest can only find uncommitted changed files in a git or hg ' +
+          'repository. If you make your project a git or hg ' +
+          'repository (`git init` or `hg init`), Jest will be able ' +
+          'to only run tests related to files changed since the last ' +
+          'commit.',
+      );
     }
   }
   return data;

@@ -30,12 +30,24 @@ const getNoTestFoundVerbose = (testRunData, globalConfig): string => {
         `Jest Documentation: ` +
         `facebook.github.io/jest/docs/configuration.html`;
   });
+  let dataMessage;
+
+  if (globalConfig.runTestsByPath) {
+    dataMessage = `Files: ${globalConfig.nonFlagArgs
+      .map(p => `"${p}"`)
+      .join(', ')}`;
+  } else {
+    dataMessage = `Pattern: ${chalk.yellow(
+      globalConfig.testPathPattern,
+    )} - 0 matches`;
+  }
+
   return (
     chalk.bold('No tests found') +
     '\n' +
     individualResults.join('\n') +
     '\n' +
-    `Pattern: ${chalk.yellow(globalConfig.testPathPattern)} - 0 matches`
+    dataMessage
   );
 };
 

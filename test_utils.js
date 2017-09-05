@@ -40,6 +40,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   replname: null,
   reporters: [],
   rootDir: '/test_root_dir/',
+  runTestsByPath: false,
   silent: false,
   testFailureExitCode: 1,
   testNamePattern: '',

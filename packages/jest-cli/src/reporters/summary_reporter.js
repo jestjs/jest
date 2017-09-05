@@ -190,13 +190,25 @@ class SummaryReporter extends BaseReporter {
       );
     };
 
-    const testInfo = globalConfig.onlyChanged
-      ? chalk.dim(' related to changed files')
-      : globalConfig.testPathPattern ? getMatchingTestsInfo() : '';
+    let testInfo = '';
 
-    const nameInfo = globalConfig.testNamePattern
-      ? chalk.dim(' with tests matching ') + `"${globalConfig.testNamePattern}"`
-      : '';
+    if (globalConfig.runTestsByPath) {
+      testInfo = chalk.dim(' within paths');
+    } else if (globalConfig.onlyChanged) {
+      testInfo = chalk.dim(' related to changed files');
+    } else if (globalConfig.testPathPattern) {
+      testInfo = getMatchingTestsInfo();
+    }
+
+    let nameInfo = '';
+
+    if (globalConfig.runTestsByPath) {
+      nameInfo = ' ' + globalConfig.nonFlagArgs.map(p => `"${p}"`).join(', ');
+    } else if (globalConfig.testNamePattern) {
+      nameInfo =
+        chalk.dim(' with tests matching ') +
+        `"${globalConfig.testNamePattern}"`;
+    }
 
     const contextInfo =
       contexts.size > 1
