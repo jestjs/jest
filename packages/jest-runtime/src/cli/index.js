@@ -27,7 +27,11 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = yargs.usage(args.usage).options(args.options).argv;
+    argv = yargs
+      .usage(args.usage)
+      .help(false)
+      .version(false)
+      .options(args.options).argv;
 
     validateCLIOptions(argv, args.options);
   }

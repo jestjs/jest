@@ -112,11 +112,11 @@ const _readResultsAndExit = (
 const _buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
   const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
     .usage(args.usage)
-    .help()
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
-    .check(args.check).argv;
+    .check(args.check)
+    .version(false).argv;
 
   validateCLIOptions(argv, args.options);
 
