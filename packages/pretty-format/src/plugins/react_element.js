@@ -55,7 +55,9 @@ export const serialize = (
     : printElement(
         getType(element),
         printProps(
-          Object.keys(element.props).filter(key => key !== 'children').sort(),
+          Object.keys(element.props)
+            .filter(key => key !== 'children')
+            .sort(),
           element.props,
           config,
           indentation + config.indent,

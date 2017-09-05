@@ -13,8 +13,10 @@ const jestImage =
 
 const getURLFromFile = file => {
   const url =
-    file.substring(0, 11).split('-').join('/') +
-    file.substring(11).replace(/\.md$/, '.html');
+    file
+      .substring(0, 11)
+      .split('-')
+      .join('/') + file.substring(11).replace(/\.md$/, '.html');
   return `${blogRootURL}${url}`;
 };
 
@@ -33,14 +35,20 @@ const retrieveMetaData = file => {
       ? post.replace(/\n\r/g, '\n').split('.\n\n')[0]
       : post.substring(0, indexOfTruncate);
 
-  return header.split(os.EOL).filter(x => x).reduce((metadata, str) => {
-    const matches = /(.*?): (.*)/.exec(str);
-    metadata[matches[1]] = matches[2];
-    return metadata;
-  }, {
-    url: getURLFromFile(file),
-    description: postExcerpt,
-  });
+  return header
+    .split(os.EOL)
+    .filter(x => x)
+    .reduce(
+      (metadata, str) => {
+        const matches = /(.*?): (.*)/.exec(str);
+        metadata[matches[1]] = matches[2];
+        return metadata;
+      },
+      {
+        url: getURLFromFile(file),
+        description: postExcerpt,
+      }
+    );
 };
 
 module.exports = function(type) {
@@ -51,7 +59,9 @@ module.exports = function(type) {
   fs.readdirSync(blogFolder).forEach(file => {
     posts[file.substring(0, 10)] = retrieveMetaData(file);
   });
-  const allPosts = Object.keys(posts).sort().reverse();
+  const allPosts = Object.keys(posts)
+    .sort()
+    .reverse();
 
   const feed = new Feed({
     title: 'Jest Blog',

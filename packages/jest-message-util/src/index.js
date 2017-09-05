@@ -78,7 +78,10 @@ const formatExecError = (
     message = separated.message;
   }
 
-  message = message.split(/\n/).map(line => MESSAGE_INDENT + line).join('\n');
+  message = message
+    .split(/\n/)
+    .map(line => MESSAGE_INDENT + line)
+    .join('\n');
   stack =
     stack && !options.noStackTrace
       ? '\n' + formatStackTrace(stack, config, options, testPath)

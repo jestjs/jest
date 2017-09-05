@@ -21,9 +21,7 @@ class HomeSplash extends React.Component {
             <div className="inner">
               <h2 className="projectTitle">
                 {siteConfig.title}
-                <small>
-                  {siteConfig[this.props.language].tagline}
-                </small>
+                <small>{siteConfig[this.props.language].tagline}</small>
               </h2>
               <div className="section promoSection">
                 <div className="promoRow">
@@ -55,9 +53,7 @@ class HomeSplash extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="githubButton">
-                {siteConfig.githubButton}
-              </div>
+              <div className="githubButton">{siteConfig.githubButton}</div>
             </div>
           </div>
         </div>

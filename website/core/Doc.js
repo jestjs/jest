@@ -38,14 +38,10 @@ class Doc extends React.Component {
       <div className="post">
         <header className="postHeader">
           {editLink}
-          <h1>
-            {this.props.title}
-          </h1>
+          <h1>{this.props.title}</h1>
         </header>
         <article>
-          <Marked>
-            {this.props.content}
-          </Marked>
+          <Marked>{this.props.content}</Marked>
         </article>
       </div>
     );

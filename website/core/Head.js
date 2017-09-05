@@ -11,9 +11,7 @@ const Head = React.createClass({
       <head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <title>
-          {this.props.title}
-        </title>
+        <title>{this.props.title}</title>
         <meta name="viewport" content="width=device-width" />
         <meta property="og:title" content={this.props.title} />
         <meta property="og:type" content="website" />

@@ -201,7 +201,10 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.P);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
 
-    ['p'].map(toHex).concat(KEYS.ENTER).forEach(key => stdin.emit(key));
+    ['p']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
 
     pipe.write.mockReset();
     stdin.emit(KEYS.P);
@@ -223,7 +226,10 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.T);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
 
-    ['t'].map(toHex).concat(KEYS.ENTER).forEach(key => stdin.emit(key));
+    ['t']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
 
     pipe.write.mockReset();
     stdin.emit(KEYS.T);

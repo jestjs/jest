@@ -11,7 +11,11 @@
 
 const runJest = require('../runJest');
 
-const getLog = result => result.stdout.toString().split('\n')[1].trim();
+const getLog = result =>
+  result.stdout
+    .toString()
+    .split('\n')[1]
+    .trim();
 
 describe('Environment override', () => {
   it('uses jsdom when specified', () => {

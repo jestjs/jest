@@ -18,9 +18,7 @@ class BlogPost extends React.Component {
       content = content.split('<!--truncate-->')[0];
       return (
         <article className="post-content">
-          <Marked>
-            {content}
-          </Marked>
+          <Marked>{content}</Marked>
           <div className="read-more">
             <a className="button" href={'/jest/blog/' + this.props.post.path}>
               Read More
@@ -29,11 +27,7 @@ class BlogPost extends React.Component {
         </article>
       );
     }
-    return (
-      <Marked>
-        {content}
-      </Marked>
-    );
+    return <Marked>{content}</Marked>;
   }
 
   renderAuthorPhoto() {
@@ -61,9 +55,7 @@ class BlogPost extends React.Component {
     const post = this.props.post;
     return (
       <h1>
-        <a href={'/jest/blog/' + post.path}>
-          {post.title}
-        </a>
+        <a href={'/jest/blog/' + post.path}>{post.title}</a>
       </h1>
     );
   }
@@ -89,11 +81,9 @@ class BlogPost extends React.Component {
     ][parseInt(match[2], 10) - 1];
     const day = parseInt(match[3], 10);
 
-    const githubButton = this.props.truncate
-      ? null
-      : <p className="post-meta">
-          {siteConfig.githubButton}
-        </p>;
+    const githubButton = this.props.truncate ? null : (
+      <p className="post-meta">{siteConfig.githubButton}</p>
+    );
 
     return (
       <header className="postHeader">
