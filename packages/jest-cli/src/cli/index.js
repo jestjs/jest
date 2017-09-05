@@ -15,6 +15,7 @@ import {
   Console,
   clearLine,
   createDirectory,
+  clearDirectory,
   validateCLIOptions,
 } from 'jest-util';
 import {readConfig} from 'jest-config';
@@ -67,6 +68,12 @@ export const runCLI = async (
       argv,
       outputStream,
     );
+
+    if (argv.clearCache) {
+      clearDirectory(configs[0].cacheDirectory);
+      process.stdout.write(`Cleared ${configs[0].cacheDirectory}\n`);
+      process.exit(0);
+    }
 
     await _run(
       globalConfig,
