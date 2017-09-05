@@ -64,7 +64,7 @@ function browserBuild(pkgName, entryPath, destination) {
       rollupBuiltins(),
       rollupResolve(),
     ],
-    useStrict: false,
+    strict: false,
   }).then(bundle => {
     return bundle.write({
       dest: destination,
