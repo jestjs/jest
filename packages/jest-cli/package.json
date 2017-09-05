@@ -24,7 +24,7 @@
     "jest-runtime": "^21.0.0",
     "jest-snapshot": "^21.0.0",
     "jest-util": "^21.0.0",
-    "micromatch": "^3.0.4",
+    "micromatch": "^2.3.11",
     "node-notifier": "^5.0.2",
     "pify": "^3.0.0",
     "slash": "^1.0.0",

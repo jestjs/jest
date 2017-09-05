@@ -51,7 +51,7 @@
     "karma-mocha": "^1.3.0",
     "left-pad": "^1.1.1",
     "lerna": "2.0.0",
-    "micromatch": "^3.0.4",
+    "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
     "mocha": "^3.4.2",
     "mock-fs": "^4.4.1",
