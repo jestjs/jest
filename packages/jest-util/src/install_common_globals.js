@@ -28,6 +28,24 @@ module.exports = (global: Global, globals: ConfigGlobals) => {
   // Forward some APIs
   global.Buffer = Buffer;
 
+  global.ArrayBuffer = ArrayBuffer;
+  global.DataView = DataView;
+
+  global.Uint8Array = Uint8Array;
+  global.Uint8ClampedArray = Uint8ClampedArray;
+  global.Uint16Array = Uint16Array;
+  global.Uint32Array = Uint32Array;
+  global.Int8Array = Int8Array;
+  global.Int16Array = Int16Array;
+  global.Int32Array = Int32Array;
+  global.Float32Array = Float32Array;
+  global.Float64Array = Float64Array;
+
+  global.Map = Map;
+  global.Set = Set;
+
+  global.Promise = Promise;
+
   // `global.process` is mutated by FakeTimers. Make a copy of the
   // object for the jsdom environment to prevent memory leaks.
   // Overwrite toString to make it look like the real process object
