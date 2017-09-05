@@ -15,8 +15,8 @@
     "jest-message-util": "^21.0.0",
     "jest-runtime": "^21.0.0",
     "jest-util": "^21.0.0",
-    "pify": "^2.3.0",
-    "throat": "^3.0.0",
+    "pify": "^3.0.0",
+    "throat": "^4.0.0",
     "worker-farm": "^1.3.1"
   }
 }
