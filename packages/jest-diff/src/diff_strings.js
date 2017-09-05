@@ -238,8 +238,8 @@ const formatHunks = (
   const oldLinesCount = (a.match(/\n/g) || []).length;
 
   return {
-    diff: structuredPatch('', '', a, b, '', '', options).hunks
-      .map((hunk: Hunk) => {
+    diff: structuredPatch('', '', a, b, '', '', options)
+      .hunks.map((hunk: Hunk) => {
         // Hunk properties are one-based but index args are zero-based.
         const getOriginal =
           getter && getter(hunk.oldStart - 1, hunk.newStart - 1);

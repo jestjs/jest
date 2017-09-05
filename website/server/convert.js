@@ -46,7 +46,10 @@ function extractMetadata(content) {
   for (let i = 0; i < lines.length - 1; ++i) {
     const keyvalue = lines[i].split(':');
     const key = keyvalue[0].trim();
-    let value = keyvalue.slice(1).join(':').trim();
+    let value = keyvalue
+      .slice(1)
+      .join(':')
+      .trim();
     // Handle the case where you have "Community #10"
     try {
       value = JSON.parse(value);
@@ -224,36 +227,39 @@ function execute() {
       files: [],
     };
 
-    files.sort().reverse().forEach(file => {
-      // Transform
-      //   2015-08-13-blog-post-name-0.5.md
-      // into
-      //   2015/08/13/blog-post-name-0-5.html
-      const filePath = path
-        .basename(file)
-        .replace('-', '/')
-        .replace('-', '/')
-        .replace('-', '/')
-        // react-middleware is broken with files that contains multiple .
-        // like react-0.14.js
-        .replace(/\./g, '-')
-        .replace(/\-md$/, '.html');
+    files
+      .sort()
+      .reverse()
+      .forEach(file => {
+        // Transform
+        //   2015-08-13-blog-post-name-0.5.md
+        // into
+        //   2015/08/13/blog-post-name-0-5.html
+        const filePath = path
+          .basename(file)
+          .replace('-', '/')
+          .replace('-', '/')
+          .replace('-', '/')
+          // react-middleware is broken with files that contains multiple .
+          // like react-0.14.js
+          .replace(/\./g, '-')
+          .replace(/\-md$/, '.html');
 
-      const res = extractMetadata(fs.readFileSync(file, {encoding: 'utf8'}));
-      const rawContent = res.rawContent;
-      const metadata = Object.assign(
-        {path: filePath, content: rawContent},
-        res.metadata
-      );
+        const res = extractMetadata(fs.readFileSync(file, {encoding: 'utf8'}));
+        const rawContent = res.rawContent;
+        const metadata = Object.assign(
+          {path: filePath, content: rawContent},
+          res.metadata
+        );
 
-      metadata.id = metadata.title;
-      metadatas.files.push(metadata);
+        metadata.id = metadata.title;
+        metadatas.files.push(metadata);
 
-      writeFileAndCreateFolder(
-        'src/jest/blog/' + filePath.replace(/\.html$/, '.js'),
-        buildFile('BlogPostLayout', metadata, rawContent)
-      );
-    });
+        writeFileAndCreateFolder(
+          'src/jest/blog/' + filePath.replace(/\.html$/, '.js'),
+          buildFile('BlogPostLayout', metadata, rawContent)
+        );
+      });
 
     const perPage = 10;
     for (

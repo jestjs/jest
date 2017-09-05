@@ -813,11 +813,7 @@ Parser.prototype.tok = function() { // eslint-disable-line
       );
     }
     case 'code': {
-      return (
-        <Prism>
-          {this.token.text}
-        </Prism>
-      );
+      return <Prism>{this.token.text}</Prism>;
     }
     case 'table': {
       const table = [];
@@ -1090,11 +1086,7 @@ marked.parse = marked;
 
 const Marked = React.createClass({
   render() {
-    return (
-      <div>
-        {marked(this.props.children, this.props)}
-      </div>
-    );
+    return <div>{marked(this.props.children, this.props)}</div>;
   },
 });
 

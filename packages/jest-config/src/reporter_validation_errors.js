@@ -55,7 +55,9 @@ function createArrayReporterError(
     `    ${chalk.bold.green(getType(value))}\n` +
     `  Reporter configuration:\n` +
     `    ${chalk.bold.green(
-      JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
+      JSON.stringify(arrayReporter, null, 2)
+        .split('\n')
+        .join('\n    '),
     )}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);

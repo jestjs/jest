@@ -41,7 +41,7 @@ const DocsLayout = React.createClass({
               language={metadata.language}
             />
             <div className="docs-prevnext">
-              {metadata.previous_id &&
+              {metadata.previous_id && (
                 <a
                   className="docs-prev button"
                   href={metadata.previous_id + '.html#content'}
@@ -52,8 +52,9 @@ const DocsLayout = React.createClass({
                       'localized-strings'
                     ]['previous']
                   }
-                </a>}
-              {metadata.next_id &&
+                </a>
+              )}
+              {metadata.next_id && (
                 <a
                   className="docs-next button"
                   href={metadata.next_id + '.html#content'}
@@ -64,7 +65,8 @@ const DocsLayout = React.createClass({
                     ]['next']
                   }{' '}
                   →
-                </a>}
+                </a>
+              )}
             </div>
           </Container>
         </div>

@@ -23,9 +23,7 @@ class LanguageDropDown extends React.Component {
       }
       enabledLanguages.push(
         <li key={lang.tag}>
-          <a href={'/jest/' + lang.tag}>
-            {lang.name}
-          </a>
+          <a href={'/jest/' + lang.tag}>{lang.name}</a>
         </li>
       );
     });
@@ -49,9 +47,7 @@ class LanguageDropDown extends React.Component {
             {currentLanguage}
           </a>
           <div id="languages-dropdown" className="hide">
-            <ul id="languages-dropdown-items">
-              {enabledLanguages}
-            </ul>
+            <ul id="languages-dropdown-items">{enabledLanguages}</ul>
           </div>
         </li>
         <script
@@ -106,9 +102,7 @@ class HeaderNav extends React.Component {
           <header>
             <a href={this.props.baseUrl}>
               <img src={this.props.baseUrl + 'img/jest-outline.svg'} />
-              <h2>
-                {this.props.title}
-              </h2>
+              <h2>{this.props.title}</h2>
             </a>
             {this.renderResponsiveNav()}
           </header>

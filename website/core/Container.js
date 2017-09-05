@@ -21,11 +21,7 @@ class Container extends React.Component {
     let wrappedChildren;
 
     if (this.props.wrapper) {
-      wrappedChildren = (
-        <div className="wrapper">
-          {this.props.children}
-        </div>
-      );
+      wrappedChildren = <div className="wrapper">{this.props.children}</div>;
     } else {
       wrappedChildren = this.props.children;
     }

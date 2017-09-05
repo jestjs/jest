@@ -148,7 +148,9 @@ test('gets changed files for git', async () => {
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   run(`${GIT} add .`, DIR);
@@ -161,7 +163,9 @@ test('gets changed files for git', async () => {
     lastCommit: true,
   }));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   writeFiles(DIR, {
@@ -170,7 +174,9 @@ test('gets changed files for git', async () => {
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt']);
 });
 
@@ -198,7 +204,9 @@ test('gets changed files for hg', async () => {
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   run(`${HG} add .`, DIR);
@@ -211,7 +219,9 @@ test('gets changed files for hg', async () => {
     lastCommit: true,
   }));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   writeFiles(DIR, {
@@ -220,7 +230,9 @@ test('gets changed files for hg', async () => {
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt']);
 
   run(`${HG} commit -m "test2"`, DIR);
@@ -234,6 +246,8 @@ test('gets changed files for hg', async () => {
   }));
   // Returns files from current uncommited state + the last commit
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file4.txt']);
 });
