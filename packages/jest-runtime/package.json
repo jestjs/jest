@@ -20,11 +20,11 @@
     "jest-resolve": "^21.0.0",
     "jest-util": "^21.0.0",
     "json-stable-stringify": "^1.0.1",
-    "micromatch": "^2.3.11",
+    "micromatch": "^3.0.4",
     "slash": "^1.0.0",
     "strip-bom": "3.0.0",
     "write-file-atomic": "^2.1.0",
-    "yargs": "^7.0.2"
+    "yargs": "^9.0.0"
   },
   "devDependencies": {
     "jest-environment-jsdom": "^21.0.0",

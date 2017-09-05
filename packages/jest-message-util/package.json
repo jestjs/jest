@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "micromatch": "^2.3.11",
+    "micromatch": "^3.0.4",
     "slash": "^1.0.0"
   }
 }

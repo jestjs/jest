@@ -4,7 +4,7 @@
   "version": "21.0.1",
   "main": "build/jest.js",
   "dependencies": {
-    "ansi-escapes": "^2.0.0",
+    "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
     "glob": "^7.1.2",
     "graceful-fs": "^4.1.11",
@@ -24,15 +24,15 @@
     "jest-runtime": "^21.0.0",
     "jest-snapshot": "^21.0.0",
     "jest-util": "^21.0.0",
-    "micromatch": "^2.3.11",
+    "micromatch": "^3.0.4",
     "node-notifier": "^5.0.2",
-    "pify": "^2.3.0",
+    "pify": "^3.0.0",
     "slash": "^1.0.0",
-    "string-length": "^1.0.1",
+    "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
     "which": "^1.2.12",
     "worker-farm": "^1.3.1",
-    "yargs": "^7.0.2"
+    "yargs": "^9.0.0"
   },
   "bin": {
     "jest": "./bin/jest.js"
