@@ -9,7 +9,7 @@
  */
 
 import type {Path, ProjectConfig} from 'types/Config';
-import type {TransformOptions} from 'types/Transform';
+import type {CacheKeyOptions, TransformOptions} from 'types/Transform';
 
 import crypto from 'crypto';
 import fs from 'fs';
@@ -82,7 +82,7 @@ const createTransformer = (options: any) => {
       fileData: string,
       filename: Path,
       configString: string,
-      {instrument}: TransformOptions,
+      {instrument, rootDir}: CacheKeyOptions,
     ): string {
       return crypto
         .createHash('md5')
@@ -90,7 +90,7 @@ const createTransformer = (options: any) => {
         .update('\0', 'utf8')
         .update(fileData)
         .update('\0', 'utf8')
-        .update(filename)
+        .update(path.relative(rootDir, filename))
         .update('\0', 'utf8')
         .update(configString)
         .update('\0', 'utf8')

@@ -28,6 +28,7 @@ export type TransformOptions = {|
 export type CacheKeyOptions = {|
   instrument: boolean,
   mapCoverage: boolean,
+  rootDir: string,
 |};
 
 export type Transformer = {|
