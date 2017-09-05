@@ -79,3 +79,25 @@ test('outputs coverage report as json', () => {
     );
   }
 });
+
+test('collects coverage from duplicate files avoiding shared cache', () => {
+  const args = [
+    '--coverage',
+    // Ensure the status code is non-zero if super edge case with coverage triggers
+    '--coverageThreshold',
+    '{"global": {"lines": 100}}',
+    '--collectCoverageOnlyFrom',
+    'cached-duplicates/a/identical.js',
+    '--collectCoverageOnlyFrom',
+    'cached-duplicates/b/identical.js',
+    '--',
+    'identical.test.js',
+  ];
+  // Run once to prime the cache
+  runJest(DIR, args);
+
+  // Run for the second time
+  const {stdout, status} = runJest(DIR, args);
+  expect(stdout).toMatchSnapshot();
+  expect(status).toBe(0);
+});
