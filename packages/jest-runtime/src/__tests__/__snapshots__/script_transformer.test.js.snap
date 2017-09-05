@@ -4,6 +4,7 @@ exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] 
 Object {
   "instrument": true,
   "mapCoverage": true,
+  "rootDir": "/",
 }
 `;
 
