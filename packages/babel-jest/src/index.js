@@ -90,6 +90,8 @@ const createTransformer = (options: any) => {
         .update('\0', 'utf8')
         .update(fileData)
         .update('\0', 'utf8')
+        .update(filename)
+        .update('\0', 'utf8')
         .update(configString)
         .update('\0', 'utf8')
         .update(getBabelRC(filename))
