@@ -19,7 +19,10 @@ module.exports = (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
 
   return buffer.reduce((output, {type, message, origin}) => {
     origin = path.relative(root, origin);
-    message = message.split(/\n/).map(line => CONSOLE_INDENT + line).join('\n');
+    message = message
+      .split(/\n/)
+      .map(line => CONSOLE_INDENT + line)
+      .join('\n');
 
     let typeMessage = 'console.' + type;
     if (type === 'warn') {

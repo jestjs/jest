@@ -19,7 +19,10 @@ const testPath = names => {
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  added.concat().reverse().forEach(serializer => addSerializer(serializer));
+  added
+    .concat()
+    .reverse()
+    .forEach(serializer => addSerializer(serializer));
 
   const next = getSerializers();
   expect(next.length).toBe(added.length + prev.length);

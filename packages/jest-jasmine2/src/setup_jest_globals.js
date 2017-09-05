@@ -93,9 +93,12 @@ module.exports = ({
 }: SetupOptions) => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers.concat().reverse().forEach(path => {
-    addSerializer(localRequire(path));
-  });
+  config.snapshotSerializers
+    .concat()
+    .reverse()
+    .forEach(path => {
+      addSerializer(localRequire(path));
+    });
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
   const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});

@@ -202,7 +202,9 @@ class CoverageReporter extends BaseReporter {
       }
     };
 
-    return Promise.all(instrumentation).then(cleanup).catch(cleanup);
+    return Promise.all(instrumentation)
+      .then(cleanup)
+      .catch(cleanup);
   }
 
   _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {

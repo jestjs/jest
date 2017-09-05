@@ -43,14 +43,16 @@ const BlogPageLayout = React.createClass({
                   );
                 })}
               <div className="docs-prevnext">
-                {page > 0 &&
+                {page > 0 && (
                   <a className="docs-prev" href={this.getPageURL(page - 1)}>
                     ← Prev
-                  </a>}
-                {MetadataBlog.files.length > (page + 1) * perPage &&
+                  </a>
+                )}
+                {MetadataBlog.files.length > (page + 1) * perPage && (
                   <a className="docs-next" href={this.getPageURL(page + 1)}>
                     Next →
-                  </a>}
+                  </a>
+                )}
               </div>
             </div>
           </Container>

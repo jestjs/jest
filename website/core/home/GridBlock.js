@@ -36,9 +36,7 @@ class GridBlock extends React.Component {
         {topLeftImage}
         <div className="blockContent">
           {this.renderBlockTitle(block.title)}
-          <Marked>
-            {block.content}
-          </Marked>
+          <Marked>{block.content}</Marked>
         </div>
         {bottomRightImage}
       </div>
@@ -59,11 +57,7 @@ class GridBlock extends React.Component {
 
   renderBlockTitle(title) {
     if (title) {
-      return (
-        <h2>
-          {title}
-        </h2>
-      );
+      return <h2>{title}</h2>;
     } else {
       return null;
     }

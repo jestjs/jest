@@ -56,12 +56,8 @@ const JestIndex = React.createClass({
             className="productShowcaseSection paddingBottom"
             style={{textAlign: 'center'}}
           >
-            <h2>
-              {siteConfig[language].featureCallout.title}
-            </h2>
-            <Marked>
-              {siteConfig[language].featureCallout.content}
-            </Marked>
+            <h2>{siteConfig[language].featureCallout.title}</h2>
+            <Marked>{siteConfig[language].featureCallout.content}</Marked>
           </div>
 
           <Container padding={['bottom', 'top']} background="light">
@@ -106,13 +102,9 @@ const JestIndex = React.createClass({
             <a className="hash-link" href="#use" />
             <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="blockContent">
-                <h2>
-                  {siteConfig[language].belowFold.try.title}
-                </h2>
+                <h2>{siteConfig[language].belowFold.try.title}</h2>
                 <div>
-                  <Marked>
-                    {siteConfig[language].belowFold.try.content}
-                  </Marked>
+                  <Marked>{siteConfig[language].belowFold.try.content}</Marked>
                 </div>
               </div>
               <div className="jest-repl">
@@ -160,9 +152,7 @@ const JestIndex = React.createClass({
                 />
               </div>
               <div className="blockContent">
-                <h2>
-                  {siteConfig[language].belowFold.watch.title}
-                </h2>
+                <h2>{siteConfig[language].belowFold.watch.title}</h2>
                 <div>
                   <Marked>
                     {siteConfig[language].belowFold.watch.content}
@@ -175,9 +165,7 @@ const JestIndex = React.createClass({
           <Container padding={['bottom', 'top']} background="light">
             <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="blockContent">
-                <h2>
-                  {siteConfig[language].belowFold.learn.title}
-                </h2>
+                <h2>{siteConfig[language].belowFold.learn.title}</h2>
                 <div>
                   <Marked>
                     {siteConfig[language].belowFold.learn.content}
@@ -191,15 +179,9 @@ const JestIndex = React.createClass({
           </Container>
 
           <div className="productShowcaseSection paddingBottom">
-            <h2>
-              {siteConfig[language].belowFold.using.title}
-            </h2>
-            <p>
-              {siteConfig[language].belowFold.using.content}
-            </p>
-            <div className="logos">
-              {showcase}
-            </div>
+            <h2>{siteConfig[language].belowFold.using.title}</h2>
+            <p>{siteConfig[language].belowFold.using.content}</p>
+            <div className="logos">{showcase}</div>
             <div className="more-users">
               <a className="button" href="/jest/users.html" target="_self">
                 {siteConfig[language].belowFold.using.button}
