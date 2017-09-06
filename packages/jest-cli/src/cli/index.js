@@ -70,8 +70,11 @@ export const runCLI = async (
     );
 
     if (argv.clearCache) {
-      clearDirectory(configs[0].cacheDirectory);
-      process.stdout.write(`Cleared ${configs[0].cacheDirectory}\n`);
+      configs.map(config => {
+        clearDirectory(config.cacheDirectory);
+        process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
+      });
+
       process.exit(0);
     }
 
