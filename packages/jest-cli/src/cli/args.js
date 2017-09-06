@@ -120,7 +120,7 @@ export const options = {
   clearCache: {
     default: undefined,
     description:
-      'Clear default directory Jest uses for cache and exits.' +
+      'Clears the configured Jest cache directory and then exits.' +
       'Default directory can be found by calling jest --showConfig',
     type: 'boolean',
   },
