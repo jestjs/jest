@@ -2467,7 +2467,7 @@ To have a nested property:
 With a value of:
   <green>2</>
 Received:
-  <red>object</>.a.b.c: <red>{\\"d\\": 1}</>"
+  <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.ttt.d', 1) 1`] = `
@@ -2517,7 +2517,8 @@ To have a nested property:
 With a value of:
   <green>{\\"c\\": 4}</>
 Received:
-  <red>object</>.a: <red>{\\"b\\": {\\"c\\": 5}}</>
+  <red>{\\"c\\": 5}</>
+
 Difference:
 
 <green>- Expected</>
@@ -2539,7 +2540,8 @@ To have a nested property:
 With a value of:
   <green>undefined</>
 Received:
-  <red>object</>.a: <red>{\\"b\\": 3}</>
+  <red>3</>
+
 Difference:
 
   Comparing two different types of values. Expected <green>undefined</> but received <red>number</>."
