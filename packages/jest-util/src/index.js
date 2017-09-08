@@ -8,8 +8,6 @@
  */
 
 import mkdirp from 'mkdirp';
-import fs from 'graceful-fs';
-import path from 'path';
 
 import BufferedConsole from './buffered_console';
 import clearLine from './clear_line';
@@ -32,26 +30,11 @@ const createDirectory = (path: string) => {
   }
 };
 
-const clearDirectory = (directoryPath: string) => {
-  if (fs.existsSync(directoryPath)) {
-    fs.readdirSync(directoryPath).map(file => {
-      const filePath = path.join(directoryPath, file);
-      if (fs.lstatSync(filePath).isDirectory()) {
-        clearDirectory(filePath);
-      } else {
-        fs.unlinkSync(filePath);
-      }
-    });
-    fs.rmdirSync(directoryPath);
-  }
-};
-
 module.exports = {
   BufferedConsole,
   Console,
   FakeTimers,
   NullConsole,
-  clearDirectory,
   clearLine,
   createDirectory,
   formatTestResults,

@@ -15,7 +15,6 @@ import {
   Console,
   clearLine,
   createDirectory,
-  clearDirectory,
   validateCLIOptions,
 } from 'jest-util';
 import {readConfig} from 'jest-config';
@@ -33,6 +32,7 @@ import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
+import rimraf from 'rimraf';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   const argv: Argv = buildArgv(maybeArgv, project);
@@ -71,7 +71,10 @@ export const runCLI = async (
 
     if (argv.clearCache) {
       configs.map(config => {
-        clearDirectory(config.cacheDirectory);
+        rimraf(config.cacheDirectory, [], () => {
+          process.stderr.write(`Unable to clear ${config.cacheDirectory}\n`);
+          process.exit(1);
+        });
         process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
       });
 
