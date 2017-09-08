@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "21.0.0",
+  "version": "21.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -11,9 +11,9 @@
     "callsites": "^2.0.0",
     "chalk": "^2.0.1",
     "graceful-fs": "^4.1.11",
-    "jest-message-util": "^21.0.0",
-    "jest-mock": "^21.0.0",
-    "jest-validate": "^21.0.0",
+    "jest-message-util": "^21.0.2",
+    "jest-mock": "^21.0.2",
+    "jest-validate": "^21.0.2",
     "mkdirp": "^0.5.1"
   }
 }

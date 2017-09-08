@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-node",
-  "version": "21.0.0",
+  "version": "21.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,7 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-mock": "^21.0.0",
-    "jest-util": "^21.0.0"
+    "jest-mock": "^21.0.2",
+    "jest-util": "^21.0.2"
   }
 }
