@@ -535,9 +535,7 @@ const matchers: MatchersObject = {
       : () => {
           const diffString =
             valuePassed && hasEndProp
-              ? diff(value, result.value, {
-                  expand: this.expand,
-                })
+              ? diff(value, result.value, {expand: this.expand})
               : '';
           return (
             matcherHint('.toHaveProperty', 'object', 'path', {
