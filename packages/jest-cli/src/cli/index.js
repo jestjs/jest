@@ -70,13 +70,19 @@ export const runCLI = async (
     );
 
     if (argv.clearCache) {
+      let clearCacheError;
+
       configs.map(config => {
         rimraf(config.cacheDirectory, [], () => {
+          clearCacheError = true;
           process.stderr.write(`Unable to clear ${config.cacheDirectory}\n`);
-          process.exit(1);
         });
         process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
       });
+
+      if (clearCacheError) {
+        process.exit(1);
+      }
 
       process.exit(0);
     }
