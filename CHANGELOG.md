@@ -1,5 +1,14 @@
 ## master
 
+* Take precedence of NODE_PATH when resolving node_modules directories ([#4453](https://github.com/facebook/jest/pull/4453))
+* Fix race condition with --coverage and babel-jest identical file contents edge case ([#4432](https://github.com/facebook/jest/pull/4432))
+* Add extra parameter `--runTestsByPath`. ([#4411](https://github.com/facebook/jest/pull/4411))
+* Upgrade all outdated deps ([#4425](https://github.com/facebook/jest/pull/4425))
+
+# jst 21.0.1
+
+* Remove obsolete error ([#4417](https://github.com/facebook/jest/pull/4417))
+
 ## jest 21.0.0
 
 * Add --changedFilesWithAncestor ([#4070](https://github.com/facebook/jest/pull/4070))
