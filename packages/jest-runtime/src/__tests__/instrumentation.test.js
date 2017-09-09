@@ -9,10 +9,12 @@
 
 'use strict';
 
-jest.mock('vm');
+import vm from 'vm';
+import path from 'path';
+import os from 'os';
+import ScriptTransformer from '../script_transformer';
 
-const path = require('path');
-const os = require('os');
+jest.mock('vm');
 
 const FILE_PATH_TO_INSTRUMENT = path.resolve(
   __dirname,
@@ -20,8 +22,6 @@ const FILE_PATH_TO_INSTRUMENT = path.resolve(
 );
 
 it('instruments files', () => {
-  const vm = require('vm');
-  const ScriptTransformer = require('../script_transformer');
   const config = {
     cache: false,
     cacheDirectory: os.tmpdir(),
