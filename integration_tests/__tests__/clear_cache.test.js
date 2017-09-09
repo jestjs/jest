@@ -12,26 +12,23 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const {cleanup, writeFiles} = require('../utils');
 const runJest = require('../runJest');
 const skipOnWindows = require('../../scripts/skip_on_windows');
+const rimraf = require('rimraf');
 
 const CACHE = path.resolve(os.tmpdir(), 'clear_cache_directory');
-const DIR = path.resolve(os.tmpdir(), 'clear_cache');
 
 skipOnWindows.suite();
 
-beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
-
 describe('jest --clearCache', () => {
-  test('clearing cache results in exit status 0', () => {
-    writeFiles(DIR, {
-      '.watchmanconfig': '',
-      'package.json': '{}',
-    });
+  test('normal run results in cache directory being written', () => {
+    const {status} = runJest('clear_cache', [`--cacheDirectory=${CACHE}`]);
 
-    const {status, stdout, stderr} = runJest(DIR, [
+    expect(fs.existsSync(CACHE)).toBe(true);
+    expect(status).toBe(0);
+  });
+  test('clearCache results in deleted directory and exit status 0', () => {
+    const {status, stdout, stderr} = runJest('clear_cache', [
       '--clearCache',
       `--cacheDirectory=${CACHE}`,
     ]);
