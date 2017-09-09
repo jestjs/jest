@@ -257,7 +257,7 @@ const formatHunks = (
   };
 };
 
-function diffStrings(
+export default function diffStrings(
   a: string,
   b: string,
   options: ?DiffOptions,
@@ -278,5 +278,3 @@ function diffStrings(
     return NO_DIFF_MESSAGE;
   }
 }
-
-module.exports = diffStrings;
