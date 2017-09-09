@@ -28,7 +28,7 @@ const isPropertyNamedSkip = property =>
 const isCallToTestSkipFunction = callee =>
   matchesTestFunction(callee.object) && isPropertyNamedSkip(callee.property);
 
-module.exports = (context: EslintContext) => ({
+export default (context: EslintContext) => ({
   CallExpression(node: CallExpression) {
     const callee = node.callee;
     if (!callee) {

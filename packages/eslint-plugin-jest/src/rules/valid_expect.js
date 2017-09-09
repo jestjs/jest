@@ -17,7 +17,7 @@ import type {EslintContext, CallExpression} from './types';
 
 const expectProperties = ['not', 'resolves', 'rejects'];
 
-module.exports = (context: EslintContext) => {
+export default (context: EslintContext) => {
   return {
     CallExpression(node: CallExpression) {
       const calleeName = node.callee.name;

@@ -12,8 +12,8 @@
 
 'use strict';
 
-const RuleTester = require('eslint').RuleTester;
-const rules = require('../../').rules;
+import {RuleTester} from 'eslint';
+import {rules} from '../../';
 
 const ruleTester = new RuleTester();
 const expectedErrorMessage = 'Unexpected focused test.';
