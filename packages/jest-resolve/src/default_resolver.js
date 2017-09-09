@@ -21,7 +21,10 @@ type ResolverOptions = {|
   rootDir: ?Path,
 |};
 
-function defaultResolver(path: Path, options: ResolverOptions): Path {
+export default function defaultResolver(
+  path: Path,
+  options: ResolverOptions,
+): Path {
   const resolve = options.browser ? browserResolve.sync : resolveSync;
 
   return resolve(path, {
@@ -32,8 +35,6 @@ function defaultResolver(path: Path, options: ResolverOptions): Path {
     rootDir: options.rootDir,
   });
 }
-
-module.exports = defaultResolver;
 
 /*
  * Adapted from: https://github.com/substack/node-resolve
