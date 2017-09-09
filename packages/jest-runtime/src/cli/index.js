@@ -17,6 +17,7 @@ import chalk from 'chalk';
 import yargs from 'yargs';
 import {Console, setGlobal, validateCLIOptions} from 'jest-util';
 import {readConfig} from 'jest-config';
+// eslint-disable-next-line import/default
 import Runtime from '../';
 import * as args from './args';
 

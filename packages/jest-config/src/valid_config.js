@@ -11,9 +11,9 @@
 import type {InitialOptions} from 'types/Config';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
-import constants from './constants';
+import {NODE_MODULES} from './constants';
 
-const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
+const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 export default ({
   automock: false,

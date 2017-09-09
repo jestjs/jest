@@ -8,12 +8,13 @@
  * @flow
  */
 
-import {cleanup, writeFiles} from '../../../../integration_tests/utils';
 import os from 'os';
 import path from 'path';
 import resolveConfigPath from '../resolve_config_path';
 
 import skipOnWindows from '../../../../scripts/skip_on_windows';
+
+const {cleanup, writeFiles} = require('../../../../integration_tests/utils');
 
 skipOnWindows.suite();
 

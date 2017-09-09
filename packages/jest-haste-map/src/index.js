@@ -37,9 +37,13 @@ import HasteFS from './haste_fs';
 import HasteModuleMap from './module_map';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
-import nodeCrawl from './crawlers/node';
 import normalizePathSep from './lib/normalize_path_sep';
+
+// eslint-disable-next-line import/default
+import nodeCrawl from './crawlers/node';
+// eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
+// eslint-disable-next-line import/default
 import worker from './worker';
 
 type Options = {

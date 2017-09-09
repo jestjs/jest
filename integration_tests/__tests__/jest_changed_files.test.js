@@ -10,15 +10,15 @@
 
 'use strict';
 
-import {cleanup, run, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
 import {
   findRepos,
   getChangedFilesForRoots,
 } from '../../packages/jest-changed-files/src';
-
 const skipOnWindows = require('../../scripts/skip_on_windows');
+const {cleanup, run, writeFiles} = require('../utils');
+
 skipOnWindows.suite();
 
 const DIR = path.resolve(os.tmpdir(), 'jest_changed_files_test_dir');

@@ -11,9 +11,10 @@
 'use strict';
 
 import runJest from '../runJest';
-import {cleanup, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
+
+const {cleanup, writeFiles} = require('../utils');
 
 const skipOnWindows = require('../../scripts/skip_on_windows');
 const DIR = path.resolve(os.tmpdir(), 'find_related_tests_test');

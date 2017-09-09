@@ -13,7 +13,7 @@
 'use strict';
 
 import {RuleTester} from 'eslint';
-import {rules} from '../../';
+const {rules} = require('../../');
 
 const ruleTester = new RuleTester();
 const expectedErrorMessage = 'Unexpected disabled test.';

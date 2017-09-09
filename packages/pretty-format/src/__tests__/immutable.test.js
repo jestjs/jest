@@ -12,14 +12,12 @@
 
 import React from 'react';
 import Immutable from 'immutable';
-import prettyFormat from '../';
-const {Immutable: ImmutablePlugin, ReactElement} = prettyFormat.plugins;
-import expectUtil from './expect_util';
+import {getPrettyPrint} from './expect_util';
 
-const toPrettyPrintTo = expectUtil.getPrettyPrint([
-  ReactElement,
-  ImmutablePlugin,
-]);
+const {plugins: prettyPlugins} = require('../');
+const {Immutable: ImmutablePlugin, ReactElement} = prettyPlugins;
+
+const toPrettyPrintTo = getPrettyPrint([ReactElement, ImmutablePlugin]);
 
 const expect = global.expect;
 expect.extend({toPrettyPrintTo});

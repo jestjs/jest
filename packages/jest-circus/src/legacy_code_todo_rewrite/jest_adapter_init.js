@@ -18,6 +18,7 @@ import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
+// eslint-disable-next-line import/default
 import globals from '../index';
 
 export const initialize = ({

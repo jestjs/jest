@@ -10,8 +10,8 @@
 
 import path from 'path';
 
-exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
-exports.DEFAULT_JS_PATTERN = '^.+\\.jsx?$';
-exports.DEFAULT_REPORTER_LABEL = 'default';
-exports.PACKAGE_JSON = 'package.json';
-exports.JEST_CONFIG = 'jest.config.js';
+export const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+export const DEFAULT_JS_PATTERN = '^.+\\.jsx?$';
+export const DEFAULT_REPORTER_LABEL = 'default';
+export const PACKAGE_JSON = 'package.json';
+export const JEST_CONFIG = 'jest.config.js';

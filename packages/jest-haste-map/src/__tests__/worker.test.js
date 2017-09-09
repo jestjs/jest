@@ -14,7 +14,8 @@ import fs from 'graceful-fs';
 import skipOnWindows from '../../../../scripts/skip_on_windows';
 
 import H from '../constants';
-import worker from '../worker';
+
+const worker = require('../worker');
 
 let createCallback;
 let mockFs;
