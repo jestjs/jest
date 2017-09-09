@@ -81,4 +81,4 @@ const handler: EventHandler = (event, state): void => {
   }
 };
 
-module.exports = handler;
+export default handler;

@@ -20,7 +20,7 @@ import {getTestID} from '../utils';
 import run from '../run';
 import globals from '../index';
 
-const initialize = ({
+export const initialize = ({
   config,
   globalConfig,
   localRequire,
@@ -58,7 +58,7 @@ const initialize = ({
   return {globals, snapshotState};
 };
 
-const runAndTransformResultsToJestFormat = async ({
+export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
   testPath,
@@ -183,9 +183,4 @@ const _addSuppressedErrors = (test: TestEntry) => {
     test.status = 'fail';
     test.errors = test.errors.concat(suppressedErrors);
   }
-};
-
-module.exports = {
-  initialize,
-  runAndTransformResultsToJestFormat,
 };
