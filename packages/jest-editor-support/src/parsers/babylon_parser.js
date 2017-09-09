@@ -18,7 +18,7 @@ export type BabylonParserResult = {
   itBlocks: Array<ItBlock>,
 };
 
-const parse = (file: string): BabylonParserResult => {
+export const parse = (file: string): BabylonParserResult => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
 
@@ -172,8 +172,4 @@ const parse = (file: string): BabylonParserResult => {
     expects,
     itBlocks,
   };
-};
-
-module.exports = {
-  parse,
 };

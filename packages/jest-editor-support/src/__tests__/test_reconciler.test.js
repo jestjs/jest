@@ -8,9 +8,10 @@
  * @flow
  */
 
-const fs = require('fs');
-const path = require('path');
-const TestReconciler = require('../test_reconciler');
+import fs from 'fs';
+import path from 'path';
+import TestReconciler from '../test_reconciler';
+
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 
 const reconcilerWithFile = (file: string): TestReconciler => {

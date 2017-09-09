@@ -20,7 +20,7 @@ import {createProcess} from './Process';
 // This class represents the running process, and
 // passes out events when it understands what data is being
 // pass sent out of the process
-module.exports = class Runner extends EventEmitter {
+export default class Runner extends EventEmitter {
   debugprocess: ChildProcess;
   outputPath: string;
   workspace: ProjectWorkspace;
@@ -108,4 +108,4 @@ module.exports = class Runner extends EventEmitter {
     }
     delete this.debugprocess;
   }
-};
+}

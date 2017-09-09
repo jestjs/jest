@@ -10,20 +10,14 @@
 
 import type {Location} from '../types';
 
-class Node {
+export class Node {
   start: Location;
   end: Location;
   file: string;
 }
 
-class Expect extends Node {}
+export class Expect extends Node {}
 
-class ItBlock extends Node {
+export class ItBlock extends Node {
   name: string;
 }
-
-module.exports = {
-  Expect,
-  ItBlock,
-  Node,
-};

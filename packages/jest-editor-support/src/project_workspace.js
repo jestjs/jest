@@ -11,7 +11,7 @@
 /**
  * Represents the project that the extension is running on and it's state
  */
-module.exports = class ProjectWorkspace {
+export default class ProjectWorkspace {
   /**
    * The path to the root of the project's workspace
    *
@@ -58,4 +58,4 @@ module.exports = class ProjectWorkspace {
     this.pathToConfig = pathToConfig;
     this.localJestMajorVersion = localJestMajorVersion;
   }
-};
+}

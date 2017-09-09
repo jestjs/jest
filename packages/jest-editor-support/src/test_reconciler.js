@@ -28,8 +28,7 @@ import path from 'path';
  *  This class represents the state between runs, keeping track of passes/fails
  *  at a file level, generating useful error messages and providing a nice API.
  */
-
-module.exports = class TestReconciler {
+export default class TestReconciler {
   fileStatuses: any;
   fails: Array<TestFileAssertionStatus>;
   passes: Array<TestFileAssertionStatus>;
@@ -178,4 +177,4 @@ module.exports = class TestReconciler {
     }
     return assertion;
   }
-};
+}

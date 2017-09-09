@@ -18,7 +18,7 @@ import ProjectWorkspace from './project_workspace';
  * @param {string[]} args
  * @returns {ChildProcess}
  */
-module.exports.createProcess = (
+export const createProcess = (
   workspace: ProjectWorkspace,
   args: Array<string>,
 ): ChildProcess => {

@@ -33,7 +33,7 @@ type ConfigRepresentation = {
   testMatch: Array<Glob>,
 };
 
-module.exports = class Settings extends EventEmitter {
+export default class Settings extends EventEmitter {
   getConfigProcess: ChildProcess;
   jestVersionMajor: number | null;
   _createProcess: (
@@ -76,4 +76,4 @@ module.exports = class Settings extends EventEmitter {
       completed();
     });
   }
-};
+}
