@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {parse} = require('../type_script_parser');
-const {parserTests} = require('../../../../fixtures/parser_tests');
+import {parse} from '../type_script_parser';
+import {parserTests} from '../../../../fixtures/parser_tests';
 
 parserTests(parse);
