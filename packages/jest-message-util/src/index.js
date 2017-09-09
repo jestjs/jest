@@ -50,7 +50,7 @@ const trimPaths = string =>
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
-const formatExecError = (
+export const formatExecError = (
   testResult: TestResult,
   config: StackTraceConfig,
   options: StackTraceOptions,
@@ -148,7 +148,7 @@ const formatPaths = (
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-const formatStackTrace = (
+export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
@@ -166,7 +166,7 @@ const formatStackTrace = (
     .join('\n');
 };
 
-const formatResultsErrors = (
+export const formatResultsErrors = (
   testResults: Array<AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
@@ -212,7 +212,7 @@ const formatResultsErrors = (
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
-const separateMessageFromStack = (content: string) => {
+export const separateMessageFromStack = (content: string) => {
   if (!content) {
     return {message: '', stack: ''};
   }
@@ -226,11 +226,4 @@ const separateMessageFromStack = (content: string) => {
     message = message.substr(ERROR_TEXT.length);
   }
   return {message, stack};
-};
-
-module.exports = {
-  formatExecError,
-  formatResultsErrors,
-  formatStackTrace,
-  separateMessageFromStack,
 };
