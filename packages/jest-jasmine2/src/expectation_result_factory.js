@@ -40,7 +40,7 @@ type Options = {
   message?: string,
 };
 
-function expectationResultFactory(options: Options) {
+export default function expectationResultFactory(options: Options) {
   const message = messageFormatter(options);
   const stack = stackFormatter(options, message);
 
@@ -64,5 +64,3 @@ function expectationResultFactory(options: Options) {
     stack,
   };
 }
-
-module.exports = expectationResultFactory;

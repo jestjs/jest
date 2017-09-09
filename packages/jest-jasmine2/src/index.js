@@ -17,7 +17,7 @@ import type Runtime from 'jest-runtime';
 
 import path from 'path';
 import JasmineReporter from './reporter';
-import jasmineAsync from './jasmine_async';
+import {install as jasmineAsyncInstall} from './jasmine_async';
 
 const JASMINE = require.resolve('./jasmine/jasmine_light.js');
 
@@ -42,7 +42,7 @@ async function jasmine2(
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
 
-  jasmineAsync.install(environment.global);
+  jasmineAsyncInstall(environment.global);
 
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
@@ -75,18 +75,20 @@ async function jasmine2(
 
   env.addReporter(reporter);
 
-  runtime.requireInternalModule(path.resolve(__dirname, './jest_expect.js'))({
-    expand: globalConfig.expand,
-  });
+  runtime
+    .requireInternalModule(path.resolve(__dirname, './jest_expect.js'))
+    .default({
+      expand: globalConfig.expand,
+    });
 
-  const snapshotState: SnapshotState = runtime.requireInternalModule(
-    path.resolve(__dirname, './setup_jest_globals.js'),
-  )({
-    config,
-    globalConfig,
-    localRequire: runtime.requireModule.bind(runtime),
-    testPath,
-  });
+  const snapshotState: SnapshotState = runtime
+    .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))
+    .default({
+      config,
+      globalConfig,
+      localRequire: runtime.requireModule.bind(runtime),
+      testPath,
+    });
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);

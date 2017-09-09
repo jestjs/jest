@@ -35,7 +35,7 @@ type SpecResult = {
 
 type Microseconds = number;
 
-class Jasmine2Reporter {
+export default class Jasmine2Reporter {
   _testResults: Array<AssertionResult>;
   _globalConfig: GlobalConfig;
   _config: ProjectConfig;
@@ -172,5 +172,3 @@ class Jasmine2Reporter {
     return results;
   }
 }
-
-module.exports = Jasmine2Reporter;

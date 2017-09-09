@@ -8,6 +8,4 @@
  * @flow
  */
 
-class ExpectationFailed extends Error {}
-
-module.exports = ExpectationFailed;
+export default class ExpectationFailed extends Error {}

@@ -43,7 +43,7 @@ import SpyRegistry from './spy_registry';
 import Suite from './Suite';
 import Timer from './Timer';
 
-exports.create = function() {
+export const create = function() {
   const j$ = {};
 
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
@@ -66,6 +66,7 @@ exports.create = function() {
   return j$;
 };
 
+// Interface is a reserved word in strict mode, so can't export it as ESM
 exports.interface = function(jasmine: Jasmine, env: any) {
   const jasmineInterface = {
     describe(description: string, specDefinitions: Function) {

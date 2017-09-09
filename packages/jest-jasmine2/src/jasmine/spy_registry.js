@@ -53,7 +53,7 @@ function isSpy(putativeSpy) {
 
 const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 
-function SpyRegistry(options: Object) {
+export default function SpyRegistry(options: Object) {
   options = options || {};
   const currentSpies =
     options.currentSpies ||
@@ -138,5 +138,3 @@ function SpyRegistry(options: Object) {
     }
   };
 }
-
-module.exports = SpyRegistry;

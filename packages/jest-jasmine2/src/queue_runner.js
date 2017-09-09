@@ -25,7 +25,7 @@ type QueueableFn = {
   timeout?: () => number,
 };
 
-function queueRunner(options: Options) {
+export default function queueRunner(options: Options) {
   const token = new PCancelable((onCancel, resolve) => {
     onCancel(resolve);
   });
@@ -82,5 +82,3 @@ function queueRunner(options: Options) {
     then: result.then.bind(result),
   };
 }
-
-module.exports = queueRunner;

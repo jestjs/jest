@@ -11,7 +11,7 @@
 
 jest.useFakeTimers();
 
-const pTimeout = require('../p_timeout');
+import pTimeout from '../p_timeout';
 
 describe('pTimeout', () => {
   it('calls `clearTimeout` and resolves when `promise` resolves.', async () => {

@@ -36,7 +36,7 @@ import ExpectationFailed from '../expectation_failed';
 
 import expectationResultFactory from '../expectation_result_factory';
 
-function Spec(attrs: Object) {
+export default function Spec(attrs: Object) {
   this.resultCallback = attrs.resultCallback || function() {};
   this.id = attrs.id;
   this.description = attrs.description || '';
@@ -133,7 +133,7 @@ Spec.prototype.onException = function onException(error) {
   }
 
   if (error instanceof require('assert').AssertionError) {
-    const assertionErrorMessage = require('../assert_support');
+    const assertionErrorMessage = require('../assert_support').default;
     error = assertionErrorMessage(error, {expand: this.expand});
   }
 
@@ -210,5 +210,3 @@ Spec.isPendingSpecException = function(e) {
     e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
   );
 };
-
-module.exports = Spec;

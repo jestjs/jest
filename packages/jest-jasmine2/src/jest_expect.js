@@ -24,7 +24,7 @@ type JasmineMatcher = {
 };
 type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
-module.exports = (config: {expand: boolean}) => {
+export default (config: {expand: boolean}) => {
   global.expect = expect;
   expect.setState({expand: config.expand});
   expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});

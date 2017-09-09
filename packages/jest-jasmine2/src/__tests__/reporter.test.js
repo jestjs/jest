@@ -9,7 +9,7 @@
 
 'use strict';
 
-const JasmineReporter = require('../reporter');
+import JasmineReporter from '../reporter';
 
 describe('Jasmine2Reporter', () => {
   let reporter;

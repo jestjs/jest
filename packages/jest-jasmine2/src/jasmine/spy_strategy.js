@@ -32,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
-function SpyStrategy(options: Object) {
+export default function SpyStrategy(options: Object) {
   options = options || {};
 
   const identity = options.name || 'unknown';
@@ -91,5 +91,3 @@ function SpyStrategy(options: Object) {
     return getSpy();
   };
 }
-
-module.exports = SpyStrategy;

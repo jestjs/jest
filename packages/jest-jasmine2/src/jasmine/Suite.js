@@ -36,7 +36,7 @@ import ExpectationFailed from '../expectation_failed';
 
 import expectationResultFactory from '../expectation_result_factory';
 
-function Suite(attrs: Object) {
+export default function Suite(attrs: Object) {
   this.id = attrs.id;
   this.parentSuite = attrs.parentSuite;
   this.description = attrs.description;
@@ -189,5 +189,3 @@ function isAfterAll(children) {
 function isFailure(args) {
   return !args[0];
 }
-
-module.exports = Suite;
