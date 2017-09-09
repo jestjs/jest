@@ -19,7 +19,7 @@ const deprecationMessage = (message: string, options: ValidationOptions) => {
   logValidationWarning(name, message, comment);
 };
 
-const deprecationWarning = (
+export const deprecationWarning = (
   config: Object,
   option: string,
   deprecatedOptions: Object,
@@ -32,8 +32,4 @@ const deprecationWarning = (
   }
 
   return false;
-};
-
-module.exports = {
-  deprecationWarning,
 };

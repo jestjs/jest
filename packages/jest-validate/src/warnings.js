@@ -18,7 +18,7 @@ import {
   WARNING,
 } from './utils';
 
-const unknownOptionWarning = (
+export const unknownOptionWarning = (
   config: Object,
   exampleConfig: Object,
   option: string,
@@ -39,8 +39,4 @@ const unknownOptionWarning = (
   const name = (options.title && options.title.warning) || WARNING;
 
   logValidationWarning(name, message, comment);
-};
-
-module.exports = {
-  unknownOptionWarning,
 };

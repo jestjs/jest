@@ -10,12 +10,13 @@
 
 const toString = Object.prototype.toString;
 
-const validationCondition = (option: any, validOption: any): boolean => {
+export default function validationCondition(
+  option: any,
+  validOption: any,
+): boolean {
   return (
     option === null ||
     option === undefined ||
     toString.call(option) === toString.call(validOption)
   );
-};
-
-module.exports = validationCondition;
+}

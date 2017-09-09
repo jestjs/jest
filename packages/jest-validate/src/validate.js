@@ -64,4 +64,4 @@ const validate = (config: Object, options: ValidationOptions) => {
   };
 };
 
-module.exports = validate;
+export default validate;
