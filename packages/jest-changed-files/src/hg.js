@@ -70,4 +70,4 @@ const adapter: SCMAdapter = {
   },
 };
 
-module.exports = adapter;
+export default adapter;
