@@ -10,7 +10,7 @@
 
 'use strict';
 
-const highlight = require('../highlight');
+import highlight from '../highlight';
 
 const rootDir = '/Users/foo/dev/jest';
 const rawPath = rootDir + '/jest-cli/__tests__/watch.test.js';

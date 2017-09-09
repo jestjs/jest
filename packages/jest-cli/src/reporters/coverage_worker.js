@@ -43,6 +43,7 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
+// Cannot use ESM export as worker-farm chokes
 module.exports = (
   {config, globalConfig, path}: CoverageWorkerData,
   callback: WorkerCallback,

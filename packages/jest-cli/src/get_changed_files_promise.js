@@ -12,7 +12,7 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import {getChangedFilesForRoots} from 'jest-changed-files';
 
-module.exports = (
+export default (
   globalConfig: GlobalConfig,
   configs: Array<ProjectConfig>,
 ): ?ChangedFilesPromise => {

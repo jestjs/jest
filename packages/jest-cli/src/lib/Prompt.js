@@ -12,7 +12,7 @@ import type {ScrollOptions} from './scroll_list';
 
 import {KEYS} from '../constants';
 
-class Prompt {
+export default class Prompt {
   _entering: boolean;
   _value: string;
   _onChange: Function;
@@ -111,5 +111,3 @@ class Prompt {
     return this._entering;
   }
 }
-
-module.exports = Prompt;

@@ -18,10 +18,7 @@ type Options = {
   mode?: 'watch' | 'watchAll',
 };
 
-module.exports = (
-  globalConfig: GlobalConfig,
-  options: Options,
-): GlobalConfig => {
+export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
   // $FlowFixMe Object.assign
   const newConfig: GlobalConfig = Object.assign({}, globalConfig);
 

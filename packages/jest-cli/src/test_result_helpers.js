@@ -14,7 +14,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-const makeEmptyAggregatedTestResult = (): AggregatedResult => {
+export const makeEmptyAggregatedTestResult = (): AggregatedResult => {
   return {
     numFailedTestSuites: 0,
     numFailedTests: 0,
@@ -47,7 +47,7 @@ const makeEmptyAggregatedTestResult = (): AggregatedResult => {
   };
 };
 
-const buildFailureTestResult = (
+export const buildFailureTestResult = (
   testPath: string,
   err: SerializableError,
 ): TestResult => {
@@ -79,7 +79,7 @@ const buildFailureTestResult = (
 };
 
 // Add individual test result to an aggregated test result
-const addResult = (
+export const addResult = (
   aggregatedResults: AggregatedResult,
   testResult: TestResult,
 ): void => {
@@ -128,10 +128,4 @@ const addResult = (
     testResult.snapshot.matched +
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;
-};
-
-module.exports = {
-  addResult,
-  buildFailureTestResult,
-  makeEmptyAggregatedTestResult,
 };

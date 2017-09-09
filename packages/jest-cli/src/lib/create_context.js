@@ -14,7 +14,7 @@ import type {HasteMap} from 'types/HasteMap';
 
 import Runtime from 'jest-runtime';
 
-module.exports = (
+export default (
   config: ProjectConfig,
   {hasteFS, moduleMap}: HasteMap,
 ): Context => ({

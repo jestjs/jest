@@ -13,7 +13,7 @@ import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 import {createInstrumenter} from 'istanbul-lib-instrument';
 import Runtime from 'jest-runtime';
 
-module.exports = function(
+export default function(
   source: string,
   filename: Path,
   globalConfig: GlobalConfig,
@@ -40,4 +40,4 @@ module.exports = function(
   } else {
     return null;
   }
-};
+}

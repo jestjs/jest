@@ -9,9 +9,9 @@
  */
 'use strict';
 
-const os = require('os');
+import generateEmptyCoverage from '../generate_empty_coverage';
 
-const generateEmptyCoverage = require('../generate_empty_coverage');
+const os = require('os');
 const {makeGlobalConfig, makeProjectConfig} = require('../../../../test_utils');
 
 jest.mock('jest-runtime', () => {

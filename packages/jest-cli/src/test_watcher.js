@@ -14,7 +14,7 @@ type State = {|
   interrupted: boolean,
 |};
 
-class TestWatcher extends EventEmitter {
+export default class TestWatcher extends EventEmitter {
   state: State;
   _isWatchMode: boolean;
 
@@ -37,5 +37,3 @@ class TestWatcher extends EventEmitter {
     return this._isWatchMode;
   }
 }
-
-module.exports = TestWatcher;

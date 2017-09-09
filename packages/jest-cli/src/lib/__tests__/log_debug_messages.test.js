@@ -8,7 +8,7 @@
 
 'use strict';
 
-const logDebugMessages = require('../log_debug_messages');
+import logDebugMessages from '../log_debug_messages';
 
 jest.mock('../../../package.json', () => ({version: 123}));
 

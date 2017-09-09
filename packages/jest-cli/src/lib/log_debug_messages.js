@@ -12,17 +12,15 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 import {version as VERSION} from '../../package.json';
 
-const logDebugMessages = (
+export default function logDebugMessages(
   globalConfig: GlobalConfig,
   configs: Array<ProjectConfig>,
   outputStream: stream$Writable | tty$WriteStream,
-): void => {
+): void {
   const output = {
     configs,
     globalConfig,
     version: VERSION,
   };
   outputStream.write(JSON.stringify(output, null, '  ') + '\n');
-};
-
-module.exports = logDebugMessages;
+}

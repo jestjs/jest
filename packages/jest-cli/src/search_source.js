@@ -63,7 +63,7 @@ const toTests = (context, tests) =>
     path,
   }));
 
-class SearchSource {
+export default class SearchSource {
   _context: Context;
   _rootPattern: RegExp;
   _testIgnorePattern: ?RegExp;
@@ -217,5 +217,3 @@ class SearchSource {
     }
   }
 }
-
-module.exports = SearchSource;

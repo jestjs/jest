@@ -30,7 +30,7 @@ const TITLE_BULLET = chalk.bold('\u25cf ');
 
 const isInteractive = process.stdin.isTTY && !isCI;
 
-class DefaultReporter extends BaseReporter {
+export default class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
   _globalConfig: GlobalConfig;
@@ -200,5 +200,3 @@ class DefaultReporter extends BaseReporter {
     }
   }
 }
-
-module.exports = DefaultReporter;

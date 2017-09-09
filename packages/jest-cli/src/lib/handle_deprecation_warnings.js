@@ -12,7 +12,7 @@ import chalk from 'chalk';
 
 import {KEYS} from '../constants';
 
-module.exports = (
+export default (
   pipe: stream$Writable | tty$WriteStream,
   stdin: stream$Readable | tty$ReadStream = process.stdin,
 ) => {

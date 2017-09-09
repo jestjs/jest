@@ -25,7 +25,7 @@ const usage = (entity: string) =>
 
 const usageRows = usage('').split('\n').length;
 
-module.exports = class PatternPrompt {
+export default class PatternPrompt {
   _pipe: stream$Writable | tty$WriteStream;
   _prompt: Prompt;
   _entityName: string;
@@ -58,4 +58,4 @@ module.exports = class PatternPrompt {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
   }
-};
+}

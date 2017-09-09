@@ -9,7 +9,7 @@
 
 'use strict';
 
-const getSnapshotStatus = require('../get_snapshot_status');
+import getSnapshotStatus from '../get_snapshot_status';
 
 test('Retrieves the snapshot status', () => {
   const snapshotResult = {

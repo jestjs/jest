@@ -13,7 +13,7 @@ import type {Argv} from 'types/Argv';
 import {isJSONString} from 'jest-config';
 import isCI from 'is-ci';
 
-const check = (argv: Argv) => {
+export const check = (argv: Argv) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
@@ -51,10 +51,11 @@ const check = (argv: Argv) => {
   return true;
 };
 
-const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
-const docs = 'Documentation: https://facebook.github.io/jest/';
+export const usage =
+  'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
+export const docs = 'Documentation: https://facebook.github.io/jest/';
 
-const options = {
+export const options = {
   all: {
     default: undefined,
     description:
@@ -556,11 +557,4 @@ const options = {
       '--no-watchman.',
     type: 'boolean',
   },
-};
-
-module.exports = {
-  check,
-  docs,
-  options,
-  usage,
 };

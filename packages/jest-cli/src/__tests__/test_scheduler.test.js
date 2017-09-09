@@ -9,8 +9,8 @@
 
 'use strict';
 
-const TestScheduler = require('../test_scheduler');
-const SummaryReporter = require('../reporters/summary_reporter');
+import TestScheduler from '../test_scheduler';
+import SummaryReporter from '../reporters/summary_reporter';
 
 jest.mock('../reporters/default_reporter');
 

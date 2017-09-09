@@ -1,4 +1,3 @@
-const pluralize = (word: string, count: number, ending: string) =>
-  `${count} ${word}${count === 1 ? '' : ending}`;
-
-module.exports = pluralize;
+export default function pluralize(word: string, count: number, ending: string) {
+  return `${count} ${word}${count === 1 ? '' : ending}`;
+}

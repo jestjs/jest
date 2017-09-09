@@ -115,14 +115,6 @@ module.exports = {
       },
     },
     {
-      files: ['packages/jest-cli/**/*'],
-      rules: {
-        // These has to be disabled until the whole code base is converted to ESM
-        'import/default': 0,
-        'import/named': 0,
-      },
-    },
-    {
       files: [
         'website/**',
         '**/__tests__/**',

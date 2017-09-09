@@ -23,7 +23,7 @@ type SummaryOptions = {|
 
 const PROGRESS_BAR_WIDTH = 40;
 
-const printDisplayName = (config: ProjectConfig) => {
+export const printDisplayName = (config: ProjectConfig) => {
   const {displayName} = config;
 
   if (displayName) {
@@ -35,7 +35,7 @@ const printDisplayName = (config: ProjectConfig) => {
   return '';
 };
 
-const trimAndFormatPath = (
+export const trimAndFormatPath = (
   pad: number,
   config: ProjectConfig | GlobalConfig,
   testPath: Path,
@@ -72,7 +72,7 @@ const trimAndFormatPath = (
   );
 };
 
-const formatTestPath = (
+export const formatTestPath = (
   config: GlobalConfig | ProjectConfig,
   testPath: Path,
 ) => {
@@ -80,7 +80,10 @@ const formatTestPath = (
   return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const relativePath = (config: GlobalConfig | ProjectConfig, testPath: Path) => {
+export const relativePath = (
+  config: GlobalConfig | ProjectConfig,
+  testPath: Path,
+) => {
   // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
   // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback
   // to config.rootDir. (Also, some unit just use config.rootDir, which is ok)
@@ -90,10 +93,10 @@ const relativePath = (config: GlobalConfig | ProjectConfig, testPath: Path) => {
   return {basename, dirname};
 };
 
-const pluralize = (word: string, count: number) =>
+export const pluralize = (word: string, count: number) =>
   `${count} ${word}${count === 1 ? '' : 's'}`;
 
-const getSummary = (
+export const getSummary = (
   aggregatedResults: AggregatedResult,
   options?: SummaryOptions,
 ) => {
@@ -188,7 +191,7 @@ const renderTime = (runTime, estimatedTime, width) => {
 
 // word-wrap a string that contains ANSI escape sequences.
 // ANSI escape sequences do not add to the string length.
-const wrapAnsiString = (string: string, terminalWidth: number) => {
+export const wrapAnsiString = (string: string, terminalWidth: number) => {
   if (terminalWidth === 0) {
     // if the terminal width is zero, don't bother word-wrapping
     return string;
@@ -247,14 +250,4 @@ const wrapAnsiString = (string: string, terminalWidth: number) => {
       [''],
     )
     .join('\n');
-};
-
-module.exports = {
-  formatTestPath,
-  getSummary,
-  pluralize,
-  printDisplayName,
-  relativePath,
-  trimAndFormatPath,
-  wrapAnsiString,
 };

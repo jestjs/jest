@@ -1,7 +1,10 @@
 import chalk from 'chalk';
 import pluralize from './pluralize';
 
-const getNoTestFoundVerbose = (testRunData, globalConfig): string => {
+export default function getNoTestFoundVerbose(
+  testRunData,
+  globalConfig,
+): string {
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || {};
     const config = testRun.context.config;
@@ -49,6 +52,4 @@ const getNoTestFoundVerbose = (testRunData, globalConfig): string => {
     '\n' +
     dataMessage
   );
-};
-
-module.exports = getNoTestFoundVerbose;
+}

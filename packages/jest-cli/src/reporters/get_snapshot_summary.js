@@ -21,7 +21,7 @@ const SNAPSHOT_REMOVED = chalk.bold.red;
 const SNAPSHOT_SUMMARY = chalk.bold;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 
-module.exports = (
+export default (
   snapshots: SnapshotSummary,
   updateCommand: string,
 ): Array<string> => {
