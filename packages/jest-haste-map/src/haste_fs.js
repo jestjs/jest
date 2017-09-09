@@ -15,7 +15,7 @@ import path from 'path';
 import micromatch from 'micromatch';
 import H from './constants';
 
-class HasteFS {
+export default class HasteFS {
   _files: FileData;
 
   constructor(files: FileData) {
@@ -62,5 +62,3 @@ class HasteFS {
     return files;
   }
 }
-
-module.exports = HasteFS;

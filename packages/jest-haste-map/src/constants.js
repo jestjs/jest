@@ -17,7 +17,7 @@
  * This constant key map allows to keep the map smaller without having to build
  * a custom serialization library.
  */
-module.exports = {
+export default {
   /* file map attributes */
   ID: 0,
   MTIME: 1,

@@ -40,6 +40,7 @@ const formatError = (error: string | Error): SerializableError => {
   };
 };
 
+// Cannot be ESM export or worker-farm is confused
 module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
   if (
     data.hasteImplModulePath &&

@@ -10,13 +10,9 @@
 
 'use strict';
 
-let getPlatformExtension;
+import getPlatformExtension from '../get_platform_extension';
 
 describe('getPlatformExtension', () => {
-  beforeEach(() => {
-    getPlatformExtension = require('../get_platform_extension');
-  });
-
   it('should get platform ext', () => {
     expect(getPlatformExtension('a.ios.js')).toBe('ios');
     expect(getPlatformExtension('a.android.js')).toBe('android');
