@@ -13,7 +13,7 @@ import type {ConsoleBuffer} from 'types/Console';
 import path from 'path';
 import chalk from 'chalk';
 
-module.exports = (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
+export default (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 

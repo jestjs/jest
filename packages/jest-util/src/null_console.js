@@ -10,7 +10,7 @@
 
 import Console from './Console';
 
-class NullConsole extends Console {
+export default class NullConsole extends Console {
   assert() {}
   dir() {}
   error() {}
@@ -21,5 +21,3 @@ class NullConsole extends Console {
   trace() {}
   warn() {}
 }
-
-module.exports = NullConsole;

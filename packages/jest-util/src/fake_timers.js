@@ -60,7 +60,7 @@ type TimerAPI = {
 
 const MS_IN_A_YEAR = 31536000000;
 
-class FakeTimers {
+export default class FakeTimers {
   _cancelledImmediates: {[key: TimerID]: boolean};
   _cancelledTicks: {[key: TimerID]: boolean};
   _config: ProjectConfig;
@@ -532,5 +532,3 @@ class FakeTimers {
     }
   }
 }
-
-module.exports = FakeTimers;

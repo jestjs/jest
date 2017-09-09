@@ -24,7 +24,7 @@ function deepCopy(obj) {
   return newObj;
 }
 
-module.exports = (global: Global, globals: ConfigGlobals) => {
+export default (global: Global, globals: ConfigGlobals) => {
   // Forward some APIs
   global.Buffer = Buffer;
 

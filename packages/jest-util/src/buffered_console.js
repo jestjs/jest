@@ -14,7 +14,7 @@ import {Console} from 'console';
 import {format} from 'util';
 import callsites from 'callsites';
 
-class BufferedConsole extends Console {
+export default class BufferedConsole extends Console {
   _buffer: ConsoleBuffer;
 
   constructor() {
@@ -55,5 +55,3 @@ class BufferedConsole extends Console {
     return this._buffer;
   }
 }
-
-module.exports = BufferedConsole;
