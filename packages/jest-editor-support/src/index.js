@@ -8,7 +8,7 @@
  * @flow
  */
 
-import Process from './Process';
+import * as Process from './Process';
 
 import ProjectWorkspace from './project_workspace';
 import Runner from './Runner';

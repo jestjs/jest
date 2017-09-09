@@ -9,7 +9,7 @@
  */
 
 import {parse as babylonParser, ItBlock, Expect} from 'jest-editor-support';
-import TypeScriptParser from './type_script_parser';
+import * as TypeScriptParser from './type_script_parser';
 
 export type ParserReturn = {
   itBlocks: Array<ItBlock>,
