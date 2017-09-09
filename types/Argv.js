@@ -33,6 +33,7 @@ export type Argv = {|
   env: string,
   expand: boolean,
   findRelatedTests: boolean,
+  followSymlinks: boolean,
   forceExit: boolean,
   globals: string,
   h: boolean,

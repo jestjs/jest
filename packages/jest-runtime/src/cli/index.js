@@ -68,6 +68,7 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     unmockedModulePathPatterns: null,
   });
   Runtime.createContext(config, {
+    followSymlinks: globalConfig.followSymlinks,
     maxWorkers: os.cpus().length - 1,
     watchman: globalConfig.watchman,
   })

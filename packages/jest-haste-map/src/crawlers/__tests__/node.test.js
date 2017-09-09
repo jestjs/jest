@@ -34,35 +34,44 @@ jest.mock('child_process', () => ({
 
 jest.mock('fs', () => {
   let mtime = 32;
-  const stat = (path, callback) => {
-    setTimeout(
-      () =>
-        callback(null, {
-          isDirectory() {
-            return path.endsWith('/directory');
-          },
-          isSymbolicLink() {
-            return false;
-          },
-          mtime: {
-            getTime() {
-              return mtime++;
+  const fakeStat = ({isSymbolicLink}) => {
+    return jest.fn((path, callback) => {
+      setTimeout(
+        () =>
+          callback(null, {
+            isDirectory() {
+              return path.endsWith('/directory');
             },
-          },
-        }),
-      0,
-    );
+            isSymbolicLink() {
+              return isSymbolicLink(path);
+            },
+            mtime: {
+              getTime() {
+                return mtime++;
+              },
+            },
+          }),
+        0,
+      );
+    });
   };
   return {
-    lstat: jest.fn(stat),
+    lstat: fakeStat({
+      isSymbolicLink: path => path.indexOf('symlink') !== -1,
+    }),
     readdir: jest.fn((dir, callback) => {
       if (dir === '/fruits') {
         setTimeout(() => callback(null, ['directory', 'tomato.js']), 0);
       } else if (dir === '/fruits/directory') {
-        setTimeout(() => callback(null, ['strawberry.js']), 0);
+        setTimeout(
+          () => callback(null, ['kiwi-symlink.js', 'strawberry.js']),
+          0,
+        );
       }
     }),
-    stat: jest.fn(stat),
+    stat: fakeStat({
+      isSymbolicLink: path => false,
+    }),
   };
 });
 
@@ -111,6 +120,59 @@ describe('node crawler', () => {
         '/vegtables',
         '-type',
         'f',
+        '(',
+        '-iname',
+        '*.js',
+        '-o',
+        '-iname',
+        '*.json',
+        ')',
+      ]);
+
+      expect(data.files).not.toBe(null);
+
+      expect(data.files).toEqual({
+        '/fruits/strawberry.js': ['', 32, 0, []],
+        '/fruits/tomato.js': ['', 33, 0, []],
+        '/vegetables/melon.json': ['', 34, 0, []],
+      });
+    });
+
+    return promise;
+  });
+
+  it('crawls symlinks if followSymlinks flag is set to true', () => {
+    process.platform = 'linux';
+
+    childProcess = require('child_process');
+    nodeCrawl = require('../node');
+
+    mockResponse = [
+      '/fruits/pear.js',
+      '/fruits/strawberry.js',
+      '/fruits/tomato.js',
+      '/vegetables/melon.json',
+    ].join('\n');
+
+    const promise = nodeCrawl({
+      data: {
+        files: Object.create(null),
+      },
+      extensions: ['js', 'json'],
+      followSymlinks: true,
+      ignore: pearMatcher,
+      roots: ['/fruits', '/vegtables'],
+    }).then(data => {
+      expect(childProcess.spawn).lastCalledWith('find', [
+        '/fruits',
+        '/vegtables',
+        '(',
+        '-type',
+        'f', // regular files
+        '-o',
+        '-type',
+        'l', // symbolic links
+        ')',
         '(',
         '-iname',
         '*.js',
@@ -193,6 +255,26 @@ describe('node crawler', () => {
       roots: ['/fruits'],
     }).then(data => {
       expect(data.files).toEqual({
+        '/fruits/directory/strawberry.js': ['', 33, 0, []],
+        '/fruits/tomato.js': ['', 32, 0, []],
+      });
+    });
+  });
+
+  it('crawls symlinks if followSymlinks flag is set to true and using node fs APIs', () => {
+    nodeCrawl = require('../node');
+
+    const files = Object.create(null);
+    return nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      followSymlinks: true,
+      forceNodeFilesystemAPI: true,
+      ignore: pearMatcher,
+      roots: ['/fruits'],
+    }).then(data => {
+      expect(data.files).toEqual({
+        '/fruits/directory/kiwi-symlink.js': ['', 34, 0, []],
         '/fruits/directory/strawberry.js': ['', 33, 0, []],
         '/fruits/tomato.js': ['', 32, 0, []],
       });

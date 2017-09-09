@@ -22,10 +22,24 @@ function find(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  followSymlinks: boolean,
   callback: Callback,
 ): void {
   const result = [];
   let activeCalls = 0;
+
+  let stat = fs.lstat;
+  if (followSymlinks) {
+    stat = (file, cb) => {
+      fs.lstat(file, (err, stat) => {
+        if (stat.isSymbolicLink()) {
+          fs.stat(file, cb);
+        } else {
+          cb(err, stat);
+        }
+      });
+    };
+  }
 
   function search(directory: string): void {
     activeCalls++;
@@ -39,7 +53,7 @@ function find(
         }
         activeCalls++;
 
-        fs.lstat(file, (err, stat) => {
+        stat(file, (err, stat) => {
           activeCalls--;
 
           if (!err && stat && !stat.isSymbolicLink()) {
@@ -75,10 +89,18 @@ function findNative(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  followSymlinks: boolean,
   callback: Callback,
 ): void {
   const args = [].concat(roots);
-  args.push('-type', 'f');
+  if (followSymlinks) {
+    args.push('(');
+  }
+  args.push('-type', 'f'); // regular files
+  if (followSymlinks) {
+    args.push('-o', '-type', 'l'); // symbolic links
+    args.push(')');
+  }
   if (extensions.length) {
     args.push('(');
   }
@@ -125,7 +147,14 @@ function findNative(
 module.exports = function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const {data, extensions, forceNodeFilesystemAPI, ignore, roots} = options;
+  const {
+    data,
+    extensions,
+    followSymlinks,
+    forceNodeFilesystemAPI,
+    ignore,
+    roots,
+  } = options;
 
   return new Promise(resolve => {
     const callback = list => {
@@ -146,9 +175,9 @@ module.exports = function nodeCrawl(
     };
 
     if (forceNodeFilesystemAPI || process.platform === 'win32') {
-      find(roots, extensions, ignore, callback);
+      find(roots, extensions, ignore, followSymlinks, callback);
     } else {
-      findNative(roots, extensions, ignore, callback);
+      findNative(roots, extensions, ignore, followSymlinks, callback);
     }
   });
 };

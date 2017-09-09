@@ -66,6 +66,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"clover\\"
     ],
     \\"expand\\": false,
+    \\"followSymlinks\\": false,
     \\"listTests\\": false,
     \\"mapCoverage\\": false,
     \\"maxWorkers\\": \\"[maxWorkers]\\",

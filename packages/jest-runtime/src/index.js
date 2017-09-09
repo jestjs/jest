@@ -41,6 +41,7 @@ type Module = {|
 
 type HasteMapOptions = {|
   console?: Console,
+  followSymlinks: boolean,
   maxWorkers: number,
   resetCache: boolean,
   watch?: boolean,
@@ -195,6 +196,7 @@ class Runtime {
     config: ProjectConfig,
     options: {
       console?: Console,
+      followSymlinks: boolean,
       maxWorkers: number,
       watch?: boolean,
       watchman: boolean,
@@ -203,6 +205,7 @@ class Runtime {
     createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
+      followSymlinks: options.followSymlinks,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
       watch: options.watch,
@@ -233,6 +236,7 @@ class Runtime {
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
       extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      followSymlinks: options && options.followSymlinks,
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
