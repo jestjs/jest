@@ -37,6 +37,8 @@ type MockFunctionConfig = {
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
+const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-\/:-@\[-`{-~]/g;
+
 // $FlowFixMe
 const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
   arguments: true,
@@ -474,8 +476,8 @@ class ModuleMockerClass {
 
     // It's also a syntax error to define a function with a reserved character
     // as part of it's name.
-    if (/[\s-]/.test(name)) {
-      name = name.replace(/[\s-]/g, '$');
+    if (FUNCTION_NAME_RESERVED_PATTERN.test(name)) {
+      name = name.replace(FUNCTION_NAME_RESERVED_PATTERN, '$');
     }
 
     const body =
