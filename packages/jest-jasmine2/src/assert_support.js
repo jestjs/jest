@@ -133,4 +133,4 @@ function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
   );
 }
 
-module.exports = assertionErrorMessage;
+export default assertionErrorMessage;

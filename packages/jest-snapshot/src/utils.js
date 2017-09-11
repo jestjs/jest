@@ -18,11 +18,11 @@ import naturalCompare from 'natural-compare';
 import path from 'path';
 import prettyFormat from 'pretty-format';
 
-const SNAPSHOT_EXTENSION = 'snap';
-const SNAPSHOT_VERSION = '1';
+export const SNAPSHOT_EXTENSION = 'snap';
+export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
-const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
-const SNAPSHOT_VERSION_WARNING = chalk.yellow(
+export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
+export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
   `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
     `we recommend that you revert any local changes to tests or other code, ` +
     `to ensure that you do not store invalid state.`,
@@ -78,10 +78,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   return null;
 };
 
-const testNameToKey = (testName: string, count: number) =>
+export const testNameToKey = (testName: string, count: number) =>
   testName + ' ' + count;
 
-const keyToTestName = (key: string) => {
+export const keyToTestName = (key: string) => {
   if (!/ \d+$/.test(key)) {
     throw new Error('Snapshot keys must end with a number.');
   }
@@ -89,13 +89,16 @@ const keyToTestName = (key: string) => {
   return key.replace(/ \d+$/, '');
 };
 
-const getSnapshotPath = (testPath: Path) =>
+export const getSnapshotPath = (testPath: Path) =>
   path.join(
     path.join(path.dirname(testPath), '__snapshots__'),
     path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
   );
 
-const getSnapshotData = (snapshotPath: Path, update: SnapshotUpdateState) => {
+export const getSnapshotData = (
+  snapshotPath: Path,
+  update: SnapshotUpdateState,
+) => {
   const data = Object.create(null);
   let snapshotContents = '';
   let dirty = false;
@@ -129,7 +132,7 @@ const getSnapshotData = (snapshotPath: Path, update: SnapshotUpdateState) => {
 const addExtraLineBreaks = string =>
   string.includes('\n') ? `\n${string}\n` : string;
 
-const serialize = (data: any): string => {
+export const serialize = (data: any): string => {
   return addExtraLineBreaks(
     normalizeNewlines(
       prettyFormat(data, {
@@ -142,13 +145,13 @@ const serialize = (data: any): string => {
 };
 
 // unescape double quotes
-const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
+export const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
 
 const printBacktickString = (str: string) => {
   return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
 };
 
-const ensureDirectoryExists = (filePath: Path) => {
+export const ensureDirectoryExists = (filePath: Path) => {
   try {
     mkdirp.sync(path.join(path.dirname(filePath)), '777');
   } catch (e) {}
@@ -156,7 +159,7 @@ const ensureDirectoryExists = (filePath: Path) => {
 
 const normalizeNewlines = string => string.replace(/\r\n|\r/g, '\n');
 
-const saveSnapshotFile = (
+export const saveSnapshotFile = (
   snapshotData: {[key: string]: string},
   snapshotPath: Path,
 ) => {
@@ -176,19 +179,4 @@ const saveSnapshotFile = (
     snapshotPath,
     writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
-};
-
-module.exports = {
-  SNAPSHOT_EXTENSION,
-  SNAPSHOT_GUIDE_LINK,
-  SNAPSHOT_VERSION,
-  SNAPSHOT_VERSION_WARNING,
-  ensureDirectoryExists,
-  getSnapshotData,
-  getSnapshotPath,
-  keyToTestName,
-  saveSnapshotFile,
-  serialize,
-  testNameToKey,
-  unescape,
 };

@@ -13,16 +13,16 @@ import prettyFormat from 'pretty-format';
 import leven from 'leven';
 
 const BULLET: string = chalk.bold('\u25cf');
-const DEPRECATION = `${BULLET} Deprecation Warning`;
-const ERROR = `${BULLET} Validation Error`;
-const WARNING = `${BULLET} Validation Warning`;
+export const DEPRECATION = `${BULLET} Deprecation Warning`;
+export const ERROR = `${BULLET} Validation Error`;
+export const WARNING = `${BULLET} Validation Warning`;
 
-const format = (value: any): string =>
+export const format = (value: any): string =>
   typeof value === 'function'
     ? value.toString()
     : prettyFormat(value, {min: true});
 
-class ValidationError extends Error {
+export class ValidationError extends Error {
   name: string;
   message: string;
 
@@ -35,7 +35,7 @@ class ValidationError extends Error {
   }
 }
 
-const logValidationWarning = (
+export const logValidationWarning = (
   name: string,
   message: string,
   comment?: ?string,
@@ -44,7 +44,7 @@ const logValidationWarning = (
   console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
 };
 
-const createDidYouMeanMessage = (
+export const createDidYouMeanMessage = (
   unrecognized: string,
   allowedOptions: Array<string>,
 ) => {
@@ -54,14 +54,4 @@ const createDidYouMeanMessage = (
   });
 
   return suggestion ? `Did you mean ${chalk.bold(format(suggestion))}?` : '';
-};
-
-module.exports = {
-  DEPRECATION,
-  ERROR,
-  ValidationError,
-  WARNING,
-  createDidYouMeanMessage,
-  format,
-  logValidationWarning,
 };

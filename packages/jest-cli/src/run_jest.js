@@ -78,7 +78,7 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
-const runJest = async ({
+export default async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -94,7 +94,7 @@ const runJest = async ({
   startRun: (globalConfig: GlobalConfig) => *,
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
-}) => {
+}) {
   const sequencer = new TestSequencer();
   let allTests = [];
   const testRunData = await Promise.all(
@@ -159,6 +159,4 @@ const runJest = async ({
     outputFile: globalConfig.outputFile,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-};
-
-module.exports = runJest;
+}

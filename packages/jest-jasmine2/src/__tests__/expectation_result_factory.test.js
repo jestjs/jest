@@ -9,7 +9,7 @@
 
 'use strict';
 
-const expectationResultFactory = require('../expectation_result_factory');
+import expectationResultFactory from '../expectation_result_factory';
 
 describe('expectationResultFactory', () => {
   it('returns the result if passed.', () => {

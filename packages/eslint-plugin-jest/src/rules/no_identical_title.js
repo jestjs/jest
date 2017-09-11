@@ -82,7 +82,7 @@ const handleTestSuiteTitles = (context, titles, node, title) => {
 const isFirstArgLiteral = node =>
   node.arguments && node.arguments[0] && node.arguments[0].type === 'Literal';
 
-module.exports = (context: EslintContext) => {
+export default (context: EslintContext) => {
   const contexts = [newDescribeContext()];
   return {
     CallExpression(node: CallExpression) {

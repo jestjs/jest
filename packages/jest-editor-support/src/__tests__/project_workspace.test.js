@@ -10,7 +10,7 @@
 
 'use strict';
 
-const ProjectWorkspace = require('../project_workspace');
+import ProjectWorkspace from '../project_workspace';
 
 describe('setup', () => {
   it('sets itself up fom the constructor', () => {

@@ -10,7 +10,7 @@
 
 import chalk from 'chalk';
 
-module.exports = (str: string, start: number, end: number) =>
+export default (str: string, start: number, end: number) =>
   chalk.dim(str.slice(0, start)) +
   chalk.reset(str.slice(start, end)) +
   chalk.dim(str.slice(end));

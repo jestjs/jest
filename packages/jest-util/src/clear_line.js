@@ -9,7 +9,7 @@
  */
 /* global stream$Writable */
 
-module.exports = (stream: stream$Writable | tty$WriteStream) => {
+export default (stream: stream$Writable | tty$WriteStream) => {
   if (process.stdout.isTTY) {
     stream.write('\x1b[999D\x1b[K');
   }

@@ -9,7 +9,7 @@
 
 'use strict';
 
-const queueRunner = require('../queue_runner');
+import queueRunner from '../queue_runner';
 
 describe('queueRunner', () => {
   it('runs every function in the queue.', async () => {

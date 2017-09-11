@@ -44,7 +44,7 @@ const createCLIValidationError = (
   return new ValidationError(title, message, comment);
 };
 
-const validateCLIOptions = (argv: Argv, options: Object) => {
+export default function validateCLIOptions(argv: Argv, options: Object) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),
@@ -59,6 +59,4 @@ const validateCLIOptions = (argv: Argv, options: Object) => {
   }
 
   return true;
-};
-
-module.exports = validateCLIOptions;
+}

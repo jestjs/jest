@@ -13,9 +13,9 @@ import type {DefaultOptions} from 'types/Config';
 import os from 'os';
 import path from 'path';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import constants from './constants';
+import {NODE_MODULES} from './constants';
 
-const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
+const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const cacheDirectory = (() => {
   const {getuid} = process;
@@ -28,7 +28,7 @@ const cacheDirectory = (() => {
   return path.join(os.tmpdir(), 'jest_' + getuid.call(process).toString(36));
 })();
 
-module.exports = ({
+export default ({
   automock: false,
   bail: false,
   browser: false,

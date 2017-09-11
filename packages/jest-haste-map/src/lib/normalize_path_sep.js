@@ -11,10 +11,10 @@
 const path = require('path');
 
 let normalizePathSep;
-if (path.sep == '/') {
+if (path.sep === '/') {
   normalizePathSep = (filePath: string) => filePath;
 } else {
   normalizePathSep = (filePath: string) => filePath.replace(/\//g, path.sep);
 }
 
-module.exports = normalizePathSep;
+export default normalizePathSep;

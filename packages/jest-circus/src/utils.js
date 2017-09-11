@@ -23,7 +23,7 @@ import type {
   TestResults,
 } from 'types/Circus';
 
-const makeDescribe = (
+export const makeDescribe = (
   name: BlockName,
   parent: ?DescribeBlock,
   mode?: BlockMode,
@@ -43,7 +43,7 @@ const makeDescribe = (
   };
 };
 
-const makeTest = (
+export const makeTest = (
   fn: ?TestFn,
   mode: TestMode,
   name: TestName,
@@ -68,7 +68,7 @@ const makeTest = (
   };
 };
 
-const getAllHooksForDescribe = (
+export const getAllHooksForDescribe = (
   describe: DescribeBlock,
 ): {[key: 'beforeAll' | 'afterAll']: Array<Hook>} => {
   const result = {afterAll: [], beforeAll: []};
@@ -87,7 +87,7 @@ const getAllHooksForDescribe = (
   return result;
 };
 
-const getEachHooksForTest = (
+export const getEachHooksForTest = (
   test: TestEntry,
 ): {[key: 'beforeEach' | 'afterEach']: Array<Hook>} => {
   const result = {afterEach: [], beforeEach: []};
@@ -121,7 +121,7 @@ const _makeTimeoutMessage = (timeout, isHook) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-const callAsyncFn = (
+export const callAsyncFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
   {
@@ -192,12 +192,12 @@ const callAsyncFn = (
     });
 };
 
-const getTestDuration = (test: TestEntry): ?number => {
+export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
   return startedAt ? Date.now() - startedAt : null;
 };
 
-const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
@@ -228,7 +228,7 @@ const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
-const getTestID = (test: TestEntry) => {
+export const getTestID = (test: TestEntry) => {
   const titles = [];
   let parent = test;
   do {
@@ -249,15 +249,4 @@ const _formatError = (error: ?Exception): string => {
   } else {
     return `${String(error)} thrown`;
   }
-};
-
-module.exports = {
-  callAsyncFn,
-  getAllHooksForDescribe,
-  getEachHooksForTest,
-  getTestDuration,
-  getTestID,
-  makeDescribe,
-  makeTest,
-  makeTestResults,
 };

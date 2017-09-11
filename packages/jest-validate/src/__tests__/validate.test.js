@@ -9,9 +9,10 @@
 
 'use strict';
 
-const validate = require('../validate');
-const jestValidateExampleConfig = require('../example_config');
-const jestValidateDefaultConfig = require('../default_config');
+import validate from '../validate';
+import jestValidateExampleConfig from '../example_config';
+import jestValidateDefaultConfig from '../default_config';
+
 const {
   defaultConfig,
   validConfig,

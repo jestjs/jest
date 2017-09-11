@@ -9,11 +9,12 @@
 
 'use strict';
 
-const path = require('path');
-const fs = require('graceful-fs');
-const skipOnWindows = require('../../../../scripts/skip_on_windows');
+import path from 'path';
+import fs from 'graceful-fs';
+import skipOnWindows from '../../../../scripts/skip_on_windows';
 
-const H = require('../constants');
+import H from '../constants';
+
 const worker = require('../worker');
 
 let createCallback;

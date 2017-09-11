@@ -18,7 +18,7 @@ export type RunOptions = {|
   showStatus: boolean,
 |};
 
-class ReporterDispatcher {
+export default class ReporterDispatcher {
   _disabled: boolean;
   _reporters: Array<Reporter>;
 
@@ -78,5 +78,3 @@ class ReporterDispatcher {
     return this.getErrors().length !== 0;
   }
 }
-
-module.exports = ReporterDispatcher;

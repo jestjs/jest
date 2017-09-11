@@ -14,7 +14,7 @@ import chalk from 'chalk';
 import getType from 'jest-get-type';
 import {format, ValidationError, ERROR} from './utils';
 
-const errorMessage = (
+export const errorMessage = (
   option: string,
   received: any,
   defaultValue: any,
@@ -34,9 +34,4 @@ const errorMessage = (
   const name = (options.title && options.title.error) || ERROR;
 
   throw new ValidationError(name, message, comment);
-};
-
-module.exports = {
-  ValidationError,
-  errorMessage,
 };

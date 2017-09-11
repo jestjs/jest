@@ -10,9 +10,9 @@
 
 'use strict';
 
-const {EventEmitter} = require('events');
-const ProjectWorkspace = require('../project_workspace');
-const Settings = require('../Settings');
+import EventEmitter from 'events';
+import ProjectWorkspace from '../project_workspace';
+import Settings from '../Settings';
 
 describe('Settings', () => {
   it('sets itself up fom the constructor', () => {

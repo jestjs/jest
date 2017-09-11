@@ -101,4 +101,4 @@ const _callTest = async (
     .catch(error => dispatch({error, name: 'test_failure', test}));
 };
 
-module.exports = run;
+export default run;

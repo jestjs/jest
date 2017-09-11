@@ -22,7 +22,7 @@ const mutex = throat(5);
 const findGitRoot = dir => mutex(() => git.getRoot(dir));
 const findHgRoot = dir => mutex(() => hg.getRoot(dir));
 
-const getChangedFilesForRoots = async (
+export const getChangedFilesForRoots = async (
   roots: Array<Path>,
   options: Options,
 ): ChangedFilesPromise => {
@@ -49,7 +49,7 @@ const getChangedFilesForRoots = async (
   return {changedFiles, repos};
 };
 
-const findRepos = async (roots: Array<Path>): Promise<Repos> => {
+export const findRepos = async (roots: Array<Path>): Promise<Repos> => {
   const gitRepos = await Promise.all(
     roots.reduce((promises, root) => promises.concat(findGitRoot(root)), []),
   );
@@ -61,9 +61,4 @@ const findRepos = async (roots: Array<Path>): Promise<Repos> => {
     git: new Set(gitRepos.filter(Boolean)),
     hg: new Set(hgRepos.filter(Boolean)),
   };
-};
-
-module.exports = {
-  findRepos,
-  getChangedFilesForRoots,
 };

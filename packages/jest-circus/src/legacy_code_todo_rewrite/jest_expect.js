@@ -24,7 +24,7 @@ type JasmineMatcher = {
   negativeCompare: () => RawMatcherFn,
 };
 
-module.exports = (config: {expand: boolean}) => {
+export default (config: {expand: boolean}) => {
   global.expect = expect;
   expect.setState({
     expand: config.expand,

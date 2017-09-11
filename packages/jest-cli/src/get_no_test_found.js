@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import pluralize from './pluralize';
 
-const getNoTestFound = (testRunData, globalConfig): string => {
+export default function getNoTestFound(testRunData, globalConfig): string {
   const testFiles = testRunData.reduce(
     (current, testRun) => (current += testRun.matches.total),
     0,
@@ -31,6 +31,4 @@ const getNoTestFound = (testRunData, globalConfig): string => {
     '\n' +
     dataMessage
   );
-};
-
-module.exports = getNoTestFound;
+}

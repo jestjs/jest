@@ -13,9 +13,10 @@ import type {Path} from 'types/Config';
 import path from 'path';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
+// eslint-disable-next-line import/default
 import jest from '../jest';
 
-function getJest(packageRoot: Path) {
+export default function getJest(packageRoot: Path) {
   const packageJSONPath = path.join(packageRoot, 'package.json');
   const binPath = path.join(packageRoot, 'node_modules/jest-cli');
   if (fs.existsSync(binPath)) {
@@ -45,5 +46,3 @@ function getJest(packageRoot: Path) {
     return jest;
   }
 }
-
-module.exports = getJest;

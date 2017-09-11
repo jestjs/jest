@@ -10,7 +10,7 @@
 
 // A specialized version of `p-timeout` that does not touch globals.
 // It does not throw on timeout.
-function pTimeout(
+export default function pTimeout(
   promise: Promise<any>,
   ms: number,
   clearTimeout: (timeoutID: number) => void,
@@ -31,5 +31,3 @@ function pTimeout(
     );
   });
 }
-
-module.exports = pTimeout;

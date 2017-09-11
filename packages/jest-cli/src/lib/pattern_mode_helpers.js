@@ -19,7 +19,7 @@ import Prompt from './Prompt';
 const pluralize = (count: number, text: string) =>
   count === 1 ? text : text + 's';
 
-const printPatternMatches = (
+export const printPatternMatches = (
   count: number,
   entity: string,
   pipe: stream$Writable | tty$WriteStream,
@@ -33,7 +33,7 @@ const printPatternMatches = (
   pipe.write(result + extraText);
 };
 
-const printPatternCaret = (
+export const printPatternCaret = (
   pattern: string,
   pipe: stream$Writable | tty$WriteStream,
 ) => {
@@ -44,7 +44,7 @@ const printPatternCaret = (
   pipe.write(ansiEscapes.cursorSavePosition);
 };
 
-const printRestoredPatternCaret = (
+export const printRestoredPatternCaret = (
   pattern: string,
   currentUsageRows: number,
   pipe: stream$Writable | tty$WriteStream,
@@ -57,7 +57,7 @@ const printRestoredPatternCaret = (
   pipe.write(ansiEscapes.cursorRestorePosition);
 };
 
-const printStartTyping = (
+export const printStartTyping = (
   entity: string,
   pipe: stream$Writable | tty$WriteStream,
 ) => {
@@ -68,7 +68,7 @@ const printStartTyping = (
   );
 };
 
-const printMore = (
+export const printMore = (
   entity: string,
   pipe: stream$Writable | tty$WriteStream,
   more: number,
@@ -78,12 +78,12 @@ const printMore = (
   );
 };
 
-const printTypeaheadItem = (
+export const printTypeaheadItem = (
   item: string,
   pipe: stream$Writable | tty$WriteStream,
 ) => pipe.write(`\n ${chalk.dim('\u203A')} ${item}`);
 
-const formatTypeaheadSelection = (
+export const formatTypeaheadSelection = (
   item: string,
   index: number,
   activeIndex: number,
@@ -94,14 +94,4 @@ const formatTypeaheadSelection = (
     return chalk.black.bgYellow(stripAnsi(item));
   }
   return item;
-};
-
-module.exports = {
-  formatTypeaheadSelection,
-  printMore,
-  printPatternCaret,
-  printPatternMatches,
-  printRestoredPatternCaret,
-  printStartTyping,
-  printTypeaheadItem,
 };

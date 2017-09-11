@@ -10,7 +10,7 @@
  */
 'use strict';
 
-const extractRequires = require('../extract_requires');
+import extractRequires from '../extract_requires';
 
 it('extracts both requires and imports from code', () => {
   const code = `

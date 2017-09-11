@@ -11,7 +11,6 @@
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ScrollOptions} from './lib/scroll_list';
-// eslint-disable-next-line import/default
 import type SearchSource from './search_source';
 
 import chalk from 'chalk';
@@ -37,7 +36,7 @@ type SearchSources = Array<{|
   searchSource: SearchSource,
 |}>;
 
-module.exports = class TestPathPatternPrompt extends PatternPrompt {
+export default class TestPathPatternPrompt extends PatternPrompt {
   _searchSources: SearchSources;
 
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
@@ -112,4 +111,4 @@ module.exports = class TestPathPatternPrompt extends PatternPrompt {
   updateSearchSources(searchSources: SearchSources) {
     this._searchSources = searchSources;
   }
-};
+}

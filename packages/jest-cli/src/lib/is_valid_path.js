@@ -12,7 +12,7 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const SNAPSHOT_EXTENSION = 'snap';
 
-function isValidPath(
+export default function isValidPath(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   filePath: string,
@@ -23,5 +23,3 @@ function isValidPath(
     !filePath.endsWith(`.${SNAPSHOT_EXTENSION}`)
   );
 }
-
-module.exports = isValidPath;

@@ -10,5 +10,5 @@
 
 import type {Global} from 'types/Global';
 
-module.exports = (global: Global, key: string, value: any) =>
+export default (global: Global, key: string, value: any) =>
   (global[key] = value);

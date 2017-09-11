@@ -7,10 +7,10 @@
  *
  */
 
-const path = require('path');
-const chalk = require('chalk');
-const stripAnsi = require('strip-ansi');
-const {wrapAnsiString, trimAndFormatPath} = require('../utils');
+import path from 'path';
+import chalk from 'chalk';
+import stripAnsi from 'strip-ansi';
+import {trimAndFormatPath, wrapAnsiString} from '../utils';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {

@@ -18,7 +18,7 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isCI from 'is-ci';
 import isValidPath from './lib/is_valid_path';
-import preRunMessage from './pre_run_message';
+import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
 import updateGlobalConfig from './lib/update_global_config';
@@ -32,13 +32,13 @@ import {KEYS, CLEAR} from './constants';
 const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
-const watch = (
+export default function watch(
   initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
-) => {
+) {
   // `globalConfig` will be consantly updated and reassigned as a result of
   // watch mode interactions.
   let globalConfig = initialGlobalConfig;
@@ -105,7 +105,7 @@ const watch = (
 
     testWatcher = new TestWatcher({isWatchMode: true});
     isInteractive && outputStream.write(CLEAR);
-    preRunMessage.print(outputStream);
+    preRunMessagePrint(outputStream);
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
@@ -260,7 +260,7 @@ const watch = (
 
   startRun(globalConfig);
   return Promise.resolve();
-};
+}
 
 const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
   const {testNamePattern, testPathPattern} = globalConfig;
@@ -336,5 +336,3 @@ const showToggleUsagePrompt = () =>
   chalk.dim('Press ') +
   'w' +
   chalk.dim(' to show more.');
-
-module.exports = watch;

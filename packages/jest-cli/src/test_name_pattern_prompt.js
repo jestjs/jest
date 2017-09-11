@@ -27,7 +27,7 @@ import {
 } from './lib/pattern_mode_helpers';
 import PatternPrompt from './pattern_prompt';
 
-module.exports = class TestNamePatternPrompt extends PatternPrompt {
+export default class TestNamePatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult>;
 
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
@@ -103,4 +103,4 @@ module.exports = class TestNamePatternPrompt extends PatternPrompt {
   updateCachedTestResults(testResults: Array<TestResult> = []) {
     this._cachedTestResults = testResults;
   }
-};
+}

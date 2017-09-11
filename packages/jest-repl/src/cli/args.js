@@ -10,9 +10,9 @@
 
 import Runtime from 'jest-runtime';
 
-const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
+export const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
 
-const options = Object.assign({}, Runtime.getCLIOptions(), {
+export const options = Object.assign({}, Runtime.getCLIOptions(), {
   replname: {
     alias: 'r',
     description:
@@ -21,8 +21,3 @@ const options = Object.assign({}, Runtime.getCLIOptions(), {
     type: 'string',
   },
 });
-
-module.exports = {
-  options,
-  usage,
-};

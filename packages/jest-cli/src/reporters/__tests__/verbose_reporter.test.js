@@ -12,7 +12,8 @@ const wrap = obj => ({suites: obj, tests: [], title: ''});
 let groupTestsBySuites;
 
 beforeEach(() => {
-  groupTestsBySuites = require('../verbose_reporter').groupTestsBySuites;
+  const VerboseReporter = require('../verbose_reporter').default;
+  groupTestsBySuites = VerboseReporter.groupTestsBySuites;
 });
 
 describe('groupTestsBySuites', () => {

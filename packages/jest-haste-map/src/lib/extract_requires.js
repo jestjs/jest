@@ -18,7 +18,7 @@ const replacePatterns = {
   REQUIRE_RE: /(?:^|[^.]\s*)(\brequire\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
 };
 
-function extractRequires(code: string): Array<string> {
+export default function extractRequires(code: string): Array<string> {
   const dependencies = new Set();
   const addDependency = (match, pre, quot, dep, post) => {
     dependencies.add(dep);
@@ -35,5 +35,3 @@ function extractRequires(code: string): Array<string> {
 
   return Array.from(dependencies);
 }
-
-module.exports = extractRequires;

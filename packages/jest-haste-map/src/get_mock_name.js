@@ -19,4 +19,4 @@ const getMockName = (filePath: string) => {
     .replace(/\\/g, '/');
 };
 
-module.exports = getMockName;
+export default getMockName;

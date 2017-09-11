@@ -17,12 +17,12 @@ import colorize from './colorize';
 const trim = '...';
 const relativePathHead = './';
 
-const highlight = (
+export default function highlight(
   rawPath: string,
   filePath: string,
   pattern: string,
   rootDir: string,
-) => {
+) {
   let regexp;
 
   try {
@@ -56,6 +56,4 @@ const highlight = (
   const start = match.index - offset;
   const end = start + match[0].length;
   return colorize(filePath, Math.max(start, 0), Math.max(end, trimLength));
-};
-
-module.exports = highlight;
+}

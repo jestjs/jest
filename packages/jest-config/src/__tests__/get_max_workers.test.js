@@ -8,7 +8,7 @@
 * @emails oncall+jsinfra
 */
 
-const getMaxWorkers = require('../get_max_workers');
+import getMaxWorkers from '../get_max_workers';
 
 jest.mock('os', () => ({
   cpus: () => ({length: 4}),

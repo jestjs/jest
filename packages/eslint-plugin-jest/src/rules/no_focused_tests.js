@@ -28,7 +28,7 @@ const isPropertyNamedOnly = property =>
 const isCallToTestOnlyFunction = callee =>
   matchesTestFunction(callee.object) && isPropertyNamedOnly(callee.property);
 
-module.exports = (context: EslintContext) => ({
+export default (context: EslintContext) => ({
   CallExpression(node: CallExpression) {
     const callee = node.callee;
     if (!callee) {

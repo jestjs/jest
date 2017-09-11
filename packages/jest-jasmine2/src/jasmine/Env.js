@@ -35,7 +35,7 @@ import queueRunner from '../queue_runner';
 
 import treeProcessor from '../tree_processor';
 
-module.exports = function(j$) {
+export default function(j$) {
   function Env(options) {
     options = options || {};
 
@@ -520,4 +520,4 @@ module.exports = function(j$) {
   }
 
   return Env;
-};
+}

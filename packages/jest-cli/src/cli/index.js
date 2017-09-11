@@ -20,21 +20,21 @@ import {
 } from 'jest-util';
 import {readConfig} from 'jest-config';
 import {version as VERSION} from '../../package.json';
-import args from './args';
+import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../get_changed_files_promise';
 import getJest from './get_jest';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
-import preRunMessage from '../pre_run_message';
+import {print as preRunMessagePrint} from '../pre_run_message';
 import runJest from '../run_jest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 
-async function run(maybeArgv?: Argv, project?: Path) {
+export async function run(maybeArgv?: Argv, project?: Path) {
   const argv: Argv = _buildArgv(maybeArgv, project);
   const projects = _getProjectListFromCLIArgs(argv, project);
   // If we're running a single Jest project, we might want to use another
@@ -45,7 +45,7 @@ async function run(maybeArgv?: Argv, project?: Path) {
   _readResultsAndExit(results, globalConfig);
 }
 
-const runCLI = async (
+export const runCLI = async (
   argv: Argv,
   projects: Array<Path>,
 ): Promise<{results: AggregatedResult, globalConfig: GlobalConfig}> => {
@@ -347,7 +347,7 @@ const _runWithoutWatch = async (
 ) => {
   const startRun = async () => {
     if (!globalConfig.listTests) {
-      preRunMessage.print(outputStream);
+      preRunMessagePrint(outputStream);
     }
     return await runJest({
       changedFilesPromise,
@@ -360,9 +360,4 @@ const _runWithoutWatch = async (
     });
   };
   return await startRun();
-};
-
-module.exports = {
-  run,
-  runCLI,
 };

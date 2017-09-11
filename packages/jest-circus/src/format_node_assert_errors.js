@@ -39,7 +39,7 @@ const humanReadableOperators = {
   notDeepStrictEqual: 'not to deeply and strictly equal',
 };
 
-module.exports = (event: Event, state: State) => {
+export default (event: Event, state: State) => {
   switch (event.name) {
     case 'test_failure':
     case 'test_success': {

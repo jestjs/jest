@@ -15,7 +15,7 @@ import Runtime from 'jest-runtime';
 import yargs from 'yargs';
 import {validateCLIOptions} from 'jest-util';
 import {version as VERSION} from '../../package.json';
-import args from './args';
+import * as args from './args';
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 

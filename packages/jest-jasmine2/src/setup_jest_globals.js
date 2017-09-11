@@ -85,7 +85,7 @@ const patchJasmine = () => {
   })(global.jasmine.Spec);
 };
 
-module.exports = ({
+export default ({
   config,
   globalConfig,
   localRequire,

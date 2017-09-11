@@ -8,8 +8,9 @@
 * @flow
 */
 
+import isValidPath from '../is_valid_path';
+
 const path = require('path');
-const isValidPath = require('../is_valid_path');
 const {
   makeGlobalConfig,
   makeProjectConfig,

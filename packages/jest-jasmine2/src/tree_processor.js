@@ -26,7 +26,7 @@ type TreeNode = {
   children?: Array<TreeNode>,
 };
 
-function treeProcessor(options: Options) {
+export default function treeProcessor(options: Options) {
   const {
     nodeComplete,
     nodeStart,
@@ -76,5 +76,3 @@ function treeProcessor(options: Options) {
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);
   }
 }
-
-module.exports = treeProcessor;

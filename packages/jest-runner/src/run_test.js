@@ -31,7 +31,7 @@ import docblock from 'jest-docblock';
 // and required implicitly through the `testRunner` ProjectConfig option.
 jasmine2;
 
-function runTest(
+export default function runTest(
   path: Path,
   globalConfig: GlobalConfig,
   config: ProjectConfig,
@@ -136,5 +136,3 @@ function runTest(
         }),
     );
 }
-
-module.exports = runTest;

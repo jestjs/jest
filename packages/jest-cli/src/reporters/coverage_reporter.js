@@ -29,6 +29,7 @@ import libSourceMaps from 'istanbul-lib-source-maps';
 import pify from 'pify';
 import workerFarm from 'worker-farm';
 import BaseReporter from './base_reporter';
+// eslint-disable-next-line import/default
 import CoverageWorker from './coverage_worker';
 import path from 'path';
 import glob from 'glob';
@@ -38,7 +39,7 @@ const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 const isInteractive = process.stdout.isTTY && !isCI;
 
-class CoverageReporter extends BaseReporter {
+export default class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
   _globalConfig: GlobalConfig;
   _sourceMapStore: any;
@@ -313,5 +314,3 @@ class CoverageReporter extends BaseReporter {
     return this._coverageMap;
   }
 }
-
-module.exports = CoverageReporter;

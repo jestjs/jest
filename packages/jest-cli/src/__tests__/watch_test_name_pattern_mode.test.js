@@ -9,8 +9,8 @@
 
 'use strict';
 
-const chalk = require('chalk');
-const {KEYS} = require('../constants');
+import chalk from 'chalk';
+import {KEYS} from '../constants';
 
 const runJestMock = jest.fn();
 
@@ -98,7 +98,7 @@ jest.doMock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => terminalWidth,
 }));
 
-const watch = require('../watch');
+const watch = require('../watch').default;
 
 const toHex = char => Number(char.charCodeAt(0)).toString(16);
 

@@ -13,19 +13,14 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import isCI from 'is-ci';
 
-const print = (stream: stream$Writable | tty$WriteStream) => {
+export const print = (stream: stream$Writable | tty$WriteStream) => {
   if (process.stdout.isTTY && !isCI) {
     stream.write(chalk.bold.dim('Determining test suites to run...'));
   }
 };
 
-const remove = (stream: stream$Writable | tty$WriteStream) => {
+export const remove = (stream: stream$Writable | tty$WriteStream) => {
   if (stream.isTTY && !isCI) {
     clearLine(stream);
   }
-};
-
-module.exports = {
-  print,
-  remove,
 };

@@ -74,4 +74,4 @@ function createSpy(name, originalFn) {
   return spy;
 }
 
-module.exports = createSpy;
+export default createSpy;

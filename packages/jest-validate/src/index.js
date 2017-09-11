@@ -8,8 +8,12 @@
  * @flow
  */
 
-import {createDidYouMeanMessage, format, logValidationWarning} from './utils';
-import {ValidationError} from './errors';
+import {
+  createDidYouMeanMessage,
+  format,
+  logValidationWarning,
+  ValidationError,
+} from './utils';
 import validate from './validate';
 
 module.exports = {

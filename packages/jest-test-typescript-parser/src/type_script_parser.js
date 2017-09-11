@@ -13,7 +13,7 @@ import {readFileSync} from 'fs';
 import ts from 'typescript';
 import {Expect, ItBlock, Node} from 'jest-editor-support';
 
-function parse(file: string) {
+export function parse(file: string) {
   const sourceFile = ts.createSourceFile(
     file,
     readFileSync(file).toString(),
@@ -83,7 +83,3 @@ function getNode<T: Node>(
   node.file = file.fileName;
   return node;
 }
-
-module.exports = {
-  parse,
-};

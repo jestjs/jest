@@ -20,7 +20,7 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
 import Resolver from 'jest-resolve';
-import utils from 'jest-regex-util';
+import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -169,9 +169,7 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   return options[key].map(pattern =>
-    utils.replacePathSepForRegex(
-      pattern.replace(/<rootDir>/g, options.rootDir),
-    ),
+    replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
   );
 };
 
@@ -309,7 +307,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-function normalize(options: InitialOptions, argv: Argv) {
+export default function normalize(options: InitialOptions, argv: Argv) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -546,5 +544,3 @@ function normalize(options: InitialOptions, argv: Argv) {
     options: newOptions,
   };
 }
-
-module.exports = normalize;

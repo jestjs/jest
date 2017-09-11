@@ -46,7 +46,7 @@ const ignoreCache: WeakMap<ProjectConfig, ?RegExp> = new WeakMap();
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
 
-class ScriptTransformer {
+export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: string;
   _config: ProjectConfig;
   _transformCache: Map<Path, ?Transformer>;
@@ -474,5 +474,3 @@ const wrap = content =>
   '\n}});';
 
 ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
-
-module.exports = ScriptTransformer;

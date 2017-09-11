@@ -17,7 +17,7 @@ import clearLine from './clear_line';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
-class CustomConsole extends Console {
+export default class CustomConsole extends Console {
   _stdout: stream$Writable;
   _formatBuffer: Formatter;
 
@@ -55,5 +55,3 @@ class CustomConsole extends Console {
     return null;
   }
 }
-
-module.exports = CustomConsole;

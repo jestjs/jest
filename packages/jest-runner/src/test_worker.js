@@ -70,6 +70,7 @@ const getResolver = (config, rawModuleMap) => {
   }
 };
 
+// Cannot be ESM export because of worker-farm
 module.exports = (
   {config, globalConfig, path, rawModuleMap}: WorkerData,
   callback: WorkerCallback,

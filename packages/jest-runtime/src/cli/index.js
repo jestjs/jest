@@ -17,12 +17,13 @@ import chalk from 'chalk';
 import yargs from 'yargs';
 import {Console, setGlobal, validateCLIOptions} from 'jest-util';
 import {readConfig} from 'jest-config';
+// eslint-disable-next-line import/default
 import Runtime from '../';
-import args from './args';
+import * as args from './args';
 
 const VERSION = (require('../../package.json').version: string);
 
-function run(cliArgv?: Argv, cliInfo?: Array<string>) {
+export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   let argv;
   if (cliArgv) {
     argv = cliArgv;
@@ -91,5 +92,3 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
       process.on('exit', () => process.exit(1));
     });
 }
-
-exports.run = run;

@@ -19,11 +19,11 @@ const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
 );
 
-const shouldInstrument = (
+export default function shouldInstrument(
   filename: Path,
   options: Options,
   config: ProjectConfig,
-): boolean => {
+): boolean {
   if (!options.collectCoverage) {
     return false;
   }
@@ -73,6 +73,4 @@ const shouldInstrument = (
   }
 
   return true;
-};
-
-module.exports = shouldInstrument;
+}

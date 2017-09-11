@@ -39,7 +39,7 @@ export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
 |};
 
-class TestScheduler {
+export default class TestScheduler {
   _dispatcher: ReporterDispatcher;
   _globalConfig: GlobalConfig;
   _options: TestSchedulerOptions;
@@ -333,5 +333,3 @@ const getEstimatedTime = (timings, workers) => {
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
 };
-
-module.exports = TestScheduler;

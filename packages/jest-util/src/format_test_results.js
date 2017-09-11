@@ -72,7 +72,7 @@ function formatTestAssertion(
   return result;
 }
 
-function formatTestResults(
+export default function formatTestResults(
   results: AggregatedResult,
   codeCoverageFormatter?: CodeCoverageFormatter,
   reporter?: CodeCoverageReporter,
@@ -87,5 +87,3 @@ function formatTestResults(
     testResults,
   });
 }
-
-module.exports = formatTestResults;

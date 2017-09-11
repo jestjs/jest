@@ -23,7 +23,7 @@ type Cache = {
   [key: string]: [0 | 1, number],
 };
 
-class TestSequencer {
+export default class TestSequencer {
   _cache: Map<Context, Cache>;
 
   constructor() {
@@ -113,5 +113,3 @@ class TestSequencer {
     );
   }
 }
-
-module.exports = TestSequencer;

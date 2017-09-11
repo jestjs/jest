@@ -7,9 +7,7 @@
  *
  */
 
-'use strict';
-
-const validatePattern = require('../validate_pattern');
+import validatePattern from '../validate_pattern';
 
 describe('validate pattern function', () => {
   it('without passed args returns true', () => {

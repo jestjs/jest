@@ -8,8 +8,8 @@
  */
 'use strict';
 
-const path = require('path');
-const getMockName = require('../get_mock_name');
+import path from 'path';
+import getMockName from '../get_mock_name';
 
 describe('getMockName', () => {
   it('extracts mock name from file path', () => {

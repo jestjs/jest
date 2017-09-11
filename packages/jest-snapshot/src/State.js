@@ -27,7 +27,7 @@ export type SnapshotStateOptions = {|
   expand?: boolean,
 |};
 
-class SnapshotState {
+export default class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
   _index: number;
@@ -185,5 +185,3 @@ class SnapshotState {
     }
   }
 }
-
-module.exports = SnapshotState;

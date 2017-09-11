@@ -20,7 +20,7 @@ const SNAPSHOT_ADDED = chalk.bold.green;
 const SNAPSHOT_REMOVED = chalk.bold.red;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 
-module.exports = (
+export default (
   snapshot: $PropertyType<TestResult, 'snapshot'>,
   afterUpdate: boolean,
 ): Array<string> => {

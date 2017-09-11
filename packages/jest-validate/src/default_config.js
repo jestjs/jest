@@ -17,7 +17,7 @@ import exampleConfig from './example_config';
 import validationCondition from './condition';
 import {ERROR, DEPRECATION, WARNING} from './utils';
 
-module.exports = ({
+export default ({
   comment: '',
   condition: validationCondition,
   deprecate: deprecationWarning,

@@ -14,7 +14,7 @@ const {EventEmitter} = require('events');
 const path = require('path');
 const {readFileSync} = require('fs');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
-const ProjectWorkspace = require('../project_workspace');
+import ProjectWorkspace from '../project_workspace';
 
 // Replace `readFile` with `readFileSync` so we don't get multiple threads
 jest.doMock('fs', () => {
@@ -36,7 +36,7 @@ jest.doMock('../Process.js', () => {
   };
 });
 
-const Runner = require('../Runner');
+const Runner = require('../Runner').default;
 
 describe('events', () => {
   let runner;

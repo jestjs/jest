@@ -164,7 +164,7 @@ describe('ScriptTransformer', () => {
       transformIgnorePatterns: ['/node_modules/'],
     };
 
-    ScriptTransformer = require('../script_transformer');
+    ScriptTransformer = require('../script_transformer').default;
   };
 
   beforeEach(reset);

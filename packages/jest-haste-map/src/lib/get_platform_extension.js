@@ -16,7 +16,7 @@ const SUPPORTED_PLATFORM_EXTS = {
 };
 
 // Extract platform extension: index.ios.js -> ios
-function getPlatformExtension(
+export default function getPlatformExtension(
   file: string,
   platforms?: Array<string>,
 ): ?string {
@@ -33,5 +33,3 @@ function getPlatformExtension(
   }
   return SUPPORTED_PLATFORM_EXTS[platform] ? platform : null;
 }
-
-module.exports = getPlatformExtension;

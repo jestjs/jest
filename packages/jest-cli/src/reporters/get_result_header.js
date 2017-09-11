@@ -28,7 +28,7 @@ const PASS = chalk.supportsColor
   ? chalk.reset.inverse.bold.green(` ${PASS_TEXT} `)
   : PASS_TEXT;
 
-module.exports = (
+export default (
   result: TestResult,
   globalConfig: GlobalConfig,
   projectConfig?: ProjectConfig,

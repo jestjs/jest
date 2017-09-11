@@ -20,7 +20,7 @@ import H from './constants';
 
 const EMPTY_MAP = {};
 
-class ModuleMap {
+export default class ModuleMap {
   _raw: RawModuleMap;
   static DuplicateHasteCandidatesError: Class<DuplicateHasteCandidatesError>;
 
@@ -187,4 +187,3 @@ function getTypeMessage(type: number) {
 }
 
 ModuleMap.DuplicateHasteCandidatesError = DuplicateHasteCandidatesError;
-module.exports = ModuleMap;

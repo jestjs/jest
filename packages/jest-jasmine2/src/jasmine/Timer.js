@@ -38,7 +38,7 @@ const defaultNow = (function(Date) {
   };
 })(Date);
 
-function Timer(options: Object) {
+export default function Timer(options: Object) {
   options = options || {};
 
   const now = options.now || defaultNow;
@@ -52,5 +52,3 @@ function Timer(options: Object) {
     return now() - startTime;
   };
 }
-
-module.exports = Timer;

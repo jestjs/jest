@@ -13,7 +13,7 @@ import prettyFormat from 'pretty-format';
 
 const format = (value: mixed) => prettyFormat(value, {min: true});
 
-const deprecatedOptions = {
+export default {
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns: Array<string>,
   }) => `  Option ${chalk.bold(
@@ -62,5 +62,3 @@ const deprecatedOptions = {
   Please update your configuration.
   `,
 };
-
-module.exports = deprecatedOptions;

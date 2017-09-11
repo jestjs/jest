@@ -21,7 +21,7 @@ import chalk from 'chalk';
 import {ICONS} from '../constants';
 import DefaultReporter from './default_reporter';
 
-class VerboseReporter extends DefaultReporter {
+export default class VerboseReporter extends DefaultReporter {
   _globalConfig: GlobalConfig;
 
   constructor(globalConfig: GlobalConfig) {
@@ -128,5 +128,3 @@ class VerboseReporter extends DefaultReporter {
     this.log(indentation + (str || ''));
   }
 }
-
-module.exports = VerboseReporter;

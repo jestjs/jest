@@ -12,8 +12,8 @@
 
 'use strict';
 
-const RuleTester = require('eslint').RuleTester;
-const rules = require('../../').rules;
+import {RuleTester} from 'eslint';
+const {rules} = require('../../');
 
 const ruleTester = new RuleTester();
 

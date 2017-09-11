@@ -49,7 +49,7 @@ const NPM_EVENTS = new Set([
   'postrestart',
 ]);
 
-class SummaryReporter extends BaseReporter {
+export default class SummaryReporter extends BaseReporter {
   _estimatedTime: number;
   _globalConfig: GlobalConfig;
 
@@ -224,5 +224,3 @@ class SummaryReporter extends BaseReporter {
     );
   }
 }
-
-module.exports = SummaryReporter;

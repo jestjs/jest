@@ -8,9 +8,9 @@
  * @flow
  */
 
-const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
+export const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
 
-const options = {
+export const options = {
   cache: {
     default: true,
     description:
@@ -39,9 +39,4 @@ const options = {
       '--no-watchman.',
     type: 'boolean',
   },
-};
-
-module.exports = {
-  options,
-  usage,
 };

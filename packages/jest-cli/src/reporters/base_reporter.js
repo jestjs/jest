@@ -13,9 +13,9 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-import preRunMessage from '../pre_run_message';
+import {remove as preRunMessageRemove} from '../pre_run_message';
 
-class BaseReporter {
+export default class BaseReporter {
   _error: ?Error;
 
   log(message: string) {
@@ -23,7 +23,7 @@ class BaseReporter {
   }
 
   onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
-    preRunMessage.remove(process.stderr);
+    preRunMessageRemove(process.stderr);
   }
 
   onTestResult(test: Test, testResult: TestResult, results: AggregatedResult) {}
@@ -45,5 +45,3 @@ class BaseReporter {
     return this._error;
   }
 }
-
-module.exports = BaseReporter;

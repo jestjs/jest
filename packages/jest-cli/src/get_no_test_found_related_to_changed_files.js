@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-const getNoTestFoundRelatedToChangedFiles = globalConfig => {
+export default function getNoTestFoundRelatedToChangedFiles(globalConfig) {
   return (
     chalk.bold('No tests found related to files changed since last commit.\n') +
     chalk.dim(
@@ -9,6 +9,4 @@ const getNoTestFoundRelatedToChangedFiles = globalConfig => {
         : 'Run Jest without `-o` or with `--all` to run all tests.',
     )
   );
-};
-
-module.exports = getNoTestFoundRelatedToChangedFiles;
+}

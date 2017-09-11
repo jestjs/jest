@@ -22,8 +22,8 @@ const {
 let PLUGINS = [ReactTestComponent, ReactElement, DOMElement, Immutable];
 
 // Prepend to list so the last added is the first tested.
-exports.addSerializer = (plugin: Plugin) => {
+export const addSerializer = (plugin: Plugin) => {
   PLUGINS = [plugin].concat(PLUGINS);
 };
 
-exports.getSerializers = () => PLUGINS;
+export const getSerializers = () => PLUGINS;

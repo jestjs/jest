@@ -19,7 +19,7 @@ const eventHandlers: Array<EventHandler> = [
   formatNodeAssertErrors,
 ];
 
-const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
+export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
 
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
@@ -33,23 +33,15 @@ const INITIAL_STATE: State = {
 
 global[STATE_SYM] = INITIAL_STATE;
 
-const getState = (): State => global[STATE_SYM];
-const setState = (state: State): State => (global[STATE_SYM] = state);
+export const getState = (): State => global[STATE_SYM];
+export const setState = (state: State): State => (global[STATE_SYM] = state);
 
-const dispatch = (event: Event): void => {
+export const dispatch = (event: Event): void => {
   for (const handler of eventHandlers) {
     handler(event, getState());
   }
 };
 
-const addEventHandler = (handler: EventHandler): void => {
+export const addEventHandler = (handler: EventHandler): void => {
   eventHandlers.push(handler);
-};
-
-module.exports = {
-  ROOT_DESCRIBE_BLOCK_NAME,
-  addEventHandler,
-  dispatch,
-  getState,
-  setState,
 };

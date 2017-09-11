@@ -107,7 +107,7 @@ function makeConcurrent(originalFn: Function, env) {
   };
 }
 
-function install(global: Global) {
+export function install(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();
@@ -122,7 +122,3 @@ function install(global: Global) {
   env.beforeAll = promisifyLifeCycleFunction(env.beforeAll, env);
   env.beforeEach = promisifyLifeCycleFunction(env.beforeEach, env);
 }
-
-module.exports = {
-  install,
-};

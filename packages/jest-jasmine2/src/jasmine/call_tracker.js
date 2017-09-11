@@ -78,4 +78,4 @@ function CallTracker() {
   };
 }
 
-module.exports = CallTracker;
+export default CallTracker;

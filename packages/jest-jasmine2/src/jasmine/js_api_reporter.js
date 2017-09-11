@@ -39,7 +39,7 @@ const noopTimer = {
   },
 };
 
-function JsApiReporter(options: Object) {
+export default function JsApiReporter(options: Object) {
   const timer = options.timer || noopTimer;
   let status = 'loaded';
 
@@ -108,5 +108,3 @@ function JsApiReporter(options: Object) {
     return executionTime;
   };
 }
-
-module.exports = JsApiReporter;

@@ -9,9 +9,9 @@
 
 'use strict';
 
-const chalk = require('chalk');
-const TestWatcher = require('../test_watcher');
-const {KEYS} = require('../constants');
+import chalk from 'chalk';
+import TestWatcher from '../test_watcher';
+import {KEYS} from '../constants';
 
 const runJestMock = jest.fn();
 
@@ -31,7 +31,7 @@ jest.doMock(
     },
 );
 
-const watch = require('../watch');
+const watch = require('../watch').default;
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {

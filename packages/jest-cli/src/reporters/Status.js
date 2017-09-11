@@ -63,7 +63,7 @@ class CurrentTestList {
  * and also provides an ANSI escape sequence to remove status lines
  * from the terminal.
  */
-class Status {
+export default class Status {
   _cache: ?{content: string, clear: string};
   _callback: () => void;
   _currentTests: CurrentTestList;
@@ -201,5 +201,3 @@ class Status {
     this._debouncedEmit();
   }
 }
-
-module.exports = Status;

@@ -27,4 +27,4 @@ const config: ValidationOptions = {
   unknown: (config, option, options) => {},
 };
 
-module.exports = config;
+export default config;
