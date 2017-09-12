@@ -716,6 +716,10 @@ class Runtime {
       this.resetAllMocks();
       return jestObject;
     };
+    const restoreAllMocks = () => {
+      this.restoreAllMocks();
+      return jestObject;
+    };
     const useFakeTimers = () => {
       this._environment.fakeTimers.useFakeTimers();
       return jestObject;
@@ -743,7 +747,6 @@ class Runtime {
     const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
-
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
@@ -759,14 +762,13 @@ class Runtime {
         this._generateMock(from, moduleName),
       genMockFunction: fn,
       isMockFunction: this._moduleMocker.isMockFunction,
-
       mock,
       requireActual: localRequire.requireActual,
       requireMock: localRequire.requireMock,
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
-
+      restoreAllMocks,
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
@@ -774,14 +776,11 @@ class Runtime {
         this._environment.fakeTimers.runOnlyPendingTimers(),
       runTimersToTime: (msToRun: number) =>
         this._environment.fakeTimers.runTimersToTime(msToRun),
-
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
       setTimeout,
       spyOn,
-
       unmock,
-
       useFakeTimers,
       useRealTimers,
     };
