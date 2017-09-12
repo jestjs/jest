@@ -26,7 +26,7 @@ type Original = {|
   b: string,
 |};
 
-type Diff = {diff: string, isDifferent: boolean};
+type Diff = string | null;
 
 type Hunk = {|
   lines: Array<string>,
@@ -159,25 +159,23 @@ const getterForChunks = (original: Original) => {
 
 // jest --expand
 const formatChunks = (a: string, b: string, original?: Original): Diff => {
+  const chunks = diffLines(a, b);
+  if (chunks.every(chunk => !chunk.removed && !chunk.added)) {
+    return null;
+  }
+
   const getOriginal = original && getterForChunks(original);
-  let isDifferent = false;
+  return chunks
+    .reduce((lines, chunk) => {
+      const char = getDiffChar(chunk);
 
-  return {
-    diff: diffLines(a, b)
-      .map(chunk => {
-        const {added, removed, value} = chunk;
-        if (added || removed) {
-          isDifferent = true;
-        }
-        const char = getDiffChar(chunk);
+      splitIntoLines(chunk.value).forEach(line => {
+        lines.push(formatLine(char, line, getOriginal));
+      });
 
-        return splitIntoLines(value)
-          .map(line => formatLine(char, line, getOriginal))
-          .join('\n');
-      })
-      .join('\n'),
-    isDifferent,
-  };
+      return lines;
+    }, [])
+    .join('\n');
 };
 
 // Only show patch marks ("@@ ... @@") if the diff is big.
@@ -225,8 +223,6 @@ const formatHunks = (
         ? contextLines
         : DIFF_CONTEXT_DEFAULT,
   };
-  const getter = original && getterForHunks(original);
-  let isDifferent = false;
   // Make sure the strings end with a newline.
   if (!a.endsWith('\n')) {
     a += '\n';
@@ -235,26 +231,27 @@ const formatHunks = (
     b += '\n';
   }
 
+  const {hunks} = structuredPatch('', '', a, b, '', '', options);
+  if (hunks.length === 0) {
+    return null;
+  }
+
+  const getter = original && getterForHunks(original);
   const oldLinesCount = (a.match(/\n/g) || []).length;
+  return hunks
+    .map((hunk: Hunk) => {
+      // Hunk properties are one-based but index args are zero-based.
+      const getOriginal =
+        getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
+      const lines = hunk.lines
+        .map(line => formatLine(line[0], line.slice(1), getOriginal))
+        .join('\n');
 
-  return {
-    diff: structuredPatch('', '', a, b, '', '', options)
-      .hunks.map((hunk: Hunk) => {
-        // Hunk properties are one-based but index args are zero-based.
-        const getOriginal =
-          getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
-        const lines = hunk.lines
-          .map(line => formatLine(line[0], line.slice(1), getOriginal))
-          .join('\n');
-
-        isDifferent = true;
-        return shouldShowPatchMarks(hunk, oldLinesCount)
-          ? createPatchMark(hunk) + lines
-          : lines;
-      })
-      .join('\n'),
-    isDifferent,
-  };
+      return shouldShowPatchMarks(hunk, oldLinesCount)
+        ? createPatchMark(hunk) + lines
+        : lines;
+    })
+    .join('\n');
 };
 
 export default function diffStrings(
@@ -272,9 +269,5 @@ export default function diffStrings(
       ? formatHunks(a, b, options && options.contextLines, original)
       : formatChunks(a, b, original);
 
-  if (result.isDifferent) {
-    return getAnnotation(options) + result.diff;
-  } else {
-    return NO_DIFF_MESSAGE;
-  }
+  return result === null ? NO_DIFF_MESSAGE : getAnnotation(options) + result;
 }
