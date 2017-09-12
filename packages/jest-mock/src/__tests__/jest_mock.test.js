@@ -80,6 +80,12 @@ describe('moduleMocker', () => {
         getMockFnWithOriginalName('foo-bar').name === 'foo$bar',
       ).toBeTruthy();
       expect(
+        getMockFnWithOriginalName('foo-bar-2').name === 'foo$bar$2',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo-bar-3').name === 'foo$bar$3',
+      ).toBeTruthy();
+      expect(
         getMockFnWithOriginalName('foo/bar').name === 'foo$bar',
       ).toBeTruthy();
       expect(
