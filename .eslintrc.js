@@ -22,6 +22,7 @@ module.exports = {
       files: ['*.md'],
       rules: {
         'consistent-return': 0,
+        'flowtype/require-valid-file-annotation': 0,
         'import/no-extraneous-dependencies': 0,
         'import/no-unresolved': 0,
         'jest/no-focused-tests': 0,
