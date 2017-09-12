@@ -69,14 +69,28 @@ describe('moduleMocker', () => {
     });
 
     it('escapes illegal characters in function name property', () => {
-      const foo = {
-        'foo-bar': () => {},
-      };
+      function getMockFnWithOriginalName(name) {
+        const fn = () => {};
+        Object.defineProperty(fn, 'name', {value: name});
 
-      const mock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(foo['foo-bar']),
-      );
-      expect(!mock.name || mock.name === 'foo$bar').toBeTruthy();
+        return moduleMocker.generateFromMetadata(moduleMocker.getMetadata(fn));
+      }
+
+      expect(
+        getMockFnWithOriginalName('foo-bar').name === 'foo$bar',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo-bar-2').name === 'foo$bar$2',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo-bar-3').name === 'foo$bar$3',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo/bar').name === 'foo$bar',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo𠮷bar').name === 'foo𠮷bar',
+      ).toBeTruthy();
     });
 
     it('special cases the mockConstructor name', () => {
