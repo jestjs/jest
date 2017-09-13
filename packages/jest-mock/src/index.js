@@ -387,11 +387,13 @@ class ModuleMockerClass {
 
       f.mockClear = () => {
         this._mockState.delete(f);
+        return f;
       };
 
       f.mockReset = () => {
         this._mockState.delete(f);
         this._mockConfigRegistry.delete(f);
+        return f;
       };
 
       f.mockReturnValueOnce = value => {
