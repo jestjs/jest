@@ -10,6 +10,7 @@
 
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
+import type ReporterDispatcher from './reporter_dispatcher';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
@@ -32,16 +33,27 @@ import {KEYS, CLEAR} from './constants';
 const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
-export default function watch(
-  initialGlobalConfig: GlobalConfig,
+export default function watch({
+  globalConfig: initialGlobalConfig,
+  contexts,
+  outputStream,
+  hasteMapInstances,
+  stdin,
+  reporterDispatcher,
+}: {
+  globalConfig: GlobalConfig,
   contexts: Array<Context>,
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
-  stdin?: stream$Readable | tty$ReadStream = process.stdin,
-) {
+  stdin?: stream$Readable | tty$ReadStream,
+  reporterDispatcher: ReporterDispatcher,
+}) {
   // `globalConfig` will be consantly updated and reassigned as a result of
   // watch mode interactions.
   let globalConfig = initialGlobalConfig;
+  if (!stdin) {
+    stdin = process.stdin;
+  }
 
   globalConfig = updateGlobalConfig(globalConfig, {
     mode: globalConfig.watch ? 'watch' : 'watchAll',
@@ -133,6 +145,7 @@ export default function watch(
         testNamePatternPrompt.updateCachedTestResults(results.testResults);
       },
       outputStream,
+      reporterDispatcher,
       startRun,
       testWatcher,
     }).catch(error => console.error(chalk.red(error.stack)));

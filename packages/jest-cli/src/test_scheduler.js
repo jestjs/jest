@@ -9,9 +9,10 @@
  */
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {GlobalConfig, ReporterConfig} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
-import type {Reporter, Test} from 'types/TestRunner';
+import type {Test} from 'types/TestRunner';
+import type ReporterDispatcher from './reporter_dispatcher';
 
 import {formatExecError} from 'jest-message-util';
 import {
@@ -19,15 +20,10 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from './test_result_helpers';
-import CoverageReporter from './reporters/coverage_reporter';
-import DefaultReporter from './reporters/default_reporter';
-import NotifyReporter from './reporters/notify_reporter';
-import ReporterDispatcher from './reporter_dispatcher';
 import snapshot from 'jest-snapshot';
-import SummaryReporter from './reporters/summary_reporter';
 import TestRunner from 'jest-runner';
 import TestWatcher from './test_watcher';
-import VerboseReporter from './reporters/verbose_reporter';
+import shouldUseVerbose from './should_use_verbose';
 
 const SLOW_TEST_TIME = 3000;
 
@@ -44,19 +40,14 @@ export default class TestScheduler {
   _globalConfig: GlobalConfig;
   _options: TestSchedulerOptions;
 
-  constructor(globalConfig: GlobalConfig, options: TestSchedulerOptions) {
-    this._dispatcher = new ReporterDispatcher();
+  constructor(
+    globalConfig: GlobalConfig,
+    options: TestSchedulerOptions,
+    reporterDispatcher: ReporterDispatcher,
+  ) {
+    this._dispatcher = reporterDispatcher;
     this._globalConfig = globalConfig;
     this._options = options;
-    this._setupReporters();
-  }
-
-  addReporter(reporter: Reporter) {
-    this._dispatcher.register(reporter);
-  }
-
-  removeReporter(ReporterClass: Function) {
-    this._dispatcher.unregister(ReporterClass);
   }
 
   async scheduleTests(tests: Array<Test>, watcher: TestWatcher) {
@@ -137,6 +128,7 @@ export default class TestScheduler {
 
     await this._dispatcher.onRunStart(aggregatedResults, {
       estimatedTime,
+      numOfTests: tests.length,
       showStatus: !runInBand,
     });
 
@@ -163,6 +155,7 @@ export default class TestScheduler {
             onFailure,
             {
               serial: runInBand,
+              verbose: shouldUseVerbose(this._globalConfig, tests.length),
             },
           );
         }
@@ -213,86 +206,6 @@ export default class TestScheduler {
     } else {
       return null;
     }
-  }
-
-  _shouldAddDefaultReporters(reporters?: Array<ReporterConfig>): boolean {
-    return (
-      !reporters ||
-      !!reporters.find(reporterConfig => reporterConfig[0] === 'default')
-    );
-  }
-
-  _setupReporters() {
-    const {collectCoverage, notify, reporters} = this._globalConfig;
-    const isDefault = this._shouldAddDefaultReporters(reporters);
-
-    if (isDefault) {
-      this._setupDefaultReporters();
-    }
-
-    if (collectCoverage) {
-      this.addReporter(new CoverageReporter(this._globalConfig));
-    }
-
-    if (notify) {
-      this.addReporter(
-        new NotifyReporter(this._globalConfig, this._options.startRun),
-      );
-    }
-
-    if (reporters && Array.isArray(reporters)) {
-      this._addCustomReporters(reporters);
-    }
-  }
-
-  _setupDefaultReporters() {
-    this.addReporter(
-      this._globalConfig.verbose
-        ? new VerboseReporter(this._globalConfig)
-        : new DefaultReporter(this._globalConfig),
-    );
-
-    this.addReporter(new SummaryReporter(this._globalConfig));
-  }
-
-  _addCustomReporters(reporters: Array<ReporterConfig>) {
-    const customReporters = reporters.filter(
-      reporterConfig => reporterConfig[0] !== 'default',
-    );
-
-    customReporters.forEach((reporter, index) => {
-      const {options, path} = this._getReporterProps(reporter);
-
-      try {
-        // $FlowFixMe
-        const Reporter = require(path);
-        this.addReporter(new Reporter(this._globalConfig, options));
-      } catch (error) {
-        throw new Error(
-          'An error occurred while adding the reporter at path "' +
-            path +
-            '".' +
-            error.message,
-        );
-      }
-    });
-  }
-
-  /**
-   * Get properties of a reporter in an object
-   * to make dealing with them less painful.
-   */
-  _getReporterProps(
-    reporter: ReporterConfig,
-  ): {path: string, options?: Object} {
-    if (typeof reporter === 'string') {
-      return {options: this._options, path: reporter};
-    } else if (Array.isArray(reporter)) {
-      const [path, options] = reporter;
-      return {options, path};
-    }
-
-    throw new Error('Reporter should be either a string or an array');
   }
 
   _bailIfNeeded(

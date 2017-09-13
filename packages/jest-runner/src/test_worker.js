@@ -28,6 +28,7 @@ type WorkerData = {|
   globalConfig: GlobalConfig,
   path: Path,
   rawModuleMap?: RawModuleMap,
+  verbose: boolean,
 |};
 
 type WorkerCallback = (error: ?SerializableError, result?: TestResult) => void;
@@ -72,7 +73,7 @@ const getResolver = (config, rawModuleMap) => {
 
 // Cannot be ESM export because of worker-farm
 module.exports = (
-  {config, globalConfig, path, rawModuleMap}: WorkerData,
+  {config, globalConfig, path, rawModuleMap, verbose}: WorkerData,
   callback: WorkerCallback,
 ) => {
   let parentExited = false;
@@ -82,7 +83,13 @@ module.exports = (
   process.on('disconnect', disconnectCallback);
 
   try {
-    runTest(path, globalConfig, config, getResolver(config, rawModuleMap)).then(
+    runTest(
+      path,
+      globalConfig,
+      config,
+      getResolver(config, rawModuleMap),
+      verbose,
+    ).then(
       result => {
         removeListener();
         if (!parentExited) {

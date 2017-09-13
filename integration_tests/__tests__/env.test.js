@@ -10,6 +10,8 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('../../scripts/skip_on_windows');
+skipOnWindows.suite();
 
 const getLog = result =>
   result.stdout

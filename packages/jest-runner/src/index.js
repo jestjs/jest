@@ -41,13 +41,21 @@ class TestRunner {
     options: TestRunnerOptions,
   ): Promise<void> {
     return await (options.serial
-      ? this._createInBandTestRun(tests, watcher, onStart, onResult, onFailure)
+      ? this._createInBandTestRun(
+          tests,
+          watcher,
+          onStart,
+          onResult,
+          onFailure,
+          options.verbose,
+        )
       : this._createParallelTestRun(
           tests,
           watcher,
           onStart,
           onResult,
           onFailure,
+          options.verbose,
         ));
   }
 
@@ -57,6 +65,7 @@ class TestRunner {
     onStart: OnTestStart,
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
+    verbose: boolean,
   ) {
     const mutex = throat(1);
     return tests.reduce(
@@ -74,6 +83,7 @@ class TestRunner {
                 this._globalConfig,
                 test.context.config,
                 test.context.resolver,
+                verbose,
               );
             })
             .then(result => onResult(test, result))
@@ -89,6 +99,7 @@ class TestRunner {
     onStart: OnTestStart,
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
+    verbose: boolean,
   ) {
     const farm = workerFarm(
       {
@@ -117,6 +128,7 @@ class TestRunner {
           rawModuleMap: watcher.isWatchMode()
             ? test.context.moduleMap.getRawModuleMap()
             : null,
+          verbose,
         });
       });
 

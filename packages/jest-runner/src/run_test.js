@@ -36,6 +36,7 @@ export default function runTest(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
+  verbose: boolean,
 ) {
   let testSource;
 
@@ -71,13 +72,13 @@ export default function runTest(
   const consoleFormatter = (type, message) =>
     getConsoleOutput(
       config.cwd,
-      !!globalConfig.verbose,
+      verbose,
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
     );
 
   let testConsole;
-  if (globalConfig.verbose) {
+  if (verbose) {
     testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
   } else {
     if (globalConfig.silent) {

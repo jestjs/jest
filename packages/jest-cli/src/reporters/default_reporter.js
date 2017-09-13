@@ -10,11 +10,17 @@
 
 /* global stream$Writable, tty$WriteStream */
 
-import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {
+  AggregatedResult,
+  AssertionResult,
+  Suite,
+  TestResult,
+} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
+import {ICONS} from '../constants';
 import {clearLine, getConsoleOutput} from 'jest-util';
 import chalk from 'chalk';
 import isCI from 'is-ci';
@@ -22,6 +28,8 @@ import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
 import getSnapshotStatus from './get_snapshot_status';
+import shouldUseVerbose from '../should_use_verbose';
+import groupTestsBySuites from './_group_tests_by_suites.js';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;
@@ -37,6 +45,7 @@ export default class DefaultReporter extends BaseReporter {
   _out: write;
   _status: Status;
   _bufferedOutput: Set<FlushBufferedOutput>;
+  _verbose: ?boolean;
 
   constructor(globalConfig: GlobalConfig) {
     super();
@@ -133,6 +142,7 @@ export default class DefaultReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
+    this._verbose = shouldUseVerbose(this._globalConfig, options.numOfTests);
     this._status.runStarted(aggregatedResults, options);
   }
 
@@ -166,6 +176,9 @@ export default class DefaultReporter extends BaseReporter {
       testResult,
     );
     this.forceFlushBufferedOutput();
+    if (this._verbose && !testResult.testExecError && !testResult.skipped) {
+      this._logTestResultsVerbose(testResult.testResults);
+    }
   }
 
   _printTestFileSummary(
@@ -198,5 +211,71 @@ export default class DefaultReporter extends BaseReporter {
       const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
       snapshotStatuses.forEach(this.log);
     }
+  }
+
+  _logTestResultsVerbose(testResults: Array<AssertionResult>) {
+    this._logSuiteVerbose(groupTestsBySuites(testResults), 0);
+  }
+
+  _logSuiteVerbose(suite: Suite, indentLevel: number) {
+    if (suite.title) {
+      this._logLineVerbose(suite.title, indentLevel);
+    }
+
+    this._logTestsVerbose(suite.tests, indentLevel + 1);
+
+    suite.suites.forEach(suite =>
+      this._logSuiteVerbose(suite, indentLevel + 1),
+    );
+  }
+
+  _logLineVerbose(str?: string, indentLevel?: number) {
+    const indentation = '  '.repeat(indentLevel || 0);
+    this.log(indentation + (str || ''));
+  }
+
+  _logTestsVerbose(tests: Array<AssertionResult>, indentLevel: number) {
+    if (this._globalConfig.expand) {
+      tests.forEach(test => this._logTestVerbose(test, indentLevel));
+    } else {
+      const skippedCount = tests.reduce((result, test) => {
+        if (test.status === 'pending') {
+          result += 1;
+        } else {
+          this._logTestVerbose(test, indentLevel);
+        }
+
+        return result;
+      }, 0);
+
+      if (skippedCount > 0) {
+        this._logSkippedTestsVerbose(skippedCount, indentLevel);
+      }
+    }
+  }
+
+  _logTestVerbose(test: AssertionResult, indentLevel: number) {
+    const status = this._getIconVerbose(test.status);
+    const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
+    this._logLineVerbose(
+      status + ' ' + chalk.dim(test.title + time),
+      indentLevel,
+    );
+  }
+
+  _getIconVerbose(status: string) {
+    if (status === 'failed') {
+      return chalk.red(ICONS.failed);
+    } else if (status === 'pending') {
+      return chalk.yellow(ICONS.pending);
+    } else {
+      return chalk.green(ICONS.success);
+    }
+  }
+  _logSkippedTestsVerbose(count: number, indentLevel: number) {
+    const icon = this._getIconVerbose('pending');
+    const text = chalk.dim(`skipped ${count} test${count === 1 ? '' : 's'}`);
+
+    this._logLineVerbose(`${icon} ${text}`, indentLevel);
   }
 }

@@ -315,6 +315,5 @@ exports[`works with node assert 1`] = `
   ✕ assert.ifError
   ✕ assert.doesNotThrow
   ✕ assert.throws
-
 "
 `;

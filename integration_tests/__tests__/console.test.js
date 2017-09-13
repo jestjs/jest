@@ -17,9 +17,10 @@ const runJest = require('../runJest');
 skipOnWindows.suite();
 
 test('console printing', () => {
-  const {stderr, status} = runJest('console');
+  const {stderr, stdout, status} = runJest('console');
   const {summary, rest} = extractSummary(stderr);
 
+  expect(stdout).toMatchSnapshot();
   expect(status).toBe(0);
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
