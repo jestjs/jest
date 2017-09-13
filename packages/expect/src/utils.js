@@ -8,7 +8,7 @@
  * @flow
  */
 
-import {equals} from './jasmine_utils';
+import {equals, isA} from './jasmine_utils';
 
 type GetPath = {
   hasEndProp?: boolean,
@@ -114,7 +114,7 @@ export const iterableEquality = (a: any, b: any) => {
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
-    } else if (a instanceof Set) {
+    } else if (isA('Set', a)) {
       let allFound = true;
       for (const aValue of a) {
         if (!b.has(aValue)) {
@@ -125,7 +125,7 @@ export const iterableEquality = (a: any, b: any) => {
       if (allFound) {
         return true;
       }
-    } else if (a instanceof Map) {
+    } else if (isA('Map', a)) {
       let allFound = true;
       for (const aEntry of a) {
         if (
