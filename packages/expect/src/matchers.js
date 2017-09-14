@@ -27,7 +27,6 @@ import {
 import {
   getObjectSubset,
   getPath,
-  hasOwnProperty,
   iterableEquality,
   subsetEquality,
 } from './utils';
@@ -516,23 +515,10 @@ const matchers: MatchersObject = {
     const result = getPath(object, keyPath);
     const {lastTraversedObject, hasEndProp} = result;
 
-    let diffString;
-
-    if (valuePassed && hasOwnProperty(result, 'value')) {
-      diffString = diff(value, result.value, {
-        expand: this.expand,
-      });
-    }
-
     const pass = valuePassed
       ? equals(result.value, value, [iterableEquality])
       : hasEndProp;
 
-    if (hasOwnProperty(result, 'value')) {
-      // we don't diff numbers. So instead we'll show the object that contains the resulting value.
-      // And to get that object we need to go up a level.
-      result.traversedPath.pop();
-    }
     const traversedPath = result.traversedPath.join('.');
 
     const message = pass
@@ -546,22 +532,34 @@ const matchers: MatchersObject = {
           `Not to have a nested property:\n` +
           `  ${printExpected(keyPath)}\n` +
           (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
-      : () =>
-          matcherHint('.toHaveProperty', 'object', 'path', {
-            secondArgument: valuePassed ? 'value' : null,
-          }) +
-          '\n\n' +
-          `Expected the object:\n` +
-          `  ${printReceived(object)}\n` +
-          `To have a nested property:\n` +
-          `  ${printExpected(keyPath)}\n` +
-          (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '') +
-          (traversedPath
-            ? `Received:\n  ${RECEIVED_COLOR(
-                'object',
-              )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
-            : '') +
-          (diffString ? `\nDifference:\n\n${diffString}` : '');
+      : () => {
+          const diffString =
+            valuePassed && hasEndProp
+              ? diff(value, result.value, {expand: this.expand})
+              : '';
+          return (
+            matcherHint('.toHaveProperty', 'object', 'path', {
+              secondArgument: valuePassed ? 'value' : null,
+            }) +
+            '\n\n' +
+            `Expected the object:\n` +
+            `  ${printReceived(object)}\n` +
+            `To have a nested property:\n` +
+            `  ${printExpected(keyPath)}\n` +
+            (valuePassed
+              ? `With a value of:\n  ${printExpected(value)}\n`
+              : '') +
+            (hasEndProp
+              ? `Received:\n` +
+                `  ${printReceived(result.value)}` +
+                (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+              : traversedPath
+                ? `Received:\n  ${RECEIVED_COLOR(
+                    'object',
+                  )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
+                : '')
+          );
+        };
     if (pass === undefined) {
       throw new Error('pass must be initialized');
     }
