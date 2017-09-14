@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve-dependencies",
-  "version": "21.0.2",
+  "version": "21.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,6 +8,6 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-regex-util": "^21.0.2"
+    "jest-regex-util": "^21.1.0"
   }
 }
