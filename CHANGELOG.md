@@ -1,11 +1,21 @@
-## master
+## jest 21.1
+
+* (minor) Use ES module exports ([#4454](https://github.com/facebook/jest/pull/4454))
+* Allow chaining mockClear and mockReset ([#4475](https://github.com/facebook/jest/pull/4475))
+* Call jest-diff and pretty-format more precisely in toHaveProperty matcher ([#4445](https://github.com/facebook/jest/pull/4445))
+* Expose restoreAllMocks to object ([#4463](https://github.com/facebook/jest/pull/4463))
+* Fix function name cleaning when making mock fn ([#4464](https://github.com/facebook/jest/pull/4464))
+* Fix Map/Set equality checker ([#4404](https://github.com/facebook/jest/pull/4404))
+* Make FUNCTION_NAME_RESERVED_PATTERN stateless ([#4466](https://github.com/facebook/jest/pull/4466))
+
+## jest 21.0.2
 
 * Take precedence of NODE_PATH when resolving node_modules directories ([#4453](https://github.com/facebook/jest/pull/4453))
 * Fix race condition with --coverage and babel-jest identical file contents edge case ([#4432](https://github.com/facebook/jest/pull/4432))
 * Add extra parameter `--runTestsByPath`. ([#4411](https://github.com/facebook/jest/pull/4411))
 * Upgrade all outdated deps ([#4425](https://github.com/facebook/jest/pull/4425))
 
-# jst 21.0.1
+# jest 21.0.1
 
 * Remove obsolete error ([#4417](https://github.com/facebook/jest/pull/4417))
 
