@@ -30,6 +30,12 @@ exports[`not throwing Error objects 3`] = `
 
 exports[`not throwing Error objects 4`] = `
 "FAIL __tests__/assertion_count.test.js
+  .assertions()
+    ✕ throws
+    ✕ throws on redeclare of assertion count
+    ✕ throws on assertion
+  .hasAssertions()
+    ✕ throws when there are not assertions
   ● .assertions() › throws
     expect(received).toBeTruthy()
     Expected value to be truthy, instead received
@@ -49,17 +55,28 @@ exports[`not throwing Error objects 4`] = `
   ● .hasAssertions() › throws when there are not assertions
     expect.hasAssertions()
     Expected at least one assertion to be called but received none.
-  .assertions()
-    ✕ throws
-    ✕ throws on redeclare of assertion count
-    ✕ throws on assertion
-  .hasAssertions()
-    ✕ throws when there are not assertions
 "
 `;
 
 exports[`works with node assert 1`] = `
 "FAIL __tests__/node_assertion_error.test.js
+  ✕ assert
+  ✕ assert with a message
+  ✕ assert.ok
+  ✕ assert.ok with a message
+  ✕ assert.equal
+  ✕ assert.notEqual
+  ✕ assert.deepEqual
+  ✕ assert.deepEqual with a message
+  ✕ assert.notDeepEqual
+  ✕ assert.strictEqual
+  ✕ assert.notStrictEqual
+  ✕ assert.deepStrictEqual
+  ✕ assert.notDeepStrictEqual
+  ✕ assert.ifError
+  ✕ assert.doesNotThrow
+  ✕ assert.throws
+
   ● assert
 
     assert.equal(received, expected) or assert(received) 
@@ -298,23 +315,6 @@ exports[`works with node assert 1`] = `
       Missing expected exception.
       
       at __tests__/node_assertion_error.test.js:78:10
-
-  ✕ assert
-  ✕ assert with a message
-  ✕ assert.ok
-  ✕ assert.ok with a message
-  ✕ assert.equal
-  ✕ assert.notEqual
-  ✕ assert.deepEqual
-  ✕ assert.deepEqual with a message
-  ✕ assert.notDeepEqual
-  ✕ assert.strictEqual
-  ✕ assert.notStrictEqual
-  ✕ assert.deepStrictEqual
-  ✕ assert.notDeepStrictEqual
-  ✕ assert.ifError
-  ✕ assert.doesNotThrow
-  ✕ assert.throws
 
 "
 `;
