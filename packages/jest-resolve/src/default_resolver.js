@@ -163,7 +163,7 @@ function isDirectory(dir: Path): boolean {
     const stat = fs.statSync(dir);
     result = stat.isDirectory();
   } catch (e) {
-    if (!(e && e.code === 'ENOENT')) {
+    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
       throw e;
     }
     result = false;
