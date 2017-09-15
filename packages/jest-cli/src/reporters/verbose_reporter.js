@@ -59,10 +59,23 @@ export default class VerboseReporter extends DefaultReporter {
     result: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    super.onTestResult(test, result, aggregatedResults);
-    if (!result.testExecError && !result.skipped) {
-      this._logTestResults(result.testResults);
+    super.testFinished(test.context.config, result, aggregatedResults);
+    if (!result.skipped) {
+      this.printTestFileHeader(
+        result.testFilePath,
+        test.context.config,
+        result,
+      );
+      if (!result.testExecError && !result.skipped) {
+        this._logTestResults(result.testResults);
+      }
+      this.printTestFileFailureMessage(
+        result.testFilePath,
+        test.context.config,
+        result,
+      );
     }
+    super.forceFlushBufferedOutput();
   }
 
   _logTestResults(testResults: Array<AssertionResult>) {
