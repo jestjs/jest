@@ -93,14 +93,14 @@ const globalConfig = {watch: true};
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
-  let pipe;
+  let outputStream;
   let hasteMapInstances;
   let contexts;
   let stdin;
 
   beforeEach(() => {
     terminalWidth = 80;
-    pipe = {write: jest.fn()};
+    outputStream = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config: {}}];
     stdin = new MockStdin();
@@ -108,16 +108,22 @@ describe('Watch mode flows', () => {
 
   it('Pressing "P" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(outputStream.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
-      pipe.write.mockReset();
+      outputStream.write.mockReset();
       stdin.emit(hex);
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+      expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
     };
 
     // Write a pattern
@@ -146,7 +152,13 @@ describe('Watch mode flows', () => {
     const toUnixPathPattern = pathPattern => pathPattern.replace(/\\\\/g, '/');
 
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -173,22 +185,34 @@ describe('Watch mode flows', () => {
 
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     stdin.emit(KEYS.P);
 
     [30, 25, 20].forEach(width => {
       terminalWidth = width;
       stdin.emit(KEYS.BACKSPACE);
-      pipe.write.mockReset();
+      outputStream.write.mockReset();
       stdin.emit(KEYS.A);
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+      expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
     });
   });
 
   it('Shows the appropiate header when the filename filter is active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     stdin.emit(KEYS.P);
 
@@ -197,23 +221,29 @@ describe('Watch mode flows', () => {
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
-    pipe.write.mockReset();
+    outputStream.write.mockReset();
     stdin.emit(KEYS.P);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
 
     ['p']
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
-    pipe.write.mockReset();
+    outputStream.write.mockReset();
     stdin.emit(KEYS.P);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 
   it('Shows the appropiate header when the test name filter is active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     stdin.emit(KEYS.T);
 
@@ -222,23 +252,29 @@ describe('Watch mode flows', () => {
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
-    pipe.write.mockReset();
+    outputStream.write.mockReset();
     stdin.emit(KEYS.T);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
 
     ['t']
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
-    pipe.write.mockReset();
+    outputStream.write.mockReset();
     stdin.emit(KEYS.T);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 
   it('Shows the appropiate header when both filters are active', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     stdin.emit(KEYS.P);
 
@@ -253,14 +289,20 @@ describe('Watch mode flows', () => {
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
-    pipe.write.mockReset();
+    outputStream.write.mockReset();
     stdin.emit(KEYS.T);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 
   it('Pressing "c" clears the filters', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     stdin.emit(KEYS.P);
 
@@ -277,9 +319,9 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.C);
 
-    pipe.write.mockReset();
+    outputStream.write.mockReset();
     stdin.emit(KEYS.P);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 });
 

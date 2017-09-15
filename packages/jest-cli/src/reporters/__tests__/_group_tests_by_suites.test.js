@@ -5,16 +5,12 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+
 'use strict';
 
+import groupTestsBySuites from '../_group_tests_by_suites';
+
 const wrap = obj => ({suites: obj, tests: [], title: ''});
-
-let groupTestsBySuites;
-
-beforeEach(() => {
-  const VerboseReporter = require('../verbose_reporter').default;
-  groupTestsBySuites = VerboseReporter.groupTestsBySuites;
-});
 
 describe('groupTestsBySuites', () => {
   it('should handle empty results', () => {

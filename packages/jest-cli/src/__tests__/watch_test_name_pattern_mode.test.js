@@ -74,7 +74,7 @@ jest.doMock(
             testResults: [{title: 'should recognize null and undefined'}],
           },
           {
-            testResults: [{title: 'should not output colors to pipe'}],
+            testResults: [{title: 'should not output colors to outputStream'}],
           },
           {
             testResults: [{title: 'should convert string to a RegExp'}],
@@ -109,14 +109,14 @@ const globalConfig = {
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
-  let pipe;
+  let outputStream;
   let hasteMapInstances;
   let contexts;
   let stdin;
 
   beforeEach(() => {
     terminalWidth = 80;
-    pipe = {write: jest.fn()};
+    outputStream = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config: {}}];
     stdin = new MockStdin();
@@ -124,16 +124,22 @@ describe('Watch mode flows', () => {
 
   it('Pressing "T" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(outputStream.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
-      pipe.write.mockReset();
+      outputStream.write.mockReset();
       stdin.emit(hex);
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+      expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
     };
 
     // Write a pattern
@@ -159,7 +165,13 @@ describe('Watch mode flows', () => {
 
   it('can select a specific test name from the typeahead results', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -184,16 +196,22 @@ describe('Watch mode flows', () => {
 
   it('Results in pattern mode get truncated appropriately', () => {
     contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch({
+      contexts,
+      globalConfig,
+      hasteMapInstances,
+      outputStream,
+      stdin,
+    });
 
     stdin.emit(KEYS.T);
 
     [50, 30].forEach(width => {
       terminalWidth = width;
       stdin.emit(KEYS.BACKSPACE);
-      pipe.write.mockReset();
+      outputStream.write.mockReset();
       stdin.emit(KEYS.T);
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+      expect(outputStream.write.mock.calls.join('\n')).toMatchSnapshot();
     });
   });
 });

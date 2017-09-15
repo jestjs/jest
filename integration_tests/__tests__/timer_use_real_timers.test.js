@@ -10,6 +10,8 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('../../scripts/skip_on_windows');
+skipOnWindows.suite();
 
 test('useRealTimers cancels "timers": "fake" for whole test file', () => {
   const result = runJest('timer_use_real_timers');

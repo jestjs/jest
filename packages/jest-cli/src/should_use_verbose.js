@@ -8,10 +8,8 @@
  * @flow
  */
 
-import type {FS} from 'jest-haste-map';
+import type {GlobalConfig} from '../../../types/Config';
 
-export type ReporterOnStartOptions = {|
-  estimatedTime: number,
-  numOfTests: number,
-  showStatus: boolean,
-|};
+// When we run a single test, we force jest to report in verbose mode
+export default (globalConfig: GlobalConfig, numOfTests: number) =>
+  globalConfig.verbose || (numOfTests === 1 && globalConfig.silent !== true);

@@ -60,4 +60,5 @@ export type TestFramework = (
 
 export type TestRunnerOptions = {
   serial: boolean,
+  verbose: boolean,
 };

@@ -18,6 +18,7 @@ import {
   createDirectory,
   validateCLIOptions,
 } from 'jest-util';
+import {print as preRunMessagePrint} from '../pre_run_message';
 import {readConfig} from 'jest-config';
 import {version as VERSION} from '../../package.json';
 import * as args from './args';
@@ -27,7 +28,7 @@ import getChangedFilesPromise from '../get_changed_files_promise';
 import getJest from './get_jest';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
-import {print as preRunMessagePrint} from '../pre_run_message';
+import ReporterDispatcher from '../reporter_dispatcher';
 import runJest from '../run_jest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
@@ -67,13 +68,16 @@ export const runCLI = async (
       outputStream,
     );
 
-    await _run(
-      globalConfig,
+    const reporterDispatcher = new ReporterDispatcher(globalConfig);
+
+    await _run({
       configs,
+      globalConfig,
       hasDeprecationWarnings,
+      onComplete: (r: AggregatedResult) => (results = r),
       outputStream,
-      (r: AggregatedResult) => (results = r),
-    );
+      reporterDispatcher,
+    });
 
     if (argv.watch || argv.watchAll) {
       // If in watch mode, return the promise that will never resolve.
@@ -282,13 +286,21 @@ const _buildContextsAndHasteMaps = async (
   return {contexts, hasteMapInstances};
 };
 
-const _run = async (
+const _run = async ({
   globalConfig,
   configs,
   hasDeprecationWarnings,
   outputStream,
   onComplete,
-) => {
+  reporterDispatcher,
+}: {
+  globalConfig: GlobalConfig,
+  configs: Array<ProjectConfig>,
+  hasDeprecationWarnings: boolean,
+  outputStream: any,
+  onComplete: (r: AggregatedResult) => any,
+  reporterDispatcher: ReporterDispatcher,
+}) => {
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
@@ -307,6 +319,7 @@ const _run = async (
         outputStream,
         hasteMapInstances,
         changedFilesPromise,
+        reporterDispatcher,
       )
     : await _runWithoutWatch(
         globalConfig,
@@ -314,6 +327,7 @@ const _run = async (
         outputStream,
         onComplete,
         changedFilesPromise,
+        reporterDispatcher,
       );
 };
 
@@ -325,17 +339,30 @@ const _runWatch = async (
   outputStream,
   hasteMapInstances,
   changedFilesPromise,
+  reporterDispatcher,
 ) => {
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+      return watch({
+        contexts,
+        globalConfig,
+        hasteMapInstances,
+        outputStream,
+        reporterDispatcher,
+      });
     } catch (e) {
       process.exit(0);
     }
   }
 
-  return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+  return watch({
+    contexts,
+    globalConfig,
+    hasteMapInstances,
+    outputStream,
+    reporterDispatcher,
+  });
 };
 
 const _runWithoutWatch = async (
@@ -344,6 +371,7 @@ const _runWithoutWatch = async (
   outputStream,
   onComplete,
   changedFilesPromise,
+  reporterDispatcher,
 ) => {
   const startRun = async () => {
     if (!globalConfig.listTests) {
@@ -355,6 +383,7 @@ const _runWithoutWatch = async (
       globalConfig,
       onComplete,
       outputStream,
+      reporterDispatcher,
       startRun,
       testWatcher: new TestWatcher({isWatchMode: false}),
     });

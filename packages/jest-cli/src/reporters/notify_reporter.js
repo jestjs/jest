@@ -25,13 +25,9 @@ export default class NotifyReporter extends BaseReporter {
   _startRun: (globalConfig: GlobalConfig) => *;
   _globalConfig: GlobalConfig;
 
-  constructor(
-    globalConfig: GlobalConfig,
-    startRun: (globalConfig: GlobalConfig) => *,
-  ) {
+  constructor(globalConfig: GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
-    this._startRun = startRun;
   }
 
   onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {

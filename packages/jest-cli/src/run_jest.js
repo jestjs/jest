@@ -13,6 +13,7 @@ import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './test_watcher';
+import type ReporterDispatcher from './reporter_dispatcher';
 
 import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
@@ -82,19 +83,21 @@ export default async function runJest({
   contexts,
   globalConfig,
   outputStream,
-  testWatcher,
+  reporterDispatcher,
   startRun,
+  testWatcher,
   changedFilesPromise,
   onComplete,
-}: {
+}: {|
   globalConfig: GlobalConfig,
   contexts: Array<Context>,
   outputStream: stream$Writable | tty$WriteStream,
-  testWatcher: TestWatcher,
+  reporterDispatcher: ReporterDispatcher,
   startRun: (globalConfig: GlobalConfig) => *,
+  testWatcher: TestWatcher,
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
-}) {
+|}) {
   const sequencer = new TestSequencer();
   let allTests = [];
   const testRunData = await Promise.all(
@@ -128,14 +131,6 @@ export default async function runJest({
     new Console(outputStream, outputStream).log(
       getNoTestsFoundMessage(testRunData, globalConfig),
     );
-  } else if (
-    allTests.length === 1 &&
-    globalConfig.silent !== true &&
-    globalConfig.verbose !== false
-  ) {
-    globalConfig = Object.freeze(
-      Object.assign({}, globalConfig, {verbose: true}),
-    );
   }
 
   // When using more than one context, make all printed paths relative to the
@@ -147,9 +142,13 @@ export default async function runJest({
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
 
-  const results = await new TestScheduler(globalConfig, {
-    startRun,
-  }).scheduleTests(allTests, testWatcher);
+  const results = await new TestScheduler(
+    globalConfig,
+    {
+      startRun,
+    },
+    reporterDispatcher,
+  ).scheduleTests(allTests, testWatcher);
 
   sequencer.cacheResults(allTests, results);
 
