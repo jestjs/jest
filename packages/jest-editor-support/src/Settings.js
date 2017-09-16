@@ -61,13 +61,13 @@ export default class Settings extends EventEmitter {
     ]);
 
     this.getConfigProcess.stdout.on('data', (data: Buffer) => {
-      const {config, version} = JSON.parse(data.toString());
+      const {configs, version} = JSON.parse(data.toString());
       // We can give warnings to versions under 17 now
       // See https://github.com/facebook/jest/issues/2343 for moving this into
       // the config object
 
       this.jestVersionMajor = parseInt(version.split('.').shift(), 10);
-      this.settings = config;
+      this.settings = configs[0];
     });
 
     // They could have an older build of Jest which
