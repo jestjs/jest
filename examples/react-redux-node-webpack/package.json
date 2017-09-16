@@ -1,0 +1,48 @@
+{
+  "name": "Example",
+  "version": "1.0.0",
+  "description": "This is an example of a complex app using Jest",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm-run-all --parallel watch:server watch:build",
+    "watch:build": "webpack -d --watch --progress --colors",
+    "watch:server": "nodemon \"server/server.js\" --watch \"./server\"",
+    "test": "jest",
+    "lint": "eslint server client --ignore-pattern client/src --ignore-pattern client/public --ignore-pattern legacy_notes_and_workbook || true"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/reactTests/__mocks__/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/client/src/stylesheets/"
+    },
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/legacy_notes_and_workbook/",
+      "<rootDir>/client/src/stylesheets/"
+    ]
+  },
+  "dependencies": {
+    "axios": "^0.16.0",
+    "babel-core": "6.24.0",
+    "babel-loader": "6.4.1",
+    "babel-preset-env": "1.3.2",
+    "babel-preset-stage-2": "6.24.1",
+    "body-parser": "1.17.1",
+    "express": "4.15.2",
+    "file-loader": "^0.11.2",
+    "nodemon": "1.11.0",
+    "npm-run-all": "4.0.2",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-promise": "^0.5.3",
+    "webpack": "2.3.2"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "jest": "^20.0.4",
+    "react-test-renderer": "^15.6.1"
+  }
+}

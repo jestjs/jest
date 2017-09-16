@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test to see if the team renders correctly 1`] = `
+<div>
+  <h1>
+    Team America
+  </h1>
+  <div>
+    <h2>
+      <div>
+        Presidents
+      </div>
+      <div />
+      <div />
+    </h2>
+    <ul>
+      <li>
+        George Washington
+         - 
+        First President of the United State of America.
+         
+      </li>
+    </ul>
+    <ul>
+      <li>
+        Abraham Lincoln
+         - 
+        President during the Civil War.
+         
+      </li>
+    </ul>
+    <ul>
+      <li>
+        Franklin D. Roosevelt
+         - 
+        President during The Great Depression and WW2. Only president to be elected 4 times.
+         
+      </li>
+    </ul>
+  </div>
+</div>
+`;
