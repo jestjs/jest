@@ -80,6 +80,7 @@ export default class Settings extends EventEmitter {
   getConfig(completed: any) {
     this.getConfigs(() => {
       this.settings = this.settings[0];
-    })
+      completed();
+    });
   }
 }
