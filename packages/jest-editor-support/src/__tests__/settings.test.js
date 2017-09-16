@@ -35,9 +35,9 @@ describe('Settings', () => {
       1000,
     );
     const completed = jest.fn();
-    const config = {cacheDirectory: '/tmp/jest', name: '[md5 hash]'};
+    const configs = [{cacheDirectory: '/tmp/jest', name: '[md5 hash]'}];
     const json = {
-      config,
+      configs,
       version: '19.0.0',
     };
 
@@ -53,7 +53,7 @@ describe('Settings', () => {
 
     expect(completed).toHaveBeenCalled();
     expect(settings.jestVersionMajor).toBe(19);
-    expect(settings.settings).toEqual(config);
+    expect(settings.settings).toEqual(configs[0]);
   });
 
   it('calls callback even if no data is sent', () => {
