@@ -55,7 +55,7 @@ export default class Settings extends EventEmitter {
     };
   }
 
-  getConfig(completed: any) {
+  getConfigs(completed: any) {
     this.getConfigProcess = this._createProcess(this.workspace, [
       '--showConfig',
     ]);
@@ -67,7 +67,7 @@ export default class Settings extends EventEmitter {
       // the config object
 
       this.jestVersionMajor = parseInt(version.split('.').shift(), 10);
-      this.settings = configs[0];
+      this.settings = configs;
     });
 
     // They could have an older build of Jest which
@@ -75,5 +75,11 @@ export default class Settings extends EventEmitter {
     this.getConfigProcess.on('close', () => {
       completed();
     });
+  }
+
+  getConfig(completed: any) {
+    this.getConfigs(() => {
+      this.settings = this.settings[0];
+    })
   }
 }
