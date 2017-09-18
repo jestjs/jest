@@ -36,8 +36,8 @@ import DEPRECATED_CONFIG from './deprecated';
 import setFromArgv from './set_from_argv';
 import VALID_CONFIG from './valid_config';
 const ERROR = `${BULLET}Validation Error`;
-const JSON_EXTENSION = '.json';
-const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
+const PRESET_EXTENSIONS = ['.json', '.js'];
+const PRESET_NAME = 'jest-preset';
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -64,11 +64,12 @@ const setupPreset = (
   let preset;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
-    presetPath.endsWith(JSON_EXTENSION)
+    presetPath.charAt(0) === '.'
       ? presetPath
       : path.join(presetPath, PRESET_NAME),
     {
       basedir: options.rootDir,
+      extensions: PRESET_EXTENSIONS,
     },
   );
 
