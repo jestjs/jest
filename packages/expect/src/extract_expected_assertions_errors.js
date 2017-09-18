@@ -17,6 +17,14 @@ import {
 
 import {getState, setState} from './jest_matchers_object';
 
+const resetAssertionsLocalState = () => {
+  setState({
+    assertionCalls: 0,
+    expectedAssertionsNumber: null,
+    isExpectingAssertions: false,
+  });
+};
+
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matchers state.
 const extractExpectedAssertionsErrors = () => {
@@ -26,7 +34,9 @@ const extractExpectedAssertionsErrors = () => {
     expectedAssertionsNumber,
     isExpectingAssertions,
   } = getState();
-  setState({assertionCalls: 0, expectedAssertionsNumber: null});
+
+  resetAssertionsLocalState();
+
   if (
     typeof expectedAssertionsNumber === 'number' &&
     assertionCalls !== expectedAssertionsNumber
