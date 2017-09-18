@@ -252,3 +252,5 @@ need to enable the `dynamic-import-node` plugin.
   }
 }
 ```
+
+For an example of how to use Jest with Webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferkaplannyc/jest_react_redux_node_webpack_complex_example).
