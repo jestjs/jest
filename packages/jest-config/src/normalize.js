@@ -39,8 +39,8 @@ import DEPRECATED_CONFIG from './deprecated';
 import setFromArgv from './set_from_argv';
 import VALID_CONFIG from './valid_config';
 const ERROR = `${BULLET}Validation Error`;
-const JSON_EXTENSION = '.json';
-const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
+const PRESET_EXTENSIONS = ['.json', '.js'];
+const PRESET_NAME = 'jest-preset';
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -51,14 +51,25 @@ const setupPreset = (
 ): InitialOptions => {
   let preset;
   const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
-  const presetModule = Resolver.findNodeModule(
-    presetPath.endsWith(JSON_EXTENSION)
-      ? presetPath
-      : path.join(presetPath, PRESET_NAME),
-    {
-      basedir: options.rootDir,
-    },
-  );
+  const foundModule = PRESET_EXTENSIONS.some(ext => {
+    const presetModule = Resolver.findNodeModule(
+      presetPath.charAt(0) === '.' || presetPath.endsWith(ext)
+        ? presetPath
+        : path.join(presetPath, PRESET_NAME + ext),
+      {
+        basedir: options.rootDir,
+      },
+    );
+
+    try {
+      // $FlowFixMe
+      preset = (require(presetModule): InitialOptions);
+    } catch (error) {
+      return false;
+    }
+
+    return true;
+  });
 
   try {
     // $FlowFixMe
