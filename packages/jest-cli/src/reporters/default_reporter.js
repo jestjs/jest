@@ -155,48 +155,65 @@ export default class DefaultReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
+    this.testFinished(
+      test,
+      testResult,
+      aggregatedResults,
+    );
+    if (!testResult.skipped) {
+      this.printTestFileHeader(
+        testResult.testFilePath,
+        test.context.config,
+        testResult,
+      );
+      this.printTestFileFailureMessage(
+        testResult.testFilePath,
+        test.context.config,
+        testResult,
+      );
+    }
+    this.forceFlushBufferedOutput();
+  }
+
+  testFinished(test, testResult, aggregatedResults) {
     this._status.testFinished(
       test.context.config,
       testResult,
       aggregatedResults,
     );
-    this._printTestFileSummary(
-      testResult.testFilePath,
-      test.context.config,
-      testResult,
-    );
-    this.forceFlushBufferedOutput();
   }
 
-  _printTestFileSummary(
+  printTestFileHeader(
     testPath: Path,
     config: ProjectConfig,
     result: TestResult,
   ) {
-    if (!result.skipped) {
-      this.log(getResultHeader(result, this._globalConfig, config));
-
-      const consoleBuffer = result.console;
-      if (consoleBuffer && consoleBuffer.length) {
-        this.log(
-          '  ' +
-            TITLE_BULLET +
-            'Console\n\n' +
-            getConsoleOutput(
-              config.cwd,
-              !!this._globalConfig.verbose,
-              consoleBuffer,
-            ),
-        );
-      }
-
-      if (result.failureMessage) {
-        this.log(result.failureMessage);
-      }
-
-      const didUpdate = this._globalConfig.updateSnapshot === 'all';
-      const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
-      snapshotStatuses.forEach(this.log);
+    this.log(getResultHeader(result, this._globalConfig, config));
+    const consoleBuffer = result.console;
+    if (consoleBuffer && consoleBuffer.length) {
+      this.log(
+        '  ' +
+        TITLE_BULLET +
+        'Console\n\n' +
+        getConsoleOutput(
+          config.cwd,
+          !!this._globalConfig.verbose,
+          consoleBuffer,
+        ),
+      );
     }
+  }
+
+  printTestFileFailureMessage(
+    testPath: Path,
+    config: ProjectConfig,
+    result: TestResult,
+  ) {
+    if (result.failureMessage) {
+      this.log(result.failureMessage);
+    }
+    const didUpdate = this._globalConfig.updateSnapshot === 'all';
+    const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
+    snapshotStatuses.forEach(this.log);
   }
 }
