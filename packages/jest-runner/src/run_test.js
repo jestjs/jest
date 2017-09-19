@@ -78,11 +78,7 @@ export default function runTest(
 
   let testConsole;
   if (globalConfig.silent) {
-    testConsole = new NullConsole(
-      consoleOut,
-      process.stderr,
-      consoleFormatter,
-    );
+    testConsole = new NullConsole(consoleOut, process.stderr, consoleFormatter);
   } else {
     if (globalConfig.verbose) {
       testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
