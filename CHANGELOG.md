@@ -15,7 +15,7 @@
 * Add extra parameter `--runTestsByPath`. ([#4411](https://github.com/facebook/jest/pull/4411))
 * Upgrade all outdated deps ([#4425](https://github.com/facebook/jest/pull/4425))
 
-# jest 21.0.1
+## jest 21.0.1
 
 * Remove obsolete error ([#4417](https://github.com/facebook/jest/pull/4417))
 
