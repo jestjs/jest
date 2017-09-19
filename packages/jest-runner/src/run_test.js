@@ -77,15 +77,15 @@ export default function runTest(
     );
 
   let testConsole;
-  if (globalConfig.verbose) {
-    testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
+  if (globalConfig.silent) {
+    testConsole = new NullConsole(
+      consoleOut,
+      process.stderr,
+      consoleFormatter,
+    );
   } else {
-    if (globalConfig.silent) {
-      testConsole = new NullConsole(
-        consoleOut,
-        process.stderr,
-        consoleFormatter,
-      );
+    if (globalConfig.verbose) {
+      testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
     } else {
       testConsole = new BufferedConsole();
     }
