@@ -14,6 +14,7 @@
 * `[jest-util]` Fix `runOnlyPendingTimers` for `setTimeout` inside `setImmediate` ([#4608](https://github.com/facebook/jest/pull/4608))
 
 ### Features
+* `[jest-environment-*]` [**BREAKING**] Add Async Test Environment APIs, dispose is now teardown ([#4506](https://github.com/facebook/jest/pull/4506))
 * `[jest-cli]` Add an option to clear the cache ([#4430](https://github.com/facebook/jest/pull/4430))
 * `[babel-plugin-jest-hoist]` Improve error message, that the second argument of `jest.mock` must be an inline function ([#4593](https://github.com/facebook/jest/pull/4593))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test and snapshot ([#4460](https://github.com/facebook/jest/pull/4460))

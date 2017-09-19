@@ -30,7 +30,7 @@ import * as docblock from 'jest-docblock';
 // and required implicitly through the `testRunner` ProjectConfig option.
 jasmine2;
 
-export default function runTest(
+export default (async function runTest(
   path: Path,
   globalConfig: GlobalConfig,
   config: ProjectConfig,
@@ -95,39 +95,33 @@ export default function runTest(
     mapCoverage: globalConfig.mapCoverage,
   });
   const start = Date.now();
-  return testFramework(globalConfig, config, environment, runtime, path)
-    .then((result: TestResult) => {
-      const testCount =
-        result.numPassingTests +
-        result.numFailingTests +
-        result.numPendingTests;
-      result.perfStats = {end: Date.now(), start};
-      result.testFilePath = path;
-      result.coverage = runtime.getAllCoverageInfo();
-      result.sourceMaps = runtime.getSourceMapInfo();
-      result.console = testConsole.getBuffer();
-      result.skipped = testCount === result.numPendingTests;
-      result.displayName = config.displayName;
-      return result;
-    })
-    .then(
-      result =>
-        Promise.resolve().then(() => {
-          environment.dispose();
-          if (globalConfig.logHeapUsage) {
-            if (global.gc) {
-              global.gc();
-            }
-            result.memoryUsage = process.memoryUsage().heapUsed;
-          }
-
-          // Delay the resolution to allow log messages to be output.
-          return new Promise(resolve => setImmediate(() => resolve(result)));
-        }),
-      err =>
-        Promise.resolve().then(() => {
-          environment.dispose();
-          throw err;
-        }),
+  await environment.setup();
+  try {
+    const result: TestResult = await testFramework(
+      globalConfig,
+      config,
+      environment,
+      runtime,
+      path,
     );
-}
+    const testCount =
+      result.numPassingTests + result.numFailingTests + result.numPendingTests;
+    result.perfStats = {end: Date.now(), start};
+    result.testFilePath = path;
+    result.coverage = runtime.getAllCoverageInfo();
+    result.sourceMaps = runtime.getSourceMapInfo();
+    result.console = testConsole.getBuffer();
+    result.skipped = testCount === result.numPendingTests;
+    result.displayName = config.displayName;
+    if (globalConfig.logHeapUsage) {
+      if (global.gc) {
+        global.gc();
+      }
+      result.memoryUsage = process.memoryUsage().heapUsed;
+    }
+    // Delay the resolution to allow log messages to be output.
+    return new Promise(resolve => setImmediate(() => resolve(result)));
+  } finally {
+    await environment.teardown();
+  }
+});
