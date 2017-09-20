@@ -21,7 +21,7 @@ jestExpect.extend({
 
 it('stack trace points to correct location when using matchers', () => {
   try {
-    jestExpect(true).toMatch(false);
+    jestExpect(true).toBe(false);
   } catch (error) {
     expect(error.stack).toContain('stacktrace.test.js:24');
   }
@@ -29,12 +29,10 @@ it('stack trace points to correct location when using matchers', () => {
 
 it('stack trace points to correct location when using nested matchers', () => {
   try {
-    const predicate = value => {
+    jestExpect(true).toMatchPredicate(value => {
       jestExpect(value).toBe(false);
-    };
-    jestExpect(true).toMatchPredicate(predicate);
+    });
   } catch (error) {
-    expect(error.stack).toContain('at predicate');
     expect(error.stack).toContain('stacktrace.test.js:33');
   }
 });
