@@ -223,13 +223,6 @@ const formatHunks = (
         ? contextLines
         : DIFF_CONTEXT_DEFAULT,
   };
-  // Make sure the strings end with a newline.
-  if (!a.endsWith('\n')) {
-    a += '\n';
-  }
-  if (!b.endsWith('\n')) {
-    b += '\n';
-  }
 
   const {hunks} = structuredPatch('', '', a, b, '', '', options);
   if (hunks.length === 0) {
@@ -260,6 +253,11 @@ export default function diffStrings(
   options: ?DiffOptions,
   original?: Original,
 ): string {
+  // Always append one trailing newline to both strings,
+  // because `formatHunks` and `formatChunks` always ignore one.
+  a += '\n';
+  b += '\n';
+
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
