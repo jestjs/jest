@@ -198,10 +198,12 @@ const makeThrowingMatcher = (
     try {
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
-      // Try to remove this and deeper functions from the stack trace frame.
-      // Guard for some environments (browsers) that do not support this feature.
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(error, throwingMatcher);
+      if (!(error instanceof JestAssertionError)) {
+        // Try to remove this and deeper functions from the stack trace frame.
+        // Guard for some environments (browsers) that do not support this feature.
+        if (Error.captureStackTrace) {
+          Error.captureStackTrace(error, throwingMatcher);
+        }
       }
       throw error;
     }
