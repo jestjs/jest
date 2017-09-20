@@ -65,7 +65,7 @@ console.log(docblock); // "/**\n * Everything is awesome!\n * \n * @everything i
 const pragmas = parse(docblock);
 console.log(pragmas); // { everything: "is:awesome", flow: "" }
 
-console.log(print(pragmas), "hi!") // /**\n * hi!\n *\n * @everything is:awesome\n * @flow */;
+console.log(print(pragmas), "hi!") // /**\n * hi!\n *\n * @everything is:awesome\n * @flow\n */;
 ```
 
 ## API Documentation
