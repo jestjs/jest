@@ -619,7 +619,7 @@ describe('outer React element (non-snapshot)', () => {
   });
 });
 
-describe('trailing newline in multiline string', () => {
+describe('trailing newline in multiline string not enclosed in quotes', () => {
   const a = ['line 1', 'line 2', 'line 3'].join('\n');
   const b = a + '\n';
 
