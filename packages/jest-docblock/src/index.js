@@ -49,7 +49,10 @@ function parse(docblock: string): {[key: string]: string} {
   return result;
 }
 
-function print(object: {[key: string]: string} = {}, comments = ''): string {
+function print(
+  object: {[key: string]: string} = {},
+  comments: string = '',
+): string {
   const head = '/**';
   const start = ' *';
   const tail = ' */';
@@ -58,11 +61,7 @@ function print(object: {[key: string]: string} = {}, comments = ''): string {
   const line = os.EOL;
 
   const printedObject = keys
-    .reduce(
-      (acc, key) =>
-        acc.concat(start, ' ', printKeyValue(key, object[key]), line),
-      [],
-    )
+    .map(key => start + ' ' + printKeyValue(key, object[key]) + line)
     .join('');
 
   if (!comments) {
