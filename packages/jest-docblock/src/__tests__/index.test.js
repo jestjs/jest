@@ -213,4 +213,80 @@ describe('docblock', () => {
       providesModule: 'apple/banana',
     });
   });
+
+  it('prints docblocks with no keys as empty string', () => {
+    const object = {};
+    expect(docblock.print(object)).toEqual('');
+  });
+
+  it('prints docblocks with one key on one line', () => {
+    const object = {flow: ''};
+    expect(docblock.print(object)).toEqual('/** @flow */');
+  });
+
+  it('prints docblocks with multiple keys on multiple lines', () => {
+    const object = {
+      flow: '',
+      format: '',
+    };
+    expect(docblock.print(object)).toEqual(
+      '/**' + os.EOL + ' * @flow' + os.EOL + ' * @format' + os.EOL + ' */',
+    );
+  });
+
+  it('prints docblocks with values', () => {
+    const object = {
+      flow: 'foo',
+      providesModule: 'x/y/z',
+    };
+    expect(docblock.print(object)).toEqual(
+      '/**' +
+        os.EOL +
+        ' * @flow foo' +
+        os.EOL +
+        ' * @providesModule x/y/z' +
+        os.EOL +
+        ' */',
+    );
+  });
+
+  it('prints docblocks with comments', () => {
+    const object = {flow: 'foo'};
+    const comments = 'hello';
+    expect(docblock.print(object, comments)).toEqual(
+      '/**' +
+        os.EOL +
+        ' * hello' +
+        os.EOL +
+        ' *' +
+        os.EOL +
+        ' * @flow foo' +
+        os.EOL +
+        ' */',
+    );
+  });
+
+  it('prints docblocks with comments and no keys', () => {
+    const object = {};
+    const comments = 'Copyright 2004-present Facebook. All Rights Reserved.';
+    expect(docblock.print(object, comments)).toEqual(
+      '/**' + os.EOL + ' * ' + comments + os.EOL + ' */',
+    );
+  });
+
+  it('prints docblocks with multiline comments', () => {
+    const object = {};
+    const comments = 'hello' + os.EOL + 'world';
+    expect(docblock.print(object, comments)).toEqual(
+      '/**' + os.EOL + ' * hello' + os.EOL + ' * world' + os.EOL + ' */',
+    );
+  });
+
+  it('prints docblocks that are parseable', () => {
+    const object = {a: 'b', c: ''};
+    const comments = 'hello world!';
+    const formatted = docblock.print(object, comments);
+    const parsed = docblock.parse(formatted);
+    expect(parsed).toEqual(object);
+  });
 });

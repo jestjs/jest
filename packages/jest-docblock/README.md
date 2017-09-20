@@ -30,6 +30,7 @@ Pragmas can also take arguments:
 `jest-docblock` can:
 * extract the docblock from some code as a string
 * parse a docblock string's pragmas into an object
+* print an object and some comments back to a string
 
 ## Installation
 ```sh
@@ -56,13 +57,15 @@ const code = `
  }
 `;
 
-const { extract, parse } = require("jest-docblock");
+const { extract, parse, print } = require("jest-docblock");
 
 const docblock = extract(code);
 console.log(docblock); // "/**\n * Everything is awesome!\n * \n * @everything is:awesome\n * @flow\n */"
 
 const pragmas = parse(docblock);
 console.log(pragmas); // { everything: "is:awesome", flow: "" }
+
+console.log(print(pragmas), "hi!") // /**\n * hi!\n *\n * @everything is:awesome\n * @flow */;
 ```
 
 ## API Documentation
@@ -72,3 +75,6 @@ Extracts a docblock from some file contents. Returns the docblock contained in `
 
 ### `parse(docblock: string): {[key: string]: string}`
 Parses the pragmas in a docblock string into an object whose keys are the pragma tags and whose values are the arguments to those pragmas.
+
+### `print(object: {[key: string]: string}, comments?: string): string`
+Prints an object of key-value pairs back into a docblock. If `comments` are provided, they will be positioned on the top of the docblock.

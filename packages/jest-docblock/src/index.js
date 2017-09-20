@@ -8,6 +8,8 @@
  * @flow
  */
 
+const os = require('os');
+
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
@@ -47,5 +49,51 @@ function parse(docblock: string): {[key: string]: string} {
   return result;
 }
 
+function print(object: {[key: string]: string} = {}, comments = ''): string {
+  const head = '/**';
+  const start = ' *';
+  const tail = ' */';
+
+  const keys = Object.keys(object);
+  const line = os.EOL;
+
+  const printedObject = keys
+    .reduce(
+      (acc, key) =>
+        acc.concat(start, ' ', printKeyValue(key, object[key]), line),
+      [],
+    )
+    .join('');
+
+  if (!comments) {
+    if (keys.length === 0) {
+      return '';
+    }
+    if (keys.length === 1) {
+      return `${head} ${printKeyValue(keys[0], object[keys[0]])}${tail}`;
+    }
+  }
+
+  const printedComments =
+    comments
+      .split(os.EOL)
+      .map(textLine => `${start} ${textLine}`)
+      .join(os.EOL) + os.EOL;
+
+  return (
+    head +
+    line +
+    (comments ? printedComments : '') +
+    (comments && keys.length ? start + line : '') +
+    printedObject +
+    tail
+  );
+}
+
+function printKeyValue(key, value) {
+  return `@${key} ${value}`.trim();
+}
+
 exports.extract = extract;
 exports.parse = parse;
+exports.print = print;
