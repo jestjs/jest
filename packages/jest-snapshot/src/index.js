@@ -63,7 +63,9 @@ const toMatchSnapshot = function(received: any, testName?: string) {
   }
 
   const result = snapshotState.match(
-    testName ? `${currentTestName}: ${testName}` : currentTestName || '',
+    testName && currentTestName
+      ? `${currentTestName}: ${testName}`
+      : currentTestName || '',
     received,
   );
   const {count, pass} = result;
