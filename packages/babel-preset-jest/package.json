@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "index.js",
   "dependencies": {
-    "babel-plugin-jest-hoist": "^21.0.2"
+    "babel-plugin-jest-hoist": "^21.0.2",
+    "babel-plugin-syntax-object-rest-spread": "^6.13.0"
   }
 }
