@@ -600,7 +600,7 @@ describe('outer React element (non-snapshot)', () => {
   describe('from more to less', () => {
     const expected = [
       '- <header>',
-      // following 3 lines are unchanged, except for more indentation
+      // following 3 lines are unchanged, except for less indentation
       '  <h1>',
       '    Jest',
       '  </h1>',
