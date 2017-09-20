@@ -253,8 +253,8 @@ export default function diffStrings(
   options: ?DiffOptions,
   original?: Original,
 ): string {
-  // Always append newline to strings,
-  // because `formatHunks` and `formatChunks` ignore one trailing newline.
+  // Because `formatHunks` and `formatChunks` ignore one trailing newline,
+  // always append newline to strings:
   a += '\n';
   b += '\n';
 
