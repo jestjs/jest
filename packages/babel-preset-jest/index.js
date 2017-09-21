@@ -10,5 +10,6 @@ module.exports = {
   plugins: [
     // Cannot be `import` as this file is not compiled
     require('babel-plugin-jest-hoist'),
+    require('babel-plugin-syntax-object-rest-spread'),
   ],
 };
