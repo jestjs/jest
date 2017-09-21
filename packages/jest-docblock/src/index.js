@@ -64,8 +64,8 @@ export function print({
   comments = '',
   pragmas = {},
 }: {
-  comments: string,
-  pragmas: {[key: string]: string},
+  comments?: string,
+  pragmas?: {[key: string]: string},
 }): string {
   const line = detectNewline(comments) || EOL;
   const head = '/**';
@@ -106,3 +106,5 @@ export function print({
 function printKeyValue(key, value) {
   return `@${key} ${value}`.trim();
 }
+
+export default {extract, parse, parseWithComments, print};

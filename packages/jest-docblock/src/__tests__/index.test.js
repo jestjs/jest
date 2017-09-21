@@ -360,9 +360,9 @@ describe('docblock', () => {
   it('can augment existing docblocks with comments', () => {
     const before =
       '/**' + os.EOL + ' * Legalese' + os.EOL + ' * @flow' + os.EOL + ' */';
-    const parsed = docblock.parseWithComments(before);
-    parsed.pragmas.format = '';
-    const after = docblock.print(parsed);
+    const {comments, pragmas} = docblock.parseWithComments(before);
+    pragmas.format = '';
+    const after = docblock.print({comments, pragmas});
     expect(after).toEqual(
       '/**' +
         os.EOL +

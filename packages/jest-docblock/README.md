@@ -82,5 +82,5 @@ Parses the pragmas in a docblock string into an object whose keys are the pragma
 ### `parseWithComments(docblock: string): { comments: string, pragmas: {[key: string]: string} }`
 Similar to `parse` except this method also returns the comments from the docblock. Useful when used with `print()`.
 
-### `print({ comments: string, pragmas: {[key: string]: string} }): string`
+### `print({ comments?: string, pragmas?: {[key: string]: string} }): string`
 Prints an object of key-value pairs back into a docblock. If `comments` are provided, they will be positioned on the top of the docblock.
