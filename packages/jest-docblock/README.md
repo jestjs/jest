@@ -57,7 +57,7 @@ const code = `
  }
 `;
 
-const { extract, parse, print } = require("jest-docblock");
+const { extract, parse, parseWithComments, print } = require("jest-docblock");
 
 const docblock = extract(code);
 console.log(docblock); // "/**\n * Everything is awesome!\n * \n * @everything is:awesome\n * @flow\n */"
@@ -65,7 +65,10 @@ console.log(docblock); // "/**\n * Everything is awesome!\n * \n * @everything i
 const pragmas = parse(docblock);
 console.log(pragmas); // { everything: "is:awesome", flow: "" }
 
-console.log(print(pragmas, "hi!")) // /**\n * hi!\n *\n * @everything is:awesome\n * @flow\n */;
+const parsed = parseWithComments(docblock);
+console.log(parsed); // { comments: "Everything is awesome!", pragmas: { everything: "is:awesome", flow: "" } }
+
+console.log(print({pragmas, comments: "hi!"})) // /**\n * hi!\n *\n * @everything is:awesome\n * @flow\n */;
 ```
 
 ## API Documentation
@@ -79,5 +82,5 @@ Parses the pragmas in a docblock string into an object whose keys are the pragma
 ### `parseWithComments(docblock: string): { comments: string, pragmas: {[key: string]: string} }`
 Similar to `parse` except this method also returns the comments from the docblock. Useful when used with `print()`.
 
-### `print(object: {[key: string]: string}, comments?: string): string`
+### `print({ comments: string, pragmas: {[key: string]: string} }): string`
 Prints an object of key-value pairs back into a docblock. If `comments` are provided, they will be positioned on the top of the docblock.

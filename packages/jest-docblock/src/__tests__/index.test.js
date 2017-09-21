@@ -11,8 +11,8 @@
 
 'use strict';
 
-const os = require('os');
-const docblock = require('../');
+import os from 'os';
+import * as docblock from '..';
 
 describe('docblock', () => {
   it('extracts valid docblock with line comment', () => {
@@ -241,7 +241,7 @@ describe('docblock', () => {
       os.EOL +
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({
-      comments: 'hello\nworld',
+      comments: 'hello' + os.EOL + 'world',
       pragmas: {flow: 'yes'},
     });
   });
@@ -260,37 +260,53 @@ describe('docblock', () => {
       os.EOL +
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({
-      comments: 'hello\n\nworld',
+      comments: 'hello' + os.EOL + os.EOL + 'world',
       pragmas: {flow: 'yes'},
     });
   });
 
-  it('prints docblocks with no keys as empty string', () => {
-    const object = {};
-    expect(docblock.print(object)).toEqual('');
+  it('extracts docblock comments as CRLF when docblock contains CRLF', () => {
+    const code = '/**\r\n * foo\r\n * bar\r\n*/';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: 'foo\r\nbar',
+      pragmas: {},
+    });
   });
 
-  it('prints docblocks with one key on one line', () => {
-    const object = {flow: ''};
-    expect(docblock.print(object)).toEqual('/** @flow */');
+  it('extracts docblock comments as LF when docblock contains LF', () => {
+    const code = '/**\n * foo\n * bar\n*/';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: 'foo\nbar',
+      pragmas: {},
+    });
   });
 
-  it('prints docblocks with multiple keys on multiple lines', () => {
-    const object = {
+  it('prints docblocks with no pragmas as empty string', () => {
+    const pragmas = {};
+    expect(docblock.print({pragmas})).toEqual('');
+  });
+
+  it('prints docblocks with one pragma on one line', () => {
+    const pragmas = {flow: ''};
+    expect(docblock.print({pragmas})).toEqual('/** @flow */');
+  });
+
+  it('prints docblocks with multiple pragmas on multiple lines', () => {
+    const pragmas = {
       flow: '',
       format: '',
     };
-    expect(docblock.print(object)).toEqual(
+    expect(docblock.print({pragmas})).toEqual(
       '/**' + os.EOL + ' * @flow' + os.EOL + ' * @format' + os.EOL + ' */',
     );
   });
 
-  it('prints docblocks with values', () => {
-    const object = {
+  it('prints docblocks with pragmas', () => {
+    const pragmas = {
       flow: 'foo',
       providesModule: 'x/y/z',
     };
-    expect(docblock.print(object)).toEqual(
+    expect(docblock.print({pragmas})).toEqual(
       '/**' +
         os.EOL +
         ' * @flow foo' +
@@ -302,9 +318,9 @@ describe('docblock', () => {
   });
 
   it('prints docblocks with comments', () => {
-    const object = {flow: 'foo'};
+    const pragmas = {flow: 'foo'};
     const comments = 'hello';
-    expect(docblock.print(object, comments)).toEqual(
+    expect(docblock.print({comments, pragmas})).toEqual(
       '/**' +
         os.EOL +
         ' * hello' +
@@ -318,26 +334,61 @@ describe('docblock', () => {
   });
 
   it('prints docblocks with comments and no keys', () => {
-    const object = {};
+    const pragmas = {};
     const comments = 'Copyright 2004-present Facebook. All Rights Reserved.';
-    expect(docblock.print(object, comments)).toEqual(
+    expect(docblock.print({comments, pragmas})).toEqual(
       '/**' + os.EOL + ' * ' + comments + os.EOL + ' */',
     );
   });
 
   it('prints docblocks with multiline comments', () => {
-    const object = {};
+    const pragmas = {};
     const comments = 'hello' + os.EOL + 'world';
-    expect(docblock.print(object, comments)).toEqual(
+    expect(docblock.print({comments, pragmas})).toEqual(
       '/**' + os.EOL + ' * hello' + os.EOL + ' * world' + os.EOL + ' */',
     );
   });
 
   it('prints docblocks that are parseable', () => {
-    const object = {a: 'b', c: ''};
+    const pragmas = {a: 'b', c: ''};
     const comments = 'hello world!';
-    const formatted = docblock.print(object, comments);
+    const formatted = docblock.print({comments, pragmas});
     const parsed = docblock.parse(formatted);
-    expect(parsed).toEqual(object);
+    expect(parsed).toEqual(pragmas);
+  });
+
+  it('can augment existing docblocks with comments', () => {
+    const before =
+      '/**' + os.EOL + ' * Legalese' + os.EOL + ' * @flow' + os.EOL + ' */';
+    const parsed = docblock.parseWithComments(before);
+    parsed.pragmas.format = '';
+    const after = docblock.print(parsed);
+    expect(after).toEqual(
+      '/**' +
+        os.EOL +
+        ' * Legalese' +
+        os.EOL +
+        ' *' +
+        os.EOL +
+        ' * @flow' +
+        os.EOL +
+        ' * @format' +
+        os.EOL +
+        ' */',
+    );
+  });
+
+  it('prints docblocks using CRLF if comments contains CRLF', () => {
+    const pragmas = {};
+    const comments = 'hello\r\nworld';
+    const formatted = docblock.print({comments, pragmas});
+    expect(formatted).toEqual('/**\r\n * hello\r\n * world\r\n */');
+  });
+
+  it('prints docblocks using LF if comments contains LF', () => {
+    const pragmas = {};
+    const comments = 'hello\nworld';
+    const formatted = docblock.print({comments, pragmas});
+    expect(formatted).toEqual('/**\n * hello\n * world\n */');
   });
 });
