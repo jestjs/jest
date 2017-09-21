@@ -214,6 +214,57 @@ describe('docblock', () => {
     });
   });
 
+  it('extracts comments from docblock', () => {
+    const code =
+      '/**' +
+      os.EOL +
+      ' * hello world' +
+      os.EOL +
+      ' * @flow yes' +
+      os.EOL +
+      ' */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: 'hello world',
+      pragmas: {flow: 'yes'},
+    });
+  });
+
+  it('extracts multiline comments from docblock', () => {
+    const code =
+      '/**' +
+      os.EOL +
+      ' * hello' +
+      os.EOL +
+      ' * world' +
+      os.EOL +
+      ' * @flow yes' +
+      os.EOL +
+      ' */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: 'hello\nworld',
+      pragmas: {flow: 'yes'},
+    });
+  });
+
+  it('extracts comments from beginning and end of docblock', () => {
+    const code =
+      '/**' +
+      os.EOL +
+      ' * hello' +
+      os.EOL +
+      ' * @flow yes' +
+      os.EOL +
+      ' * ' +
+      os.EOL +
+      ' * world' +
+      os.EOL +
+      ' */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: 'hello\n\nworld',
+      pragmas: {flow: 'yes'},
+    });
+  });
+
   it('prints docblocks with no keys as empty string', () => {
     const object = {};
     expect(docblock.print(object)).toEqual('');

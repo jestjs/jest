@@ -76,5 +76,8 @@ Extracts a docblock from some file contents. Returns the docblock contained in `
 ### `parse(docblock: string): {[key: string]: string}`
 Parses the pragmas in a docblock string into an object whose keys are the pragma tags and whose values are the arguments to those pragmas.
 
+### `parseWithComments(docblock: string): { comments: string, pragmas: {[key: string]: string} }`
+Similar to `parse` except this method also returns the comments from the docblock. Useful when used with `print()`.
+
 ### `print(object: {[key: string]: string}, comments?: string): string`
 Prints an object of key-value pairs back into a docblock. If `comments` are provided, they will be positioned on the top of the docblock.
