@@ -106,5 +106,3 @@ export function print({
 function printKeyValue(key, value) {
   return `@${key} ${value}`.trim();
 }
-
-export default {extract, parse, parseWithComments, print};

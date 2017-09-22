@@ -12,7 +12,7 @@ import type {SerializableError} from 'types/TestResult';
 import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';
 
 import path from 'path';
-import docblock from 'jest-docblock';
+import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import H from './constants';
 import extractRequires from './lib/extract_requires';
