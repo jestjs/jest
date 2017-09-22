@@ -20,7 +20,7 @@ const usage = (entity: string) =>
   `\n${chalk.bold('Pattern Mode Usage')}\n` +
   ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
   ` ${chalk.dim('\u203A Press')} Enter ` +
-  `${chalk.dim(`to apply pattern to all ${entity}.`)}\n` +
+  `${chalk.dim(`to filter by a ${entity} regex pattern.`)}\n` +
   `\n`;
 
 const usageRows = usage('').split('\n').length;

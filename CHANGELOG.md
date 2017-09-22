@@ -207,7 +207,6 @@
 
 ## jest 20.0.3
 
-* Fix arrow typeahead on Windows. ([#3563](https://github.com/facebook/jest/pull/3563))
 * Fix reporters 'default' setting. ([#3562](https://github.com/facebook/jest/pull/3562))
 * Fix to make Jest fail when the coverage threshold not met. ([#3554](https://github.com/facebook/jest/pull/3554))
 
@@ -224,7 +223,6 @@
 
 * New `--projects` option to run one instance of Jest in multiple projects at the same time. ([#3400](https://github.com/facebook/jest/pull/3400))
 * New multi project runner ([#3156](https://github.com/facebook/jest/pull/3156))
-* New keyboard/arrow selection for watch mode typeaheads. ([#3386](https://github.com/facebook/jest/pull/3386))
 * New --listTests flag. ([#3441](https://github.com/facebook/jest/pull/3441))
 * New --showConfig flag. ([#3296](https://github.com/facebook/jest/pull/3296))
 * New promise support for all `expect` matchers through `.resolves` and `.rejects`. ([#3068](https://github.com/facebook/jest/pull/3068))
@@ -271,13 +269,11 @@
 * Fixed return value of mocks so they can explicitly be set to return `undefined`. ([#3354](https://github.com/facebook/jest/pull/3354))
 * Fixed runner to run tests associated with snapshots when the snapshot changes. ([#3025](https://github.com/facebook/jest/pull/3025))
 * Fixed snapshot serializer require, restructured pretty-format. ([#3399](https://github.com/facebook/jest/pull/3399))
-* Fixed spacing in test name pattern typeahead ([#3315](https://github.com/facebook/jest/pull/3315))
 * Fixed support for Babel 7 in babel-jest. ([#3271](https://github.com/facebook/jest/pull/3271))
 * Fixed testMatch to find tests in .folders. ([#3006](https://github.com/facebook/jest/pull/3006))
 * Fixed testNamePattern and testPathPattern to work better together. ([#3327](https://github.com/facebook/jest/pull/3327))
 * Fixed to show reject reason when expecting resolve. ([#3134](https://github.com/facebook/jest/pull/3134))
 * Fixed toHaveProperty() to use hasOwnProperty from Object ([#3410](https://github.com/facebook/jest/pull/3410))
-* Fixed watch mode typeahead filter cursor behavior. ([#3392](https://github.com/facebook/jest/pull/3392))
 * Fixed watch mode's screen clearing. ([#2959](https://github.com/facebook/jest/pull/2959)) ([#3294](https://github.com/facebook/jest/pull/3294))
 * Improved and consolidated Jest's configuration file resolution. ([#3472](https://github.com/facebook/jest/pull/3472))
 * Improved documentation throughout the Jest website.
@@ -345,8 +341,6 @@
 * New jest-validate package to improve configuration errors, help with suggestions of correct configuration and to be adopted in other libraries.
 * New pretty-printing for asymmetric matchers.
 * New RSS feed for Jest's blog.
-* New typeahead to filter cached test names added to watch mode.
-* New typeahead to filter file names added to watch mode (#2324).
 * New way to provide a reducer to extract haste module ids.
 * New website, new documentation, new color scheme and new homepage.
 * Rewritten watch mode for instant feedback, better code quality and to build new features on top of it (#2362).
