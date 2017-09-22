@@ -42,18 +42,7 @@ Today we are pleased to ship version 19 of the Jest testing platform. It's the b
 
 ## Immersive Watch Mode
 
-We [completely rewrote the watch mode](https://github.com/facebook/jest/pull/2362) to make it instant and more extensible. As a result, the experience of using it really is immersive: tests re-run instantly after a file change and we added a typeahead to make it easy to select the right tests.
-
-### Filename pattern typeahead
-
-Filtering by filename now has a typeahead. This is particularly useful in large codebases to tell to exactly which files match your current pattern.
-
-![typeahead-pattern](/jest/img/blog/19-typeahead-pattern.gif)
-
-### Cached test name pattern typeahead.
-
-After running tests once, Jest knows which specific tests are available so we also added a typeahead for running specific tests within test suites:
-![typeahead-name](/jest/img/blog/19-typeahead-name.gif)
+We [completely rewrote the watch mode](https://github.com/facebook/jest/pull/2362) to make it instant and more extensible. As a result, the experience of using it really is immersive: tests re-run instantly after a file change and we made it easy to select the right tests.
 
 ]]></summary>
         <author>
