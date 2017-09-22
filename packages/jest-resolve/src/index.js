@@ -95,9 +95,10 @@ class Resolver {
         require(options.resolver)
       : defaultResolver;
     const paths = options.paths;
+    const pathWithoutQuery = path.replace(/\?.*$/, '');
 
     try {
-      return resolver(path, {
+      return resolver(pathWithoutQuery, {
         basedir: options.basedir,
         browser: options.browser,
         extensions: options.extensions,
