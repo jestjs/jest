@@ -189,7 +189,7 @@ const shouldShowPatchMarks = (hunk: Hunk, oldLinesCount: number): boolean =>
 const createPatchMark = (hunk: Hunk): string => {
   const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
   const markNew = `+${hunk.newStart},${hunk.newLines}`;
-  return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
+  return chalk.yellow(`@@ ${markOld} ${markNew} @@`);
 };
 
 // Given original lines, return callback function which given indexes for hunk,
@@ -232,18 +232,20 @@ const formatHunks = (
   const getter = original && getterForHunks(original);
   const oldLinesCount = (a.match(/\n/g) || []).length;
   return hunks
-    .map((hunk: Hunk) => {
+    .reduce((lines, hunk: Hunk) => {
+      if (shouldShowPatchMarks(hunk, oldLinesCount)) {
+        lines.push(createPatchMark(hunk));
+      }
+
       // Hunk properties are one-based but index args are zero-based.
       const getOriginal =
         getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
-      const lines = hunk.lines
-        .map(line => formatLine(line[0], line.slice(1), getOriginal))
-        .join('\n');
+      hunk.lines.forEach(line => {
+        lines.push(formatLine(line[0], line.slice(1), getOriginal));
+      });
 
-      return shouldShowPatchMarks(hunk, oldLinesCount)
-        ? createPatchMark(hunk) + lines
-        : lines;
-    })
+      return lines;
+    }, [])
     .join('\n');
 };
 
