@@ -1,39 +1,14 @@
-/* eslint-disable sort-keys */
+/*eslint sort-keys: 0*/
+/**
+ * Copyright (c) 2017-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
-const React = require('React');
-
-const githubButton = (
-  <a
-    className="github-button"
-    href="https://github.com/facebook/jest"
-    data-icon="octicon-star"
-    data-count-href="/facebook/jest/stargazers"
-    data-count-api="/repos/facebook/jest#stargazers_count"
-    data-count-aria-label="# stargazers on GitHub"
-    aria-label="Star facebook/jest on GitHub"
-  >
-    Star
-  </a>
-);
-
-console.log('siteConfig loaded...');
-
-/*
-Many companies use Jest, so we can't list all of them in our showcase.
-To be useful to someone looking through the showcase, the company must be
-something that most readers would recognize, such as a funded startup or
-public company.
-
-To add your company, add your logo to the 'website/src/jest/img/logos' folder.
-This asset should be at least 256 pixels wide. Then add an entry to the list
-below using the following format:
-
-{
-  caption: 'Your Company Name',
-  image: '/jest/img/logos/YourCompanyLogo.png',
-  infoLink: 'https://yourcompany.com',
-}
-*/
+/* List of projects/orgs using your project for the users page */
 const users = [
   {
     caption: 'Facebook',
@@ -269,26 +244,28 @@ const users = [
 ];
 
 const siteConfig = {
-  title: 'Jest',
-  url: 'https://facebook.github.io',
   baseUrl: '/jest/',
-  repo: 'facebook/jest',
-  githubButton,
+  tagline: '🃏 Delightful JavaScript Testing',
+  title: 'Jest',
+  url: 'https://github.com/facebook/jest',
+  projectName: 'jest',
+  headerLinks: [
+    {doc: 'getting-started', label: 'Docs'},
+    {doc: 'api', label: 'API'},
+    {label: 'Help', page: 'help'},
+    {blog: true, label: 'Blog'},
+    {languages: true},
+    {href: 'https://github.com/facebook/jest', label: 'GitHub'},
+  ],
   users,
+  headerIcon: 'img/jest.svg',
+  footerIcon: 'img/jest.svg',
+  favicon: 'img/favicon.png',
+  colors: {
+    primaryColor: '#99424F',
+    secondaryColor: '#205C3B',
+    prismColor: 'rgba(46, 133, 85, 0.03)',
+  },
 };
-
-// load, parse, and filter only selected languages
-const languages = require('./languages.js');
-
-const enabledLanguages = [];
-languages.filter(lang => lang.enabled).map(lang => {
-  enabledLanguages.push(lang);
-});
-siteConfig['languages'] = enabledLanguages;
-
-siteConfig['en'] = require('./i18n/en.js');
-
-/* INJECT LOCALIZED FILES BEGIN */
-/* INJECT LOCALIZED FILES END */
 
 module.exports = siteConfig;

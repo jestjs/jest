@@ -1,0 +1,32 @@
+{
+  "docs": {
+    "Introduction": [
+      "getting-started",
+      "using-matchers",
+      "asynchronous",
+      "setup-teardown",
+      "mock-function-api",
+      "more-resources"
+    ],
+    "API Reference": [
+      "api",
+      "expect",
+      "mock-functions",
+      "jest-object",
+      "configuration",
+      "cli"
+    ],
+    "Guides": [
+      "snapshot-testing",
+      "tutorial-react",
+      "tutorial-react-native",
+      "tutorial-async",
+      "timer-mocks",
+      "manual-mocks",
+      "webpack",
+      "migration-guide",
+      "testing-frameworks",
+      "troubleshooting"
+    ]
+  }
+}

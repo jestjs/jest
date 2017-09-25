@@ -1,10 +1,18 @@
-/**
- * @providesModule Footer
- * @jsx React.DOM
- */
+const React = require('react');
 
-const React = require('React');
-const siteConfig = require('../siteConfig.js');
+const githubButton = (
+  <a
+    className="github-button"
+    href="https://github.com/deltice/test-site"
+    data-icon="octicon-star"
+    data-count-href="/deltice/test-site/stargazers"
+    data-count-api="/repos/deltice/test-site#stargazers_count"
+    data-count-aria-label="# stargazers on GitHub"
+    aria-label="Star this project on GitHub"
+  >
+    Star
+  </a>
+);
 
 class Footer extends React.Component {
   render() {
@@ -12,10 +20,10 @@ class Footer extends React.Component {
     return (
       <footer className="nav-footer" id="footer">
         <section className="sitemap">
-          <a href="/jest" className="nav-home">
+          <a href={this.props.config.baseUrl} className="nav-home">
             <img
-              src="/jest/img/jest-outline.svg"
-              alt="Jest"
+              src={this.props.config.baseUrl + this.props.config.footerIcon}
+              alt={this.props.config.title}
               width="66"
               height="58"
             />
@@ -24,45 +32,60 @@ class Footer extends React.Component {
             <h5>Docs</h5>
             <a
               href={
-                '/jest/docs/' + this.props.language + '/getting-started.html'
+                this.props.config.baseUrl +
+                'docs/' +
+                this.props.language +
+                '/doc1.html'
               }
             >
-              Getting Started
+              Getting Started (or other categories)
             </a>
             <a
               href={
-                '/jest/docs/' + this.props.language + '/snapshot-testing.html'
+                this.props.config.baseUrl +
+                'docs/' +
+                this.props.language +
+                '/doc2.html'
               }
             >
-              Guides
+              Guides (or other categories)
             </a>
-            <a href={'/jest/docs/' + this.props.language + '/api.html'}>
-              API Reference
+            <a
+              href={
+                this.props.config.baseUrl +
+                'docs/' +
+                this.props.language +
+                '/doc3.html'
+              }
+            >
+              API Reference (or other categories)
             </a>
           </div>
           <div>
             <h5>Community</h5>
-            <a href={'/jest/' + this.props.language + '/users.html'}>
+            <a
+              href={
+                this.props.config.baseUrl + this.props.language + '/users.html'
+              }
+            >
               User Showcase
             </a>
             <a
-              href="http://stackoverflow.com/questions/tagged/jestjs"
+              href="http://stackoverflow.com/questions/tagged/"
               target="_blank"
             >
               Stack Overflow
             </a>
-            <a href="https://discordapp.com/channels/102860784329052160/103622435865104384">
-              Jest Chat
-            </a>
-            <a href="https://twitter.com/fbjest" target="_blank">
+            <a href="https://discordapp.com/">Project Chat</a>
+            <a href="https://twitter.com/" target="_blank">
               Twitter
             </a>
           </div>
           <div>
             <h5>More</h5>
-            <a href="/jest/blog">Blog</a>
-            <a href="https://github.com/facebook/jest">GitHub</a>
-            {siteConfig.githubButton}
+            <a href={this.props.config.baseUrl + 'blog'}>Blog</a>
+            <a href="https://github.com/">GitHub</a>
+            {githubButton}
           </div>
         </section>
 
@@ -72,14 +95,14 @@ class Footer extends React.Component {
           className="fbOpenSource"
         >
           <img
-            src="/jest/img/oss_logo.png"
+            src={this.props.config.baseUrl + 'img/oss_logo.png'}
             alt="Facebook Open Source"
             width="170"
             height="45"
           />
         </a>
         <section className="copyright">
-          Copyright © {currentYear} Facebook Inc.
+          Copyright &copy; {currentYear} Facebook Inc.
         </section>
       </footer>
     );
