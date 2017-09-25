@@ -8,8 +8,6 @@
  * @flow
  */
 
-type Node = MemberExpression | CallExpression;
-
 type Location = {
   column: number,
   line: number,
@@ -20,11 +18,15 @@ type NodeLocation = {
   start: Location,
 };
 
+type ParentNode = CallExpression | MemberExpression;
+
+export type Node = CallExpression | MemberExpression | Identifier | Literal;
+
 export type Identifier = {
   type: 'Identifier',
   name: string,
   value: string,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 
@@ -34,7 +36,7 @@ export type MemberExpression = {
   expression: CallExpression,
   property: Identifier,
   object: Identifier,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 
@@ -42,7 +44,7 @@ export type Literal = {
   type: 'Literal',
   value?: string,
   rawValue?: string,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 
@@ -50,7 +52,7 @@ export type CallExpression = {
   type: 'CallExpression',
   arguments: Array<Literal>,
   callee: Identifier | MemberExpression,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 
