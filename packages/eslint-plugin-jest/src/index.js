@@ -37,6 +37,7 @@ module.exports = {
         it: false,
         jasmine: false,
         jest: false,
+        pending: false,
         pit: false,
         require: false,
         test: false,
