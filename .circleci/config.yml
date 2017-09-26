@@ -28,7 +28,7 @@ aliases:
       git config --global user.name "Website Deployment Script"
       echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
       # install Docusaurus and generate file of English strings
-      cd website && npm install && npm run write-translations && cd ..
+      cd website && yarn && yarn run write-translations && cd ..
       # crowdin install
       sudo apt-get update
       sudo apt-get install default-jre
@@ -38,7 +38,7 @@ aliases:
       crowdin --config crowdin.yaml upload sources --auto-update -b master
       crowdin --config crowdin.yaml download -b master
       # build and publish website
-      cd website && GIT_USER=jest-bot npm run publish-gh-pages
+      cd website && GIT_USER=jest-bot yarn run publish-gh-pages
 
 version: 2
 jobs:
