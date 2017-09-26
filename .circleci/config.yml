@@ -97,7 +97,7 @@ jobs:
       - save-cache: *save-cache
       - run: |
           cd website
-          yarn run test
+          yarn run build
       - deploy: *deploy
 
 # Workflows enables us to run multiple jobs in parallel
