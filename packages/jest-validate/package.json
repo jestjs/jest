@@ -1,6 +1,6 @@
 {
   "name": "jest-validate",
-  "version": "21.1.0",
+  "version": "21.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,8 +9,8 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "jest-get-type": "^21.0.2",
+    "jest-get-type": "^21.2.0",
     "leven": "^2.1.0",
-    "pretty-format": "^21.1.0"
+    "pretty-format": "^21.2.0"
   }
 }

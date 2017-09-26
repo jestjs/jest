@@ -1,6 +1,6 @@
 {
   "name": "jest-test-typescript-parser",
-  "version": "21.1.0",
+  "version": "21.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,7 +8,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "jest-editor-support": "^21.1.0",
+    "jest-editor-support": "^21.2.0",
     "typescript": "^2.2.1"
   }
 }

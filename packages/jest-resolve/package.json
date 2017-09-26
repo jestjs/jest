@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "21.1.0",
+  "version": "21.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -13,6 +13,6 @@
     "is-builtin-module": "^1.0.0"
   },
   "devDependencies": {
-    "jest-haste-map": "^21.1.0"
+    "jest-haste-map": "^21.2.0"
   }
 }
