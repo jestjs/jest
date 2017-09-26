@@ -35,7 +35,7 @@ aliases:
       # crowdin install end
       crowdin --config crowdin.yaml upload sources --auto-update -b master
       crowdin --config crowdin.yaml download -b master
-      cd website && GIT_USER=jest-bot npm run gh-pages
+      cd website && GIT_USER=jest-bot npm run docusaurus-publish
 
 version: 2
 jobs:
