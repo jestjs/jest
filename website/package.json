@@ -4,8 +4,9 @@
     "build": "docusaurus-build",
     "gh-pages": "docusaurus-publish",
     "examples": "docusaurus-examples",
-    "crowdin-upload": "crowdin-cli --config ../crowdin.yaml upload sources --auto-update -b master",
-    "crowdin-download": "crowdin-cli --config ../crowdin.yaml download -b master",
+    "crowdin-upload":
+      "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
+    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
     "publish-gh-pages": "docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
