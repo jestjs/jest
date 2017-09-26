@@ -1,4 +1,16 @@
-## jest 21.1
+## jest 21.2.0
+
+* 🃏 Change license from BSD+Patents to MIT.
+* Allow eslint-plugin to recognize more disabled tests ([#4533](https://github.com/facebook/jest/pull/4533))
+* Add babel-plugin for object spread syntax to babel-preset-jest ([#4519](https://github.com/facebook/jest/pull/4519))
+* Display outer element and trailing newline consistently in jest-diff ([#4520](https://github.com/facebook/jest/pull/4520))
+* Do not modify stack trace of JestAssertionError ([#4516](https://github.com/facebook/jest/pull/4516))
+* Print errors after test structure in verbose mode ([#4504](https://github.com/facebook/jest/pull/4504))
+* Fix `--silent --verbose` problem ([#4505](https://github.com/facebook/jest/pull/4505))
+* Fix: Reset local state of assertions when using hasAssertions ([#4498](https://github.com/facebook/jest/pull/4498))
+* jest-resolve: Prevent default resolver failure when potential resolution directory does not exist ([#4483](https://github.com/facebook/jest/pull/4483))
+
+## jest 21.1.0
 
 * (minor) Use ES module exports ([#4454](https://github.com/facebook/jest/pull/4454))
 * Allow chaining mockClear and mockReset ([#4475](https://github.com/facebook/jest/pull/4475))
