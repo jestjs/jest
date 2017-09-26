@@ -5,6 +5,6 @@
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js"
 }

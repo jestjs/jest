@@ -2,6 +2,11 @@
   "name": "eslint-plugin-jest",
   "version": "21.1.0",
   "description": "Eslint rules for Jest",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
   "keywords": [
     "eslint",
     "eslintplugin",
@@ -12,13 +17,8 @@
     "email": "hello@jkimbo.com",
     "url": "jkimbo.com"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/facebook/jest.git"
-  },
   "main": "build/index.js",
   "peerDependencies": {
     "eslint": ">=3.6"
-  },
-  "license": "BSD-3-Clause"
+  }
 }

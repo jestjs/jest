@@ -17,7 +17,7 @@
     "url": "https://github.com/facebook/jest"
   },
   "homepage": "http://facebook.github.io/jest/",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "keywords": [
     "ava",
     "babel",
