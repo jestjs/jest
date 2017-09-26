@@ -244,27 +244,37 @@ const users = [
 ];
 
 const siteConfig = {
-  baseUrl: '/jest/',
-  tagline: '🃏 Delightful JavaScript Testing',
   title: 'Jest',
-  url: 'https://github.com/facebook/jest',
+  tagline: '🃏 Delightful JavaScript Testing',
+  url: 'https://facebook.github.io',
+  baseUrl: '/jest/',
   projectName: 'jest',
+  repo: 'facebook/jest',
+  users,
+  editUrl: 'https://github.com/facebook/jest/edit/master/docs/',
   headerLinks: [
     {doc: 'getting-started', label: 'Docs'},
     {doc: 'api', label: 'API'},
-    {label: 'Help', page: 'help'},
+    {page: 'help', label: 'Help'},
     {blog: true, label: 'Blog'},
     {languages: true},
+    {search: true},
     {href: 'https://github.com/facebook/jest', label: 'GitHub'},
   ],
-  users,
   headerIcon: 'img/jest.svg',
   footerIcon: 'img/jest.svg',
-  favicon: 'img/favicon.png',
+  favicon: 'img/favicon/favicon.ico',
+  ogImage: 'img/opengraph.png',
+  recruitingLink: 'https://crowdin.com/project/jest',
+  algolia: {
+    apiKey: '833906d7486e4059359fa58823c4ef56',
+    indexName: 'jest',
+  },
+  gaTrackingId: 'UA-44373548-17',
   colors: {
-    primaryColor: '#99424F',
-    secondaryColor: '#205C3B',
-    prismColor: 'rgba(46, 133, 85, 0.03)',
+    primaryColor: '#99424f',
+    secondaryColor: '#7f2c39',
+    prismColor: 'rgba(153, 66, 79, 0.03)',
   },
 };
 
