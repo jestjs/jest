@@ -17,6 +17,7 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 ## AngularJS
 
 * [Testing an AngularJS app with Jest](https://medium.com/aya-experience/testing-an-angularjs-app-with-jest-3029a613251) by Matthieu Lux ([@Swiip](https://twitter.com/Swiip))
+* [Running AngularJS Tests with Jest](https://engineering.talentpair.com/running-angularjs-tests-with-jest-49d0cc9c6d26) by Ben Brandt ([@benjaminbrandt](https://twitter.com/benjaminbrandt))
 
 ## Angular
 
