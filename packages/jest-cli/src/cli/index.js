@@ -270,7 +270,7 @@ const _buildContextsAndHasteMaps = async (
         console: new Console(outputStream, outputStream),
         maxWorkers: globalConfig.maxWorkers,
         resetCache: !config.cache,
-        watch: globalConfig.watch,
+        watch: globalConfig.watch || globalConfig.watchAll,
         watchman: globalConfig.watchman,
       });
       hasteMapInstances[index] = hasteMapInstance;
