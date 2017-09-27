@@ -1,29 +1,19 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 import type {TestResult} from 'types/TestResult';
-import chalk from 'chalk';
 import type {ScrollOptions} from './lib/scroll_list';
 
-import scroll from './lib/scroll_list';
-import {getTerminalWidth} from './lib/terminal_utils';
 import Prompt from './lib/Prompt';
-import formatTestNameByPattern from './lib/format_test_name_by_pattern';
 import {
-  formatTypeaheadSelection,
-  printMore,
   printPatternCaret,
-  printPatternMatches,
   printRestoredPatternCaret,
-  printStartTyping,
-  printTypeaheadItem,
 } from './lib/pattern_mode_helpers';
 import PatternPrompt from './pattern_prompt';
 
@@ -38,43 +28,12 @@ export default class TestNamePatternPrompt extends PatternPrompt {
 
   _onChange(pattern: string, options: ScrollOptions) {
     super._onChange(pattern, options);
-    this._printTypeahead(pattern, options);
+    this._printPrompt(pattern, options);
   }
 
-  _printTypeahead(pattern: string, options: ScrollOptions) {
-    const matchedTests = this._getMatchedTests(pattern);
-    const total = matchedTests.length;
+  _printPrompt(pattern: string, options: ScrollOptions) {
     const pipe = this._pipe;
-    const prompt = this._prompt;
-
     printPatternCaret(pattern, pipe);
-
-    if (pattern) {
-      printPatternMatches(
-        total,
-        'test',
-        pipe,
-        ` from ${chalk.yellow('cached')} test suites`,
-      );
-
-      const width = getTerminalWidth();
-      const {start, end, index} = scroll(total, options);
-
-      prompt.setTypeaheadLength(total);
-
-      matchedTests
-        .slice(start, end)
-        .map(name => formatTestNameByPattern(name, pattern, width - 4))
-        .map((item, i) => formatTypeaheadSelection(item, i, index, prompt))
-        .forEach(item => printTypeaheadItem(item, pipe));
-
-      if (total > end) {
-        printMore('test', pipe, total - end);
-      }
-    } else {
-      printStartTyping('test name', pipe);
-    }
-
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 

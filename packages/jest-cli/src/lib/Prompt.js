@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -18,9 +17,9 @@ export default class Prompt {
   _onChange: Function;
   _onSuccess: Function;
   _onCancel: Function;
-  _typeaheadOffset: number;
-  _typeaheadLength: number;
-  _typeaheadSelection: string | null;
+  _offset: number;
+  _promptLength: number;
+  _selection: string | null;
 
   constructor() {
     (this: any)._onResize = this._onResize.bind(this);
@@ -39,13 +38,13 @@ export default class Prompt {
     this._value = '';
     this._onSuccess = onSuccess;
     this._onCancel = onCancel;
-    this._typeaheadSelection = null;
-    this._typeaheadOffset = -1;
-    this._typeaheadLength = 0;
+    this._selection = null;
+    this._offset = -1;
+    this._promptLength = 0;
     this._onChange = () =>
       onChange(this._value, {
         max: 10,
-        offset: this._typeaheadOffset,
+        offset: this._offset,
       });
 
     this._onChange();
@@ -53,19 +52,19 @@ export default class Prompt {
     process.stdout.on('resize', this._onResize);
   }
 
-  setTypeaheadLength(length: number) {
-    this._typeaheadLength = length;
+  setPromptLength(length: number) {
+    this._promptLength = length;
   }
 
-  setTypheadheadSelection(selected: string) {
-    this._typeaheadSelection = selected;
+  setPromptSelection(selected: string) {
+    this._selection = selected;
   }
 
   put(key: string) {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
-        this._onSuccess(this._typeaheadSelection || this._value);
+        this._onSuccess(this._selection || this._value);
         this.abort();
         break;
       case KEYS.ESCAPE:
@@ -74,14 +73,11 @@ export default class Prompt {
         this.abort();
         break;
       case KEYS.ARROW_DOWN:
-        this._typeaheadOffset = Math.min(
-          this._typeaheadOffset + 1,
-          this._typeaheadLength - 1,
-        );
+        this._offset = Math.min(this._offset + 1, this._promptLength - 1);
         this._onChange();
         break;
       case KEYS.ARROW_UP:
-        this._typeaheadOffset = Math.max(this._typeaheadOffset - 1, -1);
+        this._offset = Math.max(this._offset - 1, -1);
         this._onChange();
         break;
       case KEYS.ARROW_LEFT:
@@ -94,8 +90,8 @@ export default class Prompt {
           key === KEYS.BACKSPACE
             ? this._value.slice(0, -1)
             : this._value + char;
-        this._typeaheadOffset = -1;
-        this._typeaheadSelection = null;
+        this._offset = -1;
+        this._selection = null;
         this._onChange();
         break;
     }

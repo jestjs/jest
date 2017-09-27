@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 
@@ -154,46 +153,6 @@ describe('Watch mode flows', () => {
       testNamePattern: 'con *',
       watch: true,
       watchAll: false,
-    });
-  });
-
-  it('can select a specific test name from the typeahead results', () => {
-    contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
-
-    // Write a enter pattern mode
-    stdin.emit(KEYS.T);
-
-    // Write a pattern
-    ['c', 'o', 'n']
-      .map(toHex)
-      .concat([
-        KEYS.ARROW_DOWN,
-        KEYS.ARROW_DOWN,
-        KEYS.ARROW_DOWN,
-        KEYS.ARROW_UP,
-      ])
-      .forEach(key => stdin.emit(key));
-
-    stdin.emit(KEYS.ENTER);
-
-    expect(runJestMock.mock.calls[1][0].globalConfig.testNamePattern).toBe(
-      'should convert string to a RegExp',
-    );
-  });
-
-  it('Results in pattern mode get truncated appropriately', () => {
-    contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
-
-    stdin.emit(KEYS.T);
-
-    [50, 30].forEach(width => {
-      terminalWidth = width;
-      stdin.emit(KEYS.BACKSPACE);
-      pipe.write.mockReset();
-      stdin.emit(KEYS.T);
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     });
   });
 });

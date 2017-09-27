@@ -28,7 +28,7 @@ exports[`collects coverage only from specified files avoiding dependencies 1`] =
 File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------|----------|----------|----------|----------|----------------|
 All files |    85.71 |      100 |       50 |    85.71 |                |
- sum.js   |    85.71 |      100 |       50 |    85.71 |             13 |
+ sum.js   |    85.71 |      100 |       50 |    85.71 |             12 |
 ----------|----------|----------|----------|----------|----------------|
 "
 `;
@@ -48,10 +48,10 @@ File                                 |  % Stmts | % Branch |  % Funcs |  % Lines
 -------------------------------------|----------|----------|----------|----------|----------------|
 All files                            |    56.52 |        0 |       50 |    56.52 |                |
  coverage_report                     |    41.18 |        0 |       25 |    41.18 |                |
-  not-required-in-test-suite.js      |        0 |        0 |        0 |        0 |  9,16,17,18,20 |
+  not-required-in-test-suite.js      |        0 |        0 |        0 |        0 |  8,15,16,17,19 |
   other-file.js                      |      100 |      100 |      100 |      100 |                |
-  sum.js                             |    85.71 |      100 |       50 |    85.71 |             13 |
-  sum_dependency.js                  |        0 |        0 |        0 |        0 |     9,11,12,15 |
+  sum.js                             |    85.71 |      100 |       50 |    85.71 |             12 |
+  sum_dependency.js                  |        0 |        0 |        0 |        0 |     8,10,11,14 |
  coverage_report/cached-duplicates/a |      100 |      100 |      100 |      100 |                |
   identical.js                       |      100 |      100 |      100 |      100 |                |
  coverage_report/cached-duplicates/b |      100 |      100 |      100 |      100 |                |

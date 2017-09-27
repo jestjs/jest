@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 
@@ -140,122 +139,6 @@ describe('Watch mode flows', () => {
       watch: true,
       watchAll: false,
     });
-  });
-
-  it('can select a specific file name from the typeahead results', () => {
-    const toUnixPathPattern = pathPattern => pathPattern.replace(/\\\\/g, '/');
-
-    contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
-
-    // Write a enter pattern mode
-    stdin.emit(KEYS.P);
-
-    // Write a pattern
-    ['p', '.', '*']
-      .map(toHex)
-      .concat([
-        KEYS.ARROW_DOWN,
-        KEYS.ARROW_DOWN,
-        KEYS.ARROW_DOWN,
-        KEYS.ARROW_UP,
-      ])
-      .forEach(key => stdin.emit(key));
-
-    stdin.emit(KEYS.ENTER);
-
-    expect(
-      toUnixPathPattern(
-        runJestMock.mock.calls[1][0].globalConfig.testPathPattern,
-      ),
-    ).toMatchSnapshot();
-  });
-
-  it('Results in pattern mode get truncated appropriately', () => {
-    contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
-
-    stdin.emit(KEYS.P);
-
-    [30, 25, 20].forEach(width => {
-      terminalWidth = width;
-      stdin.emit(KEYS.BACKSPACE);
-      pipe.write.mockReset();
-      stdin.emit(KEYS.A);
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-    });
-  });
-
-  it('Shows the appropiate header when the filename filter is active', () => {
-    contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
-
-    stdin.emit(KEYS.P);
-
-    ['p', '.', '*', '1', '0']
-      .map(toHex)
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
-
-    pipe.write.mockReset();
-    stdin.emit(KEYS.P);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-
-    ['p']
-      .map(toHex)
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
-
-    pipe.write.mockReset();
-    stdin.emit(KEYS.P);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-  });
-
-  it('Shows the appropiate header when the test name filter is active', () => {
-    contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
-
-    stdin.emit(KEYS.T);
-
-    ['t', 'e', 's', 't']
-      .map(toHex)
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
-
-    pipe.write.mockReset();
-    stdin.emit(KEYS.T);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-
-    ['t']
-      .map(toHex)
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
-
-    pipe.write.mockReset();
-    stdin.emit(KEYS.T);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-  });
-
-  it('Shows the appropiate header when both filters are active', () => {
-    contexts[0].config = {rootDir: ''};
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
-
-    stdin.emit(KEYS.P);
-
-    ['p', '.', '*', '1', '0']
-      .map(toHex)
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
-
-    stdin.emit(KEYS.T);
-    ['t', 'e', 's', 't']
-      .map(toHex)
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
-
-    pipe.write.mockReset();
-    stdin.emit(KEYS.T);
-    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 
   it('Pressing "c" clears the filters', () => {
