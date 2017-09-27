@@ -1,3 +1,8 @@
+## jest 21.2.1
+
+* Fix watchAll not running tests on save ([#4550](https://github.com/facebook/jest/pull/4550))
+* Add missing escape sequences to ConvertAnsi plugin ([#4544](https://github.com/facebook/jest/pull/4544))
+
 ## jest 21.2.0
 
 * 🃏 Change license from BSD+Patents to MIT.
