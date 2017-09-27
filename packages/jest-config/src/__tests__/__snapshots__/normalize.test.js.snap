@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`preprocessorIgnorePatterns\` are used 1`] = `
-"yellow<bold><bold>●<bold> Deprecation Warning</>:</>
-yellow</>
-yellow  Option <bold>\\"preprocessorIgnorePatterns\\"</> was replaced by <bold>\\"transformIgnorePatterns\\"</>, which support multiple preprocessors.</>
-yellow</>
-yellow  Jest now treats your current configuration as:</>
-yellow  {</>
-yellow    <bold>\\"transformIgnorePatterns\\"</>: <bold>[\\"bar/baz\\", \\"qux/quux\\"]</></>
-yellow  }</>
-yellow</>
-yellow  Please update your configuration.</>
-yellow</>
-yellow  <bold>Configuration Documentation:</></>
-yellow  https://facebook.github.io/jest/docs/configuration.html</>
-yellow</>"
+"<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>\\"preprocessorIgnorePatterns\\"</> was replaced by <bold>\\"transformIgnorePatterns\\"</>, which support multiple preprocessors.</>
+<yellow></>
+<yellow>  Jest now treats your current configuration as:</>
+<yellow>  {</>
+<yellow>    <bold>\\"transformIgnorePatterns\\"</>: <bold>[\\"bar/baz\\", \\"qux/quux\\"]</></>
+<yellow>  }</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://facebook.github.io/jest/docs/configuration.html</>
+<yellow></>"
 `;
 
 exports[`preset throws when preset not found 1`] = `

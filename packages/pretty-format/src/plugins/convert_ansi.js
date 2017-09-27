@@ -37,11 +37,11 @@ const toHumanReadableAnsi = text => {
       case style.cyan.open:
         return '<cyan>';
       case style.gray.open:
-        return '<gray';
+        return '<gray>';
       case style.white.open:
         return '<white>';
       case style.yellow.open:
-        return 'yellow';
+        return '<yellow>';
       case style.bgRed.open:
         return '<bgRed>';
       case style.bgGreen.open:

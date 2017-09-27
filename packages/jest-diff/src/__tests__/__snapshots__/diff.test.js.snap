@@ -70,7 +70,7 @@ exports[`collapses big diffs to patch format 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-yellow@@ -6,9 +6,9 @@</>
+<yellow>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>
@@ -103,7 +103,7 @@ exports[`context number of lines: -1 (5 default) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-yellow@@ -6,9 +6,9 @@</>
+<yellow>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>
@@ -120,9 +120,9 @@ exports[`context number of lines: 0  1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-yellow@@ -11,0 +11,1 @@</>
+<yellow>@@ -11,0 +11,1 @@</>
 <red>+     10,</>
-yellow@@ -12,1 +13,0 @@</>
+<yellow>@@ -12,1 +13,0 @@</>
 <green>-     10,</>"
 `;
 
@@ -130,7 +130,7 @@ exports[`context number of lines: 1  1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-yellow@@ -10,4 +10,4 @@</>
+<yellow>@@ -10,4 +10,4 @@</>
 <dim>      8,</>
 <red>+     10,</>
 <dim>      9,</>
@@ -142,7 +142,7 @@ exports[`context number of lines: 2  1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-yellow@@ -9,6 +9,6 @@</>
+<yellow>@@ -9,6 +9,6 @@</>
 <dim>      7,</>
 <dim>      8,</>
 <red>+     10,</>
@@ -156,7 +156,7 @@ exports[`context number of lines: null (5 default) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-yellow@@ -6,9 +6,9 @@</>
+<yellow>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>

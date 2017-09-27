@@ -1,25 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`displays warning for deprecated config options 1`] = `
-"yellow<bold><bold>●<bold> Deprecation Warning</>:</>
-yellow</>
-yellow  Option <bold>scriptPreprocessor</> was replaced by <bold>transform</>, which support multiple preprocessors.</>
-yellow</>
-yellow  Jest now treats your current configuration as:</>
-yellow  {</>
-yellow    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
-yellow  }</>
-yellow</>
-yellow  Please update your configuration.</>
-yellow</>"
+"<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>scriptPreprocessor</> was replaced by <bold>transform</>, which support multiple preprocessors.</>
+<yellow></>
+<yellow>  Jest now treats your current configuration as:</>
+<yellow>  {</>
+<yellow>    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
+<yellow>  }</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>"
 `;
 
 exports[`displays warning for unknown config options 1`] = `
-"yellow<bold><bold>●<bold> Validation Warning</>:</>
-yellow</>
-yellow  Unknown option <bold>\\"unkwon\\"</> with value <bold>{}</> was found. Did you mean <bold>\\"unknown\\"</>?</>
-yellow  This is probably a typing mistake. Fixing it will remove this message.</>
-yellow</>"
+"<yellow><bold><bold>●<bold> Validation Warning</>:</>
+<yellow></>
+<yellow>  Unknown option <bold>\\"unkwon\\"</> with value <bold>{}</> was found. Did you mean <bold>\\"unknown\\"</>?</>
+<yellow>  This is probably a typing mistake. Fixing it will remove this message.</>
+<yellow></>"
 `;
 
 exports[`pretty prints valid config for Array 1`] = `
@@ -98,18 +98,18 @@ exports[`pretty prints valid config for String 1`] = `
 `;
 
 exports[`works with custom deprecations 1`] = `
-"yellow<bold>My Custom Deprecation Warning</>:</>
-yellow</>
-yellow  Option <bold>scriptPreprocessor</> was replaced by <bold>transform</>, which support multiple preprocessors.</>
-yellow</>
-yellow  Jest now treats your current configuration as:</>
-yellow  {</>
-yellow    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
-yellow  }</>
-yellow</>
-yellow  Please update your configuration.</>
-yellow</>
-yellowMy custom comment</>"
+"<yellow><bold>My Custom Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>scriptPreprocessor</> was replaced by <bold>transform</>, which support multiple preprocessors.</>
+<yellow></>
+<yellow>  Jest now treats your current configuration as:</>
+<yellow>  {</>
+<yellow>    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
+<yellow>  }</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>My custom comment</>"
 `;
 
 exports[`works with custom errors 1`] = `
@@ -129,10 +129,10 @@ exports[`works with custom errors 1`] = `
 `;
 
 exports[`works with custom warnings 1`] = `
-"yellow<bold>My Custom Warning</>:</>
-yellow</>
-yellow  Unknown option <bold>\\"unknown\\"</> with value <bold>\\"string\\"</> was found.</>
-yellow  This is probably a typing mistake. Fixing it will remove this message.</>
-yellow</>
-yellowMy custom comment</>"
+"<yellow><bold>My Custom Warning</>:</>
+<yellow></>
+<yellow>  Unknown option <bold>\\"unknown\\"</> with value <bold>\\"string\\"</> was found.</>
+<yellow>  This is probably a typing mistake. Fixing it will remove this message.</>
+<yellow></>
+<yellow>My custom comment</>"
 `;
