@@ -83,7 +83,7 @@ const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) => {
     'Could not find a config file based on provided values:\n' +
     `path: "${initialPath}"\n` +
     `cwd: "${cwd}"\n` +
-    'Configh paths must be specified by either a direct path to a config\n' +
+    'Config paths must be specified by either a direct path to a config\n' +
     'file, or a path to a directory. If directory is given, Jest will try to\n' +
     `traverse directory tree up, until it finds either "${JEST_CONFIG}" or\n` +
     `"${PACKAGE_JSON}".`
