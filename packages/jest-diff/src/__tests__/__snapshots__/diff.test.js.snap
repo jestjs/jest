@@ -8,10 +8,10 @@ exports[`background color of spaces cyan for inchanged (expanded) 1`] = `
 <red>+   <p></>
 <cyan>      <span></>
 <cyan>        following string consists of a space:</>
-<cyan>        <bgCyan> </></>
-<cyan>        <bgCyan> </>line has preceding space only</>
-<cyan>        <bgCyan> </>line has both preceding and following space<bgCyan> </></>
-<cyan>        line has following space only<bgCyan> </></>
+<cyan>        <inverse> </></>
+<cyan>        <inverse> </>line has preceding space only</>
+<cyan>        <inverse> </>line has both preceding and following space<inverse> </></>
+<cyan>        line has following space only<inverse> </></>
 <cyan>      </span></>
 <red>+   </p></>
 <dim>  </div></>"
@@ -24,29 +24,12 @@ exports[`background color of spaces green for removed (expanded) 1`] = `
 <dim>  <div></>
 <dim>    <span></>
 <green>-     following string consists of a space:</>
-<green>-     <bgGreen> </></>
-<green>-     <bgGreen> </>line has preceding space only</>
-<green>-     <bgGreen> </>line has both preceding and following space<bgGreen> </></>
-<green>-     line has following space only<bgGreen> </></>
+<green>-     <inverse> </></>
+<green>-     <inverse> </>line has preceding space only</>
+<green>-     <inverse> </>line has both preceding and following space<inverse> </></>
+<green>-     line has following space only<inverse> </></>
 <red>+     </>
 <dim>    </span></>
-<dim>  </div></>"
-`;
-
-exports[`background color of spaces no color for unchanged (expanded) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  <div></>
-<green>-   <span></>
-<red>+   <p></>
-<dim>      following string consists of a space:</>
-<dim>       </>
-<dim>       line has preceding space only</>
-<dim>       line has both preceding and following space </>
-<dim>      line has following space only </>
-<green>-   </span></>
-<red>+   </p></>
 <dim>  </div></>"
 `;
 
@@ -58,11 +41,28 @@ exports[`background color of spaces red for added (expanded) 1`] = `
 <dim>    <span></>
 <green>-     </>
 <red>+     following string consists of a space:</>
-<red>+     <bgRed> </></>
-<red>+     <bgRed> </>line has preceding space only</>
-<red>+     <bgRed> </>line has both preceding and following space<bgRed> </></>
-<red>+     line has following space only<bgRed> </></>
+<red>+     <inverse> </></>
+<red>+     <inverse> </>line has preceding space only</>
+<red>+     <inverse> </>line has both preceding and following space<inverse> </></>
+<red>+     line has following space only<inverse> </></>
 <dim>    </span></>
+<dim>  </div></>"
+`;
+
+exports[`background color of spaces yellow for unchanged (expanded) 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim>  <div></>
+<green>-   <span></>
+<red>+   <p></>
+<dim>      following string consists of a space:</>
+<dim>      <bgYellow> </></>
+<dim>      <bgYellow> </>line has preceding space only</>
+<dim>      <bgYellow> </>line has both preceding and following space<bgYellow> </></>
+<dim>      line has following space only<bgYellow> </></>
+<green>-   </span></>
+<red>+   </p></>
 <dim>  </div></>"
 `;
 

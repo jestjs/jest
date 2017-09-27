@@ -741,15 +741,6 @@ describe('background color of spaces', () => {
       expect(diff(examples, baseline, unexpanded)).toBe(received);
     });
   });
-  describe('no color for unchanged', () => {
-    const received = diff(examples, unchanged, expanded);
-    test('(expanded)', () => {
-      expect(received).toMatchSnapshot();
-    });
-    test('(unexpanded)', () => {
-      expect(diff(examples, unchanged, unexpanded)).toBe(received);
-    });
-  });
   describe('red for added', () => {
     const received = diff(baseline, examples, expanded);
     test('(expanded)', () => {
@@ -757,6 +748,15 @@ describe('background color of spaces', () => {
     });
     test('(unexpanded)', () => {
       expect(diff(baseline, examples, unexpanded)).toBe(received);
+    });
+  });
+  describe('yellow for unchanged', () => {
+    const received = diff(examples, unchanged, expanded);
+    test('(expanded)', () => {
+      expect(received).toMatchSnapshot();
+    });
+    test('(unexpanded)', () => {
+      expect(diff(examples, unchanged, unexpanded)).toBe(received);
     });
   });
 });
