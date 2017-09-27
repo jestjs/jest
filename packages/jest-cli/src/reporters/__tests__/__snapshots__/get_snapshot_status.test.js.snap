@@ -2,20 +2,20 @@
 
 exports[`Retrieves the snapshot status 1`] = `
 Array [
-  "<bold><green> › 1 snapshot</> written.",
-  "<bold><green> › 1 snapshot</> updated.",
-  "<bold><red> › 1 obsolete snapshot</> found.",
-  "<bold><red> › 1 snapshot test</> failed.",
+  "<bold><green> › 1 snapshot</></> written.",
+  "<bold><green> › 1 snapshot</></> updated.",
+  "<bold><red> › 1 obsolete snapshot</></> found.",
+  "<bold><red> › 1 snapshot test</></> failed.",
 ]
 `;
 
 exports[`Retrieves the snapshot status after a snapshot update 1`] = `
 Array [
-  "<bold><green> › 2 snapshots</> written.",
-  "<bold><green> › 2 snapshots</> updated.",
-  "<bold><red> › 2 obsolete snapshots</> removed.",
-  "<bold><red> › Obsolete snapshot file</> removed.",
-  "<bold><red> › 2 snapshot tests</> failed.",
+  "<bold><green> › 2 snapshots</></> written.",
+  "<bold><green> › 2 snapshots</></> updated.",
+  "<bold><red> › 2 obsolete snapshots</></> removed.",
+  "<bold><red> › Obsolete snapshot file</></> removed.",
+  "<bold><red> › 2 snapshot tests</></> failed.",
 ]
 `;
 

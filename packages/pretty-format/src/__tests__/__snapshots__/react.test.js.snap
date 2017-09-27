@@ -2,7 +2,7 @@
 
 exports[`ReactElement plugin highlights syntax 1`] = `
 "<cyan><Mouse</>
-  prop</>=<green>{
+  <yellow>prop</>=<green>{
     <cyan><div></>
       </>mouse</>
       <cyan><span></>
@@ -15,7 +15,7 @@ exports[`ReactElement plugin highlights syntax 1`] = `
 
 exports[`ReactElement plugin highlights syntax with color from theme option 1`] = `
 "<cyan><Mouse</>
-  style</>=<red>\\"color:red\\"</>
+  <yellow>style</>=<red>\\"color:red\\"</>
 <cyan>></>
   </>Hello, Mouse!</>
 <cyan></Mouse></>"
@@ -23,7 +23,7 @@ exports[`ReactElement plugin highlights syntax with color from theme option 1`] 
 
 exports[`ReactTestComponent plugin highlights syntax 1`] = `
 "<cyan><Mouse</>
-  prop</>=<green>{
+  <yellow>prop</>=<green>{
     <cyan><div></>
       </>mouse</>
       <cyan><span></>
@@ -36,7 +36,7 @@ exports[`ReactTestComponent plugin highlights syntax 1`] = `
 
 exports[`ReactTestComponent plugin highlights syntax with color from theme option 1`] = `
 "<cyan><Mouse</>
-  style</>=<red>\\"color:red\\"</>
+  <yellow>style</>=<red>\\"color:red\\"</>
 <cyan>></>
   </>Hello, Mouse!</>
 <cyan></Mouse></>"
