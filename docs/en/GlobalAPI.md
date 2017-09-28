@@ -288,9 +288,8 @@ test('did not rain', () => {
 
 The first argument is the test name; the second argument is a function that contains the expectations to test.
 
-If a promise is returned from `test`, Jest will wait for the promise to resolve before letting the test complete.
-
-Jest will also wait if you provide an argument to the test function, usually called `done`. This could be handy when you want to test callbacks. See how to test async code [here](http://facebook.github.io/jest/docs/en/asynchronous.html#callbacks).
+> Note: If a **promise is returned** from `test`, Jest will wait for the promise to resolve before letting the test complete.
+Jest will also wait if you **provide an argument to the test function**, usually called `done`. This could be handy when you want to test callbacks. See how to test async code [here](http://facebook.github.io/jest/docs/en/asynchronous.html#callbacks).
 
 For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
 
