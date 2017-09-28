@@ -8,7 +8,6 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "babel-core": "^6.0.0",
     "babel-jest": "^21.2.0",
     "babel-plugin-istanbul": "^4.0.0",
     "chalk": "^2.0.1",
@@ -27,8 +26,12 @@
     "yargs": "^9.0.0"
   },
   "devDependencies": {
+    "babel-core": "^6.0.0",
     "jest-environment-jsdom": "^21.2.1",
     "jest-environment-node": "^21.2.1"
+  },
+  "peerDependencies": {
+    "babel-core": "^6.0.0 || ^7.0.0-alpha || ^7.0.0-beta || ^7.0.0"
   },
   "bin": {
     "jest-runtime": "./bin/jest-runtime.js"
