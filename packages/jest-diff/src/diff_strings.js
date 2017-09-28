@@ -64,23 +64,19 @@ const getColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) => {
 // Do NOT color leading or trailing spaces if original lines are equal:
 
 // Background color for leading or trailing spaces.
-const getBgColor = (digit: DIFF_DIGIT) => {
-  if (digit === -1) {
-    return chalk.bgGreen; // removed
-  }
-  if (digit === 1) {
-    return chalk.bgRed; // added
-  }
-  return chalk.bgCyan; // only indentation changed
-};
+const getBgColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) =>
+  digit === 0 && !onlyIndentationChanged ? chalk.bgYellow : chalk.inverse;
 
 // ONLY trailing if expected value is snapshot or multiline string.
-const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
+const highlightTrailingSpaces = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
 // BOTH leading AND trailing if expected value is data structure.
-const highlightWhitespace = (line: string, bgColor: Function): string =>
-  highlightTrailingWhitespace(line.replace(/^\s+/, bgColor('$&')), bgColor);
+const highlightLeadingTrailingSpaces = (
+  line: string,
+  bgColor: Function,
+): string =>
+  highlightTrailingSpaces(line.replace(/^\s+/, bgColor('$&')), bgColor);
 
 const getAnnotation = (options: ?DiffOptions): string =>
   chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) +
@@ -119,19 +115,16 @@ const formatLine = (
         ' ' +
         // Prepend indentation spaces from original to compared line.
         lineOriginal.slice(0, lineOriginal.length - lineCompared.length) +
-        (digit !== 0 || onlyIndentationChanged
-          ? highlightWhitespace(lineCompared, getBgColor(digit))
-          : lineCompared),
+        highlightLeadingTrailingSpaces(
+          lineCompared,
+          getBgColor(digit, onlyIndentationChanged),
+        ),
     );
   }
 
   // Format compared line when expected is snapshot or multiline string.
   return getColor(digit)(
-    char +
-      ' ' +
-      (digit !== 0
-        ? highlightTrailingWhitespace(lineCompared, getBgColor(digit))
-        : lineCompared),
+    char + ' ' + highlightTrailingSpaces(lineCompared, getBgColor(digit)),
   );
 };
 

@@ -23,7 +23,7 @@ const toHumanReadableAnsi = text => {
       case style.yellow.close:
       case style.bgRed.close:
       case style.bgGreen.close:
-      case style.bgCyan.close:
+      case style.bgYellow.close:
       case style.inverse.close:
       case style.dim.close:
       case style.bold.close:
@@ -46,8 +46,8 @@ const toHumanReadableAnsi = text => {
         return '<bgRed>';
       case style.bgGreen.open:
         return '<bgGreen>';
-      case style.bgCyan.open:
-        return '<bgCyan>';
+      case style.bgYellow.open:
+        return '<bgYellow>';
       case style.inverse.open:
         return '<inverse>';
       case style.dim.open:
