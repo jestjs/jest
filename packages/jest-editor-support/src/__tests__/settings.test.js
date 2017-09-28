@@ -26,7 +26,7 @@ describe('Settings', () => {
     expect(settings.workspace).toEqual(workspace);
     expect(settings.settings).toEqual(expect.any(Object));
   });
-  
+
   it('reads and parses the configs', () => {
     const workspace = new ProjectWorkspace(
       'root_path',
