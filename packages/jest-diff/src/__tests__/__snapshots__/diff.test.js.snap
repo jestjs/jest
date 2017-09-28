@@ -183,4 +183,19 @@ exports[`falls back to not call toJSON if objects look identical 1`] = `
 <dim>  }</>"
 `;
 
+exports[`highlight only the last in odd length of leading spaces (expanded) 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim>  <pre></>
+<green>-   attributes.reduce(function (props, attribute) {</>
+<green>-   <inverse> </>props[attribute.name] = attribute.value;</>
+<red>+   attributes.reduce((props, {name, value}) =&gt; {</>
+<red>+   props[name] = value;</>
+<dim>    return props;</>
+<green>- <inverse> </>}, {});</>
+<red>+ }, {});</>
+<dim>  </pre></>"
+`;
+
 exports[`prints a fallback message if two objects truly look identical 1`] = `"<dim>Compared values have no visual difference.</>"`;

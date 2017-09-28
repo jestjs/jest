@@ -76,7 +76,12 @@ const highlightLeadingTrailingSpaces = (
   line: string,
   bgColor: Function,
 ): string =>
-  highlightTrailingSpaces(line.replace(/^\s+/, bgColor('$&')), bgColor);
+  // If line consists of ALL spaces: highlight all of them.
+  highlightTrailingSpaces(line, bgColor).replace(
+    // If line has an ODD length of leading spaces: highlight only the LAST.
+    /^(\s\s)*(\s)(?=[^\s])/,
+    '$1' + bgColor('$2'),
+  );
 
 const getAnnotation = (options: ?DiffOptions): string =>
   chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) +
