@@ -761,6 +761,40 @@ describe('background color of spaces', () => {
   });
 });
 
+describe('highlight only the last in odd length of leading spaces', () => {
+  const pre5 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce(function (props, attribute) {',
+        '   props[attribute.name] = attribute.value;', // 3 leading spaces
+        '  return props;', // 2 leading spaces
+        ' }, {});', // 1 leading space
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const pre6 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce((props, {name, value}) => {',
+        '  props[name] = value;', // from 3 to 2 leading spaces
+        '  return props;', // unchanged 2 leading spaces
+        '}, {});', // from 1 to 0 leading spaces
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const received = diff(pre5, pre6, expanded);
+  test('(expanded)', () => {
+    expect(received).toMatchSnapshot();
+  });
+  test('(unexpanded)', () => {
+    expect(diff(pre5, pre6, unexpanded)).toBe(received);
+  });
+});
+
 test('collapses big diffs to patch format', () => {
   const result = diff(
     {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
