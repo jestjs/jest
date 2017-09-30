@@ -282,7 +282,7 @@ describe('docblock', () => {
 
   it('strips the docblock out of a file that contains a top docblock', () => {
     const code = '/**\n * foo\n * bar\n*/\nthe rest';
-    expect(docblock.strip(code)).toEqual('the rest');
+    expect(docblock.strip(code)).toEqual('\nthe rest');
   });
 
   it('returns a file unchanged if there is no top docblock to strip', () => {
