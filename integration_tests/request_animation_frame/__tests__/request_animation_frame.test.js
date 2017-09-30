@@ -9,10 +9,12 @@
 
 'use strict';
 
-test('requestAnimationFrame test', () => {
-  expect(true).toBe(true);
+test('requestAnimationFrame test', done => {
+  expect.hasAssertions();
 
   requestAnimationFrame(() => {
-    throw new Error('Scheduled Error');
+    expect(true).toBe(true);
+
+    done();
   });
 });
