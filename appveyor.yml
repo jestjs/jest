@@ -20,7 +20,7 @@ cache:
   - .eslintcache
 
 test_script:
-  - node ./yarn.js run jest -- --color
+  - node ./yarn.js run jest --color
 
 # Don't actually build.
 build: off
