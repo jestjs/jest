@@ -12,5 +12,6 @@
   "prettier.trailingComma": "all",
   "prettier.semi": true,
   "editor.formatOnSave": true,
-  "prettier.eslintIntegration": true
+  "prettier.eslintIntegration": true,
+  "javascript.validate.enable": false
 }
