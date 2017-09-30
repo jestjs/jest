@@ -22,6 +22,7 @@ class JSDOMEnvironment {
   moduleMocker: ?ModuleMocker;
 
   constructor(config: ProjectConfig): void {
+    const jsdomInitialized = process.hrtime();
     // lazy require
     this.document = JSDom.jsdom('<!DOCTYPE html>', {
       url: config.testURL,
@@ -31,6 +32,16 @@ class JSDOMEnvironment {
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global, config.globals);
+
+    if (!global.requestAnimationFrame) {
+      global.requestAnimationFrame = callback => {
+        const hr = process.hrtime(jsdomInitialized);
+        const hrInNano = hr[0] * 1e9 + hr[1];
+        const hrInMicro = hrInNano / 1e6;
+
+        return global.setTimeout(callback, 0, hrInMicro);
+      };
+    }
 
     this.moduleMocker = new mock.ModuleMocker(global);
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);

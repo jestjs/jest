@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+exports[`outer describe outer it inner describe inner it 1`] = `first nested`;
+exports[`outer describe outer it inner describe inner it 2`] = `second nested`;
