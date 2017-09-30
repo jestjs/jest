@@ -14,6 +14,8 @@ test('requestAnimationFrame', () => {
   const result = runJest('request_animation_frame', ['--verbose']);
   const stderr = result.stderr.toString();
 
+  console.log(stderr);
+
   expect(stderr).toMatch('requestAnimationFrame test');
   expect(result.status).toBe(0);
 });
