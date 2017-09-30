@@ -26,6 +26,12 @@ export function extract(contents: string): string {
   return match ? match[0].replace(ltrimRe, '') || '' : '';
 }
 
+export function strip(contents: string) {
+  const match = contents.match(docblockRe);
+  const docblockLength = match && match[0] ? match[0].length : 0;
+  return contents.substring(docblockLength);
+}
+
 export function parse(docblock: string): {[key: string]: string} {
   return parseWithComments(docblock).pragmas;
 }
