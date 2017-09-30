@@ -32,6 +32,12 @@ class JSDOMEnvironment {
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global, config.globals);
 
+    if (!this.global.requestAnimationFrame) {
+      this.global.requestAnimationFrame = callback => {
+        this.global.setTimeout(callback, 0);
+      };
+    }
+
     this.moduleMocker = new mock.ModuleMocker(global);
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
   }
