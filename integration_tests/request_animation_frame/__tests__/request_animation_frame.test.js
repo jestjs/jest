@@ -12,8 +12,9 @@
 test('requestAnimationFrame test', done => {
   expect.hasAssertions();
 
-  requestAnimationFrame(() => {
+  requestAnimationFrame(timestamp => {
     expect(true).toBe(true);
+    expect(timestamp).toBeGreaterThan(0);
 
     done();
   });

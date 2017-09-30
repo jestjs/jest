@@ -22,6 +22,7 @@ class JSDOMEnvironment {
   moduleMocker: ?ModuleMocker;
 
   constructor(config: ProjectConfig): void {
+    const jsdomInitialized = process.hrtime();
     // lazy require
     this.document = JSDom.jsdom('<!DOCTYPE html>', {
       url: config.testURL,
@@ -34,7 +35,11 @@ class JSDOMEnvironment {
 
     if (!global.requestAnimationFrame) {
       global.requestAnimationFrame = callback => {
-        global.setTimeout(callback, 0);
+        const hr = process.hrtime(jsdomInitialized);
+        const hrInNano = hr[0] * 1e9 + hr[1];
+        const hrInMicro = hrInNano / 1e6;
+
+        return global.setTimeout(callback, 0, hrInMicro);
       };
     }
 
