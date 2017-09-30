@@ -10,9 +10,9 @@
 
 'use strict';
 
-const traverse = require('babel-traverse').default;
-const {getASTfor} = require('./parsers/BabylonParser');
-const {utils} = require('jest-snapshot');
+import traverse from 'babel-traverse';
+import {getASTfor} from './parsers/babylon_parser';
+import {utils} from 'jest-snapshot';
 
 type Node = any;
 
@@ -93,7 +93,7 @@ const buildName: (
   return utils.testNameToKey(describeLess + fullName, position);
 };
 
-module.exports = class Snapshot {
+export default class Snapshot {
   _parser: Function;
   _matchers: Array<string>;
   constructor(parser: any, customMatchers?: Array<string>) {
@@ -111,7 +111,10 @@ module.exports = class Snapshot {
     const Visitors = {
       Identifier(path, state, matchers) {
         if (matchers.includes(path.node.name)) {
-          state.found.push({node: path.node, parents: getArrayOfParents(path)});
+          state.found.push({
+            node: path.node,
+            parents: getArrayOfParents(path),
+          });
         }
       },
     };
@@ -126,7 +129,7 @@ module.exports = class Snapshot {
     });
 
     const snapshotPath = utils.getSnapshotPath(filePath);
-    const snapshots = utils.getSnapshotData(snapshotPath, false).data;
+    const snapshots = utils.getSnapshotData(snapshotPath, 'none').data;
     let lastParent = null;
     let count = 1;
 
@@ -161,4 +164,4 @@ module.exports = class Snapshot {
       return result;
     });
   }
-};
+}

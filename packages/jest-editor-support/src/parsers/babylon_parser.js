@@ -7,19 +7,20 @@
  * @flow
  */
 
-import { readFileSync } from 'fs';
+import {readFileSync} from 'fs';
 
-import { parse as babylonParse } from 'babylon';
-import { Expect, ItBlock } from './parser_nodes';
+import {parse as babylonParse} from 'babylon';
+import {Expect, ItBlock} from './parser_nodes';
+import type {File as BabylonFile} from 'babylon';
 
 export type BabylonParserResult = {
   expects: Array<Expect>,
   itBlocks: Array<ItBlock>,
 };
 
-export const getASTfor = (file: string): BabylonParserResult => {
+export const getASTfor = (file: string): BabylonFile => {
   const data = readFileSync(file).toString();
-  const config = { plugins: ['*'], sourceType: 'module' };
+  const config = {plugins: ['*'], sourceType: 'module'};
   return babylonParse(data, config);
 };
 

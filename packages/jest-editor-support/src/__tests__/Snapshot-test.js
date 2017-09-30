@@ -98,8 +98,8 @@ test('describe.example', () => {
 
   results.forEach(result => {
     const check = expectations[result.name];
-    check.checked = result.content ===
-      `${check.number} ${check.assertion} ${check.describe}`;
+    check.checked =
+      result.content === `${check.number} ${check.assertion} ${check.describe}`;
   });
   expect(
     Object.keys(expectations)
