@@ -280,6 +280,16 @@ describe('docblock', () => {
     });
   });
 
+  it('strips the docblock out of a file that contains a top docblock', () => {
+    const code = '/**\n * foo\n * bar\n*/\nthe rest';
+    expect(docblock.strip(code)).toEqual('the rest');
+  });
+
+  it('returns a file unchanged if there is no top docblock to strip', () => {
+    const code = 'someCodeAtTheTop();\n/** docblock */';
+    expect(docblock.strip(code)).toEqual(code);
+  });
+
   it('prints docblocks with no pragmas as empty string', () => {
     const pragmas = {};
     expect(docblock.print({pragmas})).toEqual('');

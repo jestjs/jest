@@ -28,7 +28,7 @@ export function extract(contents: string): string {
 
 export function strip(contents: string) {
   const match = contents.match(docblockRe);
-  const docblockLength = match && match[0] ? match[0].length : 0;
+  const docblockLength = match && match[0] ? match[0].length + 1 : 0;
   return contents.substring(docblockLength);
 }
 
