@@ -55,7 +55,7 @@ describe('Settings', () => {
     expect(settings.jestVersionMajor).toBe(19);
     expect(settings.settings).toEqual(config);
   });
-  
+
   it('[jest 21] reads and parses the configs', () => {
     const workspace = new ProjectWorkspace(
       'root_path',
