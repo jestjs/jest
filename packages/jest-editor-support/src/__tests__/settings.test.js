@@ -67,7 +67,7 @@ describe('Settings', () => {
     const configs = [{cacheDirectory: '/tmp/jest', name: '[md5 hash]'}];
     const json = {
       configs,
-      version: '.0.0',
+      version: '21.0.0',
     };
 
     const mockProcess: any = new EventEmitter();
