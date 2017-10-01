@@ -15,11 +15,11 @@ const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
 const lineCommentRe = /\/\/([^\r\n]*)/g;
 const ltrimRe = /^\s*/;
+const rtrimRe = /\s*$/;
+const ltrimNewlineRe = /^(\r?\n)+/;
 const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
-const stringStartRe = /(\r?\n|^) *\*/g;
-const lineStartRe = /(\r?\n|^) */g;
-const wsRe = /[\t ]+/g;
+const stringStartRe = /(\r?\n|^) *\* ?/g;
 
 export function extract(contents: string): string {
   const match = contents.match(docblockRe);
@@ -43,7 +43,6 @@ export function parseWithComments(
   docblock = docblock
     .replace(commentStartRe, '')
     .replace(commentEndRe, '')
-    .replace(wsRe, ' ')
     .replace(lineCommentRe, '')
     .replace(stringStartRe, '$1');
 
@@ -53,15 +52,16 @@ export function parseWithComments(
     prev = docblock;
     docblock = docblock.replace(multilineRe, `${line}$1 $2${line}`);
   }
-  docblock = docblock.trim();
+  docblock = docblock.replace(ltrimNewlineRe, '').replace(rtrimRe, '');
 
   const result = Object.create(null);
-  const comments = docblock.replace(propertyRe, '').replace(lineStartRe, line);
+  const comments = docblock.replace(propertyRe, '');
+
   let match;
   while ((match = propertyRe.exec(docblock))) {
     result[match[1]] = match[2];
   }
-  return {comments: comments.trim(), pragmas: result};
+  return {comments, pragmas: result};
 }
 
 export function print({
