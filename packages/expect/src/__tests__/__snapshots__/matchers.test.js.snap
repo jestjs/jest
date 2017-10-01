@@ -229,6 +229,17 @@ Received:
   <red>\\"abc\\"</>"
 `;
 
+exports[`.toBe() fails for: "with 
+trailing space" and "without trailing space" 1`] = `
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+
+Expected value to be (using ===):
+  <green>\\"without trailing space\\"</>
+Received:
+  <red>\\"with<inverse> </></>
+<red>trailing space\\"</>"
+`;
+
 exports[`.toBe() fails for: [] and [] 1`] = `
 "<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
 

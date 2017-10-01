@@ -13,7 +13,6 @@ import getType from 'jest-get-type';
 import {escapeStrForRegex} from 'jest-regex-util';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
-  RECEIVED_BG,
   RECEIVED_COLOR,
   highlightTrailingWhitespace,
   matcherHint,
@@ -173,7 +172,7 @@ const printActualErrorMessage = error => {
       `Instead, it threw:\n` +
       RECEIVED_COLOR(
         '  ' +
-          highlightTrailingWhitespace(message, RECEIVED_BG) +
+          highlightTrailingWhitespace(message) +
           formatStackTrace(
             stack,
             {

@@ -27,9 +27,7 @@ const PLUGINS = [
 ];
 
 export const EXPECTED_COLOR = chalk.green;
-export const EXPECTED_BG = chalk.bgGreen;
 export const RECEIVED_COLOR = chalk.red;
-export const RECEIVED_BG = chalk.bgRed;
 
 const NUMBERS = [
   'zero',
@@ -76,15 +74,13 @@ export const stringify = (object: any, maxDepth?: number = 10): string => {
     : result;
 };
 
-export const highlightTrailingWhitespace = (
-  text: string,
-  bgColor: Function,
-): string => text.replace(/\s+$/gm, bgColor('$&'));
+export const highlightTrailingWhitespace = (text: string): string =>
+  text.replace(/\s+$/gm, chalk.inverse('$&'));
 
 export const printReceived = (object: any) =>
-  highlightTrailingWhitespace(RECEIVED_COLOR(stringify(object)), RECEIVED_BG);
+  RECEIVED_COLOR(highlightTrailingWhitespace(stringify(object)));
 export const printExpected = (value: any) =>
-  highlightTrailingWhitespace(EXPECTED_COLOR(stringify(value)), EXPECTED_BG);
+  EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)));
 
 export const printWithType = (
   name: string,
