@@ -245,6 +245,15 @@ describe('docblock', () => {
     });
   });
 
+  it('preserves leading whitespace in multiline comments from docblock', () => {
+    const code =
+      '/**' + os.EOL + ' *  hello' + os.EOL + ' *   world' + os.EOL + ' */';
+
+    expect(docblock.parseWithComments(code).comments).toEqual(
+      ' hello' + os.EOL + '  world',
+    );
+  });
+
   it('extracts comments from beginning and end of docblock', () => {
     const code =
       '/**' +
