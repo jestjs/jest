@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -551,6 +550,101 @@ describe('indentation in React elements (snapshot)', () => {
   });
 });
 
+describe('outer React element (non-snapshot)', () => {
+  const a = {
+    $$typeof: elementSymbol,
+    props: {
+      children: 'Jest',
+    },
+    type: 'h1',
+  };
+  const b = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        a,
+        {
+          $$typeof: elementSymbol,
+          props: {
+            children: 'Delightful JavaScript Testing',
+          },
+          type: 'h2',
+        },
+      ],
+    },
+    type: 'header',
+  };
+
+  describe('from less to more', () => {
+    const expected = [
+      '+ <header>',
+      // following 3 lines are unchanged, except for more indentation
+      '    <h1>',
+      '      Jest',
+      '    </h1>',
+      '+   <h2>',
+      '+     Delightful JavaScript Testing',
+      '+   </h2>',
+      '+ </header>',
+    ].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
+    });
+  });
+
+  describe('from more to less', () => {
+    const expected = [
+      '- <header>',
+      // following 3 lines are unchanged, except for less indentation
+      '  <h1>',
+      '    Jest',
+      '  </h1>',
+      '-   <h2>',
+      '-     Delightful JavaScript Testing',
+      '-   </h2>',
+      '- </header>',
+    ].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(b, a, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(b, a, expanded)).toMatch(expected);
+    });
+  });
+});
+
+describe('trailing newline in multiline string not enclosed in quotes', () => {
+  const a = ['line 1', 'line 2', 'line 3'].join('\n');
+  const b = a + '\n';
+
+  describe('from less to more', () => {
+    const expected = ['  line 1', '  line 2', '  line 3', '+ '].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
+    });
+  });
+
+  describe('from more to less', () => {
+    const expected = ['  line 1', '  line 2', '  line 3', '- '].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(b, a, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(b, a, expanded)).toMatch(expected);
+    });
+  });
+});
+
 describe('background color of spaces', () => {
   const baseline = {
     $$typeof: elementSymbol,
@@ -647,15 +741,6 @@ describe('background color of spaces', () => {
       expect(diff(examples, baseline, unexpanded)).toBe(received);
     });
   });
-  describe('no color for unchanged', () => {
-    const received = diff(examples, unchanged, expanded);
-    test('(expanded)', () => {
-      expect(received).toMatchSnapshot();
-    });
-    test('(unexpanded)', () => {
-      expect(diff(examples, unchanged, unexpanded)).toBe(received);
-    });
-  });
   describe('red for added', () => {
     const received = diff(baseline, examples, expanded);
     test('(expanded)', () => {
@@ -664,6 +749,49 @@ describe('background color of spaces', () => {
     test('(unexpanded)', () => {
       expect(diff(baseline, examples, unexpanded)).toBe(received);
     });
+  });
+  describe('yellow for unchanged', () => {
+    const received = diff(examples, unchanged, expanded);
+    test('(expanded)', () => {
+      expect(received).toMatchSnapshot();
+    });
+    test('(unexpanded)', () => {
+      expect(diff(examples, unchanged, unexpanded)).toBe(received);
+    });
+  });
+});
+
+describe('highlight only the last in odd length of leading spaces', () => {
+  const pre5 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce(function (props, attribute) {',
+        '   props[attribute.name] = attribute.value;', // 3 leading spaces
+        '  return props;', // 2 leading spaces
+        ' }, {});', // 1 leading space
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const pre6 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce((props, {name, value}) => {',
+        '  props[name] = value;', // from 3 to 2 leading spaces
+        '  return props;', // unchanged 2 leading spaces
+        '}, {});', // from 1 to 0 leading spaces
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const received = diff(pre5, pre6, expanded);
+  test('(expanded)', () => {
+    expect(received).toMatchSnapshot();
+  });
+  test('(unexpanded)', () => {
+    expect(diff(pre5, pre6, unexpanded)).toBe(received);
   });
 });
 

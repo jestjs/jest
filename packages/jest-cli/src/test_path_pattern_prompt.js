@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -13,21 +12,10 @@ import type {Test} from 'types/TestRunner';
 import type {ScrollOptions} from './lib/scroll_list';
 import type SearchSource from './search_source';
 
-import chalk from 'chalk';
-import stringLength from 'string-length';
-import scroll from './lib/scroll_list';
-import {getTerminalWidth} from './lib/terminal_utils';
-import highlight from './lib/highlight';
-import {trimAndFormatPath} from './reporters/utils';
 import Prompt from './lib/Prompt';
 import {
-  formatTypeaheadSelection,
-  printMore,
   printPatternCaret,
-  printPatternMatches,
   printRestoredPatternCaret,
-  printStartTyping,
-  printTypeaheadItem,
 } from './lib/pattern_mode_helpers';
 import PatternPrompt from './pattern_prompt';
 
@@ -46,48 +34,12 @@ export default class TestPathPatternPrompt extends PatternPrompt {
 
   _onChange(pattern: string, options: ScrollOptions) {
     super._onChange(pattern, options);
-    this._printTypeahead(pattern, options);
+    this._printPrompt(pattern, options);
   }
 
-  _printTypeahead(pattern: string, options: ScrollOptions) {
-    const matchedTests = this._getMatchedTests(pattern);
-    const total = matchedTests.length;
+  _printPrompt(pattern: string, options: ScrollOptions) {
     const pipe = this._pipe;
-    const prompt = this._prompt;
-
     printPatternCaret(pattern, pipe);
-
-    if (pattern) {
-      printPatternMatches(total, 'file', pipe);
-
-      const prefix = `  ${chalk.dim('\u203A')} `;
-      const padding = stringLength(prefix) + 2;
-      const width = getTerminalWidth();
-      const {start, end, index} = scroll(total, options);
-
-      prompt.setTypeaheadLength(total);
-
-      matchedTests
-        .slice(start, end)
-        .map(({path, context}) => {
-          const filePath = trimAndFormatPath(
-            padding,
-            context.config,
-            path,
-            width,
-          );
-          return highlight(path, filePath, pattern, context.config.rootDir);
-        })
-        .map((item, i) => formatTypeaheadSelection(item, i, index, prompt))
-        .forEach(item => printTypeaheadItem(item, pipe));
-
-      if (total > end) {
-        printMore('file', pipe, total - end);
-      }
-    } else {
-      printStartTyping('filename', pipe);
-    }
-
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 

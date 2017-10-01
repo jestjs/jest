@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -65,23 +64,24 @@ const getColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) => {
 // Do NOT color leading or trailing spaces if original lines are equal:
 
 // Background color for leading or trailing spaces.
-const getBgColor = (digit: DIFF_DIGIT) => {
-  if (digit === -1) {
-    return chalk.bgGreen; // removed
-  }
-  if (digit === 1) {
-    return chalk.bgRed; // added
-  }
-  return chalk.bgCyan; // only indentation changed
-};
+const getBgColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) =>
+  digit === 0 && !onlyIndentationChanged ? chalk.bgYellow : chalk.inverse;
 
 // ONLY trailing if expected value is snapshot or multiline string.
-const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
+const highlightTrailingSpaces = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
 // BOTH leading AND trailing if expected value is data structure.
-const highlightWhitespace = (line: string, bgColor: Function): string =>
-  highlightTrailingWhitespace(line.replace(/^\s+/, bgColor('$&')), bgColor);
+const highlightLeadingTrailingSpaces = (
+  line: string,
+  bgColor: Function,
+): string =>
+  // If line consists of ALL spaces: highlight all of them.
+  highlightTrailingSpaces(line, bgColor).replace(
+    // If line has an ODD length of leading spaces: highlight only the LAST.
+    /^(\s\s)*(\s)(?=[^\s])/,
+    '$1' + bgColor('$2'),
+  );
 
 const getAnnotation = (options: ?DiffOptions): string =>
   chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) +
@@ -120,19 +120,16 @@ const formatLine = (
         ' ' +
         // Prepend indentation spaces from original to compared line.
         lineOriginal.slice(0, lineOriginal.length - lineCompared.length) +
-        (digit !== 0 || onlyIndentationChanged
-          ? highlightWhitespace(lineCompared, getBgColor(digit))
-          : lineCompared),
+        highlightLeadingTrailingSpaces(
+          lineCompared,
+          getBgColor(digit, onlyIndentationChanged),
+        ),
     );
   }
 
   // Format compared line when expected is snapshot or multiline string.
   return getColor(digit)(
-    char +
-      ' ' +
-      (digit !== 0
-        ? highlightTrailingWhitespace(lineCompared, getBgColor(digit))
-        : lineCompared),
+    char + ' ' + highlightTrailingSpaces(lineCompared, getBgColor(digit)),
   );
 };
 
@@ -189,7 +186,7 @@ const shouldShowPatchMarks = (hunk: Hunk, oldLinesCount: number): boolean =>
 const createPatchMark = (hunk: Hunk): string => {
   const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
   const markNew = `+${hunk.newStart},${hunk.newLines}`;
-  return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
+  return chalk.yellow(`@@ ${markOld} ${markNew} @@`);
 };
 
 // Given original lines, return callback function which given indexes for hunk,
@@ -223,13 +220,6 @@ const formatHunks = (
         ? contextLines
         : DIFF_CONTEXT_DEFAULT,
   };
-  // Make sure the strings end with a newline.
-  if (!a.endsWith('\n')) {
-    a += '\n';
-  }
-  if (!b.endsWith('\n')) {
-    b += '\n';
-  }
 
   const {hunks} = structuredPatch('', '', a, b, '', '', options);
   if (hunks.length === 0) {
@@ -239,18 +229,20 @@ const formatHunks = (
   const getter = original && getterForHunks(original);
   const oldLinesCount = (a.match(/\n/g) || []).length;
   return hunks
-    .map((hunk: Hunk) => {
+    .reduce((lines, hunk: Hunk) => {
+      if (shouldShowPatchMarks(hunk, oldLinesCount)) {
+        lines.push(createPatchMark(hunk));
+      }
+
       // Hunk properties are one-based but index args are zero-based.
       const getOriginal =
         getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
-      const lines = hunk.lines
-        .map(line => formatLine(line[0], line.slice(1), getOriginal))
-        .join('\n');
+      hunk.lines.forEach(line => {
+        lines.push(formatLine(line[0], line.slice(1), getOriginal));
+      });
 
-      return shouldShowPatchMarks(hunk, oldLinesCount)
-        ? createPatchMark(hunk) + lines
-        : lines;
-    })
+      return lines;
+    }, [])
     .join('\n');
 };
 
@@ -260,6 +252,11 @@ export default function diffStrings(
   options: ?DiffOptions,
   original?: Original,
 ): string {
+  // Because `formatHunks` and `formatChunks` ignore one trailing newline,
+  // always append newline to strings:
+  a += '\n';
+  b += '\n';
+
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff

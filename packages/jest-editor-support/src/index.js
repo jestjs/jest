@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -13,6 +12,7 @@ import * as Process from './Process';
 import ProjectWorkspace from './project_workspace';
 import Runner from './Runner';
 import Settings from './Settings';
+import Snapshot from './Snapshot';
 import {Expect, ItBlock, Node} from './parsers/parser_nodes';
 import {parse} from './parsers/babylon_parser';
 import TestReconciler from './test_reconciler';
@@ -25,6 +25,7 @@ module.exports = {
   ProjectWorkspace,
   Runner,
   Settings,
+  Snapshot,
   TestReconciler,
   parse,
 };

@@ -4,91 +4,91 @@ exports[`background color of spaces cyan for inchanged (expanded) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-<dim>  <div>
+<dim>  <div></>
 <red>+   <p></>
 <cyan>      <span></>
 <cyan>        following string consists of a space:</>
-<cyan>        <bgCyan> </></>
-<cyan>        <bgCyan> </>line has preceding space only</>
-<cyan>        <bgCyan> </>line has both preceding and following space<bgCyan> </></>
-<cyan>        line has following space only<bgCyan> </></>
+<cyan>        <inverse> </></>
+<cyan>        <inverse> </>line has preceding space only</>
+<cyan>        <inverse> </>line has both preceding and following space<inverse> </></>
+<cyan>        line has following space only<inverse> </></>
 <cyan>      </span></>
 <red>+   </p></>
-<dim>  </div>"
+<dim>  </div></>"
 `;
 
 exports[`background color of spaces green for removed (expanded) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-<dim>  <div>
-<dim>    <span>
+<dim>  <div></>
+<dim>    <span></>
 <green>-     following string consists of a space:</>
-<green>-     <bgGreen> </></>
-<green>-     <bgGreen> </>line has preceding space only</>
-<green>-     <bgGreen> </>line has both preceding and following space<bgGreen> </></>
-<green>-     line has following space only<bgGreen> </></>
+<green>-     <inverse> </></>
+<green>-     <inverse> </>line has preceding space only</>
+<green>-     <inverse> </>line has both preceding and following space<inverse> </></>
+<green>-     line has following space only<inverse> </></>
 <red>+     </>
-<dim>    </span>
-<dim>  </div>"
-`;
-
-exports[`background color of spaces no color for unchanged (expanded) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  <div>
-<green>-   <span></>
-<red>+   <p></>
-<dim>      following string consists of a space:
-<dim>       
-<dim>       line has preceding space only
-<dim>       line has both preceding and following space 
-<dim>      line has following space only 
-<green>-   </span></>
-<red>+   </p></>
-<dim>  </div>"
+<dim>    </span></>
+<dim>  </div></>"
 `;
 
 exports[`background color of spaces red for added (expanded) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-<dim>  <div>
-<dim>    <span>
+<dim>  <div></>
+<dim>    <span></>
 <green>-     </>
 <red>+     following string consists of a space:</>
-<red>+     <bgRed> </></>
-<red>+     <bgRed> </>line has preceding space only</>
-<red>+     <bgRed> </>line has both preceding and following space<bgRed> </></>
-<red>+     line has following space only<bgRed> </></>
-<dim>    </span>
-<dim>  </div>"
+<red>+     <inverse> </></>
+<red>+     <inverse> </>line has preceding space only</>
+<red>+     <inverse> </>line has both preceding and following space<inverse> </></>
+<red>+     line has following space only<inverse> </></>
+<dim>    </span></>
+<dim>  </div></>"
+`;
+
+exports[`background color of spaces yellow for unchanged (expanded) 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim>  <div></>
+<green>-   <span></>
+<red>+   <p></>
+<dim>      following string consists of a space:</>
+<dim>      <bgYellow> </></>
+<dim>      <bgYellow> </>line has preceding space only</>
+<dim>      <bgYellow> </>line has both preceding and following space<bgYellow> </></>
+<dim>      line has following space only<bgYellow> </></>
+<green>-   </span></>
+<red>+   </p></>
+<dim>  </div></>"
 `;
 
 exports[`collapses big diffs to patch format 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-@@ -6,9 +6,9 @@</>
-</><dim>      4,
-<dim>      5,
-<dim>      6,
-<dim>      7,
-<dim>      8,
+<yellow>@@ -6,9 +6,9 @@</>
+<dim>      4,</>
+<dim>      5,</>
+<dim>      6,</>
+<dim>      7,</>
+<dim>      8,</>
 <red>+     10,</>
-<dim>      9,
+<dim>      9,</>
 <green>-     10,</>
-<dim>    ],
-<dim>  }"
+<dim>    ],</>
+<dim>  }</>"
 `;
 
 exports[`color of text (expanded) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-<dim>  Object {
-<dim>    \\"searching\\": \\"\\",
+<dim>  Object {</>
+<dim>    \\"searching\\": \\"\\",</>
 <green>-   \\"sorting\\": Object {</>
 <red>+   \\"sorting\\": Array [</>
 <red>+     Object {</>
@@ -96,91 +96,106 @@ exports[`color of text (expanded) 1`] = `
 <cyan>        \\"fieldKey\\": \\"what\\",</>
 <cyan>      },</>
 <red>+   ],</>
-<dim>  }"
+<dim>  }</>"
 `;
 
 exports[`context number of lines: -1 (5 default) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-@@ -6,9 +6,9 @@</>
-</><dim>      4,
-<dim>      5,
-<dim>      6,
-<dim>      7,
-<dim>      8,
+<yellow>@@ -6,9 +6,9 @@</>
+<dim>      4,</>
+<dim>      5,</>
+<dim>      6,</>
+<dim>      7,</>
+<dim>      8,</>
 <red>+     10,</>
-<dim>      9,
+<dim>      9,</>
 <green>-     10,</>
-<dim>    ],
-<dim>  }"
+<dim>    ],</>
+<dim>  }</>"
 `;
 
 exports[`context number of lines: 0  1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-@@ -11,0 +11,1 @@</>
-</><red>+     10,</>
-@@ -12,1 +13,0 @@</>
-</><green>-     10,</>"
+<yellow>@@ -11,0 +11,1 @@</>
+<red>+     10,</>
+<yellow>@@ -12,1 +13,0 @@</>
+<green>-     10,</>"
 `;
 
 exports[`context number of lines: 1  1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-@@ -10,4 +10,4 @@</>
-</><dim>      8,
+<yellow>@@ -10,4 +10,4 @@</>
+<dim>      8,</>
 <red>+     10,</>
-<dim>      9,
+<dim>      9,</>
 <green>-     10,</>
-<dim>    ],"
+<dim>    ],</>"
 `;
 
 exports[`context number of lines: 2  1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-@@ -9,6 +9,6 @@</>
-</><dim>      7,
-<dim>      8,
+<yellow>@@ -9,6 +9,6 @@</>
+<dim>      7,</>
+<dim>      8,</>
 <red>+     10,</>
-<dim>      9,
+<dim>      9,</>
 <green>-     10,</>
-<dim>    ],
-<dim>  }"
+<dim>    ],</>
+<dim>  }</>"
 `;
 
 exports[`context number of lines: null (5 default) 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-@@ -6,9 +6,9 @@</>
-</><dim>      4,
-<dim>      5,
-<dim>      6,
-<dim>      7,
-<dim>      8,
+<yellow>@@ -6,9 +6,9 @@</>
+<dim>      4,</>
+<dim>      5,</>
+<dim>      6,</>
+<dim>      7,</>
+<dim>      8,</>
 <red>+     10,</>
-<dim>      9,
+<dim>      9,</>
 <green>-     10,</>
-<dim>    ],
-<dim>  }"
+<dim>    ],</>
+<dim>  }</>"
 `;
 
 exports[`falls back to not call toJSON if objects look identical 1`] = `
-"<dim>Compared values serialize to the same structure.
-<dim>Printing internal object structure without calling \`toJSON\` instead.
+"<dim>Compared values serialize to the same structure.</>
+<dim>Printing internal object structure without calling \`toJSON\` instead.</>
 
 <green>- Expected</>
 <red>+ Received</>
 
-<dim>  Object {
+<dim>  Object {</>
 <green>-   \\"line\\": 1,</>
 <red>+   \\"line\\": 2,</>
-<dim>    \\"toJSON\\": [Function toJSON],
-<dim>  }"
+<dim>    \\"toJSON\\": [Function toJSON],</>
+<dim>  }</>"
 `;
 
-exports[`prints a fallback message if two objects truly look identical 1`] = `"<dim>Compared values have no visual difference."`;
+exports[`highlight only the last in odd length of leading spaces (expanded) 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim>  <pre></>
+<green>-   attributes.reduce(function (props, attribute) {</>
+<green>-   <inverse> </>props[attribute.name] = attribute.value;</>
+<red>+   attributes.reduce((props, {name, value}) =&gt; {</>
+<red>+   props[name] = value;</>
+<dim>    return props;</>
+<green>- <inverse> </>}, {});</>
+<red>+ }, {});</>
+<dim>  </pre></>"
+`;
+
+exports[`prints a fallback message if two objects truly look identical 1`] = `"<dim>Compared values have no visual difference.</>"`;

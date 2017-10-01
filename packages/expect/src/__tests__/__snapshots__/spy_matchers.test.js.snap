@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`lastCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>)[.not].lastCalledWith(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastCalledWith(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
@@ -9,7 +9,7 @@ Received:
 `;
 
 exports[`lastCalledWith works when not called 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>
@@ -17,70 +17,70 @@ But it was <red>not called</>."
 `;
 
 exports[`lastCalledWith works with Immutable.js objects 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
 `;
 
 exports[`lastCalledWith works with Map 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[Map {1 => 2, 2 => 1}]</>"
 `;
 
 exports[`lastCalledWith works with Map 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</> as argument 1, but it was called with <red>Map {1 => 2, 2 => 1}</>."
 `;
 
 exports[`lastCalledWith works with Set 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[Set {1, 2}]</>"
 `;
 
 exports[`lastCalledWith works with Set 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>Set {3, 4}</> as argument 1, but it was called with <red>Set {1, 2}</>."
 `;
 
 exports[`lastCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
 `;
 
 exports[`lastCalledWith works with arguments that match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`lastCalledWith works with many arguments 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`lastCalledWith works with many arguments that don't match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
 `;
 
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>)[.not].toBeCalled(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalled(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
@@ -88,20 +88,20 @@ Received:
 `;
 
 exports[`toBeCalled works with jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toBeCalled(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalled(</><dim>)</>
 
 Expected mock function to have been called."
 `;
 
 exports[`toBeCalled works with jest.fn 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toBeCalled(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled(</><dim>)</>
 
 Expected mock function not to be called but it was called with:
   <red>[]</>"
 `;
 
 exports[`toBeCalled works with jest.fn 3`] = `
-"<dim>expect(<red>received</><dim>)[.not].toBeCalled(<dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalled(</><dim>)</>
 
 Matcher does not accept any arguments.
 Got:
@@ -109,7 +109,7 @@ Got:
 `;
 
 exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>)[.not].toBeCalledWith(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledWith(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
@@ -117,7 +117,7 @@ Received:
 `;
 
 exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenCalled(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
@@ -125,20 +125,20 @@ Received:
 `;
 
 exports[`toHaveBeenCalled works with jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalled(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled(</><dim>)</>
 
 Expected mock function to have been called."
 `;
 
 exports[`toHaveBeenCalled works with jest.fn 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalled(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled(</><dim>)</>
 
 Expected mock function not to be called but it was called with:
   <red>[]</>"
 `;
 
 exports[`toHaveBeenCalled works with jest.fn 3`] = `
-"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalled(<dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
 
 Matcher does not accept any arguments.
 Got:
@@ -146,7 +146,7 @@ Got:
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 1`] = `
-"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
 Got:
@@ -154,7 +154,7 @@ Got:
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 2`] = `
-"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
 Got:
@@ -162,7 +162,7 @@ Got:
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 3`] = `
-"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
 Got:
@@ -170,7 +170,7 @@ Got:
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 4`] = `
-"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
 Got:
@@ -178,7 +178,7 @@ Got:
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 5`] = `
-"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
 Got:
@@ -186,7 +186,7 @@ Got:
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 6`] = `
-"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
 Got:
@@ -194,25 +194,25 @@ Got:
 `;
 
 exports[`toHaveBeenCalledTimes fails if function called less than expected times 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledTimes(<green>2</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
 
 Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
 `;
 
 exports[`toHaveBeenCalledTimes fails if function called more than expected times 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledTimes(<green>2</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
 
 Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
 `;
 
 exports[`toHaveBeenCalledTimes passes if function called equal to expected times 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledTimes(<green>2</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledTimes(</><green>2</><dim>)</>
 
 Expected mock function not to be called <green>two times</>, but it was called exactly <red>two times</>."
 `;
 
 exports[`toHaveBeenCalledTimes verifies that actual is a Spy 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
@@ -220,7 +220,7 @@ Received:
 `;
 
 exports[`toHaveBeenCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
@@ -228,7 +228,7 @@ Received:
 `;
 
 exports[`toHaveBeenCalledWith works when not called 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>
@@ -236,63 +236,63 @@ But it was <red>not called</>."
 `;
 
 exports[`toHaveBeenCalledWith works with Immutable.js objects 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function not to have been called with:
   <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Map 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function not to have been called with:
   <green>[Map {1 => 2, 2 => 1}]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Map 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
   <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</> as argument 1, but it was called with <red>Map {1 => 2, 2 => 1}</>."
 `;
 
 exports[`toHaveBeenCalledWith works with Set 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function not to have been called with:
   <green>[Set {1, 2}]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Set 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
   <green>Set {3, 4}</> as argument 1, but it was called with <red>Set {1, 2}</>."
 `;
 
 exports[`toHaveBeenCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
 `;
 
 exports[`toHaveBeenCalledWith works with arguments that match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function not to have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with many arguments 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function not to have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with many arguments that don't match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>.
@@ -303,7 +303,7 @@ Expected mock function to have been called with:
 `;
 
 exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(<dim>)
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
@@ -311,7 +311,7 @@ Received:
 `;
 
 exports[`toHaveBeenLastCalledWith works when not called 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>
@@ -319,63 +319,63 @@ But it was <red>not called</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with Immutable.js objects 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Map 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[Map {1 => 2, 2 => 1}]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Map 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</> as argument 1, but it was called with <red>Map {1 => 2, 2 => 1}</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with Set 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[Set {1, 2}]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Set 2`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>Set {3, 4}</> as argument 1, but it was called with <red>Set {1, 2}</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with many arguments 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with many arguments that don't match 1`] = `
-"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."

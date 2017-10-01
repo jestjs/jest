@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -155,48 +154,61 @@ export default class DefaultReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    this._status.testFinished(
-      test.context.config,
-      testResult,
-      aggregatedResults,
-    );
-    this._printTestFileSummary(
-      testResult.testFilePath,
-      test.context.config,
-      testResult,
-    );
+    this.testFinished(test.context.config, testResult, aggregatedResults);
+    if (!testResult.skipped) {
+      this.printTestFileHeader(
+        testResult.testFilePath,
+        test.context.config,
+        testResult,
+      );
+      this.printTestFileFailureMessage(
+        testResult.testFilePath,
+        test.context.config,
+        testResult,
+      );
+    }
     this.forceFlushBufferedOutput();
   }
 
-  _printTestFileSummary(
+  testFinished(
+    config: ProjectConfig,
+    testResult: TestResult,
+    aggregatedResults: AggregatedResult,
+  ) {
+    this._status.testFinished(config, testResult, aggregatedResults);
+  }
+
+  printTestFileHeader(
     testPath: Path,
     config: ProjectConfig,
     result: TestResult,
   ) {
-    if (!result.skipped) {
-      this.log(getResultHeader(result, this._globalConfig, config));
-
-      const consoleBuffer = result.console;
-      if (consoleBuffer && consoleBuffer.length) {
-        this.log(
-          '  ' +
-            TITLE_BULLET +
-            'Console\n\n' +
-            getConsoleOutput(
-              config.cwd,
-              !!this._globalConfig.verbose,
-              consoleBuffer,
-            ),
-        );
-      }
-
-      if (result.failureMessage) {
-        this.log(result.failureMessage);
-      }
-
-      const didUpdate = this._globalConfig.updateSnapshot === 'all';
-      const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
-      snapshotStatuses.forEach(this.log);
+    this.log(getResultHeader(result, this._globalConfig, config));
+    const consoleBuffer = result.console;
+    if (consoleBuffer && consoleBuffer.length) {
+      this.log(
+        '  ' +
+          TITLE_BULLET +
+          'Console\n\n' +
+          getConsoleOutput(
+            config.cwd,
+            !!this._globalConfig.verbose,
+            consoleBuffer,
+          ),
+      );
     }
+  }
+
+  printTestFileFailureMessage(
+    testPath: Path,
+    config: ProjectConfig,
+    result: TestResult,
+  ) {
+    if (result.failureMessage) {
+      this.log(result.failureMessage);
+    }
+    const didUpdate = this._globalConfig.updateSnapshot === 'all';
+    const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
+    snapshotStatuses.forEach(this.log);
   }
 }

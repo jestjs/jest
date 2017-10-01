@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -17,6 +16,14 @@ import {
 
 import {getState, setState} from './jest_matchers_object';
 
+const resetAssertionsLocalState = () => {
+  setState({
+    assertionCalls: 0,
+    expectedAssertionsNumber: null,
+    isExpectingAssertions: false,
+  });
+};
+
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matchers state.
 const extractExpectedAssertionsErrors = () => {
@@ -26,7 +33,9 @@ const extractExpectedAssertionsErrors = () => {
     expectedAssertionsNumber,
     isExpectingAssertions,
   } = getState();
-  setState({assertionCalls: 0, expectedAssertionsNumber: null});
+
+  resetAssertionsLocalState();
+
   if (
     typeof expectedAssertionsNumber === 'number' &&
     assertionCalls !== expectedAssertionsNumber

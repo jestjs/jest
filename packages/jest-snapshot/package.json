@@ -1,18 +1,18 @@
 {
   "name": "jest-snapshot",
-  "version": "21.1.0",
+  "version": "21.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "jest-diff": "^21.1.0",
-    "jest-matcher-utils": "^21.1.0",
+    "jest-diff": "^21.2.1",
+    "jest-matcher-utils": "^21.2.1",
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
-    "pretty-format": "^21.1.0"
+    "pretty-format": "^21.2.1"
   }
 }

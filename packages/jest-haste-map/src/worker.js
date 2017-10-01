@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -12,7 +11,7 @@ import type {SerializableError} from 'types/TestResult';
 import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';
 
 import path from 'path';
-import docblock from 'jest-docblock';
+import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import H from './constants';
 import extractRequires from './lib/extract_requires';

@@ -15,9 +15,7 @@ Until now, Jest could only operate in one project at a time. This is often cumbe
 
 <!--truncate-->
 
-Jest is now collapsing the usage guide after the first test run to save vertical space in the terminal. Along with this, we also improved watch mode by adding arrow-key support to the test pattern typeaheads and the test file and test name pattern typeaheads now work together rather than being unrelated features which allow to select the right tests to run more easily:
-
-![typeahead](/jest/img/blog/20-typeahead.png)
+Jest is now collapsing the usage guide after the first test run to save vertical space in the terminal.
 
 Further, we completely overhauled how the configuration system works inside of Jest. You can now pass any configuration option through the CLI to overwrite the ones specified in your configuration file. Along with that, we changed Jest to look for a `jest.config.js` file by default which means you are now able to define a Jest configuration using JavaScript as well as being able to configure it through `package.json` like before. Through the addition of all these new features, you are now able to combine Jest in more powerful ways than ever before. For example, if you would like to find out which tests Jest would run given a set of changed files from a commit across multiple projects in a monorepo, you can combine cli arguments like this now:
 

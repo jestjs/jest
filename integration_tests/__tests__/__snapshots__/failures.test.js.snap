@@ -30,11 +30,17 @@ exports[`not throwing Error objects 3`] = `
 
 exports[`not throwing Error objects 4`] = `
 "FAIL __tests__/assertion_count.test.js
+  .assertions()
+    ✕ throws
+    ✕ throws on redeclare of assertion count
+    ✕ throws on assertion
+  .hasAssertions()
+    ✕ throws when there are not assertions
   ● .assertions() › throws
     expect(received).toBeTruthy()
     Expected value to be truthy, instead received
       false
-      at __tests__/assertion_count.test.js:14:17
+      at __tests__/assertion_count.test.js:13:17
   ● .assertions() › throws
     expect.assertions(2)
     Expected two assertions to be called but received one assertion call.
@@ -42,24 +48,35 @@ exports[`not throwing Error objects 4`] = `
     expect(received).toBeTruthy()
     Expected value to be truthy, instead received
       false
-      at __tests__/assertion_count.test.js:18:17
+      at __tests__/assertion_count.test.js:17:17
   ● .assertions() › throws on assertion
     expect.assertions(0)
     Expected zero assertions to be called but received one assertion call.
   ● .hasAssertions() › throws when there are not assertions
     expect.hasAssertions()
     Expected at least one assertion to be called but received none.
-  .assertions()
-    ✕ throws
-    ✕ throws on redeclare of assertion count
-    ✕ throws on assertion
-  .hasAssertions()
-    ✕ throws when there are not assertions
 "
 `;
 
 exports[`works with node assert 1`] = `
 "FAIL __tests__/node_assertion_error.test.js
+  ✕ assert
+  ✕ assert with a message
+  ✕ assert.ok
+  ✕ assert.ok with a message
+  ✕ assert.equal
+  ✕ assert.notEqual
+  ✕ assert.deepEqual
+  ✕ assert.deepEqual with a message
+  ✕ assert.notDeepEqual
+  ✕ assert.strictEqual
+  ✕ assert.notStrictEqual
+  ✕ assert.deepStrictEqual
+  ✕ assert.notDeepStrictEqual
+  ✕ assert.ifError
+  ✕ assert.doesNotThrow
+  ✕ assert.throws
+
   ● assert
 
     assert.equal(received, expected) or assert(received) 
@@ -69,7 +86,7 @@ exports[`works with node assert 1`] = `
     Received:
       false
       
-      at __tests__/node_assertion_error.test.js:16:3
+      at __tests__/node_assertion_error.test.js:15:3
 
   ● assert with a message
 
@@ -83,7 +100,7 @@ exports[`works with node assert 1`] = `
     Message:
       this is a message
       
-      at __tests__/node_assertion_error.test.js:20:3
+      at __tests__/node_assertion_error.test.js:19:3
 
   ● assert.ok
 
@@ -94,7 +111,7 @@ exports[`works with node assert 1`] = `
     Received:
       false
       
-      at __tests__/node_assertion_error.test.js:24:10
+      at __tests__/node_assertion_error.test.js:23:10
 
   ● assert.ok with a message
 
@@ -108,7 +125,7 @@ exports[`works with node assert 1`] = `
     Message:
       this is a message
       
-      at __tests__/node_assertion_error.test.js:28:10
+      at __tests__/node_assertion_error.test.js:27:10
 
   ● assert.equal
 
@@ -119,7 +136,7 @@ exports[`works with node assert 1`] = `
     Received:
       1
       
-      at __tests__/node_assertion_error.test.js:32:10
+      at __tests__/node_assertion_error.test.js:31:10
 
   ● assert.notEqual
 
@@ -134,7 +151,7 @@ exports[`works with node assert 1`] = `
     
     Compared values have no visual difference.
       
-      at __tests__/node_assertion_error.test.js:36:10
+      at __tests__/node_assertion_error.test.js:35:10
 
   ● assert.deepEqual
 
@@ -159,7 +176,7 @@ exports[`works with node assert 1`] = `
         },
       }
       
-      at __tests__/node_assertion_error.test.js:40:10
+      at __tests__/node_assertion_error.test.js:39:10
 
   ● assert.deepEqual with a message
 
@@ -187,7 +204,7 @@ exports[`works with node assert 1`] = `
         },
       }
       
-      at __tests__/node_assertion_error.test.js:44:10
+      at __tests__/node_assertion_error.test.js:43:10
 
   ● assert.notDeepEqual
 
@@ -202,7 +219,7 @@ exports[`works with node assert 1`] = `
     
     Compared values have no visual difference.
       
-      at __tests__/node_assertion_error.test.js:48:10
+      at __tests__/node_assertion_error.test.js:47:10
 
   ● assert.strictEqual
 
@@ -213,7 +230,7 @@ exports[`works with node assert 1`] = `
     Received:
       1
       
-      at __tests__/node_assertion_error.test.js:52:10
+      at __tests__/node_assertion_error.test.js:51:10
 
   ● assert.notStrictEqual
 
@@ -231,7 +248,7 @@ exports[`works with node assert 1`] = `
     
     Compared values have no visual difference.
       
-      at __tests__/node_assertion_error.test.js:56:10
+      at __tests__/node_assertion_error.test.js:55:10
 
   ● assert.deepStrictEqual
 
@@ -252,7 +269,7 @@ exports[`works with node assert 1`] = `
     +   \\"a\\": 1,
       }
       
-      at __tests__/node_assertion_error.test.js:60:10
+      at __tests__/node_assertion_error.test.js:59:10
 
   ● assert.notDeepStrictEqual
 
@@ -267,7 +284,7 @@ exports[`works with node assert 1`] = `
     
     Compared values have no visual difference.
       
-      at __tests__/node_assertion_error.test.js:64:10
+      at __tests__/node_assertion_error.test.js:63:10
 
   ● assert.ifError
 
@@ -285,7 +302,7 @@ exports[`works with node assert 1`] = `
     Message:
       Got unwanted exception.
       
-      at __tests__/node_assertion_error.test.js:72:10
+      at __tests__/node_assertion_error.test.js:71:10
 
   ● assert.throws
 
@@ -297,24 +314,7 @@ exports[`works with node assert 1`] = `
     Message:
       Missing expected exception.
       
-      at __tests__/node_assertion_error.test.js:78:10
-
-  ✕ assert
-  ✕ assert with a message
-  ✕ assert.ok
-  ✕ assert.ok with a message
-  ✕ assert.equal
-  ✕ assert.notEqual
-  ✕ assert.deepEqual
-  ✕ assert.deepEqual with a message
-  ✕ assert.notDeepEqual
-  ✕ assert.strictEqual
-  ✕ assert.notStrictEqual
-  ✕ assert.deepStrictEqual
-  ✕ assert.notDeepStrictEqual
-  ✕ assert.ifError
-  ✕ assert.doesNotThrow
-  ✕ assert.throws
+      at __tests__/node_assertion_error.test.js:77:10
 
 "
 `;
