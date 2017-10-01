@@ -78,9 +78,9 @@ export default class Settings extends EventEmitter {
 
   getConfig(completed: any) {
     this.getConfigs(() => {
-	  if (this.jestVersionMajor >= 21) {
-	    this.settings = this.settings[0];	
-	  }
+      if (this.jestVersionMajor >= 21) {
+        this.settings = this.settings[0];
+      }
       completed();
     });
   }
