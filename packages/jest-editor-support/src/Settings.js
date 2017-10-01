@@ -65,7 +65,7 @@ export default class Settings extends EventEmitter {
 	  // We can give warnings to versions under 17 now
       // See https://github.com/facebook/jest/issues/2343 for moving this into
       // the config object
-      this.settings = this.jestVersionMajor >= 21 ? settings.configs : [settings.config]
+      this.settings = this.jestVersionMajor >= 21 ? settings.configs : settings.config
     });
 
     // They could have an older build of Jest which
@@ -76,9 +76,6 @@ export default class Settings extends EventEmitter {
   }
 
   getConfig(completed: any) {
-    this.getConfigs(() => {
-      this.settings = this.settings[0];
-      completed();
-    });
+    this.getConfigs(completed);
   }
 }
