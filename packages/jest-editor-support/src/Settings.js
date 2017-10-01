@@ -32,6 +32,8 @@ type ConfigRepresentation = {
   testMatch: Array<Glob>,
 };
 
+type ConfigRepresentations = Array<ConfigRepresentation>;
+
 export default class Settings extends EventEmitter {
   getConfigProcess: ChildProcess;
   jestVersionMajor: number | null;
@@ -39,6 +41,7 @@ export default class Settings extends EventEmitter {
     workspace: ProjectWorkspace,
     args: Array<string>,
   ) => ChildProcess;
+  configs: ConfigRepresentations;
   settings: ConfigRepresentation;
   workspace: ProjectWorkspace;
 
@@ -52,6 +55,8 @@ export default class Settings extends EventEmitter {
       testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
+
+    this.configs = [this.settings];
   }
 
   getConfigs(completed: any) {
@@ -60,13 +65,10 @@ export default class Settings extends EventEmitter {
     ]);
 
     this.getConfigProcess.stdout.on('data', (data: Buffer) => {
-      const {configs, version} = JSON.parse(data.toString());
-      // We can give warnings to versions under 17 now
-      // See https://github.com/facebook/jest/issues/2343 for moving this into
-      // the config object
-
-      this.jestVersionMajor = parseInt(version.split('.').shift(), 10);
-      this.settings = configs;
+      const settings = JSON.parse(data.toString());
+      this.jestVersionMajor = parseInt(settings.version.split('.').shift(), 10);
+      this.configs =
+        this.jestVersionMajor >= 21 ? settings.configs : [settings.config];
     });
 
     // They could have an older build of Jest which
@@ -76,9 +78,9 @@ export default class Settings extends EventEmitter {
     });
   }
 
-  getConfig(completed: any) {
+  getConfig(completed: any, index: number = 0) {
     this.getConfigs(() => {
-      this.settings = this.settings[0];
+      this.settings = this.configs[index];
       completed();
     });
   }

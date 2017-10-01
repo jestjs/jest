@@ -26,7 +26,7 @@ describe('Settings', () => {
     expect(settings.settings).toEqual(expect.any(Object));
   });
 
-  it('reads and parses the configs', () => {
+  it('[jest 20] reads and parses the config', () => {
     const workspace = new ProjectWorkspace(
       'root_path',
       'path_to_jest',
@@ -34,38 +34,9 @@ describe('Settings', () => {
       1000,
     );
     const completed = jest.fn();
-    const configs = [{cacheDirectory: '/tmp/jest', name: '[md5 hash]'}];
+    const config = {cacheDirectory: '/tmp/jest', name: '[md5 hash]'};
     const json = {
-      configs,
-      version: '19.0.0',
-    };
-
-    const mockProcess: any = new EventEmitter();
-    mockProcess.stdout = new EventEmitter();
-    const createProcess = () => mockProcess;
-    const buffer = makeBuffer(JSON.stringify(json));
-    const settings = new Settings(workspace, {createProcess});
-
-    settings.getConfigs(completed);
-    settings.getConfigProcess.stdout.emit('data', buffer);
-    settings.getConfigProcess.emit('close');
-
-    expect(completed).toHaveBeenCalled();
-    expect(settings.jestVersionMajor).toBe(19);
-    expect(settings.settings).toEqual(configs);
-  });
-
-  it('reads and parses the config', () => {
-    const workspace = new ProjectWorkspace(
-      'root_path',
-      'path_to_jest',
-      'test',
-      1000,
-    );
-    const completed = jest.fn();
-    const configs = [{cacheDirectory: '/tmp/jest', name: '[md5 hash]'}];
-    const json = {
-      configs,
+      config,
       version: '19.0.0',
     };
 
@@ -81,7 +52,65 @@ describe('Settings', () => {
 
     expect(completed).toHaveBeenCalled();
     expect(settings.jestVersionMajor).toBe(19);
+    expect(settings.settings).toEqual(config);
+  });
+
+  it('[jest 21] reads and parses the config', () => {
+    const workspace = new ProjectWorkspace(
+      'root_path',
+      'path_to_jest',
+      'test',
+      1000,
+    );
+    const completed = jest.fn();
+    const configs = [{cacheDirectory: '/tmp/jest', name: '[md5 hash]'}];
+    const json = {
+      configs,
+      version: '21.0.0',
+    };
+
+    const mockProcess: any = new EventEmitter();
+    mockProcess.stdout = new EventEmitter();
+    const createProcess = () => mockProcess;
+    const buffer = makeBuffer(JSON.stringify(json));
+    const settings = new Settings(workspace, {createProcess});
+
+    settings.getConfig(completed);
+    settings.getConfigProcess.stdout.emit('data', buffer);
+    settings.getConfigProcess.emit('close');
+
+    expect(completed).toHaveBeenCalled();
+    expect(settings.jestVersionMajor).toBe(21);
     expect(settings.settings).toEqual(configs[0]);
+  });
+
+  it('[jest 21] reads and parses the configs', () => {
+    const workspace = new ProjectWorkspace(
+      'root_path',
+      'path_to_jest',
+      'test',
+      1000,
+    );
+    const completed = jest.fn();
+    const configs = [{cacheDirectory: '/tmp/jest', name: '[md5 hash]'}];
+    const json = {
+      configs,
+      version: '21.0.0',
+    };
+
+    const mockProcess: any = new EventEmitter();
+    mockProcess.stdout = new EventEmitter();
+    const createProcess = () => mockProcess;
+    const buffer = makeBuffer(JSON.stringify(json));
+    const settings = new Settings(workspace, {createProcess});
+
+    settings.getConfigs(completed);
+    settings.getConfigProcess.stdout.emit('data', buffer);
+    settings.getConfigProcess.emit('close');
+
+    expect(completed).toHaveBeenCalled();
+    expect(settings.jestVersionMajor).toBe(21);
+    expect(settings.configs).toEqual(configs);
   });
 
   it('calls callback even if no data is sent', () => {
