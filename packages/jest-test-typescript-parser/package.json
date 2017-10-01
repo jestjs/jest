@@ -10,8 +10,5 @@
   "dependencies": {
     "jest-editor-support": "^21.2.0",
     "typescript": "^2.5.3"
-  },
-  "devDependencies": {
-    "typescript": "^2.5.3"
   }
 }

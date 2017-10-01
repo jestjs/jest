@@ -168,7 +168,6 @@ Expected value to be falsy, instead received
 
 describe('Terse Messages', () => {
   let parser: TestReconciler;
-  // let results: TestFileAssertionStatus[];
 
   beforeEach(() => {
     parser = new TestReconciler();
