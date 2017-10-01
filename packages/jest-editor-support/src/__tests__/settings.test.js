@@ -110,7 +110,7 @@ describe('Settings', () => {
 
     expect(completed).toHaveBeenCalled();
     expect(settings.jestVersionMajor).toBe(21);
-    expect(settings.settings).toEqual(configs);
+    expect(settings.configs).toEqual(configs);
   });
 
   it('calls callback even if no data is sent', () => {
