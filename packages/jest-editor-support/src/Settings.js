@@ -32,6 +32,8 @@ type ConfigRepresentation = {
   testMatch: Array<Glob>,
 };
 
+type ConfigRepresentations = Array<ConfigRepresentation>;
+
 export default class Settings extends EventEmitter {
   getConfigProcess: ChildProcess;
   jestVersionMajor: number | null;
@@ -39,7 +41,7 @@ export default class Settings extends EventEmitter {
     workspace: ProjectWorkspace,
     args: Array<string>,
   ) => ChildProcess;
-  settings: ConfigRepresentation;
+  settings: ConfigRepresentations;
   workspace: ProjectWorkspace;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
@@ -48,10 +50,12 @@ export default class Settings extends EventEmitter {
     this._createProcess = (options && options.createProcess) || createProcess;
 
     // Defaults for a Jest project
-    this.settings = {
-      testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
-      testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
-    };
+    this.settings = [
+      {
+        testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
+        testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
+      },
+    ];
   }
 
   getConfigs(completed: any) {
@@ -66,7 +70,7 @@ export default class Settings extends EventEmitter {
       // See https://github.com/facebook/jest/issues/2343 for moving this into
       // the config object
       this.settings =
-        this.jestVersionMajor >= 21 ? settings.configs : settings.config;
+        this.jestVersionMajor >= 21 ? settings.configs : [settings.config];
     });
 
     // They could have an older build of Jest which
@@ -77,6 +81,9 @@ export default class Settings extends EventEmitter {
   }
 
   getConfig(completed: any) {
-    this.getConfigs(completed);
+    this.getConfigs(() => {
+      this.settings = this.settings[0];
+      completed();
+    });
   }
 }
