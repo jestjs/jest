@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 const path = require('path');
@@ -64,6 +63,8 @@ module.exports = {
         'packages/jest-editor-support/src/Process.js',
         'packages/jest-editor-support/src/Runner.js',
         'packages/jest-editor-support/src/Settings.js',
+        'packages/jest-editor-support/src/Snapshot.js',
+        'packages/jest-editor-support/src/__tests__/Snapshot-test.js',
         'packages/jest-jasmine2/src/jasmine/Env.js',
         'packages/jest-jasmine2/src/jasmine/Spec.js',
         'packages/jest-jasmine2/src/jasmine/Suite.js',

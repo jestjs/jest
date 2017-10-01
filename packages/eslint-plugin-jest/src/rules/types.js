@@ -1,14 +1,11 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
-
-type Node = MemberExpression | CallExpression;
 
 type Location = {
   column: number,
@@ -20,11 +17,15 @@ type NodeLocation = {
   start: Location,
 };
 
+type ParentNode = CallExpression | MemberExpression;
+
+export type Node = CallExpression | MemberExpression | Identifier | Literal;
+
 export type Identifier = {
   type: 'Identifier',
   name: string,
   value: string,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 
@@ -34,7 +35,7 @@ export type MemberExpression = {
   expression: CallExpression,
   property: Identifier,
   object: Identifier,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 
@@ -42,7 +43,7 @@ export type Literal = {
   type: 'Literal',
   value?: string,
   rawValue?: string,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 
@@ -50,7 +51,7 @@ export type CallExpression = {
   type: 'CallExpression',
   arguments: Array<Literal>,
   callee: Identifier | MemberExpression,
-  parent: Node,
+  parent: ParentNode,
   loc: NodeLocation,
 };
 

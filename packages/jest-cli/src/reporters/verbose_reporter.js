@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -59,10 +58,23 @@ export default class VerboseReporter extends DefaultReporter {
     result: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    super.onTestResult(test, result, aggregatedResults);
-    if (!result.testExecError && !result.skipped) {
-      this._logTestResults(result.testResults);
+    super.testFinished(test.context.config, result, aggregatedResults);
+    if (!result.skipped) {
+      this.printTestFileHeader(
+        result.testFilePath,
+        test.context.config,
+        result,
+      );
+      if (!result.testExecError && !result.skipped) {
+        this._logTestResults(result.testResults);
+      }
+      this.printTestFileFailureMessage(
+        result.testFilePath,
+        test.context.config,
+        result,
+      );
     }
+    super.forceFlushBufferedOutput();
   }
 
   _logTestResults(testResults: Array<AssertionResult>) {
