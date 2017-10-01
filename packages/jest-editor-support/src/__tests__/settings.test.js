@@ -7,12 +7,12 @@
  *
  * @flow
  */
-
-'use strict';
-
 import EventEmitter from 'events';
+
 import ProjectWorkspace from '../project_workspace';
 import Settings from '../Settings';
+
+('use strict');
 
 describe('Settings', () => {
   it('sets itself up fom the constructor', () => {
@@ -64,7 +64,7 @@ describe('Settings', () => {
       1000,
     );
     const completed = jest.fn();
-    const configs = [{cacheDirectory: '/tmp/jest', name: '[md5 hash]'}];
+    const config = {cacheDirectory: '/tmp/jest', name: '[md5 hash]'};
     const json = {
       configs,
       version: '19.0.0',
@@ -82,7 +82,7 @@ describe('Settings', () => {
 
     expect(completed).toHaveBeenCalled();
     expect(settings.jestVersionMajor).toBe(19);
-    expect(settings.settings).toEqual(configs[0]);
+    expect(settings.settings).toEqual(config);
   });
 
   it('calls callback even if no data is sent', () => {
