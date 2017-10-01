@@ -6,14 +6,14 @@
  *
  * @flow
  */
+import { ChildProcess } from 'child_process';
+import EventEmitter from 'events';
+
+import { createProcess } from './Process';
+import ProjectWorkspace from './project_workspace';
+
 
 import type {Options} from './types';
-
-import {ChildProcess} from 'child_process';
-import EventEmitter from 'events';
-import ProjectWorkspace from './project_workspace';
-import {createProcess} from './Process';
-
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
 // the interface below can be used to show what we use, as currently the whole
@@ -78,7 +78,7 @@ export default class Settings extends EventEmitter {
 
   getConfig(completed: any) {
     this.getConfigs(() => {
-      this.settings = this.settings[0];
+      this.settings = this.settings[0] || this.settings;
       completed();
     });
   }
