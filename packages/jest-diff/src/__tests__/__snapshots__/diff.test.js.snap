@@ -169,7 +169,18 @@ exports[`context number of lines: null (5 default) 1`] = `
 <dim>  }</>"
 `;
 
-exports[`falls back to not call toJSON if objects look identical 1`] = `
+exports[`falls back to not call toJSON if it throws and then objects have differences 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"line\\": 1,</>
+<red>+   \\"line\\": 2,</>
+<dim>    \\"toJSON\\": [Function toJSON],</>
+<dim>  }</>"
+`;
+
+exports[`falls back to not call toJSON if serialization has no differences but then objects have differences 1`] = `
 "<dim>Compared values serialize to the same structure.</>
 <dim>Printing internal object structure without calling \`toJSON\` instead.</>
 
@@ -197,5 +208,3 @@ exports[`highlight only the last in odd length of leading spaces (expanded) 1`] 
 <red>+ }, {});</>
 <dim>  </pre></>"
 `;
-
-exports[`prints a fallback message if two objects truly look identical 1`] = `"<dim>Compared values have no visual difference.</>"`;
