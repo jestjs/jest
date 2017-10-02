@@ -30,6 +30,7 @@ type MockFunctionConfig = {
   isReturnValueLastSet: boolean,
   defaultReturnValue: any,
   mockImpl: any,
+  mockName: string,
   specificReturnValues: Array<any>,
   specificMockImpls: Array<any>,
 };
@@ -269,6 +270,7 @@ class ModuleMockerClass {
       defaultReturnValue: undefined,
       isReturnValueLastSet: false,
       mockImpl: undefined,
+      mockName: 'jest.fn()',
       specificMockImpls: [],
       specificReturnValues: [],
     };
@@ -432,6 +434,17 @@ class ModuleMockerClass {
         f.mockImplementation(function() {
           return this;
         });
+
+      f.mockName = name => {
+        if (arguments.length > 0 && name) {
+          const mockConfig = this._ensureMockConfig(f);
+          mockConfig.mockName = name;
+          return f;
+        } else {
+          const mockConfig = this._ensureMockConfig(f);
+          return mockConfig.mockName || 'jest.fn()';
+        }
+      };
 
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
@@ -632,11 +645,19 @@ class ModuleMockerClass {
     return !!fn._isMockFunction;
   }
 
-  fn(implementation?: any): any {
+  fn(implementation?: any, mockName?: string): any {
     const length = implementation ? implementation.length : 0;
     const fn = this._makeComponent({length, type: 'function'});
     if (implementation) {
-      fn.mockImplementation(implementation);
+      if (typeof implementation === 'function') {
+        fn.mockImplementation(implementation);
+      } else if (typeof implementation === 'string') {
+        fn.mockName(implementation);
+      }
+    }
+
+    if (arguments.length > 1 && mockName) {
+      fn.mockName(mockName);
     }
     return fn;
   }

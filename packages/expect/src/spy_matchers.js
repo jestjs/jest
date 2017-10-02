@@ -25,17 +25,13 @@ import {
 import {equals} from './jasmine_utils';
 import {iterableEquality, partition} from './utils';
 
-const RECEIVED_NAME = {
-  'mock function': 'jest.fn()',
-  spy: 'spy',
-};
-
 const createToBeCalledMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
+  const receivedName = receivedIsSpy ? 'spy' : received.mockName();
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -45,12 +41,12 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   const pass = count > 0;
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, RECEIVED_NAME[type], '') +
+        matcherHint('.not' + matcherName, receivedName, '') +
         '\n\n' +
         `Expected ${type} not to be called ` +
         formatReceivedCalls(calls, CALL_PRINT_LIMIT, {sameSentence: true})
     : () =>
-        matcherHint(matcherName, RECEIVED_NAME[type], '') +
+        matcherHint(matcherName, receivedName, '') +
         '\n\n' +
         `Expected ${type} to have been called.`;
 
@@ -65,6 +61,7 @@ const createToBeCalledWithMatcher = matcherName => (
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
+  const receivedName = receivedIsSpy ? 'spy' : received.mockName();
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -76,12 +73,12 @@ const createToBeCalledWithMatcher = matcherName => (
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, RECEIVED_NAME[type]) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
         `Expected ${type} not to have been called with:\n` +
         `  ${printExpected(expected)}`
     : () =>
-        matcherHint(matcherName, RECEIVED_NAME[type]) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
         `Expected ${type} to have been called with:\n` +
         formatMismatchedCalls(fail, expected, CALL_PRINT_LIMIT);
@@ -97,6 +94,7 @@ const createLastCalledWithMatcher = matcherName => (
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
+  const receivedName = receivedIsSpy ? 'spy' : received.mockName();
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -104,12 +102,12 @@ const createLastCalledWithMatcher = matcherName => (
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, RECEIVED_NAME[type]) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
         `Expected ${type} to not have been last called with:\n` +
         `  ${printExpected(expected)}`
     : () =>
-        matcherHint(matcherName, RECEIVED_NAME[type]) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
         `Expected ${type} to have been last called with:\n` +
         formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
@@ -129,23 +127,20 @@ const spyMatchers: MatchersObject = {
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
+    const receivedName = receivedIsSpy ? 'spy' : received.mockName();
     const count = receivedIsSpy
       ? received.calls.count()
       : received.mock.calls.length;
     const pass = count === expected;
     const message = pass
       ? () =>
-          matcherHint(
-            '.not' + matcherName,
-            RECEIVED_NAME[type],
-            String(expected),
-          ) +
+          matcherHint('.not' + matcherName, receivedName, String(expected)) +
           `\n\n` +
           `Expected ${type} not to be called ` +
           `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
           ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
       : () =>
-          matcherHint(matcherName, RECEIVED_NAME[type], String(expected)) +
+          matcherHint(matcherName, receivedName, String(expected)) +
           '\n\n' +
           `Expected ${type} to have been called ` +
           `${EXPECTED_COLOR(pluralize('time', expected))},` +

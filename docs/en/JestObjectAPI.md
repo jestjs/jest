@@ -15,7 +15,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.disableAutomock()`](#jestdisableautomock)
   - [`jest.enableAutomock()`](#jestenableautomock)
-  - [`jest.fn(implementation)`](#jestfnimplementation)
+  - [`jest.fn(implementation, name)`](#jestfnimplementation)
   - [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
   - [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
   - [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
@@ -65,8 +65,8 @@ Returns the `jest` object for chaining.
 
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
-### `jest.fn(implementation)`
-Returns a new, unused [mock function](/jest/docs/mock-function-api.html). Optionally takes a mock implementation.
+### `jest.fn(implementation, name)`
+Returns a new, unused [mock function](/jest/docs/mock-function-api.html). Optionally takes a mock implementation and/or a mock name.
 
 ```js
   const mockFn = jest.fn();
@@ -77,6 +77,17 @@ Returns a new, unused [mock function](/jest/docs/mock-function-api.html). Option
   const returnsTrue = jest.fn(() => true);
   console.log(returnsTrue()); // true;
 ```
+With mock name:
+```js
+  const mockFn = jest.fn('doesNothing');
+  mockFn();
+  expect(mockFn).toHaveBeenCalled();
+
+  // With a mock implementation:
+  const returnsTrue = jest.fn(() => true, 'returnsTrue');
+  console.log(returnsTrue()); // true;
+```
+
 
 ### `jest.isMockFunction(fn)`
 Determines if the given function is a mocked function.
