@@ -100,7 +100,7 @@ export const _replaceRootDirTags = (rootDir: string, config: any) => {
  * 1. looks for <name> relative to Jest.
  */
 export const getTestEnvironment = (config: Object) => {
-  const env = config.testEnvironment;
+  const env = _replaceRootDirInPath(config.rootDir, config.testEnvironment);
   let module = Resolver.findNodeModule(`jest-environment-${env}`, {
     basedir: config.rootDir,
   });
