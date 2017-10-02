@@ -93,7 +93,7 @@ test('oneline strings', () => {
 describe('falls back to not call toJSON', () => {
   describe('if serialization has no differences', () => {
     const toJSON = function toJSON() {
-      return 'apple';
+      return 'it’s all the same to me';
     };
 
     test('but then objects have differences', () => {
@@ -109,7 +109,7 @@ describe('falls back to not call toJSON', () => {
   });
   describe('if it throws', () => {
     const toJSON = function toJSON() {
-      throw new Error('');
+      throw new Error('catch me if you can');
     };
 
     test('and then objects have differences', () => {
