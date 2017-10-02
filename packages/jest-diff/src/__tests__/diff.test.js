@@ -10,16 +10,14 @@
 const stripAnsi = require('strip-ansi');
 const diff = require('../');
 
+const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
+
 const stripped = (a, b, options) => stripAnsi(diff(a, b, options));
 
 const unexpanded = {expand: false};
 const expanded = {expand: true};
 
 const elementSymbol = Symbol.for('react.element');
-
-const toJSON = function toJSON() {
-  return 'apple';
-};
 
 describe('different types', () => {
   [
@@ -58,10 +56,13 @@ describe('no visual difference', () => {
   ].forEach(values => {
     test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
       values[1],
-    )}'`, () => {
-      expect(stripped(values[0], values[1])).toBe(
-        'Compared values have no visual difference.',
-      );
+    )}' (unexpanded)`, () => {
+      expect(stripped(values[0], values[1], unexpanded)).toBe(NO_DIFF_MESSAGE);
+    });
+    test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
+      values[1],
+    )}' (expanded)`, () => {
+      expect(stripped(values[0], values[1], expanded)).toBe(NO_DIFF_MESSAGE);
     });
   });
 
@@ -69,41 +70,59 @@ describe('no visual difference', () => {
     const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
     const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
 
-    expect(stripped(arg1, arg2)).toBe(
-      'Compared values have no visual difference.',
-    );
+    expect(stripped(arg1, arg2)).toBe(NO_DIFF_MESSAGE);
   });
 
   test('Set value order should be irrelevant', () => {
     const arg1 = new Set([1, 2]);
     const arg2 = new Set([2, 1]);
 
-    expect(stripped(arg1, arg2)).toBe(
-      'Compared values have no visual difference.',
-    );
+    expect(stripped(arg1, arg2)).toBe(NO_DIFF_MESSAGE);
   });
 });
 
 test('oneline strings', () => {
   // oneline strings don't produce a diff currently.
   expect(diff('ab', 'aa')).toBe(null);
-  expect(diff('a', 'a')).toMatch(/no visual difference/);
   expect(diff('123456789', '234567890')).toBe(null);
   // if either string is oneline
   expect(diff('oneline', 'multi\nline')).toBe(null);
   expect(diff('multi\nline', 'oneline')).toBe(null);
 });
 
-test('falls back to not call toJSON if objects look identical', () => {
-  const a = {line: 1, toJSON};
-  const b = {line: 2, toJSON};
-  expect(diff(a, b)).toMatchSnapshot();
-});
+describe('falls back to not call toJSON', () => {
+  describe('if serialization has no differences', () => {
+    const toJSON = function toJSON() {
+      return 'it’s all the same to me';
+    };
 
-test('prints a fallback message if two objects truly look identical', () => {
-  const a = {line: 2, toJSON};
-  const b = {line: 2, toJSON};
-  expect(diff(a, b)).toMatchSnapshot();
+    test('but then objects have differences', () => {
+      const a = {line: 1, toJSON};
+      const b = {line: 2, toJSON};
+      expect(diff(a, b)).toMatchSnapshot();
+    });
+    test('and then objects have no differences', () => {
+      const a = {line: 2, toJSON};
+      const b = {line: 2, toJSON};
+      expect(stripped(a, b)).toBe(NO_DIFF_MESSAGE);
+    });
+  });
+  describe('if it throws', () => {
+    const toJSON = function toJSON() {
+      throw new Error('catch me if you can');
+    };
+
+    test('and then objects have differences', () => {
+      const a = {line: 1, toJSON};
+      const b = {line: 2, toJSON};
+      expect(diff(a, b)).toMatchSnapshot();
+    });
+    test('and then objects have no differences', () => {
+      const a = {line: 2, toJSON};
+      const b = {line: 2, toJSON};
+      expect(stripped(a, b)).toBe(NO_DIFF_MESSAGE);
+    });
+  });
 });
 
 // Some of the following assertions seem complex, but compare to alternatives:
@@ -758,6 +777,40 @@ describe('background color of spaces', () => {
     test('(unexpanded)', () => {
       expect(diff(examples, unchanged, unexpanded)).toBe(received);
     });
+  });
+});
+
+describe('highlight only the last in odd length of leading spaces', () => {
+  const pre5 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce(function (props, attribute) {',
+        '   props[attribute.name] = attribute.value;', // 3 leading spaces
+        '  return props;', // 2 leading spaces
+        ' }, {});', // 1 leading space
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const pre6 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce((props, {name, value}) => {',
+        '  props[name] = value;', // from 3 to 2 leading spaces
+        '  return props;', // unchanged 2 leading spaces
+        '}, {});', // from 1 to 0 leading spaces
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const received = diff(pre5, pre6, expanded);
+  test('(expanded)', () => {
+    expect(received).toMatchSnapshot();
+  });
+  test('(unexpanded)', () => {
+    expect(diff(pre5, pre6, unexpanded)).toBe(received);
   });
 });
 

@@ -63,6 +63,8 @@ module.exports = {
         'packages/jest-editor-support/src/Process.js',
         'packages/jest-editor-support/src/Runner.js',
         'packages/jest-editor-support/src/Settings.js',
+        'packages/jest-editor-support/src/Snapshot.js',
+        'packages/jest-editor-support/src/__tests__/Snapshot-test.js',
         'packages/jest-jasmine2/src/jasmine/Env.js',
         'packages/jest-jasmine2/src/jasmine/Spec.js',
         'packages/jest-jasmine2/src/jasmine/Suite.js',

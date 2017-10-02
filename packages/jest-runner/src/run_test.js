@@ -24,7 +24,7 @@ import {
 } from 'jest-util';
 import jasmine2 from 'jest-jasmine2';
 import {getTestEnvironment} from 'jest-config';
-import docblock from 'jest-docblock';
+import * as docblock from 'jest-docblock';
 
 // The default jest-runner is required because it is the default test runner
 // and required implicitly through the `testRunner` ProjectConfig option.

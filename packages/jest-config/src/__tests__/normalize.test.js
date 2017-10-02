@@ -583,6 +583,9 @@ describe('testEnvironment', () => {
       if (name === 'jest-environment-jsdom') {
         return 'node_modules/jest-environment-jsdom';
       }
+      if (name.startsWith('/root')) {
+        return name;
+      }
       return findNodeModule(name);
     });
   });
@@ -611,6 +614,18 @@ describe('testEnvironment', () => {
         {},
       ),
     ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('works with rootDir', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testEnvironment: '<rootDir>/testEnvironment.js',
+      },
+      {},
+    );
+
+    expect(options.testEnvironment).toEqual('/root/testEnvironment.js');
   });
 });
 

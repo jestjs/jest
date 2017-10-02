@@ -120,6 +120,7 @@ describe('.toBe()', () => {
     [{a: 1}, {a: 1}],
     [{a: 1}, {a: 5}],
     ['abc', 'cde'],
+    ['with \ntrailing space', 'without trailing space'],
     [[], []],
     [null, undefined],
   ].forEach(([a, b]) => {

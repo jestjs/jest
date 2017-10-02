@@ -12,6 +12,7 @@ import * as Process from './Process';
 import ProjectWorkspace from './project_workspace';
 import Runner from './Runner';
 import Settings from './Settings';
+import Snapshot from './Snapshot';
 import {Expect, ItBlock, Node} from './parsers/parser_nodes';
 import {parse} from './parsers/babylon_parser';
 import TestReconciler from './test_reconciler';
@@ -24,6 +25,7 @@ module.exports = {
   ProjectWorkspace,
   Runner,
   Settings,
+  Snapshot,
   TestReconciler,
   parse,
 };

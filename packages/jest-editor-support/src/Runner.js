@@ -27,6 +27,7 @@ export default class Runner extends EventEmitter {
     workspace: ProjectWorkspace,
     args: Array<string>,
   ) => ChildProcess;
+  watchMode: boolean;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
@@ -35,21 +36,19 @@ export default class Runner extends EventEmitter {
     this.outputPath = tmpdir() + '/jest_runner.json';
   }
 
-  start() {
+  start(watchMode: boolean = true) {
     if (this.debugprocess) {
       return;
     }
+
+    this.watchMode = watchMode;
+
     // Handle the arg change on v18
     const belowEighteen = this.workspace.localJestMajorVersion < 18;
     const outputArg = belowEighteen ? '--jsonOutputFile' : '--outputFile';
 
-    const args = [
-      '--json',
-      '--useStderr',
-      '--watch',
-      outputArg,
-      this.outputPath,
-    ];
+    const args = ['--json', '--useStderr', outputArg, this.outputPath];
+    if (this.watchMode) args.push('--watch');
 
     this.debugprocess = this._createProcess(this.workspace, args);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
