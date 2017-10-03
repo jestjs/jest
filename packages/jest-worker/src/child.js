@@ -9,13 +9,13 @@
 
 'use strict';
 
-const {
+import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
-} = require('./types');
+} from './types';
 
 import type {ChildMessage} from './types';
 
