@@ -150,10 +150,8 @@ export default class {
           error.stack = response[3];
 
           for (const key in extra) {
-            if (extra.hasOwnProperty(key)) {
-              // $FlowFixMe: adding custom properties to errors.
-              error[extra] = key;
-            }
+            // $FlowFixMe: adding custom properties to errors.
+            error[key] = extra[key];
           }
         }
 

@@ -185,13 +185,14 @@ it('creates error instances for known errors', () => {
     'RandomCustomError',
     'bar',
     'RandomCustomError: bar',
-    {},
+    {qux: 'extra property'},
   ]);
 
   expect(callback2.mock.calls[0][0]).toBeInstanceOf(Error);
   expect(callback2.mock.calls[0][0].message).toBe('bar');
   expect(callback2.mock.calls[0][0].type).toBe('RandomCustomError');
   expect(callback2.mock.calls[0][0].stack).toBe('RandomCustomError: bar');
+  expect(callback2.mock.calls[0][0].qux).toBe('extra property');
 
   // Testing a non-object throw.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback3);

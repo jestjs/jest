@@ -60,6 +60,11 @@ beforeEach(() => {
           throw mockExtendedError;
         },
 
+        fooThrowsNull() {
+          // eslint-disable-next-line no-throw-literal
+          throw null;
+        },
+
         fooWorks() {
           return 1989;
         },
@@ -185,7 +190,20 @@ it('returns results immediately when function is synchronous', () => {
     {baz: 123, qux: 456},
   ]);
 
-  expect(process.send.mock.calls.length).toBe(4);
+  process.emit('message', [
+    CHILD_MESSAGE_CALL,
+    true, // Not really used here, but for flow type purity.
+    'fooThrowsNull',
+    [],
+  ]);
+
+  expect(process.send.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_ERROR);
+  expect(process.send.mock.calls[4][0][1]).toBe('Error');
+  expect(process.send.mock.calls[4][0][2]).toEqual(
+    '"null" or "undefined" thrown',
+  );
+
+  expect(process.send.mock.calls.length).toBe(5);
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
