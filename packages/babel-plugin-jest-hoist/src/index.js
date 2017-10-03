@@ -83,7 +83,7 @@ FUNCTIONS.mock = args => {
     const moduleFactory = args[1];
     invariant(
       moduleFactory.isFunction(),
-      'The second argument of `jest.mock` must be a function.',
+      'The second argument of `jest.mock` must be an inline function.',
     );
 
     const ids = new Set();
