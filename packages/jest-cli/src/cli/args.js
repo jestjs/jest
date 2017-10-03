@@ -38,9 +38,9 @@ export const check = (argv: Argv) => {
 
   if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
     throw new Error(
-      'The --maxWorkers option requires a number to be specified.\n' +
+      'The --maxWorkers (-w) option requires a number to be specified.\n' +
         'Example usage: jest --maxWorkers 2\n' +
-        'Or did you mean --watch ?',
+        'Or did you mean --watch?',
     );
   }
 

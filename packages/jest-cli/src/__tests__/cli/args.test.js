@@ -41,7 +41,7 @@ describe('check', () => {
   it('raises an exception if maxWorkers is specified with no number', () => {
     const argv: Argv = {maxWorkers: undefined};
     expect(() => check(argv)).toThrow(
-      'The --maxWorkers option requires a number to be specified',
+      'The --maxWorkers (-w) option requires a number to be specified',
     );
   });
 
