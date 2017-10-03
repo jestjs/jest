@@ -104,6 +104,7 @@ export default class {
         throw new TypeError('Cannot define a method called ' + name);
       }
 
+      // $FlowFixMe: dynamic extension of the class instance is expected.
       this[name] = this._makeCall.bind(this, name);
     });
 

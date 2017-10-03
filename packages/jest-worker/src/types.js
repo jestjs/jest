@@ -15,12 +15,12 @@
 
 /* eslint-disable no-unclear-flowtypes */
 
-export const CHILD_MESSAGE_INITIALIZE = 0;
-export const CHILD_MESSAGE_CALL = 1;
-export const CHILD_MESSAGE_END = 2;
+export const CHILD_MESSAGE_INITIALIZE: 0 = 0;
+export const CHILD_MESSAGE_CALL: 1 = 1;
+export const CHILD_MESSAGE_END: 2 = 2;
 
-export const PARENT_MESSAGE_OK = 0;
-export const PARENT_MESSAGE_ERROR = 1;
+export const PARENT_MESSAGE_OK: 0 = 0;
+export const PARENT_MESSAGE_ERROR: 1 = 1;
 
 // Option objects.
 
@@ -39,7 +39,7 @@ export type FarmOptions = {
   computeWorkerKey?: (string, ...Array<any>) => ?string,
   exposedMethods?: $ReadOnlyArray<string>,
   forkOptions?: ForkOptions,
-  numworkers?: number,
+  numWorkers?: number,
 };
 
 export type WorkerOptions = {|
@@ -50,20 +50,20 @@ export type WorkerOptions = {|
 // Messages passed from the parent to the children.
 
 export type ChildMessageInitialize = [
-  CHILD_MESSAGE_INITIALIZE, // type
+  typeof CHILD_MESSAGE_INITIALIZE, // type
   boolean, // processed
   string, // file
 ];
 
 export type ChildMessageCall = [
-  CHILD_MESSAGE_CALL, // type
+  typeof CHILD_MESSAGE_CALL, // type
   boolean, // processed
   string, // method
   Array<any>, // args
 ];
 
 export type ChildMessageEnd = [
-  CHILD_MESSAGE_END, // type
+  typeof CHILD_MESSAGE_END, // type
   boolean, // processed
 ];
 
@@ -75,12 +75,12 @@ export type ChildMessage =
 // Messages passed from the children to the parent.
 
 export type ParentMessageOk = [
-  PARENT_MESSAGE_OK, // type
+  typeof PARENT_MESSAGE_OK, // type
   any, // result
 ];
 
 export type ParentMessageError = [
-  PARENT_MESSAGE_ERROR, // type
+  typeof PARENT_MESSAGE_ERROR, // type
   string, // constructor,
   string, // message,
   string, // stack,
