@@ -377,6 +377,9 @@ export default function(j$) {
         getSpecName(spec) {
           return getSpecName(spec, suite);
         },
+        getTestPath() {
+          return j$.testPath;
+        },
         onStart: specStarted,
         description,
         queueRunnerFactory,
