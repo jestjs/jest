@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
-const JestWorker = require('../../build');
+import JestWorker from '../../build';
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const calls = 10000;

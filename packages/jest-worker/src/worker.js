@@ -1,21 +1,21 @@
 /**
- * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
  */
 
 'use strict';
 
-const childProcess = require('child_process');
+import childProcess from 'child_process';
 
-const {
+import {
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
-} = require('./types');
+} from './types';
 
 import type {ChildProcess} from 'child_process';
 import type {Readable} from 'stream';
@@ -46,7 +46,7 @@ import type {
  * field is changed to "true", so that other workers which might encounter the
  * same call skip it.
  */
-class Worker {
+export default class {
   _busy: boolean;
   _child: ChildProcess;
   _options: WorkerOptions;
@@ -159,5 +159,3 @@ class Worker {
     }
   }
 }
-
-module.exports = Worker;

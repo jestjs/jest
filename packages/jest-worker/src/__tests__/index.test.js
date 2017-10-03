@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -28,7 +26,7 @@ beforeEach(() => {
   // in a global list, so that they can be accessed later. This list is reset in
   // every test.
   jest.mock('../worker', () => {
-    return jest.fn(() => {
+    const fakeClass = jest.fn(() => {
       const fakeWorker = {
         getStderr: () => ({once() {}, pipe() {}}),
         getStdout: () => ({once() {}, pipe() {}}),
@@ -39,6 +37,11 @@ beforeEach(() => {
 
       return fakeWorker;
     });
+
+    return {
+      __esModule: true,
+      default: fakeClass,
+    };
   });
 
   jest.mock(
@@ -61,8 +64,8 @@ beforeEach(() => {
     {virtual: true},
   );
 
-  Worker = require('../worker');
-  Farm = require('../index');
+  Worker = require('../worker').default;
+  Farm = require('../index').default;
 });
 
 afterEach(() => {
@@ -89,7 +92,6 @@ it('breaks if any of the forbidden methods is tried to be exposed', () => {
   ).toThrow();
 
   expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['end']})).toThrow();
-  expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['_foo']})).toThrow();
 });
 
 it('works with minimal options', () => {

@@ -1,23 +1,26 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
  */
 
 'use strict';
 
-const mergeStream = require('merge-stream');
-const os = require('os');
-const path = require('path');
-
-const {CHILD_MESSAGE_CALL, CHILD_MESSAGE_END} = require('./types');
-const Worker = require('./worker');
+import mergeStream from 'merge-stream';
+import os from 'os';
+import path from 'path';
 
 import type {FarmOptions} from './types';
 import type {Readable} from 'stream';
+
+import {CHILD_MESSAGE_CALL, CHILD_MESSAGE_END} from './types';
+import Worker from './worker';
+
+/* istanbul ignore next */
+const emptyMethod = () => {};
 
 /**
  * The Jest farm (publicly called "Worker") is a class that allows you to queue
@@ -44,7 +47,7 @@ import type {Readable} from 'stream';
  *   processed by the same worker. This is specially useful if your workers are
  *   caching results.
  */
-class Farm {
+export default class {
   _stdout: Readable;
   _stderr: Readable;
   _ending: boolean;
@@ -85,7 +88,6 @@ class Farm {
       const child = require(workerPath);
 
       exposedMethods = Object.keys(child)
-        .filter(name => this._isValidMethod(name))
         .filter(name => typeof child[name] === 'function');
 
       if (typeof child === 'function') {
@@ -94,7 +96,11 @@ class Farm {
     }
 
     exposedMethods.forEach(name => {
-      if (!this._isValidMethod(name)) {
+      if (name.startsWith('_')) {
+        return;
+      }
+
+      if (this.constructor.prototype.hasOwnProperty(name)) {
         throw new TypeError('Cannot define a method called ' + name);
       }
 
@@ -127,7 +133,7 @@ class Farm {
     // We do not cache the request object here. If so, it would only be only
     // processed by one of the workers, and we want them all to close.
     for (let i = 0; i < workers.length; i++) {
-      workers[i].send([CHILD_MESSAGE_END, false], this._empty);
+      workers[i].send([CHILD_MESSAGE_END, false], emptyMethod);
     }
 
     this._ending = true;
@@ -179,15 +185,4 @@ class Farm {
       }
     });
   }
-
-  _isValidMethod(name) {
-    return !Farm.prototype.hasOwnProperty(name) && !name.startsWith('_');
-  }
-
-  /* istanbul ignore next */
-  _empty() {
-    // Intentionally empty method.
-  }
 }
-
-module.exports = Farm;

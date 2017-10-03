@@ -31,7 +31,7 @@ Node module name or absolute path of the file to be loaded in the child processe
 
 List of method names that can be called on the child processes from the parent process. You cannot expose any method named like a public `Worker` method, or starting with `_`. If you use method auto-discovery, then these methods will not be exposed, even if they exist.
 
-#### `numWorkers: number` (required)
+#### `numWorkers: number` (optional)
 
 Amount of workers to spwan. Defaults to the number of CPUs minus 1.
 
