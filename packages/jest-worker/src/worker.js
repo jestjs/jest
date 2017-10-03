@@ -89,6 +89,7 @@ export default class {
     child.on('message', this._receive.bind(this));
     child.on('exit', this._exit.bind(this));
 
+    // $FlowFixMe: wrong "ChildProcess.send" signature.
     child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
 
     this._child = child;
@@ -120,11 +121,12 @@ export default class {
       call.request[1] = true;
 
       this._busy = true;
+      // $FlowFixMe: wrong "ChildProcess.send" signature.
       this._child.send(call.request);
     }
   }
 
-  _receive(response: ParentMessage) {
+  _receive(response: any) { // Should be ParentMessage
     const callback = this._queue[0].callback;
 
     this._busy = false;

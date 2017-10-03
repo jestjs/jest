@@ -34,7 +34,7 @@ let file = null;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-process.on('message', (request: ChildMessage) => {
+process.on('message', (request: any) => { // Should be ChildMessage
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       file = request[2];
@@ -77,6 +77,7 @@ function reportError(error: Error) {
     error.constructor && error.constructor.name,
     error.message,
     error.stack,
+    // $FlowFixMe: this is safe to just inherit from Object.
     typeof error === 'object' ? Object.assign({}, error) : error,
   ]);
 }
