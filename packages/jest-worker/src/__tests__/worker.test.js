@@ -145,6 +145,7 @@ it('relates replies to requests, in order', () => {
     'TypeError',
     'foo',
     'TypeError: foo',
+    {},
   ]);
 
   expect(callback2.mock.calls[0][0].message).toBe('foo');
@@ -158,6 +159,7 @@ it('creates error instances for known errors', () => {
 
   const callback1 = jest.fn();
   const callback2 = jest.fn();
+  const callback3 = jest.fn();
 
   // Testing a generic ECMAScript error.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback1);
@@ -167,6 +169,7 @@ it('creates error instances for known errors', () => {
     'TypeError',
     'bar',
     'TypeError: bar',
+    {},
   ]);
 
   expect(callback1.mock.calls[0][0]).toBeInstanceOf(TypeError);
@@ -182,12 +185,26 @@ it('creates error instances for known errors', () => {
     'RandomCustomError',
     'bar',
     'RandomCustomError: bar',
+    {},
   ]);
 
   expect(callback2.mock.calls[0][0]).toBeInstanceOf(Error);
   expect(callback2.mock.calls[0][0].message).toBe('bar');
   expect(callback2.mock.calls[0][0].type).toBe('RandomCustomError');
   expect(callback2.mock.calls[0][0].stack).toBe('RandomCustomError: bar');
+
+  // Testing a non-object throw.
+  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback3);
+
+  forkInterface.emit('message', [
+    PARENT_MESSAGE_ERROR,
+    'Number',
+    null,
+    null,
+    412,
+  ]);
+
+  expect(callback3.mock.calls[0][0]).toBe(412);
 });
 
 it('throws when the child process returns a strange message', () => {

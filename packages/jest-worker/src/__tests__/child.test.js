@@ -8,6 +8,7 @@
 'use strict';
 
 const mockError = new TypeError('Booo');
+const mockExtendedError = new ReferenceError('Booo extended');
 const processExit = process.exit;
 const processSend = process.send;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -41,6 +42,21 @@ beforeEach(() => {
           return new Promise((resolve, reject) => {
             setTimeout(() => resolve(1989), 5);
           });
+        },
+
+        fooThrowsNull() {
+          throw null;
+        },
+
+        fooThrowsANumber() {
+          throw 412;
+        },
+
+        fooThrowsAnErrorWithExtraProperties() {
+          mockExtendedError.baz = 123;
+          mockExtendedError.qux = 456;
+
+          throw mockExtendedError;
         },
 
         fooThrows() {
@@ -139,9 +155,40 @@ it('returns results immediately when function is synchronous', () => {
     'TypeError',
     'Booo',
     mockError.stack,
+    {},
   ]);
 
-  expect(process.send.mock.calls.length).toBe(2);
+  process.emit('message', [
+    CHILD_MESSAGE_CALL,
+    true, // Not really used here, but for flow type purity.
+    'fooThrowsANumber',
+    [],
+  ]);
+
+  expect(process.send.mock.calls[2][0]).toEqual([
+    PARENT_MESSAGE_ERROR,
+    'Number',
+    void 0,
+    void 0,
+    412,
+  ]);
+
+  process.emit('message', [
+    CHILD_MESSAGE_CALL,
+    true, // Not really used here, but for flow type purity.
+    'fooThrowsAnErrorWithExtraProperties',
+    [],
+  ]);
+
+  expect(process.send.mock.calls[3][0]).toEqual([
+    PARENT_MESSAGE_ERROR,
+    'ReferenceError',
+    'Booo extended',
+    mockExtendedError.stack,
+    {baz: 123, qux: 456},
+  ]);
+
+  expect(process.send.mock.calls.length).toBe(4);
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
@@ -178,6 +225,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
     'TypeError',
     'Booo',
     mockError.stack,
+    {},
   ]);
 
   expect(process.send.mock.calls.length).toBe(2);

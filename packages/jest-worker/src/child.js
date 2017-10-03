@@ -68,11 +68,16 @@ function reportError(error: Error) {
     throw new Error('Child can only be used on a forked process');
   }
 
+  if (error == null) {
+    error = new Error('"null" or "undefined" thrown');
+  }
+
   process.send([
     PARENT_MESSAGE_ERROR,
-    error.constructor.name,
+    error.constructor && error.constructor.name,
     error.message,
     error.stack,
+    typeof error === 'object' ? Object.assign({}, error) : error,
   ]);
 }
 

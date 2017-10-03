@@ -136,14 +136,25 @@ export default class {
         break;
 
       case PARENT_MESSAGE_ERROR:
-        // Try using a native constructor (e.g. TypeError) first, if it exists.
-        const NativeCtor = global[response[1]];
-        const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
-        const error = new Ctor(response[2]);
+        let error = response[4];
 
-        // $FlowFixMe: "type" is a custom property.
-        error.type = response[1];
-        error.stack = response[3];
+        if ((error != null) && (typeof error === 'object')) {
+          const extra = error;
+          const NativeCtor = global[response[1]];
+          const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
+
+          error = new Ctor(response[2]);
+          // $FlowFixMe: adding custom properties to errors.
+          error.type = response[1];
+          error.stack = response[3];
+
+          for (const key in extra) {
+            if (extra.hasOwnProperty(key)) {
+              // $FlowFixMe: adding custom properties to errors.
+              error[extra] = key;
+            }
+          }
+        }
 
         callback.call(this, error, null);
         break;

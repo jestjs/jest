@@ -59,7 +59,7 @@ export type ChildMessageCall = [
   typeof CHILD_MESSAGE_CALL, // type
   boolean, // processed
   string, // method
-  Array<any>, // args
+  $ReadOnlyArray<any>, // args
 ];
 
 export type ChildMessageEnd = [
@@ -81,9 +81,10 @@ export type ParentMessageOk = [
 
 export type ParentMessageError = [
   typeof PARENT_MESSAGE_ERROR, // type
-  string, // constructor,
-  string, // message,
-  string, // stack,
+  string, // constructor
+  string, // message
+  string, // stack
+  any, // extra
 ];
 
 export type ParentMessage = ParentMessageOk | ParentMessageError;
