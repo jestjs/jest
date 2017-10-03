@@ -44,11 +44,12 @@ beforeEach(() => {
           });
         },
 
-        fooThrowsNull() {
-          throw null;
+        fooThrows() {
+          throw mockError;
         },
 
         fooThrowsANumber() {
+          // eslint-disable-next-line no-throw-literal
           throw 412;
         },
 
@@ -57,10 +58,6 @@ beforeEach(() => {
           mockExtendedError.qux = 456;
 
           throw mockExtendedError;
-        },
-
-        fooThrows() {
-          throw mockError;
         },
 
         fooWorks() {

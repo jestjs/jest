@@ -17,8 +17,6 @@ import {
   PARENT_MESSAGE_OK,
 } from './types';
 
-import type {ChildMessage} from './types';
-
 let file = null;
 
 /**
@@ -34,7 +32,7 @@ let file = null;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-process.on('message', (request: any) => { // Should be ChildMessage
+process.on('message', (request: any /* Should be ChildMessage */) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       file = request[2];

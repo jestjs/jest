@@ -22,7 +22,6 @@ import type {Readable} from 'stream';
 
 import type {
   ChildMessage,
-  ParentMessage,
   QueueCallback,
   QueueChildMessage,
   WorkerOptions,
@@ -126,7 +125,7 @@ export default class {
     }
   }
 
-  _receive(response: any) { // Should be ParentMessage
+  _receive(response: any /* Should be ParentMessage */) {
     const callback = this._queue[0].callback;
 
     this._busy = false;
@@ -140,7 +139,7 @@ export default class {
       case PARENT_MESSAGE_ERROR:
         let error = response[4];
 
-        if ((error != null) && (typeof error === 'object')) {
+        if (error != null && typeof error === 'object') {
           const extra = error;
           const NativeCtor = global[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;

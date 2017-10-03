@@ -87,8 +87,9 @@ export default class {
       // $FlowFixMe: This has to be a dynamic require.
       const child = require(workerPath);
 
-      exposedMethods = Object.keys(child)
-        .filter(name => typeof child[name] === 'function');
+      exposedMethods = Object.keys(child).filter(
+        name => typeof child[name] === 'function',
+      );
 
       if (typeof child === 'function') {
         exposedMethods.push('default');
