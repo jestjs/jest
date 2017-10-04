@@ -247,6 +247,10 @@ Jest takes advantage of new features added to Node 4. We recommend that you
 upgrade to the latest stable release of Node. The minimum supported version is
 `v4.0.0`. Versions `0.x.x` are not supported.
 
+### `coveragePathIgnorePatterns` seems to not have any effect.
+
+Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istanbul, and therefore also tells Istanbul what files to instrument with coverage collection. When using `babel-plugin-istanbul`, every file that is processed by Babel will have coverage collection code, hence it is not being ignored by `coveragePathIgnorePatterns`.
+
 ### Still unresolved?
 
 See [Help](/jest/help.html).
