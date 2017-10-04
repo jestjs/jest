@@ -326,9 +326,10 @@ class ModuleMockerClass {
           });
 
           // Run the mock constructor implementation
-          return (
-            mockConfig.mockImpl && mockConfig.mockImpl.apply(this, arguments)
-          );
+          const mockImpl = mockConfig.specificMockImpls.length
+            ? mockConfig.specificMockImpls.shift()
+            : mockConfig.mockImpl;
+          return mockImpl && mockImpl.apply(this, arguments);
         }
 
         const returnValue = mockConfig.defaultReturnValue;

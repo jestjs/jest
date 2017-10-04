@@ -406,6 +406,24 @@ describe('moduleMocker', () => {
   });
 
   describe('mockImplementationOnce', () => {
+    it('should mock constructor', () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function() {
+        const m = new Module();
+        m.someFn();
+      };
+
+      Module.mockImplementationOnce(() => ({someFn: mock2}));
+
+      testFn();
+      expect(mock2).toHaveBeenCalled();
+      expect(mock1).not.toHaveBeenCalled();
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+    });
+
     it('should mock single call to a mock function', () => {
       const mockFn = moduleMocker.fn();
 
