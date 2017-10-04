@@ -73,6 +73,7 @@
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "slash": "^1.0.0",
+    "source-map-support": "^0.5.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
     "typescript": "^2.2.2",
