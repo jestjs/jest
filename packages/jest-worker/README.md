@@ -103,10 +103,9 @@ This example covers the standard usage:
 import Worker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker({
+  const myWorker = new Worker(require.resolve('./worker'), {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
-    workerPath: require.resolve('./worker'),
   });
 
   console.log(await myWorker.foo('Alice')); // "Hello from foo: Alice"
@@ -141,10 +140,8 @@ This example covers the usage with a `computeWorkerKey` method:
 import Worker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker({
+  const myWorker = new Worker(require.resolve('./worker'), {
     computeWorkerKey: (method, filename) => filename,
-    exposedMethods: ['foo', 'bar'],
-    workerPath: require.resolve('./worker'),
   });
 
   // Transform the given file, within the first available worker.
