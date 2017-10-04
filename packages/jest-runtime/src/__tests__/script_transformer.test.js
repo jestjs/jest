@@ -355,10 +355,10 @@ describe('ScriptTransformer', () => {
       mapCoverage: false,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(fs.writeFileSync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(map),
-      'utf8',
+      {encoding: 'utf8'},
     );
   });
 
