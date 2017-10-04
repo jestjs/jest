@@ -63,7 +63,7 @@ Amount of workers to spwan. Defaults to the number of CPUs minus 1.
 
 Allow customizing all options passed to `childProcess.fork`. By default, some values are set (`cwd` and `env`), but you can override them and customize the rest. For a list of valid values, check [the Node documentation](https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options).
 
-### `computeWorkerKey: (method: string, ...args: Array<any>) => ?string` (optional)
+#### `computeWorkerKey: (method: string, ...args: Array<any>) => ?string` (optional)
 
 Every time a method exposed via the API is called, `computeWorkerKey` is also called in order to bound the call to a worker. This is useful for workers that are able to cache the result or part of it. You bound calls to a worker by making `computeWorkerKey` return the same identifier for all different calls. If you do not want to bind the call to any worker, return `null`.
 
