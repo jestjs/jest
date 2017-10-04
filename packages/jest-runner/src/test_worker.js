@@ -22,14 +22,12 @@ import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
 import runTest from './run_test';
 
-type WorkerData = {|
+export type WorkerData = {|
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   path: Path,
   rawModuleMap?: RawModuleMap,
 |};
-
-type WorkerCallback = (error: ?SerializableError, result?: TestResult) => void;
 
 const formatError = (error: string | Error): SerializableError => {
   if (typeof error === 'string') {
@@ -69,33 +67,20 @@ const getResolver = (config, rawModuleMap) => {
   }
 };
 
-// Cannot be ESM export because of worker-farm
-module.exports = (
-  {config, globalConfig, path, rawModuleMap}: WorkerData,
-  callback: WorkerCallback,
-) => {
-  let parentExited = false;
-  const disconnectCallback = () => (parentExited = true);
-  const removeListener = () =>
-    process.removeListener('disconnect', disconnectCallback);
-  process.on('disconnect', disconnectCallback);
-
+export default async function({
+  config,
+  globalConfig,
+  path,
+  rawModuleMap,
+}: WorkerData): Promise<TestResult> {
   try {
-    runTest(path, globalConfig, config, getResolver(config, rawModuleMap)).then(
-      result => {
-        removeListener();
-        if (!parentExited) {
-          callback(null, result);
-        }
-      },
-      error => {
-        removeListener();
-        if (!parentExited) {
-          callback(formatError(error));
-        }
-      },
+    return await runTest(
+      path,
+      globalConfig,
+      config,
+      getResolver(config, rawModuleMap),
     );
-  } catch (error) {
-    callback(formatError(error));
+  } catch (err) {
+    throw formatError(err);
   }
 };

@@ -8,6 +8,7 @@
  */
 
 import type {GlobalConfig} from 'types/Config';
+import type {TestResult} from 'types/TestResult';
 import type {
   OnTestFailure,
   OnTestStart,
@@ -17,12 +18,17 @@ import type {
   TestWatcher,
 } from 'types/TestRunner';
 
-import pify from 'pify';
+import type {WorkerData} from './test_worker';
+
 import runTest from './run_test';
 import throat from 'throat';
-import workerFarm from 'worker-farm';
+import Worker from 'jest-worker';
 
 const TEST_WORKER_PATH = require.resolve('./test_worker');
+
+type CoverageWorker = Worker & {
+  default: (WorkerData) => Promise<TestResult>,
+};
 
 class TestRunner {
   _globalConfig: GlobalConfig;
@@ -89,17 +95,12 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
-    const farm = workerFarm(
-      {
-        autoStart: true,
-        maxConcurrentCallsPerWorker: 1,
-        maxConcurrentWorkers: this._globalConfig.maxWorkers,
-        maxRetries: 2, // Allow for a couple of transient errors.
-      },
-      TEST_WORKER_PATH,
-    );
+    // $FlowFixMe: "default" property will be exposed.
+    const worker: CoverageWorker = new Worker(TEST_WORKER_PATH, {
+      numWorkers: this._globalConfig.maxWorkers,
+    });
+
     const mutex = throat(this._globalConfig.maxWorkers);
-    const worker = pify(farm);
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
@@ -108,14 +109,16 @@ class TestRunner {
         if (watcher.isInterrupted()) {
           return Promise.reject();
         }
+
         await onStart(test);
-        return worker({
+
+        return worker.default({
           config: test.context.config,
           globalConfig: this._globalConfig,
           path: test.path,
           rawModuleMap: watcher.isWatchMode()
             ? test.context.moduleMap.getRawModuleMap()
-            : null,
+            : undefined,
         });
       });
 
@@ -146,7 +149,7 @@ class TestRunner {
       ),
     );
 
-    const cleanup = () => workerFarm.end(farm);
+    const cleanup = () => worker.end();
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 }
