@@ -14,6 +14,30 @@ The list of exposed methods can be explicitly provided via the `exposedMethods` 
 $ yarn add jest-worker
 ```
 
+## Example
+
+This example covers the minmal usage:
+
+### File `parent.js`
+
+```javascript
+import Worker from 'jest-worker';
+
+async function main() {
+  const worker = new Worker(require.resolve('./worker'));
+  const result = await worker.hello('Alice'); // "Hello, Alice"
+}
+
+main();
+```
+
+### File `worker.js`
+
+```javascript
+export function hello(param) {
+  return 'Hello, ' + param;
+}
+```
 
 ## API
 
@@ -67,32 +91,7 @@ Returns a `ReadableStream` where the standard error of all workers is piped. Not
 
 Finishes the workers by killing all workers. No further calls can be done to the `Worker` instance.
 
-
-## Minimal example
-
-This example covers the minmal usage:
-
-### File `parent.js`
-
-```javascript
-import Worker from 'jest-worker';
-
-async function main() {
-  const worker = new Worker(require.resolve('./worker'));
-  const result = await worker.hello('Alice'); // "Hello, Alice"
-}
-
-main();
-```
-
-### File `worker.js`
-
-```javascript
-export function hello(param) {
-  return 'Hello, ' + param;
-}
-```
-
+# More examples
 
 ## Standard usage
 
