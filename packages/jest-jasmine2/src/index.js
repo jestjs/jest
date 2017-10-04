@@ -34,7 +34,9 @@ async function jasmine2(
     testPath,
   );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
-  const jasmine = jasmineFactory.create();
+  const jasmine = jasmineFactory.create({
+    testPath,
+  });
 
   const env = jasmine.getEnv();
   const jasmineInterface = jasmineFactory.interface(jasmine, env);

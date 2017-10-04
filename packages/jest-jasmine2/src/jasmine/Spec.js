@@ -66,6 +66,7 @@ export default function Spec(attrs: Object) {
     failedExpectations: [],
     passedExpectations: [],
     pendingReason: '',
+    testPath: attrs.getTestPath(),
   };
 }
 
