@@ -159,5 +159,19 @@ describe('Runtime', () => {
         expect(exports2.modulePath).toEqual('subdir2/__mocks__/my_module.js');
       });
     });
+
+    it('uses manual mocks when using a custom resolver', () => {
+      return createRuntime(__filename, {
+        // using the default resolver as a custom resolver
+        resolver: require.resolve('./defaultResolver.js'),
+      }).then(runtime => {
+        const exports = runtime.requireMock(
+          runtime.__mockRootPath,
+          './ManuallyMocked',
+        );
+
+        expect(exports.isManualMockModule).toBe(true);
+      });
+    });
   });
 });
