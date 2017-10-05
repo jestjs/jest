@@ -162,7 +162,7 @@ By default the jest-react-native preset only processes the project's own source 
 
 ### setupFiles
 
-If you'd like to provide additional configuration for every test file, the [`setupFiles` configuration option](configuration.html#setupfiles-array) can be used to specify setup scripts.
+If you'd like to provide additional configuration for every test file, the [`setupFiles` configuration option](Configuration.md#setupfiles-array) can be used to specify setup scripts.
 
 ### moduleNameMapper
 
