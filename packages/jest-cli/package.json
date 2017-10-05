@@ -25,7 +25,7 @@
     "jest-snapshot": "^21.2.1",
     "jest-util": "^21.2.1",
     "micromatch": "^2.3.11",
-    "node-notifier": "^5.0.2",
+    "node-notifier": "^5.1.2",
     "pify": "^3.0.0",
     "slash": "^1.0.0",
     "string-length": "^2.0.0",
