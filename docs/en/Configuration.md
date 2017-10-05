@@ -242,6 +242,10 @@ Default: `[]`
 An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to
 additional locations to search when resolving modules. Use the `<rootDir>` string token to include the path to your project's root directory. Example: `["<rootDir>/app/"]`.
 
+**NOTE:** An empty `[]` works just fine with how npm works wherein Jest provides necessary configuration. However, if you want to provide this option and use npm, you need to be aware that all npm@3+ versions store flat dependencies under `<rootDir>/node_modules`, and on encountering the need for different versions of the same package, this flat structure is augmented with a non-flat structure like described [here](https://docs.npmjs.com/how-npm-works/npm3).
+To account for all possible `node_modules` folders, you would need to provide `<rootDir>/**/node_modules` (not just `<rootDir>/node_modules`), or else you would run into version conflicts when running tests, while your application code runs like a charm.
+
+
 ### `notify` [boolean]
 Default: `false`
 
