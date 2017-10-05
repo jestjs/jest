@@ -235,9 +235,9 @@ export default class FakeTimers {
   }
 
   runOnlyPendingTimers() {
+    const timers = Object.assign({}, this._timers);
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
-    const timers = this._timers;
     Object.keys(timers)
       .sort((left, right) => timers[left].expiry - timers[right].expiry)
       .forEach(this._runTimerHandle, this);

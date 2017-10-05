@@ -586,12 +586,18 @@ describe('FakeTimers', () => {
         runOrder.push('mock4');
       });
 
+      global.setImmediate(function cb() {
+        runOrder.push('mock5');
+        global.setTimeout(cb, 400);
+      });
+
       timers.runOnlyPendingTimers();
-      expect(runOrder).toEqual(['mock4', 'mock2', 'mock1', 'mock3']);
+      expect(runOrder).toEqual(['mock4', 'mock5', 'mock2', 'mock1', 'mock3']);
 
       timers.runOnlyPendingTimers();
       expect(runOrder).toEqual([
         'mock4',
+        'mock5',
         'mock2',
         'mock1',
         'mock3',
@@ -599,6 +605,7 @@ describe('FakeTimers', () => {
         'mock2',
         'mock1',
         'mock3',
+        'mock5',
       ]);
     });
 
