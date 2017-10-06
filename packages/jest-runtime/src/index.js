@@ -323,7 +323,7 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule, options, moduleRegistry[from]);
+        this._execModule(localModule, options, moduleRegistry, from);
       }
     }
     return moduleRegistry[modulePath].exports;
@@ -384,7 +384,7 @@ class Runtime {
         filename: modulePath,
         id: modulePath,
       };
-      this._execModule(localModule);
+      this._execModule(localModule, undefined, this._mockRegistry, from);
       this._mockRegistry[moduleID] = localModule.exports;
     } else {
       // Look for a real module to generate an automock from
@@ -475,7 +475,8 @@ class Runtime {
   _execModule(
     localModule: Module,
     options: ?InternalModuleOptions,
-    parentModule?: Module,
+    moduleRegistry: {[key: string]: Module},
+    from: Path,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -491,9 +492,19 @@ class Runtime {
 
     const dirname = path.dirname(filename);
     localModule.children = [];
-    localModule.parent = parentModule;
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
+
+    Object.defineProperty(
+      localModule,
+      'parent',
+      // https://github.com/facebook/flow/issues/285#issuecomment-270810619
+      ({
+        get() {
+          return moduleRegistry[from];
+        },
+      }: Object),
+    );
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
