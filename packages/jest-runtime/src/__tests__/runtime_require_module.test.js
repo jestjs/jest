@@ -38,9 +38,9 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'children',
+        'parent',
         'paths',
         'require',
-        'parent',
       ]);
     }));
 

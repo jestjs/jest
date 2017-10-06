@@ -475,7 +475,7 @@ class Runtime {
   _execModule(
     localModule: Module,
     options: ?InternalModuleOptions,
-    parent?: Module,
+    parentModule?: Module,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -491,9 +491,9 @@ class Runtime {
 
     const dirname = path.dirname(filename);
     localModule.children = [];
+    localModule.parent = parentModule;
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
-    localModule.parent = parent;
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
