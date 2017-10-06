@@ -496,6 +496,12 @@ class Runtime {
     localModule.parent = mockParentModule;
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
+    localModule.parent = Object.assign({}, localModule.parent, {
+      require: this._createRequireImplementation(
+        lastExecutingModulePath,
+        options,
+      ),
+    });
 
     const transformedFile = this._scriptTransformer.transform(
       filename,

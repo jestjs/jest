@@ -36,7 +36,17 @@ describe('Runtime requireModule', () => {
         exports: {},
         filename: 'mock.js',
         id: 'mockParent',
+        require: expect.any(Function),
       });
+    }));
+
+  it('resolve module.parent.require correctly', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
+        'inner_parent_module',
+      );
+      expect(exports).toEqual('This should happen');
     }));
 
   it('provides `module.filename` to modules', () =>
