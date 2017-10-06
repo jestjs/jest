@@ -68,7 +68,9 @@ test('suite with mock name, short form, mock called', () => {
 });
 
 test('suite with mock name, short form, mock not called', () => {
-  const {stderr, status} = runJest('mock-names/with-mock-name-short-not-called');
+  const {stderr, status} = runJest(
+    'mock-names/with-mock-name-short-not-called',
+  );
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
