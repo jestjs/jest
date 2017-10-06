@@ -301,7 +301,7 @@ describe('breaks versus spaces in React prop value', () => {
 
 describe('breaks within line in React start tag', () => {
   // Progress scenario: add props [from less to more]
-  // No highlight because no changed line has BOTH equal AND changed strings.
+  // No highlight because no changed line has BOTH changed and unchanged strings.
   const text = 'when';
   const less = createElement('th', null, text);
   const more = createElement(
@@ -365,6 +365,7 @@ describe('semantic cleanup helps in React text node', () => {
 
 describe('semantic cleanup hurts with strings and breaks within line', () => {
   // Progress scenario: CSS-in-JS style prop changes
+  // Without cleanup, many small diff items, but highlighting looks intuitive.
   const less = {
     background: '#99424F url("jest.svg") no-repeat',
   };
@@ -397,6 +398,7 @@ describe('semantic cleanup hurts with strings and breaks within line', () => {
 describe('content changes completely', () => {
   // Regress scenario: internationalization failed
   // Progress scenario: lorem ipsum replaced by realistic content
+  // Antoine de Saint Exupéry:
   const correct = createElement(
     'p',
     {lang: 'fr'},
