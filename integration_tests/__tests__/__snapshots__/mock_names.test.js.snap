@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`suite with mock name, long form, mock called 1`] = `
+"PASS __tests__/index.js
+  ✓ first test
+
+"
+`;
+
+exports[`suite with mock name, long form, mock not called 1`] = `
+"FAIL __tests__/index.js
+  ✕ first test
+
+  ● first test
+
+    expect(myMockedFunctionLong).toHaveBeenCalled()
+    
+    Expected mock function to have been called.
+      
+      at __tests__/index.js:16:18
+
+"
+`;
+
+exports[`suite with mock name, mock called 1`] = `
+"PASS __tests__/index.js
+  ✓ first test
+
+"
+`;
+
+exports[`suite with mock name, mock not called 1`] = `
+"FAIL __tests__/index.js
+  ✕ first test
+
+  ● first test
+
+    expect(myMockedFunction).toHaveBeenCalled()
+    
+    Expected mock function to have been called.
+      
+      at __tests__/index.js:16:18
+
+"
+`;
+
+exports[`suite with mock name, short form, mock called 1`] = `
+"PASS __tests__/index.js
+  ✓ first test
+
+"
+`;
+
+exports[`suite with mock name, short form, mock not called 1`] = `
+"FAIL __tests__/index.js
+  ✕ first test
+
+  ● first test
+
+    expect(myMockedFunctionShort).toHaveBeenCalled()
+    
+    Expected mock function to have been called.
+      
+      at __tests__/index.js:15:18
+
+"
+`;
+
+exports[`suite without mock name, mock called 1`] = `
+"PASS __tests__/index.js
+  ✓ first test
+
+"
+`;
+
+exports[`suite without mock name, mock not called 1`] = `
+"FAIL __tests__/index.js
+  ✕ first test
+
+  ● first test
+
+    expect(jest.fn()).toHaveBeenCalled()
+    
+    Expected mock function to have been called.
+      
+      at __tests__/index.js:16:18
+
+"
+`;
