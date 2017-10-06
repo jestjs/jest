@@ -36,7 +36,7 @@ describe('Runtime requireModule', () => {
       expect(exports.parent).toEqual({
         exports: {},
         filename: '',
-        id: 'mockParent',
+        id: '',
         require: expect.any(Function),
       });
     }));

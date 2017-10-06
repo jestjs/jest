@@ -75,11 +75,6 @@ const getModuleNameMapper = (config: ProjectConfig) => {
   return null;
 };
 
-const mockParentModule = {
-  exports: {},
-  id: 'mockParent',
-};
-
 const unmockRegExpCache = new WeakMap();
 
 class Runtime {
@@ -492,16 +487,17 @@ class Runtime {
 
     const dirname = path.dirname(filename);
     localModule.children = [];
-    localModule.parent = mockParentModule;
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
-    localModule.parent = Object.assign({}, localModule.parent, {
+    localModule.parent = {
+      exports: {},
       filename: lastExecutingModulePath,
+      id: lastExecutingModulePath,
       require: this._createRequireImplementation(
         lastExecutingModulePath,
         options,
       ),
-    });
+    };
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
