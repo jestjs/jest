@@ -55,7 +55,10 @@ export function parseWithComments(
   docblock = docblock.replace(ltrimNewlineRe, '').replace(rtrimRe, '');
 
   const result = Object.create(null);
-  const comments = docblock.replace(propertyRe, '');
+  const comments = docblock
+    .replace(propertyRe, '')
+    .replace(ltrimNewlineRe, '')
+    .replace(rtrimRe, '');
 
   let match;
   while ((match = propertyRe.exec(docblock))) {

@@ -254,6 +254,21 @@ describe('docblock', () => {
     );
   });
 
+  it('removes leading newlines in multiline comments from docblock', () => {
+    const code =
+      '/**' +
+      os.EOL +
+      ' * @snailcode' +
+      os.EOL +
+      ' *' +
+      os.EOL +
+      ' *  hello world' +
+      os.EOL +
+      ' */';
+
+    expect(docblock.parseWithComments(code).comments).toEqual(' hello world');
+  });
+
   it('extracts comments from beginning and end of docblock', () => {
     const code =
       '/**' +
