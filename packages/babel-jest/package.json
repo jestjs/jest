@@ -9,7 +9,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "babel-plugin-istanbul": "^4.0.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-jest": "^21.2.0"
   },
   "devDependencies": {

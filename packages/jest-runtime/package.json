@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "babel-jest": "^21.2.0",
-    "babel-plugin-istanbul": "^4.0.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "chalk": "^2.0.1",
     "convert-source-map": "^1.4.0",
     "graceful-fs": "^4.1.11",
