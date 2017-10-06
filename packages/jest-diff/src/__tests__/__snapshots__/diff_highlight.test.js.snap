@@ -1,0 +1,295 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`breaks in React prop value from less to more (expanded) 1`] = `
+"  <polyline
+    id=\\"J\\"
+-   points=\\"0.5,0.460 0.5,0.875 0.25,0.875\\"
++   points=\\"0.5,0.460
++ <inverse> </>0.5,0.875
++ <inverse> </>0.25,0.875\\"
+  />"
+`;
+
+exports[`breaks in React prop value from more to less (expanded) 1`] = `
+"  <polyline
+    id=\\"J\\"
+-   points=\\"0.5,0.460
+- <inverse> </>0.5,0.875
+- <inverse> </>0.25,0.875\\"
++   points=\\"0.5,0.460 0.5,0.875 0.25,0.875\\"
+  />"
+`;
+
+exports[`breaks versus spaces in React prop value from less to more (expanded) 1`] = `
+"  <polyline
+    id=\\"J\\"
+-   points=\\"0.5,0.460<inverse> </>0.5,0.875<inverse> </>0.25,0.875\\"
++   points=\\"0.5,0.460<inverse>3174603174603</>
++ 0.5,0.875
++ 0.25,0.875\\"
+  />"
+`;
+
+exports[`breaks versus spaces in React prop value from more to less (expanded) 1`] = `
+"  <polyline
+    id=\\"J\\"
+-   points=\\"0.5,0.460<inverse>3174603174603</>
+- 0.5,0.875
+- 0.25,0.875\\"
++   points=\\"0.5,0.460<inverse> </>0.5,0.875<inverse> </>0.25,0.875\\"
+  />"
+`;
+
+exports[`breaks within line in React start tag from less to more (expanded) 1`] = `
+"- <th>
++ <th
++   onClick={[Function onClick]}
++   scope=\\"col\\"
++ >
+    when
+  </th>"
+`;
+
+exports[`breaks within line in React start tag from more to less (expanded) 1`] = `
+"- <th
+-   onClick={[Function onClick]}
+-   scope=\\"col\\"
+- >
++ <th>
+    when
+  </th>"
+`;
+
+exports[`content changes completely from correct to incorrect (expanded) 1`] = `
+"- <p
+-   lang=\\"fr\\"
+- >
+-   I<inverse>l</> se<inverse>mble que la</> perfection s<inverse>oit</> att<inverse>e</>in<inverse>t</>e no<inverse>n quand</> i<inverse>l</> n<inverse>'y a plus rien à ajouter, mais quand il n'y a plus rien à retrancher</>.
++ <p>
++   I<inverse>t</> se<inverse>ems that</> perfection <inverse>i</>s att<inverse>a</>ine<inverse>d</> no<inverse>t when there</> i<inverse>s</> n<inverse>othing more to add, but when there is nothing more to remove</>.
+  </p>"
+`;
+
+exports[`content changes completely from incorrect to correct (expanded) 1`] = `
+"- <p>
+-   I<inverse>t</> se<inverse>ems that</> perfection <inverse>i</>s att<inverse>a</>ine<inverse>d</> no<inverse>t when there</> i<inverse>s</> n<inverse>othing more to add, but when there is nothing more to remove</>.
++ <p
++   lang=\\"fr\\"
++ >
++   I<inverse>l</> se<inverse>mble que la</> perfection s<inverse>oit</> att<inverse>e</>in<inverse>t</>e no<inverse>n quand</> i<inverse>l</> n<inverse>'y a plus rien à ajouter, mais quand il n'y a plus rien à retrancher</>.
+  </p>"
+`;
+
+exports[`indentation within multiline string in React pre element from even to odd (expanded) 1`] = `
+"  <pre>
+-   Usage:
+- <inverse> </> node [options] [ -e script | script.js | - ] [arguments]
+-   node inspect script.js [arguments]
++   Usage: node [options] [ -e script | script.js | - ] [arguments]
++ <inverse>     </>  node inspect script.js [arguments]
+  </pre>"
+`;
+
+exports[`indentation within multiline string in React pre element from odd to even (expanded) 1`] = `
+"  <pre>
+-   Usage: node [options] [ -e script | script.js | - ] [arguments]
+- <inverse>     </>  node inspect script.js [arguments]
++   Usage:
++ <inverse> </> node [options] [ -e script | script.js | - ] [arguments]
++   node inspect script.js [arguments]
+  </pre>"
+`;
+
+exports[`line is empty or has only space from empty to space (expanded) 1`] = `
+"  <p>
+    <span>
+      273.15
+-     
++     <inverse> </>
+      <abbr
+        title=\\"Kelvin\\"
+      >
+-       <inverse>°</>K
++       K
+      </abbr>
+    </span>
+    <bgYellow> </>is the freezing point of water
+  </p>"
+`;
+
+exports[`line is empty or has only space from space to empty (expanded) 1`] = `
+"  <p>
+    <span>
+      273.15
+-     <inverse> </>
++     
+      <abbr
+        title=\\"Kelvin\\"
+      >
+-       K
++       <inverse>°</>K
+      </abbr>
+    </span>
+    <bgYellow> </>is the freezing point of water
+  </p>"
+`;
+
+exports[`props change keys from improved to original (expanded) 1`] = `
+"  <Item
+-   <inverse>text</>=\\"Complete and easy to set-up JavaScript testing solution.\\"
+-   <inverse>title</>=\\"Easy Setup\\"
++   <inverse>description</>=\\"Complete and easy to set-up JavaScript testing solution.\\"
++   <inverse>heading</>=\\"Easy Setup\\"
+  />"
+`;
+
+exports[`props change keys from original to improved (expanded) 1`] = `
+"  <Item
+-   <inverse>description</>=\\"Complete and easy to set-up JavaScript testing solution.\\"
+-   <inverse>heading</>=\\"Easy Setup\\"
++   <inverse>text</>=\\"Complete and easy to set-up JavaScript testing solution.\\"
++   <inverse>title</>=\\"Easy Setup\\"
+  />"
+`;
+
+exports[`props exchange values from correct to incorrect (expanded) 1`] = `
+"  <Item
+-   text=\\"Complete and easy to set-up JavaScript testing solution.\\"
+-   title=\\"Easy Setup\\"
++   text=\\"<inverse>Easy Setup\\"</>
++   <inverse>title=\\"</>Complete and easy to set-up JavaScript testing solution.\\"
+  />"
+`;
+
+exports[`props exchange values from incorrect to correct (expanded) 1`] = `
+"  <Item
+-   text=\\"<inverse>Easy Setup\\"</>
+-   <inverse>title=\\"</>Complete and easy to set-up JavaScript testing solution.\\"
++   text=\\"Complete and easy to set-up JavaScript testing solution.\\"
++   title=\\"Easy Setup\\"
+  />"
+`;
+
+exports[`semantic cleanup helps in React text node from less to more (expanded) 1`] = `
+"+ <header>
++   <h1>
++     Jest
++   </h1>
+    <h2>
+-   <inverse>Painless</> Java<inverse>s</>cript Testing
++     <inverse>Delightful</> Java<inverse>S</>cript Testing
+    </h2>
++ </header>"
+`;
+
+exports[`semantic cleanup helps in React text node from more to less (expanded) 1`] = `
+"- <header>
+-   <h1>
+-     Jest
+-   </h1>
+  <h2>
+-     <inverse>Delightful</> Java<inverse>S</>cript Testing
++   <inverse>Painless</> Java<inverse>s</>cript Testing
+  </h2>
+- </header>"
+`;
+
+exports[`semantic cleanup hurts with strings and breaks within line from less to more (expanded) 1`] = `
+"  Object {
+-   \\"background\\": \\"#99424F<inverse> url(\\\\\\"jest.svg\\\\\\") </>no-repeat\\",
++   \\"background<inverse>Color</>\\": \\"#99424F<inverse>\\",</>
++   \\"backgroundImage\\": \\"url(\\\\\\"jest.svg\\\\\\")\\",
++   <inverse>\\"backgroundRepeat\\": \\"</>no-repeat\\",
+  }"
+`;
+
+exports[`semantic cleanup hurts with strings and breaks within line from more to less (expanded) 1`] = `
+"  Object {
+-   \\"background<inverse>Color</>\\": \\"#99424F<inverse>\\",</>
+-   \\"backgroundImage\\": \\"url(\\\\\\"jest.svg\\\\\\")\\",
+-   <inverse>\\"backgroundRepeat\\": \\"</>no-repeat\\",
++   \\"background\\": \\"#99424F<inverse> url(\\\\\\"jest.svg\\\\\\") </>no-repeat\\",
+  }"
+`;
+
+exports[`string at end of line and break too from less to more (expanded) 1`] = `
+"  Object {
+    \\"searching\\": \\"\\",
+-   \\"sorting\\": Object {
++   \\"sorting\\": <inverse>Array [</>
++     Object {
+        \\"descending\\": false,
+        \\"fieldKey\\": \\"when\\",
+      },
++   ],
+  }"
+`;
+
+exports[`string at end of line and break too from more to less (expanded) 1`] = `
+"  Object {
+    \\"searching\\": \\"\\",
+-   \\"sorting\\": <inverse>Array [</>
+-     Object {
++   \\"sorting\\": Object {
+      \\"descending\\": false,
+      \\"fieldKey\\": \\"when\\",
+    },
+-   ],
+  }"
+`;
+
+exports[`strings at beginning of line from less to more (expanded) 1`] = `
+"  Array [
+-   Array [
+-     0.25,
+-     0.875,
+-   <inverse>]</>,
++   Object {
++     <inverse>\\"x\\": </>0.25,
++     <inverse>\\"y\\": </>0.875,
++   <inverse>}</>,
+  ]"
+`;
+
+exports[`strings at beginning of line from more to less (expanded) 1`] = `
+"  Array [
+-   Object {
+-     <inverse>\\"x\\": </>0.25,
+-     <inverse>\\"y\\": </>0.875,
+-   <inverse>}</>,
++   Array [
++     0.25,
++     0.875,
++   <inverse>]</>,
+  ]"
+`;
+
+exports[`strings within line from correct to incorrect (expanded) 1`] = `
+"  <th
+    onClick={[Function onClick]}
+  >
+    when
+    <abbr
+-     title=\\"<inverse>de</>scending\\"
++     title=\\"<inverse>a</>scending\\"
+    >
+-     ▼
++     ▲
+    </abbr>
+  </th>"
+`;
+
+exports[`strings within line from incorrect to correct (expanded) 1`] = `
+"  <th
+    onClick={[Function onClick]}
+  >
+    when
+    <abbr
+-     title=\\"<inverse>a</>scending\\"
++     title=\\"<inverse>de</>scending\\"
+    >
+-     ▲
++     ▼
+    </abbr>
+  </th>"
+`;

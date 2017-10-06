@@ -9,6 +9,7 @@
 
 import chalk from 'chalk';
 import {diffLines, structuredPatch} from 'diff';
+import DiffMatchPatch from 'diff-match-patch';
 
 import {NO_DIFF_MESSAGE} from './constants.js';
 const DIFF_CONTEXT_DEFAULT = 5;
@@ -35,10 +36,14 @@ type Hunk = {|
   oldStart: number,
 |};
 
-type DIFF_DIGIT = -1 | 1 | 0; // removed | added | equal
+type DIFF_DIGIT = -1 | 1 | 0; // deleted | inserted | equal
+
+type DiffItem = [DIFF_DIGIT, string]; // diff-match-patch
+type DiffItems = Array<DiffItem>;
+type DelInsDiffs = [Array<DiffItems>, Array<DiffItems>];
 
 // Given diff digit, return array which consists of:
-// if compared line is removed or added: corresponding original line
+// if compared line is deleted or inserted: corresponding original line
 // if compared line is equal: original received and expected lines
 type GetOriginal = (digit: DIFF_DIGIT) => Array<string>;
 
@@ -53,19 +58,19 @@ const getDiffDigit = (char: string): DIFF_DIGIT =>
 // Color for text of line.
 const getColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) => {
   if (digit === -1) {
-    return chalk.green; // removed
+    return chalk.green; // deleted
   }
   if (digit === 1) {
-    return chalk.red; // added
+    return chalk.red; // inserted
   }
   return onlyIndentationChanged ? chalk.cyan : chalk.dim;
 };
 
-// Do NOT color leading or trailing spaces if original lines are equal:
+const bgChanged = chalk.inverse;
 
 // Background color for leading or trailing spaces.
 const getBgColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) =>
-  digit === 0 && !onlyIndentationChanged ? chalk.bgYellow : chalk.inverse;
+  digit === 0 && !onlyIndentationChanged ? chalk.bgYellow : bgChanged;
 
 // ONLY trailing if expected value is snapshot or multiline string.
 const highlightTrailingSpaces = (line: string, bgColor: Function): string =>
@@ -100,13 +105,36 @@ const splitIntoLines = string => {
   return lines;
 };
 
+// Return line length not including escape sequences around changed strings.
+const getLength = (argCompared: DiffItems | string): number => {
+  if (Array.isArray(argCompared)) {
+    return argCompared.reduce((length, diff) => length + diff[1].length, 0);
+  }
+  return argCompared.length;
+};
+
+const diffStringMapper = diff => diff[1];
+const diffChangeMapper = diff => (diff[0] !== 0 ? bgChanged(diff[1]) : diff[1]);
+
+// Highlight changed strings only if line also has unchanged strings.
+const getLine = (argCompared: DiffItems | string): string => {
+  if (Array.isArray(argCompared)) {
+    const diffMapper = argCompared.some(diff => diff[0] === 0)
+      ? diffChangeMapper
+      : diffStringMapper;
+    return argCompared.map(diffMapper).join('');
+  }
+  return argCompared;
+};
+
 // Given diff character and compared line, return original line with colors.
 const formatLine = (
   char: string,
-  lineCompared: string,
+  argCompared: DiffItems | string,
   getOriginal?: GetOriginal,
 ) => {
   const digit = getDiffDigit(char);
+  const lineCompared = getLine(argCompared);
 
   if (getOriginal) {
     // Compared without indentation if expected value is data structure.
@@ -119,7 +147,7 @@ const formatLine = (
       char +
         ' ' +
         // Prepend indentation spaces from original to compared line.
-        lineOriginal.slice(0, lineOriginal.length - lineCompared.length) +
+        lineOriginal.slice(0, lineOriginal.length - getLength(argCompared)) +
         highlightLeadingTrailingSpaces(
           lineCompared,
           getBgColor(digit, onlyIndentationChanged),
@@ -131,6 +159,72 @@ const formatLine = (
   return getColor(digit)(
     char + ' ' + highlightTrailingSpaces(lineCompared, getBgColor(digit)),
   );
+};
+
+const NEWLINE_REGEXP = /\n/;
+
+// Given diff items from diff-match-patch,
+// return them split or merged corresponding to deleted and inserted lines.
+const alignDelInsDiffs = (diffs: DiffItems): DelInsDiffs => {
+  const diffsDel = [[]];
+  const diffsIns = [[]];
+
+  diffs.forEach(diff => {
+    const digit = diff[0];
+    const value = diff[1];
+
+    if (NEWLINE_REGEXP.test(value)) {
+      value.split('\n').forEach((line, i, lines) => {
+        // Omit any empty strings that split returns to separate newlines.
+        const subdiff = line.length !== 0 ? [digit, line] : null;
+
+        // If substring is unchanged, push onto deleted and inserted.
+        if (digit !== 1) {
+          if (subdiff !== null) {
+            diffsDel[diffsDel.length - 1].push(subdiff);
+          }
+          if (i !== lines.length - 1) {
+            diffsDel.push([]); // next line
+          }
+        }
+        if (digit !== -1) {
+          if (subdiff !== null) {
+            diffsIns[diffsIns.length - 1].push(subdiff);
+          }
+          if (i !== lines.length - 1) {
+            diffsIns.push([]); // next line
+          }
+        }
+      });
+    } else {
+      // If string is unchanged, push onto deleted and inserted.
+      if (digit !== 1) {
+        diffsDel[diffsDel.length - 1].push(diff);
+      }
+      if (digit !== -1) {
+        diffsIns[diffsIns.length - 1].push(diff);
+      }
+    }
+  });
+
+  // Omit newline after last line.
+  diffsDel.pop();
+  diffsIns.pop();
+
+  return [diffsDel, diffsIns];
+};
+
+// Given adjacent deleted and inserted lines as strings with trailing newline,
+// return data structure for changed and unchanged strings within the lines.
+const computeDelInsDiffs = (
+  stringDel: string,
+  stringIns: string,
+): DelInsDiffs => {
+  const dmp = new DiffMatchPatch();
+  const diffs = dmp.diff_main(stringDel, stringIns);
+  dmp.diff_cleanupSemantic(diffs); // more often for better than for worse
+
+  return alignDelInsDiffs(diffs);
 };
 
 // Given original lines, return callback function
@@ -162,17 +256,38 @@ const formatChunks = (a: string, b: string, original?: Original): Diff => {
   }
 
   const getOriginal = original && getterForChunks(original);
-  return chunks
-    .reduce((lines, chunk) => {
+  const lines = [];
+  let i = 0;
+  while (i !== chunks.length) {
+    const chunk = chunks[i];
+    if (
+      getOriginal &&
+      chunk.removed &&
+      i + 1 !== chunks.length &&
+      chunks[i + 1].added
+    ) {
+      // For now, only if expected value is data structure.
+      // Highlight changed strings within adjacent deleted and inserted chunks.
+      const [diffsDel, diffsIns] = computeDelInsDiffs(
+        chunk.value,
+        chunks[i + 1].value,
+      );
+      diffsDel.forEach(diffs => {
+        lines.push(formatLine('-', diffs, getOriginal));
+      });
+      diffsIns.forEach(diffs => {
+        lines.push(formatLine('+', diffs, getOriginal));
+      });
+      i += 2;
+    } else {
       const char = getDiffChar(chunk);
-
       splitIntoLines(chunk.value).forEach(line => {
         lines.push(formatLine(char, line, getOriginal));
       });
-
-      return lines;
-    }, [])
-    .join('\n');
+      i += 1;
+    }
+  }
+  return lines.join('\n');
 };
 
 // Only show patch marks ("@@ ... @@") if the diff is big.
@@ -207,6 +322,77 @@ const getterForHunks = (original: Original) => {
   };
 };
 
+// Return index at end of sequence of lines which correspond to a chunk.
+const getIndexAfterDiffChar = (
+  lines: Array<string>,
+  char: string,
+  i: number,
+): number => {
+  while (i !== lines.length && lines[i][0] === char) {
+    i += 1;
+  }
+  return i;
+};
+
+// Return string which corresponds to a chunk.
+const getStringFromLines = (
+  lines: Array<string>,
+  i: number,
+  iEnd: number,
+): string => {
+  let string = '';
+  while (i !== iEnd) {
+    string += lines[i].slice(1) + '\n';
+    i += 1;
+  }
+  return string;
+};
+
+// Given lines of hunk and getter for corresponding original lines,
+// append the formatted lines to the result argument.
+const formatHunk = (
+  lines: Array<string>,
+  hunkLines: Array<string>,
+  getOriginal: GetOriginal,
+) => {
+  const length = hunkLines.length;
+  let i = 0;
+  while (i !== length) {
+    const iAfterDel = getIndexAfterDiffChar(hunkLines, '-', i);
+
+    if (iAfterDel !== i) {
+      const iAfterIns = getIndexAfterDiffChar(hunkLines, '+', iAfterDel);
+
+      if (iAfterIns !== iAfterDel) {
+        // Highlight changed strings within adjacent deleted and inserted lines.
+        const [diffsDel, diffsIns] = computeDelInsDiffs(
+          getStringFromLines(hunkLines, i, iAfterDel),
+          getStringFromLines(hunkLines, iAfterDel, iAfterIns),
+        );
+        diffsDel.forEach(diffs => {
+          lines.push(formatLine('-', diffs, getOriginal));
+        });
+        diffsIns.forEach(diffs => {
+          lines.push(formatLine('+', diffs, getOriginal));
+        });
+        i = iAfterIns;
+      } else {
+        // Format adjacent deleted lines that are not followed by inserted lines.
+        while (i !== iAfterDel) {
+          const line = hunkLines[i];
+          lines.push(formatLine(line[0], line.slice(1), getOriginal));
+          i += 1;
+        }
+      }
+    } else {
+      // Format the next line, which is inserted or unchanged.
+      const line = hunkLines[i];
+      lines.push(formatLine(line[0], line.slice(1), getOriginal));
+      i += 1;
+    }
+  }
+};
+
 // jest --no-expand
 const formatHunks = (
   a: string,
@@ -237,9 +423,13 @@ const formatHunks = (
       // Hunk properties are one-based but index args are zero-based.
       const getOriginal =
         getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
-      hunk.lines.forEach(line => {
-        lines.push(formatLine(line[0], line.slice(1), getOriginal));
-      });
+      if (getOriginal) {
+        formatHunk(lines, hunk.lines, getOriginal);
+      } else {
+        hunk.lines.forEach(line => {
+          lines.push(formatLine(line[0], line.slice(1)));
+        });
+      }
 
       return lines;
     }, [])

@@ -54,15 +54,15 @@ exports[`background color of spaces yellow for unchanged (expanded) 1`] = `
 <red>+ Received</>
 
 <dim>  <div></>
-<green>-   <span></>
-<red>+   <p></>
+<green>-   <<inverse>span</>></>
+<red>+   <<inverse>p</>></>
 <dim>      following string consists of a space:</>
 <dim>      <bgYellow> </></>
 <dim>      <bgYellow> </>line has preceding space only</>
 <dim>      <bgYellow> </>line has both preceding and following space<bgYellow> </></>
 <dim>      line has following space only<bgYellow> </></>
-<green>-   </span></>
-<red>+   </p></>
+<green>-   </<inverse>span</>></>
+<red>+   </<inverse>p</>></>
 <dim>  </div></>"
 `;
 
@@ -90,7 +90,7 @@ exports[`color of text (expanded) 1`] = `
 <dim>  Object {</>
 <dim>    \\"searching\\": \\"\\",</>
 <green>-   \\"sorting\\": Object {</>
-<red>+   \\"sorting\\": Array [</>
+<red>+   \\"sorting\\": <inverse>Array [</></>
 <red>+     Object {</>
 <cyan>        \\"descending\\": false,</>
 <cyan>        \\"fieldKey\\": \\"what\\",</>
@@ -174,8 +174,8 @@ exports[`falls back to not call toJSON if it throws and then objects have differ
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"line\\": 1,</>
-<red>+   \\"line\\": 2,</>
+<green>-   \\"line\\": <inverse>1</>,</>
+<red>+   \\"line\\": <inverse>2</>,</>
 <dim>    \\"toJSON\\": [Function toJSON],</>
 <dim>  }</>"
 `;
@@ -188,8 +188,8 @@ exports[`falls back to not call toJSON if serialization has no differences but t
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"line\\": 1,</>
-<red>+   \\"line\\": 2,</>
+<green>-   \\"line\\": <inverse>1</>,</>
+<red>+   \\"line\\": <inverse>2</>,</>
 <dim>    \\"toJSON\\": [Function toJSON],</>
 <dim>  }</>"
 `;
@@ -199,10 +199,10 @@ exports[`highlight only the last in odd length of leading spaces (expanded) 1`] 
 <red>+ Received</>
 
 <dim>  <pre></>
-<green>-   attributes.reduce(function (props, attribute) {</>
-<green>-   <inverse> </>props[attribute.name] = attribute.value;</>
-<red>+   attributes.reduce((props, {name, value}) =&gt; {</>
-<red>+   props[name] = value;</>
+<green>-   attributes.reduce(<inverse>function (props, attribute)</> {</>
+<green>- <inverse> </>  props[<inverse>attribute.name] = attribute.</>value;</>
+<red>+   attributes.reduce(<inverse>(props, {name, value}) =&gt;</> {</>
+<red>+   props[<inverse>name] = </>value;</>
 <dim>    return props;</>
 <green>- <inverse> </>}, {});</>
 <red>+ }, {});</>
