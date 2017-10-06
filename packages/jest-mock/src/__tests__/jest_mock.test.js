@@ -458,6 +458,23 @@ describe('moduleMocker', () => {
     expect(moduleMocker.isMockFunction(mockFn)).toBe(true);
   });
 
+  test('mockName sets the mock name', () => {
+    const fn = jest.fn();
+    expect(fn.mockName()).toBe('jest.fn()');
+    fn.mockName('myMockFn');
+    expect(fn.mockName()).toBe('myMockFn');
+  });
+
+  test('mockName as only arg sets the mock name', () => {
+    const fn = jest.fn('myMockFn');
+    expect(fn.mockName()).toBe('myMockFn');
+  });
+
+  test('mockName as second arg sets the mock name', () => {
+    const fn = jest.fn(() => {}, 'myMockFn');
+    expect(fn.mockName()).toBe('myMockFn');
+  });
+
   describe('spyOn', () => {
     it('should work', () => {
       let isOriginalCalled = false;
