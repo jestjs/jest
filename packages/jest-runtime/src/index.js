@@ -323,7 +323,7 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule, options);
+        this._execModule(localModule, options, moduleRegistry[from]);
       }
     }
     return moduleRegistry[modulePath].exports;
@@ -472,7 +472,11 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _execModule(localModule: Module, options: ?InternalModuleOptions) {
+  _execModule(
+    localModule: Module,
+    options: ?InternalModuleOptions,
+    parent?: Module,
+  ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
@@ -489,15 +493,7 @@ class Runtime {
     localModule.children = [];
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
-    localModule.parent = {
-      exports: {},
-      filename: lastExecutingModulePath,
-      id: lastExecutingModulePath,
-      require: this._createRequireImplementation(
-        lastExecutingModulePath,
-        options,
-      ),
-    };
+    localModule.parent = parent;
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
