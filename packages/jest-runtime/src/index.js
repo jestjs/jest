@@ -57,6 +57,8 @@ type CoverageOptions = {
   mapCoverage: boolean,
 };
 
+type ModuleRegistry = {[key: string]: Module};
+
 type BooleanObject = {[key: string]: boolean};
 type CacheFS = {[path: Path]: string};
 
@@ -86,13 +88,13 @@ class Runtime {
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
-  _internalModuleRegistry: {[key: string]: Module};
+  _internalModuleRegistry: ModuleRegistry;
   _isCurrentlyExecutingManualMock: ?string;
   _mockFactories: {[key: string]: () => any};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
   _moduleMocker: ModuleMocker;
-  _moduleRegistry: {[key: string]: Module};
+  _moduleRegistry: ModuleRegistry;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -475,7 +477,7 @@ class Runtime {
   _execModule(
     localModule: Module,
     options: ?InternalModuleOptions,
-    moduleRegistry: {[key: string]: Module},
+    moduleRegistry: ModuleRegistry,
     from: Path,
   ) {
     // If the environment was disposed, prevent this module from being executed.
