@@ -31,14 +31,26 @@ describe('Runtime requireModule', () => {
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
+        'RequireRegularModule',
+      );
+      expect(Object.keys(exports.parent)).toEqual([
+        'exports',
+        'filename',
+        'id',
+        'children',
+        'paths',
+        'require',
+        'parent',
+      ]);
+    }));
+
+  it('`module.parent` should be undefined for entrypoints', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
         'RegularModule',
       );
-      expect(exports.parent).toEqual({
-        exports: {},
-        filename: '',
-        id: '',
-        require: expect.any(Function),
-      });
+      expect(exports.parent).toBeUndefined();
     }));
 
   it('resolve module.parent.require correctly', () =>
@@ -58,7 +70,7 @@ describe('Runtime requireModule', () => {
       );
 
       expect(slash(exports.parentFileName.replace(__dirname, ''))).toEqual(
-        '/test_root/node_modules/module-needing-parent/index.js',
+        '/test_root/inner_parent_module.js',
       );
     }));
 
