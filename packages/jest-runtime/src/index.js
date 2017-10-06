@@ -492,19 +492,21 @@ class Runtime {
 
     const dirname = path.dirname(filename);
     localModule.children = [];
-    localModule.paths = this._resolver.getModulePaths(dirname);
-    localModule.require = this._createRequireImplementation(filename, options);
 
     Object.defineProperty(
       localModule,
       'parent',
       // https://github.com/facebook/flow/issues/285#issuecomment-270810619
       ({
+        enumerable: true,
         get() {
           return moduleRegistry[from];
         },
       }: Object),
     );
+
+    localModule.paths = this._resolver.getModulePaths(dirname);
+    localModule.require = this._createRequireImplementation(filename, options);
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
