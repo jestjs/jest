@@ -77,7 +77,6 @@ const getModuleNameMapper = (config: ProjectConfig) => {
 
 const mockParentModule = {
   exports: {},
-  filename: 'mock.js',
   id: 'mockParent',
 };
 
@@ -497,6 +496,7 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
     localModule.parent = Object.assign({}, localModule.parent, {
+      filename: lastExecutingModulePath,
       require: this._createRequireImplementation(
         lastExecutingModulePath,
         options,

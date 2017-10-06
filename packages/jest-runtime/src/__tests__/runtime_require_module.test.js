@@ -8,7 +8,8 @@
 
 'use strict';
 
-const path = require('path');
+import path from 'path';
+import slash from 'slash';
 
 let createRuntime;
 
@@ -34,7 +35,7 @@ describe('Runtime requireModule', () => {
       );
       expect(exports.parent).toEqual({
         exports: {},
-        filename: 'mock.js',
+        filename: '',
         id: 'mockParent',
         require: expect.any(Function),
       });
@@ -46,7 +47,19 @@ describe('Runtime requireModule', () => {
         runtime.__mockRootPath,
         'inner_parent_module',
       );
-      expect(exports).toEqual('This should happen');
+      expect(exports.outputString).toEqual('This should happen');
+    }));
+
+  it('resolve module.parent.filename correctly', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
+        'inner_parent_module',
+      );
+
+      expect(slash(exports.parentFileName.replace(__dirname, ''))).toEqual(
+        '/test_root/node_modules/module-needing-parent/index.js',
+      );
     }));
 
   it('provides `module.filename` to modules', () =>
