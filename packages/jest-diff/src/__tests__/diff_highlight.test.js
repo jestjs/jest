@@ -118,8 +118,9 @@ describe('string at end of line and break too', () => {
 
 describe('strings within line', () => {
   // Regress scenario: simulated click fails
+  function onClick() {}
   const thProps = {
-    onClick: () => {},
+    onClick,
   };
   const text = 'when';
   const correct = createElement(
@@ -302,12 +303,13 @@ describe('breaks versus spaces in React prop value', () => {
 describe('breaks within line in React start tag', () => {
   // Progress scenario: add props [from less to more]
   // No highlight because no changed line has BOTH changed and unchanged strings.
+  function onClick() {}
   const text = 'when';
   const less = createElement('th', null, text);
   const more = createElement(
     'th',
     {
-      onClick: () => {},
+      onClick,
       scope: 'col',
     },
     text,
