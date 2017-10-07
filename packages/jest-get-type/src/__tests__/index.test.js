@@ -23,4 +23,5 @@ describe('.getType()', () => {
   test('regexp', () => expect(getType(/abc/)).toBe('regexp'));
   test('map', () => expect(getType(new Map())).toBe('map'));
   test('set', () => expect(getType(new Set())).toBe('set'));
+  test('date', () => expect(getType(new Date())).toBe('date'));
 });
