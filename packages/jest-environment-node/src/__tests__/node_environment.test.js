@@ -37,9 +37,9 @@ describe('NodeEnvironment', () => {
     const timer2 = env1.global.setInterval(() => {}, 0);
 
     [timer1, timer2].forEach(timer => {
-      expect(timer.id).not.toBe(undefined);
-      expect(timer.ref).not.toBe(undefined);
-      expect(timer.unref).not.toBe(undefined);
+      expect(timer.id).not.toBeUndefined();
+      expect(timer.ref).not.toBeUndefined();
+      expect(timer.unref).not.toBeUndefined();
     });
   });
 });
