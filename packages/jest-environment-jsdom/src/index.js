@@ -17,7 +17,7 @@ import JSDom from 'jsdom';
 
 class JSDOMEnvironment {
   document: ?Object;
-  fakeTimers: ?FakeTimers;
+  fakeTimers: ?FakeTimers<number>;
   global: ?Global;
   moduleMocker: ?ModuleMocker;
 
@@ -44,7 +44,18 @@ class JSDOMEnvironment {
     }
 
     this.moduleMocker = new mock.ModuleMocker(global);
-    this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
+
+    const timerConfig = {
+      idToRef: (id: number) => id,
+      refToId: (ref: number) => ref,
+    };
+
+    this.fakeTimers = new FakeTimers(
+      global,
+      this.moduleMocker,
+      timerConfig,
+      config,
+    );
   }
 
   dispose(): void {

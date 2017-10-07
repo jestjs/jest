@@ -27,4 +27,19 @@ describe('NodeEnvironment', () => {
 
     expect(env1.global.global).toBe(env1.global);
   });
+
+  it('should configure setTimeout/setInterval to use the node api', () => {
+    const env1 = new NodeEnvironment({});
+
+    env1.fakeTimers.useFakeTimers();
+
+    const timer1 = env1.global.setTimeout(() => {}, 0);
+    const timer2 = env1.global.setInterval(() => {}, 0);
+
+    [timer1, timer2].forEach(timer => {
+      expect(timer.id).not.toBe(undefined);
+      expect(timer.ref).not.toBe(undefined);
+      expect(timer.unref).not.toBe(undefined);
+    });
+  });
 });

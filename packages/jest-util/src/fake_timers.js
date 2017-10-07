@@ -57,9 +57,14 @@ type TimerAPI = {
   /* eslint-enable flowtype/no-weak-types */
 };
 
+type TimerConfig<Ref> = {|
+  idToRef: (id: number) => Ref,
+  refToId: (ref: Ref) => number,
+|};
+
 const MS_IN_A_YEAR = 31536000000;
 
-export default class FakeTimers {
+export default class FakeTimers<TimerRef> {
   _cancelledImmediates: {[key: TimerID]: boolean};
   _cancelledTicks: {[key: TimerID]: boolean};
   _config: ProjectConfig;
@@ -74,14 +79,17 @@ export default class FakeTimers {
   _timerAPIs: TimerAPI;
   _timers: {[key: TimerID]: Timer};
   _uuidCounter: number;
+  _timerConfig: TimerConfig<TimerRef>;
 
   constructor(
     global: Global,
     moduleMocker: ModuleMocker,
+    timerConfig: TimerConfig<TimerRef>,
     config: ProjectConfig,
     maxLoops?: number,
   ) {
     this._global = global;
+    this._timerConfig = timerConfig;
     this._config = config;
     this._maxLoops = maxLoops || 100000;
     this._uuidCounter = 1;
@@ -370,9 +378,11 @@ export default class FakeTimers {
     };
   }
 
-  _fakeClearTimer(uuid: TimerID) {
+  _fakeClearTimer(timerRef: TimerRef) {
+    const uuid = this._timerConfig.refToId(timerRef);
+
     if (this._timers.hasOwnProperty(uuid)) {
-      delete this._timers[uuid];
+      delete this._timers[String(uuid)];
     }
   }
 
@@ -462,7 +472,7 @@ export default class FakeTimers {
       type: 'interval',
     };
 
-    return uuid;
+    return this._timerConfig.idToRef(uuid);
   }
 
   _fakeSetTimeout(callback: Callback, delay?: number) {
@@ -488,7 +498,7 @@ export default class FakeTimers {
       type: 'timeout',
     };
 
-    return uuid;
+    return this._timerConfig.idToRef(uuid);
   }
 
   _getNextTimerHandle() {
