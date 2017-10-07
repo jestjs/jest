@@ -508,7 +508,9 @@ class Runtime {
     );
 
     localModule.paths = this._resolver.getModulePaths(dirname);
-    localModule.require = this._createRequireImplementation(filename, options);
+    Object.defineProperty(localModule, 'require', {
+      value: this._createRequireImplementation(filename, options),
+    });
 
     const transformedFile = this._scriptTransformer.transform(
       filename,

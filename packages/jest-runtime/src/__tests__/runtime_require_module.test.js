@@ -27,6 +27,22 @@ describe('Runtime requireModule', () => {
       expect(exports.isRealModule).toBe(true);
     }));
 
+  it('provides `module` to modules', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
+        'RegularModule',
+      );
+      expect(Object.keys(exports.module)).toEqual([
+        'exports',
+        'filename',
+        'id',
+        'children',
+        'parent',
+        'paths',
+      ]);
+    }));
+
   it('provides `module.parent` to modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
