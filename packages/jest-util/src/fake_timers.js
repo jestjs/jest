@@ -229,7 +229,7 @@ export default class FakeTimers {
         'Ran ' +
         this._maxLoops +
         ' timers, and there are still more! ' +
-        "Assuming we've hit an infinite recursion and bailing out."
+        "Assuming we've hit an infinite recursion and bailing out." +
         "The following timers are still pending:" +
         Object.keys(timers)
           .sort((left, right) => timers[left].expiry - timers[right].expiry)
