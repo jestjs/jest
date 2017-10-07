@@ -13,9 +13,5 @@
     "diff-match-patch": "1.0.0",
     "jest-get-type": "^21.2.0",
     "pretty-format": "^21.2.1"
-  },
-  "devDependencies": {
-    "ansi-regex": "^3.0.0",
-    "ansi-styles": "^3.2.0"
   }
 }
