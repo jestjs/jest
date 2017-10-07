@@ -502,7 +502,7 @@ class Runtime {
       ({
         enumerable: true,
         get() {
-          return moduleRegistry[from];
+          return moduleRegistry[from] || null;
         },
       }: Object),
     );

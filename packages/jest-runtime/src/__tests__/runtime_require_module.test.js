@@ -50,7 +50,7 @@ describe('Runtime requireModule', () => {
         runtime.__mockRootPath,
         'RegularModule',
       );
-      expect(exports.parent).toBeUndefined();
+      expect(exports.parent).toBeNull();
     }));
 
   it('resolve module.parent.require correctly', () =>
