@@ -57,12 +57,12 @@ class NodeEnvironment {
       refToId: timerRefToId,
     };
 
-    this.fakeTimers = new FakeTimers(
-      global,
-      this.moduleMocker,
-      timerConfig,
+    this.fakeTimers = new FakeTimers({
       config,
-    );
+      global,
+      moduleMocker: this.moduleMocker,
+      timerConfig,
+    });
   }
 
   dispose() {

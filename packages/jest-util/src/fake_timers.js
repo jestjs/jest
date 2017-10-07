@@ -81,13 +81,19 @@ export default class FakeTimers<TimerRef> {
   _uuidCounter: number;
   _timerConfig: TimerConfig<TimerRef>;
 
-  constructor(
+  constructor({
+    global,
+    moduleMocker,
+    timerConfig,
+    config,
+    maxLoops,
+  }: {
     global: Global,
     moduleMocker: ModuleMocker,
     timerConfig: TimerConfig<TimerRef>,
     config: ProjectConfig,
     maxLoops?: number,
-  ) {
+  }) {
     this._global = global;
     this._timerConfig = timerConfig;
     this._config = config;

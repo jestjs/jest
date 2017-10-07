@@ -50,12 +50,12 @@ class JSDOMEnvironment {
       refToId: (ref: number) => ref,
     };
 
-    this.fakeTimers = new FakeTimers(
-      global,
-      this.moduleMocker,
-      timerConfig,
+    this.fakeTimers = new FakeTimers({
       config,
-    );
+      global,
+      moduleMocker: this.moduleMocker,
+      timerConfig,
+    });
   }
 
   dispose(): void {
