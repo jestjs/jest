@@ -25,6 +25,7 @@
     "debug": "^3.0.1",
     "enzyme": "^2.8.2",
     "eslint": "^4.2.0",
+    "eslint-config-fbjs": "^2.0.0",
     "eslint-config-prettier": "^2.4.0",
     "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-flowtype": "^2.35.0",
