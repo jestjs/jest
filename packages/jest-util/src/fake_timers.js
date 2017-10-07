@@ -241,8 +241,8 @@ export default class FakeTimers {
               "\n\nsetImmediate - pending timer time " + timers[key].expiry - this._now
             '\n' + formatStackTrace(new Error().stack, this._global.setImmediate, {
               noStackTrace: true,
-            }),
-        }),
+            })
+          }),
       );
     }
   }
