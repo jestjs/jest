@@ -166,6 +166,15 @@ const mockFn = jest.fn('mockedFunction');
 const mockFn2 = jest.fn(scalar => 42 + scalar, 'add42');
 ```
 
+### `mockFn.mockReturnThis()`
+Just a simple sugar function for:
+
+```js
+jest.fn(function() {
+  return this;
+});
+```
+
 ### `mockFn.mockReturnValue(value)`
 Accepts a value that will be returned whenever the mock function is called.
 
@@ -175,15 +184,6 @@ mock.mockReturnValue(42);
 mock(); // 42
 mock.mockReturnValue(43);
 mock(); // 43
-```
-
-### `mockFn.mockReturnThis()`
-Just a simple sugar function for:
-
-```js
-jest.fn(function() {
-  return this;
-});
 ```
 
 ### `mockFn.mockReturnValueOnce(value)`
