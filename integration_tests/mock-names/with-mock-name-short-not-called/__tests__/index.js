@@ -12,6 +12,5 @@ const mockFn = jest.fn('myMockedFunctionShort');
 
 test('first test', () => {
   // mockFn explicitly not called to test error snapshot
-  expect(mockFn).toHaveBeenCalled();
-  expect(mockFn.mock.calls.length).toBe(1);
+  expect(mockFn).toHaveBeenCalledTimes(1);
 });

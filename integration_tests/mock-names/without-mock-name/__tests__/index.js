@@ -13,6 +13,5 @@ const mockFn = jest.fn(importedFn);
 
 test('first test', () => {
   mockFn();
-  expect(mockFn).toHaveBeenCalled();
-  expect(mockFn.mock.calls.length).toBe(1);
+  expect(mockFn).toHaveBeenCalledTimes(1);
 });
