@@ -27,6 +27,23 @@ describe('Runtime requireModule', () => {
       expect(exports.isRealModule).toBe(true);
     }));
 
+  it('provides `module` to modules', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
+        'RegularModule',
+      );
+      expect(Object.keys(exports.module)).toEqual([
+        'children',
+        'exports',
+        'filename',
+        'id',
+        'loaded',
+        'parent',
+        'paths',
+      ]);
+    }));
+
   it('provides `module.parent` to modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
@@ -34,13 +51,13 @@ describe('Runtime requireModule', () => {
         'RequireRegularModule',
       );
       expect(Object.keys(exports.parent)).toEqual([
+        'children',
         'exports',
         'filename',
         'id',
-        'children',
+        'loaded',
         'parent',
         'paths',
-        'require',
       ]);
     }));
 
@@ -72,6 +89,19 @@ describe('Runtime requireModule', () => {
       expect(slash(exports.parentFileName.replace(__dirname, ''))).toEqual(
         '/test_root/inner_parent_module.js',
       );
+    }));
+
+  it('provides `module.loaded` to modules', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
+        'RegularModule',
+      );
+
+      // `exports.loaded` is set while the module is loaded, so should be `false`
+      expect(exports.loaded).toEqual(false);
+      // After the module is loaded we can query `module.loaded` again, at which point it should be `true`
+      expect(exports.isLoaded()).toEqual(true);
     }));
 
   it('provides `module.filename` to modules', () =>

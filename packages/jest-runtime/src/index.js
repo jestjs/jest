@@ -29,13 +29,14 @@ import {run as cilRun} from './cli';
 import {options as cliOptions} from './cli/args';
 
 type Module = {|
-  children?: Array<any>,
+  children: Array<Module>,
   exports: any,
   filename: string,
   id: string,
+  loaded: boolean,
   parent?: Module,
   paths?: Array<Path>,
-  require?: Function,
+  require?: (id: string) => any,
 |};
 
 type HasteMapOptions = {|
@@ -311,10 +312,12 @@ class Runtime {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
-      const localModule = {
+      const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
@@ -327,6 +330,8 @@ class Runtime {
       } else {
         this._execModule(localModule, options, moduleRegistry, from);
       }
+
+      localModule.loaded = true;
     }
     return moduleRegistry[modulePath].exports;
   }
@@ -381,13 +386,16 @@ class Runtime {
     }
 
     if (manualMock) {
-      const localModule = {
+      const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
       this._execModule(localModule, undefined, this._mockRegistry, from);
       this._mockRegistry[moduleID] = localModule.exports;
+      localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
       this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
@@ -508,7 +516,9 @@ class Runtime {
     );
 
     localModule.paths = this._resolver.getModulePaths(dirname);
-    localModule.require = this._createRequireImplementation(filename, options);
+    Object.defineProperty(localModule, 'require', {
+      value: this._createRequireImplementation(filename, options),
+    });
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
