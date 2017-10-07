@@ -9,7 +9,6 @@
 'use strict';
 
 const runJest = require('../runJest');
-const {extractSummary} = require('../utils');
 
 test('suite without mock name, mock called', () => {
   const {stderr, status} = runJest('mock-names/without-mock-name');
@@ -52,7 +51,6 @@ test('suite with mock name, mock not called 5 times, expect fail', () => {
   expect(status).toBe(1);
   expect(stderr).toMatch(/expect\(myMockedFunction\)\.toHaveBeenCalledTimes/);
 });
-
 
 test('suite with mock name, mock called', () => {
   const {stderr, status} = runJest('mock-names/with-mock-name');
