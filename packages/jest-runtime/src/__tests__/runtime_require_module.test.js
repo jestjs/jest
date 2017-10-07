@@ -34,11 +34,11 @@ describe('Runtime requireModule', () => {
         'RegularModule',
       );
       expect(Object.keys(exports.module)).toEqual([
+        'children',
         'exports',
         'filename',
         'id',
         'loaded',
-        'children',
         'parent',
         'paths',
       ]);
@@ -51,11 +51,11 @@ describe('Runtime requireModule', () => {
         'RequireRegularModule',
       );
       expect(Object.keys(exports.parent)).toEqual([
+        'children',
         'exports',
         'filename',
         'id',
         'loaded',
-        'children',
         'parent',
         'paths',
       ]);

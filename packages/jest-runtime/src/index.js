@@ -29,14 +29,14 @@ import {run as cilRun} from './cli';
 import {options as cliOptions} from './cli/args';
 
 type Module = {|
-  children?: Array<any>,
+  children: Array<Module>,
   exports: any,
   filename: string,
   id: string,
   loaded: boolean,
   parent?: Module,
   paths?: Array<Path>,
-  require?: Function,
+  require?: (id: string) => any,
 |};
 
 type HasteMapOptions = {|
@@ -313,6 +313,7 @@ class Runtime {
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
       const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
@@ -386,6 +387,7 @@ class Runtime {
 
     if (manualMock) {
       const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
