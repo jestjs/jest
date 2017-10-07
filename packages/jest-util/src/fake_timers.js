@@ -7,11 +7,11 @@
  * @flow
  */
 
-import type {ProjectConfig} from 'types/Config';
-import type {Global} from 'types/Global';
-import type {ModuleMocker} from 'jest-mock';
+import type {ProjectConfig } from 'types/Config';
+import type {Global } from 'types/Global';
+import type {ModuleMocker } from 'jest-mock';
 
-import {formatStackTrace} from 'jest-message-util';
+import { formatStackTrace } from 'jest-message-util';
 import setGlobal from './set_global';
 
 /**
@@ -27,14 +27,14 @@ type TimerID = string;
 
 type Tick = {|
   uuid: string,
-  callback: Callback,
+    callback: Callback,
 |};
 
 type Timer = {|
   type: string,
-  callback: Callback,
-  expiry: number,
-  interval: ?number,
+    callback: Callback,
+      expiry: number,
+        interval: ?number,
 |};
 
 type TimerAPI = {
@@ -60,8 +60,8 @@ type TimerAPI = {
 const MS_IN_A_YEAR = 31536000000;
 
 export default class FakeTimers {
-  _cancelledImmediates: {[key: TimerID]: boolean};
-  _cancelledTicks: {[key: TimerID]: boolean};
+  _cancelledImmediates: { [key: TimerID]: boolean };
+  _cancelledTicks: { [key: TimerID]: boolean };
   _config: ProjectConfig;
   _disposed: boolean;
   _fakeTimerAPIs: TimerAPI;
@@ -72,7 +72,7 @@ export default class FakeTimers {
   _now: number;
   _ticks: Array<Tick>;
   _timerAPIs: TimerAPI;
-  _timers: {[key: TimerID]: Timer};
+  _timers: { [key: TimerID]: Timer };
   _uuidCounter: number;
 
   constructor(
@@ -157,9 +157,9 @@ export default class FakeTimers {
     if (i === this._maxLoops) {
       throw new Error(
         'Ran ' +
-          this._maxLoops +
-          ' ticks, and there are still more! ' +
-          "Assuming we've hit an infinite recursion and bailing out...",
+        this._maxLoops +
+        ' ticks, and there are still more! ' +
+        "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -179,9 +179,9 @@ export default class FakeTimers {
     if (i === this._maxLoops) {
       throw new Error(
         'Ran ' +
-          this._maxLoops +
-          ' immediates, and there are still more! Assuming ' +
-          "we've hit an infinite recursion and bailing out...",
+        this._maxLoops +
+        ' immediates, and there are still more! Assuming ' +
+        "we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -227,9 +227,22 @@ export default class FakeTimers {
     if (i === this._maxLoops) {
       throw new Error(
         'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
-          "Assuming we've hit an infinite recursion and bailing out...",
+        this._maxLoops +
+        ' timers, and there are still more! ' +
+        "Assuming we've hit an infinite recursion and bailing out."
+        "The following timers are still pending:" +
+        Object.keys(timers)
+          .sort((left, right) => timers[left].expiry - timers[right].expiry)
+          .map(function (key, index) {
+            "\n\nsetTimeout - pending timer time " + timers[key].expiry - this._now
+            "\n" + formatStackTrace(new Error().stack, this._global.setTimeout, {
+              noStackTrace: true,
+            }) +
+              "\n\nsetImmediate - pending timer time " + timers[key].expiry - this._now
+            '\n' + formatStackTrace(new Error().stack, this._global.setImmediate, {
+              noStackTrace: true,
+            }),
+        }),
       );
     }
   }
@@ -272,9 +285,9 @@ export default class FakeTimers {
     if (i === this._maxLoops) {
       throw new Error(
         'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
-          "Assuming we've hit an infinite recursion and bailing out...",
+        this._maxLoops +
+        ' timers, and there are still more! ' +
+        "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -342,16 +355,16 @@ export default class FakeTimers {
     if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
       this._global.console.warn(
         `A function to advance timers was called but the timers API is not ` +
-          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
-          `test or enable fake timers globally by setting ` +
-          `\`"timers": "fake"\` in ` +
-          `the configuration file. This warning is likely a result of a ` +
-          `default configuration change in Jest 15.\n\n` +
-          `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
-          `Stack Trace:\n` +
-          formatStackTrace(new Error().stack, this._config, {
-            noStackTrace: false,
-          }),
+        `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
+        `test or enable fake timers globally by setting ` +
+        `\`"timers": "fake"\` in ` +
+        `the configuration file. This warning is likely a result of a ` +
+        `default configuration change in Jest 15.\n\n` +
+        `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
+        `Stack Trace:\n` +
+        formatStackTrace(new Error().stack, this._config, {
+          noStackTrace: false,
+        }),
       );
     }
   }
