@@ -38,8 +38,8 @@ describe('NodeEnvironment', () => {
 
     [timer1, timer2].forEach(timer => {
       expect(timer.id).not.toBeUndefined();
-      expect(timer.ref).not.toBeUndefined();
-      expect(timer.unref).not.toBeUndefined();
+      expect(typeof timer.ref).toBe('function');
+      expect(typeof timer.unref).toBe('function');
     });
   });
 });

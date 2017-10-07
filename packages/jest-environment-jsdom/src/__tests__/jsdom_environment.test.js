@@ -18,7 +18,7 @@ describe('JSDomEnvironment', () => {
     const timer2 = env1.global.setInterval(() => {}, 0);
 
     [timer1, timer2].forEach(timer => {
-      expect(typeof timer === 'number').toBe(true);
+      expect(typeof timer).toBe('number');
     });
   });
 });
