@@ -33,6 +33,7 @@ type Module = {|
   exports: any,
   filename: string,
   id: string,
+  loaded: boolean,
   parent?: Module,
   paths?: Array<Path>,
   require?: Function,
@@ -311,10 +312,11 @@ class Runtime {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
-      const localModule = {
+      const localModule: Module = {
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
@@ -327,6 +329,8 @@ class Runtime {
       } else {
         this._execModule(localModule, options, moduleRegistry, from);
       }
+
+      localModule.loaded = true;
     }
     return moduleRegistry[modulePath].exports;
   }
@@ -381,13 +385,15 @@ class Runtime {
     }
 
     if (manualMock) {
-      const localModule = {
+      const localModule: Module = {
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
       this._execModule(localModule, undefined, this._mockRegistry, from);
       this._mockRegistry[moduleID] = localModule.exports;
+      localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
       this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
