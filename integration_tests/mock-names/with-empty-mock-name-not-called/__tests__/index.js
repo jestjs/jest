@@ -13,6 +13,6 @@ const importedFn = require('../');
 const mockFn = jest.fn(importedFn, '');
 
 test('first test', () => {
-  // mockFn explicitly not called to test error snapshot
+  // mockFn explicitly not called to test error output
   expect(mockFn).toHaveBeenCalledTimes(1);
 });

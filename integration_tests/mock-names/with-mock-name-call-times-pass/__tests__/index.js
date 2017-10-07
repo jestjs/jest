@@ -9,9 +9,13 @@
 
 jest.mock('../');
 const importedFn = require('../');
-const mockFn = jest.fn(importedFn).mockName('myMockedFunctionLong');
+const mockFn = jest.fn(importedFn, 'myMockedFunction');
 
 test('first test', () => {
-  // mockFn explicitly not called to test error output
-  expect(mockFn).toHaveBeenCalledTimes(1);
+  mockFn();
+  mockFn();
+  mockFn();
+  mockFn();
+  mockFn();
+  expect(mockFn).toHaveBeenCalledTimes(5);
 });
