@@ -230,14 +230,6 @@ const myMockFn = jest.fn()
 const myMockFn2 = jest.fn(scalar => 42 + scalar, 'add42');
 ```
 
-You can also pass a mock name without providing a mock implementation:
-
-```javascript
-const myMockFn = jest.fn('myMockFunction');
-// myMockFn();
-expect(myMockFn).toHaveBeenCalled();
-```
-
 ## Custom Matchers
 
 Finally, in order to make it simpler to assert how mock functions have been

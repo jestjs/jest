@@ -645,19 +645,11 @@ class ModuleMockerClass {
     return !!fn._isMockFunction;
   }
 
-  fn(implementation?: any, mockName?: string): any {
+  fn(implementation?: any): any {
     const length = implementation ? implementation.length : 0;
     const fn = this._makeComponent({length, type: 'function'});
     if (implementation) {
-      if (typeof implementation === 'function') {
-        fn.mockImplementation(implementation);
-      } else if (typeof implementation === 'string') {
-        fn.mockName(implementation);
-      }
-    }
-
-    if (arguments.length > 1 && mockName) {
-      fn.mockName(mockName);
+      fn.mockImplementation(implementation);
     }
     return fn;
   }

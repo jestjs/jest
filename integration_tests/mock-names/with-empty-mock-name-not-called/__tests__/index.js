@@ -10,7 +10,7 @@
 jest.mock('../');
 const importedFn = require('../');
 // empty mock name should result in default 'jest.fn()' output
-const mockFn = jest.fn(importedFn, '');
+const mockFn = jest.fn(importedFn).mockName('');
 
 test('first test', () => {
   // mockFn explicitly not called to test error output

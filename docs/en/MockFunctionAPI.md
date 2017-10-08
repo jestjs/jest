@@ -141,8 +141,6 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 ### `mockFn.mockName(value)`
 Accepts a string to use in test result output in place of "jest.fn()" to indicate which mock function is being referenced.
 
-*Note: `jest.fn(implementation, name)` is a shorthand for `jest.fn().mockImplementation(implementation).mockName(name)`. Also, if you only provide a string to jest.fn(), it will be used as the mock name value.*
-
 For example:
 
 ```js
@@ -158,13 +156,6 @@ Will result in this error:
     Expected mock function to have been called.
 ```
 
-Shorthand examples:
-
-```js
-const mockFn = jest.fn('mockedFunction');
-
-const mockFn2 = jest.fn(scalar => 42 + scalar, 'add42');
-```
 
 ### `mockFn.mockReturnThis()`
 Just a simple sugar function for:

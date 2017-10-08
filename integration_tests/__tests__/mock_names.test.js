@@ -65,33 +65,3 @@ test('suite with mock name, mock not called', () => {
   expect(status).toBe(1);
   expect(stderr).toMatch(/expect\(myMockedFunction\)\.toHaveBeenCalled/);
 });
-
-test('suite with mock name, long form, mock called', () => {
-  const {stderr, status} = runJest('mock-names/with-mock-name-long');
-
-  expect(status).toBe(0);
-  expect(stderr).toMatch(/PASS/);
-});
-
-test('suite with mock name, long form, mock not called', () => {
-  const {stderr, status} = runJest('mock-names/with-mock-name-long-not-called');
-
-  expect(status).toBe(1);
-  expect(stderr).toMatch(/expect\(myMockedFunctionLong\)\.toHaveBeenCalled/);
-});
-
-test('suite with mock name, short form, mock called', () => {
-  const {stderr, status} = runJest('mock-names/with-mock-name-short');
-
-  expect(status).toBe(0);
-  expect(stderr).toMatch(/PASS/);
-});
-
-test('suite with mock name, short form, mock not called', () => {
-  const {stderr, status} = runJest(
-    'mock-names/with-mock-name-short-not-called',
-  );
-
-  expect(status).toBe(1);
-  expect(stderr).toMatch(/expect\(myMockedFunctionShort\)\.toHaveBeenCalled/);
-});
