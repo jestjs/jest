@@ -11,7 +11,6 @@ jest.mock('../');
 const importedFn = require('../');
 const mockFn = jest.fn(importedFn).mockName('myMockedFunction');
 
-
 test('first test', () => {
   mockFn();
   mockFn();
