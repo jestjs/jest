@@ -18,6 +18,9 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 
 ## Reference
 
+### `mockFn.getMockName()`
+Returns the mock name string set by calling `mockFn.mockName(value)`.
+
 ### `mockFn.mock.calls`
 An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call.
 
@@ -55,7 +58,7 @@ Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls
 The [`clearMocks`](configuration.html#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
 
 ### `mockFn.mockReset()`
-Resets all information stored in the mock, including any inital implementation given.
+Resets all information stored in the mock, including any initial implementation and mock name given.
 
 This is useful when you want to completely restore a mock back to its initial state.
 
@@ -137,6 +140,25 @@ var myMockFn = jest.fn(() => 'default')
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 > 'first call', 'second call', 'default', 'default'
 ```
+
+### `mockFn.mockName(value)`
+Accepts a string to use in test result output in place of "jest.fn()" to indicate which mock function is being referenced.
+
+For example:
+
+```js
+const mockFn = jest.fn().mockName('mockedFunction');
+// mockFn();
+expect(mockFn).toHaveBeenCalled();
+```
+
+Will result in this error:
+```
+    expect(mockedFunction).toHaveBeenCalled()
+    
+    Expected mock function to have been called.
+```
+
 
 ### `mockFn.mockReturnThis()`
 Just a simple sugar function for:

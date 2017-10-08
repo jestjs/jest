@@ -217,6 +217,19 @@ const otherObj = {
 };
 ```
 
+## Mock Names
+
+You can optionally provide a name for your mock functions, which will be displayed instead of "jest.fn()" in test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.
+
+```javascript
+const myMockFn = jest.fn()
+  .mockReturnValue('default')
+  .mockImplementation(scalar => 42 + scalar)
+  .mockName('add42');
+
+const myMockFn2 = jest.fn(scalar => 42 + scalar, 'add42');
+```
+
 ## Custom Matchers
 
 Finally, in order to make it simpler to assert how mock functions have been
