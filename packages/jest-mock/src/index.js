@@ -436,14 +436,16 @@ class ModuleMockerClass {
         });
 
       f.mockName = name => {
-        if (arguments.length > 0 && name) {
+        if (name) {
           const mockConfig = this._ensureMockConfig(f);
           mockConfig.mockName = name;
-          return f;
-        } else {
-          const mockConfig = this._ensureMockConfig(f);
-          return mockConfig.mockName || 'jest.fn()';
         }
+        return f;
+      };
+
+      f.getMockName = () => {
+        const mockConfig = this._ensureMockConfig(f);
+        return mockConfig.mockName || 'jest.fn()';
       };
 
       if (metadata.mockImpl) {

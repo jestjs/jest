@@ -458,36 +458,40 @@ describe('moduleMocker', () => {
     expect(moduleMocker.isMockFunction(mockFn)).toBe(true);
   });
 
+  test('default mockName is jest.fn()', () => {
+    const fn = jest.fn();
+    expect(fn.getMockName()).toBe('jest.fn()');
+  });
+
   test('mockName sets the mock name', () => {
     const fn = jest.fn();
-    expect(fn.mockName()).toBe('jest.fn()');
     fn.mockName('myMockFn');
-    expect(fn.mockName()).toBe('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
   });
 
   test('mockName gets reset by mockReset', () => {
     const fn = jest.fn();
-    expect(fn.mockName()).toBe('jest.fn()');
+    expect(fn.getMockName()).toBe('jest.fn()');
     fn.mockName('myMockFn');
-    expect(fn.mockName()).toBe('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
     fn.mockReset();
-    expect(fn.mockName()).toBe('jest.fn()');
+    expect(fn.getMockName()).toBe('jest.fn()');
   });
 
   test('mockName is not reset by mockRestore', () => {
     const fn = jest.fn(() => false);
     fn.mockName('myMockFn');
-    expect(fn.mockName()).toBe('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
     fn.mockRestore();
-    expect(fn.mockName()).toBe('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
   });
 
   test('mockName is not reset by mockClear', () => {
     const fn = jest.fn(() => false);
     fn.mockName('myMockFn');
-    expect(fn.mockName()).toBe('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
     fn.mockClear();
-    expect(fn.mockName()).toBe('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
   });
 
   describe('spyOn', () => {

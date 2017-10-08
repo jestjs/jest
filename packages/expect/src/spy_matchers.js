@@ -31,7 +31,7 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
-  const receivedName = receivedIsSpy ? 'spy' : received.mockName();
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -61,7 +61,7 @@ const createToBeCalledWithMatcher = matcherName => (
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
-  const receivedName = receivedIsSpy ? 'spy' : received.mockName();
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -94,7 +94,7 @@ const createLastCalledWithMatcher = matcherName => (
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
-  const receivedName = receivedIsSpy ? 'spy' : received.mockName();
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -127,7 +127,7 @@ const spyMatchers: MatchersObject = {
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
-    const receivedName = receivedIsSpy ? 'spy' : received.mockName();
+    const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
     const count = receivedIsSpy
       ? received.calls.count()
       : received.mock.calls.length;
