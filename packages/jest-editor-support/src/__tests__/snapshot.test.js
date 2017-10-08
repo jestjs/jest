@@ -4,12 +4,15 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
-const path = require('path');
-const Snapshot = require('../Snapshot');
+import path from 'path';
+import Snapshot from '../Snapshot';
+
 const snapshotHelper = new Snapshot();
 const snapshotFixturePath = path.resolve(__dirname, 'fixtures/snapshots');
 
