@@ -139,9 +139,6 @@
       "\\.snap$",
       "/packages/.*/build",
       "/packages/.*/build-es5"
-    ],
-    "testMatch": [
-      "**/*.test.js"
     ]
   },
   "prettier": {
