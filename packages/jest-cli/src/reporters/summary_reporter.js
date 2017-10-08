@@ -134,12 +134,16 @@ export default class SummaryReporter extends BaseReporter {
         process.env.npm_config_user_agent.match('yarn') !== null
           ? 'yarn'
           : 'npm';
+      const scriptUsesJest =
+        typeof process.env.npm_lifecycle_script === 'string' &&
+        process.env.npm_lifecycle_script.indexOf('jest') !== -1;
+
       if (globalConfig.watch) {
         updateCommand = 'press `u`';
-      } else if (event) {
-        updateCommand = `run with \`${client + ' ' + prefix + event} -- -u\``;
+      } else if (event && scriptUsesJest) {
+        updateCommand = `run \`${client + ' ' + prefix + event} -u\``;
       } else {
-        updateCommand = 're-run with `-u`';
+        updateCommand = 're-run jest with `-u`';
       }
 
       const snapshotSummary = getSnapshotSummary(snapshots, updateCommand);
