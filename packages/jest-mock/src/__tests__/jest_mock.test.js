@@ -465,6 +465,15 @@ describe('moduleMocker', () => {
     expect(fn.mockName()).toBe('myMockFn');
   });
 
+  test('mockName gets reset by mockReset', () => {
+    const fn = jest.fn();
+    expect(fn.mockName()).toBe('jest.fn()');
+    fn.mockName('myMockFn');
+    expect(fn.mockName()).toBe('myMockFn');
+    fn.mockReset();
+    expect(fn.mockName()).toBe('jest.fn()');
+  });
+
   describe('spyOn', () => {
     it('should work', () => {
       let isOriginalCalled = false;
