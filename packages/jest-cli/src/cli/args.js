@@ -340,6 +340,12 @@ export const options = {
       'also specified.',
     type: 'string',
   },
+  passWithNoTests: {
+    default: false,
+    description:
+      'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
+    type: 'boolean',
+  },
   preset: {
     description: "A preset that is used as a base for Jest's configuration.",
     type: 'string',

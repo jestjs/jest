@@ -165,6 +165,7 @@ export type GlobalConfig = {|
   notify: boolean,
   outputFile: ?Path,
   onlyChanged: boolean,
+  passWithNoTests: boolean,
   projects: Array<Glob>,
   replname: ?string,
   reporters: Array<ReporterConfig>,
