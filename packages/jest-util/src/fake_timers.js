@@ -232,26 +232,30 @@ export default class FakeTimers {
           ' timers, and there are still more! ' +
           "Assuming we've hit an infinite recursion and bailing out." +
           'The following timers are still pending:' +
-          Object.keys(timers)
-            .sort((left, right) => timers[left].expiry - timers[right].expiry)
-            .map(function(key, index) {
-              return (
-                '\n\nsetTimeout - pending timer time ' +
-                timers[key].expiry -
-                this._now +
-                '\n' +
-                formatStackTrace(new Error().stack, this._global.setTimeout, {
-                  noStackTrace: false,
-                }) +
-                '\n\nsetImmediate - pending timer time ' +
-                timers[key].expiry -
-                this._now +
-                '\n' +
-                formatStackTrace(new Error().stack, this._global.setImmediate, {
-                  noStackTrace: false,
-                })
-              );
-            }),
+          String(
+            Object.keys(timers)
+              .sort((left, right) => timers[left].expiry - timers[right].expiry)
+              .map(function(key, index) {
+                return (
+                  '\n\nsetTimeout - pending timer time ' +
+                  String(Number(timers[key].expiry) - this._now) +
+                  '\n' +
+                  formatStackTrace(new Error().stack, this._global.setTimeout, {
+                    noStackTrace: false,
+                  }) +
+                  '\n\nsetImmediate - pending timer time ' +
+                  String(Number(timers[key].expiry) - this._now) +
+                  '\n' +
+                  formatStackTrace(
+                    new Error().stack,
+                    this._global.setImmediate,
+                    {
+                      noStackTrace: false,
+                    },
+                  )
+                );
+              }),
+          ),
       );
     }
   }
