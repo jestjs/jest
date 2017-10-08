@@ -225,6 +225,7 @@ export default class FakeTimers {
     }
 
     if (i === this._maxLoops) {
+      const timers = Object.assign({}, this._timers);
       throw new Error(
         'Ran ' +
           this._maxLoops +
@@ -234,20 +235,22 @@ export default class FakeTimers {
           Object.keys(timers)
             .sort((left, right) => timers[left].expiry - timers[right].expiry)
             .map(function(key, index) {
-              '\n\nsetTimeout - pending timer time ' +
+              return (
+                '\n\nsetTimeout - pending timer time ' +
                 timers[key].expiry -
-                this._now;
-              '\n' +
+                this._now +
+                '\n' +
                 formatStackTrace(new Error().stack, this._global.setTimeout, {
-                  noStackTrace: true,
+                  noStackTrace: false,
                 }) +
                 '\n\nsetImmediate - pending timer time ' +
                 timers[key].expiry -
-                this._now;
-              '\n' +
+                this._now +
+                '\n' +
                 formatStackTrace(new Error().stack, this._global.setImmediate, {
-                  noStackTrace: true,
-                });
+                  noStackTrace: false,
+                })
+              );
             }),
       );
     }
