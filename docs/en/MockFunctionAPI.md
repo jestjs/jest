@@ -19,7 +19,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 ## Reference
 
 ### `mockFn.getMockName()`
-Returns the mock name string set by calling `mockFn.mockName(value)`
+Returns the mock name string set by calling `mockFn.mockName(value)`.
 
 ### `mockFn.mock.calls`
 An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call.
