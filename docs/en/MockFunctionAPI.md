@@ -55,7 +55,7 @@ Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls
 The [`clearMocks`](configuration.html#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
 
 ### `mockFn.mockReset()`
-Resets all information stored in the mock, including any inital implementation given.
+Resets all information stored in the mock, including any initial implementation and mock name given.
 
 This is useful when you want to completely restore a mock back to its initial state.
 
