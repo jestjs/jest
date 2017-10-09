@@ -110,7 +110,7 @@ export default class Snapshot {
     };
     const Visitors = {
       Identifier(path, state, matchers) {
-        if (matchers.includes(path.node.name)) {
+        if (matchers.indexOf(path.node.name) >= 0) {
           state.found.push({
             node: path.node,
             parents: getArrayOfParents(path),
