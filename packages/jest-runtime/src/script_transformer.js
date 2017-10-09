@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -239,8 +238,6 @@ export default class ScriptTransformer {
           transformed.map = inlineSourceMap.toJSON();
         }
       }
-    } else {
-      transformed.map = null;
     }
 
     // That means that the transform has a custom instrumentation
@@ -253,7 +250,7 @@ export default class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (instrument && transformed.map && mapCoverage) {
+    if (transformed.map) {
       const sourceMapContent =
         typeof transformed.map === 'string'
           ? transformed.map

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -16,6 +15,7 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
+import fs from 'fs';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
 
@@ -35,7 +35,9 @@ async function jasmine2(
     testPath,
   );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
-  const jasmine = jasmineFactory.create();
+  const jasmine = jasmineFactory.create({
+    testPath,
+  });
 
   const env = jasmine.getEnv();
   const jasmineInterface = jasmineFactory.interface(jasmine, env);
@@ -93,6 +95,25 @@ async function jasmine2(
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
+
+  runtime
+    .requireModule(require.resolve('source-map-support'), 'source-map-support')
+    .install({
+      handleUncaughtExceptions: false,
+      retrieveSourceMap: source => {
+        if (runtime._sourceMapRegistry[source]) {
+          try {
+            return {
+              map: JSON.parse(
+                fs.readFileSync(runtime._sourceMapRegistry[source]),
+              ),
+              url: source,
+            };
+          } catch (e) {}
+        }
+        return null;
+      },
+    });
 
   if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -30,13 +29,14 @@ import {run as cilRun} from './cli';
 import {options as cliOptions} from './cli/args';
 
 type Module = {|
-  children?: Array<any>,
+  children: Array<Module>,
   exports: any,
   filename: string,
   id: string,
+  loaded: boolean,
   parent?: Module,
   paths?: Array<Path>,
-  require?: Function,
+  require?: (id: string) => any,
 |};
 
 type HasteMapOptions = {|
@@ -58,6 +58,8 @@ type CoverageOptions = {
   mapCoverage: boolean,
 };
 
+type ModuleRegistry = {[key: string]: Module};
+
 type BooleanObject = {[key: string]: boolean};
 type CacheFS = {[path: Path]: string};
 
@@ -76,12 +78,6 @@ const getModuleNameMapper = (config: ProjectConfig) => {
   return null;
 };
 
-const mockParentModule = {
-  exports: {},
-  filename: 'mock.js',
-  id: 'mockParent',
-};
-
 const unmockRegExpCache = new WeakMap();
 
 class Runtime {
@@ -93,13 +89,13 @@ class Runtime {
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
-  _internalModuleRegistry: {[key: string]: Module};
+  _internalModuleRegistry: ModuleRegistry;
   _isCurrentlyExecutingManualMock: ?string;
   _mockFactories: {[key: string]: () => any};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
   _moduleMocker: ModuleMocker;
-  _moduleRegistry: {[key: string]: Module};
+  _moduleRegistry: ModuleRegistry;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -316,10 +312,12 @@ class Runtime {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
-      const localModule = {
+      const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
@@ -330,8 +328,10 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule, options);
+        this._execModule(localModule, options, moduleRegistry, from);
       }
+
+      localModule.loaded = true;
     }
     return moduleRegistry[modulePath].exports;
   }
@@ -361,39 +361,41 @@ class Runtime {
       modulePath = this._resolveModule(from, manualMock);
     } else {
       modulePath = this._resolveModule(from, moduleName);
-
-      // If the actual module file has a __mocks__ dir sitting immediately next
-      // to it, look to see if there is a manual mock for this file.
-      //
-      // subDir1/my_module.js
-      // subDir1/__mocks__/my_module.js
-      // subDir2/my_module.js
-      // subDir2/__mocks__/my_module.js
-      //
-      // Where some other module does a relative require into each of the
-      // respective subDir{1,2} directories and expects a manual mock
-      // corresponding to that particular my_module.js file.
-      const moduleDir = path.dirname(modulePath);
-      const moduleFileName = path.basename(modulePath);
-      const potentialManualMock = path.join(
-        moduleDir,
-        '__mocks__',
-        moduleFileName,
-      );
-      if (fs.existsSync(potentialManualMock)) {
-        manualMock = true;
-        modulePath = potentialManualMock;
-      }
+    }
+    // If the actual module file has a __mocks__ dir sitting immediately next
+    // to it, look to see if there is a manual mock for this file.
+    //
+    // subDir1/my_module.js
+    // subDir1/__mocks__/my_module.js
+    // subDir2/my_module.js
+    // subDir2/__mocks__/my_module.js
+    //
+    // Where some other module does a relative require into each of the
+    // respective subDir{1,2} directories and expects a manual mock
+    // corresponding to that particular my_module.js file.
+    const moduleDir = path.dirname(modulePath);
+    const moduleFileName = path.basename(modulePath);
+    const potentialManualMock = path.join(
+      moduleDir,
+      '__mocks__',
+      moduleFileName,
+    );
+    if (fs.existsSync(potentialManualMock)) {
+      manualMock = true;
+      modulePath = potentialManualMock;
     }
 
     if (manualMock) {
-      const localModule = {
+      const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
-      this._execModule(localModule);
+      this._execModule(localModule, undefined, this._mockRegistry, from);
       this._mockRegistry[moduleID] = localModule.exports;
+      localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
       this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
@@ -480,7 +482,12 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _execModule(localModule: Module, options: ?InternalModuleOptions) {
+  _execModule(
+    localModule: Module,
+    options: ?InternalModuleOptions,
+    moduleRegistry: ModuleRegistry,
+    from: Path,
+  ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
@@ -495,9 +502,23 @@ class Runtime {
 
     const dirname = path.dirname(filename);
     localModule.children = [];
-    localModule.parent = mockParentModule;
+
+    Object.defineProperty(
+      localModule,
+      'parent',
+      // https://github.com/facebook/flow/issues/285#issuecomment-270810619
+      ({
+        enumerable: true,
+        get() {
+          return moduleRegistry[from] || null;
+        },
+      }: Object),
+    );
+
     localModule.paths = this._resolver.getModulePaths(dirname);
-    localModule.require = this._createRequireImplementation(filename, options);
+    Object.defineProperty(localModule, 'require', {
+      value: this._createRequireImplementation(filename, options),
+    });
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
@@ -716,6 +737,10 @@ class Runtime {
       this.resetAllMocks();
       return jestObject;
     };
+    const restoreAllMocks = () => {
+      this.restoreAllMocks();
+      return jestObject;
+    };
     const useFakeTimers = () => {
       this._environment.fakeTimers.useFakeTimers();
       return jestObject;
@@ -743,7 +768,6 @@ class Runtime {
     const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
-
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
@@ -759,14 +783,13 @@ class Runtime {
         this._generateMock(from, moduleName),
       genMockFunction: fn,
       isMockFunction: this._moduleMocker.isMockFunction,
-
       mock,
       requireActual: localRequire.requireActual,
       requireMock: localRequire.requireMock,
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
-
+      restoreAllMocks,
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
@@ -774,14 +797,11 @@ class Runtime {
         this._environment.fakeTimers.runOnlyPendingTimers(),
       runTimersToTime: (msToRun: number) =>
         this._environment.fakeTimers.runTimersToTime(msToRun),
-
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
       setTimeout,
       spyOn,
-
       unmock,
-
       useFakeTimers,
       useRealTimers,
     };

@@ -46,7 +46,7 @@ export default function request(url) {
 ```
 
 Because we don't want to go to the network in our test, we are going to create
-a manual mock for our `request.js` module in the `__mocks__` folder.
+a manual mock for our `request.js` module in the `__mocks__` folder (the folder is case-sensitive, `__MOCKS__` will not work).
 It could look something like this:
 
 ```js

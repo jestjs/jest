@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,16 +10,14 @@
 const stripAnsi = require('strip-ansi');
 const diff = require('../');
 
+const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
+
 const stripped = (a, b, options) => stripAnsi(diff(a, b, options));
 
 const unexpanded = {expand: false};
 const expanded = {expand: true};
 
 const elementSymbol = Symbol.for('react.element');
-
-const toJSON = function toJSON() {
-  return 'apple';
-};
 
 describe('different types', () => {
   [
@@ -59,10 +56,13 @@ describe('no visual difference', () => {
   ].forEach(values => {
     test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
       values[1],
-    )}'`, () => {
-      expect(stripped(values[0], values[1])).toBe(
-        'Compared values have no visual difference.',
-      );
+    )}' (unexpanded)`, () => {
+      expect(stripped(values[0], values[1], unexpanded)).toBe(NO_DIFF_MESSAGE);
+    });
+    test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
+      values[1],
+    )}' (expanded)`, () => {
+      expect(stripped(values[0], values[1], expanded)).toBe(NO_DIFF_MESSAGE);
     });
   });
 
@@ -70,41 +70,59 @@ describe('no visual difference', () => {
     const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
     const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
 
-    expect(stripped(arg1, arg2)).toBe(
-      'Compared values have no visual difference.',
-    );
+    expect(stripped(arg1, arg2)).toBe(NO_DIFF_MESSAGE);
   });
 
   test('Set value order should be irrelevant', () => {
     const arg1 = new Set([1, 2]);
     const arg2 = new Set([2, 1]);
 
-    expect(stripped(arg1, arg2)).toBe(
-      'Compared values have no visual difference.',
-    );
+    expect(stripped(arg1, arg2)).toBe(NO_DIFF_MESSAGE);
   });
 });
 
 test('oneline strings', () => {
   // oneline strings don't produce a diff currently.
   expect(diff('ab', 'aa')).toBe(null);
-  expect(diff('a', 'a')).toMatch(/no visual difference/);
   expect(diff('123456789', '234567890')).toBe(null);
   // if either string is oneline
   expect(diff('oneline', 'multi\nline')).toBe(null);
   expect(diff('multi\nline', 'oneline')).toBe(null);
 });
 
-test('falls back to not call toJSON if objects look identical', () => {
-  const a = {line: 1, toJSON};
-  const b = {line: 2, toJSON};
-  expect(diff(a, b)).toMatchSnapshot();
-});
+describe('falls back to not call toJSON', () => {
+  describe('if serialization has no differences', () => {
+    const toJSON = function toJSON() {
+      return 'it’s all the same to me';
+    };
 
-test('prints a fallback message if two objects truly look identical', () => {
-  const a = {line: 2, toJSON};
-  const b = {line: 2, toJSON};
-  expect(diff(a, b)).toMatchSnapshot();
+    test('but then objects have differences', () => {
+      const a = {line: 1, toJSON};
+      const b = {line: 2, toJSON};
+      expect(diff(a, b)).toMatchSnapshot();
+    });
+    test('and then objects have no differences', () => {
+      const a = {line: 2, toJSON};
+      const b = {line: 2, toJSON};
+      expect(stripped(a, b)).toBe(NO_DIFF_MESSAGE);
+    });
+  });
+  describe('if it throws', () => {
+    const toJSON = function toJSON() {
+      throw new Error('catch me if you can');
+    };
+
+    test('and then objects have differences', () => {
+      const a = {line: 1, toJSON};
+      const b = {line: 2, toJSON};
+      expect(diff(a, b)).toMatchSnapshot();
+    });
+    test('and then objects have no differences', () => {
+      const a = {line: 2, toJSON};
+      const b = {line: 2, toJSON};
+      expect(stripped(a, b)).toBe(NO_DIFF_MESSAGE);
+    });
+  });
 });
 
 // Some of the following assertions seem complex, but compare to alternatives:
@@ -551,6 +569,101 @@ describe('indentation in React elements (snapshot)', () => {
   });
 });
 
+describe('outer React element (non-snapshot)', () => {
+  const a = {
+    $$typeof: elementSymbol,
+    props: {
+      children: 'Jest',
+    },
+    type: 'h1',
+  };
+  const b = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        a,
+        {
+          $$typeof: elementSymbol,
+          props: {
+            children: 'Delightful JavaScript Testing',
+          },
+          type: 'h2',
+        },
+      ],
+    },
+    type: 'header',
+  };
+
+  describe('from less to more', () => {
+    const expected = [
+      '+ <header>',
+      // following 3 lines are unchanged, except for more indentation
+      '    <h1>',
+      '      Jest',
+      '    </h1>',
+      '+   <h2>',
+      '+     Delightful JavaScript Testing',
+      '+   </h2>',
+      '+ </header>',
+    ].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
+    });
+  });
+
+  describe('from more to less', () => {
+    const expected = [
+      '- <header>',
+      // following 3 lines are unchanged, except for less indentation
+      '  <h1>',
+      '    Jest',
+      '  </h1>',
+      '-   <h2>',
+      '-     Delightful JavaScript Testing',
+      '-   </h2>',
+      '- </header>',
+    ].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(b, a, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(b, a, expanded)).toMatch(expected);
+    });
+  });
+});
+
+describe('trailing newline in multiline string not enclosed in quotes', () => {
+  const a = ['line 1', 'line 2', 'line 3'].join('\n');
+  const b = a + '\n';
+
+  describe('from less to more', () => {
+    const expected = ['  line 1', '  line 2', '  line 3', '+ '].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(a, b, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(a, b, expanded)).toMatch(expected);
+    });
+  });
+
+  describe('from more to less', () => {
+    const expected = ['  line 1', '  line 2', '  line 3', '- '].join('\n');
+
+    test('(unexpanded)', () => {
+      expect(stripped(b, a, unexpanded)).toMatch(expected);
+    });
+    test('(expanded)', () => {
+      expect(stripped(b, a, expanded)).toMatch(expected);
+    });
+  });
+});
+
 describe('background color of spaces', () => {
   const baseline = {
     $$typeof: elementSymbol,
@@ -647,15 +760,6 @@ describe('background color of spaces', () => {
       expect(diff(examples, baseline, unexpanded)).toBe(received);
     });
   });
-  describe('no color for unchanged', () => {
-    const received = diff(examples, unchanged, expanded);
-    test('(expanded)', () => {
-      expect(received).toMatchSnapshot();
-    });
-    test('(unexpanded)', () => {
-      expect(diff(examples, unchanged, unexpanded)).toBe(received);
-    });
-  });
   describe('red for added', () => {
     const received = diff(baseline, examples, expanded);
     test('(expanded)', () => {
@@ -664,6 +768,49 @@ describe('background color of spaces', () => {
     test('(unexpanded)', () => {
       expect(diff(baseline, examples, unexpanded)).toBe(received);
     });
+  });
+  describe('yellow for unchanged', () => {
+    const received = diff(examples, unchanged, expanded);
+    test('(expanded)', () => {
+      expect(received).toMatchSnapshot();
+    });
+    test('(unexpanded)', () => {
+      expect(diff(examples, unchanged, unexpanded)).toBe(received);
+    });
+  });
+});
+
+describe('highlight only the last in odd length of leading spaces', () => {
+  const pre5 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce(function (props, attribute) {',
+        '   props[attribute.name] = attribute.value;', // 3 leading spaces
+        '  return props;', // 2 leading spaces
+        ' }, {});', // 1 leading space
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const pre6 = {
+    $$typeof: elementSymbol,
+    props: {
+      children: [
+        'attributes.reduce((props, {name, value}) => {',
+        '  props[name] = value;', // from 3 to 2 leading spaces
+        '  return props;', // unchanged 2 leading spaces
+        '}, {});', // from 1 to 0 leading spaces
+      ].join('\n'),
+    },
+    type: 'pre',
+  };
+  const received = diff(pre5, pre6, expanded);
+  test('(expanded)', () => {
+    expect(received).toMatchSnapshot();
+  });
+  test('(unexpanded)', () => {
+    expect(diff(pre5, pre6, unexpanded)).toBe(received);
   });
 });
 

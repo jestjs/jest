@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -125,9 +124,18 @@ export default async function runJest({
   }
 
   if (!allTests.length) {
-    new Console(outputStream, outputStream).log(
-      getNoTestsFoundMessage(testRunData, globalConfig),
+    const noTestsFoundMessage = getNoTestsFoundMessage(
+      testRunData,
+      globalConfig,
     );
+
+    if (globalConfig.passWithNoTests) {
+      new Console(outputStream, outputStream).log(noTestsFoundMessage);
+    } else {
+      new Console(outputStream, outputStream).error(noTestsFoundMessage);
+
+      process.exit(1);
+    }
   } else if (
     allTests.length === 1 &&
     globalConfig.silent !== true &&

@@ -863,6 +863,8 @@ test('throws on octopus', () => {
 });
 ```
 
+> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
 ### `.toThrowErrorMatchingSnapshot()`
 
 Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:

@@ -1,14 +1,14 @@
 {
   "name": "jest-test-typescript-parser",
-  "version": "21.0.2",
+  "version": "21.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "jest-editor-support": "^21.0.2",
-    "typescript": "^2.2.1"
+    "jest-editor-support": "^21.2.0",
+    "typescript": "^2.5.3"
   }
 }

@@ -1,19 +1,19 @@
 {
   "name": "jest-util",
-  "version": "21.0.2",
+  "version": "21.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
     "callsites": "^2.0.0",
     "chalk": "^2.0.1",
     "graceful-fs": "^4.1.11",
-    "jest-message-util": "^21.0.2",
-    "jest-mock": "^21.0.2",
-    "jest-validate": "^21.0.2",
+    "jest-message-util": "^21.2.1",
+    "jest-mock": "^21.2.0",
+    "jest-validate": "^21.2.1",
     "mkdirp": "^0.5.1"
   }
 }

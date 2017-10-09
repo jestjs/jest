@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -34,6 +33,14 @@ export const check = (argv: Argv) => {
       'The --findRelatedTests option requires file paths to be specified.\n' +
         'Example usage: jest --findRelatedTests ./src/source.js ' +
         './src/index.js.',
+    );
+  }
+
+  if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
+    throw new Error(
+      'The --maxWorkers (-w) option requires a number to be specified.\n' +
+        'Example usage: jest --maxWorkers 2\n' +
+        'Or did you mean --watch?',
     );
   }
 
@@ -332,6 +339,12 @@ export const options = {
       'Write test results to a file when the --json option is ' +
       'also specified.',
     type: 'string',
+  },
+  passWithNoTests: {
+    default: false,
+    description:
+      'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
+    type: 'boolean',
   },
   preset: {
     description: "A preset that is used as a base for Jest's configuration.",

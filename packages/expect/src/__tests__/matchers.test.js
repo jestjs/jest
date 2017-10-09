@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 
@@ -121,6 +120,7 @@ describe('.toBe()', () => {
     [{a: 1}, {a: 1}],
     [{a: 1}, {a: 5}],
     ['abc', 'cde'],
+    ['with \ntrailing space', 'without trailing space'],
     [[], []],
     [null, undefined],
   ].forEach(([a, b]) => {
@@ -167,9 +167,14 @@ describe('.toEqual()', () => {
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
+    [[1], [2]],
+    [[1, 2], [2, 1]],
+    [new Map(), new Set()],
     [new Set([1, 2]), new Set()],
     [new Set([1, 2]), new Set([1, 2, 3])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one']])],
+    [new Map([['a', 0]]), new Map([['b', 0]])],
+    [new Map([['v', 1]]), new Map([['v', 2]])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
     [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
@@ -198,9 +203,14 @@ describe('.toEqual()', () => {
     [true, true],
     [1, 1],
     ['abc', 'abc'],
+    [[1], [1]],
+    [[1, 2], [1, 2]],
+    [{}, {}],
     [{a: 99}, {a: 99}],
+    [new Set(), new Set()],
     [new Set([1, 2]), new Set([1, 2])],
     [new Set([1, 2]), new Set([2, 1])],
+    [new Map(), new Map()],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one'], [2, 'two']])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[2, 'two'], [1, 'one']])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],

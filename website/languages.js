@@ -129,7 +129,7 @@ const languages = [
     tag: 'pt-BR',
   },
   {
-    enabled: false,
+    enabled: true,
     name: 'Română',
     tag: 'ro',
   },

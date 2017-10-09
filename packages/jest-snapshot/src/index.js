@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -18,13 +17,13 @@ import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
-import {SNAPSHOT_EXTENSION} from './utils';
+import * as utils from './utils';
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
-  const pattern = '\\.' + SNAPSHOT_EXTENSION + '$';
+  const pattern = '\\.' + utils.SNAPSHOT_EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
   const filesRemoved = files
     .filter(
@@ -33,7 +32,7 @@ const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
           path.resolve(
             path.dirname(snapshotFile),
             '..',
-            path.basename(snapshotFile, '.' + SNAPSHOT_EXTENSION),
+            path.basename(snapshotFile, '.' + utils.SNAPSHOT_EXTENSION),
           ),
           hasteFS,
         ),
@@ -147,11 +146,12 @@ const toThrowErrorMatchingSnapshot = function(
 };
 
 module.exports = {
-  EXTENSION: SNAPSHOT_EXTENSION,
+  EXTENSION: utils.SNAPSHOT_EXTENSION,
   SnapshotState,
   addSerializer,
   cleanup,
   getSerializers,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
+  utils,
 };

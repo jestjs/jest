@@ -1,16 +1,16 @@
 {
   "name": "jest-haste-map",
-  "version": "21.0.2",
+  "version": "21.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.11",
-    "jest-docblock": "^21.0.2",
+    "jest-docblock": "^21.2.0",
     "micromatch": "^2.3.11",
     "sane": "^2.0.0",
     "worker-farm": "^1.3.1"

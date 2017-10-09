@@ -1,11 +1,38 @@
-## master
+## jest 21.2.1
+
+* Fix watchAll not running tests on save ([#4550](https://github.com/facebook/jest/pull/4550))
+* Add missing escape sequences to ConvertAnsi plugin ([#4544](https://github.com/facebook/jest/pull/4544))
+
+## jest 21.2.0
+
+* 🃏 Change license from BSD+Patents to MIT.
+* Allow eslint-plugin to recognize more disabled tests ([#4533](https://github.com/facebook/jest/pull/4533))
+* Add babel-plugin for object spread syntax to babel-preset-jest ([#4519](https://github.com/facebook/jest/pull/4519))
+* Display outer element and trailing newline consistently in jest-diff ([#4520](https://github.com/facebook/jest/pull/4520))
+* Do not modify stack trace of JestAssertionError ([#4516](https://github.com/facebook/jest/pull/4516))
+* Print errors after test structure in verbose mode ([#4504](https://github.com/facebook/jest/pull/4504))
+* Fix `--silent --verbose` problem ([#4505](https://github.com/facebook/jest/pull/4505))
+* Fix: Reset local state of assertions when using hasAssertions ([#4498](https://github.com/facebook/jest/pull/4498))
+* jest-resolve: Prevent default resolver failure when potential resolution directory does not exist ([#4483](https://github.com/facebook/jest/pull/4483))
+
+## jest 21.1.0
+
+* (minor) Use ES module exports ([#4454](https://github.com/facebook/jest/pull/4454))
+* Allow chaining mockClear and mockReset ([#4475](https://github.com/facebook/jest/pull/4475))
+* Call jest-diff and pretty-format more precisely in toHaveProperty matcher ([#4445](https://github.com/facebook/jest/pull/4445))
+* Expose restoreAllMocks to object ([#4463](https://github.com/facebook/jest/pull/4463))
+* Fix function name cleaning when making mock fn ([#4464](https://github.com/facebook/jest/pull/4464))
+* Fix Map/Set equality checker ([#4404](https://github.com/facebook/jest/pull/4404))
+* Make FUNCTION_NAME_RESERVED_PATTERN stateless ([#4466](https://github.com/facebook/jest/pull/4466))
+
+## jest 21.0.2
 
 * Take precedence of NODE_PATH when resolving node_modules directories ([#4453](https://github.com/facebook/jest/pull/4453))
 * Fix race condition with --coverage and babel-jest identical file contents edge case ([#4432](https://github.com/facebook/jest/pull/4432))
 * Add extra parameter `--runTestsByPath`. ([#4411](https://github.com/facebook/jest/pull/4411))
 * Upgrade all outdated deps ([#4425](https://github.com/facebook/jest/pull/4425))
 
-# jst 21.0.1
+## jest 21.0.1
 
 * Remove obsolete error ([#4417](https://github.com/facebook/jest/pull/4417))
 
@@ -197,7 +224,6 @@
 
 ## jest 20.0.3
 
-* Fix arrow typeahead on Windows. ([#3563](https://github.com/facebook/jest/pull/3563))
 * Fix reporters 'default' setting. ([#3562](https://github.com/facebook/jest/pull/3562))
 * Fix to make Jest fail when the coverage threshold not met. ([#3554](https://github.com/facebook/jest/pull/3554))
 
@@ -214,7 +240,6 @@
 
 * New `--projects` option to run one instance of Jest in multiple projects at the same time. ([#3400](https://github.com/facebook/jest/pull/3400))
 * New multi project runner ([#3156](https://github.com/facebook/jest/pull/3156))
-* New keyboard/arrow selection for watch mode typeaheads. ([#3386](https://github.com/facebook/jest/pull/3386))
 * New --listTests flag. ([#3441](https://github.com/facebook/jest/pull/3441))
 * New --showConfig flag. ([#3296](https://github.com/facebook/jest/pull/3296))
 * New promise support for all `expect` matchers through `.resolves` and `.rejects`. ([#3068](https://github.com/facebook/jest/pull/3068))
@@ -261,13 +286,11 @@
 * Fixed return value of mocks so they can explicitly be set to return `undefined`. ([#3354](https://github.com/facebook/jest/pull/3354))
 * Fixed runner to run tests associated with snapshots when the snapshot changes. ([#3025](https://github.com/facebook/jest/pull/3025))
 * Fixed snapshot serializer require, restructured pretty-format. ([#3399](https://github.com/facebook/jest/pull/3399))
-* Fixed spacing in test name pattern typeahead ([#3315](https://github.com/facebook/jest/pull/3315))
 * Fixed support for Babel 7 in babel-jest. ([#3271](https://github.com/facebook/jest/pull/3271))
 * Fixed testMatch to find tests in .folders. ([#3006](https://github.com/facebook/jest/pull/3006))
 * Fixed testNamePattern and testPathPattern to work better together. ([#3327](https://github.com/facebook/jest/pull/3327))
 * Fixed to show reject reason when expecting resolve. ([#3134](https://github.com/facebook/jest/pull/3134))
 * Fixed toHaveProperty() to use hasOwnProperty from Object ([#3410](https://github.com/facebook/jest/pull/3410))
-* Fixed watch mode typeahead filter cursor behavior. ([#3392](https://github.com/facebook/jest/pull/3392))
 * Fixed watch mode's screen clearing. ([#2959](https://github.com/facebook/jest/pull/2959)) ([#3294](https://github.com/facebook/jest/pull/3294))
 * Improved and consolidated Jest's configuration file resolution. ([#3472](https://github.com/facebook/jest/pull/3472))
 * Improved documentation throughout the Jest website.
@@ -335,8 +358,6 @@
 * New jest-validate package to improve configuration errors, help with suggestions of correct configuration and to be adopted in other libraries.
 * New pretty-printing for asymmetric matchers.
 * New RSS feed for Jest's blog.
-* New typeahead to filter cached test names added to watch mode.
-* New typeahead to filter file names added to watch mode (#2324).
 * New way to provide a reducer to extract haste module ids.
 * New website, new documentation, new color scheme and new homepage.
 * Rewritten watch mode for instant feedback, better code quality and to build new features on top of it (#2362).

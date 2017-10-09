@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -28,9 +27,7 @@ const PLUGINS = [
 ];
 
 export const EXPECTED_COLOR = chalk.green;
-export const EXPECTED_BG = chalk.bgGreen;
 export const RECEIVED_COLOR = chalk.red;
-export const RECEIVED_BG = chalk.bgRed;
 
 const NUMBERS = [
   'zero',
@@ -77,15 +74,13 @@ export const stringify = (object: any, maxDepth?: number = 10): string => {
     : result;
 };
 
-export const highlightTrailingWhitespace = (
-  text: string,
-  bgColor: Function,
-): string => text.replace(/\s+$/gm, bgColor('$&'));
+export const highlightTrailingWhitespace = (text: string): string =>
+  text.replace(/\s+$/gm, chalk.inverse('$&'));
 
 export const printReceived = (object: any) =>
-  highlightTrailingWhitespace(RECEIVED_COLOR(stringify(object)), RECEIVED_BG);
+  RECEIVED_COLOR(highlightTrailingWhitespace(stringify(object)));
 export const printExpected = (value: any) =>
-  highlightTrailingWhitespace(EXPECTED_COLOR(stringify(value)), EXPECTED_BG);
+  EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)));
 
 export const printWithType = (
   name: string,

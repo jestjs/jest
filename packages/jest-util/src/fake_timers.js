@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -58,9 +57,14 @@ type TimerAPI = {
   /* eslint-enable flowtype/no-weak-types */
 };
 
+type TimerConfig<Ref> = {|
+  idToRef: (id: number) => Ref,
+  refToId: (ref: Ref) => number,
+|};
+
 const MS_IN_A_YEAR = 31536000000;
 
-export default class FakeTimers {
+export default class FakeTimers<TimerRef> {
   _cancelledImmediates: {[key: TimerID]: boolean};
   _cancelledTicks: {[key: TimerID]: boolean};
   _config: ProjectConfig;
@@ -75,14 +79,23 @@ export default class FakeTimers {
   _timerAPIs: TimerAPI;
   _timers: {[key: TimerID]: Timer};
   _uuidCounter: number;
+  _timerConfig: TimerConfig<TimerRef>;
 
-  constructor(
+  constructor({
+    global,
+    moduleMocker,
+    timerConfig,
+    config,
+    maxLoops,
+  }: {
     global: Global,
     moduleMocker: ModuleMocker,
+    timerConfig: TimerConfig<TimerRef>,
     config: ProjectConfig,
     maxLoops?: number,
-  ) {
+  }) {
     this._global = global;
+    this._timerConfig = timerConfig;
     this._config = config;
     this._maxLoops = maxLoops || 100000;
     this._uuidCounter = 1;
@@ -236,9 +249,9 @@ export default class FakeTimers {
   }
 
   runOnlyPendingTimers() {
+    const timers = Object.assign({}, this._timers);
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
-    const timers = this._timers;
     Object.keys(timers)
       .sort((left, right) => timers[left].expiry - timers[right].expiry)
       .forEach(this._runTimerHandle, this);
@@ -371,9 +384,11 @@ export default class FakeTimers {
     };
   }
 
-  _fakeClearTimer(uuid: TimerID) {
+  _fakeClearTimer(timerRef: TimerRef) {
+    const uuid = this._timerConfig.refToId(timerRef);
+
     if (this._timers.hasOwnProperty(uuid)) {
-      delete this._timers[uuid];
+      delete this._timers[String(uuid)];
     }
   }
 
@@ -463,7 +478,7 @@ export default class FakeTimers {
       type: 'interval',
     };
 
-    return uuid;
+    return this._timerConfig.idToRef(uuid);
   }
 
   _fakeSetTimeout(callback: Callback, delay?: number) {
@@ -489,7 +504,7 @@ export default class FakeTimers {
       type: 'timeout',
     };
 
-    return uuid;
+    return this._timerConfig.idToRef(uuid);
   }
 
   _getNextTimerHandle() {

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -29,21 +28,21 @@ import path from 'path';
  *  at a file level, generating useful error messages and providing a nice API.
  */
 export default class TestReconciler {
-  fileStatuses: any;
-  fails: Array<TestFileAssertionStatus>;
-  passes: Array<TestFileAssertionStatus>;
-  skips: Array<TestFileAssertionStatus>;
+  fileStatuses: {[key: string]: TestFileAssertionStatus};
 
   constructor() {
     this.fileStatuses = {};
   }
 
-  updateFileWithJestStatus(results: FormattedTestResults) {
-    this.fails = [];
-    this.passes = [];
-    this.skips = [];
-
+  // the processed test results will be returned immediately instead of saved in
+  // instance properties. This is 1) to prevent race condition 2) the data is already
+  // stored in the this.fileStatuses, no dup is better 3) client will most likely need to process
+  // all the results anyway.
+  updateFileWithJestStatus(
+    results: FormattedTestResults,
+  ): TestFileAssertionStatus[] {
     // Loop through all files inside the report from Jest
+    const statusList: TestFileAssertionStatus[] = [];
     results.testResults.forEach(file => {
       // Did the file pass/fail?
       const status = this.statusToReconcilationState(file.status);
@@ -55,27 +54,9 @@ export default class TestReconciler {
         status,
       };
       this.fileStatuses[file.name] = fileStatus;
-
-      if (status === 'KnownFail') {
-        this.fails.push(fileStatus);
-      } else if (status === 'KnownSuccess') {
-        this.passes.push(fileStatus);
-      } else if (status === 'KnownSkip') {
-        this.skips.push(fileStatus);
-      }
+      statusList.push(fileStatus);
     });
-  }
-
-  failedStatuses(): Array<TestFileAssertionStatus> {
-    return this.fails || [];
-  }
-
-  passedStatuses(): Array<TestFileAssertionStatus> {
-    return this.passes || [];
-  }
-
-  skipedStatuses(): Array<TestFileAssertionStatus> {
-    return this.skips || [];
+    return statusList;
   }
 
   // A failed test also contains the stack trace for an `expect`
@@ -163,12 +144,17 @@ export default class TestReconciler {
     return results.status;
   }
 
+  assertionsForTestFile(file: string): TestAssertionStatus[] | null {
+    const results = this.fileStatuses[file];
+    return results ? results.assertions : null;
+  }
+
   stateForTestAssertion(
     file: string,
     name: string,
   ): TestAssertionStatus | null {
     const results = this.fileStatuses[file];
-    if (!results) {
+    if (!results || !results.assertions) {
       return null;
     }
     const assertion = results.assertions.find(a => a.title === name);

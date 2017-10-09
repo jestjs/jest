@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -28,6 +27,7 @@ export default class Runner extends EventEmitter {
     workspace: ProjectWorkspace,
     args: Array<string>,
   ) => ChildProcess;
+  watchMode: boolean;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
@@ -36,21 +36,19 @@ export default class Runner extends EventEmitter {
     this.outputPath = tmpdir() + '/jest_runner.json';
   }
 
-  start() {
+  start(watchMode: boolean = true) {
     if (this.debugprocess) {
       return;
     }
+
+    this.watchMode = watchMode;
+
     // Handle the arg change on v18
     const belowEighteen = this.workspace.localJestMajorVersion < 18;
     const outputArg = belowEighteen ? '--jsonOutputFile' : '--outputFile';
 
-    const args = [
-      '--json',
-      '--useStderr',
-      '--watch',
-      outputArg,
-      this.outputPath,
-    ];
+    const args = ['--json', '--useStderr', outputArg, this.outputPath];
+    if (this.watchMode) args.push('--watch');
 
     this.debugprocess = this._createProcess(this.workspace, args);
     this.debugprocess.stdout.on('data', (data: Buffer) => {

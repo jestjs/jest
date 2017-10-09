@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -31,11 +30,18 @@ type MockFunctionConfig = {
   isReturnValueLastSet: boolean,
   defaultReturnValue: any,
   mockImpl: any,
+  mockName: string,
   specificReturnValues: Array<any>,
   specificMockImpls: Array<any>,
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
+
+const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-\/:-@\[-`{-~]/;
+const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
+  FUNCTION_NAME_RESERVED_PATTERN.source,
+  'g',
+);
 
 // $FlowFixMe
 const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
@@ -264,6 +270,7 @@ class ModuleMockerClass {
       defaultReturnValue: undefined,
       isReturnValueLastSet: false,
       mockImpl: undefined,
+      mockName: 'jest.fn()',
       specificMockImpls: [],
       specificReturnValues: [],
     };
@@ -321,9 +328,10 @@ class ModuleMockerClass {
           });
 
           // Run the mock constructor implementation
-          return (
-            mockConfig.mockImpl && mockConfig.mockImpl.apply(this, arguments)
-          );
+          const mockImpl = mockConfig.specificMockImpls.length
+            ? mockConfig.specificMockImpls.shift()
+            : mockConfig.mockImpl;
+          return mockImpl && mockImpl.apply(this, arguments);
         }
 
         const returnValue = mockConfig.defaultReturnValue;
@@ -381,11 +389,13 @@ class ModuleMockerClass {
 
       f.mockClear = () => {
         this._mockState.delete(f);
+        return f;
       };
 
       f.mockReset = () => {
         this._mockState.delete(f);
         this._mockConfigRegistry.delete(f);
+        return f;
       };
 
       f.mockReturnValueOnce = value => {
@@ -425,6 +435,19 @@ class ModuleMockerClass {
         f.mockImplementation(function() {
           return this;
         });
+
+      f.mockName = name => {
+        if (name) {
+          const mockConfig = this._ensureMockConfig(f);
+          mockConfig.mockName = name;
+        }
+        return f;
+      };
+
+      f.getMockName = () => {
+        const mockConfig = this._ensureMockConfig(f);
+        return mockConfig.mockName || 'jest.fn()';
+      };
 
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
@@ -474,8 +497,8 @@ class ModuleMockerClass {
 
     // It's also a syntax error to define a function with a reserved character
     // as part of it's name.
-    if (/[\s-]/.test(name)) {
-      name = name.replace(/[\s-]/g, '$');
+    if (FUNCTION_NAME_RESERVED_PATTERN.test(name)) {
+      name = name.replace(FUNCTION_NAME_RESERVED_REPLACE, '$');
     }
 
     const body =

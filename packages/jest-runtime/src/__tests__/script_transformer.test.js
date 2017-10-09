@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 
@@ -335,7 +334,7 @@ describe('ScriptTransformer', () => {
     ).toBeCalledWith(result.sourceMapPath, sourceMap, {encoding: 'utf8'});
   });
 
-  it('does not write source map if mapCoverage option is false', () => {
+  it('writes source maps if given by the transformer', () => {
     config = Object.assign(config, {
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
@@ -349,6 +348,29 @@ describe('ScriptTransformer', () => {
     require('preprocessor-with-sourcemaps').process.mockReturnValue({
       code: 'content',
       map,
+    });
+
+    const result = scriptTransformer.transform('/fruits/banana.js', {
+      collectCoverage: true,
+      mapCoverage: false,
+    });
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(
+      writeFileAtomic.sync,
+    ).toBeCalledWith(result.sourceMapPath, JSON.stringify(map), {
+      encoding: 'utf8',
+    });
+  });
+
+  it('does not write source map if not given by the transformer', () => {
+    config = Object.assign(config, {
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: 'content',
+      map: null,
     });
 
     const result = scriptTransformer.transform('/fruits/banana.js', {

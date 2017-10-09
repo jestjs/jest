@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -33,6 +32,8 @@ type ConfigRepresentation = {
   testMatch: Array<Glob>,
 };
 
+type ConfigRepresentations = Array<ConfigRepresentation>;
+
 export default class Settings extends EventEmitter {
   getConfigProcess: ChildProcess;
   jestVersionMajor: number | null;
@@ -40,6 +41,7 @@ export default class Settings extends EventEmitter {
     workspace: ProjectWorkspace,
     args: Array<string>,
   ) => ChildProcess;
+  configs: ConfigRepresentations;
   settings: ConfigRepresentation;
   workspace: ProjectWorkspace;
 
@@ -53,26 +55,32 @@ export default class Settings extends EventEmitter {
       testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
+
+    this.configs = [this.settings];
   }
 
-  getConfig(completed: any) {
+  getConfigs(completed: any) {
     this.getConfigProcess = this._createProcess(this.workspace, [
       '--showConfig',
     ]);
 
     this.getConfigProcess.stdout.on('data', (data: Buffer) => {
-      const {config, version} = JSON.parse(data.toString());
-      // We can give warnings to versions under 17 now
-      // See https://github.com/facebook/jest/issues/2343 for moving this into
-      // the config object
-
-      this.jestVersionMajor = parseInt(version.split('.').shift(), 10);
-      this.settings = config;
+      const settings = JSON.parse(data.toString());
+      this.jestVersionMajor = parseInt(settings.version.split('.').shift(), 10);
+      this.configs =
+        this.jestVersionMajor >= 21 ? settings.configs : [settings.config];
     });
 
     // They could have an older build of Jest which
     // would error with `--showConfig`
     this.getConfigProcess.on('close', () => {
+      completed();
+    });
+  }
+
+  getConfig(completed: any, index: number = 0) {
+    this.getConfigs(() => {
+      this.settings = this.configs[index];
       completed();
     });
   }

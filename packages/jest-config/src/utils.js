@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -101,7 +100,7 @@ export const _replaceRootDirTags = (rootDir: string, config: any) => {
  * 1. looks for <name> relative to Jest.
  */
 export const getTestEnvironment = (config: Object) => {
-  const env = config.testEnvironment;
+  const env = _replaceRootDirInPath(config.rootDir, config.testEnvironment);
   let module = Resolver.findNodeModule(`jest-environment-${env}`, {
     basedir: config.rootDir,
   });

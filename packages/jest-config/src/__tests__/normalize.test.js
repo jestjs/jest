@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 
@@ -584,6 +583,9 @@ describe('testEnvironment', () => {
       if (name === 'jest-environment-jsdom') {
         return 'node_modules/jest-environment-jsdom';
       }
+      if (name.startsWith('/root')) {
+        return name;
+      }
       return findNodeModule(name);
     });
   });
@@ -612,6 +614,18 @@ describe('testEnvironment', () => {
         {},
       ),
     ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('works with rootDir', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testEnvironment: '<rootDir>/testEnvironment.js',
+      },
+      {},
+    );
+
+    expect(options.testEnvironment).toEqual('/root/testEnvironment.js');
   });
 });
 

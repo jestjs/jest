@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -17,9 +16,15 @@ import vm from 'vm';
 import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
 
+type Timer = {|
+  id: number,
+  ref: () => Timer,
+  unref: () => Timer,
+|};
+
 class NodeEnvironment {
   context: ?vm$Context;
-  fakeTimers: ?FakeTimers;
+  fakeTimers: ?FakeTimers<Timer>;
   global: ?Global;
   moduleMocker: ?ModuleMocker;
 
@@ -34,7 +39,30 @@ class NodeEnvironment {
     global.setTimeout = setTimeout;
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new mock.ModuleMocker(global);
-    this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
+
+    const timerIdToRef = (id: number) => ({
+      id,
+      ref() {
+        return this;
+      },
+      unref() {
+        return this;
+      },
+    });
+
+    const timerRefToId = (timer: Timer) => timer.id;
+
+    const timerConfig = {
+      idToRef: timerIdToRef,
+      refToId: timerRefToId,
+    };
+
+    this.fakeTimers = new FakeTimers({
+      config,
+      global,
+      moduleMocker: this.moduleMocker,
+      timerConfig,
+    });
   }
 
   dispose() {
