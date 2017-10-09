@@ -99,6 +99,7 @@ export type InitialOptions = {
   notify?: boolean,
   onlyChanged?: boolean,
   outputFile?: Path,
+  passWithNoTests?: boolean,
   preprocessorIgnorePatterns?: Array<Glob>,
   preset?: ?string,
   projects?: Array<Glob>,
