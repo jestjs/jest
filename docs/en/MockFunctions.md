@@ -227,8 +227,6 @@ const myMockFn = jest.fn()
   .mockReturnValue('default')
   .mockImplementation(scalar => 42 + scalar)
   .mockName('add42');
-
-const myMockFn2 = jest.fn(scalar => 42 + scalar, 'add42');
 ```
 
 ## Custom Matchers
