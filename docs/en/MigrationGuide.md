@@ -5,7 +5,7 @@ layout: docs
 category: Guides
 permalink: docs/en/migration-guide.html
 previous: webpack
-next: testing-frameworks
+next: troubleshooting
 ---
 
 If you'd like to try out Jest with an existing codebase, there are a number of ways to convert to Jest:

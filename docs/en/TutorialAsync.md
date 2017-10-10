@@ -4,7 +4,7 @@ title: An Async Example
 layout: docs
 category: Guides
 permalink: docs/en/tutorial-async.html
-previous: tutorial-react-native
+previous: snapshot-testing
 next: timer-mocks
 ---
 
