@@ -251,7 +251,7 @@ const siteConfig = {
   projectName: "jest",
   repo: "facebook/jest",
   users,
-  editUrl: "https://github.com/facebook/jest/edit/master/docs/",
+  editUrl: "https://github.com/facebook/jest/edit/master/docs/en/",
   headerLinks: [
     { doc: "getting-started", label: "Docs" },
     { doc: "api", label: "API" },

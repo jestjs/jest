@@ -1,4 +1,3 @@
-node_modules
 .DS_Store
 lib/core/metadata.js
 lib/core/MetadataBlog.js
