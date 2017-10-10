@@ -31,7 +31,3 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 ## Redux
 
 * [Writing Tests](http://redux.js.org/docs/recipes/WritingTests.html) by Redux docs
-
-## WebComponents
-
-* [Testing WebComponents with Jest and Webpack](https://stackoverflow.com/documentation/web-component/10057/testing-web-components/30849/webpack-and-jest#t=201705260237509850601) by Rafał Lorenz ([@vardius](http://rafallorenz.com))
