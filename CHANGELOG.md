@@ -1,3 +1,50 @@
+## master
+
+### Fixes
+* [jest-cli] Check if `npm_lifecycle_script` calls Jest directly (#4629)
+* [jest-cli] Fix --showConfig to show all configs (#4494)
+* [jest-cli] Throw if `maxWorkers` doesn't have a value (#4591)
+* [jest-config] Fix `--passWithNoTests` (#4639)
+* [jest-config] Support `rootDir` tag in testEnvironment (#4579)
+* [jest-editor-support] Fix `--showConfig` to support jest 20 and jest 21 (#4575)
+* [jest-editor-support] Fix editor support test for node 4 (#4640)
+* [jest-mock] Support mocking constructor in `mockImplementationOnce` (#4599)
+* [jest-runtime] Fix manual user mocks not working with custom resolver (#4489)
+* [jest-runtime] Move `babel-core` to peer dependenies so it works with Babel 7 (#4557)
+* [jest-util] Fix `runOnlyPendingTimers` for `setTimeout` inside `setImmediate` (#4608)
+
+### Features
+* [babel-plugin-jest-hoist] Improve error message, that the second argument of `jest.mock` must be an inline function (#4593)
+* [BREAKING][jest-snapshot] Concatenate name of test and snapshot (#4460)
+* [jest-cli] Add an option to fail if no tests are found (#3672)
+* [jest-diff] Highlight only last of odd length leading spaces (#4558)
+* [jest-docblock] Add `docblock.print()` (#4517)
+* [jest-docblock] Add `strip` (#4571)
+* [jest-docblock] Preserve leading whitespace in docblock comments (#4576)
+* [jest-docblock] remove leading newlines from `parswWithComments().comments` (#4610)
+* [jest-editor-support] Add Snapshots metadata (#4570)
+* [jest-editor-support] Adds an 'any' to the typedef for ``updateFileWithJestStatus` (#4636)
+* [jest-editor-support] Better monorepo support (#4572)
+* [jest-environment-jsdom] Add simple rAF polyfill in jsdom environment to work with React 16 (#4568)
+* [jest-environment-node] Implement node Timer api (#4622)
+* [jest-jasmine2] Add testPath to reporter callbacks (#4594)
+* [jest-mock] Added support for naming mocked functions with `.mockName(value)` and `.mockGetName()` (#4586)
+* [jest-runtime] Add `module.loaded`, and make `module.require` not enumerable (#4623)
+* [jest-runtime] Add `module.parent` (#4614)
+* [jest-runtime] Support sourcemaps in transformers (#3458)
+* [jest-worker] Initial version of parallel worker abstraction, say hello! (#4497)
+
+### Chore & Maintenance
+* [babel-jest] Explicitly bump istanbul to newer versions (#4616)
+* [browser] Upgrade mocha and rollup for browser testing (#4642)
+* [docs] Add info about `coveragePathIgnorePatterns` (#4602)
+* [docs] Add Vuejs series of testing with Jest (#4648)
+* [docs] Mention about optional `done` argument in test function (#4556)
+* [jest-cli] Bump node-notifier version (#4609)
+* [jest-diff] Simplify highlight for leading and trailing spaces (#4553)
+* [jest-get-type] Add support for date (#4621)
+* [jest-matcher-utils] Call `chalk.inverse` for trailing spaces (#4578)
+
 ## jest 21.2.1
 
 * Fix watchAll not running tests on save ([#4550](https://github.com/facebook/jest/pull/4550))
