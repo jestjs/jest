@@ -1,12 +1,12 @@
-const React = require('react');
+const React = require("react");
 
 const githubButton = (
   <a
     className="github-button"
-    href="https://github.com/deltice/test-site"
+    href="https://github.com/facebook/jest"
     data-icon="octicon-star"
-    data-count-href="/deltice/test-site/stargazers"
-    data-count-api="/repos/deltice/test-site#stargazers_count"
+    data-count-href="/facebook/jest/stargazers"
+    data-count-api="/repos/facebook/jest#stargazers_count"
     data-count-aria-label="# stargazers on GitHub"
     aria-label="Star this project on GitHub"
   >
@@ -33,58 +33,60 @@ class Footer extends React.Component {
             <a
               href={
                 this.props.config.baseUrl +
-                'docs/' +
+                "docs/" +
                 this.props.language +
-                '/doc1.html'
+                "/getting-started.html"
               }
             >
-              Getting Started (or other categories)
+              Getting Started
             </a>
             <a
               href={
                 this.props.config.baseUrl +
-                'docs/' +
+                "docs/" +
                 this.props.language +
-                '/doc2.html'
+                "/snapshot-testing.html"
               }
             >
-              Guides (or other categories)
+              Guides
             </a>
             <a
               href={
                 this.props.config.baseUrl +
-                'docs/' +
+                "docs/" +
                 this.props.language +
-                '/doc3.html'
+                "/api.html"
               }
             >
-              API Reference (or other categories)
+              API Reference
             </a>
           </div>
           <div>
             <h5>Community</h5>
             <a
               href={
-                this.props.config.baseUrl + this.props.language + '/users.html'
+                this.props.config.baseUrl + this.props.language + "/users.html"
               }
             >
               User Showcase
             </a>
             <a
-              href="http://stackoverflow.com/questions/tagged/"
+              href="https://stackoverflow.com/questions/tagged/jestjs"
               target="_blank"
             >
               Stack Overflow
             </a>
-            <a href="https://discordapp.com/">Project Chat</a>
-            <a href="https://twitter.com/" target="_blank">
+            <a href="https://discordapp.com/channels/102860784329052160/103622435865104384">
+              Jest Chat
+            </a>
+            <a href="https://twitter.com/fbjest" target="_blank">
               Twitter
             </a>
           </div>
           <div>
             <h5>More</h5>
-            <a href={this.props.config.baseUrl + 'blog'}>Blog</a>
-            <a href="https://github.com/">GitHub</a>
+            <a href={this.props.config.baseUrl + "blog"}>Blog</a>
+            <a href="https://github.com/facebook/jest">GitHub</a>
             {githubButton}
           </div>
         </section>
@@ -95,7 +97,7 @@ class Footer extends React.Component {
           className="fbOpenSource"
         >
           <img
-            src={this.props.config.baseUrl + 'img/oss_logo.png'}
+            src={this.props.config.baseUrl + "img/oss_logo.png"}
             alt="Facebook Open Source"
             width="170"
             height="45"
