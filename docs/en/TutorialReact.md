@@ -2,9 +2,9 @@
 id: tutorial-react
 title: Testing React Apps
 layout: docs
-category: Guides
+category: Framework Guides
 permalink: docs/en/tutorial-react.html
-previous: snapshot-testing
+previous: cli
 next: tutorial-react-native
 ---
 

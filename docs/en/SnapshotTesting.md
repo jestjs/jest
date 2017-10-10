@@ -4,7 +4,8 @@ title: Snapshot Testing
 layout: docs
 category: Guides
 permalink: docs/en/snapshot-testing.html
-next: tutorial-react
+previous: testing-frameworks
+next: tutorial-async
 ---
 
 Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly.
