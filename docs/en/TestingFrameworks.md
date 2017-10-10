@@ -13,6 +13,7 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 ## Vue.js
 
 * [Jest for all: Episode 1 — Vue.js](https://medium.com/@kentaromiura_the_js_guy/jest-for-all-episode-1-vue-js-d616bccbe186#.d573vrce2) by Cristian Carlesso ([@kentaromiura](https://twitter.com/kentaromiura))
+* [Testing Vue.js components with Jest](https://alexjoverm.github.io/series/Unit-Testing-Vue-js-Components-with-the-Official-Vue-Testing-Tools-and-Jest/) by Alex Jover Morales ([@alexjoverm](https://twitter.com/alexjoverm))
 
 ## AngularJS
 
