@@ -15,7 +15,7 @@
 
 ### Features
 * `[babel-plugin-jest-hoist]` Improve error message, that the second argument of `jest.mock` must be an inline function ([#4593](https://github.com/facebook/jest/pull/4593))
-* `[jest-snapshot]` [**BREAKING**]` Concatenate name of test and snapshot ([#4460](https://github.com/facebook/jest/pull/4460))
+* `[jest-snapshot]` [**BREAKING**] Concatenate name of test and snapshot ([#4460](https://github.com/facebook/jest/pull/4460))
 * `[jest-cli]` Add an option to fail if no tests are found ([#3672](https://github.com/facebook/jest/pull/3672))
 * `[jest-diff]` Highlight only last of odd length leading spaces ([#4558](https://github.com/facebook/jest/pull/4558))
 * `[jest-docblock]` Add `docblock.print()` ([#4517](https://github.com/facebook/jest/pull/4517))
