@@ -1,4 +1,4 @@
-const React = require("react");
+const React = require('react');
 
 const githubButton = (
   <a
@@ -33,9 +33,9 @@ class Footer extends React.Component {
             <a
               href={
                 this.props.config.baseUrl +
-                "docs/" +
+                'docs/' +
                 this.props.language +
-                "/getting-started.html"
+                '/getting-started.html'
               }
             >
               Getting Started
@@ -43,9 +43,9 @@ class Footer extends React.Component {
             <a
               href={
                 this.props.config.baseUrl +
-                "docs/" +
+                'docs/' +
                 this.props.language +
-                "/snapshot-testing.html"
+                '/snapshot-testing.html'
               }
             >
               Guides
@@ -53,9 +53,9 @@ class Footer extends React.Component {
             <a
               href={
                 this.props.config.baseUrl +
-                "docs/" +
+                'docs/' +
                 this.props.language +
-                "/api.html"
+                '/api.html'
               }
             >
               API Reference
@@ -65,7 +65,7 @@ class Footer extends React.Component {
             <h5>Community</h5>
             <a
               href={
-                this.props.config.baseUrl + this.props.language + "/users.html"
+                this.props.config.baseUrl + this.props.language + '/users.html'
               }
             >
               User Showcase
@@ -85,7 +85,7 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>More</h5>
-            <a href={this.props.config.baseUrl + "blog"}>Blog</a>
+            <a href={this.props.config.baseUrl + 'blog'}>Blog</a>
             <a href="https://github.com/facebook/jest">GitHub</a>
             {githubButton}
           </div>
@@ -97,7 +97,7 @@ class Footer extends React.Component {
           className="fbOpenSource"
         >
           <img
-            src={this.props.config.baseUrl + "img/oss_logo.png"}
+            src={this.props.config.baseUrl + 'img/oss_logo.png'}
             alt="Facebook Open Source"
             width="170"
             height="45"

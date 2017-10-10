@@ -14,6 +14,7 @@
 /packages/*/build-es5/
 /packages/*/coverage/
 /packages/*/node_modules/
+
 /website/build
 /website/core/metadata*.js
 /website/node_modules
@@ -21,8 +22,15 @@
 /website/src/jest/docs
 /website/yarn.lock
 
+/website/lib/core/metadata.js
+/website/lib/core/MetadataBlog.js
+/website/translated_docs
+/website/yarn.lock
+/website/node_modules
+
 /website/i18n/*
 !/website/i18n/en.json
+
 /website/translated_docs/*
 /website/build
 
