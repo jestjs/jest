@@ -15,7 +15,7 @@
 
 ### Features
 * [babel-plugin-jest-hoist] Improve error message, that the second argument of `jest.mock` must be an inline function ([#4593](https://github.com/facebook/jest/pull/4593))
-* [BREAKING][jest-snapshot] Concatenate name of test and snapshot ([#4460](https://github.com/facebook/jest/pull/4460))
+* [jest-snapshot] [**BREAKING**] Concatenate name of test and snapshot ([#4460](https://github.com/facebook/jest/pull/4460))
 * [jest-cli] Add an option to fail if no tests are found ([#3672](https://github.com/facebook/jest/pull/3672))
 * [jest-diff] Highlight only last of odd length leading spaces ([#4558](https://github.com/facebook/jest/pull/4558))
 * [jest-docblock] Add `docblock.print()` ([#4517](https://github.com/facebook/jest/pull/4517))
@@ -23,7 +23,7 @@
 * [jest-docblock] Preserve leading whitespace in docblock comments ([#4576](https://github.com/facebook/jest/pull/4576))
 * [jest-docblock] remove leading newlines from `parswWithComments().comments` ([#4610](https://github.com/facebook/jest/pull/4610))
 * [jest-editor-support] Add Snapshots metadata ([#4570](https://github.com/facebook/jest/pull/4570))
-* [jest-editor-support] Adds an 'any' to the typedef for ``updateFileWithJestStatus` ([#4636](https://github.com/facebook/jest/pull/4636))
+* [jest-editor-support] Adds an 'any' to the typedef for `updateFileWithJestStatus` ([#4636](https://github.com/facebook/jest/pull/4636))
 * [jest-editor-support] Better monorepo support ([#4572](https://github.com/facebook/jest/pull/4572))
 * [jest-environment-jsdom] Add simple rAF polyfill in jsdom environment to work with React 16 ([#4568](https://github.com/facebook/jest/pull/4568))
 * [jest-environment-node] Implement node Timer api ([#4622](https://github.com/facebook/jest/pull/4622))
