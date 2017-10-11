@@ -19,7 +19,6 @@ export const serialize = (
 ): string => {
   const mockObject = {
     calls: val.mock.calls,
-    instances: val.mock.instances,
     name: val.getMockName(),
   };
 

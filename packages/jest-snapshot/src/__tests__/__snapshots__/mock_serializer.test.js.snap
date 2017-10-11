@@ -3,7 +3,6 @@
 exports[`empty with no calls mock 1`] = `
 Object {
   "calls": Array [],
-  "instances": Array [],
   "name": "jest.fn()",
 }
 `;
@@ -16,9 +15,6 @@ Object {
         "name": "some fine name",
       },
     ],
-  ],
-  "instances": Array [
-    mockConstructor {},
   ],
   "name": "jest.fn()",
 }
@@ -35,10 +31,6 @@ Object {
       42,
     ],
   ],
-  "instances": Array [
-    undefined,
-    undefined,
-  ],
   "name": "jest.fn()",
 }
 `;
@@ -46,7 +38,6 @@ Object {
 exports[`mock with name 1`] = `
 Object {
   "calls": Array [],
-  "instances": Array [],
   "name": "name of mock is nice",
 }
 `;
