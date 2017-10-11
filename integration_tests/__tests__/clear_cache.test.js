@@ -17,13 +17,15 @@ const CACHE = path.resolve(os.tmpdir(), 'clear_cache_directory');
 
 describe('jest --clearCache', () => {
   test('normal run results in cache directory being written', () => {
-    const {status} = runJest('clear_cache', [`--cacheDirectory=${CACHE}`]);
+    const { status } = runJest('clear_cache', [`--cacheDirectory=${CACHE}`]);
 
     expect(fs.existsSync(CACHE)).toBe(true);
     expect(status).toBe(0);
   });
   test('clearCache results in deleted directory and exit status 0', () => {
-    const {status, stdout, stderr} = runJest('clear_cache', [
+    expect(fs.existsSync(CACHE)).toBe(true);
+
+    const { status, stdout, stderr } = runJest('clear_cache', [
       '--clearCache',
       `--cacheDirectory=${CACHE}`,
     ]);
