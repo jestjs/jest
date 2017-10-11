@@ -17,7 +17,7 @@
     "setup-teardown": "Setup and Teardown",
     "snapshot-testing": "Snapshot Testing",
     "asynchronous": "Testing Asynchronous Code",
-    "testing-frameworks": "Testing web frameworks",
+    "testing-frameworks": "Testing Web Frameworks",
     "timer-mocks": "Timer Mocks",
     "troubleshooting": "Troubleshooting",
     "tutorial-async": "An Async Example",
@@ -34,6 +34,7 @@
     "GitHub": "GitHub",
     "Introduction": "Introduction",
     "API Reference": "API Reference",
+    "Framework Guides": "Framework Guides",
     "Guides": "Guides"
   },
   "pages-strings": {
