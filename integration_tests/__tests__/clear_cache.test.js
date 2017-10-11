@@ -13,12 +13,8 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('../../scripts/skip_on_windows');
-const rimraf = require('rimraf');
 
 const CACHE = path.resolve(os.tmpdir(), 'clear_cache_directory');
-
-skipOnWindows.suite();
 
 describe('jest --clearCache', () => {
   test('normal run results in cache directory being written', () => {
