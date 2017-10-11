@@ -33,7 +33,7 @@
 * `[jest-runtime]` Add `module.loaded`, and make `module.require` not enumerable ([#4623](https://github.com/facebook/jest/pull/4623))
 * `[jest-runtime]` Add `module.parent` ([#4614](https://github.com/facebook/jest/pull/4614))
 * `[jest-runtime]` Support sourcemaps in transformers ([#3458](https://github.com/facebook/jest/pull/3458))
-* `[jest-snapshot]` Add a serializer for `jest.fn` to allow a snapshot of a jest mock (TBD)
+* `[jest-snapshot]` Add a serializer for `jest.fn` to allow a snapshot of a jest mock ([#4668](https://github.com/facebook/jest/pull/4668))
 * `[jest-worker]` Initial version of parallel worker abstraction, say hello! ([#4497](https://github.com/facebook/jest/pull/4497))
 
 ### Chore & Maintenance
