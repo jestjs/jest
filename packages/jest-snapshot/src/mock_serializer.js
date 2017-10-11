@@ -9,8 +9,6 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import jestMock from 'jest-mock';
-
 export const serialize = (
   val: any,
   config: Config,
@@ -28,6 +26,6 @@ export const serialize = (
   return printer(mockObject, config, indentation, depth, refs);
 };
 
-export const test = jestMock.isMockFunction;
+export const test = (val: any) => val && !!val._isMockFunction;
 
 export default ({serialize, test}: NewPlugin);

@@ -24,7 +24,7 @@ test('instantiated mock', () => {
 
 test('mock with calls', () => {
   mock();
-  mock({foo: 'bar'});
+  mock({foo: 'bar'}, 42);
 
   expect(mock).toMatchSnapshot();
 });
