@@ -117,6 +117,13 @@ export const options = {
       ' prevent snapshots from being written unless explicitly requested.',
     type: 'boolean',
   },
+  clearCache: {
+    default: undefined,
+    description:
+      'Clears the configured Jest cache directory and then exits. ' +
+      'Default directory can be found by calling jest --showConfig',
+    type: 'boolean',
+  },
   clearMocks: {
     default: undefined,
     description:

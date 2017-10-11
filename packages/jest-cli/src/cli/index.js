@@ -32,6 +32,7 @@ import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
+import rimraf from 'rimraf';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   const argv: Argv = buildArgv(maybeArgv, project);
@@ -67,6 +68,15 @@ export const runCLI = async (
       argv,
       outputStream,
     );
+
+    if (argv.clearCache) {
+      configs.forEach(config => {
+        rimraf.sync(config.cacheDirectory);
+        process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
+      });
+
+      process.exit(0);
+    }
 
     await _run(
       globalConfig,
