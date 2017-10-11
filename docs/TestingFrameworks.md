@@ -1,6 +1,6 @@
 ---
 id: testing-frameworks
-title: Testing web frameworks
+title: Testing Web Frameworks
 ---
 
 Although Jest may be considered a React-specific test runner, in fact it is a universal testing platform, with the ability to adapt to any JavaScript library or framework. In this section we'd like to link to community posts and articles about integrating Jest into other popular JS libraries.

@@ -16,16 +16,18 @@
       "configuration",
       "cli"
     ],
-    "Guides": [
-      "snapshot-testing",
+    "Framework Guides": [
       "tutorial-react",
       "tutorial-react-native",
+      "testing-frameworks"
+    ],
+    "Guides": [
+      "snapshot-testing",
       "tutorial-async",
       "timer-mocks",
       "manual-mocks",
       "webpack",
       "migration-guide",
-      "testing-frameworks",
       "troubleshooting"
     ]
   }
