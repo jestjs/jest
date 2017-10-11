@@ -23,6 +23,10 @@ import * as args from './args';
 const VERSION = (require('../../package.json').version: string);
 
 export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
+  const realFs = require('fs');
+  const fs = require('graceful-fs');
+  fs.gracefulify(realFs);
+
   let argv;
   if (cliArgv) {
     argv = cliArgv;
