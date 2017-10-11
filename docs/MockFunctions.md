@@ -10,7 +10,7 @@ when instantiated with `new`, and allowing test-time configuration of return
 values.
 
 There are two ways to mock functions: Either by creating a mock function to
-use in test code, or writing a [`manual mock`](/jest/docs/manual-mocks.html)
+use in test code, or writing a [`manual mock`](/jest/docs/en/manual-mocks.html#content)
 to override a module dependency.
 
 ## Using a mock function
