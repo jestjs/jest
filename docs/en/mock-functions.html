@@ -19,7 +19,7 @@ implementation of a function, capturing calls to the function (and the
 parameters passed in those calls), capturing instances of constructor functions
 when instantiated with <code>new</code>, and allowing test-time configuration of return
 values.</p><p>There are two ways to mock functions: Either by creating a mock function to
-use in test code, or writing a <a href="/jest/docs/manual-mocks.html" target=""><code>manual mock</code></a>
+use in test code, or writing a <a href="/jest/docs/en/manual-mocks.html#content" target=""><code>manual mock</code></a>
 to override a module dependency.</p><h2><a class="anchor" name="using-a-mock-function"></a>Using a mock function <a class="hash-link" href="#using-a-mock-function">#</a></h2><p>Let&#x27;s imagine we&#x27;re testing an implementation of a function <code>forEach</code>, which
 invokes a callback for each item in a supplied array.</p><pre class="prism language-javascript"><span class="token keyword">function</span> <span class="token function">forEach</span><span class="token punctuation">(</span>items<span class="token punctuation">,</span> callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> index <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> index <span class="token operator">&lt;</span> items<span class="token punctuation">.</span>length<span class="token punctuation">;</span> index<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
