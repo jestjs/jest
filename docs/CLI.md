@@ -79,11 +79,15 @@ Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
 
 Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. *Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.*
 
-If you want to inspect or clear the cache, use `--showConfig` and look at the `cacheDirectory` value.
+If you want to inspect the cache, use `--showConfig` and look at the `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
 
 ### `--ci`
 
 When this option is provided, Jest will assume it is running in a CI environment. This changes the behavior when a new snapshot is encountered. Instead of the regular behavior of storing a new snapshot automatically, it will fail the test and require Jest to be run with `--updateSnapshot`.
+
+### `--clearCache` 
+##### available in Jest **21.3.0+**
+Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. *Note: clearing the cache will reduce performance.*
 
 ### `--collectCoverageFrom=<glob>`
 
