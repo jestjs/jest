@@ -20,6 +20,7 @@
 /website/src/jest/blog
 /website/src/jest/docs
 /website/yarn.lock
+/website/translated_docs
 
 /website/i18n/*
 !/website/i18n/en.json
