@@ -261,4 +261,4 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual(
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 ```
 
-For a complete list of matchers, check out the [reference docs](/jest/docs/expect.html).
+For a complete list of matchers, check out the [reference docs](/jest/docs/en/expect.html).
