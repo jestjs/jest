@@ -238,6 +238,9 @@ expect(mockFunc).toBeCalledWith(arg1, arg2);
 
 // The last call to the mock function was called with the specified args
 expect(mockFunc).lastCalledWith(arg1, arg2);
+
+// All calls, instantiations and the name of the mock is written as a snapshot
+expect(mockFunc).toMatchSnapshot();
 ```
 
 These matchers are really just sugar for common forms of inspecting the `.mock`
@@ -259,6 +262,12 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual(
 // The first arg of the last call to the mock function was `42`
 // (note that there is no sugar helper for this specific of an assertion)
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
+
+// A snapshot will check that a mock was invoked the same number of times,
+// in the same order, with the same arguments. It will also assert on the name. 
+expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
+expect(mockFunc.mock.instances).toEqual([{name: 'some name'}]);
+expect(mockFunc.mock.getMockName()).toBe('a mock name');
 ```
 
 For a complete list of matchers, check out the [reference docs](/jest/docs/en/expect.html).
