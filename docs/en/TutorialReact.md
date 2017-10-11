@@ -8,7 +8,7 @@ previous: cli
 next: tutorial-react-native
 ---
 
-At Facebook, we use Jest to test [React](http://facebook.github.io/react/)
+At Facebook, we use Jest to test [React](https://reactjs.org/)
 applications.
 
 ## Setup
