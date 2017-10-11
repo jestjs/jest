@@ -21,6 +21,7 @@
 /website/src/jest/blog
 /website/src/jest/docs
 /website/yarn.lock
+/website/translated_docs
 
 /website/lib/core/metadata.js
 /website/lib/core/MetadataBlog.js
