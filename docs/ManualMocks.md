@@ -5,7 +5,7 @@ title: Manual Mocks
 
 Manual mocks are used to stub out functionality with mock data. For example, instead of accessing a remote resource like a website or a database, you might want to create a manual mock that allows you to use fake data. This ensures your tests will be fast and not flaky.
 
-Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems. If the module you are mocking is a node module (eg: `fs`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](/jest/docs/en/configuration.html#roots-array-string) to point to a folder other than the project root). Eg:
+Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems. If the module you are mocking is a node module (eg: `fs`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-array-string) to point to a folder other than the project root). Eg:
 
 ```bash
 .

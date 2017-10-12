@@ -10,7 +10,7 @@ when instantiated with `new`, and allowing test-time configuration of return
 values.
 
 There are two ways to mock functions: Either by creating a mock function to
-use in test code, or writing a [`manual mock`](/jest/docs/en/manual-mocks.html#content)
+use in test code, or writing a [`manual mock`](ManualMocks.md)
 to override a module dependency.
 
 ## Using a mock function
@@ -269,4 +269,4 @@ expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
 expect(mockFunc.mock.getMockName()).toBe('a mock name');
 ```
 
-For a complete list of matchers, check out the [reference docs](/jest/docs/en/expect.html).
+For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
