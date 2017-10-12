@@ -274,7 +274,7 @@ const jestNode = async (
       return (results = r);
     };
 
-    let emitter: EventEmitter = undefined;
+    let emitter: mixed = undefined;
     if (argv.watch || argv.watchAll) {
       emitter = new EventEmitter();
       onComplete = (r: AggregatedResult) => {
