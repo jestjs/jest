@@ -65,7 +65,7 @@ Here's how to run Jest on files matching `my-test`, using `config.json` as a con
 jest my-test --notify --config=config.json
 ```
 
-If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/en/cli.html) page.
 
 ## Additional Configuration
 
