@@ -1,9 +1,15 @@
-describe('first', function() {
-  it('should succeed', function() {
-    expect(1).toBe(1);
+describe('first', () => {
+  it('should succeed', done => {
+    setTimeout(() => {
+      expect(1).toBe(1);
+      done();
+    }, 100);
   });
-  
-  it('should fail', function() {
-    expect(1).toBe(2);
+
+  it('should fail', done => {
+    setTimeout(() => {
+      expect(1).toBe(2);
+      done();
+    }, 100);
   });
-})
+});

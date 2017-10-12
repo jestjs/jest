@@ -9,6 +9,9 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-cli": "^21.2.1",
+    "jest-config": "^21.2.1",
+    "jest-runtime": "^21.2.1",
+    "jest-util": "^21.2.1",
     "memory-streams": "^0.1.2"
   }
 }

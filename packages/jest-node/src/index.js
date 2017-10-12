@@ -39,15 +39,19 @@ import EventEmitter from 'events';
 
 const printDebugInfoAndExitIfNeeded = (
   argv,
-  globalConfig,
   configs,
+  globalConfig,
   outputStream,
 ) => {
   if (argv.debug || argv.showConfig) {
     logDebugMessages(globalConfig, configs, outputStream);
   }
   if (argv.showConfig) {
-    throw new Error(JSON.stringify({globalConfig, configs}));
+    const json = {
+      configs,
+      globalConfig,
+    };
+    throw new Error(JSON.stringify(json));
   }
 };
 
@@ -274,12 +278,14 @@ const jestNode = async (
       return (results = r);
     };
 
-    let emitter: mixed = undefined;
+    let emitter: ?EventEmitter = undefined;
     if (argv.watch || argv.watchAll) {
       emitter = new EventEmitter();
       onComplete = (r: AggregatedResult) => {
         results = r;
-        emitter.emit('complete', {globalConfig, results});
+        if (emitter != null) {
+          emitter.emit('complete', {globalConfig, results});
+        }
         return results;
       };
     }
@@ -292,7 +298,7 @@ const jestNode = async (
       onComplete,
     );
 
-    if (argv.watch || argv.watchAll) {
+    if (emitter != null) {
       return Promise.resolve(emitter);
     }
 
