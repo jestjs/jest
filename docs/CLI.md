@@ -3,7 +3,7 @@ id: cli
 title: Jest CLI Options
 ---
 
-The `jest` command line runner has a number of useful options. You can run `jest --help` to view all available options. Many of the options shown below can also be used together to run tests exactly the way you want. Every one of Jest's [Configuration](/jest/docs/configuration.html) options can also be specified through the CLI.
+The `jest` command line runner has a number of useful options. You can run `jest --help` to view all available options. Many of the options shown below can also be used together to run tests exactly the way you want. Every one of Jest's [Configuration](Configuration.md) options can also be specified through the CLI.
 
 Here is a brief overview:
 

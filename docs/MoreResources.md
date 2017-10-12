@@ -7,11 +7,11 @@ By now you should have a good idea of how Jest can make it easy to test your app
 
 ### Browse the docs
 
-- Learn about [Snapshot Testing](/jest/docs/en/snapshot-testing.html), [Mock Functions](/jest/docs/en/mock-functions.html), and more in our in-depth guides.
-- Migrate your existing tests to Jest by following our [migration guide](https://facebook.github.io/jest/docs/en/migration-guide.html).
-- Learn how to [configure Jest](/jest/docs/en/configuration.html).
-- Look at the full [API Reference](/jest/docs/en/api.html).
-- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.
+- Learn about [Snapshot Testing](SnapshotTesting.md), [Mock Functions](MockFunctions.md), and more in our in-depth guides.
+- Migrate your existing tests to Jest by following our [migration guide](MigrationGuide.md).
+- Learn how to [configure Jest](Configuration.md).
+- Look at the full [API Reference](GlobalAPI.md).
+- [Troubleshoot](Troubleshooting.md) problems with Jest.
 
 ### Learn by example
 

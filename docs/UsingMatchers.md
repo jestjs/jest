@@ -156,6 +156,6 @@ test('compiling android goes as expected', () => {
 
 ### And More
 
-This is just a taste. For a complete list of matchers, check out the [reference docs](/jest/docs/en/expect.html).
+This is just a taste. For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
 
-Once you've learned about the matchers that are available, a good next step is to check out how Jest lets you [test asynchronous code](/jest/docs/en/asynchronous.html).
+Once you've learned about the matchers that are available, a good next step is to check out how Jest lets you [test asynchronous code](TestingAsyncCode.md).
