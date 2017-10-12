@@ -225,37 +225,35 @@ export default class FakeTimers {
     }
 
     if (i === this._maxLoops) {
-      const timers = Object.assign({}, this._timers);
+      const timers = this._timers;
+      const timeNow = this._now;
+      const timeout = this._global.setTimeout;
+      const immediate = this._global.setImmediate;
       throw new Error(
         'Ran ' +
           this._maxLoops +
           ' timers, and there are still more! ' +
           "Assuming we've hit an infinite recursion and bailing out." +
           'The following timers are still pending:' +
-          String(
-            Object.keys(timers)
-              .sort((left, right) => timers[left].expiry - timers[right].expiry)
-              .map(function(key, index) {
-                return (
-                  '\n\nsetTimeout - pending timer time ' +
-                  String(Number(timers[key].expiry) - this._now) +
-                  '\n' +
-                  formatStackTrace(new Error().stack, this._global.setTimeout, {
-                    noStackTrace: false,
-                  }) +
-                  '\n\nsetImmediate - pending timer time ' +
-                  String(Number(timers[key].expiry) - this._now) +
-                  '\n' +
-                  formatStackTrace(
-                    new Error().stack,
-                    this._global.setImmediate,
-                    {
-                      noStackTrace: false,
-                    },
-                  )
-                );
-              }),
-          ),
+          Object.keys(timers)
+            .sort((left, right) => timers[left].expiry - timers[right].expiry)
+            .map((key, index) => {
+              return (
+                '\n\nsetTimeout - pending timer time ' +
+                String(Number(timers[key].expiry) - timeNow) +
+                '\n' +
+                formatStackTrace(new Error().stack, timeout, {
+                  noStackTrace: false,
+                }) +
+                '\n\nsetImmediate - pending timer time ' +
+                String(Number(timers[key].expiry) - timeNow) +
+                '\n' +
+                formatStackTrace(new Error().stack, immediate, {
+                  noStackTrace: false,
+                })
+              );
+            })
+            .join(''),
       );
     }
   }
