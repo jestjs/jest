@@ -39,3 +39,6 @@ exports.object = {};
 exports.parent = module.parent;
 exports.paths = module.paths;
 exports.setModuleStateValue = setModuleStateValue;
+exports.module = module;
+exports.loaded = module.loaded;
+exports.isLoaded = () => module.loaded;

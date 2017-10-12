@@ -48,19 +48,19 @@ test(`throws the error if tested function didn't throw error`, () => {
   }
 });
 
-test('does not accept arguments', () => {
-  const filename = 'does-not-accept-arguments.test.js';
-  const template = makeTemplate(`test('does not accept arguments', () => {
+test('accepts custom snapshot name', () => {
+  const filename = 'accept-custom-snapshot-name.test.js';
+  const template = makeTemplate(`test('accepts custom snapshot name', () => {
       expect(() => { throw new Error('apple'); })
-        .toThrowErrorMatchingSnapshot('foobar');
+        .toThrowErrorMatchingSnapshot('custom-name');
     });
     `);
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Matcher does not accept any arguments.');
-    expect(status).toBe(1);
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
+    expect(status).toBe(0);
   }
 });
 

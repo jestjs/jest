@@ -67,7 +67,7 @@ export class TestReconciler {
     file: string,
     name: string,
   ): TestFileAssertionStatus | null;
-  updateFileWithJestStatus(data): TestFileAssertionStatus[];
+  updateFileWithJestStatus(data: any): TestFileAssertionStatus[];
 }
 
 export type TestReconcilationState =
