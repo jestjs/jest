@@ -1,0 +1,17 @@
+{
+  "name": "jest-node",
+  "version": "21.2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "jest-cli": "^21.2.1",
+    "jest-config": "^21.2.1",
+    "jest-runtime": "^21.2.1",
+    "jest-util": "^21.2.1",
+    "memory-streams": "^0.1.2"
+  }
+}
