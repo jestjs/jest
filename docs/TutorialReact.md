@@ -14,7 +14,7 @@ If you are just getting started with React, we recommend using [Create React App
 
 ### Setup without Create React App
 
-If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](/jest/docs/getting-started.html#using-babel).
+If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](GettingStarted.md#using-babel).
 
 Run
 
@@ -53,7 +53,7 @@ Your `package.json` should look something like this (where `<current-version>` i
 
 ### Snapshot Testing
 
-Let's create a [snapshot test](/jest/docs/snapshot-testing.html) for a Link component that renders hyperlinks:
+Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
 ```javascript
 // Link.react.js

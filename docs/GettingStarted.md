@@ -118,7 +118,7 @@ It will not use `development` section like Babel does by default when no `NODE_E
 
 ### Using webpack
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](/jest/docs/webpack.html) to get started.
+Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
 
 ### Using TypeScript
 

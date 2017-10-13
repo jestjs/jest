@@ -57,7 +57,7 @@ you can use:
 npm test -- -u -t="ColorPicker"
 ```
 
-CLI options take precedence over values from the [Configuration](/jest/docs/configuration.html).
+CLI options take precedence over values from the [Configuration](Configuration.md).
 
 ## Options
 

@@ -127,7 +127,7 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 The transform script was changed or babel was updated and the changes aren't
 being recognized by Jest?
 
-Retry with [`--no-cache`](/jest/docs/cli.html#cache). Jest caches transformed module files to speed up test execution.
+Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution.
 If you are using your own custom transformer, consider adding a `getCacheKey`
 function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
@@ -153,7 +153,7 @@ jest.setTimeout(10000); // 10 second timeout
 
 ### Watchman Issues
 
-Try running Jest with [`--no-watchman`](/jest/docs/cli.html#watchman) or set the `watchman` configuration option
+Try running Jest with [`--no-watchman`](CLI.md#watchman) or set the `watchman` configuration option
 to `false`.
 
 Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
@@ -167,7 +167,7 @@ with fast SSDs, it may be slow on certain setups as our users [have](https://git
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820),
 one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
-In order to do this you can run tests in the same thread using [`--runInBand`](/jest/docs/cli.html#runinband):
+In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#runinband):
 
 ```bash
 # Using Jest CLI
@@ -227,7 +227,7 @@ import foo from './foo';
 // foo is not mocked!
 ```
 
-See the [Getting Started](/jest/docs/getting-started.html#using-babel) guide on how to enable babel support.
+See the [Getting Started]GettingStarted.md#using-babel) guide on how to enable babel support.
 
 ### I upgraded to Jest 0.9.0 and my tests are now failing?
 

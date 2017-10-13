@@ -112,7 +112,7 @@ describe('listFilesInDirectorySync', () => {
 });
 ```
 
-The example mock shown here uses [`jest.genMockFromModule`](/jest/docs/jest-object.html#jestgenmockfrommodulemodulename)
+The example mock shown here uses [`jest.genMockFromModule`](JestObjectAPI.md#jestgenmockfrommodulemodulename)
 to generate an automatic mock, and overrides its default behavior. This is the
 recommended approach, but is completely optional. If you do not want to use the
 automatic mock at all, you can simply export your own functions from the mock

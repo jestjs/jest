@@ -27,7 +27,7 @@ Simply run `npm test` to run tests with Jest.
 
 ## Snapshot Test
 
-Let's create a [snapshot test](/jest/docs/snapshot-testing.html) for a small intro component with a few views and text components and some styles:
+Let's create a [snapshot test](SnapshotTesting.md) for a small intro component with a few views and text components and some styles:
 
 ```javascript
 // Intro.js

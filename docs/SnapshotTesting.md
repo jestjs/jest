@@ -81,7 +81,7 @@ You can try out this functionality by cloning the [snapshot example](https://git
 
 Your tests should be deterministic. That is, running the same tests multiple times on a component that has not changed should produce the same results every time. You're responsible for making sure your generated snapshots do not include platform specific or other non-deterministic data.
 
-For example, if you have a [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](/jest/docs/mock-functions.html) to return a consistent value every time the test is run:
+For example, if you have a [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](MockFunctions.md) to return a consistent value every time the test is run:
 
 ```
 Date.now = jest.fn(() => 1482363367071);
@@ -101,7 +101,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### Does snapshot testing only work with React components?
 
-[React](/jest/docs/tutorial-react.html) and [React Native](/jest/docs/tutorial-react-native.html) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console.test.js) in the Jest repo.
+[React](TutorialReacte.md) and [React Native](TutorialReactNative.md) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console.test.js) in the Jest repo.
 
 ### What's the difference between snapshot testing and visual regression testing?
 

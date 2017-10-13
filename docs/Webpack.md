@@ -36,7 +36,7 @@ module.exports = {
 };
 ```
 
-If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](/jest/docs/getting-started.html#using-babel-with-jest) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](/jest/docs/configuration.html#transform-object-string-string) config option.
+If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](GettingStarted.md#using-babel-with-jest) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](Configuration.md#transform-object-string-string) config option.
 
 ### Handling Static Assets
 
@@ -76,7 +76,7 @@ You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to 
 npm install --save-dev identity-obj-proxy
 ```
 
-Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](/jest/docs/snapshot-testing.html).
+Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
 
 ```json
 // package.json (for CSS Modules)
@@ -93,7 +93,7 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 > Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 
 If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's
-[`transform`](/jest/docs/configuration.html#transform-object-string-string)
+[`transform`](Configuration.md#transform-object-string-string)
 config option to specify how assets are transformed. For example, a transformer that
 returns the basename of a file
 (such that `require('logo.jpg');` returns `'logo'`) can be written as:
