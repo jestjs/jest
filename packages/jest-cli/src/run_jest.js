@@ -77,7 +77,7 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
-export default async function runJest({
+export default (async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -112,7 +112,7 @@ export default async function runJest({
   allTests = sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    const testsPaths = allTests.map(test => test.path);
+    const testsPaths = [...new Set(allTests.map(test => test.path))];
     if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));
     } else {
@@ -167,4 +167,4 @@ export default async function runJest({
     outputFile: globalConfig.outputFile,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-}
+});

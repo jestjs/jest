@@ -38,6 +38,22 @@ const sortLines = output =>
     .filter(str => Boolean(str))
     .join('\n');
 
+test('--listTests doesnt duplicate the test files', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '/project1.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
+    '/project2.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
+    '__tests__/in_both_projects-test.js': `test('test', () => {});`,
+    'package.json': JSON.stringify({
+      jest: {projects: ['<rootDir>/project1.js', '<rootDir>/project2.js']},
+    }),
+  });
+
+  const {stdout} = runJest(DIR, ['--listTests']);
+  expect(stdout.trim().split('\n')).toHaveLength(1);
+  expect(stdout).toMatch('in_both_projects-test.js');
+});
+
 test('can pass projects or global config', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
