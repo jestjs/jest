@@ -117,6 +117,13 @@ export const options = {
       ' prevent snapshots from being written unless explicitly requested.',
     type: 'boolean',
   },
+  clearCache: {
+    default: undefined,
+    description:
+      'Clears the configured Jest cache directory and then exits. ' +
+      'Default directory can be found by calling jest --showConfig',
+    type: 'boolean',
+  },
   clearMocks: {
     default: undefined,
     description:
@@ -339,6 +346,12 @@ export const options = {
       'Write test results to a file when the --json option is ' +
       'also specified.',
     type: 'string',
+  },
+  passWithNoTests: {
+    default: false,
+    description:
+      'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
+    type: 'boolean',
   },
   preset: {
     description: "A preset that is used as a base for Jest's configuration.",

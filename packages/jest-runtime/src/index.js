@@ -29,13 +29,14 @@ import {run as cilRun} from './cli';
 import {options as cliOptions} from './cli/args';
 
 type Module = {|
-  children?: Array<any>,
+  children: Array<Module>,
   exports: any,
   filename: string,
   id: string,
+  loaded: boolean,
   parent?: Module,
   paths?: Array<Path>,
-  require?: Function,
+  require?: (id: string) => any,
 |};
 
 type HasteMapOptions = {|
@@ -57,6 +58,8 @@ type CoverageOptions = {
   mapCoverage: boolean,
 };
 
+type ModuleRegistry = {[key: string]: Module};
+
 type BooleanObject = {[key: string]: boolean};
 type CacheFS = {[path: Path]: string};
 
@@ -75,12 +78,6 @@ const getModuleNameMapper = (config: ProjectConfig) => {
   return null;
 };
 
-const mockParentModule = {
-  exports: {},
-  filename: 'mock.js',
-  id: 'mockParent',
-};
-
 const unmockRegExpCache = new WeakMap();
 
 class Runtime {
@@ -92,13 +89,13 @@ class Runtime {
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
-  _internalModuleRegistry: {[key: string]: Module};
+  _internalModuleRegistry: ModuleRegistry;
   _isCurrentlyExecutingManualMock: ?string;
   _mockFactories: {[key: string]: () => any};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
   _moduleMocker: ModuleMocker;
-  _moduleRegistry: {[key: string]: Module};
+  _moduleRegistry: ModuleRegistry;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -315,10 +312,12 @@ class Runtime {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
-      const localModule = {
+      const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
@@ -329,8 +328,10 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule, options);
+        this._execModule(localModule, options, moduleRegistry, from);
       }
+
+      localModule.loaded = true;
     }
     return moduleRegistry[modulePath].exports;
   }
@@ -385,13 +386,16 @@ class Runtime {
     }
 
     if (manualMock) {
-      const localModule = {
+      const localModule: Module = {
+        children: [],
         exports: {},
         filename: modulePath,
         id: modulePath,
+        loaded: false,
       };
-      this._execModule(localModule);
+      this._execModule(localModule, undefined, this._mockRegistry, from);
       this._mockRegistry[moduleID] = localModule.exports;
+      localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
       this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
@@ -478,7 +482,12 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _execModule(localModule: Module, options: ?InternalModuleOptions) {
+  _execModule(
+    localModule: Module,
+    options: ?InternalModuleOptions,
+    moduleRegistry: ModuleRegistry,
+    from: Path,
+  ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
@@ -493,9 +502,23 @@ class Runtime {
 
     const dirname = path.dirname(filename);
     localModule.children = [];
-    localModule.parent = mockParentModule;
+
+    Object.defineProperty(
+      localModule,
+      'parent',
+      // https://github.com/facebook/flow/issues/285#issuecomment-270810619
+      ({
+        enumerable: true,
+        get() {
+          return moduleRegistry[from] || null;
+        },
+      }: Object),
+    );
+
     localModule.paths = this._resolver.getModulePaths(dirname);
-    localModule.require = this._createRequireImplementation(filename, options);
+    Object.defineProperty(localModule, 'require', {
+      value: this._createRequireImplementation(filename, options),
+    });
 
     const transformedFile = this._scriptTransformer.transform(
       filename,

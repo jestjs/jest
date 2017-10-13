@@ -15,6 +15,7 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
+import fs from 'fs';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
 
@@ -94,6 +95,25 @@ async function jasmine2(
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
+
+  runtime
+    .requireModule(require.resolve('source-map-support'), 'source-map-support')
+    .install({
+      handleUncaughtExceptions: false,
+      retrieveSourceMap: source => {
+        if (runtime._sourceMapRegistry[source]) {
+          try {
+            return {
+              map: JSON.parse(
+                fs.readFileSync(runtime._sourceMapRegistry[source]),
+              ),
+              url: source,
+            };
+          } catch (e) {}
+        }
+        return null;
+      },
+    });
 
   if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');

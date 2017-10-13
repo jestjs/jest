@@ -124,9 +124,18 @@ export default async function runJest({
   }
 
   if (!allTests.length) {
-    new Console(outputStream, outputStream).log(
-      getNoTestsFoundMessage(testRunData, globalConfig),
+    const noTestsFoundMessage = getNoTestsFoundMessage(
+      testRunData,
+      globalConfig,
     );
+
+    if (globalConfig.passWithNoTests) {
+      new Console(outputStream, outputStream).log(noTestsFoundMessage);
+    } else {
+      new Console(outputStream, outputStream).error(noTestsFoundMessage);
+
+      process.exit(1);
+    }
   } else if (
     allTests.length === 1 &&
     globalConfig.silent !== true &&

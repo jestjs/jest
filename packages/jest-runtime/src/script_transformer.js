@@ -238,8 +238,6 @@ export default class ScriptTransformer {
           transformed.map = inlineSourceMap.toJSON();
         }
       }
-    } else {
-      transformed.map = null;
     }
 
     // That means that the transform has a custom instrumentation
@@ -252,7 +250,7 @@ export default class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (instrument && transformed.map && mapCoverage) {
+    if (transformed.map) {
       const sourceMapContent =
         typeof transformed.map === 'string'
           ? transformed.map
@@ -404,6 +402,10 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
     writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
+    if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
+      return;
+    }
+
     e.message =
       'jest: failed to cache transform results in: ' +
       cachePath +
@@ -412,6 +414,20 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
     removeFile(cachePath);
     throw e;
   }
+};
+
+/**
+ * On Windows, renames are not atomic, leading to EPERM exceptions when two
+ * processes attempt to rename to the same target file at the same time.
+ * If the target file exists we can be reasonably sure another process has
+ * legitimately won a cache write race and ignore the error.
+ */
+const cacheWriteErrorSafeToIgnore = (e: Error, cachePath: Path) => {
+  return (
+    process.platform === 'win32' &&
+    e.code === 'EPERM' &&
+    fs.existsSync(cachePath)
+  );
 };
 
 const readCacheFile = (cachePath: Path): ?string => {

@@ -1,85 +1,13 @@
 {
-  "baseUrl": "/jest/",
-  "belowFold": {
-    "coverage": {
-      "content": "Easily create code coverage reports using `--coverage`. No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.",
-      "title": "Built-in code coverage reports"
-    },
-    "learn": {
-      "content": "In this [video](https://egghead.io/lessons/javascript-test-javascript-with-jest) by [Kent C. Dodds](https://twitter.com/kentcdodds) you will learn how to install Jest and write your first unit test.",
-      "title": "Learn how to test JavaScript with "
-    },
-    "mocking": {
-      "content": "Powerful [mocking library](/jest/docs/en/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.",
-      "title": "Powerful mocking library"
-    },
-    "parallelized": {
-      "content": "Jest parallelizes test runs across workers to maximize performance. Console messages are buffered and printed together with test results. Sandboxed test files and automatic global state resets for every test so no two tests conflict with each other.",
-      "title": "Fast and sandboxed"
-    },
-    "try": {
-      "content": "You can try out a real version of Jest using [repl.it](https://repl.it/languages/jest). Consider a function, `add()`, that adds two numbers. We can use a basic test in `add-test.js` to verify that 1 + 2 equals 3. Hit \"run\" to try it out!",
-      "title": "Try it out!"
-    },
-    "typescript": {
-      "content": "Jest works with any compile-to-JavaScript language and integrates seamlessly with [Babel](https://babeljs.io) and with TypeScript through [ts-jest](https://github.com/kulshekhar/ts-jest).",
-      "title": "Works with TypeScript"
-    },
-    "using": {
-      "button": "More Jest Users",
-      "content": "Jest is used by teams of all sizes to test web applications, node.js services, mobile apps, and APIs.",
-      "title": "Who's using Jest?"
-    },
-    "watch": {
-      "content": "The Jest core team and contributors regularly speak about Jest and Delightful JavaScript Testing. Check out our talks about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at f8 2017 or our talk about [Snapshot Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf 2017.",
-      "title": "Watch Talks about Jest"
-    },
-    "zeroConfig": {
-      "content": "Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.",
-      "title": "Zero configuration"
-    }
-  },
-  "description": "Jest is a JavaScript testing framework, used by Facebook to test all JavaScript code including React applications.",
-  "featureCallout": {
-    "content": "Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated \"zero-configuration\" experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in more stable and healthy code bases.",
-    "title": "Zero configuration testing platform"
-  },
-  "features": [
-    {
-      "content": "Complete and easy to set-up JavaScript testing solution. Works out of the box for any React project.",
-      "image": "/jest/img/content/female-technologist.png",
-      "imageAlign": "top",
-      "title": "Easy Setup"
-    },
-    {
-      "content": "Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.",
-      "image": "/jest/img/content/runner.png",
-      "imageAlign": "top",
-      "title": "Instant Feedback"
-    },
-    {
-      "content": "Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.",
-      "image": "/jest/img/content/camera-with-flash.png",
-      "imageAlign": "top",
-      "title": "Snapshot Testing"
-    }
-  ],
   "localized-strings": {
-    "API": "API",
-    "API Reference": "API Reference",
-    "Blog": "Blog",
-    "Docs": "Docs",
-    "GitHub": "GitHub",
-    "Globals": "Globals",
-    "Guides": "Guides",
-    "Help": "Help",
-    "Introduction": "Introduction",
-    "api": "Globals",
-    "asynchronous": "Testing Asynchronous Code",
+    "next": "Next",
+    "previous": "Previous",
+    "tagline": "🃏 Delightful JavaScript Testing",
     "cli": "Jest CLI Options",
     "configuration": "Configuring Jest",
     "expect": "Expect",
     "getting-started": "Getting Started",
+    "api": "Globals",
     "jest-object": "The Jest Object",
     "manual-mocks": "Manual Mocks",
     "migration-guide": "Migrating to Jest",
@@ -88,51 +16,66 @@
     "more-resources": "More Resources",
     "setup-teardown": "Setup and Teardown",
     "snapshot-testing": "Snapshot Testing",
+    "asynchronous": "Testing Asynchronous Code",
+    "testing-frameworks": "Testing Web Frameworks",
     "timer-mocks": "Timer Mocks",
-    "testing-frameworks": "Testing Other Frameworks",
     "troubleshooting": "Troubleshooting",
     "tutorial-async": "An Async Example",
     "tutorial-jquery": "DOM Manipulation",
     "tutorial-react": "Testing React Apps",
     "tutorial-react-native": "Testing React Native Apps",
+    "TutorialWebpack": "TutorialWebpack",
     "using-matchers": "Using Matchers",
-    "webpack": "Using With Webpack",
-    "previous": "Previous",
-    "next": "Continue Reading"
+    "webpack": "Using with webpack",
+    "Docs": "Docs",
+    "API": "API",
+    "Help": "Help",
+    "Blog": "Blog",
+    "GitHub": "GitHub",
+    "Introduction": "Introduction",
+    "API Reference": "API Reference",
+    "Framework Guides": "Framework Guides",
+    "Guides": "Guides"
   },
-  "promo": {
-    "get": "Get Started",
-    "learn": "Learn More",
-    "try": "Try Out Jest",
-    "watch": "Watch Talks"
-  },
-  "repo": "facebook/jest",
-  "support": {
-    "browse": {
-      "content": "Find what you're looking for in our detailed documentation and guides.\n\n- Learn how to [get started](/jest/docs/en/getting-started.html) with Jest.\n- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.\n- Learn how to [configure Jest](/jest/docs/en/configuration.html).\n- Look at the full [API Reference](/jest/docs/en/api.html).",
-      "title": "Browse the docs"
-    },
-    "header": {
-      "content": "Jest is worked on full-time by Facebook's JavaScript Tools team. Team members are often around and available for questions.",
-      "title": "Need help?"
-    },
-    "join": {
-      "content": "Ask questions and find answers from other Jest users like you.\n\n- Join the [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) channel on [Reactiflux](http://www.reactiflux.com/), a Discord community.\n- Many members of the community use Stack Overflow. Read through the [existing questions](https://stackoverflow.com/questions/tagged/jestjs) tagged with **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!",
-      "title": "Join the community"
-    },
-    "uptodate": {
-      "content": "Find out what's new with Jest.\n\n- Follow [Jest](https://twitter.com/fbjest) on Twitter.\n- Subscribe to the [Jest blog](/jest/blog/).\n- Look at the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).",
-      "title": "Stay up to date"
-    }
-  },
-  "tagline": "🃏 Delightful JavaScript Testing",
-  "url": "https://facebook.github.io",
-  "using": {
-    "header": {
-      "content": "Jest is used by teams of all sizes to test websites, mobile apps, and APIs.",
-      "title": "Who's using Jest?"
-    },
-    "prompt": "Is your company using Jest?",
-    "prompt_cta": "Add your company"
+  "pages-strings": {
+    "Find what you're looking for in our detailed documentation and guides.\\n\\n- Learn how to [get started](/jest/docs/en/getting-started.html) with Jest.\\n- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.\\n- Learn how to [configure Jest](/jest/docs/en/configuration.html).\\n- Look at the full [API Reference](/jest/docs/en/api.html).|no description given": "Find what you're looking for in our detailed documentation and guides.\\n\\n- Learn how to [get started](/jest/docs/en/getting-started.html) with Jest.\\n- [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with Jest.\\n- Learn how to [configure Jest](/jest/docs/en/configuration.html).\\n- Look at the full [API Reference](/jest/docs/en/api.html).",
+    "Browse the docs|no description given": "Browse the docs",
+    "Ask questions and find answers from other Jest users like you.\\n\\n- Join the [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) channel on [Reactiflux](http://www.reactiflux.com/), a Discord community.\\n- Many members of the community use Stack Overflow. Read through the [existing questions](https://stackoverflow.com/questions/tagged/jestjs) tagged with **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!|no description given": "Ask questions and find answers from other Jest users like you.\\n\\n- Join the [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) channel on [Reactiflux](http://www.reactiflux.com/), a Discord community.\\n- Many members of the community use Stack Overflow. Read through the [existing questions](https://stackoverflow.com/questions/tagged/jestjs) tagged with **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!",
+    "Join the community|no description given": "Join the community",
+    "Find out what's new with Jest.\\n\\n- Follow [Jest](https://twitter.com/fbjest) on Twitter.\\n- Subscribe to the [Jest blog](/jest/blog/).\\n- Look at the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).|no description given": "Find out what's new with Jest.\\n\\n- Follow [Jest](https://twitter.com/fbjest) on Twitter.\\n- Subscribe to the [Jest blog](/jest/blog/).\\n- Look at the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).",
+    "Stay up to date|no description given": "Stay up to date",
+    "Need help?|no description given": "Need help?",
+    "Jest is worked on full-time by Facebook's JavaScript Tools team. Team members are often around and available for questions.|no description given": "Jest is worked on full-time by Facebook's JavaScript Tools team. Team members are often around and available for questions.",
+    "Try Out Jest|no description given": "Try Out Jest",
+    "Get Started|no description given": "Get Started",
+    "Watch Talks|no description given": "Watch Talks",
+    "Learn More|no description given": "Learn More",
+    "Complete and easy to set-up JavaScript testing solution. Works out of the box for any React project.|no description given": "Complete and easy to set-up JavaScript testing solution. Works out of the box for any React project.",
+    "Easy Setup|no description given": "Easy Setup",
+    "Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.|no description given": "Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.",
+    "Instant Feedback|no description given": "Instant Feedback",
+    "Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.|no description given": "Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.",
+    "Snapshot Testing|no description given": "Snapshot Testing",
+    "Zero configuration testing platform|no description given": "Zero configuration testing platform",
+    "Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated \\\"zero-configuration\\\" experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in more stable and healthy code bases.|no description given": "Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated \\\"zero-configuration\\\" experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in more stable and healthy code bases.",
+    "Jest parallelizes test runs across workers to maximize performance. Console messages are buffered and printed together with test results. Sandboxed test files and automatic global state resets for every test so no two tests conflict with each other.|no description given": "Jest parallelizes test runs across workers to maximize performance. Console messages are buffered and printed together with test results. Sandboxed test files and automatic global state resets for every test so no two tests conflict with each other.",
+    "Fast and sandboxed|no description given": "Fast and sandboxed",
+    "Easily create code coverage reports using `--coverage`. No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.|no description given": "Easily create code coverage reports using `--coverage`. No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.",
+    "Built-in code coverage reports|no description given": "Built-in code coverage reports",
+    "Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.|no description given": "Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.",
+    "Zero configuration|no description given": "Zero configuration",
+    "Try it out!|no description given": "Try it out!",
+    "You can try out a real version of Jest using [repl.it](https://repl.it/languages/jest). Consider a function, `add()`, that adds two numbers. We can use a basic test in `add-test.js` to verify that 1 + 2 equals 3. Hit \\\"run\\\" to try it out!|no description given": "You can try out a real version of Jest using [repl.it](https://repl.it/languages/jest). Consider a function, `add()`, that adds two numbers. We can use a basic test in `add-test.js` to verify that 1 + 2 equals 3. Hit \\\"run\\\" to try it out!",
+    "Powerful [mocking library](/jest/docs/en/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.|no description given": "Powerful [mocking library](/jest/docs/en/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.",
+    "Powerful mocking library|no description given": "Powerful mocking library",
+    "Jest works with any compile-to-JavaScript language and integrates seamlessly with [Babel](https://babeljs.io) and with TypeScript through [ts-jest](https://github.com/kulshekhar/ts-jest).|no description given": "Jest works with any compile-to-JavaScript language and integrates seamlessly with [Babel](https://babeljs.io) and with TypeScript through [ts-jest](https://github.com/kulshekhar/ts-jest).",
+    "Works with TypeScript|no description given": "Works with TypeScript",
+    "Watch Talks about Jest|no description given": "Watch Talks about Jest",
+    "The Jest core team and contributors regularly speak about Jest and Delightful JavaScript Testing. Check out our talks about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at f8 2017 or our talk about [Snapshot Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf 2017.|no description given": "The Jest core team and contributors regularly speak about Jest and Delightful JavaScript Testing. Check out our talks about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at f8 2017 or our talk about [Snapshot Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf 2017.",
+    "Learn how to test JavaScript with|no description given": "Learn how to test JavaScript with",
+    "In this [video](https://egghead.io/lessons/javascript-test-javascript-with-jest) by [Kent C. Dodds](https://twitter.com/kentcdodds) you will learn how to install Jest and write your first unit test.|no description given": "In this [video](https://egghead.io/lessons/javascript-test-javascript-with-jest) by [Kent C. Dodds](https://twitter.com/kentcdodds) you will learn how to install Jest and write your first unit test.",
+    "Who's using Jest?|no description given": "Who's using Jest?",
+    "Jest is used by teams of all sizes to test web applications, node.js services, mobile apps, and APIs.|no description given": "Jest is used by teams of all sizes to test web applications, node.js services, mobile apps, and APIs.",
+    "More Jest Users|no description given": "More Jest Users"
   }
 }

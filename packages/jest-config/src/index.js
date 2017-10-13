@@ -96,6 +96,7 @@ const getConfigs = (
       notify: options.notify,
       onlyChanged: options.onlyChanged,
       outputFile: options.outputFile,
+      passWithNoTests: options.passWithNoTests,
       projects: options.projects,
       replname: options.replname,
       reporters: options.reporters,

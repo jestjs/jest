@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`empty with no calls mock 1`] = `
+Object {
+  "calls": Array [],
+  "name": "jest.fn()",
+}
+`;
+
+exports[`instantiated mock 1`] = `
+Object {
+  "calls": Array [
+    Array [
+      Object {
+        "name": "some fine name",
+      },
+    ],
+  ],
+  "name": "jest.fn()",
+}
+`;
+
+exports[`mock with calls 1`] = `
+Object {
+  "calls": Array [
+    Array [],
+    Array [
+      Object {
+        "foo": "bar",
+      },
+      42,
+    ],
+  ],
+  "name": "jest.fn()",
+}
+`;
+
+exports[`mock with name 1`] = `
+Object {
+  "calls": Array [],
+  "name": "name of mock is nice",
+}
+`;

@@ -32,39 +32,51 @@ import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
+import rimraf from 'rimraf';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
-  const argv: Argv = _buildArgv(maybeArgv, project);
-  const projects = _getProjectListFromCLIArgs(argv, project);
+  const argv: Argv = buildArgv(maybeArgv, project);
+  const projects = getProjectListFromCLIArgs(argv, project);
   // If we're running a single Jest project, we might want to use another
   // version of Jest (the one that is specified in this project's package.json)
-  const runCLIFn = _getRunCLIFn(projects);
+  const runCLIFn = getRunCLIFn(projects);
 
   const {results, globalConfig} = await runCLIFn(argv, projects);
-  _readResultsAndExit(results, globalConfig);
+  readResultsAndExit(results, globalConfig);
 }
 
 export const runCLI = async (
   argv: Argv,
   projects: Array<Path>,
 ): Promise<{results: AggregatedResult, globalConfig: GlobalConfig}> => {
+  const realFs = require('fs');
+  const fs = require('graceful-fs');
+  fs.gracefulify(realFs);
+
   let results;
-  // Optimize 'fs' module and make it more compatible with multiple platforms.
-  _patchGlobalFSModule();
 
   // If we output a JSON object, we can't write anything to stdout, since
   // it'll break the JSON structure and it won't be valid.
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  argv.version && _printVersionAndExit(outputStream);
+  argv.version && printVersionAndExit(outputStream);
 
   try {
-    const {globalConfig, configs, hasDeprecationWarnings} = _getConfigs(
+    const {globalConfig, configs, hasDeprecationWarnings} = getConfigs(
       projects,
       argv,
       outputStream,
     );
+
+    if (argv.clearCache) {
+      configs.forEach(config => {
+        rimraf.sync(config.cacheDirectory);
+        process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
+      });
+
+      process.exit(0);
+    }
 
     await _run(
       globalConfig,
@@ -97,7 +109,7 @@ export const runCLI = async (
   }
 };
 
-const _readResultsAndExit = (
+const readResultsAndExit = (
   result: ?AggregatedResult,
   globalConfig: GlobalConfig,
 ) => {
@@ -108,7 +120,7 @@ const _readResultsAndExit = (
   }
 };
 
-const _buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
+const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
   const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
     .usage(args.usage)
     .alias('help', 'h')
@@ -122,7 +134,7 @@ const _buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
   return argv;
 };
 
-const _getProjectListFromCLIArgs = (argv, project: ?Path) => {
+const getProjectListFromCLIArgs = (argv, project: ?Path) => {
   const projects = argv.projects ? argv.projects : [];
 
   if (project) {
@@ -136,10 +148,10 @@ const _getProjectListFromCLIArgs = (argv, project: ?Path) => {
   return projects;
 };
 
-const _getRunCLIFn = (projects: Array<Path>) =>
+const getRunCLIFn = (projects: Array<Path>) =>
   projects.length === 1 ? getJest(projects[0]).runCLI : runCLI;
 
-const _printDebugInfoAndExitIfNeeded = (
+const printDebugInfoAndExitIfNeeded = (
   argv,
   globalConfig,
   configs,
@@ -153,12 +165,12 @@ const _printDebugInfoAndExitIfNeeded = (
   }
 };
 
-const _printVersionAndExit = outputStream => {
+const printVersionAndExit = outputStream => {
   outputStream.write(`v${VERSION}\n`);
   process.exit(0);
 };
 
-const _ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
+const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
   const configPathSet = new Set();
 
   for (const {configPath} of parsedConfigs) {
@@ -190,7 +202,7 @@ const _ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
 //
 // If no projects are specified, process.cwd() will be used as the default
 // (and only) project.
-const _getConfigs = (
+const getConfigs = (
   projectsFromCLIArgs: Array<Path>,
   argv: Argv,
   outputStream,
@@ -225,7 +237,7 @@ const _getConfigs = (
 
   if (projects.length > 1) {
     const parsedConfigs = projects.map(root => readConfig(argv, root, true));
-    _ensureNoDuplicateConfigs(parsedConfigs, projects);
+    ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
@@ -242,7 +254,7 @@ const _getConfigs = (
     throw new Error('jest: No configuration found for any project.');
   }
 
-  _printDebugInfoAndExitIfNeeded(argv, globalConfig, configs, outputStream);
+  printDebugInfoAndExitIfNeeded(argv, globalConfig, configs, outputStream);
 
   return {
     configs,
@@ -251,13 +263,7 @@ const _getConfigs = (
   };
 };
 
-const _patchGlobalFSModule = () => {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-};
-
-const _buildContextsAndHasteMaps = async (
+const buildContextsAndHasteMaps = async (
   configs,
   globalConfig,
   outputStream,
@@ -291,14 +297,14 @@ const _run = async (
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
-  const {contexts, hasteMapInstances} = await _buildContextsAndHasteMaps(
+  const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,
     outputStream,
   );
 
   globalConfig.watch || globalConfig.watchAll
-    ? await _runWatch(
+    ? await runWatch(
         contexts,
         configs,
         hasDeprecationWarnings,
@@ -307,7 +313,7 @@ const _run = async (
         hasteMapInstances,
         changedFilesPromise,
       )
-    : await _runWithoutWatch(
+    : await runWithoutWatch(
         globalConfig,
         contexts,
         outputStream,
@@ -316,7 +322,7 @@ const _run = async (
       );
 };
 
-const _runWatch = async (
+const runWatch = async (
   contexts,
   configs,
   hasDeprecationWarnings,
@@ -337,7 +343,7 @@ const _runWatch = async (
   return watch(globalConfig, contexts, outputStream, hasteMapInstances);
 };
 
-const _runWithoutWatch = async (
+const runWithoutWatch = async (
   globalConfig,
   contexts,
   outputStream,

@@ -31,6 +31,7 @@ it('maps code coverage against original source', () => {
   // reduce absolute paths embedded in the coverage map to just filenames
   Object.keys(coverageMap).forEach(filename => {
     coverageMap[filename].path = path.basename(coverageMap[filename].path);
+    delete coverageMap[filename].hash;
     coverageMap[path.basename(filename)] = coverageMap[filename];
     delete coverageMap[filename];
   });

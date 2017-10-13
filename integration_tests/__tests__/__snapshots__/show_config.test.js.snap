@@ -72,6 +72,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"noStackTrace\\": false,
     \\"nonFlagArgs\\": [],
     \\"notify\\": false,
+    \\"passWithNoTests\\": false,
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
     \\"runTestsByPath\\": false,
     \\"testFailureExitCode\\": 1,
