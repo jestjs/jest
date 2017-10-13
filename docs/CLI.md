@@ -99,7 +99,7 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the current directory is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the current directory is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
 ### `--coverage`
 
@@ -107,7 +107,7 @@ Indicates that test coverage information should be collected and reported in the
 
 ### `--debug`
 
-Print debugging info about your jest config.
+Print debugging info about your Jest config.
 
 ### `--env=<environment>`
 
