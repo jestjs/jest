@@ -3,7 +3,7 @@ id: tutorial-async
 title: An Async Example
 ---
 
-First, enable Babel support in Jest as documented in the [Getting Started](/jest/docs/getting-started.html#using-babel) guide.
+First, enable Babel support in Jest as documented in the [Getting Started](GettingStarted.md#using-babel) guide.
 
 Let's implement a simple module that fetches user data from an API and
 returns the user name.
@@ -172,4 +172,4 @@ The code for this example is available at
 [examples/async](https://github.com/facebook/jest/tree/master/examples/async).
 
 If you'd like to test timers, like `setTimeout`, take a look at the
-[Timer mocks](/jest/docs/timer-mocks.html) documentation.
+[Timer mocks](TimerMocks.md) documentation.

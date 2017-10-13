@@ -61,7 +61,7 @@ Returns the `jest` object for chaining.
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
 ### `jest.fn(implementation)`
-Returns a new, unused [mock function](/jest/docs/mock-function-api.html). Optionally takes a mock implementation.
+Returns a new, unused [mock function](MockFunctionAPI.html). Optionally takes a mock implementation.
 
 ```js
   const mockFn = jest.fn();
@@ -79,7 +79,7 @@ Determines if the given function is a mocked function.
 ### `jest.genMockFromModule(moduleName)`
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
-This is useful when you want to create a [manual mock](/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
+This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior.
 
 ### `jest.mock(moduleName, factory, options)`
 Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional. For example:
@@ -219,7 +219,7 @@ Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()`, `se
 
 When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
 
-This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](/jest/docs/timer-mocks.html) doc for more information.
+This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](TimerMocks.md) doc for more information.
 
 ### `jest.runAllImmediates()`
 Exhausts all tasks queued by `setImmediate()`.
@@ -237,7 +237,7 @@ This is useful for scenarios such as one where the module being tested schedules
 ### `jest.setMock(moduleName, moduleExports)`
 Explicitly supplies the mock object that the module system should return for the specified module.
 
-On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
+On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](ManualMocks.md) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
