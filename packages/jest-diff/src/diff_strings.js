@@ -36,27 +36,27 @@ type Hunk = {|
   oldStart: number,
 |};
 
-type DIFF_DIGIT = -1 | 1 | 0; // deleted | inserted | equal
+type DiffDigit = -1 | 1 | 0; // deleted | inserted | equal
 
-type DiffItem = [DIFF_DIGIT, string]; // diff-match-patch
+type DiffItem = [DiffDigit, string]; // diff-match-patch
 type DiffItems = Array<DiffItem>;
 type DelInsDiffs = [Array<DiffItems>, Array<DiffItems>];
 
 // Given diff digit, return array which consists of:
 // if compared line is deleted or inserted: corresponding original line
 // if compared line is equal: original received and expected lines
-type GetOriginal = (digit: DIFF_DIGIT) => Array<string>;
+type GetOriginal = (digit: DiffDigit) => Array<string>;
 
 // Given chunk, return diff character.
 const getDiffChar = (chunk): string =>
   chunk.removed ? '-' : chunk.added ? '+' : ' ';
 
 // Given diff character in line of hunk or computed from properties of chunk.
-const getDiffDigit = (char: string): DIFF_DIGIT =>
+const getDiffDigit = (char: string): DiffDigit =>
   char === '-' ? -1 : char === '+' ? 1 : 0;
 
 // Color for text of line.
-const getColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) => {
+const getColor = (digit: DiffDigit, onlyIndentationChanged?: boolean) => {
   if (digit === -1) {
     return chalk.green; // deleted
   }
@@ -69,7 +69,7 @@ const getColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) => {
 const bgChanged = chalk.inverse;
 
 // Background color for leading or trailing spaces.
-const getBgColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) =>
+const getBgColor = (digit: DiffDigit, onlyIndentationChanged?: boolean) =>
   digit === 0 && !onlyIndentationChanged ? chalk.bgYellow : bgChanged;
 
 // ONLY trailing if expected value is snapshot or multiline string.
@@ -236,7 +236,7 @@ const getterForChunks = (original: Original) => {
   let iExpected = 0;
   let iReceived = 0;
 
-  return (digit: DIFF_DIGIT) => {
+  return (digit: DiffDigit) => {
     if (digit === -1) {
       return [linesExpected[iExpected++]];
     }
@@ -310,7 +310,7 @@ const getterForHunks = (original: Original) => {
   const linesExpected = splitIntoLines(original.a);
   const linesReceived = splitIntoLines(original.b);
 
-  return (iExpected: number, iReceived: number) => (digit: DIFF_DIGIT) => {
+  return (iExpected: number, iReceived: number) => (digit: DiffDigit) => {
     if (digit === -1) {
       return [linesExpected[iExpected++]];
     }
