@@ -13,7 +13,7 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
   Please update your configuration.</>
 </>
   <bold>Configuration Documentation:</>
-  https://facebook.github.io/jest/docs/configuration.html</>
+  https://facebook.github.io/jest/docs/en/configuration.html</>
 </>"
 `;
 
@@ -23,7 +23,7 @@ exports[`preset throws when preset not found 1`] = `
 <red>  Preset <bold>doesnt-exist not found.</>
 <red></>
 <red>  <bold>Configuration Documentation:</>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://facebook.github.io/jest/docs/en/configuration.html</>
 <red></>"
 `;
 
@@ -33,7 +33,7 @@ exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 <red>  Configuration option <bold>rootDir must be specified.</>
 <red></>
 <red>  <bold>Configuration Documentation:</>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://facebook.github.io/jest/docs/en/configuration.html</>
 <red></>"
 `;
 
@@ -43,7 +43,7 @@ exports[`testEnvironment throws on invalid environment names 1`] = `
 <red>  Test environment <bold>phantom cannot be found. Make sure the <bold>testEnvironment configuration option points to an existing node module.</>
 <red></>
 <red>  <bold>Configuration Documentation:</>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://facebook.github.io/jest/docs/en/configuration.html</>
 <red></>"
 `;
 
@@ -53,6 +53,6 @@ exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
 <red>  Configuration options <bold>testMatch and <bold>testRegex cannot be used together.</>
 <red></>
 <red>  <bold>Configuration Documentation:</>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://facebook.github.io/jest/docs/en/configuration.html</>
 <red></>"
 `;

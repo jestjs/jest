@@ -16,7 +16,7 @@ $ npm install --save jest-changed-files
 Get the list of files and repos that have changed since the last commit.
 
 #### Parameters
-roots: Array of string paths gathered from [jest roots](https://facebook.github.io/jest/docs/configuration.html#roots-array-string).
+roots: Array of string paths gathered from [jest roots](https://facebook.github.io/jest/docs/en/configuration.html#roots-array-string).
 
 options: Object literal with keys
 * lastCommit: boolean
@@ -26,7 +26,7 @@ options: Object literal with keys
 
 Get a set of git and hg repositories.
 #### Parameters
-roots: Array of string paths gathered from [jest roots](https://facebook.github.io/jest/docs/configuration.html#roots-array-string).
+roots: Array of string paths gathered from [jest roots](https://facebook.github.io/jest/docs/en/configuration.html#roots-array-string).
 
 ## Usage
 

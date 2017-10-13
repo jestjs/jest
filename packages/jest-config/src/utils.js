@@ -16,7 +16,7 @@ import Resolver from 'jest-resolve';
 import chalk from 'chalk';
 const BULLET: string = chalk.bold('\u25cf ');
 const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
-  https://facebook.github.io/jest/docs/configuration.html
+  https://facebook.github.io/jest/docs/en/configuration.html
 `;
 
 const createValidationError = (message: string) => {

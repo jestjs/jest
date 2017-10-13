@@ -119,7 +119,7 @@ exports[`Custom Reporters Integration invalid format for adding reporters 1`] = 
     ]
 
   Configuration Documentation:
-  https://facebook.github.io/jest/docs/configuration.html
+  https://facebook.github.io/jest/docs/en/configuration.html
 
 "
 `;
