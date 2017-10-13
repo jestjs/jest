@@ -58,7 +58,11 @@ class JSDOMEnvironment {
     });
   }
 
-  dispose(): void {
+  setup(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -68,6 +72,7 @@ class JSDOMEnvironment {
     this.global = null;
     this.document = null;
     this.fakeTimers = null;
+    return Promise.resolve();
   }
 
   runScript(script: Script): ?any {

@@ -65,12 +65,17 @@ class NodeEnvironment {
     });
   }
 
-  dispose() {
+  setup(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
     this.context = null;
     this.fakeTimers = null;
+    return Promise.resolve();
   }
 
   // Disabling rule as return type depends on script's return type.
