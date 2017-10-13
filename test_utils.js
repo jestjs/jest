@@ -36,6 +36,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   onlyChanged: false,
   outputFile: null,
   passWithNoTests: false,
+  pretransformFiles: false,
   projects: [],
   replname: null,
   reporters: [],

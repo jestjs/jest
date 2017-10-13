@@ -58,6 +58,7 @@ export default ({
   notify: false,
   onlyChanged: false,
   preset: 'react-native',
+  pretransformFiles: false,
   projects: ['project-a', 'project-b/'],
   reporters: [
     'default',

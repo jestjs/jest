@@ -357,6 +357,15 @@ export const options = {
     description: "A preset that is used as a base for Jest's configuration.",
     type: 'string',
   },
+  pretransformFiles: {
+    description:
+      'Find all test dependencies before the run, transform their ' +
+      'source and write transformed source cache files. By doing it before the ' +
+      'actual test run Jest can make sure that files are not transformed twice ' +
+      'as well as take advantage of doing it in parallel. This is useful when ' +
+      'running Jest on CI on cold cache ',
+    type: 'boolean',
+  },
   projects: {
     description:
       'A list of projects that use Jest to run all tests of all ' +
