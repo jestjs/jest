@@ -112,7 +112,7 @@ export default (async function runJest({
   allTests = sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    const testsPaths = [...new Set(allTests.map(test => test.path))];
+    const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
     if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));
     } else {
