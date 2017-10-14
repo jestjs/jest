@@ -135,9 +135,10 @@ describe('async jasmine', () => {
 
   it('async test fails', () => {
     const result = runJest.json('jasmine_async', ['async_test_fails.test.js']);
-    const stdout = result.stdout;
 
-    const expected = 'Expected value to be truthy, instead received';
-    expect(stdout).toEqual(expect.stringContaining(expected));
+    expect(result.status).toBe(1);
+    expect(result.json.testResults[0].message).toEqual(
+      expect.stringContaining('Expected value to be truthy, instead received'),
+    );
   });
 });
