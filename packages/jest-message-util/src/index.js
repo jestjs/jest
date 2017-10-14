@@ -36,8 +36,8 @@ type StackTraceOptions = {
 
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
-const ANONYMOUS_TRACE_IGNORE = /^\s+at <anonymous>.*$/;
+const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
 const TITLE_INDENT = '  ';
@@ -119,7 +119,7 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
   let pathCounter = 0;
 
   return lines.filter(line => {
-    if (ANONYMOUS_TRACE_IGNORE.test(line)) {
+    if (ANONYMOUS_FN_IGNORE.test(line)) {
       return false;
     }
 
@@ -151,7 +151,7 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
       return false;
     }
 
-    if (STACK_TRACE_IGNORE.test(line)) {
+    if (JEST_INTERNALS_IGNORE.test(line)) {
       return false;
     }
 
