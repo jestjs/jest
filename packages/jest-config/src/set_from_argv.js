@@ -17,9 +17,10 @@ export default function setFromArgv(
   options: InitialOptions,
   argv: Argv,
 ): InitialOptions {
+  // $FlowFixMe: Seems like flow doesn't approve of string values
   const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
-    .reduce((options: Object, key) => {
+    .reduce((options: {[key: string]: mixed}, key) => {
       switch (key) {
         case 'coverage':
           options.collectCoverage = argv[key];

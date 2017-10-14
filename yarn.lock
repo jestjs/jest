@@ -2616,9 +2616,9 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flow-bin@^0.53.1:
-  version "0.53.1"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.53.1.tgz#9b22b63a23c99763ae533ebbab07f88c88c97d84"
+flow-bin@^0.57.2:
+  version "0.57.2"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.57.2.tgz#0b5ed4dd38a1991047e9bee71d62a763ae61b6b7"
 
 flow-remove-types@^1.1.0:
   version "1.2.1"
@@ -3065,9 +3065,9 @@ ignore@^3.3.3:
   version "3.3.5"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.5.tgz#c4e715455f6073a8d7e5dae72d2fc9d71663dba6"
 
-immutable@^4.0.0-rc.1:
-  version "4.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.2.tgz#fdd0948aae728fda2306a02f72bb73e1773432d1"
+immutable@^4.0.0-rc.7:
+  version "4.0.0-rc.7"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.7.tgz#50b4ad60e02ac5c71ebb19ad72577b08ed4ab736"
 
 import-modules@^1.1.0:
   version "1.1.0"

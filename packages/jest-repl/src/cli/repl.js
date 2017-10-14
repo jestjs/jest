@@ -32,7 +32,6 @@ const evalCommand = (cmd, context, filename, callback, config) => {
     }
     result = vm.runInThisContext(cmd);
   } catch (e) {
-    // $FlowFixMe: https://github.com/facebook/flow/pull/4713
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);

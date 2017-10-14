@@ -70,14 +70,16 @@ export default function queueRunner(options: Options) {
     );
   };
 
-  const result = options.queueableFns.reduce(
+  const result: Promise<void> = options.queueableFns.reduce(
     (promise, fn) => promise.then(() => mapper(fn)),
     Promise.resolve(),
   );
 
   return {
     cancel: token.cancel.bind(token),
+    // $FlowFixMe
     catch: result.catch.bind(result),
+    // $FlowFixMe
     then: result.then.bind(result),
   };
 }

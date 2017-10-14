@@ -192,7 +192,7 @@ export default class TestScheduler {
   }
 
   _partitionTests(
-    testRunners: {[key: string]: TestRunner},
+    testRunners: {[key: string]: TestRunner, __proto__: null},
     tests: Array<Test>,
   ) {
     if (Object.keys(testRunners).length > 1) {
@@ -298,7 +298,7 @@ export default class TestScheduler {
     contexts: Set<Context>,
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
-  ) {
+  ): Promise<void> {
     if (this._globalConfig.bail && aggregatedResults.numFailedTests !== 0) {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});

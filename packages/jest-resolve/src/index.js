@@ -46,7 +46,7 @@ type ModuleNameMapperConfig = {|
   moduleName: string,
 |};
 
-type BooleanObject = {[key: string]: boolean};
+type BooleanObject = {[key: string]: boolean, __proto__: null};
 
 const NATIVE_PLATFORM = 'native';
 
@@ -64,9 +64,9 @@ const nodePaths = process.env.NODE_PATH
 class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
-  _moduleIDCache: {[key: string]: string};
-  _moduleNameCache: {[name: string]: Path};
-  _modulePathCache: {[path: Path]: Array<Path>};
+  _moduleIDCache: {[key: string]: string, __proto__: null};
+  _moduleNameCache: {[name: string]: Path, __proto__: null};
+  _modulePathCache: {[path: Path]: Array<Path>, __proto__: null};
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {

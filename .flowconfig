@@ -3,6 +3,7 @@
 .*/node_modules/fbjs/.*
 .*/node_modules/jest-validate/.*
 .*/node_modules/react-native/.*
+.*/node_modules/graphql/.*
 .*/vendor/jsonlint/.*
 .*/examples/.*
 .*/website/.*
@@ -13,4 +14,4 @@ module.name_mapper='^types/\(.*\)$' -> '<PROJECT_ROOT>/types/\1.js'
 module.name_mapper='\(jest-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
 
 [version]
-^0.53.1
+^0.57.2

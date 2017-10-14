@@ -121,7 +121,10 @@ export default class CoverageReporter extends BaseReporter {
     this._checkThreshold(this._globalConfig, map);
   }
 
-  _addUntestedFiles(globalConfig: GlobalConfig, contexts: Set<Context>) {
+  _addUntestedFiles(
+    globalConfig: GlobalConfig,
+    contexts: Set<Context>,
+  ): Promise<void> {
     const files = [];
     contexts.forEach(context => {
       const config = context.config;

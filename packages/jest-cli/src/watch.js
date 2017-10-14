@@ -37,8 +37,8 @@ export default function watch(
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
-) {
-  // `globalConfig` will be consantly updated and reassigned as a result of
+): Promise<void> {
+  // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
   let globalConfig = initialGlobalConfig;
 
