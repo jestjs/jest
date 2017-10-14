@@ -20,7 +20,8 @@ let nodeInternals = [];
 
 try {
   nodeInternals = StackUtils.nodeInternals()
-    // Somehow we get a trace without the `process._tickCallback` part
+    // this is to have the tests be the same in node 4 and node 6.
+    // TODO: Remove when we drop support for node 4
     .concat(new RegExp('internal/process/next_tick.js'));
 } catch (e) {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
