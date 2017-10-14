@@ -10,8 +10,9 @@
 * `[jest-editor-support]` Fix editor support test for node 4 ([#4640](https://github.com/facebook/jest/pull/4640))
 * `[jest-mock]` Support mocking constructor in `mockImplementationOnce` ([#4599](https://github.com/facebook/jest/pull/4599))
 * `[jest-runtime]` Fix manual user mocks not working with custom resolver ([#4489](https://github.com/facebook/jest/pull/4489))
-* `[jest-runtime]` Move `babel-core` to peer dependenies so it works with Babel 7 ([#4557](https://github.com/facebook/jest/pull/4557))
+* `[jest-runtime]` Move `babel-core` to peer dependencies so it works with Babel 7 ([#4557](https://github.com/facebook/jest/pull/4557))
 * `[jest-util]` Fix `runOnlyPendingTimers` for `setTimeout` inside `setImmediate` ([#4608](https://github.com/facebook/jest/pull/4608))
+* `[jest-message-util]` Always remove node internals from stacktraces (TBD)
 
 ### Features
 * `[jest-environment-*]` [**BREAKING**] Add Async Test Environment APIs, dispose is now teardown ([#4506](https://github.com/facebook/jest/pull/4506))

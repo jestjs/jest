@@ -14,6 +14,11 @@ import path from 'path';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
 import slash from 'slash';
+import StackUtils from 'stack-utils';
+
+const nodeInternals = StackUtils.nodeInternals()
+  // Somehow we get a trace without the `process._tickCallback` part
+  .concat(new RegExp('internal/process/next_tick.js'));
 
 type StackTraceConfig = {
   rootDir: string,
@@ -27,6 +32,9 @@ type StackTraceOptions = {
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
 const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const ANONYMOUS_TRACE_IGNORE = /^\s+at <anonymous>.*$/;
+const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
+const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -106,10 +114,26 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
   let pathCounter = 0;
 
   return lines.filter(line => {
-    const isPath = STACK_PATH_REGEXP.test(line);
-    if (!isPath) {
+    if (ANONYMOUS_TRACE_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (ANONYMOUS_PROMISE_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (ANONYMOUS_GENERATOR_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (nodeInternals.some(internal => internal.test(line))) {
+      return false;
+    }
+
+    if (!STACK_PATH_REGEXP.test(line)) {
       return true;
     }
+
     if (JASMINE_IGNORE.test(line)) {
       return false;
     }
@@ -118,7 +142,15 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
       return true; // always keep the first line even if it's from Jest
     }
 
-    return !(STACK_TRACE_IGNORE.test(line) || options.noStackTrace);
+    if (options.noStackTrace) {
+      return false;
+    }
+
+    if (STACK_TRACE_IGNORE.test(line)) {
+      return false;
+    }
+
+    return true;
   });
 };
 

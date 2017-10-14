@@ -10,6 +10,7 @@
   "dependencies": {
     "chalk": "^2.0.1",
     "micromatch": "^2.3.11",
-    "slash": "^1.0.0"
+    "slash": "^1.0.0",
+    "stack-utils": "^1.0.1"
   }
 }
