@@ -16,9 +16,16 @@ import micromatch from 'micromatch';
 import slash from 'slash';
 import StackUtils from 'stack-utils';
 
-const nodeInternals = StackUtils.nodeInternals()
-  // Somehow we get a trace without the `process._tickCallback` part
-  .concat(new RegExp('internal/process/next_tick.js'));
+let nodeInternals = [];
+
+try {
+  nodeInternals = StackUtils.nodeInternals()
+    // Somehow we get a trace without the `process._tickCallback` part
+    .concat(new RegExp('internal/process/next_tick.js'));
+} catch (e) {
+  // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
+  // node internals in the browser though, so no issue.
+}
 
 type StackTraceConfig = {
   rootDir: string,
