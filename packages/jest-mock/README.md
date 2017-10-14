@@ -104,6 +104,12 @@ implementations for the function.
 
 Sets the default mock implementation for the function.
 
+##### `.mockStoreArgumentsByValue()`
+
+Configures the mock to store arguments by value instead of by reference. This is
+useful when you are intentionally mutating an argument passed to your mock
+function after it was called.
+
 ##### `.mockReturnThis()`
 
 Syntactic sugar for .mockImplementation(function() {return this;})

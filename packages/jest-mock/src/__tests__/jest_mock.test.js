@@ -600,4 +600,19 @@ describe('moduleMocker', () => {
       expect(spy2.mock.calls.length).toBe(1);
     });
   });
+
+  test('mockStoreArgumentsByValue causes arguments to be stored by value', () => {
+    const myMockFn = moduleMocker.fn().mockStoreArgumentsByValue();
+    const myOtherMockFn = moduleMocker.fn();
+
+    const someObject = {};
+
+    myMockFn(someObject);
+    myOtherMockFn(someObject);
+
+    someObject.newProperty = 'I am new';
+
+    expect(myMockFn).toHaveBeenCalledWith({});
+    expect(myOtherMockFn).toHaveBeenCalledWith({newProperty: 'I am new'});
+  });
 });

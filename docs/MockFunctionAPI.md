@@ -190,3 +190,24 @@ const myMockFn = jest.fn()
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 > 'first call', 'second call', 'default', 'default'
 ```
+
+### `mockFn.storeArgumentsByValue()`
+##### available in Jest **21.3.0+**
+Configures the mock to store arguments by value instead of by reference. This is
+useful when you are intentionally mutating an argument passed to your mock
+function after it was called.
+
+```js
+const myMockFn = jest.fn().mockStoreArgumentsByValue();
+const myOtherMockFn = jest.fn();
+
+const someObject = {};
+
+myMockFn(someObject);
+myOtherMockFn(someObject);
+
+someObject.newProperty = 'I am new';
+
+expect(myMockFn).toHaveBeenCalledWith({}); // passes.
+expect(myOtherMockFn).toHaveBeenCalledWith({ newProperty: 'I am new' }); // also passes.
+```
