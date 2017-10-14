@@ -19,7 +19,9 @@ import StackUtils from 'stack-utils';
 let nodeInternals = [];
 
 try {
-  nodeInternals = StackUtils.nodeInternals();
+  nodeInternals = StackUtils.nodeInternals()
+    // Somehow we get a trace without the `process._tickCallback` part
+    .concat(new RegExp('internal/process/next_tick.js'));
 } catch (e) {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.

@@ -41,6 +41,7 @@ const assertionStack =
       at promise.then (node_modules/jest-jasmine2/build/queue_runner.js:74:39)
           at <anonymous>
       at process._tickCallback (internal/process/next_tick.js:188:7)
+      at internal/process/next_tick.js:188:7
 `;
 
 it('should exclude jasmine from stack trace for Unix paths.', () => {
