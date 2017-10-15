@@ -551,6 +551,17 @@ test('ounces per can is at most 12', () => {
 });
 ```
 
+### `.toBeWithin(number, number)`
+
+Use `.toBeWithin` when you want to check that a number is within a range.
+For example, if you want to test that \`ouncesPerCan()\` returns a value between 5 and 20, write:
+
+```js
+test('ounces per can is between 5 and 20', () => {
+  expect(ouncesPerCan()).toBeWithin(5, 20);
+});
+```
+
 ### `.toBeInstanceOf(Class)`
 
 Use `.toBeInstanceOf(Class)` to check that an object is an instance of a class. This matcher uses `instanceof` underneath.
