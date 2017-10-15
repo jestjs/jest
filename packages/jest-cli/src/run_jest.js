@@ -77,7 +77,7 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
-export default (async function runJest({
+export default async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -167,4 +167,4 @@ export default (async function runJest({
     outputFile: globalConfig.outputFile,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-});
+}
