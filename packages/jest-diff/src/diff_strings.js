@@ -112,7 +112,10 @@ const splitIntoLines = string => {
 // Return line length not including escape sequences around changed strings.
 const getLength = (argCompared: DiffItems | string): number => {
   if (Array.isArray(argCompared)) {
-    return argCompared.reduce((length, diff) => length + diff[1].length, 0);
+    return argCompared.reduce(
+      (length: number, diffItem: DiffItem) => length + diffItem[1].length,
+      0,
+    );
   }
   return argCompared.length;
 };
