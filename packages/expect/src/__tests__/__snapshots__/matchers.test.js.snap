@@ -1655,6 +1655,222 @@ Matcher does not accept any arguments.
 Got: <green>null</>"
 `;
 
+exports[`.toBeWithin() equal numbers: [-Infinity, -Infinity, -Infinity] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>-Infinity</> >= n >= <green>-Infinity</>
+Received:
+  <red>-Infinity</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [-Infinity, -Infinity, -Infinity] 2`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>-Infinity</> >= n >= <green>-Infinity</>
+Received:
+  <red>-Infinity</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [1, 1, 1] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>1</> >= n >= <green>1</>
+Received:
+  <red>1</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [1, 1, 1] 2`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>1</> >= n >= <green>1</>
+Received:
+  <red>1</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308, 1.7976931348623157e+308] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>1.7976931348623157e+308</> >= n >= <green>1.7976931348623157e+308</>
+Received:
+  <red>1.7976931348623157e+308</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308, 1.7976931348623157e+308] 2`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>1.7976931348623157e+308</> >= n >= <green>1.7976931348623157e+308</>
+Received:
+  <red>1.7976931348623157e+308</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [5e-324, 5e-324, 5e-324] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>5e-324</> >= n >= <green>5e-324</>
+Received:
+  <red>5e-324</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [5e-324, 5e-324, 5e-324] 2`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>5e-324</> >= n >= <green>5e-324</>
+Received:
+  <red>5e-324</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [Infinity, Infinity, Infinity] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>Infinity</> >= n >= <green>Infinity</>
+Received:
+  <red>Infinity</>"
+`;
+
+exports[`.toBeWithin() equal numbers: [Infinity, Infinity, Infinity] 2`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>Infinity</> >= n >= <green>Infinity</>
+Received:
+  <red>Infinity</>"
+`;
+
+exports[`.toBeWithin() throws: [-Infinity, 1, Infinity] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>-Infinity</> >= n >= <green>Infinity</>
+Received:
+  <red>1</>"
+`;
+
+exports[`.toBeWithin() throws: [-Infinity, 1, Infinity] 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeWithin(</><green>expected</><dim>)</>
+
+Expected value to be within:
+  <green>-Infinity</> >= n >= <green>1</>
+Received:
+  <red>Infinity</>"
+`;
+
+exports[`.toBeWithin() throws: [0.1, 0.19, 0.2] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>0.1</> >= n >= <green>0.2</>
+Received:
+  <red>0.19</>"
+`;
+
+exports[`.toBeWithin() throws: [0.1, 0.19, 0.2] 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeWithin(</><green>expected</><dim>)</>
+
+Expected value to be within:
+  <green>0.1</> >= n >= <green>0.19</>
+Received:
+  <red>0.2</>"
+`;
+
+exports[`.toBeWithin() throws: [1, 2, 3] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>1</> >= n >= <green>3</>
+Received:
+  <red>2</>"
+`;
+
+exports[`.toBeWithin() throws: [1, 2, 3] 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeWithin(</><green>expected</><dim>)</>
+
+Expected value to be within:
+  <green>1</> >= n >= <green>2</>
+Received:
+  <red>3</>"
+`;
+
+exports[`.toBeWithin() throws: [3, 7, 15] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>3</> >= n >= <green>15</>
+Received:
+  <red>7</>"
+`;
+
+exports[`.toBeWithin() throws: [3, 7, 15] 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeWithin(</><green>expected</><dim>)</>
+
+Expected value to be within:
+  <green>3</> >= n >= <green>7</>
+Received:
+  <red>15</>"
+`;
+
+exports[`.toBeWithin() throws: [5e-324, 1, 1.7976931348623157e+308] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>5e-324</> >= n >= <green>1.7976931348623157e+308</>
+Received:
+  <red>1</>"
+`;
+
+exports[`.toBeWithin() throws: [5e-324, 1, 1.7976931348623157e+308] 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeWithin(</><green>expected</><dim>)</>
+
+Expected value to be within:
+  <green>5e-324</> >= n >= <green>1</>
+Received:
+  <red>1.7976931348623157e+308</>"
+`;
+
+exports[`.toBeWithin() throws: [9, 17, 18] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>9</> >= n >= <green>18</>
+Received:
+  <red>17</>"
+`;
+
+exports[`.toBeWithin() throws: [9, 17, 18] 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeWithin(</><green>expected</><dim>)</>
+
+Expected value to be within:
+  <green>9</> >= n >= <green>17</>
+Received:
+  <red>18</>"
+`;
+
+exports[`.toBeWithin() throws: [17, 33, 34] 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toBeWithin(</><green>expected</><dim>)</>
+
+Expected value not within:
+  <green>17</> >= n >= <green>34</>
+Received:
+  <red>33</>"
+`;
+
+exports[`.toBeWithin() throws: [17, 33, 34] 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeWithin(</><green>expected</><dim>)</>
+
+Expected value to be within:
+  <green>17</> >= n >= <green>33</>
+Received:
+  <red>34</>"
+`;
+
 exports[`.toContain(), .toContainEqual() '"11112111"' contains '"2"' 1`] = `
 "<dim>expect(</><red>string</><dim>).not.toContain(</><green>value</><dim>)</>
 
