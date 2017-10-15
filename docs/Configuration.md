@@ -541,7 +541,7 @@ The following is a visualization of the default regex:
 ### `testResultsProcessor` [string]
 Default: `undefined`
 
-This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument:
+This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument and return it:
 
 ```
 {
