@@ -491,7 +491,31 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. See the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments as examples.
+You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods.
+
+Example:
+
+```js
+class CustomEnvironment extends NodeEnvironment {
+  constructor(config) {
+    super(config);
+  }
+
+  async setup() {
+    await super.setup();
+    await someSetupTasks();
+  }
+
+  async teardown() {
+    await someTeardownTasks();
+    await super.teardown();
+  }
+
+  runScript(script) {
+    return super.runScript(script);
+  }
+}
+```
 
 ### `testMatch` [array<string>]
 
