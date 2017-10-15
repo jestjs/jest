@@ -36,10 +36,10 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "0.0.8",
     "eslint-plugin-unicorn": "^2.1.2",
-    "flow-bin": "^0.53.1",
+    "flow-bin": "^0.57.2",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
-    "immutable": "^4.0.0-rc.1",
+    "immutable": "^4.0.0-rc.7",
     "istanbul-api": "^1.1.0",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
@@ -94,7 +94,7 @@
     "test-examples": "node scripts/test_examples.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test": "yarn run typecheck && yarn run lint && yarn run jest && yarn run test-examples",
-    "typecheck": "flow check",
+    "typecheck": "flow check --include-warnings",
     "watch": "yarn run build && node ./scripts/watch.js"
   },
   "workspaces": [

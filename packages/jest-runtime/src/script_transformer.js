@@ -32,7 +32,7 @@ import writeFileAtomic from 'write-file-atomic';
 export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{[key: string]: boolean},
+  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
   isInternalModule?: boolean,
   mapCoverage: boolean,
 |};

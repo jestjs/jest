@@ -51,7 +51,7 @@ export default class {
   _stdout: Readable;
   _stderr: Readable;
   _ending: boolean;
-  _cacheKeys: {[string]: Worker};
+  _cacheKeys: {[string]: Worker, __proto__: null};
   _options: FarmOptions;
   _workers: Array<Worker>;
 

@@ -43,7 +43,6 @@ const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
   'g',
 );
 
-// $FlowFixMe
 const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
   arguments: true,
   await: true,

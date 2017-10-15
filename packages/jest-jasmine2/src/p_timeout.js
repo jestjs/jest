@@ -15,7 +15,7 @@ export default function pTimeout(
   clearTimeout: (timeoutID: number) => void,
   setTimeout: (func: () => void, delay: number) => number,
   onTimeout: () => any,
-) {
+): Promise<any> {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => resolve(onTimeout()), ms);
     promise.then(

@@ -54,14 +54,14 @@ type InternalModuleOptions = {|
 type CoverageOptions = {
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{[key: string]: boolean},
+  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
   mapCoverage: boolean,
 };
 
-type ModuleRegistry = {[key: string]: Module};
+type ModuleRegistry = {[key: string]: Module, __proto__: null};
 
-type BooleanObject = {[key: string]: boolean};
-type CacheFS = {[path: Path]: string};
+type BooleanObject = {[key: string]: boolean, __proto__: null};
+type CacheFS = {[path: Path]: string, __proto__: null};
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
@@ -91,16 +91,16 @@ class Runtime {
   _explicitShouldMock: BooleanObject;
   _internalModuleRegistry: ModuleRegistry;
   _isCurrentlyExecutingManualMock: ?string;
-  _mockFactories: {[key: string]: () => any};
-  _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
-  _mockRegistry: {[key: string]: any};
+  _mockFactories: {[key: string]: () => any, __proto__: null};
+  _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
+  _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: ModuleRegistry;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  _sourceMapRegistry: {[key: string]: string};
+  _sourceMapRegistry: {[key: string]: string, __proto__: null};
   _scriptTransformer: ScriptTransformer;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;

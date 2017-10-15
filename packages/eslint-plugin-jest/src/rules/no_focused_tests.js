@@ -9,7 +9,6 @@
 
 import type {EslintContext, CallExpression} from './types';
 
-/* $FlowFixMe */
 const testFunctions = Object.assign(Object.create(null), {
   describe: true,
   it: true,
