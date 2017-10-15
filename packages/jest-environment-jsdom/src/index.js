@@ -19,6 +19,7 @@ class JSDOMEnvironment {
   document: ?Object;
   fakeTimers: ?FakeTimers<number>;
   global: ?Global;
+  errorEventListener: ?Function;
   moduleMocker: ?ModuleMocker;
 
   constructor(config: ProjectConfig): void {
@@ -42,6 +43,13 @@ class JSDOMEnvironment {
         return global.setTimeout(callback, 0, hrInMicro);
       };
     }
+
+    this.errorEventListener = event => {
+      if (event.error) {
+        process.emit('uncaughtException', event.error);
+      }
+    };
+    global.addEventListener('error', this.errorEventListener);
 
     this.moduleMocker = new mock.ModuleMocker(global);
 
@@ -67,8 +75,12 @@ class JSDOMEnvironment {
       this.fakeTimers.dispose();
     }
     if (this.global) {
+      if (this.errorEventListener) {
+        this.global.removeEventListener('error', this.errorEventListener);
+      }
       this.global.close();
     }
+    this.errorEventListener = null;
     this.global = null;
     this.document = null;
     this.fakeTimers = null;
