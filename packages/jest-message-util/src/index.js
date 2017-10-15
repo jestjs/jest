@@ -14,6 +14,19 @@ import path from 'path';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
 import slash from 'slash';
+import StackUtils from 'stack-utils';
+
+let nodeInternals = [];
+
+try {
+  nodeInternals = StackUtils.nodeInternals()
+    // this is to have the tests be the same in node 4 and node 6.
+    // TODO: Remove when we drop support for node 4
+    .concat(new RegExp('internal/process/next_tick.js'));
+} catch (e) {
+  // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
+  // node internals in the browser though, so no issue.
+}
 
 type StackTraceConfig = {
   rootDir: string,
@@ -26,7 +39,10 @@ type StackTraceOptions = {
 
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
+const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
+const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -106,10 +122,26 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
   let pathCounter = 0;
 
   return lines.filter(line => {
-    const isPath = STACK_PATH_REGEXP.test(line);
-    if (!isPath) {
+    if (ANONYMOUS_FN_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (ANONYMOUS_PROMISE_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (ANONYMOUS_GENERATOR_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (nodeInternals.some(internal => internal.test(line))) {
+      return false;
+    }
+
+    if (!STACK_PATH_REGEXP.test(line)) {
       return true;
     }
+
     if (JASMINE_IGNORE.test(line)) {
       return false;
     }
@@ -118,7 +150,15 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
       return true; // always keep the first line even if it's from Jest
     }
 
-    return !(STACK_TRACE_IGNORE.test(line) || options.noStackTrace);
+    if (options.noStackTrace) {
+      return false;
+    }
+
+    if (JEST_INTERNALS_IGNORE.test(line)) {
+      return false;
+    }
+
+    return true;
   });
 };
 

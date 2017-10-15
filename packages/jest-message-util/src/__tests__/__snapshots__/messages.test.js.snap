@@ -7,6 +7,23 @@ exports[`.formatExecError() 1`] = `
 "
 `;
 
+exports[`formatStackTrace should strip node internals 1`] = `
+"<bold><red>  <bold>● <bold>Unix test</></>
+
+      
+        Expected value to be of type:
+          \\"number\\"
+        Received:
+          \\"\\"
+        type:
+          \\"string\\"
+<dim>      </>
+<dim>      </>
+<dim>      <dim>at Object.it (<dim>__tests__/test.js<dim>:8:14)<dim></>
+<dim>      </>
+"
+`;
+
 exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
 "<bold><red>  <bold>● <bold>Unix test</></>
 
