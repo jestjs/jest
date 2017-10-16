@@ -7,7 +7,7 @@ exports[`fails for multiple unknown options 1`] = `
 <red>  <bold>[\\"jest\\", \\"test\\"]</></>
 <red></>
 <red>  <bold>CLI Options Documentation</>:</>
-<red>  http://facebook.github.io/jest/docs/cli.html</>
+<red>  https://facebook.github.io/jest/docs/en/cli.html</>
 <red></>"
 `;
 
@@ -17,6 +17,6 @@ exports[`fails for unknown option 1`] = `
 <red>  Unrecognized option <bold>\\"unknown\\"</>.</>
 <red></>
 <red>  <bold>CLI Options Documentation</>:</>
-<red>  http://facebook.github.io/jest/docs/cli.html</>
+<red>  https://facebook.github.io/jest/docs/en/cli.html</>
 <red></>"
 `;
