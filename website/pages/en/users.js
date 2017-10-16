@@ -26,7 +26,7 @@ class Users extends React.Component {
             <div className="logos">{showcase}</div>
             <p>Are you using this project?</p>
             <a
-              href="https://github.com/deltice/test-site/edit/master/website/siteConfig.js"
+              href="https://github.com/facebook/jest/edit/master/website/siteConfig.js"
               className="button"
             >
               Add your company
