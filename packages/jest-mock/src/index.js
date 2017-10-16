@@ -28,6 +28,7 @@ type MockFunctionState = {
 
 type MockFunctionConfig = {
   isReturnValueLastSet: boolean,
+  storeArgumentsByValue: boolean,
   defaultReturnValue: any,
   mockImpl: any,
   mockName: string,
@@ -272,6 +273,7 @@ class ModuleMockerClass {
       mockName: 'jest.fn()',
       specificMockImpls: [],
       specificReturnValues: [],
+      storeArgumentsByValue: false,
     };
   }
 
@@ -312,7 +314,11 @@ class ModuleMockerClass {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
-        mockState.calls.push(Array.prototype.slice.call(arguments));
+        let argumentsArray = Array.prototype.slice.call(arguments);
+        if (mockConfig.storeArgumentsByValue) {
+          argumentsArray = JSON.parse(JSON.stringify(argumentsArray));
+        }
+        mockState.calls.push(argumentsArray);
         if (this instanceof f) {
           // This is probably being called as a constructor
           prototypeSlots.forEach(slot => {
@@ -427,6 +433,12 @@ class ModuleMockerClass {
         mockConfig.isReturnValueLastSet = false;
         mockConfig.defaultReturnValue = undefined;
         mockConfig.mockImpl = fn;
+        return f;
+      };
+
+      f.mockStoreArgumentsByValue = fn => {
+        const mockConfig = this._ensureMockConfig(f);
+        mockConfig.storeArgumentsByValue = true;
         return f;
       };
 
