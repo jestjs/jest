@@ -16,7 +16,7 @@ $ yarn add jest-worker
 
 ## Example
 
-This example covers the minmal usage:
+This example covers the minimal usage:
 
 ### File `parent.js`
 
