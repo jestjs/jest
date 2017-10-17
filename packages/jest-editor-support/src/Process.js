@@ -40,7 +40,9 @@ export const createProcess = (
       // debug is enabled by adding --debug-brk as first argumemt of node
       // eg: `node --debug=123 node_modules/jest-cli/bin/jest.js [...args]`
       // and thersefore `pathToJest` must point to javascript
-      throw new Error('To enable debugging specify path to jest.js in pathToJest.');
+      throw new Error(
+        'To enable debugging specify path to jest.js in pathToJest.',
+      );
     }
   }
 

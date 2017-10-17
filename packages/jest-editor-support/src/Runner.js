@@ -60,8 +60,8 @@ export default class Runner extends EventEmitter {
     }
 
     this.debugprocess = this._createProcess(
-      this.workspace, 
-      args, 
+      this.workspace,
+      args,
       this.options.debugPort,
     );
     this.debugprocess.stdout.on('data', (data: Buffer) => {
