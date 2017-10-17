@@ -59,7 +59,11 @@ export default class Runner extends EventEmitter {
       args.push(this.options.testFileNamePattern);
     }
 
-    this.debugprocess = this._createProcess(this.workspace, args, this.options.debugPort);
+    this.debugprocess = this._createProcess(
+      this.workspace, 
+      args, 
+      this.options.debugPort,
+    );
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       // Make jest save to a file, otherwise we get chunked data
       // and it can be hard to put it back together.
