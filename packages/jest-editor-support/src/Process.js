@@ -30,12 +30,12 @@ export const createProcess = (
   let command = parameters[0];
   const initialArgs = parameters.slice(1);
   const runtimeArgs = [].concat(initialArgs, args);
-  
+
   if (command.endsWith('jest.js')) {
     runtimeArgs.unshift(command);
     command = 'node';
   }
-  
+
   // prepare process for debugging
   if (typeof debugPort === 'number') {
     if (command !== 'node') {
@@ -45,7 +45,7 @@ export const createProcess = (
         'To enable debugging specify path to jest.js in pathToJest.',
       );
     }
-    
+
     runtimeArgs.unshift('--debug=' + debugPort);
   }
 
