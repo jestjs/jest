@@ -91,6 +91,10 @@ export default (async function runJest({
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
 }) {
+  if (globalConfig.globalSetup) {
+    // $FlowFixMe
+    await require(globalConfig.globalSetup)();
+  }
   const sequencer = new TestSequencer();
   let allTests = [];
 
@@ -172,6 +176,10 @@ export default (async function runJest({
 
   sequencer.cacheResults(allTests, results);
 
+  if (globalConfig.globalTeardown) {
+    // $FlowFixMe
+    await require(globalConfig.globalTeardown)();
+  }
   return processResults(results, {
     isJSON: globalConfig.json,
     onComplete,

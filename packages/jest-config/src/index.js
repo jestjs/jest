@@ -85,6 +85,8 @@ const getConfigs = (
       expand: options.expand,
       findRelatedTests: options.findRelatedTests,
       forceExit: options.forceExit,
+      globalSetup: options.globalSetup,
+      globalTeardown: options.globalTeardown,
       json: options.json,
       lastCommit: options.lastCommit,
       listTests: options.listTests,

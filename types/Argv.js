@@ -33,6 +33,8 @@ export type Argv = {|
   expand: boolean,
   findRelatedTests: boolean,
   forceExit: boolean,
+  globalSetup: ?string,
+  globalTeardown: ?string,
   globals: string,
   h: boolean,
   haste: string,

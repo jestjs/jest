@@ -261,6 +261,16 @@ Note that, if you specify a global reference value (like an object or array)
 here, and some code mutates that value in the midst of running a test, that
 mutation will _not_ be persisted across test runs for other test files.
 
+### `globalSetup` [string]
+Default: `undefined`
+
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.
+
+### `globalTeardown` [string]
+Default: `undefined`
+
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.
+
 ### `mapCoverage` [boolean]
 
 ##### available in Jest **20.0.0+**
