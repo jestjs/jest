@@ -493,6 +493,8 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods.
 
+*Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.*
+
 Example:
 
 ```js
