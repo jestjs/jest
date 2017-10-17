@@ -20,15 +20,34 @@ import ProjectWorkspace from './project_workspace';
 export const createProcess = (
   workspace: ProjectWorkspace,
   args: Array<string>,
+  debugPort?: number,
 ): ChildProcess => {
   // A command could look like `npm run test`, which we cannot use as a command
   // as they can only be the first command, so take out the command, and add
   // any other bits into the args
   const runtimeExecutable = workspace.pathToJest;
   const parameters = runtimeExecutable.split(' ');
-  const command = parameters[0];
+  let command = parameters[0];
   const initialArgs = parameters.slice(1);
   const runtimeArgs = [].concat(initialArgs, args);
+
+  if (command.endsWith('jest.js')) {
+    runtimeArgs.unshift(command);
+    command = 'node';
+  }
+
+  // prepare process for debugging
+  if (typeof debugPort === 'number') {
+    if (command !== 'node') {
+      // debug is enabled by adding --debug-brk as first argumemt of node
+      // eg: `node --debug=123 node_modules/jest-cli/bin/jest.js [...args]`
+      throw new Error(
+        'To enable debugging specify path to jest.js in pathToJest.',
+      );
+    }
+
+    runtimeArgs.unshift('--debug=' + debugPort);
+  }
 
   // If a path to configuration file was defined, push it to runtimeArgs
   const configPath = workspace.pathToConfig;
