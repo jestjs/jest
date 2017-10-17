@@ -30,20 +30,23 @@ export const createProcess = (
   let command = parameters[0];
   const initialArgs = parameters.slice(1);
   const runtimeArgs = [].concat(initialArgs, args);
-
+  
+  if (command.endsWith('jest.js')) {
+    runtimeArgs.unshift(command);
+    command = 'node';
+  }
+  
   // prepare process for debugging
   if (typeof debugPort === 'number') {
-    if (command.endsWith('jest.js')) {
-      runtimeArgs.unshift('--debug=' + debugPort, command);
-      command = 'node';
-    } else {
+    if (command !== 'node') {
       // debug is enabled by adding --debug-brk as first argumemt of node
       // eg: `node --debug=123 node_modules/jest-cli/bin/jest.js [...args]`
-      // and thersefore `pathToJest` must point to javascript
       throw new Error(
         'To enable debugging specify path to jest.js in pathToJest.',
       );
     }
+    
+    runtimeArgs.unshift('--debug=' + debugPort);
   }
 
   // If a path to configuration file was defined, push it to runtimeArgs
