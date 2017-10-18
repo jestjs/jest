@@ -48,7 +48,7 @@ table {
 body {
   background: #f9f9f9;
   color: #393939;
-  font: normal 16px/1.4em "Helvetica Neue", Arial, sans-serif;
+  font: normal 16px/1.4em -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   height: 100vh;
   text-align: left;
   text-rendering: optimizeLegibility;
@@ -107,7 +107,7 @@ blockquote {
 }
 
 h1, h2, h3, h4 {
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-weight: 300;
   color: #99424f;
 }
@@ -140,14 +140,14 @@ header h2 {
   margin-bottom: 0px;
 }
 .homeContainer .homeWrapper h1#project_title {
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-size: 300%;
   letter-spacing: -0.08em;
   line-height: 1em;
   margin-bottom: 80px;
 }
 .homeContainer .homeWrapper h2#project_tagline {
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-size: 200%;
   letter-spacing: -0.04em;
   line-height: 1em;
@@ -173,7 +173,7 @@ header h2 {
 }
 
 .fbossFontLight {
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-weight: 300;
   font-style: normal;
 }
@@ -205,13 +205,13 @@ header h2 {
 }
 .mainContainer .wrapper a,
 .inner .projectIntro a {
-  text-decoration: underline;
+  text-decoration: none;
 }
 .mainContainer .wrapper a:hover,
 .mainContainer .wrapper a:focus,
 .inner .projectIntro a:hover,
 .inner .projectIntro a:focus {
-  text-decoration: none;
+  text-decoration: underline;
 }
 .mainContainer .wrapper em, .mainContainer .wrapper i {
   font-style: italic;
@@ -264,7 +264,7 @@ header h2 {
 }
 .mainContainer .wrapper p,
 .blockElement p {
-  padding: 0.8em 0;
+  padding: 0.8em 0 0 0;
 }
 .mainContainer .wrapper ul {
   list-style: disc;
@@ -274,6 +274,21 @@ header h2 {
 }
 .mainContainer .wrapper ol li, .mainContainer .wrapper ul li {
   margin: 0 0 10px 0;
+}
+.mainContainer .wrapper p,
+.blockElement p,
+.mainContainer .wrapper ul li,
+.mainContainer .wrapper ol li {
+  line-height: 1.7;
+  max-width: 50rem;
+}
+@media (max-width: 1024px) {
+  .mainContainer .wrapper p,
+  .blockElement p,
+  .mainContainer .wrapper ul li,
+  .mainContainer .wrapper ol li {
+    font-size: 16px;
+  }
 }
 .mainContainer .wrapper strong {
   font-weight: bold;
@@ -300,19 +315,13 @@ header h2 {
 .mainContainer .wrapper .post ol {
   list-style: decimal outside none;
 }
-.mainContainer .wrapper .post .postHeader {
-  padding: 2em 0 0;
-}
 .mainContainer .wrapper .post .postHeader h1 {
   font-size: 150%;
   line-height: 1em;
-  padding: 0.4em 0 0;
+  padding: 0;
 }
 .mainContainer .wrapper .post .postHeader h1 a {
   border: none;
-}
-.mainContainer .wrapper .post .postHeader .post-meta {
-  text-align: center;
 }
 .mainContainer .wrapper .post .postSocialPlugins {
   padding-top: 1em;
@@ -348,12 +357,9 @@ header h2 {
 .mainContainer .wrapper .post .docPagination a .pagerTitle {
   display: none;
 }
-.mainContainer .wrapper .posts .post {
-  margin-bottom: 6vh;
-}
 
 .mainContainer .wrapper .post h1,
-.mainContainer .wrapper .post h2, 
+.mainContainer .wrapper .post h2,
 .mainContainer .wrapper .post h3 {
     font-weight: 300;
 }
@@ -459,7 +465,6 @@ header h2 {
     font-size: 250%;
   }
   .mainContainer .wrapper .posts .post {
-    margin-bottom: 4vh;
     width: 100%;
   }
 }
@@ -503,7 +508,7 @@ header h2 {
   background: #99424f;
   color: #fff;
   min-height: 50px;
-  padding: 10px 0 8px;
+  padding: 9px 0;
   position: fixed;
   width: 100%;
   z-index: 9999;
@@ -529,7 +534,7 @@ header h2 {
 }
 .fixedHeaderContainer header h2 {
   display: block;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-weight: 400;
   line-height: 18px;
   position: relative;
@@ -537,10 +542,19 @@ header h2 {
 }
 .fixedHeaderContainer header h3 {
   text-decoration: underline;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   color: white;
   margin-left: 10px;
   font-size: 16px;
+}
+@media (max-width: 375px) {
+  .logo {
+    display: none;
+  }
+
+  .headerTitle {
+    font-size: 17px;
+  }
 }
 
 .promoSection {
@@ -607,6 +621,9 @@ input[type="search"] {
   position: absolute;
   top: 15px;
   right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .navSearchWrapper::before {
   border: 3px solid #e5e5e5;
@@ -644,7 +661,7 @@ input[type="search"] {
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--category-header {
   background: #99424f;
   color: white;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-weight: 400;
   font-size: 14px;
 }
@@ -663,7 +680,7 @@ input[type="search"] {
 input#search_input_react {
   padding-left: 25px;
   font-size: 14px;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-weight: 300;
   line-height: 20px;
   border-radius: 20px;
@@ -704,7 +721,7 @@ a code,
 .mainContainer .wrapper a code,
 .mainContainer .wrapper a:focus code {
   color: #99424f;
-  font-family: Hack, monospace;
+  font-family: "SFMono-Regular",source-code-pro,Menlo,Monaco,Consolas,"Roboto Mono","Droid Sans Mono","Liberation Mono",Consolas,"Courier New",Courier,monospace;
   font-weight: 300;
 }
 a code {
@@ -716,7 +733,7 @@ a:hover code {
 
 .prism {
   white-space: pre-wrap;
-  font-family: 'source-code-pro', Menlo, 'Courier New', Consolas, monospace;
+  font-family: "SFMono-Regular",source-code-pro,Menlo,Monaco,Consolas,"Roboto Mono","Droid Sans Mono","Liberation Mono",Consolas,"Courier New",Courier,monospace;
   font-size: 13px;
   line-height: 20px;
   border-left: 4px solid #99424f;
@@ -836,7 +853,6 @@ a:hover code {
   float: right;
   font-size: 10px;
   font-weight: normal;
-  margin-top: 20px;
   text-decoration: none;
 }
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
@@ -1041,10 +1057,10 @@ a:hover code {
 }
 .navigationSlider .slidingNav {
   box-sizing: border-box;
-  position: absolute;
-  left: -10px;
-  right: -10px;
-  top: -10px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
   bottom: auto;
 }
 .navigationSlider .slidingNav.slidingNavActive {
@@ -1277,9 +1293,6 @@ ul#languages li {
     color: #fff;
   }
 }
-.algolia-autocomplete {
-  bottom: 10px;
-}
 
 .docs-prevnext {
   margin: 20px 0;
@@ -1491,7 +1504,6 @@ nav.toc .toggleNav ul li a:hover, nav.toc .toggleNav ul li a:focus {
 }
 nav.toc .toggleNav ul li a.navItemActive {
   color: #99424f;
-  font-weight: 600;
 }
 .docsSliderActive nav.toc .navBreadcrumb {
   background: #c6c6c6;
@@ -1508,10 +1520,6 @@ nav.toc .toggleNav .navBreadcrumb h2 {
 }
 .docsSliderActive nav.toc section .navGroups {
   display: block;
-}
-
-.sideNavVisible .navPusher .mainContainer {
-  padding-top: 35px;
 }
 
 @media only screen and (min-width: 900px) {
@@ -1607,45 +1615,55 @@ table tr th code, table tr td code {
 table tr th {
   color: #000000;
   font-weight: bold;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   text-transform: uppercase;
 }
-
-.blogContainer .posts {
-  margin-top: 60px;
+.mainContainer:not(.blogContainer) .wrapper .post,
+.blogContainer .posts,
+.blogContainer .lonePost {
+  padding-top: 40px;
 }
 .blogContainer .posts .post {
   border-bottom: 1px solid #e0e0e0;
   border-radius: 3px;
-  padding: 0 10px 20px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
 }
-.blogContainer .lonePost {
-  margin-top: 60px;
-}
-.blogContainer .postHeader h1 {
-  text-align: center;
+
+.blogContainer .postHeader {
+  margin-bottom: 10px;
 }
 .blogContainer .postHeader a {
   text-decoration: none;
 }
 .blogContainer .postHeader p.post-meta {
   padding: 0;
+  margin-bottom: 10px;
 }
 
+.blogContainer .postHeader .authorBlock {
+  display: flex;
+}
 .blogContainer .postHeader .post-authorName {
   color: rgba(57, 57, 57, 0.7);
+  display: flex;
+  flex-direction: column;
   font-size: 14px;
   font-weight: 400;
+  justify-content: center;
   margin-top: 0;
+  margin-right: 10px;
   padding: 0;
-  text-align: center;
 }
 .blogContainer .postHeader .authorPhoto {
   border-radius: 50%;
-  height: 70px;
-  margin: 0 auto;
+  height: 30px;
   overflow: hidden;
-  width: 70px;
+  width: 30px;
+}
+.blogContainer .postHeader .authorPhoto.authorPhoto-big {
+  height: 50px;
+  width: 50px;
 }
 .blog-recent {
   margin: 20px 0;
@@ -1656,9 +1674,6 @@ table tr th {
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .blog-recent {
     height: 40px;
-  }
-  .blogContainer .lonePost {
-    margin-top: 0;
   }
 }
 
@@ -1863,7 +1878,7 @@ div.video iframe {
 }
 .showcaseSection .prose h1 {
   color: #99424f;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   text-align: center;
   padding: 1.4em 0 0.4em;
 }
@@ -2004,7 +2019,7 @@ footer .copyright {
 .web-player > .prism {
   display: none;
 }
-  
+
 .web-player.desktop > iframe {
   display: block; }
 
