@@ -20,6 +20,8 @@ export type Options = {
     workspace: ProjectWorkspace,
     args: Array<string>,
   ) => ChildProcess,
+  testNamePattern?: string,
+  testFileNamePattern?: string,
 };
 
 /**
