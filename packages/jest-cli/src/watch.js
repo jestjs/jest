@@ -44,6 +44,7 @@ export default function watch(
 
   globalConfig = updateGlobalConfig(globalConfig, {
     mode: globalConfig.watch ? 'watch' : 'watchAll',
+    passWithNoTests: true,
   });
 
   const prompt = new Prompt();
