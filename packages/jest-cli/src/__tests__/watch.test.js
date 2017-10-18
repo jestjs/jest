@@ -142,6 +142,14 @@ describe('Watch mode flows', () => {
       watch: false,
     });
   });
+  it('passWithNoTest should be set to true in watch mode', () => {
+    globalConfig.passWithNoTests = false;
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    globalConfig.passWithNoTests = true;
+    expect(runJestMock.mock.calls[0][0]).toMatchObject({
+      globalConfig,
+    });
+  });
 });
 
 class MockStdin {

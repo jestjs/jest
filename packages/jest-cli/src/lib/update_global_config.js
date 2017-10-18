@@ -15,6 +15,7 @@ type Options = {
   noSCM?: boolean,
   updateSnapshot?: SnapshotUpdateState,
   mode?: 'watch' | 'watchAll',
+  passWithNoTests?: boolean,
 };
 
 export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
@@ -53,6 +54,10 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
 
   if (options.noSCM) {
     newConfig.noSCM = true;
+  }
+
+  if (options.passWithNoTests) {
+    newConfig.passWithNoTests = true;
   }
 
   return Object.freeze(newConfig);
