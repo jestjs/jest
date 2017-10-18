@@ -372,7 +372,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
 
 ### `rootDir` [string]
-Default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
+Default: The root of the directory containing your jest's [config file](#) *or* the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
 
 The root directory that Jest should scan for tests and modules within. If you put your Jest config inside your `package.json` and want the root directory to be the root of your repo, the value for this config param will default to the directory of the `package.json`.
 
