@@ -187,7 +187,7 @@ Prevent tests from printing messages through the console.
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests with a name that matches the regex.
+Alias: `-t`. Run only tests and test suites with a name that matches the regex.  For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`. 
 
 ### `--testPathPattern=<regex>`
 
