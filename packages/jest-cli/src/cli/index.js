@@ -142,7 +142,11 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
   }
 
   if (!projects.length) {
-    projects.push(process.cwd());
+    if (process.platform === 'win32') {
+      projects.push(process.binding('fs').realpath(process.cwd()));
+    } else {
+      projects.push(process.cwd());
+    }
   }
 
   return projects;
