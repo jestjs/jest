@@ -1,7 +1,210 @@
-<html><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/><title>Jest · 🃏 JavaScript Testeado sin Esfuerzo</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Jest · 🃏 JavaScript Testeado sin Esfuerzo"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/jest/index.html"/><meta property="og:description" content="🃏 JavaScript Testeado sin Esfuerzo"/><meta property="og:image" content="/jest/img/opengraph.png"/><meta content="2; URL=/docs/es-ES/tutorial-react.html"/><link rel="shortcut icon" href="/jest/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="/jest/css/main.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="Jest Blog ATOM Feed"/> <link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script async="" defer="" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/jest/js/webplayer.js"></script><script type="text/javascript" src="https://snack.expo.io/embed.js"></script></head><body>The page you are looking for has moved. If you are not redirected to the new page in three seconds, then you can navigate to the new page by using <a href="/docs/es-ES/tutorial-react.html">this link</a>.<script>
-                <!--
-                window.setTimeout(
-                  function(){window.location.href = "/docs/es-ES/tutorial-react.html"},3000
-                );
-                // -->
-                </script></body> </html>
+<html><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/><title>Testing React Apps · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Testing React Apps · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/jest/index.html"/><meta property="og:description" content="En Facebook, usamos Jest para probar aplicaciones [React](http://facebook.github.io/react/)."/><meta property="og:image" content="/jest/img/opengraph.png"/><link rel="shortcut icon" href="/jest/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="/jest/css/main.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="Jest Blog ATOM Feed"/> <link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script async="" defer="" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/jest/js/webplayer.js"></script><script type="text/javascript" src="https://snack.expo.io/embed.js"></script></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jest/"><img class="logo" src="/jest/img/jest.svg"/><h2 class="headerTitle">Jest</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/es-ES/getting-started.html" target="_self">Documentación</a></li><li><a href="/jest/docs/es-ES/api.html" target="_self">API</a></li><li><a href="/jest/es-ES/help.html" target="_self">Ayuda</a></li><li><a href="/jest/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/jest/img/language.svg"/>Español</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/jest/en">English</a></li><li><a href="/jest/ja">日本語</a></li><li><a href="/jest/pt-BR">Português (Brasil)</a></li><li><a href="/jest/ro">Română</a></li><li><a href="/jest/ru">Русский</a></li><li><a href="/jest/uk">Українська</a></li><li><a href="/jest/zh-Hans">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(){
+          if(languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search"/></li><li><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Framework Guides</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Introduction</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/getting-started.html#content">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/using-matchers.html#content">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/asynchronous.html#content">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/setup-teardown.html#content">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/mock-functions.html#content">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/more-resources.html#content">More Resources</a></li></ul></div><div class="navGroup navGroupActive"><h3>API Reference</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/api.html#content">Globals</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/expect.html#content">Expect</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/mock-function-api.html#content">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/jest-object.html#content">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/configuration.html#content">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/cli.html#content">Jest CLI Options</a></li></ul></div><div class="navGroup navGroupActive"><h3>Framework Guides</h3><ul><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/jest/docs/es-ES/tutorial-react.html#content">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/tutorial-react-native.html#content">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/testing-frameworks.html#content">Testing Web Frameworks</a></li></ul></div><div class="navGroup navGroupActive"><h3>Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/snapshot-testing.html#content">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/tutorial-async.html#content">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/timer-mocks.html#content">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/manual-mocks.html#content">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/webpack.html#content">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/migration-guide.html#content">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/troubleshooting.html#content">Troubleshooting</a></li></ul></div></div></section></div><script>
+          var toggler = document.getElementById('navToggler');
+          var nav = document.getElementById('docsNav');
+          toggler.onclick = function() {
+            nav.classList.toggle('docsSliderActive');
+          };
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1>Testing React Apps</h1></header><article><div><p>En Facebook, usamos Jest para probar aplicaciones <a href="http://facebook.github.io/react/" target="_blank">React</a>.</p><h2><a class="anchor" name="setup"></a>Setup <a class="hash-link" href="#setup">#</a></h2><h3><a class="anchor" name="setup-con-create-react-app"></a>Setup con Create React App <a class="hash-link" href="#setup-con-create-react-app">#</a></h3><p>Si usted esta iniciando con React, recomendamos use <a href="https://github.com/facebookincubator/create-react-app" target="_blank">Create React App</a>. Si esta listo para usar <a href="https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests" target="_blank">zarpemos con Jest</a>! No necesita hacer pasos extras para el setup, así que podemos pasar directamente a la siguiente sección.</p><h3><a class="anchor" name="setup-sin-create-react-app"></a>Setup sin Create React App <a class="hash-link" href="#setup-sin-create-react-app">#</a></h3><p>Si tiene alguna aplicación existente, necesitará instalar algunos paquetes para hacer que todo trabaje bien junto. Estamos usando el paquete <code>babel-jest</code> y <code>react</code> babel preset para transformar nuestro código dentro de el entorno de prueba. Also see <a href="/jest/docs/es-ES/getting-started.html#using-babel" target="">using babel</a>.</p><p>Ejecutar</p><pre class="prism language-bash"><span class="token function">npm</span> <span class="token function">install</span> --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer</pre><p>Tu archivo <code>package.json</code> se debe ver como algo como ésto (donde <code>&lt;current-version&gt;</code> es la ultima versión del paquete). Por favor agregue los scripts y la configuración de jest:</p><pre class="prism language-json">// package.json
+  <span class="token property">&quot;dependencies&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;react&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;current-version&gt;&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;react-dom&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;current-version&gt;&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;devDependencies&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;babel-jest&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;current-version&gt;&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;babel-preset-es2015&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;current-version&gt;&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;babel-preset-react&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;current-version&gt;&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;current-version&gt;&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;react-test-renderer&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;current-version&gt;&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;scripts&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;test&quot;</span><span class="token operator">:</span> <span class="token string">&quot;jest&quot;</span>
+  <span class="token punctuation">}</span></pre><pre class="prism language-json">// .babelrc
+<span class="token punctuation">{</span>
+  <span class="token property">&quot;presets&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;es2015&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;react&quot;</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></pre><p><strong>Y así, ¡Estás listo para despegar!</strong></p><h3><a class="anchor" name="snapshot-testing"></a>Snapshot Testing <a class="hash-link" href="#snapshot-testing">#</a></h3><p>Let&#x27;s create a <a href="/jest/docs/es-ES/snapshot-testing.html" target="">snapshot test</a> for a Link component that renders hyperlinks:</p><pre class="prism language-javascript"><span spellcheck="true" class="token comment">// Link.react.js</span>
+<span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">&#x27;react&#x27;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> STATUS <span class="token operator">=</span> <span class="token punctuation">{</span>
+  HOVERED<span class="token punctuation">:</span> <span class="token string">&#x27;hovered&#x27;</span><span class="token punctuation">,</span>
+  NORMAL<span class="token punctuation">:</span> <span class="token string">&#x27;normal&#x27;</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Link</span> <span class="token keyword">extends</span> <span class="token class-name">React<span class="token punctuation">.</span>Component</span> <span class="token punctuation">{</span>
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>_onMouseEnter <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_onMouseEnter<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>_onMouseLeave <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_onMouseLeave<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token punctuation">{</span>
+      <span class="token keyword">class</span><span class="token punctuation">:</span> STATUS<span class="token punctuation">.</span>NORMAL<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">_onMouseEnter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token keyword">class</span><span class="token punctuation">:</span> STATUS<span class="token punctuation">.</span>HOVERED<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">_onMouseLeave</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token keyword">class</span><span class="token punctuation">:</span> STATUS<span class="token punctuation">.</span>NORMAL<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token operator">&lt;</span>a
+        className<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span>
+        href<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>page <span class="token operator">||</span> <span class="token string">&#x27;#&#x27;</span><span class="token punctuation">}</span>
+        onMouseEnter<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>_onMouseEnter<span class="token punctuation">}</span>
+        onMouseLeave<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>_onMouseLeave<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+        <span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>children<span class="token punctuation">}</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>a<span class="token operator">&gt;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></pre><p>Ahora vamos usar las características render y snapshot de React y Jest para interactuar con los componentes y capturar lo que renderea, creando un archivo snapshot:</p><pre class="prism language-javascript"><span spellcheck="true" class="token comment">// Link.react-test.js</span>
+<span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">&#x27;react&#x27;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Link <span class="token keyword">from</span> <span class="token string">&#x27;../Link.react&#x27;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> renderer <span class="token keyword">from</span> <span class="token string">&#x27;react-test-renderer&#x27;</span><span class="token punctuation">;</span>
+
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&#x27;Link changes the class when hovered&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> component <span class="token operator">=</span> renderer<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>
+    <span class="token operator">&lt;</span>Link page<span class="token operator">=</span><span class="token string">&quot;http://www.facebook.com&quot;</span><span class="token operator">&gt;</span>Facebook<span class="token operator">&lt;</span><span class="token operator">/</span>Link<span class="token operator">&gt;</span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> tree <span class="token operator">=</span> component<span class="token punctuation">.</span><span class="token function">toJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>tree<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toMatchSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span spellcheck="true" class="token comment">// manually trigger the callback</span>
+  tree<span class="token punctuation">.</span>props<span class="token punctuation">.</span><span class="token function">onMouseEnter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span spellcheck="true" class="token comment">// re-rendering</span>
+  tree <span class="token operator">=</span> component<span class="token punctuation">.</span><span class="token function">toJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>tree<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toMatchSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span spellcheck="true" class="token comment">// manually trigger the callback</span>
+  tree<span class="token punctuation">.</span>props<span class="token punctuation">.</span><span class="token function">onMouseLeave</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span spellcheck="true" class="token comment">// re-rendering</span>
+  tree <span class="token operator">=</span> component<span class="token punctuation">.</span><span class="token function">toJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>tree<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toMatchSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><p>Cuando ejecutas <code>npm test</code> o <code>jest</code>, se producirá un archivo de salida como éste:</p><pre class="prism language-javascript"><span spellcheck="true" class="token comment">// __tests__/__snapshots__/Link.react-test.js.snap</span>
+exports<span class="token punctuation">[</span><span class="token template-string"><span class="token string">`Link changes the class when hovered 1`</span></span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token template-string"><span class="token string">`
+&lt;a
+  className=&quot;normal&quot;
+  href=&quot;http://www.facebook.com&quot;
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}&gt;
+  Facebook
+&lt;/a&gt;
+`</span></span><span class="token punctuation">;</span>
+
+exports<span class="token punctuation">[</span><span class="token template-string"><span class="token string">`Link changes the class when hovered 2`</span></span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token template-string"><span class="token string">`
+&lt;a
+  className=&quot;hovered&quot;
+  href=&quot;http://www.facebook.com&quot;
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}&gt;
+  Facebook
+&lt;/a&gt;
+`</span></span><span class="token punctuation">;</span>
+
+exports<span class="token punctuation">[</span><span class="token template-string"><span class="token string">`Link changes the class when hovered 3`</span></span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token template-string"><span class="token string">`
+&lt;a
+  className=&quot;normal&quot;
+  href=&quot;http://www.facebook.com&quot;
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}&gt;
+  Facebook
+&lt;/a&gt;
+`</span></span><span class="token punctuation">;</span></pre><p>La próxima vez que ejecutes la prueba, lo que se renderee será comparado con el snapshot previamente creado. El snapshot deberá ser entregado a lo largo de los cambios en código. Cuando una prueba con snapshot falla, necesitará inspeccionar si se da por un cambio intencional o no intencional. Si el cambio es intencional, puede invocar Jest con <code>jest -u</code> para sobre escribir en snapshot existente.</p><p>El codigo de éste ejemplo se encuentra disponible en: <a href="https://github.com/facebook/jest/tree/master/examples/snapshot" target="_blank">examples/snapshot</a>.</p><h3><a class="anchor" name="dom-testing"></a>DOM Testing <a class="hash-link" href="#dom-testing">#</a></h3><p>Si desea comprobar y manipuar el render de sus componentes puede usar <a href="http://airbnb.io/enzyme/" target="_blank">Enzyme</a> o <a href="http://facebook.github.io/react/docs/test-utils.html" target="_blank">TestUtils</a> de React. Usaremos Enzyme para este ejemplo.</p><p>Tienes que ejecutar <code>npm install --save-dev enzyme</code> para usar Enzyme. Si usted usa una version menor de React a la 15.5.0, tambien necesitará instalar <code>react-addons-test-utils</code>.</p><p>Vamos a implementar un checkbox que permute entre dos estados:</p><pre class="prism language-javascript"><span spellcheck="true" class="token comment">// CheckboxWithLabel.js</span>
+
+<span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">&#x27;react&#x27;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">CheckboxWithLabel</span> <span class="token keyword">extends</span> <span class="token class-name">React<span class="token punctuation">.</span>Component</span> <span class="token punctuation">{</span>
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token punctuation">{</span>isChecked<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span spellcheck="true" class="token comment">// bind manually because React class components don&#x27;t auto-bind</span>
+    <span spellcheck="true" class="token comment">// http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>onChange <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>onChange<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">onChange</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>isChecked<span class="token punctuation">:</span> <span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>isChecked<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token operator">&lt;</span>label<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>input
+          type<span class="token operator">=</span><span class="token string">&quot;checkbox&quot;</span>
+          checked<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>isChecked<span class="token punctuation">}</span>
+          onChange<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>onChange<span class="token punctuation">}</span>
+        <span class="token operator">/</span><span class="token operator">&gt;</span>
+        <span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>isChecked <span class="token operator">?</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>labelOn <span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>labelOff<span class="token punctuation">}</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>label<span class="token operator">&gt;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></pre><p>Usaremos Enzyme <a href="http://airbnb.io/enzyme/docs/api/shallow.html" target="_blank">shallow renderer</a> en este ejemplo.</p><pre class="prism language-javascript"><span spellcheck="true" class="token comment">// __tests__/CheckboxWithLabel-test.js</span>
+
+<span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">&#x27;react&#x27;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>shallow<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&#x27;enzyme&#x27;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> CheckboxWithLabel <span class="token keyword">from</span> <span class="token string">&#x27;../CheckboxWithLabel&#x27;</span><span class="token punctuation">;</span>
+
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&#x27;CheckboxWithLabel changes the text after click&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span spellcheck="true" class="token comment">// Render a checkbox with label in the document</span>
+  <span class="token keyword">const</span> checkbox <span class="token operator">=</span> <span class="token function">shallow</span><span class="token punctuation">(</span>
+    <span class="token operator">&lt;</span>CheckboxWithLabel labelOn<span class="token operator">=</span><span class="token string">&quot;On&quot;</span> labelOff<span class="token operator">=</span><span class="token string">&quot;Off&quot;</span> <span class="token operator">/</span><span class="token operator">&gt;</span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">expect</span><span class="token punctuation">(</span>checkbox<span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span><span class="token string">&#x27;Off&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  checkbox<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token string">&#x27;input&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">simulate</span><span class="token punctuation">(</span><span class="token string">&#x27;change&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">expect</span><span class="token punctuation">(</span>checkbox<span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span><span class="token string">&#x27;On&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><p>El código de este ejemplo está disponible en: <a href="https://github.com/facebook/jest/tree/master/examples/enzyme" target="_blank">examples/enzyme</a>.</p><h3><a class="anchor" name="transformers-personalizados"></a>Transformers personalizados <a class="hash-link" href="#transformers-personalizados">#</a></h3><p>Si necesita funcionalidades mas avanzadas, uedes construir tu propio transformer, en lugar de usar babel-jest, aquí un ejemplo de uso de babel:</p><pre class="prism language-javascript"><span spellcheck="true" class="token comment">// custom-transformer.js</span>
+<span class="token string">&#x27;use strict&#x27;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> babel <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;babel-core&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> jestPreset <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;babel-preset-jest&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">process</span><span class="token punctuation">(</span>src<span class="token punctuation">,</span> filename<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>babel<span class="token punctuation">.</span>util<span class="token punctuation">.</span><span class="token function">canCompile</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> babel<span class="token punctuation">.</span><span class="token function">transform</span><span class="token punctuation">(</span>src<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        filename<span class="token punctuation">,</span>
+        presets<span class="token punctuation">:</span> <span class="token punctuation">[</span>jestPreset<span class="token punctuation">]</span><span class="token punctuation">,</span>
+        retainLines<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>code<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> src<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>No olvide instalar los paquetes<code>babel-core</code> y <code>babel-preset-jest</code> para que éste ejemplo funcione.</p><p>Para que esto funcione con Jest necesita actualizar la configuración de Jest con ésto: <code>&quot;transform&quot;: {&quot;\\.js$&quot;: &quot;path/to/custom-transformer.js&quot;}</code>.</p><p>Si usted desea construir un transformer con soporte con babel, tu puedes usar tambien babel-jest para componer uno y pasarlo a las opciones de tu configuración personalizada:</p><pre class="prism language-javascript"><span class="token keyword">const</span> babelJest <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;babel-jest&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> babelJest<span class="token punctuation">.</span><span class="token function">createTransformer</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  presets<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;my-custom-preset&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="cli.html#content">← Anterior</a><a class="docs-next button" href="tutorial-react-native.html#content">Siguiente →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/es-ES/getting-started.html">Getting Started</a><a href="/jest/docs/es-ES/snapshot-testing.html">Guides</a><a href="/jest/docs/es-ES/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/es-ES/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2017 Facebook Inc.</section></footer></div><script type="text/javascript" src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script>
+              var search = docsearch({
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react'
+              });
+            </script></body></html>
