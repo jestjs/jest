@@ -40,7 +40,20 @@ import setFromArgv from './set_from_argv';
 import VALID_CONFIG from './valid_config';
 const ERROR = `${BULLET}Validation Error`;
 const JSON_EXTENSION = '.json';
-const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
+const JS_EXTENSION = '.js';
+const PRESET_NAME = 'jest-preset';
+
+const requirePresetModule = (presetPath, rootDir): InitialOptions | null => {
+  try {
+    const presetModule = Resolver.findNodeModule(presetPath, {
+      basedir: rootDir,
+    });
+    // $FlowFixMe
+    return (require(presetModule): InitialOptions);
+  } catch (error) {
+    return null;
+  }
+};
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -51,19 +64,20 @@ const setupPreset = (
 ): InitialOptions => {
   let preset;
   const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
-  const presetModule = Resolver.findNodeModule(
-    presetPath.endsWith(JSON_EXTENSION)
-      ? presetPath
-      : path.join(presetPath, PRESET_NAME),
-    {
-      basedir: options.rootDir,
-    },
-  );
 
-  try {
-    // $FlowFixMe
-    preset = (require(presetModule): InitialOptions);
-  } catch (error) {
+  if (presetPath.endsWith(JSON_EXTENSION)) {
+    preset = requirePresetModule(presetPath, options.rootDir);
+  } else {
+    [JSON_EXTENSION, JS_EXTENSION].some(extension => {
+      preset = requirePresetModule(
+        path.join(presetPath, PRESET_NAME + extension),
+        options.rootDir,
+      );
+      return preset !== null;
+    });
+  }
+
+  if (!preset) {
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
