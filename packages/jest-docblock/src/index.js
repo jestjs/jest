@@ -31,13 +31,15 @@ export function strip(contents: string) {
   return match && match[0] ? contents.substring(match[0].length) : contents;
 }
 
-export function parse(docblock: string): {[key: string]: string} {
+export function parse(
+  docblock: string,
+): {[key: string]: string, __proto__: null} {
   return parseWithComments(docblock).pragmas;
 }
 
 export function parseWithComments(
   docblock: string,
-): {comments: string, pragmas: {[key: string]: string}} {
+): {comments: string, pragmas: {[key: string]: string, __proto__: null}} {
   const line = detectNewline(docblock) || EOL;
 
   docblock = docblock
@@ -72,7 +74,8 @@ export function print({
   pragmas = {},
 }: {
   comments?: string,
-  pragmas?: {[key: string]: string},
+  pragmas?: {[key: string]: string, __proto__: null},
+  __proto__: null,
 }): string {
   const line = detectNewline(comments) || EOL;
   const head = '/**';

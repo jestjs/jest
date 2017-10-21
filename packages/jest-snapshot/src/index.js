@@ -14,12 +14,7 @@ import type {Path, SnapshotUpdateState} from 'types/Config';
 import fs from 'fs';
 import path from 'path';
 import diff from 'jest-diff';
-import {
-  EXPECTED_COLOR,
-  ensureNoExpected,
-  matcherHint,
-  RECEIVED_COLOR,
-} from 'jest-matcher-utils';
+import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
@@ -69,7 +64,12 @@ const toMatchSnapshot = function(received: any, testName?: string) {
   let result;
 
   try {
-    result = snapshotState.match(testName || currentTestName || '', received);
+    result = snapshotState.match(
+      testName && currentTestName
+        ? `${currentTestName}: ${testName}`
+        : currentTestName || '',
+      received,
+    );
   } catch (error) {
     throw new Error(error.stack);
   }
@@ -119,7 +119,10 @@ const toMatchSnapshot = function(received: any, testName?: string) {
   };
 };
 
-const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
+const toThrowErrorMatchingSnapshot = function(
+  received: any,
+  testName?: string,
+) {
   this.dontThrow && this.dontThrow();
   const {isNot} = this;
 
@@ -128,8 +131,6 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
       'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
     );
   }
-
-  ensureNoExpected(expected, '.toThrowErrorMatchingSnapshot');
 
   let error;
 
@@ -148,7 +149,7 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
     );
   }
 
-  return toMatchSnapshot.call(this, error.message);
+  return toMatchSnapshot.call(this, error.message, testName);
 };
 
 module.exports = {

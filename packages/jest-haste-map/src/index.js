@@ -326,6 +326,7 @@ class HasteMap extends EventEmitter {
   ): ?Promise<void> {
     const setModule = (id: string, module: ModuleMetaData) => {
       if (!map[id]) {
+        // $FlowFixMe
         map[id] = Object.create(null);
       }
       const moduleMap = map[id];
@@ -666,6 +667,7 @@ class HasteMap extends EventEmitter {
 
           if (mustCopy) {
             mustCopy = false;
+            // $FlowFixMe
             hasteMap = {
               clocks: copy(hasteMap.clocks),
               duplicates: copy(hasteMap.duplicates),
@@ -694,6 +696,7 @@ class HasteMap extends EventEmitter {
             if (Object.keys(moduleMap).length === 0) {
               delete hasteMap.map[moduleName];
             } else {
+              // $FlowFixMe
               hasteMap.map[moduleName] = moduleMap;
             }
           }
@@ -795,7 +798,7 @@ class HasteMap extends EventEmitter {
     }
   }
 
-  end() {
+  end(): Promise<void> {
     clearInterval(this._changeInterval);
     if (!this._watchers.length) {
       return Promise.resolve();
@@ -805,7 +808,9 @@ class HasteMap extends EventEmitter {
       this._watchers.map(
         watcher => new Promise(resolve => watcher.close(resolve)),
       ),
-    ).then(() => (this._watchers = []));
+    ).then(() => {
+      this._watchers = [];
+    });
   }
 
   /**
@@ -847,6 +852,7 @@ class HasteMap extends EventEmitter {
   }
 
   _createEmptyMap(): InternalHasteMap {
+    // $FlowFixMe
     return {
       clocks: Object.create(null),
       duplicates: Object.create(null),

@@ -350,6 +350,7 @@ function validateOptions(options: OptionsReceived) {
 }
 
 const getColorsHighlight = (options: OptionsReceived): Colors =>
+  // $FlowFixMe: Flow thinks keys from `Colors` are missing from `DEFAULT_THEME_KEYS`
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     const value =
       options.theme && options.theme[key] !== undefined
@@ -368,13 +369,14 @@ const getColorsHighlight = (options: OptionsReceived): Colors =>
       );
     }
     return colors;
-  }, {});
+  }, Object.create(null));
 
-const getColorsEmpty = () =>
+const getColorsEmpty = (): Colors =>
+  // $FlowFixMe: Flow thinks keys from `Colors` are missing from `DEFAULT_THEME_KEYS`
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     colors[key] = {close: '', open: ''};
     return colors;
-  }, {});
+  }, Object.create(null));
 
 const getPrintFunctionName = (options?: OptionsReceived) =>
   options && options.printFunctionName !== undefined

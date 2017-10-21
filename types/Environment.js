@@ -14,7 +14,6 @@ import type {ModuleMocker} from 'jest-mock';
 
 declare class $JestEnvironment {
   constructor(config: ProjectConfig): void,
-  dispose(): void,
   runScript(script: Script): any,
   global: Global,
   fakeTimers: {
@@ -30,6 +29,8 @@ declare class $JestEnvironment {
   },
   testFilePath: string,
   moduleMocker: ModuleMocker,
+  setup(): Promise<void>,
+  teardown(): Promise<void>,
 }
 
 export type Environment = $JestEnvironment;

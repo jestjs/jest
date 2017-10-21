@@ -6,9 +6,21 @@
  */
 
 import { EventEmitter } from 'events';
+import { ChildProcess } from 'child_process';
+
+export interface Options {
+  createProcess?(
+    workspace: ProjectWorkspace, 
+    args: string[], 
+    debugPort?: number,
+  ): ChildProcess;
+  debugPort?: number;
+  testNamePattern?: string;
+  testFileNamePattern?: string;
+}
 
 export class Runner extends EventEmitter {
-  constructor(workspace: ProjectWorkspace);
+  constructor(workspace: ProjectWorkspace, options?: Options);
   watchMode: boolean;
   start(watchMode?: boolean): void;
   closeProcess(): void;
@@ -32,6 +44,7 @@ export class ProjectWorkspace {
     localJestMajorVersin: number,
   );
   pathToJest: string;
+  pathToConfig: string;
   rootPath: string;
   localJestMajorVersion: number;
 }
@@ -67,7 +80,7 @@ export class TestReconciler {
     file: string,
     name: string,
   ): TestFileAssertionStatus | null;
-  updateFileWithJestStatus(data): TestFileAssertionStatus[];
+  updateFileWithJestStatus(data: any): TestFileAssertionStatus[];
 }
 
 export type TestReconcilationState =
@@ -107,6 +120,7 @@ export interface JestAssertionResults {
   title: string;
   status: 'failed' | 'passed';
   failureMessages: string[];
+  fullName: string;
 }
 
 export interface JestTotalResults {

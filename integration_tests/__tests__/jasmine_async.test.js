@@ -132,4 +132,13 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(1);
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
   });
+
+  it('async test fails', () => {
+    const result = runJest.json('jasmine_async', ['async_test_fails.test.js']);
+
+    expect(result.status).toBe(1);
+    expect(result.json.testResults[0].message).toEqual(
+      expect.stringContaining('Expected value to be truthy, instead received'),
+    );
+  });
 });

@@ -22,7 +22,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  http://facebook.github.io/jest/docs/cli.html\n`;
+    `  https://facebook.github.io/jest/docs/en/cli.html\n`;
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];

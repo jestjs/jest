@@ -5,13 +5,13 @@
 const languages = [
   {
     enabled: true,
-    name: '日本語',
-    tag: 'ja',
+    name: 'English',
+    tag: 'en',
   },
   {
     enabled: true,
-    name: 'English',
-    tag: 'en',
+    name: '日本語',
+    tag: 'ja',
   },
   {
     enabled: false,

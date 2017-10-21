@@ -134,6 +134,7 @@ describe('Watch mode flows', () => {
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toEqual({
       onlyChanged: false,
+      passWithNoTests: true,
       testNamePattern: '',
       testPathPattern: 'p.*3',
       watch: true,

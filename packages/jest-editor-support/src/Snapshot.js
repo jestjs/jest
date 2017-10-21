@@ -24,28 +24,34 @@ type SnapshotMetadata = {
 };
 
 const describeVariants = Object.assign(
-  (Object.create(null): {[string]: boolean}),
+  (Object.create(null): {[string]: boolean, __proto__: null}),
   {
     describe: true,
     fdescribe: true,
     xdescribe: true,
   },
 );
-const base = Object.assign((Object.create(null): {[string]: boolean}), {
-  describe: true,
-  it: true,
-  test: true,
-});
-const decorators = Object.assign((Object.create(null): {[string]: boolean}), {
-  only: true,
-  skip: true,
-});
+const base = Object.assign(
+  (Object.create(null): {[string]: boolean, __proto__: null}),
+  {
+    describe: true,
+    it: true,
+    test: true,
+  },
+);
+const decorators = Object.assign(
+  (Object.create(null): {[string]: boolean, __proto__: null}),
+  {
+    only: true,
+    skip: true,
+  },
+);
 
 const validParents = Object.assign(
   (Object.create(null): any),
   base,
   describeVariants,
-  Object.assign((Object.create(null): {[string]: boolean}), {
+  Object.assign((Object.create(null): {[string]: boolean, __proto__: null}), {
     fit: true,
     xit: true,
     xtest: true,
@@ -110,7 +116,7 @@ export default class Snapshot {
     };
     const Visitors = {
       Identifier(path, state, matchers) {
-        if (matchers.includes(path.node.name)) {
+        if (matchers.indexOf(path.node.name) >= 0) {
           state.found.push({
             node: path.node,
             parents: getArrayOfParents(path),

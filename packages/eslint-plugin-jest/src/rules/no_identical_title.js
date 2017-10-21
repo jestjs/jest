@@ -9,7 +9,6 @@
 
 import type {EslintContext, CallExpression} from './types';
 
-/* $FlowFixMe */
 const describeAliases = Object.assign(Object.create(null), {
   describe: true,
   'describe.only': true,
@@ -18,7 +17,6 @@ const describeAliases = Object.assign(Object.create(null), {
   xdescribe: true,
 });
 
-/* $FlowFixMe */
 const testCaseNames = Object.assign(Object.create(null), {
   fit: true,
   it: true,

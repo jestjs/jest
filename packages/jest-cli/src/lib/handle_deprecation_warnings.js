@@ -14,7 +14,7 @@ import {KEYS} from '../constants';
 export default (
   pipe: stream$Writable | tty$WriteStream,
   stdin: stream$Readable | tty$ReadStream = process.stdin,
-) => {
+): Promise<void> => {
   return new Promise((resolve, reject) => {
     if (typeof stdin.setRawMode === 'function') {
       const messages = [

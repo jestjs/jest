@@ -30,6 +30,7 @@ type MockFunctionConfig = {
   isReturnValueLastSet: boolean,
   defaultReturnValue: any,
   mockImpl: any,
+  mockName: string,
   specificReturnValues: Array<any>,
   specificMockImpls: Array<any>,
 };
@@ -42,7 +43,6 @@ const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
   'g',
 );
 
-// $FlowFixMe
 const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
   arguments: true,
   await: true,
@@ -269,6 +269,7 @@ class ModuleMockerClass {
       defaultReturnValue: undefined,
       isReturnValueLastSet: false,
       mockImpl: undefined,
+      mockName: 'jest.fn()',
       specificMockImpls: [],
       specificReturnValues: [],
     };
@@ -433,6 +434,19 @@ class ModuleMockerClass {
         f.mockImplementation(function() {
           return this;
         });
+
+      f.mockName = name => {
+        if (name) {
+          const mockConfig = this._ensureMockConfig(f);
+          mockConfig.mockName = name;
+        }
+        return f;
+      };
+
+      f.getMockName = () => {
+        const mockConfig = this._ensureMockConfig(f);
+        return mockConfig.mockName || 'jest.fn()';
+      };
 
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);

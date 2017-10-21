@@ -28,10 +28,12 @@ export default class Runner extends EventEmitter {
     args: Array<string>,
   ) => ChildProcess;
   watchMode: boolean;
+  options: Options;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this._createProcess = (options && options.createProcess) || createProcess;
+    this.options = options || {};
     this.workspace = workspace;
     this.outputPath = tmpdir() + '/jest_runner.json';
   }
@@ -49,6 +51,12 @@ export default class Runner extends EventEmitter {
 
     const args = ['--json', '--useStderr', outputArg, this.outputPath];
     if (this.watchMode) args.push('--watch');
+    if (this.options.testNamePattern) {
+      args.push('--testNamePattern', this.options.testNamePattern);
+    }
+    if (this.options.testFileNamePattern) {
+      args.push(this.options.testFileNamePattern);
+    }
 
     this.debugprocess = this._createProcess(this.workspace, args);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
@@ -98,6 +106,9 @@ export default class Runner extends EventEmitter {
   }
 
   closeProcess() {
+    if (!this.debugprocess) {
+      return;
+    }
     if (process.platform === 'win32') {
       // Windows doesn't exit the process when it should.
       spawn('taskkill', ['/pid', '' + this.debugprocess.pid, '/T', '/F']);

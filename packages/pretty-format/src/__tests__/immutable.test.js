@@ -13,7 +13,7 @@ import React from 'react';
 import Immutable from 'immutable';
 import {getPrettyPrint} from './expect_util';
 
-const {plugins: prettyPlugins} = require('../');
+const {plugins: prettyPlugins} = require('..');
 const {Immutable: ImmutablePlugin, ReactElement} = prettyPlugins;
 
 const toPrettyPrintTo = getPrettyPrint([ReactElement, ImmutablePlugin]);
@@ -95,7 +95,6 @@ describe('Immutable.OrderedSet', () => {
   });
 
   it('supports React elements {min: true}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.OrderedSet([reactElement, reactElement]),
@@ -105,7 +104,6 @@ describe('Immutable.OrderedSet', () => {
   });
 
   it('supports React elements {min: false}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.OrderedSet([reactElement, reactElement]),
@@ -180,7 +178,6 @@ describe('Immutable.List', () => {
   });
 
   it('supports React elements {min: true}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.List([reactElement, reactElement]),
@@ -191,7 +188,6 @@ describe('Immutable.List', () => {
   });
 
   it('supports React elements {min: false}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(Immutable.List([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.List [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
@@ -265,7 +261,6 @@ describe('Immutable.Stack', () => {
   });
 
   it('supports React elements {min: true}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.Stack([reactElement, reactElement]),
@@ -276,7 +271,6 @@ describe('Immutable.Stack', () => {
   });
 
   it('supports React elements {min: false}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(Immutable.Stack([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.Stack [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
@@ -346,7 +340,6 @@ describe('Immutable.Set', () => {
   });
 
   it('supports React elements {min: true}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.Set([reactElement, reactElement]),
@@ -356,7 +349,6 @@ describe('Immutable.Set', () => {
   });
 
   it('supports React elements {min: false}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(Immutable.Set([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.Set [\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
@@ -408,7 +400,6 @@ describe('Immutable.Map', () => {
   });
 
   it('supports React elements {min: true}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.Map({a: reactElement, b: reactElement}),
@@ -419,7 +410,6 @@ describe('Immutable.Map', () => {
   });
 
   it('supports React elements {min: false}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(Immutable.Map({a: reactElement, b: reactElement})).toPrettyPrintTo(
       'Immutable.Map {\n  "a": <Mouse>\n    Hello World\n  </Mouse>,\n  "b": <Mouse>\n    Hello World\n  </Mouse>,\n}',
@@ -478,7 +468,6 @@ describe('Immutable.OrderedMap', () => {
   });
 
   it('supports React elements {min: true}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.OrderedMap({a: reactElement, b: reactElement}),
@@ -489,7 +478,6 @@ describe('Immutable.OrderedMap', () => {
   });
 
   it('supports React elements {min: false}', () => {
-    // $FlowFixMe: https://github.com/facebook/flow/issues/4658
     const reactElement = React.createElement('Mouse', null, 'Hello World');
     expect(
       Immutable.OrderedMap({a: reactElement, b: reactElement}),

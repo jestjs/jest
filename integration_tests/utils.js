@@ -156,16 +156,9 @@ const extractSummary = (stdout: string) => {
 
 // different versions of Node print different stack traces. This function
 // unifies their output to make it possible to snapshot them.
+// TODO: Remove when we drop support for node 4
 const cleanupStackTrace = (output: string) => {
-  return output
-    .replace(/\n.*at.*timers\.js.*$/gm, '')
-    .replace(/\n.*at.*assert\.js.*$/gm, '')
-    .replace(/\n.*at.*node\.js.*$/gm, '')
-    .replace(/\n.*at.*next_tick\.js.*$/gm, '')
-    .replace(/\n.*at Promise \(<anonymous>\).*$/gm, '')
-    .replace(/\n.*at <anonymous>.*$/gm, '')
-    .replace(/\n.*at Generator.next \(<anonymous>\).*$/gm, '')
-    .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
+  return output.replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 };
 
 module.exports = {

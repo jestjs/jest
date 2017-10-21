@@ -301,38 +301,62 @@ Testing.`;
     );
   });
 
-  it('matches constructor name of SVG elements', () => {
+  describe('matches constructor name of SVG elements', () => {
     // Too bad, so sad, element.constructor.name of SVG elements
-    // is HTMLUnknownElement in jsdom v9
+    // is HTMLUnknownElement in jsdom v9 and v10
+    // is Element in jsdom v11
     // instead of SVG…Element in browser DOM
-    // Mock element objects to make sure the plugin really matches them.
-    function SVGSVGElement(attributes, ...children) {
-      this.nodeType = 1;
-      this.tagName = 'svg'; // lower case
-      this.attributes = attributes;
-      this.childNodes = children;
-    }
-    function SVGTitleElement(title) {
-      this.nodeType = 1;
-      this.tagName = 'title'; // lower case
-      this.attributes = [];
-      this.childNodes = [document.createTextNode(title)];
-    }
+    const expected = [
+      '<svg',
+      '  viewBox="0 0 1 1"',
+      '>',
+      '  <title>',
+      '    JS community logo',
+      '  </title>',
+      '</svg>',
+    ].join('\n');
 
-    const title = new SVGTitleElement('JS community logo');
-    const svg = new SVGSVGElement([{name: 'viewBox', value: '0 0 1 1'}], title);
+    test('jsdom 9 and 10', () => {
+      // Mock element objects to make sure the plugin really matches them.
+      function SVGSVGElement(attributes, ...children) {
+        this.nodeType = 1;
+        this.tagName = 'svg'; // lower case
+        this.attributes = attributes;
+        this.childNodes = children;
+      }
+      function SVGTitleElement(title) {
+        this.nodeType = 1;
+        this.tagName = 'title'; // lower case
+        this.attributes = [];
+        this.childNodes = [document.createTextNode(title)];
+      }
 
-    expect(svg).toPrettyPrintTo(
-      [
-        '<svg',
-        '  viewBox="0 0 1 1"',
-        '>',
-        '  <title>',
-        '    JS community logo',
-        '  </title>',
-        '</svg>',
-      ].join('\n'),
-    );
+      const title = new SVGTitleElement('JS community logo');
+      const svg = new SVGSVGElement(
+        [{name: 'viewBox', value: '0 0 1 1'}],
+        title,
+      );
+
+      expect(svg).toPrettyPrintTo(expected);
+    });
+    test('jsdom 11', () => {
+      // Mock element objects to make sure the plugin really matches them.
+      function Element(tagName, attributes, ...children) {
+        this.nodeType = 1;
+        this.tagName = tagName; // lower case
+        this.attributes = attributes;
+        this.childNodes = children;
+      }
+
+      const title = new Element('title', [], 'JS community logo');
+      const svg = new Element(
+        'svg',
+        [{name: 'viewBox', value: '0 0 1 1'}],
+        title,
+      );
+
+      expect(svg).toPrettyPrintTo(expected);
+    });
   });
 
   it('supports SVG elements', () => {

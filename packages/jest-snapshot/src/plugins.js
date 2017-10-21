@@ -10,6 +10,7 @@
 import type {Plugin} from 'types/PrettyFormat';
 
 import prettyFormat from 'pretty-format';
+import jestMockSerializer from './mock_serializer';
 
 const {
   DOMElement,
@@ -18,7 +19,13 @@ const {
   ReactTestComponent,
 } = prettyFormat.plugins;
 
-let PLUGINS = [ReactTestComponent, ReactElement, DOMElement, Immutable];
+let PLUGINS = [
+  ReactTestComponent,
+  ReactElement,
+  DOMElement,
+  Immutable,
+  jestMockSerializer,
+];
 
 // Prepend to list so the last added is the first tested.
 export const addSerializer = (plugin: Plugin) => {
