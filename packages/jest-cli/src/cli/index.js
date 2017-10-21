@@ -300,7 +300,7 @@ const _run = async (
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
   if (globalConfig.watch && !changedFilesPromise) {
-    console.log(
+    process.stdout.write(
       'The project folder is no git and no mercurial project. ' +
         chalk.bold('Watching all files') +
         ' instead...',
