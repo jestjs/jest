@@ -66,10 +66,14 @@ const toMatchSnapshot = function(received: any, testName?: string) {
     throw new Error('Jest: snapshot state must be initialized.');
   }
 
-  const result = snapshotState.match(
-    testName || currentTestName || '',
-    received,
-  );
+  let result;
+
+  try {
+    result = snapshotState.match(testName || currentTestName || '', received);
+  } catch (error) {
+    throw new Error(error.stack);
+  }
+
   const {count, pass} = result;
   let {actual, expected} = result;
 
