@@ -937,6 +937,44 @@ describe('preset', () => {
   });
 });
 
+describe('preset with .js file', () => {
+  beforeEach(() => {
+    const Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name === 'react-native/jest-preset.json') {
+        return '/node_modules/react-native/jest-preset-dont-exist.json';
+      }
+      if (name === 'react-native/jest-preset.js') {
+        return '/node_modules/react-native/jest-preset.js';
+      }
+      return '/node_modules/' + name;
+    });
+    jest.mock(
+      '/node_modules/react-native/jest-preset.js',
+      () => ({
+        moduleNameMapper: {b: 'b'},
+        modulePathIgnorePatterns: ['js'],
+        setupFiles: ['b'],
+      }),
+      {virtual: true},
+    );
+  });
+  afterEach(() => {
+    jest.unmock('/node_modules/react-native/jest-preset.js');
+  });
+
+  it('should resolve jest-preset.js file', () => {
+    const normalized = normalize(
+      {
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+    expect(normalized.options.modulePathIgnorePatterns).toEqual(['js']);
+  });
+});
+
 describe('preset without setupFiles', () => {
   let Resolver;
   beforeEach(() => {
