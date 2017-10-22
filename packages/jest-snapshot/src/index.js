@@ -67,7 +67,6 @@ const toMatchSnapshot = function(received: any, testName?: string) {
       : currentTestName || '',
     received,
   );
-
   const {count, pass} = result;
   let {actual, expected} = result;
 
