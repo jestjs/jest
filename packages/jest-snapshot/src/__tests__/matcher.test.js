@@ -26,17 +26,3 @@ it(`matcher returns matcher name, expected and actual values`, () => {
     }),
   );
 });
-
-it(`throws the error stack when match throws an error`, () => {
-  const error = new Error();
-
-  const matcher = toMatchSnapshot.bind({
-    snapshotState: {
-      match: () => {
-        throw error;
-      },
-    },
-  });
-
-  expect(() => matcher()).toThrow(error.stack);
-});
