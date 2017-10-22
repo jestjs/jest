@@ -32,11 +32,11 @@ describe('Runtime', () => {
           /* eslint-disable max-len */
           if (process.platform === 'win32') {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\sourcemaps\\throwing-mapped-fn.js:10:9/,
+              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\sourcemaps\\throwing-mapped-fn.js:/,
             );
           } else {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/sourcemaps\/throwing-mapped-fn.js:10:9/,
+              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/sourcemaps\/throwing-mapped-fn.js:/,
             );
           }
           /* eslint-enable max-len */
