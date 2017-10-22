@@ -13,6 +13,7 @@
 * `[jest-runtime]` Move `babel-core` to peer dependencies so it works with Babel 7 ([#4557](https://github.com/facebook/jest/pull/4557))
 * `[jest-util]` Fix `runOnlyPendingTimers` for `setTimeout` inside `setImmediate` ([#4608](https://github.com/facebook/jest/pull/4608))
 * `[jest-message-util]` Always remove node internals from stacktraces ([#4695](https://github.com/facebook/jest/pull/4695))
+* `[pretty-format]` Show exception stack trace when errors are thrown by plugins ([#4738](https://github.com/facebook/jest/pull/4738))
 
 ### Features
 * `[jest-environment-*]` [**BREAKING**] Add Async Test Environment APIs, dispose is now teardown ([#4506](https://github.com/facebook/jest/pull/4506))
