@@ -42,7 +42,7 @@ type ErrorWithCode = Error & {code?: string};
 
 import fs from 'fs';
 import path from 'path';
-import isBuiltinModule from 'is-builtin-module';
+import isBuiltinModule from './is_builtin_module';
 
 import nodeModulesPaths from './node_modules_paths';
 
