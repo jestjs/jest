@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @emails oncall+jsinfra
  */
@@ -17,9 +16,10 @@ describe('Runtime', () => {
   });
 
   describe('requireModule', () => {
-    it('installs source maps if available', () =>
-      createRuntime(__filename).then(runtime => {
-        let hasThrown = false;
+    it('installs source maps if available', () => {
+      expect.assertions(1);
+
+      return createRuntime(__filename).then(runtime => {
         const sum = runtime.requireModule(
           runtime.__mockRootPath,
           './sourcemaps/out/throwing-mapped-fn.js',
@@ -28,20 +28,17 @@ describe('Runtime', () => {
         try {
           sum();
         } catch (err) {
-          hasThrown = true;
-          /* eslint-disable max-len */
           if (process.platform === 'win32') {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\sourcemaps\\throwing-mapped-fn.js:/,
+              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\sourcemaps\\(out\\)?throwing-mapped-fn.js:\d+:\d+/,
             );
           } else {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/sourcemaps\/throwing-mapped-fn.js:/,
+              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/sourcemaps\/(out\/)?throwing-mapped-fn.js:\d+:\d+/,
             );
           }
-          /* eslint-enable max-len */
         }
-        expect(hasThrown).toBe(true);
-      }));
+      });
+    });
   });
 });
