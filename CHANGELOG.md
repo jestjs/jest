@@ -49,7 +49,7 @@
 * `[jest-diff]` Simplify highlight for leading and trailing spaces ([#4553](https://github.com/facebook/jest/pull/4553))
 * `[jest-get-type]` Add support for date ([#4621](https://github.com/facebook/jest/pull/4621))
 * `[jest-matcher-utils]` Call `chalk.inverse` for trailing spaces ([#4578](https://github.com/facebook/jest/pull/4578))
-* `[jest-runtime]` Add `.advanceTimersByTime`; keep `.runTimersByTime()` as an alias.
+* `[jest-runtime]` Add `.advanceTimersByTime`; keep `.runTimersToTime()` as an alias.
 
 ## jest 21.2.1
 

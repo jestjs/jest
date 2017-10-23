@@ -225,6 +225,7 @@ This is often useful for synchronously executing setTimeouts during a test in or
 Exhausts all tasks queued by `setImmediate()`.
 
 ### `jest.advanceTimersByTime(msToRun)`
+##### renamed in Jest **21.3.0+**
 Also under the alias: `.runTimersToTime()`
 
 Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
