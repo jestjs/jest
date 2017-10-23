@@ -240,25 +240,32 @@ function printPlugin(
   depth: number,
   refs: Refs,
 ): string {
-  const printed = plugin.serialize
-    ? plugin.serialize(val, config, indentation, depth, refs, printer)
-    : plugin.print(
-        val,
-        valChild => printer(valChild, config, indentation, depth, refs),
-        str => {
-          const indentationNext = indentation + config.indent;
-          return (
-            indentationNext +
-            str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
-          );
-        },
-        {
-          edgeSpacing: config.spacingOuter,
-          min: config.min,
-          spacing: config.spacingInner,
-        },
-        config.colors,
-      );
+  let printed;
+
+  try {
+    printed = plugin.serialize
+      ? plugin.serialize(val, config, indentation, depth, refs, printer)
+      : plugin.print(
+          val,
+          valChild => printer(valChild, config, indentation, depth, refs),
+          str => {
+            const indentationNext = indentation + config.indent;
+            return (
+              indentationNext +
+              str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
+            );
+          },
+          {
+            edgeSpacing: config.spacingOuter,
+            min: config.min,
+            spacing: config.spacingInner,
+          },
+          config.colors,
+        );
+  } catch (error) {
+    throw new Error(error.stack);
+  }
+
   if (typeof printed !== 'string') {
     throw new Error(
       `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
@@ -269,8 +276,12 @@ function printPlugin(
 
 function findPlugin(plugins: Plugins, val: any) {
   for (let p = 0; p < plugins.length; p++) {
-    if (plugins[p].test(val)) {
-      return plugins[p];
+    try {
+      if (plugins[p].test(val)) {
+        return plugins[p];
+      }
+    } catch (error) {
+      throw new Error(error.stack);
     }
   }
 

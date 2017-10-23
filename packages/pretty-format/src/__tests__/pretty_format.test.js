@@ -549,6 +549,57 @@ describe('prettyFormat()', () => {
     }).toThrow();
   });
 
+  it('throws the plugin error stack when test throws an error', () => {
+    const error = new Error();
+    const options = {
+      plugins: [
+        {
+          print: () => '',
+          test() {
+            throw error;
+          },
+        },
+      ],
+    };
+    expect(() => {
+      prettyFormat('', options);
+    }).toThrow(error.stack);
+  });
+
+  it('throws the plugin error stack when print throws an error', () => {
+    const error = new Error();
+    const options = {
+      plugins: [
+        {
+          print: () => {
+            throw error;
+          },
+          test: () => true,
+        },
+      ],
+    };
+    expect(() => {
+      prettyFormat('', options);
+    }).toThrow(error.stack);
+  });
+
+  it('throws the plugin error stack when serialize throws an error', () => {
+    const error = new Error();
+    const options = {
+      plugins: [
+        {
+          serialize: () => {
+            throw error;
+          },
+          test: () => true,
+        },
+      ],
+    };
+    expect(() => {
+      prettyFormat('', options);
+    }).toThrow(error.stack);
+  });
+
   it('supports plugins with deeply nested arrays (#24)', () => {
     const val = [[1, 2], [3, 4]];
     expect(
