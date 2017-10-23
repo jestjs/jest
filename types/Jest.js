@@ -39,7 +39,7 @@ export type Jest = {|
   runAllTicks(): void,
   runAllTimers(): void,
   runOnlyPendingTimers(): void,
-  runTimersToTime(msToRun: number): void,
+  advanceTimersByTime(msToRun: number): void,
   setMock(moduleName: string, moduleExports: any): Jest,
   setTimeout(timeout: number): Jest,
   spyOn(object: Object, methodName: string): JestMockFn,
