@@ -42,24 +42,23 @@ const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
 // Return whether val is equal to both global and window object.
-let noGlobalWindow;
-let theGlobalWindow;
-const isGlobalWindow = val => {
-  if (noGlobalWindow) {
+let noWindow;
+let theWindow;
+const isWindow = val => {
+  if (noWindow) {
     return false;
   }
-  if (theGlobalWindow === undefined) {
+  if (theWindow === undefined) {
     try {
       /* global window */
-      noGlobalWindow = global !== window;
-      if (!noGlobalWindow) {
-        theGlobalWindow = window;
-      }
+      theWindow = window;
+      noWindow = false;
     } catch (e) {
-      noGlobalWindow = true;
+      noWindow = true;
+      return false;
     }
   }
-  return val === theGlobalWindow;
+  return val === theWindow;
 };
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
@@ -248,7 +247,7 @@ function printComplexValue(
   // Avoid failure to serialize global window object in jsdom test environment.
   // For example, not even relevant if window is prop of React element.
   // Theoretically could serialize window in browser if global is undefined.
-  return hitMaxDepth || isGlobalWindow(val)
+  return hitMaxDepth || isWindow(val)
     ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
     : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
       '{' +
