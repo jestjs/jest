@@ -1,4 +1,6 @@
-const isBuiltinModule = require('../is_builtin_module');
+// @flow
+
+import isBuiltinModule from '../is_builtin_module';
 
 describe('isBuiltinModule', () => {
   it('should return true for the `path` module', () => {
