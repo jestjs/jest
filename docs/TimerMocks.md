@@ -129,7 +129,7 @@ describe('infiniteTimerGame', () => {
 
 ## Run Timers to Time
 
-Another possibility is use `jest.runTimersToTime(msToRun)`. When this API is called, all pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed within msToRun milliseconds, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
+Another possibility is use `jest.runTimersToTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this timeframe, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
 
 ```javascript
 // timerGame.js
