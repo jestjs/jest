@@ -797,6 +797,8 @@ class Runtime {
         this._environment.fakeTimers.runOnlyPendingTimers(),
       advanceTimersByTime: (msToRun: number) =>
         this._environment.fakeTimers.advanceTimersByTime(msToRun),
+      runTimersByTime: (msToRun: number) =>
+        this._environment.fakeTimers.advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
       setTimeout,
