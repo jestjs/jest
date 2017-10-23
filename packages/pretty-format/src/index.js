@@ -41,7 +41,7 @@ const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
-// Return whether val is equal to both global and window object.
+// Return whether val is equal to global window object.
 let noWindow;
 let theWindow;
 const isWindow = val => {
@@ -246,7 +246,6 @@ function printComplexValue(
 
   // Avoid failure to serialize global window object in jsdom test environment.
   // For example, not even relevant if window is prop of React element.
-  // Theoretically could serialize window in browser if global is undefined.
   return hitMaxDepth || isWindow(val)
     ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
     : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
