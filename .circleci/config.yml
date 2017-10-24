@@ -13,12 +13,12 @@ aliases:
 
   - &yarn-install
     run: |
-      sudo npm i -g yarn@^0.27.5
+      sudo npm i -g yarn@^1.2.1
       yarn --no-progress
 
   - &yarn-install-no-sudo
     run: |
-      npm i -g yarn@^0.27.5
+      npm i -g yarn@^1.2.1
       yarn --no-progress
 
   - &deploy
@@ -57,18 +57,17 @@ jobs:
   test-node-8:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8.1.4
+      - image: circleci/node:8.7.0
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - *yarn-install
       - save-cache: *save-cache
       - run: yarn run test-ci-partial
 
   test-node-6:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:6.11.0
+      - image: circleci/node:6.11.4
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -90,11 +89,10 @@ jobs:
   test-and-deploy-website:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8.1.4
+      - image: circleci/node:8.7.0
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: sudo npm i -g yarn@^0.27.5
       - run: |
           cd website
           yarn --no-progress
