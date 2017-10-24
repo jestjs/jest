@@ -50,7 +50,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - &yarn-install-no-sudo
+      - *yarn-install-no-sudo
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
@@ -61,6 +61,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
+      - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn run test-ci-partial
 
