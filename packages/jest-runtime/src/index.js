@@ -768,6 +768,8 @@ class Runtime {
     const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
+      advanceTimersByTime: (msToRun: number) =>
+        this._environment.fakeTimers.advanceTimersByTime(msToRun),
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
@@ -795,8 +797,6 @@ class Runtime {
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
-      advanceTimersByTime: (msToRun: number) =>
-        this._environment.fakeTimers.advanceTimersByTime(msToRun),
       runTimersToTime: (msToRun: number) =>
         this._environment.fakeTimers.advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: Object) =>
