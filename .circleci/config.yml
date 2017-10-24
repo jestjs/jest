@@ -46,10 +46,11 @@ jobs:
   test-browser:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8-browsers
+      - image: markhobson/node-chrome
     steps:
       - checkout
       - restore-cache: *restore-cache
+      - &yarn-install-no-sudo
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
