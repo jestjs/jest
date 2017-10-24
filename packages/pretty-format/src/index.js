@@ -49,11 +49,14 @@ const isWindow = val => {
     return false;
   }
   if (theWindow === undefined) {
+    // Cost of try-catch for equality comparison is measurable on this hot path.
     try {
       /* global window */
       theWindow = window;
+      // For example, jest --env=jsdom
       noWindow = false;
     } catch (e) {
+      // For example, jest --env=node
       noWindow = true;
       return false;
     }
