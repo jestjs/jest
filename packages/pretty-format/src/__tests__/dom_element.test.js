@@ -18,6 +18,13 @@ const toPrettyPrintTo = require('./expect_util').getPrettyPrint([DOMElement]);
 const expect: any = global.expect;
 expect.extend({toPrettyPrintTo});
 
+describe('pretty-format', () => {
+  // Test is not related to plugin but is related to jsdom testing environment.
+  it('prints global window as constructor name alone', () => {
+    expect(prettyFormat(window)).toEqual('[Window]');
+  });
+});
+
 describe('DOMElement Plugin', () => {
   it('supports a single HTML element', () => {
     expect(document.createElement('div')).toPrettyPrintTo('<div />');

@@ -14,6 +14,7 @@
 * `[jest-util]` Fix `runOnlyPendingTimers` for `setTimeout` inside `setImmediate` ([#4608](https://github.com/facebook/jest/pull/4608))
 * `[jest-message-util]` Always remove node internals from stacktraces ([#4695](https://github.com/facebook/jest/pull/4695))
 * `[jest-resolve]` changes method of determining builtin modules to include missing builtins ([#4740](https://github.com/facebook/jest/pull/4740))
+* `[pretty-format]` Prevent error in pretty-format for window in jsdom test env ([#4750](https://github.com/facebook/jest/pull/4750))
 
 ### Features
 * `[jest-environment-*]` [**BREAKING**] Add Async Test Environment APIs, dispose is now teardown ([#4506](https://github.com/facebook/jest/pull/4506))

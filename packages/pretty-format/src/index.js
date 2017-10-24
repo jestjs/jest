@@ -41,6 +41,10 @@ const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
+// Is val is equal to global window object? Works even if it does not exist :)
+/* global window */
+const isWindow = val => typeof window !== 'undefined' && val === window;
+
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
 
@@ -224,7 +228,9 @@ function printComplexValue(
         '}';
   }
 
-  return hitMaxDepth
+  // Avoid failure to serialize global window object in jsdom test environment.
+  // For example, not even relevant if window is prop of React element.
+  return hitMaxDepth || isWindow(val)
     ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
     : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
       '{' +
