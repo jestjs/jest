@@ -41,28 +41,9 @@ const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
-// Return whether val is equal to global window object.
-let noWindow;
-let theWindow;
-const isWindow = val => {
-  if (noWindow) {
-    return false;
-  }
-  if (theWindow === undefined) {
-    // Cost of try-catch for equality comparison is measurable on this hot path.
-    try {
-      /* global window */
-      theWindow = window;
-      // For example, jest --env=jsdom
-      noWindow = false;
-    } catch (e) {
-      // For example, jest --env=node
-      noWindow = true;
-      return false;
-    }
-  }
-  return val === theWindow;
-};
+// Is val is equal to global window object? Works even if it does not exist :)
+/* global window */
+const isWindow = val => typeof window !== 'undefined' && val === window;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
