@@ -127,9 +127,9 @@ describe('infiniteTimerGame', () => {
 });
 ```
 
-## Run Timers to Time
+## Advance Timers by Time
 
-Another possibility is use `jest.runTimersToTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this timeframe, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
+Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this timeframe, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
 
 ```javascript
 // timerGame.js
@@ -147,7 +147,7 @@ module.exports = timerGame;
 ```
 
 ```javascript
-it('calls the callback after 1 second via runTimersToTime', () => {
+it('calls the callback after 1 second via advanceTimersByTime', () => {
   const timerGame = require('../timerGame');
   const callback = jest.fn();
 
@@ -157,7 +157,7 @@ it('calls the callback after 1 second via runTimersToTime', () => {
   expect(callback).not.toBeCalled();
 
   // Fast-forward until all timers have been executed
-  jest.runTimersToTime(1000);
+  jest.advanceTimersByTime(1000);
 
   // Now our callback should have been called!
   expect(callback).toBeCalled();

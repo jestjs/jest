@@ -445,7 +445,7 @@ describe('FakeTimers', () => {
     });
   });
 
-  describe('runTimersToTime', () => {
+  describe('advanceTimersByTime', () => {
     it('runs timers in order', () => {
       const global = {process};
       const timers = new FakeTimers({global, moduleMocker, timerConfig});
@@ -465,23 +465,23 @@ describe('FakeTimers', () => {
       }, 200);
 
       // Move forward to t=50
-      timers.runTimersToTime(50);
+      timers.advanceTimersByTime(50);
       expect(runOrder).toEqual(['mock2', 'mock3']);
 
       // Move forward to t=60
-      timers.runTimersToTime(10);
+      timers.advanceTimersByTime(10);
       expect(runOrder).toEqual(['mock2', 'mock3']);
 
       // Move forward to t=100
-      timers.runTimersToTime(40);
+      timers.advanceTimersByTime(40);
       expect(runOrder).toEqual(['mock2', 'mock3', 'mock1']);
 
       // Move forward to t=200
-      timers.runTimersToTime(100);
+      timers.advanceTimersByTime(100);
       expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4']);
 
       // Move forward to t=400
-      timers.runTimersToTime(200);
+      timers.advanceTimersByTime(200);
       expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4', 'mock4']);
     });
 
@@ -490,7 +490,7 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers({global, moduleMocker, timerConfig});
       timers.useFakeTimers();
 
-      timers.runTimersToTime(100);
+      timers.advanceTimersByTime(100);
     });
 
     it('throws before allowing infinite recursion', () => {
@@ -508,7 +508,7 @@ describe('FakeTimers', () => {
       }, 0);
 
       expect(() => {
-        timers.runTimersToTime(50);
+        timers.advanceTimersByTime(50);
       }).toThrow(
         new Error(
           "Ran 100 timers, and there are still more! Assuming we've hit an " +
@@ -565,19 +565,19 @@ describe('FakeTimers', () => {
       expect(mock1.mock.calls.length).toBe(0);
     });
 
-    it('resets current runTimersToTime time cursor', () => {
+    it('resets current advanceTimersByTime time cursor', () => {
       const global = {process};
       const timers = new FakeTimers({global, moduleMocker, timerConfig});
       timers.useFakeTimers();
 
       const mock1 = jest.genMockFn();
       global.setTimeout(mock1, 100);
-      timers.runTimersToTime(50);
+      timers.advanceTimersByTime(50);
 
       timers.reset();
       global.setTimeout(mock1, 100);
 
-      timers.runTimersToTime(50);
+      timers.advanceTimersByTime(50);
       expect(mock1.mock.calls.length).toBe(0);
     });
   });

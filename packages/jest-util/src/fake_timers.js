@@ -120,7 +120,7 @@ export default class FakeTimers<TimerRef> {
     // Instead, use the versions available on the `jest` object
     global.mockRunTicksRepeatedly = this.runAllTicks.bind(this);
     global.mockRunTimersOnce = this.runOnlyPendingTimers.bind(this);
-    global.mockRunTimersToTime = this.runTimersToTime.bind(this);
+    global.mockAdvanceTimersByTime = this.advanceTimersByTime.bind(this);
     global.mockRunTimersRepeatedly = this.runAllTimers.bind(this);
     global.mockClearTimers = this.clearAllTimers.bind(this);
     global.mockGetTimersCount = () => Object.keys(this._timers).length;
@@ -257,7 +257,7 @@ export default class FakeTimers<TimerRef> {
       .forEach(this._runTimerHandle, this);
   }
 
-  runTimersToTime(msToRun: number) {
+  advanceTimersByTime(msToRun: number) {
     this._checkFakeTimers();
     // Only run a generous number of timers and then bail.
     // This is just to help avoid recursive loops

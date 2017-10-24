@@ -21,7 +21,7 @@ declare class $JestEnvironment {
     runAllImmediates(): void,
     runAllTicks(): void,
     runAllTimers(): void,
-    runTimersToTime(msToRun: number): void,
+    advanceTimersByTime(msToRun: number): void,
     runOnlyPendingTimers(): void,
     runWithRealTimers(callback: any): void,
     useFakeTimers(): void,
