@@ -260,7 +260,7 @@ export default class FakeTimers<TimerRef> {
   runTimersToTime(msToRun: number) {
     this._checkFakeTimers();
     // Only run a generous number of timers and then bail.
-    // This is jsut to help avoid recursive loops
+    // This is just to help avoid recursive loops
     let i;
     for (i = 0; i < this._maxLoops; i++) {
       const timerHandle = this._getNextTimerHandle();
