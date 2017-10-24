@@ -46,18 +46,17 @@ jobs:
   test-browser:
     working_directory: ~/jest
     docker:
-      - image: markhobson/node-chrome
+      - image: circleci/node:8-browsers
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - *yarn-install-no-sudo
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
   test-node-8:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8.7.0
+      - image: circleci/node:8
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -67,7 +66,7 @@ jobs:
   test-node-6:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:6.11.4
+      - image: circleci/node:6
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -78,7 +77,7 @@ jobs:
   test-node-4:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:4.8.4
+      - image: circleci/node:4
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -89,7 +88,7 @@ jobs:
   test-and-deploy-website:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8.7.0
+      - image: circleci/node:8
     steps:
       - checkout
       - restore-cache: *restore-cache
