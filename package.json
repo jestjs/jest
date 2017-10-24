@@ -81,21 +81,21 @@
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
-    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn run build-clean",
+    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn build-clean",
     "jest": "node ./packages/jest-cli/bin/jest.js",
-    "jest-coverage": "yarn run jest -- --coverage",
+    "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
-    "postinstall": "yarn run build",
-    "publish": "yarn run build-clean && yarn run build && lerna publish --silent",
+    "postinstall": "yarn build",
+    "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
-    "test-ci": "yarn run typecheck && yarn run lint && yarn run lint-es5-build && yarn run jest-coverage -- -i && yarn run test-examples && node scripts/mapCoverage.js && codecov",
-    "test-ci-partial": "yarn run jest -- -i && yarn run test-examples",
+    "test-ci": "yarn typecheck && yarn lint && yarn lint-es5-build && yarn jest-coverage -- -i && yarn test-examples && node scripts/mapCoverage.js && codecov",
+    "test-ci-partial": "yarn jest -i && yarn test-examples",
     "test-examples": "node scripts/test_examples.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
-    "test": "yarn run typecheck && yarn run lint && yarn run jest && yarn run test-examples",
+    "test": "yarn typecheck && yarn lint && yarn jest && yarn test-examples",
     "typecheck": "flow check --include-warnings",
-    "watch": "yarn run build && node ./scripts/watch.js"
+    "watch": "yarn build && node ./scripts/watch.js"
   },
   "workspaces": [
     "packages/*"
