@@ -12,9 +12,5 @@ const runJest = require('../runJest');
 
 test('resolve platform modules', () => {
   const result = runJest('resolve');
-  const didFail = result.status !== 0;
-  if (didFail) {
-    console.log(result.stderr);
-  }
-  expect(didFail).toBe(false);
+  expect(result.status).toBe(0);
 });
