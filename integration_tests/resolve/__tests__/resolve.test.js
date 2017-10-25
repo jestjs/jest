@@ -56,3 +56,9 @@ test('should resolve filename.json', () => {
   expect(testRequire('../test4')).not.toThrow();
   expect(platform.extension).toBe('json');
 });
+
+test('should preserve identity for symlinks', () => {
+  expect(require('../../../packages/jest-resolve')).toBe(
+    require('jest-resolve')
+  );
+});

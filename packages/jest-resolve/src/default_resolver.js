@@ -25,7 +25,6 @@ export default function defaultResolver(
   options: ResolverOptions,
 ): Path {
   const resolve = options.browser ? browserResolve.sync : resolveSync;
-
   return resolve(path, {
     basedir: options.basedir,
     extensions: options.extensions,
@@ -93,6 +92,11 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     let result;
     if (isDirectory(dir)) {
       result = resolveAsFile(name) || resolveAsDirectory(name);
+    }
+    if (result) {
+      // Dereference symlinks to ensure we don't create a separate
+      // module instance depending on how it was referenced.
+      result = fs.realpathSync(result);
     }
     return result;
   }
