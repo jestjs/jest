@@ -25,6 +25,7 @@ export default function defaultResolver(
   options: ResolverOptions,
 ): Path {
   const resolve = options.browser ? browserResolve.sync : resolveSync;
+
   return resolve(path, {
     basedir: options.basedir,
     extensions: options.extensions,
