@@ -103,7 +103,7 @@ class HomeSplash extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="githubButton" style={{ minHeight: '20px' }}>{githubButton}</div>
+              <div className="githubButton" style={{minHeight: '20px'}}>{githubButton}</div>
             </div>
           </div>
         </div>
