@@ -94,6 +94,11 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     if (isDirectory(dir)) {
       result = resolveAsFile(name) || resolveAsDirectory(name);
     }
+    if (result) {
+      // Dereference symlinks to ensure we don't create a separate
+      // module instance depending on how it was referenced.
+      result = fs.realpathSync(result);
+    }
     return result;
   }
 
