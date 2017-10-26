@@ -12,6 +12,5 @@ const runJest = require('../runJest');
 
 test('works with nested event loops', () => {
   const result = runJest('nested_event_loop');
-  console.log(result.stderr)
   expect(result.status).toBe(0);
 });
