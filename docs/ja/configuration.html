@@ -337,6 +337,7 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 });
 </code></pre>
 <p>テスト環境のセットアップに用いる独自モジュールを作成することができます。モジュールは <code>setup</code>、 <code>teardown</code> および <code>runScript</code> メソッドを実装したクラスをエクスポートする必要があります。</p>
+<h5><a class="anchor" name="jest-2130"></a>jest バージョン <strong>21.3.0+</strong> で利用可能 <a class="hash-link" href="#jest-2130">#</a></h5>
 <p><em>Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.</em></p>
 <p>例:</p>
 <pre><code class="language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomEnvironment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NodeEnvironment</span> </span>{
