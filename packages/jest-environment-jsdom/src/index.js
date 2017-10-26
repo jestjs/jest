@@ -44,12 +44,31 @@ class JSDOMEnvironment {
       };
     }
 
+    // Report uncaught errors.
     this.errorEventListener = event => {
-      if (event.error) {
+      if (userErrorListenerCount === 0 && event.error) {
         process.emit('uncaughtException', event.error);
       }
     };
     global.addEventListener('error', this.errorEventListener);
+
+    // However, don't report them as uncaught if the user listens to 'error' event.
+    // In that case, we assume the might have custom error handling logic.
+    const originalAddListener = global.addEventListener;
+    const originalRemoveListener = global.removeEventListener;
+    let userErrorListenerCount = 0;
+    global.addEventListener = function(name) {
+      if (name === 'error') {
+        userErrorListenerCount++;
+      }
+      return originalAddListener.apply(this, arguments);
+    };
+    global.removeEventListener = function(name) {
+      if (name === 'error') {
+        userErrorListenerCount--;
+      }
+      return originalRemoveListener.apply(this, arguments);
+    };
 
     this.moduleMocker = new mock.ModuleMocker(global);
 
