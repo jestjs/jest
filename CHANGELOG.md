@@ -19,7 +19,7 @@
 * `[jest-config]` Include error message for `preset` json ([#4766](https://github.com/facebook/jest/pull/4766))
 
 ### Features
-* `[jest-environment-jsdom]` [**BREAKING**] Upgrade to JSDOM@11 (TBD)
+* `[jest-environment-jsdom]` [**BREAKING**] Upgrade to JSDOM@11 ([#4770](https://github.com/facebook/jest/pull/4770))
 * `[jest-environment-*]` [**BREAKING**] Add Async Test Environment APIs, dispose is now teardown ([#4506](https://github.com/facebook/jest/pull/4506))
 * `[jest-cli]` Add an option to clear the cache ([#4430](https://github.com/facebook/jest/pull/4430))
 * `[babel-plugin-jest-hoist]` Improve error message, that the second argument of `jest.mock` must be an inline function ([#4593](https://github.com/facebook/jest/pull/4593))
