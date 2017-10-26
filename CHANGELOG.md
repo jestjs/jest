@@ -19,6 +19,7 @@
 * `[jest-config]` Include error message for `preset` json ([#4766](https://github.com/facebook/jest/pull/4766))
 
 ### Features
+* `[eslint-plugin-jest]` Add `prefer-to-have-length` lint rule. ([#4771](https://github.com/facebook/jest/pull/4771))
 * `[jest-environment-jsdom]` [**BREAKING**] Upgrade to JSDOM@11 ([#4770](https://github.com/facebook/jest/pull/4770))
 * `[jest-environment-*]` [**BREAKING**] Add Async Test Environment APIs, dispose is now teardown ([#4506](https://github.com/facebook/jest/pull/4506))
 * `[jest-cli]` Add an option to clear the cache ([#4430](https://github.com/facebook/jest/pull/4430))
