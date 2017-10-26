@@ -76,17 +76,6 @@ jobs:
       - save-cache: *save-cache
       - run: yarn run test-ci
 
-  test-node-4:
-    working_directory: ~/jest
-    docker:
-      - image: circleci/node:4
-    steps:
-      - checkout
-      - restore-cache: *restore-cache
-      - *yarn-install
-      - save-cache: *save-cache
-      - run: npm run test-ci-partial
-
   test-and-deploy-website:
     working_directory: ~/jest
     docker:
@@ -107,6 +96,5 @@ workflows:
     jobs:
       - test-node-8
       - test-node-6
-      - test-node-4
       - test-browser
       - test-and-deploy-website
