@@ -7,6 +7,9 @@
  * @jest-environment jsdom
  */
 
+/* global document */
+/* global window */
+
 'use strict';
 
 it('can assert on errors across nested event loops', () => {
