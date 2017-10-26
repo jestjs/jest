@@ -7,8 +7,7 @@
  * @jest-environment jsdom
  */
 
-/* global document */
-/* global window */
+/* eslint-env browser */
 
 'use strict';
 
