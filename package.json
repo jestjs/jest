@@ -44,7 +44,6 @@
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "jquery": "^3.2.1",
-    "jsdom": "^9.12.0",
     "karma": "^1.7.0",
     "karma-browserify": "^5.1.1",
     "karma-chrome-launcher": "^2.1.1",
