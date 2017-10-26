@@ -877,6 +877,22 @@ describe('preset', () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
+  test('throws when preset is invalid', () => {
+    jest.mock('/node_modules/react-native/jest-preset.json', () =>
+      require.requireActual('./jest-preset.json'),
+    );
+
+    expect(() => {
+      normalize(
+        {
+          preset: 'react-native',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowErrorMatchingSnapshot();
+  });
+
   test('works with "react-native"', () => {
     expect(() => {
       normalize(

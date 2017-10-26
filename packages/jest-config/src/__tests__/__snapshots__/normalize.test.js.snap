@@ -17,6 +17,17 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 <yellow></>"
 `;
 
+exports[`preset throws when preset is invalid 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Preset <bold>react-native</> is invalid:</>
+<red>  Unexpected token } in JSON at position 104</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red></>"
+`;
+
 exports[`preset throws when preset not found 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>
