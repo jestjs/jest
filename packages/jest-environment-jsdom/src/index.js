@@ -57,17 +57,17 @@ class JSDOMEnvironment {
     const originalAddListener = global.addEventListener;
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
-    global.addEventListener = (name, ...args) => {
+    global.addEventListener = (name) => {
       if (name === 'error') {
         userErrorListenerCount++;
       }
-      return originalAddListener(name, ...args);
+      return originalAddListener.apply(this, arguments);
     };
-    global.removeEventListener = (name, ...args) => {
+    global.removeEventListener = (name) => {
       if (name === 'error') {
         userErrorListenerCount--;
       }
-      return originalRemoveListener(name, ...args);
+      return originalRemoveListener.apply(this, arguments);
     };
 
     this.moduleMocker = new mock.ModuleMocker(global);
