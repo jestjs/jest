@@ -50,6 +50,15 @@ class JSDOMEnvironment {
       }
     };
     global.addEventListener('error', this.errorEventListener);
+    const originalAddListener = global.addEventListener;
+
+    global.addEventListener = (name, ...args) => {
+      if (name === 'error') {
+        global.removeEventListener('error', this.errorEventListener);
+      }
+
+      return originalAddListener(name, ...args);
+    };
 
     this.moduleMocker = new mock.ModuleMocker(global);
 
