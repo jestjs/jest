@@ -10,7 +10,7 @@
     "jest": "./bin/jest.js"
   },
   "engines": {
-    "node": ">= 4"
+    "node": ">= 6"
   },
   "repository": {
     "type": "git",
