@@ -300,14 +300,11 @@ const _run = async (
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
   if (globalConfig.watch && !changedFilesPromise) {
-    process.stdout.write(
-      'The project folder is no git and no mercurial project. ' +
-        chalk.bold('Watching all files') +
-        ' instead...',
+    process.stderr.write(
+      chalk.bold('--watch') +
+        ' is not supported without git/hg, please use --watchAll',
     );
-    globalConfig = updateGlobalConfig(globalConfig, {
-      mode: 'watchAll',
-    });
+    process.exit(1);
   }
 
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
