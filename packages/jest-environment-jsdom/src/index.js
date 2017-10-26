@@ -13,7 +13,7 @@ import type {ModuleMocker} from 'jest-mock';
 
 import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
-import JSDom from 'jsdom';
+import {JSDOM} from 'jsdom';
 
 class JSDOMEnvironment {
   document: ?Object;
@@ -22,13 +22,14 @@ class JSDOMEnvironment {
   errorEventListener: ?Function;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: ProjectConfig): void {
+  constructor(config: ProjectConfig) {
     const jsdomInitialized = process.hrtime();
-    // lazy require
-    this.document = JSDom.jsdom('<!DOCTYPE html>', {
+
+    this.document = new JSDOM('<!DOCTYPE html>', {
+      runScripts: 'dangerously',
       url: config.testURL,
     });
-    const global = (this.global = this.document.defaultView);
+    const global = (this.global = this.document.window.document.defaultView);
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
@@ -107,8 +108,8 @@ class JSDOMEnvironment {
   }
 
   runScript(script: Script): ?any {
-    if (this.global) {
-      return JSDom.evalVMScript(this.global, script);
+    if (this.document) {
+      return this.document.runVMScript(script);
     }
     return null;
   }
