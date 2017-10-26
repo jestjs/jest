@@ -64,6 +64,11 @@ const setupPreset = (
     // $FlowFixMe
     preset = (require(presetModule): InitialOptions);
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw createConfigError(
+        `  Preset ${chalk.bold(presetPath)} is invalid:\n  ${error.message}`,
+      );
+    }
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
