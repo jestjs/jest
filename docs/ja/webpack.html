@@ -1,4 +1,4 @@
-<html><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/><title>Using with webpack · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Using with webpack · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/jest/index.html"/><meta property="og:description" content="Jestは [webpack](https://webpack.github.io/)でアセットやスタイル、コンパイル作業を管理するプロジェクトで使用できます。 webpackはJavaScript代替言語とツールの拡張的なエコシステムに加えて、スタイルシート、画像やフォントのようなアセットの管理を可能にするためにアプリケーションに直接結合するので、他の同様のツールと比べて*実に*ユニークで挑戦的な機能を提供しています。"/><meta property="og:image" content="/jest/img/opengraph.png"/><link rel="shortcut icon" href="/jest/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="/jest/css/main.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="Jest Blog ATOM Feed"/> <link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script async="" defer="" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/jest/js/webplayer.js"></script><script type="text/javascript" src="https://snack.expo.io/embed.js"></script></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jest/"><img class="logo" src="/jest/img/jest.svg"/><h2 class="headerTitle">Jest</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/ja/getting-started.html" target="_self">ドキュメント</a></li><li><a href="/jest/docs/ja/api.html" target="_self">API</a></li><li><a href="/jest/ja/help.html" target="_self">ヘルプ</a></li><li><a href="/jest/blog" target="_self">ブログ</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/jest/img/language.svg"/>日本語</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/jest/en">English</a></li><li><a href="/jest/es-ES">Español</a></li><li><a href="/jest/pt-BR">Português (Brasil)</a></li><li><a href="/jest/ro">Română</a></li><li><a href="/jest/ru">Русский</a></li><li><a href="/jest/uk">Українська</a></li><li><a href="/jest/zh-Hans">简体中文</a></li></ul></div></li><script>
+<html><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/><title>Using with webpack · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Using with webpack · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/jest/index.html"/><meta property="og:description" content="Jestは [webpack](https://webpack.github.io/)でアセットやスタイル、コンパイル作業を管理するプロジェクトで使用できます。 webpackはJavaScript代替言語とツールの拡張的なエコシステムに加えて、スタイルシート、画像やフォントのようなアセットの管理を可能にするためにアプリケーションに直接結合するので、他の同様のツールと比べて*実に*ユニークで挑戦的な機能を提供しています。"/><meta property="og:image" content="/jest/img/opengraph.png"/><link rel="shortcut icon" href="/jest/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="/jest/css/main.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script async="" defer="" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jest/"><img class="logo" src="/jest/img/jest.svg"/><h2 class="headerTitle">Jest</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/ja/getting-started.html" target="_self">ドキュメント</a></li><li><a href="/jest/docs/ja/api.html" target="_self">API</a></li><li><a href="/jest/ja/help.html" target="_self">ヘルプ</a></li><li><a href="/jest/blog" target="_self">ブログ</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/jest/img/language.svg"/>日本語</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/jest/en">English</a></li><li><a href="/jest/es-ES">Español</a></li><li><a href="/jest/pt-BR">Português (Brasil)</a></li><li><a href="/jest/ro">Română</a></li><li><a href="/jest/ru">Русский</a></li><li><a href="/jest/uk">Українська</a></li><li><a href="/jest/zh-Hans">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(){
@@ -8,142 +8,204 @@
             languagesDropDown.className = "hide";
           }
         });
-      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search"/></li><li><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Guides</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Introduction</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/getting-started.html#content">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/using-matchers.html#content">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/asynchronous.html#content">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/setup-teardown.html#content">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/mock-functions.html#content">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/more-resources.html#content">More Resources</a></li></ul></div><div class="navGroup navGroupActive"><h3>API Reference</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/api.html#content">Globals</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/expect.html#content">Expect</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/mock-function-api.html#content">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/jest-object.html#content">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/configuration.html#content">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/cli.html#content">Jest CLI Options</a></li></ul></div><div class="navGroup navGroupActive"><h3>Framework Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/tutorial-react.html#content">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/tutorial-react-native.html#content">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/testing-frameworks.html#content">Web フレームワークのテスト</a></li></ul></div><div class="navGroup navGroupActive"><h3>Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/snapshot-testing.html#content">スナップショットテスト</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/tutorial-async.html#content">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/timer-mocks.html#content">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/manual-mocks.html#content">Manual Mocks</a></li><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/jest/docs/ja/webpack.html#content">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/migration-guide.html#content">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/troubleshooting.html#content">Troubleshooting</a></li></ul></div></div></section></div><script>
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search"/></li><li><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Guides</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Introduction</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/getting-started.html">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/using-matchers.html">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/asynchronous.html">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/setup-teardown.html">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/mock-functions.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/more-resources.html">More Resources</a></li></ul></div><div class="navGroup navGroupActive"><h3>API Reference</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/api.html">Globals</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/expect.html">Expect</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/mock-function-api.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/jest-object.html">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/configuration.html">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/cli.html">Jest CLI Options</a></li></ul></div><div class="navGroup navGroupActive"><h3>Framework Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/tutorial-react.html">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/tutorial-react-native.html">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/testing-frameworks.html">Web フレームワークのテスト</a></li></ul></div><div class="navGroup navGroupActive"><h3>Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ja/snapshot-testing.html">スナップショットテスト</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/tutorial-async.html">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/timer-mocks.html">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/manual-mocks.html">Manual Mocks</a></li><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/jest/docs/ja/webpack.html">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/migration-guide.html">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ja/troubleshooting.html">Troubleshooting</a></li></ul></div></div></section></div><script>
           var toggler = document.getElementById('navToggler');
           var nav = document.getElementById('docsNav');
           toggler.onclick = function() {
             nav.classList.toggle('docsSliderActive');
           };
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1>Using with webpack</h1></header><article><div><p>Jestは <a href="https://webpack.github.io/" target="_blank">webpack</a>でアセットやスタイル、コンパイル作業を管理するプロジェクトで使用できます。 webpackはJavaScript代替言語とツールの拡張的なエコシステムに加えて、スタイルシート、画像やフォントのようなアセットの管理を可能にするためにアプリケーションに直接結合するので、他の同様のツールと比べて<em>実に</em>ユニークで挑戦的な機能を提供しています。</p><h2><a class="anchor" name="webpack"></a>webpackの設定例 <a class="hash-link" href="#webpack">#</a></h2><p>一般的な種類のwebpackの設定ファイルから始めて、Jestのセットアップに変換してみましょう。</p><pre class="prism language-js"><span spellcheck="true" class="token comment">// webpack.config.js</span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-  module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-    loaders<span class="token punctuation">:</span> <span class="token punctuation">[</span>
-      <span class="token punctuation">{</span>exclude<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;node_modules&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">,</span> loader<span class="token punctuation">:</span> <span class="token string">&#x27;babel&#x27;</span><span class="token punctuation">,</span> test<span class="token punctuation">:</span> <span class="token regex">/\.jsx?$/</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">{</span>loader<span class="token punctuation">:</span> <span class="token string">&#x27;style-loader!css-loader&#x27;</span><span class="token punctuation">,</span> test<span class="token punctuation">:</span> <span class="token regex">/\.css$/</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">{</span>loader<span class="token punctuation">:</span> <span class="token string">&#x27;url-loader&#x27;</span><span class="token punctuation">,</span> test<span class="token punctuation">:</span> <span class="token regex">/\.gif$/</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">{</span>loader<span class="token punctuation">:</span> <span class="token string">&#x27;file-loader&#x27;</span><span class="token punctuation">,</span> test<span class="token punctuation">:</span> <span class="token regex">/\.(ttf|eot|svg)$/</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  resolve<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-    alias<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-      config$<span class="token punctuation">:</span> <span class="token string">&#x27;./configs/app-config.js&#x27;</span><span class="token punctuation">,</span>
-      react<span class="token punctuation">:</span> <span class="token string">&#x27;./vendor/react-master&#x27;</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    extensions<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;js&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;jsx&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    modules<span class="token punctuation">:</span> <span class="token punctuation">[</span>
-      <span class="token string">&#x27;node_modules&#x27;</span><span class="token punctuation">,</span> 
-      <span class="token string">&#x27;bower_components&#x27;</span><span class="token punctuation">,</span> 
-      <span class="token string">&#x27;shared&#x27;</span><span class="token punctuation">,</span>
-      <span class="token string">&#x27;/shared/vendor/modules&#x27;</span><span class="token punctuation">,</span>
-    <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>Babel で変換された JavaScript ファイルがある場合は、 <code>babel-jest</code> プラグインをインストールすることで <a href="/jest/docs/ja/getting-started.html#using-babel-with-jest" target="">Babel へのサポートを有効にする</a>ことができます。 Babel 以外の JavaScriptトランスパイラは Jest の <a href="/jest/docs/ja/configuration.html#transform-object-string-string" target=""><code>transform</code></a> 設定オプションで管理できます。</p><h3><a class="anchor" name=""></a>静的アセットの管理 <a class="hash-link" href="#">#</a></h3><p>次は、スタイルシートや画像などのアセットを簡潔に管理できるようにJestを設定しましょう。 通常、これらのファイルはテストでは特に扱いづらいので、問題がないようにモックします。 しかし、CSSモジュールを利用している場合はクラス名参照のためのプロキシをモックした方が良いでしょう。</p><pre class="prism language-json">// package.json
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;moduleNameMapper&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span><span class="token punctuation">,</span>
-      <span class="token property">&quot;\\.(css|less)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><p>そしてモックファイル自身は次のようになります:</p><pre class="prism language-js"><span spellcheck="true" class="token comment">// __mocks__/styleMock.js</span>
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1>Using with webpack</h1></header><article><div><span><p>Jestは <a href="https://webpack.github.io/">webpack</a>でアセットやスタイル、コンパイル作業を管理するプロジェクトで使用できます。 webpackはJavaScript代替言語とツールの拡張的なエコシステムに加えて、スタイルシート、画像やフォントのようなアセットの管理を可能にするためにアプリケーションに直接結合するので、他の同様のツールと比べて<em>実に</em>ユニークで挑戦的な機能を提供しています。</p>
+<h2><a class="anchor" name="webpack"></a>webpackの設定例 <a class="hash-link" href="#webpack">#</a></h2>
+<p>一般的な種類のwebpackの設定ファイルから始めて、Jestのセットアップに変換してみましょう。</p>
+<pre><code class="language-js"><span class="hljs-comment">// webpack.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">loaders</span>: [
+      {<span class="hljs-attr">exclude</span>: [<span class="hljs-string">'node_modules'</span>], <span class="hljs-attr">loader</span>: <span class="hljs-string">'babel'</span>, <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.jsx?$/</span>},
+      {<span class="hljs-attr">loader</span>: <span class="hljs-string">'style-loader!css-loader'</span>, <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.css$/</span>},
+      {<span class="hljs-attr">loader</span>: <span class="hljs-string">'url-loader'</span>, <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.gif$/</span>},
+      {<span class="hljs-attr">loader</span>: <span class="hljs-string">'file-loader'</span>, <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.(ttf|eot|svg)$/</span>},
+    ],
+  },
+  <span class="hljs-attr">resolve</span>: {
+    <span class="hljs-attr">alias</span>: {
+      <span class="hljs-attr">config$</span>: <span class="hljs-string">'./configs/app-config.js'</span>,
+      <span class="hljs-attr">react</span>: <span class="hljs-string">'./vendor/react-master'</span>,
+    },
+    <span class="hljs-attr">extensions</span>: [<span class="hljs-string">''</span>, <span class="hljs-string">'js'</span>, <span class="hljs-string">'jsx'</span>],
+    <span class="hljs-attr">modules</span>: [
+      <span class="hljs-string">'node_modules'</span>, 
+      <span class="hljs-string">'bower_components'</span>, 
+      <span class="hljs-string">'shared'</span>,
+      <span class="hljs-string">'/shared/vendor/modules'</span>,
+    ],
+  },
+};
+</code></pre>
+<p>Babel で変換された JavaScript ファイルがある場合は、 <code>babel-jest</code> プラグインをインストールすることで <a href="/jest/docs/ja/getting-started.html#using-babel-with-jest">Babel へのサポートを有効にする</a>ことができます。 Babel 以外の JavaScriptトランスパイラは Jest の <a href="/jest/docs/ja/configuration.html#transform-object-string-string"><code>transform</code></a> 設定オプションで管理できます。</p>
+<h3><a class="anchor" name=""></a>静的アセットの管理 <a class="hash-link" href="#">#</a></h3>
+<p>次は、スタイルシートや画像などのアセットを簡潔に管理できるようにJestを設定しましょう。 通常、これらのファイルはテストでは特に扱いづらいので、問題がないようにモックします。 しかし、CSSモジュールを利用している場合はクラス名参照のためのプロキシをモックした方が良いでしょう。</p>
+<pre><code class="language-json">// package.json
+{
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
+      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js"
+    }
+  }
+}
+</code></pre>
+<p>そしてモックファイル自身は次のようになります:</p>
+<pre><code class="language-js"><span class="hljs-comment">// __mocks__/styleMock.js</span>
 
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span></pre><pre class="prism language-js"><span spellcheck="true" class="token comment">// __mocks__/fileMock.js</span>
+<span class="hljs-built_in">module</span>.exports = {};
+</code></pre>
+<pre><code class="language-js"><span class="hljs-comment">// __mocks__/fileMock.js</span>
 
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token string">&#x27;test-file-stub&#x27;</span><span class="token punctuation">;</span></pre><h3><a class="anchor" name="css"></a>CSSモジュールのモック <a class="hash-link" href="#css">#</a></h3><p><a href="https://github.com/css-modules/css-modules" target="_blank">CSS Modules</a>をモックするには<a href="https://github.com/keyanzhang/identity-obj-proxy" target="_blank">ES6 Proxy</a>を使用します:</p><pre class="prism language-javascript">npm install <span class="token operator">--</span>save<span class="token operator">-</span>dev identity<span class="token operator">-</span>obj<span class="token operator">-</span>proxy</pre><p>スタイルオブジェクトの全てのクラス名参照はそのまま返るようになります(つまり<code>styles.foobar === &#x27;foobar&#x27;</code>となります)。 この挙動は React の <a href="/jest/docs/ja/snapshot-testing.html" target="">Snapshot のテスト</a>にとても便利です。</p><pre class="prism language-json">// package.json (for CSS Modules<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;moduleNameMapper&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span><span class="token punctuation">,</span>
-      <span class="token property">&quot;\\.(css|less)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;identity-obj-proxy&quot;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><blockquote><p>Node6ではプロキシはデフォルトで有効であることに注意してください。Node6以前のバージョンを使用している場合は、Jestを <code>node --harmony_proxies node_modules/.bin/jest</code>コマンドで起動するようにして下さい。</p></blockquote><p><code>moduleNameMapper</code> が目的にそぐわない場合は、Jest の <a href="/jest/docs/ja/configuration.html#transform-object-string-string" target=""><code>transform</code></a> 設定オプションでアセットの変換方法を指定できます。 例えばファイルのbasename(<code>require(&#x27;logo.jpg&#x27;);</code>なら <code>&#x27;logo&#x27;</code>となるような)を返させたい場合は、次のように記述できます:</p><pre class="prism language-js"><span spellcheck="true" class="token comment">// fileTransformer.js</span>
-<span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;path&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-string">'test-file-stub'</span>;
+</code></pre>
+<h3><a class="anchor" name="css"></a>CSSモジュールのモック <a class="hash-link" href="#css">#</a></h3>
+<p><a href="https://github.com/css-modules/css-modules">CSS Modules</a>をモックするには<a href="https://github.com/keyanzhang/identity-obj-proxy">ES6 Proxy</a>を使用します:</p>
+<pre><code>npm install --save-dev identity-obj-proxy
+</code></pre>
+<p>スタイルオブジェクトの全てのクラス名参照はそのまま返るようになります(つまり<code>styles.foobar === 'foobar'</code>となります)。 この挙動は React の <a href="/jest/docs/ja/snapshot-testing.html">Snapshot のテスト</a>にとても便利です。</p>
+<pre><code class="language-json">// package.json (for CSS Modules)
+{
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
+      "\\.(css|less)$": "identity-obj-proxy"
+    }
+  }
+}
+</code></pre>
+<blockquote>
+<p>Node6ではプロキシはデフォルトで有効であることに注意してください。Node6以前のバージョンを使用している場合は、Jestを <code>node --harmony_proxies node_modules/.bin/jest</code>コマンドで起動するようにして下さい。</p>
+</blockquote>
+<p><code>moduleNameMapper</code> が目的にそぐわない場合は、Jest の <a href="/jest/docs/ja/configuration.html#transform-object-string-string"><code>transform</code></a> 設定オプションでアセットの変換方法を指定できます。 例えばファイルのbasename(<code>require('logo.jpg');</code>なら <code>'logo'</code>となるような)を返させたい場合は、次のように記述できます:</p>
+<pre><code class="language-js"><span class="hljs-comment">// fileTransformer.js</span>
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
 
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-  <span class="token function">process</span><span class="token punctuation">(</span>src<span class="token punctuation">,</span> filename<span class="token punctuation">,</span> config<span class="token punctuation">,</span> options<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token string">&#x27;module.exports = &#x27;</span> <span class="token operator">+</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">basename</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">&#x27;;&#x27;</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><pre class="prism language-json">// package.json (for custom transformers and CSS Modules<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;moduleNameMapper&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;\\.(css|less)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;identity-obj-proxy&quot;</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token property">&quot;transform&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/fileTransformer.js&quot;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><p>Jestがスタイルシートや画像の拡張子のあるファイルを無視して、代わりにモックファイルを読み込むように設定しました。 webpackの設定で扱うファイルタイプを照合する正規表現は調整することができます。</p><p><em>注意: babel-jestを追加のコードプリプロセッサと使用する場合、 <code>.js</code>拡張子ファイルを babel-jestモジュールに対応付けるため、明示的にbabel-jestをJavaScriptコードのトランスパイラとして定義する必要があります。</em></p><pre class="prism language-json"><span class="token property">&quot;transform&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-  <span class="token property">&quot;^.+\\.js$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;babel-jest&quot;</span><span class="token punctuation">,</span>
-  <span class="token property">&quot;^.+\\.css$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;custom-transformer&quot;</span><span class="token punctuation">,</span>
+<span class="hljs-built_in">module</span>.exports = {
+  process(src, filename, config, options) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'module.exports = '</span> + <span class="hljs-built_in">JSON</span>.stringify(path.basename(filename)) + <span class="hljs-string">';'</span>;
+  },
+};
+</code></pre>
+<pre><code class="language-json">// package.json (for custom transformers and CSS Modules)
+{
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "transform": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/fileTransformer.js"
+    }
+  }
+}
+</code></pre>
+<p>Jestがスタイルシートや画像の拡張子のあるファイルを無視して、代わりにモックファイルを読み込むように設定しました。 webpackの設定で扱うファイルタイプを照合する正規表現は調整することができます。</p>
+<p><em>注意: babel-jestを追加のコードプリプロセッサと使用する場合、 <code>.js</code>拡張子ファイルを babel-jestモジュールに対応付けるため、明示的にbabel-jestをJavaScriptコードのトランスパイラとして定義する必要があります。</em></p>
+<pre><code class="language-json">"transform": {
+  "^.+\\.js$": "babel-jest",
+  "^.+\\.css$": "custom-transformer",
   ...
-<span class="token punctuation">}</span></pre><h3><a class="anchor" name="jest"></a>ソースファイルを探索できるようにJestを設定する <a class="hash-link" href="#jest">#</a></h3><p>ここまででJestはファイルの処理方法を理解したので、次はJestにファイルを <em>見つける</em>方法を教えてやる必要があります。 webpackの<code>modulesDirectories</code>、そして <code>extensions</code>オプションはJestの <code>moduleDirectories</code> や <code>moduleFileExtensions</code> と直接的な類似性があります。</p><pre class="prism language-json">// package.json
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;moduleFileExtensions&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;js&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;jsx&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">&quot;moduleDirectories&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;bower_components&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;shared&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+}
+</code></pre>
+<h3><a class="anchor" name="jest"></a>ソースファイルを探索できるようにJestを設定する <a class="hash-link" href="#jest">#</a></h3>
+<p>ここまででJestはファイルの処理方法を理解したので、次はJestにファイルを <em>見つける</em>方法を教えてやる必要があります。 webpackの<code>modulesDirectories</code>、そして <code>extensions</code>オプションはJestの <code>moduleDirectories</code> や <code>moduleFileExtensions</code> と直接的な類似性があります。</p>
+<pre><code class="language-json">// package.json
+{
+  "jest": {
+    "moduleFileExtensions": ["js", "jsx"],
+    "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
-    <span class="token property">&quot;moduleNameMapper&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;\\.(css|less)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span><span class="token punctuation">,</span>    
-      <span class="token property">&quot;\\.(gif|ttf|eot|svg)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><blockquote><p>注意: &lt;rootdir&gt; (何らかのパラメータ名？) はJestによりプロジェクトのルートディレクトリに置き換えられます。 設定で特別に<code>rootDir</code>オプションを指定しない限り、大抵の場合はpackage.jsonファイルが格納されているディレクトリになります。</p></blockquote><p>webpackの <code>resolve.root</code>オプションも<code>modulePaths</code>オプションによって<code>NODE_PATH</code>環境変数を設定することと同様のことができます。</p><pre class="prism language-json">// package.json
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;modulePaths&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token string">&quot;/shared/vendor/modules&quot;</span>
-    <span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">&quot;moduleFileExtensions&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;js&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;jsx&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">&quot;moduleDirectories&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;bower_components&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;shared&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">&quot;moduleNameMapper&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;\\.(css|less)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span><span class="token punctuation">,</span>    
-      <span class="token property">&quot;\\.(gif|ttf|eot|svg)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><p>最後に取り扱うものとしてwebpackの <code>alias</code>だけが残っています。それには <code>moduleNameMapper</code>を再び利用します。</p><pre class="prism language-json">// package.json
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;modulePaths&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token string">&quot;/shared/vendor/modules&quot;</span>
-    <span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">&quot;moduleFileExtensions&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;js&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;jsx&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">&quot;moduleDirectories&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;bower_components&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;shared&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    "moduleNameMapper": {
+      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js",    
+      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js"
+    }
+  }
+}
+</code></pre>
+<blockquote>
+<p>注意: &lt;rootdir&gt; (何らかのパラメータ名？) はJestによりプロジェクトのルートディレクトリに置き換えられます。 設定で特別に<code>rootDir</code>オプションを指定しない限り、大抵の場合はpackage.jsonファイルが格納されているディレクトリになります。</p>
+</blockquote>
+<p>webpackの <code>resolve.root</code>オプションも<code>modulePaths</code>オプションによって<code>NODE_PATH</code>環境変数を設定することと同様のことができます。</p>
+<pre><code class="language-json">// package.json
+{
+  "jest": {
+    "modulePaths": [
+      "/shared/vendor/modules"
+    ],
+    "moduleFileExtensions": ["js", "jsx"],
+    "moduleDirectories": ["node_modules", "bower_components", "shared"],
+    "moduleNameMapper": {
+      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js",    
+      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js"
+    }
+  }
+}
+</code></pre>
+<p>最後に取り扱うものとしてwebpackの <code>alias</code>だけが残っています。それには <code>moduleNameMapper</code>を再び利用します。</p>
+<pre><code class="language-json">// package.json
+{
+  "jest": {
+    "modulePaths": [
+      "/shared/vendor/modules"
+    ],
+    "moduleFileExtensions": ["js", "jsx"],
+    "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
-    <span class="token property">&quot;moduleNameMapper&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;^react(.*)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/vendor/react-master$1&quot;</span><span class="token punctuation">,</span>
-      <span class="token property">&quot;^config$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/configs/app-config.js&quot;</span><span class="token punctuation">,</span>
+    "moduleNameMapper": {
+      "^react(.*)$": "&lt;rootDir&gt;/vendor/react-master$1",
+      "^config$": "&lt;rootDir&gt;/configs/app-config.js",
 
-      <span class="token property">&quot;\\.(css|less)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span><span class="token punctuation">,</span>    
-      <span class="token property">&quot;\\.(gif|ttf|eot|svg)$&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><p>以上です！ webpackは複雑で柔軟なツールなので、適用するアプリケーションが必要とすることに対応するためにいくらか調整をしなければならないでしょう。 幸いにもほとんどのプロジェクトでは、Jestはwebpackの設定を調整するよりも十分な柔軟性を持っているはずです。</p><blockquote><p>注意: より複雑なwebpackの構成については、次のようなプロジェクトも参考にして下さい: <a href="https://github.com/istarkov/babel-plugin-webpack-loaders" target="_blank">babel-plugin-webpack-loaders</a></p></blockquote><h2><a class="anchor" name="webpack2"></a>webpack2と使用する場合 <a class="hash-link" href="#webpack2">#</a></h2><p>webpack2はESモジュールのネイティブサポートを提供しています。 しかし、JestはNode上で動作するので、ESモジュールはCommonJSモジュールにトランスパイルされている必要があります。 このようにwebpackを利用している場合は、Babelに<code>test</code>環境でのみESモジュールをCommonJSモジュールに変換させたいと考えるでしょう。</p><pre class="prism language-json">// .babelrc
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;presets&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">[</span><span class="token string">&quot;es2015&quot;</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">&quot;modules&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js",    
+      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js"
+    }
+  }
+}
+</code></pre>
+<p>以上です！ webpackは複雑で柔軟なツールなので、適用するアプリケーションが必要とすることに対応するためにいくらか調整をしなければならないでしょう。 幸いにもほとんどのプロジェクトでは、Jestはwebpackの設定を調整するよりも十分な柔軟性を持っているはずです。</p>
+<blockquote>
+<p>注意: より複雑なwebpackの構成については、次のようなプロジェクトも参考にして下さい: <a href="https://github.com/istarkov/babel-plugin-webpack-loaders">babel-plugin-webpack-loaders</a></p>
+</blockquote>
+<h2><a class="anchor" name="webpack2"></a>webpack2と使用する場合 <a class="hash-link" href="#webpack2">#</a></h2>
+<p>webpack2はESモジュールのネイティブサポートを提供しています。 しかし、JestはNode上で動作するので、ESモジュールはCommonJSモジュールにトランスパイルされている必要があります。 このようにwebpackを利用している場合は、Babelに<code>test</code>環境でのみESモジュールをCommonJSモジュールに変換させたいと考えるでしょう。</p>
+<pre><code class="language-json">// .babelrc
+{
+  "presets": [
+    ["es2015", {"modules": false}]
+  ],
 
-  <span class="token property">&quot;env&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;test&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;plugins&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;transform-es2015-modules-commonjs&quot;</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><blockquote><p>注意: Jestはテストを高速化するためキャッシュ機能を持っています。 .babelrcを変更後にJestがうまく動作しない場合は、Jestを<code>--no-cache</code>オプションを付けて実行してください。</p></blockquote><p>動的インポートを使用する場合 (<code>import(&#x27;some-file.js&#x27;).then (module = &gt;...)</code>など)、 <code>dynamic-import-node</code> プラグインを有効にする必要があります。</p><pre class="prism language-json">// .babelrc
-<span class="token punctuation">{</span>
-  <span class="token property">&quot;presets&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">[</span><span class="token string">&quot;es2015&quot;</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">&quot;modules&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  "env": {
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
+}
+</code></pre>
+<blockquote>
+<p>注意: Jestはテストを高速化するためキャッシュ機能を持っています。 .babelrcを変更後にJestがうまく動作しない場合は、Jestを<code>--no-cache</code>オプションを付けて実行してください。</p>
+</blockquote>
+<p>動的インポートを使用する場合 (<code>import('some-file.js').then (module = &gt;...)</code>など)、 <code>dynamic-import-node</code> プラグインを有効にする必要があります。</p>
+<pre><code class="language-json">// .babelrc
+{
+  "presets": [
+    ["es2015", {"modules": false}]
+  ],
 
-  <span class="token property">&quot;plugins&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;syntax-dynamic-import&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  "plugins": ["syntax-dynamic-import"],
 
-  <span class="token property">&quot;env&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">&quot;test&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">&quot;plugins&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;dynamic-import-node&quot;</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><p>Jest を Webpack、React, Redux、および Node と使用する場合の例については、<a href="https://github.com/jenniferkaplannyc/jest_react_redux_node_webpack_complex_example" target="_blank">こちら</a>で確認できます。</p></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="manual-mocks.html#content">← 前</a><a class="docs-next button" href="migration-guide.html#content">次 →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/ja/getting-started.html">Getting Started</a><a href="/jest/docs/ja/snapshot-testing.html">Guides</a><a href="/jest/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/ja/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2017 Facebook Inc.</section></footer></div><script type="text/javascript" src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+  "env": {
+    "test": {
+      "plugins": ["dynamic-import-node"]
+    }
+  }
+}
+</code></pre>
+<p>Jest を Webpack、React, Redux、および Node と使用する場合の例については、<a href="https://github.com/jenniferkaplannyc/jest_react_redux_node_webpack_complex_example">こちら</a>で確認できます。</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="manual-mocks.html">← Manual Mocks</a><a class="docs-next button" href="migration-guide.html">Migrating to Jest →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/ja/getting-started.html">Getting Started</a><a href="/jest/docs/ja/snapshot-testing.html">Guides</a><a href="/jest/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/ja/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2017 Facebook Inc.</section></footer></div><script type="text/javascript" src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -157,4 +219,4 @@ module<span class="token punctuation">.</span>exports <span class="token operato
                 indexName: 'jest',
                 inputSelector: '#search_input_react'
               });
-            </script></body></html>
+            </script><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script></body></html>
