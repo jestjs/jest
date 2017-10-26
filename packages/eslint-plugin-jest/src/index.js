@@ -10,6 +10,7 @@
 import noDisabledTests from './rules/no_disabled_tests';
 import noFocusedTests from './rules/no_focused_tests';
 import noIdenticalTitle from './rules/no_identical_title';
+import preferToBeUndefined from './rules/prefer_to_be_undefined';
 import validExpect from './rules/valid_expect';
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
         'jest/no-disabled-tests': 'warn',
         'jest/no-focused-tests': 'error',
         'jest/no-identical-title': 'error',
+        'jest/prefer-to-be-undefined': 'warn',
         'jest/valid-expect': 'error',
       },
     },
@@ -50,6 +52,7 @@ module.exports = {
     'no-disabled-tests': noDisabledTests,
     'no-focused-tests': noFocusedTests,
     'no-identical-title': noIdenticalTitle,
+    'prefer-to-be-undefined': preferToBeUndefined,
     'valid-expect': validExpect,
   },
 };
