@@ -57,13 +57,13 @@ class JSDOMEnvironment {
     const originalAddListener = global.addEventListener;
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
-    global.addEventListener = (name) => {
+    global.addEventListener = function(name) {
       if (name === 'error') {
         userErrorListenerCount++;
       }
       return originalAddListener.apply(this, arguments);
     };
-    global.removeEventListener = (name) => {
+    global.removeEventListener = function(name) {
       if (name === 'error') {
         userErrorListenerCount--;
       }
