@@ -16,7 +16,7 @@ import mock from 'jest-mock';
 import {JSDOM} from 'jsdom';
 
 class JSDOMEnvironment {
-  document: ?Object;
+  dom: ?Object;
   fakeTimers: ?FakeTimers<number>;
   global: ?Global;
   errorEventListener: ?Function;
@@ -25,11 +25,11 @@ class JSDOMEnvironment {
   constructor(config: ProjectConfig) {
     const jsdomInitialized = process.hrtime();
 
-    this.document = new JSDOM('<!DOCTYPE html>', {
+    this.dom = new JSDOM('<!DOCTYPE html>', {
       runScripts: 'dangerously',
       url: config.testURL,
     });
-    const global = (this.global = this.document.window.document.defaultView);
+    const global = (this.global = this.dom.window.document.defaultView);
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
@@ -102,14 +102,14 @@ class JSDOMEnvironment {
     }
     this.errorEventListener = null;
     this.global = null;
-    this.document = null;
+    this.dom = null;
     this.fakeTimers = null;
     return Promise.resolve();
   }
 
   runScript(script: Script): ?any {
-    if (this.document) {
-      return this.document.runVMScript(script);
+    if (this.dom) {
+      return this.dom.runVMScript(script);
     }
     return null;
   }

@@ -10,6 +10,6 @@
   "dependencies": {
     "jest-mock": "^21.2.0",
     "jest-util": "^21.2.1",
-    "jsdom": "^11.3.0"
+    "jsdom": "~11.2.0"
   }
 }
