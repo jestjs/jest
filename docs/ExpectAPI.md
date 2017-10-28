@@ -743,7 +743,8 @@ describe('toMatchObject applied to arrays arrays', () => {
     ]);
   });
 
-  // .arrayContaining "matches a received array which contains elements that are *not* in the expected array"
+  // .arrayContaining "matches a received array which contains elements that
+  // are *not* in the expected array"
   test('.toMatchObject does not allow extra elements', () => {
     expect([
       { foo: 'bar' },
