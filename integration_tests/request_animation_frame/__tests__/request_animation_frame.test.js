@@ -19,3 +19,20 @@ test('requestAnimationFrame test', done => {
     done();
   });
 });
+
+test('cancelAnimationFrame test', done => {
+  expect.hasAssertions();
+
+  // Will be immediately cancelled. Must never run.
+  cancelAnimationFrame(requestAnimationFrame(() => {
+    expect(true).toBe(false);
+    done();
+  }));
+
+  // Make sure it has not fired.
+  const REASONABLE_TIME = 100;
+  setTimeout(() => {
+    expect(true).toBe(true);
+    done();
+  }, REASONABLE_TIME);
+});
