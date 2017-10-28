@@ -103,7 +103,8 @@ jest.mock('../moduleName', () => {
   return jest.fn(() => 42);
 });
 
-const moduleName = require('../moduleName'); // This runs the function specified as second argument to `jest.mock`.
+// This runs the function specified as second argument to `jest.mock`.
+const moduleName = require('../moduleName');
 moduleName(); // Will return '42';
 ```
 
