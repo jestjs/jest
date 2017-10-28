@@ -44,6 +44,7 @@
 * `[jest-worker]` Initial version of parallel worker abstraction, say hello! ([#4497](https://github.com/facebook/jest/pull/4497))
 
 ### Chore & Maintenance
+* `[docs]` Wrap code comments at 80 characters
 * `[*]` [**BREAKING**] Drop support for Node.js version 4
 * `[babel-jest]` Explicitly bump istanbul to newer versions ([#4616](https://github.com/facebook/jest/pull/4616))
 * `[expect]` Upgrade mocha and rollup for browser testing ([#4642](https://github.com/facebook/jest/pull/4642))
