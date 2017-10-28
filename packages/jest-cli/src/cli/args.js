@@ -453,7 +453,7 @@ export const options = {
   },
   testLocationInResults: {
     default: false,
-    description: 'Add `location` information the the test results',
+    description: 'Add `location` information to the test results',
     type: 'boolean',
   },
   testMatch: {
