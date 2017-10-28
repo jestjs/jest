@@ -16,6 +16,7 @@ import type Runtime from 'jest-runtime';
 
 import path from 'path';
 import fs from 'fs';
+import callsites from 'callsites';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
 
@@ -43,6 +44,18 @@ async function jasmine2(
   const jasmineInterface = jasmineFactory.interface(jasmine, env);
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
+
+  if (config.testLocationInResults === true) {
+    const originalIt = environment.global.it;
+    environment.global.it = (...args) => {
+      const stack = callsites()[1];
+      const it = originalIt(...args);
+
+      it.result.__callsite = stack;
+
+      return it;
+    };
+  }
 
   jasmineAsyncInstall(environment.global);
 

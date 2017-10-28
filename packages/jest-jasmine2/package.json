@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "callsites": "^2.0.0",
     "chalk": "^2.0.1",
     "expect": "^21.2.1",
     "graceful-fs": "^4.1.11",

@@ -78,6 +78,7 @@ export default ({
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
   testFailureExitCode: 1,
+  testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
