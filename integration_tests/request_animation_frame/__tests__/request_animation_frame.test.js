@@ -22,9 +22,11 @@ test('requestAnimationFrame test', done => {
 
 test('cancelAnimationFrame test', done => {
   // Will be immediately cancelled. Must never run.
-  cancelAnimationFrame(requestAnimationFrame(() => {
-    done.fail();
-  }));
+  cancelAnimationFrame(
+    requestAnimationFrame(() => {
+      done.fail();
+    })
+  );
 
   // Make sure it has not fired.
   const REASONABLE_TIME = 100;
