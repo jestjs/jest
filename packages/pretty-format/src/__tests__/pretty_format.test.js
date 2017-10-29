@@ -550,6 +550,7 @@ describe('prettyFormat()', () => {
   });
 
   it('throws PrettyFormatPluginError if test throws an error', () => {
+    expect.hasAssertions();
     const options = {
       plugins: [
         {
@@ -569,6 +570,7 @@ describe('prettyFormat()', () => {
   });
 
   it('throws PrettyFormatPluginError if print throws an error', () => {
+    expect.hasAssertions();
     const options = {
       plugins: [
         {
@@ -588,6 +590,7 @@ describe('prettyFormat()', () => {
   });
 
   it('throws PrettyFormatPluginError if serialize throws an error', () => {
+    expect.hasAssertions();
     const options = {
       plugins: [
         {
