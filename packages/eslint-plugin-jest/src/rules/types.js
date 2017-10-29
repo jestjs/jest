@@ -36,6 +36,7 @@ export type MemberExpression = {
   property: Identifier,
   object: Identifier,
   parent: ParentNode,
+  arguments: Array<Literal>,
   loc: NodeLocation,
 };
 
@@ -44,6 +45,7 @@ export type Literal = {
   value?: string,
   rawValue?: string,
   parent: ParentNode,
+  property: Identifier,
   loc: NodeLocation,
 };
 
