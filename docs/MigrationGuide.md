@@ -34,4 +34,4 @@ To transform your existing tests, navigate to the project containing the tests a
 jest-codemods
 ```
 
-More information can be found at https://github.com/skovhus/jest-codemods.
+More information can be found at [https://github.com/skovhus/jest-codemods](https://github.com/skovhus/jest-codemods).
