@@ -48,6 +48,14 @@ const isWindow = val => typeof window !== 'undefined' && val === window;
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
 
+class PrettyFormatPluginError extends Error {
+  constructor(message, stack) {
+    super(message);
+    this.stack = stack;
+    this.name = this.constructor.name;
+  }
+}
+
 function isToStringedArrayType(toStringed: string): boolean {
   return (
     toStringed === '[object Array]' ||
@@ -246,25 +254,31 @@ function printPlugin(
   depth: number,
   refs: Refs,
 ): string {
-  const printed = plugin.serialize
-    ? plugin.serialize(val, config, indentation, depth, refs, printer)
-    : plugin.print(
-        val,
-        valChild => printer(valChild, config, indentation, depth, refs),
-        str => {
-          const indentationNext = indentation + config.indent;
-          return (
-            indentationNext +
-            str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
-          );
-        },
-        {
-          edgeSpacing: config.spacingOuter,
-          min: config.min,
-          spacing: config.spacingInner,
-        },
-        config.colors,
-      );
+  let printed;
+
+  try {
+    printed = plugin.serialize
+      ? plugin.serialize(val, config, indentation, depth, refs, printer)
+      : plugin.print(
+          val,
+          valChild => printer(valChild, config, indentation, depth, refs),
+          str => {
+            const indentationNext = indentation + config.indent;
+            return (
+              indentationNext +
+              str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
+            );
+          },
+          {
+            edgeSpacing: config.spacingOuter,
+            min: config.min,
+            spacing: config.spacingInner,
+          },
+          config.colors,
+        );
+  } catch (error) {
+    throw new PrettyFormatPluginError(error.message, error.stack);
+  }
   if (typeof printed !== 'string') {
     throw new Error(
       `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
@@ -275,8 +289,12 @@ function printPlugin(
 
 function findPlugin(plugins: Plugins, val: any) {
   for (let p = 0; p < plugins.length; p++) {
-    if (plugins[p].test(val)) {
-      return plugins[p];
+    try {
+      if (plugins[p].test(val)) {
+        return plugins[p];
+      }
+    } catch (error) {
+      throw new PrettyFormatPluginError(error.message, error.stack);
     }
   }
 
