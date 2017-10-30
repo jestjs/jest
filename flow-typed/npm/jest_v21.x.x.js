@@ -1,8 +1,8 @@
-// flow-typed signature: 5daeb30d58a2beb3690cb4f6942df9bc
-// flow-typed version: b43dff3e0e/jest_v20.x.x/flow_>=v0.22.x
+// flow-typed signature: 3df9907bbe7831a5c2c03eb838f6b3c0
+// flow-typed version: 0fd239bfe0/jest_v21.x.x/flow_>=v0.39.x
 
-type JestMockFn = {
-  (...args: Array<any>): any,
+type JestMockFn<TArguments: $ReadOnlyArray<*>, TReturn> = {
+  (...args: TArguments): TReturn,
   /**
    * An object for introspecting mock calls
    */
@@ -12,24 +12,24 @@ type JestMockFn = {
      * function. Each call is represented by an array of arguments that were
      * passed during the call.
      */
-    calls: Array<Array<any>>,
+    calls: Array<TArguments>,
     /**
      * An array that contains all the object instances that have been
      * instantiated from this mock function.
      */
-    instances: mixed
+    instances: Array<TReturn>
   },
   /**
    * Resets all information stored in the mockFn.mock.calls and
    * mockFn.mock.instances arrays. Often this is useful when you want to clean
    * up a mock's usage data between two assertions.
    */
-  mockClear(): Function,
+  mockClear(): void,
   /**
    * Resets all information stored in the mock. This is useful when you want to
    * completely restore a mock back to its initial state.
    */
-  mockReset(): Function,
+  mockReset(): void,
   /**
    * Removes the mock and restores the initial implementation. This is useful
    * when you want to mock functions in certain test cases and restore the
@@ -37,20 +37,24 @@ type JestMockFn = {
    * works when mock was created with jest.spyOn. Thus you have to take care of
    * restoration yourself when manually assigning jest.fn().
    */
-  mockRestore(): Function,
+  mockRestore(): void,
   /**
    * Accepts a function that should be used as the implementation of the mock.
    * The mock itself will still record all calls that go into and instances
    * that come from itself -- the only difference is that the implementation
    * will also be executed when the mock is called.
    */
-  mockImplementation(fn: Function): JestMockFn,
+  mockImplementation(
+    fn: (...args: TArguments) => TReturn
+  ): JestMockFn<TArguments, TReturn>,
   /**
    * Accepts a function that will be used as an implementation of the mock for
    * one call to the mocked function. Can be chained so that multiple function
    * calls produce different results.
    */
-  mockImplementationOnce(fn: Function): JestMockFn,
+  mockImplementationOnce(
+    fn: (...args: TArguments) => TReturn
+  ): JestMockFn<TArguments, TReturn>,
   /**
    * Just a simple sugar function for returning `this`
    */
@@ -58,11 +62,11 @@ type JestMockFn = {
   /**
    * Deprecated: use jest.fn(() => value) instead
    */
-  mockReturnValue(value: any): JestMockFn,
+  mockReturnValue(value: TReturn): JestMockFn<TArguments, TReturn>,
   /**
    * Sugar for only returning a value once inside your mock
    */
-  mockReturnValueOnce(value: any): JestMockFn
+  mockReturnValueOnce(value: TReturn): JestMockFn<TArguments, TReturn>
 };
 
 type JestAsymmetricEqualityType = {
@@ -129,7 +133,7 @@ type EnzymeMatchersType = {
   toIncludeText(text: string): void,
   toHaveValue(value: any): void,
   toMatchElement(element: React$Element<any>): void,
-  toMatchSelector(selector: string): void,
+  toMatchSelector(selector: string): void
 };
 
 type JestExpectType = {
@@ -324,7 +328,9 @@ type JestObjectType = {
    * Returns a new, unused mock function. Optionally takes a mock
    * implementation.
    */
-  fn(implementation?: Function): JestMockFn,
+  fn<TArguments: $ReadOnlyArray<*>, TReturn>(
+    implementation?: (...args: TArguments) => TReturn
+  ): JestMockFn<TArguments, TReturn>,
   /**
    * Determines if the given function is a mocked function.
    */
@@ -349,6 +355,16 @@ type JestObjectType = {
     options?: Object
   ): JestObjectType,
   /**
+   * Returns the actual module instead of a mock, bypassing all checks on
+   * whether the module should receive a mock implementation or not.
+   */
+  requireActual(moduleName: string): any,
+  /**
+   * Returns a mock module instead of the actual module, bypassing all checks
+   * on whether the module should be required normally or not.
+   */
+  requireMock(moduleName: string): any,
+  /**
    * Resets the module registry - the cache of all required modules. This is
    * useful to isolate modules where local state might conflict between tests.
    */
@@ -370,10 +386,7 @@ type JestObjectType = {
   /**
    * Executes only the macro task queue (i.e. all tasks queued by setTimeout()
    * or setInterval() and setImmediate()).
-   * 
-   * Alias: .runTimersToTime
    */
-  advanceTimersByTime(msToRun: number): void,
   runTimersToTime(msToRun: number): void,
   /**
    * Executes only the macro-tasks that are currently pending (i.e., only the
@@ -407,7 +420,7 @@ type JestObjectType = {
    * Creates a mock function similar to jest.fn but also tracks calls to
    * object[methodName].
    */
-  spyOn(object: Object, methodName: string): JestMockFn
+  spyOn(object: Object, methodName: string): JestMockFn<any, any>
 };
 
 type JestSpyType = {
@@ -415,32 +428,43 @@ type JestSpyType = {
 };
 
 /** Runs this function after every test inside this context */
-declare function afterEach(fn: Function): void;
+declare function afterEach(
+  fn: (done: () => void) => ?Promise<mixed>,
+  timeout?: number
+): void;
 /** Runs this function before every test inside this context */
-declare function beforeEach(fn: Function): void;
+declare function beforeEach(
+  fn: (done: () => void) => ?Promise<mixed>,
+  timeout?: number
+): void;
 /** Runs this function after all tests have finished inside this context */
-declare function afterAll(fn: Function): void;
+declare function afterAll(
+  fn: (done: () => void) => ?Promise<mixed>,
+  timeout?: number
+): void;
 /** Runs this function before any tests have started inside this context */
-declare function beforeAll(fn: Function): void;
+declare function beforeAll(
+  fn: (done: () => void) => ?Promise<mixed>,
+  timeout?: number
+): void;
 
 /** A context for grouping tests together */
 declare var describe: {
   /**
    * Creates a block that groups together several related tests in one "test suite"
    */
-  (name: string, fn: Function): void,
+  (name: string, fn: () => void): void,
 
   /**
    * Only run this describe block
    */
-  only(name: string, fn: Function): void,
+  only(name: string, fn: () => void): void,
 
   /**
    * Skip running this describe block
    */
-  skip(name: string, fn: Function): void,
+  skip(name: string, fn: () => void): void
 };
-
 
 /** An individual test unit */
 declare var it: {
@@ -449,31 +473,55 @@ declare var it: {
    *
    * @param {string} Name of Test
    * @param {Function} Test
+   * @param {number} Timeout for the test, in milliseconds.
    */
-  (name: string, fn?: Function): ?Promise<void>,
+  (
+    name: string,
+    fn?: (done: () => void) => ?Promise<mixed>,
+    timeout?: number
+  ): void,
   /**
    * Only run this test
    *
    * @param {string} Name of Test
    * @param {Function} Test
+   * @param {number} Timeout for the test, in milliseconds.
    */
-  only(name: string, fn?: Function): ?Promise<void>,
+  only(
+    name: string,
+    fn?: (done: () => void) => ?Promise<mixed>,
+    timeout?: number
+  ): void,
   /**
    * Skip running this test
    *
    * @param {string} Name of Test
    * @param {Function} Test
+   * @param {number} Timeout for the test, in milliseconds.
    */
-  skip(name: string, fn?: Function): ?Promise<void>,
+  skip(
+    name: string,
+    fn?: (done: () => void) => ?Promise<mixed>,
+    timeout?: number
+  ): void,
   /**
    * Run the test concurrently
    *
    * @param {string} Name of Test
    * @param {Function} Test
+   * @param {number} Timeout for the test, in milliseconds.
    */
-  concurrent(name: string, fn?: Function): ?Promise<void>
+  concurrent(
+    name: string,
+    fn?: (done: () => void) => ?Promise<mixed>,
+    timeout?: number
+  ): void
 };
-declare function fit(name: string, fn: Function): ?Promise<void>;
+declare function fit(
+  name: string,
+  fn: (done: () => void) => ?Promise<mixed>,
+  timeout?: number
+): void;
 /** An individual test unit */
 declare var test: typeof it;
 /** A disabled group of tests */
