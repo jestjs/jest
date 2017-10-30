@@ -17,6 +17,6 @@
     "jest-util": "^21.2.1",
     "pify": "^3.0.0",
     "throat": "^4.0.0",
-    "worker-farm": "^1.3.1"
+    "worker-farm": "^1.5.1"
   }
 }
