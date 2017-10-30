@@ -199,7 +199,7 @@ const makeThrowingMatcher = (
     } catch (error) {
       if (
         !(error instanceof JestAssertionError) &&
-        error.name != 'PrettyFormatPluginError' &&
+        error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
         Error.captureStackTrace
       ) {
