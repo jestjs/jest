@@ -548,6 +548,38 @@ describe('HasteMap', () => {
       });
   });
 
+  it('recovers from duplicate modules (broken)', async () => {
+    mockFs['/fruits/another_strawberry.js'] = [
+      '/**',
+      ' * @providesModule Strawberry',
+      ' */',
+      'const Blackberry = require("Blackberry");',
+    ].join('\n');
+
+    let {__hasteMapForTest: data} = await new HasteMap(defaultConfig).build();
+    expect(data.duplicates).toEqual(
+      {"Strawberry": {"g": {"/fruits/another_strawberry.js": 0, "/fruits/strawberry.js": 0}}}
+    );
+    expect(data.map['Strawberry']).toEqual({});
+
+    delete mockFs['/fruits/another_strawberry.js'];
+    mockChangedFiles = object({
+      '/fruits/another_strawberry.js': null,
+    });
+    mockClocks = object({
+      '/fruits': 'c:fake-clock:3',
+      '/vegetables': 'c:fake-clock:2',
+    });
+
+    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
+    // This is broken, there should not be duplicates anymore.
+    expect(data.duplicates).toEqual(
+      {"Strawberry": {"g": {"/fruits/another_strawberry.js": 0, "/fruits/strawberry.js": 0}}}
+    );
+    // This is broken, Strawberry should now resolve to "/fruits/strawberry.js"
+    expect(data.map['Strawberry']).toEqual({});
+  });
+
   it('discards the cache when configuration changes', () => {
     HasteMap.getCacheFilePath = getCacheFilePath;
     return new HasteMap(defaultConfig).build().then(() => {
