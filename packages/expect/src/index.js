@@ -197,12 +197,14 @@ const makeThrowingMatcher = (
     try {
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
-      if (!(error instanceof JestAssertionError)) {
-        // Try to remove this and deeper functions from the stack trace frame.
+      if (
+        !(error instanceof JestAssertionError) &&
+        error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
-        if (Error.captureStackTrace) {
-          Error.captureStackTrace(error, throwingMatcher);
-        }
+        Error.captureStackTrace
+      ) {
+        // Try to remove this and deeper functions from the stack trace frame.
+        Error.captureStackTrace(error, throwingMatcher);
       }
       throw error;
     }

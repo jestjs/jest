@@ -549,6 +549,66 @@ describe('prettyFormat()', () => {
     }).toThrow();
   });
 
+  it('throws PrettyFormatPluginError if test throws an error', () => {
+    expect.hasAssertions();
+    const options = {
+      plugins: [
+        {
+          print: () => '',
+          test() {
+            throw new Error('Where is the error?');
+          },
+        },
+      ],
+    };
+
+    try {
+      prettyFormat('', options);
+    } catch (error) {
+      expect(error.name).toBe('PrettyFormatPluginError');
+    }
+  });
+
+  it('throws PrettyFormatPluginError if print throws an error', () => {
+    expect.hasAssertions();
+    const options = {
+      plugins: [
+        {
+          print: () => {
+            throw new Error('Where is the error?');
+          },
+          test: () => true,
+        },
+      ],
+    };
+
+    try {
+      prettyFormat('', options);
+    } catch (error) {
+      expect(error.name).toBe('PrettyFormatPluginError');
+    }
+  });
+
+  it('throws PrettyFormatPluginError if serialize throws an error', () => {
+    expect.hasAssertions();
+    const options = {
+      plugins: [
+        {
+          serialize: () => {
+            throw new Error('Where is the error?');
+          },
+          test: () => true,
+        },
+      ],
+    };
+
+    try {
+      prettyFormat('', options);
+    } catch (error) {
+      expect(error.name).toBe('PrettyFormatPluginError');
+    }
+  });
+
   it('supports plugins with deeply nested arrays (#24)', () => {
     const val = [[1, 2], [3, 4]];
     expect(
