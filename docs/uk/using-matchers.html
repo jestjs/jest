@@ -85,8 +85,8 @@ test(<span class="hljs-string">'zero'</span>, () =&gt; {
 <p>Для порівняння чисел з плаваючою крапкою вокристовуйте <code>toBeCloseTo</code> замість <code>toEqual</code>. Це дозволить вашим тестам не залежати від дрібних помилок округлення.</p>
 <pre><code class="language-js">test(<span class="hljs-string">'adding floating point numbers'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> value = <span class="hljs-number">0.1</span> + <span class="hljs-number">0.2</span>;
-  expect(value).not.toBe(<span class="hljs-number">0.3</span>);    <span class="hljs-comment">// Це не спрацює через помилку окгруглення!</span>
-  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Це спрацює.</span>
+<span class="hljs-comment">//expect(value).toBe(0.3);           This won't work because of rounding error</span>
+  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// This works.</span>
 });
 </code></pre>
 <h3><a class="anchor" name=""></a>Рядки <a class="hash-link" href="#">#</a></h3>

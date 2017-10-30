@@ -83,10 +83,10 @@ test(<span class="hljs-string">'zero'</span>, () =&gt; {
 });
 </code></pre>
 <p>Para igualdade de ponto flutuante, use <code>toBeCloseTo</code> em vez de <code>toEqual</code>, porque você não quer um teste dependa de um pequeno erro de arredondamento.</p>
-<pre><code class="language-js">test(<span class="hljs-string">'adicionando números de ponto flutuante'</span>, () =&gt; {
+<pre><code class="language-js">test(<span class="hljs-string">'adding floating point numbers'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> value = <span class="hljs-number">0.1</span> + <span class="hljs-number">0.2</span>;
-  expect(value).not.toBe(<span class="hljs-number">0.3</span>);    <span class="hljs-comment">// Não é! Por causa de erro de arredondamento</span>
-  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Isso funciona.</span>
+<span class="hljs-comment">//expect(value).toBe(0.3);           This won't work because of rounding error</span>
+  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// This works.</span>
 });
 </code></pre>
 <h3><a class="anchor" name="strings"></a>Strings <a class="hash-link" href="#strings">#</a></h3>
