@@ -18,7 +18,7 @@
 * `[jest-resolve]` Preserve module identity for symlinks ([#4761](https://github.com/facebook/jest/pull/4761))
 * `[jest-config]` Include error message for `preset` json ([#4766](https://github.com/facebook/jest/pull/4766))
 * `[pretty-format]` Throw `PrettyFormatPluginError` if a plugin halts with an exception ([#4787](https://github.com/facebook/jest/pull/4787))
-* `[expect]` Keep the stack trace unchanged when `PrettyFormatPluginError` is thrown by pretty-format
+* `[expect]` Keep the stack trace unchanged when `PrettyFormatPluginError` is thrown by pretty-format ([#4787](https://github.com/facebook/jest/pull/4787))
 
 ### Features
 * `[jest-environment-jsdom]` [**BREAKING**] Upgrade to JSDOM@11 ([#4770](https://github.com/facebook/jest/pull/4770))
