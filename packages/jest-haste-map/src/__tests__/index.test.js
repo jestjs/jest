@@ -13,15 +13,16 @@ jest.mock('child_process', () => ({
   execSync() {},
 }));
 
-jest.mock('worker-farm', () => {
-  const mock = jest.fn(
-    (options, worker) =>
-      (workerFarmMock = jest.fn((data, callback) =>
-        require(worker)(data, callback),
-      )),
-  );
-  mock.end = jest.fn();
-  return mock;
+jest.mock('jest-worker', () => {
+  return jest.fn((worker) => {
+    mockWorker = jest.fn((...args) => require(worker).worker(...args));
+    mockEnd = jest.fn();
+
+    return {
+      worker: mockWorker,
+      end: mockEnd,
+    };
+  });
 });
 
 jest.mock('../crawlers/node');
@@ -98,7 +99,8 @@ let HasteMap;
 let mockClocks;
 let mockEmitters;
 let object;
-let workerFarmMock;
+let mockEnd;
+let mockWorker;
 let getCacheFilePath;
 
 describe('HasteMap', () => {
@@ -659,7 +661,7 @@ describe('HasteMap', () => {
   });
 
   it('distributes work across workers', () => {
-    const workerFarm = require('worker-farm');
+    const jestWorker = require('jest-worker');
     return new HasteMap(
       Object.assign({}, defaultConfig, {
         maxWorkers: 4,
@@ -667,19 +669,19 @@ describe('HasteMap', () => {
     )
       .build()
       .then(({__hasteMapForTest: data}) => {
-        expect(workerFarm.mock.calls.length).toBe(1);
+        expect(jestWorker.mock.calls.length).toBe(1);
 
-        expect(workerFarmMock.mock.calls.length).toBe(5);
+        expect(mockWorker.mock.calls.length).toBe(5);
 
-        expect(workerFarmMock.mock.calls).toEqual([
-          [{filePath: '/fruits/__mocks__/Pear.js'}, expect.any(Function)],
-          [{filePath: '/fruits/banana.js'}, expect.any(Function)],
-          [{filePath: '/fruits/pear.js'}, expect.any(Function)],
-          [{filePath: '/fruits/strawberry.js'}, expect.any(Function)],
-          [{filePath: '/vegetables/melon.js'}, expect.any(Function)],
+        expect(mockWorker.mock.calls).toEqual([
+          [{filePath: '/fruits/__mocks__/Pear.js'}],
+          [{filePath: '/fruits/banana.js'}],
+          [{filePath: '/fruits/pear.js'}],
+          [{filePath: '/fruits/strawberry.js'}],
+          [{filePath: '/vegetables/melon.js'}],
         ]);
 
-        expect(workerFarm.end).toBeCalledWith(workerFarmMock);
+        expect(mockEnd).toBeCalled();
       });
   });
 

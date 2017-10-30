@@ -17,7 +17,9 @@ import type {
   HasteRegExp,
   MockData,
 } from 'types/HasteMap';
-import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
+
+import typeof {worker} from './worker';
+
 // eslint-disable-next-line import/no-duplicates
 import typeof HType from './constants';
 
@@ -28,7 +30,6 @@ import crypto from 'crypto';
 import {execSync} from 'child_process';
 import fs from 'graceful-fs';
 import sane from 'sane';
-import workerFarm from 'worker-farm';
 import {version as VERSION} from '../package.json';
 // eslint-disable-next-line import/no-duplicates
 import H from './constants';
@@ -37,13 +38,12 @@ import HasteModuleMap from './module_map';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
 import normalizePathSep from './lib/normalize_path_sep';
+import Worker from 'jest-worker';
 
 // eslint-disable-next-line import/default
 import nodeCrawl from './crawlers/node';
 // eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
-// eslint-disable-next-line import/default
-import worker from './worker';
 
 type Options = {
   cacheDirectory?: string,
@@ -86,6 +86,8 @@ type InternalOptions = {
 type Watcher = {
   close(callback: () => void): void,
 };
+
+type WorkerInterface = {worker: worker};
 
 export type ModuleMap = HasteModuleMap;
 export type FS = HasteFS;
@@ -202,8 +204,7 @@ class HasteMap extends EventEmitter {
   _options: InternalOptions;
   _watchers: Array<Watcher>;
   _whitelist: ?RegExp;
-  _workerFarm: ?(data: WorkerMessage, callback: WorkerCallback) => void;
-  _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
+  _worker: ?WorkerInterface;
 
   constructor(options: Options) {
     super();
@@ -245,9 +246,8 @@ class HasteMap extends EventEmitter {
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
-    this._workerPromise = null;
-    this._workerFarm = null;
     this._watchers = [];
+    this._worker = null;
   }
 
   static getCacheFilePath(
@@ -427,30 +427,32 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    return this._getWorker(workerOptions)({
-      filePath,
-      hasteImplModulePath: this._options.hasteImplModulePath,
-    }).then(
-      metadata => {
-        // `1` for truthy values instead of `true` to save cache space.
-        fileMetadata[H.VISITED] = 1;
-        const metadataId = metadata.id;
-        const metadataModule = metadata.module;
-        if (metadataId && metadataModule) {
-          fileMetadata[H.ID] = metadataId;
-          setModule(metadataId, metadataModule);
-        }
-        fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
-      },
-      error => {
-        if (['ENOENT', 'EACCES'].indexOf(error.code) < 0) {
-          throw error;
-        }
-        // If a file cannot be read we remove it from the file list and
-        // ignore the failure silently.
-        delete hasteMap.files[filePath];
-      },
-    );
+    return this._getWorker(workerOptions)
+      .worker({
+        filePath,
+        hasteImplModulePath: this._options.hasteImplModulePath,
+      })
+      .then(
+        metadata => {
+          // `1` for truthy values instead of `true` to save cache space.
+          fileMetadata[H.VISITED] = 1;
+          const metadataId = metadata.id;
+          const metadataModule = metadata.module;
+          if (metadataId && metadataModule) {
+            fileMetadata[H.ID] = metadataId;
+            setModule(metadataId, metadataModule);
+          }
+          fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+        },
+        error => {
+          if (['ENOENT', 'EACCES'].indexOf(error.code) < 0) {
+            throw error;
+          }
+          // If a file cannot be read we remove it from the file list and
+          // ignore the failure silently.
+          delete hasteMap.files[filePath];
+        },
+      );
   }
 
   _buildHasteMap(data: {
@@ -474,25 +476,27 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    const cleanup = () => {
-      if (this._workerFarm) {
-        workerFarm.end(this._workerFarm);
-      }
-      this._workerFarm = null;
-      this._workerPromise = null;
-    };
-
     return Promise.all(promises)
-      .then(cleanup)
       .then(() => {
+        this._cleanup();
         hasteMap.map = map;
         hasteMap.mocks = mocks;
         return hasteMap;
       })
       .catch(error => {
-        cleanup();
+        this._cleanup();
         return Promise.reject(error);
       });
+  }
+
+  _cleanup() {
+    const worker = this._worker;
+
+    if (worker && typeof worker.end === 'function') {
+      worker.end();
+    }
+
+    this._worker = null;
   }
 
   /**
@@ -505,36 +509,23 @@ class HasteMap extends EventEmitter {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  _getWorker(
-    options: ?{forceInBand: boolean},
-  ): (message: WorkerMessage) => Promise<WorkerMetadata> {
-    if (!this._workerPromise) {
-      let workerFn;
-      if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
-        workerFn = worker;
-      } else {
-        this._workerFarm = workerFarm(
-          {
-            maxConcurrentWorkers: this._options.maxWorkers,
-          },
-          require.resolve('./worker'),
-        );
-        workerFn = this._workerFarm;
-      }
+  _getWorker(options: ?{forceInBand: boolean}): WorkerInterface {
+    if (!this._worker) {
+      const workerOptions = {
+        exposedMethods: ['worker'],
+        maxRetries: 3,
+        numWorkers: this._options.maxWorkers,
+      };
 
-      this._workerPromise = (message: WorkerMessage) =>
-        new Promise((resolve, reject) =>
-          workerFn(message, (error, metadata) => {
-            if (error || !metadata) {
-              reject(error);
-            } else {
-              resolve(metadata);
-            }
-          }),
-        );
+      if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
+        this._worker = require('./worker');
+      } else {
+        // $FlowFixMe: assignment of a worker with custom properties.
+        this._worker = new Worker(require.resolve('./worker'), workerOptions);
+      }
     }
 
-    return this._workerPromise;
+    return this._worker;
   }
 
   _parse(hasteMapPath: string): InternalHasteMap {
@@ -749,7 +740,7 @@ class HasteMap extends EventEmitter {
               },
             );
             // Cleanup
-            this._workerPromise = null;
+            this._cleanup();
             if (promise) {
               return promise.then(add);
             } else {
