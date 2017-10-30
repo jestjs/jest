@@ -254,19 +254,15 @@ expect.addSnapshotSerializer(serializer);
 <h3><a class="anchor" name="rejects"></a><code>.rejects</code> <a class="hash-link" href="#rejects">#</a></h3>
 <h5><a class="anchor" name="disponibil-in-jest-2000"></a>disponibil în Jest <strong>20.0.0+</strong> <a class="hash-link" href="#disponibil-in-jest-2000">#</a></h5>
 <p>Utilizaţi <code>.rejects</code> pentru a desface valoarea unei promisiuni împlinite, astfel încât pot fi înlănțuiți alți validatori. În cazul în care promisiunea este împlinită, afirmaţia va eșua.</p>
-<p>De exemplu, acest cod testează că promisiunea este respinsă cu un motiv:</p>
-<pre><code class="language-js">test(<span class="hljs-string">'fetchData() rejects to be error'</span>, () =&gt; {
+<p>For example, this code tests that the promise rejects with reason <code>'octopus'</code>:</p>
+<pre><code class="language-js">test(<span class="hljs-string">'rejects to octopus'</span>, () =&gt; {
   <span class="hljs-comment">// make sure to add a return statement</span>
-  <span class="hljs-keyword">return</span> expect(<span class="hljs-built_in">Promise</span>.reject(<span class="hljs-string">'octopus'</span>)).rejects.toBeDefined();
+  <span class="hljs-keyword">return</span> expect(<span class="hljs-built_in">Promise</span>.reject(<span class="hljs-string">'octopus'</span>)).rejects.toBe(<span class="hljs-string">'octopus'</span>);
 });
 </code></pre>
-<p>Alternativ, puteţi utiliza <code>async/await</code> în combinaţie cu <code>.rejects</code>. În plus, acest cod testează că rezultatul returnat include 'octopus':</p>
-<pre><code class="language-js">test(<span class="hljs-string">'fetchData() rejects to be error'</span>, <span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> drinkOctopus = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);
-  });
-
-  <span class="hljs-keyword">await</span> expect(drinkOctopus).rejects.toMatch(<span class="hljs-string">'octopus'</span>);
+<p>Alternatively, you can use <code>async/await</code> in combination with <code>.rejects</code>.</p>
+<pre><code class="language-js">test(<span class="hljs-string">'rejects to octopus'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">await</span> expect(<span class="hljs-built_in">Promise</span>.reject(<span class="hljs-string">'octopus'</span>)).rejects.toBe(<span class="hljs-string">'octopus'</span>);
 });
 </code></pre>
 <h3><a class="anchor" name="tobevalue"></a><code>.toBe(value)</code> <a class="hash-link" href="#tobevalue">#</a></h3>
