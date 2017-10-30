@@ -83,10 +83,10 @@ test(<span class="hljs-string">'ноль'</span>, () =&gt; {
 });
 </code></pre>
 <p>Для проверки равенства чисел с плавающей запятой, используйте <code>toBeCloseTo</code> вместо <code>toEqual</code> потому, что вы не хотите, чтобы тест полагался на небольшую ошибку округления.</p>
-<pre><code class="language-js">test(<span class="hljs-string">'сложение чисел с плавающей запятой'</span>, () =&gt; {
+<pre><code class="language-js">test(<span class="hljs-string">'adding floating point numbers'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> value = <span class="hljs-number">0.1</span> + <span class="hljs-number">0.2</span>;
-  expect(value).not.toBe(<span class="hljs-number">0.3</span>);    <span class="hljs-comment">// Корректно! Из-за ошибки округления</span>
-  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Корректно</span>
+<span class="hljs-comment">//expect(value).toBe(0.3);           This won't work because of rounding error</span>
+  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// This works.</span>
 });
 </code></pre>
 <h3><a class="anchor" name=""></a>Строки <a class="hash-link" href="#">#</a></h3>
