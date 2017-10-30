@@ -33,20 +33,10 @@ jest.mock(
         this._context = context;
       }
 
-      findMatchingTests(pattern) {
-        const paths = [
-          './path/to/file1-test.js',
-          './path/to/file2-test.js',
-          './path/to/file3-test.js',
-          './path/to/file4-test.js',
-          './path/to/file5-test.js',
-          './path/to/file6-test.js',
-          './path/to/file7-test.js',
-          './path/to/file8-test.js',
-          './path/to/file9-test.js',
-          './path/to/file10-test.js',
-          './path/to/file11-test.js',
-        ].filter(path => path.match(pattern));
+      findTestsWithTags(tags) {
+        const paths = ['./a-b.js', './b-c.js', './c.js'].filter(path =>
+          tags.some(tag => path.indexOf(tag) >= 0),
+        );
 
         return {
           tests: paths.map(path => ({
@@ -105,13 +95,13 @@ describe('Watch mode flows', () => {
     stdin = new MockStdin();
   });
 
-  it('Pressing "P" enters pattern mode', () => {
+  it('Pressing "G" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
-    stdin.emit(KEYS.P);
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    stdin.emit(KEYS.G);
+    expect(pipe.write).toBeCalledWith(' @tags › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();
@@ -120,11 +110,11 @@ describe('Watch mode flows', () => {
     };
 
     // Write a pattern
-    ['p', '.', '*', '1', '0'].map(toHex).forEach(assertPattern);
+    ['a', ',', 'b'].map(toHex).forEach(assertPattern);
 
-    [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
+    [KEYS.BACKSPACE].forEach(assertPattern);
 
-    ['3'].map(toHex).forEach(assertPattern);
+    ['c'].map(toHex).forEach(assertPattern);
 
     // Runs Jest again
     runJestMock.mockReset();
@@ -136,8 +126,8 @@ describe('Watch mode flows', () => {
       onlyChanged: false,
       passWithNoTests: true,
       testNamePattern: '',
-      testPathPattern: 'p.*3',
-      testTags: null,
+      testPathPattern: '',
+      testTags: ['a', 'c'],
       watch: true,
       watchAll: false,
     });
@@ -148,7 +138,6 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
-
     ['p', '.', '*', '1', '0']
       .map(toHex)
       .concat(KEYS.ENTER)
@@ -160,10 +149,16 @@ describe('Watch mode flows', () => {
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
+    stdin.emit(KEYS.G);
+    ['a', ',', 'b']
+      .map(toHex)
+      .concat(KEYS.ENTER)
+      .forEach(key => stdin.emit(key));
+
     stdin.emit(KEYS.C);
 
     pipe.write.mockReset();
-    stdin.emit(KEYS.P);
+    stdin.emit(KEYS.G);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 });

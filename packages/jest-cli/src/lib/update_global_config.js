@@ -12,6 +12,7 @@ import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
 type Options = {
   testNamePattern?: string,
   testPathPattern?: string,
+  testTags?: ?Array<string>,
   noSCM?: boolean,
   updateSnapshot?: SnapshotUpdateState,
   mode?: 'watch' | 'watchAll',
@@ -46,11 +47,16 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     newConfig.testNamePattern = options.testNamePattern || '';
   }
 
+  if ('testTags' in options) {
+    newConfig.testTags = options.testTags || null;
+  }
+
   newConfig.onlyChanged = false;
   newConfig.onlyChanged =
     !newConfig.watchAll &&
     !newConfig.testNamePattern &&
-    !newConfig.testPathPattern;
+    !newConfig.testPathPattern &&
+    !newConfig.testTags;
 
   if (options.noSCM) {
     newConfig.noSCM = true;

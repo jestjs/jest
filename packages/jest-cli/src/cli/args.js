@@ -451,6 +451,12 @@ export const options = {
     description: 'Exit code of `jest` command if the test run failed',
     type: 'string', // number
   },
+  testIgnoreTags: {
+    description:
+      'Ignore test files containing the specified tags in the ' +
+      'docblock @tag pragma.',
+    type: 'array',
+  },
   testMatch: {
     description: 'The glob patterns Jest uses to detect test files.',
     type: 'array',
@@ -490,6 +496,13 @@ export const options = {
       ' `jasmine2`. A path to a custom test runner can be provided: ' +
       '`<rootDir>/path/to/testRunner.js`.',
     type: 'string',
+  },
+  testTags: {
+    alias: 'g',
+    description:
+      'Run only test files containing the specified tags in the ' +
+      'docblock @tag pragma.',
+    type: 'array',
   },
   testURL: {
     description: 'This option sets the URL for the jsdom environment.',

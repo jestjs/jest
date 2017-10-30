@@ -13,10 +13,15 @@ import type {Test} from 'types/TestRunner';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
 import path from 'path';
+import fs from 'fs';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './test_path_pattern_to_regexp';
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
+import {
+  extract as extractDocblock,
+  parse as parseDocblock,
+} from 'jest-docblock';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -24,6 +29,12 @@ type SearchResult = {|
   tests: Array<Test>,
   total?: number,
 |};
+
+type PathMatcher = (path: Path) => boolean;
+
+type TestPathCases = {
+  [string]: PathMatcher,
+};
 
 export type TestSelectionConfig = {|
   input?: string,
@@ -55,6 +66,30 @@ const regexToMatcher = (testRegex: string) => {
   return path => regex.test(path);
 };
 
+const tagsToMatcher = (testTags: ?Array<string>) => {
+  if (!testTags) {
+    return () => true;
+  }
+
+  const separator = /(,\s*)/;
+
+  return path => {
+    const code = fs.readFileSync(path, {encoding: 'utf-8'});
+    const docblock = extractDocblock(code);
+    const {tags: tagsInTestFile} = parseDocblock(docblock) || {};
+    const tags = tagsInTestFile
+      ? tagsInTestFile
+          .split(separator)
+          .map(tag => tag.trim())
+          .filter(Boolean)
+      : [];
+
+    return tags.some(tag => testTags && testTags.indexOf(tag) >= 0);
+  };
+};
+
+const negate = (fn: PathMatcher): PathMatcher => (path: Path) => !fn(path);
+
 const toTests = (context, tests) =>
   tests.map(path => ({
     context,
@@ -66,12 +101,7 @@ export default class SearchSource {
   _context: Context;
   _rootPattern: RegExp;
   _testIgnorePattern: ?RegExp;
-  _testPathCases: {
-    roots: (path: Path) => boolean,
-    testMatch: (path: Path) => boolean,
-    testRegex: (path: Path) => boolean,
-    testPathIgnorePatterns: (path: Path) => boolean,
-  };
+  _testPathCases: TestPathCases;
 
   constructor(context: Context) {
     const {config} = context;
@@ -85,18 +115,26 @@ export default class SearchSource {
       ? new RegExp(ignorePattern.join('|'))
       : null;
 
+    const ignoreTags = config.testIgnoreTags;
+    const testIgnoreTags =
+      ignoreTags && ignoreTags.length > 0
+        ? negate(tagsToMatcher(ignoreTags))
+        : () => true;
+
     this._testPathCases = {
       roots: path => this._rootPattern.test(path),
+      testIgnoreTags,
       testMatch: globsToMatcher(config.testMatch),
       testPathIgnorePatterns: path =>
         !this._testIgnorePattern || !this._testIgnorePattern.test(path),
       testRegex: regexToMatcher(config.testRegex),
+      testTags: tagsToMatcher(config.testTags),
     };
   }
 
   _filterTestPathsWithStats(
     allPaths: Array<Test>,
-    testPathPattern?: string,
+    applyFilter: ?(testPathCases: TestPathCases) => TestPathCases,
   ): SearchResult {
     const data = {
       stats: {},
@@ -104,10 +142,9 @@ export default class SearchSource {
       total: allPaths.length,
     };
 
-    const testCases = Object.assign({}, this._testPathCases);
-    if (testPathPattern) {
-      const regex = testPathPatternToRegExp(testPathPattern);
-      testCases.testPathPattern = path => regex.test(path);
+    let testCases = Object.assign({}, this._testPathCases);
+    if (applyFilter) {
+      testCases = applyFilter(testCases);
     }
 
     const testCasesKeys = Object.keys(testCases);
@@ -128,7 +165,13 @@ export default class SearchSource {
   _getAllTestPaths(testPathPattern: string): SearchResult {
     return this._filterTestPathsWithStats(
       toTests(this._context, this._context.hasteFS.getAllFiles()),
-      testPathPattern,
+      testCases => {
+        if (testPathPattern) {
+          const regex = testPathPatternToRegExp(testPathPattern);
+          testCases.testPathPattern = path => regex.test(path);
+        }
+        return testCases;
+      },
     );
   }
 
@@ -140,6 +183,18 @@ export default class SearchSource {
 
   findMatchingTests(testPathPattern: string): SearchResult {
     return this._getAllTestPaths(testPathPattern);
+  }
+
+  findTestsWithTags(tags: Array<string>): SearchResult {
+    return this._filterTestPathsWithStats(
+      toTests(this._context, this._context.hasteFS.getAllFiles()),
+      testCases => {
+        if (tags) {
+          testCases.testForTags = tagsToMatcher(tags);
+        }
+        return testCases;
+      },
+    );
   }
 
   findRelatedTests(allPaths: Set<Path>): SearchResult {
@@ -205,6 +260,8 @@ export default class SearchSource {
       return this.findTestRelatedToChangedFiles(changedFilesPromise);
     } else if (globalConfig.runTestsByPath && paths && paths.length) {
       return Promise.resolve(this.findTestsByPaths(paths));
+    } else if (globalConfig.testTags != null) {
+      return Promise.resolve(this.findTestsWithTags(globalConfig.testTags));
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
     } else if (globalConfig.testPathPattern != null) {

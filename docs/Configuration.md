@@ -625,6 +625,53 @@ function testRunner(
 
 An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
 
+### `testTags` [array<string>]
+Default: `null`
+
+Run only test files containing the specified tags in the docblock `@tags` pragma.
+
+Example:
+
+```js
+/**
+ * file1.js
+ * @tags a, b
+ */
+
+describe('file1', () => {
+  // Tests
+});
+```
+
+```js
+/**
+ * file2.js
+ * @tags b
+ */
+
+describe('file2', () => {
+  // Tests
+});
+```
+
+```js
+/**
+ * file3.js
+ * @tags c, d
+ */
+
+describe('file3', () => {
+  // Tests
+});
+```
+
+Configuring `jest` using `testTags: ['b']` will run only `file1.js` and `file2.js`. Files without `@tags` are excluded as is `file3.js` because it does not contain the configured testTag `b`.
+
+### `testIgnoreTags` [array<string>]
+Default: `null`
+
+Ignore test files containing the specified tags in the docblock `@tags` pragma. This will ignore test files containing the specified tags even if they are matched by `testTags`.
+
 ### `testURL` [string]
 Default: `about:blank`
 

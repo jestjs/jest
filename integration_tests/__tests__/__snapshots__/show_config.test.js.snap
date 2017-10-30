@@ -38,6 +38,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"setupFiles\\": [],
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
+      \\"testIgnoreTags\\": null,
       \\"testMatch\\": [
         \\"**/__tests__/**/*.js?(x)\\",
         \\"**/?(*.)(spec|test).js?(x)\\"
@@ -47,6 +48,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       \\"testRegex\\": \\"\\",
       \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
+      \\"testTags\\": null,
       \\"testURL\\": \\"about:blank\\",
       \\"timers\\": \\"real\\",
       \\"transformIgnorePatterns\\": [
@@ -76,8 +78,10 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
     \\"runTestsByPath\\": false,
     \\"testFailureExitCode\\": 1,
+    \\"testIgnoreTags\\": null,
     \\"testPathPattern\\": \\"\\",
     \\"testResultsProcessor\\": null,
+    \\"testTags\\": null,
     \\"updateSnapshot\\": \\"all\\",
     \\"useStderr\\": false,
     \\"verbose\\": null,

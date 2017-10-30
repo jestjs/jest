@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Watch mode flows Pressing "G" enters pattern mode 1`] = `
+"
+
+
+ @tags › a
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(10, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "G" enters pattern mode 2`] = `
+"
+
+
+ @tags › a,
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "G" enters pattern mode 3`] = `
+"
+
+
+ @tags › a,b
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(12, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "G" enters pattern mode 4`] = `
+"
+
+
+ @tags › a,
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "G" enters pattern mode 5`] = `
+"
+
+
+ @tags › a,c
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(12, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Active Filters: @tags a, b
+
+
+Tags Filter Usage
+ › Press Esc to exit filter mode.
+ › Press Enter to filter by tags.
+
+
+[MOCK - cursorShow]
+
+
+
+ @tags › 
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(9, 7)]
+[MOCK - cursorRestorePosition]"
+`;

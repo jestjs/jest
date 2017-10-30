@@ -85,7 +85,7 @@ If you want to inspect the cache, use `--showConfig` and look at the `cacheDirec
 
 When this option is provided, Jest will assume it is running in a CI environment. This changes the behavior when a new snapshot is encountered. Instead of the regular behavior of storing a new snapshot automatically, it will fail the test and require Jest to be run with `--updateSnapshot`.
 
-### `--clearCache` 
+### `--clearCache`
 ##### available in Jest **21.3.0+**
 Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. *Note: clearing the cache will reduce performance.*
 
@@ -187,7 +187,7 @@ Prevent tests from printing messages through the console.
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests and test suites with a name that matches the regex.  For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`. 
+Alias: `-t`. Run only tests and test suites with a name that matches the regex.  For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
 
 ### `--testPathPattern=<regex>`
 
@@ -196,6 +196,14 @@ A regexp pattern string that is matched against all tests paths before executing
 ### `--testRunner=<path>`
 
 Lets you specify a custom test runner.
+
+### `--testTags <tag1> ... <tagN>`
+
+Alias: `-g`. Run only test files containing the specified tags in the docblock `@tags` pragma.
+
+### `--testIgnoreTags <tag1> ... <tagN>`
+
+Ignore test files containing the specified tags in the docblock `@tags` pragma.
 
 ### `--updateSnapshot`
 

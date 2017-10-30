@@ -446,6 +446,15 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testMatch':
         value = _replaceRootDirTags(options.rootDir, options[key]);
         break;
+      case 'testIgnoreTags':
+      case 'testTags': {
+        const optionValue = options[key];
+        value =
+          Array.isArray(optionValue) && optionValue.length > 0
+            ? optionValue
+            : null;
+        break;
+      }
       case 'automock':
       case 'bail':
       case 'browser':

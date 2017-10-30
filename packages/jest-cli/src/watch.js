@@ -26,6 +26,7 @@ import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import TestPathPatternPrompt from './test_path_pattern_prompt';
 import TestNamePatternPrompt from './test_name_pattern_prompt';
+import TestTagsPrompt from './test_tags_prompt';
 import {KEYS, CLEAR} from './constants';
 
 const isInteractive = process.stdout.isTTY && !isCI;
@@ -50,6 +51,7 @@ export default function watch(
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
+  const testTagsPrompt = new TestTagsPrompt(outputStream, prompt);
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
@@ -60,7 +62,12 @@ export default function watch(
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
 
-  testPathPatternPrompt.updateSearchSources(searchSources);
+  const updateSearchSources = searchSources => {
+    testPathPatternPrompt.updateSearchSources(searchSources);
+    testTagsPrompt.updateSearchSources(searchSources);
+  };
+
+  updateSearchSources(searchSources);
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
@@ -82,7 +89,7 @@ export default function watch(
           context,
           searchSource: new SearchSource(context),
         };
-        testPathPatternPrompt.updateSearchSources(searchSources);
+        updateSearchSources(searchSources);
         startRun(globalConfig);
       }
     });
@@ -153,7 +160,9 @@ export default function watch(
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.G].indexOf(
+        key,
+      ) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -207,6 +216,7 @@ export default function watch(
               mode: 'watch',
               testNamePattern: '',
               testPathPattern: replacePathSepForRegex(testPathPattern),
+              testTags: null,
             });
 
             startRun(globalConfig);
@@ -222,6 +232,29 @@ export default function watch(
               mode: 'watch',
               testNamePattern,
               testPathPattern: globalConfig.testPathPattern,
+              testTags: null,
+            });
+
+            startRun(globalConfig);
+          },
+          onCancelPatternPrompt,
+          {header: activeFilters(globalConfig)},
+        );
+        break;
+      case KEYS.G:
+        testTagsPrompt.run(
+          tagString => {
+            const tags = tagString
+              .split(/,\s*/)
+              .map(tag => tag.trim())
+              .filter(Boolean);
+
+            globalConfig = updateGlobalConfig(globalConfig, {
+              mode: 'watch',
+              onlyChanged: false,
+              testNamePattern: '',
+              testPathPattern: '',
+              testTags: tags,
             });
 
             startRun(globalConfig);
@@ -263,14 +296,27 @@ export default function watch(
 }
 
 const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
-  const {testNamePattern, testPathPattern} = globalConfig;
-  if (testNamePattern || testPathPattern) {
+  const {
+    testIgnoreTags,
+    testNamePattern,
+    testPathPattern,
+    testTags,
+  } = globalConfig;
+
+  if (testNamePattern || testPathPattern || testTags) {
     const filters = [
       testPathPattern
         ? chalk.dim('filename ') + chalk.yellow('/' + testPathPattern + '/')
         : null,
       testNamePattern
         ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
+        : null,
+      testTags
+        ? chalk.dim('@tags ') + chalk.yellow(`${testTags.join(', ')}`)
+        : null,
+      testIgnoreTags
+        ? chalk.dim('ignored @tags ') +
+          chalk.yellow(`${testIgnoreTags.join(', ')}`)
         : null,
     ]
       .filter(f => !!f)
@@ -319,6 +365,8 @@ const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
     chalk.dim(' \u203A Press ') +
       't' +
       chalk.dim(' to filter by a test name regex pattern.'),
+
+    chalk.dim(' \u203A Press ') + 'g' + chalk.dim(' to filter using tags.'),
 
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
 

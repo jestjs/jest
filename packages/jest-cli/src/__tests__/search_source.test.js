@@ -387,6 +387,56 @@ describe('SearchSource', () => {
     });
   });
 
+  describe('testTags', () => {
+    beforeEach(done => {
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx'],
+          name,
+          rootDir,
+          testMatch,
+        },
+        {},
+      );
+      Runtime.createContext(config, {maxWorkers}).then(context => {
+        searchSource = new SearchSource(context);
+        done();
+      });
+    });
+
+    it('has no effect on search results for null input', () => {
+      const input = null;
+      const data = searchSource.findTestsWithTags(input);
+      expect(toPaths(data.tests).sort()).toEqual([
+        path.join(rootDir, '__testtests__', 'test.js'),
+        path.join(rootDir, '__testtests__', 'test.jsx'),
+      ]);
+    });
+
+    it('returns empty search result for empty input', () => {
+      const input = [];
+      const data = searchSource.findTestsWithTags(input);
+      expect(toPaths(data.tests)).toEqual([]);
+    });
+
+    it('finds tests for a single tag', () => {
+      const input = ['a'];
+      const data = searchSource.findTestsWithTags(input);
+      expect(toPaths(data.tests).sort()).toEqual([
+        path.join(rootDir, '__testtests__', 'test.js'),
+      ]);
+    });
+
+    it('finds tests for multiple tags', () => {
+      const input = ['a', 'c'];
+      const data = searchSource.findTestsWithTags(input);
+      expect(toPaths(data.tests).sort()).toEqual([
+        path.join(rootDir, '__testtests__', 'test.js'),
+        path.join(rootDir, '__testtests__', 'test.jsx'),
+      ]);
+    });
+  });
+
   describe('findRelatedTestsFromPattern', () => {
     beforeEach(done => {
       const {options: config} = normalize(
