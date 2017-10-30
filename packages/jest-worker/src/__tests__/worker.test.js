@@ -91,13 +91,13 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   forkInterface.emit('exit');
 
   // 3 retries + the initial load = 4.
-  expect(childProcess.fork.mock.calls.length).toBe(4);
-  expect(emit.mock.calls.length).toBe(0);
+  expect(childProcess.fork).toHaveBeenCalledTimes(4);
+  expect(emit).toHaveBeenCalledTimes(0);
 
   // The fourth should fail! (so no more calls to "childProcess.fork").
   forkInterface.emit('exit');
 
-  expect(childProcess.fork.mock.calls.length).toBe(4);
+  expect(childProcess.fork).toHaveBeenCalledTimes(4);
   expect(emit.mock.calls[0][0]).toBe('error');
 });
 
@@ -269,9 +269,9 @@ it('does not restart the child if it cleanly exited', () => {
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess.fork.mock.calls.length).toBe(1);
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
   forkInterface.emit('exit', 0);
-  expect(childProcess.fork.mock.calls.length).toBe(1);
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
 });
 
 it('restarts the child when the child process dies', () => {
@@ -279,7 +279,7 @@ it('restarts the child when the child process dies', () => {
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess.fork.mock.calls.length).toBe(1);
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
   forkInterface.emit('exit', 1);
-  expect(childProcess.fork.mock.calls.length).toBe(2);
+  expect(childProcess.fork).toHaveBeenCalledTimes(2);
 });
