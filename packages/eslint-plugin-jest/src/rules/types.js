@@ -44,6 +44,8 @@ export type Literal = {
   value?: string,
   rawValue?: string,
   parent: ParentNode,
+  property: Identifier,
+  object: Identifier,
   loc: NodeLocation,
 };
 
