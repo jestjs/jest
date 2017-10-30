@@ -84,9 +84,9 @@ exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
 "[MOCK - cursorHide]
 [MOCK - clearScreen]
 
-Pattern Mode Usage
- › Press Esc to exit pattern mode.
- › Press Enter to filter by a filenames regex pattern.
+Test Path Pattern Filter
+ › Press Esc to exit filter mode.
+ › Press Enter to filter by a filename regex pattern.
 
 
 [MOCK - cursorShow]

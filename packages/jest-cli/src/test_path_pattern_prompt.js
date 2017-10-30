@@ -9,38 +9,30 @@
 
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {ScrollOptions} from './lib/scroll_list';
 import type SearchSource from './search_source';
 
+import chalk from 'chalk';
 import Prompt from './lib/Prompt';
-import {
-  printPatternCaret,
-  printRestoredPatternCaret,
-} from './lib/pattern_mode_helpers';
-import PatternPrompt from './pattern_prompt';
+import InputPrompt from './input_prompt';
 
 type SearchSources = Array<{|
   context: Context,
   searchSource: SearchSource,
 |}>;
 
-export default class TestPathPatternPrompt extends PatternPrompt {
+const usage =
+  `\n${chalk.bold('Test Path Pattern Filter')}\n` +
+  ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit filter mode.')}\n` +
+  ` ${chalk.dim('\u203A Press')} Enter ` +
+  `${chalk.dim(`to filter by a filename regex pattern.`)}\n` +
+  `\n`;
+
+export default class TestPathPatternPrompt extends InputPrompt {
   _searchSources: SearchSources;
 
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
-    super(pipe, prompt);
-    this._entityName = 'filenames';
-  }
-
-  _onChange(pattern: string, options: ScrollOptions) {
-    super._onChange(pattern, options);
-    this._printPrompt(pattern, options);
-  }
-
-  _printPrompt(pattern: string, options: ScrollOptions) {
-    const pipe = this._pipe;
-    printPatternCaret(pattern, pipe);
-    printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
+    super(usage, pipe, prompt, 'pattern');
+    this._searchSources = [];
   }
 
   _getMatchedTests(pattern: string): Array<Test> {

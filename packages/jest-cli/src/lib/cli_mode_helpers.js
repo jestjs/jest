@@ -13,23 +13,27 @@ import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import stringLength from 'string-length';
 
-export const printPatternCaret = (
-  pattern: string,
+export const printCaret = (
+  name: string,
+  value: string,
   pipe: stream$Writable | tty$WriteStream,
 ) => {
-  const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
+  const prompt = ` ${name} \u203A`;
+  const inputText = `${chalk.dim(prompt)} ${value}`;
 
   pipe.write(ansiEscapes.eraseDown);
   pipe.write(inputText);
   pipe.write(ansiEscapes.cursorSavePosition);
 };
 
-export const printRestoredPatternCaret = (
-  pattern: string,
+export const printRestoredCaret = (
+  name: string,
+  value: string,
   currentUsageRows: number,
   pipe: stream$Writable | tty$WriteStream,
 ) => {
-  const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
+  const prompt = ` ${name} \u203A`;
+  const inputText = `${chalk.dim(prompt)} ${value}`;
 
   pipe.write(
     ansiEscapes.cursorTo(stringLength(inputText), currentUsageRows - 1),

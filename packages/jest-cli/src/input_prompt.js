@@ -11,29 +11,31 @@
 
 import type {ScrollOptions} from './lib/scroll_list';
 
-import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import Prompt from './lib/Prompt';
+import {printCaret, printRestoredCaret} from './lib/cli_mode_helpers';
 
-const usage = (entity: string) =>
-  `\n${chalk.bold('Pattern Mode Usage')}\n` +
-  ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
-  ` ${chalk.dim('\u203A Press')} Enter ` +
-  `${chalk.dim(`to filter by a ${entity} regex pattern.`)}\n` +
-  `\n`;
+const calculateRows = (...args) =>
+  args.reduce((total, current) => total + current.split('\n').length, 0);
 
-const usageRows = usage('').split('\n').length;
-
-export default class PatternPrompt {
+export default class InputPrompt {
+  _currentUsageRows: number;
   _pipe: stream$Writable | tty$WriteStream;
   _prompt: Prompt;
-  _entityName: string;
-  _currentUsageRows: number;
+  _promptLabel: string;
+  _usage: string;
 
-  constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
+  constructor(
+    usage: string,
+    pipe: stream$Writable | tty$WriteStream,
+    prompt: Prompt,
+    promptLabel?: string,
+  ) {
+    this._currentUsageRows = calculateRows(usage);
     this._pipe = pipe;
     this._prompt = prompt;
-    this._currentUsageRows = usageRows;
+    this._promptLabel = promptLabel || 'input';
+    this._usage = usage;
   }
 
   run(onSuccess: Function, onCancel: Function, options?: {header: string}) {
@@ -42,19 +44,27 @@ export default class PatternPrompt {
 
     if (options && options.header) {
       this._pipe.write(options.header + '\n');
-      this._currentUsageRows = usageRows + options.header.split('\n').length;
+      this._currentUsageRows = calculateRows(this._usage, options.header);
     } else {
-      this._currentUsageRows = usageRows;
+      this._currentUsageRows = calculateRows(this._usage);
     }
 
-    this._pipe.write(usage(this._entityName));
+    this._pipe.write(this._usage);
     this._pipe.write(ansiEscapes.cursorShow);
 
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  _onChange(pattern: string, options: ScrollOptions) {
+  _onChange(value: string, options: ScrollOptions) {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
+
+    printCaret(this._promptLabel, value, this._pipe);
+    printRestoredCaret(
+      this._promptLabel,
+      value,
+      this._currentUsageRows,
+      this._pipe,
+    );
   }
 }

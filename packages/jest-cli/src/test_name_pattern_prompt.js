@@ -8,33 +8,24 @@
  */
 
 import type {TestResult} from 'types/TestResult';
-import type {ScrollOptions} from './lib/scroll_list';
 
+import chalk from 'chalk';
 import Prompt from './lib/Prompt';
-import {
-  printPatternCaret,
-  printRestoredPatternCaret,
-} from './lib/pattern_mode_helpers';
-import PatternPrompt from './pattern_prompt';
+import InputPrompt from './input_prompt';
 
-export default class TestNamePatternPrompt extends PatternPrompt {
+const usage =
+  `\n${chalk.bold('Test Name Pattern Filter')}\n` +
+  ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit filter mode.')}\n` +
+  ` ${chalk.dim('\u203A Press')} Enter ` +
+  `${chalk.dim(`to filter by a test name regex pattern.`)}\n` +
+  `\n`;
+
+export default class TestNamePatternPrompt extends InputPrompt {
   _cachedTestResults: Array<TestResult>;
 
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
-    super(pipe, prompt);
-    this._entityName = 'tests';
+    super(usage, pipe, prompt, 'pattern');
     this._cachedTestResults = [];
-  }
-
-  _onChange(pattern: string, options: ScrollOptions) {
-    super._onChange(pattern, options);
-    this._printPrompt(pattern, options);
-  }
-
-  _printPrompt(pattern: string, options: ScrollOptions) {
-    const pipe = this._pipe;
-    printPatternCaret(pattern, pipe);
-    printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 
   _getMatchedTests(pattern: string) {
