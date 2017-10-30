@@ -85,7 +85,7 @@ test(<span class="hljs-string">'zero'</span>, () =&gt; {
 <p>Pentru egalitatea numerelor cu virgulă mobilă, utilizaţi <code>toBeCloseTo</code> în loc de <code>toEqual</code>, deoarece nu vrei ca un test să depindă de o eroare mică de rotunjire.</p>
 <pre><code class="language-js">test(<span class="hljs-string">'adding floating point numbers'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> value = <span class="hljs-number">0.1</span> + <span class="hljs-number">0.2</span>;
-  expect(value).not.toBe(<span class="hljs-number">0.3</span>);    <span class="hljs-comment">// It isn't! Because rounding error</span>
+<span class="hljs-comment">//expect(value).toBe(0.3);           This won't work because of rounding error</span>
   expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// This works.</span>
 });
 </code></pre>

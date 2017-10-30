@@ -83,10 +83,10 @@ test(<span class="hljs-string">'cero'</span>, () =&gt; {
 });
 </code></pre>
 <p>Para igualdad de punto flotante, use <code>toBeCloseTo</code> en lugar de <code>toEqual</code>, esto por que no quisiera depender de un pequeño error de redondeo.</p>
-<pre><code class="language-js">test(Sumando números punto flotante', () =&gt; {
-  const value = 0.1 + 0.2;
-  expect(value).not.toBe(0.3);    // ¡No coinciden! Por error de redondeo
-  expect(value).toBeCloseTo(0.3); // Ésto funciona.
+<pre><code class="language-js">test(<span class="hljs-string">'adding floating point numbers'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> value = <span class="hljs-number">0.1</span> + <span class="hljs-number">0.2</span>;
+<span class="hljs-comment">//expect(value).toBe(0.3);           This won't work because of rounding error</span>
+  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// This works.</span>
 });
 </code></pre>
 <h3><a class="anchor" name="strings"></a>Strings <a class="hash-link" href="#strings">#</a></h3>
