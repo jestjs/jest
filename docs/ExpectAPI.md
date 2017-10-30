@@ -337,25 +337,20 @@ test('resolves to lemon', async () => {
 
 Use `.rejects` to unwrap the reason of a rejected promise so any other matcher can be chained. If the promise is fulfilled the assertion fails.
 
-For example, this code tests that the promise rejects with a reason:
+For example, this code tests that the promise rejects with reason `'octopus'`:
 
 ```js
-test('fetchData() rejects to be error', () => {
+test('rejects to octopus', () => {
   // make sure to add a return statement
-  return expect(Promise.reject('octopus')).rejects.toBeDefined();
+  return expect(Promise.reject('octopus')).rejects.toBe('octopus');
 });
 ```
 
 Alternatively, you can use `async/await` in combination with `.rejects`.
-Moreover, this code tests that the returned reason includes 'octopus'`:
 
 ```js
-test('fetchData() rejects to be error', async () => {
-  const drinkOctopus = new Promise(() => {
-      throw new DisgustingFlavorError('yuck, octopus flavor');
-  });
-
-  await expect(drinkOctopus).rejects.toMatch('octopus');
+test('rejects to octopus', async () => {
+  await expect(Promise.reject('octopus')).rejects.toBe('octopus');
 });
 ```
 
