@@ -7,8 +7,6 @@
  * @flow
  */
 
-import type {FS} from 'jest-haste-map';
-
 export type ReporterOnStartOptions = {|
   estimatedTime: number,
   showStatus: boolean,
