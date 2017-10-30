@@ -10,6 +10,7 @@
 'use strict';
 
 import childProcess from 'child_process';
+import EventEmitter from 'events';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -45,15 +46,19 @@ import type {
  * field is changed to "true", so that other workers which might encounter the
  * same call skip it.
  */
-export default class {
+export default class extends EventEmitter {
   _busy: boolean;
   _child: ChildProcess;
   _options: WorkerOptions;
   _queue: Array<QueueChildMessage>;
+  _startedTimes: number;
 
   constructor(options: WorkerOptions) {
+    super();
+
     this._options = options;
     this._queue = [];
+    this._startedTimes = 0;
 
     this._initialize();
   }
@@ -72,6 +77,11 @@ export default class {
   }
 
   _initialize() {
+    if (this._startedTimes > this._options.maxRetries) {
+      this.emit('error', new Error('Process failed too many times!'));
+      return;
+    }
+
     const child = childProcess.fork(
       require.resolve('./child'),
       // $FlowFixMe: Flow does not work well with Object.assign.
@@ -91,6 +101,7 @@ export default class {
     // $FlowFixMe: wrong "ChildProcess.send" signature.
     child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
 
+    this._startedTimes++;
     this._child = child;
     this._busy = false;
   }

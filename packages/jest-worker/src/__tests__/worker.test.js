@@ -23,16 +23,17 @@ let forkInterface;
 let childProcess;
 
 beforeEach(() => {
-  forkInterface = Object.assign(new EventEmitter(), {
-    send: jest.fn(),
-    stderr: {},
-    stdout: {},
-  });
-
   jest.mock('child_process');
 
   childProcess = require('child_process');
-  childProcess.fork.mockImplementation(() => forkInterface);
+  childProcess.fork.mockImplementation(
+    () =>
+      (forkInterface = Object.assign(new EventEmitter(), {
+        send: jest.fn(),
+        stderr: {},
+        stdout: {},
+      })),
+  );
 
   Worker = require('../worker').default;
 });
@@ -48,6 +49,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
       cwd: '/tmp',
       execArgv: ['--no-warnings'],
     },
+    maxRetries: 3,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -62,6 +64,8 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 
 it('initializes the child process with the given workerPath', () => {
   new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -72,8 +76,35 @@ it('initializes the child process with the given workerPath', () => {
   ]);
 });
 
+it('stops initializing the worker after the amount of retries is exceeded', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo/bar/baz.js',
+  });
+
+  const emit = jest.spyOn(worker, 'emit').mockImplementation(() => {});
+
+  // Three retries.
+  forkInterface.emit('exit');
+  forkInterface.emit('exit');
+  forkInterface.emit('exit');
+
+  // 3 retries + the initial load = 4.
+  expect(childProcess.fork.mock.calls.length).toBe(4);
+  expect(emit.mock.calls.length).toBe(0);
+
+  // The fourth should fail! (so no more calls to "childProcess.fork").
+  forkInterface.emit('exit');
+
+  expect(childProcess.fork.mock.calls.length).toBe(4);
+  expect(emit.mock.calls[0][0]).toBe('error');
+});
+
 it('provides stdout and stderr fields from the child process', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -83,6 +114,8 @@ it('provides stdout and stderr fields from the child process', () => {
 
 it('swtiches the processed flag of a task as soon as it is processed', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -101,6 +134,8 @@ it('swtiches the processed flag of a task as soon as it is processed', () => {
 
 it('sends the task to the child process', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -114,6 +149,8 @@ it('sends the task to the child process', () => {
 
 it('relates replies to requests, in order', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -154,6 +191,8 @@ it('relates replies to requests, in order', () => {
 
 it('creates error instances for known errors', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -210,6 +249,8 @@ it('creates error instances for known errors', () => {
 
 it('throws when the child process returns a strange message', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -223,6 +264,8 @@ it('throws when the child process returns a strange message', () => {
 
 it('does not restart the child if it cleanly exited', () => {
   new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 

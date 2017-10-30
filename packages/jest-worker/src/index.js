@@ -68,6 +68,7 @@ export default class {
     // Build the options once for all workers to avoid allocating extra objects.
     const workerOptions = {
       forkOptions: options.forkOptions || {},
+      maxRetries: options.maxRetries || Infinity,
       workerPath,
     };
 

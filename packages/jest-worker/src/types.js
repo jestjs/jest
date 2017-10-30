@@ -39,11 +39,13 @@ export type FarmOptions = {
   computeWorkerKey?: (string, ...Array<any>) => ?string,
   exposedMethods?: $ReadOnlyArray<string>,
   forkOptions?: ForkOptions,
+  maxRetries?: number,
   numWorkers?: number,
 };
 
 export type WorkerOptions = {|
-  forkOptions?: ForkOptions,
+  forkOptions: ForkOptions,
+  maxRetries: number,
   workerPath: string,
 |};
 

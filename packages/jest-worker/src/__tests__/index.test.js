@@ -114,12 +114,14 @@ it('tries instantiating workers with the right options', () => {
   new Farm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     forkOptions: {execArgv: []},
+    maxRetries: 6,
     numWorkers: 4,
   });
 
   expect(Worker.mock.calls.length).toBe(4);
   expect(Worker.mock.calls[0][0]).toEqual({
     forkOptions: {execArgv: []},
+    maxRetries: 6,
     workerPath: '/tmp/baz.js',
   });
 });
