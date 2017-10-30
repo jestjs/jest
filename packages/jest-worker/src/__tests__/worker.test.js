@@ -26,14 +26,15 @@ beforeEach(() => {
   jest.mock('child_process');
 
   childProcess = require('child_process');
-  childProcess.fork.mockImplementation(
-    () =>
-      (forkInterface = Object.assign(new EventEmitter(), {
-        send: jest.fn(),
-        stderr: {},
-        stdout: {},
-      })),
-  );
+  childProcess.fork.mockImplementation(() => {
+    forkInterface = Object.assign(new EventEmitter(), {
+      send: jest.fn(),
+      stderr: {},
+      stdout: {},
+    });
+
+    return forkInterface;
+  });
 
   Worker = require('../worker').default;
 });

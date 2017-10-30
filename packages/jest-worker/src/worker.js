@@ -51,14 +51,14 @@ export default class extends EventEmitter {
   _child: ChildProcess;
   _options: WorkerOptions;
   _queue: Array<QueueChildMessage>;
-  _startedTimes: number;
+  _retries: number;
 
   constructor(options: WorkerOptions) {
     super();
 
     this._options = options;
     this._queue = [];
-    this._startedTimes = 0;
+    this._retries = 0;
 
     this._initialize();
   }
@@ -77,7 +77,7 @@ export default class extends EventEmitter {
   }
 
   _initialize() {
-    if (this._startedTimes > this._options.maxRetries) {
+    if (this._retries > this._options.maxRetries) {
       this.emit('error', new Error('Process failed too many times!'));
       return;
     }
@@ -101,7 +101,7 @@ export default class extends EventEmitter {
     // $FlowFixMe: wrong "ChildProcess.send" signature.
     child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
 
-    this._startedTimes++;
+    this._retries++;
     this._child = child;
     this._busy = false;
   }

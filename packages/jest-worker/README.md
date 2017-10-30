@@ -59,6 +59,10 @@ List of method names that can be called on the child processes from the parent p
 
 Amount of workers to spwan. Defaults to the number of CPUs minus 1.
 
+#### `maxRetries: number` (optional)
+
+Maximum amount of times that a dead child can be re-spawned. Defaults to `5`, pass `Infinity` to allow endless retries.
+
 #### `forkOptions: Object` (optional)
 
 Allow customizing all options passed to `childProcess.fork`. By default, some values are set (`cwd` and `env`), but you can override them and customize the rest. For a list of valid values, check [the Node documentation](https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options).
