@@ -84,22 +84,20 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  const emit = jest.spyOn(worker, 'emit').mockImplementation(() => {});
+  const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
+  const callback = jest.fn();
 
-  // Three retries.
+  worker.send(request, callback);
+
+  // We fail four times (initial + three retries).
   forkInterface.emit('exit');
   forkInterface.emit('exit');
   forkInterface.emit('exit');
-
-  // 3 retries + the initial load = 4.
-  expect(childProcess.fork).toHaveBeenCalledTimes(4);
-  expect(emit).toHaveBeenCalledTimes(0);
-
-  // The fourth should fail! (so no more calls to "childProcess.fork").
   forkInterface.emit('exit');
 
-  expect(childProcess.fork).toHaveBeenCalledTimes(4);
-  expect(emit.mock.calls[0][0]).toBe('error');
+  expect(childProcess.fork).toHaveBeenCalledTimes(5);
+  expect(callback.mock.calls[0][0]).toBeInstanceOf(Error);
+  expect(callback.mock.calls[0][1]).toBe(null);
 });
 
 it('provides stdout and stderr fields from the child process', () => {

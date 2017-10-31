@@ -10,7 +10,6 @@
 'use strict';
 
 import childProcess from 'child_process';
-import EventEmitter from 'events';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -46,7 +45,7 @@ import type {
  * field is changed to "true", so that other workers which might encounter the
  * same call skip it.
  */
-export default class extends EventEmitter {
+export default class {
   _busy: boolean;
   _child: ChildProcess;
   _options: WorkerOptions;
@@ -54,11 +53,8 @@ export default class extends EventEmitter {
   _retries: number;
 
   constructor(options: WorkerOptions) {
-    super();
-
     this._options = options;
     this._queue = [];
-    this._retries = 0;
 
     this._initialize();
   }
@@ -77,11 +73,6 @@ export default class extends EventEmitter {
   }
 
   _initialize() {
-    if (this._retries > this._options.maxRetries) {
-      this.emit('error', new Error('Process failed too many times!'));
-      return;
-    }
-
     const child = childProcess.fork(
       require.resolve('./child'),
       // $FlowFixMe: Flow does not work well with Object.assign.
@@ -104,6 +95,21 @@ export default class extends EventEmitter {
     this._retries++;
     this._child = child;
     this._busy = false;
+
+    // If we exceeded the amount of retries, we will emulate an error reply
+    // coming from the child. This avoids code duplication related with cleaning
+    // the queue, and scheduling the next call.
+    if (this._retries > this._options.maxRetries) {
+      const error = new Error('Call retries were exceeded');
+
+      this._receive([
+        PARENT_MESSAGE_ERROR,
+        error.name,
+        error.message,
+        error.stack,
+        {},
+      ]);
+    }
   }
 
   _process() {
@@ -130,7 +136,9 @@ export default class extends EventEmitter {
       // have to process it as well.
       call.request[1] = true;
 
+      this._retries = 0;
       this._busy = true;
+
       // $FlowFixMe: wrong "ChildProcess.send" signature.
       this._child.send(call.request);
     }
