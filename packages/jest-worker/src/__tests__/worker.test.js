@@ -97,6 +97,7 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
 
   expect(childProcess.fork).toHaveBeenCalledTimes(5);
   expect(callback.mock.calls[0][0]).toBeInstanceOf(Error);
+  expect(callback.mock.calls[0][0].type).toBe('WorkerError');
   expect(callback.mock.calls[0][1]).toBe(null);
 });
 

@@ -61,7 +61,7 @@ Amount of workers to spwan. Defaults to the number of CPUs minus 1.
 
 #### `maxRetries: number` (optional)
 
-Maximum amount of times that a dead child can be re-spawned, per call. Defaults to `5`, pass `Infinity` to allow endless retries.
+Maximum amount of times that a dead child can be re-spawned, per call. Defaults to `3`, pass `Infinity` to allow endless retries.
 
 #### `forkOptions: Object` (optional)
 

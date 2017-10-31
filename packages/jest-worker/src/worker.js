@@ -107,7 +107,7 @@ export default class {
         error.name,
         error.message,
         error.stack,
-        {},
+        {type: 'WorkerError'},
       ]);
     }
   }
