@@ -196,8 +196,6 @@ test('path on Windows is case-insensitive', () => {
 
   const modifiedDIR = path.resolve(DIR, 'outer_dir', 'inner_dir');
   const incorrectModifiedDIR = path.resolve(DIR, 'OUTER_dir', 'inner_dir');
-  let stderr;
-  let stdout;
 
   writeFiles(modifiedDIR, {
     '.watchmanconfig': '',
@@ -210,7 +208,7 @@ test('path on Windows is case-insensitive', () => {
   run(`${GIT} add .`, modifiedDIR);
   run(`${GIT} commit -m "first"`, modifiedDIR);
 
-  ({stdout} = runJest(incorrectModifiedDIR, ['-o']));
+  const {stdout} = runJest(incorrectModifiedDIR, ['-o']);
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(modifiedDIR, {
@@ -220,7 +218,7 @@ test('path on Windows is case-insensitive', () => {
     'file3.js': `require('./file2')`,
   });
 
-  ({stderr} = runJest(incorrectModifiedDIR, ['-o']));
+  const {stderr} = runJest(incorrectModifiedDIR, ['-o']);
 
   expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
