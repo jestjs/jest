@@ -50,6 +50,7 @@ export default class {
   _child: ChildProcess;
   _options: WorkerOptions;
   _queue: Array<QueueChildMessage>;
+  _retries: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -91,8 +92,24 @@ export default class {
     // $FlowFixMe: wrong "ChildProcess.send" signature.
     child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
 
+    this._retries++;
     this._child = child;
     this._busy = false;
+
+    // If we exceeded the amount of retries, we will emulate an error reply
+    // coming from the child. This avoids code duplication related with cleaning
+    // the queue, and scheduling the next call.
+    if (this._retries > this._options.maxRetries) {
+      const error = new Error('Call retries were exceeded');
+
+      this._receive([
+        PARENT_MESSAGE_ERROR,
+        error.name,
+        error.message,
+        error.stack,
+        {type: 'WorkerError'},
+      ]);
+    }
   }
 
   _process() {
@@ -119,7 +136,9 @@ export default class {
       // have to process it as well.
       call.request[1] = true;
 
+      this._retries = 0;
       this._busy = true;
+
       // $FlowFixMe: wrong "ChildProcess.send" signature.
       this._child.send(call.request);
     }
