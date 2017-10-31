@@ -316,20 +316,15 @@ class HasteMap extends EventEmitter {
       .catch(() => this._createEmptyMap())
       .then(cachedHasteMap => {
         const cachedFiles = Object.keys(cachedHasteMap.files).map(filePath => {
-          return {
-            moduleName: cachedHasteMap.files[filePath][H.ID],
-            path: filePath,
-          };
+          const moduleName = cachedHasteMap.files[filePath][H.ID];
+          return {moduleName, path: filePath};
         });
         return this._crawl(cachedHasteMap).then(hasteMap => {
-          return {
-            deprecatedFiles: cachedFiles.filter(
-              file =>
-                !(file.path in hasteMap.files) ||
-                file.moduleName != hasteMap.files[file.path][H.ID],
-            ),
-            hasteMap,
-          };
+          const deprecatedFiles = cachedFiles.filter(file => {
+            const fileData = hasteMap.files[file.path];
+            return fileData == null || file.moduleName != fileData[H.ID];
+          });
+          return {deprecatedFiles, hasteMap};
         });
       });
   }

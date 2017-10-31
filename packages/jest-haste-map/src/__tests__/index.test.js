@@ -548,34 +548,70 @@ describe('HasteMap', () => {
       });
   });
 
-  it('recovers from duplicate modules', async () => {
-    mockFs['/fruits/another_strawberry.js'] = [
-      '/**',
-      ' * @providesModule Strawberry',
-      ' */',
-      'const Blackberry = require("Blackberry");',
-    ].join('\n');
+  describe('duplicate modules', () => {
+    beforeEach(async () => {
+      mockFs['/fruits/another_strawberry.js'] = [
+        '/**',
+        ' * @providesModule Strawberry',
+        ' */',
+        'const Blackberry = require("Blackberry");',
+      ].join('\n');
 
-    let {__hasteMapForTest: data} = await new HasteMap(defaultConfig).build();
-    expect(data.duplicates).toEqual({
-      Strawberry: {
-        g: {'/fruits/another_strawberry.js': 0, '/fruits/strawberry.js': 0},
-      },
-    });
-    expect(data.map['Strawberry']).toEqual({});
-
-    delete mockFs['/fruits/another_strawberry.js'];
-    mockChangedFiles = object({
-      '/fruits/another_strawberry.js': null,
-    });
-    mockClocks = object({
-      '/fruits': 'c:fake-clock:3',
-      '/vegetables': 'c:fake-clock:2',
+      const {__hasteMapForTest: data} = await new HasteMap(
+        defaultConfig,
+      ).build();
+      expect(data.duplicates).toEqual({
+        Strawberry: {
+          g: {'/fruits/another_strawberry.js': 0, '/fruits/strawberry.js': 0},
+        },
+      });
+      expect(data.map['Strawberry']).toEqual({});
     });
 
-    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
-    expect(data.duplicates).toEqual({});
-    expect(data.map['Strawberry']).toEqual({g: ['/fruits/strawberry.js', 0]});
+    it('recovers when a duplicate file is deleted', async () => {
+      delete mockFs['/fruits/another_strawberry.js'];
+      mockChangedFiles = object({
+        '/fruits/another_strawberry.js': null,
+      });
+      mockClocks = object({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:2',
+      });
+
+      const {__hasteMapForTest: data} = await new HasteMap(
+        defaultConfig,
+      ).build();
+      expect(data.duplicates).toEqual({});
+      expect(data.map['Strawberry']).toEqual({g: ['/fruits/strawberry.js', 0]});
+      // Make sure the other files are not affected.
+      expect(data.map['Banana']).toEqual({g: ['/fruits/banana.js', 0]});
+    });
+
+    it('recovers when a duplicate module is renamed', async () => {
+      mockChangedFiles = object({
+        '/fruits/another_strawberry.js': [
+          '/**',
+          ' * @providesModule AnotherStrawberry',
+          ' */',
+          'const Blackberry = require("Blackberry");',
+        ].join('\n'),
+      });
+      mockClocks = object({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:2',
+      });
+
+      const {__hasteMapForTest: data} = await new HasteMap(
+        defaultConfig,
+      ).build();
+      expect(data.duplicates).toEqual({});
+      expect(data.map['Strawberry']).toEqual({g: ['/fruits/strawberry.js', 0]});
+      expect(data.map['AnotherStrawberry']).toEqual({
+        g: ['/fruits/another_strawberry.js', 0],
+      });
+      // Make sure the other files are not affected.
+      expect(data.map['Banana']).toEqual({g: ['/fruits/banana.js', 0]});
+    });
   });
 
   it('discards the cache when configuration changes', () => {
