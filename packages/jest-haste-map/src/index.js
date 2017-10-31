@@ -322,7 +322,7 @@ class HasteMap extends EventEmitter {
         return this._crawl(cachedHasteMap).then(hasteMap => {
           const deprecatedFiles = cachedFiles.filter(file => {
             const fileData = hasteMap.files[file.path];
-            return fileData == null || file.moduleName != fileData[H.ID];
+            return fileData == null || file.moduleName !== fileData[H.ID];
           });
           return {deprecatedFiles, hasteMap};
         });
