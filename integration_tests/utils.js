@@ -82,12 +82,7 @@ const cleanup = (directory: string) => rimraf.sync(directory);
 const writeFiles = (directory: string, files: {[filename: string]: string}) => {
   mkdirp.sync(directory);
   Object.keys(files).forEach(fileOrPath => {
-    let filePath;
-    if (process.platform === 'win32') {
-      filePath = fileOrPath.replace(/(\/)/g, path.sep).split(path.sep); // ['tmp', 'a.js']
-    } else {
-      filePath = fileOrPath.split(path.sep); // ['tmp', 'a.js']
-    }
+    const filePath = fileOrPath.split('/'); // ['tmp', 'a.js']
     const filename = filePath.pop(); // filepath becomes dirPath (no filename)
 
     if (filePath.length) {
