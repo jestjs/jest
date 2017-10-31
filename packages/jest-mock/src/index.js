@@ -629,7 +629,7 @@ class ModuleMockerClass {
   }
 
   isMockFunction(fn: any): boolean {
-    return !!fn._isMockFunction;
+    return !!(fn && fn._isMockFunction);
   }
 
   fn(implementation?: any): any {
@@ -642,12 +642,22 @@ class ModuleMockerClass {
   }
 
   spyOn(object: any, methodName: any): any {
+    if (typeof object !== 'object' && typeof object !== 'function') {
+      throw new Error(
+        'Cannot spyOn on a primitive value; ' + this._typeOf(object) + ' given',
+      );
+    }
+
     const original = object[methodName];
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          'Cannot spyOn the ' + methodName + ' property; it is not a function',
+          'Cannot spy the ' +
+            methodName +
+            ' property because it is not a function; ' +
+            this._typeOf(original) +
+            ' given instead',
         );
       }
 
@@ -675,6 +685,10 @@ class ModuleMockerClass {
   restoreAllMocks() {
     this._spyState.forEach(restore => restore());
     this._spyState = new Set();
+  }
+
+  _typeOf(value: any): string {
+    return value == null ? '' + value : typeof value;
   }
 }
 
