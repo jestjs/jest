@@ -187,3 +187,42 @@ test('gets changed files for hg', async () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
+
+test('path on Windows is case-insensitive', () => {
+  if (process.platform !== 'win32') {
+    // This test is Windows specific, skip it on other platforms.
+    return;
+  }
+
+  const modifiedDIR = path.resolve(DIR, 'outer_dir', 'inner_dir');
+  const incorrectModifiedDIR = path.resolve(DIR, 'OUTER_dir', 'inner_dir');
+  let stderr;
+  let stdout;
+
+  writeFiles(modifiedDIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    'file1.js': 'module.exports = {}',
+    'package.json': '{}',
+  });
+
+  run(`${GIT} init`, modifiedDIR);
+  run(`${GIT} add .`, modifiedDIR);
+  run(`${GIT} commit -m "first"`, modifiedDIR);
+
+  ({stdout} = runJest(modifiedDIR, ['-o']));
+  expect(stdout).toMatch('No tests found related to files');
+
+  writeFiles(modifiedDIR, {
+    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
+    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    'file2.js': 'module.exports = {}',
+    'file3.js': `require('./file2')`,
+  });
+
+  ({stderr} = runJest(modifiedDIR, ['-o']));
+
+  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+});
