@@ -210,7 +210,7 @@ test('path on Windows is case-insensitive', () => {
   run(`${GIT} add .`, modifiedDIR);
   run(`${GIT} commit -m "first"`, modifiedDIR);
 
-  ({stdout} = runJest(modifiedDIR, ['-o']));
+  ({stdout} = runJest(incorrectModifiedDIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(modifiedDIR, {
@@ -220,7 +220,7 @@ test('path on Windows is case-insensitive', () => {
     'file3.js': `require('./file2')`,
   });
 
-  ({stderr} = runJest(modifiedDIR, ['-o']));
+  ({stderr} = runJest(incorrectModifiedDIR, ['-o']));
 
   expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
