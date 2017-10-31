@@ -265,7 +265,7 @@ class HasteMap extends EventEmitter {
   build(): Promise<HasteMapObject> {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
-        .then(fileMap => this._buildHasteMap(fileMap))
+        .then(data => this._buildHasteMap(data))
         .then(hasteMap => {
           this._persist(hasteMap);
           const hasteFS = new HasteFS(hasteMap.files);
@@ -305,13 +305,28 @@ class HasteMap extends EventEmitter {
   /**
    * 2. crawl the file system.
    */
-  _buildFileMap(): Promise<InternalHasteMap> {
+  _buildFileMap(): Promise<{
+    deprecatedFiles: Array<{moduleName: string, path: string}>,
+    hasteMap: InternalHasteMap,
+  }> {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
 
     return Promise.resolve()
       .then(() => read.call(this))
       .catch(() => this._createEmptyMap())
-      .then(hasteMap => this._crawl(hasteMap));
+      .then(cachedHasteMap => {
+        const cachedFiles = Object.keys(cachedHasteMap.files).map(filePath => {
+          const moduleName = cachedHasteMap.files[filePath][H.ID];
+          return {moduleName, path: filePath};
+        });
+        return this._crawl(cachedHasteMap).then(hasteMap => {
+          const deprecatedFiles = cachedFiles.filter(file => {
+            const fileData = hasteMap.files[file.path];
+            return fileData == null || file.moduleName !== fileData[H.ID];
+          });
+          return {deprecatedFiles, hasteMap};
+        });
+      });
   }
 
   /**
@@ -438,10 +453,19 @@ class HasteMap extends EventEmitter {
     );
   }
 
-  _buildHasteMap(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
+  _buildHasteMap(data: {
+    deprecatedFiles: Array<{moduleName: string, path: string}>,
+    hasteMap: InternalHasteMap,
+  }): Promise<InternalHasteMap> {
+    const {deprecatedFiles, hasteMap} = data;
     const map = Object.create(null);
     const mocks = Object.create(null);
     const promises = [];
+
+    for (let i = 0; i < deprecatedFiles.length; ++i) {
+      const file = deprecatedFiles[i];
+      this._recoverDuplicates(hasteMap, file.path, file.moduleName);
+    }
 
     for (const filePath in hasteMap.files) {
       const promise = this._processFile(hasteMap, map, mocks, filePath);
