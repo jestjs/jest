@@ -591,7 +591,11 @@ This option allows the use of a custom results processor. This processor must be
       "status": "failed" | "pending" | "passed",
       "ancestorTitles": [string (message in describe blocks)],
       "failureMessages": [string],
-      "numPassingAsserts": number
+      "numPassingAsserts": number,
+      "location": {
+        "column": number,
+        "line": number
+      }
     },
     ...
     ],
