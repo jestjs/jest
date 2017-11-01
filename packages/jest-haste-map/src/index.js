@@ -445,9 +445,16 @@ class HasteMap extends EventEmitter {
           fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
         },
         error => {
+          if (!(error instanceof Error)) {
+            error = new Error(error);
+            error.stack = ''; // So it does not confuse people.
+          }
+
+          // $FlowFixMe: checking error code is OK if error comes from "fs".
           if (['ENOENT', 'EACCES'].indexOf(error.code) < 0) {
             throw error;
           }
+
           // If a file cannot be read we remove it from the file list and
           // ignore the failure silently.
           delete hasteMap.files[filePath];
@@ -511,17 +518,15 @@ class HasteMap extends EventEmitter {
    */
   _getWorker(options: ?{forceInBand: boolean}): WorkerInterface {
     if (!this._worker) {
-      const workerOptions = {
-        exposedMethods: ['worker'],
-        maxRetries: 3,
-        numWorkers: this._options.maxWorkers,
-      };
-
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = require('./worker');
       } else {
         // $FlowFixMe: assignment of a worker with custom properties.
-        this._worker = new Worker(require.resolve('./worker'), workerOptions);
+        this._worker = new Worker(require.resolve('./worker'), {
+          exposedMethods: ['worker'],
+          maxRetries: 3,
+          numWorkers: this._options.maxWorkers,
+        });
       }
     }
 

@@ -14,13 +14,13 @@ jest.mock('child_process', () => ({
 }));
 
 jest.mock('jest-worker', () => {
-  return jest.fn((worker) => {
+  return jest.fn(worker => {
     mockWorker = jest.fn((...args) => require(worker).worker(...args));
     mockEnd = jest.fn();
 
     return {
-      worker: mockWorker,
       end: mockEnd,
+      worker: mockWorker,
     };
   });
 });
