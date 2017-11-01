@@ -11,31 +11,11 @@ Try using the debugging support built into Node.
 
 Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
-```
-node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
+`node inspect node_modules/.bin/jest`
 or on Windows
-node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
-```
+`node inspect ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]`
 
-This will run Jest in a Node process that an external debugger can connect to. Note that the process
-will pause until the debugger has connected to it.
-
-For example, to connect the [Node Inspector](https://github.com/node-inspector/node-inspector)
-debugger to the paused process, you would first install it (if you don't have it installed already):
-
-```
-npm install --global node-inspector
-```
-
-Then simply run it:
-
-```
-node-inspector
-```
-
-This will output a link that you can open in Chrome. After opening that link, the Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done simply to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
-
-> Note: the `--runInBand` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+Currently, NodeJS supports a CLI inspector which can be used to debug Jest. You can [read more about it here].(https://github.com/nodejs/node-inspect)
 
 ### Debugging in VS Code
 
