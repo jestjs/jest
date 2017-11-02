@@ -61,7 +61,7 @@ Returns the `jest` object for chaining.
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
 ### `jest.fn(implementation)`
-Returns a new, unused [mock function](MockFunctionAPI.html). Optionally takes a mock implementation.
+Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
 ```js
   const mockFn = jest.fn();
