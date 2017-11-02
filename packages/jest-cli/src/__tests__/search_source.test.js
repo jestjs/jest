@@ -239,6 +239,26 @@ describe('SearchSource', () => {
       });
     });
 
+    it('finds tests with parentheses in their rootDir when using testMatch', () => {
+      const {options: config} = normalize(
+        {
+          name,
+          rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
+          testMatch: ['<rootDir>**/__testtests__/**/*'],
+          testRegex: null,
+        },
+        {},
+      );
+      return findMatchingTests(config).then(data => {
+        const relPaths = toPaths(data.tests).map(absPath =>
+          path.relative(rootDir, absPath),
+        );
+        expect(relPaths.sort()).toEqual([
+          expect.stringContaining(path.normalize('__testtests__/test.js')),
+        ]);
+      });
+    });
+
     it('finds tests with similar but custom file extensions', () => {
       const {options: config} = normalize(
         {
