@@ -12,6 +12,8 @@
 module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/src/index.js'
 module.name_mapper='^types/\(.*\)$' -> '<PROJECT_ROOT>/types/\1.js'
 module.name_mapper='\(jest-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
+include_warnings=true
+emoji=true
 
 [version]
 ^0.58.0
