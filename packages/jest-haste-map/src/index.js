@@ -445,9 +445,9 @@ class HasteMap extends EventEmitter {
           fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
         },
         error => {
-          if (!(error instanceof Error)) {
+          if (typeof error !== 'object' || !error.message || !error.stack) {
             error = new Error(error);
-            error.stack = ''; // So it does not confuse people.
+            error.stack = ''; // Remove stack for stack-less errors.
           }
 
           // $FlowFixMe: checking error code is OK if error comes from "fs".
