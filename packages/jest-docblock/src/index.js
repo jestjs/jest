@@ -17,7 +17,7 @@ const lineCommentRe = /(^|\s+)\/\/([^\r\n]*)/g;
 const ltrimRe = /^\s*/;
 const rtrimRe = /\s*$/;
 const ltrimNewlineRe = /^(\r?\n)+/;
-const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/;
+const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
 const stringStartRe = /(\r?\n|^) *\* ?/g;
 
