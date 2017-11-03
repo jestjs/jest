@@ -17,12 +17,19 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string => {
-  const mockObject = {
-    calls: val.mock.calls,
-    name: val.getMockName(),
-  };
+  const indentationNext = indentation + config.indent;
 
-  return printer(mockObject, config, indentation, depth, refs);
+  return (
+    'MockFunction {\n' +
+    indentationNext +
+    '"calls": ' +
+    printer(val.mock.calls, config, indentationNext, depth, refs) +
+    ',\n' +
+    indentationNext +
+    '"name": ' +
+    printer(val.getMockName(), config, indentationNext, depth, refs) +
+    ',\n}'
+  );
 };
 
 export const test = (val: any) => val && !!val._isMockFunction;
