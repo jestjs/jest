@@ -26,7 +26,7 @@ export type WorkerData = {|
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   path: Path,
-  rawModuleMap?: RawModuleMap,
+  rawModuleMap: ?RawModuleMap,
 |};
 
 const formatError = (error: string | Error): SerializableError => {
