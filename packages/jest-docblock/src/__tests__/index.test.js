@@ -288,6 +288,15 @@ describe('docblock', () => {
     });
   });
 
+  it('preserves pragmas containing urls', () => {
+    const code =
+      '/**' + os.EOL + ' * @see: https://examples-for-chickens.com */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: '',
+      pragmas: {'see:': 'https://examples-for-chickens.com'},
+    });
+  });
+
   it('extracts docblock comments as CRLF when docblock contains CRLF', () => {
     const code = '/**\r\n * foo\r\n * bar\r\n*/';
     expect(docblock.parseWithComments(code)).toEqual({
