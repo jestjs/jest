@@ -12,9 +12,10 @@ import type {
   CoverageMap,
   FileCoverage,
   CoverageSummary,
-  SerializableError,
   TestResult,
 } from 'types/TestResult';
+import typeof {worker} from './coverage_worker';
+
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
@@ -25,11 +26,8 @@ import chalk from 'chalk';
 import isCI from 'is-ci';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
-import pify from 'pify';
-import workerFarm from 'worker-farm';
+import Worker from 'jest-worker';
 import BaseReporter from './base_reporter';
-// eslint-disable-next-line import/default
-import CoverageWorker from './coverage_worker';
 import path from 'path';
 import glob from 'glob';
 
@@ -37,6 +35,8 @@ const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 const isInteractive = process.stdout.isTTY && !isCI;
+
+type CoverageWorker = {worker: worker};
 
 export default class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
@@ -121,11 +121,12 @@ export default class CoverageReporter extends BaseReporter {
     this._checkThreshold(this._globalConfig, map);
   }
 
-  _addUntestedFiles(
+  async _addUntestedFiles(
     globalConfig: GlobalConfig,
     contexts: Set<Context>,
   ): Promise<void> {
     const files = [];
+
     contexts.forEach(context => {
       const config = context.config;
       if (
@@ -142,8 +143,9 @@ export default class CoverageReporter extends BaseReporter {
           );
       }
     });
+
     if (!files.length) {
-      return Promise.resolve();
+      return;
     }
 
     if (isInteractive) {
@@ -152,62 +154,65 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    let worker;
-    let farm;
+    let worker: CoverageWorker;
+
     if (this._globalConfig.maxWorkers <= 1) {
-      worker = pify(CoverageWorker);
+      worker = require('./coverage_worker');
     } else {
-      farm = workerFarm(
-        {
-          autoStart: true,
-          maxConcurrentCallsPerWorker: 1,
-          maxConcurrentWorkers: this._globalConfig.maxWorkers,
-          maxRetries: 2,
-        },
-        require.resolve('./coverage_worker'),
-      );
-      worker = pify(farm);
+      // $FlowFixMe: assignment of a worker with custom properties.
+      worker = new Worker(require.resolve('./coverage_worker'), {
+        exposeMethods: ['worker'],
+        maxRetries: 2,
+        numWorkers: this._globalConfig.maxWorkers,
+      });
     }
-    const instrumentation = [];
-    files.forEach(fileObj => {
+
+    const instrumentation = files.map(async fileObj => {
       const filename = fileObj.path;
       const config = fileObj.config;
+
       if (!this._coverageMap.data[filename]) {
-        const promise = worker({
-          config,
-          globalConfig,
-          path: filename,
-        })
-          .then(result => {
-            if (result) {
-              this._coverageMap.addFileCoverage(result.coverage);
-              if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath,
-                );
-              }
-            }
-          })
-          .catch((error: SerializableError) => {
-            console.error(chalk.red(error.message));
+        try {
+          const result = await worker.worker({
+            config,
+            globalConfig,
+            path: filename,
           });
-        instrumentation.push(promise);
+
+          if (result) {
+            this._coverageMap.addFileCoverage(result.coverage);
+
+            if (result.sourceMapPath) {
+              this._sourceMapStore.registerURL(filename, result.sourceMapPath);
+            }
+          }
+        } catch (error) {
+          console.error(
+            chalk.red(
+              [
+                `Failed to collect coverage from ${filename}`,
+                `ERROR: ${error.message}`,
+                `STACK: ${error.stack}`,
+              ].join('\n'),
+            ),
+          );
+        }
       }
     });
 
-    const cleanup = () => {
-      if (isInteractive) {
-        clearLine(process.stderr);
-      }
-      if (farm) {
-        workerFarm.end(farm);
-      }
-    };
+    try {
+      await Promise.all(instrumentation);
+    } catch (err) {
+      // Do nothing; errors were reported earlier to the console.
+    }
 
-    return Promise.all(instrumentation)
-      .then(cleanup)
-      .catch(cleanup);
+    if (isInteractive) {
+      clearLine(process.stderr);
+    }
+
+    if (worker && typeof worker.end === 'function') {
+      worker.end();
+    }
   }
 
   _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {
