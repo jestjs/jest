@@ -157,8 +157,10 @@ describe('docblock', () => {
       '' +
       ' * @providesModule foo' +
       os.EOL +
+      '' +
       ' * // TODO: test' +
       os.EOL +
+      '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
       providesModule: 'foo',
