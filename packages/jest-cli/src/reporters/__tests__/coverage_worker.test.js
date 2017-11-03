@@ -52,13 +52,10 @@ test('throws errors on invalid JavaScript', async () => {
     throw new Error('SyntaxError');
   });
 
-  let error = null;
-
+  // We intentionally expect the worker to fail!
   try {
     await worker(workerOptions);
-  } catch (err) {
-    error = err;
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error);
   }
-
-  expect(error).toBeInstanceOf(Error);
 });

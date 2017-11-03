@@ -27,11 +27,11 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-export async function worker({
+export function worker({
   config,
   globalConfig,
   path,
-}: CoverageWorkerData): Promise<?CoverageWorkerResult> {
+}: CoverageWorkerData): ?CoverageWorkerResult {
   return generateEmptyCoverage(
     fs.readFileSync(path, 'utf8'),
     path,
