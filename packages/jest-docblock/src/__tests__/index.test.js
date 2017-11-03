@@ -162,8 +162,9 @@ describe('docblock', () => {
       os.EOL +
       '' +
       ' */';
-    expect(docblock.parse(code)).toEqual({
-      providesModule: 'foo',
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: '// TODO: test',
+      pragmas: {providesModule: 'foo'},
     });
   });
 
@@ -196,6 +197,48 @@ describe('docblock', () => {
         'A long declaration of a class goes here, ' +
         'so we can read it and enjoy',
       'preserve-whitespace': '',
+    });
+  });
+
+  it('parses multiline directives even if there are linecomments within the docblock', () => {
+    const code =
+      '/**' +
+      os.EOL +
+      '' +
+      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      os.EOL +
+      '' +
+      ' * @class A long declaration of a class' +
+      os.EOL +
+      '' +
+      ' *        goes here, so we can read it and enjoy' +
+      os.EOL +
+      '' +
+      ' *' +
+      os.EOL +
+      '' +
+      ' * And some license here' +
+      os.EOL +
+      '' +
+      ' * @preserve-whitespace' +
+      os.EOL +
+      '' +
+      '// heres a comment' +
+      ' */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments:
+        'Copyright 2004-present Facebook. All Rights Reserved.' +
+        os.EOL +
+        os.EOL +
+        'And some license here' +
+        os.EOL +
+        '// heres a comment',
+      pragmas: {
+        class:
+          'A long declaration of a class goes here, ' +
+          'so we can read it and enjoy',
+        'preserve-whitespace': '',
+      },
     });
   });
 
