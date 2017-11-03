@@ -21,14 +21,21 @@ export const serialize = (
 
   return (
     'MockFunction {\n' +
-    indentationNext +
-    '"calls": ' +
-    printer(val.mock.calls, config, indentationNext, depth, refs) +
-    ',\n' +
-    indentationNext +
-    '"name": ' +
-    printer(val.getMockName(), config, indentationNext, depth, refs) +
-    ',\n}'
+    `${indentationNext}"calls": ${printer(
+      val.mock.calls,
+      config,
+      indentationNext,
+      depth,
+      refs,
+    )},\n` +
+    `${indentationNext}"name": ${printer(
+      val.getMockName(),
+      config,
+      indentationNext,
+      depth,
+      refs,
+    )},\n` +
+    '}'
   );
 };
 
