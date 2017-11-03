@@ -157,10 +157,8 @@ describe('docblock', () => {
       '' +
       ' * @providesModule foo' +
       os.EOL +
-      '' +
       ' * // TODO: test' +
       os.EOL +
-      '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
       providesModule: 'foo',
@@ -288,12 +286,21 @@ describe('docblock', () => {
     });
   });
 
-  it("preserves urls within a pragma's values", () => {
+  it("preserve urls within a pragma's values", () => {
     const code =
       '/**' + os.EOL + ' * @see: https://example.com' + os.EOL + ' */';
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '',
       pragmas: {'see:': 'https://example.com'},
+    });
+  });
+
+  it('strip linecomments from pragmas but preserve for comments', () => {
+    const code =
+      '/**' + os.EOL + ' * @format: everything' + os.EOL + '// keep me' + ' */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: '// keep me',
+      pragmas: {'format:': 'everything'},
     });
   });
 

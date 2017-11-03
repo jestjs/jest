@@ -13,7 +13,7 @@ import {EOL} from 'os';
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
-const lineCommentRe = /\/\/([^\r\n]*)/g;
+const lineCommentRe = /(^|\s+)\/\/([^\r\n]*)/g;
 const ltrimRe = /^\s*/;
 const rtrimRe = /\s*$/;
 const ltrimNewlineRe = /^(\r?\n)+/;
@@ -45,7 +45,6 @@ export function parseWithComments(
   docblock = docblock
     .replace(commentStartRe, '')
     .replace(commentEndRe, '')
-    .replace(lineCommentRe, '')
     .replace(stringStartRe, '$1');
 
   // Normalize multi-line directives
@@ -64,7 +63,8 @@ export function parseWithComments(
 
   let match;
   while ((match = propertyRe.exec(docblock))) {
-    result[match[1]] = match[2];
+    // strip linecomments from pragmas
+    result[match[1]] = match[2].replace(lineCommentRe, '');
   }
   return {comments, pragmas: result};
 }
