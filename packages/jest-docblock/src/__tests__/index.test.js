@@ -288,12 +288,12 @@ describe('docblock', () => {
     });
   });
 
-  it('preserves pragmas containing urls', () => {
+  it("preserves urls within a pragma's values", () => {
     const code =
-      '/**' + os.EOL + ' * @see: https://examples-for-chickens.com */';
+      '/**' + os.EOL + ' * @see: https://example.com' + os.EOL + ' */';
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '',
-      pragmas: {'see:': 'https://examples-for-chickens.com'},
+      pragmas: {'see:': 'https://example.com'},
     });
   });
 
