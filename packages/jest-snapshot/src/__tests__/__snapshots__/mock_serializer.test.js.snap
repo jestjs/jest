@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`empty with no calls mock 1`] = `
-Object {
+MockFunction {
   "calls": Array [],
   "name": "jest.fn()",
 }
 `;
 
 exports[`instantiated mock 1`] = `
-Object {
+MockFunction {
   "calls": Array [
     Array [
       Object {
@@ -21,7 +21,7 @@ Object {
 `;
 
 exports[`mock with calls 1`] = `
-Object {
+MockFunction {
   "calls": Array [
     Array [],
     Array [
@@ -36,7 +36,7 @@ Object {
 `;
 
 exports[`mock with name 1`] = `
-Object {
+MockFunction {
   "calls": Array [],
   "name": "name of mock is nice",
 }
