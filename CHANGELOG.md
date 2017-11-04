@@ -1,6 +1,7 @@
 ## master
 
 ### Fixes
+* `[jest-docblock]` pragmas should preserve urls ([#4837](https://github.com/facebook/jest/pull/4629))
 * `[jest-cli]` Check if `npm_lifecycle_script` calls Jest directly ([#4629](https://github.com/facebook/jest/pull/4629))
 * `[jest-cli]` Fix --showConfig to show all configs ([#4494](https://github.com/facebook/jest/pull/4494))
 * `[jest-cli]` Throw if `maxWorkers` doesn't have a value ([#4591](https://github.com/facebook/jest/pull/4591))
