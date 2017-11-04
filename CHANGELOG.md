@@ -46,6 +46,7 @@
 * `[jest-runtime]` Support sourcemaps in transformers ([#3458](https://github.com/facebook/jest/pull/3458))
 * `[jest-snapshot]` [**BREAKING**] Add a serializer for `jest.fn` to allow a snapshot of a jest mock ([#4668](https://github.com/facebook/jest/pull/4668))
 * `[jest-worker]` Initial version of parallel worker abstraction, say hello! ([#4497](https://github.com/facebook/jest/pull/4497))
+* `[jest-jasmine2]` Add `testLocationInResults` flag to add location information per spec to test results ([#4782](https://github.com/facebook/jest/pull/4782))
 
 ### Chore & Maintenance
 * `[*]` [**BREAKING**] Drop support for Node.js version 4

@@ -83,11 +83,17 @@ export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
 export type Bytes = number;
 export type Milliseconds = number;
 
+type Callsite = {|
+  column: number,
+  line: number,
+|}
+
 export type AssertionResult = {|
   ancestorTitles: Array<string>,
   duration?: ?Milliseconds,
   failureMessages: Array<string>,
   fullName: string,
+  location: ?Callsite,
   numPassingAsserts: number,
   status: Status,
   title: string,
@@ -96,6 +102,7 @@ export type AssertionResult = {|
 export type FormattedAssertionResult = {
   failureMessages: Array<string> | null,
   fullName: string,
+  location: ?Callsite,
   status: Status,
   title: string,
 };

@@ -189,6 +189,19 @@ Prevent tests from printing messages through the console.
 
 Alias: `-t`. Run only tests and test suites with a name that matches the regex.  For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`. 
 
+### `--testLocationInResults`
+
+Adds a `location` field to test results. Useful if you want to report the location of a test in a reporter.
+
+Note that `column` is 0-indexed while `line` is not.
+
+```json
+{
+  "column": 4,
+  "line": 5
+}
+``` 
+
 ### `--testPathPattern=<regex>`
 
 A regexp pattern string that is matched against all tests paths before executing the test.

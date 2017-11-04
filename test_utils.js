@@ -85,6 +85,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   skipNodeResolution: false,
   snapshotSerializers: [],
   testEnvironment: 'node',
+  testLocationInResults: false,
   testMatch: [],
   testPathIgnorePatterns: [],
   testRegex: '.test.js$',

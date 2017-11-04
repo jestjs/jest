@@ -451,6 +451,11 @@ export const options = {
     description: 'Exit code of `jest` command if the test run failed',
     type: 'string', // number
   },
+  testLocationInResults: {
+    default: false,
+    description: 'Add `location` information to the test results',
+    type: 'boolean',
+  },
   testMatch: {
     description: 'The glob patterns Jest uses to detect test files.',
     type: 'array',
