@@ -96,5 +96,6 @@ export default ({
   verbose: false,
   watch: false,
   watchPathIgnorePatterns: [],
+  watchPlugins: [],
   watchman: true,
 }: InitialOptions);

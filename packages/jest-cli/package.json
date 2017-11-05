@@ -16,6 +16,7 @@
     "jest-changed-files": "^21.2.0",
     "jest-config": "^21.2.1",
     "jest-environment-jsdom": "^21.2.1",
+    "jest-get-type": "^21.2.0",
     "jest-haste-map": "^21.2.0",
     "jest-message-util": "^21.2.1",
     "jest-regex-util": "^21.2.0",

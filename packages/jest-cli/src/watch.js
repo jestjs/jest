@@ -9,6 +9,7 @@
 
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
+import type {WatchPlugin} from './types';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
@@ -26,6 +27,7 @@ import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import TestPathPatternPrompt from './test_path_pattern_prompt';
 import TestNamePatternPrompt from './test_name_pattern_prompt';
+import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
 
 const isInteractive = process.stdout.isTTY && !isCI;
@@ -46,6 +48,13 @@ export default function watch(
     mode: globalConfig.watch ? 'watch' : 'watchAll',
     passWithNoTests: true,
   });
+
+  const watchPlugins = new WatchPluginRegistry(globalConfig.rootDir);
+  if (globalConfig.watchPlugins != null) {
+    for (const pluginModulePath of globalConfig.watchPlugins) {
+      watchPlugins.loadPluginPath(pluginModulePath);
+    }
+  }
 
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
@@ -121,7 +130,9 @@ export default function watch(
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
         if (shouldDisplayWatchUsage) {
-          outputStream.write(usage(globalConfig, hasSnapshotFailure));
+          outputStream.write(
+            usage(globalConfig, watchPlugins, hasSnapshotFailure),
+          );
           shouldDisplayWatchUsage = false; // hide Watch Usage after first run
           isWatchUsageDisplayed = true;
         } else {
@@ -138,9 +149,16 @@ export default function watch(
     }).catch(error => console.error(chalk.red(error.stack)));
   };
 
+  let activePlugin: ?WatchPlugin;
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       process.exit(0);
+      return;
+    }
+
+    if (activePlugin != null) {
+      // if a plugin is activate, Jest should let it handle keystrokes, so ignore
+      // them here
       return;
     }
 
@@ -157,6 +175,20 @@ export default function watch(
     ) {
       testWatcher.setState({interrupted: true});
       return;
+    }
+
+    const matchingWatchPlugin = watchPlugins.getPluginByPressedKey(
+      parseInt(key, 16),
+    );
+    if (matchingWatchPlugin != null) {
+      // "activate" the plugin, which has jest ignore keystrokes so the plugin
+      // can handle them
+      activePlugin = matchingWatchPlugin;
+      activePlugin.enter(
+        globalConfig,
+        // end callback -- returns control to jest to handle keystrokes
+        () => (activePlugin = null),
+      );
     }
 
     switch (key) {
@@ -236,7 +268,9 @@ export default function watch(
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
-          outputStream.write(usage(globalConfig, hasSnapshotFailure));
+          outputStream.write(
+            usage(globalConfig, watchPlugins, hasSnapshotFailure),
+          );
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
         }
@@ -247,7 +281,7 @@ export default function watch(
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
     outputStream.write(ansiEscapes.clearScreen);
-    outputStream.write(usage(globalConfig, hasSnapshotFailure));
+    outputStream.write(usage(globalConfig, watchPlugins, hasSnapshotFailure));
     outputStream.write(ansiEscapes.cursorShow);
   };
 
@@ -284,7 +318,12 @@ const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
   return '';
 };
 
-const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
+const usage = (
+  globalConfig,
+  watchPlugins: WatchPluginRegistry,
+  snapshotFailure,
+  delimiter = '\n',
+) => {
   const messages = [
     activeFilters(globalConfig),
 
@@ -319,6 +358,17 @@ const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
     chalk.dim(' \u203A Press ') +
       't' +
       chalk.dim(' to filter by a test name regex pattern.'),
+
+    ...watchPlugins
+      .getPluginsOrderedByKey()
+      .map(
+        plugin =>
+          chalk.dim(' \u203A Press') +
+          ' ' +
+          String.fromCodePoint(plugin.key) +
+          ' ' +
+          chalk.dim(`to ${plugin.prompt}.`),
+      ),
 
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
 
