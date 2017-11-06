@@ -86,7 +86,7 @@ export type Milliseconds = number;
 type Callsite = {|
   column: number,
   line: number,
-|}
+|};
 
 export type AssertionResult = {|
   ancestorTitles: Array<string>,
