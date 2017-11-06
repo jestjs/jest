@@ -17,26 +17,26 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string => {
-  const indentationNext = indentation + config.indent;
+  // Serialize a non-default name, even if config.printFunctionName is false.
+  const name = val.getMockName();
+  const nameString = name === 'jest.fn()' ? '' : ' ' + name;
 
-  return (
-    'MockFunction {\n' +
-    `${indentationNext}"calls": ${printer(
-      val.mock.calls,
-      config,
-      indentationNext,
-      depth,
-      refs,
-    )},\n` +
-    `${indentationNext}"name": ${printer(
-      val.getMockName(),
-      config,
-      indentationNext,
-      depth,
-      refs,
-    )},\n` +
-    '}'
-  );
+  let callsString = '';
+  if (val.mock.calls.length !== 0) {
+    const indentationNext = indentation + config.indent;
+    callsString =
+      ' {' +
+      config.spacingOuter +
+      indentationNext +
+      '"calls": ' +
+      printer(val.mock.calls, config, indentationNext, depth, refs) +
+      (config.min ? '' : ',') +
+      config.spacingOuter +
+      indentation +
+      '}';
+  }
+
+  return '[MockFunction' + nameString + ']' + callsString;
 };
 
 export const test = (val: any) => val && !!val._isMockFunction;

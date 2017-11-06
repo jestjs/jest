@@ -1,27 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`empty with no calls mock 1`] = `
-MockFunction {
-  "calls": Array [],
-  "name": "jest.fn()",
-}
+exports[`mock with 0 calls and default name 1`] = `[MockFunction]`;
+
+exports[`mock with 0 calls and default name in React element 1`] = `
+<button
+  onClick={[MockFunction]}
+>
+  Mock me!
+</button>
 `;
 
-exports[`instantiated mock 1`] = `
-MockFunction {
-  "calls": Array [
-    Array [
-      Object {
-        "name": "some fine name",
-      },
+exports[`mock with 0 calls and non-default name 1`] = `[MockFunction MyConstructor]`;
+
+exports[`mock with 1 calls and non-default name via new in object 1`] = `
+Object {
+  "fn": [MockFunction MyConstructor] {
+    "calls": Array [
+      Array [
+        Object {
+          "name": "some fine name",
+        },
+      ],
     ],
-  ],
-  "name": "jest.fn()",
+  },
 }
 `;
 
-exports[`mock with calls 1`] = `
-MockFunction {
+exports[`mock with 1 calls in React element 1`] = `
+<button
+  onClick={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          "Mocking you!",
+        ],
+      ],
+    }
+  }
+>
+  Mock me!
+</button>
+`;
+
+exports[`mock with 2 calls 1`] = `
+[MockFunction] {
   "calls": Array [
     Array [],
     Array [
@@ -31,13 +53,5 @@ MockFunction {
       42,
     ],
   ],
-  "name": "jest.fn()",
-}
-`;
-
-exports[`mock with name 1`] = `
-MockFunction {
-  "calls": Array [],
-  "name": "name of mock is nice",
 }
 `;
