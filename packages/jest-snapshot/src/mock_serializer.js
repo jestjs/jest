@@ -25,10 +25,15 @@ export const serialize = (
   if (val.mock.calls.length !== 0) {
     const indentationNext = indentation + config.indent;
     callsString =
-      config.spacingInner +
+      ' {' +
+      config.spacingOuter +
       indentationNext +
-      'calls: ' +
-      printer(val.mock.calls, config, indentationNext, depth, refs);
+      '"calls": ' +
+      printer(val.mock.calls, config, indentationNext, depth, refs) +
+      (config.min ? '' : ',') +
+      config.spacingOuter +
+      indentation +
+      '}';
   }
 
   return '[MockFunction' + nameString + ']' + callsString;

@@ -10,28 +10,32 @@ exports[`mock with 0 calls and default name in React element 1`] = `
 </button>
 `;
 
+exports[`mock with 0 calls and non-default name 1`] = `[MockFunction MyConstructor]`;
+
 exports[`mock with 1 calls and non-default name via new in object 1`] = `
 Object {
-  "fn": [MockFunction MyConstructor]
-    calls: Array [
+  "fn": [MockFunction MyConstructor] {
+    "calls": Array [
       Array [
         Object {
           "name": "some fine name",
         },
       ],
     ],
+  },
 }
 `;
 
 exports[`mock with 1 calls in React element 1`] = `
 <button
   onClick={
-    [MockFunction]
-      calls: Array [
+    [MockFunction] {
+      "calls": Array [
         Array [
           "Mocking you!",
         ],
-      ]
+      ],
+    }
   }
 >
   Mock me!
@@ -39,8 +43,8 @@ exports[`mock with 1 calls in React element 1`] = `
 `;
 
 exports[`mock with 2 calls 1`] = `
-[MockFunction]
-  calls: Array [
+[MockFunction] {
+  "calls": Array [
     Array [],
     Array [
       Object {
@@ -48,5 +52,6 @@ exports[`mock with 2 calls 1`] = `
       },
       42,
     ],
-  ]
+  ],
+}
 `;

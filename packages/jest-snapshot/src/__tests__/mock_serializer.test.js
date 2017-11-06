@@ -29,6 +29,12 @@ test('mock with 0 calls and default name in React element', () => {
   expect(val).toMatchSnapshot();
 });
 
+test('mock with 0 calls and non-default name', () => {
+  const fn = jest.fn();
+  fn.mockName('MyConstructor');
+  expect(fn).toMatchSnapshot();
+});
+
 test('mock with 1 calls and non-default name via new in object', () => {
   const fn = jest.fn();
   fn.mockName('MyConstructor');
@@ -65,14 +71,15 @@ test('indent option', () => {
   const fn = jest.fn();
   fn({key: 'value'});
   const expected = [
-    '[MockFunction]',
-    'calls: Array [',
+    '[MockFunction] {',
+    '"calls": Array [',
     'Array [',
     'Object {',
     '"key": "value",',
     '},',
     '],',
-    ']',
+    '],',
+    '}',
   ].join('\n');
   expect(prettyFormat(fn, {indent: 0, plugins: [plugin]})).toBe(expected);
 });
@@ -80,7 +87,7 @@ test('indent option', () => {
 test('min option', () => {
   const fn = jest.fn();
   fn({key: 'value'});
-  const expected = '[MockFunction] calls: [[{"key": "value"}]]';
+  const expected = '[MockFunction] {"calls": [[{"key": "value"}]]}';
   expect(prettyFormat(fn, {min: true, plugins: [plugin]})).toBe(expected);
 });
 
@@ -105,21 +112,24 @@ test('maxDepth option', () => {
   };
   const expected = [
     'Object {', // ++depth === 1
-    '  "fn1": [MockFunction atDepth1]',
-    '    calls: Array [', // ++depth === 2
+    '  "fn1": [MockFunction atDepth1] {',
+    '    "calls": Array [', // ++depth === 2
     '      Array [', // ++depth === 3
     '        "primitive",',
     '        [Object],', // ++depth === 4
     '      ],',
-    '    ],', // trailing comma after property of object
+    '    ],',
+    '  },',
     '  "greaterThan1": Object {', // ++depth === 2
-    '    "fn2": [MockFunction atDepth2]',
-    '      calls: Array [', // ++depth === 3
+    '    "fn2": [MockFunction atDepth2] {',
+    '      "calls": Array [', // ++depth === 3
     '        [Array],', // ++depth === 4
-    '      ],', // trailing comma after property of object
+    '      ],',
+    '    },',
     '    "greaterThan2": Object {', // ++depth === 3
-    '      "fn3": [MockFunction atDepth3]',
-    '        calls: [Array],', // ++depth === 4 trailing comma after property of object
+    '      "fn3": [MockFunction atDepth3] {',
+    '        "calls": [Array],', // ++depth === 4
+    '      },',
     '    },',
     '  },',
     '}',
