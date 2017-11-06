@@ -7,9 +7,9 @@
  */
 'use strict';
 
-const prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 
-const plugin = require('../mock_serializer');
+import plugin from '../mock_serializer';
 
 test('mock with 0 calls and default name', () => {
   const fn = jest.fn();
