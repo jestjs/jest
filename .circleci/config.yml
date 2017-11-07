@@ -109,5 +109,6 @@ workflows:
     jobs:
       - test-node-8
       - test-node-6
+      - test-node-9
       - test-browser
       - test-and-deploy-website
