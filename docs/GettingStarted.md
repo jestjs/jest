@@ -40,8 +40,8 @@ Add the following section to your `package.json`:
 ```json
 {
   "scripts": {
-    "test": "jest",
-  },
+    "test": "jest"
+  }
 }
 ```
 
@@ -95,7 +95,7 @@ in your project's root folder. For example, if you are using ES6 and
 
 ```json
 {
-  "presets": ["es2015", "react"],
+  "presets": ["es2015", "react"]
 }
 ```
 
@@ -115,9 +115,9 @@ You are now set up to use all ES6 features and React specific syntax.
   "presets": [["es2015", {"modules": false}], "react"],
   "env": {
     "test": {
-      "presets": [["es2015"], "react"],
-    },
-  },
+      "presets": [["es2015"], "react"]
+    }
+  }
 }
 ```
 
@@ -130,8 +130,8 @@ You are now set up to use all ES6 features and React specific syntax.
 {
   // package.json
   "jest": {
-    "transform": {},
-  },
+    "transform": {}
+  }
 }
 ```
 

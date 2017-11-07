@@ -116,13 +116,13 @@ inside browsers](https://github.com/facebook/jest/pull/2795).
 Thanks to [Jonathan Kim](https://twitter.com/jonnykim) Jest finally has its own
 official ESLint plugin. It exposes three rules:
 
-* [no-disabled-tests](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-disabled-tests.md)
-  - this rule prevents you from accidentally committing disabled tests.
-* [no-focused-tests](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-focused-tests.md)
-  - this rule prevents you from committing focused tests which would disable all
+* [no-disabled-tests](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-disabled-tests.md) -
+  this rule prevents you from accidentally committing disabled tests.
+* [no-focused-tests](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-focused-tests.md) -
+  this rule prevents you from committing focused tests which would disable all
   other tests in the same suite.
-* [no-identical-title](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-identical-title.md)
-  - disallows identical titles in test names.
+* [no-identical-title](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-identical-title.md) -
+  disallows identical titles in test names.
 
 You can install it using `npm install eslint-plugin-jest` or `yarn add --dev
 eslint eslint-plugin-jest` and it can be enabled by adding `{"plugins":

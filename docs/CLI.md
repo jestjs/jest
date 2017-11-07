@@ -259,7 +259,7 @@ Note that `column` is 0-indexed while `line` is not.
 ```json
 {
   "column": 4,
-  "line": 5,
+  "line": 5
 }
 ```
 

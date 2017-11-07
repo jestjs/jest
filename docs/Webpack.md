@@ -61,9 +61,9 @@ mock a proxy for your className lookups.
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
         "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-    },
-  },
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    }
+  }
 }
 ```
 
@@ -101,9 +101,9 @@ Testing](SnapshotTesting.md).
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
         "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "identity-obj-proxy",
-    },
-  },
+      "\\.(css|less)$": "identity-obj-proxy"
+    }
+  }
 }
 ```
 
@@ -133,13 +133,13 @@ module.exports = {
   // package.json (for custom transformers and CSS Modules)
   "jest": {
     "moduleNameMapper": {
-      "\\.(css|less)$": "identity-obj-proxy",
+      "\\.(css|less)$": "identity-obj-proxy"
     },
     "transform": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-        "<rootDir>/fileTransformer.js",
-    },
-  },
+        "<rootDir>/fileTransformer.js"
+    }
+  }
 }
 ```
 
@@ -174,9 +174,9 @@ direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
-    },
-  },
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+    }
+  }
 }
 ```
 
@@ -196,9 +196,9 @@ env variable, which you can set, or make use of the `modulePaths` option.
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
-    },
-  },
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+    }
+  }
 }
 ```
 
@@ -218,9 +218,9 @@ make use of the `moduleNameMapper` option again.
       "^config$": "<rootDir>/configs/app-config.js",
 
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
-    },
-  },
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+    }
+  }
 }
 ```
 
@@ -247,9 +247,9 @@ ES modules to CommonJS modules only in the `test` environment.
 
   "env": {
     "test": {
-      "plugins": ["transform-es2015-modules-commonjs"],
-    },
-  },
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
 }
 ```
 
@@ -268,9 +268,9 @@ need to enable the `dynamic-import-node` plugin.
 
   "env": {
     "test": {
-      "plugins": ["dynamic-import-node"],
-    },
-  },
+      "plugins": ["dynamic-import-node"]
+    }
+  }
 }
 ```
 

@@ -177,8 +177,8 @@ example, in a `package.json` file:
 ```json
 {
   "jest": {
-    "snapshotSerializers": ["my-serializer-module"],
-  },
+    "snapshotSerializers": ["my-serializer-module"]
+  }
 }
 ```
 

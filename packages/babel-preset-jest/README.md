@@ -18,7 +18,7 @@ $ npm install --save-dev babel-preset-jest
 
 ```json
 {
-  "presets": ["jest"],
+  "presets": ["jest"]
 }
 ```
 

@@ -572,7 +572,7 @@ cases.
 
 Use `.toBeDefined` to check that a variable is not undefined. For example, if
 you just want to check that a function `fetchNewFlavorIdea()` returns
-*something*, you can write:
+_something_, you can write:
 
 ```js
 test('there is a new flavor idea', () => {

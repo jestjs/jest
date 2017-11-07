@@ -11,7 +11,7 @@ Before creating an issue please check the following:
 * run Jest once with `--no-cache` to see if that fixes the problem you are experiencing. 
 -->
 
-**Do you want to request a _feature_ or report a *bug*?**
+**Do you want to request a _feature_ or report a _bug_?**
 
 **What is the current behavior?**
 

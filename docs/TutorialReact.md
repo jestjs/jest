@@ -55,7 +55,7 @@ jest configuration entries:
 ```json
 {
   // .babelrc
-  "presets": ["es2015", "react"],
+  "presets": ["es2015", "react"]
 }
 ```
 

@@ -65,9 +65,9 @@ Then attach VS Code's debugger using the following `launch.json` config:
       "type": "node",
       "request": "attach",
       "name": "Attach",
-      "port": 9229,
-    },
-  ],
+      "port": 9229
+    }
+  ]
 }
 ```
 
@@ -85,12 +85,12 @@ following configuration:
       "runtimeArgs": [
         "--inspect-brk",
         "${workspaceRoot}/node_modules/.bin/jest",
-        "--runInBand",
+        "--runInBand"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-    },
-  ],
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
 }
 ```
 
@@ -112,9 +112,9 @@ can debug your Jest tests with the following configuration:
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-    },
-  ],
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
 }
 ```
 
@@ -199,7 +199,7 @@ npm test -- --runInBand
 ```
 
 Another alternative to expediting test execution time on Continuous Integration
-Servers such as Travis-CI is to set the max worker pool to ~*4*. Specifically on
+Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on
 Travis-CI, this can reduce test execution time in half. Note: The Travis CI
 _free_ plan available for open source projects only includes 2 CPU cores.
 

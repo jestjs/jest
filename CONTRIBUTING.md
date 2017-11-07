@@ -56,11 +56,15 @@ _Before_ submitting a pull request, please make sure the following is done…
    [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may
    need to download either node.js or Chocolatey<br />
 
-       yarn install
+   ```sh
+   yarn install
+   ```
 
    To check your version of Yarn and ensure it's installed you can type:
 
-       yarn --version
+   ```sh
+   yarn --version
+   ```
 
 4. If you've added code that should be tested, add tests. You can use watch mode
    that continuously transforms changed files to make your life easier.

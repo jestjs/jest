@@ -13,8 +13,8 @@ settings:
 {
   "name": "my-project",
   "jest": {
-    "verbose": true,
-  },
+    "verbose": true
+  }
 }
 ```
 
@@ -34,7 +34,7 @@ When using the --config option, the JSON file must not contain a "jest" key:
 ```json
 {
   "bail": true,
-  "verbose": true,
+  "verbose": true
 }
 ```
 
@@ -118,8 +118,8 @@ Example:
   "collectCoverageFrom": [
     "**/*.{js,jsx}",
     "!**/node_modules/**",
-    "!**/vendor/**",
-  ],
+    "!**/vendor/**"
+  ]
 }
 ```
 
@@ -278,8 +278,7 @@ module's location. Setting this option will _override_ the default, if you wish
 to still search `node_modules` for packages include it along with any other
 options: `["node_modules", "bower_components"]`
 
-### `moduleNameMapper` [object<string,
-string>]
+### `moduleNameMapper` [object<string, string>]
 
 Default: `null`
 
@@ -302,8 +301,8 @@ Example:
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
     "^[./a-zA-Z0-9$_-]+\\.png$": "<rootDir>/RelativeImageStub.js",
-    "module_name_(.*)": "<rootDir>/substituted_module_$1.js",
-  },
+    "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
+  }
 }
 ```
 
@@ -359,7 +358,7 @@ time.
 
 ```json
 {
-  "projects": ["<rootDir>", "<rootDir>/examples/*"],
+  "projects": ["<rootDir>", "<rootDir>/examples/*"]
 }
 ```
 
@@ -375,8 +374,7 @@ Automatically clear mock calls and instances between every test. Equivalent to
 calling `jest.clearAllMocks()` between each test. This does not remove any mock
 implementation that may have been provided.
 
-### `reporters` [array<moduleName | [moduleName,
-options]>]
+### `reporters` [array<moduleName | [moduleName, options]>]
 
 Default: `undefined`
 
@@ -393,7 +391,7 @@ This will override default reporters:
 
 ```json
 {
-  "reporters": ["<rootDir>/my-custom-reporter.js"],
+  "reporters": ["<rootDir>/my-custom-reporter.js"]
 }
 ```
 
@@ -402,7 +400,7 @@ provides:
 
 ```json
 {
-  "reporters": ["default", "<rootDir>/my-custom-reporter.js"],
+  "reporters": ["default", "<rootDir>/my-custom-reporter.js"]
 }
 ```
 
@@ -413,8 +411,8 @@ as a second argument:
 {
   "reporters": [
     "default",
-    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}],
-  ],
+    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
+  ]
 }
 ```
 
@@ -835,8 +833,7 @@ Setting this value to `fake` allows the use of fake timers for functions such as
 `setTimeout`. Fake timers are useful when a piece of code sets a long timeout
 that we don't want to wait for in a test.
 
-### `transform` [object<string,
-string>]
+### `transform` [object<string, string>]
 
 Default: `undefined`
 

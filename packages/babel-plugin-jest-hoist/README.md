@@ -19,7 +19,7 @@ $ npm install babel-plugin-jest-hoist
 
 ```json
 {
-  "plugins": ["jest-hoist"],
+  "plugins": ["jest-hoist"]
 }
 ```
 
