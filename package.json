@@ -32,7 +32,7 @@
     "eslint-plugin-jest": "^21.0.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-markdown": "^1.0.0-beta.6",
-    "eslint-plugin-prettier": "^2.2.0",
+    "eslint-plugin-prettier": "^2.3.1",
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "0.0.8",
     "eslint-plugin-unicorn": "^2.1.2",
@@ -85,7 +85,7 @@
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
-    "lint:md": "prettier --bracket-spacing false --single-quote --trailing-comma all docs/**/*md packages/*/README.md website/blog/* .github/*.md CHANGELOG.md CONTRIBUTING.md --write",
+    "lint:md": "prettier docs/**/*.md packages/*/README.md packages/*/docs/**/*.md website/blog/*.md .github/*.md CHANGELOG.md CONTRIBUTING.md website/README.md --write",
     "postinstall": "yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
@@ -142,5 +142,10 @@
     "testMatch": [
       "**/*.test.js"
     ]
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }

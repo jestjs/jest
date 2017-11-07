@@ -2330,12 +2330,12 @@ eslint-plugin-markdown@^1.0.0-beta.6:
     remark-parse "^3.0.0"
     unified "^6.1.2"
 
-eslint-plugin-prettier@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-2.2.0.tgz#f2837ad063903d73c621e7188fb3d41486434088"
+eslint-plugin-prettier@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-2.3.1.tgz#e7a746c67e716f335274b88295a9ead9f544e44d"
   dependencies:
     fast-diff "^1.1.1"
-    jest-docblock "^20.0.1"
+    jest-docblock "^21.0.0"
 
 eslint-plugin-react@^7.1.0:
   version "7.3.0"
@@ -3556,10 +3556,6 @@ jasmine-reporters@^2.2.0:
   dependencies:
     mkdirp "^0.5.1"
     xmldom "^0.1.22"
-
-jest-docblock@^20.0.1:
-  version "20.0.3"
-  resolved "https://registry.yarnpkg.com/jest-docblock/-/jest-docblock-20.0.3.tgz#17bea984342cc33d83c50fbe1545ea0efaa44712"
 
 jquery@^3.2.1:
   version "3.2.1"
