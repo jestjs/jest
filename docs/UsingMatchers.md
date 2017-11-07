@@ -3,7 +3,9 @@ id: using-matchers
 title: Using Matchers
 ---
 
-Jest uses "matchers" to let you test values in different ways. There are too many different matchers to memorize them all, so this document will only try to introduce the most useful ones.
+Jest uses "matchers" to let you test values in different ways. There are too
+many different matchers to memorize them all, so this document will only try to
+introduce the most useful ones.
 
 ### Common Matchers
 
@@ -15,9 +17,13 @@ test('two plus two is four', () => {
 });
 ```
 
-In this code, `expect(2 + 2)` returns an "expectation" object. You typically won't do much with these expectation objects except call matchers on them. In this code, `.toBe(4)` is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.
+In this code, `expect(2 + 2)` returns an "expectation" object. You typically
+won't do much with these expectation objects except call matchers on them. In
+this code, `.toBe(4)` is the matcher. When Jest runs, it tracks all the failing
+matchers so that it can print out nice error messages for you.
 
-`toBe` uses `===` to test exact equality. If you want to check the value of an object, use `toEqual` instead:
+`toBe` uses `===` to test exact equality. If you want to check the value of an
+object, use `toEqual` instead:
 
 ```js
 test('object assignment', () => {
@@ -43,7 +49,9 @@ test('adding positive numbers is not zero', () => {
 
 ### Truthiness
 
-In tests you sometimes need to distinguish between `undefined`, `null`, and `false`, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.
+In tests you sometimes need to distinguish between `undefined`, `null`, and
+`false`, but you sometimes do not want to treat these differently. Jest contains
+helpers that let you be explicit about what you want.
 
 * `toBeNull` matches only `null`
 * `toBeUndefined` matches only `undefined`
@@ -73,7 +81,8 @@ test('zero', () => {
 });
 ```
 
-You should use the matcher that most precisely corresponds to what you want your code to be doing.
+You should use the matcher that most precisely corresponds to what you want your
+code to be doing.
 
 ### Numbers
 
@@ -93,12 +102,13 @@ test('two plus two', () => {
 });
 ```
 
-For floating point equality, use `toBeCloseTo` instead of `toEqual`, because you don't want a test to depend on a tiny rounding error.
+For floating point equality, use `toBeCloseTo` instead of `toEqual`, because you
+don't want a test to depend on a tiny rounding error.
 
 ```js
 test('adding floating point numbers', () => {
   const value = 0.1 + 0.2;
-//expect(value).toBe(0.3);           This won't work because of rounding error
+  //expect(value).toBe(0.3);           This won't work because of rounding error
   expect(value).toBeCloseTo(0.3); // This works.
 });
 ```
@@ -124,9 +134,9 @@ You can check if an array contains a particular item using `toContain`:
 ```js
 const shoppingList = [
   'diapers',
-  'kleenex', 
-  'trash bags', 
-  'paper towels', 
+  'kleenex',
+  'trash bags',
+  'paper towels',
   'beer',
 ];
 
@@ -137,7 +147,8 @@ test('the shopping list has beer on it', () => {
 
 ### Exceptions
 
-If you want to test that a particular function throws an error when it's called, use `toThrow`.
+If you want to test that a particular function throws an error when it's called,
+use `toThrow`.
 
 ```js
 function compileAndroidCode() {
@@ -156,6 +167,8 @@ test('compiling android goes as expected', () => {
 
 ### And More
 
-This is just a taste. For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
+This is just a taste. For a complete list of matchers, check out the [reference
+docs](ExpectAPI.md).
 
-Once you've learned about the matchers that are available, a good next step is to check out how Jest lets you [test asynchronous code](TestingAsyncCode.md).
+Once you've learned about the matchers that are available, a good next step is
+to check out how Jest lets you [test asynchronous code](TestingAsyncCode.md).
