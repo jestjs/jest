@@ -826,11 +826,11 @@ test('collapses big diffs to patch format', () => {
 
 describe('context', () => {
   const testDiffContextLines = (contextLines?: number) => {
-    test(`number of lines: ${typeof contextLines === 'number'
-      ? contextLines
-      : 'null'} ${typeof contextLines !== 'number' || contextLines < 0
-      ? '(5 default)'
-      : ''}`, () => {
+    test(`number of lines: ${
+      typeof contextLines === 'number' ? contextLines : 'null'
+    } ${
+      typeof contextLines !== 'number' || contextLines < 0 ? '(5 default)' : ''
+    }`, () => {
       const result = diff(
         {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
         {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},

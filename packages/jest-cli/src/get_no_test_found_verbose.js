@@ -25,13 +25,13 @@ export default function getNoTestFoundVerbose(
 
     return testRun.matches.total
       ? `In ${chalk.bold(config.rootDir)}\n` +
-        `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
-        statsMessage
+          `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
+          statsMessage
       : `No files found in ${config.rootDir}.\n` +
-        `Make sure Jest's configuration does not exclude this directory.` +
-        `\nTo set up Jest, make sure a package.json file exists.\n` +
-        `Jest Documentation: ` +
-        `facebook.github.io/jest/docs/configuration.html`;
+          `Make sure Jest's configuration does not exclude this directory.` +
+          `\nTo set up Jest, make sure a package.json file exists.\n` +
+          `Jest Documentation: ` +
+          `facebook.github.io/jest/docs/configuration.html`;
   });
   let dataMessage;
 

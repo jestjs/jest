@@ -13,9 +13,9 @@ import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
 declare class $JestEnvironment {
-  constructor(config: ProjectConfig): void,
-  runScript(script: Script): any,
-  global: Global,
+  constructor(config: ProjectConfig): void;
+  runScript(script: Script): any;
+  global: Global;
   fakeTimers: {
     clearAllTimers(): void,
     runAllImmediates(): void,
@@ -26,11 +26,11 @@ declare class $JestEnvironment {
     runWithRealTimers(callback: any): void,
     useFakeTimers(): void,
     useRealTimers(): void,
-  },
-  testFilePath: string,
-  moduleMocker: ModuleMocker,
-  setup(): Promise<void>,
-  teardown(): Promise<void>,
+  };
+  testFilePath: string;
+  moduleMocker: ModuleMocker;
+  setup(): Promise<void>;
+  teardown(): Promise<void>;
 }
 
 export type Environment = $JestEnvironment;

@@ -766,11 +766,11 @@ class HasteMap extends EventEmitter {
     };
 
     this._changeInterval = setInterval(emitChange, CHANGE_INTERVAL);
-    return Promise.all(
-      this._options.roots.map(createWatcher),
-    ).then(watchers => {
-      this._watchers = watchers;
-    });
+    return Promise.all(this._options.roots.map(createWatcher)).then(
+      watchers => {
+        this._watchers = watchers;
+      },
+    );
   }
 
   /**

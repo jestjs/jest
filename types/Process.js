@@ -8,6 +8,6 @@
  */
 
 export interface Process {
-  stdout: stream$Writable | tty$WriteStream,
-  exit(code?: number): void,
+  stdout: stream$Writable | tty$WriteStream;
+  exit(code?: number): void;
 }
