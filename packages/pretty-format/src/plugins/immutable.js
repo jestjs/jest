@@ -81,10 +81,17 @@ const printImmutableRecord = (
   return ++depth > config.maxDepth
     ? printAsLeaf(name)
     : name +
-      SPACE +
-      '{' +
-      printIteratorEntries(entries, config, indentation, depth, refs, printer) +
-      '}';
+        SPACE +
+        '{' +
+        printIteratorEntries(
+          entries,
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        ) +
+        '}';
 };
 
 const printImmutableSeq = (

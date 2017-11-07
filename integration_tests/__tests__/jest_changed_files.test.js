@@ -139,11 +139,9 @@ test('gets changed files for git', async () => {
 
   run(`${GIT} init`, DIR);
 
-  const roots = [
-    '',
-    'nested_dir',
-    'nested_dir/second_nested_dir',
-  ].map(filename => path.resolve(DIR, filename));
+  const roots = ['', 'nested_dir', 'nested_dir/second_nested_dir'].map(
+    filename => path.resolve(DIR, filename),
+  );
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -195,11 +193,9 @@ test('gets changed files for hg', async () => {
 
   run(`${HG} init`, DIR);
 
-  const roots = [
-    '',
-    'nested_dir',
-    'nested_dir/second_nested_dir',
-  ].map(filename => path.resolve(DIR, filename));
+  const roots = ['', 'nested_dir', 'nested_dir/second_nested_dir'].map(
+    filename => path.resolve(DIR, filename),
+  );
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
