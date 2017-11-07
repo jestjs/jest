@@ -59,7 +59,7 @@ type TimerAPI = {
 
 type TimerConfig<Ref> = {|
   idToRef: (id: number) => Ref,
-  refToId: (ref: Ref) => number,
+  refToId: (ref: Ref) => ?number,
 |};
 
 const MS_IN_A_YEAR = 31536000000;
@@ -387,7 +387,7 @@ export default class FakeTimers<TimerRef> {
   _fakeClearTimer(timerRef: TimerRef) {
     const uuid = this._timerConfig.refToId(timerRef);
 
-    if (this._timers.hasOwnProperty(uuid)) {
+    if (uuid && this._timers.hasOwnProperty(uuid)) {
       delete this._timers[String(uuid)];
     }
   }

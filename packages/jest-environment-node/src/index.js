@@ -50,7 +50,9 @@ class NodeEnvironment {
       },
     });
 
-    const timerRefToId = (timer: Timer) => timer.id;
+    const timerRefToId = (timer: Timer): ?number => {
+      return (timer && timer.id) || null;
+    };
 
     const timerConfig = {
       idToRef: timerIdToRef,
