@@ -85,7 +85,7 @@
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
-    "lint:md": "prettier --bracket-spacing false --single-quote --trailing-comma all docs/**/*md packages/*/README.md website/blog/* --write",
+    "lint:md": "prettier --bracket-spacing false --single-quote --trailing-comma all docs/**/*md packages/*/README.md website/blog/* .github/*.md *.md --write",
     "postinstall": "yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
