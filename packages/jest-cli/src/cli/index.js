@@ -30,7 +30,6 @@ import {print as preRunMessagePrint} from '../pre_run_message';
 import runJest from '../run_jest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
-import updateGlobalConfig from '../lib/update_global_config';
 import watch from '../watch';
 import yargs from 'yargs';
 import rimraf from 'rimraf';

@@ -342,7 +342,7 @@ describe('docblock', () => {
 
   it('strip linecomments from pragmas but preserve for comments', () => {
     const code =
-      '/**' + os.EOL + ' * @format: everything' + os.EOL + '// keep me' + ' */';
+      '/**' + os.EOL + ' * @format: everything' + os.EOL + '// keep me */';
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '// keep me',
       pragmas: {'format:': 'everything'},
