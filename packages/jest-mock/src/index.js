@@ -24,6 +24,7 @@ export type MockFunctionMetadata = {
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
+  timestamps: Array<number>,
 };
 
 type MockFunctionConfig = {
@@ -279,6 +280,7 @@ class ModuleMockerClass {
     return {
       calls: [],
       instances: [],
+      timestamps: [],
     };
   }
 
@@ -313,6 +315,7 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
+        mockState.timestamps.push(new Date().getTime());
         if (this instanceof f) {
           // This is probably being called as a constructor
           prototypeSlots.forEach(slot => {
