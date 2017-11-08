@@ -12,6 +12,7 @@ import noFocusedTests from './rules/no_focused_tests';
 import noIdenticalTitle from './rules/no_identical_title';
 import preferToHaveLength from './rules/prefer_to_have_length';
 import validExpect from './rules/valid_expect';
+import validExpectInPromise from './rules/valid_expect_in_promise';
 
 module.exports = {
   configs: {
@@ -22,6 +23,7 @@ module.exports = {
         'jest/no-identical-title': 'error',
         'jest/prefer-to-have-length': 'warn',
         'jest/valid-expect': 'error',
+        'jest/valid-expect-in-promise': 'error',
       },
     },
   },
@@ -54,5 +56,6 @@ module.exports = {
     'no-identical-title': noIdenticalTitle,
     'prefer-to-have-length': preferToHaveLength,
     'valid-expect': validExpect,
+    'valid-expect-in-promise': validExpectInPromise,
   },
 };
