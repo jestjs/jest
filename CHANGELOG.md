@@ -23,6 +23,7 @@
 * `[jest-environment-jsdom]` Fix asynchronous test will fail due to timeout issue. ([#4669](https://github.com/facebook/jest/pull/4669))
 
 ### Features
+* `[eslint-plugin-jest]` Add `no-to-be-float` lint rule. ([#4791](https://github.com/facebook/jest/pull/4791))
 * `[eslint-plugin-jest]` Add `prefer-to-have-length` lint rule. ([#4771](https://github.com/facebook/jest/pull/4771))
 * `[jest-environment-jsdom]` [**BREAKING**] Upgrade to JSDOM@11 ([#4770](https://github.com/facebook/jest/pull/4770))
 * `[jest-environment-*]` [**BREAKING**] Add Async Test Environment APIs, dispose is now teardown ([#4506](https://github.com/facebook/jest/pull/4506))
