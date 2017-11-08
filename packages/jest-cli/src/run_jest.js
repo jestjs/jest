@@ -98,10 +98,10 @@ export default (async function runJest({
   const sequencer = new TestSequencer();
   let allTests = [];
 
-  if (changedFilesPromise) {
+  if (changedFilesPromise && globalConfig.watch) {
     const {repos} = await changedFilesPromise;
     const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
-    if (globalConfig.watch && noSCM) {
+    if (noSCM) {
       process.stderr.write(
         '\n' +
           chalk.bold('--watch') +
