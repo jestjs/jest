@@ -20,6 +20,7 @@
 * `[jest-config]` Include error message for `preset` json ([#4766](https://github.com/facebook/jest/pull/4766))
 * `[pretty-format]` Throw `PrettyFormatPluginError` if a plugin halts with an exception ([#4787](https://github.com/facebook/jest/pull/4787))
 * `[expect]` Keep the stack trace unchanged when `PrettyFormatPluginError` is thrown by pretty-format ([#4787](https://github.com/facebook/jest/pull/4787))
+* `[jest-environment-jsdom]` Fix asynchronous test will fail due to timeout issue. ([#4669](https://github.com/facebook/jest/pull/4669))
 
 ### Features
 * `[eslint-plugin-jest]` Add `prefer-to-have-length` lint rule. ([#4771](https://github.com/facebook/jest/pull/4771))
