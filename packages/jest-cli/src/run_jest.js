@@ -66,18 +66,18 @@ const processResults = (runResults, options) => {
       const filePath = path.resolve(process.cwd(), outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
-      process.stdout.write(
+      options.outputStream.write(
         `Test results written to: ` +
           `${path.relative(process.cwd(), filePath)}\n`,
       );
     } else {
-      process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+      options.outputStream.write(JSON.stringify(formatTestResults(runResults)));
     }
   }
   return options.onComplete && options.onComplete(runResults);
 };
 
-export default async function runJest({
+export default (async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -165,6 +165,7 @@ export default async function runJest({
     isJSON: globalConfig.json,
     onComplete,
     outputFile: globalConfig.outputFile,
+    outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-}
+});
