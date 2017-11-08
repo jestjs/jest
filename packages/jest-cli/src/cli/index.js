@@ -30,7 +30,6 @@ import {print as preRunMessagePrint} from '../pre_run_message';
 import runJest from '../run_jest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
-import updateGlobalConfig from '../lib/update_global_config';
 import watch from '../watch';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
@@ -298,14 +297,6 @@ const _run = async (
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
-
-  if (globalConfig.watch && !changedFilesPromise) {
-    process.stderr.write(
-      chalk.bold('--watch') +
-        ' is not supported without git/hg, please use --watchAll',
-    );
-    process.exit(1);
-  }
 
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
