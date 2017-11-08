@@ -78,7 +78,7 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
-export default async function runJest({
+export default (async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -101,12 +101,12 @@ export default async function runJest({
   if (changedFilesPromise) {
     const {repos} = await changedFilesPromise;
     const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
-
     if (globalConfig.watch && noSCM) {
       process.stderr.write(
         '\n' +
           chalk.bold('--watch') +
-          ' is not supported without git/hg, please use --watchAll',
+          ' is not supported without git/hg, please use --watchAll ' +
+          '\n',
       );
       process.exit(1);
     }
@@ -138,7 +138,6 @@ export default async function runJest({
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
-
   if (!allTests.length) {
     const noTestsFoundMessage = getNoTestsFoundMessage(
       testRunData,
@@ -183,4 +182,4 @@ export default async function runJest({
     outputFile: globalConfig.outputFile,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-}
+});
