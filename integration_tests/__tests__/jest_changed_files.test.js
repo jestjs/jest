@@ -239,7 +239,7 @@ test('gets changed files for hg', async () => {
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
     withAncestor: true,
   }));
-  // Returns files from current uncommited state + the last commit
+  // Returns files from current uncommitted state + the last commit
   expect(
     Array.from(files)
       .map(filePath => path.basename(filePath))
