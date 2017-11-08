@@ -13,6 +13,7 @@ import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './test_watcher';
 
+import chalk from 'chalk';
 import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
 import fs from 'graceful-fs';
@@ -96,6 +97,21 @@ export default async function runJest({
 }) {
   const sequencer = new TestSequencer();
   let allTests = [];
+
+  if (changedFilesPromise) {
+    const {repos} = await changedFilesPromise;
+    const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
+
+    if (globalConfig.watch && noSCM) {
+      process.stderr.write(
+        '\n' +
+          chalk.bold('--watch') +
+          ' is not supported without git/hg, please use --watchAll',
+      );
+      process.exit(1);
+    }
+  }
+
   const testRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(
