@@ -7,7 +7,7 @@
     "babel-preset-env": "*",
     "babel-preset-react": "*",
     "jest": "*",
-    "react-test-renderer": "*",
+    "react-test-renderer": "15.4.2",
     "regenerator-runtime": "*"
   },
   "scripts": {
