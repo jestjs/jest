@@ -9,10 +9,5 @@
   "flow.useNPMPackagedFlow": true,
   "javascript.validate.enable": false,
   "jest.pathToJest": "yarn jest --",
-  "prettier.eslintIntegration": true,
-  "prettier.parser": "flow",
-  "prettier.printWidth": 80,
-  "prettier.semi": true,
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "all"
+  "prettier.eslintIntegration": true
 }
