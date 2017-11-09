@@ -390,6 +390,72 @@ describe('moduleMocker', () => {
       expect(fake(2)).toEqual(42);
       expect(fake(2)).toEqual(4);
     });
+
+    describe('timestamps', () => {
+      const RealDate = Date;
+
+      beforeEach(() => {
+        global.Date = {
+          now: jest
+            .fn()
+            .mockImplementationOnce(() => 978391040765)
+            .mockImplementationOnce(() => 1262388620765),
+        };
+      });
+
+      afterEach(() => {
+        global.Date = RealDate;
+      });
+
+      it('tracks timestamps made by mocks', () => {
+        const fn = moduleMocker.fn();
+        expect(fn.mock.timestamps).toEqual([]);
+
+        fn(1, 2, 3);
+        expect(fn.mock.timestamps[0]).toBe(978391040765);
+
+        fn('a', 'b', 'c');
+        expect(fn.mock.timestamps[1]).toBe(1262388620765);
+      });
+
+      it('supports clearing mock timestamps', () => {
+        const fn = moduleMocker.fn();
+        expect(fn.mock.timestamps).toEqual([]);
+
+        fn(1, 2, 3);
+        expect(fn.mock.timestamps).toEqual([978391040765]);
+
+        fn.mockReturnValue('abcd');
+
+        fn.mockClear();
+        expect(fn.mock.timestamps).toEqual([]);
+
+        fn('a', 'b', 'c');
+        expect(fn.mock.timestamps).toEqual([1262388620765]);
+
+        expect(fn()).toEqual('abcd');
+      });
+
+      it('supports clearing all mocks timestamps', () => {
+        const fn1 = moduleMocker.fn();
+        fn1.mockImplementation(() => 'abcd');
+
+        fn1(1, 2, 3);
+        expect(fn1.mock.timestamps).toEqual([978391040765]);
+
+        const fn2 = moduleMocker.fn();
+
+        fn2.mockReturnValue('abcde');
+        fn2('a', 'b', 'c', 'd');
+        expect(fn2.mock.timestamps).toEqual([1262388620765]);
+
+        moduleMocker.clearAllMocks();
+        expect(fn1.mock.timestamps).toEqual([]);
+        expect(fn2.mock.timestamps).toEqual([]);
+        expect(fn1()).toEqual('abcd');
+        expect(fn2()).toEqual('abcde');
+      });
+    });
   });
 
   describe('getMockImplementation', () => {

@@ -80,11 +80,12 @@ the following members:
 
 ##### `.mock`
 
-An object with two members, `calls`, and `instances`, which are both
-lists. The items in the `calls` list are the arguments with which the
+An object with three members, `calls`, `instances` and `timestamps`, which are
+all lists. The items in the `calls` list are the arguments with which the
 function was called. The "instances" list stores the value of 'this' for
 each call to the function. This is useful for retrieving instances from a
-constructor.
+constructor. The `timestamps` list stores a number timestamp every time the
+mock is called.
 
 ##### `.mockReturnValueOnce(value)`
 
