@@ -36,6 +36,7 @@ export type MemberExpression = {
   property: Identifier,
   object: Identifier,
   parent: ParentNode,
+  arguments: Array<Literal>,
   loc: NodeLocation,
 };
 
