@@ -395,13 +395,12 @@ describe('moduleMocker', () => {
       const RealDate = Date;
 
       beforeEach(() => {
-        const mockDates = {
-          getTime: jest
+        global.Date = {
+          now: jest
             .fn()
             .mockImplementationOnce(() => 978391040765)
             .mockImplementationOnce(() => 1262388620765),
         };
-        global.Date = jest.fn(() => mockDates);
       });
 
       afterEach(() => {

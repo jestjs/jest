@@ -315,7 +315,7 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
-        mockState.timestamps.push(new Date().getTime());
+        mockState.timestamps.push(Date.now());
         if (this instanceof f) {
           // This is probably being called as a constructor
           prototypeSlots.forEach(slot => {
