@@ -50,7 +50,8 @@
 * `[jest-jasmine2]` Add `testLocationInResults` flag to add location information per spec to test results ([#4782](https://github.com/facebook/jest/pull/4782))
 
 ### Chore & Maintenance
-* `[*]` [**BREAKING**] Drop support for Node.js version 4
+* `[*]` [**BREAKING**] Drop support for Node.js version 4 ([#4769](https://github.com/facebook/jest/pull/4769))
+* `[eslint-plugin-jest]` Removed from the Jest core repo, and moved to https://github.com/jest-community/eslint-plugin-jest ([#4867](https://github.com/facebook/jest/pull/4867))
 * `[babel-jest]` Explicitly bump istanbul to newer versions ([#4616](https://github.com/facebook/jest/pull/4616))
 * `[expect]` Upgrade mocha and rollup for browser testing ([#4642](https://github.com/facebook/jest/pull/4642))
 * `[docs]` Add info about `coveragePathIgnorePatterns` ([#4602](https://github.com/facebook/jest/pull/4602))
