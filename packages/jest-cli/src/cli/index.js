@@ -298,14 +298,6 @@ const _run = async (
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
-  if (globalConfig.watch && !changedFilesPromise) {
-    process.stderr.write(
-      chalk.bold('--watch') +
-        ' is not supported without git/hg, please use --watchAll',
-    );
-    process.exit(1);
-  }
-
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,
