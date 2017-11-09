@@ -9,10 +9,10 @@ you might want to check out.
 
 ### Browse the docs
 
-* Learn about [Snapshot Testing](SnapshotTesting.md), [Mock
-  Functions](MockFunctions.md), and more in our in-depth guides.
-* Migrate your existing tests to Jest by following our [migration
-  guide](MigrationGuide.md).
+* Learn about [Snapshot Testing](SnapshotTesting.md),
+  [Mock Functions](MockFunctions.md), and more in our in-depth guides.
+* Migrate your existing tests to Jest by following our
+  [migration guide](MigrationGuide.md).
 * Learn how to [configure Jest](Configuration.md).
 * Look at the full [API Reference](GlobalAPI.md).
 * [Troubleshoot](Troubleshooting.md) problems with Jest.
@@ -24,8 +24,8 @@ You will find a number of example test cases in the
 GitHub. You can also learn from the excellent tests used by the
 [React](https://github.com/facebook/react/tree/master/src/renderers/__tests__),
 [Relay](https://github.com/facebook/relay/tree/master/packages/react-relay/modern/__tests__),
-and [React
-Native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
+and
+[React Native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
 projects.
 
 ### Join the community

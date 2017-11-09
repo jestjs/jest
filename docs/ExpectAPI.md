@@ -893,8 +893,7 @@ describe('toMatchObject applied to arrays arrays', () => {
 
 Use `.toHaveProperty` to check if property at provided reference `keyPath`
 exists for an object. For checking deeply nested properties in an object use
-[dot
-notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors)
+[dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 for deep references.
 
 Optionally, you can provide a `value` to check if it's equal to the value
@@ -938,8 +937,8 @@ test('this house has my desired features', () => {
 
 ### `.toMatchSnapshot(optionalString)`
 
-This ensures that a value matches the most recent snapshot. Check out [the
-Snapshot Testing guide](SnapshotTesting.md) for more information.
+This ensures that a value matches the most recent snapshot. Check out
+[the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
 You can also specify an optional snapshot name. Otherwise, the name is inferred
 from the test.
@@ -1033,6 +1032,6 @@ And it will generate the following snapshot:
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
-Check out [React Tree Snapshot
-Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more
-information on snapshot testing.
+Check out
+[React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html)
+for more information on snapshot testing.

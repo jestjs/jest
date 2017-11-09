@@ -43,8 +43,8 @@ current scope and call stack.
 
 ### Debugging in VS Code
 
-There are multiple ways to debug Jest tests with [Visual Studio
-Code's](https://code.visualstudio.com) built in
+There are multiple ways to debug Jest tests with
+[Visual Studio Code's](https://code.visualstudio.com) built in
 [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
 To attach the built-in debugger, run your tests as aforementioned:
@@ -144,8 +144,8 @@ being recognized by Jest?
 
 Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to
 speed up test execution. If you are using your own custom transformer, consider
-adding a `getCacheKey` function to it: [getCacheKey in
-Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
+adding a `getCacheKey` function to it:
+[getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ### Unresolved Promises
 
@@ -172,8 +172,8 @@ jest.setTimeout(10000); // 10 second timeout
 Try running Jest with [`--no-watchman`](CLI.md#watchman) or set the `watchman`
 configuration option to `false`.
 
-Also see [watchman
-troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
+Also see
+[watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
 
 ### Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
@@ -226,9 +226,8 @@ load when running your tests by a considerable amount.
 
 To transform `import` statements, there is
 [babel-plugin-transform-inline-imports-commonjs](https://github.com/zertosh/babel-plugin-transform-inline-imports-commonjs),
-and to transform `require` statements, there is [Facebook's `inline-requires`
-babel
-plugin](https://github.com/facebook/fbjs/blob/master/packages/babel-preset-fbjs/plugins/inline-requires.js),
+and to transform `require` statements, there is
+[Facebook's `inline-requires` babel plugin](https://github.com/facebook/fbjs/blob/master/packages/babel-preset-fbjs/plugins/inline-requires.js),
 which is part of the `babel-preset-fbjs` package.
 
 ### I'm using npm3 and my node_modules aren't properly loading.

@@ -15,11 +15,9 @@ behavior.
 * [`jest.fn(implementation)`](#jestfnimplementation)
 * [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
 * [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
-* [`jest.mock(moduleName, factory,
-  options)`](#jestmockmodulename-factory-options)
+* [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
 * [`jest.unmock(moduleName)`](#jestunmockmodulename)
-* [`jest.doMock(moduleName, factory,
-  options)`](#jestdomockmodulename-factory-options)
+* [`jest.doMock(moduleName, factory, options)`](#jestdomockmodulename-factory-options)
 * [`jest.dontMock(moduleName)`](#jestdontmockmodulename)
 * [`jest.clearAllMocks()`](#jestclearallmocks)
 * [`jest.resetAllMocks()`](#jestresetallmocks)
@@ -29,8 +27,7 @@ behavior.
 * [`jest.runAllTimers()`](#jestrunalltimers)
 * [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
 * [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
-* [`jest.setMock(moduleName,
-  moduleExports)`](#jestsetmockmodulename-moduleexports)
+* [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
 * [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
 * [`jest.useFakeTimers()`](#jestusefaketimers)
 * [`jest.useRealTimers()`](#jestuserealtimers)
@@ -294,8 +291,8 @@ exhausted until there are no more macro-tasks remaining in the queue.
 
 This is often useful for synchronously executing setTimeouts during a test in
 order to synchronously assert about some behavior that would only happen after
-the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer
-mocks](TimerMocks.md) doc for more information.
+the `setTimeout()` or `setInterval()` callbacks executed. See the
+[Timer mocks](TimerMocks.md) doc for more information.
 
 ### `jest.runAllImmediates()`
 
@@ -337,10 +334,10 @@ specified module.
 
 On occasion there are times where the automatically generated mock the module
 system would normally provide you isn't adequate enough for your testing needs.
-Normally under those circumstances you should write a [manual
-mock](ManualMocks.md) that is more adequate for the module in question. However,
-on extremely rare occasions, even a manual mock isn't suitable for your purposes
-and you need to build the mock yourself inside your test.
+Normally under those circumstances you should write a
+[manual mock](ManualMocks.md) that is more adequate for the module in question.
+However, on extremely rare occasions, even a manual mock isn't suitable for your
+purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the
 module system's mock-module registry.

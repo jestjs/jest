@@ -88,8 +88,8 @@ to `3`, pass `Infinity` to allow endless retries.
 
 Allow customizing all options passed to `childProcess.fork`. By default, some
 values are set (`cwd` and `env`), but you can override them and customize the
-rest. For a list of valid values, check [the Node
-documentation](https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options).
+rest. For a list of valid values, check
+[the Node documentation](https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options).
 
 #### `computeWorkerKey: (method: string, ...args: Array<any>) => ?string` (optional)
 

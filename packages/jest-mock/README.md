@@ -39,16 +39,16 @@ always be `object`. For instance, a simple class might be defined like this:
 
 ```js
 const classDef = {
-  type: "function",
+  type: 'function',
   members: {
-    staticMethod: { type: "function" },
+    staticMethod: {type: 'function'},
     prototype: {
-      type: "object",
+      type: 'object',
       members: {
-        instanceMethod: { type: "function" }
-      }
-    }
-  }
+        instanceMethod: {type: 'function'},
+      },
+    },
+  },
 };
 ```
 
@@ -60,11 +60,11 @@ metadata blob:
 
 ```js
 const refID = {
-  type: "object",
+  type: 'object',
   refID: 1,
   members: {
-    self: { ref: 1 }
-  }
+    self: {ref: 1},
+  },
 };
 ```
 

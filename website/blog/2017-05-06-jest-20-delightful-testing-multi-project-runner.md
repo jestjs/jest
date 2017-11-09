@@ -5,8 +5,8 @@ authorURL: http://twitter.com/cpojer
 authorFBID: 100000023028168
 ---
 
-A few months ago we announced [Jest
-19](http://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html)
+A few months ago we announced
+[Jest 19](http://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html)
 which came with major new features and was the biggest Jest release until today.
 Jest 20 has twice the amount of changes compared to the previous version,
 features a complete rewrite of the test runner, adds new testing APIs. The new
@@ -69,8 +69,8 @@ improvements were made entirely by community members!
 
 * **Better async testing:** Added new async/Promise support through
   resolves/rejects modifiers on expect:
-  `expect(Promise(…)).resolves.toEqual(…)`. [See
-  documentation](https://facebook.github.io/jest/docs/en/expect.html#resolves).
+  `expect(Promise(…)).resolves.toEqual(…)`.
+  [See documentation](https://facebook.github.io/jest/docs/en/expect.html#resolves).
 * **Expect <n> assertions:** Along with the existing `expect.assertions(n)`, the
   new `expect.hasAssertions()` can be used to ensure a test has at least one
   assertion.
@@ -143,14 +143,14 @@ to affect the majority of Jest's users:
   Snapshot Testing FAQ, a guide with information about how to use Jest with
   common JavaScript libraries as well as we documented the new features
   mentioned above.
-* **Translations:** We are now asking for your help to [translate the Jest
-  documentation](https://crowdin.com/project/jest) to make it easier for people
-  to learn how to use Jest.
+* **Translations:** We are now asking for your help to
+  [translate the Jest documentation](https://crowdin.com/project/jest) to make
+  it easier for people to learn how to use Jest.
 * **Custom Reporters:** Jest now supports custom test reporters through the
   `reporters` configuration option. You can finally customize the output of Jest
   as well as integrate it with other tools by generating reports in formats such
-  as XML. [See
-  documentation](https://facebook.github.io/jest/docs/en/configuration.html#reporters-array-modulename-modulename-options).
+  as XML.
+  [See documentation](https://facebook.github.io/jest/docs/en/configuration.html#reporters-array-modulename-modulename-options).
 * **Codebase Health:** It was only possible iterate so quickly in Jest because
   we spent a significant amount of time on the health of the codebase. We were
   one of the early adopters of [prettier](https://github.com/prettier/prettier),
@@ -158,19 +158,19 @@ to affect the majority of Jest's users:
   library and we rewrote and refactored significant portions of Jest itself to
   set up Jest for success in the future.
 * **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full
-  changelog can be found in the [Jest
-  repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
+  changelog can be found in the
+  [Jest repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
 
 ## Talks about Jest
 
 Recently the Jest core team and other contributors started to talk more about
 Jest and the experience of working on Jest at conferences:
 
-* Rogelio Guzman did a talk about [Jest Snapshots and
-  Beyond](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at
-  React Conf.
-* I spoke about [Building High-Quality JavaScript
-  Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/)
+* Rogelio Guzman did a talk about
+  [Jest Snapshots and Beyond](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs)
+  at React Conf.
+* I spoke about
+  [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/)
   at Facebook's F8 conference.
 
 _As always, this release couldn't have been possible without you, the JavaScript

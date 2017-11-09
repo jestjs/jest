@@ -12,8 +12,7 @@
       `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`,
     * `Map`, `Set`, `WeakMap`, `WeakSet`
     * `Object`
-* [Blazingly
-  fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
+* [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
   * similar performance to `JSON.stringify` in v8
   * significantly faster than `util.format` in Node.js
 * Serialize application-specific data types with built-in or user-defined
@@ -91,8 +90,8 @@ console.log(prettyFormat(onClick, options));
 | `printFunctionName` | `boolean` | `true`     | include or omit the name of a function                  |
 | `theme`             | `object`  |            | colors to highlight syntax in terminal                  |
 
-Property values of `theme` are from [ansi-styles
-colors](https://github.com/chalk/ansi-styles#colors)
+Property values of `theme` are from
+[ansi-styles colors](https://github.com/chalk/ansi-styles#colors)
 
 ```js
 const DEFAULT_THEME = {

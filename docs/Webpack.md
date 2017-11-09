@@ -41,11 +41,11 @@ module.exports = {
 };
 ```
 
-If you have JavaScript files that are transformed by Babel, you can [enable
-support for Babel](GettingStarted.md#using-babel-with-jest) by installing the
-`babel-jest` plugin. Non-Babel JavaScript transformations can be handled with
-Jest's [`transform`](Configuration.md#transform-object-string-string) config
-option.
+If you have JavaScript files that are transformed by Babel, you can
+[enable support for Babel](GettingStarted.md#using-babel-with-jest) by
+installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be
+handled with Jest's
+[`transform`](Configuration.md#transform-object-string-string) config option.
 
 ### Handling Static Assets
 
@@ -55,8 +55,8 @@ safely mock them out. However, if you are using CSS Modules then it's better to
 mock a proxy for your className lookups.
 
 ```json
+// package.json
 {
-  // package.json
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
@@ -91,12 +91,12 @@ npm install --save-dev identity-obj-proxy
 ```
 
 Then all your className lookups on the styles object will be returned as-is
-(e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot
-Testing](SnapshotTesting.md).
+(e.g., `styles.foobar === 'foobar'`). This is pretty handy for React
+[Snapshot Testing](SnapshotTesting.md).
 
 ```json
+// package.json (for CSS Modules)
 {
-  // package.json (for CSS Modules)
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
@@ -129,8 +129,8 @@ module.exports = {
 ```
 
 ```json
+// package.json (for custom transformers and CSS Modules)
 {
-  // package.json (for custom transformers and CSS Modules)
   "jest": {
     "moduleNameMapper": {
       "\\.(css|less)$": "identity-obj-proxy"
@@ -166,8 +166,8 @@ them. For webpack's `modulesDirectories`, and `extensions` options there are
 direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
 ```json
+// package.json
 {
-  // package.json
   "jest": {
     "moduleFileExtensions": ["js", "jsx"],
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
@@ -188,8 +188,8 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 env variable, which you can set, or make use of the `modulePaths` option.
 
 ```json
+// package.json
 {
-  // package.json
   "jest": {
     "modulePaths": ["/shared/vendor/modules"],
     "moduleFileExtensions": ["js", "jsx"],
@@ -206,8 +206,8 @@ And finally we just have the webpack `alias` left to handle. For that we can
 make use of the `moduleNameMapper` option again.
 
 ```json
+// package.json
 {
-  // package.json
   "jest": {
     "modulePaths": ["/shared/vendor/modules"],
     "moduleFileExtensions": ["js", "jsx"],
@@ -241,8 +241,8 @@ are using webpack 2, you most likely will want to configure Babel to transpile
 ES modules to CommonJS modules only in the `test` environment.
 
 ```json
+// .babelrc
 {
-  // .babelrc
   "presets": [["es2015", {"modules": false}]],
 
   "env": {
@@ -260,8 +260,8 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you
 need to enable the `dynamic-import-node` plugin.
 
 ```json
+// .babelrc
 {
-  // .babelrc
   "presets": [["es2015", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],

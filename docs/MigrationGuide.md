@@ -19,8 +19,8 @@ ways to convert to Jest:
 ### jest-codemods
 
 If you are using [AVA](https://github.com/avajs/ava),
-[Chai](https://github.com/chaijs/chai), [Expect.js (by
-Automattic)](https://github.com/Automattic/expect.js),
+[Chai](https://github.com/chaijs/chai),
+[Expect.js (by Automattic)](https://github.com/Automattic/expect.js),
 [Jasmine](https://github.com/jasmine/jasmine),
 [Mocha](https://github.com/mochajs/mocha),
 [proxyquire](https://github.com/thlorenz/proxyquire),

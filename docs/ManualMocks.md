@@ -147,8 +147,8 @@ The code for this example is available at
 
 ### Using with ES module imports
 
-If you're using [ES module
-imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
+If you're using
+[ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
 then you'll normally be inclined to put your `import` statements at the top of
 the test file. But often you need to instruct Jest to use a mock before modules
 use it. For this reason, Jest will automatically hoist `jest.mock` calls to the

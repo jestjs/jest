@@ -70,9 +70,9 @@ details and a workaround._
 
 Default: `false`
 
-Respect Browserify's [`"browser"`
-field](https://github.com/substack/browserify-handbook#browser-field) in
-`package.json` when resolving modules. Some modules export different versions
+Respect Browserify's
+[`"browser"` field](https://github.com/substack/browserify-handbook#browser-field)
+in `package.json` when resolving modules. Some modules export different versions
 based on whether they are operating in Node or a browser.
 
 ### `bail` [boolean]
@@ -154,9 +154,8 @@ different root directories. Example: `["<rootDir>/build/",
 Default: `["json", "lcov", "text"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any
-[istanbul
-reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report) can be
-used.
+[istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report)
+can be used.
 
 _Note: Setting this option overwrites the default values. Add `"text"` or
 `"text-summary"` to see a coverage summary in the console output._
@@ -574,8 +573,9 @@ A list of paths to snapshot serializer modules Jest should use for snapshot
 testing.
 
 Jest has default serializers for built-in JavaScript types, HTML elements (Jest
-20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See [snapshot test
-tutorial](TutorialReactNative.md#snapshot-test) for more information.
+20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See
+[snapshot test tutorial](TutorialReactNative.md#snapshot-test) for more
+information.
 
 Example serializer module:
 
@@ -731,9 +731,9 @@ Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`
 The pattern Jest uses to detect test files. By default it looks for `.js` and
 `.jsx` files inside of `__tests__` folders, as well as any files with a suffix
 of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will
-also find files called `test.js` or `spec.js`. See also [`testMatch`
-[array<string>]](#testmatch-array-string), but note that you cannot specify both
-options.
+also find files called `test.js` or `spec.js`. See also
+[`testMatch` [array<string>]](#testmatch-array-string), but note that you cannot
+specify both options.
 
 The following is a visualization of the default regex:
 
@@ -815,8 +815,8 @@ function testRunner(
 ): Promise<TestResult>
 ```
 
-An example of such function can be found in our default [jasmine2 test runner
-package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
+An example of such function can be found in our default
+[jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
 
 ### `testURL` [string]
 
@@ -852,15 +852,14 @@ Examples of such compilers include [Babel](https://babeljs.io/),
 
 _Note: a transformer is only ran once per file unless the file has changed.
 During development of a transformer it can be useful to run Jest with
-`--no-cache` or to frequently [delete Jest's
-cache](Troubleshooting.md#caching-issues)._
+`--no-cache` or to frequently
+[delete Jest's cache](Troubleshooting.md#caching-issues)._
 
 _Note: if you are using the `babel-jest` transformer and want to use an
 additional code preprocessor, keep in mind that when "transform" is overwritten
 in any way the `babel-jest` is not loaded automatically anymore. If you want to
 use it to compile JavaScript code it has to be explicitly defined. See
-[babel-jest
-plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
+[babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
 ### `transformIgnorePatterns` [array<string>]
 

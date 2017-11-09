@@ -10,10 +10,10 @@ applications.
 
 ### Setup with Create React App
 
-If you are just getting started with React, we recommend using [Create React
-App](https://github.com/facebookincubator/create-react-app). It is ready to use
-and [ships with
-Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)!
+If you are just getting started with React, we recommend using
+[Create React App](https://github.com/facebookincubator/create-react-app). It is
+ready to use and
+[ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)!
 You don't need to do any extra steps for setup, and can head straight to the
 next section.
 
@@ -53,8 +53,8 @@ jest configuration entries:
 ```
 
 ```json
+// .babelrc
 {
-  // .babelrc
   "presets": ["es2015", "react"]
 }
 ```
@@ -231,8 +231,9 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-We use Enzyme's [shallow
-renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+We use Enzyme's
+[shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this
+example.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js

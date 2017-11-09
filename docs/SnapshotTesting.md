@@ -16,10 +16,10 @@ or the screenshot needs to be updated to the new version of the UI component.
 A similar approach can be taken when it comes to testing your React components.
 Instead of rendering the graphical UI, which would require building the entire
 app, you can use a test renderer to quickly generate a serializable value for
-your React tree. Consider this [example
-test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js)
-for a simple [Link
-component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
+your React tree. Consider this
+[example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js)
+for a simple
+[Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
 
 ```javascript
 import React from 'react';
@@ -34,8 +34,8 @@ it('renders correctly', () => {
 });
 ```
 
-The first time this test is run, Jest creates a [snapshot
-file](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap)
+The first time this test is run, Jest creates a
+[snapshot file](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap)
 that looks like this:
 
 ```javascript
@@ -61,13 +61,13 @@ bug in your code that should be fixed, or the implementation has changed and the
 snapshot needs to be updated.
 
 More information on how snapshot testing works and why we built it can be found
-on the [release blog
-post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html). We
-recommend reading [this blog
-post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/)
+on the
+[release blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html).
+We recommend reading
+[this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/)
 to get a good sense of when you should use snapshot testing. We also recommend
-watching this [egghead
-video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074)
+watching this
+[egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074)
 on Snapshot Testing with Jest.
 
 ### Updating Snapshots
@@ -117,8 +117,8 @@ If you'd like to limit which snapshot test cases get re-generated, you can pass
 an additional `--testNamePattern` flag to re-record snapshots only for those
 tests that match the pattern.
 
-You can try out this functionality by cloning the [snapshot
-example](https://github.com/facebook/jest/tree/master/examples/snapshot),
+You can try out this functionality by cloning the
+[snapshot example](https://github.com/facebook/jest/tree/master/examples/snapshot),
 modifying the `Link` component, and running Jest.
 
 ### Tests Should Be Deterministic
@@ -131,9 +131,9 @@ platform specific or other non-deterministic data.
 For example, if you have a
 [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js)
 component that uses `Date.now()`, the snapshot generated from this component
-will be different every time the test case is run. In this case we can [mock the
-Date.now() method](MockFunctions.md) to return a consistent value every time the
-test is run:
+will be different every time the test case is run. In this case we can
+[mock the Date.now() method](MockFunctions.md) to return a consistent value
+every time the test is run:
 
 ```
 Date.now = jest.fn(() => 1482363367071);
@@ -172,8 +172,7 @@ serializable value and should be used anytime the goal is testing whether the
 output is correct. The Jest repository contains many examples of testing the
 output of Jest itself, the output of Jest's assertion library as well as log
 messages from various parts of the Jest codebase. See an example of
-[snapshotting CLI
-output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console.test.js)
+[snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console.test.js)
 in the Jest repo.
 
 ### What's the difference between snapshot testing and visual regression testing?
@@ -183,8 +182,8 @@ UIs, and they serve different purposes. Visual regression testing tools take
 screenshots of web pages and compare the resulting images pixel by pixel. With
 Snapshot testing values are serialized, stored within text files and compared
 using a diff algorithm. There are different trade-offs to consider and we listed
-the reasons why snapshot testing was built in the [Jest
-blog](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+the reasons why snapshot testing was built in the
+[Jest blog](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html#why-snapshot-testing).
 
 ### Does snapshot testing substitute unit testing?
 

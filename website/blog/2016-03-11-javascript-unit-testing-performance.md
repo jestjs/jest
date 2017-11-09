@@ -212,9 +212,9 @@ to Node 4. The new version of V8 helped improve performance and was quite easy
 to upgrade to.
 
 We noticed that the `path` module in Node.js is slow when making thousands of
-path operations which was [fixed in Node
-5.7](https://github.com/nodejs/node/pull/5123). Until we drop support for Node 4
-internally at Facebook, we'll ship our own version of the
+path operations which was
+[fixed in Node 5.7](https://github.com/nodejs/node/pull/5123). Until we drop
+support for Node 4 internally at Facebook, we'll ship our own version of the
 [fastpath](https://github.com/facebook/node-haste/blob/master/src/fastpath.js)
 module.
 
