@@ -5,7 +5,8 @@ title: Timer Mocks
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`,
 `clearInterval`) are less than ideal for a testing environment since they depend
-on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time.
+on real time to elapse. Jest can swap out timers with functions that allow you
+to control the passage of time.
 [Great Scott!](https://www.youtube.com/watch?v=5gVv10J4nio)
 
 ```javascript
@@ -38,7 +39,8 @@ test('waits 1 second before ending the game', () => {
 });
 ```
 
-Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions.
+Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out
+setTimeout and other timer functions with mock functions.
 
 ## Run All Timers
 
@@ -47,22 +49,22 @@ callback is called after 1 second. To do this, we're going to use Jest's timer
 control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
-  test('calls the callback after 1 second', () => {
-    const timerGame = require('../timerGame');
-    const callback = jest.fn();
+test('calls the callback after 1 second', () => {
+  const timerGame = require('../timerGame');
+  const callback = jest.fn();
 
-    timerGame(callback);
+  timerGame(callback);
 
-    // At this point in time, the callback should not have been called yet
-    expect(callback).not.toBeCalled();
+  // At this point in time, the callback should not have been called yet
+  expect(callback).not.toBeCalled();
 
-    // Fast-forward until all timers have been executed
-    jest.runAllTimers();
+  // Fast-forward until all timers have been executed
+  jest.runAllTimers();
 
-    // Now our callback should have been called!
-    expect(callback).toBeCalled();
-    expect(callback.mock.calls.length).toBe(1);
-  });
+  // Now our callback should have been called!
+  expect(callback).toBeCalled();
+  expect(callback.mock.calls.length).toBe(1);
+});
 ```
 
 ## Run Pending Timers
@@ -87,7 +89,6 @@ function infiniteTimerGame(callback) {
     setTimeout(() => {
       infiniteTimerGame(callback);
     }, 10000);
-
   }, 1000);
 }
 
@@ -128,9 +129,16 @@ describe('infiniteTimerGame', () => {
 ```
 
 ## Advance Timers by Time
+
 ##### renamed from `runTimersToTime` to `advanceTimersByTime` in Jest **21.3.0**
 
-Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this timeframe, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
+Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is
+called, all timers are advanced by `msToRun` milliseconds. All pending
+"macro-tasks" that have been queued via setTimeout() or setInterval(), and would
+be executed during this timeframe, will be executed. Additionally if those
+macro-tasks schedule new macro-tasks that would be executed within the same time
+frame, those will be executed until there are no more macro-tasks remaining in
+the queue that should be run within msToRun milliseconds.
 
 ```javascript
 // timerGame.js

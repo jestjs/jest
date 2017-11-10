@@ -47,7 +47,7 @@ test('displays a user after a click', () => {
 
   // Tell the fetchCurrentUser mock function to automatically invoke
   // its callback with some data
-  fetchCurrentUser.mockImplementation(cb =>  {
+  fetchCurrentUser.mockImplementation(cb => {
     cb({
       fullName: 'Johnny Cash',
       loggedIn: true,
@@ -62,7 +62,6 @@ test('displays a user after a click', () => {
   expect(fetchCurrentUser).toBeCalled();
   expect($('#username').text()).toEqual('Johnny Cash - Logged In');
 });
-
 ```
 
 The function being tested adds an event listener on the `#button` DOM element,
@@ -71,6 +70,10 @@ which simulates a DOM environment as if you were in the browser. This means that
 every DOM API that we call can be observed in the same way it would be observed
 in a browser!
 
-We are mocking `fetchCurrentUser.js` so that our test doesn't make a real network request but instead resolves to mock data locally. This ensures that our test can complete in milliseconds rather than seconds and guarantees a fast unit test iteration speed.
+We are mocking `fetchCurrentUser.js` so that our test doesn't make a real
+network request but instead resolves to mock data locally. This ensures that our
+test can complete in milliseconds rather than seconds and guarantees a fast unit
+test iteration speed.
 
-The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/master/examples/jquery).
+The code for this example is available at
+[examples/jquery](https://github.com/facebook/jest/tree/master/examples/jquery).
