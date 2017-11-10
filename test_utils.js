@@ -51,6 +51,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   verbose: false,
   watch: false,
   watchAll: false,
+  watchPlugins: [],
   watchman: false,
 };
 

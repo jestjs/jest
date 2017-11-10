@@ -112,6 +112,7 @@ const getConfigs = (
       verbose: options.verbose,
       watch: options.watch,
       watchAll: options.watchAll,
+      watchPlugins: options.watchPlugins,
       watchman: options.watchman,
     }),
     projectConfig: Object.freeze({
