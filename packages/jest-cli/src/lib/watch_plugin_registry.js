@@ -35,7 +35,9 @@ export default class WatchPluginRegistry {
     // before assuming it's a valid watch plugin.
     if (getType(maybePlugin) !== 'object') {
       throw new Error(
-        `Jest watch plugin ${pluginModulePath} must be an ES Module or export an object`,
+        `Jest watch plugin ${
+          pluginModulePath
+        } must be an ES Module or export an object`,
       );
     }
     if (getType(maybePlugin.key) !== 'number') {
@@ -45,12 +47,16 @@ export default class WatchPluginRegistry {
     }
     if (getType(maybePlugin.prompt) !== 'string') {
       throw new Error(
-        `Jest watch plugin ${pluginModulePath} must export 'prompt' as a string`,
+        `Jest watch plugin ${
+          pluginModulePath
+        } must export 'prompt' as a string`,
       );
     }
     if (getType(maybePlugin.enter) !== 'function') {
       throw new Error(
-        `Jest watch plugin ${pluginModulePath} must export 'enter' as a function`,
+        `Jest watch plugin ${
+          pluginModulePath
+        } must export 'enter' as a function`,
       );
     }
 
@@ -58,7 +64,9 @@ export default class WatchPluginRegistry {
 
     if (RESERVED_KEYS.includes(maybePlugin.key)) {
       throw new Error(
-        `Jest watch plugin ${pluginModulePath} tried to register reserved key ${String.fromCodePoint(
+        `Jest watch plugin ${
+          pluginModulePath
+        } tried to register reserved key ${String.fromCodePoint(
           maybePlugin.key,
         )}`,
       );
