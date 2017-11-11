@@ -23,6 +23,7 @@ import {
   setGlobal,
 } from 'jest-util';
 import jasmine2 from 'jest-jasmine2';
+import LeakDetector from 'jest-leak-detector';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 
@@ -30,22 +31,24 @@ import * as docblock from 'jest-docblock';
 // and required implicitly through the `testRunner` ProjectConfig option.
 jasmine2;
 
-export default (async function runTest(
+// Keeping the core of "runTest" as a separate function (as "runTestHelper") is
+// key to be able to detect memory leaks. Since all variables are local to the
+// function, when "runTestHelper" finishes its execution, they can all be freed,
+// UNLESS someone else is leaking them (and that's why we can detect the leak!).
+//
+// If we had all the code in a single function, we should manually nullify all
+// references to verify if there is a leak, which is not maintainable and error
+// prone. That's why "runTestHelper" CANNOT be inlined inside "runTest".
+async function runTestHelper(
   path: Path,
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
-) {
-  let testSource;
-
-  try {
-    testSource = fs.readFileSync(path, 'utf8');
-  } catch (e) {
-    return Promise.reject(e);
-  }
-
+): Promise<TestResult> {
+  const testSource = fs.readFileSync(path, 'utf8');
   const parsedDocblock = docblock.parse(docblock.extract(testSource));
   const customEnvironment = parsedDocblock['jest-environment'];
+
   let testEnvironment = config.testEnvironment;
 
   if (customEnvironment) {
@@ -66,6 +69,10 @@ export default (async function runTest(
   >);
 
   const environment = new TestEnvironment(config);
+  const environmentLeakDetector = config.detectLeaks
+    ? new LeakDetector(environment)
+    : false;
+
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type, message) =>
     getConsoleOutput(
@@ -76,24 +83,25 @@ export default (async function runTest(
     );
 
   let testConsole;
+
   if (globalConfig.silent) {
     testConsole = new NullConsole(consoleOut, process.stderr, consoleFormatter);
+  } else if (globalConfig.verbose) {
+    testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
   } else {
-    if (globalConfig.verbose) {
-      testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
-    } else {
-      testConsole = new BufferedConsole();
-    }
+    testConsole = new BufferedConsole();
   }
 
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
+
   const runtime = new Runtime(config, environment, resolver, cacheFS, {
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     mapCoverage: globalConfig.mapCoverage,
   });
+
   const start = Date.now();
   await environment.setup();
   try {
@@ -106,6 +114,8 @@ export default (async function runTest(
     );
     const testCount =
       result.numPassingTests + result.numFailingTests + result.numPendingTests;
+
+    result.leaks = environmentLeakDetector;
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;
     result.coverage = runtime.getAllCoverageInfo();
@@ -113,15 +123,40 @@ export default (async function runTest(
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
     result.displayName = config.displayName;
+
     if (globalConfig.logHeapUsage) {
       if (global.gc) {
         global.gc();
       }
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
+
     // Delay the resolution to allow log messages to be output.
-    return new Promise(resolve => setImmediate(() => resolve(result)));
+    await new Promise(resolve => setImmediate(resolve));
+
+    return result;
   } finally {
     await environment.teardown();
   }
-});
+}
+
+export default async function runTest(
+  path: Path,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+  resolver: Resolver,
+): Promise<TestResult> {
+  const result: TestResult = await runTestHelper(
+    path,
+    globalConfig,
+    config,
+    resolver,
+  );
+
+  // Resolve leak detector, so that the object is JSON serializable.
+  if (result.leaks instanceof LeakDetector) {
+    result.leaks = result.leaks.isLeaking();
+  }
+
+  return result;
+}

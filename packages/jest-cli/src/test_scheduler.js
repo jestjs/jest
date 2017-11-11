@@ -96,6 +96,23 @@ export default class TestScheduler {
         });
         return Promise.resolve();
       }
+      if (testResult.leaks) {
+        const message = [
+          'Your test suite is leaking memory! Please ensure all references are cleaned.',
+          '',
+          'There is a number of things that can leak memory:',
+          '  - Async operations that have not finished (e.g. fs.readFile).',
+          '  - Timers not properly mocked (e.g. setInterval, setTimeout).',
+          '  - Missed global listeners (e.g. process.on).',
+          '  - Keeping references to the global scope.',
+        ].join('\n');
+
+        await onFailure(test, {
+          message,
+          stack: new Error(message).stack,
+        });
+        return Promise.resolve();
+      }
       addResult(aggregatedResults, testResult);
       await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);

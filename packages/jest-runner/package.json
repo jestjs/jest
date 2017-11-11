@@ -12,6 +12,7 @@
     "jest-docblock": "^21.2.0",
     "jest-haste-map": "^21.2.0",
     "jest-jasmine2": "^21.2.1",
+    "jest-leak-detector": "^21.2.1",
     "jest-message-util": "^21.2.1",
     "jest-runtime": "^21.2.1",
     "jest-util": "^21.2.1",

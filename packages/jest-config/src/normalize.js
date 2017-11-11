@@ -455,6 +455,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'collectCoverage':
       case 'coverageReporters':
       case 'coverageThreshold':
+      case 'detectLeaks':
       case 'displayName':
       case 'expand':
       case 'globals':

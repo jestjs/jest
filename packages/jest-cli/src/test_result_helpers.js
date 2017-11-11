@@ -54,6 +54,7 @@ export const buildFailureTestResult = (
     console: null,
     displayName: '',
     failureMessage: null,
+    leaks: false,
     numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,

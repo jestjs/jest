@@ -7,6 +7,7 @@
  * @flow
  */
 
+import LeakDetector from 'jest-leak-detector';
 import type {ConsoleBuffer} from './Console';
 
 export type RawFileCoverage = {|
@@ -138,6 +139,7 @@ export type TestResult = {|
   console: ?ConsoleBuffer,
   coverage?: RawCoverage,
   displayName: ?string,
+  leaks: LeakDetector | boolean,
   memoryUsage?: Bytes,
   failureMessage: ?string,
   numFailingTests: number,

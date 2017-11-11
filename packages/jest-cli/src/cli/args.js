@@ -202,6 +202,14 @@ export const options = {
     description: 'Print debugging info about your jest config.',
     type: 'boolean',
   },
+  detectLeaks: {
+    default: false,
+    description:
+      '**EXPERIMENTAL**: Detect memory leaks in tests. After executing a ' +
+      'test, it will try to garbage collect the global object used, and fail ' +
+      'if it was leaked',
+    type: 'boolean',
+  },
   env: {
     description:
       'The test environment used for all tests. This can point to ' +
