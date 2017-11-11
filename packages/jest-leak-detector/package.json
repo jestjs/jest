@@ -1,5 +1,5 @@
 {
-  "name": "jest-leak-check",
+  "name": "jest-leak-detector",
   "version": "21.2.1",
   "repository": {
     "type": "git",
