@@ -29,7 +29,7 @@ module.exports = {
 
 Please keep in mind that the resulting configuration must be JSON-serializable.
 
-When using the --config option, the JSON file must not contain a "jest" key:
+When using the `--config` option, the JSON file must not contain a "jest" key:
 
 ```json
 {
