@@ -15,7 +15,7 @@ test('config as JSON', () => {
     '--config=' +
       JSON.stringify({
         testEnvironment: 'node',
-        testMatch: ['banana strawbery kiwi'],
+        testMatch: ['banana strawberry kiwi'],
       }),
   ]);
   const stdout = result.stdout.toString();
