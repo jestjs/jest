@@ -7,11 +7,7 @@ make contributing to this project as easy and transparent as possible, but we're
 not quite there yet. Hopefully this document makes the process for contributing
 clear and answers some questions that you may have.
 
-## [Code of Conduct](https://code.facebook.com/codeofconduct)
-
-Facebook has adopted a Code of Conduct that we expect project participants to
-adhere to. Please read [the full text](https://code.facebook.com/codeofconduct)
-so that you can understand what actions will and will not be tolerated.
+## [Code of Conduct](/CODE_OF_CONDUCT.md)
 
 ## Our Development Process
 
