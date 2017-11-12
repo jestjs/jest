@@ -1,0 +1,3 @@
+{
+  "setupTestFrameworkScriptFile": "<rootDir>/setup/setup.js"
+}

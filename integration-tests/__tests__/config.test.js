@@ -74,3 +74,12 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
   expect(result.status).toBe(0);
   expect(stderr).toMatch('found userAgent Agent/007');
 });
+
+test('rootDir should be correct if config not in the root folder', () => {
+  const {status, stderr} = runJest('config_not_in_root_and_rootDir', [
+    '--config=setup/config.json',
+  ]);
+
+  expect(status).toBe(0);
+  expect(stderr).toMatch('PASS');
+});
