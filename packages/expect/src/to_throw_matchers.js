@@ -21,7 +21,7 @@ import {
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
 
-export const createMatcher = (matcherName, fromPromise) => (
+export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
   actual: Function,
   expected: string | Error | RegExp,
 ) => {
