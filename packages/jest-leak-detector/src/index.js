@@ -9,14 +9,10 @@
 
 'use strict';
 
-const v8 = require('v8');
-const vm = require('vm');
-const weak = require('weak');
-
-// Setting the flag has no effect on the main context, but will allow new
-// contexts to access the garbage collector.
-v8.setFlagsFromString('--expose-gc');
-const gc = vm.runInNewContext('gc');
+import prettyFormat from 'pretty-format';
+import v8 from 'v8';
+import vm from 'vm';
+import weak from 'weak';
 
 const PRIMITIVE_TYPES = new Set([
   'undefined',
@@ -27,24 +23,42 @@ const PRIMITIVE_TYPES = new Set([
 ]);
 
 export default class {
-  _held: boolean;
+  _isReferenceBeingHeld: boolean;
 
   constructor(value: ?Object) {
     if (this._isPrimitive(value)) {
-      throw new TypeError('Primitives cannot leak memory');
+      throw new TypeError(
+        [
+          'Primitives cannot leak memory.',
+          'You passed a ' + typeof value + ': <' + prettyFormat(value) + '>',
+        ].join(' '),
+      );
     }
 
-    weak(value, () => (this._held = false));
-    this._held = true;
+    weak(value, () => (this._isReferenceBeingHeld = false));
+    this._isReferenceBeingHeld = true;
 
     // Ensure value is not leaked by the closure created by the "weak" callback.
     value = null;
   }
 
   isLeaked(): boolean {
-    gc();
+    this._runGarbageCollector();
 
-    return this._held;
+    return this._isReferenceBeingHeld;
+  }
+
+  _runGarbageCollector() {
+    const isGarbageCollectorHidden = !global.gc;
+
+    // GC is usually hidden, so we have to expose it before running.
+    v8.setFlagsFromString('--expose-gc');
+    vm.runInNewContext('gc')();
+
+    // The GC was not initially exposed, so let's hide it again.
+    if (isGarbageCollectorHidden) {
+      v8.setFlagsFromString('--no-expose-gc');
+    }
   }
 
   _isPrimitive(value: any): boolean {

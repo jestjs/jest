@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "pretty-format": "^21.2.1",
     "weak": "^1.0.1"
   }
 }

@@ -2,12 +2,36 @@
 
 import LeakDetector from '../index';
 
+const gc = global.gc;
+
+// Some tests override the "gc" value. Let's make sure we roll it back to its
+// previous value after executing the test.
+afterEach(() => {
+  global.gc = gc;
+});
+
 it('complains if the value is a primitive', () => {
-  expect(() => new LeakDetector(undefined)).toThrow(TypeError);
-  expect(() => new LeakDetector(null)).toThrow(TypeError);
-  expect(() => new LeakDetector(false)).toThrow(TypeError);
-  expect(() => new LeakDetector(42)).toThrow(TypeError);
-  expect(() => new LeakDetector('foo')).toThrow(TypeError);
+  expect(() => new LeakDetector(undefined)).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(null)).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(false)).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(42)).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector('foo')).toThrowErrorMatchingSnapshot();
+});
+
+it('does not show the GC if hidden', () => {
+  const detector = new LeakDetector({});
+
+  global.gc = undefined;
+  detector.isLeaked();
+  expect(global.gc).not.toBeDefined();
+});
+
+it('does not hide the GC if visible', () => {
+  const detector = new LeakDetector({});
+
+  global.gc = () => {};
+  detector.isLeaked();
+  expect(global.gc).toBeDefined();
 });
 
 it('correctly checks simple leaks', () => {

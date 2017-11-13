@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`complains if the value is a primitive 1`] = `"Primitives cannot leak memory. You passed a undefined: <undefined>"`;
+
+exports[`complains if the value is a primitive 2`] = `"Primitives cannot leak memory. You passed a object: <null>"`;
+
+exports[`complains if the value is a primitive 3`] = `"Primitives cannot leak memory. You passed a boolean: <false>"`;
+
+exports[`complains if the value is a primitive 4`] = `"Primitives cannot leak memory. You passed a number: <42>"`;
+
+exports[`complains if the value is a primitive 5`] = `"Primitives cannot leak memory. You passed a string: <\\"foo\\">"`;
