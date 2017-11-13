@@ -234,8 +234,9 @@ export default class CoverageReporter extends BaseReporter {
                 }
               } else if (actual < threshold) {
                 errors.push(
-                  `Jest: Coverage for ${key} (${actual}` +
-                    `%) does not meet ${name} threshold (${threshold}%)`,
+                  `Jest: "${name}" coverage threshold for ${key} (${
+                    threshold
+                  }%) not met: ` + `${actual}%`,
                 );
               }
             }
@@ -245,66 +246,137 @@ export default class CoverageReporter extends BaseReporter {
         );
       }
 
-      const expandedThresholds = {};
-      Object.keys(globalConfig.coverageThreshold).forEach(filePathOrGlob => {
-        if (filePathOrGlob !== 'global') {
-          const pathArray = glob.sync(filePathOrGlob);
-          pathArray.forEach(filePath => {
-            expandedThresholds[path.resolve(filePath)] =
-              globalConfig.coverageThreshold[filePathOrGlob];
-          });
-        } else {
-          expandedThresholds.global = globalConfig.coverageThreshold.global;
+      const THRESHOLD_GROUP_TYPES = {
+        GLOB: 'glob',
+        GLOBAL: 'global',
+        PATH: 'path',
+      };
+      const coveredFiles = map.files();
+      const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
+      const numThresholdGroups = thresholdGroups.length;
+      const groupTypeByThresholdGroup = {};
+      const filesByGlob = {};
+
+      const coveredFilesSortedIntoThresholdGroup = coveredFiles.map(file => {
+        for (let i = 0; i < numThresholdGroups; i++) {
+          const thresholdGroup = thresholdGroups[i];
+          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+
+          // The threshold group might be a path:
+
+          if (file.indexOf(absoluteThresholdGroup) === 0) {
+            groupTypeByThresholdGroup[thresholdGroup] =
+              THRESHOLD_GROUP_TYPES.PATH;
+            return [file, thresholdGroup];
+          }
+
+          // If the threshold group is not a path it might be a glob:
+
+          // Note: glob.sync is slow. By memoizing the files matching each glob
+          // (rather than recalculating it for each covered file) we save a tonne
+          // of execution time.
+          if (filesByGlob[absoluteThresholdGroup] === undefined) {
+            filesByGlob[absoluteThresholdGroup] = glob.sync(
+              absoluteThresholdGroup,
+            );
+          }
+
+          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+            groupTypeByThresholdGroup[thresholdGroup] =
+              THRESHOLD_GROUP_TYPES.GLOB;
+            return [file, thresholdGroup];
+          }
+        }
+
+        // Neither a glob or a path? Toss it in global if there's a global threshold:
+        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+          groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
+            THRESHOLD_GROUP_TYPES.GLOBAL;
+          return [file, THRESHOLD_GROUP_TYPES.GLOBAL];
+        }
+
+        // A covered file that doesn't have a threshold:
+        return [file, undefined];
+      });
+
+      const getFilesInThresholdGroup = thresholdGroup =>
+        coveredFilesSortedIntoThresholdGroup
+          .filter(fileAndGroup => fileAndGroup[1] === thresholdGroup)
+          .map(fileAndGroup => fileAndGroup[0]);
+
+      function combineCoverage(filePaths) {
+        return filePaths
+          .map(filePath => map.fileCoverageFor(filePath))
+          .reduce(
+            (
+              combinedCoverage: ?CoverageSummary,
+              nextFileCoverage: FileCoverage,
+            ) => {
+              if (combinedCoverage === undefined || combinedCoverage === null) {
+                return nextFileCoverage.toSummary();
+              }
+              return combinedCoverage.merge(nextFileCoverage.toSummary());
+            },
+            undefined,
+          );
+      }
+
+      let errors = [];
+
+      thresholdGroups.forEach(thresholdGroup => {
+        switch (groupTypeByThresholdGroup[thresholdGroup]) {
+          case THRESHOLD_GROUP_TYPES.GLOBAL: {
+            const coverage = combineCoverage(
+              getFilesInThresholdGroup(THRESHOLD_GROUP_TYPES.GLOBAL),
+            );
+            if (coverage) {
+              errors = errors.concat(
+                check(
+                  thresholdGroup,
+                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverage,
+                ),
+              );
+            }
+            break;
+          }
+          case THRESHOLD_GROUP_TYPES.PATH: {
+            const coverage = combineCoverage(
+              getFilesInThresholdGroup(thresholdGroup),
+            );
+            if (coverage) {
+              errors = errors.concat(
+                check(
+                  thresholdGroup,
+                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverage,
+                ),
+              );
+            }
+            break;
+          }
+          case THRESHOLD_GROUP_TYPES.GLOB:
+            getFilesInThresholdGroup(thresholdGroup).forEach(
+              fileMatchingGlob => {
+                errors = errors.concat(
+                  check(
+                    fileMatchingGlob,
+                    globalConfig.coverageThreshold[thresholdGroup],
+                    map.fileCoverageFor(fileMatchingGlob).toSummary(),
+                  ),
+                );
+              },
+            );
+            break;
+          default:
+            errors = errors.concat(
+              `Jest: Coverage data for ${thresholdGroup} was not found.`,
+            );
         }
       });
 
-      const filteredCoverageSummary = map
-        .files()
-        .filter(
-          filePath => Object.keys(expandedThresholds).indexOf(filePath) === -1,
-        )
-        .map(filePath => map.fileCoverageFor(filePath))
-        .reduce((summary: ?CoverageSummary, fileCov: FileCoverage) => {
-          return summary === undefined || summary === null
-            ? (summary = fileCov.toSummary())
-            : summary.merge(fileCov.toSummary());
-        }, undefined);
-
-      const errors = [].concat.apply(
-        [],
-        Object.keys(expandedThresholds)
-          .map(thresholdKey => {
-            if (thresholdKey === 'global') {
-              if (filteredCoverageSummary !== undefined) {
-                return check(
-                  'global',
-                  expandedThresholds.global,
-                  filteredCoverageSummary,
-                );
-              } else {
-                return [];
-              }
-            } else {
-              if (map.files().indexOf(thresholdKey) !== -1) {
-                return check(
-                  thresholdKey,
-                  expandedThresholds[thresholdKey],
-                  map.fileCoverageFor(thresholdKey).toSummary(),
-                );
-              } else {
-                return [
-                  `Jest: Coverage data for ${thresholdKey} was not found.`,
-                ];
-              }
-            }
-          })
-          .filter(errorArray => {
-            return (
-              errorArray !== undefined &&
-              errorArray !== null &&
-              errorArray.length > 0
-            );
-          }),
+      errors = errors.filter(
+        err => err !== undefined && err !== null && err.length > 0,
       );
 
       if (errors.length > 0) {
