@@ -21,7 +21,9 @@ import type {
 import * as utils from 'jest-matcher-utils';
 import matchers from './matchers';
 import spyMatchers from './spy_matchers';
-import toThrowMatchers from './to_throw_matchers';
+import toThrowMatchers, {
+  createMatcher as createThrowMatcher,
+} from './to_throw_matchers';
 import {equals} from './jasmine_utils';
 import {
   any,
@@ -53,9 +55,9 @@ const isPromise = obj => {
 
 const getPromiseMatcher = name => {
   if (name === 'toThrow' || name === 'toThrowError') {
-    return 'toThrowFromPromise';
+    return createThrowMatcher('.' + name, true);
   }
-  return name;
+  return null;
 };
 
 const expect = (actual: any, ...rest): ExpectationObject => {
@@ -71,40 +73,33 @@ const expect = (actual: any, ...rest): ExpectationObject => {
   };
 
   Object.keys(allMatchers).forEach(name => {
-    const targetName = getPromiseMatcher(name);
-    expectation[name] = makeThrowingMatcher(
-      allMatchers[targetName],
-      false,
-      actual,
-    );
-    expectation.not[name] = makeThrowingMatcher(
-      allMatchers[name],
-      true,
-      actual,
-    );
+    const matcher = allMatchers[name];
+    const promiseMatcher = getPromiseMatcher(name) || matcher;
+    expectation[name] = makeThrowingMatcher(matcher, false, actual);
+    expectation.not[name] = makeThrowingMatcher(matcher, true, actual);
 
     expectation.resolves[name] = makeResolveMatcher(
       name,
-      allMatchers[targetName],
+      promiseMatcher,
       false,
       actual,
     );
     expectation.resolves.not[name] = makeResolveMatcher(
       name,
-      allMatchers[targetName],
+      promiseMatcher,
       true,
       actual,
     );
 
     expectation.rejects[name] = makeRejectMatcher(
       name,
-      allMatchers[targetName],
+      promiseMatcher,
       false,
       actual,
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
-      allMatchers[targetName],
+      matcher,
       true,
       actual,
     );

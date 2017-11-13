@@ -21,7 +21,7 @@ import {
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
 
-const createMatcher = (matcherName, fromPromise) => (
+export const createMatcher = (matcherName, fromPromise) => (
   actual: Function,
   expected: string | Error | RegExp,
 ) => {
@@ -88,7 +88,6 @@ const createMatcher = (matcherName, fromPromise) => (
 const matchers: MatchersObject = {
   toThrow: createMatcher('.toThrow'),
   toThrowError: createMatcher('.toThrowError'),
-  toThrowFromPromise: createMatcher('.toThrowFromPromise', true),
 };
 
 const toThrowMatchingStringOrRegexp = (
