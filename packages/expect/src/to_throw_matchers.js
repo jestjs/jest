@@ -21,26 +21,29 @@ import {
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
 
-const createMatcher = matcherName => (
+const createMatcher = (matcherName, fromPromise) => (
   actual: Function,
   expected: string | Error | RegExp,
 ) => {
   const value = expected;
   let error;
 
-  if (typeof actual !== 'function') {
-    throw new Error(
-      matcherHint(matcherName, 'function', getType(value)) +
-        '\n\n' +
-        'Received value must be a function, but instead ' +
-        `"${getType(actual)}" was found`,
-    );
-  }
-
-  try {
-    actual();
-  } catch (e) {
-    error = e;
+  if (fromPromise) {
+    error = actual;
+  } else {
+    if (typeof actual !== 'function') {
+      throw new Error(
+        matcherHint(matcherName, 'function', getType(value)) +
+          '\n\n' +
+          'Received value must be a function, but instead ' +
+          `"${getType(actual)}" was found`,
+      );
+    }
+    try {
+      actual();
+    } catch (e) {
+      error = e;
+    }
   }
 
   if (typeof expected === 'string') {
@@ -85,6 +88,7 @@ const createMatcher = matcherName => (
 const matchers: MatchersObject = {
   toThrow: createMatcher('.toThrow'),
   toThrowError: createMatcher('.toThrowError'),
+  toThrowFromPromise: createMatcher('.toThrowFromPromise', true),
 };
 
 const toThrowMatchingStringOrRegexp = (

@@ -51,6 +51,13 @@ const isPromise = obj => {
   );
 };
 
+const getPromiseMatcher = name => {
+  if (name === 'toThrow' || name === 'toThrowError') {
+    return 'toThrowFromPromise';
+  }
+  return name;
+};
+
 const expect = (actual: any, ...rest): ExpectationObject => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
@@ -64,7 +71,12 @@ const expect = (actual: any, ...rest): ExpectationObject => {
   };
 
   Object.keys(allMatchers).forEach(name => {
-    expectation[name] = makeThrowingMatcher(allMatchers[name], false, actual);
+    const targetName = getPromiseMatcher(name);
+    expectation[name] = makeThrowingMatcher(
+      allMatchers[targetName],
+      false,
+      actual,
+    );
     expectation.not[name] = makeThrowingMatcher(
       allMatchers[name],
       true,
@@ -73,26 +85,26 @@ const expect = (actual: any, ...rest): ExpectationObject => {
 
     expectation.resolves[name] = makeResolveMatcher(
       name,
-      allMatchers[name],
+      allMatchers[targetName],
       false,
       actual,
     );
     expectation.resolves.not[name] = makeResolveMatcher(
       name,
-      allMatchers[name],
+      allMatchers[targetName],
       true,
       actual,
     );
 
     expectation.rejects[name] = makeRejectMatcher(
       name,
-      allMatchers[name],
+      allMatchers[targetName],
       false,
       actual,
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
-      allMatchers[name],
+      allMatchers[targetName],
       true,
       actual,
     );
