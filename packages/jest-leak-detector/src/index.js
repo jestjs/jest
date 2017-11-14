@@ -42,7 +42,7 @@ export default class {
     value = null;
   }
 
-  isLeaked(): boolean {
+  isLeaking(): boolean {
     this._runGarbageCollector();
 
     return this._isReferenceBeingHeld;

@@ -22,7 +22,7 @@ it('does not show the GC if hidden', () => {
   const detector = new LeakDetector({});
 
   global.gc = undefined;
-  detector.isLeaked();
+  detector.isLeaking();
   expect(global.gc).not.toBeDefined();
 });
 
@@ -30,7 +30,7 @@ it('does not hide the GC if visible', () => {
   const detector = new LeakDetector({});
 
   global.gc = () => {};
-  detector.isLeaked();
+  detector.isLeaking();
   expect(global.gc).toBeDefined();
 });
 
@@ -40,13 +40,13 @@ it('correctly checks simple leaks', () => {
   const detector = new LeakDetector(reference);
 
   // Reference is still held in memory.
-  expect(detector.isLeaked()).toBe(true);
+  expect(detector.isLeaking()).toBe(true);
 
   // We destroy the only reference to the object we had.
   reference = null;
 
   // Reference should be gone.
-  expect(detector.isLeaked()).toBe(false);
+  expect(detector.isLeaking()).toBe(false);
 });
 
 it('tests different objects', () => {
@@ -61,9 +61,9 @@ it('tests different objects', () => {
 
   const detectors = refs.map(ref => new LeakDetector(ref));
 
-  detectors.forEach(detector => expect(detector.isLeaked()).toBe(true));
+  detectors.forEach(detector => expect(detector.isLeaking()).toBe(true));
   refs.forEach((_, i) => (refs[i] = null));
-  detectors.forEach(detector => expect(detector.isLeaked()).toBe(false));
+  detectors.forEach(detector => expect(detector.isLeaking()).toBe(false));
 });
 
 it('correctly checks more complex leaks', () => {
@@ -78,20 +78,20 @@ it('correctly checks more complex leaks', () => {
   const detector2 = new LeakDetector(ref2);
 
   // References are still held in memory.
-  expect(detector1.isLeaked()).toBe(true);
-  expect(detector2.isLeaked()).toBe(true);
+  expect(detector1.isLeaking()).toBe(true);
+  expect(detector2.isLeaking()).toBe(true);
 
   // We destroy the reference to ref1.
   ref1 = null;
 
   // It will still be referenced by ref2, so both references are still leaking.
-  expect(detector1.isLeaked()).toBe(true);
-  expect(detector2.isLeaked()).toBe(true);
+  expect(detector1.isLeaking()).toBe(true);
+  expect(detector2.isLeaking()).toBe(true);
 
   // We destroy the reference to ref2.
   ref2 = null;
 
   // Now both references should be gone (yay mark & sweep!).
-  expect(detector1.isLeaked()).toBe(false);
-  expect(detector2.isLeaked()).toBe(false);
+  expect(detector1.isLeaking()).toBe(false);
+  expect(detector2.isLeaking()).toBe(false);
 });
