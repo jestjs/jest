@@ -21,7 +21,9 @@ import type {
 import * as utils from 'jest-matcher-utils';
 import matchers from './matchers';
 import spyMatchers from './spy_matchers';
-import toThrowMatchers from './to_throw_matchers';
+import toThrowMatchers, {
+  createMatcher as createThrowMatcher,
+} from './to_throw_matchers';
 import {equals} from './jasmine_utils';
 import {
   any,
@@ -51,6 +53,13 @@ const isPromise = obj => {
   );
 };
 
+const getPromiseMatcher = name => {
+  if (name === 'toThrow' || name === 'toThrowError') {
+    return createThrowMatcher('.' + name, true);
+  }
+  return null;
+};
+
 const expect = (actual: any, ...rest): ExpectationObject => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
@@ -64,35 +73,33 @@ const expect = (actual: any, ...rest): ExpectationObject => {
   };
 
   Object.keys(allMatchers).forEach(name => {
-    expectation[name] = makeThrowingMatcher(allMatchers[name], false, actual);
-    expectation.not[name] = makeThrowingMatcher(
-      allMatchers[name],
-      true,
-      actual,
-    );
+    const matcher = allMatchers[name];
+    const promiseMatcher = getPromiseMatcher(name) || matcher;
+    expectation[name] = makeThrowingMatcher(matcher, false, actual);
+    expectation.not[name] = makeThrowingMatcher(matcher, true, actual);
 
     expectation.resolves[name] = makeResolveMatcher(
       name,
-      allMatchers[name],
+      promiseMatcher,
       false,
       actual,
     );
     expectation.resolves.not[name] = makeResolveMatcher(
       name,
-      allMatchers[name],
+      promiseMatcher,
       true,
       actual,
     );
 
     expectation.rejects[name] = makeRejectMatcher(
       name,
-      allMatchers[name],
+      promiseMatcher,
       false,
       actual,
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
-      allMatchers[name],
+      matcher,
       true,
       actual,
     );

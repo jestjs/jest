@@ -27,11 +27,14 @@ describe('.rejects', () => {
     await jestExpect(Promise.reject({a: 1, b: 2})).rejects.not.toMatchObject({
       c: 1,
     });
-    await jestExpect(
-      Promise.reject(() => {
-        throw new Error();
-      }),
-    ).rejects.toThrow();
+    await jestExpect(Promise.reject(new Error())).rejects.toThrow();
+  });
+
+  it('should reject with toThrow', async () => {
+    async function fn() {
+      throw new Error('some error');
+    }
+    await jestExpect(fn()).rejects.toThrow('some error');
   });
 
   [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {

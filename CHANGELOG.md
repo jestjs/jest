@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[expect]` fix .toThrow for promises
+  ([#4884](https://github.com/facebook/jest/pull/4884))
 * `[jest-docblock]` pragmas should preserve urls
   ([#4837](https://github.com/facebook/jest/pull/4629))
 * `[jest-cli]` Check if `npm_lifecycle_script` calls Jest directly
