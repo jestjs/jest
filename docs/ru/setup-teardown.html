@@ -90,7 +90,7 @@ describe(<span class="hljs-string">'matching cities to foods'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" name=""></a>Общие рекомендации <a class="hash-link" href="#">#</a></h3>
-<p>Если ест падает, нужно проверить в первую очередь, что тест падает, будучи запущенным водиночку. В Jest это легко сделать: временно поменяйте команду <code>test</code> на <code>test.only</code>:</p>
+<p>Если тест падает, нужно проверить в первую очередь, что тест падает, будучи запущенным водиночку. В Jest это легко сделать: временно поменяйте команду <code>test</code> на <code>test.only</code>:</p>
 <pre><code class="language-js">test.only(<span class="hljs-string">'this will be the only test that runs'</span>, () =&gt; {
   expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
 });
