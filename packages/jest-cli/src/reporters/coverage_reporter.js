@@ -276,9 +276,9 @@ export default class CoverageReporter extends BaseReporter {
           // (rather than recalculating it for each covered file) we save a tonne
           // of execution time.
           if (filesByGlob[absoluteThresholdGroup] === undefined) {
-            filesByGlob[absoluteThresholdGroup] = glob.sync(
-              absoluteThresholdGroup,
-            );
+            filesByGlob[absoluteThresholdGroup] = glob
+              .sync(absoluteThresholdGroup)
+              .map(filePath => path.resolve(filePath));
           }
 
           if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
