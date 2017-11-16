@@ -12,45 +12,55 @@ import type {Global} from 'types/Global';
 
 function deepCopy(obj) {
   const newObj = {};
-  let value;
+
   for (const key in obj) {
-    value = obj[key];
-    if (typeof value === 'object' && value !== null) {
-      value = deepCopy(value);
+    if (obj.hasOwnProperty(key)) {
+      let value = obj[key];
+
+      if (typeof value === 'object' && value !== null) {
+        value = deepCopy(value);
+      }
+
+      newObj[key] = value;
     }
-    newObj[key] = value;
   }
+
   return newObj;
 }
 
-export default (global: Global, globals: ConfigGlobals) => {
-  // Forward some APIs
-  global.Buffer = Buffer;
+export default (globalObject: Global, globals: ConfigGlobals) => {
+  let prototype = Object.getPrototypeOf(process);
+  const processObject = Object.create(prototype);
+  const processBlacklist = /^mainModule$/g;
 
-  // `global.process` is mutated by FakeTimers. Make a copy of the
-  // object for the jsdom environment to prevent memory leaks.
-  // Overwrite toString to make it look like the real process object
-  let toStringOverwrite;
-  if (Symbol && Symbol.toStringTag) {
-    // $FlowFixMe
-    toStringOverwrite = {
-      [Symbol.toStringTag]: 'process',
-    };
+  // Sequentially execute all constructors over the object.
+  do {
+    // $FlowFixMe: constructor is always defined.
+    prototype.constructor.call(processObject);
+  } while ((prototype = Object.getPrototypeOf(prototype)));
+
+  // Forward some APIs.
+  globalObject.Buffer = global.Buffer;
+
+  // Make a copy of "process" to avoid memory leaks.
+  if (typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+    // $FlowFixMe: "Symbol.toStringTag" is defined in "process".
+    processObject[Symbol.toStringTag] = process[Symbol.toStringTag];
   }
-  global.process = Object.assign({}, process, toStringOverwrite);
-  global.process.setMaxListeners = process.setMaxListeners.bind(process);
-  global.process.getMaxListeners = process.getMaxListeners.bind(process);
-  global.process.emit = process.emit.bind(process);
-  global.process.addListener = process.addListener.bind(process);
-  global.process.on = process.on.bind(process);
-  global.process.once = process.once.bind(process);
-  global.process.removeListener = process.removeListener.bind(process);
-  global.process.removeAllListeners = process.removeAllListeners.bind(process);
-  global.process.listeners = process.listeners.bind(process);
-  global.process.listenerCount = process.listenerCount.bind(process);
 
-  global.setImmediate = setImmediate;
-  global.clearImmediate = clearImmediate;
+  // Copy all remaining properties that are not already in the object.
+  for (const key in process) {
+    if (process.hasOwnProperty(key) && !processObject.hasOwnProperty(key)) {
+      if (!processBlacklist.test(key)) {
+        // $FlowFixMe: Copying properties is fine.
+        processObject[key] = process[key];
+      }
+    }
+  }
+
+  globalObject.process = processObject;
+  globalObject.setImmediate = global.setImmediate;
+  globalObject.clearImmediate = global.clearImmediate;
 
   Object.assign(global, deepCopy(globals));
 };
