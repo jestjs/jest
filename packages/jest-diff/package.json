@@ -10,6 +10,7 @@
   "dependencies": {
     "chalk": "^2.0.1",
     "diff": "^3.2.0",
+    "diff-match-patch": "1.0.0",
     "jest-get-type": "^21.2.0",
     "pretty-format": "^21.2.1"
   }

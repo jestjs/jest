@@ -280,8 +280,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": 5,</>
-<red>+   \\"a\\": 1,</>
+<green>-   \\"a\\": <inverse>5</>,</>
+<red>+   \\"a\\": <inverse>1</>,</>
 <dim>  }</>"
 `;
 
@@ -2007,11 +2007,11 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>- ArrayContaining [</>
+<green>- Array<inverse>Containing</> [</>
 <red>+ Array [</>
 <dim>    1,</>
-<green>-   2,</>
-<red>+   3,</>
+<green>-   <inverse>2</>,</>
+<red>+   <inverse>3</>,</>
 <dim>  ]</>"
 `;
 
@@ -2038,8 +2038,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Array [</>
-<green>-   2,</>
-<red>+   1,</>
+<green>-   <inverse>2</>,</>
+<red>+   <inverse>1</>,</>
 <dim>  ]</>"
 `;
 
@@ -2083,11 +2083,11 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>- ObjectContaining {</>
-<green>-   \\"a\\": 2,</>
-<red>+ Object {</>
+<green>- Object<inverse>Containing {</></>
+<green>-   <inverse>\\"a</>\\": 2,</>
+<red>+ Object<inverse> {</></>
 <red>+   \\"a\\": 1,</>
-<red>+   \\"b\\": 2,</>
+<red>+   <inverse>\\"b</>\\": 2,</>
 <dim>  }</>"
 `;
 
@@ -2105,8 +2105,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"b\\": 6,</>
-<red>+   \\"a\\": 5,</>
+<green>-   \\"<inverse>b</>\\": <inverse>6</>,</>
+<red>+   \\"<inverse>a</>\\": <inverse>5</>,</>
 <dim>  }</>"
 `;
 
@@ -2186,8 +2186,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Map {</>
-<green>-   \\"b\\" => 0,</>
-<red>+   \\"a\\" => 0,</>
+<green>-   \\"<inverse>b</>\\" => 0,</>
+<red>+   \\"<inverse>a</>\\" => 0,</>
 <dim>  }</>"
 `;
 
@@ -2205,8 +2205,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Map {</>
-<green>-   \\"v\\" => 2,</>
-<red>+   \\"v\\" => 1,</>
+<green>-   \\"v\\" => <inverse>2</>,</>
+<red>+   \\"v\\" => <inverse>1</>,</>
 <dim>  }</>"
 `;
 
@@ -2671,8 +2671,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"c\\": 4,</>
-<red>+   \\"c\\": 5,</>
+<green>-   \\"c\\": <inverse>4</>,</>
+<red>+   \\"c\\": <inverse>5</>,</>
 <dim>  }</>"
 `;
 
@@ -3001,7 +3001,7 @@ Difference:
 <red>+ Received</>
 
 <dim>  Array [</>
-<green>-   -0,</>
+<green>-   <inverse>-</>0,</>
 <red>+   0,</>
 <dim>  ]</>"
 `;
@@ -3020,8 +3020,8 @@ Difference:
 <dim>  Array [</>
 <dim>    1,</>
 <dim>    2,</>
-<green>-   2,</>
-<red>+   3,</>
+<green>-   <inverse>2</>,</>
+<red>+   <inverse>3</>,</>
 <dim>  ]</>"
 `;
 
@@ -3057,8 +3057,8 @@ Difference:
 
 <dim>  Array [</>
 <dim>    1,</>
-<green>-   3,</>
-<red>+   2,</>
+<green>-   <inverse>3</>,</>
+<red>+   <inverse>2</>,</>
 <dim>  ]</>"
 `;
 
@@ -3073,8 +3073,8 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>- [Error: bar]</>
-<red>+ [Error: foo]</>"
+<green>- [Error: <inverse>bar</>]</>
+<red>+ [Error: <inverse>foo</>]</>"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObject({"a": Any<Number>}) 1`] = `
@@ -3089,8 +3089,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": Any<Number>,</>
-<red>+   \\"a\\": \\"a\\",</>
+<green>-   \\"a\\": <inverse>Any<Number></>,</>
+<red>+   \\"a\\": <inverse>\\"a\\"</>,</>
 <dim>  }</>"
 `;
 
@@ -3106,7 +3106,7 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": \\"b!\\",</>
+<green>-   \\"a\\": \\"b<inverse>!</>\\",</>
 <red>+   \\"a\\": \\"b\\",</>
 <dim>    \\"c\\": \\"d\\",</>
 <dim>  }</>"
@@ -3124,8 +3124,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"e\\": \\"b\\",</>
-<red>+   \\"a\\": \\"b\\",</>
+<green>-   \\"<inverse>e</>\\": \\"b\\",</>
+<red>+   \\"<inverse>a</>\\": \\"b\\",</>
 <red>+   \\"c\\": \\"d\\",</>
 <dim>  }</>"
 `;
@@ -3144,10 +3144,10 @@ Difference:
 <dim>  Object {</>
 <dim>    \\"a\\": \\"b\\",</>
 <dim>    \\"t\\": Object {</>
-<green>-     \\"z\\": Array [</>
+<green>-     \\"z\\": <inverse>Array [</></>
 <green>-       3,</>
-<green>-     ],</>
-<red>+     \\"z\\": \\"z\\",</>
+<green>-     <inverse>]</>,</>
+<red>+     \\"z\\": <inverse>\\"z\\"</>,</>
 <dim>    },</>
 <dim>  }</>"
 `;
@@ -3165,8 +3165,8 @@ Difference:
 
 <dim>  Object {</>
 <dim>    \\"t\\": Object {</>
-<green>-     \\"l\\": Object {</>
-<red>+     \\"x\\": Object {</>
+<green>-     \\"<inverse>l</>\\": Object {</>
+<red>+     \\"<inverse>x</>\\": Object {</>
 <dim>        \\"r\\": \\"r\\",</>
 <dim>      },</>
 <red>+     \\"z\\": \\"z\\",</>
@@ -3188,8 +3188,8 @@ Difference:
 <dim>  Object {</>
 <dim>    \\"a\\": Array [</>
 <dim>      Object {</>
-<green>-       \\"a\\": \\"c\\",</>
-<red>+       \\"a\\": \\"a\\",</>
+<green>-       \\"a\\": \\"<inverse>c</>\\",</>
+<red>+       \\"a\\": \\"<inverse>a</>\\",</>
 <dim>      },</>
 <dim>    ],</>
 <dim>  }</>"
@@ -3268,14 +3268,14 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": Object {</>
+<green>-   \\"a\\": <inverse>Object {</></>
 <green>-     \\"b\\": 4,</>
-<green>-   },</>
-<red>+   \\"a\\": Array [</>
+<green>-   <inverse>}</>,</>
+<red>+   \\"a\\": <inverse>Array [</></>
 <red>+     3,</>
 <red>+     4,</>
 <red>+     5,</>
-<red>+   ],</>
+<red>+   <inverse>]</>,</>
 <dim>  }</>"
 `;
 
@@ -3291,14 +3291,14 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": Object {</>
-<green>-     \\"b\\": Any<String>,</>
-<green>-   },</>
-<red>+   \\"a\\": Array [</>
+<green>-   \\"a\\": <inverse>Object {</></>
+<green>-     <inverse>\\"b\\": Any<String></>,</>
+<green>-   <inverse>}</>,</>
+<red>+   \\"a\\": <inverse>Array [</></>
 <red>+     3,</>
 <red>+     4,</>
-<red>+     5,</>
-<red>+   ],</>
+<red>+     <inverse>5</>,</>
+<red>+   <inverse>]</>,</>
 <dim>  }</>"
 `;
 
@@ -3316,8 +3316,8 @@ Difference:
 <dim>  Object {</>
 <dim>    \\"d\\": Object {</>
 <dim>      \\"e\\": Object {</>
-<green>-       \\"f\\": 222,</>
-<red>+       \\"f\\": 555,</>
+<green>-       \\"f\\": <inverse>222</>,</>
+<red>+       \\"f\\": <inverse>555</>,</>
 <dim>      },</>
 <dim>    },</>
 <dim>  }</>"
@@ -3335,8 +3335,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": 2015-10-10T00:00:00.000Z,</>
-<red>+   \\"a\\": 2015-11-30T00:00:00.000Z,</>
+<green>-   \\"a\\": 2015-1<inverse>0-1</>0T00:00:00.000Z,</>
+<red>+   \\"a\\": 2015-1<inverse>1-3</>0T00:00:00.000Z,</>
 <dim>  }</>"
 `;
 
@@ -3352,8 +3352,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": \\"4\\",</>
-<red>+   \\"a\\": null,</>
+<green>-   \\"a\\": <inverse>\\"4\\"</>,</>
+<red>+   \\"a\\": <inverse>null</>,</>
 <dim>  }</>"
 `;
 
@@ -3369,8 +3369,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": undefined,</>
-<red>+   \\"a\\": null,</>
+<green>-   \\"a\\": <inverse>undefined</>,</>
+<red>+   \\"a\\": <inverse>null</>,</>
 <dim>  }</>"
 `;
 
@@ -3386,8 +3386,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"a\\": null,</>
-<red>+   \\"a\\": undefined,</>
+<green>-   \\"a\\": <inverse>null</>,</>
+<red>+   \\"a\\": <inverse>undefined</>,</>
 <dim>  }</>"
 `;
 
@@ -3419,8 +3419,8 @@ Difference:
 <green>- Expected</>
 <red>+ Received</>
 
-<green>- 2015-10-10T00:00:00.000Z</>
-<red>+ 2015-11-30T00:00:00.000Z</>"
+<green>- 2015-1<inverse>0-1</>0T00:00:00.000Z</>
+<red>+ 2015-1<inverse>1-3</>0T00:00:00.000Z</>"
 `;
 
 exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2}) 1`] = `

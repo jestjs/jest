@@ -18,8 +18,8 @@ Difference:
 <red>+ Received</>
 
 <dim>  Object {</>
-<green>-   \\"b\\": 1,</>
-<red>+   \\"a\\": 1,</>
+<green>-   \\"<inverse>b</>\\": 1,</>
+<red>+   \\"<inverse>a</>\\": 1,</>
 <dim>    \\"toJSON\\": [Function toJSON],</>
 <dim>  }</>"
 `;
