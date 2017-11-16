@@ -117,13 +117,16 @@ class Resolver {
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
-    const extensions = this._options.extensions.slice();
-    if (this._supportsNativePlatform()) {
-      extensions.unshift('.' + NATIVE_PLATFORM + '.js');
-    }
-    if (defaultPlatform) {
-      extensions.unshift('.' + defaultPlatform + '.js');
-    }
+
+    const extensions = [].concat(
+      defaultPlatform
+        ? this._options.extensions.map(ext => '.' + defaultPlatform + ext)
+        : undefined,
+      this._supportsNativePlatform()
+        ? this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext)
+        : undefined,
+      this._options.extensions.slice()
+    );
 
     // 0. If we have already resolved this module for this directory name,
     //    return a value from the cache.
