@@ -10,57 +10,16 @@
 import type {ConfigGlobals} from 'types/Config';
 import type {Global} from 'types/Global';
 
-function deepCopy(obj) {
-  const newObj = {};
+import createProcesObject from './create_process_object';
+import deepCyclicCopy from './deep_cyclic_copy';
 
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      let value = obj[key];
-
-      if (typeof value === 'object' && value !== null) {
-        value = deepCopy(value);
-      }
-
-      newObj[key] = value;
-    }
-  }
-
-  return newObj;
-}
-
-export default (globalObject: Global, globals: ConfigGlobals) => {
-  let prototype = Object.getPrototypeOf(process);
-  const processObject = Object.create(prototype);
-  const processBlacklist = /^mainModule$/g;
-
-  // Sequentially execute all constructors over the object.
-  do {
-    // $FlowFixMe: constructor is always defined.
-    prototype.constructor.call(processObject);
-  } while ((prototype = Object.getPrototypeOf(prototype)));
+export default function(globalObject: Global, globals: ConfigGlobals) {
+  globalObject.process = createProcesObject();
 
   // Forward some APIs.
   globalObject.Buffer = global.Buffer;
-
-  // Make a copy of "process" to avoid memory leaks.
-  if (typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-    // $FlowFixMe: "Symbol.toStringTag" is defined in "process".
-    processObject[Symbol.toStringTag] = process[Symbol.toStringTag];
-  }
-
-  // Copy all remaining properties that are not already in the object.
-  for (const key in process) {
-    if (process.hasOwnProperty(key) && !processObject.hasOwnProperty(key)) {
-      if (!processBlacklist.test(key)) {
-        // $FlowFixMe: Copying properties is fine.
-        processObject[key] = process[key];
-      }
-    }
-  }
-
-  globalObject.process = processObject;
   globalObject.setImmediate = global.setImmediate;
   globalObject.clearImmediate = global.clearImmediate;
 
-  Object.assign(global, deepCopy(globals));
-};
+  Object.assign(global, deepCyclicCopy(globals));
+}

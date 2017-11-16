@@ -300,8 +300,7 @@ class Runtime {
     }
 
     if (moduleName && this._resolver.isCoreModule(moduleName)) {
-      // $FlowFixMe
-      return require(moduleName);
+      return this._requireCoreModule(moduleName);
     }
 
     if (!modulePath) {
@@ -556,6 +555,15 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+  }
+
+  _requireCoreModule(moduleName: string) {
+    if (moduleName === 'process') {
+      return this._environment.global.process;
+    }
+
+    // $FlowFixMe
+    return require(moduleName);
   }
 
   _generateMock(from: Path, moduleName: string) {
