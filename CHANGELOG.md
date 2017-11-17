@@ -130,6 +130,7 @@
   ([#4578](https://github.com/facebook/jest/pull/4578))
 * `[jest-runtime]` Add `.advanceTimersByTime`; keep `.runTimersToTime()` as an
   alias.
+* `[docs]` Include missing dependency in TestEnvironment sample code  
 
 ## jest 21.2.1
 
