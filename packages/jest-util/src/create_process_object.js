@@ -19,7 +19,7 @@ export default function() {
   // Sequentially execute all constructors over the object.
   let proto = process;
 
-  while (proto = Object.getPrototypeOf(proto)) {
+  while ((proto = Object.getPrototypeOf(proto))) {
     if (typeof proto.constructor === 'function') {
       proto.constructor.call(newProcess);
     }
