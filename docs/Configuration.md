@@ -672,6 +672,8 @@ in their own TestEnvironment._
 Example:
 
 ```js
+const NodeEnvironment = require('jest-environment-node');
+
 class CustomEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
