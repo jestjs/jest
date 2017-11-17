@@ -117,19 +117,17 @@ class Resolver {
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
-
-    let extensions: Array<string> = [];
-    if (defaultPlatform) {
-      extensions = extensions.concat(
-        this._options.extensions.map(ext => '.' + defaultPlatform + ext),
-      );
-    }
+    const extensions = this._options.extensions.slice();
     if (this._supportsNativePlatform()) {
-      extensions = extensions.concat(
-        this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
       );
     }
-    extensions = extensions.concat(this._options.extensions);
+    if (defaultPlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
+    }
 
     // 0. If we have already resolved this module for this directory name,
     //    return a value from the cache.

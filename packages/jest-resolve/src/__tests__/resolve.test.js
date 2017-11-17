@@ -78,6 +78,58 @@ describe('findNodeModule', () => {
   });
 });
 
+describe('resolveModule', () => {
+  let moduleMap;
+  beforeEach(() => {
+    moduleMap = new ModuleMap({
+      duplicates: [],
+      map: [],
+      mocks: [],
+    });
+  });
+
+  it('is possible to resolve node modules', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    });
+    const src = require.resolve('../');
+    const resolved = resolver.resolveModule(
+      src,
+      './__mocks__/mockJsDependency',
+    );
+    expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
+  });
+
+  it('is possible to resolve node modules with custom extensions', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js', '.jsx'],
+    });
+    const src = require.resolve('../');
+    const resolvedJsx = resolver.resolveModule(
+      src,
+      './__mocks__/mockJsxDependency',
+    );
+    expect(resolvedJsx).toBe(
+      require.resolve('../__mocks__/mockJsxDependency.jsx'),
+    );
+  });
+
+  it('is possible to resolve node modules with custom extensions and platforms', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js', '.jsx'],
+      platforms: ['native'],
+    });
+    const src = require.resolve('../');
+    const resolvedJsx = resolver.resolveModule(
+      src,
+      './__mocks__/mockJsxDependency',
+    );
+    expect(resolvedJsx).toBe(
+      require.resolve('../__mocks__/mockJsxDependency.native.jsx'),
+    );
+  });
+});
+
 describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
     userResolver.mockImplementation(() => 'module');
@@ -106,6 +158,7 @@ describe('getMockModule', () => {
       path.dirname(src),
     );
   });
+
   it('is possible to use custom resolver to resolve deps inside mock modules without moduleNameMapper', () => {
     userResolver.mockImplementation(() => 'module');
 
