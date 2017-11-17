@@ -30,6 +30,18 @@ jest.doMock(
     },
 );
 
+jest.doMock('./__fixtures__/watch_plugin', () => ({
+  enter: jest.fn(),
+  key: 's'.codePointAt(0),
+  prompt: 'do nothing',
+}));
+
+jest.doMock('./__fixtures__/watch_plugin2', () => ({
+  enter: jest.fn(),
+  key: 'u'.codePointAt(0),
+  prompt: 'do something else',
+}));
+
 const watch = require('../watch').default;
 afterEach(runJestMock.mockReset);
 
@@ -87,6 +99,88 @@ describe('Watch mode flows', () => {
       testWatcher: new TestWatcher({isWatchMode: true}),
     });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
+  });
+
+  it('resolves relative to the package root', () => {
+    expect(async () => {
+      await watch(
+        Object.assign({}, globalConfig, {
+          rootDir: __dirname,
+          watchPlugins: ['./__fixtures__/watch_plugin'],
+        }),
+        contexts,
+        pipe,
+        hasteMapInstances,
+        stdin,
+      );
+    }).not.toThrow();
+  });
+
+  it('shows prompts for WatchPlugins in alphabetical order', async () => {
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [
+          './__fixtures__/watch_plugin2',
+          './__fixtures__/watch_plugin',
+        ],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    expect(pipe.write.mock.calls).toMatchSnapshot();
+  });
+
+  it('triggers enter on a WatchPlugin when its key is pressed', () => {
+    const plugin = require('./__fixtures__/watch_plugin');
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: ['./__fixtures__/watch_plugin'],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    stdin.emit(plugin.key.toString(16));
+
+    expect(plugin.enter).toHaveBeenCalled();
+  });
+
+  it('prevents Jest from handling keys when active and returns control when end is called', () => {
+    const plugin = require('./__fixtures__/watch_plugin');
+    const plugin2 = require('./__fixtures__/watch_plugin2');
+
+    let pluginEnd;
+    plugin.enter = jest.fn((globalConfig, end) => (pluginEnd = end));
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [
+          './__fixtures__/watch_plugin',
+          './__fixtures__/watch_plugin2',
+        ],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    stdin.emit(plugin.key.toString(16));
+    expect(plugin.enter).toHaveBeenCalled();
+    stdin.emit(plugin2.key.toString(16));
+    expect(plugin2.enter).not.toHaveBeenCalled();
+    pluginEnd();
+    stdin.emit(plugin2.key.toString(16));
+    expect(plugin2.enter).toHaveBeenCalled();
   });
 
   it('Pressing "o" runs test in "only changed files" mode', () => {

@@ -198,7 +198,7 @@ describe('node crawler', () => {
     });
   });
 
-  it('completes with emtpy roots', () => {
+  it('completes with empty roots', () => {
     process.platform = 'win32';
 
     nodeCrawl = require('../node');

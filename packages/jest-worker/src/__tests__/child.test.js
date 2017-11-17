@@ -203,7 +203,7 @@ it('returns results immediately when function is synchronous', () => {
     '"null" or "undefined" thrown',
   );
 
-  expect(process.send.mock.calls.length).toBe(5);
+  expect(process.send).toHaveBeenCalledTimes(5);
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
@@ -243,7 +243,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
     {},
   ]);
 
-  expect(process.send.mock.calls.length).toBe(2);
+  expect(process.send).toHaveBeenCalledTimes(2);
 });
 
 it('calls the main module if the method call is "default"', () => {

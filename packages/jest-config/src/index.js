@@ -112,6 +112,7 @@ const getConfigs = (
       verbose: options.verbose,
       watch: options.watch,
       watchAll: options.watchAll,
+      watchPlugins: options.watchPlugins,
       watchman: options.watchman,
     }),
     projectConfig: Object.freeze({
@@ -143,6 +144,7 @@ const getConfigs = (
       skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,
       testEnvironment: options.testEnvironment,
+      testLocationInResults: options.testLocationInResults,
       testMatch: options.testMatch,
       testPathIgnorePatterns: options.testPathIgnorePatterns,
       testRegex: options.testRegex,

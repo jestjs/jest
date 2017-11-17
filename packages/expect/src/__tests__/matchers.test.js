@@ -27,11 +27,14 @@ describe('.rejects', () => {
     await jestExpect(Promise.reject({a: 1, b: 2})).rejects.not.toMatchObject({
       c: 1,
     });
-    await jestExpect(
-      Promise.reject(() => {
-        throw new Error();
-      }),
-    ).rejects.toThrow();
+    await jestExpect(Promise.reject(new Error())).rejects.toThrow();
+  });
+
+  it('should reject with toThrow', async () => {
+    async function fn() {
+      throw new Error('some error');
+    }
+    await jestExpect(fn()).rejects.toThrow('some error');
   });
 
   [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
@@ -442,7 +445,9 @@ describe(
         jestExpect(big).toBeGreaterThanOrEqual(small);
       });
 
-      it(`{pass: false} expect(${small}).toBeGreaterThanOrEqual(${big})`, () => {
+      it(`{pass: false} expect(${small}).toBeGreaterThanOrEqual(${
+        big
+      })`, () => {
         jestExpect(small).not.toBeGreaterThanOrEqual(big);
       });
 
@@ -705,39 +710,31 @@ describe('.toMatch()', () => {
 });
 
 describe('.toHaveLength', () => {
-  [
-    [[1, 2], 2],
-    [[], 0],
-    [['a', 'b'], 2],
-    ['abc', 3],
-    ['', 0],
-  ].forEach(([received, length]) => {
-    test(`{pass: true} expect(${stringify(
-      received,
-    )}).toHaveLength(${length})`, () => {
-      jestExpect(received).toHaveLength(length);
-      expect(() =>
-        jestExpect(received).not.toHaveLength(length),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  });
+  [[[1, 2], 2], [[], 0], [['a', 'b'], 2], ['abc', 3], ['', 0]].forEach(
+    ([received, length]) => {
+      test(`{pass: true} expect(${stringify(received)}).toHaveLength(${
+        length
+      })`, () => {
+        jestExpect(received).toHaveLength(length);
+        expect(() =>
+          jestExpect(received).not.toHaveLength(length),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
 
-  [
-    [[1, 2], 3],
-    [[], 1],
-    [['a', 'b'], 99],
-    ['abc', 66],
-    ['', 1],
-  ].forEach(([received, length]) => {
-    test(`{pass: false} expect(${stringify(
-      received,
-    )}).toHaveLength(${length})`, () => {
-      jestExpect(received).not.toHaveLength(length);
-      expect(() =>
-        jestExpect(received).toHaveLength(length),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  });
+  [[[1, 2], 3], [[], 1], [['a', 'b'], 99], ['abc', 66], ['', 1]].forEach(
+    ([received, length]) => {
+      test(`{pass: false} expect(${stringify(received)}).toHaveLength(${
+        length
+      })`, () => {
+        jestExpect(received).not.toHaveLength(length);
+        expect(() =>
+          jestExpect(received).toHaveLength(length),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
 
   test('error cases', () => {
     expect(() =>
@@ -758,9 +755,9 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
   ].forEach(([obj, keyPath, value]) => {
-    test(`{pass: true} expect(${stringify(
-      obj,
-    )}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
+    test(`{pass: true} expect(${stringify(obj)}).toHaveProperty('${
+      keyPath
+    }', ${stringify(value)})`, () => {
       jestExpect(obj).toHaveProperty(keyPath, value);
       expect(() =>
         jestExpect(obj).not.toHaveProperty(keyPath, value),
@@ -779,9 +776,9 @@ describe('.toHaveProperty()', () => {
     ['abc', 'a.b.c', {a: 5}],
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
   ].forEach(([obj, keyPath, value]) => {
-    test(`{pass: false} expect(${stringify(
-      obj,
-    )}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
+    test(`{pass: false} expect(${stringify(obj)}).toHaveProperty('${
+      keyPath
+    }', ${stringify(value)})`, () => {
       expect(() =>
         jestExpect(obj).toHaveProperty(keyPath, value),
       ).toThrowErrorMatchingSnapshot();
@@ -794,9 +791,9 @@ describe('.toHaveProperty()', () => {
     [{a: 0}, 'a'],
     [{a: {b: undefined}}, 'a.b'],
   ].forEach(([obj, keyPath]) => {
-    test(`{pass: true} expect(${stringify(
-      obj,
-    )}).toHaveProperty('${keyPath}')'`, () => {
+    test(`{pass: true} expect(${stringify(obj)}).toHaveProperty('${
+      keyPath
+    }')'`, () => {
       jestExpect(obj).toHaveProperty(keyPath);
       expect(() =>
         jestExpect(obj).not.toHaveProperty(keyPath),
@@ -811,9 +808,9 @@ describe('.toHaveProperty()', () => {
     [1, 'a.b.c'],
     ['abc', 'a.b.c'],
   ].forEach(([obj, keyPath]) => {
-    test(`{pass: false} expect(${stringify(
-      obj,
-    )}).toHaveProperty('${keyPath}')`, () => {
+    test(`{pass: false} expect(${stringify(obj)}).toHaveProperty('${
+      keyPath
+    }')`, () => {
       expect(() =>
         jestExpect(obj).toHaveProperty(keyPath),
       ).toThrowErrorMatchingSnapshot();
@@ -828,9 +825,9 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {}}}, null],
     [{a: {b: {}}}, 1],
   ].forEach(([obj, keyPath]) => {
-    test(`{error} expect(${stringify(
-      obj,
-    )}).toHaveProperty('${keyPath}')`, () => {
+    test(`{error} expect(${stringify(obj)}).toHaveProperty('${
+      keyPath
+    }')`, () => {
       expect(() =>
         jestExpect(obj).toHaveProperty(keyPath),
       ).toThrowErrorMatchingSnapshot();

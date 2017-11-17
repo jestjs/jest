@@ -23,16 +23,18 @@ let forkInterface;
 let childProcess;
 
 beforeEach(() => {
-  forkInterface = Object.assign(new EventEmitter(), {
-    send: jest.fn(),
-    stderr: {},
-    stdout: {},
-  });
-
   jest.mock('child_process');
 
   childProcess = require('child_process');
-  childProcess.fork.mockImplementation(() => forkInterface);
+  childProcess.fork.mockImplementation(() => {
+    forkInterface = Object.assign(new EventEmitter(), {
+      send: jest.fn(),
+      stderr: {},
+      stdout: {},
+    });
+
+    return forkInterface;
+  });
 
   Worker = require('../worker').default;
 });
@@ -48,6 +50,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
       cwd: '/tmp',
       execArgv: ['--no-warnings'],
     },
+    maxRetries: 3,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -62,6 +65,8 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 
 it('initializes the child process with the given workerPath', () => {
   new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -72,8 +77,34 @@ it('initializes the child process with the given workerPath', () => {
   ]);
 });
 
+it('stops initializing the worker after the amount of retries is exceeded', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo/bar/baz.js',
+  });
+
+  const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
+  const callback = jest.fn();
+
+  worker.send(request, callback);
+
+  // We fail four times (initial + three retries).
+  forkInterface.emit('exit');
+  forkInterface.emit('exit');
+  forkInterface.emit('exit');
+  forkInterface.emit('exit');
+
+  expect(childProcess.fork).toHaveBeenCalledTimes(5);
+  expect(callback.mock.calls[0][0]).toBeInstanceOf(Error);
+  expect(callback.mock.calls[0][0].type).toBe('WorkerError');
+  expect(callback.mock.calls[0][1]).toBe(null);
+});
+
 it('provides stdout and stderr fields from the child process', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -83,6 +114,8 @@ it('provides stdout and stderr fields from the child process', () => {
 
 it('swtiches the processed flag of a task as soon as it is processed', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -101,6 +134,8 @@ it('swtiches the processed flag of a task as soon as it is processed', () => {
 
 it('sends the task to the child process', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -114,6 +149,8 @@ it('sends the task to the child process', () => {
 
 it('relates replies to requests, in order', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -154,6 +191,8 @@ it('relates replies to requests, in order', () => {
 
 it('creates error instances for known errors', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -210,6 +249,8 @@ it('creates error instances for known errors', () => {
 
 it('throws when the child process returns a strange message', () => {
   const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
@@ -223,12 +264,14 @@ it('throws when the child process returns a strange message', () => {
 
 it('does not restart the child if it cleanly exited', () => {
   new Worker({
+    forkOptions: {},
+    maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess.fork.mock.calls.length).toBe(1);
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
   forkInterface.emit('exit', 0);
-  expect(childProcess.fork.mock.calls.length).toBe(1);
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
 });
 
 it('restarts the child when the child process dies', () => {
@@ -236,7 +279,7 @@ it('restarts the child when the child process dies', () => {
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess.fork.mock.calls.length).toBe(1);
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
   forkInterface.emit('exit', 1);
-  expect(childProcess.fork.mock.calls.length).toBe(2);
+  expect(childProcess.fork).toHaveBeenCalledTimes(2);
 });

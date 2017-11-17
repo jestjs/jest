@@ -480,6 +480,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'skipNodeResolution':
       case 'testEnvironment':
       case 'testFailureExitCode':
+      case 'testLocationInResults':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':
@@ -540,8 +541,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
-    newOptions.coverageReporters = (newOptions.coverageReporters || [])
-      .filter(reporter => reporter !== 'text');
+    newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
+      reporter => reporter !== 'text',
+    );
   }
 
   return {

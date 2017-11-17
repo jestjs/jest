@@ -22,49 +22,40 @@ beforeEach(() => {
 
   fs = require('fs');
   generateEmptyCoverage = require('../../generate_empty_coverage').default;
-  worker = require('../coverage_worker');
+  worker = require('../coverage_worker').worker;
 });
 
-test('resolves to the result of generateEmptyCoverage upon success', () => {
+test('resolves to the result of generateEmptyCoverage upon success', async () => {
   expect.assertions(2);
+
   const validJS = 'function(){}';
+
   fs.readFileSync.mockImplementation(() => validJS);
   generateEmptyCoverage.mockImplementation(() => 42);
-  return new Promise((resolve, reject) => {
-    worker(workerOptions, (error, result) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      expect(generateEmptyCoverage).toBeCalledWith(
-        validJS,
-        'banana.js',
-        globalConfig,
-        config,
-      );
-      expect(result).toEqual(42);
-      resolve();
-    });
-  });
+
+  const result = await worker(workerOptions);
+
+  expect(generateEmptyCoverage).toBeCalledWith(
+    validJS,
+    'banana.js',
+    globalConfig,
+    config,
+  );
+
+  expect(result).toEqual(42);
 });
 
-test('throws errors on invalid JavaScript', () => {
-  expect.assertions(2);
+test('throws errors on invalid JavaScript', async () => {
+  expect.assertions(1);
+
   generateEmptyCoverage.mockImplementation(() => {
     throw new Error('SyntaxError');
   });
-  return new Promise((resolve, reject) => {
-    worker(workerOptions, (error, result) => {
-      if (!error) {
-        reject(result);
-        return;
-      }
 
-      expect(error.message).toMatch(
-        'Failed to collect coverage from banana.js',
-      );
-      expect(result).toEqual(undefined);
-      resolve();
-    });
-  });
+  // We intentionally expect the worker to fail!
+  try {
+    await worker(workerOptions);
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error);
+  }
 });

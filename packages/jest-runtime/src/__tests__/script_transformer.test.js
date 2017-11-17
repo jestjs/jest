@@ -329,9 +329,11 @@ describe('ScriptTransformer', () => {
       mapCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(
-      writeFileAtomic.sync,
-    ).toBeCalledWith(result.sourceMapPath, sourceMap, {encoding: 'utf8'});
+    expect(writeFileAtomic.sync).toBeCalledWith(
+      result.sourceMapPath,
+      sourceMap,
+      {encoding: 'utf8'},
+    );
   });
 
   it('writes source maps if given by the transformer', () => {
@@ -355,11 +357,13 @@ describe('ScriptTransformer', () => {
       mapCoverage: false,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(
-      writeFileAtomic.sync,
-    ).toBeCalledWith(result.sourceMapPath, JSON.stringify(map), {
-      encoding: 'utf8',
-    });
+    expect(writeFileAtomic.sync).toBeCalledWith(
+      result.sourceMapPath,
+      JSON.stringify(map),
+      {
+        encoding: 'utf8',
+      },
+    );
   });
 
   it('does not write source map if not given by the transformer', () => {

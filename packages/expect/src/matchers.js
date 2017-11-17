@@ -553,9 +553,9 @@ const matchers: MatchersObject = {
                 `  ${printReceived(result.value)}` +
                 (diffString ? `\n\nDifference:\n\n${diffString}` : '')
               : traversedPath
-                ? `Received:\n  ${RECEIVED_COLOR(
-                    'object',
-                  )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
+                ? `Received:\n  ${RECEIVED_COLOR('object')}.${
+                    traversedPath
+                  }: ${printReceived(lastTraversedObject)}`
                 : '')
           );
         };

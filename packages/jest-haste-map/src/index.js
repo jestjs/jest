@@ -17,7 +17,9 @@ import type {
   HasteRegExp,
   MockData,
 } from 'types/HasteMap';
-import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
+
+import typeof {worker} from './worker';
+
 // eslint-disable-next-line import/no-duplicates
 import typeof HType from './constants';
 
@@ -28,7 +30,6 @@ import crypto from 'crypto';
 import {execSync} from 'child_process';
 import fs from 'graceful-fs';
 import sane from 'sane';
-import workerFarm from 'worker-farm';
 import {version as VERSION} from '../package.json';
 // eslint-disable-next-line import/no-duplicates
 import H from './constants';
@@ -37,13 +38,12 @@ import HasteModuleMap from './module_map';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
 import normalizePathSep from './lib/normalize_path_sep';
+import Worker from 'jest-worker';
 
 // eslint-disable-next-line import/default
 import nodeCrawl from './crawlers/node';
 // eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
-// eslint-disable-next-line import/default
-import worker from './worker';
 
 type Options = {
   cacheDirectory?: string,
@@ -86,6 +86,8 @@ type InternalOptions = {
 type Watcher = {
   close(callback: () => void): void,
 };
+
+type WorkerInterface = {worker: worker};
 
 export type ModuleMap = HasteModuleMap;
 export type FS = HasteFS;
@@ -202,8 +204,7 @@ class HasteMap extends EventEmitter {
   _options: InternalOptions;
   _watchers: Array<Watcher>;
   _whitelist: ?RegExp;
-  _workerFarm: ?(data: WorkerMessage, callback: WorkerCallback) => void;
-  _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
+  _worker: ?WorkerInterface;
 
   constructor(options: Options) {
     super();
@@ -245,9 +246,8 @@ class HasteMap extends EventEmitter {
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
-    this._workerPromise = null;
-    this._workerFarm = null;
     this._watchers = [];
+    this._worker = null;
   }
 
   static getCacheFilePath(
@@ -265,7 +265,7 @@ class HasteMap extends EventEmitter {
   build(): Promise<HasteMapObject> {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
-        .then(fileMap => this._buildHasteMap(fileMap))
+        .then(data => this._buildHasteMap(data))
         .then(hasteMap => {
           this._persist(hasteMap);
           const hasteFS = new HasteFS(hasteMap.files);
@@ -305,13 +305,28 @@ class HasteMap extends EventEmitter {
   /**
    * 2. crawl the file system.
    */
-  _buildFileMap(): Promise<InternalHasteMap> {
+  _buildFileMap(): Promise<{
+    deprecatedFiles: Array<{moduleName: string, path: string}>,
+    hasteMap: InternalHasteMap,
+  }> {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
 
     return Promise.resolve()
       .then(() => read.call(this))
       .catch(() => this._createEmptyMap())
-      .then(hasteMap => this._crawl(hasteMap));
+      .then(cachedHasteMap => {
+        const cachedFiles = Object.keys(cachedHasteMap.files).map(filePath => {
+          const moduleName = cachedHasteMap.files[filePath][H.ID];
+          return {moduleName, path: filePath};
+        });
+        return this._crawl(cachedHasteMap).then(hasteMap => {
+          const deprecatedFiles = cachedFiles.filter(file => {
+            const fileData = hasteMap.files[file.path];
+            return fileData == null || file.moduleName !== fileData[H.ID];
+          });
+          return {deprecatedFiles, hasteMap};
+        });
+      });
   }
 
   /**
@@ -412,36 +427,54 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    return this._getWorker(workerOptions)({
-      filePath,
-      hasteImplModulePath: this._options.hasteImplModulePath,
-    }).then(
-      metadata => {
-        // `1` for truthy values instead of `true` to save cache space.
-        fileMetadata[H.VISITED] = 1;
-        const metadataId = metadata.id;
-        const metadataModule = metadata.module;
-        if (metadataId && metadataModule) {
-          fileMetadata[H.ID] = metadataId;
-          setModule(metadataId, metadataModule);
-        }
-        fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
-      },
-      error => {
-        if (['ENOENT', 'EACCES'].indexOf(error.code) < 0) {
-          throw error;
-        }
-        // If a file cannot be read we remove it from the file list and
-        // ignore the failure silently.
-        delete hasteMap.files[filePath];
-      },
-    );
+    return this._getWorker(workerOptions)
+      .worker({
+        filePath,
+        hasteImplModulePath: this._options.hasteImplModulePath,
+      })
+      .then(
+        metadata => {
+          // `1` for truthy values instead of `true` to save cache space.
+          fileMetadata[H.VISITED] = 1;
+          const metadataId = metadata.id;
+          const metadataModule = metadata.module;
+          if (metadataId && metadataModule) {
+            fileMetadata[H.ID] = metadataId;
+            setModule(metadataId, metadataModule);
+          }
+          fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+        },
+        error => {
+          if (typeof error !== 'object' || !error.message || !error.stack) {
+            error = new Error(error);
+            error.stack = ''; // Remove stack for stack-less errors.
+          }
+
+          // $FlowFixMe: checking error code is OK if error comes from "fs".
+          if (['ENOENT', 'EACCES'].indexOf(error.code) < 0) {
+            throw error;
+          }
+
+          // If a file cannot be read we remove it from the file list and
+          // ignore the failure silently.
+          delete hasteMap.files[filePath];
+        },
+      );
   }
 
-  _buildHasteMap(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
+  _buildHasteMap(data: {
+    deprecatedFiles: Array<{moduleName: string, path: string}>,
+    hasteMap: InternalHasteMap,
+  }): Promise<InternalHasteMap> {
+    const {deprecatedFiles, hasteMap} = data;
     const map = Object.create(null);
     const mocks = Object.create(null);
     const promises = [];
+
+    for (let i = 0; i < deprecatedFiles.length; ++i) {
+      const file = deprecatedFiles[i];
+      this._recoverDuplicates(hasteMap, file.path, file.moduleName);
+    }
 
     for (const filePath in hasteMap.files) {
       const promise = this._processFile(hasteMap, map, mocks, filePath);
@@ -450,25 +483,27 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    const cleanup = () => {
-      if (this._workerFarm) {
-        workerFarm.end(this._workerFarm);
-      }
-      this._workerFarm = null;
-      this._workerPromise = null;
-    };
-
     return Promise.all(promises)
-      .then(cleanup)
       .then(() => {
+        this._cleanup();
         hasteMap.map = map;
         hasteMap.mocks = mocks;
         return hasteMap;
       })
       .catch(error => {
-        cleanup();
+        this._cleanup();
         return Promise.reject(error);
       });
+  }
+
+  _cleanup() {
+    const worker = this._worker;
+
+    if (worker && typeof worker.end === 'function') {
+      worker.end();
+    }
+
+    this._worker = null;
   }
 
   /**
@@ -481,36 +516,21 @@ class HasteMap extends EventEmitter {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  _getWorker(
-    options: ?{forceInBand: boolean},
-  ): (message: WorkerMessage) => Promise<WorkerMetadata> {
-    if (!this._workerPromise) {
-      let workerFn;
+  _getWorker(options: ?{forceInBand: boolean}): WorkerInterface {
+    if (!this._worker) {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
-        workerFn = worker;
+        this._worker = require('./worker');
       } else {
-        this._workerFarm = workerFarm(
-          {
-            maxConcurrentWorkers: this._options.maxWorkers,
-          },
-          require.resolve('./worker'),
-        );
-        workerFn = this._workerFarm;
+        // $FlowFixMe: assignment of a worker with custom properties.
+        this._worker = new Worker(require.resolve('./worker'), {
+          exposedMethods: ['worker'],
+          maxRetries: 3,
+          numWorkers: this._options.maxWorkers,
+        });
       }
-
-      this._workerPromise = (message: WorkerMessage) =>
-        new Promise((resolve, reject) =>
-          workerFn(message, (error, metadata) => {
-            if (error || !metadata) {
-              reject(error);
-            } else {
-              resolve(metadata);
-            }
-          }),
-        );
     }
 
-    return this._workerPromise;
+    return this._worker;
   }
 
   _parse(hasteMapPath: string): InternalHasteMap {
@@ -725,7 +745,7 @@ class HasteMap extends EventEmitter {
               },
             );
             // Cleanup
-            this._workerPromise = null;
+            this._cleanup();
             if (promise) {
               return promise.then(add);
             } else {
@@ -746,11 +766,11 @@ class HasteMap extends EventEmitter {
     };
 
     this._changeInterval = setInterval(emitChange, CHANGE_INTERVAL);
-    return Promise.all(
-      this._options.roots.map(createWatcher),
-    ).then(watchers => {
-      this._watchers = watchers;
-    });
+    return Promise.all(this._options.roots.map(createWatcher)).then(
+      watchers => {
+        this._watchers = watchers;
+      },
+    );
   }
 
   /**

@@ -13,6 +13,7 @@ import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './test_watcher';
 
+import chalk from 'chalk';
 import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
 import fs from 'graceful-fs';
@@ -77,7 +78,7 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
-export default async function runJest({
+export default (async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -96,6 +97,21 @@ export default async function runJest({
 }) {
   const sequencer = new TestSequencer();
   let allTests = [];
+
+  if (changedFilesPromise && globalConfig.watch) {
+    const {repos} = await changedFilesPromise;
+    const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
+    if (noSCM) {
+      process.stderr.write(
+        '\n' +
+          chalk.bold('--watch') +
+          ' is not supported without git/hg, please use --watchAll ' +
+          '\n',
+      );
+      process.exit(1);
+    }
+  }
+
   const testRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(
@@ -122,7 +138,6 @@ export default async function runJest({
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
-
   if (!allTests.length) {
     const noTestsFoundMessage = getNoTestsFoundMessage(
       testRunData,
@@ -167,4 +182,4 @@ export default async function runJest({
     outputFile: globalConfig.outputFile,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-}
+});

@@ -54,8 +54,7 @@ const NATIVE_PLATFORM = 'native';
 const cwd = process.cwd();
 const resolvedCwd = fs.realpathSync(cwd) || cwd;
 const nodePaths = process.env.NODE_PATH
-  ? process.env.NODE_PATH
-      .split(path.delimiter)
+  ? process.env.NODE_PATH.split(path.delimiter)
       .filter(Boolean)
       // The resolver expects absolute paths.
       .map(p => path.resolve(resolvedCwd, p))
@@ -120,10 +119,14 @@ class Resolver {
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
     if (this._supportsNativePlatform()) {
-      extensions.unshift('.' + NATIVE_PLATFORM + '.js');
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
     }
     if (defaultPlatform) {
-      extensions.unshift('.' + defaultPlatform + '.js');
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
     }
 
     // 0. If we have already resolved this module for this directory name,

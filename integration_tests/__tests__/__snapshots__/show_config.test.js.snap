@@ -38,6 +38,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"setupFiles\\": [],
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
+      \\"testLocationInResults\\": false,
       \\"testMatch\\": [
         \\"**/__tests__/**/*.js?(x)\\",
         \\"**/?(*.)(spec|test).js?(x)\\"

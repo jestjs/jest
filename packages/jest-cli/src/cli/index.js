@@ -307,6 +307,7 @@ const _run = async (
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,

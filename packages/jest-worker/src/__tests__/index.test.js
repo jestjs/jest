@@ -98,7 +98,7 @@ it('works with minimal options', () => {
   // eslint-disable-next-line no-new
   const farm1 = new Farm('/fake-worker.js');
 
-  expect(Worker.mock.calls.length).toBe(require('os').cpus().length - 1);
+  expect(Worker).toHaveBeenCalledTimes(require('os').cpus().length - 1);
   expect(typeof farm1.methodA).toBe('function');
   expect(typeof farm1.methodB).toBe('function');
   expect(typeof farm1._shouldNotExist).not.toBe('function');
@@ -114,12 +114,14 @@ it('tries instantiating workers with the right options', () => {
   new Farm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     forkOptions: {execArgv: []},
+    maxRetries: 6,
     numWorkers: 4,
   });
 
-  expect(Worker.mock.calls.length).toBe(4);
+  expect(Worker).toHaveBeenCalledTimes(4);
   expect(Worker.mock.calls[0][0]).toEqual({
     forkOptions: {execArgv: []},
+    maxRetries: 6,
     workerPath: '/tmp/baz.js',
   });
 });
@@ -257,9 +259,9 @@ it('sends non-sticked tasks to all workers', () => {
 
   farm.foo('car', 'plane');
 
-  expect(mockWorkers[0].send.mock.calls.length).toBe(1);
-  expect(mockWorkers[1].send.mock.calls.length).toBe(1);
-  expect(mockWorkers[2].send.mock.calls.length).toBe(1);
+  expect(mockWorkers[0].send).toHaveBeenCalledTimes(1);
+  expect(mockWorkers[1].send).toHaveBeenCalledTimes(1);
+  expect(mockWorkers[2].send).toHaveBeenCalledTimes(1);
 });
 
 it('sends first-time sticked tasks to all workers', () => {
@@ -271,9 +273,9 @@ it('sends first-time sticked tasks to all workers', () => {
 
   farm.foo('car', 'plane');
 
-  expect(mockWorkers[0].send.mock.calls.length).toBe(1);
-  expect(mockWorkers[1].send.mock.calls.length).toBe(1);
-  expect(mockWorkers[2].send.mock.calls.length).toBe(1);
+  expect(mockWorkers[0].send).toHaveBeenCalledTimes(1);
+  expect(mockWorkers[1].send).toHaveBeenCalledTimes(1);
+  expect(mockWorkers[2].send).toHaveBeenCalledTimes(1);
 });
 
 it('checks that once a sticked task finishes, next time is sent to that worker', async () => {
@@ -298,9 +300,9 @@ it('checks that once a sticked task finishes, next time is sent to that worker',
   // earlier ("foo" call), so it got queued to all workers. Later, since the one
   // that resolved the call was the one in position 1, all subsequent calls are
   // only redirected to that worker.
-  expect(mockWorkers[0].send.mock.calls.length).toBe(1); // Only "foo".
-  expect(mockWorkers[1].send.mock.calls.length).toBe(2); // "foo" + "bar".
-  expect(mockWorkers[2].send.mock.calls.length).toBe(1); // Only "foo".
+  expect(mockWorkers[0].send).toHaveBeenCalledTimes(1); // Only "foo".
+  expect(mockWorkers[1].send).toHaveBeenCalledTimes(2); // "foo" + "bar".
+  expect(mockWorkers[2].send).toHaveBeenCalledTimes(1); // Only "foo".
 });
 
 it('checks that once a non-sticked task finishes, next time is sent to all workers', async () => {
@@ -319,7 +321,7 @@ it('checks that once a non-sticked task finishes, next time is sent to all worke
 
   // Since "computeWorkerKey" does not return anything, new jobs are sent again to
   // all existing workers.
-  expect(mockWorkers[0].send.mock.calls.length).toBe(2);
-  expect(mockWorkers[1].send.mock.calls.length).toBe(2);
-  expect(mockWorkers[2].send.mock.calls.length).toBe(2);
+  expect(mockWorkers[0].send).toHaveBeenCalledTimes(2);
+  expect(mockWorkers[1].send).toHaveBeenCalledTimes(2);
+  expect(mockWorkers[2].send).toHaveBeenCalledTimes(2);
 });
