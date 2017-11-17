@@ -27,24 +27,30 @@ import LeakDetector from 'jest-leak-detector';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 
+type RunTestInternalResult = {
+  leakDetector: ?LeakDetector,
+  result: TestResult,
+};
+
 // The default jest-runner is required because it is the default test runner
 // and required implicitly through the `testRunner` ProjectConfig option.
 jasmine2;
 
-// Keeping the core of "runTest" as a separate function (as "runTestHelper") is
-// key to be able to detect memory leaks. Since all variables are local to the
-// function, when "runTestHelper" finishes its execution, they can all be freed,
-// UNLESS someone else is leaking them (and that's why we can detect the leak!).
+// Keeping the core of "runTest" as a separate function (as "runTestInternal")
+// is key to be able to detect memory leaks. Since all variables are local to
+// the function, when "runTestInternal" finishes its execution, they can all be
+// freed, UNLESS something else is leaking them (and that's why we can detect
+// the leak!).
 //
 // If we had all the code in a single function, we should manually nullify all
 // references to verify if there is a leak, which is not maintainable and error
-// prone. That's why "runTestHelper" CANNOT be inlined inside "runTest".
-async function runTestHelper(
+// prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
+async function runTestInternal(
   path: Path,
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
-): Promise<TestResult> {
+): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const parsedDocblock = docblock.parse(docblock.extract(testSource));
   const customEnvironment = parsedDocblock['jest-environment'];
@@ -69,9 +75,9 @@ async function runTestHelper(
   >);
 
   const environment = new TestEnvironment(config);
-  const environmentLeakDetector = config.detectLeaks
+  const leakDetector = config.detectLeaks
     ? new LeakDetector(environment)
-    : false;
+    : null;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type, message) =>
@@ -115,7 +121,6 @@ async function runTestHelper(
     const testCount =
       result.numPassingTests + result.numFailingTests + result.numPendingTests;
 
-    result.leaks = environmentLeakDetector;
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;
     result.coverage = runtime.getAllCoverageInfo();
@@ -132,9 +137,9 @@ async function runTestHelper(
     }
 
     // Delay the resolution to allow log messages to be output.
-    await new Promise(resolve => setImmediate(resolve));
-
-    return result;
+    return new Promise(resolve => {
+      setImmediate(() => resolve({leakDetector, result}));
+    });
   } finally {
     await environment.teardown();
   }
@@ -146,17 +151,15 @@ export default async function runTest(
   config: ProjectConfig,
   resolver: Resolver,
 ): Promise<TestResult> {
-  const result: TestResult = await runTestHelper(
+  const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,
     config,
     resolver,
   );
 
-  // Resolve leak detector, so that the object is JSON serializable.
-  if (result.leaks instanceof LeakDetector) {
-    result.leaks = result.leaks.isLeaking();
-  }
+  // Resolve leak detector, outside the "runTestInternal" closure.
+  result.leaks = leakDetector ? leakDetector.isLeaking() : false;
 
   return result;
 }

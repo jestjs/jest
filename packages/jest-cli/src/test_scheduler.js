@@ -12,6 +12,7 @@ import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
 
+import chalk from 'chalk';
 import {formatExecError} from 'jest-message-util';
 import {
   addResult,
@@ -88,31 +89,33 @@ export default class TestScheduler {
       if (watcher.isInterrupted()) {
         return Promise.resolve();
       }
+
       if (testResult.testResults.length === 0) {
         const message = 'Your test suite must contain at least one test.';
-        await onFailure(test, {
-          message,
-          stack: new Error(message).stack,
-        });
-        return Promise.resolve();
-      }
-      if (testResult.leaks) {
-        const message = [
-          'Your test suite is leaking memory! Please ensure all references are cleaned.',
-          '',
-          'There is a number of things that can leak memory:',
-          '  - Async operations that have not finished (e.g. fs.readFile).',
-          '  - Timers not properly mocked (e.g. setInterval, setTimeout).',
-          '  - Missed global listeners (e.g. process.on).',
-          '  - Keeping references to the global scope.',
-        ].join('\n');
 
-        await onFailure(test, {
+        return onFailure(test, {
           message,
           stack: new Error(message).stack,
         });
-        return Promise.resolve();
       }
+
+      // Throws when the context is leaked after executinga test.
+      if (testResult.leaks) {
+        const message =
+          chalk.red.bold('EXPERIMENTAL FEATURE!\n') +
+          'Your test suite is leaking memory. Please ensure all references are cleaned.\n' +
+          '\n' +
+          'There is a number of things that can leak memory:\n' +
+          '  - Async operations that have not finished (e.g. fs.readFile).\n' +
+          '  - Timers not properly mocked (e.g. setInterval, setTimeout).\n' +
+          '  - Keeping references to the global scope.';
+
+        return onFailure(test, {
+          message,
+          stack: new Error(message).stack,
+        });
+      }
+
       addResult(aggregatedResults, testResult);
       await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
