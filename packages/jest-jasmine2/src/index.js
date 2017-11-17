@@ -37,6 +37,7 @@ async function jasmine2(
   );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create({
+    process,
     testPath,
   });
 
