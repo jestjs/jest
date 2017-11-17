@@ -141,6 +141,16 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
     projects.push(project);
   }
 
+  if (!projects.length && process.platform === 'win32') {
+    try {
+      // $FlowFixMe
+      projects.push(process.binding('fs').realpath(process.cwd()));
+    } catch (err) {
+      // do nothing, just catch error
+      // process.binding('fs').realpath can throw, e.g. on mapped drives
+    }
+  }
+
   if (!projects.length) {
     projects.push(process.cwd());
   }

@@ -1,7 +1,6 @@
 ## master
 
 ### Fixes
-
 * `[expect]` fix .toThrow for promises
   ([#4884](https://github.com/facebook/jest/pull/4884))
 * `[jest-docblock]` pragmas should preserve urls
@@ -44,6 +43,9 @@
   thrown by pretty-format ([#4787](https://github.com/facebook/jest/pull/4787))
 * `[jest-environment-jsdom]` Fix asynchronous test will fail due to timeout
   issue. ([#4669](https://github.com/facebook/jest/pull/4669))
+* `[jest-cli]` Fix `--onlyChanged` path case sensitivity on Windows platform
+  ([#4730](https://github.com/facebook/jest/pull/4730))
+
 
 ### Features
 
