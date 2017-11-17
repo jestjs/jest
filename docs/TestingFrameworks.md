@@ -21,6 +21,7 @@ about integrating Jest into other popular JS libraries.
   by Matthieu Lux ([@Swiip](https://twitter.com/Swiip))
 * [Running AngularJS Tests with Jest](https://engineering.talentpair.com/running-angularjs-tests-with-jest-49d0cc9c6d26)
   by Ben Brandt ([@benjaminbrandt](https://twitter.com/benjaminbrandt))
+* [AngularJs with Jest Unit Testing](https://curtistimson.co.uk/post/angularjs/angularjs-jest-unit-testing/) by Curtis Timson ([@curty_](https://twitter.com/curty_))
 
 ## Angular
 
