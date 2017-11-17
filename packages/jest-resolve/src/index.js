@@ -119,10 +119,14 @@ class Resolver {
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
     if (this._supportsNativePlatform()) {
-      extensions.unshift('.' + NATIVE_PLATFORM + '.js');
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
     }
     if (defaultPlatform) {
-      extensions.unshift('.' + defaultPlatform + '.js');
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
     }
 
     // 0. If we have already resolved this module for this directory name,
