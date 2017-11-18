@@ -135,6 +135,7 @@
 * `[jest-runtime]` Add `.advanceTimersByTime`; keep `.runTimersToTime()` as an
   alias.
 * `[docs]` Include missing dependency in TestEnvironment sample code  
+* `[docs]` Add clarification for hook execution order
 
 ## jest 21.2.1
 
