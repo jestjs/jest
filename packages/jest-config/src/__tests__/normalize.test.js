@@ -928,7 +928,7 @@ describe('preset', () => {
 
   test('merges with options and moduleNameMapper preset is overridden by options', () => {
     // Object initializer not used for properties as a workaround for
-    //  sort-keys eslint rule while specifing properties in
+    //  sort-keys eslint rule while specifying properties in
     //  non-alphabetical order for a better test
     const moduleNameMapper = {};
     moduleNameMapper.e = 'ee';

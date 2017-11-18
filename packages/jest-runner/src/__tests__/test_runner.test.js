@@ -11,17 +11,17 @@
 const TestRunner = require('../index');
 const {TestWatcher} = require('jest-cli');
 
-let workerFarmMock;
+let mockWorkerFarm;
 
-jest.mock('worker-farm', () => {
-  const mock = jest.fn(
-    (options, worker) =>
-      (workerFarmMock = jest.fn((data, callback) =>
-        require(worker)(data, callback),
-      )),
-  );
-  mock.end = jest.fn();
-  return mock;
+jest.mock('jest-worker', () => {
+  return jest.fn(worker => {
+    return (mockWorkerFarm = {
+      end: jest.fn(),
+      getStderr: jest.fn(),
+      getStdout: jest.fn(),
+      worker: jest.fn((data, callback) => require(worker)(data, callback)),
+    });
+  });
 });
 
 jest.mock('../test_worker', () => {});
@@ -44,15 +44,9 @@ test('injects the rawModuleMap into each worker in watch mode', () => {
       {serial: false},
     )
     .then(() => {
-      expect(workerFarmMock.mock.calls).toEqual([
-        [
-          {config, globalConfig, path: './file.test.js', rawModuleMap},
-          expect.any(Function),
-        ],
-        [
-          {config, globalConfig, path: './file2.test.js', rawModuleMap},
-          expect.any(Function),
-        ],
+      expect(mockWorkerFarm.worker.mock.calls).toEqual([
+        [{config, globalConfig, path: './file.test.js', rawModuleMap}],
+        [{config, globalConfig, path: './file2.test.js', rawModuleMap}],
       ]);
     });
 });
@@ -72,7 +66,7 @@ test('does not inject the rawModuleMap in serial mode', () => {
       {serial: false},
     )
     .then(() => {
-      expect(workerFarmMock.mock.calls).toEqual([
+      expect(mockWorkerFarm.worker.mock.calls).toEqual([
         [
           {
             config,
@@ -80,7 +74,6 @@ test('does not inject the rawModuleMap in serial mode', () => {
             path: './file.test.js',
             rawModuleMap: null,
           },
-          expect.any(Function),
         ],
         [
           {
@@ -89,7 +82,6 @@ test('does not inject the rawModuleMap in serial mode', () => {
             path: './file2.test.js',
             rawModuleMap: null,
           },
-          expect.any(Function),
         ],
       ]);
     });

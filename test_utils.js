@@ -51,6 +51,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   verbose: false,
   watch: false,
   watchAll: false,
+  watchPlugins: [],
   watchman: false,
 };
 
@@ -85,6 +86,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   skipNodeResolution: false,
   snapshotSerializers: [],
   testEnvironment: 'node',
+  testLocationInResults: false,
   testMatch: [],
   testPathIgnorePatterns: [],
   testRegex: '.test.js$',

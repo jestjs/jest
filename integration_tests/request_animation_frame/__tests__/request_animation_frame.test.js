@@ -19,3 +19,18 @@ test('requestAnimationFrame test', done => {
     done();
   });
 });
+
+test('cancelAnimationFrame test', done => {
+  // Will be immediately cancelled. Must never run.
+  cancelAnimationFrame(
+    requestAnimationFrame(() => {
+      done.fail();
+    })
+  );
+
+  // Make sure it has not fired.
+  const REASONABLE_TIME = 100;
+  setTimeout(() => {
+    done();
+  }, REASONABLE_TIME);
+});

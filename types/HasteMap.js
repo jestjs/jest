@@ -9,7 +9,6 @@
 
 import type {ModuleMap as _ModuleMap, FS} from 'jest-haste-map';
 import type {Path} from 'types/Config';
-import type HasteResolver from 'jest-resolve';
 
 export type HasteFS = FS;
 export type ModuleMap = _ModuleMap;
@@ -20,7 +19,10 @@ export type ModuleMapData = {[id: string]: ModuleMapItem, __proto__: null};
 export type WatchmanClocks = {[filepath: Path]: string, __proto__: null};
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
-export type DuplicatesSet = {[filePath: string]: /* type */ number, __proto__: null};
+export type DuplicatesSet = {
+  [filePath: string]: /* type */ number,
+  __proto__: null,
+};
 export type DuplicatesIndex = {
   [id: string]: {[platform: string]: DuplicatesSet, __proto__: null},
 };

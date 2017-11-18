@@ -7,7 +7,6 @@
  * @flow
  */
 
-import type {SerializableError} from 'types/TestResult';
 import type {InternalHasteMap, ModuleMetaData} from 'types/HasteMap';
 
 export type IgnoreMatcher = (item: string) => boolean;
@@ -16,15 +15,12 @@ export type WorkerMessage = {
   filePath: string,
   hasteImplModulePath?: string,
 };
+
 export type WorkerMetadata = {
   id: ?string,
   module: ?ModuleMetaData,
   dependencies: ?Array<string>,
 };
-export type WorkerCallback = (
-  error: ?SerializableError,
-  metaData: ?WorkerMetadata,
-) => void;
 
 export type CrawlerOptions = {|
   data: InternalHasteMap,

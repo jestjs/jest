@@ -151,6 +151,11 @@ const users = [
     infoLink: 'http://www.globo.com/',
   },
   {
+    caption: 'Hearsay Systems',
+    image: '/jest/img/logos/hearsaysystems.png',
+    infoLink: 'https://hearsaysystems.com/company/careers/',
+  },
+  {
     caption: 'Help.com',
     image: '/jest/img/logos/Help-Clean.png',
     infoLink: 'https://help.com',

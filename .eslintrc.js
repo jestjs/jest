@@ -53,6 +53,13 @@ module.exports = {
       },
     },
     {
+      files: 'types/**/*',
+      rules: {
+        'import/no-extraneous-dependencies': 0,
+        'unicorn/filename-case': 0,
+      },
+    },
+    {
       files: [
         '**/__mocks__/**/*',
         'website/**/*',

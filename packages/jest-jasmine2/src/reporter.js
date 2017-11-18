@@ -24,6 +24,7 @@ type Suite = {
 };
 
 type SpecResult = {
+  __callsite?: Object,
   description: string,
   duration?: Milliseconds,
   failedExpectations: Array<FailedAssertion>,
@@ -150,11 +151,19 @@ export default class Jasmine2Reporter {
     const duration = start ? Date.now() - start : undefined;
     const status =
       specResult.status === 'disabled' ? 'pending' : specResult.status;
+    const location = specResult.__callsite
+      ? {
+          column: specResult.__callsite.getColumnNumber(),
+          // $FlowFixMe: https://github.com/facebook/flow/issues/5213
+          line: specResult.__callsite.getLineNumber(),
+        }
+      : null;
     const results = {
       ancestorTitles,
       duration,
       failureMessages: [],
       fullName: specResult.fullName,
+      location,
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
       status,
       title: specResult.description,

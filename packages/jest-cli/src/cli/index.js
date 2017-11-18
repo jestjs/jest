@@ -35,14 +35,22 @@ import yargs from 'yargs';
 import rimraf from 'rimraf';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
-  const argv: Argv = buildArgv(maybeArgv, project);
-  const projects = getProjectListFromCLIArgs(argv, project);
-  // If we're running a single Jest project, we might want to use another
-  // version of Jest (the one that is specified in this project's package.json)
-  const runCLIFn = getRunCLIFn(projects);
+  try {
+    const argv: Argv = buildArgv(maybeArgv, project);
+    const projects = getProjectListFromCLIArgs(argv, project);
+    // If we're running a single Jest project, we might want to use another
+    // version of Jest (the one that is specified in this project's package.json)
+    const runCLIFn = getRunCLIFn(projects);
 
-  const {results, globalConfig} = await runCLIFn(argv, projects);
-  readResultsAndExit(results, globalConfig);
+    const {results, globalConfig} = await runCLIFn(argv, projects);
+    readResultsAndExit(results, globalConfig);
+  } catch (error) {
+    clearLine(process.stderr);
+    clearLine(process.stdout);
+    console.error(chalk.red(error.stack));
+    process.exit(1);
+    throw error;
+  }
 }
 
 export const runCLI = async (
@@ -62,51 +70,43 @@ export const runCLI = async (
 
   argv.version && printVersionAndExit(outputStream);
 
-  try {
-    const {globalConfig, configs, hasDeprecationWarnings} = getConfigs(
-      projects,
-      argv,
-      outputStream,
-    );
+  const {globalConfig, configs, hasDeprecationWarnings} = getConfigs(
+    projects,
+    argv,
+    outputStream,
+  );
 
-    if (argv.clearCache) {
-      configs.forEach(config => {
-        rimraf.sync(config.cacheDirectory);
-        process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
-      });
+  if (argv.clearCache) {
+    configs.forEach(config => {
+      rimraf.sync(config.cacheDirectory);
+      process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
+    });
 
-      process.exit(0);
-    }
-
-    await _run(
-      globalConfig,
-      configs,
-      hasDeprecationWarnings,
-      outputStream,
-      (r: AggregatedResult) => (results = r),
-    );
-
-    if (argv.watch || argv.watchAll) {
-      // If in watch mode, return the promise that will never resolve.
-      // If the watch mode is interrupted, watch should handle the process
-      // shutdown.
-      return new Promise(() => {});
-    }
-
-    if (!results) {
-      throw new Error(
-        'AggregatedResult must be present after test run is complete',
-      );
-    }
-
-    return Promise.resolve({globalConfig, results});
-  } catch (error) {
-    clearLine(process.stderr);
-    clearLine(process.stdout);
-    console.error(chalk.red(error.stack));
-    process.exit(1);
-    throw error;
+    process.exit(0);
   }
+
+  await _run(
+    globalConfig,
+    configs,
+    hasDeprecationWarnings,
+    outputStream,
+    (r: AggregatedResult) => (results = r),
+  );
+
+  if (argv.watch || argv.watchAll) {
+    // If in watch mode, return the promise that will never resolve.
+    // If the watch mode is interrupted, watch should handle the process
+    // shutdown.
+    return new Promise(() => {});
+  }
+
+  if (!results) {
+    throw new Error(
+      'AggregatedResult must be present after test run is complete',
+    );
+  }
+
+  return Promise.resolve({globalConfig, results});
 };
 
 const readResultsAndExit = (
@@ -139,6 +139,16 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
 
   if (project) {
     projects.push(project);
+  }
+
+  if (!projects.length && process.platform === 'win32') {
+    try {
+      // $FlowFixMe
+      projects.push(process.binding('fs').realpath(process.cwd()));
+    } catch (err) {
+      // do nothing, just catch error
+      // process.binding('fs').realpath can throw, e.g. on mapped drives
+    }
   }
 
   if (!projects.length) {
@@ -297,6 +307,7 @@ const _run = async (
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,

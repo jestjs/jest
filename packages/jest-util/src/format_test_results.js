@@ -62,6 +62,7 @@ function formatTestAssertion(
     ancestorTitles: assertion.ancestorTitles,
     failureMessages: null,
     fullName: assertion.fullName,
+    location: assertion.location,
     status: assertion.status,
     title: assertion.title,
   };

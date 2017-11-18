@@ -4,7 +4,6 @@ bin/
 flow-typed/**
 packages/*/build/**
 packages/*/build-es5/**
-types/**
 website/blog
 website/build
 website/node_modules

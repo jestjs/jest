@@ -48,6 +48,7 @@ export type DefaultOptions = {|
   snapshotSerializers: Array<Path>,
   testEnvironment: string,
   testFailureExitCode: string | number,
+  testLocationInResults: boolean,
   testMatch: Array<Glob>,
   testPathIgnorePatterns: Array<string>,
   testRegex: string,
@@ -119,6 +120,7 @@ export type InitialOptions = {
   snapshotSerializers?: Array<Path>,
   testEnvironment?: string,
   testFailureExitCode?: string | number,
+  testLocationInResults?: boolean,
   testMatch?: Array<Glob>,
   testNamePattern?: string,
   testPathDirs?: Array<Path>,
@@ -138,6 +140,7 @@ export type InitialOptions = {
   watch?: boolean,
   watchAll?: boolean,
   watchman?: boolean,
+  watchPlugins?: Array<string>,
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -183,6 +186,7 @@ export type GlobalConfig = {|
   watch: boolean,
   watchAll: boolean,
   watchman: boolean,
+  watchPlugins: ?Array<string>,
 |};
 
 export type ProjectConfig = {|
@@ -215,6 +219,7 @@ export type ProjectConfig = {|
   snapshotSerializers: Array<Path>,
   testEnvironment: string,
   testMatch: Array<Glob>,
+  testLocationInResults: boolean,
   testPathIgnorePatterns: Array<string>,
   testRegex: string,
   testRunner: string,

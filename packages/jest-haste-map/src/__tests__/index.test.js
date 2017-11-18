@@ -13,15 +13,16 @@ jest.mock('child_process', () => ({
   execSync() {},
 }));
 
-jest.mock('worker-farm', () => {
-  const mock = jest.fn(
-    (options, worker) =>
-      (workerFarmMock = jest.fn((data, callback) =>
-        require(worker)(data, callback),
-      )),
-  );
-  mock.end = jest.fn();
-  return mock;
+jest.mock('jest-worker', () => {
+  return jest.fn(worker => {
+    mockWorker = jest.fn((...args) => require(worker).worker(...args));
+    mockEnd = jest.fn();
+
+    return {
+      end: mockEnd,
+      worker: mockWorker,
+    };
+  });
 });
 
 jest.mock('../crawlers/node');
@@ -98,7 +99,8 @@ let HasteMap;
 let mockClocks;
 let mockEmitters;
 let object;
-let workerFarmMock;
+let mockEnd;
+let mockWorker;
 let getCacheFilePath;
 
 describe('HasteMap', () => {
@@ -548,6 +550,72 @@ describe('HasteMap', () => {
       });
   });
 
+  describe('duplicate modules', () => {
+    beforeEach(async () => {
+      mockFs['/fruits/another_strawberry.js'] = [
+        '/**',
+        ' * @providesModule Strawberry',
+        ' */',
+        'const Blackberry = require("Blackberry");',
+      ].join('\n');
+
+      const {__hasteMapForTest: data} = await new HasteMap(
+        defaultConfig,
+      ).build();
+      expect(data.duplicates).toEqual({
+        Strawberry: {
+          g: {'/fruits/another_strawberry.js': 0, '/fruits/strawberry.js': 0},
+        },
+      });
+      expect(data.map['Strawberry']).toEqual({});
+    });
+
+    it('recovers when a duplicate file is deleted', async () => {
+      delete mockFs['/fruits/another_strawberry.js'];
+      mockChangedFiles = object({
+        '/fruits/another_strawberry.js': null,
+      });
+      mockClocks = object({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:2',
+      });
+
+      const {__hasteMapForTest: data} = await new HasteMap(
+        defaultConfig,
+      ).build();
+      expect(data.duplicates).toEqual({});
+      expect(data.map['Strawberry']).toEqual({g: ['/fruits/strawberry.js', 0]});
+      // Make sure the other files are not affected.
+      expect(data.map['Banana']).toEqual({g: ['/fruits/banana.js', 0]});
+    });
+
+    it('recovers when a duplicate module is renamed', async () => {
+      mockChangedFiles = object({
+        '/fruits/another_strawberry.js': [
+          '/**',
+          ' * @providesModule AnotherStrawberry',
+          ' */',
+          'const Blackberry = require("Blackberry");',
+        ].join('\n'),
+      });
+      mockClocks = object({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:2',
+      });
+
+      const {__hasteMapForTest: data} = await new HasteMap(
+        defaultConfig,
+      ).build();
+      expect(data.duplicates).toEqual({});
+      expect(data.map['Strawberry']).toEqual({g: ['/fruits/strawberry.js', 0]});
+      expect(data.map['AnotherStrawberry']).toEqual({
+        g: ['/fruits/another_strawberry.js', 0],
+      });
+      // Make sure the other files are not affected.
+      expect(data.map['Banana']).toEqual({g: ['/fruits/banana.js', 0]});
+    });
+  });
+
   it('discards the cache when configuration changes', () => {
     HasteMap.getCacheFilePath = getCacheFilePath;
     return new HasteMap(defaultConfig).build().then(() => {
@@ -593,7 +661,7 @@ describe('HasteMap', () => {
   });
 
   it('distributes work across workers', () => {
-    const workerFarm = require('worker-farm');
+    const jestWorker = require('jest-worker');
     return new HasteMap(
       Object.assign({}, defaultConfig, {
         maxWorkers: 4,
@@ -601,19 +669,19 @@ describe('HasteMap', () => {
     )
       .build()
       .then(({__hasteMapForTest: data}) => {
-        expect(workerFarm.mock.calls.length).toBe(1);
+        expect(jestWorker.mock.calls.length).toBe(1);
 
-        expect(workerFarmMock.mock.calls.length).toBe(5);
+        expect(mockWorker.mock.calls.length).toBe(5);
 
-        expect(workerFarmMock.mock.calls).toEqual([
-          [{filePath: '/fruits/__mocks__/Pear.js'}, expect.any(Function)],
-          [{filePath: '/fruits/banana.js'}, expect.any(Function)],
-          [{filePath: '/fruits/pear.js'}, expect.any(Function)],
-          [{filePath: '/fruits/strawberry.js'}, expect.any(Function)],
-          [{filePath: '/vegetables/melon.js'}, expect.any(Function)],
+        expect(mockWorker.mock.calls).toEqual([
+          [{filePath: '/fruits/__mocks__/Pear.js'}],
+          [{filePath: '/fruits/banana.js'}],
+          [{filePath: '/fruits/pear.js'}],
+          [{filePath: '/fruits/strawberry.js'}],
+          [{filePath: '/vegetables/melon.js'}],
         ]);
 
-        expect(workerFarm.end).toBeCalledWith(workerFarmMock);
+        expect(mockEnd).toBeCalled();
       });
   });
 

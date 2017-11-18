@@ -14,13 +14,10 @@ import skipOnWindows from '../../../../scripts/skip_on_windows';
 
 import H from '../constants';
 
-const worker = require('../worker');
+const {worker} = require('../worker');
 
-let createCallback;
 let mockFs;
-let moduleData;
 let readFileSync;
-let workerError;
 
 describe('worker', () => {
   skipOnWindows.suite();
@@ -58,61 +55,32 @@ describe('worker', () => {
 
       throw new Error(`Cannot read path '${path}'.`);
     });
-
-    moduleData = null;
-    workerError = null;
-    createCallback = () =>
-      jest.fn((error, data) => {
-        workerError = error;
-        moduleData = data;
-      });
   });
 
   afterEach(() => {
     fs.readFileSync = readFileSync;
   });
 
-  it('parses JavaScript files and extracts module information', () => {
-    let callback = createCallback();
-    worker({filePath: '/fruits/pear.js'}, callback);
-
-    // Worker is synchronous. callback must have been called by now
-    expect(callback).toBeCalled();
-
-    expect(workerError).toBe(null);
-    expect(moduleData).toEqual({
+  it('parses JavaScript files and extracts module information', async () => {
+    expect(await worker({filePath: '/fruits/pear.js'})).toEqual({
       dependencies: ['Banana', 'Strawberry'],
       id: 'Pear',
       module: ['/fruits/pear.js', H.MODULE],
     });
 
-    callback = createCallback();
-    worker({filePath: '/fruits/strawberry.js'}, callback);
-
-    expect(callback).toBeCalled();
-
-    expect(workerError).toBe(null);
-    expect(moduleData).toEqual({
+    expect(await worker({filePath: '/fruits/strawberry.js'})).toEqual({
       dependencies: [],
       id: 'Strawberry',
       module: ['/fruits/strawberry.js', H.MODULE],
     });
   });
 
-  it('delegates to hasteImplModulePath for getting the id', () => {
-    const callback = createCallback();
-    worker(
-      {
-        filePath: '/fruits/strawberry.js',
-        hasteImplModulePath: path.resolve(__dirname, 'haste_impl.js'),
-      },
-      callback,
-    );
+  it('delegates to hasteImplModulePath for getting the id', async () => {
+    const moduleData = await worker({
+      filePath: '/fruits/strawberry.js',
+      hasteImplModulePath: path.resolve(__dirname, 'haste_impl.js'),
+    });
 
-    // Worker is synchronous. callback must have been called by now
-    expect(callback).toBeCalled();
-
-    expect(workerError).toBe(null);
     expect(moduleData.id).toBe('strawberry');
     expect(moduleData).toEqual(
       expect.objectContaining({
@@ -123,28 +91,22 @@ describe('worker', () => {
     );
   });
 
-  it('parses package.json files as haste packages', () => {
-    const callback = createCallback();
-
-    worker({filePath: '/package.json'}, callback);
-    expect(callback).toBeCalled();
-
-    expect(workerError).toBe(null);
-    expect(moduleData).toEqual({
+  it('parses package.json files as haste packages', async () => {
+    expect(await worker({filePath: '/package.json'})).toEqual({
       dependencies: undefined,
       id: 'haste-package',
       module: ['/package.json', H.PACKAGE],
     });
   });
 
-  it('returns an error when a file cannot be accessed', () => {
-    const callback = createCallback();
+  it('returns an error when a file cannot be accessed', async () => {
+    let error = null;
+    try {
+      await worker({filePath: '/kiwi.js'});
+    } catch (err) {
+      error = err;
+    }
 
-    worker({filePath: '/kiwi.js'}, callback);
-
-    expect(callback).toBeCalled();
-    expect(moduleData).toBe(undefined);
-    expect(workerError.type).toEqual('Error');
-    expect(workerError.message).toEqual(`Cannot read path '/kiwi.js'.`);
+    expect(error.message).toEqual(`Cannot read path '/kiwi.js'.`);
   });
 });
