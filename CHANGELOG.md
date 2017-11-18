@@ -109,6 +109,8 @@
 
 * `[*]` [**BREAKING**] Drop support for Node.js version 4
   ([#4769](https://github.com/facebook/jest/pull/4769))
+* `[docs]` Wrap code comments at 80 characters
+  ([#4781](https://github.com/facebook/jest/pull/4781))
 * `[eslint-plugin-jest]` Removed from the Jest core repo, and moved to
   https://github.com/jest-community/eslint-plugin-jest
   ([#4867](https://github.com/facebook/jest/pull/4867))
