@@ -50,6 +50,8 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
+      - run: |
+          apt-get update && apt-get install make g++ -y
       - *yarn-install-no-sudo
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
