@@ -1,6 +1,8 @@
 ## master
 
 ### Fixes
+* `[babel-jest]` Fix support for namespaced babel version 7
+  ([#4918](https://github.com/facebook/jest/pull/4918))
 * `[expect]` fix .toThrow for promises
   ([#4884](https://github.com/facebook/jest/pull/4884))
 * `[jest-docblock]` pragmas should preserve urls
