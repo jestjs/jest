@@ -104,13 +104,13 @@ for the `toBe` matcher:
 const diff = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
-    const pass = received === expected;
+    const pass = Object.is(received, expected);
 
     const message = pass
       ? () =>
           this.utils.matcherHint('.not.toBe') +
           '\n\n' +
-          `Expected value to not be (using ===):\n` +
+          `Expected value to not be (using Object.is):\n` +
           `  ${this.utils.printExpected(expected)}\n` +
           `Received:\n` +
           `  ${this.utils.printReceived(received)}`
@@ -121,7 +121,7 @@ expect.extend({
           return (
             this.utils.matcherHint('.toBe') +
             '\n\n' +
-            `Expected value to be (using ===):\n` +
+            `Expected value to be (using Object.is):\n` +
             `  ${this.utils.printExpected(expected)}\n` +
             `Received:\n` +
             `  ${this.utils.printReceived(received)}` +
@@ -139,7 +139,7 @@ This will print something like this:
 ```
   expect(received).toBe(expected)
 
-    Expected value to be (using ===):
+    Expected value to be (using Object.is):
       "banana"
     Received:
       "apple"
@@ -430,8 +430,8 @@ test('rejects to octopus', async () => {
 
 ### `.toBe(value)`
 
-`toBe` just checks that a value is what you expect. It uses `===` to check
-strict equality.
+`toBe` just checks that a value is what you expect. It uses `Object.is` to check
+exact equality.
 
 For example, this code will validate some properties of the `can` object:
 

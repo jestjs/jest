@@ -105,6 +105,7 @@ describe('.resolves', () => {
     expect(error.message).toMatchSnapshot();
   });
 });
+
 describe('.toBe()', () => {
   it('does not throw', () => {
     jestExpect('a').not.toBe('b');
@@ -114,6 +115,7 @@ describe('.toBe()', () => {
     jestExpect(null).not.toBe(undefined);
     jestExpect(null).toBe(null);
     jestExpect(undefined).toBe(undefined);
+    jestExpect(NaN).toBe(NaN);
   });
 
   [
@@ -126,6 +128,7 @@ describe('.toBe()', () => {
     ['with \ntrailing space', 'without trailing space'],
     [[], []],
     [null, undefined],
+    [-0, +0],
   ].forEach(([a, b]) => {
     it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() => jestExpect(a).toBe(b)).toThrowErrorMatchingSnapshot();
