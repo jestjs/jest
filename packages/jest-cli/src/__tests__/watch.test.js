@@ -131,7 +131,13 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    expect(pipe.write.mock.calls).toMatchSnapshot();
+    const pipeMockCalls = pipe.write.mock.calls;
+
+    const determiningTestsToRun = pipeMockCalls.findIndex(
+      ([c]) => c === 'Determining test suites to run...',
+    );
+
+    expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
   it('triggers enter on a WatchPlugin when its key is pressed', () => {

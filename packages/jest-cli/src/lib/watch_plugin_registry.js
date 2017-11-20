@@ -9,7 +9,7 @@
 
 import type {WatchPlugin} from '../types';
 import getType from 'jest-get-type';
-import defaultResolver from '../../../jest-resolve/src/default_resolver';
+import Resolver from 'jest-resolve';
 
 const RESERVED_KEYS = [
   0x03, // Jest should handle ctrl-c interrupt
@@ -27,7 +27,7 @@ export default class WatchPluginRegistry {
 
   loadPluginPath(pluginModulePath: string) {
     // $FlowFixMe dynamic require
-    const maybePlugin = require(defaultResolver(pluginModulePath, {
+    const maybePlugin = require(Resolver.findNodeModule(pluginModulePath, {
       basedir: this._rootDir,
     }));
 

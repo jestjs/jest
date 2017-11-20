@@ -992,3 +992,26 @@ describe('preset without setupFiles', () => {
     );
   });
 });
+
+describe('watchPlugins', () => {
+  it('defaults to undefined', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.watchPlugins).toEqual(undefined);
+  });
+
+  it('normalizes watchPlugins', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        watchPlugins: ['my-watch-plugin', '<rootDir>/path/to/plugin'],
+      },
+      {},
+    );
+
+    expect(options.watchPlugins).toEqual([
+      'my-watch-plugin',
+      '/root/path/to/plugin',
+    ]);
+  });
+});
