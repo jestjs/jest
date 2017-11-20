@@ -97,9 +97,12 @@ export default class Runner extends EventEmitter {
     });
   }
 
-  runJestWithUpdateForSnapshots(completion: any) {
-    const args = ['--updateSnapshot'];
-    const updateProcess = this._createProcess(this.workspace, args);
+  runJestWithUpdateForSnapshots(completion: any, args: string[]) {
+    const defaultArgs = ['--updateSnapshot'];
+    const updateProcess = this._createProcess(this.workspace, [
+      ...defaultArgs,
+      ...(args ? args : []),
+    ]);
     updateProcess.on('close', () => {
       completion();
     });
