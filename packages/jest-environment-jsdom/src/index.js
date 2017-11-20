@@ -26,6 +26,7 @@ class JSDOMEnvironment {
     const jsdomInitialized = process.hrtime();
 
     this.dom = new JSDOM('<!DOCTYPE html>', {
+      pretendToBeVisual: true,
       runScripts: 'dangerously',
       url: config.testURL,
     });
@@ -34,19 +35,6 @@ class JSDOMEnvironment {
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global, config.globals);
-
-    if (!global.requestAnimationFrame || !global.cancelAnimationFrame) {
-      global.requestAnimationFrame = callback => {
-        const hr = process.hrtime(jsdomInitialized);
-        const hrInNano = hr[0] * 1e9 + hr[1];
-        const hrInMicro = hrInNano / 1e6;
-
-        return global.setTimeout(callback, 0, hrInMicro);
-      };
-      global.cancelAnimationFrame = id => {
-        return global.clearTimeout(id);
-      };
-    }
 
     // Report uncaught errors.
     this.errorEventListener = event => {
