@@ -101,7 +101,7 @@ export default class Runner extends EventEmitter {
     const defaultArgs = ['--updateSnapshot'];
     const updateProcess = this._createProcess(this.workspace, [
       ...defaultArgs,
-      ...args,
+      ...(args ? args : []),
     ]);
     updateProcess.on('close', () => {
       completion();
