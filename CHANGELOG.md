@@ -26,8 +26,6 @@
   ([#4599](https://github.com/facebook/jest/pull/4599))
 * `[jest-runtime]` Fix manual user mocks not working with custom resolver
   ([#4489](https://github.com/facebook/jest/pull/4489))
-* `[jest-runtime]` Move `babel-core` to peer dependencies so it works with Babel
-  7 ([#4557](https://github.com/facebook/jest/pull/4557))
 * `[jest-util]` Fix `runOnlyPendingTimers` for `setTimeout` inside
   `setImmediate` ([#4608](https://github.com/facebook/jest/pull/4608))
 * `[jest-message-util]` Always remove node internals from stacktraces
