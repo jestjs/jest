@@ -106,6 +106,7 @@
   per spec to test results ([#4782](https://github.com/facebook/jest/pull/4782))
 * `[jest-environment-jsdom]` Update JSOM to 11.4, which includes built-in
   support for `requestAnimationFrame`
+  ([#4919](https://github.com/facebook/jest/pull/4919))
 
 ### Chore & Maintenance
 
