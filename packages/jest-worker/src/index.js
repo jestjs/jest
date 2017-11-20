@@ -54,6 +54,7 @@ export default class {
   _cacheKeys: {[string]: Worker, __proto__: null};
   _options: FarmOptions;
   _workers: Array<Worker>;
+  _offset: number;
 
   constructor(workerPath: string, options?: FarmOptions = {}) {
     const numWorkers = options.numWorkers || os.cpus().length - 1;
@@ -116,6 +117,7 @@ export default class {
     this._cacheKeys = Object.create(null);
     this._options = options;
     this._workers = workers;
+    this._offset = 0;
   }
 
   getStdout(): Readable {
@@ -151,6 +153,7 @@ export default class {
     return new Promise((resolve, reject) => {
       const {computeWorkerKey} = this._options;
       const workers = this._workers;
+      const length = workers.length;
       const cacheKeys = this._cacheKeys;
       const request = [CHILD_MESSAGE_CALL, false, method, args];
 
@@ -183,9 +186,11 @@ export default class {
       }
 
       // ... otherwise use all workers, so the first one available will pick it.
-      for (let i = 0; i < workers.length; i++) {
-        workers[i].send(request, callback);
+      for (let i = 0; i < length; i++) {
+        workers[(i + this._offset) % length].send(request, callback);
       }
+
+      this._offset++;
     });
   }
 }
