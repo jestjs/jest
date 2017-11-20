@@ -45,6 +45,8 @@
 
 ### Features
 
+* `[jest-cli]` Add combined coverage threshold for directories.
+  ([#4885](https://github.com/facebook/jest/pull/4885))
 * `[jest-mock]` Add `timestamps` to mock state.
   ([#4866](https://github.com/facebook/jest/pull/4866))
 * `[eslint-plugin-jest]` Add `prefer-to-have-length` lint rule.
