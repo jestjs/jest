@@ -291,9 +291,9 @@ it('checks that once a sticked task finishes, next time is sent to that worker',
   await promise;
 
   // Note that the stickiness is not created by the method name or the arguments
-  // it is solely controlled by the provided "computeWorkerKey" method, which in the
-  // test example always returns the same key, so all calls should be redirected
-  // to worker 1 (which is the one that resolved the first call).
+  // it is solely controlled by the provided "computeWorkerKey" method, which in
+  // the test example always returns the same key, so all calls should be
+  // redirected to worker 1 (which is the one that resolved the first call).
   farm.bar();
 
   // The first time, a call with a "1234567890abcdef" hash had never been done
@@ -324,4 +324,43 @@ it('checks that once a non-sticked task finishes, next time is sent to all worke
   expect(mockWorkers[0].send).toHaveBeenCalledTimes(2);
   expect(mockWorkers[1].send).toHaveBeenCalledTimes(2);
   expect(mockWorkers[2].send).toHaveBeenCalledTimes(2);
+});
+
+it('rotates workers when they are idling', async () => {
+  let order;
+  let promise;
+
+  // Note there is no "computeWorkerKey".
+  const farm = new Farm('/tmp/baz.js', {
+    exposedMethods: ['foo', 'bar'],
+    numWorkers: 3,
+  });
+
+  [0, 1, 2].forEach(i => {
+    mockWorkers[i].send.mockReset();
+    mockWorkers[i].send.mockImplementation(() => order.push(i));
+  });
+
+  // First time, the order is 0, 1, 2.
+  order = [];
+  promise = farm.foo('car', 'plane');
+  expect(order).toEqual([0, 1, 2]);
+
+  // Worker 1 successfully replies with "17" as a result.
+  workerReply(1, null, 17);
+  await promise;
+
+  [0, 1, 2].forEach(i => {
+    mockWorkers[i].send.mockReset();
+    mockWorkers[i].send.mockImplementation(() => order.push(i));
+  });
+
+  // Now, the order is 1, 2, 0 (shifted one).
+  order = [];
+  promise = farm.foo('car', 'plane');
+  expect(order).toEqual([1, 2, 0]);
+
+  // Worker 1 successfully replies again.
+  workerReply(1, null, 17);
+  await promise;
 });
