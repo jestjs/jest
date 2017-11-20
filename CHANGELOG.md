@@ -1,6 +1,7 @@
 ## master
 
 ### Fixes
+
 * `[expect]` fix .toThrow for promises
   ([#4884](https://github.com/facebook/jest/pull/4884))
 * `[jest-docblock]` pragmas should preserve urls
@@ -45,7 +46,6 @@
   issue. ([#4669](https://github.com/facebook/jest/pull/4669))
 * `[jest-cli]` Fix `--onlyChanged` path case sensitivity on Windows platform
   ([#4730](https://github.com/facebook/jest/pull/4730))
-
 
 ### Features
 
@@ -104,6 +104,8 @@
   ([#4497](https://github.com/facebook/jest/pull/4497))
 * `[jest-jasmine2]` Add `testLocationInResults` flag to add location information
   per spec to test results ([#4782](https://github.com/facebook/jest/pull/4782))
+* `[jest-environment-jsdom]` Update JSOM to 11.4, which includes built-in
+  support for `requestAnimationFrame`
 
 ### Chore & Maintenance
 
@@ -134,7 +136,7 @@
   ([#4578](https://github.com/facebook/jest/pull/4578))
 * `[jest-runtime]` Add `.advanceTimersByTime`; keep `.runTimersToTime()` as an
   alias.
-* `[docs]` Include missing dependency in TestEnvironment sample code  
+* `[docs]` Include missing dependency in TestEnvironment sample code
 * `[docs]` Add clarification for hook execution order
 
 ## jest 21.2.1
