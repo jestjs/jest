@@ -98,7 +98,8 @@
     "watch": "yarn build && node ./scripts/watch.js"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "website"
   ],
   "jest": {
     "modulePathIgnorePatterns": [
