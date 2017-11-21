@@ -23,8 +23,6 @@ class JSDOMEnvironment {
   moduleMocker: ?ModuleMocker;
 
   constructor(config: ProjectConfig) {
-    const jsdomInitialized = process.hrtime();
-
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       runScripts: 'dangerously',

@@ -22,8 +22,8 @@ won't do much with these expectation objects except call matchers on them. In
 this code, `.toBe(4)` is the matcher. When Jest runs, it tracks all the failing
 matchers so that it can print out nice error messages for you.
 
-`toBe` uses `Object.is` to test exact equality. If you want to check the value of an
-object, use `toEqual` instead:
+`toBe` uses `Object.is` to test exact equality. If you want to check the value
+of an object, use `toEqual` instead:
 
 ```js
 test('object assignment', () => {

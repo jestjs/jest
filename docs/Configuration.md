@@ -165,14 +165,16 @@ _Note: Setting this option overwrites the default values. Add `"text"` or
 Default: `undefined`
 
 This will be used to configure minimum threshold enforcement for coverage
-results. Thresholds can be specified as `global`, as
-a [glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or
+results. Thresholds can be specified as `global`, as a
+[glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or
 file path. If thresholds aren't met, jest will fail. Thresholds specified as a
 positive number are taken to be the minimum percentage required. Thresholds
 specified as a negative number represent the maximum number of uncovered
 entities allowed.
 
-For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:
+For example, with the following configuration jest will fail if there is less
+than 80% branch, line, and function coverage, or if there are more than 10
+uncovered statements:
 
 ```json
 {
@@ -192,8 +194,8 @@ For example, with the following configuration jest will fail if there is less th
 
 If globs or paths are specified alongside `global`, coverage data for matching
 paths will be subtracted from overall coverage and thresholds will be applied
-independently. Thresholds for globs are applied to all files matching the
-glob. If the file specified by path is not found, error is returned.
+independently. Thresholds for globs are applied to all files matching the glob.
+If the file specified by path is not found, error is returned.
 
 For example, with the following configuration:
 
@@ -228,12 +230,12 @@ For example, with the following configuration:
 
 Jest will fail if:
 
- - The `./src/components` directory has less than 40% branch or statement coverage.
- - One of the files matching the `./src/reducers/**/*.js` glob has less than 90%
-   statement coverage.
- - The `./src/api/very-important-module.js` file has less than 100% coverage.
- - Every remaining file combined has less than 50% coverage (`global`).
-
+* The `./src/components` directory has less than 40% branch or statement
+  coverage.
+* One of the files matching the `./src/reducers/**/*.js` glob has less than 90%
+  statement coverage.
+* The `./src/api/very-important-module.js` file has less than 100% coverage.
+* Every remaining file combined has less than 50% coverage (`global`).
 
 ### `globals` [object]
 

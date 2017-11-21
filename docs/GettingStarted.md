@@ -86,6 +86,7 @@ npm install --save-dev babel-jest babel-core regenerator-runtime
 
 > Note: If you are using a babel version 7 then you need to install `babel-jest`
 > with the following command:
+>
 > ```
 > npm install --save-dev babel-jest babel-core@^7.0.0-0 @babel/core regenerator-runtime
 > ```

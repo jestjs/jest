@@ -236,7 +236,7 @@ export default class CoverageReporter extends BaseReporter {
                 errors.push(
                   `Jest: "${name}" coverage threshold for ${key} (${
                     threshold
-                  }%) not met: ` + `${actual}%`,
+                  }%) not met: ${actual}%`,
                 );
               }
             }
