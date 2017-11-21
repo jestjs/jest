@@ -112,7 +112,7 @@ describe('onRunComplete', () => {
     });
   });
 
-  it('getLastError() returns an error when threshold is not met for global', () => {
+  test('getLastError() returns an error when threshold is not met for global', () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -134,7 +134,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  it('getLastError() returns an error when threshold is not met for file', () => {
+  test('getLastError() returns an error when threshold is not met for file', () => {
     const covThreshold = {};
     [
       'global',
@@ -164,7 +164,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  it('getLastError() returns `undefined` when threshold is met', () => {
+  test('getLastError() returns `undefined` when threshold is met', () => {
     const covThreshold = {};
     [
       'global',
@@ -194,13 +194,79 @@ describe('onRunComplete', () => {
       });
   });
 
-  it('getLastError() returns an error when threshold is for non-covered file', () => {
+  test('getLastError() returns an error when threshold is not met for non-covered file', () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
         coverageThreshold: {
           'path-test-files/non_covered_file.js': {
             statements: 100,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
+      });
+  });
+
+  test('getLastError() returns an error when threshold is not met for directory', () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          './path-test-files/glob-path/': {
+            statements: 100,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
+      });
+  });
+
+  test('getLastError() returns `undefined` when threshold is met for directory', () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          './path-test-files/glob-path/': {
+            statements: 40,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError()).toBeUndefined();
+      });
+  });
+
+  test('getLastError() returns an error when there is no coverage data for a threshold', () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          './path/doesnt/exist': {
+            statements: 40,
           },
         },
       },

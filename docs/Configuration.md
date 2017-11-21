@@ -165,20 +165,37 @@ _Note: Setting this option overwrites the default values. Add `"text"` or
 Default: `undefined`
 
 This will be used to configure minimum threshold enforcement for coverage
-results. If the thresholds are not met, jest will return failure. Thresholds,
-when specified as a positive number are taken to be the minimum percentage
-required. When a threshold is specified as a negative number it represents the
-maximum number of uncovered entities allowed. Thresholds can be specified as
-`global`, as `glob` paths or just paths. If globs or paths are specified
-alongside `global`, coverage data for matching paths will be subtracted from
-overall coverage and thresholds will be applied independently. Threshold for
-globs is applied to all files matching the glob. If the file specified by path
-is not found, error is returned.
+results. Thresholds can be specified as `global`, as
+a [glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or
+file path. If thresholds aren't met, jest will fail. Thresholds specified as a
+positive number are taken to be the minimum percentage required. Thresholds
+specified as a negative number represent the maximum number of uncovered
+entities allowed.
 
-For example, statements: 90 implies minimum statement coverage is 90%.
-statements: -10 implies that no more than 10 uncovered statements are allowed.
-`global` branch threshold 50 will be applied to all files minus matching
-`./src/components/**/*.js` and `./src/api/very-important-module.js`.
+For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:
+
+```json
+{
+  ...
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": -10
+      }
+    }
+  }
+}
+```
+
+If globs or paths are specified alongside `global`, coverage data for matching
+paths will be subtracted from overall coverage and thresholds will be applied
+independently. Thresholds for globs are applied to all files matching the
+glob. If the file specified by path is not found, error is returned.
+
+For example, with the following configuration:
 
 ```json
 {
@@ -191,9 +208,12 @@ statements: -10 implies that no more than 10 uncovered statements are allowed.
         "lines": 50,
         "statements": 50
       },
-      "./src/components/**/*.js": {
+      "./src/components/": {
         "branches": 40,
         "statements": 40
+      },
+      "./src/reducers/**/*.js": {
+        "statements": 90,
       },
       "./src/api/very-important-module.js": {
         "branches": 100,
@@ -205,6 +225,15 @@ statements: -10 implies that no more than 10 uncovered statements are allowed.
   }
 }
 ```
+
+Jest will fail if:
+
+ - The `./src/components` directory has less than 40% branch or statement coverage.
+ - One of the files matching the `./src/reducers/**/*.js` glob has less than 90%
+   statement coverage.
+ - The `./src/api/very-important-module.js` file has less than 100% coverage.
+ - Every remaining file combined has less than 50% coverage (`global`).
+
 
 ### `globals` [object]
 
