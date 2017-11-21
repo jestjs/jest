@@ -24,7 +24,7 @@
     "slash": "^1.0.0",
     "strip-bom": "3.0.0",
     "write-file-atomic": "^2.1.0",
-    "yargs": "^9.0.0"
+    "yargs": "^10.0.3"
   },
   "devDependencies": {
     "jest-environment-jsdom": "^21.2.1",

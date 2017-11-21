@@ -416,7 +416,9 @@ For example, this code tests that the promise rejects with reason `'octopus'`:
 ```js
 test('rejects to octopus', () => {
   // make sure to add a return statement
-  return expect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus');
+  return expect(Promise.reject(new Error('octopus'))).rejects.toThrow(
+    'octopus',
+  );
 });
 ```
 

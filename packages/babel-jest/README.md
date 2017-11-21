@@ -13,6 +13,7 @@ npm install --save-dev babel-jest babel-core
 ```
 
 > Note: If you are using babel version 7 you have to install `babel-jest` with
+>
 > ```
 > npm install --save-dev babel-jest babel-core@^7.0.0-0 @babel/core
 > ```
