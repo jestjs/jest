@@ -76,8 +76,13 @@ export default class {
     for (let i = 0; i < numWorkers; i++) {
       const worker = new Worker(workerOptions);
 
-      stdout.add(worker.getStdout());
-      stderr.add(worker.getStderr());
+      if (worker.getStdout()) {
+        stdout.add(worker.getStdout());
+      }
+
+      if (worker.getStderr()) {
+        stderr.add(worker.getStderr());
+      }
 
       workers[i] = worker;
     }
