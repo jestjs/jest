@@ -50,7 +50,8 @@ const printImmutableEntries = (
       ) +
       '}';
 
-// Return an iterator for Immutable Record in v4 or later.
+// Record has an entries method because it is a collection in immutable v3.
+// Return an iterator for Immutable Record from version v3 or v4.
 const getRecordEntries = val => {
   let i = 0;
   return {
@@ -75,16 +76,13 @@ const printImmutableRecord = (
   // _name property is defined only for an Immutable Record instance
   // which was constructed with a second optional descriptive name arg
   const name = getImmutableName(val._name || 'Record');
-  const entries = typeof Array.isArray(val._keys)
-    ? getRecordEntries(val) // immutable v4
-    : val.entries(); // Record is a collection in immutable v3
   return ++depth > config.maxDepth
     ? printAsLeaf(name)
     : name +
         SPACE +
         '{' +
         printIteratorEntries(
-          entries,
+          getRecordEntries(val),
           config,
           indentation,
           depth,
