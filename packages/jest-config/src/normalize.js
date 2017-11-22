@@ -492,6 +492,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'watchman':
         value = options[key];
         break;
+      case 'watchPlugins':
+        value = (options[key] || []).map(watchPlugin =>
+          resolve(options.rootDir, key, watchPlugin),
+        );
+        break;
     }
     newOptions[key] = value;
     return newOptions;

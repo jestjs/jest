@@ -14,6 +14,9 @@ import {KEYS} from '../constants';
 
 const runJestMock = jest.fn();
 
+const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
+const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
+
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
 jest.doMock(
   '../run_jest',
@@ -30,17 +33,25 @@ jest.doMock(
     },
 );
 
-jest.doMock('./__fixtures__/watch_plugin', () => ({
-  enter: jest.fn(),
-  key: 's'.codePointAt(0),
-  prompt: 'do nothing',
-}));
+jest.doMock(
+  watchPluginPath,
+  () => ({
+    enter: jest.fn(),
+    key: 's'.codePointAt(0),
+    prompt: 'do nothing',
+  }),
+  {virtual: true},
+);
 
-jest.doMock('./__fixtures__/watch_plugin2', () => ({
-  enter: jest.fn(),
-  key: 'u'.codePointAt(0),
-  prompt: 'do something else',
-}));
+jest.doMock(
+  watchPlugin2Path,
+  () => ({
+    enter: jest.fn(),
+    key: 'u'.codePointAt(0),
+    prompt: 'do something else',
+  }),
+  {virtual: true},
+);
 
 const watch = require('../watch').default;
 afterEach(runJestMock.mockReset);
@@ -106,7 +117,7 @@ describe('Watch mode flows', () => {
       await watch(
         Object.assign({}, globalConfig, {
           rootDir: __dirname,
-          watchPlugins: ['./__fixtures__/watch_plugin'],
+          watchPlugins: [watchPluginPath],
         }),
         contexts,
         pipe,
@@ -120,10 +131,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [
-          './__fixtures__/watch_plugin2',
-          './__fixtures__/watch_plugin',
-        ],
+        watchPlugins: [watchPlugin2Path, watchPluginPath],
       }),
       contexts,
       pipe,
@@ -131,16 +139,22 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    expect(pipe.write.mock.calls).toMatchSnapshot();
+    const pipeMockCalls = pipe.write.mock.calls;
+
+    const determiningTestsToRun = pipeMockCalls.findIndex(
+      ([c]) => c === 'Determining test suites to run...',
+    );
+
+    expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
   it('triggers enter on a WatchPlugin when its key is pressed', () => {
-    const plugin = require('./__fixtures__/watch_plugin');
+    const plugin = require(watchPluginPath);
 
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: ['./__fixtures__/watch_plugin'],
+        watchPlugins: [watchPluginPath],
       }),
       contexts,
       pipe,
@@ -154,8 +168,8 @@ describe('Watch mode flows', () => {
   });
 
   it('prevents Jest from handling keys when active and returns control when end is called', () => {
-    const plugin = require('./__fixtures__/watch_plugin');
-    const plugin2 = require('./__fixtures__/watch_plugin2');
+    const plugin = require(watchPluginPath);
+    const plugin2 = require(watchPlugin2Path);
 
     let pluginEnd;
     plugin.enter = jest.fn((globalConfig, end) => (pluginEnd = end));
@@ -163,10 +177,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [
-          './__fixtures__/watch_plugin',
-          './__fixtures__/watch_plugin2',
-        ],
+        watchPlugins: [watchPluginPath, watchPlugin2Path],
       }),
       contexts,
       pipe,

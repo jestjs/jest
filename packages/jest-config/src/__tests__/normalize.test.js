@@ -7,6 +7,7 @@
  */
 
 import {escapeStrForRegex} from 'jest-regex-util';
+import Resolver from 'jest-resolve';
 import normalize from '../normalize';
 
 jest.mock('jest-resolve');
@@ -990,5 +991,39 @@ describe('preset without setupFiles', () => {
         setupFiles: expect.arrayContaining(['/node_modules/a']),
       }),
     );
+  });
+});
+
+describe('watchPlugins', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name.startsWith(path.sep)) {
+        return name;
+      }
+      return path.sep + 'node_modules' + path.sep + name;
+    });
+  });
+
+  it('defaults to undefined', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.watchPlugins).toEqual(undefined);
+  });
+
+  it('normalizes watchPlugins', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        watchPlugins: ['my-watch-plugin', '<rootDir>/path/to/plugin'],
+      },
+      {},
+    );
+
+    expect(options.watchPlugins).toEqual([
+      '/node_modules/my-watch-plugin',
+      '/root/path/to/plugin',
+    ]);
   });
 });
