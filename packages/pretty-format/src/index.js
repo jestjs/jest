@@ -41,6 +41,11 @@ const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
+// Explicitly comparing typeof constructor to function avoids undefined as name
+// when mock identity-obj-proxy returns the key as the value for any key.
+const getConstructorName = val =>
+  (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
+
 // Is val is equal to global window object? Works even if it does not exist :)
 /* global window */
 const isWindow = val => typeof window !== 'undefined' && val === window;
@@ -239,8 +244,8 @@ function printComplexValue(
   // Avoid failure to serialize global window object in jsdom test environment.
   // For example, not even relevant if window is prop of React element.
   return hitMaxDepth || isWindow(val)
-    ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
-    : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
+    ? '[' + getConstructorName(val) + ']'
+    : (min ? '' : getConstructorName(val) + ' ') +
         '{' +
         printObjectProperties(val, config, indentation, depth, refs, printer) +
         '}';

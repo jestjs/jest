@@ -649,6 +649,17 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(Object.create(null))).toEqual('Object {}');
   });
 
+  it('prints identity-obj-proxy with string constructor', () => {
+    const val = Object.create(null);
+    val.constructor = 'constructor'; // mock the mock object :)
+    const expected = [
+      'Object {', // Object instead of undefined
+      '  "constructor": "constructor",',
+      '}',
+    ].join('\n');
+    expect(prettyFormat(val)).toEqual(expected);
+  });
+
   it('calls toJSON and prints its return value', () => {
     expect(
       prettyFormat({

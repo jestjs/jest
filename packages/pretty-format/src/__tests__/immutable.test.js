@@ -21,6 +21,15 @@ const toPrettyPrintTo = getPrettyPrint([ReactElement, ImmutablePlugin]);
 const expect = global.expect;
 expect.extend({toPrettyPrintTo});
 
+it('does not incorrectly match identity-obj-proxy as Immutable object', () => {
+  // SENTINEL constant is from https://github.com/facebook/immutable-js
+  const IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
+  const val = {};
+  val[IS_ITERABLE_SENTINEL] = IS_ITERABLE_SENTINEL; // mock the mock object :)
+  const expected = `{"${IS_ITERABLE_SENTINEL}": "${IS_ITERABLE_SENTINEL}"}`;
+  expect(val).toPrettyPrintTo(expected, {min: true});
+});
+
 describe('Immutable.OrderedSet', () => {
   it('supports an empty collection {min: true}', () => {
     expect(Immutable.OrderedSet([])).toPrettyPrintTo(
