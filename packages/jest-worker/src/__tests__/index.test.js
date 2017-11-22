@@ -182,6 +182,26 @@ it('aggregates all stdouts and stderrs from all workers', () => {
   expect(stderr.mock.calls[1][0].toString()).toBe('tree');
 });
 
+it('works when stdout and stderr are not piped to the parent', () => {
+  Worker.mockImplementation(() => ({
+    getStderr: () => null,
+    getStdout: () => null,
+    send: () => null,
+  }));
+
+  const farm = new Farm('/tmp/baz.js', {
+    exposedMethods: ['foo', 'bar'],
+    forkOptions: {
+      silent: false,
+      stdio: 'inherit',
+    },
+    numWorkers: 2,
+  });
+
+  expect(() => farm.foo()).not.toThrow();
+  expect(() => farm.bar()).not.toThrow();
+});
+
 it('does not let make calls after the farm is ended', () => {
   const farm = new Farm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
