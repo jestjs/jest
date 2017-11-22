@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[pretty-format]` Fix errors when identity-obj-proxy mocks CSS Modules
+  ([#4935](https://github.com/facebook/jest/pull/4935))
 * `[babel-jest]` Fix support for namespaced babel version 7
   ([#4918](https://github.com/facebook/jest/pull/4918))
 * `[expect]` fix .toThrow for promises
