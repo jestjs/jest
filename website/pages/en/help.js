@@ -72,7 +72,7 @@ class Help extends React.Component {
             </header>
             <p>
               <translate>
-                Jest is worked on full-time by Facebook's JavaScript Tools team.
+                Jest is worked on full-time by Facebook's JavaScript Foundation team.
                 Team members are often around and available for questions.
               </translate>
             </p>
