@@ -494,7 +494,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'watchPlugins':
         value = (options[key] || []).map(watchPlugin =>
-          _replaceRootDirTags(options.rootDir, watchPlugin),
+          resolve(options.rootDir, key, watchPlugin),
         );
         break;
     }
