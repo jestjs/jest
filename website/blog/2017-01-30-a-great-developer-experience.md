@@ -68,7 +68,7 @@ installing it, you can easily do so below or directly from the Jest homepage. Go
 ahead and give it a try!
 
 <div class="jest-repl">
-  <iframe src="https://repl.it/languages/jest?lite=true"></iframe>
+  <iframe src="https://repl.it/@amasad/try-jest?lite=true"></iframe>
 </div>
 
 ## Get involved
