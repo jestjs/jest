@@ -277,7 +277,7 @@ class Index extends React.Component {
                 </div>
               </div>
               <div className="jest-repl">
-                <iframe src="https://repl.it/languages/jest?lite=true" />
+                <iframe src="https://repl.it/@amasad/try-jest?lite=true" />
               </div>
             </div>
           </Container>
