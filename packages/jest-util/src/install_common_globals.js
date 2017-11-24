@@ -13,13 +13,23 @@ import type {Global} from 'types/Global';
 import createProcesObject from './create_process_object';
 import deepCyclicCopy from './deep_cyclic_copy';
 
+const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
+
 export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.process = createProcesObject();
 
   // Forward some APIs.
+  DTRACE.forEach(dtrace => {
+    globalObject[dtrace] = function(...args) {
+      return global[dtrace].apply(this, args);
+    };
+  });
+
+  // Forward some others (this breaks the sandbox but for now it's OK).
   globalObject.Buffer = global.Buffer;
   globalObject.setImmediate = global.setImmediate;
   globalObject.clearImmediate = global.clearImmediate;
 
-  Object.assign(global, deepCyclicCopy(globals));
+  // $FlowFixMe: assigning an object.
+  return Object.assign(globalObject, deepCyclicCopy(globals));
 }
