@@ -33,6 +33,7 @@ export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
+  isCoreModule?: boolean,
   isInternalModule?: boolean,
   mapCoverage: boolean,
 |};
@@ -275,13 +276,17 @@ export default class ScriptTransformer {
     fileSource?: string,
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
+    const isCoreModule = !!(options && options.isCoreModule);
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
+
     let wrappedCode: string;
     let sourceMapPath: ?string = null;
+
     const willTransform =
       !isInternalModule &&
+      !isCoreModule &&
       (shouldTransform(filename, this._config) || instrument);
 
     try {
@@ -300,7 +305,10 @@ export default class ScriptTransformer {
       }
 
       return {
-        script: new vm.Script(wrappedCode, {displayErrors: true, filename}),
+        script: new vm.Script(wrappedCode, {
+          displayErrors: true,
+          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
+        }),
         sourceMapPath,
       };
     } catch (e) {
@@ -317,25 +325,32 @@ export default class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): TransformResult {
-    const instrument = shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(
-      filename,
-      this._config,
-      instrument,
-    );
-    let result = cache.get(scriptCacheKey);
+    let scriptCacheKey = null;
+    let instrument = false;
+    let result = '';
+
+    if (!options.isCoreModule) {
+      instrument = shouldInstrument(filename, options, this._config);
+      scriptCacheKey = getScriptCacheKey(filename, this._config, instrument);
+      result = cache.get(scriptCacheKey);
+    }
+
     if (result) {
       return result;
-    } else {
-      result = this._transformAndBuildScript(
-        filename,
-        options,
-        instrument,
-        fileSource,
-      );
-      cache.set(scriptCacheKey, result);
-      return result;
     }
+
+    result = this._transformAndBuildScript(
+      filename,
+      options,
+      instrument,
+      fileSource,
+    );
+
+    if (scriptCacheKey) {
+      cache.set(scriptCacheKey, result);
+    }
+
+    return result;
   }
 }
 
