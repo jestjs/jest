@@ -16,8 +16,8 @@ import chalk from 'chalk';
 import getChangedFilesPromise from './get_changed_files_promise';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
-import isCI from 'is-ci';
 import isValidPath from './lib/is_valid_path';
+import isInteractive from './check_if_interative';
 import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
@@ -30,7 +30,6 @@ import TestNamePatternPrompt from './test_name_pattern_prompt';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
 
-const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
 export default function watch(
