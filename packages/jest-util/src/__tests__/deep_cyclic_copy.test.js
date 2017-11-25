@@ -61,3 +61,18 @@ it('handles cyclic dependencies', () => {
   expect(copy.bar).toEqual(copy);
   expect(copy.subcycle.baz).toEqual(copy);
 });
+
+it('uses the blacklist to avoid copying properties on the first level', () => {
+  const obj = {
+    blacklisted: 41,
+    subObj: {
+      blacklisted: 42,
+    },
+  };
+
+  expect(deepCyclicCopy(obj, new Set(['blacklisted']))).toEqual({
+    subObj: {
+      blacklisted: 42,
+    },
+  });
+});
