@@ -9,11 +9,12 @@
 
 import deepCyclicCopy from './deep_cyclic_copy';
 
+const BLACKLIST = new Set(['mainModule']);
+
 export default function() {
   const process = require('process');
-  const newProcess = deepCyclicCopy(process);
+  const newProcess = deepCyclicCopy(process, BLACKLIST);
 
-  // $FlowFixMe: Add the symbol for toString objects.
   newProcess[Symbol.toStringTag] = 'process';
 
   // Sequentially execute all constructors over the object.
