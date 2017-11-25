@@ -129,16 +129,23 @@ export default function watch(
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
-        if (shouldDisplayWatchUsage) {
-          outputStream.write(
-            usage(globalConfig, watchPlugins, hasSnapshotFailure),
-          );
-          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-          isWatchUsageDisplayed = true;
+
+        // Do not show any Watch Usage related stuff when running in a
+        // non-interactive environment
+        if (isInteractive) {
+          if (shouldDisplayWatchUsage) {
+            outputStream.write(
+              usage(globalConfig, watchPlugins, hasSnapshotFailure),
+            );
+            shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+            isWatchUsageDisplayed = true;
+          } else {
+            outputStream.write(showToggleUsagePrompt());
+            shouldDisplayWatchUsage = false;
+            isWatchUsageDisplayed = false;
+          }
         } else {
-          outputStream.write(showToggleUsagePrompt());
-          shouldDisplayWatchUsage = false;
-          isWatchUsageDisplayed = false;
+          outputStream.write('\n');
         }
 
         testNamePatternPrompt.updateCachedTestResults(results.testResults);

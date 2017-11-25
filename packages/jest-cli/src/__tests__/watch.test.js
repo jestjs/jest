@@ -112,6 +112,22 @@ describe('Watch mode flows', () => {
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
 
+  it('Runs Jest in a non-interactive environment not showing usage', () => {
+    jest.resetModules();
+    jest.doMock('is-ci', () => true);
+
+    const ci_watch = require('../watch').default;
+    ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    expect(runJestMock.mock.calls[0][0]).toMatchObject({
+      contexts,
+      globalConfig,
+      onComplete: expect.any(Function),
+      outputStream: pipe,
+      testWatcher: new TestWatcher({isWatchMode: true}),
+    });
+    expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
+  });
+
   it('resolves relative to the package root', () => {
     expect(async () => {
       await watch(
