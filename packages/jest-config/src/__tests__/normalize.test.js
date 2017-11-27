@@ -7,7 +7,6 @@
  */
 
 import {escapeStrForRegex} from 'jest-regex-util';
-import Resolver from 'jest-resolve';
 import normalize from '../normalize';
 
 jest.mock('jest-resolve');

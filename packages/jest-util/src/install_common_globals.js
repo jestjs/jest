@@ -30,6 +30,5 @@ export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.setImmediate = global.setImmediate;
   globalObject.clearImmediate = global.clearImmediate;
 
-  // $FlowFixMe: assigning an object.
   return Object.assign(globalObject, deepCyclicCopy(globals));
 }
