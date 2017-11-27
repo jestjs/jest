@@ -111,7 +111,7 @@ fail the test and require Jest to be run with `--updateSnapshot`.
 
 ### `--clearCache`
 
-##### available in Jest **21.3.0+**
+##### available in Jest **22.0.0+**
 
 Deletes the Jest cache directory and then exits without running tests. Will
 delete `cacheDirectory` if the option is passed, or Jest's default cache
