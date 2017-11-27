@@ -301,7 +301,7 @@ Exhausts all tasks queued by `setImmediate()`.
 
 ### `jest.advanceTimersByTime(msToRun)`
 
-##### renamed in Jest **21.3.0+**
+##### renamed in Jest **22.0.0+**
 
 Also under the alias: `.runTimersToTime()`
 
