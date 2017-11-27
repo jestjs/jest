@@ -101,8 +101,9 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest once by default and shows usage', () => {
-    jest.resetModules();
-    jest.doMock('is-ci', () => false);
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
 
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
@@ -117,8 +118,9 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest in a non-interactive environment not showing usage', () => {
-    jest.resetModules();
-    jest.doMock('is-ci', () => true);
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = false;
 
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
@@ -148,8 +150,9 @@ describe('Watch mode flows', () => {
   });
 
   it('shows prompts for WatchPlugins in alphabetical order', async () => {
-    jest.resetModules();
-    jest.doMock('is-ci', () => false);
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
 
     const ci_watch = require('../watch').default;
     ci_watch(
