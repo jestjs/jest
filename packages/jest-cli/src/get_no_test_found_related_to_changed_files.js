@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import isInteractive from './check_if_interative';
+import {isInteractive} from 'jest-util';
 
 export default function getNoTestFoundRelatedToChangedFiles(globalConfig) {
   let msg = chalk.bold(
