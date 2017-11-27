@@ -101,7 +101,11 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest once by default and shows usage', () => {
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    jest.resetModules();
+    jest.doMock('is-ci', () => false);
+
+    const ci_watch = require('../watch').default;
+    ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
       globalConfig,
@@ -144,7 +148,11 @@ describe('Watch mode flows', () => {
   });
 
   it('shows prompts for WatchPlugins in alphabetical order', async () => {
-    watch(
+    jest.resetModules();
+    jest.doMock('is-ci', () => false);
+
+    const ci_watch = require('../watch').default;
+    ci_watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
         watchPlugins: [watchPlugin2Path, watchPluginPath],
