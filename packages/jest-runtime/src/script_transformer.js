@@ -33,7 +33,7 @@ export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
-  isCoreModule?: boolean,
+  isNativeModule?: boolean,
   isInternalModule?: boolean,
   mapCoverage: boolean,
 |};
@@ -276,7 +276,7 @@ export default class ScriptTransformer {
     fileSource?: string,
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
-    const isCoreModule = !!(options && options.isCoreModule);
+    const isNativeModule = !!(options && options.isNativeModule);
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
@@ -286,7 +286,7 @@ export default class ScriptTransformer {
 
     const willTransform =
       !isInternalModule &&
-      !isCoreModule &&
+      !isNativeModule &&
       (shouldTransform(filename, this._config) || instrument);
 
     try {
@@ -307,7 +307,7 @@ export default class ScriptTransformer {
       return {
         script: new vm.Script(wrappedCode, {
           displayErrors: true,
-          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
+          filename: isNativeModule ? 'jest-node-native-' + filename : filename,
         }),
         sourceMapPath,
       };
@@ -329,7 +329,7 @@ export default class ScriptTransformer {
     let instrument = false;
     let result = '';
 
-    if (!options.isCoreModule) {
+    if (!options.isNativeModule) {
       instrument = shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, this._config, instrument);
       result = cache.get(scriptCacheKey);

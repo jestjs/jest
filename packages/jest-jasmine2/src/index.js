@@ -25,10 +25,17 @@ const JASMINE = require.resolve('./jasmine/jasmine_light.js');
 async function jasmine2(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
-  environment: Environment,
+  environment: ?Environment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult> {
+  // The "environment" parameter is nullable just so that we can clean its
+  // reference after adding some variables to it; but you still need to pass
+  // it when calling "jasmine2".
+  if (!environment) {
+    throw new ReferenceError('Please pass a valid Jest Environment object');
+  }
+
   const reporter = new JasmineReporter(
     globalConfig,
     config,
@@ -85,10 +92,15 @@ async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake') {
+      if (environment && config.timers === 'fake') {
         environment.fakeTimers.useFakeTimers();
       }
     }
+  });
+
+  // Free references to environment to avoid leaks.
+  env.afterAll(() => {
+    environment = null;
   });
 
   env.addReporter(reporter);

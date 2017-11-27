@@ -40,6 +40,8 @@ type StackTraceOptions = {
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
 const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+
+const JEST_NODE_NATIVE_IGNORE = /^\s+at.*?jest-node-native-/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
@@ -135,6 +137,10 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
     }
 
     if (nodeInternals.some(internal => internal.test(line))) {
+      return false;
+    }
+
+    if (JEST_NODE_NATIVE_IGNORE.test(line)) {
       return false;
     }
 

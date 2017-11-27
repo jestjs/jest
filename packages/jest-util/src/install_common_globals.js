@@ -13,15 +13,18 @@ import type {Global} from 'types/Global';
 import createProcesObject from './create_process_object';
 import deepCyclicCopy from './deep_cyclic_copy';
 
-const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
+// Matches macros referenced in Node repository, under the "src" folder.
+const MACROS = Object.keys(global).filter(key => {
+  return /^(?:DTRACE|LTTNG|COUNTER)_/.test(key);
+});
 
 export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.process = createProcesObject();
 
   // Forward some APIs.
-  DTRACE.forEach(dtrace => {
-    globalObject[dtrace] = function(...args) {
-      return global[dtrace].apply(this, args);
+  MACROS.forEach(macro => {
+    globalObject[macro] = function(...args) {
+      return global[macro].apply(this, args);
     };
   });
 
