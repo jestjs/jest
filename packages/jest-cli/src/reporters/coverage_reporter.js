@@ -20,10 +20,9 @@ import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
-import {clearLine} from 'jest-util';
+import {clearLine, isInteractive} from 'jest-util';
 import {createReporter} from 'istanbul-api';
 import chalk from 'chalk';
-import isCI from 'is-ci';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
 import Worker from 'jest-worker';
@@ -33,8 +32,6 @@ import glob from 'glob';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
-
-const isInteractive = process.stdout.isTTY && !isCI;
 
 type CoverageWorker = {worker: worker};
 

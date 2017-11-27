@@ -8,6 +8,7 @@
     "chalk": "^2.0.1",
     "glob": "^7.1.2",
     "graceful-fs": "^4.1.11",
+    "is-ci": "^1.0.10",
     "istanbul-api": "^1.1.14",
     "istanbul-lib-coverage": "^1.1.1",
     "istanbul-lib-instrument": "^1.8.0",

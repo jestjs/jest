@@ -7,19 +7,18 @@
  * @flow
  */
 
-import {clearLine} from 'jest-util';
+import {clearLine, isInteractive} from 'jest-util';
 
 import chalk from 'chalk';
-import isCI from 'is-ci';
 
 export const print = (stream: stream$Writable | tty$WriteStream) => {
-  if (process.stdout.isTTY && !isCI) {
+  if (isInteractive) {
     stream.write(chalk.bold.dim('Determining test suites to run...'));
   }
 };
 
 export const remove = (stream: stream$Writable | tty$WriteStream) => {
-  if (stream.isTTY && !isCI) {
+  if (isInteractive) {
     clearLine(stream);
   }
 };
