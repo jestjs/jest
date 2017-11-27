@@ -20,6 +20,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   coverageDirectory: 'coverage',
   coverageReporters: [],
   coverageThreshold: {global: {}},
+  detectLeaks: false,
   expand: false,
   findRelatedTests: false,
   forceExit: false,
@@ -63,6 +64,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   clearMocks: false,
   coveragePathIgnorePatterns: [],
   cwd: '/test_root_dir/',
+  detectLeaks: false,
   displayName: undefined,
   globals: {},
   haste: {

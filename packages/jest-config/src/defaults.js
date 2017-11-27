@@ -36,6 +36,7 @@ export default ({
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  detectLeaks: false,
   expand: false,
   globals: {},
   haste: {

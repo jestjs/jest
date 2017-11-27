@@ -51,6 +51,8 @@
 
 ### Features
 
+* `[jest-runner]` Enable experimental detection of leaked contexts
+  ([#4895](https://github.com/facebook/jest/pull/4895))
 * `[jest-cli]` Add combined coverage threshold for directories.
   ([#4885](https://github.com/facebook/jest/pull/4885))
 * `[jest-mock]` Add `timestamps` to mock state.
