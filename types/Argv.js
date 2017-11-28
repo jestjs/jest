@@ -61,6 +61,7 @@ export type Argv = {|
   rootDir: string,
   roots: Array<string>,
   setupFiles: Array<string>,
+  setupTestFramework: Array<string>,
   setupTestFrameworkScriptFile: string,
   silent: boolean,
   snapshotSerializers: Array<string>,
