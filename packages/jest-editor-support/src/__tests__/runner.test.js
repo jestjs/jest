@@ -15,6 +15,10 @@ const {readFileSync} = require('fs');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 import ProjectWorkspace from '../project_workspace';
 
+// Win32 requires to spawn a process to kill the first one, by using "taskkill".
+// Mocking "child_process" avoids the async spawn.
+jest.mock('child_process');
+
 // Replace `readFile` with `readFileSync` so we don't get multiple threads
 jest.doMock('fs', () => {
   return {
