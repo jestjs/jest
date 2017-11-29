@@ -142,6 +142,7 @@ const getConfigs = (
       roots: options.roots,
       runner: options.runner,
       setupFiles: options.setupFiles,
+      setupTestFramework: options.setupTestFramework,
       setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
       skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,

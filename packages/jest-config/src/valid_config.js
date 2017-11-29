@@ -72,7 +72,7 @@ export default ({
   runTestsByPath: false,
   runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
-  setupTestFrameworkScriptFile: '<rootDir>/test_setup_file.js',
+  setupTestFramework: ['<rootDir>/test_setup_file.js'],
   silent: true,
   skipNodeResolution: false,
   snapshotSerializers: ['my-serializer-module'],

@@ -112,6 +112,12 @@ async function jasmine2(
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
 
+  if (config.setupTestFramework && config.setupTestFramework.length) {
+    config.setupTestFramework.forEach(module => {
+      require(module)(environment.global);
+    });
+  }
+
   runtime
     .requireModule(require.resolve('source-map-support'), 'source-map-support')
     .install({

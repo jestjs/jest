@@ -84,6 +84,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   roots: [],
   runner: 'jest-runner',
   setupFiles: [],
+  setupTestFramework: [],
   setupTestFrameworkScriptFile: null,
   skipNodeResolution: false,
   snapshotSerializers: [],

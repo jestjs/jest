@@ -359,6 +359,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
+      case 'setupTestFramework':
       case 'snapshotSerializers':
         value =
           options[key] &&

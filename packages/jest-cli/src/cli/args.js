@@ -426,7 +426,13 @@ export const options = {
   setupFiles: {
     description:
       'The paths to modules that run some code to configure or ' +
-      'set up the testing environment before each test. ',
+      'set up the testing environment before each test.',
+    type: 'array',
+  },
+  setupTestFramework: {
+    description:
+      'Allows to setup the Jasmine environment from the global namespace, ' +
+      'instead of injecting the module inside the context',
     type: 'array',
   },
   setupTestFrameworkScriptFile: {
