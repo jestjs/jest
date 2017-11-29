@@ -149,7 +149,8 @@ test('"No tests found" message for projects', () => {
     'project2',
   ]);
   expect(stdout).toContain(
-    '  6 files checked across 2 projects. for more details run with `--verbose`',
+    '  6 files checked across 2 projects. ' +
+      'Run with `--verbose` for more details.',
   );
 });
 
