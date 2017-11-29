@@ -19,7 +19,7 @@ import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 import path from 'path';
 import HasteMap from 'jest-haste-map';
 import Resolver from 'jest-resolve';
-import {createDirectory} from 'jest-util';
+import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
@@ -49,6 +49,7 @@ type HasteMapOptions = {|
 
 type InternalModuleOptions = {|
   isInternalModule: boolean,
+  isNativeModule: boolean,
 |};
 
 type CoverageOptions = {
@@ -96,6 +97,8 @@ class Runtime {
   _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: ModuleRegistry;
+  _nativeModuleRegistry: ModuleRegistry;
+  _path: Path;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -112,7 +115,10 @@ class Runtime {
     resolver: Resolver,
     cacheFS?: CacheFS,
     coverageOptions?: CoverageOptions,
+    path?: Path,
   ) {
+    this.reset();
+
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
     this._coverageOptions = coverageOptions || {
@@ -121,22 +127,18 @@ class Runtime {
       collectCoverageOnlyFrom: null,
       mapCoverage: false,
     };
+
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
-    this._internalModuleRegistry = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
-    this._mockFactories = Object.create(null);
-    this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
-    this._moduleRegistry = Object.create(null);
+    this._path = path || '<unknown entry point>';
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
-    this._sourceMapRegistry = Object.create(null);
     this._virtualMocks = Object.create(null);
 
-    this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
     this._shouldUnmockTransitiveDependenciesCache = Object.create(null);
     this._transitiveShouldMock = Object.create(null);
@@ -267,40 +269,69 @@ class Runtime {
     return cliOptions;
   }
 
+  reset() {
+    // Clean mock data.
+    this._mockFactories = Object.create(null);
+    this._mockMetaDataCache = Object.create(null);
+    this._mockRegistry = Object.create(null);
+
+    // Clean registry data.
+    this._internalModuleRegistry = Object.create(null);
+    this._moduleRegistry = Object.create(null);
+    this._nativeModuleRegistry = Object.create(null);
+
+    // Clean other registries.
+    this._cacheFS = Object.create(null);
+    this._sourceMapRegistry = Object.create(null);
+
+    // $FlowFixMe: de-reference environment.
+    this._environment = null;
+  }
+
   requireModule(
     from: Path,
     moduleName?: string,
     options: ?InternalModuleOptions,
   ) {
-    const moduleID = this._resolver.getModuleID(
-      this._virtualMocks,
-      from,
-      moduleName,
-    );
+    const isNativeModule =
+      moduleName &&
+      ((options && options.isNativeModule) ||
+        this._resolver.isCoreModule(moduleName));
+
+    const moduleID =
+      !isNativeModule &&
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
+
+    let moduleRegistry;
     let modulePath;
 
-    const moduleRegistry =
-      !options || !options.isInternalModule
-        ? this._moduleRegistry
-        : this._internalModuleRegistry;
+    if (isNativeModule) {
+      moduleRegistry = this._nativeModuleRegistry;
+    } else if (options && options.isInternalModule) {
+      moduleRegistry = this._internalModuleRegistry;
+    } else {
+      moduleRegistry = this._moduleRegistry;
+    }
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
     const manualMock =
       moduleName && this._resolver.getMockModule(from, moduleName);
+
     if (
       (!options || !options.isInternalModule) &&
       !moduleResource &&
       manualMock &&
       manualMock !== this._isCurrentlyExecutingManualMock &&
+      moduleID &&
       this._explicitShouldMock[moduleID] !== false
     ) {
       modulePath = manualMock;
     }
 
-    if (moduleName && this._resolver.isCoreModule(moduleName)) {
-      return this._requireCoreModule(moduleName);
+    if (isNativeModule) {
+      modulePath = moduleName;
     }
 
     if (!modulePath) {
@@ -318,7 +349,9 @@ class Runtime {
         id: modulePath,
         loaded: false,
       };
+
       moduleRegistry[modulePath] = localModule;
+
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
           stripBOM(fs.readFileSync(modulePath, 'utf8')),
@@ -326,17 +359,38 @@ class Runtime {
       } else if (path.extname(modulePath) === '.node') {
         // $FlowFixMe
         localModule.exports = require(modulePath);
+      } else if (moduleName && isNativeModule) {
+        // Use a special resolution when requiring Node's internal modules. For
+        // instance, the "util" module requires "internal/util" which refers to
+        // an internal file and not to the NPM "internal" module.
+        this._requireNativeModule(
+          localModule,
+          moduleName,
+          moduleRegistry,
+          from,
+        );
       } else {
         this._execModule(localModule, options, moduleRegistry, from);
       }
 
       localModule.loaded = true;
     }
+
     return moduleRegistry[modulePath].exports;
   }
 
   requireInternalModule(from: Path, to?: string) {
-    return this.requireModule(from, to, {isInternalModule: true});
+    return this.requireModule(from, to, {
+      isInternalModule: true,
+      isNativeModule: false,
+    });
+  }
+
+  requireNativeModule(from: Path, to?: string) {
+    return this.requireModule(from, to, {
+      isInternalModule: true,
+      isNativeModule: true,
+    });
   }
 
   requireMock(from: Path, moduleName: string) {
@@ -487,19 +541,30 @@ class Runtime {
     moduleRegistry: ModuleRegistry,
     from: Path,
   ) {
+    if (!this._environment) {
+      throw new Error(
+        `A module was required after the test suite ${this._path} finished.\n` +
+          `In most cases this is because an async operation was not cleaned ` +
+          `up or mocked properly.`,
+      );
+    }
+
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
     }
 
     const isInternalModule = !!(options && options.isInternalModule);
+    const isNativeModule = !!(options && options.isNativeModule);
     const filename = localModule.filename;
+
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
+
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
     this._isCurrentlyExecutingManualMock = filename;
 
-    const dirname = path.dirname(filename);
+    const dirname = isNativeModule ? '' : path.dirname(filename);
     localModule.children = [];
 
     Object.defineProperty(
@@ -515,9 +580,15 @@ class Runtime {
     );
 
     localModule.paths = this._resolver.getModulePaths(dirname);
+
     Object.defineProperty(localModule, 'require', {
       value: this._createRequireImplementation(filename, options),
     });
+
+    const fileSource = isNativeModule
+      ? // $FlowFixMe: process.binding exists.
+        process.binding('natives')[filename]
+      : this._cacheFS[filename];
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
@@ -526,9 +597,10 @@ class Runtime {
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
         isInternalModule,
+        isNativeModule,
         mapCoverage: this._coverageOptions.mapCoverage,
       },
-      this._cacheFS[filename],
+      fileSource,
     );
 
     if (transformedFile.sourceMapPath) {
@@ -538,6 +610,7 @@ class Runtime {
     const wrapper = this._environment.runScript(transformedFile.script)[
       ScriptTransformer.EVAL_RESULT_VARIABLE
     ];
+
     wrapper.call(
       localModule.exports, // module context
       localModule, // module object
@@ -557,13 +630,41 @@ class Runtime {
     this._currentlyExecutingModulePath = lastExecutingModulePath;
   }
 
-  _requireCoreModule(moduleName: string) {
-    if (moduleName === 'process') {
-      return this._environment.global.process;
-    }
+  _requireNativeModule(
+    localModule: Module,
+    moduleName: string,
+    moduleRegistry: ModuleRegistry,
+    from: Path,
+  ) {
+    switch (moduleName) {
+      case 'async_hooks': // Pure native module.
+      case 'buffer': // Causes issues when passing buffers to another context.
+      case 'module': // Calls into native_module, which is not mockable.
+        // $FlowFixMe: dynamic require needed.
+        localModule.exports = require(moduleName);
+        break;
 
-    // $FlowFixMe
-    return require(moduleName);
+      case 'os': // Pure native module.
+      case 'v8': // Contains invalid references.
+        // $FlowFixMe: dynamic require needed.
+        localModule.exports = deepCyclicCopy(require(moduleName));
+        break;
+
+      case 'process': // Make sure that the returned reference is consistent.
+        localModule.exports = this._environment.global.process;
+        break;
+
+      default:
+        this._execModule(
+          localModule,
+          {
+            isInternalModule: true,
+            isNativeModule: true,
+          },
+          moduleRegistry,
+          from,
+        );
+    }
   }
 
   _generateMock(from: Path, moduleName: string) {
@@ -676,15 +777,22 @@ class Runtime {
     from: Path,
     options: ?InternalModuleOptions,
   ): LocalModuleRequire {
-    const moduleRequire =
-      options && options.isInternalModule
-        ? (moduleName: string) => this.requireInternalModule(from, moduleName)
-        : this.requireModuleOrMock.bind(this, from);
+    let moduleRequire;
+
+    if (options && options.isNativeModule) {
+      moduleRequire = this.requireNativeModule.bind(this, from);
+    } else if (options && options.isInternalModule) {
+      moduleRequire = this.requireInternalModule.bind(this, from);
+    } else {
+      moduleRequire = this.requireModuleOrMock.bind(this, from);
+    }
+
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
     moduleRequire.requireActual = this.requireModule.bind(this, from);
     moduleRequire.requireMock = this.requireMock.bind(this, from);
     moduleRequire.resolve = moduleName => this._resolveModule(from, moduleName);
+
     return moduleRequire;
   }
 

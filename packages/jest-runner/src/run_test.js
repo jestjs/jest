@@ -74,7 +74,8 @@ async function runTestInternal(
     RuntimeClass,
   >);
 
-  const environment = new TestEnvironment(config);
+  let environment = new TestEnvironment(config);
+
   const leakDetector = config.detectLeaks
     ? new LeakDetector(environment)
     : null;
@@ -98,15 +99,24 @@ async function runTestInternal(
     testConsole = new BufferedConsole();
   }
 
-  const cacheFS = {[path]: testSource};
+  let cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  const runtime = new Runtime(config, environment, resolver, cacheFS, {
+  const coverageOptions = {
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     mapCoverage: globalConfig.mapCoverage,
-  });
+  };
+
+  let runtime = new Runtime(
+    config,
+    environment,
+    resolver,
+    cacheFS,
+    coverageOptions,
+    path,
+  );
 
   const start = Date.now();
   await environment.setup();
@@ -129,19 +139,23 @@ async function runTestInternal(
     result.skipped = testCount === result.numPendingTests;
     result.displayName = config.displayName;
 
-    if (globalConfig.logHeapUsage) {
-      if (global.gc) {
-        global.gc();
-      }
-      result.memoryUsage = process.memoryUsage().heapUsed;
-    }
-
     // Delay the resolution to allow log messages to be output.
     return new Promise(resolve => {
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    await environment.teardown();
+    if (environment.teardown) {
+      await environment.teardown();
+    }
+
+    if (runtime.reset) {
+      await runtime.reset();
+    }
+
+    // Free references to environment to avoid leaks.
+    cacheFS = null;
+    environment = null;
+    runtime = null;
   }
 }
 
@@ -157,6 +171,11 @@ export default async function runTest(
     config,
     resolver,
   );
+
+  if (globalConfig.logHeapUsage) {
+    global.gc && global.gc();
+    result.memoryUsage = process.memoryUsage().heapUsed;
+  }
 
   // Resolve leak detector, outside the "runTestInternal" closure.
   result.leaks = leakDetector ? leakDetector.isLeaking() : false;

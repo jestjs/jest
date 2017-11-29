@@ -12,6 +12,7 @@ import mkdirp from 'mkdirp';
 import BufferedConsole from './buffered_console';
 import clearLine from './clear_line';
 import Console from './Console';
+import deepCyclicCopy from './deep_cyclic_copy';
 import FakeTimers from './fake_timers';
 import formatTestResults from './format_test_results';
 import getConsoleOutput from './get_console_output';
@@ -37,6 +38,7 @@ module.exports = {
   NullConsole,
   clearLine,
   createDirectory,
+  deepCyclicCopy,
   formatTestResults,
   getConsoleOutput,
   installCommonGlobals,
