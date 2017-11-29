@@ -545,7 +545,7 @@ class Runtime {
       throw new Error(
         `A module was required after the test suite ${this._path} finished.\n` +
           `In most cases this is because an async operation was not cleaned ` +
-          `up or mocked properly`,
+          `up or mocked properly.`,
       );
     }
 
