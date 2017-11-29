@@ -12,7 +12,6 @@
 import prettyFormat from 'pretty-format';
 import v8 from 'v8';
 import vm from 'vm';
-import weak from 'weak';
 
 const PRIMITIVE_TYPES = new Set([
   'undefined',
@@ -32,6 +31,17 @@ export default class {
           'Primitives cannot leak memory.',
           'You passed a ' + typeof value + ': <' + prettyFormat(value) + '>',
         ].join(' '),
+      );
+    }
+
+    let weak;
+
+    try {
+      weak = require('weak');
+    } catch (err) {
+      throw new Error(
+        'The leaking detection mechanism requires the "weak" package to work. ' +
+          'Please make sure that you can install the native dependency on your platform.',
       );
     }
 
