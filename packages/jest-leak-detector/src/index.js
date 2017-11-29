@@ -40,8 +40,8 @@ export default class {
       weak = require('weak');
     } catch (err) {
       throw new Error(
-        'The leaking detection mechanism requires "weak" to work. ' +
-          'Please make sure that you can install the native dependency on your platform',
+        'The leaking detection mechanism requires the "weak" package to work. ' +
+          'Please make sure that you can install the native dependency on your platform.',
       );
     }
 
