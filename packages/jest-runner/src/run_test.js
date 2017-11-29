@@ -144,8 +144,13 @@ async function runTestInternal(
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    environment.teardown && (await environment.teardown());
-    runtime.teardown && (await runtime.teardown());
+    if (environment.teardown) {
+      await environment.teardown();
+    }
+
+    if (runtime.reset) {
+      await runtime.reset();
+    }
 
     // Free references to environment to avoid leaks.
     cacheFS = null;

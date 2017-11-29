@@ -117,6 +117,8 @@ class Runtime {
     coverageOptions?: CoverageOptions,
     path?: Path,
   ) {
+    this.reset();
+
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
     this._coverageOptions = coverageOptions || {
@@ -125,24 +127,18 @@ class Runtime {
       collectCoverageOnlyFrom: null,
       mapCoverage: false,
     };
+
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
-    this._internalModuleRegistry = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
-    this._mockFactories = Object.create(null);
-    this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
-    this._moduleRegistry = Object.create(null);
-    this._nativeModuleRegistry = Object.create(null);
-    this._path = path || '<unknown test file>';
+    this._path = path || '<unknown entry point>';
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
-    this._sourceMapRegistry = Object.create(null);
     this._virtualMocks = Object.create(null);
 
-    this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
     this._shouldUnmockTransitiveDependenciesCache = Object.create(null);
     this._transitiveShouldMock = Object.create(null);
@@ -273,7 +269,7 @@ class Runtime {
     return cliOptions;
   }
 
-  teardown() {
+  reset() {
     // Clean mock data.
     this._mockFactories = Object.create(null);
     this._mockMetaDataCache = Object.create(null);
@@ -286,6 +282,7 @@ class Runtime {
 
     // Clean other registries.
     this._cacheFS = Object.create(null);
+    this._sourceMapRegistry = Object.create(null);
 
     // $FlowFixMe: de-reference environment.
     this._environment = null;
@@ -547,7 +544,8 @@ class Runtime {
     if (!this._environment) {
       throw new Error(
         `A module was required after the test suite ${this._path} finished.\n` +
-          `This usually means that you forgot to clean or mock an async operation`,
+          `In most cases this is because an async operation was not cleaned ` +
+          `up or mocked properly`,
       );
     }
 

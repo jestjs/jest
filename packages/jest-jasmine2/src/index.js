@@ -126,7 +126,9 @@ async function jasmine2(
 
   if (config.setupTestFramework && config.setupTestFramework.length) {
     config.setupTestFramework.forEach(module => {
-      require(module)(environment.global);
+      if (environment) {
+        require(module)(environment.global);
+      }
     });
   }
 
