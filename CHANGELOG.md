@@ -116,6 +116,8 @@
 
 ### Chore & Maintenance
 
+* `[jest-util]` `jest-util` should not depend on `jest-mock`
+  ([#4992](https://github.com/facebook/jest/pull/4992))
 * `[*]` [**BREAKING**] Drop support for Node.js version 4
   ([#4769](https://github.com/facebook/jest/pull/4769))
 * `[docs]` Wrap code comments at 80 characters

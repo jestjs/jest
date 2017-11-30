@@ -9,7 +9,7 @@
 
 import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
-import type {ModuleMocker} from 'jest-mock';
+import type {ModuleMocker} from 'types/Mock';
 
 import {formatStackTrace} from 'jest-message-util';
 import setGlobal from './set_global';
