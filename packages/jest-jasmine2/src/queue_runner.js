@@ -55,15 +55,17 @@ export default function queueRunner(options: Options) {
     if (!timeout) {
       return promise;
     }
+    const timeoutMs: number = timeout();
     return pTimeout(
       promise,
-      timeout(),
+      timeoutMs,
       options.clearTimeout,
       options.setTimeout,
       () => {
         const error = new Error(
-          'Timeout - Async callback was not invoked within timeout specified ' +
-            'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+          'Timeout - Async callback was not invoked within the ' +
+            timeoutMs +
+            'ms timeout specified by jest.setTimeout.',
         );
         options.onException(error);
       },
