@@ -111,6 +111,8 @@
 * `[jest-environment-jsdom]` Update JSOM to 11.4, which includes built-in
   support for `requestAnimationFrame`
   ([#4919](https://github.com/facebook/jest/pull/4919))
+* `[jest-cli]` Hide watch usage output when running on non-interactive
+  environments ([#4958](https://github.com/facebook/jest/pull/4958))
 
 ### Chore & Maintenance
 
