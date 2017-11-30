@@ -63,9 +63,9 @@ export default function queueRunner(options: Options) {
       options.setTimeout,
       () => {
         const error = new Error(
-          'Timeout - Async callback was not invoked within timeout specified by jest.setTimeout: ' +
+          'Timeout - Async callback was not invoked within the ' +
             timeoutMs +
-            'ms.',
+            'ms timeout specified by jest.setTimeout.',
         );
         options.onException(error);
       },
