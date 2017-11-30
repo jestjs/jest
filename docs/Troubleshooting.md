@@ -94,6 +94,28 @@ following configuration:
 }
 ```
 
+or the following for Windows:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/jest/bin/jest.js",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
+```
+
 If you are using Facebook's
 [`create-react-app`](https://github.com/facebookincubator/create-react-app), you
 can debug your Jest tests with the following configuration:
