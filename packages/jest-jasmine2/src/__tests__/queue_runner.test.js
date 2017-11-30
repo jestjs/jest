@@ -112,7 +112,7 @@ describe('queueRunner', () => {
     // i.e. the `message` of the error passed to `onException`.
     expect(onException.mock.calls[0][0].message).toEqual(
       'Timeout - Async callback was not invoked within timeout specified ' +
-        'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+        'by jest.setTimeout: 0ms.',
     );
     expect(fnTwo).toHaveBeenCalled();
   });
