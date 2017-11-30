@@ -44,6 +44,22 @@ node <span class="token operator">--</span>inspect<span class="token operator">-
       <span class="token property">&quot;internalConsoleOptions&quot;</span><span class="token operator">:</span> <span class="token string">&quot;neverOpen&quot;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></pre><p>or the following for Windows:</p><pre class="prism language-json"><span class="token punctuation">{</span>
+  <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;0.2.0&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;configurations&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Debug Jest Tests&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;node&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;request&quot;</span><span class="token operator">:</span> <span class="token string">&quot;launch&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;runtimeArgs&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">&quot;--inspect-brk&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;${workspaceRoot}/node_modules/jest/bin/jest.js&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;--runInBand&quot;</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;console&quot;</span><span class="token operator">:</span> <span class="token string">&quot;integratedTerminal&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;internalConsoleOptions&quot;</span><span class="token operator">:</span> <span class="token string">&quot;neverOpen&quot;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></pre><p>Facebook の <a href="https://github.com/facebookincubator/create-react-app" target="_blank"><code>create-react-app</code></a> を使用しているなら、Jest のテストを以下の設定でデバッグできます:</p><pre class="prism language-json"><span class="token punctuation">{</span>
   <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;0.2.0&quot;</span><span class="token punctuation">,</span>
   <span class="token property">&quot;configurations&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
