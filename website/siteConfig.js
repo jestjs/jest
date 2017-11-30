@@ -245,11 +245,6 @@ const users = [
     image: '/jest/img/logos/xing.png',
     infoLink: 'https://www.xing.com/',
   },
-  {
-    caption: 'Yammer',
-    image: '/jest/img/logos/yammer.png',
-    infoLink: 'https://www.yammer.com/',
-  },
 ];
 
 const siteConfig = {
