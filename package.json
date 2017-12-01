@@ -77,27 +77,30 @@
     "typescript": "^2.2.2",
     "watchify": "^3.9.0"
 },
-"scripts": {
-  "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
-  "build": "node ./scripts/build.js",
-  "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn build-clean",
-  "jest": "node ./packages/jest-cli/bin/jest.js",
-  "jest-coverage": "yarn jest --coverage",
-  "lint": "eslint . --cache --ext js,md",
-  "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
-  "lint:md": "prettier docs/**/*.md packages/*/README.md packages/*/docs/**/*.md website/blog/*.md .github/*.md CHANGELOG.md CONTRIBUTING.md website/README.md --write",
-  "postinstall": "yarn build",
-  "publish": "yarn build-clean && yarn build && lerna publish --silent",
-  "test-ci-es5-build-in-browser": "karma start --single-run",
-  "test-ci": "yarn typecheck && yarn lint && yarn lint-es5-build && yarn jest-coverage -- -i && yarn test-examples && node scripts/mapCoverage.js && codecov",
-  "test-ci-partial": "yarn jest -i && yarn test-examples",
-  "test-examples": "node scripts/test_examples.js",
-  "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
-  "test": "yarn typecheck && yarn lint && yarn jest && yarn test-examples",
-  "typecheck": "flow check --include-warnings",
-  "watch": "yarn build && node ./scripts/watch.js"
+  "scripts": {
+    "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
+    "build": "node ./scripts/build.js",
+    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn build-clean",
+    "jest": "node ./packages/jest-cli/bin/jest.js",
+    "jest-coverage": "yarn jest --coverage",
+    "lint": "eslint . --cache --ext js,md",
+    "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
+    "lint:md": "prettier docs/**/*.md packages/*/README.md packages/*/docs/**/*.md website/blog/*.md .github/*.md CHANGELOG.md CONTRIBUTING.md website/README.md --write",
+    "postinstall": "yarn build",
+    "publish": "yarn build-clean && yarn build && lerna publish --silent",
+    "test-ci-es5-build-in-browser": "karma start --single-run",
+    "test-ci": "yarn typecheck && yarn lint && yarn lint-es5-build && yarn jest-coverage -- -i && yarn test-examples && node scripts/mapCoverage.js && codecov",
+    "test-ci-partial": "yarn jest -i && yarn test-examples",
+    "test-examples": "node scripts/test_examples.js",
+    "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
+    "test": "yarn typecheck && yarn lint && yarn jest && yarn test-examples",
+    "typecheck": "flow check --include-warnings",
+    "watch": "yarn build && node ./scripts/watch.js"
   },
-  "workspaces": ["packages/*", "website"],
+  "workspaces": [
+    "packages/*",
+    "website"
+  ],
   "jest": {
     "modulePathIgnorePatterns": [
       "examples/.*",
@@ -118,12 +121,16 @@
       "!**/__tests__/**",
       "!integration_tests/**"
     ],
-    "coverageReporters": ["json"],
+    "coverageReporters": [
+      "json"
+    ],
     "transform": {
       "^.+\\.js$": "<rootDir>/packages/babel-jest"
     },
     "setupTestFrameworkScriptFile": "<rootDir>/test_setup_file.js",
-    "setupTestFramework": ["<rootDir>/test_setup_file.js"],
+    "setupTestFramework": [
+      "<rootDir>/test_setup_file.js"
+    ],
     "snapshotSerializers": [
       "<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js"
     ],
@@ -136,7 +143,9 @@
       "/packages/.*/build",
       "/packages/.*/build-es5"
     ],
-    "testMatch": ["**/*.test.js"]
+    "testMatch": [
+      "**/*.test.js"
+    ]
   },
   "prettier": {
     "bracketSpacing": false,
