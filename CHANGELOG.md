@@ -48,6 +48,8 @@
   issue. ([#4669](https://github.com/facebook/jest/pull/4669))
 * `[jest-cli]` Fix `--onlyChanged` path case sensitivity on Windows platform
   ([#4730](https://github.com/facebook/jest/pull/4730))
+* `[jest-runtime]` Use realpath to match transformers
+  ([#5000](https://github.com/facebook/jest/pull/5000))
 
 ### Features
 
