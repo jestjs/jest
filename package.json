@@ -127,6 +127,7 @@
     "transform": {
       "^.+\\.js$": "<rootDir>/packages/babel-jest"
     },
+    "setupTestFrameworkScriptFile": "<rootDir>/test_setup_file.js",
     "setupTestFramework": [
       "<rootDir>/test_setup_file.js"
     ],
