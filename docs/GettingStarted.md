@@ -3,7 +3,7 @@ id: getting-started
 title: Getting Started
 ---
 
-Install Jest using `npm`:
+Install Jest using [`npm`](https://www.npmjs.com/):
 
 ```
 npm install --save-dev jest
