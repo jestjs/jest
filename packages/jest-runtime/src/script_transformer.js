@@ -183,11 +183,12 @@ export default class ScriptTransformer {
   }
 
   transformSource(
-    filename: Path,
+    filepath: Path,
     content: string,
     instrument: boolean,
     mapCoverage: boolean,
   ) {
+    const filename = fs.realpathSync(filepath) || filepath;
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,
