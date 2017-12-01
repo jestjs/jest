@@ -76,7 +76,7 @@
     "strip-ansi": "^4.0.0",
     "typescript": "^2.2.2",
     "watchify": "^3.9.0"
-},
+  },
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
