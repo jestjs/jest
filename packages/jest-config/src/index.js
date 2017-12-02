@@ -147,6 +147,7 @@ const getConfigs = (
       skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,
       testEnvironment: options.testEnvironment,
+      testEnvironmentOptions: options.testEnvironmentOptions,
       testLocationInResults: options.testLocationInResults,
       testMatch: options.testMatch,
       testPathIgnorePatterns: options.testPathIgnorePatterns,

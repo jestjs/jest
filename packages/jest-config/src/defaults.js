@@ -56,6 +56,7 @@ export default ({
   runner: 'jest-runner',
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
+  testEnvironmentOptions: {},
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],

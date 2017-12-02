@@ -726,6 +726,17 @@ class CustomEnvironment extends NodeEnvironment {
 }
 ```
 
+### `testEnvironmentOptions` [Object]
+
+##### available in Jest **2?.0.0+**
+
+Default: `{}`
+
+Test environment options that will be passed to the `testEnvironment`.  The
+relevant options depend on the environment.  For example you can override
+options given to [jsdom](https://github.com/tmpvar/jsdom) such as
+`{userAgent: "Agent/007"}`.
+
 ### `testMatch` [array<string>]
 
 ##### available in Jest **19.0.0+**
