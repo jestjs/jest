@@ -728,7 +728,7 @@ class CustomEnvironment extends NodeEnvironment {
 
 ### `testEnvironmentOptions` [Object]
 
-##### available in Jest **2?.0.0+**
+##### available in Jest **22.0.0+**
 
 Default: `{}`
 
