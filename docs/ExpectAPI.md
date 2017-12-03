@@ -159,7 +159,7 @@ you want to check that a mock function is called with a non-null argument:
 ```js
 test('map calls its argument with a non-null argument', () => {
   const mock = jest.fn();
-  [1].map(mock);
+  [1].map(x => mock(x));
   expect(mock).toBeCalledWith(expect.anything());
 });
 ```
