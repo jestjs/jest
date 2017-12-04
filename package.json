@@ -127,9 +127,7 @@
     "transform": {
       "^.+\\.js$": "<rootDir>/packages/babel-jest"
     },
-    "setupTestFramework": [
-      "<rootDir>/test_setup_file.js"
-    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/test_setup_file.js",
     "snapshotSerializers": [
       "<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js"
     ],
