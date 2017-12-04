@@ -149,6 +149,8 @@
   alias.
 * `[docs]` Include missing dependency in TestEnvironment sample code
 * `[docs]` Add clarification for hook execution order
+* `[docs]` Update `expect.anything()` sample code
+  ([#5007](https://github.com/facebook/jest/pull/5007))
 
 ## jest 21.2.1
 
