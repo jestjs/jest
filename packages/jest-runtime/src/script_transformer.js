@@ -19,6 +19,7 @@ import path from 'path';
 import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
+import nodeFS from 'fs';
 import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
@@ -182,13 +183,22 @@ export default class ScriptTransformer {
     }).code;
   }
 
+  _getRealPath(filepath: Path): Path {
+    try {
+      // $FlowFixMe
+      return process.binding('fs').realpath(filepath) || filepath;
+    } catch (err) {
+      return filepath;
+    }
+  }
+
   transformSource(
     filepath: Path,
     content: string,
     instrument: boolean,
     mapCoverage: boolean,
   ) {
-    const filename = fs.realpathSync(filepath) || filepath;
+    const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,
