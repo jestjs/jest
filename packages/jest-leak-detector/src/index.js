@@ -39,7 +39,7 @@ export default class {
     try {
       weak = require('weak');
     } catch (err) {
-      if (!err || (err.code !== 'MODULE_NOT_FOUND')) {
+      if (!err || err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }
 
