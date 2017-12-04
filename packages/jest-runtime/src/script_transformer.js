@@ -182,12 +182,22 @@ export default class ScriptTransformer {
     }).code;
   }
 
+  _getRealPath(filepath: Path): Path {
+    try {
+      // $FlowFixMe
+      return process.binding('fs').realpath(filepath) || filepath;
+    } catch (err) {
+      return filepath;
+    }
+  }
+
   transformSource(
-    filename: Path,
+    filepath: Path,
     content: string,
     instrument: boolean,
     mapCoverage: boolean,
   ) {
+    const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,
