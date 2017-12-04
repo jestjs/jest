@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import EventEmitter from 'events';
 import createProcessObject from '../create_process_object';
 
 it('creates a process object that looks like the original one', () => {
   const fakeProcess = createProcessObject();
 
-  // "process" should expose EventEmitter methods through the prototype chain.
-  expect(typeof fakeProcess.on).toBe('function');
-  expect(typeof fakeProcess.removeListener).toBe('function');
+  // "process" inherits from EventEmitter through the prototype chain.
+  expect(fakeProcess instanceof EventEmitter).toBe(true);
 
   // They look the same, but they are NOT the same (deep copied object). The
   // "_events" property is checked to ensure event emitter properties are
