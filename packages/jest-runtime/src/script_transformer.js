@@ -19,7 +19,6 @@ import path from 'path';
 import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
-import nodeFS from 'fs';
 import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
