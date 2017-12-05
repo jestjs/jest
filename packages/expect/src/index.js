@@ -53,10 +53,19 @@ const isPromise = obj => {
   );
 };
 
-const getPromiseMatcher = name => {
+const createToThrowErrorMatchingSnapshotMatcher = function(matcher) {
+  return function(received: any, testName?: string) {
+    return matcher.apply(this, [received, testName, true]);
+  };
+};
+
+const getPromiseMatcher = (name, matcher) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher('.' + name, true);
+  } else if (name === 'toThrowErrorMatchingSnapshot') {
+    return createToThrowErrorMatchingSnapshotMatcher(matcher);
   }
+
   return null;
 };
 
@@ -74,7 +83,7 @@ const expect = (actual: any, ...rest): ExpectationObject => {
 
   Object.keys(allMatchers).forEach(name => {
     const matcher = allMatchers[name];
-    const promiseMatcher = getPromiseMatcher(name) || matcher;
+    const promiseMatcher = getPromiseMatcher(name, matcher) || matcher;
     expectation[name] = makeThrowingMatcher(matcher, false, actual);
     expectation.not[name] = makeThrowingMatcher(matcher, true, actual);
 

@@ -72,7 +72,7 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 
   let report;
   if (pass) {
-    return {message: '', pass: true};
+    return {message: () => '', pass: true};
   } else if (!expected) {
     report = () =>
       `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
@@ -115,8 +115,10 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 const toThrowErrorMatchingSnapshot = function(
   received: any,
   testName?: string,
+  fromPromise: boolean,
 ) {
   this.dontThrow && this.dontThrow();
+
   const {isNot} = this;
 
   if (isNot) {
@@ -127,10 +129,14 @@ const toThrowErrorMatchingSnapshot = function(
 
   let error;
 
-  try {
-    received();
-  } catch (e) {
-    error = e;
+  if (fromPromise) {
+    error = received;
+  } else {
+    try {
+      received();
+    } catch (e) {
+      error = e;
+    }
   }
 
   if (error === undefined) {
