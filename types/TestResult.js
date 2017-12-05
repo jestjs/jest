@@ -154,6 +154,7 @@ export type TestResult = {|
     fileDeleted: boolean,
     matched: number,
     unchecked: number,
+    uncheckedKeys: Array<string>,
     unmatched: number,
     updated: number,
   |},
@@ -210,6 +211,7 @@ export type SnapshotSummary = {|
   matched: number,
   total: number,
   unchecked: number,
+  uncheckedKeys: Array<string>,
   unmatched: number,
   updated: number,
 |};

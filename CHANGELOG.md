@@ -119,6 +119,8 @@
   ([#4919](https://github.com/facebook/jest/pull/4919))
 * `[jest-snapshot]` Promises support for `toThrowErrorMatchingSnapshot`
   ([#4946](https://github.com/facebook/jest/pull/4946))
+* `[jest-cli]` Explain which snapshots are obsolete 
+  ([#5005](https://github.com/facebook/jest/pull/5005))
 
 ### Chore & Maintenance
 

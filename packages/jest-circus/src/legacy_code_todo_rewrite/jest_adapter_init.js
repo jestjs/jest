@@ -144,6 +144,7 @@ export const runAndTransformResultsToJestFormat = async ({
       fileDeleted: false,
       matched: 0,
       unchecked: 0,
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },
