@@ -23,11 +23,17 @@ class JSDOMEnvironment {
   moduleMocker: ?ModuleMocker;
 
   constructor(config: ProjectConfig) {
-    this.dom = new JSDOM('<!DOCTYPE html>', {
-      pretendToBeVisual: true,
-      runScripts: 'dangerously',
-      url: config.testURL,
-    });
+    this.dom = new JSDOM(
+      '<!DOCTYPE html>',
+      Object.assign(
+        {
+          pretendToBeVisual: true,
+          runScripts: 'dangerously',
+          url: config.testURL,
+        },
+        config.testEnvironmentOptions,
+      ),
+    );
     const global = (this.global = this.dom.window.document.defaultView);
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.

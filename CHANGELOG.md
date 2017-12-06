@@ -53,6 +53,8 @@
 
 ### Features
 
+* `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node context.
+  ([#5003](https://github.com/facebook/jest/pull/5003))
 * `[jest-jasmine2]` Update Timeout error message to `jest.timeout` and display
   current timeout value ([#4990](https://github.com/facebook/jest/pull/4990))
 * `[jest-runner]` Enable experimental detection of leaked contexts
