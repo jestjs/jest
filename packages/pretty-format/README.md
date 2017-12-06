@@ -197,8 +197,8 @@ result from either:
 ### test
 
 Write `test` so it can receive `val` argument of any type. To serialize
-**objects** which have certain properties, then a guarded expression like `val
-!= null && …` or more concise `val && …` prevents the following errors:
+**objects** which have certain properties, then a guarded expression like
+`val != null && …` or more concise `val && …` prevents the following errors:
 
 * `TypeError: Cannot read property 'whatever' of null`
 * `TypeError: Cannot read property 'whatever' of undefined`

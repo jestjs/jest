@@ -146,8 +146,8 @@ coverage information will be skipped.
 These pattern strings match against the full path. Use the `<rootDir>` string
 token to include the path to your project's root directory to prevent it from
 accidentally ignoring all of your files in different environments that may have
-different root directories. Example: `["<rootDir>/build/",
-"<rootDir>/node_modules/"]`.
+different root directories. Example:
+`["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
 ### `coverageReporters` [array<string>]
 
@@ -754,8 +754,8 @@ be skipped.
 These pattern strings match against the full path. Use the `<rootDir>` string
 token to include the path to your project's root directory to prevent it from
 accidentally ignoring all of your files in different environments that may have
-different root directories. Example: `["<rootDir>/build/",
-"<rootDir>/node_modules/"]`.
+different root directories. Example:
+`["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
 ### `testRegex` [string]
 
@@ -905,8 +905,8 @@ will not be transformed.
 These pattern strings match against the full path. Use the `<rootDir>` string
 token to include the path to your project's root directory to prevent it from
 accidentally ignoring all of your files in different environments that may have
-different root directories. Example: `["<rootDir>/bower_components/",
-"<rootDir>/node_modules/"]`.
+different root directories. Example:
+`["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
 ### `unmockedModulePathPatterns` [array<string>]
 

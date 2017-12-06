@@ -81,9 +81,10 @@ improvements were made entirely by community members!
   Jest. We now pretty-print
   [Immutable.js](https://github.com/facebook/immutable-js/) data structures and
   HtmlElements in assertion failures and snapshots.
-* **Custom Environment:** It is now possible to add a `@jest-environment
-  node|jsdom` annotation to the doc-block comment of a test file to use a test
-  environment different from the default for individual tests.
+* **Custom Environment:** It is now possible to add a
+  `@jest-environment node|jsdom` annotation to the doc-block comment of a test
+  file to use a test environment different from the default for individual
+  tests.
 
 Here is an example of all how all the new APIs together will make testing more
 delightful:

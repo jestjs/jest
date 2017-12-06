@@ -146,8 +146,9 @@ More information on Node debugging can be found
 ### Debugging in WebStorm
 
 The easiest way to debug Jest tests in
-[WebStorm](https://www.jetbrains.com/webstorm/) is using `Jest run/debug
-configuration`. It will launch tests and automatically attach debugger.
+[WebStorm](https://www.jetbrains.com/webstorm/) is using
+`Jest run/debug configuration`. It will launch tests and automatically attach
+debugger.
 
 In the WebStorm menu `Run` select `Edit Configurations...`. Then click `+` and
 select `Jest`. Optionally specify the Jest configuration file, additional
