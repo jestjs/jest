@@ -53,8 +53,8 @@
 
 ### Features
 
-* `[jest-jasmine2]` Update Timeout error message to `jest.timeout` and display current timeout value
-  ([#4990](https://github.com/facebook/jest/pull/4990))
+* `[jest-jasmine2]` Update Timeout error message to `jest.timeout` and display
+  current timeout value ([#4990](https://github.com/facebook/jest/pull/4990))
 * `[jest-runner]` Enable experimental detection of leaked contexts
   ([#4895](https://github.com/facebook/jest/pull/4895))
 * `[jest-cli]` Add combined coverage threshold for directories.
@@ -1046,8 +1046,8 @@ See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
   many tests.
   * Add support for property testing via testcheck-js.
 * Added a webpack tutorial.
-* Added support for virtual mocks through `jest.mock('Module', implementation,
-  {virtual: true})`.
+* Added support for virtual mocks through
+  `jest.mock('Module', implementation, {virtual: true})`.
 * Added snapshot functionality through `toMatchSnapshot()`.
 * Redesigned website.
 

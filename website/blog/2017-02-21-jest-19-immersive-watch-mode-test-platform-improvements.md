@@ -124,9 +124,9 @@ official ESLint plugin. It exposes three rules:
 * [no-identical-title](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-identical-title.md) -
   disallows identical titles in test names.
 
-You can install it using `npm install eslint-plugin-jest` or `yarn add --dev
-eslint eslint-plugin-jest` and it can be enabled by adding `{"plugins":
-["jest"]}` to your eslint configuration.
+You can install it using `npm install eslint-plugin-jest` or
+`yarn add --dev eslint eslint-plugin-jest` and it can be enabled by adding
+`{"plugins": ["jest"]}` to your eslint configuration.
 
 ## New public package: [jest-validate](https://github.com/facebook/jest/tree/master/packages/jest-validate)
 
@@ -205,7 +205,7 @@ and API as separate pages:
   _package.json_ and from the CLI.
 
 The homepage was completely redesigned to be more descriptive of what Jest is
-about: “*Zero configuration testing platform*”. We also made sure it reads
+about: “_Zero configuration testing platform_”. We also made sure it reads
 better on mobile devices. And for those using RSS – we finally provide a
 [feed for our blog](http://facebook.github.io/jest/blog/feed.xml).
 
