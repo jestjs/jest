@@ -8,5 +8,5 @@
 /*global window */
 
 test('found userAgent Agent/007', () => {
-  expect(window.navigator.userAgent).toBe("Agent/007");
+  expect(window.navigator.userAgent).toBe('Agent/007');
 });
