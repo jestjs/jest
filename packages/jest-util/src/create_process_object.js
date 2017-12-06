@@ -9,7 +9,7 @@
 
 import deepCyclicCopy from './deep_cyclic_copy';
 
-const BLACKLIST = new Set(['mainModule']);
+const BLACKLIST = new Set(['mainModule', '_events']);
 
 export default function() {
   const process = require('process');
