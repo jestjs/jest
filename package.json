@@ -150,7 +150,8 @@
       "/packages/jest-snapshot/src/__tests__/plugins",
       "/packages/jest-validate/src/__tests__/fixtures/",
       "/packages/jest-worker/src/__performance_tests__",
-      "/packages/pretty-format/perf/test.js"
+      "/packages/pretty-format/perf/test.js",
+      "/integration_tests/__tests__/iterator-to-null-test.js"
     ]
   },
   "prettier": {
