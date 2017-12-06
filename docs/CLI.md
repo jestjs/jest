@@ -3,9 +3,9 @@ id: cli
 title: Jest CLI Options
 ---
 
-The `jest` command line runner has a number of useful options. You can run `jest
---help` to view all available options. Many of the options shown below can also
-be used together to run tests exactly the way you want. Every one of Jest's
+The `jest` command line runner has a number of useful options. You can run
+`jest --help` to view all available options. Many of the options shown below can
+also be used together to run tests exactly the way you want. Every one of Jest's
 [Configuration](Configuration.md) options can also be specified through the CLI.
 
 Here is a brief overview:
@@ -115,8 +115,8 @@ fail the test and require Jest to be run with `--updateSnapshot`.
 
 Deletes the Jest cache directory and then exits without running tests. Will
 delete `cacheDirectory` if the option is passed, or Jest's default cache
-directory. The default cache directory can be found by calling `jest
---showConfig`. _Note: clearing the cache will reduce performance._
+directory. The default cache directory can be found by calling
+`jest --showConfig`. _Note: clearing the cache will reduce performance._
 
 ### `--collectCoverageFrom=<glob>`
 
@@ -246,8 +246,8 @@ Prevent tests from printing messages through the console.
 
 Alias: `-t`. Run only tests and test suites with a name that matches the regex.
 For example, suppose you want to run only tests related to authorization which
-will have names like `"GET /api/posts with auth"`, then you can use `jest
--t=auth`.
+will have names like `"GET /api/posts with auth"`, then you can use
+`jest -t=auth`.
 
 ### `--testLocationInResults`
 

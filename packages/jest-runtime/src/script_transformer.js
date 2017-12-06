@@ -33,7 +33,7 @@ export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
-  isNativeModule?: boolean,
+  isCoreModule?: boolean,
   isInternalModule?: boolean,
   mapCoverage: boolean,
 |};
@@ -182,12 +182,22 @@ export default class ScriptTransformer {
     }).code;
   }
 
+  _getRealPath(filepath: Path): Path {
+    try {
+      // $FlowFixMe
+      return process.binding('fs').realpath(filepath) || filepath;
+    } catch (err) {
+      return filepath;
+    }
+  }
+
   transformSource(
-    filename: Path,
+    filepath: Path,
     content: string,
     instrument: boolean,
     mapCoverage: boolean,
   ) {
+    const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,
@@ -276,7 +286,7 @@ export default class ScriptTransformer {
     fileSource?: string,
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
-    const isNativeModule = !!(options && options.isNativeModule);
+    const isCoreModule = !!(options && options.isCoreModule);
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
@@ -286,7 +296,7 @@ export default class ScriptTransformer {
 
     const willTransform =
       !isInternalModule &&
-      !isNativeModule &&
+      !isCoreModule &&
       (shouldTransform(filename, this._config) || instrument);
 
     try {
@@ -307,7 +317,7 @@ export default class ScriptTransformer {
       return {
         script: new vm.Script(wrappedCode, {
           displayErrors: true,
-          filename: isNativeModule ? 'jest-node-native-' + filename : filename,
+          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
         }),
         sourceMapPath,
       };
@@ -329,7 +339,7 @@ export default class ScriptTransformer {
     let instrument = false;
     let result = '';
 
-    if (!options.isNativeModule) {
+    if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, this._config, instrument);
       result = cache.get(scriptCacheKey);

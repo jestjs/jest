@@ -8,6 +8,7 @@
  */
 
 const path = require('path');
+const fs = require('fs');
 const {makeTemplate, writeFiles, cleanup} = require('../utils');
 const runJest = require('../runJest');
 
@@ -78,5 +79,27 @@ test('cannot be used with .not', () => {
       'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
     );
     expect(status).toBe(1);
+  }
+});
+
+test('should support rejecting promises', () => {
+  const filename = 'should-support-rejecting-promises.test.js';
+  const template = makeTemplate(`test('should support rejecting promises', async () => {
+      await expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+
+    const snapshot = fs.readFileSync(
+      `${TESTS_DIR}/__snapshots__/${filename}.snap`,
+      'utf8',
+    );
+
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
+    expect(snapshot).toMatchSnapshot();
+    expect(status).toBe(0);
   }
 });

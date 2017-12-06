@@ -394,9 +394,7 @@ const getColorsHighlight = (options: OptionsReceived): Colors =>
       colors[key] = color;
     } else {
       throw new Error(
-        `pretty-format: Option "theme" has a key "${key}" whose value "${
-          value
-        }" is undefined in ansi-styles.`,
+        `pretty-format: Option "theme" has a key "${key}" whose value "${value}" is undefined in ansi-styles.`,
       );
     }
     return colors;

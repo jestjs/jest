@@ -54,7 +54,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "mock-fs": "^4.4.1",
-    "prettier": "^1.8.2",
+    "prettier": "^1.9.1",
     "progress": "^2.0.0",
     "react": "^15.4.2",
     "react-addons-test-utils": "15.4.2",
@@ -127,9 +127,7 @@
     "transform": {
       "^.+\\.js$": "<rootDir>/packages/babel-jest"
     },
-    "setupTestFramework": [
-      "<rootDir>/test_setup_file.js"
-    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/test_setup_file.js",
     "snapshotSerializers": [
       "<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js"
     ],
@@ -148,6 +146,7 @@
   },
   "prettier": {
     "bracketSpacing": false,
+    "proseWrap": "always",
     "singleQuote": true,
     "trailingComma": "all"
   }

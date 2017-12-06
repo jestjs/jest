@@ -28,6 +28,10 @@ export default (config: {expand: boolean}) => {
   expect.setState({
     expand: config.expand,
   });
-  expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
+  expect.extend({
+    toMatchSnapshot,
+    toThrowErrorMatchingSnapshot,
+  });
+
   (expect: Object).addSnapshotSerializer = addSerializer;
 };

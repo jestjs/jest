@@ -39,6 +39,10 @@ export default class {
     try {
       weak = require('weak');
     } catch (err) {
+      if (!err || err.code !== 'MODULE_NOT_FOUND') {
+        throw err;
+      }
+
       throw new Error(
         'The leaking detection mechanism requires the "weak" package to work. ' +
           'Please make sure that you can install the native dependency on your platform.',
