@@ -59,3 +59,18 @@ test('config from argv is respected with sane config JSON', () => {
 
   expect(stdout).toMatch('"watchman": false');
 });
+
+test('works with jsdom testEnvironmentOptions config JSON', () => {
+  const result = runJest('environmentOptions', [
+    '--config=' +
+      JSON.stringify({
+        testEnvironmentOptions: {
+          userAgent: "Agent/007"
+        }
+      }),
+  ]);
+  const stderr = result.stderr.toString();
+
+  expect(result.status).toBe(0);
+  expect(stderr).toMatch('found userAgent Agent/007');
+});
