@@ -513,9 +513,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   if (argv.all) {
     newOptions.onlyChanged = false;
   } else if (newOptions.testPathPattern) {
-    // If you pass a test path pattern, you probably don't want to only monitor
-    // changed files; unless you are also passing "--watch". That's why the
-    // "onlyChanged" value has to equal the one in "watch".
+    // When passing a test path pattern we don't want to only monitor changed
+    // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
   }
 
