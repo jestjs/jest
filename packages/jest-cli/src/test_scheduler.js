@@ -142,6 +142,7 @@ export default class TestScheduler {
           context.hasteFS,
           this._globalConfig.updateSnapshot,
         );
+
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
