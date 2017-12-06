@@ -511,8 +511,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
 
-  if (argv.all || newOptions.testPathPattern) {
+  if (argv.all) {
     newOptions.onlyChanged = false;
+  } else if (newOptions.testPathPattern) {
+    // When passing a test path pattern we don't want to only monitor changed
+    // files unless `--watch` is also passed.
+    newOptions.onlyChanged = newOptions.watch;
   }
 
   newOptions.updateSnapshot =
