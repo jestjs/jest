@@ -155,9 +155,9 @@ milliseconds.</p><p><em>Note: The default timeout interval is 5 seconds if this 
 <code>setImmediate</code> and <code>clearImmediate</code>).</p><p>Returns the <code>jest</code> object for chaining.</p><h3><a class="anchor" name="jestuserealtimers"></a><code>jest.useRealTimers()</code> <a class="hash-link" href="#jestuserealtimers">#</a></h3><p>Instructs Jest to use the real versions of the standard timer functions.</p><p>Returns the <code>jest</code> object for chaining.</p><h3><a class="anchor" name="jestspyonobject-methodname"></a><code>jest.spyOn(object, methodName)</code> <a class="hash-link" href="#jestspyonobject-methodname">#</a></h3><h5><a class="anchor" name="available-in-jest-1900"></a>available in Jest <strong>19.0.0+</strong> <a class="hash-link" href="#available-in-jest-1900">#</a></h5><p>Creates a mock function similar to <code>jest.fn</code> but also tracks calls to
 <code>object[methodName]</code>. Returns a Jest mock function.</p><p><em>Note: By default, <code>jest.spyOn</code> also calls the <strong>spied</strong> method. This is
 different behavior from most other test libraries. If you want to overwrite the
-original function, you can use <code>jest.spyOn(object,
-methodName).mockImplementation(() =&gt; customImplementation)</code> or
-<code>object[methodName] = jest.fn(() =&gt; customImplementation);</code></em></p><p>Example:</p><pre class="prism language-js"><span class="token keyword">const</span> video <span class="token operator">=</span> <span class="token punctuation">{</span>
+original function, you can use
+<code>jest.spyOn(object, methodName).mockImplementation(() =&gt; customImplementation)</code>
+or <code>object[methodName] = jest.fn(() =&gt; customImplementation);</code></em></p><p>Example:</p><pre class="prism language-js"><span class="token keyword">const</span> video <span class="token operator">=</span> <span class="token punctuation">{</span>
   <span class="token function">play</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>

@@ -47,8 +47,8 @@ either git or hg, a common thing in developer tools.</p><h2><a class="anchor" na
 <code>--notify</code>.</li><li>Added a <code>browser</code> config option to properly resolve npm packages with a
 browser field in <code>package.json</code> if you are writing tests for client side apps.</li><li>Improved “no tests found message” which will now report which tests were found
 and how they were filtered.</li><li>Added <code>jest.isMockFunction(jest.fn())</code> to test for mock functions.</li><li>Improved test reporter printing and added a test failure summary when running
-many tests.</li><li>Added support for mocking virtual modules through <code>jest.mock(&#x27;Module&#x27;,
-implementation, {virtual: true})</code>.</li><li>Removed the <code>.haste_cache</code> folder. Jest now uses the operating system&#x27;s
+many tests.</li><li>Added support for mocking virtual modules through
+<code>jest.mock(&#x27;Module&#x27;, implementation, {virtual: true})</code>.</li><li>Removed the <code>.haste_cache</code> folder. Jest now uses the operating system&#x27;s
 preferred temporary file location.</li><li>Added the duration of individual tests in verbose mode.</li><li>Added the ability to record snapshots in Jest. We&#x27;ll be publishing a separate
 blog post about this feature soon.</li></ul><p>Finally, we have received a complete website redesign done by Matthew Johnston
 and added documentation for using

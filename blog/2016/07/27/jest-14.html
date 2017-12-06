@@ -64,8 +64,9 @@ testing.</p><p>This feature was built by <a href="https://twitter.com/soprano" t
 <a href="https://twitter.com/kentaromiura" target="_blank">Cristian Carlesso</a>.</p><h2><a class="anchor" name="experimental-react-native-support"></a>Experimental React Native support <a class="hash-link" href="#experimental-react-native-support">#</a></h2><p>By building a test renderer that targets no specific platform we are finally
 able to support a full, unmocked version of React Native. We are excited to
 launch experimental React Native support for Jest through the
-<code>jest-react-native</code> package.</p><p>You can start using Jest with react-native by running <code>npm install --save-dev
-jest-react-native</code> and by adding the preset to your Jest configuration:</p><pre class="prism language-json"><span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+<code>jest-react-native</code> package.</p><p>You can start using Jest with react-native by running
+<code>npm install --save-dev jest-react-native</code> and by adding the preset to your Jest
+configuration:</p><pre class="prism language-json"><span class="token property">&quot;jest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
   <span class="token property">&quot;preset&quot;</span><span class="token operator">:</span> <span class="token string">&quot;jest-react-native&quot;</span>
 <span class="token punctuation">}</span></pre><ul><li><a href="/jest/docs/tutorial-react-native.html#content" target="">Tutorial and setup guide</a></li><li><a href="https://github.com/facebook/jest/tree/master/examples/react-native" target="_blank">Example project</a></li><li><a href="https://github.com/bartonhammond/snowflake/pull/110" target="_blank">Example pull request for <em>snowflake</em></a>,
 a popular react-native open source library.</li></ul><p><em>Note: the preset currently only implements the minimal set of configuration
