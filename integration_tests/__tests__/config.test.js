@@ -66,7 +66,7 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
       JSON.stringify({
         testEnvironmentOptions: {
           userAgent: "Agent/007",
-        }
+        },
       }),
   ]);
   const stderr = result.stderr.toString();

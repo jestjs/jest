@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 'use strict';
+/*global window */
 
 test('found userAgent Agent/007', () => {
-  expect(navigator.userAgent).toBe("Agent/007");
+  expect(window.navigator.userAgent).toBe("Agent/007");
 });
