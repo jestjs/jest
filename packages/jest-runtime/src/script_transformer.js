@@ -185,7 +185,7 @@ export default class ScriptTransformer {
   _getRealPath(filepath: Path): Path {
     try {
       // $FlowFixMe
-      return process.binding('fs').realpath(filepath) || filepath;
+      return process.binding('fs').realpath(filepath, 'utf8') || filepath;
     } catch (err) {
       return filepath;
     }
