@@ -7,17 +7,11 @@
 
 const jasmineReporters = require('jasmine-reporters');
 
-module.exports = function(global) {
-  const {jasmine} = global;
+// Some of the `jest-runtime` tests are very slow and cause
+// timeouts on travis
+jest.setTimeout(70000);
 
-  if (jasmine) {
-    // Some of the `jest-runtime` tests are very slow and cause timeouts on
-    // Travis CI.
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 70000;
-
-    // Running on AppVeyor, add the custom reporter.
-    if (process.env.APPVEYOR_API_URL) {
-      jasmine.getEnv().addReporter(new jasmineReporters.AppVeyorReporter());
-    }
-  }
-};
+if (global.jasmine && process.env.APPVEYOR_API_URL) {
+  // Running on AppVeyor, add the custom reporter.
+  jasmine.getEnv().addReporter(new jasmineReporters.AppVeyorReporter());
+}
