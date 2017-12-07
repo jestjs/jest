@@ -27,7 +27,7 @@ export default function getNoTestFound(testRunData, globalConfig): string {
       'project',
       testRunData.length,
       's',
-    )}. for more details run with \`--verbose\`` +
+    )}. Run with \`--verbose\` for more details.` +
     '\n' +
     dataMessage
   );

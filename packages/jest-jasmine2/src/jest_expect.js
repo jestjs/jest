@@ -26,7 +26,10 @@ type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 export default (config: {expand: boolean}) => {
   global.expect = expect;
   expect.setState({expand: config.expand});
-  expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
+  expect.extend({
+    toMatchSnapshot,
+    toThrowErrorMatchingSnapshot,
+  });
   (expect: Object).addSnapshotSerializer = addSerializer;
 
   const jasmine = global.jasmine;

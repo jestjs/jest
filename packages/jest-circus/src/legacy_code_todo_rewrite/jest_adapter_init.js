@@ -129,6 +129,7 @@ export const runAndTransformResultsToJestFormat = async ({
     console: null,
     displayName: config.displayName,
     failureMessage,
+    leaks: false, // That's legacy code, just adding it so Flow is happy.
     numFailingTests,
     numPassingTests,
     numPendingTests,
@@ -143,6 +144,7 @@ export const runAndTransformResultsToJestFormat = async ({
       fileDeleted: false,
       matched: 0,
       unchecked: 0,
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },

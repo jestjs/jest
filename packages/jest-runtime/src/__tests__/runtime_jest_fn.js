@@ -60,7 +60,7 @@ describe('Runtime', () => {
         expect(mock1).toBeCalled();
         expect(mock2).toBeCalled();
 
-        jest.clearAllMocks();
+        runtime.clearAllMocks();
 
         expect(mock1).not.toBeCalled();
         expect(mock2).not.toBeCalled();

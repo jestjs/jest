@@ -146,8 +146,8 @@ coverage information will be skipped.
 These pattern strings match against the full path. Use the `<rootDir>` string
 token to include the path to your project's root directory to prevent it from
 accidentally ignoring all of your files in different environments that may have
-different root directories. Example: `["<rootDir>/build/",
-"<rootDir>/node_modules/"]`.
+different root directories. Example:
+`["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
 ### `coverageReporters` [array<string>]
 
@@ -695,7 +695,7 @@ You can create your own module that will be used for setting up the test
 environment. The module must export a class with `setup`, `teardown` and
 `runScript` methods.
 
-##### available in Jest **21.3.0+**
+##### available in Jest **22.0.0+**
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown
 in their own TestEnvironment._
@@ -726,6 +726,17 @@ class CustomEnvironment extends NodeEnvironment {
 }
 ```
 
+### `testEnvironmentOptions` [Object]
+
+##### available in Jest **22.0.0+**
+
+Default: `{}`
+
+Test environment options that will be passed to the `testEnvironment`.  The
+relevant options depend on the environment.  For example you can override
+options given to [jsdom](https://github.com/tmpvar/jsdom) such as
+`{userAgent: "Agent/007"}`.
+
 ### `testMatch` [array<string>]
 
 ##### available in Jest **19.0.0+**
@@ -754,8 +765,8 @@ be skipped.
 These pattern strings match against the full path. Use the `<rootDir>` string
 token to include the path to your project's root directory to prevent it from
 accidentally ignoring all of your files in different environments that may have
-different root directories. Example: `["<rootDir>/build/",
-"<rootDir>/node_modules/"]`.
+different root directories. Example:
+`["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
 ### `testRegex` [string]
 
@@ -905,8 +916,8 @@ will not be transformed.
 These pattern strings match against the full path. Use the `<rootDir>` string
 token to include the path to your project's root directory to prevent it from
 accidentally ignoring all of your files in different environments that may have
-different root directories. Example: `["<rootDir>/bower_components/",
-"<rootDir>/node_modules/"]`.
+different root directories. Example:
+`["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
 ### `unmockedModulePathPatterns` [array<string>]
 

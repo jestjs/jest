@@ -153,6 +153,8 @@ const addSnapshotData = (results, snapshotState) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
+  const uncheckedKeys = snapshotState.getUncheckedKeys();
+
   if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
@@ -164,6 +166,8 @@ const addSnapshotData = (results, snapshotState) => {
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  results.snapshot.uncheckedKeys = uncheckedKeys;
+
   return results;
 };
 

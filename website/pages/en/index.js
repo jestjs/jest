@@ -219,8 +219,9 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Easily create code coverage reports using `--coverage`. No
-                      additional setup or libraries needed! Jest can collect
+                      Easily create code coverage reports using
+                      [`--coverage`](https://facebook.github.io/jest/docs/en/cli.html#coverage).
+                      No additional setup or libraries needed! Jest can collect
                       code coverage information from entire projects, including
                       untested files.
                     </translate>

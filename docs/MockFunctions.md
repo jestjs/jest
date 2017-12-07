@@ -214,7 +214,7 @@ const otherObj = {
 
 ## Mock Names
 
-##### available in Jest **21.3.0+**
+##### available in Jest **22.0.0+**
 
 You can optionally provide a name for your mock functions, which will be
 displayed instead of "jest.fn()" in test error output. Use this if you want to

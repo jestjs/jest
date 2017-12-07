@@ -301,7 +301,7 @@ Exhausts all tasks queued by `setImmediate()`.
 
 ### `jest.advanceTimersByTime(msToRun)`
 
-##### renamed in Jest **21.3.0+**
+##### renamed in Jest **22.0.0+**
 
 Also under the alias: `.runTimersToTime()`
 
@@ -386,9 +386,9 @@ Creates a mock function similar to `jest.fn` but also tracks calls to
 
 _Note: By default, `jest.spyOn` also calls the **spied** method. This is
 different behavior from most other test libraries. If you want to overwrite the
-original function, you can use `jest.spyOn(object,
-methodName).mockImplementation(() => customImplementation)` or
-`object[methodName] = jest.fn(() => customImplementation);`_
+original function, you can use
+`jest.spyOn(object, methodName).mockImplementation(() => customImplementation)`
+or `object[methodName] = jest.fn(() => customImplementation);`_
 
 Example:
 

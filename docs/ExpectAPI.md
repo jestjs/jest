@@ -159,7 +159,7 @@ you want to check that a mock function is called with a non-null argument:
 ```js
 test('map calls its argument with a non-null argument', () => {
   const mock = jest.fn();
-  [1].map(mock);
+  [1].map(x => mock(x));
   expect(mock).toBeCalledWith(expect.anything());
 });
 ```
@@ -395,6 +395,10 @@ test('resolves to lemon', () => {
 });
 ```
 
+Note that, since you are still testing promises, the test is still asynchronous.
+Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by
+returning the unwrapped assertion.
+
 Alternatively, you can use `async/await` in combination with `.resolves`:
 
 ```js
@@ -421,6 +425,10 @@ test('rejects to octopus', () => {
   );
 });
 ```
+
+Note that, since you are still testing promises, the test is still asynchronous.
+Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by
+returning the unwrapped assertion.
 
 Alternatively, you can use `async/await` in combination with `.rejects`.
 

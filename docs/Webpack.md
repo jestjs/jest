@@ -108,8 +108,8 @@ Then all your className lookups on the styles object will be returned as-is
 ```
 
 > Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6
-> yet, make sure you invoke Jest using `node --harmony_proxies
-> node_modules/.bin/jest`.
+> yet, make sure you invoke Jest using
+> `node --harmony_proxies node_modules/.bin/jest`.
 
 If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's
 [`transform`](Configuration.md#transform-object-string-string) config option to

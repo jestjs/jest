@@ -96,6 +96,10 @@ export default class SnapshotState {
     return this._uncheckedKeys.size || 0;
   }
 
+  getUncheckedKeys(): Array<string> {
+    return Array.from(this._uncheckedKeys);
+  }
+
   removeUncheckedKeys(): void {
     if (this._updateSnapshot === 'all' && this._uncheckedKeys.size) {
       this._dirty = true;

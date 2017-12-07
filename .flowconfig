@@ -1,12 +1,5 @@
 [ignore]
-.*/node_modules/conventional-changelog-core/.*
-.*/node_modules/fbjs/.*
-.*/node_modules/jest-validate/.*
-.*/node_modules/react-native/.*
-.*/node_modules/graphql/.*
-.*/vendor/jsonlint/.*
 .*/examples/.*
-.*/website/.*
 
 [options]
 module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/src/index.js'

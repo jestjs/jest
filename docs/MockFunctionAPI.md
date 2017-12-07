@@ -18,7 +18,7 @@ implementation is given, the mock function will return `undefined` when invoked.
 
 ### `mockFn.getMockName()`
 
-##### available in Jest **21.3.0+**
+##### available in Jest **22.0.0+**
 
 Returns the mock name string set by calling `mockFn.mockName(value)`.
 
@@ -179,7 +179,7 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockName(value)`
 
-##### available in Jest **21.3.0+**
+##### available in Jest **22.0.0+**
 
 Accepts a string to use in test result output in place of "jest.fn()" to
 indicate which mock function is being referenced.

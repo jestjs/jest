@@ -365,8 +365,8 @@ tests.
 
 ### `test.skip(name, fn)`
 
-Also under the aliases: `it.skip(name, fn)` or `xit(name, fn)` or `xtest(name,
-fn)`
+Also under the aliases: `it.skip(name, fn)` or `xit(name, fn)` or
+`xtest(name, fn)`
 
 When you are maintaining a large codebase, you may sometimes find a test that is
 temporarily broken for some reason. If you want to skip running this test, but

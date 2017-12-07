@@ -17,7 +17,7 @@ import type {
 import crypto from 'crypto';
 import path from 'path';
 import vm from 'vm';
-import {createDirectory} from 'jest-util';
+import {createDirectory, realpath} from 'jest-util';
 import fs from 'graceful-fs';
 import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
@@ -182,12 +182,21 @@ export default class ScriptTransformer {
     }).code;
   }
 
+  _getRealPath(filepath: Path): Path {
+    try {
+      return realpath(filepath) || filepath;
+    } catch (err) {
+      return filepath;
+    }
+  }
+
   transformSource(
-    filename: Path,
+    filepath: Path,
     content: string,
     instrument: boolean,
     mapCoverage: boolean,
   ) {
+    const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,

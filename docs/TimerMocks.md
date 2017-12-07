@@ -130,7 +130,7 @@ describe('infiniteTimerGame', () => {
 
 ## Advance Timers by Time
 
-##### renamed from `runTimersToTime` to `advanceTimersByTime` in Jest **21.3.0**
+##### renamed from `runTimersToTime` to `advanceTimersByTime` in Jest **22.0.0**
 
 Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is
 called, all timers are advanced by `msToRun` milliseconds. All pending

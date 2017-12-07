@@ -36,6 +36,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => {
       matched: 0,
       total: 0,
       unchecked: 0,
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },
@@ -54,6 +55,7 @@ export const buildFailureTestResult = (
     console: null,
     displayName: '',
     failureMessage: null,
+    leaks: false,
     numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,
@@ -67,6 +69,7 @@ export const buildFailureTestResult = (
       fileDeleted: false,
       matched: 0,
       unchecked: 0,
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },
@@ -120,6 +123,7 @@ export const addResult = (
   aggregatedResults.snapshot.added += testResult.snapshot.added;
   aggregatedResults.snapshot.matched += testResult.snapshot.matched;
   aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
+  aggregatedResults.snapshot.uncheckedKeys = testResult.snapshot.uncheckedKeys;
   aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
   aggregatedResults.snapshot.updated += testResult.snapshot.updated;
   aggregatedResults.snapshot.total +=

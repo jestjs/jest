@@ -16,6 +16,8 @@
   ([#4494](https://github.com/facebook/jest/pull/4494))
 * `[jest-cli]` Throw if `maxWorkers` doesn't have a value
   ([#4591](https://github.com/facebook/jest/pull/4591))
+* `[jest-cli]` Use `fs.realpathSync.native` if available
+  ([#5031](https://github.com/facebook/jest/pull/5031))
 * `[jest-config]` Fix `--passWithNoTests`
   ([#4639](https://github.com/facebook/jest/pull/4639))
 * `[jest-config]` Support `rootDir` tag in testEnvironment
@@ -48,9 +50,17 @@
   issue. ([#4669](https://github.com/facebook/jest/pull/4669))
 * `[jest-cli]` Fix `--onlyChanged` path case sensitivity on Windows platform
   ([#4730](https://github.com/facebook/jest/pull/4730))
+* `[jest-runtime]` Use realpath to match transformers
+  ([#5000](https://github.com/facebook/jest/pull/5000))
 
 ### Features
 
+* `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node context.
+  ([#5003](https://github.com/facebook/jest/pull/5003))
+* `[jest-jasmine2]` Update Timeout error message to `jest.timeout` and display
+  current timeout value ([#4990](https://github.com/facebook/jest/pull/4990))
+* `[jest-runner]` Enable experimental detection of leaked contexts
+  ([#4895](https://github.com/facebook/jest/pull/4895))
 * `[jest-cli]` Add combined coverage threshold for directories.
   ([#4885](https://github.com/facebook/jest/pull/4885))
 * `[jest-mock]` Add `timestamps` to mock state.
@@ -113,9 +123,15 @@
   ([#4919](https://github.com/facebook/jest/pull/4919))
 * `[jest-cli]` Hide watch usage output when running on non-interactive
   environments ([#4958](https://github.com/facebook/jest/pull/4958))
+* `[jest-snapshot]` Promises support for `toThrowErrorMatchingSnapshot`
+  ([#4946](https://github.com/facebook/jest/pull/4946))
+* `[jest-cli]` Explain which snapshots are obsolete 
+  ([#5005](https://github.com/facebook/jest/pull/5005))
 
 ### Chore & Maintenance
 
+* `[jest-util]` `jest-util` should not depend on `jest-mock`
+  ([#4992](https://github.com/facebook/jest/pull/4992))
 * `[*]` [**BREAKING**] Drop support for Node.js version 4
   ([#4769](https://github.com/facebook/jest/pull/4769))
 * `[docs]` Wrap code comments at 80 characters
@@ -145,6 +161,8 @@
   alias.
 * `[docs]` Include missing dependency in TestEnvironment sample code
 * `[docs]` Add clarification for hook execution order
+* `[docs]` Update `expect.anything()` sample code
+  ([#5007](https://github.com/facebook/jest/pull/5007))
 
 ## jest 21.2.1
 
@@ -1036,8 +1054,8 @@ See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
   many tests.
   * Add support for property testing via testcheck-js.
 * Added a webpack tutorial.
-* Added support for virtual mocks through `jest.mock('Module', implementation,
-  {virtual: true})`.
+* Added support for virtual mocks through
+  `jest.mock('Module', implementation, {virtual: true})`.
 * Added snapshot functionality through `toMatchSnapshot()`.
 * Redesigned website.
 

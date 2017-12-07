@@ -94,6 +94,28 @@ following configuration:
 }
 ```
 
+or the following for Windows:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/jest/bin/jest.js",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
+```
+
 If you are using Facebook's
 [`create-react-app`](https://github.com/facebookincubator/create-react-app), you
 can debug your Jest tests with the following configuration:
@@ -124,8 +146,9 @@ More information on Node debugging can be found
 ### Debugging in WebStorm
 
 The easiest way to debug Jest tests in
-[WebStorm](https://www.jetbrains.com/webstorm/) is using `Jest run/debug
-configuration`. It will launch tests and automatically attach debugger.
+[WebStorm](https://www.jetbrains.com/webstorm/) is using
+`Jest run/debug configuration`. It will launch tests and automatically attach
+debugger.
 
 In the WebStorm menu `Run` select `Edit Configurations...`. Then click `+` and
 select `Jest`. Optionally specify the Jest configuration file, additional

@@ -36,7 +36,9 @@ test('exceeds the timeout', () => {
 
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatch(/(jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/);
+  expect(rest).toMatch(
+    /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
+  );
   expect(summary).toMatchSnapshot();
   expect(status).toBe(1);
 });

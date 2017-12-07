@@ -455,6 +455,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'collectCoverage':
       case 'coverageReporters':
       case 'coverageThreshold':
+      case 'detectLeaks':
       case 'displayName':
       case 'expand':
       case 'globals':
@@ -479,6 +480,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'silent':
       case 'skipNodeResolution':
       case 'testEnvironment':
+      case 'testEnvironmentOptions':
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
@@ -509,8 +511,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
 
-  if (argv.all || newOptions.testPathPattern) {
+  if (argv.all) {
     newOptions.onlyChanged = false;
+  } else if (newOptions.testPathPattern) {
+    // When passing a test path pattern we don't want to only monitor changed
+    // files unless `--watch` is also passed.
+    newOptions.onlyChanged = newOptions.watch;
   }
 
   newOptions.updateSnapshot =
