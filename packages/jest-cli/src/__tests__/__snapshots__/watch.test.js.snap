@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Watch mode flows Runs Jest in a non-interactive environment not showing usage 1`] = `
+Array [
+  "
+",
+]
+`;
+
 exports[`Watch mode flows Runs Jest once by default and shows usage 1`] = `
 Array [
   "

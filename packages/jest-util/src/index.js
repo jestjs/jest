@@ -18,6 +18,7 @@ import formatTestResults from './format_test_results';
 import getConsoleOutput from './get_console_output';
 import installCommonGlobals from './install_common_globals';
 import NullConsole from './null_console';
+import isInteractive from './is_interative';
 import setGlobal from './set_global';
 import validateCLIOptions from './validate_cli_options';
 
@@ -50,6 +51,7 @@ module.exports = {
   formatTestResults,
   getConsoleOutput,
   installCommonGlobals,
+  isInteractive,
   realpath,
   setGlobal,
   validateCLIOptions,

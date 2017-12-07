@@ -13,6 +13,7 @@
     "graceful-fs": "^4.1.11",
     "jest-message-util": "^21.2.1",
     "jest-validate": "^21.2.1",
+    "is-ci": "^1.0.10",
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {

@@ -16,8 +16,8 @@ import chalk from 'chalk';
 import getChangedFilesPromise from './get_changed_files_promise';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
-import isCI from 'is-ci';
 import isValidPath from './lib/is_valid_path';
+import {isInteractive} from 'jest-util';
 import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
@@ -30,7 +30,6 @@ import TestNamePatternPrompt from './test_name_pattern_prompt';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
 
-const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
 export default function watch(
@@ -129,16 +128,23 @@ export default function watch(
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
-        if (shouldDisplayWatchUsage) {
-          outputStream.write(
-            usage(globalConfig, watchPlugins, hasSnapshotFailure),
-          );
-          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-          isWatchUsageDisplayed = true;
+
+        // Do not show any Watch Usage related stuff when running in a
+        // non-interactive environment
+        if (isInteractive) {
+          if (shouldDisplayWatchUsage) {
+            outputStream.write(
+              usage(globalConfig, watchPlugins, hasSnapshotFailure),
+            );
+            shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+            isWatchUsageDisplayed = true;
+          } else {
+            outputStream.write(showToggleUsagePrompt());
+            shouldDisplayWatchUsage = false;
+            isWatchUsageDisplayed = false;
+          }
         } else {
-          outputStream.write(showToggleUsagePrompt());
-          shouldDisplayWatchUsage = false;
-          isWatchUsageDisplayed = false;
+          outputStream.write('\n');
         }
 
         testNamePatternPrompt.updateCachedTestResults(results.testResults);

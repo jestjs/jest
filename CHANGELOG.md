@@ -121,6 +121,8 @@
 * `[jest-environment-jsdom]` Update JSOM to 11.4, which includes built-in
   support for `requestAnimationFrame`
   ([#4919](https://github.com/facebook/jest/pull/4919))
+* `[jest-cli]` Hide watch usage output when running on non-interactive
+  environments ([#4958](https://github.com/facebook/jest/pull/4958))
 * `[jest-snapshot]` Promises support for `toThrowErrorMatchingSnapshot`
   ([#4946](https://github.com/facebook/jest/pull/4946))
 * `[jest-cli]` Explain which snapshots are obsolete 
