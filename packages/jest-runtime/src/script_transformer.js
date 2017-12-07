@@ -17,7 +17,7 @@ import type {
 import crypto from 'crypto';
 import path from 'path';
 import vm from 'vm';
-import {createDirectory} from 'jest-util';
+import {createDirectory, realpath} from 'jest-util';
 import fs from 'graceful-fs';
 import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
@@ -184,8 +184,7 @@ export default class ScriptTransformer {
 
   _getRealPath(filepath: Path): Path {
     try {
-      // $FlowFixMe
-      return process.binding('fs').realpath(filepath) || filepath;
+      return realpath(filepath) || filepath;
     } catch (err) {
       return filepath;
     }

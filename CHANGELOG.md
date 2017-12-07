@@ -16,6 +16,8 @@
   ([#4494](https://github.com/facebook/jest/pull/4494))
 * `[jest-cli]` Throw if `maxWorkers` doesn't have a value
   ([#4591](https://github.com/facebook/jest/pull/4591))
+* `[jest-cli]` Use `fs.realpathSync.native` if available
+  ([#5031](https://github.com/facebook/jest/pull/5031))
 * `[jest-config]` Fix `--passWithNoTests`
   ([#4639](https://github.com/facebook/jest/pull/4639))
 * `[jest-config]` Support `rootDir` tag in testEnvironment
