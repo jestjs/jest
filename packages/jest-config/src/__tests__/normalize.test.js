@@ -1026,3 +1026,69 @@ describe('watchPlugins', () => {
     ]);
   });
 });
+
+describe('testPathPattern', () => {
+  const initialOptions = {rootDir: '/root'};
+  const consoleLog = console.log;
+
+  beforeEach(() => {
+    console.log = jest.fn()
+  });
+
+  afterEach(() => {
+    console.log = consoleLog;
+  });
+
+  it('defaults to empty', () => {
+    const {options} = normalize(initialOptions, {});
+    expect(options.testPathPattern).toBe('');
+  });
+
+  describe('--testPathPattern', () => {
+    it('uses testPathPattern if set', () => {
+      const {options} = normalize(initialOptions, {testPathPattern: 'a'});
+      expect(options.testPathPattern).toBe('a');
+    });
+
+    it('ignores invalid regular expressions and logs a warning', () => {
+      const {options} = normalize(initialOptions, {testPathPattern: 'a('});
+      expect(options.testPathPattern).toBe('');
+      expect(console.log.mock.calls[0][0]).toMatchSnapshot();
+    });
+
+    it('escapes Windows path separators', () => {
+      jest.resetModules()
+      jest.mock('path', () => require.requireActual('path').win32)
+      const {options} = require('../normalize').default(initialOptions, {testPathPattern: 'a\\b'});
+      expect(options.testPathPattern).toBe('a\\\\b');
+    });
+  });
+
+  describe('<regexForTestFiles>', () => {
+    it('uses <regexForTestFiles> if set', () => {
+      const {options} = normalize(initialOptions, {_: ['a']});
+      expect(options.testPathPattern).toBe('a');
+    });
+
+    it('ignores invalid regular expressions and logs a warning', () => {
+      const {options} = normalize(initialOptions, {_: ['a(']});
+      expect(options.testPathPattern).toBe('');
+      expect(console.log.mock.calls[0][0]).toMatchSnapshot();
+    });
+
+    it.skip('escapes Windows path separators ', () => {
+      const {options} = normalize(initialOptions, {testPathPattern: 'a\\b'});
+      expect(options.testPathPattern).toBe('a\\\\b');
+    });
+
+    it('joins multiple <regexForTestFiles> if set', () => {
+      const {options} = normalize(initialOptions, {_: ['a', 'b']});
+      expect(options.testPathPattern).toBe('a|b');
+    });
+
+    it.skip('escapes Windows path separators in multiple args', () => {
+      const {options} = normalize(initialOptions, {_: ['a\\b', 'c\\d']});
+      expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
+    })
+  });
+});
