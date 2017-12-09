@@ -52,6 +52,8 @@
   ([#4730](https://github.com/facebook/jest/pull/4730))
 * `[jest-runtime]` Use realpath to match transformers
   ([#5000](https://github.com/facebook/jest/pull/5000))
+* `[expect]` [**BREAKING**] Replace identity equality with Object.is in toBe 
+  matcher ([#4917](https://github.com/facebook/jest/pull/4917))
 
 ### Features
 
