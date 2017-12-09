@@ -175,6 +175,7 @@ function printComplexValue(
   indentation: string,
   depth: number,
   refs: Refs,
+  hasCalledToJSON?: boolean,
 ): string {
   if (refs.indexOf(val) !== -1) {
     return '[Circular]';
@@ -189,9 +190,10 @@ function printComplexValue(
     config.callToJSON &&
     !hitMaxDepth &&
     val.toJSON &&
-    typeof val.toJSON === 'function'
+    typeof val.toJSON === 'function' &&
+    !hasCalledToJSON
   ) {
-    return printer(val.toJSON(), config, indentation, depth, refs);
+    return printer(val.toJSON(), config, indentation, depth, refs, true);
   }
 
   const toStringed = toString.call(val);
@@ -312,6 +314,7 @@ function printer(
   indentation: string,
   depth: number,
   refs: Refs,
+  hasCalledToJSON?: boolean,
 ): string {
   const plugin = findPlugin(config.plugins, val);
   if (plugin !== null) {
@@ -327,7 +330,14 @@ function printer(
     return basicResult;
   }
 
-  return printComplexValue(val, config, indentation, depth, refs);
+  return printComplexValue(
+    val,
+    config,
+    indentation,
+    depth,
+    refs,
+    hasCalledToJSON,
+  );
 }
 
 const DEFAULT_THEME: Theme = {

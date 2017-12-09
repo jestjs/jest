@@ -78,6 +78,7 @@ export type Printer = (
   indentation: string,
   depth: number,
   refs: Refs,
+  hasCalledToJSON?: boolean,
 ) => string;
 
 export type Test = any => boolean;

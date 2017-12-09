@@ -687,13 +687,13 @@ describe('prettyFormat()', () => {
     ).toEqual('Object {\n  "toJSON": false,\n  "value": true,\n}');
   });
 
-  it('calls toJSON recursively', () => {
+  it('does not call toJSON recursively', () => {
     expect(
       prettyFormat({
         toJSON: () => ({toJSON: () => ({value: true})}),
         value: false,
       }),
-    ).toEqual('Object {\n  "value": true,\n}');
+    ).toEqual('Object {\n  "toJSON": [Function toJSON],\n}');
   });
 
   it('calls toJSON on Sets', () => {
