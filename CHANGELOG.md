@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[pretty-format]` Do not call toJSON recursively
+  ([#5044](https://github.com/facebook/jest/pull/5044))
 * `[pretty-format]` Fix errors when identity-obj-proxy mocks CSS Modules
   ([#4935](https://github.com/facebook/jest/pull/4935))
 * `[babel-jest]` Fix support for namespaced babel version 7
@@ -52,7 +54,7 @@
   ([#4730](https://github.com/facebook/jest/pull/4730))
 * `[jest-runtime]` Use realpath to match transformers
   ([#5000](https://github.com/facebook/jest/pull/5000))
-* `[expect]` [**BREAKING**] Replace identity equality with Object.is in toBe 
+* `[expect]` [**BREAKING**] Replace identity equality with Object.is in toBe
   matcher ([#4917](https://github.com/facebook/jest/pull/4917))
 
 ### Features
@@ -127,7 +129,7 @@
   environments ([#4958](https://github.com/facebook/jest/pull/4958))
 * `[jest-snapshot]` Promises support for `toThrowErrorMatchingSnapshot`
   ([#4946](https://github.com/facebook/jest/pull/4946))
-* `[jest-cli]` Explain which snapshots are obsolete 
+* `[jest-cli]` Explain which snapshots are obsolete
   ([#5005](https://github.com/facebook/jest/pull/5005))
 
 ### Chore & Maintenance
