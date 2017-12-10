@@ -58,7 +58,6 @@
 * `[expect]` [**BREAKING**] Replace identity equality with Object.is in toBe
   matcher ([#4917](https://github.com/facebook/jest/pull/4917))
 
-
 ### Features
 
 * `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node context.
