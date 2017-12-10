@@ -115,6 +115,7 @@ async function jasmine2(
   runtime
     .requireModule(require.resolve('source-map-support'), 'source-map-support')
     .install({
+      environment: 'node',
       handleUncaughtExceptions: false,
       retrieveSourceMap: source => {
         if (runtime._sourceMapRegistry[source]) {
