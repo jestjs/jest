@@ -1041,7 +1041,7 @@ describe('testPathPattern', () => {
   }
 
   beforeEach(() => {
-    console.log = jest.fn()
+    console.log = jest.fn();
   });
 
   afterEach(() => {
