@@ -1031,6 +1031,15 @@ describe('testPathPattern', () => {
   const initialOptions = {rootDir: '/root'};
   const consoleLog = console.log;
 
+  function testWindowsPathSeparator(argv, expected) {
+    jest.resetModules();
+    jest.mock('path', () => require.requireActual('path').win32);
+    require('jest-resolve').findNodeModule = findNodeModule;
+
+    const {options} = require('../normalize').default(initialOptions, argv);
+    expect(options.testPathPattern).toBe(expected);
+  }
+
   beforeEach(() => {
     console.log = jest.fn()
   });
@@ -1046,8 +1055,8 @@ describe('testPathPattern', () => {
 
   describe('--testPathPattern', () => {
     it('uses testPathPattern if set', () => {
-      const {options} = normalize(initialOptions, {testPathPattern: 'a'});
-      expect(options.testPathPattern).toBe('a');
+      const {options} = normalize(initialOptions, {testPathPattern: 'a/b'});
+      expect(options.testPathPattern).toBe('a/b');
     });
 
     it('ignores invalid regular expressions and logs a warning', () => {
@@ -1057,17 +1066,14 @@ describe('testPathPattern', () => {
     });
 
     it('escapes Windows path separators', () => {
-      jest.resetModules()
-      jest.mock('path', () => require.requireActual('path').win32)
-      const {options} = require('../normalize').default(initialOptions, {testPathPattern: 'a\\b'});
-      expect(options.testPathPattern).toBe('a\\\\b');
+      testWindowsPathSeparator({testPathPattern: 'a\\b'}, 'a\\\\b');
     });
   });
 
   describe('<regexForTestFiles>', () => {
     it('uses <regexForTestFiles> if set', () => {
-      const {options} = normalize(initialOptions, {_: ['a']});
-      expect(options.testPathPattern).toBe('a');
+      const {options} = normalize(initialOptions, {_: ['a/b']});
+      expect(options.testPathPattern).toBe('a/b');
     });
 
     it('ignores invalid regular expressions and logs a warning', () => {
@@ -1076,19 +1082,17 @@ describe('testPathPattern', () => {
       expect(console.log.mock.calls[0][0]).toMatchSnapshot();
     });
 
-    it.skip('escapes Windows path separators ', () => {
-      const {options} = normalize(initialOptions, {testPathPattern: 'a\\b'});
-      expect(options.testPathPattern).toBe('a\\\\b');
+    it('escapes Windows path separators', () => {
+      testWindowsPathSeparator({_: ['a\\b']}, 'a\\\\b');
     });
 
     it('joins multiple <regexForTestFiles> if set', () => {
-      const {options} = normalize(initialOptions, {_: ['a', 'b']});
-      expect(options.testPathPattern).toBe('a|b');
+      const {options} = normalize(initialOptions, {_: ['a/b', 'c/d']});
+      expect(options.testPathPattern).toBe('a/b|c/d');
     });
 
-    it.skip('escapes Windows path separators in multiple args', () => {
-      const {options} = normalize(initialOptions, {_: ['a\\b', 'c\\d']});
-      expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
-    })
+    it('escapes Windows path separators in multiple args', () => {
+      testWindowsPathSeparator({_: ['a\\b', 'c\\d']}, 'a\\\\b|c\\\\d');
+    });
   });
 });
