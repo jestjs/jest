@@ -56,5 +56,37 @@ test('not throwing Error objects', () => {
 
 test('works with node assert', () => {
   const {stderr} = runJest(dir, ['node_assertion_error.test.js']);
-  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+  let summary = normalizeDots(extractSummary(stderr).rest);
+
+  // Node 9 started to include the error for `doesNotThrow`
+  // https://github.com/nodejs/node/pull/12167
+  if (Number(process.versions.node.split('.')[0]) >= 9) {
+    expect(summary).toContain(`
+    assert.doesNotThrow(function)
+    
+    Expected the function not to throw an error.
+    Instead, it threw:
+      [Error: err!]
+    
+    Message:
+      Got unwanted exception.
+    err!
+    err!
+      
+      at __tests__/node_assertion_error.test.js:71:10
+`);
+
+    summary = summary.replace(
+      `Message:
+      Got unwanted exception.
+    err!
+    err!
+`,
+      `Message:
+      Got unwanted exception.
+`,
+    );
+  }
+
+  expect(summary).toMatchSnapshot();
 });
