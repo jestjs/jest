@@ -216,7 +216,7 @@ export default function(j$) {
 
       await treeProcessor({
         nodeComplete(suite) {
-          if (!suite.disabled) {
+          if (!suite.markedPending) {
             clearResourcesForRunnable(suite.id);
           }
           currentlyExecutingSuites.pop();

@@ -45,7 +45,6 @@ export default function Suite(attrs: Object) {
   this.afterFns = [];
   this.beforeAllFns = [];
   this.afterAllFns = [];
-  this.disabled = false;
 
   this.children = [];
 
@@ -69,10 +68,6 @@ Suite.prototype.getFullName = function() {
     }
   }
   return fullName.join(' ');
-};
-
-Suite.prototype.disable = function() {
-  this.disabled = true;
 };
 
 Suite.prototype.pend = function(message) {
@@ -100,10 +95,6 @@ Suite.prototype.addChild = function(child) {
 };
 
 Suite.prototype.status = function() {
-  if (this.disabled) {
-    return 'disabled';
-  }
-
   if (this.markedPending) {
     return 'pending';
   }
@@ -113,10 +104,6 @@ Suite.prototype.status = function() {
   } else {
     return 'finished';
   }
-};
-
-Suite.prototype.isExecutable = function() {
-  return !this.disabled;
 };
 
 Suite.prototype.canBeReentered = function() {
