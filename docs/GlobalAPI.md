@@ -14,10 +14,13 @@ environment. You don't have to require or import anything to use them.
 
 ## Reference
 
-### `afterAll(fn)`
+### `afterAll(fn, timeout)`
 
 Runs a function after all the tests in this file have completed. If the function
 returns a promise, Jest waits for that promise to resolve before continuing.
+
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait
+before aborting. _Note: The default timeout is 5 seconds._
 
 This is often useful if you want to clean up some global setup state that is
 shared across tests.
@@ -57,11 +60,14 @@ block.
 If you want to run some cleanup after every test instead of after all tests, use
 `afterEach` instead.
 
-### `afterEach(fn)`
+### `afterEach(fn, timeout)`
 
 Runs a function after each one of the tests in this file completes. If the
 function returns a promise, Jest waits for that promise to resolve before
 continuing.
+
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait
+before aborting. _Note: The default timeout is 5 seconds._
 
 This is often useful if you want to clean up some temporary state that is
 created by each test.
@@ -101,10 +107,13 @@ are inside this describe block.
 If you want to run some cleanup just once, after all of the tests run, use
 `afterAll` instead.
 
-### `beforeAll(fn)`
+### `beforeAll(fn, timeout)`
 
 Runs a function before any of the tests in this file run. If the function
 returns a promise, Jest waits for that promise to resolve before running tests.
+
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait
+before aborting. _Note: The default timeout is 5 seconds._
 
 This is often useful if you want to set up some global state that will be used
 by many tests.
@@ -142,11 +151,14 @@ describe block.
 If you want to run something before every test instead of before any test runs,
 use `beforeEach` instead.
 
-### `beforeEach(fn)`
+### `beforeEach(fn, timeout)`
 
 Runs a function before each of the tests in this file runs. If the function
 returns a promise, Jest waits for that promise to resolve before running the
 test.
+
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait
+before aborting. _Note: The default timeout is 5 seconds._
 
 This is often useful if you want to reset some global state that will be used by
 many tests.
@@ -300,9 +312,9 @@ module should receive a mock implementation or not.
 Returns a mock module instead of the actual module, bypassing all checks on
 whether the module should be required normally or not.
 
-### `test(name, fn)`
+### `test(name, fn, timeout)`
 
-Also under the alias: `it(name, fn)`
+Also under the alias: `it(name, fn, timeout)`
 
 All you need in a test file is the `test` method which runs a test. For example,
 let's say there's a function `inchesOfRain()` that should be zero. Your whole
@@ -315,7 +327,8 @@ test('did not rain', () => {
 ```
 
 The first argument is the test name; the second argument is a function that
-contains the expectations to test.
+contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds)
+for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
 
 > Note: If a **promise is returned** from `test`, Jest will wait for the promise
 > to resolve before letting the test complete. Jest will also wait if you
@@ -337,13 +350,16 @@ test('has lemon in it', () => {
 Even though the call to `test` will return right away, the test doesn't complete
 until the promise resolves as well.
 
-### `test.only(name, fn)`
+### `test.only(name, fn, timeout)`
 
-Also under the aliases: `it.only(name, fn)` or `fit(name, fn)`
+Also under the aliases: `it.only(name, fn, timeout)` or `fit(name, fn, timeout)`
 
 When you are debugging a large codebase, you will often only want to run a
 subset of tests. You can use `.only` to specify which tests are the only ones
 you want to run.
+
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait
+before aborting. _Note: The default timeout is 5 seconds._
 
 For example, let's say you had these tests:
 
