@@ -2,6 +2,7 @@
 
 ### Fixes
 
+* `[jest-jasmine]` Register sourcemaps as node environment to improve performance with jsdom ([#5045](https://github.com/facebook/jest/pull/5045))
 * `[pretty-format]` Do not call toJSON recursively
   ([#5044](https://github.com/facebook/jest/pull/5044))
 * `[pretty-format]` Fix errors when identity-obj-proxy mocks CSS Modules
