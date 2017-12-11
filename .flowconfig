@@ -9,4 +9,4 @@ include_warnings=true
 emoji=true
 
 [version]
-^0.59.0
+^0.61.0
