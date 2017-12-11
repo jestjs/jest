@@ -281,14 +281,14 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
 const buildTestPathPattern = (argv: Argv): string => {
   if (argv.testPathPattern) {
     if (validatePattern(argv.testPathPattern)) {
-      return argv.testPathPattern;
+      return replacePathSepForRegex(argv.testPathPattern);
     } else {
       showTestPathPatternError(argv.testPathPattern);
     }
   }
 
   if (argv._ && argv._.length) {
-    const testPathPattern = argv._.join('|');
+    const testPathPattern = argv._.map(replacePathSepForRegex).join('|');
 
     if (validatePattern(testPathPattern)) {
       return testPathPattern;

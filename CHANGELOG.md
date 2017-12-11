@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-config]` Escape Windows path separator in testPathPattern CLI arguments
+  ([#5054](https://github.com/facebook/jest/pull/5054)
 * `[jest-jasmine]` Register sourcemaps as node environment to improve performance with jsdom ([#5045](https://github.com/facebook/jest/pull/5045))
 * `[pretty-format]` Do not call toJSON recursively
   ([#5044](https://github.com/facebook/jest/pull/5044))
