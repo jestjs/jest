@@ -99,7 +99,8 @@
   },
   "workspaces": [
     "packages/*",
-    "website"
+    "website",
+    "examples/react-native"
   ],
   "jest": {
     "modulePathIgnorePatterns": [
