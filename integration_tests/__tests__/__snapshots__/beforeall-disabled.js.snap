@@ -14,7 +14,7 @@ exports[`should not run beforeall for disabled tests 2`] = `
     Failed: Ran beforeAll for def
       
       at ../../packages/jest-jasmine2/build/expectation_result_factory.js:49:427
-      at skip.test.js:6:19
+      at skip.test.js:8:19
 
 "
 `;

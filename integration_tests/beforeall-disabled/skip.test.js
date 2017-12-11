@@ -1,11 +1,13 @@
-describe("abc", function() {
-  it("runs abc", function() {});
+/* globals fail */
+
+describe('abc', () => {
+  it('runs abc', () => {});
 });
 
-describe("def", function() {
-  beforeAll(() => fail("Ran beforeAll for def"));
+describe('def', () => {
+  beforeAll(() => fail('Ran beforeAll for def'));
 
-  it("does not run def", function() {
-    fail("ran def");
-  })
+  it('does not run def', () => {
+    fail('ran def');
+  });
 });
