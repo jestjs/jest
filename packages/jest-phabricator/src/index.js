@@ -13,7 +13,7 @@ import type {
 } from 'types/TestResult';
 
 type PhabricatorReport = AggregatedResultWithoutCoverage & {
-  coverageMap?: ?{[string]: string},
+  coverageMap?: ?CoverageMap,
 };
 
 function summarize(coverageMap: CoverageMap) {
