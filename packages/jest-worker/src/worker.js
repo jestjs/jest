@@ -81,7 +81,6 @@ export default class {
           cwd: process.cwd(),
           env: process.env,
           // suppress --debug / --inspect flags while preserving others (like --harmony)
-          // inspired by https://github.com/rvagg/node-worker-farm/blob/f63d988c307a6805e03b1650f8ef0fb7ca6f1546/lib/fork.js
           execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
           silent: true,
         },

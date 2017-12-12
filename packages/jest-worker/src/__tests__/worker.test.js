@@ -21,11 +21,11 @@ import {
 let Worker;
 let forkInterface;
 let childProcess;
-let properProcess;
+let originalExecArgv;
 
 beforeEach(() => {
   jest.mock('child_process');
-  properProcess = process;
+  originalExecArgv = process.execArgv;
 
   childProcess = require('child_process');
   childProcess.fork.mockImplementation(() => {
@@ -43,14 +43,13 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetModules();
-  // eslint-disable-next-line no-native-reassign
-  process = properProcess;
+  process.execArgv = originalExecArgv;
 });
 
 it('passes fork options down to child_process.fork, adding the defaults', () => {
   const child = require.resolve('../child');
 
-  Object.assign(process, {execArgv: ['--inspect', '-p']});
+  process.execArgv = ['--inspect', '-p'];
 
   new Worker({
     forkOptions: {
