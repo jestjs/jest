@@ -279,25 +279,22 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
 };
 
 const buildTestPathPattern = (argv: Argv): string => {
+  const patterns = [];
+
+  if (argv._) {
+    patterns.push(...argv._);
+  }
   if (argv.testPathPattern) {
-    if (validatePattern(argv.testPathPattern)) {
-      return replacePathSepForRegex(argv.testPathPattern);
-    } else {
-      showTestPathPatternError(argv.testPathPattern);
-    }
+    patterns.push(...argv.testPathPattern);
   }
 
-  if (argv._ && argv._.length) {
-    const testPathPattern = argv._.map(replacePathSepForRegex).join('|');
-
-    if (validatePattern(testPathPattern)) {
-      return testPathPattern;
-    } else {
-      showTestPathPatternError(testPathPattern);
-    }
+  const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
+  if (validatePattern(testPathPattern)) {
+    return testPathPattern;
+  } else {
+    showTestPathPatternError(testPathPattern);
+    return '';
   }
-
-  return '';
 };
 
 const showTestPathPatternError = (testPathPattern: string) => {

@@ -69,7 +69,7 @@ export type Argv = {|
   testMatch: Array<string>,
   testNamePattern: string,
   testPathIgnorePatterns: Array<string>,
-  testPathPattern: string,
+  testPathPattern: Array<string>,
   testRegex: string,
   testResultsProcessor: ?string,
   testRunner: string,

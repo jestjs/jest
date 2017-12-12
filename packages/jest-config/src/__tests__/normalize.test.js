@@ -1055,18 +1055,32 @@ describe('testPathPattern', () => {
 
   describe('--testPathPattern', () => {
     it('uses testPathPattern if set', () => {
-      const {options} = normalize(initialOptions, {testPathPattern: 'a/b'});
+      const {options} = normalize(initialOptions, {testPathPattern: ['a/b']});
       expect(options.testPathPattern).toBe('a/b');
     });
 
     it('ignores invalid regular expressions and logs a warning', () => {
-      const {options} = normalize(initialOptions, {testPathPattern: 'a('});
+      const {options} = normalize(initialOptions, {testPathPattern: ['a(']});
       expect(options.testPathPattern).toBe('');
       expect(console.log.mock.calls[0][0]).toMatchSnapshot();
     });
 
     it('escapes Windows path separators', () => {
-      testWindowsPathSeparator({testPathPattern: 'a\\b'}, 'a\\\\b');
+      testWindowsPathSeparator({testPathPattern: ['a\\b']}, 'a\\\\b');
+    });
+
+    it('joins multiple --testPathPatterns if set', () => {
+      const {options} = normalize(initialOptions, {
+        testPathPattern: ['a/b', 'c/d'],
+      });
+      expect(options.testPathPattern).toBe('a/b|c/d');
+    });
+
+    it('escapes Windows path separators in multiple args', () => {
+      testWindowsPathSeparator(
+        {testPathPattern: ['a\\b', 'c\\d']},
+        'a\\\\b|c\\\\d',
+      );
     });
   });
 
@@ -1094,5 +1108,13 @@ describe('testPathPattern', () => {
     it('escapes Windows path separators in multiple args', () => {
       testWindowsPathSeparator({_: ['a\\b', 'c\\d']}, 'a\\\\b|c\\\\d');
     });
+  });
+
+  it('joins multiple --testPathPatterns and <regexForTestFiles>', () => {
+    const {options} = normalize(initialOptions, {
+      _: ['a', 'b'],
+      testPathPattern: ['c', 'd'],
+    });
+    expect(options.testPathPattern).toBe('a|b|c|d');
   });
 });

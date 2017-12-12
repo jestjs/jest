@@ -484,7 +484,7 @@ export const options = {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
-    type: 'string',
+    type: 'array',
   },
   testRegex: {
     description: 'The regexp pattern Jest uses to detect test files.',
