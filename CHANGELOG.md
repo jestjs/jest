@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Do not support `--watch` inside non-version-controlled environments
+  ([#5060](https://github.com/facebook/jest/pull/5060))
 * `[jest-config]` Escape Windows path separator in testPathPattern CLI arguments
   ([#5054](https://github.com/facebook/jest/pull/5054)
 * `[jest-jasmine]` Register sourcemaps as node environment to improve performance with jsdom ([#5045](https://github.com/facebook/jest/pull/5045))
