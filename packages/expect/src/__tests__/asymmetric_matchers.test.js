@@ -142,6 +142,7 @@ test('ObjectContaining throws for non-objects', () => {
 test('StringContaining matches string against string', () => {
   jestExpect(stringContaining('en*').asymmetricMatch('queen*')).toBe(true);
   jestExpect(stringContaining('en').asymmetricMatch('queue')).toBe(false);
+  jestExpect(stringContaining('en').asymmetricMatch({})).toBe(false);
 });
 
 test('StringContaining throws for non-strings', () => {
@@ -153,11 +154,13 @@ test('StringContaining throws for non-strings', () => {
 test('StringMatching matches string against regexp', () => {
   jestExpect(stringMatching(/en/).asymmetricMatch('queen')).toBe(true);
   jestExpect(stringMatching(/en/).asymmetricMatch('queue')).toBe(false);
+  jestExpect(stringMatching(/en/).asymmetricMatch({})).toBe(false);
 });
 
 test('StringMatching matches string against string', () => {
   jestExpect(stringMatching('en').asymmetricMatch('queen')).toBe(true);
   jestExpect(stringMatching('en').asymmetricMatch('queue')).toBe(false);
+  jestExpect(stringMatching('en').asymmetricMatch({})).toBe(false);
 });
 
 test('StringMatching throws for non-strings and non-regexps', () => {
