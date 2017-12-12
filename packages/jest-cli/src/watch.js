@@ -354,12 +354,10 @@ const usage = (
       : null,
 
     globalConfig.onlyFailures
-      ? chalk.dim(' \u203A Press ') +
-        'f' +
-        chalk.dim(' to disable "only-failures" mode.')
+      ? chalk.dim(' \u203A Press ') + 'f' + chalk.dim(' to run all tests.')
       : chalk.dim(' \u203A Press ') +
         'f' +
-        chalk.dim(' to enable "only-failures" mode.'),
+        chalk.dim(' to run only failed tests.'),
 
     (globalConfig.watchAll ||
       globalConfig.testPathPattern ||
