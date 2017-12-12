@@ -330,9 +330,9 @@ in their own TestEnvironment.</em></p><p>Example:</p><pre class="prism language-
   <span class="token function">runScript</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">runScript</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><h3><a class="anchor" name="testenvironmentoptions-object"></a><code>testEnvironmentOptions</code> [Object] <a class="hash-link" href="#testenvironmentoptions-object">#</a></h3><h5><a class="anchor" name="available-in-jest-2200"></a>available in Jest <strong>22.0.0+</strong> <a class="hash-link" href="#available-in-jest-2200">#</a></h5><p>Default: <code>{}</code></p><p>Test environment options that will be passed to the <code>testEnvironment</code>.  The
-relevant options depend on the environment.  For example you can override
-options given to <a href="https://github.com/tmpvar/jsdom" target="_blank">jsdom</a> such as
+<span class="token punctuation">}</span></pre><h3><a class="anchor" name="testenvironmentoptions-object"></a><code>testEnvironmentOptions</code> [Object] <a class="hash-link" href="#testenvironmentoptions-object">#</a></h3><h5><a class="anchor" name="available-in-jest-2200"></a>available in Jest <strong>22.0.0+</strong> <a class="hash-link" href="#available-in-jest-2200">#</a></h5><p>Default: <code>{}</code></p><p>Test environment options that will be passed to the <code>testEnvironment</code>. The
+relevant options depend on the environment. For example you can override options
+given to <a href="https://github.com/tmpvar/jsdom" target="_blank">jsdom</a> such as
 <code>{userAgent: &quot;Agent/007&quot;}</code>.</p><h3><a class="anchor" name="testmatch-array-string"></a><code>testMatch</code> [array&lt;string&gt;] <a class="hash-link" href="#testmatch-array-string">#</a></h3><h5><a class="anchor" name="available-in-jest-1900"></a>available in Jest <strong>19.0.0+</strong> <a class="hash-link" href="#available-in-jest-1900">#</a></h5><p>(default: <code>[ &#x27;**/__tests__/**/*.js?(x)&#x27;, &#x27;**/?(*.)(spec|test).js?(x)&#x27; ]</code>)</p><p>The glob patterns Jest uses to detect test files. By default it looks for <code>.js</code>
 and <code>.jsx</code> files inside of <code>__tests__</code> folders, as well as any files with a
 suffix of <code>.test</code> or <code>.spec</code> (e.g. <code>Component.test.js</code> or <code>Component.spec.js</code>).
@@ -426,8 +426,13 @@ paths before transformation. If the test path matches any of the patterns, it
 will not be transformed.</p><p>These pattern strings match against the full path. Use the <code>&lt;rootDir&gt;</code> string
 token to include the path to your project&#x27;s root directory to prevent it from
 accidentally ignoring all of your files in different environments that may have
-different root directories. Example:
-<code>[&quot;&lt;rootDir&gt;/bower_components/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p><h3><a class="anchor" name="unmockedmodulepathpatterns-array-string"></a><code>unmockedModulePathPatterns</code> [array&lt;string&gt;] <a class="hash-link" href="#unmockedmodulepathpatterns-array-string">#</a></h3><p>Default: <code>[]</code></p><p>An array of regexp pattern strings that are matched against all modules before
+different root directories.</p><p>Example: <code>[&quot;&lt;rootDir&gt;/bower_components/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p><p>Sometimes it happens (especially in React Native or TypeScript projects) that
+3rd party modules are published as untranspiled. Since all files inside
+<code>node_modules</code> are not transformed by default, Jest will not understand the code
+in these modules, resulting in syntax errors. To overcome this, you may use
+<code>transformIgnorePatterns</code> to whitelist such modules. You&#x27;ll find a good example
+of this use case in
+<a href="http://facebook.github.io/jest/docs/en/tutorial-react-native.html#transformignorepatterns-customization" target="_blank">React Native Guide</a>.</p><h3><a class="anchor" name="unmockedmodulepathpatterns-array-string"></a><code>unmockedModulePathPatterns</code> [array&lt;string&gt;] <a class="hash-link" href="#unmockedmodulepathpatterns-array-string">#</a></h3><p>Default: <code>[]</code></p><p>An array of regexp pattern strings that are matched against all modules before
 the module loader will automatically return a mock for them. If a module&#x27;s path
 matches any of the patterns in this list, it will not be automatically mocked by
 the module loader.</p><p>This is useful for some commonly used &#x27;utility&#x27; modules that are almost always
