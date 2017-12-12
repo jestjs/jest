@@ -21,9 +21,11 @@ import {
 let Worker;
 let forkInterface;
 let childProcess;
+let originalExecArgv;
 
 beforeEach(() => {
   jest.mock('child_process');
+  originalExecArgv = process.execArgv;
 
   childProcess = require('child_process');
   childProcess.fork.mockImplementation(() => {
@@ -41,14 +43,18 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetModules();
+  process.execArgv = originalExecArgv;
 });
 
 it('passes fork options down to child_process.fork, adding the defaults', () => {
   const child = require.resolve('../child');
+
+  process.execArgv = ['--inspect', '-p'];
+
   new Worker({
     forkOptions: {
       cwd: '/tmp',
-      execArgv: ['--no-warnings'],
+      execPath: 'hello',
     },
     maxRetries: 3,
     workerPath: '/tmp/foo/bar/baz.js',
@@ -58,7 +64,8 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   expect(childProcess.fork.mock.calls[0][1]).toEqual({
     cwd: '/tmp', // Overridden default option.
     env: process.env, // Default option.
-    execArgv: ['--no-warnings'], // Added option.
+    execArgv: ['-p'], // Filtered option.
+    execPath: 'hello', // Added option.
     silent: true, // Default option.
   });
 });

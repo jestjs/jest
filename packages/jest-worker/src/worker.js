@@ -80,6 +80,8 @@ export default class {
         {
           cwd: process.cwd(),
           env: process.env,
+          // suppress --debug / --inspect flags while preserving others (like --harmony)
+          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
           silent: true,
         },
         this._options.forkOptions,

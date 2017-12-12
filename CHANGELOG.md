@@ -2,13 +2,16 @@
 
 ### Fixes
 
+* `[jest-worker]` Remove `debug` and `inspect` flags from the arguments sent to
+  the child ([#5068](https://github.com/facebook/jest/pull/5068))
 * `[jest-config]` Use all `--testPathPattern` and `<regexForTestFiles>` args in
-  `testPathPattern`([#5066](https://github.com/facebook/jest/pull/5066))
-* `[jest-cli]` Do not support `--watch` inside non-version-controlled environments
-  ([#5060](https://github.com/facebook/jest/pull/5060))
+  `testPathPattern` ([#5066](https://github.com/facebook/jest/pull/5066))
+* `[jest-cli]` Do not support `--watch` inside non-version-controlled
+  environments ([#5060](https://github.com/facebook/jest/pull/5060))
 * `[jest-config]` Escape Windows path separator in testPathPattern CLI arguments
   ([#5054](https://github.com/facebook/jest/pull/5054)
-* `[jest-jasmine]` Register sourcemaps as node environment to improve performance with jsdom ([#5045](https://github.com/facebook/jest/pull/5045))
+* `[jest-jasmine]` Register sourcemaps as node environment to improve
+  performance with jsdom ([#5045](https://github.com/facebook/jest/pull/5045))
 * `[pretty-format]` Do not call toJSON recursively
   ([#5044](https://github.com/facebook/jest/pull/5044))
 * `[pretty-format]` Fix errors when identity-obj-proxy mocks CSS Modules
@@ -66,8 +69,8 @@
 
 ### Features
 
-* `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node context.
-  ([#5003](https://github.com/facebook/jest/pull/5003))
+* `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node
+  context. ([#5003](https://github.com/facebook/jest/pull/5003))
 * `[jest-jasmine2]` Update Timeout error message to `jest.timeout` and display
   current timeout value ([#4990](https://github.com/facebook/jest/pull/4990))
 * `[jest-runner]` Enable experimental detection of leaked contexts
