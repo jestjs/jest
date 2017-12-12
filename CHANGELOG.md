@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-config]` Use all `--testPathPattern` and `<regexForTestFiles>` args in
+  `testPathPattern`([#5066](https://github.com/facebook/jest/pull/5066))
 * `[jest-cli]` Do not support `--watch` inside non-version-controlled environments
   ([#5060](https://github.com/facebook/jest/pull/5060))
 * `[jest-config]` Escape Windows path separator in testPathPattern CLI arguments
