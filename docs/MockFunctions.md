@@ -208,7 +208,7 @@ const myObj = {
 const otherObj = {
   myMethod: jest.fn(function() {
     return this;
-  }),
+  })
 };
 ```
 
