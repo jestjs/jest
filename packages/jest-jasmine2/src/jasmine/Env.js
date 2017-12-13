@@ -31,8 +31,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import queueRunner from '../queue_runner';
-
 import treeProcessor from '../tree_processor';
+
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test. Async functions return it implicitly.
+// eslint-disable-next-line no-unused-vars
+const Promise =
+  (global.__originalGlobals__ && global.__originalGlobals__.Promise) ||
+  global.Promise;
 
 export default function(j$) {
   function Env(options) {

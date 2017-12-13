@@ -7,6 +7,12 @@
  * @flow
  */
 
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test.
+const Promise =
+  (global.__originalGlobals__ && global.__originalGlobals__.Promise) ||
+  global.Promise;
+
 // A specialized version of `p-timeout` that does not touch globals.
 // It does not throw on timeout.
 export default function pTimeout(
