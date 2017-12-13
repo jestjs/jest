@@ -69,6 +69,8 @@
 
 ### Features
 
+* `[jest-config]` Add Global Setup/Teardown options
+  ([#4716](https://github.com/facebook/jest/pull/4716))
 * `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node
   context. ([#5003](https://github.com/facebook/jest/pull/5003))
 * `[jest-jasmine2]` Update Timeout error message to `jest.timeout` and display

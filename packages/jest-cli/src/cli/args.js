@@ -239,6 +239,14 @@ export const options = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  globalSetup: {
+    description: 'The path to a module that runs before All Tests.',
+    type: 'string',
+  },
+  globalTeardown: {
+    description: 'The path to a module that runs after All Tests.',
+    type: 'string',
+  },
   globals: {
     description:
       'A JSON string with map of global variables that need ' +

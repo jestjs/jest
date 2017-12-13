@@ -38,6 +38,8 @@ export default ({
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   detectLeaks: false,
   expand: false,
+  globalSetup: null,
+  globalTeardown: null,
   globals: {},
   haste: {
     providesModuleNodeModules: [],

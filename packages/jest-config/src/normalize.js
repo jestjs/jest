@@ -455,6 +455,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'detectLeaks':
       case 'displayName':
       case 'expand':
+      case 'globalSetup':
+      case 'globalTeardown':
       case 'globals':
       case 'findRelatedTests':
       case 'forceExit':
