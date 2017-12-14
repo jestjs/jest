@@ -28,9 +28,7 @@ type TreeNode = {
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
 // eslint-disable-next-line no-unused-vars
-const Promise =
-  (global.__originalGlobals__ && global.__originalGlobals__.Promise) ||
-  global.Promise;
+const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
 
 export default function treeProcessor(options: Options) {
   const {

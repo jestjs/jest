@@ -18,13 +18,8 @@ const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.process = createProcesObject();
 
-  // Deep copy all the original global values so that if a test overrides them,
-  // we can still get them back.
-  if (typeof global.__originalGlobals__ === 'undefined') {
-    Object.defineProperty(global, '__originalGlobals__', {
-      value: Object.freeze(deepCyclicCopy(global)),
-    });
-  }
+  // Keep a reference to "Promise", since "jasmine_light.js" needs it.
+  global[global.Symbol.for('jest-native-promise')] = Promise;
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {
