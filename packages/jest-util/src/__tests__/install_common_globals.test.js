@@ -5,8 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import vm from 'vm';
+
 let installCommonGlobals;
 let fake;
+
+function getGlobal() {
+  return vm.runInContext('this', vm.createContext());
+}
 
 beforeEach(() => {
   fake = jest.fn();
@@ -16,13 +22,13 @@ beforeEach(() => {
 });
 
 it('returns the passed object', () => {
-  const myGlobal = {};
+  const myGlobal = getGlobal();
 
   expect(installCommonGlobals(myGlobal, {})).toBe(myGlobal);
 });
 
 it('turns a V8 global object into a Node global object', () => {
-  const myGlobal = installCommonGlobals({}, {});
+  const myGlobal = installCommonGlobals(getGlobal(), {});
 
   expect(myGlobal.process).toBeDefined();
   expect(myGlobal.DTRACE_NET_SERVER_CONNECTION).toBeDefined();
