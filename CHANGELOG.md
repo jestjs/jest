@@ -1,6 +1,7 @@
 ## master
 
-None
+* `[jest-config]` Add `forceCoverageMatch` to allow collecting coverage from
+  ignored files. ([#5081](https://github.com/facebook/jest/pull/5081))
 
 ## jest 22.0.0
 
