@@ -128,6 +128,15 @@ describe('resolveModule', () => {
       require.resolve('../__mocks__/mockJsxDependency.native.jsx'),
     );
   });
+
+  it('is possible to resolve node modules by resolving their realpath', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    });
+    const src = require.resolve('../../src/__mocks__/bar/node_modules/foo');
+    const resolved = resolver.resolveModule(src, './dep/index');
+    expect(resolved).toBe(require.resolve('../../src/__mocks__/mockJsDependency.js'));
+  });
 });
 
 describe('getMockModule', () => {
