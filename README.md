@@ -162,4 +162,4 @@ Show the world you're using *Jest* → [![tested with jest](https://img.shields.
 
 Send issues and pull requests with your ideas. For more information about contributing PRs and issues, see our [Contribution Guidelines](https://github.com/facebook/jest/blob/master/CONTRIBUTING.md).
 
-[Good First Task](https://github.com/facebook/jest/labels/Good%20First%20Task) is a great starting point for PRs.
+[Good First Issue](https://github.com/facebook/jest/labels/Good%20First%20Issue) is a great starting point for PRs.
