@@ -9,7 +9,8 @@
   "main": "build/index.js",
   "dependencies": {
     "browser-resolve": "^1.11.2",
-    "chalk": "^2.0.1"
+    "chalk": "^2.0.1",
+    "jest-util": "^21.2.1"
   },
   "devDependencies": {
     "jest-haste-map": "^21.2.0"
