@@ -368,6 +368,7 @@ const runWithoutWatch = async (
     return await runJest({
       changedFilesPromise,
       contexts,
+      failedTestsCache: null,
       globalConfig,
       onComplete,
       outputStream,

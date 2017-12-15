@@ -27,6 +27,7 @@ import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import TestPathPatternPrompt from './test_path_pattern_prompt';
 import TestNamePatternPrompt from './test_name_pattern_prompt';
+import FailedTestsCache from './failed_tests_cache';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
 
@@ -55,6 +56,7 @@ export default function watch(
     }
   }
 
+  const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
@@ -120,6 +122,7 @@ export default function watch(
     return runJest({
       changedFilesPromise,
       contexts,
+      failedTestsCache,
       globalConfig,
       onComplete: results => {
         isRunning = false;
@@ -146,7 +149,7 @@ export default function watch(
         } else {
           outputStream.write('\n');
         }
-
+        failedTestsCache.setTestResults(results.testResults);
         testNamePatternPrompt.updateCachedTestResults(results.testResults);
       },
       outputStream,
@@ -177,7 +180,9 @@ export default function watch(
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.F].indexOf(
+        key,
+      ) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -227,6 +232,12 @@ export default function watch(
           mode: 'watch',
           testNamePattern: '',
           testPathPattern: '',
+        });
+        startRun(globalConfig);
+        break;
+      case KEYS.F:
+        globalConfig = updateGlobalConfig(globalConfig, {
+          onlyFailures: !globalConfig.onlyFailures,
         });
         startRun(globalConfig);
         break;
@@ -341,6 +352,12 @@ const usage = (
     globalConfig.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
+
+    globalConfig.onlyFailures
+      ? chalk.dim(' \u203A Press ') + 'f' + chalk.dim(' to run all tests.')
+      : chalk.dim(' \u203A Press ') +
+        'f' +
+        chalk.dim(' to run only failed tests.'),
 
     (globalConfig.watchAll ||
       globalConfig.testPathPattern ||

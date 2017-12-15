@@ -23,6 +23,7 @@ export const KEYS = {
   CONTROL_D: '04',
   ENTER: '0d',
   ESCAPE: '1b',
+  F: '66',
   O: '6f',
   P: '70',
   Q: '71',
