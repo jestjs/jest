@@ -2,6 +2,7 @@
 
 ### Fixes
 
+* `[jest-resolve]` Update node module resolution algorithm to follow physical paths ([#5085](https://github.com/facebook/jest/pull/5085))
 * `[jest-worker]` Remove `debug` and `inspect` flags from the arguments sent to
   the child ([#5068](https://github.com/facebook/jest/pull/5068))
 * `[jest-config]` Use all `--testPathPattern` and `<regexForTestFiles>` args in
