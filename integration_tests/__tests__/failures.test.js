@@ -72,6 +72,13 @@ test('works with node assert', () => {
       Got unwanted exception.
     err!
     err!
+
+      69 | 
+      70 | test('assert.doesNotThrow', () => {
+    > 71 |   assert.doesNotThrow(() => {
+      72 |     throw Error('err!');
+      73 |   });
+      74 | });
       
       at __tests__/node_assertion_error.test.js:71:10
 `);

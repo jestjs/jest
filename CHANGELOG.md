@@ -69,6 +69,8 @@
 
 ### Features
 
+* `[jest-message-util]` Add codeframe to test assertion failures
+  ([#5087](https://github.com/facebook/jest/pull/5087))
 * `[jest-config]` Add Global Setup/Teardown options
   ([#4716](https://github.com/facebook/jest/pull/4716))
 * `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node

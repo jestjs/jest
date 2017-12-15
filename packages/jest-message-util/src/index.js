@@ -10,10 +10,12 @@
 import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
+import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
 import slash from 'slash';
+import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
 
 let nodeInternals = [];
@@ -194,15 +196,45 @@ export const formatStackTrace = (
   testPath: ?Path,
 ) => {
   let lines = stack.split(/\n/);
+  let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
   lines = removeInternalStackEntries(lines, options);
-  return lines
+
+  if (testPath) {
+    const topFrame = lines
+      .join('\n')
+      .trim()
+      .split('\n')[0];
+
+    const parsedFrame = StackUtils.parseLine(topFrame);
+
+    if (parsedFrame) {
+      renderedCallsite = codeFrameColumns(
+        fs.readFileSync(testPath, 'utf8'),
+        {
+          start: {line: parsedFrame.line},
+        },
+        {highlightCode: true},
+      );
+
+      renderedCallsite = renderedCallsite
+        .split('\n')
+        .map(line => MESSAGE_INDENT + line)
+        .join('\n');
+
+      renderedCallsite = `\n${renderedCallsite}\n`;
+    }
+  }
+
+  const stacktrace = lines
     .map(trimPaths)
     .map(formatPaths.bind(null, config, options, relativeTestPath))
     .map(line => STACK_INDENT + line)
     .join('\n');
+
+  return renderedCallsite + stacktrace;
 };
 
 export const formatResultsErrors = (
