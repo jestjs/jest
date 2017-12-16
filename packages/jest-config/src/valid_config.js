@@ -38,6 +38,8 @@ export default ({
   displayName: 'project-name',
   expand: false,
   forceExit: false,
+  globalSetup: 'setup.js',
+  globalTeardown: 'teardown.js',
   globals: {},
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],
