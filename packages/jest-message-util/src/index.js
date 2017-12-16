@@ -208,9 +208,13 @@ export const formatStackTrace = (
   lines = removeInternalStackEntries(lines, options);
 
   const topFrame = lines
-    .join('\n')
-    .trim()
-    .split('\n')[0];
+    .map(line => line.trim())
+    .filter(Boolean)
+    .find(
+      line =>
+        !line.includes(`${path.sep}node_modules${path.sep}`) &&
+        !line.includes(`expect${path.sep}build${path.sep}`),
+    );
 
   if (topFrame) {
     const parsedFrame = stackUtils.parseLine(topFrame);

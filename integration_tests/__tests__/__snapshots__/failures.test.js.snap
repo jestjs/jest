@@ -95,6 +95,34 @@ exports[`works with assertions in separate files 1`] = `
 "
 `;
 
+exports[`works with async failures 1`] = `
+"FAIL __tests__/async_failures.test.js
+  ✕ something async
+
+  ● something async
+
+    expect(received).toEqual(expected)
+
+    Expected value to equal:
+      {\\"baz\\": \\"bar\\"}
+    Received:
+      {\\"foo\\": \\"bar\\"}
+
+    Difference:
+
+    - Expected
+    + Received
+
+      Object {
+    -   \\"baz\\": \\"bar\\",
+    +   \\"foo\\": \\"bar\\",
+      }
+
+      at ../../packages/expect/build/index.js:155:54
+
+"
+`;
+
 exports[`works with node assert 1`] = `
 "FAIL __tests__/node_assertion_error.test.js
   ✕ assert
