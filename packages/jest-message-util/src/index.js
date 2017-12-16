@@ -213,7 +213,7 @@ export const formatStackTrace = (
     .find(
       line =>
         !line.includes(`${path.sep}node_modules${path.sep}`) &&
-        !line.includes(`expect${path.sep}build${path.sep}`),
+        !line.includes(`${path.sep}expect${path.sep}build${path.sep}`),
     );
 
   if (topFrame) {
@@ -222,20 +222,22 @@ export const formatStackTrace = (
     if (parsedFrame) {
       const filename = parsedFrame.file;
 
-      renderedCallsite = codeFrameColumns(
-        fs.readFileSync(filename, 'utf8'),
-        {
-          start: {line: parsedFrame.line},
-        },
-        {highlightCode: true},
-      );
+      if (path.isAbsolute(filename)) {
+        renderedCallsite = codeFrameColumns(
+          fs.readFileSync(filename, 'utf8'),
+          {
+            start: {line: parsedFrame.line},
+          },
+          {highlightCode: true},
+        );
 
-      renderedCallsite = renderedCallsite
-        .split('\n')
-        .map(line => MESSAGE_INDENT + line)
-        .join('\n');
+        renderedCallsite = renderedCallsite
+          .split('\n')
+          .map(line => MESSAGE_INDENT + line)
+          .join('\n');
 
-      renderedCallsite = `\n${renderedCallsite}\n`;
+        renderedCallsite = `\n${renderedCallsite}\n`;
+      }
     }
   }
 
