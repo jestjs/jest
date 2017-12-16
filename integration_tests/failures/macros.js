@@ -8,6 +8,6 @@
  */
 'use strict';
 
-module.exports = (one, two) => {
+module.exports = (one: any, two: any) => {
   expect(one).toEqual(two);
 };
