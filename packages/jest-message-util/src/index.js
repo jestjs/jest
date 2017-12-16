@@ -18,6 +18,11 @@ import slash from 'slash';
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
 
+// stack utils tries to create pretty stack by making paths relative.
+const stackUtils = new StackUtils({
+  cwd: 'something which does not exist',
+});
+
 let nodeInternals = [];
 
 try {
@@ -202,17 +207,19 @@ export const formatStackTrace = (
     : null;
   lines = removeInternalStackEntries(lines, options);
 
-  if (testPath) {
-    const topFrame = lines
-      .join('\n')
-      .trim()
-      .split('\n')[0];
+  const topFrame = lines
+    .join('\n')
+    .trim()
+    .split('\n')[0];
 
-    const parsedFrame = StackUtils.parseLine(topFrame);
+  if (topFrame) {
+    const parsedFrame = stackUtils.parseLine(topFrame);
 
     if (parsedFrame) {
+      const filename = parsedFrame.file;
+
       renderedCallsite = codeFrameColumns(
-        fs.readFileSync(testPath, 'utf8'),
+        fs.readFileSync(filename, 'utf8'),
         {
           start: {line: parsedFrame.line},
         },
