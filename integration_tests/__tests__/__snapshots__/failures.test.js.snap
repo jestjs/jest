@@ -84,7 +84,7 @@ exports[`works with assertions in separate files 1`] = `
       1
 
       10 | 
-      11 | module.exports = (one, two) => {
+      11 | module.exports = (one: any, two: any) => {
     > 12 |   expect(one).toEqual(two);
       13 | };
       14 | 
@@ -102,22 +102,22 @@ exports[`works with async failures 1`] = `
   ● something async
 
     expect(received).toEqual(expected)
-
+    
     Expected value to equal:
       {\\"baz\\": \\"bar\\"}
     Received:
       {\\"foo\\": \\"bar\\"}
-
+    
     Difference:
-
+    
     - Expected
     + Received
-
+    
       Object {
     -   \\"baz\\": \\"bar\\",
     +   \\"foo\\": \\"bar\\",
       }
-
+      
       at ../../packages/expect/build/index.js:155:54
 
 "
