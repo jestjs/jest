@@ -50,6 +50,7 @@ const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|pa
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
+const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -138,6 +139,10 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
     }
 
     if (ANONYMOUS_GENERATOR_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (NATIVE_NEXT_IGNORE.test(line)) {
       return false;
     }
 
