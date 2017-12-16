@@ -3,12 +3,14 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
  */
 
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('skipOnWindows');
+const skipOnWindows = require('../../scripts/skip_on_windows');
 const {extractSummary, cleanup, writeFiles} = require('../utils');
 const runJest = require('../runJest');
 
