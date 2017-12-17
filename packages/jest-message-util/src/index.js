@@ -227,7 +227,7 @@ export const formatStackTrace = (
     if (parsedFrame) {
       const filename = parsedFrame.file;
 
-      if (path.isAbsolute(filename)) {
+      if (filename && path.isAbsolute(filename)) {
         renderedCallsite = codeFrameColumns(
           fs.readFileSync(filename, 'utf8'),
           {

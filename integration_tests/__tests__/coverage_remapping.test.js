@@ -12,20 +12,23 @@
 const {readFileSync} = require('fs');
 const path = require('path');
 const skipOnWindows = require('../../scripts/skip_on_windows');
-const {run} = require('../utils');
+const {cleanup, run} = require('../utils');
 const runJest = require('../runJest');
+
+const dir = path.resolve(__dirname, '../coverage-remapping');
+const coverageDir = path.join(dir, 'coverage');
 
 skipOnWindows.suite();
 
+beforeAll(() => {
+  cleanup(coverageDir);
+});
+
 it('maps code coverage against original source', () => {
-  const dir = path.resolve(__dirname, '../coverage-remapping');
   run('yarn', dir);
   runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
 
-  const coverageMapFile = path.join(
-    __dirname,
-    '../coverage-remapping/coverage/coverage-final.json',
-  );
+  const coverageMapFile = path.join(coverageDir, 'coverage-final.json');
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));
 
   // reduce absolute paths embedded in the coverage map to just filenames
