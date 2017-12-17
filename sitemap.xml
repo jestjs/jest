@@ -122,6 +122,14 @@
 <url> <loc>https://facebook.github.io/docs/ru/more-resources.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/uk/more-resources.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/zh-Hans/more-resources.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/en/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/ja/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/es-ES/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/pt-BR/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/ro/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/ru/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/uk/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/zh-Hans/puppeteer.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/en/setup-teardown.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/ja/setup-teardown.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/es-ES/setup-teardown.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
