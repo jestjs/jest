@@ -148,6 +148,8 @@
 
 ### Chore & Maintenance
 
+* `[docs]` Add guide of using with puppeteer
+  ([#5093](https://github.com/facebook/jest/pull/5093))
 * `[jest-util]` `jest-util` should not depend on `jest-mock`
   ([#4992](https://github.com/facebook/jest/pull/4992))
 * `[*]` [**BREAKING**] Drop support for Node.js version 4
