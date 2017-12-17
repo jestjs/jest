@@ -8,7 +8,6 @@
  */
 
 import mkdirp from 'mkdirp';
-import fs from 'fs';
 
 import BufferedConsole from './buffered_console';
 import clearLine from './clear_line';
@@ -32,15 +31,6 @@ const createDirectory = (path: string) => {
   }
 };
 
-const realpath = (filepath: string) => {
-  if (typeof fs.realpathSync.native === 'function') {
-    return fs.realpathSync.native(filepath);
-  }
-
-  // $FlowFixMe: This is need for node@<9.2
-  return process.binding('fs').realpath(filepath, 'utf8');
-};
-
 module.exports = {
   BufferedConsole,
   Console,
@@ -52,7 +42,6 @@ module.exports = {
   getConsoleOutput,
   installCommonGlobals,
   isInteractive,
-  realpath,
   setGlobal,
   validateCLIOptions,
 };
