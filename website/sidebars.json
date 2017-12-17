@@ -27,6 +27,7 @@
       "timer-mocks",
       "manual-mocks",
       "webpack",
+      "puppeteer",
       "migration-guide",
       "troubleshooting"
     ]
