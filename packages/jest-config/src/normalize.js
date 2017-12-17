@@ -384,6 +384,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             _replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'globalSetup':
+      case 'globalTeardown':
       case 'moduleLoader':
       case 'resolver':
       case 'runner':
@@ -455,8 +457,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'detectLeaks':
       case 'displayName':
       case 'expand':
-      case 'globalSetup':
-      case 'globalTeardown':
       case 'globals':
       case 'findRelatedTests':
       case 'forceExit':
