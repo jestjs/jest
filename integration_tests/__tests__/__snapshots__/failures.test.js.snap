@@ -70,6 +70,59 @@ exports[`not throwing Error objects 4`] = `
 "
 `;
 
+exports[`works with assertions in separate files 1`] = `
+"FAIL __tests__/test_macro.test.js
+  ✕ use some imported macro to make assertion
+
+  ● use some imported macro to make assertion
+
+    expect(received).toEqual(expected)
+    
+    Expected value to equal:
+      2
+    Received:
+      1
+
+      10 | 
+      11 | module.exports = (one: any, two: any) => {
+    > 12 |   expect(one).toEqual(two);
+      13 | };
+      14 | 
+      
+      at macros.js:12:15
+      at __tests__/test_macro.test.js:14:3
+
+"
+`;
+
+exports[`works with async failures 1`] = `
+"FAIL __tests__/async_failures.test.js
+  ✕ something async
+
+  ● something async
+
+    expect(received).toEqual(expected)
+    
+    Expected value to equal:
+      {\\"baz\\": \\"bar\\"}
+    Received:
+      {\\"foo\\": \\"bar\\"}
+    
+    Difference:
+    
+    - Expected
+    + Received
+    
+      Object {
+    -   \\"baz\\": \\"bar\\",
+    +   \\"foo\\": \\"bar\\",
+      }
+      
+      at ../../packages/expect/build/index.js:155:54
+
+"
+`;
+
 exports[`works with node assert 1`] = `
 "FAIL __tests__/node_assertion_error.test.js
   ✕ assert

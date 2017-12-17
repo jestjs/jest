@@ -18,6 +18,11 @@ import slash from 'slash';
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
 
+// stack utils tries to create pretty stack by making paths relative.
+const stackUtils = new StackUtils({
+  cwd: 'something which does not exist',
+});
+
 let nodeInternals = [];
 
 try {
@@ -45,6 +50,7 @@ const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|pa
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
+const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -136,6 +142,10 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
       return false;
     }
 
+    if (NATIVE_NEXT_IGNORE.test(line)) {
+      return false;
+    }
+
     if (nodeInternals.some(internal => internal.test(line))) {
       return false;
     }
@@ -202,19 +212,26 @@ export const formatStackTrace = (
     : null;
   lines = removeInternalStackEntries(lines, options);
 
-  if (testPath) {
-    const topFrame = lines
-      .join('\n')
-      .trim()
-      .split('\n')[0];
+  const topFrame = lines
+    .map(line => line.trim())
+    .filter(Boolean)
+    .filter(
+      line =>
+        !line.includes(`${path.sep}node_modules${path.sep}`) &&
+        !line.includes(`${path.sep}expect${path.sep}build${path.sep}`),
+    )
+    .map(line => stackUtils.parseLine(line))
+    .filter(Boolean)
+    .filter(parsedFrame => parsedFrame.file)[0];
 
-    const parsedFrame = StackUtils.parseLine(topFrame);
+  if (topFrame) {
+    const filename = topFrame.file;
 
-    if (parsedFrame) {
+    if (path.isAbsolute(filename)) {
       renderedCallsite = codeFrameColumns(
-        fs.readFileSync(testPath, 'utf8'),
+        fs.readFileSync(filename, 'utf8'),
         {
-          start: {line: parsedFrame.line},
+          start: {line: topFrame.line},
         },
         {highlightCode: true},
       );

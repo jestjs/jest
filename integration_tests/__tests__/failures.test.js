@@ -97,3 +97,15 @@ test('works with node assert', () => {
 
   expect(summary).toMatchSnapshot();
 });
+
+test('works with assertions in separate files', () => {
+  const {stderr} = runJest(dir, ['test_macro.test.js']);
+
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+});
+
+test('works with async failures', () => {
+  const {stderr} = runJest(dir, ['async_failures.test.js']);
+
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+});
