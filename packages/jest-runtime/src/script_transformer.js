@@ -17,7 +17,7 @@ import type {
 import crypto from 'crypto';
 import path from 'path';
 import vm from 'vm';
-import {createDirectory, realpath} from 'jest-util';
+import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
 import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
@@ -28,6 +28,7 @@ import slash from 'slash';
 import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
 import writeFileAtomic from 'write-file-atomic';
+import {sync as realpath} from 'realpath-native';
 
 export type Options = {|
   collectCoverage: boolean,
