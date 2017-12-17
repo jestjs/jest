@@ -215,34 +215,33 @@ export const formatStackTrace = (
   const topFrame = lines
     .map(line => line.trim())
     .filter(Boolean)
-    .find(
+    .filter(
       line =>
         !line.includes(`${path.sep}node_modules${path.sep}`) &&
         !line.includes(`${path.sep}expect${path.sep}build${path.sep}`),
-    );
+    )
+    .map(line => stackUtils.parseLine(line))
+    .filter(Boolean)
+    .filter(parsedFrame => parsedFrame.file)[0];
 
   if (topFrame) {
-    const parsedFrame = stackUtils.parseLine(topFrame);
+    const filename = topFrame.file;
 
-    if (parsedFrame) {
-      const filename = parsedFrame.file;
+    if (path.isAbsolute(filename)) {
+      renderedCallsite = codeFrameColumns(
+        fs.readFileSync(filename, 'utf8'),
+        {
+          start: {line: topFrame.line},
+        },
+        {highlightCode: true},
+      );
 
-      if (filename && path.isAbsolute(filename)) {
-        renderedCallsite = codeFrameColumns(
-          fs.readFileSync(filename, 'utf8'),
-          {
-            start: {line: parsedFrame.line},
-          },
-          {highlightCode: true},
-        );
+      renderedCallsite = renderedCallsite
+        .split('\n')
+        .map(line => MESSAGE_INDENT + line)
+        .join('\n');
 
-        renderedCallsite = renderedCallsite
-          .split('\n')
-          .map(line => MESSAGE_INDENT + line)
-          .join('\n');
-
-        renderedCallsite = `\n${renderedCallsite}\n`;
-      }
+      renderedCallsite = `\n${renderedCallsite}\n`;
     }
   }
 
