@@ -1,5 +1,9 @@
 ## master
 
+None
+
+## jest 22.0.0
+
 ### Fixes
 
 * `[jest-resolve]` Use `module.builtinModules` as `BUILTIN_MODULES` when it
