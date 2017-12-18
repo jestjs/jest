@@ -245,6 +245,11 @@ const users = [
     image: '/jest/img/logos/xing.png',
     infoLink: 'https://www.xing.com/',
   },
+  {
+    caption: 'Wingify',
+    image: '/jest/img/logos/wingify.png',
+    infoLink: 'https://wingify.com/',
+  }
 ];
 
 const siteConfig = {
