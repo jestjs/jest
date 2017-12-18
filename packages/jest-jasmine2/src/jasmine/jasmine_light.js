@@ -120,7 +120,7 @@ exports.interface = function(jasmine: Jasmine, env: any) {
       return env.spyOn(obj, methodName);
     },
 
-    spyOnProperty: function (obj: Object, methodName: string, accessType = 'get') {
+    spyOnProperty(obj: Object, methodName: string, accessType = 'get') {
       return env.spyOnProperty(obj, methodName, accessType);
     },
 

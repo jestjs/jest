@@ -131,7 +131,9 @@ export default function SpyRegistry(options: Object) {
 
   this.spyOnProperty = function(obj, propertyName, accessType = 'get') {
     if (!obj) {
-      throw new Error('spyOn could not find an object to spy upon for ' + propertyName + '');
+      throw new Error(
+        'spyOn could not find an object to spy upon for ' + propertyName + '',
+      );
     }
 
     if (!propertyName) {
@@ -154,7 +156,9 @@ export default function SpyRegistry(options: Object) {
     }
 
     if (!descriptor[accessType]) {
-      throw new Error('Property ' + propertyName + ' does not have access type ' + accessType);
+      throw new Error(
+        'Property ' + propertyName + ' does not have access type ' + accessType,
+      );
     }
 
     if (obj[propertyName] && isSpy(obj[propertyName])) {
@@ -172,20 +176,22 @@ export default function SpyRegistry(options: Object) {
     let restoreStrategy;
 
     if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {
-      restoreStrategy = function () {
+      restoreStrategy = function() {
         Object.defineProperty(obj, propertyName, originalDescriptor);
       };
     } else {
-      restoreStrategy = function () {
+      restoreStrategy = function() {
         delete obj[propertyName];
       };
     }
 
     currentSpies().push({
-      restoreObjectToOriginalState: restoreStrategy
+      restoreObjectToOriginalState: restoreStrategy,
     });
 
-    const spiedDescriptor = Object.assign({}, descriptor, { [accessType]: spiedProperty })
+    const spiedDescriptor = Object.assign({}, descriptor, {
+      [accessType]: spiedProperty,
+    });
 
     Object.defineProperty(obj, propertyName, spiedDescriptor);
 
