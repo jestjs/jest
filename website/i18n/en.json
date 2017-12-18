@@ -14,6 +14,7 @@
     "mock-function-api": "Mock Functions",
     "mock-functions": "Mock Functions",
     "more-resources": "More Resources",
+    "puppeteer": "Using with puppeteer",
     "setup-teardown": "Setup and Teardown",
     "snapshot-testing": "Snapshot Testing",
     "asynchronous": "Testing Asynchronous Code",
