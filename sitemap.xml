@@ -83,6 +83,14 @@
 <url> <loc>https://facebook.github.io/docs/ru/jest-object.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/uk/jest-object.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/zh-Hans/jest-object.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/en/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/ja/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/es-ES/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/pt-BR/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/ro/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/ru/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/uk/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
+<url> <loc>https://facebook.github.io/docs/zh-Hans/jest-platform.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/en/manual-mocks.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/ja/manual-mocks.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
 <url> <loc>https://facebook.github.io/docs/es-ES/manual-mocks.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> </url>
