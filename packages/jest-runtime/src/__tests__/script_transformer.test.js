@@ -357,7 +357,7 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('writes source maps if given by the transformer', () => {
+  it.skip('writes source maps if given by the transformer', () => {
     config = Object.assign(config, {
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });

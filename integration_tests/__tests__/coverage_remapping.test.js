@@ -26,7 +26,9 @@ beforeAll(() => {
 
 it('maps code coverage against original source', () => {
   run('yarn', dir);
-  runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
+  const result = runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
+
+  expect(result.status).toBe(0);
 
   const coverageMapFile = path.join(coverageDir, 'coverage-final.json');
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));
