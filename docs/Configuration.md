@@ -242,7 +242,8 @@ Jest will fail if:
 Default: `['']`
 
 Test files are normally ignored from collecting code coverage. With this option,
-you can overwrite this behavior and include otherwise ignored files in code coverage.
+you can overwrite this behavior and include otherwise ignored files in code
+coverage.
 
 For example, if you have tests in source files named with `.t.js` extension as
 following:
@@ -250,7 +251,7 @@ following:
 ```javascript
 // sum.t.js
 
-export function sum(a,b) {
+export function sum(a, b) {
   return a + b;
 }
 
@@ -262,6 +263,7 @@ if (process.env.NODE_ENV === 'test') {
 ```
 
 You can collect coverage from those files with setting `forceCoverageMatch`.
+
 ```json
 {
   ...
@@ -270,7 +272,6 @@ You can collect coverage from those files with setting `forceCoverageMatch`.
   }
 }
 ```
-
 
 ### `globals` [object]
 
