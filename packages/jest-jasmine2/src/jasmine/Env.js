@@ -285,6 +285,10 @@ export default function(j$) {
       return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };
 
+    this.spyOnProperty = function() {
+      return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
+    };
+
     const suiteFactory = function(description) {
       const suite = new j$.Suite({
         id: getNextSuiteId(),
@@ -434,10 +438,10 @@ export default function(j$) {
       if (currentSpec !== null) {
         throw new Error(
           'Tests cannot be nested. Test `' +
-            spec.description +
-            '` cannot run because it is nested within `' +
-            currentSpec.description +
-            '`.',
+          spec.description +
+          '` cannot run because it is nested within `' +
+          currentSpec.description +
+          '`.',
         );
       }
       currentDeclarationSuite.addChild(spec);

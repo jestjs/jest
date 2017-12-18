@@ -129,6 +129,69 @@ export default function SpyRegistry(options: Object) {
     return spiedMethod;
   };
 
+  this.spyOnProperty = function(obj, propertyName, accessType = 'get') {
+    if (!obj) {
+      throw new Error('spyOn could not find an object to spy upon for ' + propertyName + '');
+    }
+
+    if (!propertyName) {
+      throw new Error('No property name supplied');
+    }
+
+    let descriptor;
+    try {
+      descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
+    } catch (e) {
+      // IE 8 doesn't support `definePropery` on non-DOM nodes
+    }
+
+    if (!descriptor) {
+      throw new Error(propertyName + ' property does not exist');
+    }
+
+    if (!descriptor.configurable) {
+      throw new Error(propertyName + ' is not declared configurable');
+    }
+
+    if (!descriptor[accessType]) {
+      throw new Error('Property ' + propertyName + ' does not have access type ' + accessType);
+    }
+
+    if (obj[propertyName] && isSpy(obj[propertyName])) {
+      if (this.respy) {
+        return obj[propertyName];
+      } else {
+        throw new Error(
+          getErrorMsg(propertyName + ' has already been spied upon'),
+        );
+      }
+    }
+
+    const originalDescriptor = descriptor;
+    const spiedProperty = createSpy(propertyName, descriptor[accessType]);
+    let restoreStrategy;
+
+    if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {
+      restoreStrategy = function () {
+        Object.defineProperty(obj, propertyName, originalDescriptor);
+      };
+    } else {
+      restoreStrategy = function () {
+        delete obj[propertyName];
+      };
+    }
+
+    currentSpies().push({
+      restoreObjectToOriginalState: restoreStrategy
+    });
+
+    const spiedDescriptor = Object.assign({}, descriptor, { [accessType]: spiedProperty })
+
+    Object.defineProperty(obj, propertyName, spiedDescriptor);
+
+    return spiedProperty;
+  };
+
   this.clearSpies = function() {
     const spies = currentSpies();
     for (let i = spies.length - 1; i >= 0; i--) {

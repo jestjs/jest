@@ -672,10 +672,10 @@ class ModuleMockerClass {
       if (typeof original !== 'function') {
         throw new Error(
           'Cannot spy the ' +
-            methodName +
-            ' property because it is not a function; ' +
-            this._typeOf(original) +
-            ' given instead',
+          methodName +
+          ' property because it is not a function; ' +
+          this._typeOf(original) +
+          ' given instead',
         );
       }
 
@@ -689,6 +689,65 @@ class ModuleMockerClass {
     }
 
     return object[methodName];
+  }
+
+  spyOnProperty(object: any, propertyName: any, accessType = 'get'): any {
+    if (typeof object !== 'object' && typeof object !== 'function') {
+      throw new Error(
+        'Cannot spyOn on a primitive value; ' + this._typeOf(object) + ' given',
+      );
+    }
+
+    if (!obj) {
+      throw new Error('spyOn could not find an object to spy upon for ' + propertyName + '');
+    }
+
+    if (!propertyName) {
+      throw new Error('No property name supplied');
+    }
+
+    let descriptor;
+    try {
+      descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
+    } catch (e) {
+      // IE 8 doesn't support `definePropery` on non-DOM nodes
+    }
+
+    if (!descriptor) {
+      throw new Error(propertyName + ' property does not exist');
+    }
+
+    if (!descriptor.configurable) {
+      throw new Error(propertyName + ' is not declared configurable');
+    }
+
+    if (!descriptor[accessType]) {
+      throw new Error('Property ' + propertyName + ' does not have access type ' + accessType);
+    }
+
+    const original = descriptor[accessType]
+
+    if (!this.isMockFunction(original)) {
+      if (typeof original !== 'function') {
+        throw new Error(
+          'Cannot spy the ' +
+          methodName +
+          ' property because it is not a function; ' +
+          this._typeOf(original) +
+          ' given instead',
+        );
+      }
+
+      descriptor[accessType] = this._makeComponent({ type: 'function' }, () => {
+        descriptor[accessType] = original;
+      });
+
+      descriptor[accessType].mockImplementation(function () {
+        return original.apply(this, arguments);
+      });
+    }
+
+    return descriptor[accessType];
   }
 
   clearAllMocks() {
