@@ -104,7 +104,8 @@ const createTransformer = (options: any) => {
       config: ProjectConfig,
       transformOptions: TransformOptions,
     ): string {
-      if (babelUtil && !babelUtil.canCompile(filename)) {
+      const altExts = config.moduleFileExtensions.map(ext => '.' + ext);
+      if (babelUtil && !babelUtil.canCompile(filename, altExts)) {
         return src;
       }
 
