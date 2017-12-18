@@ -113,5 +113,9 @@ test('works with async failures', () => {
 test('works with snapshot failures', () => {
   const {stderr} = runJest(dir, ['snapshot.test.js']);
 
-  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+  const result = normalizeDots(extractSummary(stderr).rest);
+
+  expect(
+    result.substring(0, result.indexOf('Snapshot Summary')),
+  ).toMatchSnapshot();
 });

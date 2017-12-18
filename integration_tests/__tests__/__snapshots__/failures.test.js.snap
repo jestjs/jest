@@ -510,8 +510,5 @@ exports[`works with snapshot failures 1`] = `
       at __tests__/snapshot.test.js:12:17
 
  › 1 snapshot test failed.
-Snapshot Summary
- › 1 snapshot test failed in 1 test suite. Inspect your code changes or re-run jest with \`-u\` to update them.
-
 "
 `;
