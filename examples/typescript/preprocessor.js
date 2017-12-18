@@ -13,7 +13,7 @@ module.exports = {
       });
       // Transformers can return a string with the transformed source text
       // or a {code, map} if source maps are available
-      return {code: outputText, map: sourceMapText}
+      return {code: outputText, map: sourceMapText};
     }
     return src;
   },
