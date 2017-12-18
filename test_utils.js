@@ -70,6 +70,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   cwd: '/test_root_dir/',
   detectLeaks: false,
   displayName: undefined,
+  forceCoverageMatch: [],
   globals: {},
   haste: {
     providesModuleNodeModules: [],

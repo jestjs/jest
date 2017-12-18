@@ -130,6 +130,7 @@ const getConfigs = (
       cwd: options.cwd,
       detectLeaks: options.detectLeaks,
       displayName: options.displayName,
+      forceCoverageMatch: options.forceCoverageMatch,
       globals: options.globals,
       haste: options.haste,
       moduleDirectories: options.moduleDirectories,

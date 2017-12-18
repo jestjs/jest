@@ -237,6 +237,41 @@ Jest will fail if:
 * The `./src/api/very-important-module.js` file has less than 100% coverage.
 * Every remaining file combined has less than 50% coverage (`global`).
 
+### `forceCoverageMatch` [array<string>]
+
+Default: `['']`
+
+Test files are normally ignored from collecting code coverage. With this option,
+you can overwrite this behavior and include otherwise ignored files in code coverage.
+
+For example, if you have tests in source files named with `.t.js` extension as
+following:
+
+```javascript
+// sum.t.js
+
+export function sum(a,b) {
+  return a + b;
+}
+
+if (process.env.NODE_ENV === 'test') {
+  test('sum', () => {
+    expect(sum(1, 2)).toBe(3);
+  });
+}
+```
+
+You can collect coverage from those files with setting `forceCoverageMatch`.
+```json
+{
+  ...
+  "jest": {
+    "forceCoverageMatch": ["**/*.t.js"]
+  }
+}
+```
+
+
 ### `globals` [object]
 
 Default: `{}`
