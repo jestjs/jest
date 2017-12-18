@@ -19,5 +19,6 @@ const BUILTIN_MODULES =
   );
 
 export default function isBuiltinModule(module: string): boolean {
+  // $FlowFixMe: module.builtinModules is not added to the flow type definitions yet
   return BUILTIN_MODULES.indexOf(module) !== -1;
 }
