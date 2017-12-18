@@ -24,6 +24,7 @@
 <url> <loc>https://facebook.github.io/ru/users.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://facebook.github.io/uk/users.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://facebook.github.io/zh-Hans/users.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://facebook.github.io/blog/2017/12/18/jest-22.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://facebook.github.io/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://facebook.github.io/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://facebook.github.io/blog/2017/01/30/a-great-developer-experience.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>

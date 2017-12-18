@@ -2,11 +2,26 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://facebook.github.io/blog</id>
     <title>Jest Blog</title>
-    <updated>2017-05-06T06:00:00Z</updated>
+    <updated>2017-12-18T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://facebook.github.io/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Jest news and events.</subtitle>
     <logo>https://facebook.github.ioimg/jest.svg</logo>
+    <entry>
+        <title type="html"><![CDATA[Jest 22: Refinements & Custom Runners]]></title>
+        <id>https://facebook.github.io/blog/2017/12/18/jest-22.html</id>
+        <link href="https://facebook.github.io/blog/2017/12/18/jest-22.html">
+        </link>
+        <updated>2017-12-18T06:00:00Z</updated>
+        <summary type="html"><![CDATA[Today we are announcing a new major version of Jest which refines almost all
+parts of Jest to provide a more solid testing foundation. Together with the Jest
+community we made a number of changes across the board that will help you get
+more out of Je]]></summary>
+        <author>
+            <name>Simen Bekkhus</name>
+            <uri>https://github.com/SimenB</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner]]></title>
         <id>https://facebook.github.io/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html</id>

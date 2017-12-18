@@ -8,13 +8,154 @@
             languagesDropDown.className = "hide";
           }
         });
-      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search"/></li><li><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Recent Posts</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Recent Posts</h3><ul><li class="navListItem"><a class="navItem" href="/jest/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html">Jest 20: 💖 Delightful Testing &amp; 🏃🏽 Multi-Project-Runner</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html">🃏 Jest 19: Immersive Watch Mode &amp; Test Platform Improvements</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2017/01/30/a-great-developer-experience.html">A Great Developer Experience</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2016/12/15/2016-in-jest.html">2016 in Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2016/10/03/jest-16.html">Jest 16.0: Turbocharged CLI &amp; Community Update</a></li></ul></div></div></section></div><script>
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search"/></li><li><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Recent Posts</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Recent Posts</h3><ul><li class="navListItem"><a class="navItem" href="/jest/blog/2017/12/18/jest-22.html">Jest 22: Refinements &amp; Custom Runners</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html">Jest 20: 💖 Delightful Testing &amp; 🏃🏽 Multi-Project-Runner</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html">🃏 Jest 19: Immersive Watch Mode &amp; Test Platform Improvements</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2017/01/30/a-great-developer-experience.html">A Great Developer Experience</a></li><li class="navListItem"><a class="navItem" href="/jest/blog/2016/12/15/2016-in-jest.html">2016 in Jest</a></li></ul></div></div></section></div><script>
           var toggler = document.getElementById('navToggler');
           var nav = document.getElementById('docsNav');
           toggler.onclick = function() {
             nav.classList.toggle('docsSliderActive');
           };
-        </script></nav></div><div class="container mainContainer documentContainer postContainer blogContainer"><div class="wrapper"><div class="posts"><div class="post"><header class="postHeader"><h1><a href="/jest/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html">Jest 20: 💖 Delightful Testing &amp; 🏃🏽 Multi-Project-Runner</a></h1><p class="post-meta">May 6, 2017</p><div class="authorBlock"><p class="post-authorName"><a href="http://twitter.com/cpojer" target="_blank">Christoph Pojer</a></p><div class="authorPhoto"><a href="http://twitter.com/cpojer" target="_blank"><img src="https://graph.facebook.com/100000023028168/picture/?height=200&amp;width=200"/></a></div></div></header><article class="post-content"><div><p>A few months ago we announced
+        </script></nav></div><div class="container mainContainer documentContainer postContainer blogContainer"><div class="wrapper"><div class="posts"><div class="post"><header class="postHeader"><h1><a href="/jest/blog/2017/12/18/jest-22.html">Jest 22: Refinements &amp; Custom Runners</a></h1><p class="post-meta">December 18, 2017</p><div class="authorBlock"><p class="post-authorName"><a href="https://github.com/SimenB" target="_blank">Simen Bekkhus</a></p><div class="authorPhoto"><a href="https://github.com/SimenB" target="_blank"><img src="https://graph.facebook.com/100003004880942/picture/?height=200&amp;width=200"/></a></div></div></header><article class="post-content"><div><p>Today we are announcing a new major version of Jest which refines almost all
+parts of Jest to provide a more solid testing foundation. Together with the Jest
+community we made a number of changes across the board that will help you get
+more out of Jest. We are also graduating the custom runners feature out of the
+experimental stage and added a new package, <code>jest-worker</code>, for parallelizing
+work across multiple processes. We have compiled a list of highlights below but
+make sure to check out the (as always)
+<a href="https://github.com/facebook/jest/blob/master/CHANGELOG.md" target="_blank">massive changelog</a>.</p><h2><a class="anchor" name="good-bye-node-4-welcome-jsdom-11"></a>Good bye Node 4 &amp; welcome JSDOM 11 <a class="hash-link" href="#good-bye-node-4-welcome-jsdom-11">#</a></h2><p>With this release we are dropping support for Node 4, mainly because one of our
+main dependencies, JSDOM, ended their support. Jest now comes out of the box
+with JSDOM 11 which features better support for SVGs, <code>requestAnimationFrame</code>,
+<code>URL</code> and <code>URLSearchParams</code> built in, and
+<a href="https://github.com/tmpvar/jsdom/blob/master/Changelog.md" target="_blank">much more</a>.</p><h2><a class="anchor" name="custom-runners-easy-parallelization-with-jest-worker"></a>Custom Runners + Easy parallelization with <code>jest-worker</code> <a class="hash-link" href="#custom-runners-easy-parallelization-with-jest-worker">#</a></h2><p>In Jest 21 we introduced the concept of custom Jest runners. Since then,
+Rogelio, one of Jest&#x27;s core contributors, built a number of useful runners: If
+you have many existing tests written using another framework but you&#x27;d like to
+immediately benefit from Jest&#x27;s features, check out
+<a href="https://yarnpkg.com/en/package/jest-runner-mocha" target="_blank">jest-runner-mocha</a>. If you
+have a large codebase that needs linting,
+<a href="https://twitter.com/lencioni/status/907398856756695040" target="_blank">you may get a significant speedup</a>
+if you run eslint within Jest using
+<a href="https://yarnpkg.com/en/package/jest-runner-eslint" target="_blank">jest-runner-eslint</a>.</p><p>To gain more of fine-grained control over heavy tasks parallelization (e.g.
+transforming files or crawling the file system), we designed a new library
+perfectly suited for the job. We developed a modern, Promise-based module with
+an approachable API, called <code>jest-worker</code>, that allows you to delegate to child
+processes those intensive functions. As <code>jest-worker</code>, like any other Jest
+package, is a part of the Jest platform, you can use it however you like even
+without ever using Jest itself. You&#x27;ll find more in the documentation
+<a href="https://yarnpkg.com/en/package/jest-worker" target="_blank">here</a>.</p><p>To get a better understanding of custom runners and Jest as a platform, make
+sure to check out Rogelio&#x27;s talk from Reactive Conf 2017:
+<a href="https://www.youtube.com/watch?v=NtjyeojAOBs" target="_blank">Jest as a Platform</a>.</p><h2><a class="anchor" name="codeframe-in-test-failures"></a>Codeframe in test failures <a class="hash-link" href="#codeframe-in-test-failures">#</a></h2><p>In order to more easily identify which assertion is failing your test, we&#x27;ve
+added a code frame showing the context where the assertion is in order to focus
+on your own code. See the following example test:</p><pre class="prism language-javascript"><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&#x27;some test&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">function</span> <span class="token function">someFunctionWhichShouldThrow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token string">&#x27;success!&#x27;</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">expect</span><span class="token punctuation">(</span>someFunctionWhichShouldThrow<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toThrowError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><p>In Jest 21, we would display the following error:</p><p><img src="/jest/img/blog/22-failure-21.png" alt="failure in Jest 21"/></p><p>In Jest 22, we have added a codeframe, giving more context to the failing
+assertions. We have also cleaned up the stack trace to remove more clutter than
+ever.</p><p><img src="/jest/img/blog/22-failure-22.png" alt="failure in Jest 22"/></p><h2><a class="anchor" name="easier-testing-of-errors-thrown-in-async-code"></a>Easier testing of errors thrown in async code <a class="hash-link" href="#easier-testing-of-errors-thrown-in-async-code">#</a></h2><p>You can now use <code>toThrow</code> and <code>toThrowErrorMatchingSnapshot</code> on promise
+rejections in the same way you can on synchronous errors.</p><pre class="prism language-javascript"><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">throwingFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">&#x27;This failed&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&#x27;asynchronous rejection&#x27;</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token function">expect</span><span class="token punctuation">(</span><span class="token function">throwingFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>rejects<span class="token punctuation">.</span><span class="token function">toThrowErrorMatchingSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h2><a class="anchor" name="asynchronous-test-environments"></a>Asynchronous test environments <a class="hash-link" href="#asynchronous-test-environments">#</a></h2><p>When <a href="https://github.com/GoogleChrome/puppeteer/" target="_blank">Puppeteer</a>, a way of
+programmatically interacting with a real Chromium Browser, was announced by the
+Google Chrome team in August, many wanted to be able to use Jest to write their
+tests running them in Chrome. The community have helped us out making this
+possible by allowing asynchronous test environments. We are still working on
+making this experience as good as possible, but please see
+<a href="http://facebook.github.io/jest/docs/en/puppeteer.html" target="_blank">this guide</a> for how to
+use Puppeteer with Jest, starting today.</p><h2><a class="anchor" name="experimental-leak-detection"></a>Experimental Leak Detection <a class="hash-link" href="#experimental-leak-detection">#</a></h2><p>We added an experimental <code>--detectLeaks</code> setting to Jest that will let you know
+if your internal environment instance is leaked after a test execution. It will
+also warn you when your test suite tries to require a file after the test has
+finished, meaning you forgot to wait for all async operations or left something
+not properly cleaned. This will however not discover leaks in user land code,
+only in test land code; although the technology used behind it can help you (see
+<code>jest-leak-detector</code>). If you are reporting a bug about Jest&#x27;s memory usage,
+please provide a repro where <code>--detectLeaks</code> will make the test suite fail. We
+<a href="https://github.com/facebook/jest/pull/4970" target="_blank">started building a better sandboxing mechanism</a>
+for Jest but it&#x27;s not ready yet to be enabled by default. If you&#x27;d like to help,
+please reach out to us on discord!</p><h2><a class="anchor" name="watch-mode-refinements"></a>Watch Mode Refinements <a class="hash-link" href="#watch-mode-refinements">#</a></h2><p>When using watch mode, there is now a way to
+<a href="https://github.com/facebook/jest/pull/4886" target="_blank">focus only on tests that previously failed</a>.
+In this mode, Jest will not re-run previously passing tests which should help
+you iron out all test failures. Additionally,
+<a href="https://github.com/facebook/jest/pull/4841" target="_blank">we added a plugin system to watch mode</a>.
+By adding modules to <code>watchPlugins</code> in your configuration you can extend the
+features of the watch mode.</p><h2><a class="anchor" name="babel-7-support"></a>Babel 7 support <a class="hash-link" href="#babel-7-support">#</a></h2><p>Jest uses Babel under the hood to power Code coverage and advanced mocking
+features. With Jest 22, it also supports the upcoming Babel 7. You&#x27;ll find more
+in the documentation
+<a href="http://facebook.github.io/jest/docs/en/getting-started.html#using-babel" target="_blank">here</a>.</p><h2><a class="anchor" name="mock-function-improvements"></a>Mock function improvements <a class="hash-link" href="#mock-function-improvements">#</a></h2><p>There has been a couple of changes to mock functions in Jest 22, making them
+even easier to use. Firstly, we added a
+<code>[mockName](http://facebook.github.io/jest/docs/en/mock-function-api.html#mockfnmocknamevalue)</code>
+property allowing you to name your mocks, which is useful in assertion failures.
+We have also made the Jest mock function serializable in <code>pretty-format</code>,
+meaning that you can snapshot test mocks. In Jest 21,
+<code>expect(jest.fn()).toMatchSnapshot()</code> would serialize to <code>[Function]</code>, in Jest
+22, you might get something like this:</p><pre class="prism language-javascript"><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&#x27;my mocking test&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> mock <span class="token operator">=</span> jest<span class="token punctuation">.</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockName</span><span class="token punctuation">(</span><span class="token string">&#x27;myMock&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">mock</span><span class="token punctuation">(</span><span class="token string">&#x27;hello&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> foo<span class="token punctuation">:</span> <span class="token string">&#x27;bar&#x27;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">expect</span><span class="token punctuation">(</span>mock<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toMatchSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span spellcheck="true" class="token comment">// Serializes to:</span>
+
+<span class="token punctuation">[</span>MockFunction myMock<span class="token punctuation">]</span> <span class="token punctuation">{</span>
+  <span class="token string">&quot;calls&quot;</span><span class="token punctuation">:</span> Array <span class="token punctuation">[</span>
+    Array <span class="token punctuation">[</span>
+      <span class="token string">&quot;hello&quot;</span><span class="token punctuation">,</span>
+      Object <span class="token punctuation">{</span>
+        <span class="token string">&quot;foo&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;bar&quot;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span></pre><h2><a class="anchor" name="highlights-from-jest-21"></a>Highlights from Jest 21 <a class="hash-link" href="#highlights-from-jest-21">#</a></h2><p>Jest 21 was released back in September, and we unfortunately never got around to
+write a blog post. So here is a quick summary of the main changes in version 21:</p><ol><li><strong>Use expect and jest-mock in the browser:
+</strong><a href="https://github.com/mjackson" target="_blank">Michael Jackson</a> donated his excellent
+<a href="https://github.com/mjackson/expect" target="_blank"><code>expect</code></a> package to the Jest project.
+As part of that transition, the Jest core team, with much help from
+<a href="https://github.com/skovhus/" target="_blank">Kenneth Skovhus</a>, made both <code>jest-matchers</code>
+(renamed to <code>expect</code>) and <code>jest-mock</code> work in browsers. This means that while
+you cannot use Jest itself in browsers
+(<a href="https://github.com/facebook/jest/issues/848" target="_blank">yet</a>), you can use its awesome
+assertions and mocks for instance as replacements for Chai and Sinon running
+in Mocha tests. If you are migrating from earlier <code>expect</code> to the new
+Jest-powered <code>expect</code>, you can use
+<a href="https://github.com/skovhus/jest-codemods/" target="_blank"><code>jest-codemods</code></a> to automate the
+migration.</li><li><strong>MIT License:</strong> We changed Jest&#x27;s license to MIT. <em>Yay!</em></li><li><strong>Fail test suites on async errors:</strong> Jest used to have a bug that made it
+crash when errors were thrown in certain parts of async code. This was fixed
+by community contributors.</li><li><strong>Faster startup:</strong> With Jest 21 we fine tuned Jest&#x27;s startup to be more than
+50% faster. The large overhead of Jest when running it on a small and fast
+test was always an issue for us and now this shouldn&#x27;t be a reason to hold
+you back from using Jest any longer.</li></ol><h2><a class="anchor" name="jest-community"></a>Jest Community <a class="hash-link" href="#jest-community">#</a></h2><p>The community around Jest is working hard to make the testing experience even
+greater. These are separate projects from the main Jest project, but we want to
+highlight some of our personal favorites here.</p><ul><li><a href="https://github.com/americanexpress/jest-image-snapshot" target="_blank">jest-image-snapshot</a>
+– custom matcher to compare images with snapshots by American Express
+developers</li><li><a href="https://github.com/kulshekhar/ts-jest" target="_blank">ts-jest</a> – all you need to
+successfully run Jest within TypeScript project by
+<a href="https://github.com/kulshekhar/ts-jest" target="_blank">@kulshekhar</a></li><li><a href="https://github.com/skovhus/jest-codemods/" target="_blank">jest-codemods</a> – migrate your
+tests from other frameworks to Jest with ease</li><li><a href="https://github.com/negativetwelve/jest-plugins" target="_blank">jest-plugins</a> – a new
+community project oriented around simplifying setting up test environment for
+specific tools, like React, or providing some handy utilities</li></ul><p>We&#x27;d also like to announce that recently we launched a new place for high
+quality Jest additions – <a href="https://github.com/jest-community" target="_blank">jest-community</a>.
+It&#x27;s a new GitHub organization already featuring our favorite projects, like
+<a href="https://github.com/jest-community/vscode-jest" target="_blank">vscode-jest</a>,
+<a href="https://github.com/jest-community/jest-extended" target="_blank">jest-extended</a>, to name a few,
+curated by Jest maintainers and collaborators. We&#x27;ve even migrated our
+<a href="https://github.com/jest-community/eslint-plugin-jest" target="_blank">eslint-plugin-jest</a>
+there, and already see some great contributions, which are published
+independently at a faster pace.</p><p><img src="/jest/img/blog/22-community.png" alt="Jest Community"/></p><p>Community projects under one organisation are also a great way for us to
+experiment on things like automated releases, which we&#x27;d like to explore for
+Jest as well. They also enable us to share some common things between them, like
+the shape of the README for example (thanks to the webpack Community for the
+idea), making it easier to learn and use for all of us.</p><p>If you have something awesome to share, feel free to reach out to us! We&#x27;d love
+to share your project here.</p></div><div class="read-more"><a class="button" href="/jest/blog/2017/12/18/jest-22.html">Read More</a></div></article></div><div class="post"><header class="postHeader"><h1><a href="/jest/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html">Jest 20: 💖 Delightful Testing &amp; 🏃🏽 Multi-Project-Runner</a></h1><p class="post-meta">May 6, 2017</p><div class="authorBlock"><p class="post-authorName"><a href="http://twitter.com/cpojer" target="_blank">Christoph Pojer</a></p><div class="authorPhoto"><a href="http://twitter.com/cpojer" target="_blank"><img src="https://graph.facebook.com/100000023028168/picture/?height=200&amp;width=200"/></a></div></div></header><article class="post-content"><div><p>A few months ago we announced
 <a href="http://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html" target="_blank">Jest 19</a>
 which came with major new features and was the biggest Jest release until today.
 Jest 20 has twice the amount of changes compared to the previous version,
@@ -137,15 +278,7 @@ changes from the last few months were rolled into Jest 11.0.</p><h3><a class="an
 <a href="https://github.com/facebook/jest/tree/master/packages" target="_blank">repository</a> and it is
 now seamlessly integrated into Jest. If you are upgrading from an older version
 of Jest or are looking to adopt Jest, we recommend reading the
-<a href="http://facebook.github.io/jest/docs/getting-started.html" target="_blank">Getting Started guide</a>.</p></div><div class="read-more"><a class="button" href="/jest/blog/2016/04/12/jest-11.html">Read More</a></div></article></div><div class="post"><header class="postHeader"><h1><a href="/jest/blog/2016/03/11/javascript-unit-testing-performance.html">JavaScript Unit Testing Performance</a></h1><p class="post-meta">March 11, 2016</p><div class="authorBlock"><p class="post-authorName"><a href="http://twitter.com/cpojer" target="_blank">Christoph Pojer</a></p><div class="authorPhoto"><a href="http://twitter.com/cpojer" target="_blank"><img src="https://graph.facebook.com/100000023028168/picture/?height=200&amp;width=200"/></a></div></div></header><article class="post-content"><div><p>Jest is running thousands of tests at Facebook at all times, either through
-continuous integration or invoked by engineers manually during development. This
-worked well for years even as the people working on Jest moved on to other
-projects within Facebook.</p><p>As engineers added more and more tests though, we noticed the performance of
-Jest wasn&#x27;t going to scale. Additionally, in the last year the JavaScript
-ecosystem has changed dramatically with the introduction of things like npm3 and
-Babel, which we hadn&#x27;t anticipated. We formed a new Jest team to address all of
-these issues and we&#x27;ll be sharing our progress and plans on this blog from now
-on.</p></div><div class="read-more"><a class="button" href="/jest/blog/2016/03/11/javascript-unit-testing-performance.html">Read More</a></div></article></div><div class="docs-prevnext"></div></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/en/getting-started.html">Getting Started</a><a href="/jest/docs/en/snapshot-testing.html">Guides</a><a href="/jest/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/en/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2017 Facebook Inc.</section></footer></div><script type="text/javascript" src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+<a href="http://facebook.github.io/jest/docs/getting-started.html" target="_blank">Getting Started guide</a>.</p></div><div class="read-more"><a class="button" href="/jest/blog/2016/04/12/jest-11.html">Read More</a></div></article></div><div class="docs-prevnext"><a class="docs-next" href="/jest/blog/page2/#content">Next →</a></div></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/en/getting-started.html">Getting Started</a><a href="/jest/docs/en/snapshot-testing.html">Guides</a><a href="/jest/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/en/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2017 Facebook Inc.</section></footer></div><script type="text/javascript" src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

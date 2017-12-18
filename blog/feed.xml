@@ -4,7 +4,7 @@
         <title>Jest Blog</title>
         <link>https://facebook.github.io/blog</link>
         <description>The best place to stay up-to-date with the latest Jest news and events.</description>
-        <lastBuildDate>Sat, 06 May 2017 06:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 18 Dec 2017 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
@@ -12,6 +12,16 @@
             <url>https://facebook.github.ioimg/jest.svg</url>
             <link>https://facebook.github.io/blog</link>
         </image>
+        <item>
+            <title><![CDATA[Jest 22: Refinements & Custom Runners]]></title>
+            <link>https://facebook.github.io/blog/2017/12/18/jest-22.html</link>
+            <guid>https://facebook.github.io/blog/2017/12/18/jest-22.html</guid>
+            <pubDate>Mon, 18 Dec 2017 06:00:00 GMT</pubDate>
+            <description><![CDATA[Today we are announcing a new major version of Jest which refines almost all
+parts of Jest to provide a more solid testing foundation. Together with the Jest
+community we made a number of changes across the board that will help you get
+more out of Je]]></description>
+        </item>
         <item>
             <title><![CDATA[Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner]]></title>
             <link>https://facebook.github.io/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html</link>
