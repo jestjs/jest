@@ -30,21 +30,21 @@ import {options as cliOptions} from './cli/args';
 
 type Module = {|
   children: Array<Module>,
-    exports: any,
-      filename: string,
-        id: string,
-          loaded: boolean,
-            parent?: Module,
-            paths?: Array<Path>,
-            require?: (id: string) => any,
+  exports: any,
+  filename: string,
+  id: string,
+  loaded: boolean,
+  parent?: Module,
+  paths?: Array<Path>,
+  require?: (id: string) => any,
 |};
 
 type HasteMapOptions = {|
   console?: Console,
-    maxWorkers: number,
-      resetCache: boolean,
-        watch?: boolean,
-        watchman: boolean,
+  maxWorkers: number,
+  resetCache: boolean,
+  watch?: boolean,
+  watchman: boolean,
 |};
 
 type InternalModuleOptions = {|
@@ -550,7 +550,7 @@ class Runtime {
         filename,
         // $FlowFixMe
         (localModule.require: LocalModuleRequire),
-    ), // jest object
+      ), // jest object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -595,7 +595,7 @@ class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
+            `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
         );
       }
       this._mockMetaDataCache[modulePath] = mockMetadata;
@@ -769,8 +769,8 @@ class Runtime {
       this._environment.global.jasmine
         ? (this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout)
         : (this._environment.global[
-          Symbol.for('TEST_TIMEOUT_SYMBOL')
-        ] = timeout);
+            Symbol.for('TEST_TIMEOUT_SYMBOL')
+          ] = timeout);
       return jestObject;
     };
 

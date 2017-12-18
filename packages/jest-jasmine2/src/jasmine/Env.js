@@ -438,10 +438,10 @@ export default function(j$) {
       if (currentSpec !== null) {
         throw new Error(
           'Tests cannot be nested. Test `' +
-          spec.description +
-          '` cannot run because it is nested within `' +
-          currentSpec.description +
-          '`.',
+            spec.description +
+            '` cannot run because it is nested within `' +
+            currentSpec.description +
+            '`.',
         );
       }
       currentDeclarationSuite.addChild(spec);

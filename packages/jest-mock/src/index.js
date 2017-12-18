@@ -672,10 +672,10 @@ class ModuleMockerClass {
       if (typeof original !== 'function') {
         throw new Error(
           'Cannot spy the ' +
-          methodName +
-          ' property because it is not a function; ' +
-          this._typeOf(original) +
-          ' given instead',
+            methodName +
+            ' property because it is not a function; ' +
+            this._typeOf(original) +
+            ' given instead',
         );
       }
 
@@ -731,10 +731,10 @@ class ModuleMockerClass {
       if (typeof original !== 'function') {
         throw new Error(
           'Cannot spy the ' +
-          methodName +
-          ' property because it is not a function; ' +
-          this._typeOf(original) +
-          ' given instead',
+            methodName +
+            ' property because it is not a function; ' +
+            this._typeOf(original) +
+            ' given instead',
         );
       }
 
