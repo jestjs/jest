@@ -9,6 +9,7 @@
     "getting-started": "Getting Started",
     "api": "Globals",
     "jest-object": "The Jest Object",
+    "jest-platform": "Jest Platform",
     "manual-mocks": "Manual Mocks",
     "migration-guide": "Migrating to Jest",
     "mock-function-api": "Mock Functions",
