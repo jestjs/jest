@@ -2,7 +2,8 @@
 
 ### Fixes
 
-* `[jest-resolve]` Use `module.builtinModules` as `BUILTIN_MODULES` when it exists
+* `[jest-resolve]` Use `module.builtinModules` as `BUILTIN_MODULES` when it
+  exists
 * `[jest-worker]` Remove `debug` and `inspect` flags from the arguments sent to
   the child ([#5068](https://github.com/facebook/jest/pull/5068))
 * `[jest-config]` Use all `--testPathPattern` and `<regexForTestFiles>` args in
