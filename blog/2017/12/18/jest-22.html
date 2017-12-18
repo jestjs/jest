@@ -86,12 +86,12 @@ In this mode, Jest will not re-run previously passing tests which should help
 you iron out all test failures. Additionally,
 <a href="https://github.com/facebook/jest/pull/4841" target="_blank">we added a plugin system to watch mode</a>.
 By adding modules to <code>watchPlugins</code> in your configuration you can extend the
-features of the watch mode.</p><h2><a class="anchor" name="babel-7-support"></a>Babel 7 support <a class="hash-link" href="#babel-7-support">#</a></h2><p>Jest uses Babel under the hood to power Code coverage and advanced mocking
+features of the watch mode.</p><h2><a class="anchor" name="babel-7-support"></a>Babel 7 support <a class="hash-link" href="#babel-7-support">#</a></h2><p>Jest uses Babel under the hood to power code coverage and advanced mocking
 features. With Jest 22, it also supports the upcoming Babel 7. You&#x27;ll find more
 in the documentation
 <a href="http://facebook.github.io/jest/docs/en/getting-started.html#using-babel" target="_blank">here</a>.</p><h2><a class="anchor" name="mock-function-improvements"></a>Mock function improvements <a class="hash-link" href="#mock-function-improvements">#</a></h2><p>There has been a couple of changes to mock functions in Jest 22, making them
 even easier to use. Firstly, we added a
-<code>[mockName](http://facebook.github.io/jest/docs/en/mock-function-api.html#mockfnmocknamevalue)</code>
+<a href="http://facebook.github.io/jest/docs/en/mock-function-api.html#mockfnmocknamevalue" target="_blank"><code>mockName</code></a>
 property allowing you to name your mocks, which is useful in assertion failures.
 We have also made the Jest mock function serializable in <code>pretty-format</code>,
 meaning that you can snapshot test mocks. In Jest 21,
