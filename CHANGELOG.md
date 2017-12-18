@@ -1,5 +1,12 @@
 ## master
 
+### Fixes
+
+* `[jest-runtime]` fix error for test files providing coverage.
+  ([#5117](https://github.com/facebook/jest/pull/5117))
+
+### Features
+
 * `[jest-config]` Add `forceCoverageMatch` to allow collecting coverage from
   ignored files. ([#5081](https://github.com/facebook/jest/pull/5081))
 
