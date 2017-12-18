@@ -487,3 +487,31 @@ exports[`works with node assert 1`] = `
 
 "
 `;
+
+exports[`works with snapshot failures 1`] = `
+"FAIL __tests__/snapshot.test.js
+  ✕ failing snapshot
+
+  ● failing snapshot
+
+    expect(value).toMatchSnapshot()
+    
+    Received value does not match stored snapshot 1.
+    
+    - \\"bar\\"
+    + \\"foo\\"
+
+      10 | 
+      11 | test('failing snapshot', () => {
+    > 12 |   expect('foo').toMatchSnapshot();
+      13 | });
+      14 | 
+      
+      at __tests__/snapshot.test.js:12:17
+
+ › 1 snapshot test failed.
+Snapshot Summary
+ › 1 snapshot test failed in 1 test suite. Inspect your code changes or re-run jest with \`-u\` to update them.
+
+"
+`;
