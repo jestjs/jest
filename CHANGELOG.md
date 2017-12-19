@@ -1,10 +1,12 @@
 ## master
 
-None for now
-
 ### Fixes
 
 ### Features
+
+* Expose `expect.JestAssertionError` to enable custom matchers to throw errors
+  with the call stack preserved.
+  ([#5138](https://github.com/facebook/jest/pull/5138))
 
 ### Chore & Maintenance
 
