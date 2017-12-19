@@ -13,10 +13,9 @@ import type {AggregatedResult} from 'types/TestResult';
 const chalk = require('chalk');
 const ansiEscapes = require('ansi-escapes');
 const {pluralize} = require('./reporters/utils');
-const {rightPad} = require('./lib/terminal_utils');
 const {KEYS} = require('./constants');
 
-module.exports = class SnapshotInteractiveMode {
+export default class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;
   _isActive: boolean;
   _updateTestRunnerConfig: (path: string, shouldUpdateSnapshot: boolean) => *;
@@ -36,13 +35,6 @@ module.exports = class SnapshotInteractiveMode {
     this._pipe.write(ansiEscapes.scrollDown);
     this._pipe.write(ansiEscapes.scrollDown);
 
-    // this._pipe.write(ansiEscapes.cursorSavePosition);
-    // this._pipe.write(ansiEscapes.cursorTo(0, 0));
-    //
-    // const title = rightPad(' -> Interactive Snapshot Update Activated <-');
-    // this._pipe.write(chalk.black.bold.bgYellow(title));
-    //
-    // this._pipe.write(ansiEscapes.cursorRestorePosition);
     this._pipe.write(ansiEscapes.cursorUp(6));
     this._pipe.write(ansiEscapes.eraseDown);
 
@@ -141,4 +133,4 @@ module.exports = class SnapshotInteractiveMode {
     this._isActive = true;
     this._run(false);
   }
-};
+}

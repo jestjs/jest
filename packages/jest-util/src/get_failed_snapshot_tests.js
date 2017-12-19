@@ -19,4 +19,4 @@ function getFailedSnapshotTests(testResults: AggregatedResult) {
   return failedTestPaths;
 }
 
-module.exports = getFailedSnapshotTests;
+export default getFailedSnapshotTests;
