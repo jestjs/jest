@@ -27,6 +27,14 @@ export default function shouldInstrument(
     return false;
   }
 
+  if (
+    config.forceCoverageMatch &&
+    config.forceCoverageMatch.length &&
+    micromatch.any(filename, config.forceCoverageMatch)
+  ) {
+    return true;
+  }
+
   if (config.testRegex && filename.match(config.testRegex)) {
     return false;
   }

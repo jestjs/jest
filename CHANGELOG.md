@@ -1,8 +1,33 @@
 ## master
 
+None for now
+
 ### Fixes
 
-* `[jest-resolve]` Update node module resolution algorithm to correctly handle symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
+### Features
+
+### Chore & Maintenance
+
+## jest 22.0.1
+
+### Fixes
+
+* `[jest-runtime]` fix error for test files providing coverage.
+  ([#5117](https://github.com/facebook/jest/pull/5117))
+
+### Features
+
+* `[jest-config]` Add `forceCoverageMatch` to allow collecting coverage from
+  ignored files. ([#5081](https://github.com/facebook/jest/pull/5081))
+
+## jest 22.0.0
+
+### Fixes
+
+* `[jest-resolve]` Update node module resolution algorithm to correctly handle
+  symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
+* `[jest-resolve]` Use `module.builtinModules` as `BUILTIN_MODULES` when it
+  exists
 * `[jest-worker]` Remove `debug` and `inspect` flags from the arguments sent to
   the child ([#5068](https://github.com/facebook/jest/pull/5068))
 * `[jest-config]` Use all `--testPathPattern` and `<regexForTestFiles>` args in
@@ -70,6 +95,8 @@
 
 ### Features
 
+* `[jest-message-util]` Add codeframe to test assertion failures
+  ([#5087](https://github.com/facebook/jest/pull/5087))
 * `[jest-config]` Add Global Setup/Teardown options
   ([#4716](https://github.com/facebook/jest/pull/4716))
 * `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node
@@ -95,7 +122,7 @@
   ([#4593](https://github.com/facebook/jest/pull/4593))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test and snapshot
   ([#4460](https://github.com/facebook/jest/pull/4460))
-* `[jest-cli]` Add an option to fail if no tests are found
+* `[jest-cli]` [**BREAKING**] Fail if no tests are found
   ([#3672](https://github.com/facebook/jest/pull/3672))
 * `[jest-diff]` Highlight only last of odd length leading spaces
   ([#4558](https://github.com/facebook/jest/pull/4558))
@@ -147,6 +174,8 @@
 
 ### Chore & Maintenance
 
+* `[docs]` Add guide of using with puppeteer
+  ([#5093](https://github.com/facebook/jest/pull/5093))
 * `[jest-util]` `jest-util` should not depend on `jest-mock`
   ([#4992](https://github.com/facebook/jest/pull/4992))
 * `[*]` [**BREAKING**] Drop support for Node.js version 4

@@ -357,6 +357,12 @@ export const options = {
       'running tests in a git repository at the moment.',
     type: 'boolean',
   },
+  onlyFailures: {
+    alias: 'f',
+    default: undefined,
+    description: 'Run tests that failed in the previous execution.',
+    type: 'boolean',
+  },
   outputFile: {
     description:
       'Write test results to a file when the --json option is ' +

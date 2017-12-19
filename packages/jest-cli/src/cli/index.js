@@ -15,7 +15,6 @@ import {
   Console,
   clearLine,
   createDirectory,
-  realpath,
   validateCLIOptions,
 } from 'jest-util';
 import {readConfig} from 'jest-config';
@@ -34,6 +33,7 @@ import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
+import {sync as realpath} from 'realpath-native';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
@@ -368,6 +368,7 @@ const runWithoutWatch = async (
     return await runJest({
       changedFilesPromise,
       contexts,
+      failedTestsCache: null,
       globalConfig,
       onComplete,
       outputStream,

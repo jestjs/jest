@@ -21,6 +21,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   coverageReporters: [],
   coverageThreshold: {global: {}},
   detectLeaks: false,
+  enabledTestsMap: null,
   expand: false,
   findRelatedTests: false,
   forceExit: false,
@@ -37,6 +38,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   nonFlagArgs: [],
   notify: false,
   onlyChanged: false,
+  onlyFailures: false,
   outputFile: null,
   passWithNoTests: false,
   projects: [],
@@ -68,6 +70,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   cwd: '/test_root_dir/',
   detectLeaks: false,
   displayName: undefined,
+  forceCoverageMatch: [],
   globals: {},
   haste: {
     providesModuleNodeModules: [],
