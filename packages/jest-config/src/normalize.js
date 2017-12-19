@@ -282,10 +282,10 @@ const buildTestPathPattern = (argv: Argv): string => {
   const patterns = [];
 
   if (argv._) {
-    patterns.push(...argv._);
+    patterns.push.apply(patterns, argv._);
   }
   if (argv.testPathPattern) {
-    patterns.push(...argv.testPathPattern);
+    patterns.push.apply(patterns, argv.testPathPattern);
   }
 
   const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
