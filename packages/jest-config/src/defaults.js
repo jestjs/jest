@@ -38,6 +38,7 @@ export default ({
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   detectLeaks: false,
   expand: false,
+  forceCoverageMatch: [],
   globalSetup: null,
   globalTeardown: null,
   globals: {},

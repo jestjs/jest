@@ -3,7 +3,6 @@
 exports[`maps code coverage against original source 1`] = `
 Object {
   "covered.ts": Object {
-    "_coverageSchema": "332fd63041d2c1bcb487cc26dd0d5f7d97098a6c",
     "b": Object {
       "0": Array [
         1,
@@ -25,35 +24,34 @@ Object {
     },
     "branchMap": Object {
       "0": Object {
-        "line": 4,
         "loc": Object {
           "end": Object {
-            "column": 11,
-            "line": 6,
+            "column": 9,
+            "line": 5,
           },
           "start": Object {
-            "column": 18,
-            "line": 4,
+            "column": 8,
+            "line": 5,
           },
         },
         "locations": Array [
           Object {
             "end": Object {
-              "column": 11,
+              "column": 9,
               "line": 5,
             },
             "start": Object {
-              "column": 10,
+              "column": 8,
               "line": 5,
             },
           },
           Object {
             "end": Object {
-              "column": 11,
+              "column": 9,
               "line": 6,
             },
             "start": Object {
-              "column": 10,
+              "column": 8,
               "line": 6,
             },
           },
@@ -61,35 +59,34 @@ Object {
         "type": "cond-expr",
       },
       "1": Object {
-        "line": 7,
         "loc": Object {
           "end": Object {
-            "column": 30,
+            "column": 37,
             "line": 7,
           },
           "start": Object {
-            "column": 18,
+            "column": 36,
             "line": 7,
           },
         },
         "locations": Array [
           Object {
             "end": Object {
-              "column": 26,
+              "column": 37,
               "line": 7,
             },
             "start": Object {
-              "column": 25,
+              "column": 36,
               "line": 7,
             },
           },
           Object {
             "end": Object {
-              "column": 30,
+              "column": 41,
               "line": 7,
             },
             "start": Object {
-              "column": 29,
+              "column": 40,
               "line": 7,
             },
           },
@@ -97,45 +94,44 @@ Object {
         "type": "cond-expr",
       },
       "2": Object {
-        "line": 8,
         "loc": Object {
           "end": Object {
-            "column": 39,
+            "column": 33,
             "line": 8,
           },
           "start": Object {
-            "column": 18,
+            "column": 29,
             "line": 8,
           },
         },
         "locations": Array [
           Object {
             "end": Object {
-              "column": 22,
+              "column": 33,
               "line": 8,
             },
             "start": Object {
-              "column": 18,
+              "column": 29,
               "line": 8,
             },
           },
           Object {
             "end": Object {
-              "column": 30,
+              "column": 41,
               "line": 8,
             },
             "start": Object {
-              "column": 26,
+              "column": 37,
               "line": 8,
             },
           },
           Object {
             "end": Object {
-              "column": 39,
+              "column": 50,
               "line": 8,
             },
             "start": Object {
-              "column": 34,
+              "column": 45,
               "line": 8,
             },
           },
@@ -143,35 +139,34 @@ Object {
         "type": "binary-expr",
       },
       "3": Object {
-        "line": 9,
         "loc": Object {
           "end": Object {
-            "column": 79,
+            "column": 42,
             "line": 9,
           },
           "start": Object {
-            "column": 13,
+            "column": 32,
             "line": 9,
           },
         },
         "locations": Array [
           Object {
             "end": Object {
-              "column": 48,
+              "column": 42,
               "line": 9,
             },
             "start": Object {
-              "column": 20,
+              "column": 32,
               "line": 9,
             },
           },
           Object {
             "end": Object {
-              "column": 79,
+              "column": 55,
               "line": 9,
             },
             "start": Object {
-              "column": 51,
+              "column": 45,
               "line": 9,
             },
           },
@@ -188,22 +183,21 @@ Object {
       "0": Object {
         "decl": Object {
           "end": Object {
-            "column": 36,
+            "column": 28,
             "line": 3,
           },
           "start": Object {
-            "column": 26,
+            "column": 9,
             "line": 3,
           },
         },
-        "line": 3,
         "loc": Object {
           "end": Object {
             "column": 1,
-            "line": 11,
+            "line": 12,
           },
           "start": Object {
-            "column": 43,
+            "column": 49,
             "line": 3,
           },
         },
@@ -212,18 +206,17 @@ Object {
       "1": Object {
         "decl": Object {
           "end": Object {
-            "column": 21,
+            "column": 37,
             "line": 9,
           },
           "start": Object {
-            "column": 20,
+            "column": 32,
             "line": 9,
           },
         },
-        "line": 9,
         "loc": Object {
           "end": Object {
-            "column": 48,
+            "column": 42,
             "line": 9,
           },
           "start": Object {
@@ -236,22 +229,21 @@ Object {
       "2": Object {
         "decl": Object {
           "end": Object {
-            "column": 52,
+            "column": 50,
             "line": 9,
           },
           "start": Object {
-            "column": 51,
+            "column": 45,
             "line": 9,
           },
         },
-        "line": 9,
         "loc": Object {
           "end": Object {
-            "column": 79,
+            "column": 55,
             "line": 9,
           },
           "start": Object {
-            "column": 63,
+            "column": 45,
             "line": 9,
           },
         },
@@ -272,8 +264,8 @@ Object {
     "statementMap": Object {
       "0": Object {
         "end": Object {
-          "column": 2,
-          "line": 11,
+          "column": 1,
+          "line": 12,
         },
         "start": Object {
           "column": 0,
@@ -282,72 +274,72 @@ Object {
       },
       "1": Object {
         "end": Object {
-          "column": 11,
+          "column": 9,
           "line": 6,
         },
         "start": Object {
-          "column": 18,
+          "column": 29,
           "line": 4,
         },
       },
       "2": Object {
         "end": Object {
-          "column": 30,
+          "column": 41,
           "line": 7,
         },
         "start": Object {
-          "column": 18,
+          "column": 29,
           "line": 7,
         },
       },
       "3": Object {
         "end": Object {
-          "column": 39,
+          "column": 50,
           "line": 8,
         },
         "start": Object {
-          "column": 18,
+          "column": 29,
           "line": 8,
         },
       },
       "4": Object {
         "end": Object {
-          "column": 79,
+          "column": 55,
           "line": 9,
         },
         "start": Object {
-          "column": 13,
+          "column": 25,
           "line": 9,
         },
       },
       "5": Object {
         "end": Object {
-          "column": 46,
+          "column": 42,
           "line": 9,
         },
         "start": Object {
-          "column": 34,
+          "column": 38,
           "line": 9,
         },
       },
       "6": Object {
         "end": Object {
-          "column": 77,
+          "column": 55,
           "line": 9,
         },
         "start": Object {
-          "column": 65,
+          "column": 51,
           "line": 9,
         },
       },
       "7": Object {
         "end": Object {
           "column": 17,
-          "line": 10,
+          "line": 11,
         },
         "start": Object {
           "column": 4,
-          "line": 10,
+          "line": 11,
         },
       },
     },

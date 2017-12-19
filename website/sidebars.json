@@ -6,6 +6,7 @@
       "asynchronous",
       "setup-teardown",
       "mock-functions",
+      "jest-platform",
       "more-resources"
     ],
     "API Reference": [
@@ -27,6 +28,7 @@
       "timer-mocks",
       "manual-mocks",
       "webpack",
+      "puppeteer",
       "migration-guide",
       "troubleshooting"
     ]

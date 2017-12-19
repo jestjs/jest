@@ -72,6 +72,13 @@ test('works with node assert', () => {
       Got unwanted exception.
     err!
     err!
+
+      69 | 
+      70 | test('assert.doesNotThrow', () => {
+    > 71 |   assert.doesNotThrow(() => {
+      72 |     throw Error('err!');
+      73 |   });
+      74 | });
       
       at __tests__/node_assertion_error.test.js:71:10
 `);
@@ -89,4 +96,26 @@ test('works with node assert', () => {
   }
 
   expect(summary).toMatchSnapshot();
+});
+
+test('works with assertions in separate files', () => {
+  const {stderr} = runJest(dir, ['test_macro.test.js']);
+
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+});
+
+test('works with async failures', () => {
+  const {stderr} = runJest(dir, ['async_failures.test.js']);
+
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+});
+
+test('works with snapshot failures', () => {
+  const {stderr} = runJest(dir, ['snapshot.test.js']);
+
+  const result = normalizeDots(extractSummary(stderr).rest);
+
+  expect(
+    result.substring(0, result.indexOf('Snapshot Summary')),
+  ).toMatchSnapshot();
 });

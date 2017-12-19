@@ -10,11 +10,18 @@
 import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
+import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
 import slash from 'slash';
+import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
+
+// stack utils tries to create pretty stack by making paths relative.
+const stackUtils = new StackUtils({
+  cwd: 'something which does not exist',
+});
 
 let nodeInternals = [];
 
@@ -43,6 +50,7 @@ const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|pa
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
+const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -134,6 +142,10 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
       return false;
     }
 
+    if (NATIVE_NEXT_IGNORE.test(line)) {
+      return false;
+    }
+
     if (nodeInternals.some(internal => internal.test(line))) {
       return false;
     }
@@ -194,15 +206,52 @@ export const formatStackTrace = (
   testPath: ?Path,
 ) => {
   let lines = stack.split(/\n/);
+  let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
   lines = removeInternalStackEntries(lines, options);
-  return lines
+
+  const topFrame = lines
+    .map(line => line.trim())
+    .filter(Boolean)
+    .filter(
+      line =>
+        !line.includes(`${path.sep}node_modules${path.sep}`) &&
+        !line.includes(`${path.sep}expect${path.sep}build${path.sep}`),
+    )
+    .map(line => stackUtils.parseLine(line))
+    .filter(Boolean)
+    .filter(parsedFrame => parsedFrame.file)[0];
+
+  if (topFrame) {
+    const filename = topFrame.file;
+
+    if (path.isAbsolute(filename)) {
+      renderedCallsite = codeFrameColumns(
+        fs.readFileSync(filename, 'utf8'),
+        {
+          start: {line: topFrame.line},
+        },
+        {highlightCode: true},
+      );
+
+      renderedCallsite = renderedCallsite
+        .split('\n')
+        .map(line => MESSAGE_INDENT + line)
+        .join('\n');
+
+      renderedCallsite = `\n${renderedCallsite}\n`;
+    }
+  }
+
+  const stacktrace = lines
     .map(trimPaths)
     .map(formatPaths.bind(null, config, options, relativeTestPath))
     .map(line => STACK_INDENT + line)
     .join('\n');
+
+  return renderedCallsite + stacktrace;
 };
 
 export const formatResultsErrors = (

@@ -37,7 +37,10 @@ export default ({
   },
   displayName: 'project-name',
   expand: false,
+  forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,
+  globalSetup: 'setup.js',
+  globalTeardown: 'teardown.js',
   globals: {},
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],

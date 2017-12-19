@@ -34,7 +34,7 @@ test('waits 1 second before ending the game', () => {
   const timerGame = require('../timerGame');
   timerGame();
 
-  expect(setTimeout).toHaveBeenCalledTimes(1)
+  expect(setTimeout).toHaveBeenCalledTimes(1);
   expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
 });
 ```
@@ -63,7 +63,7 @@ test('calls the callback after 1 second', () => {
 
   // Now our callback should have been called!
   expect(callback).toBeCalled();
-  expect(callback).toHaveBeenCalledTimes(1)
+  expect(callback).toHaveBeenCalledTimes(1);
 });
 ```
 
@@ -110,7 +110,7 @@ describe('infiniteTimerGame', () => {
 
     // At this point in time, there should have been a single call to
     // setTimeout to schedule the end of the game in 1 second.
-    expect(setTimeout).toHaveBeenCalledTimes(1)
+    expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
 
     // Fast forward and exhaust only currently pending timers
@@ -122,7 +122,7 @@ describe('infiniteTimerGame', () => {
 
     // And it should have created a new timer to start the game over in
     // 10 seconds
-    expect(setTimeout).toHaveBeenCalledTimes(2)
+    expect(setTimeout).toHaveBeenCalledTimes(2);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
   });
 });
@@ -170,7 +170,7 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 
   // Now our callback should have been called!
   expect(callback).toBeCalled();
-  expect(callback).toHaveBeenCalledTimes(1)
+  expect(callback).toHaveBeenCalledTimes(1);
 });
 ```
 

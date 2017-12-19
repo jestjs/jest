@@ -132,7 +132,14 @@ async function jasmine2(
       },
     });
 
-  if (globalConfig.testNamePattern) {
+  if (globalConfig.enabledTestsMap) {
+    env.specFilter = spec => {
+      const suiteMap =
+        globalConfig.enabledTestsMap &&
+        globalConfig.enabledTestsMap[spec.result.testPath];
+      return suiteMap && suiteMap[spec.result.fullName];
+    };
+  } else if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }

@@ -282,10 +282,10 @@ const buildTestPathPattern = (argv: Argv): string => {
   const patterns = [];
 
   if (argv._) {
-    patterns.push(...argv._);
+    patterns.push.apply(patterns, argv._);
   }
   if (argv.testPathPattern) {
-    patterns.push(...argv.testPathPattern);
+    patterns.push.apply(patterns, argv.testPathPattern);
   }
 
   const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
@@ -384,6 +384,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             _replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'globalSetup':
+      case 'globalTeardown':
       case 'moduleLoader':
       case 'resolver':
       case 'runner':
@@ -455,10 +457,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'detectLeaks':
       case 'displayName':
       case 'expand':
-      case 'globalSetup':
-      case 'globalTeardown':
       case 'globals':
       case 'findRelatedTests':
+      case 'forceCoverageMatch':
       case 'forceExit':
       case 'listTests':
       case 'logHeapUsage':
