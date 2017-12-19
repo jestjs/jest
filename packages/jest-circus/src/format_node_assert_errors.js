@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,9 +10,9 @@
 import type {DiffOptions} from 'jest-diff/src/diff_strings.js';
 import type {Event, State} from 'types/Circus';
 
-const {printReceived, printExpected} = require('jest-matcher-utils');
-const chalk = require('chalk');
-const diff = require('jest-diff');
+import {printExpected, printReceived} from 'jest-matcher-utils';
+import chalk from 'chalk';
+import diff from 'jest-diff';
 
 type AssertionError = {|
   actual: ?string,
@@ -39,12 +38,26 @@ const humanReadableOperators = {
   notDeepStrictEqual: 'not to deeply and strictly equal',
 };
 
-module.exports = (event: Event, state: State) => {
+export default (event: Event, state: State) => {
   switch (event.name) {
     case 'test_failure':
     case 'test_success': {
+      let assert;
+      try {
+        // Use indirect require so that Metro Bundler does not attempt to
+        // bundle `assert`, which does not exist in React Native.
+        // eslint-disable-next-line no-useless-call
+        assert = require.call(null, 'assert');
+      } catch (error) {
+        // We are running somewhere where `assert` isn't available, like a
+        // browser or React Native. Since assert isn't available, presumably
+        // none of the errors we get through this event listener will be
+        // `AssertionError`s, so we don't need to do anything.
+        break;
+      }
+
       event.test.errors = event.test.errors.map(error => {
-        return error instanceof require('assert').AssertionError
+        return error instanceof assert.AssertionError
           ? assertionErrorMessage(error, {expand: state.expand})
           : error;
       });

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -20,7 +19,7 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
 import Resolver from 'jest-resolve';
-import utils from 'jest-regex-util';
+import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -65,6 +64,11 @@ const setupPreset = (
     // $FlowFixMe
     preset = (require(presetModule): InitialOptions);
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw createConfigError(
+        `  Preset ${chalk.bold(presetPath)} is invalid:\n  ${error.message}`,
+      );
+    }
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
@@ -169,9 +173,7 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   return options[key].map(pattern =>
-    utils.replacePathSepForRegex(
-      pattern.replace(/<rootDir>/g, options.rootDir),
-    ),
+    replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
   );
 };
 
@@ -277,25 +279,22 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
 };
 
 const buildTestPathPattern = (argv: Argv): string => {
+  const patterns = [];
+
+  if (argv._) {
+    patterns.push.apply(patterns, argv._);
+  }
   if (argv.testPathPattern) {
-    if (validatePattern(argv.testPathPattern)) {
-      return argv.testPathPattern;
-    } else {
-      showTestPathPatternError(argv.testPathPattern);
-    }
+    patterns.push.apply(patterns, argv.testPathPattern);
   }
 
-  if (argv._ && argv._.length) {
-    const testPathPattern = argv._.join('|');
-
-    if (validatePattern(testPathPattern)) {
-      return testPathPattern;
-    } else {
-      showTestPathPatternError(testPathPattern);
-    }
+  const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
+  if (validatePattern(testPathPattern)) {
+    return testPathPattern;
+  } else {
+    showTestPathPatternError(testPathPattern);
+    return '';
   }
-
-  return '';
 };
 
 const showTestPathPatternError = (testPathPattern: string) => {
@@ -309,7 +308,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-function normalize(options: InitialOptions, argv: Argv) {
+export default function normalize(options: InitialOptions, argv: Argv) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -385,8 +384,11 @@ function normalize(options: InitialOptions, argv: Argv) {
             _replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'globalSetup':
+      case 'globalTeardown':
       case 'moduleLoader':
       case 'resolver':
+      case 'runner':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -414,6 +416,7 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'modulePathIgnorePatterns':
       case 'testPathIgnorePatterns':
       case 'transformIgnorePatterns':
+      case 'watchPathIgnorePatterns':
       case 'unmockedModulePathPatterns':
         value = normalizeUnmockedModulePathPatterns(options, key);
         break;
@@ -451,9 +454,12 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'collectCoverage':
       case 'coverageReporters':
       case 'coverageThreshold':
+      case 'detectLeaks':
+      case 'displayName':
       case 'expand':
       case 'globals':
       case 'findRelatedTests':
+      case 'forceCoverageMatch':
       case 'forceExit':
       case 'listTests':
       case 'logHeapUsage':
@@ -464,15 +470,19 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'notify':
       case 'onlyChanged':
       case 'outputFile':
+      case 'passWithNoTests':
       case 'replname':
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
+      case 'runTestsByPath':
       case 'silent':
       case 'skipNodeResolution':
       case 'testEnvironment':
+      case 'testEnvironmentOptions':
       case 'testFailureExitCode':
+      case 'testLocationInResults':
       case 'testNamePattern':
       case 'testRegex':
       case 'testURL':
@@ -483,6 +493,11 @@ function normalize(options: InitialOptions, argv: Argv) {
       case 'watchAll':
       case 'watchman':
         value = options[key];
+        break;
+      case 'watchPlugins':
+        value = (options[key] || []).map(watchPlugin =>
+          resolve(options.rootDir, key, watchPlugin),
+        );
         break;
     }
     newOptions[key] = value;
@@ -496,8 +511,12 @@ function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
 
-  if (argv.all || newOptions.testPathPattern) {
+  if (argv.all) {
     newOptions.onlyChanged = false;
+  } else if (newOptions.testPathPattern) {
+    // When passing a test path pattern we don't want to only monitor changed
+    // files unless `--watch` is also passed.
+    newOptions.onlyChanged = newOptions.watch;
   }
 
   newOptions.updateSnapshot =
@@ -533,8 +552,9 @@ function normalize(options: InitialOptions, argv: Argv) {
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
-    newOptions.coverageReporters = (newOptions.coverageReporters || [])
-      .filter(reporter => reporter !== 'text');
+    newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
+      reporter => reporter !== 'text',
+    );
   }
 
   return {
@@ -542,5 +562,3 @@ function normalize(options: InitialOptions, argv: Argv) {
     options: newOptions,
   };
 }
-
-module.exports = normalize;

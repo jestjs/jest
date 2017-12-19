@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 const path = require('path');
+const fs = require('fs');
 const {makeTemplate, writeFiles, cleanup} = require('../utils');
 const runJest = require('../runJest');
 
@@ -49,19 +49,19 @@ test(`throws the error if tested function didn't throw error`, () => {
   }
 });
 
-test('does not accept arguments', () => {
-  const filename = 'does-not-accept-arguments.test.js';
-  const template = makeTemplate(`test('does not accept arguments', () => {
+test('accepts custom snapshot name', () => {
+  const filename = 'accept-custom-snapshot-name.test.js';
+  const template = makeTemplate(`test('accepts custom snapshot name', () => {
       expect(() => { throw new Error('apple'); })
-        .toThrowErrorMatchingSnapshot('foobar');
+        .toThrowErrorMatchingSnapshot('custom-name');
     });
     `);
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Matcher does not accept any arguments.');
-    expect(status).toBe(1);
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
+    expect(status).toBe(0);
   }
 });
 
@@ -79,5 +79,27 @@ test('cannot be used with .not', () => {
       'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
     );
     expect(status).toBe(1);
+  }
+});
+
+test('should support rejecting promises', () => {
+  const filename = 'should-support-rejecting-promises.test.js';
+  const template = makeTemplate(`test('should support rejecting promises', async () => {
+      await expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+
+    const snapshot = fs.readFileSync(
+      `${TESTS_DIR}/__snapshots__/${filename}.snap`,
+      'utf8',
+    );
+
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
+    expect(snapshot).toMatchSnapshot();
+    expect(status).toBe(0);
   }
 });

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,9 +10,10 @@
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
-const FRAMEWORK_INITIALIZER = require.resolve('./jest-adapter-init');
+const FRAMEWORK_INITIALIZER = require.resolve('./jest_adapter_init');
 import path from 'path';
 
 const jestAdapter = async (
@@ -94,4 +94,4 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   return results;
 };
 
-module.exports = jestAdapter;
+export default jestAdapter;

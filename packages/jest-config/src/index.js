@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -36,7 +35,15 @@ function readConfig(
   // A JSON string was passed to `--config` argument and we can parse it
   // and use as is.
   if (isJSONString(argv.config)) {
-    const config = JSON.parse(argv.config);
+    let config;
+    try {
+      config = JSON.parse(argv.config);
+    } catch (e) {
+      throw new Error(
+        'There was an error while parsing the `--config` argument as a JSON string.',
+      );
+    }
+
     // NOTE: we might need to resolve this dir to an absolute path in the future
     config.rootDir = config.rootDir || packageRoot;
     rawOptions = config;
@@ -74,9 +81,13 @@ const getConfigs = (
       coverageDirectory: options.coverageDirectory,
       coverageReporters: options.coverageReporters,
       coverageThreshold: options.coverageThreshold,
+      detectLeaks: options.detectLeaks,
+      enabledTestsMap: options.enabledTestsMap,
       expand: options.expand,
       findRelatedTests: options.findRelatedTests,
       forceExit: options.forceExit,
+      globalSetup: options.globalSetup,
+      globalTeardown: options.globalTeardown,
       json: options.json,
       lastCommit: options.lastCommit,
       listTests: options.listTests,
@@ -88,11 +99,14 @@ const getConfigs = (
       nonFlagArgs: options.nonFlagArgs,
       notify: options.notify,
       onlyChanged: options.onlyChanged,
+      onlyFailures: options.onlyFailures,
       outputFile: options.outputFile,
+      passWithNoTests: options.passWithNoTests,
       projects: options.projects,
       replname: options.replname,
       reporters: options.reporters,
       rootDir: options.rootDir,
+      runTestsByPath: options.runTestsByPath,
       silent: options.silent,
       testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,
@@ -103,6 +117,7 @@ const getConfigs = (
       verbose: options.verbose,
       watch: options.watch,
       watchAll: options.watchAll,
+      watchPlugins: options.watchPlugins,
       watchman: options.watchman,
     }),
     projectConfig: Object.freeze({
@@ -112,6 +127,10 @@ const getConfigs = (
       cacheDirectory: options.cacheDirectory,
       clearMocks: options.clearMocks,
       coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+      cwd: options.cwd,
+      detectLeaks: options.detectLeaks,
+      displayName: options.displayName,
+      forceCoverageMatch: options.forceCoverageMatch,
       globals: options.globals,
       haste: options.haste,
       moduleDirectories: options.moduleDirectories,
@@ -126,11 +145,14 @@ const getConfigs = (
       resolver: options.resolver,
       rootDir: options.rootDir,
       roots: options.roots,
+      runner: options.runner,
       setupFiles: options.setupFiles,
       setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
       skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,
       testEnvironment: options.testEnvironment,
+      testEnvironmentOptions: options.testEnvironmentOptions,
+      testLocationInResults: options.testLocationInResults,
       testMatch: options.testMatch,
       testPathIgnorePatterns: options.testPathIgnorePatterns,
       testRegex: options.testRegex,
@@ -140,12 +162,14 @@ const getConfigs = (
       transform: options.transform,
       transformIgnorePatterns: options.transformIgnorePatterns,
       unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+      watchPathIgnorePatterns: options.watchPathIgnorePatterns,
     }),
   };
 };
 
 module.exports = {
   getTestEnvironment,
+  isJSONString,
   normalize,
   readConfig,
 };

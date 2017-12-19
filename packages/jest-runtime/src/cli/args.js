@@ -1,16 +1,15 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
-const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
+export const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
 
-const options = {
+export const options = {
   cache: {
     default: true,
     description:
@@ -39,9 +38,4 @@ const options = {
       '--no-watchman.',
     type: 'boolean',
   },
-};
-
-module.exports = {
-  options,
-  usage,
 };

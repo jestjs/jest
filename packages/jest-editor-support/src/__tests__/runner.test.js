@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -14,7 +13,7 @@ const {EventEmitter} = require('events');
 const path = require('path');
 const {readFileSync} = require('fs');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
-const ProjectWorkspace = require('../project_workspace');
+import ProjectWorkspace from '../project_workspace';
 
 // Replace `readFile` with `readFileSync` so we don't get multiple threads
 jest.doMock('fs', () => {
@@ -36,7 +35,7 @@ jest.doMock('../Process.js', () => {
   };
 });
 
-const Runner = require('../Runner');
+const Runner = require('../Runner').default;
 
 describe('events', () => {
   let runner;

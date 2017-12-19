@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -23,7 +22,7 @@ import type {
   TestResults,
 } from 'types/Circus';
 
-const makeDescribe = (
+export const makeDescribe = (
   name: BlockName,
   parent: ?DescribeBlock,
   mode?: BlockMode,
@@ -43,7 +42,7 @@ const makeDescribe = (
   };
 };
 
-const makeTest = (
+export const makeTest = (
   fn: ?TestFn,
   mode: TestMode,
   name: TestName,
@@ -68,7 +67,7 @@ const makeTest = (
   };
 };
 
-const getAllHooksForDescribe = (
+export const getAllHooksForDescribe = (
   describe: DescribeBlock,
 ): {[key: 'beforeAll' | 'afterAll']: Array<Hook>} => {
   const result = {afterAll: [], beforeAll: []};
@@ -87,7 +86,7 @@ const getAllHooksForDescribe = (
   return result;
 };
 
-const getEachHooksForTest = (
+export const getEachHooksForTest = (
   test: TestEntry,
 ): {[key: 'beforeEach' | 'afterEach']: Array<Hook>} => {
   const result = {afterEach: [], beforeEach: []};
@@ -112,16 +111,16 @@ const getEachHooksForTest = (
 
 const _makeTimeoutMessage = (timeout, isHook) =>
   new Error(
-    `Exceeded timeout of ${timeout}ms for a ${isHook
-      ? 'hook'
-      : 'test'}.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`,
+    `Exceeded timeout of ${timeout}ms for a ${
+      isHook ? 'hook' : 'test'
+    }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`,
   );
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-const callAsyncFn = (
+export const callAsyncFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
   {
@@ -154,8 +153,13 @@ const callAsyncFn = (
       return reject(error);
     }
 
-    // If it's a Promise, return it.
-    if (returnedValue instanceof Promise) {
+    // If it's a Promise, return it. Test for an object with a `then` function
+    // to support custom Promise implementations.
+    if (
+      typeof returnedValue === 'object' &&
+      returnedValue !== null &&
+      typeof returnedValue.then === 'function'
+    ) {
       return returnedValue.then(resolve, reject);
     }
 
@@ -187,12 +191,12 @@ const callAsyncFn = (
     });
 };
 
-const getTestDuration = (test: TestEntry): ?number => {
+export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
   return startedAt ? Date.now() - startedAt : null;
 };
 
-const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
@@ -223,7 +227,7 @@ const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
-const getTestID = (test: TestEntry) => {
+export const getTestID = (test: TestEntry) => {
   const titles = [];
   let parent = test;
   do {
@@ -244,15 +248,4 @@ const _formatError = (error: ?Exception): string => {
   } else {
     return `${String(error)} thrown`;
   }
-};
-
-module.exports = {
-  callAsyncFn,
-  getAllHooksForDescribe,
-  getEachHooksForTest,
-  getTestDuration,
-  getTestID,
-  makeDescribe,
-  makeTest,
-  makeTestResults,
 };

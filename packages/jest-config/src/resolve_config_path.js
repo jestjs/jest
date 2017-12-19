@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -17,7 +16,7 @@ import {JEST_CONFIG, PACKAGE_JSON} from './constants';
 const isFile = filePath =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
-module.exports = (pathToResolve: Path, cwd: Path): Path => {
+export default (pathToResolve: Path, cwd: Path): Path => {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -29,7 +28,7 @@ module.exports = (pathToResolve: Path, cwd: Path): Path => {
     return absolutePath;
   }
 
-  // This is a guard agains passing non existing path as a project/config,
+  // This is a guard against passing non existing path as a project/config,
   // that will otherwise result in a very confusing situation.
   // e.g.
   // With a directory structure like this:
@@ -84,7 +83,7 @@ const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) => {
     'Could not find a config file based on provided values:\n' +
     `path: "${initialPath}"\n` +
     `cwd: "${cwd}"\n` +
-    'Configh paths must be specified by either a direct path to a config\n' +
+    'Config paths must be specified by either a direct path to a config\n' +
     'file, or a path to a directory. If directory is given, Jest will try to\n' +
     `traverse directory tree up, until it finds either "${JEST_CONFIG}" or\n` +
     `"${PACKAGE_JSON}".`

@@ -1,16 +1,28 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
+import { ChildProcess } from 'child_process';
+
+export interface Options {
+  createProcess?(
+    workspace: ProjectWorkspace, 
+    args: string[], 
+    debugPort?: number,
+  ): ChildProcess;
+  debugPort?: number;
+  testNamePattern?: string;
+  testFileNamePattern?: string;
+}
 
 export class Runner extends EventEmitter {
-  constructor(workspace: ProjectWorkspace);
-  start(): void;
+  constructor(workspace: ProjectWorkspace, options?: Options);
+  watchMode: boolean;
+  start(watchMode?: boolean): void;
   closeProcess(): void;
   runJestWithUpdateForSnapshots(completion: any): void;
 }
@@ -29,9 +41,10 @@ export class ProjectWorkspace {
     rootPath: string,
     pathToJest: string,
     pathToConfig: string,
-    localJestMajorVersin: number
+    localJestMajorVersin: number,
   );
   pathToJest: string;
+  pathToConfig: string;
   rootPath: string;
   localJestMajorVersion: number;
 }
@@ -62,14 +75,19 @@ export class Expect extends Node {}
 
 export class TestReconciler {
   stateForTestFile(file: string): TestReconcilationState;
-  stateForTestAssertion(file: string, name: string): TestFileAssertionStatus | null;
-  failedStatuses(): Array<TestFileAssertionStatus>;
-  updateFileWithJestStatus(data): void;
+  assertionsForTestFile(file: string): TestAssertionStatus[] | null;
+  stateForTestAssertion(
+    file: string,
+    name: string,
+  ): TestFileAssertionStatus | null;
+  updateFileWithJestStatus(data: any): TestFileAssertionStatus[];
 }
 
-export type TestReconcilationState = "Unknown" |
-  "KnownSuccess" |
-  "KnownFail";
+export type TestReconcilationState =
+  | 'Unknown'
+  | 'KnownSuccess'
+  | 'KnownFail'
+  | 'KnownSkip';
 
 export interface TestFileAssertionStatus {
   file: string;
@@ -91,7 +109,7 @@ export interface JestFileResults {
   name: string;
   summary: string;
   message: string;
-  status: "failed" | "passed";
+  status: 'failed' | 'passed';
   startTime: number;
   endTime: number;
   assertionResults: Array<JestAssertionResults>;
@@ -100,8 +118,9 @@ export interface JestFileResults {
 export interface JestAssertionResults {
   name: string;
   title: string;
-  status: "failed" | "passed";
+  status: 'failed' | 'passed';
   failureMessages: string[];
+  fullName: string;
 }
 
 export interface JestTotalResults {

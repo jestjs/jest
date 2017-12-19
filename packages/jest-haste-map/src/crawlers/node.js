@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -99,7 +98,10 @@ function findNative(
   child.stdout.on('data', data => (stdout += data));
 
   child.stdout.on('close', () => {
-    const lines = stdout.trim().split('\n').filter(x => !ignore(x));
+    const lines = stdout
+      .trim()
+      .split('\n')
+      .filter(x => !ignore(x));
     const result = [];
     let count = lines.length;
     if (!count) {

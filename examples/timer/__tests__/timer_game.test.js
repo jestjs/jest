@@ -30,7 +30,7 @@ describe('timerGame', () => {
     expect(callback.mock.calls.length).toBe(1);
   });
 
-  it('calls the callback after 1 second via runTimersToTime', () => {
+  it('calls the callback after 1 second via advanceTimersByTime', () => {
     const timerGame = require('../timerGame');
     const callback = jest.fn();
 
@@ -40,7 +40,7 @@ describe('timerGame', () => {
     expect(callback).not.toBeCalled();
 
     // Fast-forward until all timers have been executed
-    jest.runTimersToTime(1000);
+    jest.advanceTimersByTime(1000);
 
     // Now our callback should have been called!
     expect(callback).toBeCalled();

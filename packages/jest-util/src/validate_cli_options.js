@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -23,7 +22,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  http://facebook.github.io/jest/docs/cli.html\n`;
+    `  https://facebook.github.io/jest/docs/en/cli.html\n`;
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -44,7 +43,7 @@ const createCLIValidationError = (
   return new ValidationError(title, message, comment);
 };
 
-const validateCLIOptions = (argv: Argv, options: Object) => {
+export default function validateCLIOptions(argv: Argv, options: Object) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),
@@ -59,6 +58,4 @@ const validateCLIOptions = (argv: Argv, options: Object) => {
   }
 
   return true;
-};
-
-module.exports = validateCLIOptions;
+}

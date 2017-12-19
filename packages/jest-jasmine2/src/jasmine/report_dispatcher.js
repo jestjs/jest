@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 // This file is a heavily modified fork of Jasmine. Original license:
@@ -32,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
-function ReportDispatcher(methods: Array<string>) {
+export default function ReportDispatcher(methods: Array<string>) {
   const dispatchedMethods = methods || [];
 
   for (let i = 0; i < dispatchedMethods.length; i++) {
@@ -73,5 +72,3 @@ function ReportDispatcher(methods: Array<string>) {
     }
   }
 }
-
-module.exports = ReportDispatcher;

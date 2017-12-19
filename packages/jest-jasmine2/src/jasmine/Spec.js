@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 // This file is a heavily modified fork of Jasmine. Original license:
@@ -36,7 +35,7 @@ import ExpectationFailed from '../expectation_failed';
 
 import expectationResultFactory from '../expectation_result_factory';
 
-function Spec(attrs: Object) {
+export default function Spec(attrs: Object) {
   this.resultCallback = attrs.resultCallback || function() {};
   this.id = attrs.id;
   this.description = attrs.description || '';
@@ -67,6 +66,7 @@ function Spec(attrs: Object) {
     failedExpectations: [],
     passedExpectations: [],
     pendingReason: '',
+    testPath: attrs.getTestPath(),
   };
 }
 
@@ -96,13 +96,15 @@ Spec.prototype.execute = function(onComplete, enabled) {
   const fns = this.beforeAndAfterFns();
   const allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
 
-  this.queueRunnerFactory({
+  this.currentRun = this.queueRunnerFactory({
     queueableFns: allFns,
     onException() {
       self.onException.apply(self, arguments);
     },
     userContext: this.userContext(),
-  }).then(() => complete(true));
+  });
+
+  this.currentRun.then(() => complete(true));
 
   function complete(enabledAgain) {
     self.result.status = self.status(enabledAgain);
@@ -111,6 +113,12 @@ Spec.prototype.execute = function(onComplete, enabled) {
     if (onComplete) {
       onComplete();
     }
+  }
+};
+
+Spec.prototype.cancel = function cancel() {
+  if (this.currentRun) {
+    this.currentRun.cancel();
   }
 };
 
@@ -125,7 +133,7 @@ Spec.prototype.onException = function onException(error) {
   }
 
   if (error instanceof require('assert').AssertionError) {
-    const assertionErrorMessage = require('../assert_support');
+    const assertionErrorMessage = require('../assert_support').default;
     error = assertionErrorMessage(error, {expand: this.expand});
   }
 
@@ -202,5 +210,3 @@ Spec.isPendingSpecException = function(e) {
     e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
   );
 };
-
-module.exports = Spec;

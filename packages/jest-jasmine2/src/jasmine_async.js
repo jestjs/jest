@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -38,7 +37,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
       const returnValue = fn.call({});
 
       if (isPromise(returnValue)) {
-        returnValue.then(done, done.fail);
+        returnValue.then(done.bind(null, null), done.fail);
       } else {
         done();
       }
@@ -68,7 +67,7 @@ function promisifyIt(originalFn, env) {
       const returnValue = fn.call({});
 
       if (isPromise(returnValue)) {
-        returnValue.then(done, done.fail);
+        returnValue.then(done.bind(null, null), done.fail);
       } else if (returnValue === undefined) {
         done();
       } else {
@@ -107,7 +106,7 @@ function makeConcurrent(originalFn: Function, env) {
   };
 }
 
-function install(global: Global) {
+export function install(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();
@@ -122,7 +121,3 @@ function install(global: Global) {
   env.beforeAll = promisifyLifeCycleFunction(env.beforeAll, env);
   env.beforeEach = promisifyLifeCycleFunction(env.beforeEach, env);
 }
-
-module.exports = {
-  install,
-};

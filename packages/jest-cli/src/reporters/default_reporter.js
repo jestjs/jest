@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -15,22 +14,19 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-import {clearLine} from 'jest-util';
+import {clearLine, getConsoleOutput, isInteractive} from 'jest-util';
 import chalk from 'chalk';
-import isCI from 'is-ci';
 import BaseReporter from './base_reporter';
 import Status from './Status';
-import getConsoleOutput from './get_console_output';
 import getResultHeader from './get_result_header';
+import getSnapshotStatus from './get_snapshot_status';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;
 
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
-const isInteractive = process.stdin.isTTY && !isCI;
-
-class DefaultReporter extends BaseReporter {
+export default class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
   _globalConfig: GlobalConfig;
@@ -155,46 +151,61 @@ class DefaultReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    this._status.testFinished(
-      test.context.config,
-      testResult,
-      aggregatedResults,
-    );
-    this._printTestFileSummary(
-      testResult.testFilePath,
-      test.context.config,
-      testResult,
-    );
+    this.testFinished(test.context.config, testResult, aggregatedResults);
+    if (!testResult.skipped) {
+      this.printTestFileHeader(
+        testResult.testFilePath,
+        test.context.config,
+        testResult,
+      );
+      this.printTestFileFailureMessage(
+        testResult.testFilePath,
+        test.context.config,
+        testResult,
+      );
+    }
     this.forceFlushBufferedOutput();
   }
 
-  _printTestFileSummary(
+  testFinished(
+    config: ProjectConfig,
+    testResult: TestResult,
+    aggregatedResults: AggregatedResult,
+  ) {
+    this._status.testFinished(config, testResult, aggregatedResults);
+  }
+
+  printTestFileHeader(
     testPath: Path,
     config: ProjectConfig,
     result: TestResult,
   ) {
-    if (!result.skipped) {
-      this.log(getResultHeader(result, config));
-
-      const consoleBuffer = result.console;
-      if (consoleBuffer && consoleBuffer.length) {
-        this.log(
-          '  ' +
-            TITLE_BULLET +
-            'Console\n\n' +
-            getConsoleOutput(
-              config.rootDir,
-              !!this._globalConfig.verbose,
-              consoleBuffer,
-            ),
-        );
-      }
-
-      if (result.failureMessage) {
-        this.log(result.failureMessage);
-      }
+    this.log(getResultHeader(result, this._globalConfig, config));
+    const consoleBuffer = result.console;
+    if (consoleBuffer && consoleBuffer.length) {
+      this.log(
+        '  ' +
+          TITLE_BULLET +
+          'Console\n\n' +
+          getConsoleOutput(
+            config.cwd,
+            !!this._globalConfig.verbose,
+            consoleBuffer,
+          ),
+      );
     }
   }
-}
 
-module.exports = DefaultReporter;
+  printTestFileFailureMessage(
+    testPath: Path,
+    config: ProjectConfig,
+    result: TestResult,
+  ) {
+    if (result.failureMessage) {
+      this.log(result.failureMessage);
+    }
+    const didUpdate = this._globalConfig.updateSnapshot === 'all';
+    const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
+    snapshotStatuses.forEach(this.log);
+  }
+}

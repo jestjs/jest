@@ -63,54 +63,44 @@ exports[`renders the Image component 1`] = `
 `;
 
 exports[`renders the ListView component 1`] = `
-<ScrollView
+<RCTScrollView
   dataSource={
     ListViewDataSource {
       "items": 3,
     }
   }
-  initialListSize={10}
-  onContentSizeChange={[Function]}
-  onEndReachedThreshold={1000}
-  onKeyboardDidHide={undefined}
-  onKeyboardDidShow={undefined}
-  onKeyboardWillHide={undefined}
-  onKeyboardWillShow={undefined}
-  onLayout={[Function]}
-  onScroll={[Function]}
-  pageSize={1}
-  removeClippedSubviews={true}
   renderRow={[Function]}
-  scrollEventThrottle={50}
-  scrollRenderAheadDistance={1000}
-  stickyHeaderIndices={Array []}
+  renderScrollComponent={[Function]}
 >
-  <Text
-    accessible={true}
-    allowFontScaling={true}
-    ellipsizeMode="tail"
-  >
-    apple
-  </Text>
-  <Text
-    accessible={true}
-    allowFontScaling={true}
-    ellipsizeMode="tail"
-  >
-    banana
-  </Text>
-  <Text
-    accessible={true}
-    allowFontScaling={true}
-    ellipsizeMode="tail"
-  >
-    kiwi
-  </Text>
-</ScrollView>
+  <View>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+    >
+      apple
+    </Text>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+    >
+      banana
+    </Text>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+    >
+      kiwi
+    </Text>
+  </View>
+</RCTScrollView>
 `;
 
 exports[`renders the TextInput component 1`] = `
 <TextInput
+  allowFontScaling={true}
   autoCorrect={false}
   value="apple banana kiwi"
 />

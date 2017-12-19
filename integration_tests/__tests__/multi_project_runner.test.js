@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,10 +10,10 @@
 'use strict';
 
 import runJest from '../runJest';
-import {cleanup, extractSummary, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
 
+const {cleanup, extractSummary, writeFiles} = require('../utils');
 const skipOnWindows = require('../../scripts/skip_on_windows');
 const DIR = path.resolve(os.tmpdir(), 'multi_project_runner_test');
 
@@ -39,7 +38,86 @@ const sortLines = output =>
     .filter(str => Boolean(str))
     .join('\n');
 
+test('--listTests doesnt duplicate the test files', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '/project1.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
+    '/project2.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
+    '__tests__/in_both_projects-test.js': `test('test', () => {});`,
+    'package.json': JSON.stringify({
+      jest: {projects: ['<rootDir>/project1.js', '<rootDir>/project2.js']},
+    }),
+  });
+
+  const {stdout} = runJest(DIR, ['--listTests']);
+  expect(stdout.trim().split('\n')).toHaveLength(1);
+  expect(stdout).toMatch('in_both_projects-test.js');
+});
+
 test('can pass projects or global config', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    'package.json': '{}',
+    'project1/__tests__/file1.test.js': `
+      const file1 = require('file1');
+      test('file1', () => {});
+    `,
+    'project1/file1.js': fileContentWithProvidesModule('file1'),
+    'project1/jest.config.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
+    'project2/__tests__/file1.test.js': `
+      const file1 = require('file1');
+      test('file1', () => {});
+    `,
+    'project2/file1.js': fileContentWithProvidesModule('file1'),
+    'project2/jest.config.js': `module.exports = {rootDir: './'}`,
+    'project3/__tests__/file1.test.js': `
+      const file1 = require('file1');
+      test('file1', () => {});
+    `,
+    'project3/file1.js': fileContentWithProvidesModule('file1'),
+    'project3/jest.config.js': `module.exports = {rootDir: './', displayName: 'UI'}`,
+  });
+  let stderr;
+
+  ({stderr} = runJest(DIR));
+  expect(stderr).toMatch(
+    'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
+  );
+
+  expect(extractSummary(stderr).summary).toMatchSnapshot();
+
+  writeFiles(DIR, {
+    'global_config.js': `
+      module.exports = {
+        projects: ['project1/', 'project2/', 'project3/'],
+      };
+    `,
+  });
+
+  ({stderr} = runJest(DIR, [
+    '-i',
+    '--projects',
+    'project1',
+    'project2',
+    'project3',
+  ]));
+
+  const result1 = extractSummary(stderr);
+  expect(result1.summary).toMatchSnapshot();
+  expect(sortLines(result1.rest)).toMatchSnapshot();
+
+  ({stderr} = runJest(DIR, ['-i', '--config', 'global_config.js']));
+  const result2 = extractSummary(stderr);
+
+  expect(result2.summary).toMatchSnapshot();
+  expect(sortLines(result2.rest)).toMatchSnapshot();
+
+  // make sure different ways of passing projects work exactly the same
+  expect(result1.summary).toBe(result2.summary);
+  expect(sortLines(result1.rest)).toBe(sortLines(result2.rest));
+});
+
+test('"No tests found" message for projects', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     'package.json': '{}',
@@ -56,38 +134,24 @@ test('can pass projects or global config', () => {
     'project2/file1.js': fileContentWithProvidesModule('file1'),
     'project2/jest.config.js': `module.exports = {rootDir: './'}`,
   });
-  let stderr;
-
-  ({stderr} = runJest(DIR));
-  expect(stderr).toMatch(
-    'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
+  const {stdout: verboseOutput} = runJest(DIR, [
+    'xyz321',
+    '--verbose',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+  expect(verboseOutput).toContain('Pattern: xyz321 - 0 matches');
+  const {stdout} = runJest(DIR, [
+    'xyz321',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+  expect(stdout).toContain(
+    '  6 files checked across 2 projects. ' +
+      'Run with `--verbose` for more details.',
   );
-
-  expect(extractSummary(stderr).summary).toMatchSnapshot();
-
-  writeFiles(DIR, {
-    'global_config.js': `
-      module.exports = {
-        projects: ['project1/', 'project2/'],
-      };
-    `,
-  });
-
-  ({stderr} = runJest(DIR, ['-i', '--projects', 'project1', 'project2']));
-
-  const result1 = extractSummary(stderr);
-  expect(result1.summary).toMatchSnapshot();
-  expect(sortLines(result1.rest)).toMatchSnapshot();
-
-  ({stderr} = runJest(DIR, ['-i', '--config', 'global_config.js']));
-  const result2 = extractSummary(stderr);
-
-  expect(result2.summary).toMatchSnapshot();
-  expect(sortLines(result2.rest)).toMatchSnapshot();
-
-  // make sure different ways of passing projects work exactly the same
-  expect(result1.summary).toBe(result2.summary);
-  expect(sortLines(result1.rest)).toBe(sortLines(result2.rest));
 });
 
 test('resolves projects and their <rootDir> properly', () => {
@@ -125,8 +189,8 @@ test('resolves projects and their <rootDir> properly', () => {
   ({stderr} = runJest(DIR));
 
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
-  expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
 
   // Use globs
   writeFiles(DIR, {
@@ -141,8 +205,8 @@ test('resolves projects and their <rootDir> properly', () => {
 
   ({stderr} = runJest(DIR));
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch(' PASS  project1/__tests__/test.test.js');
-  expect(stderr).toMatch(' PASS  project2/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
 
   // Include two projects that will resolve to the same config
   writeFiles(DIR, {

@@ -1,13 +1,13 @@
 {
   "dependencies": {
     "react": "15.4.2",
-    "react-dom": "15.4.2"
+    "react-dom": "15.4.2",
+    "typescript": "*"
   },
   "devDependencies": {
     "@types/jest": "^19.2.4",
     "jest": "*",
-    "react-addons-test-utils": "15.4.2",
-    "typescript": "*"
+    "react-addons-test-utils": "15.4.2"
   },
   "scripts": {
     "test": "jest"

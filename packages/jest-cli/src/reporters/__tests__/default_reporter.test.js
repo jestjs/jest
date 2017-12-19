@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -16,6 +15,14 @@ const testCase = {
   path: '/foo',
 };
 const testResult = {
+  snapshot: {
+    added: 0,
+    fileDeleted: true,
+    matched: 1,
+    unchecked: 0,
+    unmatched: 0,
+    updated: 0,
+  },
   testFilePath: '/foo',
 };
 
@@ -31,7 +38,9 @@ beforeEach(() => {
   jest.useFakeTimers();
 
   // This is not a CI environment, which removes all output by default.
-  jest.mock('is-ci', () => false);
+  jest.unmock('jest-util');
+  const util = require('jest-util');
+  util.isInteractive = true;
 
   oldIsTTY = process.stdin.isTTY;
   oldStdout = process.stdout.write;
@@ -44,7 +53,7 @@ beforeEach(() => {
   process.stderr.write = jest.fn();
   stdout = process.stdout.write = jest.fn();
 
-  DefaultReporter = require('../default_reporter');
+  DefaultReporter = require('../default_reporter').default;
 });
 
 afterEach(() => {
@@ -54,7 +63,7 @@ afterEach(() => {
 });
 
 test('normal output, everything goes to stdout', () => {
-  const reporter = new DefaultReporter({useStderr: false});
+  const reporter = new DefaultReporter({rootDir: '', useStderr: false});
 
   reporter.onRunStart(aggregatedResults, options);
   reporter.onTestStart(testCase);
@@ -67,7 +76,7 @@ test('normal output, everything goes to stdout', () => {
 });
 
 test('when using stderr as output, no stdout call is made', () => {
-  const reporter = new DefaultReporter({useStderr: true});
+  const reporter = new DefaultReporter({rootDir: '', useStderr: true});
 
   reporter.onRunStart(aggregatedResults, options);
   reporter.onTestStart(testCase);

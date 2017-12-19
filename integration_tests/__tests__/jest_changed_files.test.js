@@ -1,24 +1,23 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 'use strict';
 
-import {cleanup, run, writeFiles} from '../utils';
 import os from 'os';
 import path from 'path';
 import {
   findRepos,
   getChangedFilesForRoots,
 } from '../../packages/jest-changed-files/src';
-
 const skipOnWindows = require('../../scripts/skip_on_windows');
+const {cleanup, run, writeFiles} = require('../utils');
+
 skipOnWindows.suite();
 
 const DIR = path.resolve(os.tmpdir(), 'jest_changed_files_test_dir');
@@ -140,15 +139,15 @@ test('gets changed files for git', async () => {
 
   run(`${GIT} init`, DIR);
 
-  const roots = [
-    '',
-    'nested_dir',
-    'nested_dir/second_nested_dir',
-  ].map(filename => path.resolve(DIR, filename));
+  const roots = ['', 'nested_dir', 'nested_dir/second_nested_dir'].map(
+    filename => path.resolve(DIR, filename),
+  );
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   run(`${GIT} add .`, DIR);
@@ -161,7 +160,9 @@ test('gets changed files for git', async () => {
     lastCommit: true,
   }));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   writeFiles(DIR, {
@@ -170,7 +171,9 @@ test('gets changed files for git', async () => {
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt']);
 });
 
@@ -190,15 +193,15 @@ test('gets changed files for hg', async () => {
 
   run(`${HG} init`, DIR);
 
-  const roots = [
-    '',
-    'nested_dir',
-    'nested_dir/second_nested_dir',
-  ].map(filename => path.resolve(DIR, filename));
+  const roots = ['', 'nested_dir', 'nested_dir/second_nested_dir'].map(
+    filename => path.resolve(DIR, filename),
+  );
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   run(`${HG} add .`, DIR);
@@ -211,7 +214,9 @@ test('gets changed files for hg', async () => {
     lastCommit: true,
   }));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   writeFiles(DIR, {
@@ -220,7 +225,9 @@ test('gets changed files for hg', async () => {
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt']);
 
   run(`${HG} commit -m "test2"`, DIR);
@@ -232,8 +239,10 @@ test('gets changed files for hg', async () => {
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
     withAncestor: true,
   }));
-  // Returns files from current uncommited state + the last commit
+  // Returns files from current uncommitted state + the last commit
   expect(
-    Array.from(files).map(filePath => path.basename(filePath)).sort(),
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
   ).toEqual(['file1.txt', 'file4.txt']);
 });

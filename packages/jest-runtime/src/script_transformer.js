@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -29,11 +28,13 @@ import slash from 'slash';
 import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
 import writeFileAtomic from 'write-file-atomic';
+import {sync as realpath} from 'realpath-native';
 
 export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{[key: string]: boolean},
+  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
+  isCoreModule?: boolean,
   isInternalModule?: boolean,
   mapCoverage: boolean,
 |};
@@ -46,7 +47,7 @@ const ignoreCache: WeakMap<ProjectConfig, ?RegExp> = new WeakMap();
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
 
-class ScriptTransformer {
+export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: string;
   _config: ProjectConfig;
   _transformCache: Map<Path, ?Transformer>;
@@ -77,6 +78,7 @@ class ScriptTransformer {
           transformer.getCacheKey(fileData, filename, configString, {
             instrument,
             mapCoverage,
+            rootDir: this._config.rootDir,
           }),
         )
         .update(CACHE_VERSION)
@@ -181,12 +183,21 @@ class ScriptTransformer {
     }).code;
   }
 
+  _getRealPath(filepath: Path): Path {
+    try {
+      return realpath(filepath) || filepath;
+    } catch (err) {
+      return filepath;
+    }
+  }
+
   transformSource(
-    filename: Path,
+    filepath: Path,
     content: string,
     instrument: boolean,
     mapCoverage: boolean,
   ) {
+    const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,
@@ -238,8 +249,6 @@ class ScriptTransformer {
           transformed.map = inlineSourceMap.toJSON();
         }
       }
-    } else {
-      transformed.map = null;
     }
 
     // That means that the transform has a custom instrumentation
@@ -252,7 +261,7 @@ class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (instrument && transformed.map && mapCoverage) {
+    if (instrument && mapCoverage && transformed.map) {
       const sourceMapContent =
         typeof transformed.map === 'string'
           ? transformed.map
@@ -277,13 +286,17 @@ class ScriptTransformer {
     fileSource?: string,
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
+    const isCoreModule = !!(options && options.isCoreModule);
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
+
     let wrappedCode: string;
     let sourceMapPath: ?string = null;
+
     const willTransform =
       !isInternalModule &&
+      !isCoreModule &&
       (shouldTransform(filename, this._config) || instrument);
 
     try {
@@ -302,7 +315,10 @@ class ScriptTransformer {
       }
 
       return {
-        script: new vm.Script(wrappedCode, {displayErrors: true, filename}),
+        script: new vm.Script(wrappedCode, {
+          displayErrors: true,
+          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
+        }),
         sourceMapPath,
       };
     } catch (e) {
@@ -319,25 +335,32 @@ class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): TransformResult {
-    const instrument = shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(
-      filename,
-      this._config,
-      instrument,
-    );
-    let result = cache.get(scriptCacheKey);
+    let scriptCacheKey = null;
+    let instrument = false;
+    let result = '';
+
+    if (!options.isCoreModule) {
+      instrument = shouldInstrument(filename, options, this._config);
+      scriptCacheKey = getScriptCacheKey(filename, this._config, instrument);
+      result = cache.get(scriptCacheKey);
+    }
+
     if (result) {
       return result;
-    } else {
-      result = this._transformAndBuildScript(
-        filename,
-        options,
-        instrument,
-        fileSource,
-      );
-      cache.set(scriptCacheKey, result);
-      return result;
     }
+
+    result = this._transformAndBuildScript(
+      filename,
+      options,
+      instrument,
+      fileSource,
+    );
+
+    if (scriptCacheKey) {
+      cache.set(scriptCacheKey, result);
+    }
+
+    return result;
   }
 }
 
@@ -365,7 +388,10 @@ const stripShebang = content => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: Path, code: string) {
-  const checksum = crypto.createHash('md5').update(code).digest('hex');
+  const checksum = crypto
+    .createHash('md5')
+    .update(code)
+    .digest('hex');
   writeCacheFile(cachePath, checksum + '\n' + code);
 }
 
@@ -381,7 +407,10 @@ function readCodeCacheFile(cachePath: Path): ?string {
     return null;
   }
   const code = content.substr(33);
-  const checksum = crypto.createHash('md5').update(code).digest('hex');
+  const checksum = crypto
+    .createHash('md5')
+    .update(code)
+    .digest('hex');
   if (checksum === content.substr(0, 32)) {
     return code;
   }
@@ -398,6 +427,10 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
     writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
+    if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
+      return;
+    }
+
     e.message =
       'jest: failed to cache transform results in: ' +
       cachePath +
@@ -406,6 +439,20 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
     removeFile(cachePath);
     throw e;
   }
+};
+
+/**
+ * On Windows, renames are not atomic, leading to EPERM exceptions when two
+ * processes attempt to rename to the same target file at the same time.
+ * If the target file exists we can be reasonably sure another process has
+ * legitimately won a cache write race and ignore the error.
+ */
+const cacheWriteErrorSafeToIgnore = (e: Error, cachePath: Path) => {
+  return (
+    process.platform === 'win32' &&
+    e.code === 'EPERM' &&
+    fs.existsSync(cachePath)
+  );
 };
 
 const readCacheFile = (cachePath: Path): ?string => {
@@ -467,5 +514,3 @@ const wrap = content =>
   '\n}});';
 
 ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
-
-module.exports = ScriptTransformer;

@@ -8,7 +8,7 @@ exports[`traverses directory tree up until it finds jest.config 1`] = `
 `;
 
 exports[`traverses directory tree up until it finds jest.config 2`] = `
-" PASS  ../../../__tests__/a-banana.js
+"PASS ../../../__tests__/a-banana.js
   ✓ banana
   ✓ abc
 
@@ -25,7 +25,7 @@ Ran all test suites.
 `;
 
 exports[`works with jest.conf.js 1`] = `
-" PASS  __tests__/a-banana.js
+"PASS __tests__/a-banana.js
   ✓ banana
 
 "

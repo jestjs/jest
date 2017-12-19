@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -13,7 +12,13 @@ import type {ProjectConfig, Path} from 'types/Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
 import chalk from 'chalk';
-import {getSummary, trimAndFormatPath, wrapAnsiString} from './utils';
+import stringLength from 'string-length';
+import {
+  getSummary,
+  trimAndFormatPath,
+  wrapAnsiString,
+  printDisplayName,
+} from './utils';
 
 const RUNNING_TEXT = ' RUNS ';
 const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
@@ -57,7 +62,7 @@ class CurrentTestList {
  * and also provides an ANSI escape sequence to remove status lines
  * from the terminal.
  */
-class Status {
+export default class Status {
   _cache: ?{content: string, clear: string};
   _callback: () => void;
   _currentTests: CurrentTestList;
@@ -136,15 +141,16 @@ class Status {
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
+
+        const projectDisplayName = config.displayName
+          ? printDisplayName(config) + ' '
+          : '';
+        const prefix = RUNNING + projectDisplayName;
+
         content +=
           wrapAnsiString(
-            RUNNING +
-              trimAndFormatPath(
-                RUNNING_TEXT.length + 1,
-                config,
-                testPath,
-                width,
-              ),
+            prefix +
+              trimAndFormatPath(stringLength(prefix), config, testPath, width),
             width,
           ) + '\n';
       }
@@ -194,5 +200,3 @@ class Status {
     this._debouncedEmit();
   }
 }
-
-module.exports = Status;

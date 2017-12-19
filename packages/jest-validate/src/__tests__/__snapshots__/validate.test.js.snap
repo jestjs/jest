@@ -1,138 +1,138 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`displays warning for deprecated config options 1`] = `
-"<bold><bold>●<bold> Deprecation Warning:</>
-</>
-  Option <bold>scriptPreprocessor was replaced by <bold>transform, which support multiple preprocessors.</>
-</>
-  Jest now treats your current configuration as:</>
-  {</>
-    <bold>\\"transform\\": <bold>{\\".*\\": \\"test\\"}</>
-  }</>
-</>
-  Please update your configuration.</>
-</>"
+"<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>scriptPreprocessor</> was replaced by <bold>transform</>, which support multiple preprocessors.</>
+<yellow></>
+<yellow>  Jest now treats your current configuration as:</>
+<yellow>  {</>
+<yellow>    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
+<yellow>  }</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>"
 `;
 
 exports[`displays warning for unknown config options 1`] = `
-"<bold><bold>●<bold> Validation Warning:</>
-</>
-  Unknown option <bold>\\"unkwon\\" with value <bold>{} was found. Did you mean <bold>\\"unknown\\"?</>
-  This is probably a typing mistake. Fixing it will remove this message.</>
-</>"
+"<yellow><bold><bold>●<bold> Validation Warning</>:</>
+<yellow></>
+<yellow>  Unknown option <bold>\\"unkwon\\"</> with value <bold>{}</> was found. Did you mean <bold>\\"unknown\\"</>?</>
+<yellow>  This is probably a typing mistake. Fixing it will remove this message.</>
+<yellow></>"
 `;
 
 exports[`pretty prints valid config for Array 1`] = `
-"<red><bold><bold>●<bold> Validation Error:</>
+"<red><bold><bold>●<bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"coverageReporters\\" must be of type:</>
-<red>    <bold><green>array<red></>
+<red>  Option <bold>\\"coverageReporters\\"</> must be of type:</>
+<red>    <bold><green>array<red></></>
 <red>  but instead received:</>
-<red>    <bold><red>object<red></>
+<red>    <bold><red>object<red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"coverageReporters\\": <bold>[\\"json\\", \\"text\\", \\"lcov\\", \\"clover\\"]</>
+<red>    <bold>\\"coverageReporters\\"</>: <bold>[\\"json\\", \\"text\\", \\"lcov\\", \\"clover\\"]</></>
 <red>  }</>
 <red></>"
 `;
 
 exports[`pretty prints valid config for Boolean 1`] = `
-"<red><bold><bold>●<bold> Validation Error:</>
+"<red><bold><bold>●<bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"automock\\" must be of type:</>
-<red>    <bold><green>boolean<red></>
+<red>  Option <bold>\\"automock\\"</> must be of type:</>
+<red>    <bold><green>boolean<red></></>
 <red>  but instead received:</>
-<red>    <bold><red>array<red></>
+<red>    <bold><red>array<red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"automock\\": <bold>false</>
+<red>    <bold>\\"automock\\"</>: <bold>false</></>
 <red>  }</>
 <red></>"
 `;
 
 exports[`pretty prints valid config for Function 1`] = `
-"<red><bold><bold>●<bold> Validation Error:</>
+"<red><bold><bold>●<bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"fn\\" must be of type:</>
-<red>    <bold><green>function<red></>
+<red>  Option <bold>\\"fn\\"</> must be of type:</>
+<red>    <bold><green>function<red></></>
 <red>  but instead received:</>
-<red>    <bold><red>string<red></>
+<red>    <bold><red>string<red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"fn\\": <bold>(config, option, deprecatedOptions) => true</>
+<red>    <bold>\\"fn\\"</>: <bold>(config, option, deprecatedOptions) => true</></>
 <red>  }</>
 <red></>"
 `;
 
 exports[`pretty prints valid config for Object 1`] = `
-"<red><bold><bold>●<bold> Validation Error:</>
+"<red><bold><bold>●<bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"haste\\" must be of type:</>
-<red>    <bold><green>object<red></>
+<red>  Option <bold>\\"haste\\"</> must be of type:</>
+<red>    <bold><green>object<red></></>
 <red>  but instead received:</>
-<red>    <bold><red>number<red></>
+<red>    <bold><red>number<red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"haste\\": <bold>{\\"providesModuleNodeModules\\": [\\"react\\", \\"react-native\\"]}</>
+<red>    <bold>\\"haste\\"</>: <bold>{\\"providesModuleNodeModules\\": [\\"react\\", \\"react-native\\"]}</></>
 <red>  }</>
 <red></>"
 `;
 
 exports[`pretty prints valid config for String 1`] = `
-"<red><bold><bold>●<bold> Validation Error:</>
+"<red><bold><bold>●<bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"preset\\" must be of type:</>
-<red>    <bold><green>string<red></>
+<red>  Option <bold>\\"preset\\"</> must be of type:</>
+<red>    <bold><green>string<red></></>
 <red>  but instead received:</>
-<red>    <bold><red>number<red></>
+<red>    <bold><red>number<red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"preset\\": <bold>\\"react-native\\"</>
+<red>    <bold>\\"preset\\"</>: <bold>\\"react-native\\"</></>
 <red>  }</>
 <red></>"
 `;
 
 exports[`works with custom deprecations 1`] = `
-"<bold>My Custom Deprecation Warning:</>
-</>
-  Option <bold>scriptPreprocessor was replaced by <bold>transform, which support multiple preprocessors.</>
-</>
-  Jest now treats your current configuration as:</>
-  {</>
-    <bold>\\"transform\\": <bold>{\\".*\\": \\"test\\"}</>
-  }</>
-</>
-  Please update your configuration.</>
-</>
-My custom comment</>"
+"<yellow><bold>My Custom Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>scriptPreprocessor</> was replaced by <bold>transform</>, which support multiple preprocessors.</>
+<yellow></>
+<yellow>  Jest now treats your current configuration as:</>
+<yellow>  {</>
+<yellow>    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
+<yellow>  }</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>My custom comment</>"
 `;
 
 exports[`works with custom errors 1`] = `
-"<red><bold>My Custom Error:</>
+"<red><bold>My Custom Error</>:</>
 <red></>
-<red>  Option <bold>\\"test\\" must be of type:</>
-<red>    <bold><green>array<red></>
+<red>  Option <bold>\\"test\\"</> must be of type:</>
+<red>    <bold><green>array<red></></>
 <red>  but instead received:</>
-<red>    <bold><red>string<red></>
+<red>    <bold><red>string<red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"test\\": <bold>[1, 2]</>
+<red>    <bold>\\"test\\"</>: <bold>[1, 2]</></>
 <red>  }</>
 <red></>
 <red>My custom comment</>"
 `;
 
 exports[`works with custom warnings 1`] = `
-"<bold>My Custom Warning:</>
-</>
-  Unknown option <bold>\\"unknown\\" with value <bold>\\"string\\" was found.</>
-  This is probably a typing mistake. Fixing it will remove this message.</>
-</>
-My custom comment</>"
+"<yellow><bold>My Custom Warning</>:</>
+<yellow></>
+<yellow>  Unknown option <bold>\\"unknown\\"</> with value <bold>\\"string\\"</> was found.</>
+<yellow>  This is probably a typing mistake. Fixing it will remove this message.</>
+<yellow></>
+<yellow>My custom comment</>"
 `;

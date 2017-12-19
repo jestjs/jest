@@ -1,14 +1,13 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
-import type {Path} from 'types/Config';
+import type {Path, ProjectConfig, GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
 import path from 'path';
@@ -23,9 +22,21 @@ type SummaryOptions = {|
 
 const PROGRESS_BAR_WIDTH = 40;
 
-const trimAndFormatPath = (
+export const printDisplayName = (config: ProjectConfig) => {
+  const {displayName} = config;
+
+  if (displayName) {
+    return chalk.supportsColor
+      ? chalk.reset.inverse.white(` ${displayName} `)
+      : displayName;
+  }
+
+  return '';
+};
+
+export const trimAndFormatPath = (
   pad: number,
-  config: {rootDir: Path},
+  config: ProjectConfig | GlobalConfig,
   testPath: Path,
   columns: number,
 ): string => {
@@ -60,22 +71,31 @@ const trimAndFormatPath = (
   );
 };
 
-const formatTestPath = (config: {rootDir: Path}, testPath: Path) => {
+export const formatTestPath = (
+  config: GlobalConfig | ProjectConfig,
+  testPath: Path,
+) => {
   const {dirname, basename} = relativePath(config, testPath);
   return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const relativePath = (config: {rootDir: Path}, testPath: Path) => {
-  testPath = path.relative(config.rootDir, testPath);
+export const relativePath = (
+  config: GlobalConfig | ProjectConfig,
+  testPath: Path,
+) => {
+  // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
+  // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback
+  // to config.rootDir. (Also, some unit just use config.rootDir, which is ok)
+  testPath = path.relative(config.cwd || config.rootDir, testPath);
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
   return {basename, dirname};
 };
 
-const pluralize = (word: string, count: number) =>
+export const pluralize = (word: string, count: number) =>
   `${count} ${word}${count === 1 ? '' : 's'}`;
 
-const getSummary = (
+export const getSummary = (
   aggregatedResults: AggregatedResult,
   options?: SummaryOptions,
 ) => {
@@ -170,7 +190,7 @@ const renderTime = (runTime, estimatedTime, width) => {
 
 // word-wrap a string that contains ANSI escape sequences.
 // ANSI escape sequences do not add to the string length.
-const wrapAnsiString = (string: string, terminalWidth: number) => {
+export const wrapAnsiString = (string: string, terminalWidth: number) => {
   if (terminalWidth === 0) {
     // if the terminal width is zero, don't bother word-wrapping
     return string;
@@ -229,13 +249,4 @@ const wrapAnsiString = (string: string, terminalWidth: number) => {
       [''],
     )
     .join('\n');
-};
-
-module.exports = {
-  formatTestPath,
-  getSummary,
-  pluralize,
-  relativePath,
-  trimAndFormatPath,
-  wrapAnsiString,
 };

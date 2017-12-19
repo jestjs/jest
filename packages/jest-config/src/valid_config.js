@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,11 +10,11 @@
 import type {InitialOptions} from 'types/Config';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
-import constants from './constants';
+import {NODE_MODULES} from './constants';
 
-const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
+const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-module.exports = ({
+export default ({
   automock: false,
   bail: false,
   browser: false,
@@ -36,8 +35,12 @@ module.exports = ({
       branches: 50,
     },
   },
+  displayName: 'project-name',
   expand: false,
+  forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,
+  globalSetup: 'setup.js',
+  globalTeardown: 'teardown.js',
   globals: {},
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],
@@ -69,13 +72,17 @@ module.exports = ({
   resolver: '<rootDir>/resolver.js',
   rootDir: '/',
   roots: ['<rootDir>'],
+  runTestsByPath: false,
+  runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
   setupTestFrameworkScriptFile: '<rootDir>/test_setup_file.js',
   silent: true,
   skipNodeResolution: false,
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
+  testEnvironmentOptions: {},
   testFailureExitCode: 1,
+  testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
@@ -93,5 +100,7 @@ module.exports = ({
   useStderr: false,
   verbose: false,
   watch: false,
+  watchPathIgnorePatterns: [],
+  watchPlugins: [],
   watchman: true,
 }: InitialOptions);

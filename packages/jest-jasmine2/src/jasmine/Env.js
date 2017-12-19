@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 // This file is a heavily modified fork of Jasmine. Original license:
@@ -32,10 +31,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import queueRunner from '../queue_runner';
-
 import treeProcessor from '../tree_processor';
 
-module.exports = function(j$) {
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test. Async functions return it implicitly.
+// eslint-disable-next-line no-unused-vars
+const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+
+export default function(j$) {
   function Env(options) {
     options = options || {};
 
@@ -161,7 +164,7 @@ module.exports = function(j$) {
       return seed;
     };
 
-    async function queueRunnerFactory(options) {
+    function queueRunnerFactory(options) {
       options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
       options.setTimeout = realSetTimeout;
@@ -187,9 +190,31 @@ module.exports = function(j$) {
         }
       }
 
-      reporter.jasmineStarted({
-        totalSpecsDefined,
-      });
+      const uncaught = err => {
+        if (currentSpec) {
+          currentSpec.onException(err);
+          currentSpec.cancel();
+        } else {
+          console.error('Unhandled error');
+          console.error(err.stack);
+        }
+      };
+
+      // Need to ensure we are the only ones handling these exceptions.
+      const oldListenersException = process
+        .listeners('uncaughtException')
+        .slice();
+      const oldListenersRejection = process
+        .listeners('unhandledRejection')
+        .slice();
+
+      j$.process.removeAllListeners('uncaughtException');
+      j$.process.removeAllListeners('unhandledRejection');
+
+      j$.process.on('uncaughtException', uncaught);
+      j$.process.on('unhandledRejection', uncaught);
+
+      reporter.jasmineStarted({totalSpecsDefined});
 
       currentlyExecutingSuites.push(topSuite);
 
@@ -214,6 +239,18 @@ module.exports = function(j$) {
       currentlyExecutingSuites.pop();
       reporter.jasmineDone({
         failedExpectations: topSuite.result.failedExpectations,
+      });
+
+      j$.process.removeListener('uncaughtException', uncaught);
+      j$.process.removeListener('unhandledRejection', uncaught);
+
+      // restore previous exception handlers
+      oldListenersException.forEach(listener => {
+        j$.process.on('uncaughtException', listener);
+      });
+
+      oldListenersRejection.forEach(listener => {
+        j$.process.on('unhandledRejection', listener);
       });
     };
 
@@ -344,6 +381,9 @@ module.exports = function(j$) {
         getSpecName(spec) {
           return getSpecName(spec, suite);
         },
+        getTestPath() {
+          return j$.testPath;
+        },
         onStart: specStarted,
         description,
         queueRunnerFactory,
@@ -387,6 +427,18 @@ module.exports = function(j$) {
       );
       if (currentDeclarationSuite.markedPending) {
         spec.pend();
+      }
+
+      // When a test is defined inside another, jasmine will not run it.
+      // This check throws an error to warn the user about the edge-case.
+      if (currentSpec !== null) {
+        throw new Error(
+          'Tests cannot be nested. Test `' +
+            spec.description +
+            '` cannot run because it is nested within `' +
+            currentSpec.description +
+            '`.',
+        );
       }
       currentDeclarationSuite.addChild(spec);
       return spec;
@@ -474,4 +526,4 @@ module.exports = function(j$) {
   }
 
   return Env;
-};
+}

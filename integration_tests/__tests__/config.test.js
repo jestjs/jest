@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -16,12 +15,12 @@ test('config as JSON', () => {
     '--config=' +
       JSON.stringify({
         testEnvironment: 'node',
-        testMatch: ['banana strawbery kiwi'],
+        testMatch: ['banana strawberry kiwi'],
       }),
   ]);
   const stdout = result.stdout.toString();
 
-  expect(result.status).toBe(0);
+  expect(result.status).toBe(1);
   expect(stdout).toMatch('No tests found');
 });
 
@@ -59,4 +58,19 @@ test('config from argv is respected with sane config JSON', () => {
   ]);
 
   expect(stdout).toMatch('"watchman": false');
+});
+
+test('works with jsdom testEnvironmentOptions config JSON', () => {
+  const result = runJest('environmentOptions', [
+    '--config=' +
+      JSON.stringify({
+        testEnvironmentOptions: {
+          userAgent: 'Agent/007',
+        },
+      }),
+  ]);
+  const stderr = result.stderr.toString();
+
+  expect(result.status).toBe(0);
+  expect(stderr).toMatch('found userAgent Agent/007');
 });

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -17,7 +16,7 @@
  * This constant key map allows to keep the map smaller without having to build
  * a custom serialization library.
  */
-module.exports = {
+export default {
   /* file map attributes */
   ID: 0,
   MTIME: 1,

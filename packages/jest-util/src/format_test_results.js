@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -60,7 +59,10 @@ function formatTestAssertion(
   assertion: AssertionResult,
 ): FormattedAssertionResult {
   const result: FormattedAssertionResult = {
+    ancestorTitles: assertion.ancestorTitles,
     failureMessages: null,
+    fullName: assertion.fullName,
+    location: assertion.location,
     status: assertion.status,
     title: assertion.title,
   };
@@ -70,7 +72,7 @@ function formatTestAssertion(
   return result;
 }
 
-function formatTestResults(
+export default function formatTestResults(
   results: AggregatedResult,
   codeCoverageFormatter?: CodeCoverageFormatter,
   reporter?: CodeCoverageReporter,
@@ -85,5 +87,3 @@ function formatTestResults(
     testResults,
   });
 }
-
-module.exports = formatTestResults;

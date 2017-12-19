@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -13,9 +12,9 @@ import type {DefaultOptions} from 'types/Config';
 import os from 'os';
 import path from 'path';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import constants from './constants';
+import {NODE_MODULES} from './constants';
 
-const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
+const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const cacheDirectory = (() => {
   const {getuid} = process;
@@ -28,7 +27,7 @@ const cacheDirectory = (() => {
   return path.join(os.tmpdir(), 'jest_' + getuid.call(process).toString(36));
 })();
 
-module.exports = ({
+export default ({
   automock: false,
   bail: false,
   browser: false,
@@ -37,7 +36,11 @@ module.exports = ({
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  detectLeaks: false,
   expand: false,
+  forceCoverageMatch: [],
+  globalSetup: null,
+  globalTeardown: null,
   globals: {},
   haste: {
     providesModuleNodeModules: [],
@@ -52,9 +55,13 @@ module.exports = ({
   preset: null,
   resetMocks: false,
   resetModules: false,
+  runTestsByPath: false,
+  runner: 'jest-runner',
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
+  testEnvironmentOptions: {},
   testFailureExitCode: 1,
+  testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '',
@@ -65,5 +72,6 @@ module.exports = ({
   useStderr: false,
   verbose: null,
   watch: false,
+  watchPathIgnorePatterns: [],
   watchman: true,
 }: DefaultOptions);

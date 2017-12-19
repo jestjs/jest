@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -14,8 +13,10 @@ import path from 'path';
 import {ValidationError} from 'jest-validate';
 import Resolver from 'jest-resolve';
 import chalk from 'chalk';
-const BULLET: string = chalk.bold('\u25cf ');
-const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
+export const BULLET: string = chalk.bold('\u25cf ');
+export const DOCUMENTATION_NOTE = `  ${chalk.bold(
+  'Configuration Documentation:',
+)}
   https://facebook.github.io/jest/docs/configuration.html
 `;
 
@@ -27,7 +28,7 @@ const createValidationError = (message: string) => {
   );
 };
 
-const resolve = (rootDir: string, key: string, filePath: Path) => {
+export const resolve = (rootDir: string, key: string, filePath: Path) => {
   const module = Resolver.findNodeModule(
     _replaceRootDirInPath(rootDir, filePath),
     {
@@ -46,7 +47,10 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
   return module;
 };
 
-const _replaceRootDirInPath = (rootDir: string, filePath: Path): string => {
+export const _replaceRootDirInPath = (
+  rootDir: string,
+  filePath: Path,
+): string => {
   if (!/^<rootDir>/.test(filePath)) {
     return filePath;
   }
@@ -71,7 +75,7 @@ const _replaceRootDirInObject = (rootDir: string, config: any): Object => {
   return config;
 };
 
-const _replaceRootDirTags = (rootDir: string, config: any) => {
+export const _replaceRootDirTags = (rootDir: string, config: any) => {
   switch (typeof config) {
     case 'object':
       if (Array.isArray(config)) {
@@ -95,8 +99,8 @@ const _replaceRootDirTags = (rootDir: string, config: any) => {
  * 1. looks for <name> relative to project.
  * 1. looks for <name> relative to Jest.
  */
-const getTestEnvironment = (config: Object) => {
-  const env = config.testEnvironment;
+export const getTestEnvironment = (config: Object) => {
+  const env = _replaceRootDirInPath(config.rootDir, config.testEnvironment);
   let module = Resolver.findNodeModule(`jest-environment-${env}`, {
     basedir: config.rootDir,
   });
@@ -126,18 +130,8 @@ const getTestEnvironment = (config: Object) => {
   );
 };
 
-const isJSONString = (text: ?string) =>
+export const isJSONString = (text: ?string) =>
   text &&
   typeof text === 'string' &&
   text.startsWith('{') &&
   text.endsWith('}');
-
-module.exports = {
-  BULLET,
-  DOCUMENTATION_NOTE,
-  _replaceRootDirInPath,
-  _replaceRootDirTags,
-  getTestEnvironment,
-  isJSONString,
-  resolve,
-};

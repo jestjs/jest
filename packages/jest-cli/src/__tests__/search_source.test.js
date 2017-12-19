@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
+
+import path from 'path';
 
 jest.setTimeout(15000);
 
-const path = require('path');
 const skipOnWindows = require('../../../../scripts/skip_on_windows');
 
 const rootDir = path.resolve(__dirname, 'test_root');
@@ -34,7 +34,7 @@ describe('SearchSource', () => {
 
   beforeEach(() => {
     Runtime = require('jest-runtime');
-    SearchSource = require('../search_source');
+    SearchSource = require('../search_source').default;
     normalize = require('jest-config').normalize;
   });
 
@@ -373,12 +373,14 @@ describe('SearchSource', () => {
 
     it('finds tests that depend directly on the path', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
+      const file2Path = path.join(rootDir, 'RequireRegularModule.js');
       const loggingDep = path.join(rootDir, 'logging.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
       const data = searchSource.findRelatedTests(new Set([filePath]));
       expect(toPaths(data.tests).sort()).toEqual([
         parentDep,
         filePath,
+        file2Path,
         loggingDep,
         rootPath,
       ]);

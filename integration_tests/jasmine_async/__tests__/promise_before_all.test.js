@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -32,6 +31,21 @@ describe('promise beforeAll', () => {
       return new Promise(resolve => setTimeout(resolve, 100));
     }, 10);
 
+    it('fails', () => {});
+  });
+
+  describe('done - with error thrown', () => {
+    beforeAll(done => {
+      throw new Error('fail');
+      done(); // eslint-disable-line
+    });
+    it('fails', () => {});
+  });
+
+  describe('done - with error called back', () => {
+    beforeAll(done => {
+      done(new Error('fail'));
+    });
     it('fails', () => {});
   });
 });

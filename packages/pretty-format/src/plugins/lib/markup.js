@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -65,17 +64,32 @@ export const printChildren = (
   refs: Refs,
   printer: Printer,
 ): string => {
-  const colors = config.colors;
   return children
     .map(
       child =>
         config.spacingOuter +
         indentation +
         (typeof child === 'string'
-          ? colors.content.open + escapeHTML(child) + colors.content.close
+          ? printText(child, config)
           : printer(child, config, indentation, depth, refs)),
     )
     .join('');
+};
+
+export const printText = (text: string, config: Config): string => {
+  const contentColor = config.colors.content;
+  return contentColor.open + escapeHTML(text) + contentColor.close;
+};
+
+export const printComment = (comment: string, config: Config): string => {
+  const commentColor = config.colors.comment;
+  return (
+    commentColor.open +
+    '<!--' +
+    escapeHTML(comment) +
+    '-->' +
+    commentColor.close
+  );
 };
 
 // Separate the functions to format props, children, and element,
@@ -111,6 +125,20 @@ export const printElement = (
         type
       : (printedProps && !config.min ? '' : ' ') + '/') +
     '>' +
+    tagColor.close
+  );
+};
+
+export const printElementAsLeaf = (type: string, config: Config) => {
+  const tagColor = config.colors.tag;
+  return (
+    tagColor.open +
+    '<' +
+    type +
+    tagColor.close +
+    ' …' +
+    tagColor.open +
+    ' />' +
     tagColor.close
   );
 };

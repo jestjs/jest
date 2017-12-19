@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -18,6 +17,10 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test.
+const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+
 import {formatResultsErrors} from 'jest-message-util';
 
 type Suite = {
@@ -25,6 +28,7 @@ type Suite = {
 };
 
 type SpecResult = {
+  __callsite?: Object,
   description: string,
   duration?: Milliseconds,
   failedExpectations: Array<FailedAssertion>,
@@ -35,7 +39,7 @@ type SpecResult = {
 
 type Microseconds = number;
 
-class Jasmine2Reporter {
+export default class Jasmine2Reporter {
   _testResults: Array<AssertionResult>;
   _globalConfig: GlobalConfig;
   _config: ProjectConfig;
@@ -151,11 +155,19 @@ class Jasmine2Reporter {
     const duration = start ? Date.now() - start : undefined;
     const status =
       specResult.status === 'disabled' ? 'pending' : specResult.status;
+    const location = specResult.__callsite
+      ? {
+          column: specResult.__callsite.getColumnNumber(),
+          // $FlowFixMe: https://github.com/facebook/flow/issues/5213
+          line: specResult.__callsite.getLineNumber(),
+        }
+      : null;
     const results = {
       ancestorTitles,
       duration,
       failureMessages: [],
       fullName: specResult.fullName,
+      location,
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
       status,
       title: specResult.description,
@@ -172,5 +184,3 @@ class Jasmine2Reporter {
     return results;
   }
 }
-
-module.exports = Jasmine2Reporter;

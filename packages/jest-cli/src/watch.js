@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
+import type {WatchPlugin} from './types';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
@@ -17,9 +17,9 @@ import getChangedFilesPromise from './get_changed_files_promise';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {getFailedSnapshotTests} from 'jest-util';
 import HasteMap from 'jest-haste-map';
-import isCI from 'is-ci';
 import isValidPath from './lib/is_valid_path';
-import preRunMessage from './pre_run_message';
+import {isInteractive} from 'jest-util';
+import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
 import updateGlobalConfig from './lib/update_global_config';
@@ -29,26 +29,36 @@ import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import TestPathPatternPrompt from './test_path_pattern_prompt';
 import TestNamePatternPrompt from './test_name_pattern_prompt';
+import FailedTestsCache from './failed_tests_cache';
+import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
 
-const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
 
-const watch = (
+export default function watch(
   initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
-) => {
-  // `globalConfig` will be consantly updated and reassigned as a result of
+): Promise<void> {
+  // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
   let globalConfig = initialGlobalConfig;
 
   globalConfig = updateGlobalConfig(globalConfig, {
     mode: globalConfig.watch ? 'watch' : 'watchAll',
+    passWithNoTests: true,
   });
 
+  const watchPlugins = new WatchPluginRegistry(globalConfig.rootDir);
+  if (globalConfig.watchPlugins != null) {
+    for (const pluginModulePath of globalConfig.watchPlugins) {
+      watchPlugins.loadPluginPath(pluginModulePath);
+    }
+  }
+
+  const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
@@ -109,13 +119,14 @@ const watch = (
 
     testWatcher = new TestWatcher({isWatchMode: true});
     isInteractive && outputStream.write(CLEAR);
-    preRunMessage.print(outputStream);
+    preRunMessagePrint(outputStream);
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
     return runJest({
       changedFilesPromise,
       contexts,
+      failedTestsCache,
       globalConfig,
       onComplete: results => {
         isRunning = false;
@@ -129,20 +140,29 @@ const watch = (
 
         testNamePatternPrompt.updateCachedTestResults(results.testResults);
 
-        if (snapshotInteracticeMode.isActive()) {
-          snapshotInteracticeMode.updateWithResults(results);
-          return;
-        }
-
-        if (shouldDisplayWatchUsage) {
-          outputStream.write(usage(globalConfig, hasSnapshotFailure));
-          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-          isWatchUsageDisplayed = true;
+        // Do not show any Watch Usage related stuff when running in a
+        // non-interactive environment
+        if (isInteractive) {
+          if (snapshotInteracticeMode.isActive()) {
+            snapshotInteracticeMode.updateWithResults(results);
+            return;
+          }
+          if (shouldDisplayWatchUsage) {
+            outputStream.write(
+              usage(globalConfig, watchPlugins, hasSnapshotFailure),
+            );
+            shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+            isWatchUsageDisplayed = true;
+          } else {
+            outputStream.write(showToggleUsagePrompt());
+            shouldDisplayWatchUsage = false;
+            isWatchUsageDisplayed = false;
+          }
         } else {
-          outputStream.write(showToggleUsagePrompt());
-          shouldDisplayWatchUsage = false;
-          isWatchUsageDisplayed = false;
+          outputStream.write('\n');
         }
+        failedTestsCache.setTestResults(results.testResults);
+        testNamePatternPrompt.updateCachedTestResults(results.testResults);
       },
       outputStream,
       startRun,
@@ -150,9 +170,16 @@ const watch = (
     }).catch(error => console.error(chalk.red(error.stack)));
   };
 
+  let activePlugin: ?WatchPlugin;
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       process.exit(0);
+      return;
+    }
+
+    if (activePlugin != null) {
+      // if a plugin is activate, Jest should let it handle keystrokes, so ignore
+      // them here
       return;
     }
 
@@ -170,10 +197,26 @@ const watch = (
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.F].indexOf(
+        key,
+      ) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
+    }
+
+    const matchingWatchPlugin = watchPlugins.getPluginByPressedKey(
+      parseInt(key, 16),
+    );
+    if (matchingWatchPlugin != null) {
+      // "activate" the plugin, which has jest ignore keystrokes so the plugin
+      // can handle them
+      activePlugin = matchingWatchPlugin;
+      activePlugin.enter(
+        globalConfig,
+        // end callback -- returns control to jest to handle keystrokes
+        () => (activePlugin = null),
+      );
     }
 
     switch (key) {
@@ -229,6 +272,12 @@ const watch = (
         });
         startRun(globalConfig);
         break;
+      case KEYS.F:
+        globalConfig = updateGlobalConfig(globalConfig, {
+          onlyFailures: !globalConfig.onlyFailures,
+        });
+        startRun(globalConfig);
+        break;
       case KEYS.O:
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watch',
@@ -273,7 +322,9 @@ const watch = (
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
-          outputStream.write(usage(globalConfig, hasSnapshotFailure));
+          outputStream.write(
+            usage(globalConfig, watchPlugins, hasSnapshotFailure),
+          );
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
         }
@@ -284,7 +335,7 @@ const watch = (
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
     outputStream.write(ansiEscapes.clearScreen);
-    outputStream.write(usage(globalConfig, hasSnapshotFailure));
+    outputStream.write(usage(globalConfig, watchPlugins, hasSnapshotFailure));
     outputStream.write(ansiEscapes.cursorShow);
   };
 
@@ -297,7 +348,7 @@ const watch = (
 
   startRun(globalConfig);
   return Promise.resolve();
-};
+}
 
 const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
   const {testNamePattern, testPathPattern} = globalConfig;
@@ -321,7 +372,12 @@ const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
   return '';
 };
 
-const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
+const usage = (
+  globalConfig,
+  watchPlugins: WatchPluginRegistry,
+  snapshotFailure,
+  delimiter = '\n',
+) => {
   const messages = [
     activeFilters(globalConfig),
 
@@ -333,6 +389,12 @@ const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
     globalConfig.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
+
+    globalConfig.onlyFailures
+      ? chalk.dim(' \u203A Press ') + 'f' + chalk.dim(' to run all tests.')
+      : chalk.dim(' \u203A Press ') +
+        'f' +
+        chalk.dim(' to run only failed tests.'),
 
     (globalConfig.watchAll ||
       globalConfig.testPathPattern ||
@@ -363,6 +425,17 @@ const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
       't' +
       chalk.dim(' to filter by a test name regex pattern.'),
 
+    ...watchPlugins
+      .getPluginsOrderedByKey()
+      .map(
+        plugin =>
+          chalk.dim(' \u203A Press') +
+          ' ' +
+          String.fromCodePoint(plugin.key) +
+          ' ' +
+          chalk.dim(`to ${plugin.prompt}.`),
+      ),
+
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
 
     chalk.dim(' \u203A Press ') +
@@ -379,5 +452,3 @@ const showToggleUsagePrompt = () =>
   chalk.dim('Press ') +
   'w' +
   chalk.dim(' to show more.');
-
-module.exports = watch;

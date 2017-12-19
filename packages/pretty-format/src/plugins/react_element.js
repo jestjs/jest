@@ -1,16 +1,20 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import {printChildren, printElement, printProps} from './lib/markup';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
 const elementSymbol = Symbol.for('react.element');
 
@@ -34,39 +38,43 @@ const getType = element => {
   if (typeof element.type === 'function') {
     return element.type.displayName || element.type.name || 'Unknown';
   }
-  return 'Unknown';
+  return 'UNDEFINED';
 };
 
 export const serialize = (
-  element: React$Element<*>,
+  element: React$Element<any>,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
 ): string =>
-  printElement(
-    getType(element),
-    printProps(
-      Object.keys(element.props).filter(key => key !== 'children').sort(),
-      element.props,
-      config,
-      indentation + config.indent,
-      depth,
-      refs,
-      printer,
-    ),
-    printChildren(
-      getChildren(element.props.children),
-      config,
-      indentation + config.indent,
-      depth,
-      refs,
-      printer,
-    ),
-    config,
-    indentation,
-  );
+  ++depth > config.maxDepth
+    ? printElementAsLeaf(getType(element), config)
+    : printElement(
+        getType(element),
+        printProps(
+          Object.keys(element.props)
+            .filter(key => key !== 'children')
+            .sort(),
+          element.props,
+          config,
+          indentation + config.indent,
+          depth,
+          refs,
+          printer,
+        ),
+        printChildren(
+          getChildren(element.props.children),
+          config,
+          indentation + config.indent,
+          depth,
+          refs,
+          printer,
+        ),
+        config,
+        indentation,
+      );
 
 export const test = (val: any) => val && val.$$typeof === elementSymbol;
 

@@ -1,40 +1,41 @@
 /**
-* Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
-*
-* This source code is licensed under the BSD-style license found in the
-* LICENSE file in the root directory of this source tree. An additional grant
-* of patent rights can be found in the PATENTS file in the same directory.
-*
-* @flow
-*/
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
 
 import type {
   AggregatedResult,
   CoverageMap,
-  SerializableError,
+  FileCoverage,
+  CoverageSummary,
   TestResult,
 } from 'types/TestResult';
+import typeof {worker} from './coverage_worker';
+
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
-import {clearLine} from 'jest-util';
+import {clearLine, isInteractive} from 'jest-util';
 import {createReporter} from 'istanbul-api';
 import chalk from 'chalk';
-import isCI from 'is-ci';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
-import pify from 'pify';
-import workerFarm from 'worker-farm';
+import Worker from 'jest-worker';
 import BaseReporter from './base_reporter';
-import CoverageWorker from './coverage_worker';
+import path from 'path';
+import glob from 'glob';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
-const isInteractive = process.stdout.isTTY && !isCI;
+type CoverageWorker = {worker: worker};
 
-class CoverageReporter extends BaseReporter {
+export default class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
   _globalConfig: GlobalConfig;
   _sourceMapStore: any;
@@ -57,10 +58,20 @@ class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        this._sourceMapStore.registerURL(
-          sourcePath,
-          testResult.sourceMaps[sourcePath],
-        );
+        let coverage: FileCoverage, inputSourceMap: ?Object;
+        try {
+          coverage = this._coverageMap.fileCoverageFor(sourcePath);
+          ({inputSourceMap} = coverage.toJSON());
+        } finally {
+          if (inputSourceMap) {
+            this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
+          } else {
+            this._sourceMapStore.registerURL(
+              sourcePath,
+              testResult.sourceMaps[sourcePath],
+            );
+          }
+        }
       });
     }
   }
@@ -107,8 +118,12 @@ class CoverageReporter extends BaseReporter {
     this._checkThreshold(this._globalConfig, map);
   }
 
-  _addUntestedFiles(globalConfig: GlobalConfig, contexts: Set<Context>) {
+  async _addUntestedFiles(
+    globalConfig: GlobalConfig,
+    contexts: Set<Context>,
+  ): Promise<void> {
     const files = [];
+
     contexts.forEach(context => {
       const config = context.config;
       if (
@@ -125,8 +140,9 @@ class CoverageReporter extends BaseReporter {
           );
       }
     });
+
     if (!files.length) {
-      return Promise.resolve();
+      return;
     }
 
     if (isInteractive) {
@@ -135,99 +151,227 @@ class CoverageReporter extends BaseReporter {
       );
     }
 
-    let worker;
-    let farm;
+    let worker: CoverageWorker;
+
     if (this._globalConfig.maxWorkers <= 1) {
-      worker = pify(CoverageWorker);
+      worker = require('./coverage_worker');
     } else {
-      farm = workerFarm(
-        {
-          autoStart: true,
-          maxConcurrentCallsPerWorker: 1,
-          maxConcurrentWorkers: this._globalConfig.maxWorkers,
-          maxRetries: 2,
-        },
-        require.resolve('./coverage_worker'),
-      );
-      worker = pify(farm);
+      // $FlowFixMe: assignment of a worker with custom properties.
+      worker = new Worker(require.resolve('./coverage_worker'), {
+        exposeMethods: ['worker'],
+        maxRetries: 2,
+        numWorkers: this._globalConfig.maxWorkers,
+      });
     }
-    const instrumentation = [];
-    files.forEach(fileObj => {
+
+    const instrumentation = files.map(async fileObj => {
       const filename = fileObj.path;
       const config = fileObj.config;
+
       if (!this._coverageMap.data[filename]) {
-        const promise = worker({
-          config,
-          globalConfig,
-          path: filename,
-        })
-          .then(result => {
-            if (result) {
-              this._coverageMap.addFileCoverage(result.coverage);
-              if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath,
-                );
-              }
-            }
-          })
-          .catch((error: SerializableError) => {
-            console.error(chalk.red(error.message));
+        try {
+          const result = await worker.worker({
+            config,
+            globalConfig,
+            path: filename,
           });
-        instrumentation.push(promise);
+
+          if (result) {
+            this._coverageMap.addFileCoverage(result.coverage);
+
+            if (result.sourceMapPath) {
+              this._sourceMapStore.registerURL(filename, result.sourceMapPath);
+            }
+          }
+        } catch (error) {
+          console.error(
+            chalk.red(
+              [
+                `Failed to collect coverage from ${filename}`,
+                `ERROR: ${error.message}`,
+                `STACK: ${error.stack}`,
+              ].join('\n'),
+            ),
+          );
+        }
       }
     });
 
-    const cleanup = () => {
-      if (isInteractive) {
-        clearLine(process.stderr);
-      }
-      if (farm) {
-        workerFarm.end(farm);
-      }
-    };
+    try {
+      await Promise.all(instrumentation);
+    } catch (err) {
+      // Do nothing; errors were reported earlier to the console.
+    }
 
-    return Promise.all(instrumentation).then(cleanup).catch(cleanup);
+    if (isInteractive) {
+      clearLine(process.stderr);
+    }
+
+    if (worker && typeof worker.end === 'function') {
+      worker.end();
+    }
   }
 
   _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {
     if (globalConfig.coverageThreshold) {
-      const results = map.getCoverageSummary().toJSON();
-
       function check(name, thresholds, actuals) {
-        return [
-          'statements',
-          'branches',
-          'lines',
-          'functions',
-        ].reduce((errors, key) => {
-          const actual = actuals[key].pct;
-          const actualUncovered = actuals[key].total - actuals[key].covered;
-          const threshold = thresholds[key];
+        return ['statements', 'branches', 'lines', 'functions'].reduce(
+          (errors, key) => {
+            const actual = actuals[key].pct;
+            const actualUncovered = actuals[key].total - actuals[key].covered;
+            const threshold = thresholds[key];
 
-          if (threshold != null) {
-            if (threshold < 0) {
-              if (threshold * -1 < actualUncovered) {
+            if (threshold != null) {
+              if (threshold < 0) {
+                if (threshold * -1 < actualUncovered) {
+                  errors.push(
+                    `Jest: Uncovered count for ${key} (${actualUncovered})` +
+                      `exceeds ${name} threshold (${-1 * threshold})`,
+                  );
+                }
+              } else if (actual < threshold) {
                 errors.push(
-                  `Jest: Uncovered count for ${key} (${actualUncovered})` +
-                    `exceeds ${name} threshold (${-1 * threshold})`,
+                  `Jest: "${name}" coverage threshold for ${key} (${threshold}%) not met: ${actual}%`,
                 );
               }
-            } else if (actual < threshold) {
-              errors.push(
-                `Jest: Coverage for ${key} (${actual}` +
-                  `%) does not meet ${name} threshold (${threshold}%)`,
+            }
+            return errors;
+          },
+          [],
+        );
+      }
+
+      const THRESHOLD_GROUP_TYPES = {
+        GLOB: 'glob',
+        GLOBAL: 'global',
+        PATH: 'path',
+      };
+      const coveredFiles = map.files();
+      const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
+      const numThresholdGroups = thresholdGroups.length;
+      const groupTypeByThresholdGroup = {};
+      const filesByGlob = {};
+
+      const coveredFilesSortedIntoThresholdGroup = coveredFiles.map(file => {
+        for (let i = 0; i < numThresholdGroups; i++) {
+          const thresholdGroup = thresholdGroups[i];
+          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+
+          // The threshold group might be a path:
+
+          if (file.indexOf(absoluteThresholdGroup) === 0) {
+            groupTypeByThresholdGroup[thresholdGroup] =
+              THRESHOLD_GROUP_TYPES.PATH;
+            return [file, thresholdGroup];
+          }
+
+          // If the threshold group is not a path it might be a glob:
+
+          // Note: glob.sync is slow. By memoizing the files matching each glob
+          // (rather than recalculating it for each covered file) we save a tonne
+          // of execution time.
+          if (filesByGlob[absoluteThresholdGroup] === undefined) {
+            filesByGlob[absoluteThresholdGroup] = glob
+              .sync(absoluteThresholdGroup)
+              .map(filePath => path.resolve(filePath));
+          }
+
+          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+            groupTypeByThresholdGroup[thresholdGroup] =
+              THRESHOLD_GROUP_TYPES.GLOB;
+            return [file, thresholdGroup];
+          }
+        }
+
+        // Neither a glob or a path? Toss it in global if there's a global threshold:
+        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+          groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
+            THRESHOLD_GROUP_TYPES.GLOBAL;
+          return [file, THRESHOLD_GROUP_TYPES.GLOBAL];
+        }
+
+        // A covered file that doesn't have a threshold:
+        return [file, undefined];
+      });
+
+      const getFilesInThresholdGroup = thresholdGroup =>
+        coveredFilesSortedIntoThresholdGroup
+          .filter(fileAndGroup => fileAndGroup[1] === thresholdGroup)
+          .map(fileAndGroup => fileAndGroup[0]);
+
+      function combineCoverage(filePaths) {
+        return filePaths
+          .map(filePath => map.fileCoverageFor(filePath))
+          .reduce(
+            (
+              combinedCoverage: ?CoverageSummary,
+              nextFileCoverage: FileCoverage,
+            ) => {
+              if (combinedCoverage === undefined || combinedCoverage === null) {
+                return nextFileCoverage.toSummary();
+              }
+              return combinedCoverage.merge(nextFileCoverage.toSummary());
+            },
+            undefined,
+          );
+      }
+
+      let errors = [];
+
+      thresholdGroups.forEach(thresholdGroup => {
+        switch (groupTypeByThresholdGroup[thresholdGroup]) {
+          case THRESHOLD_GROUP_TYPES.GLOBAL: {
+            const coverage = combineCoverage(
+              getFilesInThresholdGroup(THRESHOLD_GROUP_TYPES.GLOBAL),
+            );
+            if (coverage) {
+              errors = errors.concat(
+                check(
+                  thresholdGroup,
+                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverage,
+                ),
               );
             }
+            break;
           }
-          return errors;
-        }, []);
-      }
-      const errors = check(
-        'global',
-        globalConfig.coverageThreshold.global,
-        results,
+          case THRESHOLD_GROUP_TYPES.PATH: {
+            const coverage = combineCoverage(
+              getFilesInThresholdGroup(thresholdGroup),
+            );
+            if (coverage) {
+              errors = errors.concat(
+                check(
+                  thresholdGroup,
+                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverage,
+                ),
+              );
+            }
+            break;
+          }
+          case THRESHOLD_GROUP_TYPES.GLOB:
+            getFilesInThresholdGroup(thresholdGroup).forEach(
+              fileMatchingGlob => {
+                errors = errors.concat(
+                  check(
+                    fileMatchingGlob,
+                    globalConfig.coverageThreshold[thresholdGroup],
+                    map.fileCoverageFor(fileMatchingGlob).toSummary(),
+                  ),
+                );
+              },
+            );
+            break;
+          default:
+            errors = errors.concat(
+              `Jest: Coverage data for ${thresholdGroup} was not found.`,
+            );
+        }
+      });
+
+      errors = errors.filter(
+        err => err !== undefined && err !== null && err.length > 0,
       );
 
       if (errors.length > 0) {
@@ -242,5 +386,3 @@ class CoverageReporter extends BaseReporter {
     return this._coverageMap;
   }
 }
-
-module.exports = CoverageReporter;

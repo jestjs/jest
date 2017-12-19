@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -25,19 +24,26 @@ export type MockFunctionMetadata = {
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
+  timestamps: Array<number>,
 };
 
 type MockFunctionConfig = {
   isReturnValueLastSet: boolean,
   defaultReturnValue: any,
   mockImpl: any,
+  mockName: string,
   specificReturnValues: Array<any>,
   specificMockImpls: Array<any>,
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
-// $FlowFixMe
+const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-\/:-@\[-`{-~]/;
+const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
+  FUNCTION_NAME_RESERVED_PATTERN.source,
+  'g',
+);
+
 const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
   arguments: true,
   await: true,
@@ -264,6 +270,7 @@ class ModuleMockerClass {
       defaultReturnValue: undefined,
       isReturnValueLastSet: false,
       mockImpl: undefined,
+      mockName: 'jest.fn()',
       specificMockImpls: [],
       specificReturnValues: [],
     };
@@ -273,6 +280,7 @@ class ModuleMockerClass {
     return {
       calls: [],
       instances: [],
+      timestamps: [],
     };
   }
 
@@ -307,6 +315,7 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
+        mockState.timestamps.push(Date.now());
         if (this instanceof f) {
           // This is probably being called as a constructor
           prototypeSlots.forEach(slot => {
@@ -321,9 +330,10 @@ class ModuleMockerClass {
           });
 
           // Run the mock constructor implementation
-          return (
-            mockConfig.mockImpl && mockConfig.mockImpl.apply(this, arguments)
-          );
+          const mockImpl = mockConfig.specificMockImpls.length
+            ? mockConfig.specificMockImpls.shift()
+            : mockConfig.mockImpl;
+          return mockImpl && mockImpl.apply(this, arguments);
         }
 
         const returnValue = mockConfig.defaultReturnValue;
@@ -381,11 +391,13 @@ class ModuleMockerClass {
 
       f.mockClear = () => {
         this._mockState.delete(f);
+        return f;
       };
 
       f.mockReset = () => {
         this._mockState.delete(f);
         this._mockConfigRegistry.delete(f);
+        return f;
       };
 
       f.mockReturnValueOnce = value => {
@@ -425,6 +437,19 @@ class ModuleMockerClass {
         f.mockImplementation(function() {
           return this;
         });
+
+      f.mockName = name => {
+        if (name) {
+          const mockConfig = this._ensureMockConfig(f);
+          mockConfig.mockName = name;
+        }
+        return f;
+      };
+
+      f.getMockName = () => {
+        const mockConfig = this._ensureMockConfig(f);
+        return mockConfig.mockName || 'jest.fn()';
+      };
 
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
@@ -474,8 +499,8 @@ class ModuleMockerClass {
 
     // It's also a syntax error to define a function with a reserved character
     // as part of it's name.
-    if (/[\s-]/.test(name)) {
-      name = name.replace(/[\s-]/g, '$');
+    if (FUNCTION_NAME_RESERVED_PATTERN.test(name)) {
+      name = name.replace(FUNCTION_NAME_RESERVED_REPLACE, '$');
     }
 
     const body =
@@ -622,7 +647,7 @@ class ModuleMockerClass {
   }
 
   isMockFunction(fn: any): boolean {
-    return !!fn._isMockFunction;
+    return !!(fn && fn._isMockFunction);
   }
 
   fn(implementation?: any): any {
@@ -635,12 +660,22 @@ class ModuleMockerClass {
   }
 
   spyOn(object: any, methodName: any): any {
+    if (typeof object !== 'object' && typeof object !== 'function') {
+      throw new Error(
+        'Cannot spyOn on a primitive value; ' + this._typeOf(object) + ' given',
+      );
+    }
+
     const original = object[methodName];
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          'Cannot spyOn the ' + methodName + ' property; it is not a function',
+          'Cannot spy the ' +
+            methodName +
+            ' property because it is not a function; ' +
+            this._typeOf(original) +
+            ' given instead',
         );
       }
 
@@ -668,6 +703,10 @@ class ModuleMockerClass {
   restoreAllMocks() {
     this._spyState.forEach(restore => restore());
     this._spyState = new Set();
+  }
+
+  _typeOf(value: any): string {
+    return value == null ? '' + value : typeof value;
   }
 }
 

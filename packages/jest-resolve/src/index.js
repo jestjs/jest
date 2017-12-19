@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -14,8 +13,8 @@ import type {ResolveModuleConfig} from 'types/Resolve';
 
 import fs from 'fs';
 import path from 'path';
-import nodeModulesPaths from 'resolve/lib/node-modules-paths';
-import isBuiltinModule from 'is-builtin-module';
+import nodeModulesPaths from './node_modules_paths';
+import isBuiltinModule from './is_builtin_module';
 import defaultResolver from './default_resolver.js';
 import chalk from 'chalk';
 
@@ -29,6 +28,7 @@ type ResolverConfig = {|
   modulePaths: Array<Path>,
   platforms?: Array<string>,
   resolver: ?Path,
+  rootDir: ?Path,
 |};
 
 type FindNodeModuleConfig = {|
@@ -38,6 +38,7 @@ type FindNodeModuleConfig = {|
   moduleDirectory?: Array<string>,
   paths?: Array<Path>,
   resolver?: ?Path,
+  rootDir?: ?Path,
 |};
 
 type ModuleNameMapperConfig = {|
@@ -45,7 +46,7 @@ type ModuleNameMapperConfig = {|
   moduleName: string,
 |};
 
-type BooleanObject = {[key: string]: boolean};
+type BooleanObject = {[key: string]: boolean, __proto__: null};
 
 const NATIVE_PLATFORM = 'native';
 
@@ -53,8 +54,7 @@ const NATIVE_PLATFORM = 'native';
 const cwd = process.cwd();
 const resolvedCwd = fs.realpathSync(cwd) || cwd;
 const nodePaths = process.env.NODE_PATH
-  ? process.env.NODE_PATH
-      .split(path.delimiter)
+  ? process.env.NODE_PATH.split(path.delimiter)
       .filter(Boolean)
       // The resolver expects absolute paths.
       .map(p => path.resolve(resolvedCwd, p))
@@ -63,9 +63,9 @@ const nodePaths = process.env.NODE_PATH
 class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
-  _moduleIDCache: {[key: string]: string};
-  _moduleNameCache: {[name: string]: Path};
-  _modulePathCache: {[path: Path]: Array<Path>};
+  _moduleIDCache: {[key: string]: string, __proto__: null};
+  _moduleNameCache: {[name: string]: Path, __proto__: null};
+  _modulePathCache: {[path: Path]: Array<Path>, __proto__: null};
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
@@ -79,6 +79,7 @@ class Resolver {
       modulePaths: options.modulePaths,
       platforms: options.platforms,
       resolver: options.resolver,
+      rootDir: options.rootDir,
     };
     this._moduleMap = moduleMap;
     this._moduleIDCache = Object.create(null);
@@ -100,6 +101,7 @@ class Resolver {
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
+        rootDir: options.rootDir,
       });
     } catch (e) {}
     return null;
@@ -117,10 +119,16 @@ class Resolver {
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
     if (this._supportsNativePlatform()) {
-      extensions.unshift('.' + NATIVE_PLATFORM + '.js');
+      extensions.unshift.apply(
+        extensions,
+        this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
     }
     if (defaultPlatform) {
-      extensions.unshift('.' + defaultPlatform + '.js');
+      extensions.unshift.apply(
+        extensions,
+        this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
     }
 
     // 0. If we have already resolved this module for this directory name,
@@ -152,6 +160,7 @@ class Resolver {
         moduleDirectory,
         paths,
         resolver: this._options.resolver,
+        rootDir: this._options.rootDir,
       });
     };
 
@@ -316,39 +325,46 @@ class Resolver {
     const extensions = this._options.extensions;
     const moduleDirectory = this._options.moduleDirectories;
     const moduleNameMapper = this._options.moduleNameMapper;
+    const resolver = this._options.resolver;
 
     if (moduleNameMapper) {
       for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
         if (regex.test(moduleName)) {
+          // Note: once a moduleNameMapper matches the name, it must result
+          // in a module, or else an error is thrown.
           const matches = moduleName.match(regex);
-          if (!matches) {
-            moduleName = mappedModuleName;
-          } else {
-            moduleName = mappedModuleName.replace(
-              /\$([0-9]+)/g,
-              (_, index) => matches[parseInt(index, 10)],
-            );
-          }
+          const updatedName = matches
+            ? mappedModuleName.replace(
+                /\$([0-9]+)/g,
+                (_, index) => matches[parseInt(index, 10)],
+              )
+            : mappedModuleName;
 
           const module =
-            this.getModule(moduleName) ||
-            Resolver.findNodeModule(moduleName, {
+            this.getModule(updatedName) ||
+            Resolver.findNodeModule(updatedName, {
               basedir: dirname,
               browser: this._options.browser,
               extensions,
               moduleDirectory,
               paths,
+              resolver,
+              rootDir: this._options.rootDir,
             });
           if (!module) {
             const error = new Error(
               chalk.red(`${chalk.bold('Configuration error')}:
 
-Unknown module in configuration option ${chalk.bold('moduleNameMapper')}
+Could not locate module ${chalk.bold(moduleName)} (mapped as ${chalk.bold(
+                updatedName,
+              )})
+
 Please check:
 
 "moduleNameMapper": {
-  "${regex.toString()}": "${chalk.bold(moduleName)}"
-}`),
+  "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
+},
+"resolver": ${chalk.bold(resolver)}`),
             );
             error.stack = '';
             throw error;
@@ -356,6 +372,22 @@ Please check:
           return module;
         }
       }
+    }
+    if (resolver) {
+      // if moduleNameMapper didn't match anything, fallback to just the
+      // regular resolver
+      const module =
+        this.getModule(moduleName) ||
+        Resolver.findNodeModule(moduleName, {
+          basedir: dirname,
+          browser: this._options.browser,
+          extensions,
+          moduleDirectory,
+          paths,
+          resolver,
+          rootDir: this._options.rootDir,
+        });
+      return module;
     }
     return null;
   }

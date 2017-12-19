@@ -1,18 +1,16 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
-import type {SerializableError} from 'types/TestResult';
-import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';
+import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
 import path from 'path';
-import docblock from 'jest-docblock';
+import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import H from './constants';
 import extractRequires from './lib/extract_requires';
@@ -23,24 +21,7 @@ const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 let hasteImpl: ?HasteImpl = null;
 let hasteImplModulePath: ?string = null;
 
-const formatError = (error: string | Error): SerializableError => {
-  if (typeof error === 'string') {
-    return {
-      message: error,
-      stack: null,
-      type: 'Error',
-    };
-  }
-
-  return {
-    code: error.code || undefined,
-    message: error.message,
-    stack: error.stack,
-    type: 'Error',
-  };
-};
-
-module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
+export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   if (
     data.hasteImplModulePath &&
     data.hasteImplModulePath !== hasteImplModulePath
@@ -49,39 +30,34 @@ module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
       throw new Error('jest-haste-map: hasteImplModulePath changed');
     }
     hasteImplModulePath = data.hasteImplModulePath;
-    hasteImpl =
-      // $FlowFixMe: dynamic require
-      (require(hasteImplModulePath): HasteImpl);
+    // $FlowFixMe: dynamic require
+    hasteImpl = (require(hasteImplModulePath): HasteImpl);
   }
 
-  try {
-    const filePath = data.filePath;
-    const content = fs.readFileSync(filePath, 'utf8');
-    let module;
-    let id;
-    let dependencies;
+  const filePath = data.filePath;
+  const content = fs.readFileSync(filePath, 'utf8');
+  let module;
+  let id;
+  let dependencies;
 
-    if (filePath.endsWith(PACKAGE_JSON)) {
-      const fileData = JSON.parse(content);
-      if (fileData.name) {
-        id = fileData.name;
-        module = [filePath, H.PACKAGE];
-      }
-    } else if (!filePath.endsWith(JSON_EXTENSION)) {
-      if (hasteImpl) {
-        id = hasteImpl.getHasteName(filePath);
-      } else {
-        const doc = docblock.parse(docblock.extract(content));
-        id = doc.providesModule || doc.provides;
-      }
-      dependencies = extractRequires(content);
-      if (id) {
-        module = [filePath, H.MODULE];
-      }
+  if (filePath.endsWith(PACKAGE_JSON)) {
+    const fileData = JSON.parse(content);
+    if (fileData.name) {
+      id = fileData.name;
+      module = [filePath, H.PACKAGE];
     }
-
-    callback(null, {dependencies, id, module});
-  } catch (error) {
-    callback(formatError(error));
+  } else if (!filePath.endsWith(JSON_EXTENSION)) {
+    if (hasteImpl) {
+      id = hasteImpl.getHasteName(filePath);
+    } else {
+      const doc = docblock.parse(docblock.extract(content));
+      id = doc.providesModule || doc.provides;
+    }
+    dependencies = extractRequires(content);
+    if (id) {
+      module = [filePath, H.MODULE];
+    }
   }
-};
+
+  return {dependencies, id, module};
+}

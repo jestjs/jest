@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -14,10 +13,14 @@ import type {Argv} from 'types/Argv';
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
 import {isJSONString} from './utils';
 
-function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
+export default function setFromArgv(
+  options: InitialOptions,
+  argv: Argv,
+): InitialOptions {
+  // $FlowFixMe: Seems like flow doesn't approve of string values
   const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
-    .reduce((options: Object, key) => {
+    .reduce((options: {[key: string]: mixed}, key) => {
       switch (key) {
         case 'coverage':
           options.collectCoverage = argv[key];
@@ -26,7 +29,8 @@ function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
           options.useStderr = argv[key];
           break;
         case 'watchAll':
-          options.watch = argv[key];
+          options.watch = false;
+          options.watchAll = argv[key];
           break;
         case 'env':
           options.testEnvironment = argv[key];
@@ -55,5 +59,3 @@ function setFromArgv(options: InitialOptions, argv: Argv): InitialOptions {
     argvToOptions,
   );
 }
-
-module.exports = setFromArgv;

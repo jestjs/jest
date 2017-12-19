@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,11 +10,7 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
-import {
-  extractExpectedAssertionsErrors,
-  getState,
-  setState,
-} from 'jest-matchers';
+import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 
 export type SetupOptions = {|
@@ -89,7 +84,7 @@ const patchJasmine = () => {
   })(global.jasmine.Spec);
 };
 
-module.exports = ({
+export default ({
   config,
   globalConfig,
   localRequire,
@@ -97,9 +92,12 @@ module.exports = ({
 }: SetupOptions) => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers.concat().reverse().forEach(path => {
-    addSerializer(localRequire(path));
-  });
+  config.snapshotSerializers
+    .concat()
+    .reverse()
+    .forEach(path => {
+      addSerializer(localRequire(path));
+    });
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
   const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});

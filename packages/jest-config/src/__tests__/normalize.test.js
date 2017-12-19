@@ -1,12 +1,13 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
-'use strict';
+
+import {escapeStrForRegex} from 'jest-regex-util';
+import normalize from '../normalize';
 
 jest.mock('jest-resolve');
 
@@ -14,9 +15,6 @@ jest.mock('path', () => require.requireActual('path').posix);
 
 const crypto = require('crypto');
 const path = require('path');
-const utils = require('jest-regex-util');
-const normalize = require('../normalize');
-
 const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
@@ -37,10 +35,7 @@ const findNodeModule = jest.fn(name => {
 // regular expressions. This little helper function helps us generate the
 // expected strings for checking path patterns.
 function joinForPattern() {
-  return Array.prototype.join.call(
-    arguments,
-    utils.escapeStrForRegex(path.sep),
-  );
+  return Array.prototype.join.call(arguments, escapeStrForRegex(path.sep));
 }
 
 beforeEach(() => {
@@ -383,6 +378,57 @@ describe('coveragePathIgnorePatterns', () => {
   });
 });
 
+describe('watchPathIgnorePatterns', () => {
+  it('does not normalize paths relative to rootDir', () => {
+    // This is a list of patterns, so we can't assume any of them are
+    // directories
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        watchPathIgnorePatterns: ['bar/baz', 'qux/quux'],
+      },
+      {},
+    );
+
+    expect(options.watchPathIgnorePatterns).toEqual([
+      joinForPattern('bar', 'baz'),
+      joinForPattern('qux', 'quux'),
+    ]);
+  });
+
+  it('does not normalize trailing slashes', () => {
+    // This is a list of patterns, so we can't assume any of them are
+    // directories
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        watchPathIgnorePatterns: ['bar/baz', 'qux/quux/'],
+      },
+      {},
+    );
+
+    expect(options.watchPathIgnorePatterns).toEqual([
+      joinForPattern('bar', 'baz'),
+      joinForPattern('qux', 'quux', ''),
+    ]);
+  });
+
+  it('substitutes <rootDir> tokens', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        watchPathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
+      },
+      {},
+    );
+
+    expect(options.watchPathIgnorePatterns).toEqual([
+      'hasNoToken',
+      joinForPattern('', 'root', 'path', 'foo', 'hasAToken'),
+    ]);
+  });
+});
+
 describe('testPathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', () => {
     // This is a list of patterns, so we can't assume any of them are
@@ -537,6 +583,9 @@ describe('testEnvironment', () => {
       if (name === 'jest-environment-jsdom') {
         return 'node_modules/jest-environment-jsdom';
       }
+      if (name.startsWith('/root')) {
+        return name;
+      }
       return findNodeModule(name);
     });
   });
@@ -565,6 +614,18 @@ describe('testEnvironment', () => {
         {},
       ),
     ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('works with rootDir', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testEnvironment: '<rootDir>/testEnvironment.js',
+      },
+      {},
+    );
+
+    expect(options.testEnvironment).toEqual('/root/testEnvironment.js');
   });
 });
 
@@ -816,6 +877,22 @@ describe('preset', () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
+  test('throws when preset is invalid', () => {
+    jest.mock('/node_modules/react-native/jest-preset.json', () =>
+      require.requireActual('./jest-preset.json'),
+    );
+
+    expect(() => {
+      normalize(
+        {
+          preset: 'react-native',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowErrorMatchingSnapshot();
+  });
+
   test('works with "react-native"', () => {
     expect(() => {
       normalize(
@@ -851,7 +928,7 @@ describe('preset', () => {
 
   test('merges with options and moduleNameMapper preset is overridden by options', () => {
     // Object initializer not used for properties as a workaround for
-    //  sort-keys eslint rule while specifing properties in
+    //  sort-keys eslint rule while specifying properties in
     //  non-alphabetical order for a better test
     const moduleNameMapper = {};
     moduleNameMapper.e = 'ee';
@@ -913,5 +990,131 @@ describe('preset without setupFiles', () => {
         setupFiles: expect.arrayContaining(['/node_modules/a']),
       }),
     );
+  });
+});
+
+describe('watchPlugins', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name.startsWith(path.sep)) {
+        return name;
+      }
+      return path.sep + 'node_modules' + path.sep + name;
+    });
+  });
+
+  it('defaults to undefined', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.watchPlugins).toEqual(undefined);
+  });
+
+  it('normalizes watchPlugins', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        watchPlugins: ['my-watch-plugin', '<rootDir>/path/to/plugin'],
+      },
+      {},
+    );
+
+    expect(options.watchPlugins).toEqual([
+      '/node_modules/my-watch-plugin',
+      '/root/path/to/plugin',
+    ]);
+  });
+});
+
+describe('testPathPattern', () => {
+  const initialOptions = {rootDir: '/root'};
+  const consoleLog = console.log;
+
+  function testWindowsPathSeparator(argv, expected) {
+    jest.resetModules();
+    jest.mock('path', () => require.requireActual('path').win32);
+    require('jest-resolve').findNodeModule = findNodeModule;
+
+    const {options} = require('../normalize').default(initialOptions, argv);
+    expect(options.testPathPattern).toBe(expected);
+  }
+
+  beforeEach(() => {
+    console.log = jest.fn();
+  });
+
+  afterEach(() => {
+    console.log = consoleLog;
+  });
+
+  it('defaults to empty', () => {
+    const {options} = normalize(initialOptions, {});
+    expect(options.testPathPattern).toBe('');
+  });
+
+  describe('--testPathPattern', () => {
+    it('uses testPathPattern if set', () => {
+      const {options} = normalize(initialOptions, {testPathPattern: ['a/b']});
+      expect(options.testPathPattern).toBe('a/b');
+    });
+
+    it('ignores invalid regular expressions and logs a warning', () => {
+      const {options} = normalize(initialOptions, {testPathPattern: ['a(']});
+      expect(options.testPathPattern).toBe('');
+      expect(console.log.mock.calls[0][0]).toMatchSnapshot();
+    });
+
+    it('escapes Windows path separators', () => {
+      testWindowsPathSeparator({testPathPattern: ['a\\b']}, 'a\\\\b');
+    });
+
+    it('joins multiple --testPathPatterns if set', () => {
+      const {options} = normalize(initialOptions, {
+        testPathPattern: ['a/b', 'c/d'],
+      });
+      expect(options.testPathPattern).toBe('a/b|c/d');
+    });
+
+    it('escapes Windows path separators in multiple args', () => {
+      testWindowsPathSeparator(
+        {testPathPattern: ['a\\b', 'c\\d']},
+        'a\\\\b|c\\\\d',
+      );
+    });
+  });
+
+  describe('<regexForTestFiles>', () => {
+    it('uses <regexForTestFiles> if set', () => {
+      const {options} = normalize(initialOptions, {_: ['a/b']});
+      expect(options.testPathPattern).toBe('a/b');
+    });
+
+    it('ignores invalid regular expressions and logs a warning', () => {
+      const {options} = normalize(initialOptions, {_: ['a(']});
+      expect(options.testPathPattern).toBe('');
+      expect(console.log.mock.calls[0][0]).toMatchSnapshot();
+    });
+
+    it('escapes Windows path separators', () => {
+      testWindowsPathSeparator({_: ['a\\b']}, 'a\\\\b');
+    });
+
+    it('joins multiple <regexForTestFiles> if set', () => {
+      const {options} = normalize(initialOptions, {_: ['a/b', 'c/d']});
+      expect(options.testPathPattern).toBe('a/b|c/d');
+    });
+
+    it('escapes Windows path separators in multiple args', () => {
+      testWindowsPathSeparator({_: ['a\\b', 'c\\d']}, 'a\\\\b|c\\\\d');
+    });
+  });
+
+  it('joins multiple --testPathPatterns and <regexForTestFiles>', () => {
+    const {options} = normalize(initialOptions, {
+      _: ['a', 'b'],
+      testPathPattern: ['c', 'd'],
+    });
+    expect(options.testPathPattern).toBe('a|b|c|d');
   });
 });

@@ -12,6 +12,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"coveragePathIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
+      \\"detectLeaks\\": false,
+      \\"forceCoverageMatch\\": [],
       \\"globals\\": {},
       \\"haste\\": {
         \\"providesModuleNodeModules\\": []
@@ -34,9 +36,12 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"roots\\": [
         \\"<<REPLACED_ROOT_DIR>>\\"
       ],
+      \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
+      \\"testEnvironmentOptions\\": {},
+      \\"testLocationInResults\\": false,
       \\"testMatch\\": [
         \\"**/__tests__/**/*.js?(x)\\",
         \\"**/?(*.)(spec|test).js?(x)\\"
@@ -50,7 +55,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"timers\\": \\"real\\",
       \\"transformIgnorePatterns\\": [
         \\"/node_modules/\\"
-      ]
+      ],
+      \\"watchPathIgnorePatterns\\": []
     }
   ],
   \\"globalConfig\\": {
@@ -63,14 +69,19 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"lcov\\",
       \\"clover\\"
     ],
+    \\"detectLeaks\\": false,
     \\"expand\\": false,
+    \\"globalSetup\\": null,
+    \\"globalTeardown\\": null,
     \\"listTests\\": false,
     \\"mapCoverage\\": false,
     \\"maxWorkers\\": \\"[maxWorkers]\\",
     \\"noStackTrace\\": false,
     \\"nonFlagArgs\\": [],
     \\"notify\\": false,
+    \\"passWithNoTests\\": false,
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
+    \\"runTestsByPath\\": false,
     \\"testFailureExitCode\\": 1,
     \\"testPathPattern\\": \\"\\",
     \\"testResultsProcessor\\": null,

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -15,17 +14,11 @@ import type {ReporterOnStartOptions} from 'types/Reporters';
 
 import chalk from 'chalk';
 import BaseReporter from './base_reporter';
-import {getSummary, pluralize} from './utils';
+import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
+import getSnapshotSummary from './get_snapshot_summary';
 import testPathPatternToRegExp from '../test_path_pattern_to_regexp';
 
-const ARROW = ' \u203A ';
-const FAIL_COLOR = chalk.bold.red;
-const SNAPSHOT_ADDED = chalk.bold.green;
-const SNAPSHOT_NOTE = chalk.dim;
-const SNAPSHOT_REMOVED = chalk.bold.red;
-const SNAPSHOT_SUMMARY = chalk.bold;
-const SNAPSHOT_UPDATED = chalk.bold.green;
 const TEST_SUMMARY_THRESHOLD = 20;
 
 const NPM_EVENTS = new Set([
@@ -55,7 +48,7 @@ const NPM_EVENTS = new Set([
   'postrestart',
 ]);
 
-class SummaryReporter extends BaseReporter {
+export default class SummaryReporter extends BaseReporter {
   _estimatedTime: number;
   _globalConfig: GlobalConfig;
 
@@ -141,71 +134,20 @@ class SummaryReporter extends BaseReporter {
         process.env.npm_config_user_agent.match('yarn') !== null
           ? 'yarn'
           : 'npm';
+      const scriptUsesJest =
+        typeof process.env.npm_lifecycle_script === 'string' &&
+        process.env.npm_lifecycle_script.indexOf('jest') !== -1;
+
       if (globalConfig.watch) {
         updateCommand = 'press `u`';
-      } else if (event) {
-        updateCommand = `run with \`${client + ' ' + prefix + event} -- -u\``;
+      } else if (event && scriptUsesJest) {
+        updateCommand = `run \`${client + ' ' + prefix + event} -u\``;
       } else {
-        updateCommand = 're-run with `-u`';
+        updateCommand = 're-run jest with `-u`';
       }
 
-      this.log(SNAPSHOT_SUMMARY('Snapshot Summary'));
-      if (snapshots.added) {
-        this.log(
-          SNAPSHOT_ADDED(ARROW + pluralize('snapshot', snapshots.added)) +
-            ` written in ${pluralize('test suite', snapshots.filesAdded)}.`,
-        );
-      }
-
-      if (snapshots.unmatched) {
-        this.log(
-          FAIL_COLOR(ARROW + pluralize('snapshot test', snapshots.unmatched)) +
-            ` failed in ` +
-            `${pluralize('test suite', snapshots.filesUnmatched)}. ` +
-            SNAPSHOT_NOTE(
-              'Inspect your code changes or ' +
-                updateCommand +
-                ' to update them.',
-            ),
-        );
-      }
-
-      if (snapshots.updated) {
-        this.log(
-          SNAPSHOT_UPDATED(ARROW + pluralize('snapshot', snapshots.updated)) +
-            ` updated in ${pluralize('test suite', snapshots.filesUpdated)}.`,
-        );
-      }
-
-      if (snapshots.filesRemoved) {
-        this.log(
-          SNAPSHOT_REMOVED(
-            ARROW + pluralize('obsolete snapshot file', snapshots.filesRemoved),
-          ) +
-            (snapshots.didUpdate
-              ? ' removed.'
-              : ' found, ' +
-                updateCommand +
-                ' to remove ' +
-                (snapshots.filesRemoved === 1 ? 'it' : 'them.') +
-                '.'),
-        );
-      }
-
-      if (snapshots.unchecked) {
-        this.log(
-          FAIL_COLOR(
-            ARROW + pluralize('obsolete snapshot', snapshots.unchecked),
-          ) +
-            (snapshots.didUpdate
-              ? ' removed.'
-              : ' found, ' +
-                updateCommand +
-                ' to remove ' +
-                (snapshots.filesRemoved === 1 ? 'it' : 'them') +
-                '.'),
-        );
-      }
+      const snapshotSummary = getSnapshotSummary(snapshots, updateCommand);
+      snapshotSummary.forEach(this.log);
 
       this.log(''); // print empty line
     }
@@ -240,16 +182,36 @@ class SummaryReporter extends BaseReporter {
   }
 
   _getTestSummary(contexts: Set<Context>, globalConfig: GlobalConfig) {
-    const testInfo = globalConfig.onlyChanged
-      ? chalk.dim(' related to changed files')
-      : globalConfig.testPathPattern
-        ? chalk.dim(' matching ') +
-          testPathPatternToRegExp(globalConfig.testPathPattern).toString()
-        : '';
+    const getMatchingTestsInfo = () => {
+      const prefix = globalConfig.findRelatedTests
+        ? ' related to files matching '
+        : ' matching ';
 
-    const nameInfo = globalConfig.testNamePattern
-      ? chalk.dim(' with tests matching ') + `"${globalConfig.testNamePattern}"`
-      : '';
+      return (
+        chalk.dim(prefix) +
+        testPathPatternToRegExp(globalConfig.testPathPattern).toString()
+      );
+    };
+
+    let testInfo = '';
+
+    if (globalConfig.runTestsByPath) {
+      testInfo = chalk.dim(' within paths');
+    } else if (globalConfig.onlyChanged) {
+      testInfo = chalk.dim(' related to changed files');
+    } else if (globalConfig.testPathPattern) {
+      testInfo = getMatchingTestsInfo();
+    }
+
+    let nameInfo = '';
+
+    if (globalConfig.runTestsByPath) {
+      nameInfo = ' ' + globalConfig.nonFlagArgs.map(p => `"${p}"`).join(', ');
+    } else if (globalConfig.testNamePattern) {
+      nameInfo =
+        chalk.dim(' with tests matching ') +
+        `"${globalConfig.testNamePattern}"`;
+    }
 
     const contextInfo =
       contexts.size > 1
@@ -265,5 +227,3 @@ class SummaryReporter extends BaseReporter {
     );
   }
 }
-
-module.exports = SummaryReporter;

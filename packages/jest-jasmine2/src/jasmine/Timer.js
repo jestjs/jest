@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 // This file is a heavily modified fork of Jasmine. Original license:
@@ -38,7 +37,7 @@ const defaultNow = (function(Date) {
   };
 })(Date);
 
-function Timer(options: Object) {
+export default function Timer(options: Object) {
   options = options || {};
 
   const now = options.now || defaultNow;
@@ -52,5 +51,3 @@ function Timer(options: Object) {
     return now() - startTime;
   };
 }
-
-module.exports = Timer;

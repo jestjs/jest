@@ -1,18 +1,17 @@
 /**
-* Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
-*
-* This source code is licensed under the BSD-style license found in the
-* LICENSE file in the root directory of this source tree. An additional grant
-* of patent rights can be found in the PATENTS file in the same directory.
-*
-* @emails oncall+jsinfra
-*/
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 'use strict';
 
-const Prompt = require('../Prompt');
-let {KEYS} = require('../../constants');
+import Prompt from '../Prompt';
+import {KEYS} from '../../constants';
 
-KEYS = Object.assign({}, KEYS, {
+const EXTRA_KEYS = Object.assign({}, KEYS, {
   E: '65',
   S: '73',
 });
@@ -26,16 +25,16 @@ it('calls handler on change value', () => {
 
   expect(onChange).toHaveBeenLastCalledWith('', options);
 
-  prompt.put(KEYS.T);
+  prompt.put(EXTRA_KEYS.T);
   expect(onChange).toHaveBeenLastCalledWith('t', options);
 
-  prompt.put(KEYS.E);
+  prompt.put(EXTRA_KEYS.E);
   expect(onChange).toHaveBeenLastCalledWith('te', options);
 
-  prompt.put(KEYS.S);
+  prompt.put(EXTRA_KEYS.S);
   expect(onChange).toHaveBeenLastCalledWith('tes', options);
 
-  prompt.put(KEYS.T);
+  prompt.put(EXTRA_KEYS.T);
   expect(onChange).toHaveBeenLastCalledWith('test', options);
 
   expect(onChange).toHaveBeenCalledTimes(5);
@@ -47,11 +46,11 @@ it('calls handler on success prompt', () => {
 
   prompt.enter(jest.fn(), onSuccess, jest.fn());
 
-  prompt.put(KEYS.T);
-  prompt.put(KEYS.E);
-  prompt.put(KEYS.S);
-  prompt.put(KEYS.T);
-  prompt.put(KEYS.ENTER);
+  prompt.put(EXTRA_KEYS.T);
+  prompt.put(EXTRA_KEYS.E);
+  prompt.put(EXTRA_KEYS.S);
+  prompt.put(EXTRA_KEYS.T);
+  prompt.put(EXTRA_KEYS.ENTER);
 
   expect(onSuccess).toHaveBeenCalledWith('test');
 });
@@ -62,11 +61,11 @@ it('calls handler on cancel prompt', () => {
 
   prompt.enter(jest.fn(), jest.fn(), onCancel);
 
-  prompt.put(KEYS.T);
-  prompt.put(KEYS.E);
-  prompt.put(KEYS.S);
-  prompt.put(KEYS.T);
-  prompt.put(KEYS.ESCAPE);
+  prompt.put(EXTRA_KEYS.T);
+  prompt.put(EXTRA_KEYS.E);
+  prompt.put(EXTRA_KEYS.S);
+  prompt.put(EXTRA_KEYS.T);
+  prompt.put(EXTRA_KEYS.ESCAPE);
 
   expect(onCancel).toHaveBeenCalled();
 });

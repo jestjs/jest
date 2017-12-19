@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -14,7 +13,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-const makeEmptyAggregatedTestResult = (): AggregatedResult => {
+export const makeEmptyAggregatedTestResult = (): AggregatedResult => {
   return {
     numFailedTestSuites: 0,
     numFailedTests: 0,
@@ -37,6 +36,7 @@ const makeEmptyAggregatedTestResult = (): AggregatedResult => {
       matched: 0,
       total: 0,
       unchecked: 0,
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },
@@ -47,13 +47,15 @@ const makeEmptyAggregatedTestResult = (): AggregatedResult => {
   };
 };
 
-const buildFailureTestResult = (
+export const buildFailureTestResult = (
   testPath: string,
   err: SerializableError,
 ): TestResult => {
   return {
     console: null,
+    displayName: '',
     failureMessage: null,
+    leaks: false,
     numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,
@@ -67,6 +69,7 @@ const buildFailureTestResult = (
       fileDeleted: false,
       matched: 0,
       unchecked: 0,
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },
@@ -78,7 +81,7 @@ const buildFailureTestResult = (
 };
 
 // Add individual test result to an aggregated test result
-const addResult = (
+export const addResult = (
   aggregatedResults: AggregatedResult,
   testResult: TestResult,
 ): void => {
@@ -120,6 +123,7 @@ const addResult = (
   aggregatedResults.snapshot.added += testResult.snapshot.added;
   aggregatedResults.snapshot.matched += testResult.snapshot.matched;
   aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
+  aggregatedResults.snapshot.uncheckedKeys = testResult.snapshot.uncheckedKeys;
   aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
   aggregatedResults.snapshot.updated += testResult.snapshot.updated;
   aggregatedResults.snapshot.total +=
@@ -127,10 +131,4 @@ const addResult = (
     testResult.snapshot.matched +
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;
-};
-
-module.exports = {
-  addResult,
-  buildFailureTestResult,
-  makeEmptyAggregatedTestResult,
 };

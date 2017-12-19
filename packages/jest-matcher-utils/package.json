@@ -1,16 +1,16 @@
 {
   "name": "jest-matcher-utils",
-  "description": "A set of utility functions for jest-matchers and related packages",
-  "version": "20.0.3",
+  "description": "A set of utility functions for expect and related packages",
+  "version": "22.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "jest-get-type": "^20.0.3",
-    "pretty-format": "^20.0.3"
+    "jest-get-type": "^22.0.3",
+    "pretty-format": "^22.0.3"
   }
 }

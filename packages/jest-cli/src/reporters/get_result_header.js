@@ -1,26 +1,37 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
-import type {Path} from 'types/Config';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 
 import chalk from 'chalk';
-import {formatTestPath} from './utils';
+import {formatTestPath, printDisplayName} from './utils';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the
 // middle of error logging
-const FAIL = chalk.reset.inverse.bold.red(' FAIL ');
-const PASS = chalk.reset.inverse.bold.green(' PASS ');
+const FAIL_TEXT = 'FAIL';
+const PASS_TEXT = 'PASS';
 
-module.exports = (result: TestResult, config: {rootDir: Path}) => {
+const FAIL = chalk.supportsColor
+  ? chalk.reset.inverse.bold.red(` ${FAIL_TEXT} `)
+  : FAIL_TEXT;
+
+const PASS = chalk.supportsColor
+  ? chalk.reset.inverse.bold.green(` ${PASS_TEXT} `)
+  : PASS_TEXT;
+
+export default (
+  result: TestResult,
+  globalConfig: GlobalConfig,
+  projectConfig?: ProjectConfig,
+) => {
   const testPath = result.testFilePath;
   const status =
     result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
@@ -39,8 +50,15 @@ module.exports = (result: TestResult, config: {rootDir: Path}) => {
     testDetail.push(`${toMB(result.memoryUsage)} MB heap size`);
   }
 
+  const projectDisplayName =
+    projectConfig && projectConfig.displayName
+      ? printDisplayName(projectConfig) + ' '
+      : '';
+
   return (
-    `${status} ${formatTestPath(config, testPath)}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
+    `${status} ${projectDisplayName}${formatTestPath(
+      projectConfig ? projectConfig : globalConfig,
+      testPath,
+    )}` + (testDetail.length ? ` (${testDetail.join(', ')})` : '')
   );
 };

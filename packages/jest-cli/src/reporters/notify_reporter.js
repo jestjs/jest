@@ -1,12 +1,11 @@
 /**
-* Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
-*
-* This source code is licensed under the BSD-style license found in the
-* LICENSE file in the root directory of this source tree. An additional grant
-* of patent rights can be found in the PATENTS file in the same directory.
-*
-* @flow
-*/
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
 
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
@@ -21,7 +20,7 @@ const isDarwin = process.platform === 'darwin';
 
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
-class NotifyReporter extends BaseReporter {
+export default class NotifyReporter extends BaseReporter {
   _startRun: (globalConfig: GlobalConfig) => *;
   _globalConfig: GlobalConfig;
 
@@ -85,5 +84,3 @@ class NotifyReporter extends BaseReporter {
     }
   }
 }
-
-module.exports = NotifyReporter;

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -31,8 +30,8 @@ import {
 
 import AsymmetricMatcher from './plugins/asymmetric_matcher';
 import ConvertAnsi from './plugins/convert_ansi';
-import HTMLElement from './plugins/html_element';
-import Immutable from './plugins/immutable_plugins';
+import DOMElement from './plugins/dom_element';
+import Immutable from './plugins/immutable';
 import ReactElement from './plugins/react_element';
 import ReactTestComponent from './plugins/react_test_component';
 
@@ -42,8 +41,25 @@ const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
+// Explicitly comparing typeof constructor to function avoids undefined as name
+// when mock identity-obj-proxy returns the key as the value for any key.
+const getConstructorName = val =>
+  (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
+
+// Is val is equal to global window object? Works even if it does not exist :)
+/* global window */
+const isWindow = val => typeof window !== 'undefined' && val === window;
+
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
+
+class PrettyFormatPluginError extends Error {
+  constructor(message, stack) {
+    super(message);
+    this.stack = stack;
+    this.name = this.constructor.name;
+  }
+}
 
 function isToStringedArrayType(toStringed: string): boolean {
   return (
@@ -159,6 +175,7 @@ function printComplexValue(
   indentation: string,
   depth: number,
   refs: Refs,
+  hasCalledToJSON?: boolean,
 ): string {
   if (refs.indexOf(val) !== -1) {
     return '[Circular]';
@@ -173,9 +190,10 @@ function printComplexValue(
     config.callToJSON &&
     !hitMaxDepth &&
     val.toJSON &&
-    typeof val.toJSON === 'function'
+    typeof val.toJSON === 'function' &&
+    !hasCalledToJSON
   ) {
-    return printer(val.toJSON(), config, indentation, depth, refs);
+    return printer(val.toJSON(), config, indentation, depth, refs, true);
   }
 
   const toStringed = toString.call(val);
@@ -183,54 +201,56 @@ function printComplexValue(
     return hitMaxDepth
       ? '[Arguments]'
       : (min ? '' : 'Arguments ') +
-        '[' +
-        printListItems(val, config, indentation, depth, refs, printer) +
-        ']';
+          '[' +
+          printListItems(val, config, indentation, depth, refs, printer) +
+          ']';
   }
   if (isToStringedArrayType(toStringed)) {
     return hitMaxDepth
       ? '[' + val.constructor.name + ']'
       : (min ? '' : val.constructor.name + ' ') +
-        '[' +
-        printListItems(val, config, indentation, depth, refs, printer) +
-        ']';
+          '[' +
+          printListItems(val, config, indentation, depth, refs, printer) +
+          ']';
   }
   if (toStringed === '[object Map]') {
     return hitMaxDepth
       ? '[Map]'
       : 'Map {' +
-        printIteratorEntries(
-          val.entries(),
-          config,
-          indentation,
-          depth,
-          refs,
-          printer,
-          ' => ',
-        ) +
-        '}';
+          printIteratorEntries(
+            val.entries(),
+            config,
+            indentation,
+            depth,
+            refs,
+            printer,
+            ' => ',
+          ) +
+          '}';
   }
   if (toStringed === '[object Set]') {
     return hitMaxDepth
       ? '[Set]'
       : 'Set {' +
-        printIteratorValues(
-          val.values(),
-          config,
-          indentation,
-          depth,
-          refs,
-          printer,
-        ) +
-        '}';
+          printIteratorValues(
+            val.values(),
+            config,
+            indentation,
+            depth,
+            refs,
+            printer,
+          ) +
+          '}';
   }
 
-  return hitMaxDepth
-    ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
-    : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
-      '{' +
-      printObjectProperties(val, config, indentation, depth, refs, printer) +
-      '}';
+  // Avoid failure to serialize global window object in jsdom test environment.
+  // For example, not even relevant if window is prop of React element.
+  return hitMaxDepth || isWindow(val)
+    ? '[' + getConstructorName(val) + ']'
+    : (min ? '' : getConstructorName(val) + ' ') +
+        '{' +
+        printObjectProperties(val, config, indentation, depth, refs, printer) +
+        '}';
 }
 
 function printPlugin(
@@ -241,25 +261,31 @@ function printPlugin(
   depth: number,
   refs: Refs,
 ): string {
-  const printed = plugin.serialize
-    ? plugin.serialize(val, config, indentation, depth, refs, printer)
-    : plugin.print(
-        val,
-        valChild => printer(valChild, config, indentation, depth, refs),
-        str => {
-          const indentationNext = indentation + config.indent;
-          return (
-            indentationNext +
-            str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
-          );
-        },
-        {
-          edgeSpacing: config.spacingOuter,
-          min: config.min,
-          spacing: config.spacingInner,
-        },
-        config.colors,
-      );
+  let printed;
+
+  try {
+    printed = plugin.serialize
+      ? plugin.serialize(val, config, indentation, depth, refs, printer)
+      : plugin.print(
+          val,
+          valChild => printer(valChild, config, indentation, depth, refs),
+          str => {
+            const indentationNext = indentation + config.indent;
+            return (
+              indentationNext +
+              str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
+            );
+          },
+          {
+            edgeSpacing: config.spacingOuter,
+            min: config.min,
+            spacing: config.spacingInner,
+          },
+          config.colors,
+        );
+  } catch (error) {
+    throw new PrettyFormatPluginError(error.message, error.stack);
+  }
   if (typeof printed !== 'string') {
     throw new Error(
       `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
@@ -270,8 +296,12 @@ function printPlugin(
 
 function findPlugin(plugins: Plugins, val: any) {
   for (let p = 0; p < plugins.length; p++) {
-    if (plugins[p].test(val)) {
-      return plugins[p];
+    try {
+      if (plugins[p].test(val)) {
+        return plugins[p];
+      }
+    } catch (error) {
+      throw new PrettyFormatPluginError(error.message, error.stack);
     }
   }
 
@@ -284,6 +314,7 @@ function printer(
   indentation: string,
   depth: number,
   refs: Refs,
+  hasCalledToJSON?: boolean,
 ): string {
   const plugin = findPlugin(config.plugins, val);
   if (plugin !== null) {
@@ -299,7 +330,14 @@ function printer(
     return basicResult;
   }
 
-  return printComplexValue(val, config, indentation, depth, refs);
+  return printComplexValue(
+    val,
+    config,
+    indentation,
+    depth,
+    refs,
+    hasCalledToJSON,
+  );
 }
 
 const DEFAULT_THEME: Theme = {
@@ -351,6 +389,7 @@ function validateOptions(options: OptionsReceived) {
 }
 
 const getColorsHighlight = (options: OptionsReceived): Colors =>
+  // $FlowFixMe: Flow thinks keys from `Colors` are missing from `DEFAULT_THEME_KEYS`
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     const value =
       options.theme && options.theme[key] !== undefined
@@ -369,13 +408,14 @@ const getColorsHighlight = (options: OptionsReceived): Colors =>
       );
     }
     return colors;
-  }, {});
+  }, Object.create(null));
 
-const getColorsEmpty = () =>
+const getColorsEmpty = (): Colors =>
+  // $FlowFixMe: Flow thinks keys from `Colors` are missing from `DEFAULT_THEME_KEYS`
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     colors[key] = {close: '', open: ''};
     return colors;
-  }, {});
+  }, Object.create(null));
 
 const getPrintFunctionName = (options?: OptionsReceived) =>
   options && options.printFunctionName !== undefined
@@ -449,7 +489,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
 prettyFormat.plugins = {
   AsymmetricMatcher,
   ConvertAnsi,
-  HTMLElement,
+  DOMElement,
   Immutable,
   ReactElement,
   ReactTestComponent,

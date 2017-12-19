@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -19,13 +18,21 @@ const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
 );
 
-const shouldInstrument = (
+export default function shouldInstrument(
   filename: Path,
   options: Options,
   config: ProjectConfig,
-): boolean => {
+): boolean {
   if (!options.collectCoverage) {
     return false;
+  }
+
+  if (
+    config.forceCoverageMatch &&
+    config.forceCoverageMatch.length &&
+    micromatch.any(filename, config.forceCoverageMatch)
+  ) {
+    return true;
   }
 
   if (config.testRegex && filename.match(config.testRegex)) {
@@ -73,6 +80,4 @@ const shouldInstrument = (
   }
 
   return true;
-};
-
-module.exports = shouldInstrument;
+}

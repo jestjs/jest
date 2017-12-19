@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -16,12 +15,11 @@ type Options = {
   noSCM?: boolean,
   updateSnapshot?: SnapshotUpdateState,
   mode?: 'watch' | 'watchAll',
+  passWithNoTests?: boolean,
+  onlyFailures?: boolean,
 };
 
-module.exports = (
-  globalConfig: GlobalConfig,
-  options: Options,
-): GlobalConfig => {
+export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
   // $FlowFixMe Object.assign
   const newConfig: GlobalConfig = Object.assign({}, globalConfig);
 
@@ -57,6 +55,14 @@ module.exports = (
 
   if (options.noSCM) {
     newConfig.noSCM = true;
+  }
+
+  if (options.passWithNoTests) {
+    newConfig.passWithNoTests = true;
+  }
+
+  if ('onlyFailures' in options) {
+    newConfig.onlyFailures = options.onlyFailures || false;
   }
 
   return Object.freeze(newConfig);

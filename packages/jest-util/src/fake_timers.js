@@ -1,16 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
-import type {ModuleMocker} from 'jest-mock';
+import type {ModuleMocker} from 'types/Mock';
 
 import {formatStackTrace} from 'jest-message-util';
 import setGlobal from './set_global';
@@ -58,9 +57,14 @@ type TimerAPI = {
   /* eslint-enable flowtype/no-weak-types */
 };
 
+type TimerConfig<Ref> = {|
+  idToRef: (id: number) => Ref,
+  refToId: (ref: Ref) => ?number,
+|};
+
 const MS_IN_A_YEAR = 31536000000;
 
-class FakeTimers {
+export default class FakeTimers<TimerRef> {
   _cancelledImmediates: {[key: TimerID]: boolean};
   _cancelledTicks: {[key: TimerID]: boolean};
   _config: ProjectConfig;
@@ -75,14 +79,23 @@ class FakeTimers {
   _timerAPIs: TimerAPI;
   _timers: {[key: TimerID]: Timer};
   _uuidCounter: number;
+  _timerConfig: TimerConfig<TimerRef>;
 
-  constructor(
+  constructor({
+    global,
+    moduleMocker,
+    timerConfig,
+    config,
+    maxLoops,
+  }: {
     global: Global,
     moduleMocker: ModuleMocker,
+    timerConfig: TimerConfig<TimerRef>,
     config: ProjectConfig,
     maxLoops?: number,
-  ) {
+  }) {
     this._global = global;
+    this._timerConfig = timerConfig;
     this._config = config;
     this._maxLoops = maxLoops || 100000;
     this._uuidCounter = 1;
@@ -107,7 +120,7 @@ class FakeTimers {
     // Instead, use the versions available on the `jest` object
     global.mockRunTicksRepeatedly = this.runAllTicks.bind(this);
     global.mockRunTimersOnce = this.runOnlyPendingTimers.bind(this);
-    global.mockRunTimersToTime = this.runTimersToTime.bind(this);
+    global.mockAdvanceTimersByTime = this.advanceTimersByTime.bind(this);
     global.mockRunTimersRepeatedly = this.runAllTimers.bind(this);
     global.mockClearTimers = this.clearAllTimers.bind(this);
     global.mockGetTimersCount = () => Object.keys(this._timers).length;
@@ -236,18 +249,18 @@ class FakeTimers {
   }
 
   runOnlyPendingTimers() {
+    const timers = Object.assign({}, this._timers);
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
-    const timers = this._timers;
     Object.keys(timers)
       .sort((left, right) => timers[left].expiry - timers[right].expiry)
       .forEach(this._runTimerHandle, this);
   }
 
-  runTimersToTime(msToRun: number) {
+  advanceTimersByTime(msToRun: number) {
     this._checkFakeTimers();
     // Only run a generous number of timers and then bail.
-    // This is jsut to help avoid recursive loops
+    // This is just to help avoid recursive loops
     let i;
     for (i = 0; i < this._maxLoops; i++) {
       const timerHandle = this._getNextTimerHandle();
@@ -371,9 +384,11 @@ class FakeTimers {
     };
   }
 
-  _fakeClearTimer(uuid: TimerID) {
-    if (this._timers.hasOwnProperty(uuid)) {
-      delete this._timers[uuid];
+  _fakeClearTimer(timerRef: TimerRef) {
+    const uuid = this._timerConfig.refToId(timerRef);
+
+    if (uuid && this._timers.hasOwnProperty(uuid)) {
+      delete this._timers[String(uuid)];
     }
   }
 
@@ -463,7 +478,7 @@ class FakeTimers {
       type: 'interval',
     };
 
-    return uuid;
+    return this._timerConfig.idToRef(uuid);
   }
 
   _fakeSetTimeout(callback: Callback, delay?: number) {
@@ -489,7 +504,7 @@ class FakeTimers {
       type: 'timeout',
     };
 
-    return uuid;
+    return this._timerConfig.idToRef(uuid);
   }
 
   _getNextTimerHandle() {
@@ -532,5 +547,3 @@ class FakeTimers {
     }
   }
 }
-
-module.exports = FakeTimers;

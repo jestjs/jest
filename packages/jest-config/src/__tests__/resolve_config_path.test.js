@@ -1,19 +1,19 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
-import {cleanup, writeFiles} from '../../../../integration_tests/utils';
 import os from 'os';
 import path from 'path';
 import resolveConfigPath from '../resolve_config_path';
 
 import skipOnWindows from '../../../../scripts/skip_on_windows';
+
+const {cleanup, writeFiles} = require('../../../../integration_tests/utils');
 
 skipOnWindows.suite();
 

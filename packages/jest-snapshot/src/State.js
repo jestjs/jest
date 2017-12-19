@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -27,7 +26,7 @@ export type SnapshotStateOptions = {|
   expand?: boolean,
 |};
 
-class SnapshotState {
+export default class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
   _index: number;
@@ -95,6 +94,10 @@ class SnapshotState {
 
   getUncheckedCount(): number {
     return this._uncheckedKeys.size || 0;
+  }
+
+  getUncheckedKeys(): Array<string> {
+    return Array.from(this._uncheckedKeys);
   }
 
   removeUncheckedKeys(): void {
@@ -185,5 +188,3 @@ class SnapshotState {
     }
   }
 }
-
-module.exports = SnapshotState;

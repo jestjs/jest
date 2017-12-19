@@ -4,14 +4,14 @@
  */
 const languages = [
   {
-    enabled: false,
-    name: '日本語',
-    tag: 'ja',
-  },
-  {
     enabled: true,
     name: 'English',
     tag: 'en',
+  },
+  {
+    enabled: true,
+    name: '日本語',
+    tag: 'ja',
   },
   {
     enabled: false,
@@ -129,7 +129,7 @@ const languages = [
     tag: 'pt-BR',
   },
   {
-    enabled: false,
+    enabled: true,
     name: 'Română',
     tag: 'ro',
   },

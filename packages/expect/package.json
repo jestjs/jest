@@ -1,0 +1,19 @@
+{
+  "name": "expect",
+  "version": "22.0.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "browser": "build-es5/index.js",
+  "dependencies": {
+    "ansi-styles": "^3.2.0",
+    "jest-diff": "^22.0.3",
+    "jest-get-type": "^22.0.3",
+    "jest-matcher-utils": "^22.0.3",
+    "jest-message-util": "^22.0.3",
+    "jest-regex-util": "^22.0.3"
+  }
+}

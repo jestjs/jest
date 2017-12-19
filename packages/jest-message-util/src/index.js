@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,10 +10,30 @@
 import type {Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
+import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
 import slash from 'slash';
+import {codeFrameColumns} from '@babel/code-frame';
+import StackUtils from 'stack-utils';
+
+// stack utils tries to create pretty stack by making paths relative.
+const stackUtils = new StackUtils({
+  cwd: 'something which does not exist',
+});
+
+let nodeInternals = [];
+
+try {
+  nodeInternals = StackUtils.nodeInternals()
+    // this is to have the tests be the same in node 4 and node 6.
+    // TODO: Remove when we drop support for node 4
+    .concat(new RegExp('internal/process/next_tick.js'));
+} catch (e) {
+  // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
+  // node internals in the browser though, so no issue.
+}
 
 type StackTraceConfig = {
   rootDir: string,
@@ -27,7 +46,11 @@ type StackTraceOptions = {
 
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
+const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
+const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
+const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -50,7 +73,7 @@ const trimPaths = string =>
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
-const formatExecError = (
+export const formatExecError = (
   testResult: TestResult,
   config: StackTraceConfig,
   options: StackTraceOptions,
@@ -78,7 +101,10 @@ const formatExecError = (
     message = separated.message;
   }
 
-  message = message.split(/\n/).map(line => MESSAGE_INDENT + line).join('\n');
+  message = message
+    .split(/\n/)
+    .map(line => MESSAGE_INDENT + line)
+    .join('\n');
   stack =
     stack && !options.noStackTrace
       ? '\n' + formatStackTrace(stack, config, options, testPath)
@@ -104,10 +130,30 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
   let pathCounter = 0;
 
   return lines.filter(line => {
-    const isPath = STACK_PATH_REGEXP.test(line);
-    if (!isPath) {
+    if (ANONYMOUS_FN_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (ANONYMOUS_PROMISE_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (ANONYMOUS_GENERATOR_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (NATIVE_NEXT_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (nodeInternals.some(internal => internal.test(line))) {
+      return false;
+    }
+
+    if (!STACK_PATH_REGEXP.test(line)) {
       return true;
     }
+
     if (JASMINE_IGNORE.test(line)) {
       return false;
     }
@@ -116,7 +162,15 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
       return true; // always keep the first line even if it's from Jest
     }
 
-    return !(STACK_TRACE_IGNORE.test(line) || options.noStackTrace);
+    if (options.noStackTrace) {
+      return false;
+    }
+
+    if (JEST_INTERNALS_IGNORE.test(line)) {
+      return false;
+    }
+
+    return true;
   });
 };
 
@@ -145,25 +199,62 @@ const formatPaths = (
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-const formatStackTrace = (
+export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath: ?Path,
 ) => {
   let lines = stack.split(/\n/);
+  let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
   lines = removeInternalStackEntries(lines, options);
-  return lines
+
+  const topFrame = lines
+    .map(line => line.trim())
+    .filter(Boolean)
+    .filter(
+      line =>
+        !line.includes(`${path.sep}node_modules${path.sep}`) &&
+        !line.includes(`${path.sep}expect${path.sep}build${path.sep}`),
+    )
+    .map(line => stackUtils.parseLine(line))
+    .filter(Boolean)
+    .filter(parsedFrame => parsedFrame.file)[0];
+
+  if (topFrame) {
+    const filename = topFrame.file;
+
+    if (path.isAbsolute(filename)) {
+      renderedCallsite = codeFrameColumns(
+        fs.readFileSync(filename, 'utf8'),
+        {
+          start: {line: topFrame.line},
+        },
+        {highlightCode: true},
+      );
+
+      renderedCallsite = renderedCallsite
+        .split('\n')
+        .map(line => MESSAGE_INDENT + line)
+        .join('\n');
+
+      renderedCallsite = `\n${renderedCallsite}\n`;
+    }
+  }
+
+  const stacktrace = lines
     .map(trimPaths)
     .map(formatPaths.bind(null, config, options, relativeTestPath))
     .map(line => STACK_INDENT + line)
     .join('\n');
+
+  return renderedCallsite + stacktrace;
 };
 
-const formatResultsErrors = (
+export const formatResultsErrors = (
   testResults: Array<AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
@@ -209,7 +300,7 @@ const formatResultsErrors = (
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
-const separateMessageFromStack = (content: string) => {
+export const separateMessageFromStack = (content: string) => {
   if (!content) {
     return {message: '', stack: ''};
   }
@@ -223,11 +314,4 @@ const separateMessageFromStack = (content: string) => {
     message = message.substr(ERROR_TEXT.length);
   }
   return {message, stack};
-};
-
-module.exports = {
-  formatExecError,
-  formatResultsErrors,
-  formatStackTrace,
-  separateMessageFromStack,
 };

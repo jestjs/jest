@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -15,21 +14,16 @@ import type {Path, SnapshotUpdateState} from 'types/Config';
 import fs from 'fs';
 import path from 'path';
 import diff from 'jest-diff';
-import {
-  EXPECTED_COLOR,
-  ensureNoExpected,
-  matcherHint,
-  RECEIVED_COLOR,
-} from 'jest-matcher-utils';
+import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
-import {SNAPSHOT_EXTENSION} from './utils';
+import * as utils from './utils';
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
-  const pattern = '\\.' + SNAPSHOT_EXTENSION + '$';
+  const pattern = '\\.' + utils.SNAPSHOT_EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
   const filesRemoved = files
     .filter(
@@ -38,7 +32,7 @@ const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
           path.resolve(
             path.dirname(snapshotFile),
             '..',
-            path.basename(snapshotFile, '.' + SNAPSHOT_EXTENSION),
+            path.basename(snapshotFile, '.' + utils.SNAPSHOT_EXTENSION),
           ),
           hasteFS,
         ),
@@ -68,7 +62,9 @@ const toMatchSnapshot = function(received: any, testName?: string) {
   }
 
   const result = snapshotState.match(
-    testName || currentTestName || '',
+    testName && currentTestName
+      ? `${currentTestName}: ${testName}`
+      : currentTestName || '',
     received,
   );
   const {count, pass} = result;
@@ -76,13 +72,15 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 
   let report;
   if (pass) {
-    return {message: '', pass: true};
+    return {message: () => '', pass: true};
   } else if (!expected) {
     report = () =>
       `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
       `must be explicitly passed to write a new snapshot.\n\n` +
       `This is likely because this test is run in a continuous integration ` +
-      `(CI) environment in which snapshots are not written by default.`;
+      `(CI) environment in which snapshots are not written by default.\n\n` +
+      `${RECEIVED_COLOR('Received value')}` +
+      `${actual}`;
   } else {
     expected = (expected || '').trim();
     actual = (actual || '').trim();
@@ -114,8 +112,13 @@ const toMatchSnapshot = function(received: any, testName?: string) {
   };
 };
 
-const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
+const toThrowErrorMatchingSnapshot = function(
+  received: any,
+  testName?: string,
+  fromPromise: boolean,
+) {
   this.dontThrow && this.dontThrow();
+
   const {isNot} = this;
 
   if (isNot) {
@@ -124,14 +127,16 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
     );
   }
 
-  ensureNoExpected(expected, '.toThrowErrorMatchingSnapshot');
-
   let error;
 
-  try {
-    received();
-  } catch (e) {
-    error = e;
+  if (fromPromise) {
+    error = received;
+  } else {
+    try {
+      received();
+    } catch (e) {
+      error = e;
+    }
   }
 
   if (error === undefined) {
@@ -143,15 +148,16 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
     );
   }
 
-  return toMatchSnapshot.call(this, error.message);
+  return toMatchSnapshot.call(this, error.message, testName);
 };
 
 module.exports = {
-  EXTENSION: SNAPSHOT_EXTENSION,
+  EXTENSION: utils.SNAPSHOT_EXTENSION,
   SnapshotState,
   addSerializer,
   cleanup,
   getSerializers,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
+  utils,
 };

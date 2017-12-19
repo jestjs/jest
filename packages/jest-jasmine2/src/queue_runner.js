@@ -1,13 +1,18 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test.
+const Promise: Class<Promise> =
+  global[Symbol.for('jest-native-promise')] || global.Promise;
+
+import PCancelable from './p_cancelable';
 import pTimeout from './p_timeout';
 
 type Options = {
@@ -24,10 +29,20 @@ type QueueableFn = {
   timeout?: () => number,
 };
 
-async function queueRunner(options: Options) {
+export default function queueRunner(options: Options) {
+  const token = new PCancelable((onCancel, resolve) => {
+    onCancel(resolve);
+  });
+
   const mapper = ({fn, timeout}) => {
-    const promise = new Promise(resolve => {
-      const next = () => resolve();
+    let promise = new Promise(resolve => {
+      const next = function(err) {
+        if (err) {
+          options.fail.apply(null, arguments);
+        }
+        resolve();
+      };
+
       next.fail = function() {
         options.fail.apply(null, arguments);
         resolve();
@@ -39,28 +54,41 @@ async function queueRunner(options: Options) {
         resolve();
       }
     });
+
+    promise = Promise.race([promise, token]);
+
     if (!timeout) {
       return promise;
     }
+
+    const timeoutMs: number = timeout();
+
     return pTimeout(
       promise,
-      timeout(),
+      timeoutMs,
       options.clearTimeout,
       options.setTimeout,
       () => {
         const error = new Error(
-          'Timeout - Async callback was not invoked within timeout specified ' +
-            'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+          'Timeout - Async callback was not invoked within the ' +
+            timeoutMs +
+            'ms timeout specified by jest.setTimeout.',
         );
         options.onException(error);
       },
     );
   };
 
-  return options.queueableFns.reduce(
+  const result: Promise<void> = options.queueableFns.reduce(
     (promise, fn) => promise.then(() => mapper(fn)),
     Promise.resolve(),
   );
-}
 
-module.exports = queueRunner;
+  return {
+    cancel: token.cancel.bind(token),
+    // $FlowFixMe
+    catch: result.catch.bind(result),
+    // $FlowFixMe
+    then: result.then.bind(result),
+  };
+}

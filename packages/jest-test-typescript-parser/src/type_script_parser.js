@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -13,7 +12,7 @@ import {readFileSync} from 'fs';
 import ts from 'typescript';
 import {Expect, ItBlock, Node} from 'jest-editor-support';
 
-function parse(file: string) {
+export function parse(file: string) {
   const sourceFile = ts.createSourceFile(
     file,
     readFileSync(file).toString(),
@@ -36,7 +35,7 @@ function parse(file: string) {
       } else {
         let element = node.expression;
         let expectText = '';
-        while (!expectText) {
+        while (element && !expectText) {
           expectText = element.text;
           element = element.expression;
         }
@@ -83,7 +82,3 @@ function getNode<T: Node>(
   node.file = file.fileName;
   return node;
 }
-
-module.exports = {
-  parse,
-};

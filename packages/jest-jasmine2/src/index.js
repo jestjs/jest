@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -12,11 +11,14 @@ import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
+import fs from 'fs';
+import callsites from 'callsites';
 import JasmineReporter from './reporter';
-import jasmineAsync from './jasmine_async';
+import {install as jasmineAsyncInstall} from './jasmine_async';
 
 const JASMINE = require.resolve('./jasmine/jasmine_light.js');
 
@@ -34,14 +36,31 @@ async function jasmine2(
     testPath,
   );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
-  const jasmine = jasmineFactory.create();
+  const jasmine = jasmineFactory.create({
+    process,
+    testPath,
+  });
 
   const env = jasmine.getEnv();
   const jasmineInterface = jasmineFactory.interface(jasmine, env);
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
 
-  jasmineAsync.install(environment.global);
+  // TODO: Remove config option if V8 exposes some way of getting location of caller
+  // in a future version
+  if (config.testLocationInResults === true) {
+    const originalIt = environment.global.it;
+    environment.global.it = (...args) => {
+      const stack = callsites()[1];
+      const it = originalIt(...args);
+
+      it.result.__callsite = stack;
+
+      return it;
+    };
+  }
+
+  jasmineAsyncInstall(environment.global);
 
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
@@ -74,24 +93,53 @@ async function jasmine2(
 
   env.addReporter(reporter);
 
-  runtime.requireInternalModule(path.resolve(__dirname, './jest_expect.js'))({
-    expand: globalConfig.expand,
-  });
+  runtime
+    .requireInternalModule(path.resolve(__dirname, './jest_expect.js'))
+    .default({
+      expand: globalConfig.expand,
+    });
 
-  const snapshotState: SnapshotState = runtime.requireInternalModule(
-    path.resolve(__dirname, './setup_jest_globals.js'),
-  )({
-    config,
-    globalConfig,
-    localRequire: runtime.requireModule.bind(runtime),
-    testPath,
-  });
+  const snapshotState: SnapshotState = runtime
+    .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))
+    .default({
+      config,
+      globalConfig,
+      localRequire: runtime.requireModule.bind(runtime),
+      testPath,
+    });
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
 
-  if (globalConfig.testNamePattern) {
+  runtime
+    .requireModule(require.resolve('source-map-support'), 'source-map-support')
+    .install({
+      environment: 'node',
+      handleUncaughtExceptions: false,
+      retrieveSourceMap: source => {
+        if (runtime._sourceMapRegistry[source]) {
+          try {
+            return {
+              map: JSON.parse(
+                fs.readFileSync(runtime._sourceMapRegistry[source]),
+              ),
+              url: source,
+            };
+          } catch (e) {}
+        }
+        return null;
+      },
+    });
+
+  if (globalConfig.enabledTestsMap) {
+    env.specFilter = spec => {
+      const suiteMap =
+        globalConfig.enabledTestsMap &&
+        globalConfig.enabledTestsMap[spec.result.testPath];
+      return suiteMap && suiteMap[spec.result.fullName];
+    };
+  } else if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
@@ -113,6 +161,8 @@ const addSnapshotData = (results, snapshotState) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
+  const uncheckedKeys = snapshotState.getUncheckedKeys();
+
   if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
@@ -124,6 +174,8 @@ const addSnapshotData = (results, snapshotState) => {
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  results.snapshot.uncheckedKeys = uncheckedKeys;
+
   return results;
 };
 

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -63,7 +62,7 @@ const toTests = (context, tests) =>
     path,
   }));
 
-class SearchSource {
+export default class SearchSource {
   _context: Context;
   _rootPattern: RegExp;
   _testIgnorePattern: ?RegExp;
@@ -162,6 +161,17 @@ class SearchSource {
     };
   }
 
+  findTestsByPaths(paths: Array<Path>): SearchResult {
+    return {
+      tests: toTests(
+        this._context,
+        paths
+          .map(p => path.resolve(process.cwd(), p))
+          .filter(this.isTestFilePath.bind(this)),
+      ),
+    };
+  }
+
   findRelatedTestsFromPattern(paths: Array<Path>): SearchResult {
     if (Array.isArray(paths) && paths.length) {
       const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
@@ -193,6 +203,8 @@ class SearchSource {
       }
 
       return this.findTestRelatedToChangedFiles(changedFilesPromise);
+    } else if (globalConfig.runTestsByPath && paths && paths.length) {
+      return Promise.resolve(this.findTestsByPaths(paths));
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
     } else if (globalConfig.testPathPattern != null) {
@@ -204,5 +216,3 @@ class SearchSource {
     }
   }
 }
-
-module.exports = SearchSource;

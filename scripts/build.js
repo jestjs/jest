@@ -1,9 +1,8 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 /**
@@ -41,10 +40,12 @@ const JS_FILES_PATTERN = '**/*.js';
 const IGNORE_PATTERN = '**/__tests__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
-const babelNodeOptions = JSON.parse(
+const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
+
+const transformOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
-babelNodeOptions.babelrc = false;
+transformOptions.babelrc = false;
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
@@ -54,7 +55,10 @@ const adjustToTerminalWidth = str => {
   if (lastString.length < WIDTH) {
     lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
   }
-  return strs.slice(0, -1).concat(lastString).join('\n');
+  return strs
+    .slice(0, -1)
+    .concat(lastString)
+    .join('\n');
 };
 
 function getPackageName(file) {
@@ -136,7 +140,27 @@ function buildFile(file, silent) {
           '\n'
       );
   } else {
-    const transformed = babel.transformFileSync(file, babelNodeOptions).code;
+    const options = Object.assign({}, transformOptions);
+    options.plugins = options.plugins.slice();
+
+    if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
+      // Remove normal plugin.
+      options.plugins = options.plugins.filter(
+        plugin =>
+          !(
+            Array.isArray(plugin) &&
+            plugin[0] === 'transform-es2015-modules-commonjs'
+          )
+      );
+      options.plugins.push([
+        'transform-inline-imports-commonjs',
+        {
+          allowTopLevelThis: true,
+        },
+      ]);
+    }
+
+    const transformed = babel.transformFileSync(file, options).code;
     fs.writeFileSync(destPath, transformed);
     silent ||
       process.stdout.write(

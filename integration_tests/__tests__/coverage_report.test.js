@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -78,4 +77,26 @@ test('outputs coverage report as json', () => {
       "Can't parse the JSON result from stdout. " + err.toString(),
     );
   }
+});
+
+test('collects coverage from duplicate files avoiding shared cache', () => {
+  const args = [
+    '--coverage',
+    // Ensure the status code is non-zero if super edge case with coverage triggers
+    '--coverageThreshold',
+    '{"global": {"lines": 100}}',
+    '--collectCoverageOnlyFrom',
+    'cached-duplicates/a/identical.js',
+    '--collectCoverageOnlyFrom',
+    'cached-duplicates/b/identical.js',
+    '--',
+    'identical.test.js',
+  ];
+  // Run once to prime the cache
+  runJest(DIR, args);
+
+  // Run for the second time
+  const {stdout, status} = runJest(DIR, args);
+  expect(stdout).toMatchSnapshot();
+  expect(status).toBe(0);
 });

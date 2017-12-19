@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  * @flow
  */
 
@@ -25,7 +24,7 @@ const ERROR = `${BULLET}Reporter Validation Error`;
  * merged with jest-validate. Till then, we can make use of it. It works
  * and that's what counts most at this time.
  */
-function createReporterError(
+export function createReporterError(
   reporterIndex: number,
   reporterValue: Array<ReporterConfig> | string,
 ): ValidationError {
@@ -38,7 +37,7 @@ function createReporterError(
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
-function createArrayReporterError(
+export function createArrayReporterError(
   arrayReporter: ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
@@ -55,13 +54,15 @@ function createArrayReporterError(
     `    ${chalk.bold.green(getType(value))}\n` +
     `  Reporter configuration:\n` +
     `    ${chalk.bold.green(
-      JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
+      JSON.stringify(arrayReporter, null, 2)
+        .split('\n')
+        .join('\n    '),
     )}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
-function validateReporters(
+export function validateReporters(
   reporterConfig: Array<ReporterConfig | string>,
 ): boolean {
   return reporterConfig.every((reporter, index) => {
@@ -100,9 +101,3 @@ function validateArrayReporter(
     );
   }
 }
-
-module.exports = {
-  createArrayReporterError,
-  createReporterError,
-  validateReporters,
-};

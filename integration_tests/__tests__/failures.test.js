@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -57,5 +56,66 @@ test('not throwing Error objects', () => {
 
 test('works with node assert', () => {
   const {stderr} = runJest(dir, ['node_assertion_error.test.js']);
+  let summary = normalizeDots(extractSummary(stderr).rest);
+
+  // Node 9 started to include the error for `doesNotThrow`
+  // https://github.com/nodejs/node/pull/12167
+  if (Number(process.versions.node.split('.')[0]) >= 9) {
+    expect(summary).toContain(`
+    assert.doesNotThrow(function)
+    
+    Expected the function not to throw an error.
+    Instead, it threw:
+      [Error: err!]
+    
+    Message:
+      Got unwanted exception.
+    err!
+    err!
+
+      69 | 
+      70 | test('assert.doesNotThrow', () => {
+    > 71 |   assert.doesNotThrow(() => {
+      72 |     throw Error('err!');
+      73 |   });
+      74 | });
+      
+      at __tests__/node_assertion_error.test.js:71:10
+`);
+
+    summary = summary.replace(
+      `Message:
+      Got unwanted exception.
+    err!
+    err!
+`,
+      `Message:
+      Got unwanted exception.
+`,
+    );
+  }
+
+  expect(summary).toMatchSnapshot();
+});
+
+test('works with assertions in separate files', () => {
+  const {stderr} = runJest(dir, ['test_macro.test.js']);
+
   expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+});
+
+test('works with async failures', () => {
+  const {stderr} = runJest(dir, ['async_failures.test.js']);
+
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+});
+
+test('works with snapshot failures', () => {
+  const {stderr} = runJest(dir, ['snapshot.test.js']);
+
+  const result = normalizeDots(extractSummary(stderr).rest);
+
+  expect(
+    result.substring(0, result.indexOf('Snapshot Summary')),
+  ).toMatchSnapshot();
 });

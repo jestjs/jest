@@ -1,23 +1,23 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "20.0.4",
+  "version": "22.0.3",
   "main": "build/jest.js",
   "dependencies": {
-    "jest-cli": "^20.0.4"
+    "jest-cli": "^22.0.3"
   },
   "bin": {
     "jest": "./bin/jest.js"
   },
   "engines": {
-    "node": ">= 4"
+    "node": ">= 6"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest"
   },
   "homepage": "http://facebook.github.io/jest/",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "keywords": [
     "ava",
     "babel",

@@ -1,17 +1,17 @@
 {
   "name": "pretty-format",
-  "version": "20.0.3",
+  "version": "22.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "description": "Stringify any JavaScript value.",
   "main": "build/index.js",
   "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
     "ansi-regex": "^3.0.0",
-    "ansi-styles": "^3.0.0"
+    "ansi-styles": "^3.2.0"
   }
 }

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -12,19 +11,16 @@ import type {TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Event, TestEntry} from 'types/Circus';
 
-import {
-  extractExpectedAssertionsErrors,
-  getState,
-  setState,
-} from 'jest-matchers';
+import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
+// eslint-disable-next-line import/default
 import globals from '../index';
 
-const initialize = ({
+export const initialize = ({
   config,
   globalConfig,
   localRequire,
@@ -47,9 +43,12 @@ const initialize = ({
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers.concat().reverse().forEach(path => {
-    addSerializer(localRequire(path));
-  });
+  config.snapshotSerializers
+    .concat()
+    .reverse()
+    .forEach(path => {
+      addSerializer(localRequire(path));
+    });
 
   const {expand, updateSnapshot} = globalConfig;
   const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
@@ -59,7 +58,7 @@ const initialize = ({
   return {globals, snapshotState};
 };
 
-const runAndTransformResultsToJestFormat = async ({
+export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
   testPath,
@@ -128,7 +127,9 @@ const runAndTransformResultsToJestFormat = async ({
 
   return {
     console: null,
+    displayName: config.displayName,
     failureMessage,
+    leaks: false, // That's legacy code, just adding it so Flow is happy.
     numFailingTests,
     numPassingTests,
     numPendingTests,
@@ -143,6 +144,7 @@ const runAndTransformResultsToJestFormat = async ({
       fileDeleted: false,
       matched: 0,
       unchecked: 0,
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },
@@ -183,9 +185,4 @@ const _addSuppressedErrors = (test: TestEntry) => {
     test.status = 'fail';
     test.errors = test.errors.concat(suppressedErrors);
   }
-};
-
-module.exports = {
-  initialize,
-  runAndTransformResultsToJestFormat,
 };

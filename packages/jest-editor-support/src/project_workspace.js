@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -11,7 +10,7 @@
 /**
  * Represents the project that the extension is running on and it's state
  */
-module.exports = class ProjectWorkspace {
+export default class ProjectWorkspace {
   /**
    * The path to the root of the project's workspace
    *
@@ -58,4 +57,4 @@ module.exports = class ProjectWorkspace {
     this.pathToConfig = pathToConfig;
     this.localJestMajorVersion = localJestMajorVersion;
   }
-};
+}

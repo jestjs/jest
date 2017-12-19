@@ -1,17 +1,16 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 jest.useFakeTimers();
 
-const pTimeout = require('../p_timeout');
+import pTimeout from '../p_timeout';
 
 describe('pTimeout', () => {
   it('calls `clearTimeout` and resolves when `promise` resolves.', async () => {

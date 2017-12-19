@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -13,9 +12,9 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-import preRunMessage from '../pre_run_message';
+import {remove as preRunMessageRemove} from '../pre_run_message';
 
-class BaseReporter {
+export default class BaseReporter {
   _error: ?Error;
 
   log(message: string) {
@@ -23,7 +22,7 @@ class BaseReporter {
   }
 
   onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
-    preRunMessage.remove(process.stderr);
+    preRunMessageRemove(process.stderr);
   }
 
   onTestResult(test: Test, testResult: TestResult, results: AggregatedResult) {}
@@ -45,5 +44,3 @@ class BaseReporter {
     return this._error;
   }
 }
-
-module.exports = BaseReporter;

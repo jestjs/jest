@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -26,7 +25,12 @@ type TreeNode = {
   children?: Array<TreeNode>,
 };
 
-function treeProcessor(options: Options) {
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test. Async functions return it implicitly.
+// eslint-disable-next-line no-unused-vars
+const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+
+export default function treeProcessor(options: Options) {
   const {
     nodeComplete,
     nodeStart,
@@ -76,5 +80,3 @@ function treeProcessor(options: Options) {
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);
   }
 }
-
-module.exports = treeProcessor;

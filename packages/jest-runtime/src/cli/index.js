@@ -1,12 +1,11 @@
 /**
-* Copyright (c) 2014, Facebook, Inc. All rights reserved.
-*
-* This source code is licensed under the BSD-style license found in the
-* LICENSE file in the root directory of this source tree. An additional grant
-* of patent rights can be found in the PATENTS file in the same directory.
-*
-* @flow
-*/
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
 
 import type {Argv} from 'types/Argv';
 import type {EnvironmentClass} from 'types/Environment';
@@ -17,17 +16,26 @@ import chalk from 'chalk';
 import yargs from 'yargs';
 import {Console, setGlobal, validateCLIOptions} from 'jest-util';
 import {readConfig} from 'jest-config';
+// eslint-disable-next-line import/default
 import Runtime from '../';
-import args from './args';
+import * as args from './args';
 
 const VERSION = (require('../../package.json').version: string);
 
-function run(cliArgv?: Argv, cliInfo?: Array<string>) {
+export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
+  const realFs = require('fs');
+  const fs = require('graceful-fs');
+  fs.gracefulify(realFs);
+
   let argv;
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = yargs.usage(args.usage).options(args.options).argv;
+    argv = yargs
+      .usage(args.usage)
+      .help(false)
+      .version(false)
+      .options(args.options).argv;
 
     validateCLIOptions(argv, args.options);
   }
@@ -87,5 +95,3 @@ function run(cliArgv?: Argv, cliInfo?: Array<string>) {
       process.on('exit', () => process.exit(1));
     });
 }
-
-exports.run = run;

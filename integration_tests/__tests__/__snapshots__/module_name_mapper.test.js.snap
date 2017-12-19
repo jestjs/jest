@@ -1,24 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`moduleNameMapper correct configuration 1`] = `
-" PASS  __tests__/index.js
+"PASS __tests__/index.js
   ✓ moduleNameMapping correct configuration
 
 "
 `;
 
 exports[`moduleNameMapper wrong configuration 1`] = `
-" FAIL  __tests__/index.js
+"FAIL __tests__/index.js
   ● Test suite failed to run
 
     Configuration error:
     
-    Unknown module in configuration option moduleNameMapper
+    Could not locate module ./style.css (mapped as no-such-module)
+    
     Please check:
     
     \\"moduleNameMapper\\": {
       \\"/\\\\.(css|less)$/\\": \\"no-such-module\\"
-    }
+    },
+    \\"resolver\\": undefined
 
 "
 `;

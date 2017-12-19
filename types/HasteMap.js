@@ -1,29 +1,30 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 import type {ModuleMap as _ModuleMap, FS} from 'jest-haste-map';
 import type {Path} from 'types/Config';
-import type HasteResolver from 'jest-resolve';
 
 export type HasteFS = FS;
 export type ModuleMap = _ModuleMap;
 
-export type FileData = {[filepath: Path]: FileMetaData};
-export type MockData = {[id: string]: Path};
-export type ModuleMapData = {[id: string]: ModuleMapItem};
-export type WatchmanClocks = {[filepath: Path]: string};
+export type FileData = {[filepath: Path]: FileMetaData, __proto__: null};
+export type MockData = {[id: string]: Path, __proto__: null};
+export type ModuleMapData = {[id: string]: ModuleMapItem, __proto__: null};
+export type WatchmanClocks = {[filepath: Path]: string, __proto__: null};
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
-export type DuplicatesSet = {[filePath: string]: /* type */ number};
+export type DuplicatesSet = {
+  [filePath: string]: /* type */ number,
+  __proto__: null,
+};
 export type DuplicatesIndex = {
-  [id: string]: {[platform: string]: DuplicatesSet},
+  [id: string]: {[platform: string]: DuplicatesSet, __proto__: null},
 };
 
 export type InternalHasteMap = {|

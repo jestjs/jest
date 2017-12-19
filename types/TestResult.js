@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -30,14 +29,15 @@ type FileCoverageTotal = {|
   total: number,
   covered: number,
   skipped: number,
-  pct?: number,
+  pct: number,
 |};
 
-type CoverageSummary = {|
+export type CoverageSummary = {|
   lines: FileCoverageTotal,
   statements: FileCoverageTotal,
   branches: FileCoverageTotal,
   functions: FileCoverageTotal,
+  merge: (other: CoverageSummary) => void,
 |};
 
 export type FileCoverage = {|
@@ -83,20 +83,28 @@ export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
 export type Bytes = number;
 export type Milliseconds = number;
 
+type Callsite = {|
+  column: number,
+  line: number,
+|};
+
 export type AssertionResult = {|
   ancestorTitles: Array<string>,
   duration?: ?Milliseconds,
   failureMessages: Array<string>,
   fullName: string,
+  location: ?Callsite,
   numPassingAsserts: number,
   status: Status,
   title: string,
 |};
 
 export type FormattedAssertionResult = {
+  failureMessages: Array<string> | null,
+  fullName: string,
+  location: ?Callsite,
   status: Status,
   title: string,
-  failureMessages: Array<string> | null,
 };
 
 export type AggregatedResultWithoutCoverage = {
@@ -129,8 +137,10 @@ export type Suite = {|
 export type TestResult = {|
   console: ?ConsoleBuffer,
   coverage?: RawCoverage,
-  memoryUsage?: Bytes,
+  displayName: ?string,
   failureMessage: ?string,
+  leaks: boolean,
+  memoryUsage?: Bytes,
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
@@ -144,6 +154,7 @@ export type TestResult = {|
     fileDeleted: boolean,
     matched: number,
     unchecked: number,
+    uncheckedKeys: Array<string>,
     unmatched: number,
     updated: number,
   |},
@@ -200,6 +211,7 @@ export type SnapshotSummary = {|
   matched: number,
   total: number,
   unchecked: number,
+  uncheckedKeys: Array<string>,
   unmatched: number,
   updated: number,
 |};

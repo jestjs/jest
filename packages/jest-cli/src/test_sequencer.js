@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -23,7 +22,7 @@ type Cache = {
   [key: string]: [0 | 1, number],
 };
 
-class TestSequencer {
+export default class TestSequencer {
   _cache: Map<Context, Cache>;
 
   constructor() {
@@ -113,5 +112,3 @@ class TestSequencer {
     );
   }
 }
-
-module.exports = TestSequencer;

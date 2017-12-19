@@ -1,22 +1,24 @@
 {
   "name": "jest-jasmine2",
-  "version": "20.0.4",
+  "version": "22.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "callsites": "^2.0.0",
     "chalk": "^2.0.1",
+    "expect": "^22.0.3",
     "graceful-fs": "^4.1.11",
-    "jest-diff": "^20.0.3",
-    "jest-matcher-utils": "^20.0.3",
-    "jest-matchers": "^20.0.3",
-    "jest-message-util": "^20.0.3",
-    "jest-snapshot": "^20.0.3"
+    "jest-diff": "^22.0.3",
+    "jest-matcher-utils": "^22.0.3",
+    "jest-message-util": "^22.0.3",
+    "jest-snapshot": "^22.0.3",
+    "source-map-support": "^0.5.0"
   },
   "devDependencies": {
-    "jest-runtime": "^20.0.4"
+    "jest-runtime": "^22.0.3"
   }
 }

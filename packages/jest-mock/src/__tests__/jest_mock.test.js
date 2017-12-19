@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
 const vm = require('vm');
@@ -69,14 +68,28 @@ describe('moduleMocker', () => {
     });
 
     it('escapes illegal characters in function name property', () => {
-      const foo = {
-        'foo-bar': () => {},
-      };
+      function getMockFnWithOriginalName(name) {
+        const fn = () => {};
+        Object.defineProperty(fn, 'name', {value: name});
 
-      const mock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(foo['foo-bar']),
-      );
-      expect(!mock.name || mock.name === 'foo$bar').toBeTruthy();
+        return moduleMocker.generateFromMetadata(moduleMocker.getMetadata(fn));
+      }
+
+      expect(
+        getMockFnWithOriginalName('foo-bar').name === 'foo$bar',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo-bar-2').name === 'foo$bar$2',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo-bar-3').name === 'foo$bar$3',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo/bar').name === 'foo$bar',
+      ).toBeTruthy();
+      expect(
+        getMockFnWithOriginalName('foo𠮷bar').name === 'foo𠮷bar',
+      ).toBeTruthy();
     });
 
     it('special cases the mockConstructor name', () => {
@@ -377,6 +390,72 @@ describe('moduleMocker', () => {
       expect(fake(2)).toEqual(42);
       expect(fake(2)).toEqual(4);
     });
+
+    describe('timestamps', () => {
+      const RealDate = Date;
+
+      beforeEach(() => {
+        global.Date = {
+          now: jest
+            .fn()
+            .mockImplementationOnce(() => 978391040765)
+            .mockImplementationOnce(() => 1262388620765),
+        };
+      });
+
+      afterEach(() => {
+        global.Date = RealDate;
+      });
+
+      it('tracks timestamps made by mocks', () => {
+        const fn = moduleMocker.fn();
+        expect(fn.mock.timestamps).toEqual([]);
+
+        fn(1, 2, 3);
+        expect(fn.mock.timestamps[0]).toBe(978391040765);
+
+        fn('a', 'b', 'c');
+        expect(fn.mock.timestamps[1]).toBe(1262388620765);
+      });
+
+      it('supports clearing mock timestamps', () => {
+        const fn = moduleMocker.fn();
+        expect(fn.mock.timestamps).toEqual([]);
+
+        fn(1, 2, 3);
+        expect(fn.mock.timestamps).toEqual([978391040765]);
+
+        fn.mockReturnValue('abcd');
+
+        fn.mockClear();
+        expect(fn.mock.timestamps).toEqual([]);
+
+        fn('a', 'b', 'c');
+        expect(fn.mock.timestamps).toEqual([1262388620765]);
+
+        expect(fn()).toEqual('abcd');
+      });
+
+      it('supports clearing all mocks timestamps', () => {
+        const fn1 = moduleMocker.fn();
+        fn1.mockImplementation(() => 'abcd');
+
+        fn1(1, 2, 3);
+        expect(fn1.mock.timestamps).toEqual([978391040765]);
+
+        const fn2 = moduleMocker.fn();
+
+        fn2.mockReturnValue('abcde');
+        fn2('a', 'b', 'c', 'd');
+        expect(fn2.mock.timestamps).toEqual([1262388620765]);
+
+        moduleMocker.clearAllMocks();
+        expect(fn1.mock.timestamps).toEqual([]);
+        expect(fn2.mock.timestamps).toEqual([]);
+        expect(fn1()).toEqual('abcd');
+        expect(fn2()).toEqual('abcde');
+      });
+    });
   });
 
   describe('getMockImplementation', () => {
@@ -393,6 +472,24 @@ describe('moduleMocker', () => {
   });
 
   describe('mockImplementationOnce', () => {
+    it('should mock constructor', () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function() {
+        const m = new Module();
+        m.someFn();
+      };
+
+      Module.mockImplementationOnce(() => ({someFn: mock2}));
+
+      testFn();
+      expect(mock2).toHaveBeenCalled();
+      expect(mock1).not.toHaveBeenCalled();
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+    });
+
     it('should mock single call to a mock function', () => {
       const mockFn = moduleMocker.fn();
 
@@ -443,6 +540,42 @@ describe('moduleMocker', () => {
 
     expect(moduleMocker.isMockFunction(() => {})).toBe(false);
     expect(moduleMocker.isMockFunction(mockFn)).toBe(true);
+  });
+
+  test('default mockName is jest.fn()', () => {
+    const fn = jest.fn();
+    expect(fn.getMockName()).toBe('jest.fn()');
+  });
+
+  test('mockName sets the mock name', () => {
+    const fn = jest.fn();
+    fn.mockName('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
+  });
+
+  test('mockName gets reset by mockReset', () => {
+    const fn = jest.fn();
+    expect(fn.getMockName()).toBe('jest.fn()');
+    fn.mockName('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
+    fn.mockReset();
+    expect(fn.getMockName()).toBe('jest.fn()');
+  });
+
+  test('mockName is not reset by mockRestore', () => {
+    const fn = jest.fn(() => false);
+    fn.mockName('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
+    fn.mockRestore();
+    expect(fn.getMockName()).toBe('myMockFn');
+  });
+
+  test('mockName is not reset by mockClear', () => {
+    const fn = jest.fn(() => false);
+    fn.mockName('myMockFn');
+    expect(fn.getMockName()).toBe('myMockFn');
+    fn.mockClear();
+    expect(fn.getMockName()).toBe('myMockFn');
   });
 
   describe('spyOn', () => {

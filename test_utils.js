@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -21,9 +20,13 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   coverageDirectory: 'coverage',
   coverageReporters: [],
   coverageThreshold: {global: {}},
+  detectLeaks: false,
+  enabledTestsMap: null,
   expand: false,
   findRelatedTests: false,
   forceExit: false,
+  globalSetup: null,
+  globalTeardown: null,
   json: false,
   lastCommit: false,
   listTests: false,
@@ -35,11 +38,14 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   nonFlagArgs: [],
   notify: false,
   onlyChanged: false,
+  onlyFailures: false,
   outputFile: null,
+  passWithNoTests: false,
   projects: [],
   replname: null,
   reporters: [],
   rootDir: '/test_root_dir/',
+  runTestsByPath: false,
   silent: false,
   testFailureExitCode: 1,
   testNamePattern: '',
@@ -50,6 +56,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   verbose: false,
   watch: false,
   watchAll: false,
+  watchPlugins: [],
   watchman: false,
 };
 
@@ -60,6 +67,10 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,
   coveragePathIgnorePatterns: [],
+  cwd: '/test_root_dir/',
+  detectLeaks: false,
+  displayName: undefined,
+  forceCoverageMatch: [],
   globals: {},
   haste: {
     providesModuleNodeModules: [],
@@ -76,11 +87,14 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   resolver: null,
   rootDir: '/test_root_dir/',
   roots: [],
+  runner: 'jest-runner',
   setupFiles: [],
   setupTestFrameworkScriptFile: null,
   skipNodeResolution: false,
   snapshotSerializers: [],
   testEnvironment: 'node',
+  testEnvironmentOptions: {},
+  testLocationInResults: false,
   testMatch: [],
   testPathIgnorePatterns: [],
   testRegex: '.test.js$',
@@ -90,6 +104,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: null,
+  watchPathIgnorePatterns: [],
 };
 
 const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
@@ -103,7 +118,6 @@ const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
     `);
   }
 
-  // $FlowFixMe Object.assign
   return Object.assign({}, DEFAULT_GLOBAL_CONFIG, overrides);
 };
 
@@ -118,7 +132,6 @@ const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
     `);
   }
 
-  // $FlowFixMe Object.assign
   return Object.assign({}, DEFAULT_PROJECT_CONFIG, overrides);
 };
 

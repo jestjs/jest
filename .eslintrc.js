@@ -1,10 +1,12 @@
 /**
  * Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
+
+const path = require('path');
+const customImportResolver = path.resolve('./eslint_import_resolver');
 
 module.exports = {
   extends: [
@@ -19,6 +21,8 @@ module.exports = {
       files: ['*.md'],
       rules: {
         'consistent-return': 0,
+        'flowtype/require-valid-file-annotation': 0,
+        'import/no-extraneous-dependencies': 0,
         'import/no-unresolved': 0,
         'jest/no-focused-tests': 0,
         'jest/no-identical-title': 0,
@@ -49,6 +53,13 @@ module.exports = {
       },
     },
     {
+      files: 'types/**/*',
+      rules: {
+        'import/no-extraneous-dependencies': 0,
+        'unicorn/filename-case': 0,
+      },
+    },
+    {
       files: [
         '**/__mocks__/**/*',
         'website/**/*',
@@ -59,6 +70,8 @@ module.exports = {
         'packages/jest-editor-support/src/Process.js',
         'packages/jest-editor-support/src/Runner.js',
         'packages/jest-editor-support/src/Settings.js',
+        'packages/jest-editor-support/src/Snapshot.js',
+        'packages/jest-editor-support/src/__tests__/Snapshot-test.js',
         'packages/jest-jasmine2/src/jasmine/Env.js',
         'packages/jest-jasmine2/src/jasmine/Spec.js',
         'packages/jest-jasmine2/src/jasmine/Suite.js',
@@ -76,6 +89,7 @@ module.exports = {
         'scripts/**/*',
         'integration_tests/*/**/*',
         'website/*/**/*',
+        'eslint_import_resolver.js',
       ],
       rules: {
         'prettier/prettier': [
@@ -109,6 +123,17 @@ module.exports = {
         'flowtype/require-valid-file-annotation': [2, 'always'],
       },
     },
+    {
+      files: [
+        'website/**',
+        '**/__tests__/**',
+        'integration_tests/**',
+        '**/pretty-format/perf/**',
+      ],
+      rules: {
+        'import/no-extraneous-dependencies': 0,
+      },
+    },
   ],
   parser: 'babel-eslint',
   plugins: ['markdown', 'import', 'unicorn', 'prettier'],
@@ -116,11 +141,20 @@ module.exports = {
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
     'flowtype/require-valid-file-annotation': 2,
-    // These has to be disabled until the whole code base is converted to ESM
-    'import/default': 0,
-    'import/named': 0,
     'import/no-duplicates': 2,
-    'import/no-unresolved': [2, {ignore: ['^types/']}],
+    'import/no-extraneous-dependencies': [
+      2,
+      {
+        devDependencies: [
+          '**/__tests__/**',
+          '**/__mocks__/**',
+          '**/?(*.)(spec|test).js?(x)',
+          'scripts/**',
+          'eslint_import_resolver.js',
+          'test_setup_file.js',
+        ],
+      },
+    ],
     // This has to be disabled until all type and module imports are combined
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
@@ -135,5 +169,14 @@ module.exports = {
       },
     ],
     'unicorn/filename-case': [2, {case: 'snakeCase'}],
+  },
+  settings: {
+    'import/resolver': {
+      [customImportResolver]: {
+        moduleNameMapper: {
+          '^types/(.*)': './types/$1',
+        },
+      },
+    },
   },
 };

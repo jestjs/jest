@@ -1,20 +1,22 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
 
 import type {
-  JestTotalResults,
-  JestAssertionResults,
   TestFileAssertionStatus,
   TestAssertionStatus,
   TestReconciliationState,
 } from './types';
+
+import type {
+  FormattedAssertionResult,
+  FormattedTestResults,
+} from 'types/TestResult';
 
 import path from 'path';
 
@@ -25,21 +27,22 @@ import path from 'path';
  *  This class represents the state between runs, keeping track of passes/fails
  *  at a file level, generating useful error messages and providing a nice API.
  */
-
-module.exports = class TestReconciler {
-  fileStatuses: any;
-  fails: Array<TestFileAssertionStatus>;
-  passes: Array<TestFileAssertionStatus>;
+export default class TestReconciler {
+  fileStatuses: {[key: string]: TestFileAssertionStatus};
 
   constructor() {
     this.fileStatuses = {};
   }
 
-  updateFileWithJestStatus(results: JestTotalResults) {
-    this.fails = [];
-    this.passes = [];
-
+  // the processed test results will be returned immediately instead of saved in
+  // instance properties. This is 1) to prevent race condition 2) the data is already
+  // stored in the this.fileStatuses, no dup is better 3) client will most likely need to process
+  // all the results anyway.
+  updateFileWithJestStatus(
+    results: FormattedTestResults,
+  ): TestFileAssertionStatus[] {
     // Loop through all files inside the report from Jest
+    const statusList: TestFileAssertionStatus[] = [];
     results.testResults.forEach(file => {
       // Did the file pass/fail?
       const status = this.statusToReconcilationState(file.status);
@@ -51,21 +54,9 @@ module.exports = class TestReconciler {
         status,
       };
       this.fileStatuses[file.name] = fileStatus;
-
-      if (status === 'KnownFail') {
-        this.fails.push(fileStatus);
-      } else if (status === 'KnownSuccess') {
-        this.passes.push(fileStatus);
-      }
+      statusList.push(fileStatus);
     });
-  }
-
-  failedStatuses(): Array<TestFileAssertionStatus> {
-    return this.fails || [];
-  }
-
-  passedStatuses(): Array<TestFileAssertionStatus> {
-    return this.passes || [];
+    return statusList;
   }
 
   // A failed test also contains the stack trace for an `expect`
@@ -74,7 +65,7 @@ module.exports = class TestReconciler {
 
   mapAssertions(
     filename: string,
-    assertions: Array<JestAssertionResults>,
+    assertions: Array<FormattedAssertionResult>,
   ): Array<TestAssertionStatus> {
     // Is it jest < 17? e.g. Before I added this to the JSON
     if (!assertions) {
@@ -84,7 +75,7 @@ module.exports = class TestReconciler {
     // Change all failing assertions into structured data
     return assertions.map(assertion => {
       // Failure messages seems to always be an array of one item
-      const message = assertion.failureMessages[0];
+      const message = assertion.failureMessages && assertion.failureMessages[0];
       let short = null;
       let terse = null;
       let line = null;
@@ -97,7 +88,7 @@ module.exports = class TestReconciler {
       }
       return {
         line,
-        message,
+        message: message || '',
         shortMessage: short,
         status: this.statusToReconcilationState(assertion.status),
         terseMessage: terse,
@@ -138,6 +129,8 @@ module.exports = class TestReconciler {
         return 'KnownSuccess';
       case 'failed':
         return 'KnownFail';
+      case 'pending':
+        return 'KnownSkip';
       default:
         return 'Unknown';
     }
@@ -151,12 +144,17 @@ module.exports = class TestReconciler {
     return results.status;
   }
 
+  assertionsForTestFile(file: string): TestAssertionStatus[] | null {
+    const results = this.fileStatuses[file];
+    return results ? results.assertions : null;
+  }
+
   stateForTestAssertion(
     file: string,
     name: string,
   ): TestAssertionStatus | null {
     const results = this.fileStatuses[file];
-    if (!results) {
+    if (!results || !results.assertions) {
       return null;
     }
     const assertion = results.assertions.find(a => a.title === name);
@@ -165,4 +163,4 @@ module.exports = class TestReconciler {
     }
     return assertion;
   }
-};
+}

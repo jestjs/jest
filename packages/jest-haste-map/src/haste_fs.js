@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -15,7 +14,7 @@ import path from 'path';
 import micromatch from 'micromatch';
 import H from './constants';
 
-class HasteFS {
+export default class HasteFS {
   _files: FileData;
 
   constructor(files: FileData) {
@@ -62,5 +61,3 @@ class HasteFS {
     return files;
   }
 }
-
-module.exports = HasteFS;

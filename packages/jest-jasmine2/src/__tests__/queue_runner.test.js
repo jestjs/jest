@@ -1,15 +1,14 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+jsinfra
  */
+
 'use strict';
 
-const queueRunner = require('../queue_runner');
+import queueRunner from '../queue_runner';
 
 describe('queueRunner', () => {
   it('runs every function in the queue.', async () => {
@@ -112,8 +111,8 @@ describe('queueRunner', () => {
     expect(onException).toHaveBeenCalled();
     // i.e. the `message` of the error passed to `onException`.
     expect(onException.mock.calls[0][0].message).toEqual(
-      'Timeout - Async callback was not invoked within timeout specified ' +
-        'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+      'Timeout - Async callback was not invoked within the 0ms timeout ' +
+        'specified by jest.setTimeout.',
     );
     expect(fnTwo).toHaveBeenCalled();
   });
@@ -129,5 +128,31 @@ describe('queueRunner', () => {
     await queueRunner(options);
 
     expect(options.fail).toHaveBeenCalledWith('miserably', 'failed');
+  });
+
+  it('calls `fail` when done(error) is invoked', async () => {
+    const error = new Error('I am an error');
+    const fail = jest.fn();
+    const fnOne = jest.fn(next => next(error));
+    const fnTwo = jest.fn(next => next());
+    const options = {
+      clearTimeout,
+      fail,
+      onException: () => {},
+      queueableFns: [
+        {
+          fn: fnOne,
+        },
+        {
+          fn: fnTwo,
+        },
+      ],
+      setTimeout,
+    };
+    await queueRunner(options);
+    expect(fnOne).toHaveBeenCalled();
+    expect(fail).toHaveBeenCalledWith(error);
+    // Even if `fail` is called, the queue keeps running.
+    expect(fnTwo).toHaveBeenCalled();
   });
 });

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
@@ -40,7 +39,7 @@ type Options = {
   message?: string,
 };
 
-function expectationResultFactory(options: Options) {
+export default function expectationResultFactory(options: Options) {
   const message = messageFormatter(options);
   const stack = stackFormatter(options, message);
 
@@ -64,5 +63,3 @@ function expectationResultFactory(options: Options) {
     stack,
   };
 }
-
-module.exports = expectationResultFactory;

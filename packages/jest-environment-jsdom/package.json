@@ -1,15 +1,15 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "20.0.3",
+  "version": "22.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "jest-mock": "^20.0.3",
-    "jest-util": "^20.0.3",
-    "jsdom": "^9.12.0"
+    "jest-mock": "^22.0.3",
+    "jest-util": "^22.0.3",
+    "jsdom": "^11.5.1"
   }
 }

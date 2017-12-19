@@ -65,7 +65,7 @@ Object {
 `;
 
 exports[`Custom Reporters Integration default reporters enabled 1`] = `
-" PASS  __tests__/add.test.js
+"PASS __tests__/add.test.js
   Custom Reporters
     ✓ adds ok
 
