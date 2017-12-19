@@ -191,6 +191,11 @@ const users = [
     infoLink: 'https://www.nhl.com/',
   },
   {
+    caption: 'Playo',
+    image: '/jest/img/logos/playo.png',
+    infoLink: 'https://www.playo.co/',
+  },
+  {
     caption: 'Quiqup',
     image: '/jest/img/logos/quiqup.png',
     infoLink: 'https://www.quiqup.com/',
