@@ -1,5 +1,15 @@
 ## master
 
+None for now
+
+### Fixes
+
+### Features
+
+### Chore & Maintenance
+
+## jest 22.0.1
+
 ### Fixes
 
 * `[jest-runtime]` fix error for test files providing coverage.
