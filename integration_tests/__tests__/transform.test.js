@@ -122,18 +122,11 @@ describe('multiple-transformers', () => {
 });
 
 describe('ecmascript-modules-support', () => {
-  skipOnWindows.suite();
   const dir = path.resolve(
     __dirname,
     '..',
     'transform/ecmascript-modules-support',
   );
-
-  beforeEach(() => {
-    if (process.platform !== 'win32') {
-      run('yarn', dir);
-    }
-  });
 
   it('runs transpiled code', () => {
     // --no-cache because babel can cache stuff and result in false green
