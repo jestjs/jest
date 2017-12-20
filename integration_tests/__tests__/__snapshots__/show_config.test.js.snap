@@ -13,6 +13,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"/node_modules/\\"
       ],
       \\"detectLeaks\\": false,
+      \\"forceCoverageMatch\\": [],
       \\"globals\\": {},
       \\"haste\\": {
         \\"providesModuleNodeModules\\": []

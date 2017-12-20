@@ -6,6 +6,7 @@
       "asynchronous",
       "setup-teardown",
       "mock-functions",
+      "jest-platform",
       "more-resources"
     ],
     "API Reference": [

@@ -282,10 +282,10 @@ const buildTestPathPattern = (argv: Argv): string => {
   const patterns = [];
 
   if (argv._) {
-    patterns.push(...argv._);
+    patterns.push.apply(patterns, argv._);
   }
   if (argv.testPathPattern) {
-    patterns.push(...argv.testPathPattern);
+    patterns.push.apply(patterns, argv.testPathPattern);
   }
 
   const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
@@ -459,6 +459,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'expand':
       case 'globals':
       case 'findRelatedTests':
+      case 'forceCoverageMatch':
       case 'forceExit':
       case 'listTests':
       case 'logHeapUsage':

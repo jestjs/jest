@@ -119,13 +119,15 @@ class Resolver {
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
     if (this._supportsNativePlatform()) {
-      extensions.unshift(
-        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      extensions.unshift.apply(
+        extensions,
+        this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
       );
     }
     if (defaultPlatform) {
-      extensions.unshift(
-        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      extensions.unshift.apply(
+        extensions,
+        this._options.extensions.map(ext => '.' + defaultPlatform + ext),
       );
     }
 

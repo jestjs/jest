@@ -261,7 +261,7 @@ export default class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (transformed.map) {
+    if (instrument && mapCoverage && transformed.map) {
       const sourceMapContent =
         typeof transformed.map === 'string'
           ? transformed.map

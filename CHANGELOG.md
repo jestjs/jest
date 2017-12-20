@@ -1,6 +1,24 @@
 ## master
 
-None
+None for now
+
+### Fixes
+
+### Features
+
+### Chore & Maintenance
+
+## jest 22.0.1
+
+### Fixes
+
+* `[jest-runtime]` fix error for test files providing coverage.
+  ([#5117](https://github.com/facebook/jest/pull/5117))
+
+### Features
+
+* `[jest-config]` Add `forceCoverageMatch` to allow collecting coverage from
+  ignored files. ([#5081](https://github.com/facebook/jest/pull/5081))
 
 ## jest 22.0.0
 
@@ -102,7 +120,7 @@ None
   ([#4593](https://github.com/facebook/jest/pull/4593))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test and snapshot
   ([#4460](https://github.com/facebook/jest/pull/4460))
-* `[jest-cli]` Add an option to fail if no tests are found
+* `[jest-cli]` [**BREAKING**] Fail if no tests are found
   ([#3672](https://github.com/facebook/jest/pull/3672))
 * `[jest-diff]` Highlight only last of odd length leading spaces
   ([#4558](https://github.com/facebook/jest/pull/4558))
