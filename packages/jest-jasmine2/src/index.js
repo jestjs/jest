@@ -50,9 +50,9 @@ async function jasmine2(
   // in a future version
   if (config.testLocationInResults === true) {
     const originalIt = environment.global.it;
-    environment.global.it = function() {
+    environment.global.it = (...args) => {
       const stack = callsites()[1];
-      const it = originalIt.apply(this, arguments);
+      const it = originalIt.apply(this, ...args);
 
       it.result.__callsite = stack;
 
