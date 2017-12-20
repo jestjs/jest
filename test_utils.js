@@ -38,6 +38,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   noStackTrace: false,
   nonFlagArgs: [],
   notify: false,
+  notifyMode: 'always',
   onlyChanged: false,
   onlyFailures: false,
   outputFile: null,

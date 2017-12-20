@@ -88,6 +88,11 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
+const testSchedulerContext = {
+  firstRun: true,
+  previousSuccess: true,
+};
+
 export default (async function runJest({
   contexts,
   globalConfig,
@@ -199,9 +204,13 @@ export default (async function runJest({
     // $FlowFixMe
     await require(globalConfig.globalSetup)();
   }
-  const results = await new TestScheduler(globalConfig, {
-    startRun,
-  }).scheduleTests(allTests, testWatcher);
+  const results = await new TestScheduler(
+    globalConfig,
+    {
+      startRun,
+    },
+    testSchedulerContext,
+  ).scheduleTests(allTests, testWatcher);
 
   sequencer.cacheResults(allTests, results);
 

@@ -60,6 +60,7 @@ export default ({
   name: 'string',
   noStackTrace: false,
   notify: false,
+  notifyMode: 'always',
   onlyChanged: false,
   preset: 'react-native',
   projects: ['project-a', 'project-b/'],

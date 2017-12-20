@@ -52,6 +52,7 @@ export default ({
   modulePathIgnorePatterns: [],
   noStackTrace: false,
   notify: false,
+  notifyMode: 'always',
   preset: null,
   resetMocks: false,
   resetModules: false,
