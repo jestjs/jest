@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "babel-preset-env": "^1.6.1"
+  },
+
+  "jest": {
+    "testEnvironment": "node",
+    "moduleFileExtensions": ["js", "json", "jsx", "node", "mjs"],
+    "testMatch": [ "**/__tests__/**/*.mjs"],
+    "transform": {
+      "^.+\\.mjs?$": "../../../packages/babel-jest"
+    }
+  }
+}
