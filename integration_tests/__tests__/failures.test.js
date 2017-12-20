@@ -119,3 +119,9 @@ test('works with snapshot failures', () => {
     result.substring(0, result.indexOf('Snapshot Summary')),
   ).toMatchSnapshot();
 });
+
+test('works with custom matchers', () => {
+  const {stderr} = runJest(dir, ['custom_matcher.test.js']);
+
+  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+});

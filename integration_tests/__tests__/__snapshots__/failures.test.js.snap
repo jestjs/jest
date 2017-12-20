@@ -123,6 +123,47 @@ exports[`works with async failures 1`] = `
 "
 `;
 
+exports[`works with custom matchers 1`] = `
+"FAIL __tests__/custom_matcher.test.js
+  Custom matcher
+    ✓ passes
+    ✕ fails
+    ✕ preserves error stack
+
+  ● Custom matcher › fails
+
+    Expected \\"bar\\" but got \\"foo\\"
+
+      43 |   // This test should fail
+      44 |   it('fails', () => {
+    > 45 |     expect(() => 'foo').toCustomMatch('bar');
+      46 |   });
+      47 | 
+      48 |   // This test fails due to an unrelated/unexpected error
+      
+      at __tests__/custom_matcher.test.js:45:25
+
+  ● Custom matcher › preserves error stack
+
+    ReferenceError: qux is not defined
+
+      52 |     const bar = () => baz();
+      53 |     // eslint-disable-next-line no-undef
+    > 54 |     const baz = () => qux();
+      55 | 
+      56 |     expect(() => {
+      57 |       foo();
+      
+      at __tests__/custom_matcher.test.js:54:23
+      at __tests__/custom_matcher.test.js:52:23
+      at __tests__/custom_matcher.test.js:51:23
+      at __tests__/custom_matcher.test.js:57:7
+      at __tests__/custom_matcher.test.js:13:20
+      at __tests__/custom_matcher.test.js:58:8
+
+"
+`;
+
 exports[`works with node assert 1`] = `
 "FAIL __tests__/node_assertion_error.test.js
   ✕ assert
