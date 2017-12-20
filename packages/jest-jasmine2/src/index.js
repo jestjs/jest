@@ -52,7 +52,7 @@ async function jasmine2(
     const originalIt = environment.global.it;
     environment.global.it = (...args) => {
       const stack = callsites()[1];
-      const it = originalIt.apply(this, ...args);
+      const it = originalIt(...args);
 
       it.result.__callsite = stack;
 
