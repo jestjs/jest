@@ -9,19 +9,6 @@
       "jest-platform",
       "more-resources"
     ],
-    "API Reference": [
-      "api",
-      "expect",
-      "mock-function-api",
-      "jest-object",
-      "configuration",
-      "cli"
-    ],
-    "Framework Guides": [
-      "tutorial-react",
-      "tutorial-react-native",
-      "testing-frameworks"
-    ],
     "Guides": [
       "snapshot-testing",
       "tutorial-async",
@@ -31,6 +18,19 @@
       "puppeteer",
       "migration-guide",
       "troubleshooting"
+    ],
+    "Framework Guides": [
+      "tutorial-react",
+      "tutorial-react-native",
+      "testing-frameworks"
+    ],
+    "API Reference": [
+      "api",
+      "expect",
+      "mock-function-api",
+      "jest-object",
+      "configuration",
+      "cli"
     ]
   }
 }
