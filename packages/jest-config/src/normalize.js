@@ -73,7 +73,7 @@ const setupPreset = (
 
   try {
     // $FlowFixMe
-    preset = (require(presetModule): InitialOptions);
+    preset = (require(foundModule): InitialOptions);
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw createConfigError(
