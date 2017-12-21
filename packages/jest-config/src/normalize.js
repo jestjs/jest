@@ -51,29 +51,39 @@ const setupPreset = (
 ): InitialOptions => {
   let preset;
   const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
-  const foundModule = PRESET_EXTENSIONS.some(ext => {
-    const presetModule = Resolver.findNodeModule(
-      presetPath.charAt(0) === '.' || presetPath.endsWith(ext)
-        ? presetPath
-        : path.join(presetPath, PRESET_NAME + ext),
-      {
-        basedir: options.rootDir,
-      },
-    );
+  const presetModule = Resolver.findNodeModule(
+    presetPath.charAt(0) === '.'
+      ? presetPath
+      : path.join(presetPath, PRESET_NAME),
+    {
+      basedir: options.rootDir,
+      extensions: PRESET_EXTENSIONS,
+    },
+  );
 
-    try {
-      // $FlowFixMe
-      preset = (require(presetModule): InitialOptions);
-    } catch (error) {
-      return false;
-    }
-
-    return true;
-  });
+  // const foundModule = PRESET_EXTENSIONS.some(ext => {
+  // const presetModule = Resolver.findNodeModule(
+  //   presetPath.charAt(0) === '.' || presetPath.endsWith(ext)
+  //     ? presetPath
+  //     : path.join(presetPath, PRESET_NAME + ext),
+  //   {
+  //     basedir: options.rootDir,
+  //   },
+  // );
+  //
+  //   try {
+  //     // $FlowFixMe
+  //     preset = (require(presetModule): InitialOptions);
+  //   } catch (error) {
+  //     return false;
+  //   }
+  //
+  //   return true;
+  // });
 
   try {
     // $FlowFixMe
-    preset = (require(foundModule): InitialOptions);
+    preset = (require(presetModule): InitialOptions);
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw createConfigError(
