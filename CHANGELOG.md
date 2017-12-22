@@ -1,11 +1,11 @@
 ## master
 
-None for now
-
 ### Fixes
 
 * `[babel-jest]` moduleFileExtensions not passed to babel transformer.
   ([#4637](https://github.com/facebook/jest/issues/4637))
+* Do not override `Error` stack (with `Error.captureStackTrace`) for custom matchers.
+  ([#5162](https://github.com/facebook/jest/pull/5162))
 
 ### Features
 

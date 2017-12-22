@@ -35,6 +35,13 @@ export const setState = (state: Object) => {
 
 export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
 
-export const setMatchers = (matchers: MatchersObject) => {
+export const setMatchers = (matchers: MatchersObject, isInternal: boolean) => {
+  for (const key in matchers) {
+    const matcher = matchers[key];
+    Object.defineProperty(matcher, '__jestInternal', {
+      value: isInternal,
+    });
+  }
+
   Object.assign(global[JEST_MATCHERS_OBJECT].matchers, matchers);
 };

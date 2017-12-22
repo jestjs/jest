@@ -214,6 +214,7 @@ const makeThrowingMatcher = (
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
       if (
+        matcher.__jestInternal === true &&
         !(error instanceof JestAssertionError) &&
         error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
@@ -252,7 +253,8 @@ const makeThrowingMatcher = (
   };
 };
 
-expect.extend = (matchers: MatchersObject): void => setMatchers(matchers);
+expect.extend = (matchers: MatchersObject): void =>
+  setMatchers(matchers, false);
 
 expect.anything = anything;
 expect.any = any;
@@ -280,9 +282,9 @@ const _validateResult = result => {
 };
 
 // add default jest matchers
-expect.extend(matchers);
-expect.extend(spyMatchers);
-expect.extend(toThrowMatchers);
+setMatchers(matchers, true);
+setMatchers(spyMatchers, true);
+setMatchers(toThrowMatchers, true);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {
@@ -295,5 +297,9 @@ expect.hasAssertions = expected => {
 expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
+
+// Expose JestAssertionError for custom matchers
+// This enables them to preserve the stack for specific errors
+expect.JestAssertionError = JestAssertionError;
 
 module.exports = (expect: Expect);

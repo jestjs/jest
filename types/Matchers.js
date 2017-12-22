@@ -19,6 +19,7 @@ export type RawMatcherFn = (
   expected: any,
   actual: any,
   options: any,
+  __jestInternal?: boolean,
 ) => ExpectationResult;
 
 export type ThrowingMatcherFn = (actual: any) => void;
