@@ -14,6 +14,7 @@ None for now
 
 * `[jest-runtime]` fix error for test files providing coverage.
   ([#5117](https://github.com/facebook/jest/pull/5117))
+* `[jest-config]` fix unexpected condition to avoid infinite recursion in Windows platform.([#5161](https://github.com/facebook/jest/pull/5161))
 
 ### Features
 
