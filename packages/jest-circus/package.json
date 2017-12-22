@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "22.0.3",
+  "version": "22.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -16,6 +16,6 @@
     "jest-snapshot": "^22.0.3"
   },
   "devDependencies": {
-    "jest-runtime": "^22.0.3"
+    "jest-runtime": "^22.0.4"
   }
 }
