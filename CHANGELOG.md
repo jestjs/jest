@@ -4,6 +4,9 @@ None for now
 
 ### Fixes
 
+* `[babel-jest]` moduleFileExtensions not passed to babel transformer.
+  ([#4637](https://github.com/facebook/jest/issues/4637))
+
 ### Features
 
 ### Chore & Maintenance
