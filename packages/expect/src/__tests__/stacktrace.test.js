@@ -9,24 +9,24 @@
 const jestExpect = require('../');
 
 jestExpect.extend({
+  toCustomMatch(callback, expectation) {
+    const actual = callback();
+
+    if (actual !== expectation) {
+      return {
+        message: () => `Expected "${expectation}" but got "${actual}"`,
+        pass: false,
+      };
+    }
+
+    return {pass: true};
+  },
   toMatchPredicate(received, argument) {
     argument(received);
     return {
       message: () => '',
       pass: true,
     };
-  },
-  toCustomMatch(callback, expectation) {
-    const actual = callback();
-
-    if (actual !== expectation) {
-      return {
-        pass: false,
-        message: () => `Expected "${expectation}" but got "${actual}"`
-      };
-    }
-
-    return {pass: true};
   },
 });
 
