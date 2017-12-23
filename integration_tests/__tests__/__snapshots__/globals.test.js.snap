@@ -156,3 +156,11 @@ Time:        <<REPLACED>>
 Ran all test suites.
 "
 `;
+
+exports[`function as descriptor`] = `
+"PASS __tests__/function-as-descriptor.test.js
+  Foo
+    ✓ it
+
+"
+`;
