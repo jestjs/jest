@@ -7,7 +7,8 @@
 
 ### Features
 
-* `[jest-jasmine2]` Support generator functions as specs
+* `[jest-jasmine2]` Support generator functions as specs.
+  ([#5166](https://github.com/facebook/jest/pull/5166))
 
 ### Chore & Maintenance
 
