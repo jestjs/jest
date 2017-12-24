@@ -173,30 +173,3 @@ Time:        <<REPLACED>>
 Ran all test suites.
 "
 `;
-
-exports[`array as descriptor 1`] = `
-"FAIL __tests__/array-as-descriptor.test.js
-  ● Test suite failed to run
-
-describe expects a string, class, or function.
-
-      188 |
-      189 |   if (typeof descriptor !== 'function') {
-    > 190 |     throw new Error('describe expects a string, class, or function.');
-      191 |   }
-      192 |
-      193 |   if (descriptor.name !== undefined) {
-
-      at __tests__/array-as-descriptor.test.js:2:5
-
-"
-`;
-
-exports[`function as descriptor 2`] = `
-"Test Suites: 0 passed, 0 total
-Tests:       0 passed, 0 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-"
-`;
