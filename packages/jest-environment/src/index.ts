@@ -28,7 +28,7 @@ type ModuleWrapper = (...args: Array<unknown>) => unknown;
 export declare class JestEnvironment {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
-  fakeTimers: FakeTimers<unknown> | null;
+  fakeTimers: FakeTimers | null;
   moduleMocker: ModuleMocker | null;
   runScript(
     script: Script,
@@ -165,10 +165,6 @@ export interface Jest {
    */
   retryTimes(numRetries: number): Jest;
   /**
-   * Exhausts tasks queued by setImmediate().
-   */
-  runAllImmediates(): void;
-  /**
    * Exhausts the micro-task queue (usually interfaced in node via
    * process.nextTick).
    */
@@ -248,4 +244,7 @@ export interface Jest {
    * every test so that local module state doesn't conflict between tests.
    */
   isolateModules(fn: () => void): Jest;
+
+  getRealSystemTime(): number;
+  setSystemTime(now?: number): void;
 }

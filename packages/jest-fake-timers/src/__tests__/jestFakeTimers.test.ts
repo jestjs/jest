@@ -3,108 +3,66 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  */
 
-import vm from 'vm';
-import mock from 'jest-mock';
 import FakeTimers from '../jestFakeTimers';
 
-const timerConfig = {
-  idToRef: (id: number) => id,
-  refToId: (ref: number) => ref,
-};
-
-const config = {
-  rootDir: '/',
-  testMatch: [],
-};
-
 describe('FakeTimers', () => {
-  let moduleMocker: mock.ModuleMocker;
-
-  beforeEach(() => {
-    const global = vm.runInNewContext('this');
-    moduleMocker = new mock.ModuleMocker(global);
-  });
-
   describe('construction', () => {
     it('installs setTimeout mock', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.setTimeout).not.toBe(undefined);
     });
 
     it('installs clearTimeout mock', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.clearTimeout).not.toBe(undefined);
     });
 
     it('installs setInterval mock', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.setInterval).not.toBe(undefined);
     });
 
     it('installs clearInterval mock', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.clearInterval).not.toBe(undefined);
     });
 
     it('mocks process.nextTick if it exists on global', () => {
       const origNextTick = () => {};
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process: {
           nextTick: origNextTick,
         },
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.process.nextTick).not.toBe(origNextTick);
     });
 
     it('mocks setImmediate if it exists on global', () => {
       const origSetImmediate = () => {};
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process,
         setImmediate: origSetImmediate,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.setImmediate).not.toBe(origSetImmediate);
     });
@@ -112,17 +70,15 @@ describe('FakeTimers', () => {
     it('mocks clearImmediate if setImmediate is on global', () => {
       const origSetImmediate = () => {};
       const origClearImmediate = () => {};
-      const global = ({
+      const global = {
+        Date,
         clearImmediate: origClearImmediate,
+        clearTimeout,
         process,
         setImmediate: origSetImmediate,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.clearImmediate).not.toBe(origClearImmediate);
     });
@@ -130,21 +86,19 @@ describe('FakeTimers', () => {
 
   describe('runAllTicks', () => {
     it('runs all ticks, in order', () => {
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process: {
           nextTick: () => {},
         },
-      } as unknown) as NodeJS.Global;
+        setTimeout,
+      };
 
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
-      const runOrder: Array<string> = [];
+      const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
 
@@ -163,18 +117,16 @@ describe('FakeTimers', () => {
 
     it('does nothing when no ticks have been scheduled', () => {
       const nextTick = jest.fn();
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process: {
           nextTick,
         },
-      } as unknown) as NodeJS.Global;
+        setTimeout,
+      };
 
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       timers.runAllTicks();
 
@@ -182,18 +134,16 @@ describe('FakeTimers', () => {
     });
 
     it('only runs a scheduled callback once', () => {
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process: {
           nextTick: () => {},
         },
-      } as unknown) as NodeJS.Global;
+        setTimeout,
+      };
 
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const mock1 = jest.fn();
@@ -207,162 +157,17 @@ describe('FakeTimers', () => {
       expect(mock1).toHaveBeenCalledTimes(1);
     });
 
-    it('cancels a callback even from native nextTick', () => {
-      const nativeNextTick = jest.fn();
-
-      const global = ({
-        process: {
-          nextTick: nativeNextTick,
-        },
-      } as unknown) as NodeJS.Global;
-
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      const mock1 = jest.fn();
-      global.process.nextTick(mock1);
-      timers.runAllTicks();
-      expect(mock1).toHaveBeenCalledTimes(1);
-      expect(nativeNextTick).toHaveBeenCalledTimes(1);
-
-      // Now imagine we fast forward to the next real tick. We need to be sure
-      // that native nextTick doesn't try to run the callback again
-      nativeNextTick.mock.calls[0][0]();
-      expect(mock1).toHaveBeenCalledTimes(1);
-    });
-
-    it('cancels a callback even from native setImmediate', () => {
-      const nativeSetImmediate = jest.fn();
-
-      const global = ({
-        process,
-        setImmediate: nativeSetImmediate,
-      } as unknown) as NodeJS.Global;
-
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      const mock1 = jest.fn();
-      global.setImmediate(mock1);
-      timers.runAllImmediates();
-      expect(mock1).toHaveBeenCalledTimes(1);
-      expect(nativeSetImmediate).toHaveBeenCalledTimes(1);
-
-      // ensure that native setImmediate doesn't try to run the callback again
-      nativeSetImmediate.mock.calls[0][0]();
-      expect(mock1).toHaveBeenCalledTimes(1);
-    });
-
-    it('doesnt run a tick callback if native nextTick already did', () => {
-      const nativeNextTick = jest.fn();
-
-      const global = ({
-        process: {
-          nextTick: nativeNextTick,
-        },
-      } as unknown) as NodeJS.Global;
-
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      const mock1 = jest.fn();
-      global.process.nextTick(mock1);
-
-      // Emulate native nextTick running...
-      nativeNextTick.mock.calls[0][0]();
-      expect(mock1).toHaveBeenCalledTimes(1);
-
-      // Ensure runAllTicks() doesn't run the callback again
-      timers.runAllTicks();
-      expect(mock1).toHaveBeenCalledTimes(1);
-    });
-
-    it('doesnt run immediate if native setImmediate already did', () => {
-      const nativeSetImmediate = jest.fn();
-
-      const global = ({
-        process,
-        setImmediate: nativeSetImmediate,
-      } as unknown) as NodeJS.Global;
-
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      const mock1 = jest.fn();
-      global.setImmediate(mock1);
-
-      // Emulate native setImmediate running...
-      nativeSetImmediate.mock.calls[0][0]();
-      expect(mock1).toHaveBeenCalledTimes(1);
-
-      // Ensure runAllTicks() doesn't run the callback again
-      timers.runAllImmediates();
-      expect(mock1).toHaveBeenCalledTimes(1);
-    });
-
-    it('native doesnt run immediate if fake already did', () => {
-      const nativeSetImmediate = jest.fn();
-
-      const global = ({
-        process,
-        setImmediate: nativeSetImmediate,
-      } as unknown) as NodeJS.Global;
-
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      const mock1 = jest.fn();
-      global.setImmediate(mock1);
-
-      //run all immediates now
-      timers.runAllImmediates();
-      expect(mock1).toHaveBeenCalledTimes(1);
-
-      // Emulate native setImmediate running ensuring it doesn't re-run
-      nativeSetImmediate.mock.calls[0][0]();
-
-      expect(mock1).toHaveBeenCalledTimes(1);
-    });
-
     it('throws before allowing infinite recursion', () => {
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process: {
           nextTick: () => {},
         },
-      } as unknown) as NodeJS.Global;
+        setTimeout,
+      };
 
-      const timers = new FakeTimers({
-        config,
-        global,
-        maxLoops: 100,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global, maxLoops: 100});
 
       timers.useFakeTimers();
 
@@ -373,26 +178,18 @@ describe('FakeTimers', () => {
       expect(() => {
         timers.runAllTicks();
       }).toThrow(
-        new Error(
-          "Ran 100 ticks, and there are still more! Assuming we've hit an " +
-            'infinite recursion and bailing out...',
-        ),
+        'Aborting after running 100 timers, assuming an infinite loop!',
       );
     });
   });
 
   describe('runAllTimers', () => {
     it('runs all timers in order', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
-      const runOrder: Array<string> = [];
+      const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
@@ -422,50 +219,38 @@ describe('FakeTimers', () => {
     });
 
     it('warns when trying to advance timers while real timers are used', () => {
-      const consoleWarn = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
+      const consoleWarn = console.warn;
+      console.warn = jest.fn();
       const timers = new FakeTimers({
         config: {
           rootDir: __dirname,
-          testMatch: [],
         },
         global,
-        moduleMocker,
-        timerConfig,
       });
       timers.runAllTimers();
       expect(
-        consoleWarn.mock.calls[0][0].split('\nStack Trace')[0],
+        console.warn.mock.calls[0][0].split('\nStack Trace')[0],
       ).toMatchSnapshot();
-      consoleWarn.mockRestore();
+      console.warn = consoleWarn;
     });
 
     it('does nothing when no timers have been scheduled', () => {
       const nativeSetTimeout = jest.fn();
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process,
         setTimeout: nativeSetTimeout,
-      } as unknown) as NodeJS.Global;
+      };
 
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
       timers.runAllTimers();
     });
 
     it('only runs a setTimeout callback once (ever)', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const fn = jest.fn();
@@ -480,13 +265,8 @@ describe('FakeTimers', () => {
     });
 
     it('runs callbacks with arguments after the interval', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const fn = jest.fn();
@@ -497,20 +277,20 @@ describe('FakeTimers', () => {
       expect(fn).toHaveBeenCalledWith('mockArg1', 'mockArg2');
     });
 
-    it('doesnt pass the callback to native setTimeout', () => {
+    it("doesn't pass the callback to native setTimeout", () => {
       const nativeSetTimeout = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process,
         setTimeout: nativeSetTimeout,
-      } as unknown) as NodeJS.Global;
+      };
 
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
+      // Lolex uses `setTimeout` during init to figure out if it's in Node or
+      // browser env. So clear its calls before we install them into the env
+      nativeSetTimeout.mockClear();
       timers.useFakeTimers();
 
       const mock1 = jest.fn();
@@ -522,14 +302,8 @@ describe('FakeTimers', () => {
     });
 
     it('throws before allowing infinite recursion', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        maxLoops: 100,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global, maxLoops: 100});
       timers.useFakeTimers();
 
       global.setTimeout(function infinitelyRecursingCallback() {
@@ -540,20 +314,14 @@ describe('FakeTimers', () => {
         timers.runAllTimers();
       }).toThrow(
         new Error(
-          "Ran 100 timers, and there are still more! Assuming we've hit an " +
-            'infinite recursion and bailing out...',
+          'Aborting after running 100 timers, assuming an infinite loop!',
         ),
       );
     });
 
     it('also clears ticks', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const fn = jest.fn();
@@ -569,16 +337,11 @@ describe('FakeTimers', () => {
 
   describe('advanceTimersByTime', () => {
     it('runs timers in order', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
-      const runOrder: Array<string> = [];
+      const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
@@ -613,53 +376,18 @@ describe('FakeTimers', () => {
     });
 
     it('does nothing when no timers have been scheduled', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       timers.advanceTimersByTime(100);
-    });
-
-    it('throws before allowing infinite recursion', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        maxLoops: 100,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      global.setTimeout(function infinitelyRecursingCallback() {
-        global.setTimeout(infinitelyRecursingCallback, 0);
-      }, 0);
-
-      expect(() => {
-        timers.advanceTimersByTime(50);
-      }).toThrow(
-        new Error(
-          "Ran 100 timers, and there are still more! Assuming we've hit an " +
-            'infinite recursion and bailing out...',
-        ),
-      );
     });
   });
 
   describe('reset', () => {
     it('resets all pending setTimeouts', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const mock1 = jest.fn();
@@ -671,13 +399,8 @@ describe('FakeTimers', () => {
     });
 
     it('resets all pending setIntervals', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const mock1 = jest.fn();
@@ -688,19 +411,17 @@ describe('FakeTimers', () => {
       expect(mock1).toHaveBeenCalledTimes(0);
     });
 
-    it('resets all pending ticks callbacks & immediates', () => {
-      const global = ({
+    it('resets all pending ticks callbacks', () => {
+      const global = {
+        Date,
+        clearTimeout,
         process: {
           nextTick: () => {},
         },
         setImmediate: () => {},
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const mock1 = jest.fn();
@@ -709,18 +430,12 @@ describe('FakeTimers', () => {
 
       timers.reset();
       timers.runAllTicks();
-      timers.runAllImmediates();
       expect(mock1).toHaveBeenCalledTimes(0);
     });
 
     it('resets current advanceTimersByTime time cursor', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const mock1 = jest.fn();
@@ -739,20 +454,18 @@ describe('FakeTimers', () => {
     it('runs all timers in order', () => {
       const nativeSetImmediate = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process,
         setImmediate: nativeSetImmediate,
-      } as unknown) as NodeJS.Global;
+        setTimeout,
+      };
 
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
-      const runOrder: Array<string> = [];
+      const runOrder = [];
 
       global.setTimeout(function cb() {
         runOrder.push('mock1');
@@ -761,7 +474,7 @@ describe('FakeTimers', () => {
 
       global.setTimeout(function cb() {
         runOrder.push('mock2');
-        global.setTimeout(cb, 0);
+        global.setTimeout(cb, 50);
       }, 0);
 
       global.setInterval(() => {
@@ -778,31 +491,38 @@ describe('FakeTimers', () => {
       });
 
       timers.runOnlyPendingTimers();
-      expect(runOrder).toEqual(['mock4', 'mock5', 'mock2', 'mock1', 'mock3']);
-
-      timers.runOnlyPendingTimers();
-      expect(runOrder).toEqual([
+      const firsRunOrder = [
         'mock4',
         'mock5',
         'mock2',
-        'mock1',
-        'mock3',
-
         'mock2',
         'mock1',
+        'mock2',
+        'mock2',
+        'mock3',
+        'mock1',
+        'mock2',
+      ];
+
+      expect(runOrder).toEqual(firsRunOrder);
+
+      timers.runOnlyPendingTimers();
+      expect(runOrder).toEqual([
+        ...firsRunOrder,
+        'mock2',
+        'mock1',
+        'mock2',
+        'mock2',
         'mock3',
         'mock5',
+        'mock1',
+        'mock2',
       ]);
     });
 
     it('does not run timers that were cleared in another timer', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const global = {Date, clearTimeout, process, setTimeout};
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       const fn = jest.fn();
@@ -816,152 +536,6 @@ describe('FakeTimers', () => {
     });
   });
 
-  describe('runWithRealTimers', () => {
-    it('executes callback with native timers', () => {
-      const nativeClearInterval = jest.fn();
-      const nativeClearTimeout = jest.fn();
-      const nativeSetInterval = jest.fn();
-      const nativeSetTimeout = jest.fn();
-
-      const global = ({
-        clearInterval: nativeClearInterval,
-        clearTimeout: nativeClearTimeout,
-        process,
-        setInterval: nativeSetInterval,
-        setTimeout: nativeSetTimeout,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      // clearInterval()
-      timers.runWithRealTimers(() => {
-        (global as any).clearInterval();
-      });
-      expect(nativeClearInterval).toHaveBeenCalledTimes(1);
-      expect(global.clearInterval).toHaveBeenCalledTimes(0);
-
-      // clearTimeout()
-      timers.runWithRealTimers(() => {
-        (global as any).clearTimeout();
-      });
-      expect(nativeClearTimeout).toHaveBeenCalledTimes(1);
-      expect(global.clearTimeout).toHaveBeenCalledTimes(0);
-
-      // setInterval()
-      timers.runWithRealTimers(() => {
-        (global as any).setInterval();
-      });
-      expect(nativeSetInterval).toHaveBeenCalledTimes(1);
-      expect(global.setInterval).toHaveBeenCalledTimes(0);
-
-      // setTimeout()
-      timers.runWithRealTimers(() => {
-        (global as any).setTimeout();
-      });
-      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
-      expect(global.setTimeout).toHaveBeenCalledTimes(0);
-    });
-
-    it('resets mock timers after executing callback', () => {
-      const nativeClearInterval = jest.fn();
-      const nativeClearTimeout = jest.fn();
-      const nativeSetInterval = jest.fn();
-      const nativeSetTimeout = jest.fn();
-
-      const global = ({
-        clearInterval: nativeClearInterval,
-        clearTimeout: nativeClearTimeout,
-        process,
-        setInterval: nativeSetInterval,
-        setTimeout: nativeSetTimeout,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      // clearInterval()
-      timers.runWithRealTimers(() => {
-        (global as any).clearInterval();
-      });
-      expect(nativeClearInterval).toHaveBeenCalledTimes(1);
-      expect(global.clearInterval).toHaveBeenCalledTimes(0);
-
-      (global as any).clearInterval();
-      expect(nativeClearInterval).toHaveBeenCalledTimes(1);
-      expect(global.clearInterval).toHaveBeenCalledTimes(1);
-
-      // clearTimeout()
-      timers.runWithRealTimers(() => {
-        (global as any).clearTimeout();
-      });
-      expect(nativeClearTimeout).toHaveBeenCalledTimes(1);
-      expect(global.clearTimeout).toHaveBeenCalledTimes(0);
-
-      (global as any).clearTimeout();
-      expect(nativeClearTimeout).toHaveBeenCalledTimes(1);
-      expect(global.clearTimeout).toHaveBeenCalledTimes(1);
-
-      // setInterval()
-      timers.runWithRealTimers(() => {
-        (global as any).setInterval();
-      });
-      expect(nativeSetInterval).toHaveBeenCalledTimes(1);
-      expect(global.setInterval).toHaveBeenCalledTimes(0);
-
-      (global as any).setInterval();
-      expect(nativeSetInterval).toHaveBeenCalledTimes(1);
-      expect(global.setInterval).toHaveBeenCalledTimes(1);
-
-      // setTimeout()
-      timers.runWithRealTimers(() => {
-        (global as any).setTimeout();
-      });
-      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
-      expect(global.setTimeout).toHaveBeenCalledTimes(0);
-
-      (global as any).setTimeout();
-      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
-      expect(global.setTimeout).toHaveBeenCalledTimes(1);
-    });
-
-    it('resets mock timer functions even if callback throws', () => {
-      const nativeSetTimeout = jest.fn();
-      const global = ({
-        process,
-        setTimeout: nativeSetTimeout,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      expect(() => {
-        timers.runWithRealTimers(() => {
-          (global as any).setTimeout();
-          throw new Error('test');
-        });
-      }).toThrow(new Error('test'));
-      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
-      expect(global.setTimeout).toHaveBeenCalledTimes(0);
-
-      (global as any).setTimeout();
-      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
-      expect(global.setTimeout).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('useRealTimers', () => {
     it('resets native timer APIs', () => {
       const nativeSetTimeout = jest.fn();
@@ -969,19 +543,15 @@ describe('FakeTimers', () => {
       const nativeClearTimeout = jest.fn();
       const nativeClearInterval = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
         clearInterval: nativeClearInterval,
         clearTimeout: nativeClearTimeout,
         process,
         setInterval: nativeSetInterval,
         setTimeout: nativeSetTimeout,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      };
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       // Ensure that timers has overridden the native timer APIs
@@ -1002,15 +572,13 @@ describe('FakeTimers', () => {
     it('resets native process.nextTick when present', () => {
       const nativeProcessNextTick = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process: {nextTick: nativeProcessNextTick},
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       // Ensure that timers has overridden the native timer APIs
@@ -1026,17 +594,15 @@ describe('FakeTimers', () => {
       const nativeSetImmediate = jest.fn();
       const nativeClearImmediate = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
         clearImmediate: nativeClearImmediate,
+        clearTimeout,
         process,
         setImmediate: nativeSetImmediate,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
       // Ensure that timers has overridden the native timer APIs
@@ -1058,19 +624,15 @@ describe('FakeTimers', () => {
       const nativeClearTimeout = jest.fn();
       const nativeClearInterval = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
         clearInterval: nativeClearInterval,
         clearTimeout: nativeClearTimeout,
         process,
         setInterval: nativeSetInterval,
         setTimeout: nativeSetTimeout,
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      };
+      const timers = new FakeTimers({global});
       timers.useRealTimers();
 
       // Ensure that the real timers are installed at this point
@@ -1091,15 +653,13 @@ describe('FakeTimers', () => {
     it('resets mock process.nextTick when present', () => {
       const nativeProcessNextTick = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
+        clearTimeout,
         process: {nextTick: nativeProcessNextTick},
-      } as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const timers = new FakeTimers({global});
       timers.useRealTimers();
 
       // Ensure that the real timers are installed at this point
@@ -1115,17 +675,15 @@ describe('FakeTimers', () => {
       const nativeSetImmediate = jest.fn();
       const nativeClearImmediate = jest.fn();
 
-      const global = ({
+      const global = {
+        Date,
         clearImmediate: nativeClearImmediate,
+        clearTimeout,
         process,
         setImmediate: nativeSetImmediate,
-      } as unknown) as NodeJS.Global;
-      const fakeTimers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+        setTimeout,
+      };
+      const fakeTimers = new FakeTimers({global});
       fakeTimers.useRealTimers();
 
       // Ensure that the real timers are installed at this point
@@ -1142,12 +700,7 @@ describe('FakeTimers', () => {
 
   describe('getTimerCount', () => {
     it('returns the correct count', () => {
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
 
       timers.useFakeTimers();
 
@@ -1167,12 +720,7 @@ describe('FakeTimers', () => {
     });
 
     it('includes immediates and ticks', () => {
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
+      const timers = new FakeTimers({global});
 
       timers.useFakeTimers();
 

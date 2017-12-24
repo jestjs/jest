@@ -527,10 +527,6 @@ When this API is called, all pending macro-tasks and micro-tasks will be execute
 
 This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](TimerMocks.md) doc for more information.
 
-### `jest.runAllImmediates()`
-
-Exhausts all tasks queued by `setImmediate()`.
-
 ### `jest.advanceTimersByTime(msToRun)`
 
 ##### renamed in Jest **22.0.0+**
@@ -556,6 +552,14 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 ### `jest.getTimerCount()`
 
 Returns the number of fake timers still left to run.
+
+### `.jest.setSystemTime()`
+
+Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
+
+### `.jest.getRealSystemTime()`
+
+When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
 
 ## Misc
 

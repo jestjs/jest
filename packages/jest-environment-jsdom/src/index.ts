@@ -30,7 +30,7 @@ function isWin(globals: Win | Global.Global): globals is Win {
 
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
-  fakeTimers: FakeTimers<number> | null;
+  fakeTimers: FakeTimers | null;
   // @ts-ignore
   global: Global.Global | Win | null;
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
@@ -87,17 +87,7 @@ class JSDOMEnvironment implements JestEnvironment {
 
     this.moduleMocker = new mock.ModuleMocker(global as any);
 
-    const timerConfig = {
-      idToRef: (id: number) => id,
-      refToId: (ref: number) => ref,
-    };
-
-    this.fakeTimers = new FakeTimers({
-      config,
-      global: global as any,
-      moduleMocker: this.moduleMocker,
-      timerConfig,
-    });
+    this.fakeTimers = new FakeTimers({config, global: global as any});
   }
 
   setup() {

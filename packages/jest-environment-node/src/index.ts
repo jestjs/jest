@@ -12,15 +12,9 @@ import {installCommonGlobals} from 'jest-util';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 import {JestEnvironment} from '@jest/environment';
 
-type Timer = {
-  id: number;
-  ref: () => Timer;
-  unref: () => Timer;
-};
-
 class NodeEnvironment implements JestEnvironment {
   context: Context | null;
-  fakeTimers: FakeTimers<Timer> | null;
+  fakeTimers: FakeTimers | null;
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
 
@@ -54,30 +48,7 @@ class NodeEnvironment implements JestEnvironment {
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new ModuleMocker(global);
 
-    const timerIdToRef = (id: number) => ({
-      id,
-      ref() {
-        return this;
-      },
-      unref() {
-        return this;
-      },
-    });
-
-    const timerRefToId = (timer: Timer): number | undefined =>
-      (timer && timer.id) || undefined;
-
-    const timerConfig = {
-      idToRef: timerIdToRef,
-      refToId: timerRefToId,
-    };
-
-    this.fakeTimers = new FakeTimers({
-      config,
-      global,
-      moduleMocker: this.moduleMocker,
-      timerConfig,
-    });
+    this.fakeTimers = new FakeTimers({config, global});
   }
 
   setup() {
