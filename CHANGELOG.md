@@ -6,14 +6,10 @@ None for now
 
 ### Features
 
-### Chore & Maintenance
-
-## jest 22.0.5
-
-### Features
-
 * `[jest-jasmine]` Allowed classes and functions as `describe` names
 ([#5154](https://github.com/facebook/jest/pull/5154))
+
+### Chore & Maintenance
 
 ## jest 22.0.1
 
