@@ -182,7 +182,11 @@ Suite.prototype.addExpectationResult = function() {
 };
 
 function convertDescriptorToString(descriptor) {
-  if (typeof descriptor === 'string' || typeof descriptor === 'number' || descriptor === undefined) {
+  if (
+    typeof descriptor === 'string' ||
+    typeof descriptor === 'number' ||
+    descriptor === undefined
+  ) {
     return descriptor;
   }
 
