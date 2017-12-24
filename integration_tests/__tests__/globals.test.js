@@ -222,20 +222,3 @@ test('function as descriptor', () => {
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
-
-test('array as descriptor', () => {
-  const filename = 'array-as-descriptor.test.js';
-  const content = `
-    describe([], () => {
-      it('it', () => {});
-    });
-  `;
-
-  writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR);
-  expect(status).toBe(1);
-
-  const {summary, rest} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-});
