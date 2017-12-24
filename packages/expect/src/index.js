@@ -296,4 +296,8 @@ expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
+// Expose JestAssertionError for custom matchers
+// This enables them to preserve the stack for specific errors
+expect.JestAssertionError = JestAssertionError;
+
 module.exports = (expect: Expect);
