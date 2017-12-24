@@ -186,6 +186,10 @@ function convertDescriptorToString(descriptor) {
     return descriptor;
   }
 
+  if (typeof descriptor !== "function") {
+    throw new Error("describe expects a string, class, or function.");
+  }
+
   if (descriptor.name !== undefined) {
     return descriptor.name;
   }

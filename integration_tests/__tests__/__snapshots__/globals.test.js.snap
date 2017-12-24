@@ -173,3 +173,19 @@ Time:        <<REPLACED>>
 Ran all test suites.
 "
 `;
+
+exports[`array as descriptor 1`] = `
+"FAIL __tests__/function-as-descriptor.test.js
+
+describe expects a string, class, or function.
+"
+`;
+
+exports[`function as descriptor 2`] = `
+"Test Suites: 0 passed, 0 total
+Tests:       0 passed, 0 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
