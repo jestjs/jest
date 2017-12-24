@@ -7,6 +7,8 @@
 
 ### Features
 
+* `[jest-jasmine]` Allowed classes and functions as `describe` names
+  ([#5154](https://github.com/facebook/jest/pull/5154))
 * `[jest-jasmine2]` Support generator functions as specs.
   ([#5166](https://github.com/facebook/jest/pull/5166))
 
