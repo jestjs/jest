@@ -16,7 +16,8 @@
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GlobalAPI.md" target="_blank">Edit this Doc</a><h1>Globals</h1></header><article><div><p>In your test files, Jest puts each of these methods and objects into the global
 environment. You don&#x27;t have to require or import anything to use them.</p><h2><a class="anchor" name="methods"></a>Methods <a class="hash-link" href="#methods">#</a></h2><ul><li><a href="#afterallfn-timeout" target=""><code>afterAll(fn, timeout)</code></a></li><li><a href="#aftereachfn-timeout" target=""><code>afterEach(fn, timeout)</code></a></li><li><a href="#beforeallfn-timeout" target=""><code>beforeAll(fn, timeout)</code></a></li><li><a href="#beforeeachfn-timeout" target=""><code>beforeEach(fn, timeout)</code></a></li><li><a href="#describename-fn" target=""><code>describe(name, fn)</code></a></li><li><a href="#describeonlyname-fn" target=""><code>describe.only(name, fn)</code></a></li><li><a href="#describeskipname-fn" target=""><code>describe.skip(name, fn)</code></a></li><li><a href="#requirerequireactualmodulename" target=""><code>require.requireActual(moduleName)</code></a></li><li><a href="#requirerequiremockmodulename" target=""><code>require.requireMock(moduleName)</code></a></li><li><a href="#testname-fn-timeout" target=""><code>test(name, fn, timeout)</code></a></li><li><a href="#testonlyname-fn-timeout" target=""><code>test.only(name, fn, timeout)</code></a></li><li><a href="#testskipname-fn" target=""><code>test.skip(name, fn)</code></a></li></ul><hr/><h2><a class="anchor" name="reference"></a>Reference <a class="hash-link" href="#reference">#</a></h2><h3><a class="anchor" name="afterallfn-timeout"></a><code>afterAll(fn, timeout)</code> <a class="hash-link" href="#afterallfn-timeout">#</a></h3><p>Runs a function after all the tests in this file have completed. If the function
-returns a promise, Jest waits for that promise to resolve before continuing.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
+returns a promise or is a generator, Jest waits for that promise to resolve
+before continuing.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
 long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p><p>This is often useful if you want to clean up some global setup state that is
 shared across tests.</p><p>For example:</p><pre class="prism language-js"><span class="token keyword">const</span> globalDatabase <span class="token operator">=</span> <span class="token function">makeGlobalDatabase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -42,8 +43,8 @@ shared across tests.</p><p>For example:</p><pre class="prism language-js"><span 
 run.</p><p>If <code>afterAll</code> is inside a <code>describe</code> block, it runs at the end of the describe
 block.</p><p>If you want to run some cleanup after every test instead of after all tests, use
 <code>afterEach</code> instead.</p><h3><a class="anchor" name="aftereachfn-timeout"></a><code>afterEach(fn, timeout)</code> <a class="hash-link" href="#aftereachfn-timeout">#</a></h3><p>Runs a function after each one of the tests in this file completes. If the
-function returns a promise, Jest waits for that promise to resolve before
-continuing.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
+function returns a promise or is a generator, Jest waits for that promise to
+resolve before continuing.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
 long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p><p>This is often useful if you want to clean up some temporary state that is
 created by each test.</p><p>For example:</p><pre class="prism language-js"><span class="token keyword">const</span> globalDatabase <span class="token operator">=</span> <span class="token function">makeGlobalDatabase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -69,7 +70,8 @@ created by each test.</p><p>For example:</p><pre class="prism language-js"><span
 runs.</p><p>If <code>afterEach</code> is inside a <code>describe</code> block, it only runs after the tests that
 are inside this describe block.</p><p>If you want to run some cleanup just once, after all of the tests run, use
 <code>afterAll</code> instead.</p><h3><a class="anchor" name="beforeallfn-timeout"></a><code>beforeAll(fn, timeout)</code> <a class="hash-link" href="#beforeallfn-timeout">#</a></h3><p>Runs a function before any of the tests in this file run. If the function
-returns a promise, Jest waits for that promise to resolve before running tests.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
+returns a promise or is a generator, Jest waits for that promise to resolve
+before running tests.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
 long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p><p>This is often useful if you want to set up some global state that will be used
 by many tests.</p><p>For example:</p><pre class="prism language-js"><span class="token keyword">const</span> globalDatabase <span class="token operator">=</span> <span class="token function">makeGlobalDatabase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -93,8 +95,8 @@ that Jest will wait for a promise to resolve, so you can have asynchronous setup
 as well.</p><p>If <code>beforeAll</code> is inside a <code>describe</code> block, it runs at the beginning of the
 describe block.</p><p>If you want to run something before every test instead of before any test runs,
 use <code>beforeEach</code> instead.</p><h3><a class="anchor" name="beforeeachfn-timeout"></a><code>beforeEach(fn, timeout)</code> <a class="hash-link" href="#beforeeachfn-timeout">#</a></h3><p>Runs a function before each of the tests in this file runs. If the function
-returns a promise, Jest waits for that promise to resolve before running the
-test.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
+returns a promise or is a generator, Jest waits for that promise to resolve
+before running the test.</p><p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how
 long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p><p>This is often useful if you want to reset some global state that will be used by
 many tests.</p><p>For example:</p><pre class="prism language-js"><span class="token keyword">const</span> globalDatabase <span class="token operator">=</span> <span class="token function">makeGlobalDatabase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
