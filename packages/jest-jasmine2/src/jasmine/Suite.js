@@ -182,12 +182,12 @@ Suite.prototype.addExpectationResult = function() {
 };
 
 function convertDescriptorToString(descriptor) {
-  if (typeof descriptor === 'string' || descriptor === undefined) {
+  if (typeof descriptor === 'string' || typeof descriptor === 'number' || descriptor === undefined) {
     return descriptor;
   }
 
   if (typeof descriptor !== 'function') {
-    throw new Error('describe expects a string, class, or function.');
+    throw new Error('describe expects a class, function, number, or string.');
   }
 
   if (descriptor.name !== undefined) {
