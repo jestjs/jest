@@ -1,13 +1,16 @@
 ## master
 
-None for now
-
 ### Fixes
+
+* `[babel-jest]` moduleFileExtensions not passed to babel transformer.
+  ([#4637](https://github.com/facebook/jest/issues/4637))
 
 ### Features
 
 * `[jest-jasmine]` Allowed classes and functions as `describe` names
-([#5154](https://github.com/facebook/jest/pull/5154))
+  ([#5154](https://github.com/facebook/jest/pull/5154))
+* `[jest-jasmine2]` Support generator functions as specs.
+  ([#5166](https://github.com/facebook/jest/pull/5166))
 
 ### Chore & Maintenance
 
@@ -17,6 +20,7 @@ None for now
 
 * `[jest-runtime]` fix error for test files providing coverage.
   ([#5117](https://github.com/facebook/jest/pull/5117))
+* `[jest-config]` fix unexpected condition to avoid infinite recursion in Windows platform.([#5161](https://github.com/facebook/jest/pull/5161))
 
 ### Features
 

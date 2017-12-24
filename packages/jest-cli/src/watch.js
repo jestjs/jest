@@ -161,6 +161,7 @@ export default function watch(
   let activePlugin: ?WatchPlugin;
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
+      outputStream.write('\n');
       process.exit(0);
       return;
     }
@@ -204,6 +205,7 @@ export default function watch(
 
     switch (key) {
       case KEYS.Q:
+        outputStream.write('\n');
         process.exit(0);
         return;
       case KEYS.ENTER:
