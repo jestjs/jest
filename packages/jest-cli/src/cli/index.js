@@ -251,7 +251,7 @@ const getConfigs = (
 
   if (projects.length > 1) {
     const parsedConfigs = projects.map(root =>
-      readConfig(argv, root, true, configPath)
+      readConfig(argv, root, true, configPath),
     );
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
