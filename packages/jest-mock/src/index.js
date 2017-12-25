@@ -739,7 +739,7 @@ class ModuleMockerClass {
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
         descriptor[accessType] = original;
-        Object.defineProperty(obj, propertyName, descriptor)
+        Object.defineProperty(obj, propertyName, descriptor);
       });
 
       descriptor[accessType].mockImplementation(function() {
@@ -747,7 +747,7 @@ class ModuleMockerClass {
       });
     }
 
-    Object.defineProperty(obj, propertyName, descriptor)
+    Object.defineProperty(obj, propertyName, descriptor);
     return descriptor[accessType];
   }
 

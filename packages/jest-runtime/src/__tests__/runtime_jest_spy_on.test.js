@@ -44,7 +44,7 @@ describe('Runtime', () => {
         let isOriginalCalled = false;
         const obj = {
           get method() {
-            return () => isOriginalCalled = true;
+            return () => (isOriginalCalled = true);
           },
         };
 

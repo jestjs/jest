@@ -674,11 +674,11 @@ describe('moduleMocker', () => {
       let originalCallArguments;
       const obj = {
         get method() {
-          return function () {
+          return function() {
             isOriginalCalled = true;
             originalCallThis = this;
             originalCallArguments = arguments;
-          }
+          };
         },
       };
 
@@ -700,7 +700,7 @@ describe('moduleMocker', () => {
       originalCallArguments = null;
       spy.mockReset();
       spy.mockRestore();
-      console.log('porcoddddddiooo', obj, obj.method)
+      console.log('porcoddddddiooo', obj, obj.method);
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
@@ -727,10 +727,14 @@ describe('moduleMocker', () => {
       let methodTwoCalls = 0;
       const obj = {
         get methodOne() {
-          return function () {methodOneCalls++};
+          return function() {
+            methodOneCalls++;
+          };
         },
         get methodTwo() {
-          return function () {methodTwoCalls++};
+          return function() {
+            methodTwoCalls++;
+          };
         },
       };
 
