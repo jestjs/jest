@@ -44,7 +44,7 @@ function readConfig(
       rawOptions.rootDir = parentConfigPath;
     } else {
       throw new Error(
-        'jest: Cannot use configuration as an object without a file path',
+        'Jest: Cannot use configuration as an object without a file path.',
       );
     }
   } else if (isJSONString(argv.config)) {
