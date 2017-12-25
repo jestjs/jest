@@ -35,4 +35,25 @@ describe('Runtime', () => {
         expect(spy).toHaveBeenCalled();
       }));
   });
+
+  describe('jest.spyOnProperty', () => {
+    it('calls the original function', () =>
+      createRuntime(__filename).then(runtime => {
+        const root = runtime.requireModule(runtime.__mockRootPath);
+
+        let isOriginalCalled = false;
+        const obj = {
+          get method() {
+            return () => isOriginalCalled = true;
+          },
+        };
+
+        const spy = root.jest.spyOnProperty(obj, 'method');
+
+        obj.method();
+
+        expect(isOriginalCalled).toBe(true);
+        expect(spy).toHaveBeenCalled();
+      }));
+  });
 });
