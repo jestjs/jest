@@ -154,6 +154,31 @@ test('"No tests found" message for projects', () => {
   );
 });
 
+test('objects in project configuration', () => {
+  writeFiles(DIR, {
+    '__tests__/file1.test.js': `
+      test('foo', () => {});
+    `,
+    '__tests__/file2.test.js': `
+      test('foo', () => {});
+    `,
+    'jest.config.js': `module.exports = {
+      projects: [
+        { testMatch: ['<rootDir>/__tests__/file1.test.js$'] },
+        { testMatch: ['<rootDir>/__tests__/file2.test.js$'] },
+      ]
+    };`,
+    'package.json': '{}',
+  });
+
+  const {stdout, stderr} = runJest(DIR);
+  expect(stderr).toEqual('');
+  expect(stdout).toContain(
+    '  2 files checked across 2 projects. ' +
+      'Run with `--verbose` for more details.',
+  );
+});
+
 test('resolves projects and their <rootDir> properly', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',

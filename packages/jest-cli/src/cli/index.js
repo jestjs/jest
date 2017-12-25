@@ -199,7 +199,9 @@ const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
       });
       throw new Error(message);
     }
-    configPathSet.add(configPath);
+    if (configPath !== null) {
+      configPathSet.add(configPath);
+    }
   }
 };
 
@@ -225,9 +227,11 @@ const getConfigs = (
   let hasDeprecationWarnings;
   let configs: Array<ProjectConfig> = [];
   let projects = projectsFromCLIArgs;
+  let configPath: ?Path;
 
   if (projectsFromCLIArgs.length === 1) {
     const parsedConfig = readConfig(argv, projects[0]);
+    configPath = parsedConfig.configPath;
 
     if (parsedConfig.globalConfig.projects) {
       // If this was a single project, and its config has `projects`
@@ -246,7 +250,9 @@ const getConfigs = (
   }
 
   if (projects.length > 1) {
-    const parsedConfigs = projects.map(root => readConfig(argv, root, true));
+    const parsedConfigs = projects.map(root =>
+      readConfig(argv, root, true, configPath)
+    );
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
