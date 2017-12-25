@@ -8,7 +8,12 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
+import type {
+  GlobalConfig,
+  InitialOptions,
+  Path,
+  ProjectConfig,
+} from 'types/Config';
 
 import {getTestEnvironment, isJSONString} from './utils';
 import normalize from './normalize';
@@ -17,7 +22,7 @@ import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
 
 function readConfig(
   argv: Argv,
-  packageRootOrConfig: Path | ProjectConfig,
+  packageRootOrConfig: Path | InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
   // It only used to read initial config. If the initial config contains
   // `project` property, we don't want to read `--config` value and rather
