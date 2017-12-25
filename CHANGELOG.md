@@ -24,7 +24,7 @@
 ### Features
 
 * `[babel-jest]` moduleFileExtensions not passed to babel transformer.
-  ([#4637](https://github.com/facebook/jest/issues/4637))
+  ([#5110](https://github.com/facebook/jest/pull/5110))
 
 ### Chore & Maintenance
 
