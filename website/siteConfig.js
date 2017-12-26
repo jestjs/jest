@@ -247,6 +247,8 @@ const users = [
   },
 ];
 
+const repoUrl = 'https://github.com/facebook/jest';
+
 const siteConfig = {
   title: 'Jest',
   tagline: '🃏 Delightful JavaScript Testing',
@@ -255,7 +257,7 @@ const siteConfig = {
   projectName: 'jest',
   repo: 'facebook/jest',
   users,
-  editUrl: 'https://github.com/facebook/jest/edit/master/docs/',
+  editUrl: repoUrl + '/edit/master/docs/',
   headerLinks: [
     {doc: 'getting-started', label: 'Docs'},
     {doc: 'api', label: 'API'},
@@ -263,7 +265,7 @@ const siteConfig = {
     {blog: true, label: 'Blog'},
     {languages: true},
     {search: true},
-    {href: 'https://github.com/facebook/jest', label: 'GitHub'},
+    {href: repoUrl, label: 'GitHub'},
   ],
   headerIcon: 'img/jest.svg',
   footerIcon: 'img/jest-outline.svg',
@@ -280,6 +282,8 @@ const siteConfig = {
     secondaryColor: '#7f2c39',
     prismColor: 'rgba(153, 66, 79, 0.03)',
   },
+  scripts: ['https://buttons.github.io/buttons.js'],
+  repoUrl,
 };
 
 module.exports = siteConfig;
