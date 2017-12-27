@@ -743,7 +743,9 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test
 environment. The module must export a class with `setup`, `teardown` and
-`runScript` methods.
+`runScript` methods. You can also pass variables from this module to your
+test suites by assigning them to `this.global` object &ndash; this will
+make them available in your test suites as global variables.
 
 ##### available in Jest **22.0.0+**
 
@@ -753,6 +755,7 @@ in their own TestEnvironment._
 Example:
 
 ```js
+// my-custom-environment
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
@@ -763,9 +766,11 @@ class CustomEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
     await someSetupTasks();
+    this.global.someGlobalObject = createGlobalObject();
   }
 
   async teardown() {
+    this.global.someGlobalObject = destroyGlobalObject();
     await someTeardownTasks();
     await super.teardown();
   }
@@ -774,6 +779,16 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+```
+
+```js
+// my-test-suite
+let someGlobalObject;
+
+beforeAll(() => {
+  someGlobalObject = global.someGlobalObject;
+})
+
 ```
 
 ### `testEnvironmentOptions` [Object]
