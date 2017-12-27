@@ -45,18 +45,27 @@ const adapter: SCMAdapter = {
     cwd: string,
     options?: Options,
   ): Promise<Array<Path>> => {
-    if (options && options.withAncestor) {
-      throw new Error(
-        '`changedFilesWithAncestor` is not supported in git repos.',
+    if (options && options.lastCommit) {
+      return await findChangedFilesUsingCommand(
+        ['diff', '--name-only', 'HEAD^', 'HEAD'],
+        cwd,
+      );
+    } else if (options && options.withAncestor) {
+      const changed = await findChangedFilesUsingCommand(
+        ['diff', '--name-only', 'HEAD^'],
+        cwd,
+      );
+      const untracked = await findChangedFilesUsingCommand(
+        ['ls-files', '--other', '--exclude-standard'],
+        cwd,
+      );
+      return changed.concat(untracked);
+    } else {
+      return await findChangedFilesUsingCommand(
+        ['ls-files', '--other', '--modified', '--exclude-standard'],
+        cwd,
       );
     }
-    return new Promise((resolve, reject) => {
-      const args =
-        options && options.lastCommit
-          ? ['show', '--name-only', '--pretty=%b', 'HEAD']
-          : ['ls-files', '--other', '--modified', '--exclude-standard'];
-      resolve(findChangedFilesUsingCommand(args, cwd));
-    });
   },
 
   getRoot: async (cwd: string): Promise<?string> => {
