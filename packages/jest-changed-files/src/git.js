@@ -47,7 +47,7 @@ const adapter: SCMAdapter = {
   ): Promise<Array<Path>> => {
     if (options && options.lastCommit) {
       return await findChangedFilesUsingCommand(
-        ['diff', '--name-only', 'HEAD^', 'HEAD'],
+        ['show', '--name-only', '--pretty=%b', 'HEAD'],
         cwd,
       );
     } else if (options && options.withAncestor) {
