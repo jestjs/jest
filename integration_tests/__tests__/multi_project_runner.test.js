@@ -160,23 +160,42 @@ test('objects in project configuration', () => {
       test('foo', () => {});
     `,
     '__tests__/file2.test.js': `
-      test('foo', () => {});
+      test('bar', () => {});
     `,
     'jest.config.js': `module.exports = {
       projects: [
-        { testMatch: ['<rootDir>/__tests__/file1.test.js$'] },
-        { testMatch: ['<rootDir>/__tests__/file2.test.js$'] },
+        { testMatch: ['<rootDir>/__tests__/file1.test.js'] },
+        { testMatch: ['<rootDir>/__tests__/file2.test.js'] },
       ]
     };`,
     'package.json': '{}',
   });
 
   const {stdout, stderr} = runJest(DIR);
-  expect(stderr).toEqual('');
-  expect(stdout).toContain(
-    '  2 files checked across 2 projects. ' +
-      'Run with `--verbose` for more details.',
-  );
+  expect(stderr).toContain('Test Suites: 2 passed, 2 total');
+  expect(stderr).toContain('PASS __tests__/file1.test.js');
+  expect(stderr).toContain('PASS __tests__/file2.test.js');
+  expect(stderr).toContain('Ran all test suites in 2 projects.');
+  expect(stdout).toEqual('');
+});
+
+test('allows a single project', () => {
+  writeFiles(DIR, {
+    '__tests__/file1.test.js': `
+      test('foo', () => {});
+    `,
+    'jest.config.js': `module.exports = {
+      projects: [
+        { testMatch: ['<rootDir>/__tests__/file1.test.js'] },
+      ]
+    };`,
+    'package.json': '{}',
+  });
+
+  const {stdout, stderr} = runJest(DIR);
+  expect(stderr).toContain('PASS __tests__/file1.test.js');
+  expect(stderr).toContain('Test Suites: 1 passed, 1 total');
+  expect(stdout).toEqual('');
 });
 
 test('resolves projects and their <rootDir> properly', () => {
