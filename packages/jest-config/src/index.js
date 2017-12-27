@@ -32,7 +32,7 @@ export function readConfig(
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigPath?: ?Path,
+  parentConfigPath: ?Path,
 ): {
   configPath: ?Path,
   globalConfig: GlobalConfig,
