@@ -15,12 +15,16 @@ import type {
   ProjectConfig,
 } from 'types/Config';
 
-import {getTestEnvironment, isJSONString} from './utils';
+import path from 'path';
+import {isJSONString} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolve_config_path';
 import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
 
-function readConfig(
+export {getTestEnvironment, isJSONString} from './utils';
+export {default as normalize} from './normalize';
+
+export function readConfig(
   argv: Argv,
   packageRootOrConfig: Path | InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
@@ -41,7 +45,7 @@ function readConfig(
   if (typeof packageRootOrConfig !== 'string') {
     if (parentConfigPath) {
       rawOptions = packageRootOrConfig;
-      rawOptions.rootDir = parentConfigPath;
+      rawOptions.rootDir = path.dirname(parentConfigPath);
     } else {
       throw new Error(
         'Jest: Cannot use configuration as an object without a file path.',
@@ -180,11 +184,4 @@ const getConfigs = (
       watchPathIgnorePatterns: options.watchPathIgnorePatterns,
     }),
   };
-};
-
-module.exports = {
-  getTestEnvironment,
-  isJSONString,
-  normalize,
-  readConfig,
 };
