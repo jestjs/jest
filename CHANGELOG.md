@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
+  with git. ([#5189](https://github.com/facebook/jest/pull/5189))
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
 
