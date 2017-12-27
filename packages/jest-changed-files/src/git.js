@@ -13,6 +13,33 @@ import type {Options, SCMAdapter} from 'types/ChangedFiles';
 import path from 'path';
 import childProcess from 'child_process';
 
+const findChangedFilesUsingCommand = async (args, cwd) => {
+  return new Promise((resolve, reject) => {
+    const child = childProcess.spawn('git', args, {cwd});
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', data => (stdout += data));
+    child.stderr.on('data', data => (stderr += data));
+    child.on('error', e => reject(e));
+    child.on('close', code => {
+      if (code === 0) {
+        stdout = stdout.trim();
+        if (stdout === '') {
+          resolve([]);
+        } else {
+          resolve(
+            stdout
+              .split('\n')
+              .map(changedPath => path.resolve(cwd, changedPath)),
+          );
+        }
+      } else {
+        reject(code + ': ' + stderr);
+      }
+    });
+  });
+};
+
 const adapter: SCMAdapter = {
   findChangedFiles: async (
     cwd: string,
@@ -28,28 +55,7 @@ const adapter: SCMAdapter = {
         options && options.lastCommit
           ? ['show', '--name-only', '--pretty=%b', 'HEAD']
           : ['ls-files', '--other', '--modified', '--exclude-standard'];
-      const child = childProcess.spawn('git', args, {cwd});
-      let stdout = '';
-      let stderr = '';
-      child.stdout.on('data', data => (stdout += data));
-      child.stderr.on('data', data => (stderr += data));
-      child.on('error', e => reject(e));
-      child.on('close', code => {
-        if (code === 0) {
-          stdout = stdout.trim();
-          if (stdout === '') {
-            resolve([]);
-          } else {
-            resolve(
-              stdout
-                .split('\n')
-                .map(changedPath => path.resolve(cwd, changedPath)),
-            );
-          }
-        } else {
-          reject(code + ': ' + stderr);
-        }
-      });
+      resolve(findChangedFilesUsingCommand(args, cwd));
     });
   },
 
