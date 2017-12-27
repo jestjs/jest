@@ -105,8 +105,7 @@ export const options = {
   changedFilesWithAncestor: {
     description:
       'When used together with `--onlyChanged`, it runs tests ' +
-      'related to the current changes and the changes made in the last commit. ' +
-      '(NOTE: this only works for hg repos)',
+      'related to the current changes and the changes made in the last commit. ',
     type: 'boolean',
   },
   ci: {
