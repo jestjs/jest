@@ -103,6 +103,12 @@ two times slower._
 If you want to inspect the cache, use `--showConfig` and look at the
 `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
 
+### `--changedFilesToContributeTo`
+
+When used together with `--onlyChanged` or `--watch`, it runs tests related the
+changes since the provided revision. If the current branch is not a child of the
+given commit, then only changes made locally will be tested.
+
 ### `--changedFilesWithAncestor`
 
 Runs tests related to the current changes and the changes made in the last

@@ -191,6 +191,37 @@ test('gets changed files for git', async () => {
       .map(filePath => path.basename(filePath))
       .sort(),
   ).toEqual(['file1.txt', 'file4.txt']);
+
+  run(`${GIT} add file4.txt`, DIR);
+  run(`${GIT} commit -m "test3"`, DIR);
+
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {
+    toContributeTo: 'HEAD^^',
+  }));
+  // Returns files from the last 2 commits
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file1.txt', 'file4.txt']);
+
+  run(`${GIT} checkout HEAD^^ -b feature-branch`, DIR);
+
+  writeFiles(DIR, {
+    'file5.txt': 'file5',
+  });
+  run(`${GIT} add file5.txt`, DIR);
+  run(`${GIT} commit -m "test5"`, DIR);
+
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {
+    toContributeTo: 'master',
+  }));
+  // Returns files from this branch but not ones that only exist on master
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file5.txt']);
 });
 
 test('gets changed files for hg', async () => {
@@ -261,4 +292,37 @@ test('gets changed files for hg', async () => {
       .map(filePath => path.basename(filePath))
       .sort(),
   ).toEqual(['file1.txt', 'file4.txt']);
+
+  run(`${HG} add file4.txt`, DIR);
+  run(`${HG} commit -m "test3"`, DIR);
+
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {
+    toContributeTo: '-3',
+  }));
+  // Returns files from the last 2 commits
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file1.txt', 'file4.txt']);
+
+  run(`${HG} bookmark master`, DIR);
+  // Back up and develop on a different branch
+  run(`${HG} checkout --rev=-2`, DIR);
+
+  writeFiles(DIR, {
+    'file5.txt': 'file5',
+  });
+  run(`${HG} add file5.txt`, DIR);
+  run(`${HG} commit -m "test4"`, DIR);
+
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {
+    toContributeTo: 'master',
+  }));
+  // Returns files from this branch but not ones that only exist on master
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file5.txt']);
 });

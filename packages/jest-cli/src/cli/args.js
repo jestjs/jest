@@ -20,7 +20,12 @@ export const check = (argv: Argv) => {
     );
   }
 
-  for (const key of ['onlyChanged', 'lastCommit', 'changedFilesWithAncestor']) {
+  for (const key of [
+    'onlyChanged',
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedFilesToContributeTo',
+  ]) {
     if (argv[key]) {
       argv.onlyChanged = true;
     }
@@ -105,6 +110,14 @@ export const options = {
     description:
       'The directory where Jest should store its cached ' +
       ' dependency information.',
+    type: 'string',
+  },
+  changedFilesToContributeTo: {
+    description:
+      'Runs tests related the changes since the provided branch. If the ' +
+      'current branch has diverged from the given branch, then only changes ' +
+      'made locally will be tested. Behaves similarly to `--onlyChanged`.',
+    nargs: 1,
     type: 'string',
   },
   changedFilesWithAncestor: {
