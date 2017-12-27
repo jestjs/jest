@@ -13,6 +13,7 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   bail: false,
+  changedFilesToContributeTo: '',
   changedFilesWithAncestor: false,
   collectCoverage: false,
   collectCoverageFrom: [],
