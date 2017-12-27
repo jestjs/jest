@@ -39,7 +39,7 @@ aliases:
       yarn run crowdin-upload
       yarn run crowdin-download
       # build and publish website
-      GIT_USER=jest-bot yarn run publish-gh-pages
+      GIT_USER=jest-bot USE_SSH=true yarn run publish-gh-pages
 
 version: 2
 jobs:
