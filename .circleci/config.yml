@@ -28,10 +28,10 @@ aliases:
       git config --global user.name "Website Deployment Script"
       echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
       # install Docusaurus and generate file of English strings
-      cd website && yarn && yarn run write-translations
+      yarn && cd website && yarn run write-translations
       # crowdin install
       sudo apt-get update
-      sudo apt-get install default-jre
+      sudo apt-get install default-jre rsync
       wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
       sudo dpkg -i crowdin.deb
       sleep 5
@@ -96,9 +96,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: |
-          cd website
-          yarn --no-progress
+      - run: yarn --no-progress
       - save-cache: *save-cache
       - deploy: *deploy
 
