@@ -104,8 +104,8 @@ If you want to inspect the cache, use `--showConfig` and look at the
 
 ### `--changedFilesWithAncestor`
 
-When used together with `--onlyChanged`, it runs tests related to the current
-changes and the changes made in the last commit.
+When used together with `--onlyChanged` or `--watch`, it runs tests related to
+the current changes and the changes made in the last commit.
 
 ### `--ci`
 

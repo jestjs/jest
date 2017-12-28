@@ -104,7 +104,7 @@ export const options = {
   },
   changedFilesWithAncestor: {
     description:
-      'When used together with `--onlyChanged`, it runs tests ' +
+      'When used together with `--onlyChanged` or `--watch`, it runs tests ' +
       'related to the current changes and the changes made in the last commit. ',
     type: 'boolean',
   },
