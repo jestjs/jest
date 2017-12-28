@@ -171,12 +171,13 @@ test('objects in project configuration', () => {
     'package.json': '{}',
   });
 
-  const {stdout, stderr} = runJest(DIR);
+  const {stdout, stderr, status} = runJest(DIR);
   expect(stderr).toContain('Test Suites: 2 passed, 2 total');
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('PASS __tests__/file2.test.js');
   expect(stderr).toContain('Ran all test suites in 2 projects.');
   expect(stdout).toEqual('');
+  expect(status).toEqual(0);
 });
 
 test('allows a single project', () => {
@@ -192,10 +193,11 @@ test('allows a single project', () => {
     'package.json': '{}',
   });
 
-  const {stdout, stderr} = runJest(DIR);
+  const {stdout, stderr, status} = runJest(DIR);
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('Test Suites: 1 passed, 1 total');
   expect(stdout).toEqual('');
+  expect(status).toEqual(0);
 });
 
 test('resolves projects and their <rootDir> properly', () => {
