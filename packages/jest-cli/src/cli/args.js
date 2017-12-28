@@ -267,8 +267,8 @@ export const options = {
   lastCommit: {
     default: undefined,
     description:
-      'Will run all tests affected by file changes in the last ' +
-      'commit made.',
+      'When used together with `--onlyChanged`, it will run all tests ' +
+      'affected by file changes in the last commit made.',
     type: 'boolean',
   },
   listTests: {
