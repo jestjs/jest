@@ -437,7 +437,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
-            const globMatches = glob.sync(project);
+            const globMatches =
+              typeof project === 'string' ? glob.sync(project) : [];
             return projects.concat(globMatches.length ? globMatches : project);
           }, []);
         break;

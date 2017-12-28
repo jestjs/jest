@@ -11,6 +11,8 @@
   ([#5154](https://github.com/facebook/jest/pull/5154))
 * `[jest-jasmine2]` Support generator functions as specs.
   ([#5166](https://github.com/facebook/jest/pull/5166))
+* `[jest-config]` Allow configuration objects inside `projects` array
+  ([#5176](https://github.com/facebook/jest/pull/5176))
 
 ### Chore & Maintenance
 

@@ -427,7 +427,7 @@ Default: `undefined`
 A preset that is used as a base for Jest's configuration. A preset should point
 to an npm module that exports a `jest-preset.json` module on its top level.
 
-### `projects` [array<string>]
+### `projects` [array<string | ProjectConfig>]
 
 Default: `undefined`
 
@@ -445,6 +445,27 @@ time.
 This example configuration will run Jest in the root directory as well as in
 every folder in the examples directory. You can have an unlimited amount of
 projects running in the same Jest instance.
+
+The projects feature can also be used to run multiple configurations or multiple
+[runners](#runner-string). For this purpose you can pass an array of
+configuration objects. For example, to run both tests and ESLint (via
+[jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in
+the same invocation of Jest:
+
+```json
+{
+  "projects": [
+    {
+      "displayName": "test"
+    },
+    {
+      "displayName": "lint",
+      "runner": "jest-runner-eslint",
+      "testMatch": ["<rootDir>/**/*.js"]
+    }
+  ]
+}
+```
 
 ### `clearMocks` [boolean]
 
@@ -618,6 +639,34 @@ modules from `node_modules` (`__mocks__` will need to live in one of the
 _Note: By default, `roots` has a single entry `<rootDir>` but there are cases
 where you may want to have multiple roots within one project, for example
 `roots: ["<rootDir>/src/", "<rootDir>/tests/"]`._
+
+### `runner` [string]
+
+##### available in Jest **21.0.0+**
+
+Default: `"jest-runner"`
+
+This option allows you to use a custom runner instead of Jest's default test
+runner. Examples of runners include:
+
+* [`jest-runner-eslint`](https://github.com/jest-community/jest-runner-eslint)
+* [`jest-runner-mocha`](https://github.com/rogeliog/jest-runner-mocha)
+* [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc)
+* [`jest-runner-prettier`](https://github.com/keplersj/jest-runner-prettier)
+
+To write a test-runner, export a class with which accepts `globalConfig` in the
+constructor, and has a `runTests` method with the signature:
+
+```ts
+async runTests(
+  tests: Array<Test>,
+  watcher: TestWatcher,
+  onStart: OnTestStart,
+  onResult: OnTestSuccess,
+  onFailure: OnTestFailure,
+  options: TestRunnerOptions,
+): Promise<void>
+```
 
 ### `setupFiles` [array]
 
