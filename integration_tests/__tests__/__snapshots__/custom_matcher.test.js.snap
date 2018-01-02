@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom matcher preserves error stack 1`] = `
+"Error: qux
+    at baz (/Users/bvaughn/Documents/git/jest/integration_tests/__tests__/custom_matcher.test.js:49:13)
+    at bar (/Users/bvaughn/Documents/git/jest/integration_tests/__tests__/custom_matcher.test.js:47:23)
+    at foo (/Users/bvaughn/Documents/git/jest/integration_tests/__tests__/custom_matcher.test.js:46:23)
+    at expect (/Users/bvaughn/Documents/git/jest/integration_tests/__tests__/custom_matcher.test.js:54:9)
+    at Object.toCustomMatch (/Users/bvaughn/Documents/git/jest/integration_tests/__tests__/custom_matcher.test.js:12:18)
+    at Object.throwingMatcher [as toCustomMatch] (/Users/bvaughn/Documents/git/jest/packages/expect/build/index.js:214:24)
+    at Object.it (/Users/bvaughn/Documents/git/jest/integration_tests/__tests__/custom_matcher.test.js:55:10)
+    at Object.asyncFn (/Users/bvaughn/Documents/git/jest/packages/jest-jasmine2/build/jasmine_async.js:129:432)
+    at resolve (/Users/bvaughn/Documents/git/jest/packages/jest-jasmine2/build/queue_runner.js:51:12)
+    at Promise (<anonymous>)"
+`;
