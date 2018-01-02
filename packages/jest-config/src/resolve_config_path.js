@@ -66,7 +66,7 @@ const resolveConfigPathByTraversing = (
 
   // This is the system root.
   // We tried everything, config is nowhere to be found ¯\_(ツ)_/¯
-  if (pathToResolve === path.sep) {
+  if (pathToResolve === path.dirname(pathToResolve)) {
     throw new Error(makeResolutionErrorMessage(initialPath, cwd));
   }
 

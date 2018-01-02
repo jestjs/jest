@@ -204,3 +204,21 @@ test('tests with no implementation with expand arg', () => {
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
+
+test('function as descriptor', () => {
+  const filename = 'function-as-descriptor.test.js';
+  const content = `
+    function Foo() {}
+    describe(Foo, () => {
+      it('it', () => {});
+    });
+  `;
+
+  writeFiles(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR);
+  expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});

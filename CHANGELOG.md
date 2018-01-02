@@ -2,14 +2,45 @@
 
 ### Fixes
 
-* `[babel-jest]` moduleFileExtensions not passed to babel transformer.
-  ([#4637](https://github.com/facebook/jest/issues/4637))
+* `[jest-config]` fix unexpected condition to avoid infinite recursion in
+  Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
 * Do not override `Error` stack (with `Error.captureStackTrace`) for custom matchers.
   ([#5162](https://github.com/facebook/jest/pull/5162))
 
 ### Features
 
+* `[jest-jasmine]` Allowed classes and functions as `describe` names.
+  ([#5154](https://github.com/facebook/jest/pull/5154))
+* `[jest-jasmine2]` Support generator functions as specs.
+  ([#5166](https://github.com/facebook/jest/pull/5166))
+* `[jest-config]` Allow configuration objects inside `projects` array
+  ([#5176](https://github.com/facebook/jest/pull/5176))
+
 ### Chore & Maintenance
+
+## jest 22.0.4
+
+### Fixes
+
+* `[jest-cli]` New line before quitting watch mode.
+  ([#5158](https://github.com/facebook/jest/pull/5158))
+
+### Features
+
+* `[babel-jest]` moduleFileExtensions not passed to babel transformer.
+  ([#5110](https://github.com/facebook/jest/pull/5110))
+
+### Chore & Maintenance
+
+* `[*]` Tweaks to better support Node 4
+  ([#5142](https://github.com/facebook/jest/pull/5142))
+
+## jest 22.0.2 && 22.0.3
+
+### Chore & Maintenance
+
+* `[*]` Tweaks to better support Node 4
+  ([#5134](https://github.com/facebook/jest/pull/5134))
 
 ## jest 22.0.1
 

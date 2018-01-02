@@ -154,6 +154,52 @@ test('"No tests found" message for projects', () => {
   );
 });
 
+test('objects in project configuration', () => {
+  writeFiles(DIR, {
+    '__tests__/file1.test.js': `
+      test('foo', () => {});
+    `,
+    '__tests__/file2.test.js': `
+      test('bar', () => {});
+    `,
+    'jest.config.js': `module.exports = {
+      projects: [
+        { testMatch: ['<rootDir>/__tests__/file1.test.js'] },
+        { testMatch: ['<rootDir>/__tests__/file2.test.js'] },
+      ]
+    };`,
+    'package.json': '{}',
+  });
+
+  const {stdout, stderr, status} = runJest(DIR);
+  expect(stderr).toContain('Test Suites: 2 passed, 2 total');
+  expect(stderr).toContain('PASS __tests__/file1.test.js');
+  expect(stderr).toContain('PASS __tests__/file2.test.js');
+  expect(stderr).toContain('Ran all test suites in 2 projects.');
+  expect(stdout).toEqual('');
+  expect(status).toEqual(0);
+});
+
+test('allows a single project', () => {
+  writeFiles(DIR, {
+    '__tests__/file1.test.js': `
+      test('foo', () => {});
+    `,
+    'jest.config.js': `module.exports = {
+      projects: [
+        { testMatch: ['<rootDir>/__tests__/file1.test.js'] },
+      ]
+    };`,
+    'package.json': '{}',
+  });
+
+  const {stdout, stderr, status} = runJest(DIR);
+  expect(stderr).toContain('PASS __tests__/file1.test.js');
+  expect(stderr).toContain('Test Suites: 1 passed, 1 total');
+  expect(stdout).toEqual('');
+  expect(status).toEqual(0);
+});
+
 test('resolves projects and their <rootDir> properly', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
