@@ -25,6 +25,7 @@ import {
   DOCUMENTATION_NOTE,
   _replaceRootDirInPath,
   _replaceRootDirTags,
+  escapeGlobCharacters,
   getTestEnvironment,
   resolve,
 } from './utils';
@@ -444,7 +445,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(options.rootDir, options[key]);
+        value = _replaceRootDirTags(
+          escapeGlobCharacters(options.rootDir),
+          options[key],
+        );
         break;
       case 'automock':
       case 'bail':
