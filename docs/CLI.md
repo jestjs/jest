@@ -218,6 +218,10 @@ changed in the current repository. Only works if you're running tests in a
 git/hg repository at the moment and requires a static dependency graph (ie. no
 dynamic requires).
 
+### `--passWithNoTests`
+
+Allows the test suite to pass when no files are found.
+
 ### `--projects <project1> ... <projectN>`
 
 Run tests from one or more projects.
