@@ -100,4 +100,77 @@ describe('events', () => {
     runner.start();
     expect(mockCreateProcess).toHaveBeenCalledTimes(2);
   });
+
+  const messageType = {
+    noTests: 1,
+    watchUsage: 2,
+  };
+
+  describe('stdout.on("data")', () => {
+    it('should indicate when test results follow "No tests found related to files changed since the last commit"', () => {
+      const listener = jest.fn();
+      runner.on('executableJSON', listener);
+      runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+      runner.prevMessageTypes.push(messageType.noTests);
+      fakeProcess.stdout.emit('data', 'Test results written to file');
+
+      expect(listener.mock.calls[0].length).toBe(2);
+      expect(listener.mock.calls[0][1]).toEqual({noTestsFound: true});
+    });
+
+    it('should indicate when test results follow "No tests found related to files changed since the last commit" and "Watch Usage"', () => {
+      const listener = jest.fn();
+      runner.on('executableJSON', listener);
+      runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+      runner.prevMessageTypes.push(messageType.noTests, messageType.watchUsage);
+      fakeProcess.stdout.emit('data', 'Test results written to file');
+
+      expect(listener.mock.calls[0].length).toBe(2);
+      expect(listener.mock.calls[0][1]).toEqual({noTestsFound: true});
+    });
+
+    it('should clear the message type history', () => {
+      runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+      runner.prevMessageTypes.push(messageType.noTests);
+      fakeProcess.stdout.emit('data', 'Test results written to file');
+
+      expect(runner.prevMessageTypes.length).toBe(0);
+    });
+  });
+
+  describe('stderr.on("data")', () => {
+    it('should emit an "executableStdErr" event', () => {
+      const listener = jest.fn();
+      const expected = Buffer.from('');
+
+      runner.on('executableStdErr', listener);
+      fakeProcess.stderr.emit('data', expected);
+
+      expect(listener).toBeCalledWith(expected);
+    });
+
+    it('should track when "No tests found related to files changed since the last commit" is received', () => {
+      const data = Buffer.from(
+        'No tests found related to files changed since last commit.\n' +
+          'Press `a` to run all tests, or run Jest with `--watchAll`.',
+      );
+      fakeProcess.stderr.emit('data', data);
+
+      expect(runner.prevMessageTypes).toEqual([messageType.noTests]);
+    });
+
+    it('should track when the "Watch Usage" prompt is received', () => {
+      const data = Buffer.from('\n\nWatch Usage\n...');
+      fakeProcess.stderr.emit('data', data);
+
+      expect(runner.prevMessageTypes).toEqual([messageType.watchUsage]);
+    });
+
+    it('should clear the message type history when any other other data is received', () => {
+      const data = Buffer.from('');
+      fakeProcess.stderr.emit('data', data);
+
+      expect(runner.prevMessageTypes).toEqual([]);
+    });
+  });
 });
