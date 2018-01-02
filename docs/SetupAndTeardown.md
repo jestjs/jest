@@ -7,6 +7,8 @@ Often while writing tests you have some setup work that needs to happen before
 tests run, and you have some finishing work that needs to happen after tests
 run. Jest provides helper functions to handle this.
 
+
+
 ### Repeating Setup For Many Tests
 
 If you have some work you need to do repeatedly for many tests, you can use
@@ -146,6 +148,59 @@ describe('Scoped / Nested block', () => {
 // 2 - afterAll
 // 1 - afterAll
 ```
+
+### Order of execution of describe and test blocks
+
+Jest executes all describe handlers in a test file *before* it executes any of the actual tests. This is an extra reason to use the `before*` and `after*` handlers rather than relying on closures. Once the describe blocks are complete, jest runs all the tests in the order they were encountered in the collection phase. Consider the following illustrative test file and output:
+
+```
+describe('outer', () => {
+
+  console.log(`describe outer`);
+
+  describe('describe inner 1', () => {
+    console.log(`describe inner 1`);
+    test('test 1', () => {
+      console.log(`test for describe inner 1`);
+      expect(true).toEqual(true);
+    });
+  });
+
+  test('test 1', () => {
+    console.log(`test for describe outer`);
+    expect(true).toEqual(true);
+  });
+
+  describe('describe inner 2', () => {
+    console.log(`describe inner 2`);
+    test('test for describe inner 2', () => {
+      console.log(`test for describe inner 2`);
+      expect(false).toEqual(false);
+    })
+  });
+});
+
+// describe outer
+// describe inner 1
+// describe inner 2
+// test for describe inner 1
+// test for describe outer
+// test for describe inner 2
+```
+
+### Concurrent tests
+
+If you have multiple tests in the same file that may take a long time and 
+are independent, then you can mark that they can be executed concurrently
+using `test.concurrent()`:
+
+```
+test.concurrent('long test', () => {
+  return new Promise(resolve => someLongFunction(resolve));
+});
+```
+
+Note that concurrent tests must return a promise.
 
 ### General Advice
 
