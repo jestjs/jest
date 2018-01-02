@@ -7,8 +7,6 @@ Often while writing tests you have some setup work that needs to happen before
 tests run, and you have some finishing work that needs to happen after tests
 run. Jest provides helper functions to handle this.
 
-
-
 ### Repeating Setup For Many Tests
 
 If you have some work you need to do repeatedly for many tests, you can use
@@ -151,7 +149,9 @@ describe('Scoped / Nested block', () => {
 
 ### Order of execution of describe and test blocks
 
-Jest executes all describe handlers in a test file *before* it executes any of the actual tests. This is an extra reason to use the `before*` and `after*` handlers rather than relying on closures. Once the describe blocks are complete, jest runs all the tests in the order they were encountered in the collection phase. Consider the following illustrative test file and output:
+Jest executes all describe handlers in a test file *before* it executes any of the actual tests. This is an extra reason to use the `before*` and `after*` handlers rather than relying on closures. Once the describe blocks are complete, by default jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on. 
+
+Consider the following illustrative test file and output:
 
 ```
 describe('outer', () => {
