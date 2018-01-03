@@ -51,13 +51,14 @@ const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
 const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
+const NATIVE_ERROR_IGNORE = /^\s+at Error \(native\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
 const TITLE_BULLET = chalk.bold('\u25cf ');
 const STACK_TRACE_COLOR = chalk.dim;
-const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
+const STACK_PATH_REGEXP = /\s*at.*\(?(:\d*:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const ERROR_TEXT = 'Error: ';
 
@@ -143,6 +144,10 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
     }
 
     if (NATIVE_NEXT_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (NATIVE_ERROR_IGNORE.test(line)) {
       return false;
     }
 
