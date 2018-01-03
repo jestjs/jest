@@ -15,11 +15,14 @@ const skipOnWindows = require('../../scripts/skip_on_windows');
 skipOnWindows.suite();
 
 test('works with custom matchers', () => {
-  if (skipOnWindows.test()) {
-    return;
-  }
-
   const {stderr} = runJest('custom_matcher_stack_trace');
 
-  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  let {rest} = extractSummary(stderr);
+
+  rest = rest
+    .split('\n')
+    .filter(line => line.indexOf('at Error (native)') < 0)
+    .join('\n');
+
+  expect(rest).toMatchSnapshot();
 });
