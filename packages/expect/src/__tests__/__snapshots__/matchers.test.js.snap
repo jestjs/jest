@@ -2812,7 +2812,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2834,7 +2834,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2856,7 +2856,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2890,7 +2890,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2912,7 +2912,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2934,7 +2934,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
