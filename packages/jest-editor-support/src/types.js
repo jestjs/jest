@@ -58,3 +58,7 @@ export type TestAssertionStatus = {
   terseMessage: ?string,
   line: ?number,
 };
+
+export type JestTotalResultsMeta = {
+  noTestsFound: boolean,
+};

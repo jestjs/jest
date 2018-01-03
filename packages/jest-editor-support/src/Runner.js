@@ -29,13 +29,16 @@ export default class Runner extends EventEmitter {
   ) => ChildProcess;
   watchMode: boolean;
   options: Options;
+  prevMessageTypes: number[];
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
+
     this._createProcess = (options && options.createProcess) || createProcess;
     this.options = options || {};
     this.workspace = workspace;
     this.outputPath = tmpdir() + '/jest_runner.json';
+    this.prevMessageTypes = [];
   }
 
   start(watchMode: boolean = true) {
@@ -50,7 +53,9 @@ export default class Runner extends EventEmitter {
     const outputArg = belowEighteen ? '--jsonOutputFile' : '--outputFile';
 
     const args = ['--json', '--useStderr', outputArg, this.outputPath];
-    if (this.watchMode) args.push('--watch');
+    if (this.watchMode) {
+      args.push('--watch');
+    }
     if (this.options.testNamePattern) {
       args.push('--testNamePattern', this.options.testNamePattern);
     }
@@ -66,34 +71,50 @@ export default class Runner extends EventEmitter {
         .toString()
         .replace(/\n$/, '')
         .trim();
+
       if (stringValue.startsWith('Test results written to')) {
         readFile(this.outputPath, 'utf8', (err, data) => {
           if (err) {
             const message = `JSON report not found at ${this.outputPath}`;
             this.emit('terminalError', message);
           } else {
-            this.emit('executableJSON', JSON.parse(data));
+            const noTestsFound = this.doResultsFollowNoTestsFoundMessage();
+
+            this.emit('executableJSON', JSON.parse(data), {noTestsFound});
           }
         });
       } else {
         this.emit('executableOutput', stringValue.replace('[2J[H', ''));
       }
+      this.prevMessageTypes.length = 0;
     });
 
     this.debugprocess.stderr.on('data', (data: Buffer) => {
       this.emit('executableStdErr', data);
+
+      const slice = data.toString('utf8', 0, 58);
+      if (
+        slice === 'No tests found related to files changed since last commit.'
+      ) {
+        this.prevMessageTypes.push(messageType.noTests);
+      } else if (/^\s*Watch Usage\b/.test(slice)) {
+        this.prevMessageTypes.push(messageType.watchUsage);
+      }
     });
 
     this.debugprocess.on('exit', () => {
       this.emit('debuggerProcessExit');
+      this.prevMessageTypes.length = 0;
     });
 
     this.debugprocess.on('error', (error: Error) => {
       this.emit('terminalError', 'Process failed: ' + error.message);
+      this.prevMessageTypes.length = 0;
     });
 
     this.debugprocess.on('close', () => {
       this.emit('debuggerProcessExit');
+      this.prevMessageTypes.length = 0;
     });
   }
 
@@ -120,4 +141,24 @@ export default class Runner extends EventEmitter {
     }
     delete this.debugprocess;
   }
+
+  doResultsFollowNoTestsFoundMessage() {
+    if (this.prevMessageTypes.length === 1) {
+      return this.prevMessageTypes[0] === messageType.noTests;
+    }
+
+    if (this.prevMessageTypes.length === 2) {
+      return (
+        this.prevMessageTypes[0] === messageType.noTests &&
+        this.prevMessageTypes[1] === messageType.watchUsage
+      );
+    }
+
+    return false;
+  }
 }
+
+const messageType = {
+  noTests: 1,
+  watchUsage: 2,
+};

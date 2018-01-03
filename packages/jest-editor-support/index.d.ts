@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { EventEmitter } from 'events';
-import { ChildProcess } from 'child_process';
+import {EventEmitter} from 'events';
+import {ChildProcess} from 'child_process';
 
 export interface Options {
   createProcess?(
-    workspace: ProjectWorkspace, 
-    args: string[], 
+    workspace: ProjectWorkspace,
+    args: string[],
     debugPort?: number,
   ): ChildProcess;
   debugPort?: number;
@@ -133,4 +133,8 @@ export interface JestTotalResults {
   numFailedTests: number;
   numPendingTests: number;
   testResults: Array<JestFileResults>;
+}
+
+export interface JestTotalResultsMeta {
+  noTestsFound: boolean;
 }
