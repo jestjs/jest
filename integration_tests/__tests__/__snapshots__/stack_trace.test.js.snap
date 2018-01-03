@@ -62,3 +62,26 @@ Time:        <<REPLACED>>
 Ran all test suites matching /runtime_error.test.js/i.
 "
 `;
+
+exports[`works with custom matchers 1`] = `
+"FAIL __tests__/custom_matcher.test.js
+  Custom matcher
+    ✓ passes
+    ✓ fails
+    ✕ preserves error stack
+
+  ● Custom matcher › preserves error stack
+
+    qux
+
+      49 |     expect(() => {
+      50 |       foo();
+    > 51 |     }).toCustomMatch('test');
+      52 |   });
+      53 | });
+      54 | 
+      
+      at __tests__/custom_matcher.test.js:51:8
+
+"
+`;

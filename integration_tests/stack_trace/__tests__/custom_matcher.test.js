@@ -4,17 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 'use strict';
-
-import {formatStackTrace} from 'jest-message-util';
-import path from 'path';
-
-const rootDir = path.resolve(__dirname, '..', '..');
-
-const {makeProjectConfig} = require('../../test_utils');
-const projectConfig = makeProjectConfig({rootDir});
 
 function toCustomMatch(callback, expectation) {
   const actual = callback();
@@ -32,8 +23,6 @@ function toCustomMatch(callback, expectation) {
 expect.extend({
   toCustomMatch,
 });
-
-declare var expect: (any: any) => any;
 
 describe('Custom matcher', () => {
   // This test is expected to pass
@@ -57,15 +46,8 @@ describe('Custom matcher', () => {
       throw Error('qux');
     };
 
-    try {
-      expect(() => {
-        foo();
-      }).toCustomMatch('test');
-    } catch (error) {
-      const stack = formatStackTrace(error.stack, projectConfig, {
-        noStackTrace: false,
-      });
-      expect(stack).toMatchSnapshot();
-    }
+    expect(() => {
+      foo();
+    }).toCustomMatch('test');
   });
 });

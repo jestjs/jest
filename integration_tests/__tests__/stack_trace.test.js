@@ -122,3 +122,9 @@ describe('Stack Trace', () => {
     );
   });
 });
+
+test('works with custom matchers', () => {
+  const {stderr} = runJest('stack_trace', ['custom_matcher.test.js']);
+
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
+});
