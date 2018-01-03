@@ -13,7 +13,7 @@
   ([#5166](https://github.com/facebook/jest/pull/5166))
 * `[jest-config]` Allow configuration objects inside `projects` array
   ([#5176](https://github.com/facebook/jest/pull/5176))
-* `[jest-cli]` Add support to .toHaveProperty matcher to accept the keyPath
+* `[expect]` Add support to `.toHaveProperty` matcher to accept the keyPath
   argument as an array of properties/indices.
   ([#5220](https://github.com/facebook/jest/pull/5220))
 * `[docs]` Add documentation for .toHaveProperty matcher to accept the keyPath

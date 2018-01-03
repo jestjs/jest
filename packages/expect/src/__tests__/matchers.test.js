@@ -803,7 +803,7 @@ describe('.toHaveProperty()', () => {
   ].forEach(([obj, keyPath]) => {
     test(`{pass: true} expect(${stringify(
       obj,
-    )}).toHaveProperty('${keyPath}')'`, () => {
+    )}).toHaveProperty('${keyPath}')`, () => {
       jestExpect(obj).toHaveProperty(keyPath);
       expect(() =>
         jestExpect(obj).not.toHaveProperty(keyPath),
