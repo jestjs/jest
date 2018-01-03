@@ -74,13 +74,18 @@ exports[`works with custom matchers 1`] = `
 
     qux
 
+      44 |     const bar = () => baz();
+      45 |     const baz = () => {
+    > 46 |       throw Error('qux');
+      47 |     };
+      48 | 
       49 |     expect(() => {
-      50 |       foo();
-    > 51 |     }).toCustomMatch('test');
-      52 |   });
-      53 | });
-      54 | 
       
+      at __tests__/custom_matcher.test.js:46:13
+      at __tests__/custom_matcher.test.js:44:23
+      at __tests__/custom_matcher.test.js:43:23
+      at __tests__/custom_matcher.test.js:50:7
+      at __tests__/custom_matcher.test.js:11:18
       at __tests__/custom_matcher.test.js:51:8
 
 "
