@@ -149,7 +149,7 @@ describe('Scoped / Nested block', () => {
 
 ### Order of execution of describe and test blocks
 
-Jest executes all describe handlers in a test file *before* it executes any of the actual tests. This is another reason to do setup and teardown in `before*` and `after*` handlers rather in the describe blocks. Once the describe blocks are complete, by default jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on. 
+Jest executes all describe handlers in a test file *before* it executes any of the actual tests. This is another reason to do setup and teardown in `before*` and `after*` handlers rather in the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on. 
 
 Consider the following illustrative test file and output:
 
@@ -193,20 +193,6 @@ describe('outer', () => {
 // test for describe outer
 // test for describe inner 2
 ```
-
-### Concurrent tests
-
-If you have multiple tests in the same file that may take a long time and 
-are independent, then you can mark that they can be executed concurrently
-using `test.concurrent()`:
-
-```
-test.concurrent('long test', () => {
-  return new Promise(resolve => someLongFunction(resolve));
-});
-```
-
-Note that concurrent tests must return a promise.
 
 ### General Advice
 
