@@ -8,6 +8,14 @@
  */
 'use strict';
 
+import {formatStackTrace} from 'jest-message-util';
+import path from 'path';
+
+const rootDir = path.resolve(__dirname, '..', '..');
+
+const {makeProjectConfig} = require('../../test_utils');
+const projectConfig = makeProjectConfig({rootDir});
+
 function toCustomMatch(callback, expectation) {
   const actual = callback();
 
@@ -25,7 +33,7 @@ expect.extend({
   toCustomMatch,
 });
 
-declare var expect: (func: Function) => any;
+declare var expect: (any: any) => any;
 
 describe('Custom matcher', () => {
   // This test is expected to pass
@@ -54,7 +62,10 @@ describe('Custom matcher', () => {
         foo();
       }).toCustomMatch('test');
     } catch (error) {
-      expect(error.stack).toMatchSnapshot();
+      const stack = formatStackTrace(error.stack, projectConfig, {
+        noStackTrace: false,
+      });
+      expect(stack).toMatchSnapshot();
     }
   });
 });
