@@ -903,9 +903,10 @@ describe('toMatchObject applied to arrays arrays', () => {
 ### `.toHaveProperty(keyPath, value)`
 
 Use `.toHaveProperty` to check if property at provided reference `keyPath`
-exists for an object. For checking deeply nested properties in an object use
+exists for an object. For checking deeply nested properties in an object you may
+use
 [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors)
-for deep references.
+or an array containing the keyPath for deep references.
 
 Optionally, you can provide a `value` to check if it's equal to the value
 present at `keyPath` on the target object. This matcher uses 'deep equality'
@@ -941,6 +942,16 @@ test('this house has my desired features', () => {
     'stove',
     'washer',
   ]);
+
+  expect(houseForSale).not.toHaveProperty('kitchen.open');
+
+  // Deep referencing using an array containing the keyPath
+  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
+  expect(houseForSale).toHaveProperty(
+    ['kitchen', 'amenities'],
+    ['oven', 'stove', 'washer'],
+  );
+  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
 
   expect(houseForSale).not.toHaveProperty('kitchen.open');
 });
