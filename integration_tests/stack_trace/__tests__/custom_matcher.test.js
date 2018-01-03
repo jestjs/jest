@@ -38,8 +38,6 @@ describe('Custom matcher', () => {
     }).toThrow();
   });
 
-  // This test fails due to an unrelated/unexpected error
-  // It will show a helpful stack trace though
   it('preserves error stack', () => {
     const foo = () => bar();
     const bar = () => baz();
@@ -47,6 +45,9 @@ describe('Custom matcher', () => {
       throw Error('qux');
     };
 
+    // This expecation fails due to an error we throw (intentionally)
+    // The stack trace should point to the line that throws the error though,
+    // Not to the line that calls the matcher.
     expect(() => {
       foo();
     }).toCustomMatch('test');
