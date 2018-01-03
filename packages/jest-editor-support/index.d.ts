@@ -138,3 +138,11 @@ export interface JestTotalResults {
 export interface JestTotalResultsMeta {
   noTestsFound: boolean;
 }
+
+export enum MessageTypes {
+  noTests = 1,
+  unknown = 0,
+  watchUsage = 2,
+}
+
+export type MessageType = number;
