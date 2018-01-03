@@ -25,14 +25,15 @@ expect.extend({
 });
 
 describe('Custom matcher', () => {
-  // This test is expected to pass
   it('passes', () => {
+    // This expectation should pass
     expect(() => 'foo').toCustomMatch('foo');
   });
 
-  // This test is expected to fail
   it('fails', () => {
     expect(() => {
+      // This expectation should fail,
+      // Which is why it's wrapped in a .toThrow() block.
       expect(() => 'foo').toCustomMatch('bar');
     }).toThrow();
   });
