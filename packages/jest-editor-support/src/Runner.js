@@ -7,7 +7,8 @@
  * @flow
  */
 
-import type {Options} from './types';
+import type {Options, MessageType} from './types';
+import {messageTypes} from './types';
 
 import {ChildProcess, spawn} from 'child_process';
 import {readFile} from 'fs';
@@ -29,7 +30,7 @@ export default class Runner extends EventEmitter {
   ) => ChildProcess;
   watchMode: boolean;
   options: Options;
-  prevMessageTypes: number[];
+  prevMessageTypes: MessageType[];
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
@@ -79,7 +80,6 @@ export default class Runner extends EventEmitter {
             this.emit('terminalError', message);
           } else {
             const noTestsFound = this.doResultsFollowNoTestsFoundMessage();
-
             this.emit('executableJSON', JSON.parse(data), {noTestsFound});
           }
         });
@@ -90,16 +90,14 @@ export default class Runner extends EventEmitter {
     });
 
     this.debugprocess.stderr.on('data', (data: Buffer) => {
-      this.emit('executableStdErr', data);
-
-      const slice = data.toString('utf8', 0, 58);
-      if (
-        slice === 'No tests found related to files changed since last commit.'
-      ) {
-        this.prevMessageTypes.push(messageType.noTests);
-      } else if (/^\s*Watch Usage\b/.test(slice)) {
-        this.prevMessageTypes.push(messageType.watchUsage);
+      const type = this.findMessageType(data);
+      if (type === messageTypes.unknown) {
+        this.prevMessageTypes.length = 0;
+      } else {
+        this.prevMessageTypes.push(type);
       }
+
+      this.emit('executableStdErr', data, {type});
     });
 
     this.debugprocess.on('exit', () => {
@@ -142,23 +140,31 @@ export default class Runner extends EventEmitter {
     delete this.debugprocess;
   }
 
+  findMessageType(buf: Buffer) {
+    const str = buf.toString('utf8', 0, 58);
+    if (str === 'No tests found related to files changed since last commit.') {
+      return messageTypes.noTests;
+    }
+
+    if (/^\s*Watch Usage\b/.test(str)) {
+      return messageTypes.watchUsage;
+    }
+
+    return messageTypes.unknown;
+  }
+
   doResultsFollowNoTestsFoundMessage() {
     if (this.prevMessageTypes.length === 1) {
-      return this.prevMessageTypes[0] === messageType.noTests;
+      return this.prevMessageTypes[0] === messageTypes.noTests;
     }
 
     if (this.prevMessageTypes.length === 2) {
       return (
-        this.prevMessageTypes[0] === messageType.noTests &&
-        this.prevMessageTypes[1] === messageType.watchUsage
+        this.prevMessageTypes[0] === messageTypes.noTests &&
+        this.prevMessageTypes[1] === messageTypes.watchUsage
       );
     }
 
     return false;
   }
 }
-
-const messageType = {
-  noTests: 1,
-  watchUsage: 2,
-};

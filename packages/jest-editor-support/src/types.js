@@ -62,3 +62,11 @@ export type TestAssertionStatus = {
 export type JestTotalResultsMeta = {
   noTestsFound: boolean,
 };
+
+export const messageTypes = {
+  noTests: 1,
+  unknown: 0,
+  watchUsage: 2,
+};
+
+export type MessageType = number;
