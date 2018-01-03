@@ -10,7 +10,6 @@
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
-const skipOnWindows = require('../../scripts/skip_on_windows');
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {
@@ -122,14 +121,4 @@ describe('Stack Trace', () => {
       /\s+at\s(?:.+?)\s\(__tests__\/test_error.test\.js/,
     );
   });
-});
-
-test('works with custom matchers', () => {
-  if (skipOnWindows.test()) {
-    return;
-  }
-
-  const {stderr} = runJest('stack_trace', ['custom_matcher.test.js']);
-
-  expect(extractSummary(stderr).rest).toMatchSnapshot();
 });
