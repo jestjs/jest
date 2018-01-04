@@ -4,6 +4,8 @@
 
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
+* `[jest-regex-util]` Fix breaking change in `--testPathPattern`
+  ([#5230](https://github.com/facebook/jest/pull/5230))
 
 ### Features
 
