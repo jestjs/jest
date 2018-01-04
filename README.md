@@ -79,7 +79,7 @@ If you'd like to learn more about running `jest` through the command line, take 
 To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
 
 ```
-npm install --save-dev babel-jest regenerator-runtime
+npm install --save-dev jest babel-jest regenerator-runtime
 ```
 
 *Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn*
@@ -118,7 +118,7 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 To use TypeScript in your tests, install the `ts-jest` package and the types for Jest.
 
 ```
-npm install --save-dev ts-jest @types/jest
+npm install --save-dev jest ts-jest @types/jest
 ```
 
 then modify your `package.json` so the `jest` section looks something like:
