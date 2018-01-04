@@ -149,7 +149,12 @@ describe('Scoped / Nested block', () => {
 
 ### Order of execution of describe and test blocks
 
-Jest executes all describe handlers in a test file *before* it executes any of the actual tests. This is another reason to do setup and teardown in `before*` and `after*` handlers rather in the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on. 
+Jest executes all describe handlers in a test file _before_ it executes any of
+the actual tests. This is another reason to do setup and teardown in `before*`
+and `after*` handlers rather in the describe blocks. Once the describe blocks
+are complete, by default Jest runs all the tests serially in the order they were
+encountered in the collection phase, waiting for each to finish and be tidied up
+before moving on.
 
 Consider the following illustrative test file and output:
 
@@ -157,7 +162,7 @@ Consider the following illustrative test file and output:
 describe('outer', () => {
 
  console.log(`describe outer-a`);
- 
+
  describe('describe inner 1', () => {
    console.log(`describe inner 1`);
    test('test 1', () => {
@@ -167,7 +172,7 @@ describe('outer', () => {
  });
 
  console.log(`describe outer-b`);
- 
+
  test('test 1', () => {
    console.log(`test for describe outer`);
    expect(true).toEqual(true);
@@ -180,7 +185,7 @@ describe('outer', () => {
      expect(false).toEqual(false);
    })
  });
- 
+
  console.log(`describe outer-c`);
 });
 
