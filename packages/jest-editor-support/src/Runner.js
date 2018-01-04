@@ -7,7 +7,8 @@
  * @flow
  */
 
-import type {Options} from './types';
+import type {Options, MessageType} from './types';
+import {messageTypes} from './types';
 
 import {ChildProcess, spawn} from 'child_process';
 import {readFile} from 'fs';
@@ -29,13 +30,16 @@ export default class Runner extends EventEmitter {
   ) => ChildProcess;
   watchMode: boolean;
   options: Options;
+  prevMessageTypes: MessageType[];
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
+
     this._createProcess = (options && options.createProcess) || createProcess;
     this.options = options || {};
     this.workspace = workspace;
     this.outputPath = tmpdir() + '/jest_runner.json';
+    this.prevMessageTypes = [];
   }
 
   start(watchMode: boolean = true) {
@@ -50,7 +54,9 @@ export default class Runner extends EventEmitter {
     const outputArg = belowEighteen ? '--jsonOutputFile' : '--outputFile';
 
     const args = ['--json', '--useStderr', outputArg, this.outputPath];
-    if (this.watchMode) args.push('--watch');
+    if (this.watchMode) {
+      args.push('--watch');
+    }
     if (this.options.testNamePattern) {
       args.push('--testNamePattern', this.options.testNamePattern);
     }
@@ -66,34 +72,47 @@ export default class Runner extends EventEmitter {
         .toString()
         .replace(/\n$/, '')
         .trim();
+
       if (stringValue.startsWith('Test results written to')) {
         readFile(this.outputPath, 'utf8', (err, data) => {
           if (err) {
             const message = `JSON report not found at ${this.outputPath}`;
             this.emit('terminalError', message);
           } else {
-            this.emit('executableJSON', JSON.parse(data));
+            const noTestsFound = this.doResultsFollowNoTestsFoundMessage();
+            this.emit('executableJSON', JSON.parse(data), {noTestsFound});
           }
         });
       } else {
         this.emit('executableOutput', stringValue.replace('[2J[H', ''));
       }
+      this.prevMessageTypes.length = 0;
     });
 
     this.debugprocess.stderr.on('data', (data: Buffer) => {
-      this.emit('executableStdErr', data);
+      const type = this.findMessageType(data);
+      if (type === messageTypes.unknown) {
+        this.prevMessageTypes.length = 0;
+      } else {
+        this.prevMessageTypes.push(type);
+      }
+
+      this.emit('executableStdErr', data, {type});
     });
 
     this.debugprocess.on('exit', () => {
       this.emit('debuggerProcessExit');
+      this.prevMessageTypes.length = 0;
     });
 
     this.debugprocess.on('error', (error: Error) => {
       this.emit('terminalError', 'Process failed: ' + error.message);
+      this.prevMessageTypes.length = 0;
     });
 
     this.debugprocess.on('close', () => {
       this.emit('debuggerProcessExit');
+      this.prevMessageTypes.length = 0;
     });
   }
 
@@ -119,5 +138,33 @@ export default class Runner extends EventEmitter {
       this.debugprocess.kill();
     }
     delete this.debugprocess;
+  }
+
+  findMessageType(buf: Buffer) {
+    const str = buf.toString('utf8', 0, 58);
+    if (str === 'No tests found related to files changed since last commit.') {
+      return messageTypes.noTests;
+    }
+
+    if (/^\s*Watch Usage\b/.test(str)) {
+      return messageTypes.watchUsage;
+    }
+
+    return messageTypes.unknown;
+  }
+
+  doResultsFollowNoTestsFoundMessage() {
+    if (this.prevMessageTypes.length === 1) {
+      return this.prevMessageTypes[0] === messageTypes.noTests;
+    }
+
+    if (this.prevMessageTypes.length === 2) {
+      return (
+        this.prevMessageTypes[0] === messageTypes.noTests &&
+        this.prevMessageTypes[1] === messageTypes.watchUsage
+      );
+    }
+
+    return false;
   }
 }

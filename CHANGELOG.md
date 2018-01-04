@@ -2,8 +2,12 @@
 
 ### Fixes
 
+* `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
+  with git. ([#5189](https://github.com/facebook/jest/pull/5189))
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
+* `[jest-regex-util]` Fix breaking change in `--testPathPattern`
+  ([#5230](https://github.com/facebook/jest/pull/5230))
 * Do not override `Error` stack (with `Error.captureStackTrace`) for custom matchers.
   ([#5162](https://github.com/facebook/jest/pull/5162))
 
@@ -17,6 +21,9 @@
   ([#5176](https://github.com/facebook/jest/pull/5176))
 
 ### Chore & Maintenance
+
+* `[docs]` Describe the order of execution of describe and test blocks, and a note on using `test.concurrent`.
+  ([#5217](https://github.com/facebook/jest/pull/5217))
 
 ## jest 22.0.4
 

@@ -1010,7 +1010,7 @@ Examples of such compilers include [Babel](https://babeljs.io/),
 
 _Note: a transformer is only ran once per file unless the file has changed.
 During development of a transformer it can be useful to run Jest with
-`--no-cache` or to frequently
+`--no-cache` to frequently
 [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
 _Note: if you are using the `babel-jest` transformer and want to use an

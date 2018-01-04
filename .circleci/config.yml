@@ -23,10 +23,10 @@ aliases:
 
   - &deploy
     command: |
-      # Deploy Jest website
-      git config --global user.email "jest-bot@users.noreply.github.com"
+      # Deploy Jest website using Docusaurus bot
+      git config --global user.email "docusaurus-bot@users.noreply.github.com"
       git config --global user.name "Website Deployment Script"
-      echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
+      echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
       # install Docusaurus and generate file of English strings
       yarn && cd website && yarn run write-translations
       # crowdin install
@@ -39,7 +39,7 @@ aliases:
       yarn run crowdin-upload
       yarn run crowdin-download
       # build and publish website
-      GIT_USER=jest-bot USE_SSH=true yarn run publish-gh-pages
+      GIT_USER=docusaurus-bot USE_SSH=false yarn run publish-gh-pages
 
 version: 2
 jobs:
