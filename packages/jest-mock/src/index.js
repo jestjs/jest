@@ -659,7 +659,11 @@ class ModuleMockerClass {
     return fn;
   }
 
-  spyOn(object: any, methodName: any): any {
+  spyOn(object: any, methodName: any, accessType?: string): any {
+    if (accessType) {
+      return this._spyOnProperty(object, methodName, accessType)
+    }
+
     if (typeof object !== 'object' && typeof object !== 'function') {
       throw new Error(
         'Cannot spyOn on a primitive value; ' + this._typeOf(object) + ' given',
@@ -691,7 +695,7 @@ class ModuleMockerClass {
     return object[methodName];
   }
 
-  spyOnProperty(obj: any, propertyName: any, accessType: string = 'get'): any {
+  _spyOnProperty(obj: any, propertyName: any, accessType: string = 'get'): any {
     if (typeof obj !== 'object' && typeof obj !== 'function') {
       throw new Error(
         'Cannot spyOn on a primitive value; ' + this._typeOf(obj) + ' given',

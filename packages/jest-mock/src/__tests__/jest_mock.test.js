@@ -682,7 +682,7 @@ describe('moduleMocker', () => {
         },
       };
 
-      const spy = moduleMocker.spyOnProperty(obj, 'method');
+      const spy = moduleMocker.spyOn(obj, 'method', 'get');
 
       const thisArg = {this: true};
       const firstArg = {first: true};
@@ -738,8 +738,8 @@ describe('moduleMocker', () => {
         },
       };
 
-      const spy1 = moduleMocker.spyOnProperty(obj, 'methodOne');
-      const spy2 = moduleMocker.spyOnProperty(obj, 'methodTwo');
+      const spy1 = moduleMocker.spyOn(obj, 'methodOne', 'get');
+      const spy2 = moduleMocker.spyOn(obj, 'methodTwo', 'get');
 
       // First, we call with the spies: both spies and both original functions
       // should be called.

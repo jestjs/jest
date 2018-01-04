@@ -64,7 +64,11 @@ export default function SpyRegistry(options: Object) {
     this.respy = allow;
   };
 
-  this.spyOn = function(obj, methodName) {
+  this.spyOn = function(obj, methodName, accessType?: string) {
+    if (accessType) {
+      return this._spyOnProperty(obj, methodName, accessType)
+    }
+
     if (obj === void 0) {
       throw new Error(
         getErrorMsg(
@@ -129,7 +133,7 @@ export default function SpyRegistry(options: Object) {
     return spiedMethod;
   };
 
-  this.spyOnProperty = function(obj, propertyName, accessType = 'get') {
+  this._spyOnProperty = function(obj, propertyName, accessType = 'get') {
     if (!obj) {
       throw new Error(
         'spyOn could not find an object to spy upon for ' + propertyName + '',

@@ -48,7 +48,7 @@ describe('Runtime', () => {
           },
         };
 
-        const spy = root.jest.spyOnProperty(obj, 'method');
+        const spy = root.jest.spyOn(obj, 'method', 'get');
 
         obj.method();
 

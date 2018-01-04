@@ -285,10 +285,6 @@ export default function(j$) {
       return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };
 
-    this.spyOnProperty = function() {
-      return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
-    };
-
     const suiteFactory = function(description) {
       const suite = new j$.Suite({
         id: getNextSuiteId(),
