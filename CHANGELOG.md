@@ -24,6 +24,12 @@
 * `[docs]` Add documentation for .toHaveProperty matcher to accept the keyPath
   argument as an array of properties/indices.
   ([#5220](https://github.com/facebook/jest/pull/5220))
+* `[jest-runner]` test environments are now passed a new `options` parameter.
+  Currently this only has the `console` which is the test console that Jest will
+  expose to tests. ([#5223](https://github.com/facebook/jest/issues/5223))
+* `[jest-environment-jsdom]` pass the `options.console` to a custom
+  instance of `virtualConsole` so jsdom is using the same console as the
+  test. ([#5223](https://github.com/facebook/jest/issues/5223))
 
 ### Chore & Maintenance
 

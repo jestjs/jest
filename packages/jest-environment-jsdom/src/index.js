@@ -8,12 +8,13 @@
 
 import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';
+import type {EnvironmentOptions} from 'types/Environment';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
 import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
-import {JSDOM} from 'jsdom';
+import {JSDOM, VirtualConsole} from 'jsdom';
 
 class JSDOMEnvironment {
   dom: ?Object;
@@ -22,7 +23,7 @@ class JSDOMEnvironment {
   errorEventListener: ?Function;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: ProjectConfig) {
+  constructor(config: ProjectConfig, options: EnvironmentOptions = {}) {
     this.dom = new JSDOM(
       '<!DOCTYPE html>',
       Object.assign(
@@ -30,6 +31,9 @@ class JSDOMEnvironment {
           pretendToBeVisual: true,
           runScripts: 'dangerously',
           url: config.testURL,
+          virtualConsole: new VirtualConsole().sendTo(
+            options.console || console,
+          ),
         },
         config.testEnvironmentOptions,
       ),
