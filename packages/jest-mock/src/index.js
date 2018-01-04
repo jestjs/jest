@@ -661,7 +661,7 @@ class ModuleMockerClass {
 
   spyOn(object: any, methodName: any, accessType?: string): any {
     if (accessType) {
-      return this._spyOnProperty(object, methodName, accessType)
+      return this._spyOnProperty(object, methodName, accessType);
     }
 
     if (typeof object !== 'object' && typeof object !== 'function') {

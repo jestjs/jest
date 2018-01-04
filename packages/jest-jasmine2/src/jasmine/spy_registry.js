@@ -66,7 +66,7 @@ export default function SpyRegistry(options: Object) {
 
   this.spyOn = function(obj, methodName, accessType?: string) {
     if (accessType) {
-      return this._spyOnProperty(obj, methodName, accessType)
+      return this._spyOnProperty(obj, methodName, accessType);
     }
 
     if (obj === void 0) {
