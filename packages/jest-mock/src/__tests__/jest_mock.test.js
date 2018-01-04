@@ -700,7 +700,6 @@ describe('moduleMocker', () => {
       originalCallArguments = null;
       spy.mockReset();
       spy.mockRestore();
-      console.log('porcoddddddiooo', obj, obj.method);
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
