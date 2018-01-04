@@ -102,6 +102,11 @@ two times slower._
 If you want to inspect the cache, use `--showConfig` and look at the
 `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
 
+### `--changedFilesWithAncestor`
+
+When used together with `--onlyChanged` or `--watch`, it runs tests related to
+the current changes and the changes made in the last commit.
+
 ### `--ci`
 
 When this option is provided, Jest will assume it is running in a CI
@@ -182,7 +187,8 @@ Write test results to a file when the `--json` option is also specified.
 
 ### `--lastCommit`
 
-Will run all tests affected by file changes in the last commit made.
+When used together with `--onlyChanged`, it will run all tests affected by file
+changes in the last commit made.
 
 ### `--listTests`
 
