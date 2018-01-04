@@ -34,6 +34,7 @@ import {
   stringMatching,
 } from './asymmetric_matchers';
 import {
+  INTERNAL_MATCHER_FLAG,
   getState,
   setState,
   getMatchers,
@@ -214,7 +215,7 @@ const makeThrowingMatcher = (
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
       if (
-        matcher.__jestInternal === true &&
+        matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
         error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
