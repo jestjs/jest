@@ -23,7 +23,7 @@ class JSDOMEnvironment {
   errorEventListener: ?Function;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: ProjectConfig, options: EnvironmentOptions = {}) {
+  constructor(config: ProjectConfig, options?: EnvironmentOptions = {}) {
     this.dom = new JSDOM(
       '<!DOCTYPE html>',
       Object.assign(
