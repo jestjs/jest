@@ -222,7 +222,7 @@ class StringMatching extends AsymmetricMatcher {
   }
 
   asymmetricMatch(other: string) {
-    if (!isA('String', other) && !isA('RegExp', other)) {
+    if (!isA('String', other)) {
       return false;
     }
 
