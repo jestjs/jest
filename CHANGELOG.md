@@ -2,13 +2,94 @@
 
 ### Fixes
 
+* `[jest-cli]` Treat dumb terminals as noninteractive ([#5237](https://github.com/facebook/jest/pull/5237))
+* `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
+  with git. ([#5189](https://github.com/facebook/jest/pull/5189))
+* `[jest-config]` fix unexpected condition to avoid infinite recursion in
+  Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
+* `[jest-regex-util]` Fix breaking change in `--testPathPattern`
+  ([#5230](https://github.com/facebook/jest/pull/5230))
+* `[expect]` Do not override `Error` stack (with `Error.captureStackTrace`) for
+  custom matchers. ([#5162](https://github.com/facebook/jest/pull/5162))
+
+### Features
+
+* `[jest-jasmine]` Allowed classes and functions as `describe` names.
+  ([#5154](https://github.com/facebook/jest/pull/5154))
+* `[jest-jasmine2]` Support generator functions as specs.
+  ([#5166](https://github.com/facebook/jest/pull/5166))
+* `[jest-config]` Allow configuration objects inside `projects` array
+  ([#5176](https://github.com/facebook/jest/pull/5176))
+* `[expect]` Add support to `.toHaveProperty` matcher to accept the keyPath
+  argument as an array of properties/indices.
+  ([#5220](https://github.com/facebook/jest/pull/5220))
+* `[docs]` Add documentation for .toHaveProperty matcher to accept the keyPath
+  argument as an array of properties/indices.
+  ([#5220](https://github.com/facebook/jest/pull/5220))
+* `[jest-runner]` test environments are now passed a new `options` parameter.
+  Currently this only has the `console` which is the test console that Jest will
+  expose to tests. ([#5223](https://github.com/facebook/jest/issues/5223))
+* `[jest-environment-jsdom]` pass the `options.console` to a custom
+  instance of `virtualConsole` so jsdom is using the same console as the
+  test. ([#5223](https://github.com/facebook/jest/issues/5223))
+
+### Chore & Maintenance
+
+* `[docs]` Describe the order of execution of describe and test blocks.
+  ([#5217](https://github.com/facebook/jest/pull/5217), [#5238](https://github.com/facebook/jest/pull/5238))
+
+## jest 22.0.4
+
+### Fixes
+
+* `[jest-cli]` New line before quitting watch mode.
+  ([#5158](https://github.com/facebook/jest/pull/5158))
+
+### Features
+
+* `[babel-jest]` moduleFileExtensions not passed to babel transformer.
+  ([#5110](https://github.com/facebook/jest/pull/5110))
+
+### Chore & Maintenance
+
+* `[*]` Tweaks to better support Node 4
+  ([#5142](https://github.com/facebook/jest/pull/5142))
+
+## jest 22.0.2 && 22.0.3
+
+### Chore & Maintenance
+
+* `[*]` Tweaks to better support Node 4
+  ([#5134](https://github.com/facebook/jest/pull/5134))
+
+## jest 22.0.1
+
+### Fixes
+
+* `[jest-runtime]` fix error for test files providing coverage.
+  ([#5117](https://github.com/facebook/jest/pull/5117))
+
+### Features
+
+* `[jest-config]` Add `forceCoverageMatch` to allow collecting coverage from
+  ignored files. ([#5081](https://github.com/facebook/jest/pull/5081))
+
+## jest 22.0.0
+
+### Fixes
+
+* `[jest-resolve]` Use `module.builtinModules` as `BUILTIN_MODULES` when it
+  exists
+* `[jest-worker]` Remove `debug` and `inspect` flags from the arguments sent to
+  the child ([#5068](https://github.com/facebook/jest/pull/5068))
 * `[jest-config]` Use all `--testPathPattern` and `<regexForTestFiles>` args in
-  `testPathPattern`([#5066](https://github.com/facebook/jest/pull/5066))
-* `[jest-cli]` Do not support `--watch` inside non-version-controlled environments
-  ([#5060](https://github.com/facebook/jest/pull/5060))
+  `testPathPattern` ([#5066](https://github.com/facebook/jest/pull/5066))
+* `[jest-cli]` Do not support `--watch` inside non-version-controlled
+  environments ([#5060](https://github.com/facebook/jest/pull/5060))
 * `[jest-config]` Escape Windows path separator in testPathPattern CLI arguments
   ([#5054](https://github.com/facebook/jest/pull/5054)
-* `[jest-jasmine]` Register sourcemaps as node environment to improve performance with jsdom ([#5045](https://github.com/facebook/jest/pull/5045))
+* `[jest-jasmine]` Register sourcemaps as node environment to improve
+  performance with jsdom ([#5045](https://github.com/facebook/jest/pull/5045))
 * `[pretty-format]` Do not call toJSON recursively
   ([#5044](https://github.com/facebook/jest/pull/5044))
 * `[pretty-format]` Fix errors when identity-obj-proxy mocks CSS Modules
@@ -66,8 +147,12 @@
 
 ### Features
 
-* `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node context.
-  ([#5003](https://github.com/facebook/jest/pull/5003))
+* `[jest-message-util]` Add codeframe to test assertion failures
+  ([#5087](https://github.com/facebook/jest/pull/5087))
+* `[jest-config]` Add Global Setup/Teardown options
+  ([#4716](https://github.com/facebook/jest/pull/4716))
+* `[jest-config]` Add `testEnvironmentOptions` to apply to jsdom options or node
+  context. ([#5003](https://github.com/facebook/jest/pull/5003))
 * `[jest-jasmine2]` Update Timeout error message to `jest.timeout` and display
   current timeout value ([#4990](https://github.com/facebook/jest/pull/4990))
 * `[jest-runner]` Enable experimental detection of leaked contexts
@@ -89,7 +174,7 @@
   ([#4593](https://github.com/facebook/jest/pull/4593))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test and snapshot
   ([#4460](https://github.com/facebook/jest/pull/4460))
-* `[jest-cli]` Add an option to fail if no tests are found
+* `[jest-cli]` [**BREAKING**] Fail if no tests are found
   ([#3672](https://github.com/facebook/jest/pull/3672))
 * `[jest-diff]` Highlight only last of odd length leading spaces
   ([#4558](https://github.com/facebook/jest/pull/4558))
@@ -141,6 +226,8 @@
 
 ### Chore & Maintenance
 
+* `[docs]` Add guide of using with puppeteer
+  ([#5093](https://github.com/facebook/jest/pull/5093))
 * `[jest-util]` `jest-util` should not depend on `jest-mock`
   ([#4992](https://github.com/facebook/jest/pull/4992))
 * `[*]` [**BREAKING**] Drop support for Node.js version 4

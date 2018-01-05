@@ -120,3 +120,18 @@ describe('multiple-transformers', () => {
     expect(json.numPassedTests).toBe(1);
   });
 });
+
+describe('ecmascript-modules-support', () => {
+  const dir = path.resolve(
+    __dirname,
+    '..',
+    'transform/ecmascript-modules-support',
+  );
+
+  it('runs transpiled code', () => {
+    // --no-cache because babel can cache stuff and result in false green
+    const {json} = runJest.json(dir, ['--no-cache']);
+    expect(json.success).toBe(true);
+    expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
+  });
+});

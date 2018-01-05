@@ -237,6 +237,42 @@ Jest will fail if:
 * The `./src/api/very-important-module.js` file has less than 100% coverage.
 * Every remaining file combined has less than 50% coverage (`global`).
 
+### `forceCoverageMatch` [array<string>]
+
+Default: `['']`
+
+Test files are normally ignored from collecting code coverage. With this option,
+you can overwrite this behavior and include otherwise ignored files in code
+coverage.
+
+For example, if you have tests in source files named with `.t.js` extension as
+following:
+
+```javascript
+// sum.t.js
+
+export function sum(a, b) {
+  return a + b;
+}
+
+if (process.env.NODE_ENV === 'test') {
+  test('sum', () => {
+    expect(sum(1, 2)).toBe(3);
+  });
+}
+```
+
+You can collect coverage from those files with setting `forceCoverageMatch`.
+
+```json
+{
+  ...
+  "jest": {
+    "forceCoverageMatch": ["**/*.t.js"]
+  }
+}
+```
+
 ### `globals` [object]
 
 Default: `{}`
@@ -260,6 +296,20 @@ For example, the following would create a global `__DEV__` variable set to
 Note that, if you specify a global reference value (like an object or array)
 here, and some code mutates that value in the midst of running a test, that
 mutation will _not_ be persisted across test runs for other test files.
+
+### `globalSetup` [string]
+
+Default: `undefined`
+
+This option allows the use of a custom global setup module which exports an
+async function that is triggered once before all test suites.
+
+### `globalTeardown` [string]
+
+Default: `undefined`
+
+This option allows the use of a custom global teardown module which exports an
+async function that is triggered once after all test suites.
 
 ### `mapCoverage` [boolean]
 
@@ -377,7 +427,7 @@ Default: `undefined`
 A preset that is used as a base for Jest's configuration. A preset should point
 to an npm module that exports a `jest-preset.json` module on its top level.
 
-### `projects` [array<string>]
+### `projects` [array<string | ProjectConfig>]
 
 Default: `undefined`
 
@@ -395,6 +445,27 @@ time.
 This example configuration will run Jest in the root directory as well as in
 every folder in the examples directory. You can have an unlimited amount of
 projects running in the same Jest instance.
+
+The projects feature can also be used to run multiple configurations or multiple
+[runners](#runner-string). For this purpose you can pass an array of
+configuration objects. For example, to run both tests and ESLint (via
+[jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in
+the same invocation of Jest:
+
+```json
+{
+  "projects": [
+    {
+      "displayName": "test"
+    },
+    {
+      "displayName": "lint",
+      "runner": "jest-runner-eslint",
+      "testMatch": ["<rootDir>/**/*.js"]
+    }
+  ]
+}
+```
 
 ### `clearMocks` [boolean]
 
@@ -569,6 +640,34 @@ _Note: By default, `roots` has a single entry `<rootDir>` but there are cases
 where you may want to have multiple roots within one project, for example
 `roots: ["<rootDir>/src/", "<rootDir>/tests/"]`._
 
+### `runner` [string]
+
+##### available in Jest **21.0.0+**
+
+Default: `"jest-runner"`
+
+This option allows you to use a custom runner instead of Jest's default test
+runner. Examples of runners include:
+
+* [`jest-runner-eslint`](https://github.com/jest-community/jest-runner-eslint)
+* [`jest-runner-mocha`](https://github.com/rogeliog/jest-runner-mocha)
+* [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc)
+* [`jest-runner-prettier`](https://github.com/keplersj/jest-runner-prettier)
+
+To write a test-runner, export a class with which accepts `globalConfig` in the
+constructor, and has a `runTests` method with the signature:
+
+```ts
+async runTests(
+  tests: Array<Test>,
+  watcher: TestWatcher,
+  onStart: OnTestStart,
+  onResult: OnTestSuccess,
+  onFailure: OnTestFailure,
+  options: TestRunnerOptions,
+): Promise<void>
+```
+
 ### `setupFiles` [array]
 
 Default: `[]`
@@ -693,7 +792,9 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test
 environment. The module must export a class with `setup`, `teardown` and
-`runScript` methods.
+`runScript` methods. You can also pass variables from this module to your
+test suites by assigning them to `this.global` object &ndash; this will
+make them available in your test suites as global variables.
 
 ##### available in Jest **22.0.0+**
 
@@ -703,6 +804,7 @@ in their own TestEnvironment._
 Example:
 
 ```js
+// my-custom-environment
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
@@ -713,9 +815,11 @@ class CustomEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
     await someSetupTasks();
+    this.global.someGlobalObject = createGlobalObject();
   }
 
   async teardown() {
+    this.global.someGlobalObject = destroyGlobalObject();
     await someTeardownTasks();
     await super.teardown();
   }
@@ -724,6 +828,16 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+```
+
+```js
+// my-test-suite
+let someGlobalObject;
+
+beforeAll(() => {
+  someGlobalObject = global.someGlobalObject;
+})
+
 ```
 
 ### `testEnvironmentOptions` [Object]
@@ -896,7 +1010,7 @@ Examples of such compilers include [Babel](https://babeljs.io/),
 
 _Note: a transformer is only ran once per file unless the file has changed.
 During development of a transformer it can be useful to run Jest with
-`--no-cache` or to frequently
+`--no-cache` to frequently
 [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
 _Note: if you are using the `babel-jest` transformer and want to use an

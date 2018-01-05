@@ -66,9 +66,9 @@ function browserBuild(pkgName, entryPath, destination) {
     strict: false,
   }).then(bundle => {
     return bundle.write({
-      dest: destination,
+      file: destination,
       format: 'umd',
-      moduleName: pkgName,
+      name: pkgName,
     });
   });
 }

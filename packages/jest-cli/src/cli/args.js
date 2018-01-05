@@ -104,9 +104,8 @@ export const options = {
   },
   changedFilesWithAncestor: {
     description:
-      'When used together with `--onlyChanged`, it runs tests ' +
-      'related to the current changes and the changes made in the last commit. ' +
-      '(NOTE: this only works for hg repos)',
+      'When used together with `--onlyChanged` or `--watch`, it runs tests ' +
+      'related to the current changes and the changes made in the last commit. ',
     type: 'boolean',
   },
   ci: {
@@ -239,6 +238,14 @@ export const options = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  globalSetup: {
+    description: 'The path to a module that runs before All Tests.',
+    type: 'string',
+  },
+  globalTeardown: {
+    description: 'The path to a module that runs after All Tests.',
+    type: 'string',
+  },
   globals: {
     description:
       'A JSON string with map of global variables that need ' +
@@ -260,8 +267,8 @@ export const options = {
   lastCommit: {
     default: undefined,
     description:
-      'Will run all tests affected by file changes in the last ' +
-      'commit made.',
+      'When used together with `--onlyChanged`, it will run all tests ' +
+      'affected by file changes in the last commit made.',
     type: 'boolean',
   },
   listTests: {
@@ -347,6 +354,12 @@ export const options = {
       'Attempts to identify which tests to run based on which ' +
       "files have changed in the current repository. Only works if you're " +
       'running tests in a git repository at the moment.',
+    type: 'boolean',
+  },
+  onlyFailures: {
+    alias: 'f',
+    default: undefined,
+    description: 'Run tests that failed in the previous execution.',
     type: 'boolean',
   },
   outputFile: {

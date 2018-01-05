@@ -9,7 +9,7 @@
 
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
-export type BlockName = string;
+export type BlockName = string | Function;
 export type BlockMode = void | 'skip' | 'only';
 export type TestMode = BlockMode;
 export type TestName = string;

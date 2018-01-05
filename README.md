@@ -79,7 +79,7 @@ If you'd like to learn more about running `jest` through the command line, take 
 To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
 
 ```
-npm install --save-dev babel-jest regenerator-runtime
+npm install --save-dev jest babel-jest regenerator-runtime
 ```
 
 *Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn*
@@ -118,7 +118,7 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 To use TypeScript in your tests, install the `ts-jest` package and the types for Jest.
 
 ```
-npm install --save-dev ts-jest @types/jest
+npm install --save-dev jest ts-jest @types/jest
 ```
 
 then modify your `package.json` so the `jest` section looks something like:
@@ -162,4 +162,4 @@ Show the world you're using *Jest* → [![tested with jest](https://img.shields.
 
 Send issues and pull requests with your ideas. For more information about contributing PRs and issues, see our [Contribution Guidelines](https://github.com/facebook/jest/blob/master/CONTRIBUTING.md).
 
-[Good First Task](https://github.com/facebook/jest/labels/Good%20First%20Task) is a great starting point for PRs.
+[Good First Issue](https://github.com/facebook/jest/labels/Good%20First%20Issue) is a great starting point for PRs.

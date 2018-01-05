@@ -384,6 +384,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             _replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'globalSetup':
+      case 'globalTeardown':
       case 'moduleLoader':
       case 'resolver':
       case 'runner':
@@ -435,7 +437,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
-            const globMatches = glob.sync(project);
+            const globMatches =
+              typeof project === 'string' ? glob.sync(project) : [];
             return projects.concat(globMatches.length ? globMatches : project);
           }, []);
         break;
@@ -457,6 +460,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'expand':
       case 'globals':
       case 'findRelatedTests':
+      case 'forceCoverageMatch':
       case 'forceExit':
       case 'listTests':
       case 'logHeapUsage':

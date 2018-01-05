@@ -148,7 +148,7 @@ const extractSummary = (stdout: string) => {
 
   const rest = cleanupStackTrace(
     // remove all timestamps
-    stdout.slice(0, -match[0].length).replace(/\s*\(.*ms\)/gm, ''),
+    stdout.slice(0, -match[0].length).replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
   );
 
   return {rest, summary};

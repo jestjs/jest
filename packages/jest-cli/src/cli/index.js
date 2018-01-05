@@ -15,7 +15,6 @@ import {
   Console,
   clearLine,
   createDirectory,
-  realpath,
   validateCLIOptions,
 } from 'jest-util';
 import {readConfig} from 'jest-config';
@@ -34,6 +33,7 @@ import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
+import {sync as realpath} from 'realpath-native';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
@@ -199,7 +199,9 @@ const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
       });
       throw new Error(message);
     }
-    configPathSet.add(configPath);
+    if (configPath !== null) {
+      configPathSet.add(configPath);
+    }
   }
 };
 
@@ -225,9 +227,11 @@ const getConfigs = (
   let hasDeprecationWarnings;
   let configs: Array<ProjectConfig> = [];
   let projects = projectsFromCLIArgs;
+  let configPath: ?Path;
 
   if (projectsFromCLIArgs.length === 1) {
     const parsedConfig = readConfig(argv, projects[0]);
+    configPath = parsedConfig.configPath;
 
     if (parsedConfig.globalConfig.projects) {
       // If this was a single project, and its config has `projects`
@@ -246,7 +250,9 @@ const getConfigs = (
   }
 
   if (projects.length > 1) {
-    const parsedConfigs = projects.map(root => readConfig(argv, root, true));
+    const parsedConfigs = projects.map(root =>
+      readConfig(argv, root, true, configPath),
+    );
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
@@ -368,6 +374,7 @@ const runWithoutWatch = async (
     return await runJest({
       changedFilesPromise,
       contexts,
+      failedTestsCache: null,
       globalConfig,
       onComplete,
       outputStream,

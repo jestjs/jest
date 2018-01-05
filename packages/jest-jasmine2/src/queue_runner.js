@@ -7,7 +7,12 @@
  * @flow
  */
 
-import PCancelable from 'p-cancelable';
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test.
+const Promise: Class<Promise> =
+  global[Symbol.for('jest-native-promise')] || global.Promise;
+
+import PCancelable from './p_cancelable';
 import pTimeout from './p_timeout';
 
 type Options = {
@@ -55,7 +60,9 @@ export default function queueRunner(options: Options) {
     if (!timeout) {
       return promise;
     }
+
     const timeoutMs: number = timeout();
+
     return pTimeout(
       promise,
       timeoutMs,

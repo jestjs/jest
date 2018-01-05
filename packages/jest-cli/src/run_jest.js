@@ -22,6 +22,7 @@ import SearchSource from './search_source';
 import TestScheduler from './test_scheduler';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
+import FailedTestsCache from './failed_tests_cache';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -82,6 +83,7 @@ export default (async function runJest({
   startRun,
   changedFilesPromise,
   onComplete,
+  failedTestsCache,
 }: {
   globalConfig: GlobalConfig,
   contexts: Array<Context>,
@@ -90,7 +92,12 @@ export default (async function runJest({
   startRun: (globalConfig: GlobalConfig) => *,
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
+  failedTestsCache: ?FailedTestsCache,
 }) {
+  if (globalConfig.globalSetup) {
+    // $FlowFixMe
+    await require(globalConfig.globalSetup)();
+  }
   const sequencer = new TestSequencer();
   let allTests = [];
 
@@ -134,6 +141,12 @@ export default (async function runJest({
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return null;
   }
+
+  if (globalConfig.onlyFailures && failedTestsCache) {
+    allTests = failedTestsCache.filterTests(allTests);
+    globalConfig = failedTestsCache.updateConfig(globalConfig);
+  }
+
   if (!allTests.length) {
     const noTestsFoundMessage = getNoTestsFoundMessage(
       testRunData,
@@ -172,6 +185,10 @@ export default (async function runJest({
 
   sequencer.cacheResults(allTests, results);
 
+  if (globalConfig.globalTeardown) {
+    // $FlowFixMe
+    await require(globalConfig.globalTeardown)();
+  }
   return processResults(results, {
     isJSON: globalConfig.json,
     onComplete,

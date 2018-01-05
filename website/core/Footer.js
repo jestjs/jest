@@ -1,18 +1,11 @@
-const React = require('react');
+/**
+ * Copyright (c) 2017-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-const githubButton = (
-  <a
-    className="github-button"
-    href="https://github.com/facebook/jest"
-    data-icon="octicon-star"
-    data-count-href="/facebook/jest/stargazers"
-    data-count-api="/repos/facebook/jest#stargazers_count"
-    data-count-aria-label="# stargazers on GitHub"
-    aria-label="Star this project on GitHub"
-  >
-    Star
-  </a>
-);
+const React = require('react');
 
 class Footer extends React.Component {
   render() {
@@ -87,7 +80,17 @@ class Footer extends React.Component {
             <h5>More</h5>
             <a href={this.props.config.baseUrl + 'blog'}>Blog</a>
             <a href="https://github.com/facebook/jest">GitHub</a>
-            {githubButton}
+            <a
+              className="github-button"
+              href={this.props.config.repoUrl}
+              data-icon="octicon-star"
+              data-count-href="/facebook/jest/stargazers"
+              data-show-count={true}
+              data-count-aria-label="# stargazers on GitHub"
+              aria-label="Star facebook/jest on GitHub"
+            >
+              Star
+            </a>
           </div>
         </section>
 

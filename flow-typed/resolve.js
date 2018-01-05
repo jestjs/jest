@@ -17,8 +17,8 @@ declare module "resolve/lib/node-modules-paths" {
     moduleDirectory: Array<string>,
   };
 
-  declare function exports(
+  declare module.exports: (
     path: string,
     options: NodeModulesPathsOptions,
-  ): Array<string>;
+  ) => Array<string>;
 }

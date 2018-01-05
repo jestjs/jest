@@ -141,4 +141,10 @@ describe('async jasmine', () => {
       expect.stringContaining('Expected value to be truthy, instead received'),
     );
   });
+
+  it('generator test', () => {
+    const result = runJest('jasmine_async', ['generator.test.js']);
+
+    expect(result.status).toBe(0);
+  });
 });
