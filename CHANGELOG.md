@@ -26,9 +26,8 @@
 
 ### Chore & Maintenance
 
-* `[docs]` Describe the order of execution of describe and test blocks, and a
-  note on using `test.concurrent`.
-  ([#5217](https://github.com/facebook/jest/pull/5217))
+* `[docs]` Describe the order of execution of describe and test blocks.
+  ([#5217](https://github.com/facebook/jest/pull/5217), [#5238](https://github.com/facebook/jest/pull/5238))
 
 ## jest 22.0.4
 
