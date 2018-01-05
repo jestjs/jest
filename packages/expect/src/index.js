@@ -34,6 +34,7 @@ import {
   stringMatching,
 } from './asymmetric_matchers';
 import {
+  INTERNAL_MATCHER_FLAG,
   getState,
   setState,
   getMatchers,
@@ -214,6 +215,7 @@ const makeThrowingMatcher = (
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
       if (
+        matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
         error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
@@ -252,7 +254,8 @@ const makeThrowingMatcher = (
   };
 };
 
-expect.extend = (matchers: MatchersObject): void => setMatchers(matchers);
+expect.extend = (matchers: MatchersObject): void =>
+  setMatchers(matchers, false);
 
 expect.anything = anything;
 expect.any = any;
@@ -280,9 +283,9 @@ const _validateResult = result => {
 };
 
 // add default jest matchers
-expect.extend(matchers);
-expect.extend(spyMatchers);
-expect.extend(toThrowMatchers);
+setMatchers(matchers, true);
+setMatchers(spyMatchers, true);
+setMatchers(toThrowMatchers, true);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {

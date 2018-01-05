@@ -9,6 +9,8 @@
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
 * `[jest-regex-util]` Fix breaking change in `--testPathPattern`
   ([#5230](https://github.com/facebook/jest/pull/5230))
+* `[expect]` Do not override `Error` stack (with `Error.captureStackTrace`) for
+  custom matchers. ([#5162](https://github.com/facebook/jest/pull/5162))
 
 ### Features
 
