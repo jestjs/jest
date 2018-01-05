@@ -2,6 +2,7 @@
 
 ### Fixes
 
+* `[jest-cli]` Treat dumb terminals as noninteractive ([#5237](https://github.com/facebook/jest/pull/5237))
 * `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
   with git. ([#5189](https://github.com/facebook/jest/pull/5189))
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
@@ -19,11 +20,17 @@
   ([#5166](https://github.com/facebook/jest/pull/5166))
 * `[jest-config]` Allow configuration objects inside `projects` array
   ([#5176](https://github.com/facebook/jest/pull/5176))
+* `[expect]` Add support to `.toHaveProperty` matcher to accept the keyPath
+  argument as an array of properties/indices.
+  ([#5220](https://github.com/facebook/jest/pull/5220))
+* `[docs]` Add documentation for .toHaveProperty matcher to accept the keyPath
+  argument as an array of properties/indices.
+  ([#5220](https://github.com/facebook/jest/pull/5220))
 
 ### Chore & Maintenance
 
-* `[docs]` Describe the order of execution of describe and test blocks, and a note on using `test.concurrent`.
-  ([#5217](https://github.com/facebook/jest/pull/5217))
+* `[docs]` Describe the order of execution of describe and test blocks.
+  ([#5217](https://github.com/facebook/jest/pull/5217), [#5238](https://github.com/facebook/jest/pull/5238))
 
 ## jest 22.0.4
 
