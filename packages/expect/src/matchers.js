@@ -486,7 +486,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toHaveProperty(object: Object, keyPath: string, value?: any) {
+  toHaveProperty(object: Object, keyPath: string | Array<any>, value?: any) {
     const valuePassed = arguments.length === 3;
 
     if (!object && typeof object !== 'string' && typeof object !== 'number') {
@@ -500,13 +500,17 @@ const matchers: MatchersObject = {
       );
     }
 
-    if (getType(keyPath) !== 'string') {
+    const keyPathType = getType(keyPath);
+
+    if (keyPathType !== 'string' && keyPathType !== 'array') {
       throw new Error(
         matcherHint('[.not].toHaveProperty', 'object', 'path', {
           secondArgument: valuePassed ? 'value' : null,
         }) +
           '\n\n' +
-          `Expected ${EXPECTED_COLOR('path')} to be a string. Received:\n` +
+          `Expected ${EXPECTED_COLOR(
+            'path',
+          )} to be a string or an array. Received:\n` +
           `  ${getType(keyPath)}: ${printReceived(keyPath)}`,
       );
     }
