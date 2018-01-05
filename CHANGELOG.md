@@ -2,6 +2,7 @@
 
 ### Fixes
 
+* `[jest-cli]` Treat dumb terminals as noninteractive ([#5237](https://github.com/facebook/jest/pull/5237))
 * `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
   with git. ([#5189](https://github.com/facebook/jest/pull/5189))
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
