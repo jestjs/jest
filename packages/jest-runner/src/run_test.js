@@ -74,11 +74,6 @@ async function runTestInternal(
     RuntimeClass,
   >);
 
-  const environment = new TestEnvironment(config);
-  const leakDetector = config.detectLeaks
-    ? new LeakDetector(environment)
-    : null;
-
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type, message) =>
     getConsoleOutput(
@@ -97,6 +92,11 @@ async function runTestInternal(
   } else {
     testConsole = new BufferedConsole();
   }
+
+  const environment = new TestEnvironment(config, {console: testConsole});
+  const leakDetector = config.detectLeaks
+    ? new LeakDetector(environment)
+    : null;
 
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);

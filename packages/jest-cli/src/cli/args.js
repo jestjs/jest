@@ -104,9 +104,8 @@ export const options = {
   },
   changedFilesWithAncestor: {
     description:
-      'When used together with `--onlyChanged`, it runs tests ' +
-      'related to the current changes and the changes made in the last commit. ' +
-      '(NOTE: this only works for hg repos)',
+      'When used together with `--onlyChanged` or `--watch`, it runs tests ' +
+      'related to the current changes and the changes made in the last commit. ',
     type: 'boolean',
   },
   ci: {
@@ -268,8 +267,8 @@ export const options = {
   lastCommit: {
     default: undefined,
     description:
-      'Will run all tests affected by file changes in the last ' +
-      'commit made.',
+      'When used together with `--onlyChanged`, it will run all tests ' +
+      'affected by file changes in the last commit made.',
     type: 'boolean',
   },
   listTests: {

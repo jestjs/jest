@@ -175,6 +175,22 @@ test('gets changed files for git', async () => {
       .map(filePath => path.basename(filePath))
       .sort(),
   ).toEqual(['file1.txt']);
+
+  run(`${GIT} commit -am "test2"`, DIR);
+
+  writeFiles(DIR, {
+    'file4.txt': 'file4',
+  });
+
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {
+    withAncestor: true,
+  }));
+  // Returns files from current uncommitted state + the last commit
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file1.txt', 'file4.txt']);
 });
 
 test('gets changed files for hg', async () => {

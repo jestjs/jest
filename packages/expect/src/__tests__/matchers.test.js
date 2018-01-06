@@ -751,6 +751,9 @@ describe('.toHaveLength', () => {
 describe('.toHaveProperty()', () => {
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
+    [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
+    [{'a.b.c.d': 1}, ['a.b.c.d'], 1],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], 2],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
@@ -769,6 +772,9 @@ describe('.toHaveProperty()', () => {
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.ttt.d', 1],
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
+    [{'a.b.c.d': 1}, 'a.b.c.d', 2],
+    [{'a.b.c.d': 1}, ['a.b.c.d'], 2],
+    [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 2],
     [{a: {b: {c: {}}}}, 'a.b.c.d', 1],
     [{a: 1}, 'a.b.c.d', 5],
     [{}, 'a', 'test'],
@@ -789,12 +795,15 @@ describe('.toHaveProperty()', () => {
 
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d'],
+    [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd']],
+    [{'a.b.c.d': 1}, ['a.b.c.d']],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1]],
     [{a: 0}, 'a'],
     [{a: {b: undefined}}, 'a.b'],
   ].forEach(([obj, keyPath]) => {
     test(`{pass: true} expect(${stringify(
       obj,
-    )}).toHaveProperty('${keyPath}')'`, () => {
+    )}).toHaveProperty('${keyPath}')`, () => {
       jestExpect(obj).toHaveProperty(keyPath);
       expect(() =>
         jestExpect(obj).not.toHaveProperty(keyPath),

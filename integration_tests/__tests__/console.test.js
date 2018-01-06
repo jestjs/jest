@@ -54,3 +54,14 @@ test('does not print to console with --silent', () => {
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
+
+// issue: https://github.com/facebook/jest/issues/5223
+test('the jsdom console is the same as the test console', () => {
+  const {stderr, stdout, status} = runJest('console-jsdom');
+  const {summary, rest} = extractSummary(stderr);
+
+  expect(status).toBe(0);
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});

@@ -2,9 +2,16 @@
 
 ### Fixes
 
+* `[jest-cli]` Treat dumb terminals as noninteractive ([#5237](https://github.com/facebook/jest/pull/5237))
+* `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
+  with git. ([#5189](https://github.com/facebook/jest/pull/5189))
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
 * `[jest-config]` Escape parentheses and other glob characters in `rootDir` before interpolating with `testMatch`. ([#4838](https://github.com/facebook/jest/issues/4838))
+* `[jest-regex-util]` Fix breaking change in `--testPathPattern`
+  ([#5230](https://github.com/facebook/jest/pull/5230))
+* `[expect]` Do not override `Error` stack (with `Error.captureStackTrace`) for
+  custom matchers. ([#5162](https://github.com/facebook/jest/pull/5162))
 
 ### Features
 
@@ -14,11 +21,23 @@
   ([#5166](https://github.com/facebook/jest/pull/5166))
 * `[jest-config]` Allow configuration objects inside `projects` array
   ([#5176](https://github.com/facebook/jest/pull/5176))
+* `[expect]` Add support to `.toHaveProperty` matcher to accept the keyPath
+  argument as an array of properties/indices.
+  ([#5220](https://github.com/facebook/jest/pull/5220))
+* `[docs]` Add documentation for .toHaveProperty matcher to accept the keyPath
+  argument as an array of properties/indices.
+  ([#5220](https://github.com/facebook/jest/pull/5220))
+* `[jest-runner]` test environments are now passed a new `options` parameter.
+  Currently this only has the `console` which is the test console that Jest will
+  expose to tests. ([#5223](https://github.com/facebook/jest/issues/5223))
+* `[jest-environment-jsdom]` pass the `options.console` to a custom
+  instance of `virtualConsole` so jsdom is using the same console as the
+  test. ([#5223](https://github.com/facebook/jest/issues/5223))
 
 ### Chore & Maintenance
 
-* `[docs]` Describe the order of execution of describe and test blocks, and a note on using `test.concurrent`.
-  ([#5217](https://github.com/facebook/jest/pull/5217))
+* `[docs]` Describe the order of execution of describe and test blocks.
+  ([#5217](https://github.com/facebook/jest/pull/5217), [#5238](https://github.com/facebook/jest/pull/5238))
 
 ## jest 22.0.4
 
