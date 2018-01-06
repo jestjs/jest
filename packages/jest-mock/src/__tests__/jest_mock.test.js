@@ -21,7 +21,7 @@ describe('moduleMocker', () => {
 
   describe('getMetadata', () => {
     it('returns the function `name` property', () => {
-      function x() {}
+      function x() { }
       const metadata = moduleMocker.getMetadata(x);
       expect(x.name).toBe('x');
       expect(metadata.name).toBe('x');
@@ -60,7 +60,7 @@ describe('moduleMocker', () => {
 
   describe('generateFromMetadata', () => {
     it('forwards the function name property', () => {
-      function foo() {}
+      function foo() { }
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo),
       );
@@ -69,8 +69,8 @@ describe('moduleMocker', () => {
 
     it('escapes illegal characters in function name property', () => {
       function getMockFnWithOriginalName(name) {
-        const fn = () => {};
-        Object.defineProperty(fn, 'name', {value: name});
+        const fn = () => { };
+        Object.defineProperty(fn, 'name', { value: name });
 
         return moduleMocker.generateFromMetadata(moduleMocker.getMetadata(fn));
       }
@@ -93,7 +93,7 @@ describe('moduleMocker', () => {
     });
 
     it('special cases the mockConstructor name', () => {
-      function mockConstructor() {}
+      function mockConstructor() { }
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(mockConstructor),
       );
@@ -102,8 +102,8 @@ describe('moduleMocker', () => {
     });
 
     it('wont interfere with previous mocks on a shared prototype', () => {
-      const ClassFoo = function() {};
-      ClassFoo.prototype.x = () => {};
+      const ClassFoo = function () { };
+      ClassFoo.prototype.x = () => { };
       const ClassFooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(ClassFoo),
       );
@@ -131,7 +131,7 @@ describe('moduleMocker', () => {
             },
           },
           nonEnumMethod: {
-            value: () => {},
+            value: () => { },
           },
         },
       );
@@ -166,7 +166,7 @@ describe('moduleMocker', () => {
 
     it('mocks ES2015 non-enumerable methods', () => {
       class ClassFoo {
-        foo() {}
+        foo() { }
         toString() {
           return 'Foo';
         }
@@ -190,7 +190,7 @@ describe('moduleMocker', () => {
     });
 
     it('mocks methods that are bound multiple times', () => {
-      const func = function func() {};
+      const func = function func() { };
       const multipleBoundFunc = func.bind(null).bind(null);
 
       const multipleBoundFuncMock = moduleMocker.generateFromMetadata(
@@ -202,7 +202,7 @@ describe('moduleMocker', () => {
 
     it('mocks methods that are bound after mocking', () => {
       const fooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(() => {}),
+        moduleMocker.getMetadata(() => { }),
       );
 
       const barMock = moduleMocker.generateFromMetadata(
@@ -475,13 +475,13 @@ describe('moduleMocker', () => {
     it('should mock constructor', () => {
       const mock1 = jest.fn();
       const mock2 = jest.fn();
-      const Module = jest.fn(() => ({someFn: mock1}));
-      const testFn = function() {
+      const Module = jest.fn(() => ({ someFn: mock1 }));
+      const testFn = function () {
         const m = new Module();
         m.someFn();
       };
 
-      Module.mockImplementationOnce(() => ({someFn: mock2}));
+      Module.mockImplementationOnce(() => ({ someFn: mock2 }));
 
       testFn();
       expect(mock2).toHaveBeenCalled();
@@ -538,7 +538,7 @@ describe('moduleMocker', () => {
   it('should recognize a mocked function', () => {
     const mockFn = moduleMocker.fn();
 
-    expect(moduleMocker.isMockFunction(() => {})).toBe(false);
+    expect(moduleMocker.isMockFunction(() => { })).toBe(false);
     expect(moduleMocker.isMockFunction(mockFn)).toBe(true);
   });
 
@@ -593,9 +593,9 @@ describe('moduleMocker', () => {
 
       const spy = moduleMocker.spyOn(obj, 'method');
 
-      const thisArg = {this: true};
-      const firstArg = {first: true};
-      const secondArg = {second: true};
+      const thisArg = { this: true };
+      const firstArg = { first: true };
+      const secondArg = { second: true };
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
@@ -626,7 +626,7 @@ describe('moduleMocker', () => {
         moduleMocker.spyOn({}, 'method');
       }).toThrow();
       expect(() => {
-        moduleMocker.spyOn({method: 10}, 'method');
+        moduleMocker.spyOn({ method: 10 }, 'method');
       }).toThrow();
     });
 
@@ -668,13 +668,13 @@ describe('moduleMocker', () => {
   });
 
   describe('spyOnProperty', () => {
-    it('should work', () => {
+    it('should work - getter', () => {
       let isOriginalCalled = false;
       let originalCallThis;
       let originalCallArguments;
       const obj = {
         get method() {
-          return function() {
+          return function () {
             isOriginalCalled = true;
             originalCallThis = this;
             originalCallArguments = arguments;
@@ -684,9 +684,9 @@ describe('moduleMocker', () => {
 
       const spy = moduleMocker.spyOn(obj, 'method', 'get');
 
-      const thisArg = {this: true};
-      const firstArg = {first: true};
-      const secondArg = {second: true};
+      const thisArg = { this: true };
+      const firstArg = { first: true };
+      const secondArg = { second: true };
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
@@ -709,6 +709,29 @@ describe('moduleMocker', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
+    it('should work - setter', () => {
+      const obj = {
+        _property: false,
+        set property(value) {
+          this._property = value;
+        },
+        get property() {
+          return this._property;
+        }
+      };
+
+      const spy = moduleMocker.spyOn(obj, 'property', 'set');
+      obj.property = true;
+      expect(spy).toHaveBeenCalled();
+      expect(obj.property).toBe(true);
+      obj.property = false;
+      spy.mockReset();
+      spy.mockRestore();
+      obj.property = true;
+      expect(spy).not.toHaveBeenCalled();
+      expect(obj.property).toBe(true);
+    });
+
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
@@ -717,7 +740,7 @@ describe('moduleMocker', () => {
         moduleMocker.spyOn({}, 'method');
       }).toThrow();
       expect(() => {
-        moduleMocker.spyOn({method: 10}, 'method');
+        moduleMocker.spyOn({ method: 10 }, 'method');
       }).toThrow();
     });
 
@@ -726,12 +749,12 @@ describe('moduleMocker', () => {
       let methodTwoCalls = 0;
       const obj = {
         get methodOne() {
-          return function() {
+          return function () {
             methodOneCalls++;
           };
         },
         get methodTwo() {
-          return function() {
+          return function () {
             methodTwoCalls++;
           };
         },
