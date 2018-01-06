@@ -7,6 +7,7 @@
   with git. ([#5189](https://github.com/facebook/jest/pull/5189))
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
+* `[jest-config]` Escape parentheses and other glob characters in `rootDir` before interpolating with `testMatch`. ([#4838](https://github.com/facebook/jest/issues/4838))
 * `[jest-regex-util]` Fix breaking change in `--testPathPattern`
   ([#5230](https://github.com/facebook/jest/pull/5230))
 * `[expect]` Do not override `Error` stack (with `Error.captureStackTrace`) for
