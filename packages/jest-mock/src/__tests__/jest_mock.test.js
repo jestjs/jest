@@ -711,13 +711,13 @@ describe('moduleMocker', () => {
 
     it('should throw on invalid input', () => {
       expect(() => {
-        moduleMocker.spyOnProperty(null, 'method');
+        moduleMocker.spyOn(null, 'method');
       }).toThrow();
       expect(() => {
-        moduleMocker.spyOnProperty({}, 'method');
+        moduleMocker.spyOn({}, 'method');
       }).toThrow();
       expect(() => {
-        moduleMocker.spyOnProperty({method: 10}, 'method');
+        moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow();
     });
 
