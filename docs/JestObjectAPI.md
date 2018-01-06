@@ -434,6 +434,18 @@ const video = {
 };
 
 module.exports = video;
+
+const audio = {
+  _volume: false,
+  set volume(value) { // it's a setter!
+    this._volume = value;
+  },
+  get volume() {
+    return this._volume;
+  }
+};
+
+module.exports = video;
 ```
 
 Example test:
@@ -447,6 +459,17 @@ test('plays video', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
+
+  spy.mockReset();
+  spy.mockRestore();
+});
+
+test('plays audio', () => {
+  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
+  video.volume = 100;
+
+  expect(spy).toHaveBeenCalled();
+  expect(video.volume).toBe(100);
 
   spy.mockReset();
   spy.mockRestore();
