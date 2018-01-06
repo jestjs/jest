@@ -239,11 +239,35 @@ export default class FakeTimers<TimerRef> {
     }
 
     if (i === this._maxLoops) {
+      const timers = this._timers;
+      const timeNow = this._now;
+      const timeout = this._global.setTimeout;
+      const immediate = this._global.setImmediate;
       throw new Error(
         'Ran ' +
           this._maxLoops +
           ' timers, and there are still more! ' +
-          "Assuming we've hit an infinite recursion and bailing out...",
+          "Assuming we've hit an infinite recursion and bailing out." +
+          'The following timers are still pending:' +
+          Object.keys(timers)
+            .sort((left, right) => timers[left].expiry - timers[right].expiry)
+            .map((key, index) => {
+              return (
+                '\n\nsetTimeout - pending timer time ' +
+                String(Number(timers[key].expiry) - timeNow) +
+                '\n' +
+                formatStackTrace(new Error().stack, timeout, {
+                  noStackTrace: false,
+                }) +
+                '\n\nsetImmediate - pending timer time ' +
+                String(Number(timers[key].expiry) - timeNow) +
+                '\n' +
+                formatStackTrace(new Error().stack, immediate, {
+                  noStackTrace: false,
+                })
+              );
+            })
+            .join(''),
       );
     }
   }
