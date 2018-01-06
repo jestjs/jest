@@ -12,6 +12,7 @@ import type {Glob, GlobalConfig, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
+import fs from 'fs';
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
@@ -207,12 +208,18 @@ export default class SearchSource {
       return Promise.resolve(this.findTestsByPaths(paths));
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
-    } else if (globalConfig.testPathPattern != null) {
-      return Promise.resolve(
-        this.findMatchingTests(globalConfig.testPathPattern),
-      );
     } else {
-      return Promise.resolve({tests: []});
+      const validTestPaths = paths && paths.filter(fs.existsSync);
+
+      if (validTestPaths && validTestPaths.length) {
+        return Promise.resolve({tests: toTests(this._context, validTestPaths)});
+      } else if (globalConfig.testPathPattern != null) {
+        return Promise.resolve(
+          this.findMatchingTests(globalConfig.testPathPattern),
+        );
+      } else {
+        return Promise.resolve({tests: []});
+      }
     }
   }
 }
