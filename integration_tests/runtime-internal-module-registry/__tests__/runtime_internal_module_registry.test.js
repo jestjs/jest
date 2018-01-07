@@ -13,7 +13,7 @@ describe('Runtime internal module registry', () => {
   it('behaves correctly when requiring a module that is used by jest internals', () => {
     const fs = require('fs');
 
-    // We require from this crazy path so that we can mimick Jest (and it's
+    // We require from this crazy path so that we can mimick Jest (and its
     // transitive deps) being installed along side a projects deps (e.g. with an
     // NPM3 flat dep tree)
     const jestUtil = require('../../../packages/jest-util');

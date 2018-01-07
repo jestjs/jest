@@ -509,6 +509,10 @@ class Runtime {
       ({
         enumerable: true,
         get() {
+          if (localModule.filename === from) {
+            return null;
+          }
+
           return moduleRegistry[from] || null;
         },
       }: Object),
