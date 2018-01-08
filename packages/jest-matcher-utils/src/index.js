@@ -12,6 +12,7 @@ import getType from 'jest-get-type';
 import prettyFormat from 'pretty-format';
 const {
   AsymmetricMatcher,
+  DOMCollection,
   DOMElement,
   Immutable,
   ReactElement,
@@ -22,6 +23,7 @@ const PLUGINS = [
   ReactTestComponent,
   ReactElement,
   DOMElement,
+  DOMCollection,
   Immutable,
   AsymmetricMatcher,
 ];
