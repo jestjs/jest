@@ -28,6 +28,9 @@ module.exports = sum;
 Then, create a file named `sum.test.js`. This will contain our actual test:
 
 ```javascript
+/**
+ * @jest-environment node
+ */
 const sum = require('./sum');
 
 test('adds 1 + 2 to equal 3', () => {
