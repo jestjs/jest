@@ -10,7 +10,7 @@
   "dependencies": {
     "pretty-format": "^22.0.3"
   },
-  "optionalDependencies": {
+  "devDependencies": {
     "weak": "^1.0.1"
   }
 }

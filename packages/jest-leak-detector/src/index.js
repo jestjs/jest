@@ -37,6 +37,7 @@ export default class {
     let weak;
 
     try {
+      // eslint-disable-next-line
       weak = require('weak');
     } catch (err) {
       if (!err || err.code !== 'MODULE_NOT_FOUND') {
@@ -44,8 +45,8 @@ export default class {
       }
 
       throw new Error(
-        'The leaking detection mechanism requires the "weak" package to work. ' +
-          'Please make sure that you can install the native dependency on your platform.',
+        'The leaking detection mechanism requires the "weak" package to be installed and work. ' +
+          'Please install it as a dependency on your main project',
       );
     }
 
