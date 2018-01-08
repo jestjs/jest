@@ -114,7 +114,7 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 the component and capture the rendered output and create a snapshot file:
 
 ```javascript
-// Link.react-test.js
+// Link.react.test.js
 import React from 'react';
 import Link from '../Link.react';
 import renderer from 'react-test-renderer';
@@ -143,7 +143,7 @@ test('Link changes the class when hovered', () => {
 When you run `npm test` or `jest`, this will produce an output file like this:
 
 ```javascript
-// __tests__/__snapshots__/Link.react-test.js.snap
+// __tests__/__snapshots__/Link.react.test.js.snap
 exports[`Link changes the class when hovered 1`] = `
 <a
   className="normal"
