@@ -136,12 +136,14 @@ export default function SpyRegistry(options: Object) {
   this._spyOnProperty = function(obj, propertyName, accessType = 'get') {
     if (!obj) {
       throw new Error(
-        'spyOn could not find an object to spy upon for ' + propertyName + '',
+        getErrorMsg(
+          'could not find an object to spy upon for ' + propertyName,
+        ),
       );
     }
 
     if (!propertyName) {
-      throw new Error('No property name supplied');
+      throw new Error(getErrorMsg('No property name supplied'));
     }
 
     let descriptor;
@@ -152,16 +154,18 @@ export default function SpyRegistry(options: Object) {
     }
 
     if (!descriptor) {
-      throw new Error(propertyName + ' property does not exist');
+      throw new Error(getErrorMsg(propertyName + ' property does not exist'));
     }
 
     if (!descriptor.configurable) {
-      throw new Error(propertyName + ' is not declared configurable');
+      throw new Error(getErrorMsg(propertyName + ' is not declared configurable'));
     }
 
     if (!descriptor[accessType]) {
       throw new Error(
-        'Property ' + propertyName + ' does not have access type ' + accessType,
+        getErrorMsg(
+          'Property ' + propertyName + ' does not have access type ' + accessType,
+        )
       );
     }
 
