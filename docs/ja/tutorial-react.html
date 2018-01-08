@@ -91,7 +91,7 @@
 }
 </code></pre>
 <p>コンポーネントとのやり取りとレンダリングされた出力をキャプチャしてスナップショットファイルを作成するために、React のテストレンダラーと Jest のスナップショット機能を利用しましょう:</p>
-<pre><code class="hljs css javascript"><span class="hljs-comment">// Link.react.test.js</span>
+<pre><code class="hljs css javascript"><span class="hljs-comment">// Link.react-test.js</span>
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> Link <span class="hljs-keyword">from</span> <span class="hljs-string">'../Link.react'</span>;
 <span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
@@ -117,7 +117,7 @@ test(<span class="hljs-string">'Link changes the class when hovered'</span>, () 
 });
 </code></pre>
 <p><code>npm test</code> または <code>jest</code>を実行すると、このようなファイルが出力されます:</p>
-<pre><code class="hljs css javascript"><span class="hljs-comment">// __tests__/__snapshots__/Link.react.test.js.snap</span>
+<pre><code class="hljs css javascript"><span class="hljs-comment">// __tests__/__snapshots__/Link.react-test.js.snap</span>
 exports[<span class="hljs-string">`Link changes the class when hovered 1`</span>] = <span class="hljs-string">`
 &lt;a
   className="normal"
