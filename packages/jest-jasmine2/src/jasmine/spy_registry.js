@@ -136,9 +136,7 @@ export default function SpyRegistry(options: Object) {
   this._spyOnProperty = function(obj, propertyName, accessType = 'get') {
     if (!obj) {
       throw new Error(
-        getErrorMsg(
-          'could not find an object to spy upon for ' + propertyName,
-        ),
+        getErrorMsg('could not find an object to spy upon for ' + propertyName),
       );
     }
 
@@ -158,14 +156,19 @@ export default function SpyRegistry(options: Object) {
     }
 
     if (!descriptor.configurable) {
-      throw new Error(getErrorMsg(propertyName + ' is not declared configurable'));
+      throw new Error(
+        getErrorMsg(propertyName + ' is not declared configurable'),
+      );
     }
 
     if (!descriptor[accessType]) {
       throw new Error(
         getErrorMsg(
-          'Property ' + propertyName + ' does not have access type ' + accessType,
-        )
+          'Property ' +
+            propertyName +
+            ' does not have access type ' +
+            accessType,
+        ),
       );
     }
 
