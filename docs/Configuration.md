@@ -386,6 +386,9 @@ Example:
 }
 ```
 
+The order in which the mappings are defined matters. Patterns are checked one
+by one until one fits. The most specific rule should be listed first.
+
 _Note: If you provide module name without boundaries `^$` it may cause hard to
 spot errors. E.g. `relay` will replace all modules which contain `relay` as a
 substring in its name: `relay`, `react-relay` and `graphql-relay` will all be
