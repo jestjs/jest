@@ -30,6 +30,7 @@ import {
 
 import AsymmetricMatcher from './plugins/asymmetric_matcher';
 import ConvertAnsi from './plugins/convert_ansi';
+import DOMCollection from './plugins/dom_collection';
 import DOMElement from './plugins/dom_element';
 import Immutable from './plugins/immutable';
 import ReactElement from './plugins/react_element';
@@ -489,6 +490,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
 prettyFormat.plugins = {
   AsymmetricMatcher,
   ConvertAnsi,
+  DOMCollection,
   DOMElement,
   Immutable,
   ReactElement,

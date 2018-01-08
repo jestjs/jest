@@ -12,6 +12,8 @@
   ([#5230](https://github.com/facebook/jest/pull/5230))
 * `[expect]` Do not override `Error` stack (with `Error.captureStackTrace`) for
   custom matchers. ([#5162](https://github.com/facebook/jest/pull/5162))
+* `[pretty-format]` Pretty format for DOMStringMap and NamedNodeMap
+  ([#5233](https://github.com/facebook/jest/pull/5233))
 
 ### Features
 

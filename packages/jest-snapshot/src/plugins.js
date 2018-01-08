@@ -13,6 +13,7 @@ import prettyFormat from 'pretty-format';
 import jestMockSerializer from './mock_serializer';
 
 const {
+  DOMCollection,
   DOMElement,
   Immutable,
   ReactElement,
@@ -23,6 +24,7 @@ let PLUGINS = [
   ReactTestComponent,
   ReactElement,
   DOMElement,
+  DOMCollection,
   Immutable,
   jestMockSerializer,
 ];
