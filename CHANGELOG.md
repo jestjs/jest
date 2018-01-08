@@ -38,6 +38,7 @@
 
 * `[docs]` Describe the order of execution of describe and test blocks.
   ([#5217](https://github.com/facebook/jest/pull/5217), [#5238](https://github.com/facebook/jest/pull/5238))
+* `[docs]` Add a note on `moduleNameMapper` ordering. ([#5249](https://github.com/facebook/jest/pull/5249))
 
 ## jest 22.0.4
 
