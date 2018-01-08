@@ -114,7 +114,7 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 the component and capture the rendered output and create a snapshot file:
 
 ```javascript
-// Link.react-test.js
+// Link.react.test.js
 import React from 'react';
 import Link from '../Link.react';
 import renderer from 'react-test-renderer';
