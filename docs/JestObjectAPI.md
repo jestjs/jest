@@ -418,3 +418,60 @@ test('plays video', () => {
   spy.mockRestore();
 });
 ```
+
+### `jest.spyOn(object, methodName, accessType?)`
+##### available in Jest **x.x.x+**
+
+Since Jest x.x.x+, the `jest.spyOn` method takes an optional third argument that can be `'get'` or `'get'` in order to install a spy as a getter or a setter respectively. This is also needed when you need a spy an existing getter/setter method.
+
+Example:
+
+```js
+const video = {
+  get play() { // it's a getter!
+    return true;
+  },
+};
+
+module.exports = video;
+
+const audio = {
+  _volume: false,
+  set volume(value) { // it's a setter!
+    this._volume = value;
+  },
+  get volume() {
+    return this._volume;
+  }
+};
+
+module.exports = video;
+```
+
+Example test:
+
+```js
+const video = require('./video');
+
+test('plays video', () => {
+  const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
+  const isPlaying = video.play;
+
+  expect(spy).toHaveBeenCalled();
+  expect(isPlaying).toBe(true);
+
+  spy.mockReset();
+  spy.mockRestore();
+});
+
+test('plays audio', () => {
+  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
+  video.volume = 100;
+
+  expect(spy).toHaveBeenCalled();
+  expect(video.volume).toBe(100);
+
+  spy.mockReset();
+  spy.mockRestore();
+});
+```
