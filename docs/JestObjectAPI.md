@@ -420,9 +420,9 @@ test('plays video', () => {
 ```
 
 ### `jest.spyOn(object, methodName, accessType?)`
-##### available in Jest **x.x.x+**
+##### available in Jest **22.1.0+**
 
-Since Jest x.x.x+, the `jest.spyOn` method takes an optional third argument that can be `'get'` or `'get'` in order to install a spy as a getter or a setter respectively. This is also needed when you need a spy an existing getter/setter method.
+Since Jest 22.1.0+, the `jest.spyOn` method takes an optional third argument of `accessType` that can be either `'get'` or `'set'`, which proves to be useful when you want to spy on a getter or a setter, respectively.
 
 Example:
 
