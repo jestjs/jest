@@ -161,10 +161,9 @@ const addSnapshotData = (results, snapshotState) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
-  let uncheckedKeys;
+  const uncheckedKeys = snapshotState.getUncheckedKeys();
 
   if (uncheckedCount) {
-    uncheckedKeys = snapshotState.getUncheckedKeys();
     snapshotState.removeUncheckedKeys();
   }
 
