@@ -1,5 +1,7 @@
 ## master
 
+## jest 22.0.5
+
 ### Fixes
 
 * `[jest-leak-detector]` Removed the reference to `weak`. Now, parent projects
