@@ -431,8 +431,8 @@ Example:
 
 ```js
 const video = {
+  // it's a getter!
   get play() {
-    // it's a getter!
     return true;
   },
 };
@@ -441,8 +441,8 @@ module.exports = video;
 
 const audio = {
   _volume: false,
+  // it's a setter!
   set volume(value) {
-    // it's a setter!
     this._volume = value;
   },
   get volume() {
