@@ -212,13 +212,15 @@ export default function watch(
         startRun(globalConfig);
         break;
       case KEYS.U:
+        const previousUpdateSnapshot = globalConfig.updateSnapshot;
+
         globalConfig = updateGlobalConfig(globalConfig, {
           updateSnapshot: 'all',
         });
         startRun(globalConfig);
         globalConfig = updateGlobalConfig(globalConfig, {
           // updateSnapshot is not sticky after a run.
-          updateSnapshot: 'none',
+          updateSnapshot: previousUpdateSnapshot,
         });
         break;
       case KEYS.A:
