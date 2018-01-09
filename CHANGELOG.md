@@ -3,7 +3,7 @@
 ### Fixes
 
 * `[expect]` Fail test when the types of `stringContaining` and `stringMatching`
-  matchers do not match.
+  matchers do not match. ([#5069](https://github.com/facebook/jest/pull/5069))
 * `[jest-cli]` Treat dumb terminals as noninteractive
   ([#5237](https://github.com/facebook/jest/pull/5237))
 * `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
