@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-leak-detector]` Removed the reference to `weak`. Now, parent projects
+  must install it by hand for the module to work.
 * `[expect]` Fail test when the types of `stringContaining` and `stringMatching`
   matchers do not match. ([#5069](https://github.com/facebook/jest/pull/5069))
 * `[jest-cli]` Treat dumb terminals as noninteractive
