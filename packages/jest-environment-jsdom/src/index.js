@@ -33,6 +33,7 @@ class JSDOMEnvironment {
           url: config.testURL,
           virtualConsole: new VirtualConsole().sendTo(
             options.console || console,
+            { omitJSDOMErrors: true },
           ),
         },
         config.testEnvironmentOptions,
