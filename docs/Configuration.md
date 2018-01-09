@@ -386,8 +386,8 @@ Example:
 }
 ```
 
-The order in which the mappings are defined matters. Patterns are checked one
-by one until one fits. The most specific rule should be listed first.
+The order in which the mappings are defined matters. Patterns are checked one by
+one until one fits. The most specific rule should be listed first.
 
 _Note: If you provide module name without boundaries `^$` it may cause hard to
 spot errors. E.g. `relay` will replace all modules which contain `relay` as a
@@ -795,9 +795,9 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test
 environment. The module must export a class with `setup`, `teardown` and
-`runScript` methods. You can also pass variables from this module to your
-test suites by assigning them to `this.global` object &ndash; this will
-make them available in your test suites as global variables.
+`runScript` methods. You can also pass variables from this module to your test
+suites by assigning them to `this.global` object &ndash; this will make them
+available in your test suites as global variables.
 
 ##### available in Jest **22.0.0+**
 
@@ -839,8 +839,7 @@ let someGlobalObject;
 
 beforeAll(() => {
   someGlobalObject = global.someGlobalObject;
-})
-
+});
 ```
 
 ### `testEnvironmentOptions` [Object]
