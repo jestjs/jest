@@ -37,7 +37,7 @@ export default class {
     let weak;
 
     try {
-      // eslint-disable-next-line
+      // eslint-disable-next-line import/no-extraneous-dependencies
       weak = require('weak');
     } catch (err) {
       if (!err || err.code !== 'MODULE_NOT_FOUND') {
