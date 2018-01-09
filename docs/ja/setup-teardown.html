@@ -120,33 +120,32 @@ describe(<span class="hljs-string">'Scoped / Nested block'</span>, () =&gt; {
 <p>Jest executes all describe handlers in a test file <em>before</em> it executes any of the actual tests. This is another reason to do setup and teardown in <code>before*</code> and <code>after*</code> handlers rather in the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.</p>
 <p>Consider the following illustrative test file and output:</p>
 <pre><code class="hljs css js">describe(<span class="hljs-string">'outer'</span>, () =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-a'</span>);
 
- <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-a'</span>);
+  describe(<span class="hljs-string">'describe inner 1'</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 1'</span>);
+    test(<span class="hljs-string">'test 1'</span>, () =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 1'</span>);
+      expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
+    });
+  });
 
- describe(<span class="hljs-string">'describe inner 1'</span>, () =&gt; {
-   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 1'</span>);
-   test(<span class="hljs-string">'test 1'</span>, () =&gt; {
-     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 1'</span>);
-     expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
-   });
- });
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-b'</span>);
 
- <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-b'</span>);
+  test(<span class="hljs-string">'test 1'</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe outer'</span>);
+    expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
+  });
 
- test(<span class="hljs-string">'test 1'</span>, () =&gt; {
-   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe outer'</span>);
-   expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
- });
+  describe(<span class="hljs-string">'describe inner 2'</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 2'</span>);
+    test(<span class="hljs-string">'test for describe inner 2'</span>, () =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 2'</span>);
+      expect(<span class="hljs-literal">false</span>).toEqual(<span class="hljs-literal">false</span>);
+    });
+  });
 
- describe(<span class="hljs-string">'describe inner 2'</span>, () =&gt; {
-   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 2'</span>);
-   test(<span class="hljs-string">'test for describe inner 2'</span>, () =&gt; {
-     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 2'</span>);
-     expect(<span class="hljs-literal">false</span>).toEqual(<span class="hljs-literal">false</span>);
-   })
- });
-
- <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-c'</span>);
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-c'</span>);
 });
 
 <span class="hljs-comment">// describe outer-a</span>
