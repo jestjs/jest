@@ -376,7 +376,8 @@ test('it is not snowing', () => {
 });
 ```
 
-Only the "it is raining" test will run in that test file, since it is run with `test.only`.
+Only the "it is raining" test will run in that test file, since it is run with
+`test.only`.
 
 Usually you wouldn't check code using `test.only` into source control - you
 would use it just for debugging, and remove it once you have fixed the broken
