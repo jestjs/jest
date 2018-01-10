@@ -184,6 +184,31 @@ with `jest -u` to overwrite the existing snapshot.
 The code for this example is available at
 [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
 
+#### Snapshot Testing with Mocks, Enzyme and React 16
+
+There's a caveat around snapshot testing when using Enzyme and React 16+.
+If you mock out a module using the following style:
+
+```js
+jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
+```
+
+Then you will see warnings in the console:
+
+```
+Warning: <SomeComponent /> is using uppercase HTML. Always use lowercase HTML tags in React.
+
+# Or:
+Warning: The tag <SomeComponent> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
+```
+
+React 16 triggers these warnings due to how it checks element types, and
+the mocked module failing these checks. This doesn't happen if you're using
+`react-test-renderer` for your snapshot tests, because the test renderer
+doesn't care about the element types and will happily accept e.g.
+`SomeComponent`. As a rule of thumb, if you want to mock components in your
+snapshots, use `react-test-renderer`.
+
 ### DOM Testing
 
 If you'd like to assert, and manipulate your rendered components you can use

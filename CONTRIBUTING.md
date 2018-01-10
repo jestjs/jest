@@ -95,7 +95,7 @@ accurately.
    ```sh
    cd website       # Only needed if you are not already in the website directory
    yarn
-   yarn test
+   yarn start
    ```
 2. You can run a development server to check if the changes you made are being
    displayed accurately by running `yarn start` in the website directory.
