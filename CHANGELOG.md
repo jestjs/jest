@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[docs]` Document caveat with mocks, Enzyme, snapshots and React 16
+   ([#5258](https://github.com/facebook/jest/issues/5258))
+
 ## jest 22.0.5
 
 ### Fixes
