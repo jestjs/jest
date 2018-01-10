@@ -22,56 +22,8 @@ export const escapeStrForRegex = (string: string) =>
   string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
 
 export const replacePathSepForRegex = (string: string) => {
-  if (!string || path.sep !== '\\') {
-    return string;
+  if (path.sep === '\\') {
+    return string.replace(/(\/|\\(?!\.))/g, '\\\\');
   }
-
-  let result = '';
-  for (let i = 0; i < string.length; i += 1) {
-    const char = string[i];
-    if (char === '\\') {
-      const nextChar = string[i + 1];
-      /* Case: \/ -- recreate legacy behavior */
-      if (nextChar === '/') {
-        i += 1;
-        result += '\\\\\\\\';
-        continue;
-      }
-
-      /* Case: \. */
-      if (nextChar === '.') {
-        i += 1;
-        result += '\\.';
-        continue;
-      }
-
-      /* Case: \\. */
-      if (nextChar === '\\' && string[i + 2] === '.') {
-        i += 2;
-        result += '\\\\.';
-        continue;
-      }
-
-      /* Case: \\ */
-      if (nextChar === '\\') {
-        i += 1;
-        result += '\\\\';
-        continue;
-      }
-
-      /* Case: \<other> */
-      result += '\\\\';
-      continue;
-    }
-
-    /* Case: / */
-    if (char === '/') {
-      result += '\\\\';
-      continue;
-    }
-
-    result += char;
-  }
-
-  return result;
+  return string;
 };
