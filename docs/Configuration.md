@@ -295,7 +295,9 @@ For example, the following would create a global `__DEV__` variable set to
 
 Note that, if you specify a global reference value (like an object or array)
 here, and some code mutates that value in the midst of running a test, that
-mutation will _not_ be persisted across test runs for other test files.
+mutation will _not_ be persisted across test runs for other test files. In
+addition the `globals` object must be json-seriazable, so it can't be used
+to specify global functions. For that you should use setup module.
 
 ### `globalSetup` [string]
 
@@ -330,7 +332,7 @@ Both inline source maps and source maps returned directly from a transformer are
 supported. Source map URLs are not supported because Jest may not be able to
 locate them. To return source maps from a transformer, the `process` function
 can return an object like the following. The `map` property may either be the
-source map object, or the source map object as a JSON string.
+source map object, or the source map object as a string.
 
 ```js
 return {
