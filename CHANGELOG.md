@@ -1,4 +1,9 @@
 ## master
+## jest 22.0.6
+
+### Fixes
+
+* `[jest-jasmine2]` Fix memory leak in snapshot reporting ([#5279](https://github.com/facebook/jest/pull/5279))
 
 ## jest 22.0.5
 
