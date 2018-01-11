@@ -150,6 +150,26 @@ exports[<span class="hljs-string">`Link changes the class when hovered 3`</span>
 </code></pre>
 <p>The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with <code>jest -u</code> to overwrite the existing snapshot.</p>
 <p>该例的代码在<a href="https://github.com/facebook/jest/tree/master/examples/snapshot">examples/snapshot</a></p>
+<h4><a class="anchor" aria-hidden="true" name="snapshot-testing-with-mocks-enzyme-and-react-16"></a><a href="#snapshot-testing-with-mocks-enzyme-and-react-16" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Snapshot Testing with Mocks, Enzyme and React 16</h4>
+<p>There's a caveat around snapshot testing when using Enzyme and React 16+. If you mock out a module using the following style:</p>
+<pre><code class="hljs css js">jest.mock(<span class="hljs-string">'../SomeDirectory/SomeComponent'</span>, () =&gt; <span class="hljs-string">'SomeComponent'</span>);
+</code></pre>
+<p>Then you will see warnings in the console:</p>
+<pre><code class="hljs">Warning: &lt;SomeComponent /&gt; is using uppercase HTML. Always use lowercase HTML tags in React.
+
+# Or:
+Warning: The tag &lt;SomeComponent&gt; is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
+</code></pre>
+<p>React 16 triggers these warnings due to how it checks element types, and the mocked module fails these checks. Your options are:</p>
+<ol>
+<li><p>Render as text. This way you won't see the props passed to the mock component in the snapshot, but it's straightforward:
+js
+jest.mock('./SomeComponent', () =&gt; () =&gt; 'SomeComponent');</p></li>
+<li><p>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
+js
+jest.mock('./Widget', () =&gt; 'mock-widget');</p></li>
+<li><p>Use <code>react-test-renderer</code>. The test renderer doesn't care about element types and will happily accept e.g. <code>SomeComponent</code>. You could check snapshots using the test renderer, and check component behaviour separately using Enzyme.</p></li>
+</ol>
 <h3><a class="anchor" aria-hidden="true" name="dom"></a><a href="#dom" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>DOM测试</h3>
 <p>If you'd like to assert, and manipulate your rendered components you can use <a href="http://airbnb.io/enzyme/">Enzyme</a> or React's <a href="http://facebook.github.io/react/docs/test-utils.html">TestUtils</a>. We use Enzyme for this example.</p>
 <p>You have to run <code>npm install --save-dev enzyme</code> to use Enzyme. If you are using a React below version 15.5.0, you will also need to install <code>react-addons-test-utils</code>.</p>

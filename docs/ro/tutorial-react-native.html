@@ -142,7 +142,7 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 <p>For example, if your code depends on a third party native video component called <code>react-native-video</code> you might want to stub it out with a manual mock like this:</p>
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'react-native-video'</span>, () =&gt; <span class="hljs-string">'Video'</span>);
 </code></pre>
-<p>This will render the component as <code>&lt;Video {...props} /&gt;</code> with all of its props in the snapshot output.</p>
+<p>This will render the component as <code>&lt;Video {...props} /&gt;</code> with all of its props in the snapshot output. See also <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a>.</p>
 <p>Uneori, este nevoie să furnizați o dublură manuală mai complexă. For example if you'd like to forward the prop types or static fields of a native component to a mock, you can return a different React component from a mock through this helper from jest-react-native:</p>
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'path/to/MyNativeComponent'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> mockComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">'react-native/jest/mockComponent'</span>);

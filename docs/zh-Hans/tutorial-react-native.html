@@ -142,7 +142,7 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 <p>比如你的项目依赖了一个名为<code>react-native-video</code>的原生视频组件，你应该会想要这样来模拟它的行为：</p>
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'react-native-video'</span>, () =&gt; <span class="hljs-string">'Video'</span>);
 </code></pre>
-<p>这么做你会得到一个<code>&lt;Video {...props} /&gt;</code>组件，props被传入快照导出的所有属性。</p>
+<p>This will render the component as <code>&lt;Video {...props} /&gt;</code> with all of its props in the snapshot output. See also <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a>.</p>
 <p>Sometimes you need to provide a more complex manual mock. 比如如果你想将原生组件的属性类型或静态数据传入模拟组件，你可以用过jest-react-native的帮助工具返回一个不同的React组件。</p>
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'path/to/MyNativeComponent'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> mockComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">'react-native/jest/mockComponent'</span>);
