@@ -61,7 +61,7 @@ export default function watch(
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
-  const snapshotInteracticeMode = new SnapshotInteractiveMode(outputStream);
+  const snapshotInteractiveMode = new SnapshotInteractiveMode(outputStream);
   let failedSnapshotTestPaths = [];
   let searchSources = contexts.map(context => ({
     context,
@@ -142,8 +142,8 @@ export default function watch(
         // Do not show any Watch Usage related stuff when running in a
         // non-interactive environment
         if (isInteractive) {
-          if (snapshotInteracticeMode.isActive()) {
-            snapshotInteracticeMode.updateWithResults(results);
+          if (snapshotInteractiveMode.isActive()) {
+            snapshotInteractiveMode.updateWithResults(results);
             return;
           }
           if (shouldDisplayWatchUsage) {
@@ -187,8 +187,8 @@ export default function watch(
       return;
     }
 
-    if (snapshotInteracticeMode.isActive()) {
-      snapshotInteracticeMode.put(key);
+    if (snapshotInteractiveMode.isActive()) {
+      snapshotInteractiveMode.put(key);
       return;
     }
 
@@ -237,7 +237,7 @@ export default function watch(
         break;
       case KEYS.I:
         if (hasSnapshotFailure) {
-          snapshotInteracticeMode.run(
+          snapshotInteractiveMode.run(
             failedSnapshotTestPaths,
             (path: string, shouldUpdateSnapshot: boolean) => {
               globalConfig = updateGlobalConfig(globalConfig, {

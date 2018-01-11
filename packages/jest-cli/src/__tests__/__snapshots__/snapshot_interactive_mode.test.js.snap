@@ -4,8 +4,6 @@ exports[`SnapshotInteractiveMode updateWithResults last test success, trigger en
 
 exports[`SnapshotInteractiveMode updateWithResults overlay handle progress UI 1`] = `
 "TEST RESULTS CONTENTS
-
-
 [MOCK - cursorUp]
 [MOCK - eraseDown]
 
@@ -22,8 +20,6 @@ exports[`SnapshotInteractiveMode updateWithResults overlay handle progress UI 1`
 
 exports[`SnapshotInteractiveMode updateWithResults with a test failure simply update UI 1`] = `
 "TEST RESULTS CONTENTS
-
-
 [MOCK - cursorUp]
 [MOCK - eraseDown]
 

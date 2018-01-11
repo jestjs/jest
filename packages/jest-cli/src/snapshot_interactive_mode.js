@@ -32,9 +32,6 @@ export default class SnapshotInteractiveMode {
   }
 
   _drawUIOverlay() {
-    this._pipe.write(ansiEscapes.scrollDown);
-    this._pipe.write(ansiEscapes.scrollDown);
-
     this._pipe.write(ansiEscapes.cursorUp(6));
     this._pipe.write(ansiEscapes.eraseDown);
 
@@ -69,7 +66,7 @@ export default class SnapshotInteractiveMode {
         chalk.dim(' to trigger a test run.'),
     ];
 
-    this._pipe.write(messages.filter(message => !!message).join('\n') + '\n');
+    this._pipe.write(messages.filter(Boolean).join('\n') + '\n');
   }
 
   put(key: string) {
