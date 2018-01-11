@@ -174,7 +174,7 @@ const addSnapshotData = (results, snapshotState) => {
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
-  results.snapshot.uncheckedKeys = uncheckedKeys;
+  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 
   return results;
 };
