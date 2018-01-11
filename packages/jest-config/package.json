@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "22.0.5",
+  "version": "22.0.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,14 +10,14 @@
   "dependencies": {
     "chalk": "^2.0.1",
     "glob": "^7.1.1",
-    "jest-environment-jsdom": "^22.0.5",
-    "jest-environment-node": "^22.0.5",
-    "jest-get-type": "^22.0.3",
-    "jest-jasmine2": "^22.0.5",
-    "jest-regex-util": "^22.0.5",
-    "jest-resolve": "^22.0.4",
-    "jest-util": "^22.0.5",
-    "jest-validate": "^22.0.5",
-    "pretty-format": "^22.0.5"
+    "jest-environment-jsdom": "^22.0.6",
+    "jest-environment-node": "^22.0.6",
+    "jest-get-type": "^22.0.6",
+    "jest-jasmine2": "^22.0.6",
+    "jest-regex-util": "^22.0.6",
+    "jest-resolve": "^22.0.6",
+    "jest-util": "^22.0.6",
+    "jest-validate": "^22.0.6",
+    "pretty-format": "^22.0.6"
   }
 }

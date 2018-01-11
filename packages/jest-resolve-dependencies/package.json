@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve-dependencies",
-  "version": "22.0.5",
+  "version": "22.0.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,6 +8,6 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "jest-regex-util": "^22.0.5"
+    "jest-regex-util": "^22.0.6"
   }
 }
