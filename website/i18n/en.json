@@ -6,6 +6,7 @@
     "tagline": "🃏 Delightful JavaScript Testing",
     "cli": "Jest CLI Options",
     "configuration": "Configuring Jest",
+    "es6-class-mocks": "ES6 Class Mocks",
     "expect": "Expect",
     "getting-started": "Getting Started",
     "api": "Globals",
