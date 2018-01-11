@@ -55,7 +55,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "mock-fs": "^4.4.1",
-    "prettier": "^1.9.1",
+    "prettier": "^1.10.1",
     "progress": "^2.0.0",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
