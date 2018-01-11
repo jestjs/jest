@@ -85,8 +85,9 @@ CLI options take precedence over values from the
 When you run `jest` with an argument, that argument is treated as a regular
 expression to match against files in your project. It is possible to run test
 suites by providing a pattern. Only the files that the pattern matches will be
-picked up and executed. Note: depending on your terminal, you may need to quote
-this argument: `jest "my.*(complex)?pattern"`.
+picked up and executed. Depending on your terminal, you may need to quote this
+argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/`
+as a path separator or escape `\` as `\\`.
 
 ### `--bail`
 
@@ -276,7 +277,8 @@ Note that `column` is 0-indexed while `line` is not.
 ### `--testPathPattern=<regex>`
 
 A regexp pattern string that is matched against all tests paths before executing
-the test.
+the test. On Windows, you will need to use `/` as a path separator or escape `\`
+as `\\`.
 
 ### `--testRunner=<path>`
 
