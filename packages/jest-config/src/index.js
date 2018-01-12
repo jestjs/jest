@@ -121,6 +121,7 @@ const getConfigs = (
       onlyFailures: options.onlyFailures,
       outputFile: options.outputFile,
       passWithNoTests: options.passWithNoTests,
+      pretransformFiles: options.pretransformFiles,
       projects: options.projects,
       replname: options.replname,
       reporters: options.reporters,

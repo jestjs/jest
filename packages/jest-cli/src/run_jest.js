@@ -15,6 +15,7 @@ import type TestWatcher from './test_watcher';
 
 import chalk from 'chalk';
 import path from 'path';
+import pretransformFiles from './pretransform_files';
 import {Console, formatTestResults} from 'jest-util';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './get_no_test_found_message';
@@ -183,6 +184,13 @@ export default (async function runJest({
   // original value of rootDir. Instead, use the {cwd: Path} property to resolve
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
+
+  // This has to be done after all config mutations. Otherwise cache keys
+  // for precompiled files will be different from the cache keys during the
+  // action run.
+  if (globalConfig.pretransformFiles) {
+    await pretransformFiles({allTests, globalConfig});
+  }
 
   const results = await new TestScheduler(globalConfig, {
     startRun,

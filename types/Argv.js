@@ -56,6 +56,7 @@ export type Argv = {|
   onlyChanged: boolean,
   outputFile: string,
   preset: ?string,
+  pretransformFiles: ?boolean,
   replname: ?string,
   resetMocks: boolean,
   resetModules: boolean,

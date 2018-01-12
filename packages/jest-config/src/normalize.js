@@ -538,6 +538,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 
+  newOptions.pretransformFiles = !!argv.pretransformFiles;
+
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(
       'regenerator-runtime/runtime',
