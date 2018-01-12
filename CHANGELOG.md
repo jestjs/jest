@@ -1,9 +1,16 @@
 ## master
+
 ## jest 22.0.7
 
 ### Fixes
 
 * `[jest-runner]` Fix memory leak in coverage reporting ([#5289](https://github.com/facebook/jest/pull/5289))
+
+### Features
+
+* `[jest-cli]` Make Jest exit without an error when no tests are found in
+  the case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
+  having been passed to the CLI
 
 ## jest 22.0.6
 

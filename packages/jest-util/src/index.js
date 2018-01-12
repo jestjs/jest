@@ -14,6 +14,7 @@ import clearLine from './clear_line';
 import Console from './Console';
 import FakeTimers from './fake_timers';
 import formatTestResults from './format_test_results';
+import getFailedSnapshotTests from './get_failed_snapshot_tests';
 import getConsoleOutput from './get_console_output';
 import installCommonGlobals from './install_common_globals';
 import NullConsole from './null_console';
@@ -40,6 +41,7 @@ module.exports = {
   createDirectory,
   formatTestResults,
   getConsoleOutput,
+  getFailedSnapshotTests,
   installCommonGlobals,
   isInteractive,
   setGlobal,

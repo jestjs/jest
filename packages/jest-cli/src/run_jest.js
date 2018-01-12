@@ -153,7 +153,12 @@ export default (async function runJest({
       globalConfig,
     );
 
-    if (globalConfig.passWithNoTests) {
+    if (
+      globalConfig.passWithNoTests ||
+      globalConfig.findRelatedTests ||
+      globalConfig.lastCommit ||
+      globalConfig.onlyChanged
+    ) {
       new Console(outputStream, outputStream).log(noTestsFoundMessage);
     } else {
       new Console(outputStream, outputStream).error(noTestsFoundMessage);
