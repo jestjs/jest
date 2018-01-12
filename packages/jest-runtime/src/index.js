@@ -435,7 +435,7 @@ class Runtime {
 
   getAllCoverageInfoCopy() {
     const coverage = this._environment.global.__coverage__;
-    if (!coverage) return null;
+    if (!coverage) return undefined;
 
     return JSON.parse(JSON.stringify(coverage));
   }
