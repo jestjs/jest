@@ -434,7 +434,10 @@ class Runtime {
   }
 
   getAllCoverageInfoCopy() {
-    return JSON.parse(JSON.stringify(this._environment.global.__coverage__));
+    const coverage = this._environment.global.__coverage__;
+    if (!coverage) return null;
+
+    return JSON.parse(JSON.stringify(coverage));
   }
 
   getSourceMapInfo() {
