@@ -5,11 +5,13 @@
 
 * `[jest-jasmine2]` Fix memory leak in snapshot reporting ([#5279](https://github.com/facebook/jest/pull/5279))
 * `[jest-config]` Fix breaking change in `--testPathPattern` ([#5269](https://github.com/facebook/jest/pull/5269))
-
-### Fixes
-
 * `[docs]` Document caveat with mocks, Enzyme, snapshots and React 16
-   ([#5258](https://github.com/facebook/jest/issues/5258))
+   ([#3831](https://github.com/facebook/jest/pull/3831))
+
+### Features
+
+* `[jest-cli]` Interactive Snapshot Update mode 
+  ([#5154](https://github.com/facebook/jest/pull/5154))
 
 ## jest 22.0.5
 
