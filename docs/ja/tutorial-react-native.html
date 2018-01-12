@@ -142,7 +142,7 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 <p>例えば、もしあなたのコードが <code>react-native-video</code> という名前のビデオコンポーネントに依存していた場合、あなたはそれをモック関数で置き換えたくなるかもしれません。</p>
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'react-native-video'</span>, () =&gt; <span class="hljs-string">'Video'</span>);
 </code></pre>
-<p>This will render the component as <code>&lt;Video {...props} /&gt;</code> with all of its props in the snapshot output. See also <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a>.</p>
+<p>これはコンポーネントを、そのコンポーネントのすべてのプロパティとともに、<code>&lt;Video {...props} /&gt;</code> としてスナップショット出力の中でレンダリングします。 See also <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a>.</p>
 <p>ときにより複雑なマニュアルモックを必要とする場合もあるでしょう。 例えば、もしネイティブコンポーネントの prop types もしくは静的フィールドをモックに渡したい場合に、jest-react-native のヘルパーを使って別の React モックコンポーネントを返すことができます。</p>
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'path/to/MyNativeComponent'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> mockComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">'react-native/jest/mockComponent'</span>);
