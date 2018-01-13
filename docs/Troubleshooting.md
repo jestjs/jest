@@ -299,9 +299,9 @@ option to `jasmine1` or pass `--testRunner=jasmine1` as a command line option.
 
 ### Compatibility issues
 
-Jest takes advantage of new features added to Node 4. We recommend that you
+Jest takes advantage of new features added to Node 6. We recommend that you
 upgrade to the latest stable release of Node. The minimum supported version is
-`v4.0.0`. Versions `0.x.x` are not supported.
+`v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported.
 
 ### `coveragePathIgnorePatterns` seems to not have any effect.
 

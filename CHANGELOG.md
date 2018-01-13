@@ -6,6 +6,9 @@
   the case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
 
+### Fixes
+* `[docs]` Update mention of the minimal version of node supported [#4947](https://github.com/facebook/jest/issues/4947)
+
 ## jest 22.0.6
 
 ### Fixes
