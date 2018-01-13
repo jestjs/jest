@@ -14,7 +14,7 @@ const runJest = require('../runJest');
 const os = require('os');
 const path = require('path');
 
-const DIR = path.resolve(os.tmpdir(), 'custom_reporters_test_dir');
+const DIR = path.resolve(os.tmpdir(), 'custom-reporters-test-dir');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -27,7 +27,7 @@ describe('Custom Reporters Integration', () => {
       reporters: ['<rootDir>/reporters/test_reporter.js'],
     };
 
-    const {status} = runJest('custom_reporters', [
+    const {status} = runJest('custom-reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
@@ -46,7 +46,7 @@ describe('Custom Reporters Integration', () => {
       ],
     };
 
-    const {status, stdout} = runJest('custom_reporters', [
+    const {status, stdout} = runJest('custom-reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
@@ -61,7 +61,7 @@ describe('Custom Reporters Integration', () => {
       reporters: [[3243242]],
     };
 
-    const {status, stderr} = runJest('custom_reporters', [
+    const {status, stderr} = runJest('custom-reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
@@ -72,7 +72,7 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('default reporters enabled', () => {
-    const {stderr, stdout, status} = runJest('custom_reporters', [
+    const {stderr, stdout, status} = runJest('custom-reporters', [
       '--config',
       JSON.stringify({
         reporters: ['default', '<rootDir>/reporters/test_reporter.js'],
@@ -90,7 +90,7 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('TestReporter with all tests passing', () => {
-    const {stdout, status, stderr} = runJest('custom_reporters', [
+    const {stdout, status, stderr} = runJest('custom-reporters', [
       'add.test.js',
     ]);
 
@@ -102,7 +102,7 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('TestReporter with all tests failing', () => {
-    const {stdout, status, stderr} = runJest('custom_reporters', [
+    const {stdout, status, stderr} = runJest('custom-reporters', [
       'add_fail.test.js',
     ]);
 
@@ -114,7 +114,7 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('IncompleteReporter for flexibility', () => {
-    const {stderr, stdout, status} = runJest('custom_reporters', [
+    const {stderr, stdout, status} = runJest('custom-reporters', [
       '--no-cache',
       '--config',
       JSON.stringify({

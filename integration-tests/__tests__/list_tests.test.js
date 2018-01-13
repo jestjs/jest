@@ -22,7 +22,7 @@ const normalizePaths = rawPaths =>
 
 describe('--listTests flag', () => {
   it('causes tests to be printed in different lines', () => {
-    const {status, stdout} = runJest('list_tests', ['--listTests']);
+    const {status, stdout} = runJest('list-tests', ['--listTests']);
 
     expect(status).toBe(0);
     expect(
@@ -34,7 +34,7 @@ describe('--listTests flag', () => {
   });
 
   it('causes tests to be printed out as JSON when using the --json flag', () => {
-    const {status, stdout} = runJest('list_tests', ['--listTests', '--json']);
+    const {status, stdout} = runJest('list-tests', ['--listTests', '--json']);
 
     expect(status).toBe(0);
     expect(() => JSON.parse(stdout)).not.toThrow();

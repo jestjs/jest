@@ -14,13 +14,13 @@ const skipOnWindows = require('../../scripts/skip_on_windows');
 const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 
-const DIR = path.resolve(__dirname, '../coverage_report');
+const DIR = path.resolve(__dirname, '../coverage-report');
 
 skipOnWindows.suite();
 
 test('outputs coverage report', () => {
   const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage']);
-  const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
+  const coverageDir = path.resolve(__dirname, '../coverage-report/coverage');
 
   // - the `setup.js` file is ignored and should not be in the coverage report.
   // - `sum_dependency.js` is mocked and the real module is never required but
@@ -60,7 +60,7 @@ test('collects coverage only from specified files avoiding dependencies', () => 
 });
 
 test('json reporter printing with --coverage', () => {
-  const {stderr, status} = runJest('json_reporter', ['--coverage']);
+  const {stderr, status} = runJest('json-reporter', ['--coverage']);
   const {summary} = extractSummary(stderr);
   expect(status).toBe(1);
   expect(summary).toMatchSnapshot();

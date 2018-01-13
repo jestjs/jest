@@ -13,7 +13,7 @@ const {extractSummary} = require('../utils');
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {
-    const result = runJest('stack_trace', ['runtime_error.test.js']);
+    const result = runJest('stack-trace', ['runtime_error.test.js']);
     const stderr = result.stderr.toString();
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
@@ -28,7 +28,7 @@ describe('Stack Trace', () => {
   });
 
   it('does not print a stack trace for runtime errors when --noStackTrace is given', () => {
-    const result = runJest('stack_trace', [
+    const result = runJest('stack-trace', [
       'runtime_error.test.js',
       '--noStackTrace',
     ]);
@@ -46,7 +46,7 @@ describe('Stack Trace', () => {
   });
 
   it('prints a stack trace for matching errors', () => {
-    const result = runJest('stack_trace', ['stack_trace.test.js']);
+    const result = runJest('stack-trace', ['stack_trace.test.js']);
     const stderr = result.stderr.toString();
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
@@ -56,7 +56,7 @@ describe('Stack Trace', () => {
   });
 
   it('does not print a stack trace for matching errors when --noStackTrace is given', () => {
-    const result = runJest('stack_trace', [
+    const result = runJest('stack-trace', [
       'stack_trace.test.js',
       '--noStackTrace',
     ]);
@@ -71,7 +71,7 @@ describe('Stack Trace', () => {
   });
 
   it('prints a stack trace for errors', () => {
-    const result = runJest('stack_trace', ['test_error.test.js']);
+    const result = runJest('stack-trace', ['test_error.test.js']);
     const stderr = result.stderr.toString();
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
@@ -93,7 +93,7 @@ describe('Stack Trace', () => {
   });
 
   it('prints a stack trace for errors without message in stack trace', () => {
-    const result = runJest('stack_trace', [
+    const result = runJest('stack-trace', [
       'stack_trace_without_message.test.js',
     ]);
     const stderr = result.stderr.toString();
@@ -108,7 +108,7 @@ describe('Stack Trace', () => {
   });
 
   it('does not print a stack trace for errors when --noStackTrace is given', () => {
-    const result = runJest('stack_trace', [
+    const result = runJest('stack-trace', [
       'test_error.test.js',
       '--noStackTrace',
     ]);

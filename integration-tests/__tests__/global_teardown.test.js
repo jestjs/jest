@@ -14,7 +14,7 @@ const path = require('path');
 const runJest = require('../runJest');
 const {cleanup} = require('../utils');
 
-const DIR = path.join(os.tmpdir(), 'jest_global_teardown');
+const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -23,9 +23,9 @@ test('globalTeardown is triggered once after all test suites', () => {
   mkdirp.sync(DIR);
   const teardownPath = path.resolve(
     __dirname,
-    '../global_teardown/teardown.js',
+    '../global-teardown/teardown.js',
   );
-  const result = runJest.json('global_teardown', [
+  const result = runJest.json('global-teardown', [
     `--globalTeardown=${teardownPath}`,
   ]);
   expect(result.status).toBe(0);

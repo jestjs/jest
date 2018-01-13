@@ -11,11 +11,11 @@
 const runJest = require('../runJest');
 
 test('run timers after resetAllMocks test', () => {
-  const result = runJest('timer-resetMocks/after_resetAllMocks');
+  const result = runJest('timer-reset-mocks/after-reset-all-mocks');
   expect(result.status).toBe(0);
 });
 
 test('run timers with resetMocks in config test', () => {
-  const result = runJest('timer-resetMocks/with_resetMocks');
+  const result = runJest('timer-reset-mocks/with-reset-mocks');
   expect(result.status).toBe(0);
 });

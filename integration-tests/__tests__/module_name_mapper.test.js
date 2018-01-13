@@ -16,7 +16,7 @@ const skipOnWindows = require('../../scripts/skip_on_windows');
 skipOnWindows.suite();
 
 test('moduleNameMapper wrong configuration', () => {
-  const {stderr, status} = runJest('module_name_mapper_wrong_config');
+  const {stderr, status} = runJest('module-name-mapper-wrong-config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
@@ -24,7 +24,7 @@ test('moduleNameMapper wrong configuration', () => {
 });
 
 test('moduleNameMapper correct configuration', () => {
-  const {stderr, status} = runJest('module_name_mapper_correct_config');
+  const {stderr, status} = runJest('module-name-mapper-correct-config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);

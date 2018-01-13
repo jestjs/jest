@@ -11,7 +11,7 @@
 const runJest = require('../runJest');
 
 test('Verbose Reporter', () => {
-  const result = runJest('verbose_reporter');
+  const result = runJest('verbose-reporter');
   const stderr = result.stderr.toString();
 
   expect(result.status).toBe(1);

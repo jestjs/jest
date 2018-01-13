@@ -11,7 +11,7 @@
 const runJest = require('../runJest');
 
 it('prints a usable stack trace even if no Error.captureStackTrace', () => {
-  const {stderr, status} = runJest('stack_trace_no_captureStackTrace');
+  const {stderr, status} = runJest('stack-trace-no-capture-stack-trace');
   expect(stderr).not.toMatch('Error.captureStackTrace is not a function');
   expect(status).toBe(1);
 });

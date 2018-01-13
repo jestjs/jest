@@ -15,7 +15,7 @@ const skipOnWindows = require('../../scripts/skip_on_windows');
 skipOnWindows.suite();
 
 test('works with custom matchers', () => {
-  const {stderr} = runJest('custom_matcher_stack_trace');
+  const {stderr} = runJest('custom-matcher-stack-trace');
 
   let {rest} = extractSummary(stderr);
 

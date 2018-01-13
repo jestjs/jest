@@ -12,7 +12,7 @@ const runJest = require('../runJest');
 
 describe('--setupTestFrameworkScriptFile setup.js', () => {
   it('requires a setup file before each file in the suite', () => {
-    const result = runJest.json('setup_test_framework_script_file_cli_config', [
+    const result = runJest.json('setup-test-framework-script-file-cli-config', [
       '--setupTestFrameworkScriptFile',
       './setup1.js',
       'test1.test.js',
@@ -26,7 +26,7 @@ describe('--setupTestFrameworkScriptFile setup.js', () => {
   });
 
   it('requires setup files *after* the test runners are required', () => {
-    const result = runJest.json('setup_test_framework_script_file_cli_config', [
+    const result = runJest.json('setup-test-framework-script-file-cli-config', [
       '--setupTestFrameworkScriptFile',
       './setup_hooks_into_runner.js',
       'runner_patch.test.js',

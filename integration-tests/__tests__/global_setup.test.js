@@ -13,14 +13,14 @@ const path = require('path');
 const runJest = require('../runJest');
 const {cleanup} = require('../utils');
 
-const DIR = path.join(os.tmpdir(), 'jest_global_setup');
+const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 test('globalSetup is triggered once before all test suites', () => {
-  const setupPath = path.resolve(__dirname, '../global_setup/setup.js');
-  const result = runJest.json('global_setup', [`--globalSetup=${setupPath}`]);
+  const setupPath = path.resolve(__dirname, '../global-setup/setup.js');
+  const result = runJest.json('global-setup', [`--globalSetup=${setupPath}`]);
   expect(result.status).toBe(0);
   const files = fs.readdirSync(DIR);
   expect(files).toHaveLength(1);

@@ -16,7 +16,7 @@ describe('JSON Reporter', () => {
   const outputFileName = 'sum.result.json';
   const outputFilePath = path.join(
     process.cwd(),
-    'integration-tests/json_reporter/',
+    'integration-tests/json-reporter/',
     outputFileName,
   );
 
@@ -27,7 +27,7 @@ describe('JSON Reporter', () => {
   it('writes test result to sum.result.json', () => {
     let jsonResult;
 
-    runJest('json_reporter', ['--json', `--outputFile=${outputFileName}`]);
+    runJest('json-reporter', ['--json', `--outputFile=${outputFileName}`]);
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
 
     try {
@@ -65,7 +65,7 @@ describe('JSON Reporter', () => {
   });
 
   it('outputs coverage report', () => {
-    const result = runJest('json_reporter', ['--json']);
+    const result = runJest('json-reporter', ['--json']);
     const stdout = result.stdout.toString();
     const stderr = result.stderr.toString();
     let jsonResult;

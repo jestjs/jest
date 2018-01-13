@@ -13,7 +13,7 @@ const runJest = require('../runJest');
 describe('jest --debug', () => {
   skipOnWindows.suite();
 
-  const dir = path.resolve(__dirname, '..', 'verbose_reporter');
+  const dir = path.resolve(__dirname, '..', 'verbose-reporter');
 
   it('outputs debugging info before running the test', () => {
     const {stdout} = runJest(dir, ['--debug', '--no-cache']);

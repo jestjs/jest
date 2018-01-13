@@ -10,13 +10,13 @@ const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
 
-const DIR = path.join(os.tmpdir(), 'jest_global_setup');
+const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
 
 module.exports = function() {
   return new Promise((resolve, reject) => {
     mkdirp.sync(DIR);
     const fileId = crypto.randomBytes(20).toString('hex');
-    fs.writeFileSync(path.join(DIR, fileId), 'setup');
+    fs.writeFileSync(path.join(DIR, fileId), 'teardown');
     resolve();
   });
 };

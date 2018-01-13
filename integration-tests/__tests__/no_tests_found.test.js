@@ -12,7 +12,7 @@
 const path = require('path');
 const runJest = require('../runJest');
 
-const DIR = path.resolve(__dirname, '../no_tests_found-test');
+const DIR = path.resolve(__dirname, '../no-tests-found-test');
 
 describe('No tests are found', () => {
   test('fails the test suite in standard situation', () => {

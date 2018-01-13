@@ -11,7 +11,7 @@
 const runJest = require('../runJest');
 
 it('defaults to null for location', () => {
-  const result = runJest.json('location_in_results').json;
+  const result = runJest.json('location-in-results').json;
 
   const assertions = result.testResults[0].assertionResults;
   expect(result.success).toBe(true);
@@ -21,7 +21,7 @@ it('defaults to null for location', () => {
 });
 
 it('adds correct location info when provided with flag', () => {
-  const result = runJest.json('location_in_results', [
+  const result = runJest.json('location-in-results', [
     '--testLocationInResults',
   ]).json;
 

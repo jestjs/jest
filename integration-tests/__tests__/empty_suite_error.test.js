@@ -11,7 +11,7 @@
 const path = require('path');
 const runJest = require('../runJest');
 
-const DIR = path.resolve(__dirname, '../empty_suite_error');
+const DIR = path.resolve(__dirname, '../empty-suite-error');
 
 describe('JSON Reporter', () => {
   it('fails the test suite if it contains no tests', () => {

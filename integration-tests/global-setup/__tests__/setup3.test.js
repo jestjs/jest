@@ -10,9 +10,11 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const DIR = path.join(os.tmpdir(), 'jest_global_teardown');
+const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 
-test('should not exist teardown file', () => {
+test('should exist setup file', () => {
   const files = fs.readdirSync(DIR);
-  expect(files).toHaveLength(0);
+  expect(files).toHaveLength(1);
+  const setup = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
+  expect(setup).toBe('setup');
 });

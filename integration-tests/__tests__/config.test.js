@@ -11,7 +11,7 @@
 const runJest = require('../runJest');
 
 test('config as JSON', () => {
-  const result = runJest('verbose_reporter', [
+  const result = runJest('verbose-reporter', [
     '--config=' +
       JSON.stringify({
         testEnvironment: 'node',
@@ -25,7 +25,7 @@ test('config as JSON', () => {
 });
 
 test('works with sane config JSON', () => {
-  const result = runJest('verbose_reporter', [
+  const result = runJest('verbose-reporter', [
     '--config=' +
       JSON.stringify({
         testEnvironment: 'node',
@@ -38,7 +38,7 @@ test('works with sane config JSON', () => {
 });
 
 test('watchman config option is respected over default argv', () => {
-  const {stdout} = runJest('verbose_reporter', [
+  const {stdout} = runJest('verbose-reporter', [
     '--env=node',
     '--watchman=false',
     '--debug',
@@ -48,7 +48,7 @@ test('watchman config option is respected over default argv', () => {
 });
 
 test('config from argv is respected with sane config JSON', () => {
-  const {stdout} = runJest('verbose_reporter', [
+  const {stdout} = runJest('verbose-reporter', [
     '--config=' +
       JSON.stringify({
         testEnvironment: 'node',
