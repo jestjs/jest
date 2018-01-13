@@ -83,7 +83,10 @@ function deepCyclicCopyArray(
   options: DeepCyclicCopyOptions,
   cycles: WeakMap<any, any>,
 ): Array<any> {
-  const newArray = [];
+  const newArray = options.keepPrototype
+    ? // $FlowFixMe: getPrototypeOf an array is OK.
+      new (Object.getPrototypeOf(array)).constructor(array.length)
+    : [];
   const length = array.length;
 
   cycles.set(array, newArray);
