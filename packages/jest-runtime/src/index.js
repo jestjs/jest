@@ -19,7 +19,7 @@ import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 import path from 'path';
 import HasteMap from 'jest-haste-map';
 import Resolver from 'jest-resolve';
-import {createDirectory} from 'jest-util';
+import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
@@ -434,10 +434,7 @@ class Runtime {
   }
 
   getAllCoverageInfoCopy() {
-    const coverage = this._environment.global.__coverage__;
-    if (!coverage) return undefined;
-
-    return JSON.parse(JSON.stringify(coverage));
+    return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
   getSourceMapInfo() {

@@ -13,7 +13,10 @@ const BLACKLIST = new Set(['mainModule', '_events']);
 
 export default function() {
   const process = require('process');
-  const newProcess = deepCyclicCopy(process, BLACKLIST);
+  const newProcess = deepCyclicCopy(process, {
+    blacklist: BLACKLIST,
+    keepPrototype: true,
+  });
 
   newProcess[Symbol.toStringTag] = 'process';
 

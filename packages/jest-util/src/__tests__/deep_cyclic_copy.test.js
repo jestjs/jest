@@ -70,9 +70,46 @@ it('uses the blacklist to avoid copying properties on the first level', () => {
     },
   };
 
-  expect(deepCyclicCopy(obj, new Set(['blacklisted']))).toEqual({
+  expect(deepCyclicCopy(obj, {blacklist: new Set(['blacklisted'])})).toEqual({
     subObj: {
       blacklisted: 42,
     },
   });
+});
+
+it('does not keep the prototype by default', () => {
+  const obj = new function() {}();
+  obj.nestedObj = new function() {}();
+
+  const copy = deepCyclicCopy(obj);
+  expect(Object.getPrototypeOf(copy)).not.toBe(Object.getPrototypeOf(obj));
+  expect(Object.getPrototypeOf(copy.nestedObj)).not.toBe(
+    Object.getPrototypeOf(obj.nestedObj),
+  );
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf({}));
+});
+
+it('does not keep the prototype for keepPrototype = false', () => {
+  const obj = new function() {}();
+  obj.nestedObj = new function() {}();
+
+  const copy = deepCyclicCopy(obj, {keepPrototype: false});
+
+  expect(Object.getPrototypeOf(copy)).not.toBe(Object.getPrototypeOf(obj));
+  expect(Object.getPrototypeOf(copy.nestedObj)).not.toBe(
+    Object.getPrototypeOf(obj.nestedObj),
+  );
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf({}));
+});
+
+it('keeps the prototype for keepPrototype = true', () => {
+  const obj = new function() {}();
+  obj.nestedObj = new function() {}();
+
+  const copy = deepCyclicCopy(obj, {keepPrototype: true});
+
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf(obj));
+  expect(Object.getPrototypeOf(copy.nestedObj)).toBe(
+    Object.getPrototypeOf(obj.nestedObj),
+  );
 });
