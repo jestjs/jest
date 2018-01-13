@@ -65,14 +65,19 @@ it('handles cyclic dependencies', () => {
 it('uses the blacklist to avoid copying properties on the first level', () => {
   const obj = {
     blacklisted: 41,
+    blacklisted2: 42,
     subObj: {
-      blacklisted: 42,
+      blacklisted: 43,
     },
   };
 
-  expect(deepCyclicCopy(obj, {blacklist: new Set(['blacklisted'])})).toEqual({
+  expect(
+    deepCyclicCopy(obj, {
+      blacklist: new Set(['blacklisted', 'blacklisted2']),
+    }),
+  ).toEqual({
     subObj: {
-      blacklisted: 42,
+      blacklisted: 43,
     },
   });
 });
@@ -134,7 +139,7 @@ it('does not keep the prototype of arrays when keepPrototype = false', () => {
     this.length = 0;
   }();
 
-  const copy = deepCyclicCopy(sourceArray);
+  const copy = deepCyclicCopy(sourceArray, {keepPrototype: false});
   expect(Object.getPrototypeOf(copy)).not.toBe(
     Object.getPrototypeOf(sourceArray),
   );
