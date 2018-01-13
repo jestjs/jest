@@ -310,7 +310,7 @@ Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or
 
 When this API is called, all timers are advanced by `msToRun` milliseconds. All
 pending "macro-tasks" that have been queued via `setTimeout()` or
-`setInterval()`, and would be executed within this timeframe will be executed.
+`setInterval()`, and would be executed within this time frame will be executed.
 Additionally if those macro-tasks schedule new macro-tasks that would be
 executed within the same time frame, those will be executed until there are no
 more macro-tasks remaining in the queue, that should be run within `msToRun`

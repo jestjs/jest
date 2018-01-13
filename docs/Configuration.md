@@ -296,7 +296,7 @@ For example, the following would create a global `__DEV__` variable set to
 Note that, if you specify a global reference value (like an object or array)
 here, and some code mutates that value in the midst of running a test, that
 mutation will _not_ be persisted across test runs for other test files. In
-addition the `globals` object must be json-seriazable, so it can't be used
+addition the `globals` object must be json-serializable, so it can't be used
 to specify global functions. For that you should use `setupFiles`.
 
 ### `globalSetup` [string]
