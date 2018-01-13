@@ -157,7 +157,7 @@ module.exports = {
 async function main() {
   const worker = new Worker(require.resolve('./heavy-task.js'));
 
-  // run 2 tasks in parellel with different arguments
+  // run 2 tasks in parallel with different arguments
   const results = await Promise.all([
     worker.myHeavyTask({foo: 'bar'}),
     worker.myHeavyTask({bar: 'foo'}),

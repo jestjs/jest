@@ -166,7 +166,7 @@ which reviewers can study your changes better.
 
 ### Does snapshot testing only work with React components?
 
-[React](TutorialReacte.md) and [React Native](TutorialReactNative.md) components
+[React](TutorialReact.md) and [React Native](TutorialReactNative.md) components
 are a good use case for snapshot testing. However, snapshots can capture any
 serializable value and should be used anytime the goal is testing whether the
 output is correct. The Jest repository contains many examples of testing the
