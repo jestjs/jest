@@ -31,6 +31,19 @@ describe('check', () => {
     );
   });
 
+  it('raises an exception when lastCommit and watchAll are both specified', () => {
+    const argv: Argv = {lastCommit: true, watchAll: true};
+    expect(() => check(argv)).toThrow(
+      'Both --lastCommit and --watchAll were specified',
+    );
+  });
+
+  it('sets onlyChanged if lastCommit is specified', () => {
+    const argv: Argv = {lastCommit: true};
+    check(argv);
+    expect(argv.onlyChanged).toBe(true);
+  });
+
   it('raises an exception if findRelatedTests is specified with no file paths', () => {
     const argv: Argv = {_: [], findRelatedTests: true};
     expect(() => check(argv)).toThrow(
