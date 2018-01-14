@@ -236,9 +236,9 @@ Jasmine <a href="http://jasmine.github.io/2.0/introduction.html">upgrade guide</
 <p>If you would like to continue using Jasmine 1, set the <code>testRunner</code> config
 option to <code>jasmine1</code> or pass <code>--testRunner=jasmine1</code> as a command line option.</p>
 <h3><a class="anchor" aria-hidden="true" name="compatibility-issues"></a><a href="#compatibility-issues" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Compatibility issues</h3>
-<p>Jest takes advantage of new features added to Node 4. We recommend that you
+<p>Jest takes advantage of new features added to Node 6. We recommend that you
 upgrade to the latest stable release of Node. The minimum supported version is
-<code>v4.0.0</code>. Versions <code>0.x.x</code> are not supported.</p>
+<code>v6.0.0</code>. Versions <code>0.x.x</code> and <code>4.x.x</code> are not supported.</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragepathignorepatterns-seems-to-not-have-any-effect"></a><a href="#coveragepathignorepatterns-seems-to-not-have-any-effect" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coveragePathIgnorePatterns</code> seems to not have any effect.</h3>
 <p>Make sure you are not using the <code>babel-plugin-istanbul</code> plugin. Jest wraps
 Istanbul, and therefore also tells Istanbul what files to instrument with
