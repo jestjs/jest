@@ -1,17 +1,5 @@
 ## master
 
-### Fixes
-
-* `[jest-cli]` Use `import-local` to support global Jest installations.
-  ([#5304](https://github.com/facebook/jest/pull/5304))
-
-## jest 22.0.7
-
-### Fixes
-
-* `[jest-runner]` Fix memory leak in coverage reporting
-  ([#5289](https://github.com/facebook/jest/pull/5289))
-
 ### Features
 
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
@@ -19,6 +7,10 @@
   having been passed to the CLI
 
 ### Fixes
+* `[jest-cli]` Use `import-local` to support global Jest installations.
+  ([#5304](https://github.com/facebook/jest/pull/5304))
+* `[jest-runner]` Fix memory leak in coverage reporting
+  ([#5289](https://github.com/facebook/jest/pull/5289))
 * `[docs]` Update mention of the minimal version of node supported [#4947](https://github.com/facebook/jest/issues/4947)
 
 ### Chore & Maintenance
