@@ -23,7 +23,6 @@ import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../get_changed_files_promise';
-import getJest from './get_jest';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
 import {print as preRunMessagePrint} from '../pre_run_message';
@@ -39,11 +38,8 @@ export async function run(maybeArgv?: Argv, project?: Path) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
     const projects = getProjectListFromCLIArgs(argv, project);
-    // If we're running a single Jest project, we might want to use another
-    // version of Jest (the one that is specified in this project's package.json)
-    const runCLIFn = getRunCLIFn(projects);
 
-    const {results, globalConfig} = await runCLIFn(argv, projects);
+    const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
   } catch (error) {
     clearLine(process.stderr);
@@ -157,9 +153,6 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
 
   return projects;
 };
-
-const getRunCLIFn = (projects: Array<Path>) =>
-  projects.length === 1 ? getJest(projects[0]).runCLI : runCLI;
 
 const printDebugInfoAndExitIfNeeded = (
   argv,
