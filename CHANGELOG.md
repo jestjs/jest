@@ -1,15 +1,21 @@
 ## master
 
+### Fixes
+
+* `[jest-cli]` Use `import-local` to support global Jest installations.
+  ([#5304](https://github.com/facebook/jest/pull/5304))
+
 ## jest 22.0.7
 
 ### Fixes
 
-* `[jest-runner]` Fix memory leak in coverage reporting ([#5289](https://github.com/facebook/jest/pull/5289))
+* `[jest-runner]` Fix memory leak in coverage reporting
+  ([#5289](https://github.com/facebook/jest/pull/5289))
 
 ### Features
 
-* `[jest-cli]` Make Jest exit without an error when no tests are found in
-  the case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
+* `[jest-cli]` Make Jest exit without an error when no tests are found in the
+  case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
 
 ### Fixes
@@ -24,13 +30,15 @@
 
 ### Fixes
 
-* `[jest-jasmine2]` Fix memory leak in snapshot reporting ([#5279](https://github.com/facebook/jest/pull/5279))
-* `[jest-config]` Fix breaking change in `--testPathPattern` ([#5269](https://github.com/facebook/jest/pull/5269))
+* `[jest-jasmine2]` Fix memory leak in snapshot reporting
+  ([#5279](https://github.com/facebook/jest/pull/5279))
+* `[jest-config]` Fix breaking change in `--testPathPattern`
+  ([#5269](https://github.com/facebook/jest/pull/5269))
 
 ### Fixes
 
 * `[docs]` Document caveat with mocks, Enzyme, snapshots and React 16
-   ([#5258](https://github.com/facebook/jest/issues/5258))
+  ([#5258](https://github.com/facebook/jest/issues/5258))
 
 ## jest 22.0.5
 
