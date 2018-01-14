@@ -34,14 +34,14 @@ test(<span class="hljs-string">'city database has San Juan'</span>, () =&gt; {
   expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
 });
 </code></pre>
-<p><code>beforeEach</code> and <code>afterEach</code> can handle asynchronous code in the same ways that <a href="/jest/docs/zh-Hans/asynchronous.html">tests can handle asynchronous code</a> - they can either take a <code>done</code> parameter or return a promise. For example, if <code>initializeCityDatabase()</code> returned a promise that resolved when the database was initialized, we would want to return that promise:</p>
+<p><code>beforeEach</code> 和 <code>afterEach</code> 能够通过与<a href="/jest/docs/zh-Hans/asynchronous.html"> 异步代码测试</a> 相同的方式处理异步代码，可以传一个 <code>done</code> 参数或者返回一个 Promise。 比如，如果 <code>initializeCityDatabase()</code> 返回一个数据库初始化时就被接受的 Promise ，我们会想返回这一 Promise︰</p>
 <pre><code class="hljs css js">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-keyword">return</span> initializeCityDatabase();
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>一次性设置</h3>
-<p>在某些情况下，你只需要在文件的开头做一次设置。 This can be especially bothersome when the setup is asynchronous, so you can't just do it inline. Jest 提供 <code>beforeAll</code> 和 <code>afterAll</code> 处理这种情况。</p>
-<p>For example, if both <code>initializeCityDatabase</code> and <code>clearCityDatabase</code> returned promises, and the city database could be reused between tests, we could change our test code to:</p>
+<p>在某些情况下，你只需要在文件的开头做一次设置。 当这种设置是异步的时候，可能非常烦人，你不太可能一行代码就解决它。 Jest 提供 <code>beforeAll</code> 和 <code>afterAll</code> 处理这种情况。</p>
+<p>比如，如果 <code>initializeCityDatabase</code> 和 <code>clearCityDatabase</code> 都返回了 Promise ，而且城市数据库可以在测试中重用，我们就能把测试代码改成这样:</p>
 <pre><code class="hljs css js">beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-keyword">return</span> initializeCityDatabase();
 });
@@ -59,8 +59,8 @@ test(<span class="hljs-string">'city database has San Juan'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>作用域</h3>
-<p>默认情况下，<code>before</code> 和 <code>after</code> 的块可以应用到文件中的每个测试。 You can also group tests together using a <code>describe</code> block. When they are inside a <code>describe</code> block, the <code>before</code> and <code>after</code> blocks only apply to the tests within that <code>describe</code> block.</p>
-<p>For example, let's say we had not just a city database, but also a food database. We could do different setup for different tests:</p>
+<p>默认情况下，<code>before</code> 和 <code>after</code> 的块可以应用到文件中的每个测试。 此外可以把代码包裹在 <code>describe</code> 块里将测试分成许多组。 当 <code>before</code> 和 <code>after</code> 的块在 <code>describe</code> 块内部时，就只适用于该 <code>describe</code> 块内的测试。</p>
+<p>比如说，我们不仅有城市的数据库，还有一个食品数据库。我们可以为不同的测试做不同的设置︰</p>
 <pre><code class="hljs css js"><span class="hljs-comment">// Applies to all tests in this file</span>
 beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-keyword">return</span> initializeCityDatabase();
@@ -89,7 +89,7 @@ describe(<span class="hljs-string">'matching cities to foods'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>Note that the top-level <code>beforeEach</code> is executed before the <code>beforeEach</code> inside the <code>describe</code> block. It may help to illustrate the order of execution of all hooks.</p>
+<p>请注意, 最顶层的 <code>beforeEach</code> 是在 <code>describe</code> 块内的 <code>beforeEach</code> 之前执行的。它可以帮助说明所有钩子（hooks）的执行顺序。</p>
 <pre><code class="hljs css js">beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'1 - beforeAll'</span>));
 afterAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'1 - afterAll'</span>));
 beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'1 - beforeEach'</span>));
@@ -116,9 +116,9 @@ describe(<span class="hljs-string">'Scoped / Nested block'</span>, () =&gt; {
 <span class="hljs-comment">// 2 - afterAll</span>
 <span class="hljs-comment">// 1 - afterAll</span>
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" name="order-of-execution-of-describe-and-test-blocks"></a><a href="#order-of-execution-of-describe-and-test-blocks" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Order of execution of describe and test blocks</h3>
-<p>Jest executes all describe handlers in a test file <em>before</em> it executes any of the actual tests. This is another reason to do setup and teardown in <code>before*</code> and <code>after*</code> handlers rather in the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.</p>
-<p>Consider the following illustrative test file and output:</p>
+<h3><a class="anchor" aria-hidden="true" name="desribe-test"></a><a href="#desribe-test" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>desribe和test块的执行顺序</h3>
+<p>Jest 会在真正的测试开始<em>之前</em>执行测试文件里所有的 describe 处理程序（handlers）。 这是在 <code>before*</code> 和 <code>after*</code> 处理程序里面 (而不是在 describe 块中) 进行准备工作和整理工作的另一个原因。 当 describe 块运行完后,，默认情况下，Jest 会按照 test 出现的顺序（译者注：原文是in the order they were encountered in the collection phase）依次运行所有测试,，等待每一个测试完成并整理好，然后才继续往下走。</p>
+<p>猜一下这个用来说明的测试文件的输出：</p>
 <pre><code class="hljs css js">describe(<span class="hljs-string">'outer'</span>, () =&gt; {
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-a'</span>);
 
@@ -158,7 +158,7 @@ describe(<span class="hljs-string">'Scoped / Nested block'</span>, () =&gt; {
 <span class="hljs-comment">// test for describe inner 2</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>通用建议</h3>
-<p>If a test is failing, one of the first things to check should be whether the test is failing when it's the only test that runs. In Jest it's simple to run only one test - just temporarily change that <code>test</code> command to a <code>test.only</code>:</p>
+<p>如果测试失败，第一件要检查的事就是，只单独运行这一条测试时，它是否仍然失败。 在 Jest里， 只单独运行一个测试是很简单的，只要暂时将 <code>test</code> 命令更改为 <code>test.only</code>:</p>
 <pre><code class="hljs css js">test.only(<span class="hljs-string">'this will be the only test that runs'</span>, () =&gt; {
   expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
 });
@@ -167,7 +167,7 @@ test(<span class="hljs-string">'this test will not run'</span>, () =&gt; {
   expect(<span class="hljs-string">'A'</span>).toBe(<span class="hljs-string">'A'</span>);
 });
 </code></pre>
-<p>If you have a test that often fails when it's run as part of a larger suite, but doesn't fail when you run it alone, it's a good bet that something from a different test is interfering with this one. You can often fix this by clearing some shared state with <code>beforeEach</code>. If you're not sure whether some shared state is being modified, you can also try a <code>beforeEach</code> that just logs data.</p>
+<p>如果你有一个测试，当它作为一个更大的测试组合中的一部分时，经常运行失败，但是当你单独运行它时，并不会失败，最好思考一下是否有其他测试对这个测试造成了干扰。 通常可以用 <code>beforeEach</code> 来清除一些共享的状态从而修复这种问题。 如果不确定哪些共享状态被修改了，还可以尝试在 <code>beforeEach</code> 中打印数据出来 debug。</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="asynchronous.html">← Testing Asynchronous Code</a><a class="docs-next button" href="mock-functions.html">Mock Functions →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/zh-Hans/getting-started.html">Getting Started</a><a href="/jest/docs/zh-Hans/snapshot-testing.html">Guides</a><a href="/jest/docs/zh-Hans/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/zh-Hans/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
