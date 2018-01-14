@@ -69,7 +69,7 @@ function deepCyclicCopyObject(
     if (typeof descriptor.value !== 'undefined') {
       descriptor.value = deepCyclicCopy(
         descriptor.value,
-        {...options, blacklist: EMPTY},
+        {blacklist: EMPTY, keepPrototype: options.keepPrototype},
         cycles,
       );
     }
@@ -96,7 +96,7 @@ function deepCyclicCopyArray(
   for (let i = 0; i < length; i++) {
     newArray[i] = deepCyclicCopy(
       array[i],
-      {...options, blacklist: EMPTY},
+      {blacklist: EMPTY, keepPrototype: options.keepPrototype},
       cycles,
     );
   }
