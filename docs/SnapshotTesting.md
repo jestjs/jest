@@ -172,7 +172,7 @@ serializable value and should be used anytime the goal is testing whether the
 output is correct. The Jest repository contains many examples of testing the
 output of Jest itself, the output of Jest's assertion library as well as log
 messages from various parts of the Jest codebase. See an example of
-[snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console.test.js)
+[snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration-tests/__tests__/console.test.js)
 in the Jest repo.
 
 ### What's the difference between snapshot testing and visual regression testing?

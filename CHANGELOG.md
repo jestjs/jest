@@ -12,6 +12,12 @@
   the case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
 
+### Chore & Maintenance
+
+* `[filenames]` Standardize folder names under `integration-tests/`
+  ([#5298](https://github.com/facebook/jest/pull/5298))
+
+
 ## jest 22.0.6
 
 ### Fixes
