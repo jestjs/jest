@@ -15,7 +15,7 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/MockFunctions.md" target="_blank">Edit</a><h1>Mock Functions</h1></header><article><div><span><p>Mock 函数可以轻松地测试代码之间的连接——这通过擦除函数的实际实现，捕获对函数的调用 ( 以及在这些调用中传递的参数) ，在使用 <code>new</code> 实例化时捕获构造函数的实例，或允许测试时配置返回值的形式来实现。</p>
-<p>There are two ways to mock functions: Either by creating a mock function to use in test code, or writing a <a href="/jest/docs/zh-Hans/manual-mocks.html"><code>manual mock</code></a> to override a module dependency.</p>
+<p>有两种方式可以模拟（mock）函数：可以在测试代码中创建一个 mock 函数，或者是自己编写一个 <a href="/jest/docs/zh-Hans/manual-mocks.html"><code>manual mock</code></a> 来覆盖模块之间的依赖。</p>
 <h2><a class="anchor" aria-hidden="true" name="mock"></a><a href="#mock" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>使用 mock 函数</h2>
 <p>假设我们要测试函数 <code>forEach</code> 的内部实现，这个函数为传入的数组中的每个元素调用一个回调函数。</p>
 <pre><code class="hljs css javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">forEach</span>(<span class="hljs-params">items, callback</span>) </span>{
@@ -95,7 +95,7 @@ filterTestFn.mockReturnValueOnce(<span class="hljs-literal">true</span>).mockRet
 </code></pre>
 <p>大多数现实世界的例子实际上都涉及到将一个被依赖的组件上使用 mock 函数替代并进行配置，这在技术上（和上面的描述）是相同的。 在这些情况下，尽量避免在非真正想要进行测试的任何函数内实现逻辑。</p>
 <h2><a class="anchor" aria-hidden="true" name="mock"></a><a href="#mock" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock 实现</h2>
-<p>不过，有些情况下超越指定返回值的功能是有用的，并且全面替换了模拟函数的实现。 This can be done with <code>jest.fn</code> or the <code>mockImplementationOnce</code> method on mock functions.</p>
+<p>不过，有些情况下超越指定返回值的功能是有用的，并且全面替换了模拟函数的实现。 这可以通过 mock 函数上的 <code>jest.fn</code> 或 <code>mockImplementationOnce</code> 方法来完成。</p>
 <pre><code class="hljs css javascript"><span class="hljs-keyword">const</span> myMockFn = jest.fn(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>));
 
 myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val));
@@ -131,7 +131,7 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val));
 <span class="hljs-comment">// &gt; false</span>
 </code></pre>
-<p>When the mocked function runs out of implementations defined with <code>mockImplementationOnce</code>, it will execute the default implementation set with <code>jest.fn</code> (if it is defined):</p>
+<p>当被模拟的函数运行完了 <code>mockImplementationOnce</code> 定义的实现时，它将执行 <code>jest.fn</code>（如果被定义了）的默认实现：</p>
 <pre><code class="hljs css javascript"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'default'</span>)
   .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'first call'</span>)
@@ -153,9 +153,9 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
   }),
 };
 </code></pre>
-<h2><a class="anchor" aria-hidden="true" name="mock-names"></a><a href="#mock-names" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock Names</h2>
+<h2><a class="anchor" aria-hidden="true" name="mock"></a><a href="#mock" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock 名称</h2>
 <h5><a class="anchor" aria-hidden="true" name="jest-2200"></a><a href="#jest-2200" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>仅用于jest <strong>22.0.0+</strong></h5>
-<p>You can optionally provide a name for your mock functions, which will be displayed instead of &quot;jest.fn()&quot; in test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.</p>
+<p>您可以为 mock 函数提供一个名称（可选的），它将在测试错误输出中显示，而不是&quot;jest.fn()&quot;。 如果希望能够快速标识测试输出中错误的 mock 函数，请使用此方法。</p>
 <pre><code class="hljs css javascript"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn()
   .mockReturnValue(<span class="hljs-string">'default'</span>)
@@ -164,41 +164,41 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>自定义匹配器</h2>
 <p>最后，为了更简单地说明如何调用mock函数，我们为您添加了一些自定义匹配器函数：</p>
-<pre><code class="hljs css javascript"><span class="hljs-comment">// The mock function was called at least once</span>
+<pre><code class="hljs css javascript"><span class="hljs-comment">// 这个 mock 函数至少被调用一次</span>
 expect(mockFunc).toBeCalled();
 
-<span class="hljs-comment">// The mock function was called at least once with the specified args</span>
+<span class="hljs-comment">// 这个 mock 函数至少被调用一次，而且传入了特定参数</span>
 expect(mockFunc).toBeCalledWith(arg1, arg2);
 
-<span class="hljs-comment">// The last call to the mock function was called with the specified args</span>
+<span class="hljs-comment">// 这个 mock 函数的最后一次调用传入了特定参数</span>
 expect(mockFunc).lastCalledWith(arg1, arg2);
 
-<span class="hljs-comment">// All calls and the name of the mock is written as a snapshot</span>
+<span class="hljs-comment">// 所有的 mock 的调用和名称都被写入了快照</span>
 expect(mockFunc).toMatchSnapshot();
 </code></pre>
 <p>这些匹配器是真的只是语法糖的常见形式的检查 <code>.mock</code> 属性。 你总可以手动自己如果是更合你的口味，或如果你需要做一些更具体的事情︰</p>
-<pre><code class="hljs css javascript"><span class="hljs-comment">// The mock function was called at least once</span>
+<pre><code class="hljs css javascript"><span class="hljs-comment">// 这个 mock 函数至少被调用一次</span>
 expect(mockFunc.mock.calls.length).toBeGreaterThan(<span class="hljs-number">0</span>);
 
-<span class="hljs-comment">// The mock function was called at least once with the specified args</span>
+<span class="hljs-comment">// 这个 mock 函数至少被调用一次，而且传入了特定参数</span>
 expect(mockFunc.mock.calls).toContain([arg1, arg2]);
 
-<span class="hljs-comment">// The last call to the mock function was called with the specified args</span>
+<span class="hljs-comment">// 这个 mock 函数的最后一次调用传入了特定参数</span>
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - <span class="hljs-number">1</span>]).toEqual([
   arg1,
   arg2,
 ]);
 
-<span class="hljs-comment">// The first arg of the last call to the mock function was `42`</span>
-<span class="hljs-comment">// (note that there is no sugar helper for this specific of an assertion)</span>
+<span class="hljs-comment">//  这个 mock 函数的最后一次调用的第一个参数是`42`</span>
+<span class="hljs-comment">// （注意这个断言的规范是没有语法糖的）</span>
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - <span class="hljs-number">1</span>][<span class="hljs-number">0</span>]).toBe(<span class="hljs-number">42</span>);
 
-<span class="hljs-comment">// A snapshot will check that a mock was invoked the same number of times,</span>
-<span class="hljs-comment">// in the same order, with the same arguments. It will also assert on the name.</span>
+<span class="hljs-comment">// 快照会检查 mock 函数被调用了同样的次数，</span>
+<span class="hljs-comment">// 同样的顺序，和同样的参数 它还会在名称上断言。</span>
 expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
 expect(mockFunc.mock.getMockName()).toBe(<span class="hljs-string">'a mock name'</span>);
 </code></pre>
-<p>这些只是浅尝辄止。匹配器的完整列表，请查阅 <a href="/jest/docs/zh-Hans/expect.html"> 参考文档</a>。</p>
+<p>这些只是一部分，有关匹配器的完整列表，请查阅 <a href="/jest/docs/zh-Hans/expect.html"> 参考文档</a>。</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="setup-teardown.html">← Setup and Teardown</a><a class="docs-next button" href="jest-platform.html">Jest Platform →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/zh-Hans/getting-started.html">Getting Started</a><a href="/jest/docs/zh-Hans/snapshot-testing.html">Guides</a><a href="/jest/docs/zh-Hans/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/zh-Hans/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
