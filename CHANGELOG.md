@@ -12,11 +12,13 @@
   the case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
 
+### Fixes
+* `[docs]` Update mention of the minimal version of node supported [#4947](https://github.com/facebook/jest/issues/4947)
+
 ### Chore & Maintenance
 
 * `[filenames]` Standardize folder names under `integration-tests/`
   ([#5298](https://github.com/facebook/jest/pull/5298))
-
 
 ## jest 22.0.6
 
