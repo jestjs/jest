@@ -66,10 +66,12 @@ function deepCyclicCopyObject(
     }
 
     const descriptor = descriptors[key];
-
     if (typeof descriptor.value !== 'undefined') {
-      delete options.blacklist;
-      descriptor.value = deepCyclicCopy(descriptor.value, options, cycles);
+      descriptor.value = deepCyclicCopy(
+        descriptor.value,
+        {blacklist: EMPTY, keepPrototype: options.keepPrototype},
+        cycles,
+      );
     }
 
     descriptor.configurable = true;
@@ -92,8 +94,11 @@ function deepCyclicCopyArray(
   cycles.set(array, newArray);
 
   for (let i = 0; i < length; i++) {
-    delete options.blacklist;
-    newArray[i] = deepCyclicCopy(array[i], options, cycles);
+    newArray[i] = deepCyclicCopy(
+      array[i],
+      {blacklist: EMPTY, keepPrototype: options.keepPrototype},
+      cycles,
+    );
   }
 
   return newArray;
