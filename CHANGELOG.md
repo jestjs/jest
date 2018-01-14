@@ -3,6 +3,7 @@
 ### Fixes
 
 * `[jest-cli]` Use `import-local` to support global Jest installations.
+  ([#5304](https://github.com/facebook/jest/pull/5304))
 
 ## jest 22.0.7
 
