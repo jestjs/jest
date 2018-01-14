@@ -70,9 +70,144 @@ it('uses the blacklist to avoid copying properties on the first level', () => {
     },
   };
 
-  expect(deepCyclicCopy(obj, new Set(['blacklisted']))).toEqual({
+  expect(deepCyclicCopy(obj, {blacklist: new Set(['blacklisted'])})).toEqual({
     subObj: {
       blacklisted: 42,
     },
   });
+});
+
+it('does not keep the prototype by default when top level is object', () => {
+  const sourceObject = new function() {}();
+  sourceObject.nestedObject = new function() {}();
+  sourceObject.nestedArray = new function() {
+    this.length = 0;
+  }();
+
+  const spy = jest.spyOn(Array, 'isArray').mockImplementation(object => {
+    return object === sourceObject.nestedArray;
+  });
+
+  const copy = deepCyclicCopy(sourceObject, {keepPrototype: false});
+
+  expect(Object.getPrototypeOf(copy)).not.toBe(
+    Object.getPrototypeOf(sourceObject),
+  );
+  expect(Object.getPrototypeOf(copy.nestedObject)).not.toBe(
+    Object.getPrototypeOf(sourceObject.nestedObject),
+  );
+  expect(Object.getPrototypeOf(copy.nestedArray)).not.toBe(
+    Object.getPrototypeOf(sourceObject.nestedArray),
+  );
+
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf({}));
+  expect(Object.getPrototypeOf(copy.nestedObject)).toBe(
+    Object.getPrototypeOf({}),
+  );
+  expect(Object.getPrototypeOf(copy.nestedArray)).toBe(
+    Object.getPrototypeOf([]),
+  );
+
+  spy.mockRestore();
+});
+
+it('does not keep the prototype by default when top level is array', () => {
+  const spy = jest.spyOn(Array, 'isArray').mockImplementation(() => true);
+
+  const sourceArray = new function() {
+    this.length = 0;
+  }();
+
+  const copy = deepCyclicCopy(sourceArray);
+  expect(Object.getPrototypeOf(copy)).not.toBe(
+    Object.getPrototypeOf(sourceArray),
+  );
+
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf([]));
+  spy.mockRestore();
+});
+
+it('does not keep the prototype of arrays when keepPrototype = false', () => {
+  const spy = jest.spyOn(Array, 'isArray').mockImplementation(() => true);
+
+  const sourceArray = new function() {
+    this.length = 0;
+  }();
+
+  const copy = deepCyclicCopy(sourceArray);
+  expect(Object.getPrototypeOf(copy)).not.toBe(
+    Object.getPrototypeOf(sourceArray),
+  );
+
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf([]));
+  spy.mockRestore();
+});
+
+it('keeps the prototype of arrays when keepPrototype = true', () => {
+  const spy = jest.spyOn(Array, 'isArray').mockImplementation(() => true);
+
+  const sourceArray = new function() {
+    this.length = 0;
+  }();
+
+  const copy = deepCyclicCopy(sourceArray, {keepPrototype: true});
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf(sourceArray));
+
+  spy.mockRestore();
+});
+
+it('does not keep the prototype for objects when keepPrototype = false', () => {
+  const sourceobject = new function() {}();
+  sourceobject.nestedObject = new function() {}();
+  sourceobject.nestedArray = new function() {
+    this.length = 0;
+  }();
+
+  const spy = jest.spyOn(Array, 'isArray').mockImplementation(object => {
+    return object === sourceobject.nestedArray;
+  });
+
+  const copy = deepCyclicCopy(sourceobject, {keepPrototype: false});
+
+  expect(Object.getPrototypeOf(copy)).not.toBe(
+    Object.getPrototypeOf(sourceobject),
+  );
+  expect(Object.getPrototypeOf(copy.nestedObject)).not.toBe(
+    Object.getPrototypeOf(sourceobject.nestedObject),
+  );
+  expect(Object.getPrototypeOf(copy.nestedArray)).not.toBe(
+    Object.getPrototypeOf(sourceobject.nestedArray),
+  );
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf({}));
+  expect(Object.getPrototypeOf(copy.nestedObject)).toBe(
+    Object.getPrototypeOf({}),
+  );
+  expect(Object.getPrototypeOf(copy.nestedArray)).toBe(
+    Object.getPrototypeOf([]),
+  );
+
+  spy.mockRestore();
+});
+
+it('keeps the prototype for objects when keepPrototype = true', () => {
+  const sourceObject = new function() {}();
+  sourceObject.nestedObject = new function() {}();
+  sourceObject.nestedArray = new function() {
+    this.length = 0;
+  }();
+
+  const spy = jest.spyOn(Array, 'isArray').mockImplementation(object => {
+    return object === sourceObject.nestedArray;
+  });
+
+  const copy = deepCyclicCopy(sourceObject, {keepPrototype: true});
+
+  expect(Object.getPrototypeOf(copy)).toBe(Object.getPrototypeOf(sourceObject));
+  expect(Object.getPrototypeOf(copy.nestedObject)).toBe(
+    Object.getPrototypeOf(sourceObject.nestedObject),
+  );
+  expect(Object.getPrototypeOf(copy.nestedArray)).toBe(
+    Object.getPrototypeOf(sourceObject.nestedArray),
+  );
+  spy.mockRestore();
 });
