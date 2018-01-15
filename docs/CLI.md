@@ -105,8 +105,8 @@ If you want to inspect the cache, use `--showConfig` and look at the
 
 ### `--changedFilesWithAncestor`
 
-When used together with `--onlyChanged` or `--watch`, it runs tests related to
-the current changes and the changes made in the last commit.
+Runs tests related to the current changes and the changes made in the last
+commit. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -188,8 +188,8 @@ Write test results to a file when the `--json` option is also specified.
 
 ### `--lastCommit`
 
-When used together with `--onlyChanged`, it will run all tests affected by file
-changes in the last commit made.
+Run all tests affected by file changes in the last commit made. Behaves
+similarly to `--onlyChanged`.
 
 ### `--listTests`
 
