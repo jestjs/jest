@@ -1,5 +1,12 @@
 ## master
 
+## jest 22.1.1
+
+### Fixes
+
+* `[jest-cli]` Fix `EISDIR` when a directory is passed as an argument to `jest`.
+  ([#5317](https://github.com/facebook/jest/pull/5317))
+
 ## jest 22.1.0
 
 ### Features
