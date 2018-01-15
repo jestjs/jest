@@ -69,6 +69,8 @@
   ([#5154](https://github.com/facebook/jest/pull/5154))
 * `[jest-jasmine2]` Support generator functions as specs.
   ([#5166](https://github.com/facebook/jest/pull/5166))
+* `[jest-jasmine2]` Allow `spyOn` with getters and setters.
+  ([#5107](https://github.com/facebook/jest/pull/5107))
 * `[jest-config]` Allow configuration objects inside `projects` array
   ([#5176](https://github.com/facebook/jest/pull/5176))
 * `[expect]` Add support to `.toHaveProperty` matcher to accept the keyPath
