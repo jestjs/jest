@@ -13,6 +13,7 @@
     "babel-plugin-istanbul": "^4.1.5",
     "chalk": "^2.0.1",
     "convert-source-map": "^1.4.0",
+    "exit": "^0.1.2",
     "graceful-fs": "^4.1.11",
     "jest-config": "^22.1.0",
     "jest-haste-map": "^22.1.0",

@@ -6,6 +6,7 @@
   "dependencies": {
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
+    "exit": "^0.1.2",
     "glob": "^7.1.2",
     "graceful-fs": "^4.1.11",
     "import-local": "^1.0.0",

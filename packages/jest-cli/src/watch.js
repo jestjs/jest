@@ -14,6 +14,7 @@ import type {WatchPlugin} from './types';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import getChangedFilesPromise from './get_changed_files_promise';
+import exit from 'exit';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
@@ -173,7 +174,7 @@ export default function watch(
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       outputStream.write('\n');
-      process.exit(0);
+      exit(0);
       return;
     }
 
@@ -222,7 +223,7 @@ export default function watch(
     switch (key) {
       case KEYS.Q:
         outputStream.write('\n');
-        process.exit(0);
+        exit(0);
         return;
       case KEYS.ENTER:
         startRun(globalConfig);
