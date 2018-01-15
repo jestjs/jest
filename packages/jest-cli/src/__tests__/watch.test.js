@@ -257,6 +257,8 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', () => {
+    globalConfig.updateSnapshot = 'new';
+
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
@@ -270,7 +272,7 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.A);
     // updateSnapshot is not sticky after a run.
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
-      updateSnapshot: 'none',
+      updateSnapshot: 'new',
       watch: false,
     });
   });
