@@ -95,10 +95,6 @@ export default (async function runJest({
   onComplete: (testResults: AggregatedResult) => any,
   failedTestsCache: ?FailedTestsCache,
 }) {
-  if (globalConfig.globalSetup) {
-    // $FlowFixMe
-    await require(globalConfig.globalSetup)();
-  }
   const sequencer = new TestSequencer();
   let allTests = [];
 
@@ -184,7 +180,10 @@ export default (async function runJest({
   // original value of rootDir. Instead, use the {cwd: Path} property to resolve
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
-
+  if (globalConfig.globalSetup) {
+    // $FlowFixMe
+    await require(globalConfig.globalSetup)();
+  }
   const results = await new TestScheduler(globalConfig, {
     startRun,
   }).scheduleTests(allTests, testWatcher);
