@@ -21,8 +21,8 @@ export default (
       [],
     );
     return getChangedFilesForRoots(allRootsForAllProjects, {
+      changedSince: globalConfig.changedSince,
       lastCommit: globalConfig.lastCommit,
-      toContributeTo: globalConfig.changedFilesToContributeTo,
       withAncestor: globalConfig.changedFilesWithAncestor,
     });
   }

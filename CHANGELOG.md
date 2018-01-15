@@ -28,8 +28,9 @@
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
   case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
-* `[jest-cli]` Allow selectively running tests for code changed since arbitrary
-  revisions. ([#5188](https://github.com/facebook/jest/pull/5188))
+* `[jest-cli]` `--changedSince`: allow selectively running tests for code
+  changed since arbitrary revisions.
+  ([#5312](https://github.com/facebook/jest/pull/5312))
 
 ### Fixes
 * `[jest-cli]` Use `import-local` to support global Jest installations.

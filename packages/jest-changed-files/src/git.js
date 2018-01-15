@@ -49,17 +49,17 @@ const adapter: SCMAdapter = {
     cwd: string,
     options?: Options,
   ): Promise<Array<Path>> => {
-    const toContributeTo: ?string =
-      options && (options.withAncestor ? 'HEAD^' : options.toContributeTo);
+    const changedSince: ?string =
+      options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
     if (options && options.lastCommit) {
       return await findChangedFilesUsingCommand(
         ['show', '--name-only', '--pretty=%b', 'HEAD'],
         cwd,
       );
-    } else if (toContributeTo) {
+    } else if (changedSince) {
       const committed = await findChangedFilesUsingCommand(
-        ['log', '--name-only', '--pretty=%b', 'HEAD', `^${toContributeTo}`],
+        ['log', '--name-only', '--pretty=%b', 'HEAD', `^${changedSince}`],
         cwd,
       );
       const staged = await findChangedFilesUsingCommand(

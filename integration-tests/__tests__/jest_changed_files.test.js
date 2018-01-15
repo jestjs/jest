@@ -196,7 +196,7 @@ test('gets changed files for git', async () => {
   run(`${GIT} commit -m "test3"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    toContributeTo: 'HEAD^^',
+    changedSince: 'HEAD^^',
   }));
   // Returns files from the last 2 commits
   expect(
@@ -214,7 +214,7 @@ test('gets changed files for git', async () => {
   run(`${GIT} commit -m "test5"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    toContributeTo: 'master',
+    changedSince: 'master',
   }));
   // Returns files from this branch but not ones that only exist on master
   expect(
@@ -297,7 +297,7 @@ test('gets changed files for hg', async () => {
   run(`${HG} commit -m "test3"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    toContributeTo: '-3',
+    changedSince: '-3',
   }));
   // Returns files from the last 2 commits
   expect(
@@ -317,7 +317,7 @@ test('gets changed files for hg', async () => {
   run(`${HG} commit -m "test4"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    toContributeTo: 'master',
+    changedSince: 'master',
   }));
   // Returns files from this branch but not ones that only exist on master
   expect(
