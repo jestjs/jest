@@ -22,7 +22,7 @@ exports[`CLI accepts exact filenames 2`] = `
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /.\\\\/bar.js|.\\\\/foo\\\\/baz.js/i.
+Ran all test suites matching /.\\\\/bar.js|.\\\\/foo\\\\/baz.js|.\\\\/foo/i.
 "
 `;
 
