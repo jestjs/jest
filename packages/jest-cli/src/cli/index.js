@@ -42,6 +42,7 @@ export async function run(maybeArgv?: Argv, project?: Path) {
 
     const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
+    return results;
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
