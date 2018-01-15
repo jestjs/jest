@@ -391,6 +391,55 @@ describe('moduleMocker', () => {
       expect(fake(2)).toEqual(4);
     });
 
+    it('supports mocking resolvable async functions', () => {
+      const fn = moduleMocker.fn();
+      fn.mockResolvedValue('abcd');
+
+      const promise = fn();
+
+      expect(promise).toBeInstanceOf(Promise);
+
+      return promise.then(value => expect(value).toBe('abcd'));
+    });
+
+    it('supports mocking resolvable async functions only once', () => {
+      const fn = moduleMocker.fn();
+      fn.mockResolvedValue('abcd');
+      fn.mockResolvedValueOnce('abcde');
+
+      const promise1 = fn().then(value => expect(value).toBe('abcde'));
+      const promise2 = fn().then(value => expect(value).toBe('abcd'));
+
+      return Promise.all([promise1, promise2]);
+    });
+
+    it('supports mocking rejectable async functions', () => {
+      const err = new Error('rejected');
+      const fn = moduleMocker.fn();
+      fn.mockRejectedValue(err);
+
+      const promise = fn();
+
+      expect(promise).toBeInstanceOf(Promise);
+
+      return promise.catch(rejection => expect(rejection).toBe(err));
+    });
+
+    it('supports mocking rejectable async functions only once', () => {
+      const defaultErr = new Error('default rejected');
+      const err = new Error('rejected');
+      const fn = moduleMocker.fn();
+      fn.mockRejectedValue(defaultErr);
+      fn.mockRejectedValueOnce(err);
+
+      const promise1 = fn().catch(rejection => expect(rejection).toBe(err));
+      const promise2 = fn().catch(rejection =>
+        expect(rejection).toBe(defaultErr),
+      );
+
+      return Promise.all([promise1, promise2]);
+    });
+
     describe('timestamps', () => {
       const RealDate = Date;
 
