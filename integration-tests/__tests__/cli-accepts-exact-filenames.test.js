@@ -38,6 +38,7 @@ test('CLI accepts exact filenames', () => {
     '--forceExit',
     './bar.js',
     './foo/baz.js',
+    './foo',
   ]);
   const {rest, summary} = extractSummary(stderr);
   expect(status).toBe(0);

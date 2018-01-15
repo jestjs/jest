@@ -209,7 +209,9 @@ export default class SearchSource {
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
     } else {
-      const validTestPaths = paths && paths.filter(fs.existsSync);
+      const validTestPaths =
+        paths &&
+        paths.filter(fs.existsSync).filter(name => fs.lstatSync(name).isFile());
 
       if (validTestPaths && validTestPaths.length) {
         return Promise.resolve({tests: toTests(this._context, validTestPaths)});
