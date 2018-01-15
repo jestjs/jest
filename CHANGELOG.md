@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+* `[jest-cli]` Return results object from `jest.run` ([#5316](https://github.com/facebook/jest/pull/5316))
+
 ## jest 22.1.0
 
 ### Features
