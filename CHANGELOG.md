@@ -1,5 +1,7 @@
 ## master
 
+## jest 22.1.0
+
 ### Features
 
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
