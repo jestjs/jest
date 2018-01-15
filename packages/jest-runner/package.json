@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "exit": "^0.1.2",
     "jest-config": "^22.1.0",
     "jest-docblock": "^22.1.0",
     "jest-haste-map": "^22.1.0",
