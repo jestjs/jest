@@ -20,6 +20,7 @@ export default ({
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
+  changedFilesToContributeTo: '',
   changedFilesWithAncestor: false,
   clearMocks: false,
   collectCoverage: true,

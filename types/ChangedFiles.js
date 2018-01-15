@@ -12,6 +12,7 @@ import type {Path} from 'types/Config';
 export type Options = {|
   lastCommit?: boolean,
   withAncestor?: boolean,
+  toContributeTo?: string,
 |};
 
 export type ChangedFiles = Set<Path>;
