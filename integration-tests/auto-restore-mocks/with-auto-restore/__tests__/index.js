@@ -13,7 +13,7 @@ const localClass = new TestClass();
 test('first test', () => {
   jest.spyOn(localClass, 'test').mockImplementation(() => 'ABCD');
   expect(localClass.test()).toEqual('ABCD');
-  expect(localClass.test.mock.calls.length).toBe(1);
+  expect(localClass.test).toHaveBeenCalledTimes(1);
 });
 
 test('second test', () => {
