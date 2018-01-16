@@ -85,6 +85,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   resetMocks: false,
   resetModules: false,
   resolver: null,
+  restoreMocks: false,
   rootDir: '/test_root_dir/',
   roots: [],
   runner: 'jest-runner',

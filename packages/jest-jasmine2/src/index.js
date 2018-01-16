@@ -89,6 +89,10 @@ async function jasmine2(
         environment.fakeTimers.useFakeTimers();
       }
     }
+
+    if (config.restoreMocks) {
+      runtime.restoreAllMocks();
+    }
   });
 
   env.addReporter(reporter);

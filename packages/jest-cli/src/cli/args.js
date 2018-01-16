@@ -411,6 +411,13 @@ export const options = {
     description: 'A JSON string which allows the use of a custom resolver.',
     type: 'string',
   },
+  restoreMocks: {
+    default: undefined,
+    description:
+      'Automatically restore mock state and implementation between every test. ' +
+      'Equivalent to calling jest.restoreAllMocks() between each test.',
+    type: 'boolean',
+  },
   rootDir: {
     description:
       'The root directory that Jest should scan for tests and ' +

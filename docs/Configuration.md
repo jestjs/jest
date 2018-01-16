@@ -605,6 +605,15 @@ argument:
 The function should either return a path to the module that should be resolved
 or throw an error if the module can't be found.
 
+### `restoreMocks` [boolean]
+
+Default: `false`
+
+Automatically restore mock state between every test. Equivalent to calling
+`jest.restoreAllMocks()` between each test. This will lead to any mocks having
+their fake implementations removed and restores their initial
+implementation.
+
 ### `rootDir` [string]
 
 Default: The root of the directory containing your jest's [config file](#) _or_
