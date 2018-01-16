@@ -5,4 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = () => {};
+module.exports = class Test {
+  test() {
+    return '12345';
+  }
+};

@@ -7,28 +7,20 @@
 
 'use strict';
 
-jest.mock('../');
-
-const importedFn = require('../');
-const localFn = jest.fn(() => 8675309);
+const TestClass = require('../');
+const localClass = new TestClass();
 
 describe('without an explicit restore', () => {
-  test('first test', () => {
-    importedFn();
-    const returnVal = localFn();
+  jest.spyOn(localClass, 'test').mockImplementation(() => 'ABCD');
 
-    expect(importedFn.mock.calls.length).toBe(1);
-    expect(localFn.mock.calls.length).toBe(1);
-    expect(returnVal).toBe(8675309);
+  test('first test', () => {
+    expect(localClass.test()).toEqual('ABCD');
+    expect(localClass.test.mock.calls.length).toBe(1);
   });
 
   test('second test', () => {
-    importedFn();
-    const returnVal = localFn();
-
-    expect(importedFn.mock.calls.length).toBe(2);
-    expect(localFn.mock.calls.length).toBe(2);
-    expect(returnVal).toBe(8675309);
+    expect(localClass.test()).toEqual('ABCD');
+    expect(localClass.test.mock.calls.length).toBe(2);
   });
 });
 
@@ -38,20 +30,13 @@ describe('with an explicit restore', () => {
   });
 
   test('first test', () => {
-    importedFn();
-    const returnVal = localFn();
-
-    expect(importedFn.mock.calls.length).toBe(1);
-    expect(localFn.mock.calls.length).toBe(1);
-    expect(returnVal).toBe(8675309);
+    jest.spyOn(localClass, 'test').mockImplementation(() => 'ABCD');
+    expect(localClass.test()).toEqual('ABCD');
+    expect(localClass.test.mock.calls.length).toBe(1);
   });
 
   test('second test', () => {
-    importedFn();
-    const returnVal = localFn();
-
-    expect(importedFn.mock.calls.length).toBe(1);
-    expect(localFn.mock.calls.length).toBe(1);
-    expect(returnVal).not.toBe(8675309);
+    expect(localClass.test()).toEqual('12345');
+    expect(localClass.test.mock).toBe(undefined);
   });
 });
