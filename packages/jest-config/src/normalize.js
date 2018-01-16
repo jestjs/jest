@@ -487,6 +487,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
+      case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
       case 'silent':

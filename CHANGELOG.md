@@ -4,6 +4,8 @@
 
 * `[jest-cli]` Fix `EISDIR` when a directory is passed as an argument to `jest`.
   ([#5317](https://github.com/facebook/jest/pull/5317))
+* `[jest-config]` Added restoreMocks config option.
+  ([#5327](https://github.com/facebook/jest/pull/5327))
 
 ## jest 22.1.0
 

@@ -32,6 +32,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"name\\": \\"[md5 hash]\\",
       \\"resetMocks\\": false,
       \\"resetModules\\": false,
+      \\"restoreMocks\\": false,
       \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
       \\"roots\\": [
         \\"<<REPLACED_ROOT_DIR>>\\"
