@@ -32,6 +32,7 @@ import TestNamePatternPrompt from './test_name_pattern_prompt';
 import FailedTestsCache from './failed_tests_cache';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
+import {AsyncSeriesWaterfallHook} from 'tapable';
 
 let hasExitListener = false;
 
@@ -45,13 +46,35 @@ export default function watch(
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
   let globalConfig = initialGlobalConfig;
+  let activePlugin: ?WatchPlugin;
 
   globalConfig = updateGlobalConfig(globalConfig, {
     mode: globalConfig.watch ? 'watch' : 'watchAll',
     passWithNoTests: true,
   });
 
+  const hooks = {
+    showPrompt: new AsyncSeriesWaterfallHook(['globalConfig']),
+  };
+
+  hooks.showPrompt.intercept({
+    register: tapInfo => {
+      return Object.assign({}, tapInfo, {
+        fn: (...args) => {
+          if (activePlugin && tapInfo.name === activePlugin.name) {
+            return tapInfo.fn(...args);
+          }
+
+          return Promise.resolve();
+        },
+      });
+    },
+  });
+
   const watchPlugins = new WatchPluginRegistry(globalConfig.rootDir);
+
+  watchPlugins.loadPluginPath(require.resolve('./plugins/test_path_pattern'));
+
   if (globalConfig.watchPlugins != null) {
     for (const pluginModulePath of globalConfig.watchPlugins) {
       watchPlugins.loadPluginPath(pluginModulePath);
@@ -170,7 +193,6 @@ export default function watch(
     }).catch(error => console.error(chalk.red(error.stack)));
   };
 
-  let activePlugin: ?WatchPlugin;
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       outputStream.write('\n');

@@ -35,6 +35,7 @@
     "slash": "^1.0.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
+    "tapable": "1.0.0-beta.5",
     "which": "^1.2.12",
     "yargs": "^10.0.3"
   },

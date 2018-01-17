@@ -11,6 +11,13 @@ import type {GlobalConfig} from 'types/Config';
 
 export type WatchPlugin = {
   key: number,
+  name: string,
   prompt: string,
-  enter: (globalConfig: GlobalConfig, end: () => mixed) => mixed,
+  apply: (
+    jestHooks: any,
+    {
+      stdin: stream$Readable | tty$ReadStream,
+      stdout: stream$Writable | tty$WriteStream,
+    },
+  ) => void,
 };
