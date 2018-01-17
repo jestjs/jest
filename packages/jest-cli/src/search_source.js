@@ -209,14 +209,22 @@ export default class SearchSource {
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
     } else {
+      const allFiles = this._context.hasteFS.getAllFiles();
       const validTestPaths =
         paths &&
         paths.filter(name => {
           try {
-            return fs.lstatSync(name).isFile();
+            if (!fs.lstatSync(name).isFile()) {
+              // It exists, but it is not a file; return false.
+              return false;
+            }
           } catch (e) {
+            // It does not exist; return false.
             return false;
           }
+
+          // It exists and it is a file; return true if it's in the project.
+          return allFiles.includes(path.resolve(name));
         });
 
       if (validTestPaths && validTestPaths.length) {
