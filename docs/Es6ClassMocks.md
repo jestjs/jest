@@ -28,30 +28,73 @@ Questions:
 
 # Mocking ES6 Classes
 
-ES6 classes are constructor functions with some syntactic sugar. So any mock for an ES6 class must be a function or an actual ES6 class. So we mock them using [mock functions](MockFunctions.md).
+ES6 classes are constructor functions with some syntactic sugar. So any mock for an ES6 class must be a function or an actual ES6 class. So you can mock them using [mock functions](MockFunctions.md).
 
 In the Jest framework, there are three general approaches to mocking an import using `jest.mock()`.
 
 1. Using a [manual mock](ManualMocks.md) that is implemented in the `__mocks__` folder.
-2. Using an automatic mock and setting its implementation by calling [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn).
+2. Using a mock created by [`jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options) and setting its implementation by calling [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn).
 3. Passing a factory function ("module factory") as the [second parameter to `jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options), where the factory function returns the mock.
 
-All three use `mockImplementation()` to create a mock function that we can spy on, call `new` on, and that returns an object which mocks an instance object of the mocked class.
+All three use `mockImplementation()` to create a mock function that you can spy on, call `new` on, and that returns an object which mocks an instance object of the mocked class.
 
 
 ## Module factory function must return a function
 `mockImplementation(moduleFactory)` and `jest.mock(path, moduleFactory)` expect a **module factory** argument. A module factory is a function that returns the mock.
 
-When we mock a constructor function, the module factory will return a constructor function. In other words, it's a function that returns a function - a higher-order function (HOF).
+When you mock a constructor function, the module factory will return a constructor function. In other words, the module factory must be a function that returns a function - a higher-order function (HOF).
 
 ## Background
-Using `jest.fn().mockImplementation()` can make it harder to read what the code is doing. Creating our own mocks can help us understand the process.
+Using `jest.fn().mockImplementation()` can make it harder to read what the code is doing. This section shows how you can create your own simple mocks to help you understand the process.
+
+The examples in this section use a contrived example of a class that plays sound files, `SoundPlayer`, and a consumer class which uses that class, `SoundPlayerConsumer`.
+
+```javascript
+// sound-player.js
+export default class SoundPlayer {
+  constructor() {
+    this.foo = 'bar';
+  }
+
+  playSoundFile(fileName) {
+    console.log('Playing sound file ' + fileName);
+  }
+}
+```
+
+```javascript
+// sound-player-consumer.js
+import SoundPlayer from './sound-player';
+
+export default class SoundPlayerConsumer {
+  constructor() {
+    this.soundPlayer = new SoundPlayer();
+  }
+
+  playSomethingCool() {
+    const coolSoundFileName = 'song.mp3';
+    this.soundPlayer.playSoundFile(coolSoundFileName);
+  }
+}
+
+```
 
 ### Manual mock that is another ES6 class
-If we define an ES6 class using the same filename as the mocked class in the __mocks__ folder, it will serve as the mock. This class will be used in place of the real class. This allows you to inject a test implementation for the class, but does not provide a way to spy on calls.
+If you define an ES6 class using the same filename as the mocked class in the \__mocks\__ folder, it will serve as the mock. This class will be used in place of the real class. This allows you to inject a test implementation for the class, but does not provide a way to spy on calls.
+
+For the contrived example, the mock might look like this:
+
+```javascript
+// sound-player.js
+export default class SoundPlayer {
+  playSoundFile() {
+    console.log('Mock SoundPlayer constructor was called');
+  }
+}
+```
 
 ### Simple mock you can call `new` on:
-The module factory function passed to `jest.mock(path, moduleFactory)` or `mockImplementation()` can be a HOF that returns a function. This will allow calling `new` on the mock. Again, this allows us to inject different behavior for testing, but does not provide a way to spy on calls.
+The module factory function passed to `jest.mock(path, moduleFactory)` or `mockImplementation()` can be a HOF that returns a function. This will allow calling `new` on the mock. Again, this allows you to inject different behavior for testing, but does not provide a way to spy on calls.
 
 ```javascript
 jest.mock('./sound-player', () => {
@@ -63,7 +106,7 @@ jest.mock('./sound-player', () => {
 
 ***Note: Arrow functions won't work***
 
-Note that our mock can't be an arrow function because we can't call new on an arrow function in Javascript; that's inherent in the language. So this won't work:
+Note that the mock can't be an arrow function because calling `new` on an arrow function in Javascript; that's inherent in the language. So this won't work:
 
 ```javascript
 jest.mock('./sound-player', () => {
@@ -73,12 +116,12 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-This will throw ***TypeError: _soundPlayer2.default is not a constructor***, unless the code is transpiled to ES5.
+This will throw ***TypeError: _soundPlayer2.default is not a constructor***, unless the code is transpiled to ES5, e.g. by babel-preset-env. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)
 
 ## Keeping track of usage (spying on the mock)
-Injecting a test implementation is helpful, but we may also want to test whether our constructor was called with the correct parameters.
+Injecting a test implementation is helpful, but you will probably also want to test whether the class constructor is called with the correct parameters.
 
-In order to track calls to the constructor, we can replace the function returned by the HOF with a Jest mock function. We create it with [`jest.fn()`](JestObjectAPI.md#jestfnimplementation), and then we specify its implementation with `mockImplementation()`.
+In order to track calls to the constructor, replace the function returned by the HOF with a Jest mock function. Create it with [`jest.fn()`](JestObjectAPI.md#jestfnimplementation), and then specify its implementation with `mockImplementation()`.
 
 ```javascript
 jest.mock('./sound-player', () => {
@@ -93,7 +136,7 @@ This will let us inspect usage of our mocked class, using `SoundPlayer.mock.call
 ### Spying on methods of our class
 Our mocked class will need to provide any member functions (`playSoundFile` in the example) that will be called during our tests, or else we'll get an error for calling a function that doesn't exist. But we'll probably want to also spy on calls to those methods, to ensure that they were called with the expected parameters.
 
-A new object will be created each time our mock constructor function is called during our tests. To spy on method calls in all of these objects, we populate `playSoundFile` with another mock function, and store a reference to that same mock function in our test file, so we can access it during tests.
+A new object will be created each time the mock constructor function is called during tests. To spy on method calls in all of these objects, we populate `playSoundFile` with another mock function, and store a reference to that same mock function in our test file, so it's available during tests.
 
 ```javascript
 let mockPlaySoundFile = jest.fn();
