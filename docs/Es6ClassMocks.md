@@ -10,14 +10,10 @@ In the Jest framework, there are three general approaches to mocking an import u
 
 1. Using a [manual mock](ManualMocks.md) that is implemented in the `__mocks__` folder.
 2. Using a mock created by [`jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options) and setting its implementation by calling [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn).
-3. Passing a factory function ("module factory") as the [second parameter to `jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options), where the factory function returns the mock.
+3. Passing a factory function ("module factory") as the [second parameter to `jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options), where the factory function returns the mock*.
 
-All three use `mockImplementation()` to create a mock function that you can spy on, call `new` on, and that returns an object which mocks an instance object of the mocked class.
-
----
-
-## Module factory function must return a function
-`mockImplementation(moduleFactory)` and `jest.mock(path, moduleFactory)` expect a **module factory** argument. A module factory is a function that returns the mock.
+### * Module factory function must return a function
+`jest.mock(path, moduleFactory)` expects a **module factory** argument. A module factory is a function that returns the mock.
 
 In order to mock a constructor function, the module factory must return a constructor function. In other words, the module factory must be a function that returns a function - a higher-order function (HOF).
 
@@ -101,11 +97,14 @@ jest.mock('./sound-player', () => {
 This will throw ***TypeError: _soundPlayer2.default is not a constructor***, unless the code is transpiled to ES5, e.g. by babel-preset-env. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)
 
 ## Keeping track of usage (spying on the mock)
-Injecting a test implementation is helpful, but you will probably also want to test whether the class constructor is called with the correct parameters.
+Injecting a test implementation is helpful, but you will probably also want to test whether the class constructor and methods are called with the correct parameters.
+
+### Spying on the constructor
 
 In order to track calls to the constructor, replace the function returned by the HOF with a Jest mock function. Create it with [`jest.fn()`](JestObjectAPI.md#jestfnimplementation), and then specify its implementation with `mockImplementation()`.
 
 ```javascript
+import SoundPlayer from './sound-player';
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => { // Works and lets you check for constructor calls
     return { playSoundFile: () => {} };
@@ -113,7 +112,10 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`.
+This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`:
+`expect(SoundPlayer).toHaveBeenCalled();`
+or near-equivalent:
+`expect(SoundPlayer.mock.calls.length).toEqual(1);`
 
 ### Spying on methods of our class
 Our mocked class will need to provide any member functions (`playSoundFile` in the example) that will be called during our tests, or else we'll get an error for calling a function that doesn't exist. But we'll probably want to also spy on calls to those methods, to ensure that they were called with the expected parameters.
@@ -121,9 +123,10 @@ Our mocked class will need to provide any member functions (`playSoundFile` in t
 A new object will be created each time the mock constructor function is called during tests. To spy on method calls in all of these objects, we populate `playSoundFile` with another mock function, and store a reference to that same mock function in our test file, so it's available during tests.
 
 ```javascript
+import SoundPlayer from './sound-player';
 let mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
-  return jest.fn().mockImplementation(() => { // Works and lets you check for constructor calls
+  return jest.fn().mockImplementation(() => { // Works and lets us check for constructor calls
     return { playSoundFile: mockPlaySoundFile }; // Now we can track calls to playSoundFile
   });
 });
@@ -140,7 +143,7 @@ const mock = jest.fn().mockImplementation(() => {
 export default mock;
 ```
 
-Usage is identical, except that you don't need to pass a factory function to jest.mock(), and you must import the mocked method into your test file, since it is no longer defined there.
+Usage is identical, except that you don't need to pass a factory function to jest.mock(), and you must import the mocked method into your test file, since it is no longer defined there. Use the original module path for this; don't include `__mocks__`.
 
 Note that, like all manual mocks, this will override the real implementation in all of your tests unless you call `jest.unmock('./sound-player)`.
 
