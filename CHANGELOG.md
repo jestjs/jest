@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Check if the file belongs to the checked project before adding it
+  to the list ([#5335](https://github.com/facebook/jest/pull/5335))
 * `[jest-cli]` Fix `EISDIR` when a directory is passed as an argument to `jest`.
   ([#5317](https://github.com/facebook/jest/pull/5317))
 * `[jest-config]` Added restoreMocks config option.

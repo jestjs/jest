@@ -40,8 +40,11 @@ test('CLI accepts exact filenames', () => {
     './foo/baz.js',
     './foo',
   ]);
-  const {rest, summary} = extractSummary(stderr);
+
   expect(status).toBe(0);
+
+  const {rest, summary} = extractSummary(stderr);
+
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
   expect(stdout).toMatchSnapshot();
