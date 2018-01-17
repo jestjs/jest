@@ -209,7 +209,7 @@ export default class SearchSource {
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
     } else {
-      const allFiles = this._context.hasteFS.getAllFiles();
+      const allFiles = new Set(this._context.hasteFS.getAllFiles());
       const validTestPaths =
         paths &&
         paths.filter(name => {
@@ -224,7 +224,7 @@ export default class SearchSource {
           }
 
           // It exists and it is a file; return true if it's in the project.
-          return allFiles.includes(path.resolve(name));
+          return allFiles.has(path.resolve(name));
         });
 
       if (validTestPaths && validTestPaths.length) {
