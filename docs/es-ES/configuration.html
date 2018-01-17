@@ -294,7 +294,7 @@
 
 <span class="hljs-built_in">module</span>.exports = MyCustomReporter;
 </code></pre>
-<p>Custom reporters can also force Jest to exit with non-0 code by returning an Error from <code>getLastError()</code> methods</p>
+<p>Los reporteros modificados también pueden forzar a Jest a salir con código non-0 devolviendo un Error desde <code>getLastError()</code> métodos</p>
 <pre><code class="hljs css js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyCustomReporter</span> </span>{
   <span class="hljs-comment">// ...</span>
   getLastError() {
