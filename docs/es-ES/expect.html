@@ -102,7 +102,7 @@ expect.extend({
     Received:
       &quot;apple&quot;
 </code></pre>
-<p>When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. You should craft a precise failure message to make sure users of your custom assertions have a good developer experience.</p>
+<p>When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. Debe elaborar un mensaje de error preciso para asegurarse de que los usuarios de sus afirmaciones modificadas tengan una buena experiencia de desarrollador.</p>
 <h3><a class="anchor" aria-hidden="true" name="expectanything"></a><a href="#expectanything" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.anything()</code></h3>
 <p><code>expect.anything()</code> aprobará cualquier cosa excepto <code>null</code> o <code>undefined</code>. You can use it inside <code>toEqual</code> or <code>toBeCalledWith</code> instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'map calls its argument with a non-null argument'</span>, () =&gt; {
@@ -112,7 +112,7 @@ expect.extend({
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectanyconstructor"></a><a href="#expectanyconstructor" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.any(constructor)</code></h3>
-<p><code>expect.any(constructor)</code> matches anything that was created with the given constructor. You can use it inside <code>toEqual</code> or <code>toBeCalledWith</code> instead of a literal value. For example, if you want to check that a mock function is called with a number:</p>
+<p><code>expect.any(constructor)</code> matches anything that was created with the given constructor. You can use it inside <code>toEqual</code> or <code>toBeCalledWith</code> instead of a literal value. Por ejemplo, si desea controlar que se denomina una función de prueba con un número:</p>
 <pre><code class="hljs css js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">randocall</span>(<span class="hljs-params">fn</span>) </span>{
   <span class="hljs-keyword">return</span> fn(<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">6</span> + <span class="hljs-number">1</span>));
 }
@@ -155,7 +155,7 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectassertionsnumber"></a><a href="#expectassertionsnumber" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.assertions(number)</code></h3>
-<p><code>expect.assertions(number)</code> verifies that a certain number of assertions are called during a test. This is often useful when testing asynchronous code, in order to make sure that assertions in a callback actually got called.</p>
+<p><code>expect.assertions(number)</code> verifies that a certain number of assertions are called during a test. Esto es útil frecuentemente cuando se prueba el código asíncrono con el fin de asegurarnos de que las aserciones en una devolución de llamada realmente se invocaron.</p>
 <p>For example, let's say that we have a function <code>doAsync</code> that receives two callbacks <code>callback1</code> and <code>callback2</code>, it will asynchronously call both of them in an unknown order. Podemos comprobarlo con:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'doAsync llama a ambos callbacks'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">2</span>);
@@ -183,7 +183,7 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 </code></pre>
 <p>The <code>expect.hasAssertions()</code> call ensures that the <code>prepareState</code> callback actually gets called.</p>
 <h3><a class="anchor" aria-hidden="true" name="expectobjectcontainingobject"></a><a href="#expectobjectcontainingobject" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.objectContaining(object)</code></h3>
-<p><code>expect.objectContaining(object)</code> matches any received object that recursively matches the expected properties. That is, the expected object is a <strong>subset</strong> of the received object. Therefore, it matches a received object which contains properties that are <strong>not</strong> in the expected object.</p>
+<p><code>expect.objectContaining(object)</code> matches any received object that recursively matches the expected properties. That is, the expected object is a <strong>subset</strong> of the received object. Por lo tanto, coincide con un objeto aceptado que contiene propiedades que ** not ** en el objeto esperado.</p>
 <p>Instead of literal property values in the expected object, you can use matchers, <code>expect.anything()</code>, and so on.</p>
 <p>For example, let's say that we expect an <code>onPress</code> function to be called with an <code>Event</code> object, and all we need to verify is that the event has <code>event.x</code> and <code>event.y</code> properties. Puedes hacer esto con:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'onPress gets called with the right thing'</span>, () =&gt; {
@@ -318,7 +318,7 @@ describe(<span class="hljs-string">'la lata'</span>, () =&gt; {
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="tohavebeencalledtimesnumber"></a><a href="#tohavebeencalledtimesnumber" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveBeenCalledTimes(number)</code></h3>
 <p>Use <code>.toHaveBeenCalledTimes</code> to ensure that a mock function got called exact number of times.</p>
-<p>For example, let's say you have a <code>drinkEach(drink, Array&lt;flavor&gt;)</code> function that takes a <code>drink</code> function and applies it to array of passed beverages. You might want to check that drink function was called exact number of times. You can do that with this test suite:</p>
+<p>For example, let's say you have a <code>drinkEach(drink, Array&lt;flavor&gt;)</code> function that takes a <code>drink</code> function and applies it to array of passed beverages. Es probable que pida controlar que la función de bebida se hubiera llamado el número exacto de veces. You can do that with this test suite:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'beberCada bebe cada bebida'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> beber = jest.fn();
   beberCada(beber, [<span class="hljs-string">'limon'</span>, <span class="hljs-string">'pulpo'</span>]);
@@ -347,7 +347,7 @@ describe(<span class="hljs-string">'la lata'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="tobeclosetonumero-numerodigitos"></a><a href="#tobeclosetonumero-numerodigitos" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeCloseTo(número, númeroDigitos)</code></h3>
-<p>Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:</p>
+<p>Es una mala idea usar la igualdad exacta con los números de coma flotante Redondear significa que las cosas intuitivas fallan. Por ejemplo, esta prueba falla:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'sumar funciona de manera sencilla con decimales simples'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBe(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Falla!</span>
 });
@@ -596,7 +596,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 <h3><a class="anchor" aria-hidden="true" name="tomatchsnapshotoptionalstring"></a><a href="#tomatchsnapshotoptionalstring" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toMatchSnapshot(optionalString)</code></h3>
 <p>This ensures that a value matches the most recent snapshot. Check out <a href="/jest/docs/es-ES/snapshot-testing.html">the Snapshot Testing guide</a> for more information.</p>
 <p>You can also specify an optional snapshot name. Otherwise, the name is inferred from the test.</p>
-<p><em>Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot.</em></p>
+<p><em>Nota: Si bien la prueba de instantáneas se usa con mayor frecuencia con los componentes de React, cualquier valor serializable se puede utilizar como una instantánea.</em></p>
 <h3><a class="anchor" aria-hidden="true" name="tothrowerror"></a><a href="#tothrowerror" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrow(error)</code></h3>
 <p>También bajo el alias: <code>.toThrowError(error)</code></p>
 <p>Utilice <code>.toThrow</code> en una prueba para verificar que una función arroja un error cuando se llama. For example, if we want to test that <code>drinkFlavor('octopus')</code> throws, because octopus flavor is too disgusting to drink, we could write:</p>
@@ -631,7 +631,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 });
 </code></pre>
 <blockquote>
-<p>Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.</p>
+<p>Nota: debe envolver el código en una función, al lo contrario el error no se detectará y la afirmación fallará.</p>
 </blockquote>
 <h3><a class="anchor" aria-hidden="true" name="tothrowerrormatchingsnapshot"></a><a href="#tothrowerrormatchingsnapshot" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrowErrorMatchingSnapshot()</code></h3>
 <p>Use <code>.toThrowErrorMatchingSnapshot</code> to test that a function throws an error matching the most recent snapshot when it is called. For example, let's say you have a <code>drinkFlavor</code> function that throws whenever the flavor is <code>'octopus'</code>, and is coded like this:</p>
