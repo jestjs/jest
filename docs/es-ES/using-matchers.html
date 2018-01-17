@@ -21,7 +21,7 @@
   expect(<span class="hljs-number">2</span> + <span class="hljs-number">2</span>).toBe(<span class="hljs-number">4</span>);
 });
 </code></pre>
-<p>Este código, <code>expect (2 + 2)</code> devuelve un objeto de &quot;expectativa&quot;. You typically won't do much with these expectation objects except call matchers on them. In this code, <code>.toBe(4)</code> is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.</p>
+<p>Este código, <code>expect (2 + 2)</code> devuelve un objeto de &quot;expectativa&quot;. Normalmente no hará mucho con estos objetos de expectativa, salvo los compradores de convocatoria sobre ellos. In this code, <code>.toBe(4)</code> is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.</p>
 <p><code>toBe</code> uses <code>Object.is</code> to test exact equality. If you want to check the value of an object, use <code>toEqual</code> instead:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'asignacion de objeto'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> data = {<span class="hljs-attr">uno</span>: <span class="hljs-number">1</span>};
@@ -67,7 +67,7 @@ test(<span class="hljs-string">'cero'</span>, () =&gt; {
   expect(z).toBeFalsy();
 });
 </code></pre>
-<p>You should use the matcher that most precisely corresponds to what you want your code to be doing.</p>
+<p>Debería utilizar el comparador que corresponda con mayor precisión a lo que demanda que haga su código.</p>
 <h3><a class="anchor" aria-hidden="true" name="numeros"></a><a href="#numeros" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Números</h3>
 <p>Existen múltiples matchers equivalentes para la comprobación de números.</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'dos mas dos'</span>, () =&gt; {
