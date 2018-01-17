@@ -1,5 +1,7 @@
 ## master
 
+## jest 22.1.2
+
 ### Fixes
 
 * `[jest-cli]` Check if the file belongs to the checked project before adding it
