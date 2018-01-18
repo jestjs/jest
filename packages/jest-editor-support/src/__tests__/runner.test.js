@@ -260,6 +260,7 @@ describe('events', () => {
     fakeProcess = (new EventEmitter(): any);
     fakeProcess.stdout = new EventEmitter();
     fakeProcess.stderr = new EventEmitter();
+    fakeProcess.kill = () => {};
 
     (createProcess: any).mockImplementation(() => fakeProcess);
 
