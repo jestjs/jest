@@ -60,6 +60,7 @@ export type Argv = {|
   resetMocks: boolean,
   resetModules: boolean,
   resolver: ?string,
+  restoreMocks: boolean,
   rootDir: string,
   roots: Array<string>,
   setupFiles: Array<string>,

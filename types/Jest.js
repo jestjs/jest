@@ -43,7 +43,7 @@ export type Jest = {|
   runTimersToTime(msToRun: number): void,
   setMock(moduleName: string, moduleExports: any): Jest,
   setTimeout(timeout: number): Jest,
-  spyOn(object: Object, methodName: string): JestMockFn,
+  spyOn(object: Object, methodName: string, accessType?: string): JestMockFn,
   unmock(moduleName: string): Jest,
   useFakeTimers(): Jest,
   useRealTimers(): Jest,

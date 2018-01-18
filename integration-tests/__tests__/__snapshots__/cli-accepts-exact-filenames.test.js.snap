@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CLI accepts exact filenames 1`] = `
+"PASS ./bar.js
+  ● Console
+
+    console.log bar.js:2
+      Hey
+
+PASS foo/baz.js
+  ● Console
+
+    console.log foo/baz.js:2
+      Hey
+
+
+"
+`;
+
+exports[`CLI accepts exact filenames 2`] = `
+"Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /.\\\\/bar.js|.\\\\/foo\\\\/baz.js|.\\\\/foo/i.
+"
+`;
+
+exports[`CLI accepts exact filenames 3`] = `""`;

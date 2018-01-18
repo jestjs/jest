@@ -193,6 +193,10 @@ class StringContaining extends AsymmetricMatcher {
   }
 
   asymmetricMatch(other: string) {
+    if (!isA('String', other)) {
+      return false;
+    }
+
     return other.includes(this.sample);
   }
 
@@ -218,6 +222,10 @@ class StringMatching extends AsymmetricMatcher {
   }
 
   asymmetricMatch(other: string) {
+    if (!isA('String', other)) {
+      return false;
+    }
+
     return this.sample.test(other);
   }
 

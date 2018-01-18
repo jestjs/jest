@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {Path} from 'types/Config';
+import type {Path, Glob} from 'types/Config';
 
 import path from 'path';
 import {ValidationError} from 'jest-validate';
@@ -45,6 +45,10 @@ export const resolve = (rootDir: string, key: string, filePath: Path) => {
   }
 
   return module;
+};
+
+export const escapeGlobCharacters = (path: Path): Glob => {
+  return path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
 };
 
 export const _replaceRootDirInPath = (

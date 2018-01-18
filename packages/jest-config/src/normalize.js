@@ -25,6 +25,7 @@ import {
   DOCUMENTATION_NOTE,
   _replaceRootDirInPath,
   _replaceRootDirTags,
+  escapeGlobCharacters,
   getTestEnvironment,
   resolve,
 } from './utils';
@@ -288,7 +289,14 @@ const buildTestPathPattern = (argv: Argv): string => {
     patterns.push(...argv.testPathPattern);
   }
 
-  const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
+  const replacePosixSep = (pattern: string) => {
+    if (path.sep === '/') {
+      return pattern;
+    }
+    return pattern.replace(/\//g, '\\\\');
+  };
+
+  const testPathPattern = patterns.map(replacePosixSep).join('|');
   if (validatePattern(testPathPattern)) {
     return testPathPattern;
   } else {
@@ -437,13 +445,17 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
-            const globMatches = glob.sync(project);
+            const globMatches =
+              typeof project === 'string' ? glob.sync(project) : [];
             return projects.concat(globMatches.length ? globMatches : project);
           }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(options.rootDir, options[key]);
+        value = _replaceRootDirTags(
+          escapeGlobCharacters(options.rootDir),
+          options[key],
+        );
         break;
       case 'automock':
       case 'bail':
@@ -475,6 +487,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
+      case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
       case 'silent':

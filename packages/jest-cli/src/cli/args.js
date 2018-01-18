@@ -20,12 +20,17 @@ export const check = (argv: Argv) => {
     );
   }
 
-  if (argv.onlyChanged && argv.watchAll) {
-    throw new Error(
-      'Both --onlyChanged and --watchAll were specified, but these two ' +
-        'options do not make sense together. Try the --watch option which ' +
-        'reruns only tests related to changed files.',
-    );
+  for (const key of ['onlyChanged', 'lastCommit', 'changedFilesWithAncestor']) {
+    if (argv[key]) {
+      argv.onlyChanged = true;
+    }
+    if (argv[key] && argv.watchAll) {
+      throw new Error(
+        `Both --${key} and --watchAll were specified, but these two ` +
+          'options do not make sense together. Try the --watch option which ' +
+          'reruns only tests related to changed files.',
+      );
+    }
   }
 
   if (argv.findRelatedTests && argv._.length === 0) {
@@ -104,9 +109,8 @@ export const options = {
   },
   changedFilesWithAncestor: {
     description:
-      'When used together with `--onlyChanged`, it runs tests ' +
-      'related to the current changes and the changes made in the last commit. ' +
-      '(NOTE: this only works for hg repos)',
+      'Runs tests related to the current changes and the changes made in the ' +
+      'last commit. Behaves similarly to `--onlyChanged`.',
     type: 'boolean',
   },
   ci: {
@@ -268,8 +272,8 @@ export const options = {
   lastCommit: {
     default: undefined,
     description:
-      'Will run all tests affected by file changes in the last ' +
-      'commit made.',
+      'Run all tests affected by file changes in the last commit made. ' +
+      'Behaves similarly to `--onlyChanged`.',
     type: 'boolean',
   },
   listTests: {
@@ -354,7 +358,7 @@ export const options = {
     description:
       'Attempts to identify which tests to run based on which ' +
       "files have changed in the current repository. Only works if you're " +
-      'running tests in a git repository at the moment.',
+      'running tests in a git or hg repository at the moment.',
     type: 'boolean',
   },
   onlyFailures: {
@@ -406,6 +410,13 @@ export const options = {
   resolver: {
     description: 'A JSON string which allows the use of a custom resolver.',
     type: 'string',
+  },
+  restoreMocks: {
+    default: undefined,
+    description:
+      'Automatically restore mock state and implementation between every test. ' +
+      'Equivalent to calling jest.restoreAllMocks() between each test.',
+    type: 'boolean',
   },
   rootDir: {
     description:

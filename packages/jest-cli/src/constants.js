@@ -9,7 +9,7 @@
 
 const isWindows = process.platform === 'win32';
 
-export const CLEAR = isWindows ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
+export const CLEAR = isWindows ? '\x1B[2J\x1B[0f' : '\x1B[2J\x1B[3J\x1B[H';
 
 export const KEYS = {
   A: '61',
@@ -24,10 +24,12 @@ export const KEYS = {
   ENTER: '0d',
   ESCAPE: '1b',
   F: '66',
+  I: '69',
   O: '6f',
   P: '70',
   Q: '71',
   QUESTION_MARK: '3f',
+  S: '73',
   T: '74',
   U: '75',
   W: '77',

@@ -96,6 +96,9 @@ Beware that `mockFn.mockRestore` only works when mock was created with
 `jest.spyOn`. Thus you have to take care of restoration yourself when manually
 assigning `jest.fn()`.
 
+The [`restoreMocks`](configuration.html#restoremocks-boolean) configuration
+option is available to restore mocks automatically between tests.
+
 ### `mockFn.mockImplementation(fn)`
 
 Accepts a function that should be used as the implementation of the mock. The

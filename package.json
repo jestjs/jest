@@ -55,7 +55,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "mock-fs": "^4.4.1",
-    "prettier": "^1.9.1",
+    "prettier": "^1.10.1",
     "progress": "^2.0.0",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
@@ -81,7 +81,7 @@
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
-    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn build-clean",
+    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration-tests/*/*/node_modules && yarn build-clean",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,md",
@@ -109,7 +109,7 @@
       "packages/.*/build-es5",
       "packages/jest-runtime/src/__tests__/test_root.*",
       "website/.*",
-      "integration_tests/runtime-internal-module-registry/__mocks__"
+      "integration-tests/runtime-internal-module-registry/__mocks__"
     ],
     "collectCoverageFrom": [
       "**/packages/jest-*/**/*.js",
@@ -120,7 +120,7 @@
       "!**/perf/**",
       "!**/__mocks__/**",
       "!**/__tests__/**",
-      "!integration_tests/**"
+      "!integration-tests/**"
     ],
     "coverageReporters": [
       "json"
@@ -140,7 +140,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/examples/",
-      "/integration_tests/.*/__tests__",
+      "/integration-tests/.*/__tests__",
       "\\.snap$",
       "/packages/.*/build",
       "/packages/.*/build-es5",
@@ -156,7 +156,7 @@
       "/packages/jest-validate/src/__tests__/fixtures/",
       "/packages/jest-worker/src/__performance_tests__",
       "/packages/pretty-format/perf/test.js",
-      "/integration_tests/__tests__/iterator-to-null-test.js"
+      "/integration-tests/__tests__/iterator-to-null-test.js"
     ]
   },
   "prettier": {

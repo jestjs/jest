@@ -21,6 +21,7 @@ import {
 } from './test_result_helpers';
 import CoverageReporter from './reporters/coverage_reporter';
 import DefaultReporter from './reporters/default_reporter';
+import exit from 'exit';
 import NotifyReporter from './reporters/notify_reporter';
 import ReporterDispatcher from './reporter_dispatcher';
 import snapshot from 'jest-snapshot';
@@ -324,11 +325,12 @@ export default class TestScheduler {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {
-        const exit = () => process.exit(1);
+        const failureExit = () => exit(1);
+
         return this._dispatcher
           .onRunComplete(contexts, aggregatedResults)
-          .then(exit)
-          .catch(exit);
+          .then(failureExit)
+          .catch(failureExit);
       }
     }
     return Promise.resolve();

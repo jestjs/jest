@@ -357,9 +357,9 @@ until the promise resolves as well.
 
 Also under the aliases: `it.only(name, fn, timeout)` or `fit(name, fn, timeout)`
 
-When you are debugging a large codebase, you will often only want to run a
+When you are debugging a large test file, you will often only want to run a
 subset of tests. You can use `.only` to specify which tests are the only ones
-you want to run.
+you want to run in that test file.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how
 long to wait before aborting. _Note: The default timeout is 5 seconds._
@@ -376,7 +376,8 @@ test('it is not snowing', () => {
 });
 ```
 
-Only the "it is raining" test will run, since it is run with `test.only`.
+Only the "it is raining" test will run in that test file, since it is run with
+`test.only`.
 
 Usually you wouldn't check code using `test.only` into source control - you
 would use it just for debugging, and remove it once you have fixed the broken

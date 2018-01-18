@@ -70,6 +70,7 @@ export default ({
   resetMocks: false,
   resetModules: false,
   resolver: '<rootDir>/resolver.js',
+  restoreMocks: false,
   rootDir: '/',
   roots: ['<rootDir>'],
   runTestsByPath: false,
