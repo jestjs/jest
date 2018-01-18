@@ -31,10 +31,9 @@ export const createProcess = (
   const runtimeArgs = [].concat(initialArgs, args);
 
   // If a path to configuration file was defined, push it to runtimeArgs
-  const configPath = workspace.pathToConfig;
-  if (configPath !== '') {
+  if (workspace.pathToConfig) {
     runtimeArgs.push('--config');
-    runtimeArgs.push(configPath);
+    runtimeArgs.push(workspace.pathToConfig);
   }
 
   // To use our own commands in create-react, we need to tell the command that
