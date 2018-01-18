@@ -25,8 +25,9 @@ test('Tests are executed only once even in an MPR', () => {
   // Make a global config that ignores all sub-projects.
   const config = {
     jest: {
-      projects: ['<rootDir>/foo/*/'],
+      projects: ['<rootDir>', '<rootDir>/foo/*/'],
       testPathIgnorePatterns: ['/foo/'],
+      testRegex: /my-test-.*\.js/.source,
     },
   };
 

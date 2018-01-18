@@ -213,18 +213,25 @@ export default class SearchSource {
       const validTestPaths =
         paths &&
         paths.filter(name => {
+          const fullName = path.resolve(name);
+
           try {
-            if (!fs.lstatSync(name).isFile()) {
-              // It exists, but it is not a file; return false.
+            if (!fs.lstatSync(fullName).isFile()) {
+              // It exists, but it is not a file.
               return false;
             }
           } catch (e) {
-            // It does not exist; return false.
+            // It does not exist.
+            return false;
+          }
+
+          // The file exists, but it is explicitly blacklisted.
+          if (!this._testPathCases.testPathIgnorePatterns(fullName)) {
             return false;
           }
 
           // It exists and it is a file; return true if it's in the project.
-          return allFiles.has(path.resolve(name));
+          return allFiles.has(fullName);
         });
 
       if (validTestPaths && validTestPaths.length) {
