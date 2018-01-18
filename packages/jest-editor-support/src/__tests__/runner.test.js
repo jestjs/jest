@@ -9,15 +9,12 @@
 
 'use strict';
 
-const {EventEmitter} = require('events');
-const path = require('path');
-const {readFileSync} = require('fs');
-const fixtures = path.resolve(__dirname, '../../../../fixtures');
-import ProjectWorkspace from '../project_workspace';
-import {messageTypes} from '../types';
-
+jest.mock('../Process');
+jest.mock('child_process', () => ({spawn: jest.fn()}));
+jest.mock('os', () => ({tmpdir: jest.fn()}));
+jest.mock('fs', () => {
+  const readFileSync = require.requireActual('fs').readFileSync;
 // Replace `readFile` with `readFileSync` so we don't get multiple threads
-jest.doMock('fs', () => {
   return {
     readFile: (path, type, closure) => {
       const data = readFileSync(path);
@@ -27,23 +24,234 @@ jest.doMock('fs', () => {
   };
 });
 
-// Let's us use a per-test "jest process"
-let mockDebugProcess = {};
-const mockCreateProcess = jest.fn(() => mockDebugProcess);
-jest.doMock('../Process.js', () => {
-  return {
-    createProcess: mockCreateProcess,
-  };
+const path = require('path');
+const fixtures = path.resolve(__dirname, '../../../../fixtures');
+import ProjectWorkspace from '../project_workspace';
+import {messageTypes} from '../types';
+
+import {default as Runner} from '../Runner';
+import {createProcess} from '../Process';
+import {tmpdir} from 'os';
+import {spawn} from 'child_process';
+import {readFileSync} from 'fs';
+import EventEmitter from 'events';
+import type {ChildProcess} from 'child_process';
+
+describe('Runner', () => {
+  describe('constructor', () => {
+    it('does not set watchMode', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+
+      expect(sut.watchMode).not.toBeDefined();
+    });
+
+    it('sets the output filepath', () => {
+      tmpdir.mockReturnValueOnce('tmpdir');
+
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+
+      expect(sut.outputPath).toBe('tmpdir/jest_runner.json');
+    });
+
+    it('sets the default options', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+
+      expect(sut.options).toEqual({});
+    });
+
+    it('sets the options', () => {
+      const workspace: any = {};
+      const options = {};
+      const sut = new Runner(workspace, options);
+
+      expect(sut.options).toBe(options);
+    });
+  });
+
+  describe('start', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+
+      (createProcess: any).mockImplementationOnce(
+        (workspace, args, options) => {
+          const process: any = new EventEmitter();
+          process.stdout = new EventEmitter();
+          process.stderr = new EventEmitter();
+          return process;
+        },
+      );
+    });
+
+    it('will not start when started', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+
+      sut.start();
+      sut.start();
+
+      expect(createProcess).toHaveBeenCalledTimes(1);
+    });
+
+    it('sets watchMode', () => {
+      const expected = true;
+
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.start(expected);
+
+      expect(sut.watchMode).toBe(expected);
+    });
+
+    it('calls createProcess', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][0]).toBe(workspace);
+    });
+
+    it('calls createProcess with the --json arg', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][1]).toContain('--json');
+    });
+
+    it('calls createProcess with the --useStderr arg', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][1]).toContain('--useStderr');
+    });
+
+    it('calls createProcess with the --jsonOutputFile arg for Jest 17 and below', () => {
+      const workspace: any = {localJestMajorVersion: 17};
+      const sut = new Runner(workspace);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf('--jsonOutputFile');
+      expect(index).not.toBe(-1);
+      expect(args[index + 1]).toBe(sut.outputPath);
+    });
+
+    it('calls createProcess with the --outputFile arg for Jest 18 and above', () => {
+      const workspace: any = {localJestMajorVersion: 18};
+      const sut = new Runner(workspace);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf('--outputFile');
+      expect(index).not.toBe(-1);
+      expect(args[index + 1]).toBe(sut.outputPath);
+    });
+
+    it('calls createProcess with the --watch arg when provided', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.start(true);
+
+      expect((createProcess: any).mock.calls[0][1]).toContain('--watch');
+    });
+
+    it('calls createProcess with the --testNamePattern arg when provided', () => {
+      const expected = 'testNamePattern';
+
+      const workspace: any = {};
+      const options = {testNamePattern: expected};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf('--testNamePattern');
+      expect(index).not.toBe(-1);
+      expect(args[index + 1]).toBe(expected);
+    });
+
+    it('calls createProcess with a test path pattern when provided', () => {
+      const expected = 'testPathPattern';
+      const workspace: any = {};
+      const options = {testFileNamePattern: expected};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][1]).toContain(expected);
+    });
+  });
+
+  describe('closeProcess', () => {
+    let platformPV;
+
+    beforeEach(() => {
+      jest.resetAllMocks();
+      platformPV = process.platform;
+
+      // Remove the "process.platform" property descriptor so it can be writable.
+      delete process.platform;
+    });
+
+    afterEach(() => {
+      process.platform = platformPV;
+    });
+
+    it('does nothing if the runner has not started', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.closeProcess();
+
+      expect(spawn).not.toBeCalled();
+    });
+
+    it('spawns taskkill to close the process on Windows', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      process.platform = 'win32';
+      sut.debugprocess = ({pid: 123}: any);
+      sut.closeProcess();
+
+      expect(spawn).toBeCalledWith('taskkill', ['/pid', '123', '/T', '/F']);
+    });
+
+    it('calls kill() to close the process on POSIX', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      process.platform = 'posix';
+      const kill = jest.fn();
+      sut.debugprocess = ({kill}: any);
+      sut.closeProcess();
+
+      expect(kill).toBeCalledWith();
 });
 
-const Runner = require('../Runner').default;
+    it('clears the debugprocess property', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.debugprocess = ({kill: () => {}}: any);
+      sut.closeProcess();
+
+      expect(sut.debugprocess).not.toBeDefined();
+    });
+  });
+});
 
 describe('events', () => {
-  let runner;
-  let fakeProcess;
+  let runner: Runner;
+  let fakeProcess: ChildProcess;
 
   beforeEach(() => {
-    mockCreateProcess.mockClear();
+    jest.resetAllMocks();
+
+    fakeProcess = (new EventEmitter(): any);
+    fakeProcess.stdout = new EventEmitter();
+    fakeProcess.stderr = new EventEmitter();
+
+    (createProcess: any).mockImplementation(() => fakeProcess);
+
     const workspace = new ProjectWorkspace(
       '.',
       'node_modules/.bin/jest',
@@ -51,11 +259,6 @@ describe('events', () => {
       18,
     );
     runner = new Runner(workspace);
-    fakeProcess = (new EventEmitter(): any);
-    fakeProcess.stdout = new EventEmitter();
-    fakeProcess.stderr = new EventEmitter();
-    mockDebugProcess = fakeProcess;
-    mockDebugProcess.kill = jest.fn();
 
     // Sets it up and registers for notifications
     runner.start();
@@ -91,15 +294,11 @@ describe('events', () => {
     expect(close).toBeCalled();
   });
 
-  it('should only start one jest process at a time', () => {
-    runner.start();
-    expect(mockCreateProcess).toHaveBeenCalledTimes(1);
-  });
-
   it('should start jest process after killing the old process', () => {
     runner.closeProcess();
     runner.start();
-    expect(mockCreateProcess).toHaveBeenCalledTimes(2);
+
+    expect(createProcess).toHaveBeenCalledTimes(2);
   });
 
   describe('stdout.on("data")', () => {
