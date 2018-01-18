@@ -1,6 +1,14 @@
 ## master
 
-* `[jest-editor-support]` Add option to spawn command in shell ([#5340](https://github.com/facebook/jest/pull/5340))
+## jest 22.1.3
+
+### Fixes
+
+* `[jest-cli]` Check if the file belongs to the checked project before adding it
+  to the list, also checking that the file name is not explicitly blacklisted
+  ([#5341](https://github.com/facebook/jest/pull/5341))
+* `[jest-editor-support]` Add option to spawn command in shell
+  ([#5340](https://github.com/facebook/jest/pull/5340))
 
 ## jest 22.1.2
 
