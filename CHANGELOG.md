@@ -1,5 +1,7 @@
 ## master
 
+* `[jest-editor-support]` Add option to spawn command in shell ([#5340](https://github.com/facebook/jest/pull/5340))
+
 ## jest 22.1.2
 
 ### Fixes
