@@ -23,9 +23,11 @@ export type Options = {
   createProcess?: (
     workspace: ProjectWorkspace,
     args: Array<string>,
+    options?: SpawnOptions,
   ) => ChildProcess,
   testNamePattern?: string,
   testFileNamePattern?: string,
+  shell?: boolean,
 };
 
 /**

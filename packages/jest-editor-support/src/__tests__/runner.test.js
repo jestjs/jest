@@ -14,7 +14,7 @@ jest.mock('child_process', () => ({spawn: jest.fn()}));
 jest.mock('os', () => ({tmpdir: jest.fn()}));
 jest.mock('fs', () => {
   const readFileSync = require.requireActual('fs').readFileSync;
-// Replace `readFile` with `readFileSync` so we don't get multiple threads
+  // Replace `readFile` with `readFileSync` so we don't get multiple threads
   return {
     readFile: (path, type, closure) => {
       const data = readFileSync(path);
@@ -182,6 +182,15 @@ describe('Runner', () => {
 
       expect((createProcess: any).mock.calls[0][1]).toContain(expected);
     });
+
+    it('calls createProcess with the shell option when provided', () => {
+      const workspace: any = {};
+      const options = {shell: true};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][2]).toEqual({shell: true});
+    });
   });
 
   describe('closeProcess', () => {
@@ -226,7 +235,7 @@ describe('Runner', () => {
       sut.closeProcess();
 
       expect(kill).toBeCalledWith();
-});
+    });
 
     it('clears the debugprocess property', () => {
       const workspace: any = {};
