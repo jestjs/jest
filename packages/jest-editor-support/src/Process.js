@@ -45,7 +45,7 @@ export const createProcess = (
   const spawnOptions = {
     cwd: workspace.rootPath,
     env,
-    ...options,
+    shell: options.shell,
   };
   return spawn(command, runtimeArgs, spawnOptions);
 };

@@ -13,7 +13,9 @@ jest.mock('../Process');
 jest.mock('child_process', () => ({spawn: jest.fn()}));
 jest.mock('os', () => ({tmpdir: jest.fn()}));
 jest.mock('fs', () => {
+  // $FlowFixMe requireActual
   const readFileSync = require.requireActual('fs').readFileSync;
+
   // Replace `readFile` with `readFileSync` so we don't get multiple threads
   return {
     readFile: (path, type, closure) => {
