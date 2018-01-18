@@ -58,7 +58,7 @@ test(<span class="hljs-string">'sumar 1 + 2 es igual a 3'</span>, () =&gt; {
 <pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>Note: If you are using a babel version 7 then you need to install <code>babel-jest</code> with the following command:</p>
+<p>Observa: Si está utilizando una versión babel 7, entonces tiene que instalar <code>babel-jest</code> con el siguiente comando:</p>
 <pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
 </code></pre>
 </blockquote>
@@ -71,7 +71,7 @@ test(<span class="hljs-string">'sumar 1 + 2 es igual a 3'</span>, () =&gt; {
 <p>Ahora estas preparado para usar todas las características de ES6 y la sintaxis específica de React.</p>
 <blockquote>
 <p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. It will not use <code>development</code> section like Babel does by default when no <code>NODE_ENV</code> is set.</p>
-<p>Note: If you've turned off transpilation of ES2015 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
+<p>Observa: Si ha desactivado la transpilación de módulos ES2015 con la opción <code>{ &quot;modules&quot;: false }</code>, debe asegurarse de activarlo en su entorno de prueba.</p>
 </blockquote>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
