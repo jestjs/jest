@@ -116,4 +116,14 @@ describe('createProcess', () => {
 
     expect(spawn.mock.calls[0][2].shell).not.toBeDefined();
   });
+
+  it('should set the "shell" property when "options" are provided', () => {
+    const expected = {};
+    const workspace: any = {pathToJest: ''};
+    const args = [];
+    const options: any = {shell: expected};
+    createProcess(workspace, args, options);
+
+    expect(spawn.mock.calls[0][2].shell).toBe(expected);
+  });
 });

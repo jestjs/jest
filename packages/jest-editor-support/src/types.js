@@ -12,6 +12,10 @@ export type Location = {
   line: number,
 };
 
+export type SpawnOptions = {
+  shell?: boolean,
+};
+
 import type {ChildProcess} from 'child_process';
 import type ProjectWorkspace from './project_workspace';
 
