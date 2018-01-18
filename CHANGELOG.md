@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-resolve]` Add condition to avoid infinite loop when node module package main is ".".
+  ([#5344)](https://github.com/facebook/jest/pull/5344)
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
 
