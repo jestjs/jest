@@ -1,5 +1,7 @@
 ## master
 
+## jest 22.1.4
+
 ### Fixes
 
 * `[jest-util]` Add "debug" method to "console" implementations
