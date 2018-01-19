@@ -75,10 +75,10 @@ with the following command:</p>
 <p>Don't forget to add a <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> file
 in your project's root folder. For example, if you are using ES6 and
 <a href="https://facebook.github.io/react/">React.js</a> with the
-<a href="https://babeljs.io/docs/plugins/preset-es2015/"><code>babel-preset-es2015</code></a> and
+<a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and
 <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
 <pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"es2015"</span>, <span class="hljs-string">"react"</span>]
+  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
 }
 </code></pre>
 <p>You are now set up to use all ES6 features and React specific syntax.</p>
@@ -89,15 +89,15 @@ in your project's root folder. For example, if you are using ES6 and
 no <code>NODE_ENV</code> is set.</p>
 </blockquote>
 <blockquote>
-<p>Note: If you've turned off transpilation of ES2015 modules with the option
+<p>Note: If you've turned off transpilation of ES6 modules with the option
 <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test
 environment.</p>
 </blockquote>
 <pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
+  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
   <span class="hljs-attr">"env"</span>: {
     <span class="hljs-attr">"test"</span>: {
-      <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>], <span class="hljs-string">"react"</span>]
+      <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>], <span class="hljs-string">"react"</span>]
     }
   }
 }

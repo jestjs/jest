@@ -63,21 +63,21 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 </code></pre>
 </blockquote>
 <p><em>注意：如果您在使用 <code>npm</code> 3 或 4 ，或者 Yarn，您就不用再显式地安装 <code>regenerator-runtime</code>了。</em></p>
-<p>别忘了在你的项目根文件夹下添加一个 <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> 配置文件。 举个例子，如果您在使用 ES6 和 <a href="https://facebook.github.io/react/">React.js</a> 并且配置了 <a href="https://babeljs.io/docs/plugins/preset-es2015/"><code>babel-preset-es2015</code></a> 和 <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> ：</p>
+<p>别忘了在你的项目根文件夹下添加一个 <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> 配置文件。 For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
 <pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"es2015"</span>, <span class="hljs-string">"react"</span>]
+  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
 }
 </code></pre>
 <p>现在你就完成了使用所有 ES6 特性和 React 特殊语法所需的配置了。</p>
 <blockquote>
 <p>注意：如果你正在使用一个更复杂的 Babel 配置，并使用 Babel 的 <code>env</code> 选项，请记住 Jest 将自动把 <code>NODE_ENV</code> 设为 <code>test</code>。 它不会像 Babel 那样在 <code>NODE_ENV</code> 没有被设置时默认设为<code>development</code> 。</p>
-<p>注意：如果你用 <code>{ &quot;modules&quot;: false }</code> 关闭了 ES2015 模块的转译，就必须确保在测试环境中将其开启。</p>
+<p>注意：如果你用 <code>{ &quot;modules&quot;: false }</code> 关闭了 ES6 模块的转译，就必须确保在测试环境中将其开启。</p>
 </blockquote>
 <pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
+  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
   <span class="hljs-attr">"env"</span>: {
     <span class="hljs-attr">"test"</span>: {
-      <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>], <span class="hljs-string">"react"</span>]
+      <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>], <span class="hljs-string">"react"</span>]
     }
   }
 }

@@ -63,21 +63,21 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 </code></pre>
 </blockquote>
 <p><em>注: <code>npm</code> v3,4 か <code>yarn</code> を使用している場合は、<code>regenerator-runtime</code> を明示的にインストールする必要ありません。</em></p>
-<p>プロジェクトのルートフォルダーに <a href="https://babeljs.io/docs/usage/babelrc/"> <code>.babelrc</code></a> ファイルを追加することを忘れないでください。 たとえば、ES6 と <a href="https://facebook.github.io/react/"> React.js</a> を使用する場合は、 <a href="https://babeljs.io/docs/plugins/preset-es2015/"> <code>babel-preset-es2015</code></a> と <a href="https://babeljs.io/docs/plugins/preset-react/"> <code>babel-preset-react</code></a> をプリセットします。</p>
+<p>プロジェクトのルートフォルダーに <a href="https://babeljs.io/docs/usage/babelrc/"> <code>.babelrc</code></a> ファイルを追加することを忘れないでください。 For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
 <pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"es2015"</span>, <span class="hljs-string">"react"</span>]
+  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
 }
 </code></pre>
 <p>ES6 と React の構文が使用できるように設定されました。</p>
 <blockquote>
 <p>注意: もし Babel の <code>env</code> オプションでより複雑な Babel の設定を行っている場合は、Jest は自動的に <code>NODE_ENV</code> を <code>test</code> に設定することに注意して下さい。 Jest では Babel が デフォルトで行うような、<code>NODE_ENV</code> が設定されていない場合に, <code>development</code> セクションを利用するといった事をしません。</p>
-<p>Note: If you've turned off transpilation of ES2015 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
+<p>Note: If you've turned off transpilation of ES6 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
 </blockquote>
 <pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
+  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
   <span class="hljs-attr">"env"</span>: {
     <span class="hljs-attr">"test"</span>: {
-      <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>], <span class="hljs-string">"react"</span>]
+      <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>], <span class="hljs-string">"react"</span>]
     }
   }
 }
