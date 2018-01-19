@@ -121,6 +121,20 @@ You can try out this functionality by cloning the
 [snapshot example](https://github.com/facebook/jest/tree/master/examples/snapshot),
 modifying the `Link` component, and running Jest.
 
+#### Interactive Updates
+
+Snapshots can also be updated one at a time in the Jest watch mode:
+
+![](/jest/img/content/interactiveSnapshot.png)
+
+Once you enter the Interactive Snapshot Updates mode, Jest will walk you though
+the failed snapshots one at a time and give you an opportunity to review the
+failed output.
+
+From here you can choose to update that snapshot or skip to the next:
+
+![](/jest/img/content/interactiveSnapshotUpdate.png)
+
 ### Tests Should Be Deterministic
 
 Your tests should be deterministic. That is, running the same tests multiple
