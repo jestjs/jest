@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[jest-resolve]` Add condition to avoid infinite loop when node module package main is ".".
+  ([#5344)](https://github.com/facebook/jest/pull/5344)
+
 ### Features
 * `[jest-cli]` `--changedSince`: allow selectively running tests for code
   changed since arbitrary revisions.
