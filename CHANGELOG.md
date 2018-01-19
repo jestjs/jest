@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[jest-util]` Add "debug" method to "console" implementations
+  ([#5350](https://github.com/facebook/jest/pull/5350))
 * `[jest-resolve]` Add condition to avoid infinite loop when node module package main is ".".
   ([#5344)](https://github.com/facebook/jest/pull/5344)
 
