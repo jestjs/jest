@@ -13,7 +13,10 @@ import type {Options, SCMAdapter} from 'types/ChangedFiles';
 import path from 'path';
 import childProcess from 'child_process';
 
-const findChangedFilesUsingCommand = async (args, cwd) => {
+const findChangedFilesUsingCommand = async (
+  args: Array<string>,
+  cwd: Path,
+): Promise<Array<Path>> => {
   return new Promise((resolve, reject) => {
     const child = childProcess.spawn('git', args, {cwd});
     let stdout = '';
@@ -30,6 +33,7 @@ const findChangedFilesUsingCommand = async (args, cwd) => {
           resolve(
             stdout
               .split('\n')
+              .filter(s => s !== '')
               .map(changedPath => path.resolve(cwd, changedPath)),
           );
         }
@@ -45,21 +49,28 @@ const adapter: SCMAdapter = {
     cwd: string,
     options?: Options,
   ): Promise<Array<Path>> => {
+    const changedSince: ?string =
+      options && (options.withAncestor ? 'HEAD^' : options.changedSince);
+
     if (options && options.lastCommit) {
       return await findChangedFilesUsingCommand(
         ['show', '--name-only', '--pretty=%b', 'HEAD'],
         cwd,
       );
-    } else if (options && options.withAncestor) {
-      const changed = await findChangedFilesUsingCommand(
-        ['diff', '--name-only', 'HEAD^'],
+    } else if (changedSince) {
+      const committed = await findChangedFilesUsingCommand(
+        ['log', '--name-only', '--pretty=%b', 'HEAD', `^${changedSince}`],
         cwd,
       );
-      const untracked = await findChangedFilesUsingCommand(
-        ['ls-files', '--other', '--exclude-standard'],
+      const staged = await findChangedFilesUsingCommand(
+        ['diff', '--cached', '--name-only'],
         cwd,
       );
-      return changed.concat(untracked);
+      const unstaged = await findChangedFilesUsingCommand(
+        ['ls-files', '--other', '--modified', '--exclude-standard'],
+        cwd,
+      );
+      return [...committed, ...staged, ...unstaged];
     } else {
       return await findChangedFilesUsingCommand(
         ['ls-files', '--other', '--modified', '--exclude-standard'],
