@@ -36,7 +36,60 @@ export default class SoundPlayerConsumer {
     this.soundPlayer.playSoundFile(coolSoundFileName);
   }
 }
+```
 
+## tl;dr: The 3 ways to create an ES6 class mock
+
+### Automatic mock
+Calling `jest.mock('./sound-player')` returns an "automatic mock" that replaces the ES6 class with a mock constructor, and replaces all of its methods with mock functions that don't return anything. Method calls are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
+
+```javascript
+import SoundPlayer from './sound-player';
+jest.mock('./sound-player');
+beforeEach(() => {
+  SoundPlayer.mockClear();
+});
+
+```
+
+### Manual mock
+
+```javascript
+// __mocks/sound-player.js
+export const mockPlayVideoFile = jest.fn(); // Import this named export into your test file
+const mock = jest.fn().mockImplementation(() => {
+  return { playVideoFile: mockPlayVideoFile }
+});
+
+export default mock;
+```
+
+### Calling  [`jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options) with the module factory parameter
+
+```javascript
+import SoundPlayer from './sound-player';
+let mockPlaySoundFile = jest.fn();
+jest.mock('./sound-player', () => {
+  return jest.fn().mockImplementation(() => {
+    return { playSoundFile: mockPlaySoundFile };
+  });
+});
+```
+
+
+
+### Calling mockImplementation on an automatic mock
+The mock returned when importing SoundPlayer and calling `jest.mock('./sound-player')` is called an "automatic mock."
+
+```javascript
+import SoundPlayer from './sound-player';
+let mockPlaySoundFile = jest.fn();
+jest.mock('./sound-player');
+SoundPlayer.mockImplementation(() => { // Works and lets you check for constructor calls
+  return {
+    playSoundFile: mockPlaySoundFile
+  };
+});
 ```
 
 In the Jest framework, there are three general approaches to mocking an import.
