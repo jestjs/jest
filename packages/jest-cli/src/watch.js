@@ -34,6 +34,12 @@ import {AsyncSeriesWaterfallHook} from 'tapable';
 
 let hasExitListener = false;
 
+const internalPlugins = [
+  require.resolve('./plugins/test_path_pattern'),
+  require.resolve('./plugins/test_name_pattern'),
+  require.resolve('./plugins/quit'),
+];
+
 export default function watch(
   initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
@@ -71,8 +77,9 @@ export default function watch(
 
   const watchPlugins = new WatchPluginRegistry(globalConfig.rootDir);
 
-  watchPlugins.loadPluginPath(require.resolve('./plugins/test_path_pattern'));
-  watchPlugins.loadPluginPath(require.resolve('./plugins/test_name_pattern'));
+  internalPlugins.forEach(pluginPath => {
+    watchPlugins.loadPluginPath(pluginPath);
+  });
 
   if (globalConfig.watchPlugins != null) {
     for (const pluginModulePath of globalConfig.watchPlugins) {
@@ -253,10 +260,6 @@ export default function watch(
     }
 
     switch (key) {
-      case KEYS.Q:
-        outputStream.write('\n');
-        exit(0);
-        return;
       case KEYS.ENTER:
         startRun(globalConfig);
         break;
@@ -433,8 +436,6 @@ const usage = (
           ' ' +
           chalk.dim(`to ${plugin.prompt}.`),
       ),
-
-    chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
 
     chalk.dim(' \u203A Press ') +
       'Enter' +

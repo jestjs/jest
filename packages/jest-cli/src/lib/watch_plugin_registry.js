@@ -12,7 +12,6 @@ import getType from 'jest-get-type';
 
 const RESERVED_KEYS = [
   0x03, // Jest should handle ctrl-c interrupt
-  'q'.codePointAt(0), // 'q' is reserved for quit
 ];
 
 export default class WatchPluginRegistry {
