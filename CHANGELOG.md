@@ -28,8 +28,9 @@
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
   case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
-* `[jest-cli]` Interactive Snapshot Update mode
-  ([#5154](https://github.com/facebook/jest/pull/5154))
+* `[jest-cli]` Interactive Snapshot Update: allow to review and update
+  individual snapshot failure
+  ([#3831](https://github.com/facebook/jest/pull/3831))
 
 ### Fixes
 
