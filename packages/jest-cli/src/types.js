@@ -7,14 +7,16 @@
  * @flow
  */
 
-import type {GlobalConfig} from 'types/Config';
+export type JestHooks = {
+  showPrompt: any,
+};
 
 export type WatchPlugin = {
   key: number,
   name: string,
   prompt: string,
   apply: (
-    jestHooks: any,
+    jestHooks: JestHooks,
     {
       stdin: stream$Readable | tty$ReadStream,
       stdout: stream$Writable | tty$WriteStream,

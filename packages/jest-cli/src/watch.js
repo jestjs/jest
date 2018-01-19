@@ -27,7 +27,6 @@ import SearchSource from './search_source';
 import SnapshotInteractiveMode from './snapshot_interactive_mode';
 import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
-import TestPathPatternPrompt from './test_path_pattern_prompt';
 import TestNamePatternPrompt from './test_name_pattern_prompt';
 import FailedTestsCache from './failed_tests_cache';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
@@ -81,9 +80,15 @@ export default function watch(
     }
   }
 
+  watchPlugins.getPluginsOrderedByKey().forEach(plugin => {
+    plugin.apply(hooks, {
+      stdin,
+      stdout: outputStream,
+    });
+  });
+
   const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
-  const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
   const snapshotInteractiveMode = new SnapshotInteractiveMode(outputStream);
   let failedSnapshotTestPaths = [];
@@ -96,8 +101,6 @@ export default function watch(
   let testWatcher;
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
-
-  testPathPatternPrompt.updateSearchSources(searchSources);
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
@@ -119,7 +122,6 @@ export default function watch(
           context,
           searchSource: new SearchSource(context),
         };
-        testPathPatternPrompt.updateSearchSources(searchSources);
         startRun(globalConfig);
       }
     });
@@ -217,12 +219,13 @@ export default function watch(
     }
 
     // Abort test run
+    const pluginKeys = watchPlugins.getPluginsOrderedByKey().map(p => p.key);
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.F].indexOf(
-        key,
-      ) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.T, KEYS.F]
+        .concat(pluginKeys)
+        .indexOf(key) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -235,10 +238,21 @@ export default function watch(
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
-      activePlugin.enter(
-        globalConfig,
-        // end callback -- returns control to jest to handle keystrokes
-        () => (activePlugin = null),
+      hooks.showPrompt.promise(globalConfig).then(
+        ({testNamePattern, testPathPattern} = {}) => {
+          activePlugin = null;
+          globalConfig = updateGlobalConfig(globalConfig, {
+            mode: 'watch',
+            testNamePattern,
+            testPathPattern: replacePathSepForRegex(testPathPattern || ''),
+          });
+
+          startRun(globalConfig);
+        },
+        () => {
+          activePlugin = null;
+          onCancelPatternPrompt();
+        },
       );
     }
 
@@ -311,21 +325,6 @@ export default function watch(
           testPathPattern: '',
         });
         startRun(globalConfig);
-        break;
-      case KEYS.P:
-        testPathPatternPrompt.run(
-          testPathPattern => {
-            globalConfig = updateGlobalConfig(globalConfig, {
-              mode: 'watch',
-              testNamePattern: '',
-              testPathPattern: replacePathSepForRegex(testPathPattern),
-            });
-
-            startRun(globalConfig);
-          },
-          onCancelPatternPrompt,
-          {header: activeFilters(globalConfig)},
-        );
         break;
       case KEYS.T:
         testNamePatternPrompt.run(
@@ -442,10 +441,6 @@ const usage = (
         'i' +
         chalk.dim(' to update failing snapshots interactively.')
       : null,
-
-    chalk.dim(' \u203A Press ') +
-      'p' +
-      chalk.dim(' to filter by a filename regex pattern.'),
 
     chalk.dim(' \u203A Press ') +
       't' +

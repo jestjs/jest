@@ -26,7 +26,7 @@ export default class WatchPluginRegistry {
 
   loadPluginPath(pluginModulePath: string) {
     // $FlowFixMe dynamic require
-    const maybePlugin = require(pluginModulePath).default;
+    let maybePlugin = require(pluginModulePath);
 
     // Since we're loading the module from a dynamic path, assert its shape
     // before assuming it's a valid watch plugin.
@@ -35,6 +35,11 @@ export default class WatchPluginRegistry {
         `Jest watch plugin ${pluginModulePath} must be an ES Module or export an object`,
       );
     }
+
+    if (getType(maybePlugin.default) === 'object') {
+      maybePlugin = maybePlugin.default;
+    }
+
     if (getType(maybePlugin.key) !== 'number') {
       throw new Error(
         `Jest watch plugin ${pluginModulePath} must export 'key' as a number`,
