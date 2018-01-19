@@ -9,6 +9,11 @@
 
 const EMPTY = new Set();
 
+export type DeepCyclicCopyOptions = {|
+  blacklist: Set<string>,
+  keepPrototype: boolean,
+|};
+
 // Node 6 does not have gOPDs, so we define a simple polyfill for it.
 if (!Object.getOwnPropertyDescriptors) {
   // $FlowFixMe: polyfill
@@ -26,7 +31,7 @@ if (!Object.getOwnPropertyDescriptors) {
 
 export default function deepCyclicCopy(
   value: any,
-  blacklist: Set<string> = EMPTY,
+  options?: DeepCyclicCopyOptions = {blacklist: EMPTY, keepPrototype: false},
   cycles: WeakMap<any, any> = new WeakMap(),
 ): any {
   if (typeof value !== 'object' || value === null) {
@@ -34,33 +39,39 @@ export default function deepCyclicCopy(
   } else if (cycles.has(value)) {
     return cycles.get(value);
   } else if (Array.isArray(value)) {
-    return deepCyclicCopyArray(value, blacklist, cycles);
+    return deepCyclicCopyArray(value, options, cycles);
   } else {
-    return deepCyclicCopyObject(value, blacklist, cycles);
+    return deepCyclicCopyObject(value, options, cycles);
   }
 }
 
 function deepCyclicCopyObject(
   object: Object,
-  blacklist: Set<string>,
+  options: DeepCyclicCopyOptions,
   cycles: WeakMap<any, any>,
 ): Object {
-  const newObject = Object.create(Object.getPrototypeOf(object));
+  const newObject = options.keepPrototype
+    ? Object.create(Object.getPrototypeOf(object))
+    : {};
+
   // $FlowFixMe: Object.getOwnPropertyDescriptors is polyfilled above.
   const descriptors = Object.getOwnPropertyDescriptors(object);
 
   cycles.set(object, newObject);
 
   Object.keys(descriptors).forEach(key => {
-    if (blacklist.has(key)) {
+    if (options.blacklist && options.blacklist.has(key)) {
       delete descriptors[key];
       return;
     }
 
     const descriptor = descriptors[key];
-
     if (typeof descriptor.value !== 'undefined') {
-      descriptor.value = deepCyclicCopy(descriptor.value, EMPTY, cycles);
+      descriptor.value = deepCyclicCopy(
+        descriptor.value,
+        {blacklist: EMPTY, keepPrototype: options.keepPrototype},
+        cycles,
+      );
     }
 
     descriptor.configurable = true;
@@ -71,16 +82,23 @@ function deepCyclicCopyObject(
 
 function deepCyclicCopyArray(
   array: Array<any>,
-  blacklist: Set<string>,
+  options: DeepCyclicCopyOptions,
   cycles: WeakMap<any, any>,
 ): Array<any> {
-  const newArray = [];
+  const newArray = options.keepPrototype
+    ? // $FlowFixMe: getPrototypeOf an array is OK.
+      new (Object.getPrototypeOf(array)).constructor(array.length)
+    : [];
   const length = array.length;
 
   cycles.set(array, newArray);
 
   for (let i = 0; i < length; i++) {
-    newArray[i] = deepCyclicCopy(array[i], EMPTY, cycles);
+    newArray[i] = deepCyclicCopy(
+      array[i],
+      {blacklist: EMPTY, keepPrototype: options.keepPrototype},
+      cycles,
+    );
   }
 
   return newArray;

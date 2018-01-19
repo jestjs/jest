@@ -55,6 +55,7 @@ export default ({
   preset: null,
   resetMocks: false,
   resetModules: false,
+  restoreMocks: false,
   runTestsByPath: false,
   runner: 'jest-runner',
   snapshotSerializers: [],

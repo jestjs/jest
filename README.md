@@ -68,7 +68,7 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly
 identical. To learn about the other things that Jest can test, see
-[Using Matchers](UsingMatchers.md).
+[Using Matchers](https://facebook.github.io/jest/docs/using-matchers.html).
 
 ## Running from command line
 
@@ -83,7 +83,7 @@ jest my-test --notify --config=config.json
 ```
 
 If you'd like to learn more about running `jest` through the command line, take
-a look at the [Jest CLI Options](CLI.md) page.
+a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
 
 ## Additional Configuration
 

@@ -22,8 +22,8 @@ import {version as VERSION} from '../../package.json';
 import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
+import exit from 'exit';
 import getChangedFilesPromise from '../get_changed_files_promise';
-import getJest from './get_jest';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
 import {print as preRunMessagePrint} from '../pre_run_message';
@@ -39,17 +39,14 @@ export async function run(maybeArgv?: Argv, project?: Path) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
     const projects = getProjectListFromCLIArgs(argv, project);
-    // If we're running a single Jest project, we might want to use another
-    // version of Jest (the one that is specified in this project's package.json)
-    const runCLIFn = getRunCLIFn(projects);
 
-    const {results, globalConfig} = await runCLIFn(argv, projects);
+    const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
     console.error(chalk.red(error.stack));
-    process.exit(1);
+    exit(1);
     throw error;
   }
 }
@@ -83,7 +80,7 @@ export const runCLI = async (
       process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
     });
 
-    process.exit(0);
+    exit(0);
   }
 
   await _run(
@@ -115,9 +112,11 @@ const readResultsAndExit = (
   globalConfig: GlobalConfig,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
-  process.on('exit', () => process.exit(code));
+
+  process.on('exit', () => exit(code));
+
   if (globalConfig.forceExit) {
-    process.exit(code);
+    exit(code);
   }
 };
 
@@ -158,9 +157,6 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
   return projects;
 };
 
-const getRunCLIFn = (projects: Array<Path>) =>
-  projects.length === 1 ? getJest(projects[0]).runCLI : runCLI;
-
 const printDebugInfoAndExitIfNeeded = (
   argv,
   globalConfig,
@@ -171,13 +167,13 @@ const printDebugInfoAndExitIfNeeded = (
     logDebugMessages(globalConfig, configs, outputStream);
   }
   if (argv.showConfig) {
-    process.exit(0);
+    exit(0);
   }
 };
 
 const printVersionAndExit = outputStream => {
   outputStream.write(`v${VERSION}\n`);
-  process.exit(0);
+  exit(0);
 };
 
 const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
@@ -353,7 +349,7 @@ const runWatch = async (
       await handleDeprecationWarnings(outputStream, process.stdin);
       return watch(globalConfig, contexts, outputStream, hasteMapInstances);
     } catch (e) {
-      process.exit(0);
+      exit(0);
     }
   }
 

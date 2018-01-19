@@ -11,6 +11,7 @@ import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 
+import exit from 'exit';
 import path from 'path';
 import util from 'util';
 import notifier from 'node-notifier';
@@ -73,7 +74,7 @@ export default class NotifyReporter extends BaseReporter {
             return;
           }
           if (metadata.activationValue === quitAnswer) {
-            process.exit(0);
+            exit(0);
             return;
           }
           if (metadata.activationValue === restartAnswer) {

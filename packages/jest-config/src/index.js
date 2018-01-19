@@ -162,6 +162,7 @@ const getConfigs = (
       resetMocks: options.resetMocks,
       resetModules: options.resetModules,
       resolver: options.resolver,
+      restoreMocks: options.restoreMocks,
       rootDir: options.rootDir,
       roots: options.roots,
       runner: options.runner,

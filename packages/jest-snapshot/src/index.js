@@ -79,7 +79,7 @@ const toMatchSnapshot = function(received: any, testName?: string) {
       `must be explicitly passed to write a new snapshot.\n\n` +
       `This is likely because this test is run in a continuous integration ` +
       `(CI) environment in which snapshots are not written by default.\n\n` +
-      `${RECEIVED_COLOR('Received value')}` +
+      `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
   } else {
     expected = (expected || '').trim();

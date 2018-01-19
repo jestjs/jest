@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "22.0.6",
+  "version": "22.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -12,11 +12,11 @@
     "chalk": "^2.0.1",
     "graceful-fs": "^4.1.11",
     "is-ci": "^1.0.10",
-    "jest-message-util": "^22.0.6",
-    "jest-validate": "^22.0.6",
+    "jest-message-util": "^22.1.0",
+    "jest-validate": "^22.1.2",
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {
-    "jest-mock": "^22.0.6"
+    "jest-mock": "^22.1.0"
   }
 }

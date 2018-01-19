@@ -1,17 +1,65 @@
 ## master
+
+## jest 22.1.3
+
+### Fixes
+
+* `[jest-cli]` Check if the file belongs to the checked project before adding it
+  to the list, also checking that the file name is not explicitly blacklisted
+  ([#5341](https://github.com/facebook/jest/pull/5341))
+* `[jest-editor-support]` Add option to spawn command in shell
+  ([#5340](https://github.com/facebook/jest/pull/5340))
+
+## jest 22.1.2
+
+### Fixes
+
+* `[jest-cli]` Check if the file belongs to the checked project before adding it
+  to the list ([#5335](https://github.com/facebook/jest/pull/5335))
+* `[jest-cli]` Fix `EISDIR` when a directory is passed as an argument to `jest`.
+  ([#5317](https://github.com/facebook/jest/pull/5317))
+* `[jest-config]` Added restoreMocks config option.
+  ([#5327](https://github.com/facebook/jest/pull/5327))
+
+## jest 22.1.0
+
+### Features
+
+* `[jest-cli]` Make Jest exit without an error when no tests are found in the
+  case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
+  having been passed to the CLI
+* `[jest-cli]` Interactive Snapshot Update mode
+  ([#5154](https://github.com/facebook/jest/pull/5154))
+
+### Fixes
+
+* `[jest-cli]` Use `import-local` to support global Jest installations.
+  ([#5304](https://github.com/facebook/jest/pull/5304))
+* `[jest-runner]` Fix memory leak in coverage reporting
+  ([#5289](https://github.com/facebook/jest/pull/5289))
+* `[docs]` Update mention of the minimal version of node supported
+  [#4947](https://github.com/facebook/jest/issues/4947)
+* `[jest-cli]` Fix missing newline in console message
+  ([#5308](https://github.com/facebook/jest/pull/5308))
+* `[jest-cli]` `--lastCommit` and `--changedFilesWithAncestor` now take effect
+  even when `--onlyChanged` is not specified.
+  ([#5307](https://github.com/facebook/jest/pull/5307))
+
+### Chore & Maintenance
+
+* `[filenames]` Standardize folder names under `integration-tests/`
+  ([#5298](https://github.com/facebook/jest/pull/5298))
+
 ## jest 22.0.6
 
 ### Fixes
 
-* `[jest-jasmine2]` Fix memory leak in snapshot reporting ([#5279](https://github.com/facebook/jest/pull/5279))
-* `[jest-config]` Fix breaking change in `--testPathPattern` ([#5269](https://github.com/facebook/jest/pull/5269))
+* `[jest-jasmine2]` Fix memory leak in snapshot reporting
+  ([#5279](https://github.com/facebook/jest/pull/5279))
+* `[jest-config]` Fix breaking change in `--testPathPattern`
+  ([#5269](https://github.com/facebook/jest/pull/5269))
 * `[docs]` Document caveat with mocks, Enzyme, snapshots and React 16
-   ([#3831](https://github.com/facebook/jest/pull/3831))
-
-### Features
-
-* `[jest-cli]` Interactive Snapshot Update mode 
-  ([#5154](https://github.com/facebook/jest/pull/5154))
+  ([#5258](https://github.com/facebook/jest/issues/5258))
 
 ## jest 22.0.5
 
@@ -45,6 +93,8 @@
   ([#5154](https://github.com/facebook/jest/pull/5154))
 * `[jest-jasmine2]` Support generator functions as specs.
   ([#5166](https://github.com/facebook/jest/pull/5166))
+* `[jest-jasmine2]` Allow `spyOn` with getters and setters.
+  ([#5107](https://github.com/facebook/jest/pull/5107))
 * `[jest-config]` Allow configuration objects inside `projects` array
   ([#5176](https://github.com/facebook/jest/pull/5176))
 * `[expect]` Add support to `.toHaveProperty` matcher to accept the keyPath
