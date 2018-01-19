@@ -181,8 +181,8 @@ Jest's manual mocking system can help to mock out the underlying implementation.
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'react-native-video'</span>, () =&gt; <span class="hljs-string">'Video'</span>);
 </code></pre>
 <p>This will render the component as <code>&lt;Video {...props} /&gt;</code> with all of its props
-in the snapshot output. See also <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React
-16</a>.</p>
+in the snapshot output. See also
+<a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a>.</p>
 <p>Sometimes you need to provide a more complex manual mock. For example if you'd
 like to forward the prop types or static fields of a native component to a mock,
 you can return a different React component from a mock through this helper from
