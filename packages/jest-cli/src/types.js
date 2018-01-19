@@ -6,6 +6,7 @@
  *
  * @flow
  */
+import type {GlobalConfig} from 'types/Config';
 
 export type JestHooks = {
   showPrompt: any,
@@ -22,4 +23,8 @@ export type WatchPlugin = {
       stdout: stream$Writable | tty$WriteStream,
     },
   ) => void,
+  shouldShowUsage?: (
+    globalConfig: GlobalConfig,
+    hasSnapshotFailures: boolean,
+  ) => boolean,
 };

@@ -9,7 +9,7 @@
 import type {WatchPlugin} from '../types';
 
 const PLUGIN_NAME = 'quit';
-const testPathPatternPlugin: WatchPlugin = {
+const quitPlugin: WatchPlugin = {
   apply: (jestHooks, {stdin, stdout}) => {
     jestHooks.showPrompt.tapPromise(PLUGIN_NAME, () => {
       stdout.write('\n');
@@ -21,4 +21,4 @@ const testPathPatternPlugin: WatchPlugin = {
   prompt: 'quit watch mode',
 };
 
-export default testPathPatternPlugin;
+export default quitPlugin;

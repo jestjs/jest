@@ -37,6 +37,7 @@ let hasExitListener = false;
 const internalPlugins = [
   require.resolve('./plugins/test_path_pattern'),
   require.resolve('./plugins/test_name_pattern'),
+  require.resolve('./plugins/update_snapshots'),
   require.resolve('./plugins/quit'),
 ];
 
@@ -245,15 +246,24 @@ export default function watch(
       // can handle them
       activePlugin = matchingWatchPlugin;
       hooks.showPrompt.promise(globalConfig).then(
-        ({testNamePattern, testPathPattern} = {}) => {
+        ({testNamePattern, testPathPattern, updateSnapshot} = {}) => {
           activePlugin = null;
+          const previousUpdateSnapshot = globalConfig.updateSnapshot;
           globalConfig = updateGlobalConfig(globalConfig, {
             mode: 'watch',
             testNamePattern,
             testPathPattern: replacePathSepForRegex(testPathPattern || ''),
+            updateSnapshot: updateSnapshot || globalConfig.updateSnapshot,
           });
 
           startRun(globalConfig);
+          globalConfig = updateGlobalConfig(globalConfig, {
+            // updateSnapshot is not sticky after a run.
+            updateSnapshot:
+              previousUpdateSnapshot === 'all'
+                ? 'none'
+                : previousUpdateSnapshot,
+          });
         },
         () => {
           activePlugin = null;
@@ -265,18 +275,6 @@ export default function watch(
     switch (key) {
       case KEYS.ENTER:
         startRun(globalConfig);
-        break;
-      case KEYS.U:
-        const previousUpdateSnapshot = globalConfig.updateSnapshot;
-
-        globalConfig = updateGlobalConfig(globalConfig, {
-          updateSnapshot: 'all',
-        });
-        startRun(globalConfig);
-        globalConfig = updateGlobalConfig(globalConfig, {
-          // updateSnapshot is not sticky after a run.
-          updateSnapshot: previousUpdateSnapshot,
-        });
         break;
       case KEYS.I:
         if (hasSnapshotFailure) {
@@ -419,18 +417,19 @@ const usage = (
 
     snapshotFailure
       ? chalk.dim(' \u203A Press ') +
-        'u' +
-        chalk.dim(' to update failing snapshots.')
-      : null,
-
-    snapshotFailure
-      ? chalk.dim(' \u203A Press ') +
         'i' +
         chalk.dim(' to update failing snapshots interactively.')
       : null,
 
     ...watchPlugins
       .getPluginsOrderedByKey()
+      .filter(plugin => {
+        if (plugin.shouldShowUsage) {
+          return plugin.shouldShowUsage(globalConfig, snapshotFailure);
+        } else {
+          return true;
+        }
+      })
       .map(
         plugin =>
           chalk.dim(' \u203A Press') +

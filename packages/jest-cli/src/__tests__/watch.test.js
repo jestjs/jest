@@ -53,6 +53,8 @@ jest.doMock(
   {virtual: true},
 );
 
+const nextTick = () => new Promise(res => process.nextTick(res));
+
 const watch = require('../watch').default;
 afterEach(runJestMock.mockReset);
 
@@ -256,14 +258,14 @@ describe('Watch mode flows', () => {
     expect(runJestMock).toHaveBeenCalledTimes(2);
   });
 
-  it('Pressing "u" reruns the tests in "update snapshot" mode', () => {
+  it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
     globalConfig.updateSnapshot = 'new';
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
     stdin.emit(KEYS.U);
-
+    await nextTick();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       updateSnapshot: 'all',
       watch: true,
