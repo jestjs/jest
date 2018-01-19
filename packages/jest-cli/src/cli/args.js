@@ -20,7 +20,12 @@ export const check = (argv: Argv) => {
     );
   }
 
-  for (const key of ['onlyChanged', 'lastCommit', 'changedFilesWithAncestor']) {
+  for (const key of [
+    'onlyChanged',
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedSince',
+  ]) {
     if (argv[key]) {
       argv.onlyChanged = true;
     }
@@ -112,6 +117,14 @@ export const options = {
       'Runs tests related to the current changes and the changes made in the ' +
       'last commit. Behaves similarly to `--onlyChanged`.',
     type: 'boolean',
+  },
+  changedSince: {
+    description:
+      'Runs tests related the changes since the provided branch. If the ' +
+      'current branch has diverged from the given branch, then only changes ' +
+      'made locally will be tested. Behaves similarly to `--onlyChanged`.',
+    nargs: 1,
+    type: 'string',
   },
   ci: {
     default: isCI,
