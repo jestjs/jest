@@ -101,6 +101,8 @@ const watch = require('../watch').default;
 
 const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
+const nextTick = () => new Promise(res => process.nextTick(res));
+
 const globalConfig = {
   watch: true,
 };
@@ -121,12 +123,13 @@ describe('Watch mode flows', () => {
     stdin = new MockStdin();
   });
 
-  it('Pressing "T" enters pattern mode', () => {
+  it('Pressing "T" enters pattern mode', async () => {
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
+    await nextTick();
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
@@ -145,6 +148,7 @@ describe('Watch mode flows', () => {
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
+    await nextTick();
     expect(runJestMock).toBeCalled();
 
     // globalConfig is updated with the current pattern

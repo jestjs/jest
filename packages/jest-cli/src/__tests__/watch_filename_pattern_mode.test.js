@@ -150,18 +150,22 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
+    await nextTick();
+
     ['p', '.', '*', '1', '0']
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
-
     await nextTick();
 
     stdin.emit(KEYS.T);
+    await nextTick();
+
     ['t', 'e', 's', 't']
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
+    await nextTick();
 
     stdin.emit(KEYS.C);
     pipe.write.mockReset();

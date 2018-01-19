@@ -13,8 +13,8 @@ Array [
 Watch Usage
  › Press a to run all tests.
  › Press f to run only failed tests.
- › Press t to filter by a test name regex pattern.
  › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test regex pattern.
  › Press q to quit watch mode.
  › Press Enter to trigger a test run.
 ",
@@ -28,9 +28,9 @@ Array [
 Watch Usage
  › Press a to run all tests.
  › Press f to run only failed tests.
- › Press t to filter by a test name regex pattern.
  › Press p to filter by a filename regex pattern.
  › Press s to do nothing.
+ › Press t to filter by a test regex pattern.
  › Press u to do something else.
  › Press q to quit watch mode.
  › Press Enter to trigger a test run.

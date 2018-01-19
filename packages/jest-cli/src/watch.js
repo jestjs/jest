@@ -27,7 +27,6 @@ import SearchSource from './search_source';
 import SnapshotInteractiveMode from './snapshot_interactive_mode';
 import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
-import TestNamePatternPrompt from './test_name_pattern_prompt';
 import FailedTestsCache from './failed_tests_cache';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
@@ -73,6 +72,7 @@ export default function watch(
   const watchPlugins = new WatchPluginRegistry(globalConfig.rootDir);
 
   watchPlugins.loadPluginPath(require.resolve('./plugins/test_path_pattern'));
+  watchPlugins.loadPluginPath(require.resolve('./plugins/test_name_pattern'));
 
   if (globalConfig.watchPlugins != null) {
     for (const pluginModulePath of globalConfig.watchPlugins) {
@@ -89,7 +89,6 @@ export default function watch(
 
   const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
-  const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
   const snapshotInteractiveMode = new SnapshotInteractiveMode(outputStream);
   let failedSnapshotTestPaths = [];
   let searchSources = contexts.map(context => ({
@@ -163,8 +162,6 @@ export default function watch(
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
 
-        testNamePatternPrompt.updateCachedTestResults(results.testResults);
-
         // Do not show any Watch Usage related stuff when running in a
         // non-interactive environment
         if (isInteractive) {
@@ -187,7 +184,6 @@ export default function watch(
           outputStream.write('\n');
         }
         failedTestsCache.setTestResults(results.testResults);
-        testNamePatternPrompt.updateCachedTestResults(results.testResults);
       },
       outputStream,
       startRun,
@@ -223,7 +219,7 @@ export default function watch(
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.T, KEYS.F]
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.F]
         .concat(pluginKeys)
         .indexOf(key) !== -1
     ) {
@@ -326,21 +322,6 @@ export default function watch(
         });
         startRun(globalConfig);
         break;
-      case KEYS.T:
-        testNamePatternPrompt.run(
-          testNamePattern => {
-            globalConfig = updateGlobalConfig(globalConfig, {
-              mode: 'watch',
-              testNamePattern,
-              testPathPattern: globalConfig.testPathPattern,
-            });
-
-            startRun(globalConfig);
-          },
-          onCancelPatternPrompt,
-          {header: activeFilters(globalConfig)},
-        );
-        break;
       case KEYS.QUESTION_MARK:
         break;
       case KEYS.W:
@@ -441,10 +422,6 @@ const usage = (
         'i' +
         chalk.dim(' to update failing snapshots interactively.')
       : null,
-
-    chalk.dim(' \u203A Press ') +
-      't' +
-      chalk.dim(' to filter by a test name regex pattern.'),
 
     ...watchPlugins
       .getPluginsOrderedByKey()
