@@ -222,7 +222,10 @@ export default function watch(
     }
 
     // Abort test run
-    const pluginKeys = watchPlugins.getPluginsOrderedByKey().map(p => p.key);
+    const pluginKeys = watchPlugins
+      .getPluginsOrderedByKey()
+      .map(p => p.key)
+      .map(key => Number(key).toString(16));
     if (
       isRunning &&
       testWatcher &&
