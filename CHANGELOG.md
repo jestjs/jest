@@ -21,6 +21,13 @@
 * `[jest-config]` Added restoreMocks config option.
   ([#5327](https://github.com/facebook/jest/pull/5327))
 
+## jest 22.1.1
+
+### Fixes
+
+* `[*]` Move from "process.exit" to "exit.
+  ([#5313](https://github.com/facebook/jest/pull/5313))
+
 ## jest 22.1.0
 
 ### Features
