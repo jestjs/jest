@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[doc]` Add information about Interactive Snapshot update
+  ([#5291](https://github.com/facebook/jest/pull/5291))
+
 ## jest 22.1.3
 
 ### Fixes
