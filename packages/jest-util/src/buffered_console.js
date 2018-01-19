@@ -34,6 +34,10 @@ export default class BufferedConsole extends Console {
     return buffer;
   }
 
+  debug() {
+    BufferedConsole.write(this._buffer, 'debug', format.apply(null, arguments));
+  }
+
   log() {
     BufferedConsole.write(this._buffer, 'log', format.apply(null, arguments));
   }
