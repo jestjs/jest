@@ -1,5 +1,7 @@
 ## master
 
+* `[jest]` Add `import-local` to `jest` package.
+
 ## jest 22.1.4
 
 ### Fixes
