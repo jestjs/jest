@@ -1,5 +1,7 @@
 ## master
 
+### Fixes
+
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 
