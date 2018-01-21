@@ -1,0 +1,14 @@
+{
+  "jest": {
+    "rootDir": "./",
+    "transform": {
+      "^.+\\.(js)$": "babel-jest"
+    },
+    "testRegex": "/__tests__/.*\\.(js)$",
+    "testEnvironment": "node",
+    "moduleFileExtensions": ["js"]
+  },
+  "babel": {
+    "presets": ["env"]
+  }
+}

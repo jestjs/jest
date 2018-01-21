@@ -437,9 +437,12 @@ class Runtime {
     return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
-  getSourceMapInfo() {
+  getSourceMapInfo(coveredFiles: Array<string>) {
     return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
-      if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
+      if (
+        coveredFiles.includes(sourcePath) &&
+        fs.existsSync(this._sourceMapRegistry[sourcePath])
+      ) {
         result[sourcePath] = this._sourceMapRegistry[sourcePath];
       }
       return result;

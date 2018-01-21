@@ -124,7 +124,9 @@ async function runTestInternal(
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;
     result.coverage = runtime.getAllCoverageInfoCopy();
-    result.sourceMaps = runtime.getSourceMapInfo();
+    result.sourceMaps = runtime.getSourceMapInfo(
+      Object.keys(result.coverage || {}),
+    );
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
     result.displayName = config.displayName;

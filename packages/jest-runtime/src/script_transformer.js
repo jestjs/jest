@@ -242,12 +242,12 @@ export default class ScriptTransformer {
       }
     }
 
-    if (mapCoverage) {
-      if (!transformed.map) {
-        const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
-        if (inlineSourceMap) {
-          transformed.map = inlineSourceMap.toJSON();
-        }
+    if (!transformed.map) {
+      //Could be a potential freeze here.
+      //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+      const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
+      if (inlineSourceMap) {
+        transformed.map = inlineSourceMap.toJSON();
       }
     }
 
@@ -261,7 +261,7 @@ export default class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (instrument && mapCoverage && transformed.map) {
+    if (transformed.map) {
       const sourceMapContent =
         typeof transformed.map === 'string'
           ? transformed.map

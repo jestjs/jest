@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`maps code coverage against original source 1`] = `
+Object {
+  "covered.js": Object {
+    "b": Object {},
+    "branchMap": Object {},
+    "f": Object {
+      "0": 1,
+    },
+    "fnMap": Object {
+      "0": Object {
+        "decl": Object {
+          "end": Object {
+            "column": 17,
+            "line": 2,
+          },
+          "start": Object {
+            "column": 26,
+            "line": 2,
+          },
+        },
+        "loc": Object {
+          "end": Object {
+            "column": 0,
+            "line": 2,
+          },
+          "start": Object {
+            "column": 58,
+            "line": 2,
+          },
+        },
+        "name": "doES6Stuff",
+      },
+    },
+    "path": "covered.js",
+    "s": Object {
+      "0": 1,
+      "1": 1,
+      "2": 1,
+    },
+    "statementMap": Object {
+      "0": Object {
+        "end": Object {
+          "column": -1,
+          "line": null,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 2,
+        },
+      },
+      "1": Object {
+        "end": Object {
+          "column": 24,
+          "line": 3,
+        },
+        "start": Object {
+          "column": 9,
+          "line": 3,
+        },
+      },
+      "2": Object {
+        "end": Object {
+          "column": -1,
+          "line": null,
+        },
+        "start": Object {
+          "column": 2,
+          "line": 4,
+        },
+      },
+    },
+  },
+}
+`;
