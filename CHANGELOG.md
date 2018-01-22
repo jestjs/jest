@@ -1,5 +1,10 @@
 ## master
 
+### features
+
+* `[jest-mock]` Add util methods to create async functions. 
+  ([#5318](https://github.com/facebook/jest/pull/5318)) 
+
 ### Fixes
 
 * `[jest]` Add `import-local` to `jest` package.
