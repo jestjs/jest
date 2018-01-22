@@ -253,9 +253,11 @@ jest.fn().mockReturnValue(Promise.resolve(value));
 Useful to mock async functions in async tests:
 
 ```js
-const asyncMock = jest.fn().mockResolvedValue(43);
-
-await asyncMock(); // 43
+test('async test', async () => {
+  const asyncMock = jest.fn().mockResolvedValue(43);
+  
+  await asyncMock(); // 43
+});
 ```
 
 ### `mockFn.mockRejectedValueOnce(value)`
@@ -268,16 +270,18 @@ jest.fn().mockReturnValueOnce(Promise.resolve(value));
 
 Useful to resolve different values over multiple async calls:
 
-```
-const asyncMock = jest.fn()
-  .mockResolvedValue('default')
-  .mockResolvedValueOnce('first call')
-  .mockResolvedValueOnce('second call');
-
-await asyncMock(); // first call
-await asyncMock(); // second call
-await asyncMock(); // default
-await asyncMock(); // default
+```js
+test('async test', async () => {
+  const asyncMock = jest.fn()
+    .mockResolvedValue('default')
+    .mockResolvedValueOnce('first call')
+    .mockResolvedValueOnce('second call');
+  
+  await asyncMock(); // first call
+  await asyncMock(); // second call
+  await asyncMock(); // default
+  await asyncMock(); // default
+});
 ```
 
 ### `mockFn.mockRejectedValue(value)`
@@ -291,9 +295,11 @@ jest.fn().mockReturnValue(Promise.reject(value));
 Useful to create async mock functions that will always reject:
 
 ```js
-const asyncMock = jest.fn().mockRejectedValue(new Error('Async error'));
-
-await asyncMock(); // throws "Async error"
+test('async test', async () => {
+  const asyncMock = jest.fn().mockRejectedValue(new Error('Async error'));
+  
+  await asyncMock(); // throws "Async error"
+});
 ```
 
 ### `mockFn.mockRejectedValueOnce(value)`
@@ -307,10 +313,12 @@ jest.fn().mockReturnValueOnce(Promise.reject(value));
 Example usage:
 
 ```js
-const asyncMock = jest.fn()
-  .mockResolvedValueOnce('first call')
-  .mockRejectedValueOnce(new Error('Async error'));
-
-await asyncMock(); // first call
-await asyncMock(); // throws "Async error"
+test('async test', async () => {
+  const asyncMock = jest.fn()
+    .mockResolvedValueOnce('first call')
+    .mockRejectedValueOnce(new Error('Async error'));
+  
+  await asyncMock(); // first call
+  await asyncMock(); // throws "Async error"
+});
 ```
