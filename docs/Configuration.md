@@ -766,7 +766,7 @@ test(() => {
 
 Rendered snapshot:
 
-```js
+```json
 Pretty foo: Object {
   "x": 1,
   "y": 2,
@@ -976,7 +976,7 @@ implementation.
 
 The test runner module must export a function with the following signature:
 
-```js
+```ts
 function testRunner(
   config: Config,
   environment: Environment,

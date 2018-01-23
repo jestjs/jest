@@ -155,7 +155,7 @@ call to the mocked function. Can be chained so that multiple function calls
 produce different results.
 
 ```js
-var myMockFn = jest
+const myMockFn = jest
   .fn()
   .mockImplementationOnce(cb => cb(null, true))
   .mockImplementationOnce(cb => cb(null, false));
@@ -171,7 +171,7 @@ mockImplementationOnce, it will execute the default implementation set with
 they were called:
 
 ```js
-var myMockFn = jest
+const myMockFn = jest
   .fn(() => 'default')
   .mockImplementationOnce(() => 'first call')
   .mockImplementationOnce(() => 'second call');
