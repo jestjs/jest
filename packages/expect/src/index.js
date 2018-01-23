@@ -172,18 +172,19 @@ const makeRejectMatcher = (
     );
   }
 
-  return actual
-    .then(v => {
+  return actual.then(
+    result => {
       const err = new JestAssertionError(
         utils.matcherHint(matcherStatement, 'received', '') +
           '\n\n' +
           `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
           'instead it resolved to value\n' +
-          `  ${utils.printReceived(v)}`,
+          `  ${utils.printReceived(result)}`,
       );
       return Promise.reject(err);
-    })
-    .catch(e => makeThrowingMatcher(matcher, isNot, e).apply(null, args));
+    },
+    reason => makeThrowingMatcher(matcher, isNot, reason).apply(null, args),
+  );
 };
 
 const makeThrowingMatcher = (
