@@ -260,7 +260,7 @@ test('async test', async () => {
 });
 ```
 
-### `mockFn.mockRejectedValueOnce(value)`
+### `mockFn.mockResolveValueOnce(value)`
 
 Simple sugar function for:
 
