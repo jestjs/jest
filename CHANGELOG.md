@@ -9,6 +9,8 @@
 
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
+* `[jest-cli]` Fix npm update command for snapshot summary.
+([#5376](https://github.com/facebook/jest/pull/5376))
 
 ## jest 22.1.4
 
