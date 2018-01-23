@@ -172,22 +172,18 @@ const makeRejectMatcher = (
     );
   }
 
-  return (async () => {
-    let result;
-    try {
-      result = await actual;
-    } catch (e) {
-      return makeThrowingMatcher(matcher, isNot, e).apply(null, args);
-    }
-
-    throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
-        'instead it resolved to value\n' +
-        `  ${utils.printReceived(result)}`,
-    );
-  })();
+  return actual
+    .then(v => {
+      const err = new JestAssertionError(
+        utils.matcherHint(matcherStatement, 'received', '') +
+          '\n\n' +
+          `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
+          'instead it resolved to value\n' +
+          `  ${utils.printReceived(v)}`,
+      );
+      return Promise.reject(err);
+    })
+    .catch(e => makeThrowingMatcher(matcher, isNot, e).apply(null, args));
 };
 
 const makeThrowingMatcher = (
