@@ -2,13 +2,15 @@
 
 ### features
 
-* `[jest-mock]` Add util methods to create async functions. 
-  ([#5318](https://github.com/facebook/jest/pull/5318)) 
+* `[jest-mock]` Add util methods to create async functions.
+  ([#5318](https://github.com/facebook/jest/pull/5318))
 
 ### Fixes
 
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
+* `[expect]` Make `makeRejectMatcher` synchronizable.
+  ([#5364](https://github.com/facebook/jest/pull/5364))
 
 ## jest 22.1.4
 
