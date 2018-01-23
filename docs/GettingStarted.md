@@ -80,7 +80,7 @@ a look at the [Jest CLI Options](CLI.md) page.
 To use [Babel](http://babeljs.io/), install the `babel-jest` and
 `regenerator-runtime` packages:
 
-```
+```bash
 npm install --save-dev babel-jest babel-core regenerator-runtime
 ```
 

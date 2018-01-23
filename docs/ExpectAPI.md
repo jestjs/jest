@@ -1050,7 +1050,7 @@ test('throws on octopus', () => {
 
 And it will generate the following snapshot:
 
-```
+```js
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
