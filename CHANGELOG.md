@@ -2,15 +2,17 @@
 
 ### features
 
-* `[jest-mock]` Add util methods to create async functions. 
-  ([#5318](https://github.com/facebook/jest/pull/5318)) 
+* `[jest-mock]` Add util methods to create async functions.
+  ([#5318](https://github.com/facebook/jest/pull/5318))
 
 ### Fixes
 
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
+* `[expect]` Support class instances in `.toHaveProperty()` matcher.
+  ([#5367](https://github.com/facebook/jest/pull/5367))
 * `[jest-cli]` Fix npm update command for snapshot summary.
-([#5376](https://github.com/facebook/jest/pull/5376))
+  ([#5376](https://github.com/facebook/jest/pull/5376))
 
 ## jest 22.1.4
 

@@ -749,6 +749,15 @@ describe('.toHaveLength', () => {
 });
 
 describe('.toHaveProperty()', () => {
+  class Foo {
+    get a() {
+      return undefined;
+    }
+    get b() {
+      return 'b';
+    }
+  }
+
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
@@ -758,6 +767,8 @@ describe('.toHaveProperty()', () => {
     [{a: {b: undefined}}, 'a.b', undefined],
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
+    [new Foo(), 'a', undefined],
+    [new Foo(), 'b', 'b'],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(
       obj,
@@ -782,6 +793,8 @@ describe('.toHaveProperty()', () => {
     [1, 'a.b.c', 'test'],
     ['abc', 'a.b.c', {a: 5}],
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
+    [new Foo(), 'a', 'a'],
+    [new Foo(), 'b', undefined],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,
