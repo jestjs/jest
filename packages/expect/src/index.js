@@ -130,7 +130,7 @@ const makeResolveMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
-): PromiseMatcherFn => async (...args) => {
+): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
@@ -141,19 +141,19 @@ const makeResolveMatcher = (
     );
   }
 
-  let result;
-  try {
-    result = await actual;
-  } catch (e) {
-    throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
-        'instead it rejected to value\n' +
-        `  ${utils.printReceived(e)}`,
-    );
-  }
-  return makeThrowingMatcher(matcher, isNot, result).apply(null, args);
+  return actual.then(
+    result => makeThrowingMatcher(matcher, isNot, result).apply(null, args),
+    reason => {
+      const err = new JestAssertionError(
+        utils.matcherHint(matcherStatement, 'received', '') +
+          '\n\n' +
+          `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
+          'instead it rejected to value\n' +
+          `  ${utils.printReceived(reason)}`,
+      );
+      return Promise.reject(err);
+    },
+  );
 };
 
 const makeRejectMatcher = (
