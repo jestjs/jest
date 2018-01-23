@@ -102,7 +102,7 @@ matches the snapshot artifact for this test case.
 To resolve this, we will need to update our snapshot artifacts. You can run Jest
 with a flag that will tell it to re-generate snapshots:
 
-```
+```bash
 jest --updateSnapshot
 ```
 
@@ -135,7 +135,7 @@ will be different every time the test case is run. In this case we can
 [mock the Date.now() method](MockFunctions.md) to return a consistent value
 every time the test is run:
 
-```
+```js
 Date.now = jest.fn(() => 1482363367071);
 ```
 

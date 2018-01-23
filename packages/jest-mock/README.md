@@ -24,10 +24,10 @@ and its return values.
 
 Inspects the argument and returns its schema in the following recursive format:
 
-```
+```js
 {
   type: ...
-  members : {}
+  members: {}
 }
 ```
 

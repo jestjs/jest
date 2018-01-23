@@ -136,7 +136,7 @@ expect.extend({
 
 This will print something like this:
 
-```
+```bash
   expect(received).toBe(expected)
 
     Expected value to be (using Object.is):

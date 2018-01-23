@@ -86,7 +86,7 @@ module.exports = 'test-file-stub';
 You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to
 mock [CSS Modules](https://github.com/css-modules/css-modules):
 
-```
+```bash
 npm install --save-dev identity-obj-proxy
 ```
 

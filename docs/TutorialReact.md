@@ -195,7 +195,7 @@ jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
 
 Then you will see warnings in the console:
 
-```
+```bash
 Warning: <SomeComponent /> is using uppercase HTML. Always use lowercase HTML tags in React.
 
 # Or:
