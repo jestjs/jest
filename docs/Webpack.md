@@ -42,10 +42,10 @@ module.exports = {
 ```
 
 If you have JavaScript files that are transformed by Babel, you can
-[enable support for Babel](GettingStarted.md#using-babel) by
-installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be
-handled with Jest's
-[`transform`](Configuration.md#transform-object-string-string) config option.
+[enable support for Babel](GettingStarted.md#using-babel) by installing the
+`babel-jest` plugin. Non-Babel JavaScript transformations can be handled with
+Jest's [`transform`](Configuration.md#transform-object-string-string) config
+option.
 
 ### Handling Static Assets
 
@@ -86,7 +86,7 @@ module.exports = 'test-file-stub';
 You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to
 mock [CSS Modules](https://github.com/css-modules/css-modules):
 
-```
+```bash
 npm install --save-dev identity-obj-proxy
 ```
 

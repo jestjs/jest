@@ -77,7 +77,7 @@ be exposed, even if they exist.
 
 #### `numWorkers: number` (optional)
 
-Amount of workers to spwan. Defaults to the number of CPUs minus 1.
+Amount of workers to spawn. Defaults to the number of CPUs minus 1.
 
 #### `maxRetries: number` (optional)
 

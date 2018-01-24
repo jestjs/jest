@@ -84,7 +84,23 @@ Received:
   string: <red>\\"a\\"</>"
 `;
 
+exports[`.resolves fails non-promise value "a" synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  string: <red>\\"a\\"</>"
+`;
+
 exports[`.resolves fails non-promise value [1] 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  array: <red>[1]</>"
+`;
+
+exports[`.resolves fails non-promise value [1] synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
 <red>received</> value must be a Promise.
@@ -100,7 +116,23 @@ Received:
   function: <red>[Function anonymous]</>"
 `;
 
+exports[`.resolves fails non-promise value [Function anonymous] synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  function: <red>[Function anonymous]</>"
+`;
+
 exports[`.resolves fails non-promise value {"a": 1} 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  object: <red>{\\"a\\": 1}</>"
+`;
+
+exports[`.resolves fails non-promise value {"a": 1} synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
 <red>received</> value must be a Promise.
@@ -116,7 +148,22 @@ Received:
   number: <red>4</>"
 `;
 
+exports[`.resolves fails non-promise value 4 synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  number: <red>4</>"
+`;
+
 exports[`.resolves fails non-promise value null 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received: <red>null</>"
+`;
+
+exports[`.resolves fails non-promise value null synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
 <red>received</> value must be a Promise.
@@ -131,7 +178,22 @@ Received:
   boolean: <red>true</>"
 `;
 
+exports[`.resolves fails non-promise value true synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  boolean: <red>true</>"
+`;
+
 exports[`.resolves fails non-promise value undefined 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received: <red>undefined</>"
+`;
+
+exports[`.resolves fails non-promise value undefined synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
 <red>received</> value must be a Promise.
