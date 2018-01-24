@@ -130,7 +130,7 @@ In order to mock a constructor function, the module factory must return a constr
 
 ```javascript
 import SoundPlayer from './sound-player';
-let mockPlaySoundFile = jest.fn();
+const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
     return { playSoundFile: mockPlaySoundFile };
@@ -241,7 +241,7 @@ A new object will be created each time the mock constructor function is called d
 
 ```javascript
 import SoundPlayer from './sound-player';
-let mockPlaySoundFile = jest.fn();
+const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
     return { playSoundFile: mockPlaySoundFile };
@@ -283,7 +283,7 @@ Here's a complete test file which uses the module factory parameter to `jest.moc
 import SoundPlayerConsumer from './sound-player-consumer';
 import SoundPlayer from './sound-player';
 
-let mockPlaySoundFile = jest.fn();
+const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
     return { playSoundFile: mockPlaySoundFile };
