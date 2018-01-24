@@ -2778,6 +2778,23 @@ To have a nested property:
 "
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a', "a") 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+To have a nested property:
+  <green>\\"a\\"</>
+With a value of:
+  <green>\\"a\\"</>
+Received:
+  <red>undefined</>
+
+Difference:
+
+  Comparing two different types of values. Expected <green>string</> but received <red>undefined</>."
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a', "test") 1`] = `
 "<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
 
@@ -2788,6 +2805,23 @@ To have a nested property:
 With a value of:
   <green>\\"test\\"</>
 "
+`;
+
+exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('b', undefined) 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+To have a nested property:
+  <green>\\"b\\"</>
+With a value of:
+  <green>undefined</>
+Received:
+  <red>\\"b\\"</>
+
+Difference:
+
+  Comparing two different types of values. Expected <green>undefined</> but received <red>string</>."
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(1).toHaveProperty('a.b.c') 1`] = `
@@ -2965,6 +2999,30 @@ Not to have a nested property:
   <green>\\"property\\"</>
 With a value of:
   <green>1</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('a', undefined) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+Not to have a nested property:
+  <green>\\"a\\"</>
+With a value of:
+  <green>undefined</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('b', "b") 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+Not to have a nested property:
+  <green>\\"b\\"</>
+With a value of:
+  <green>\\"b\\"</>
 "
 `;
 
