@@ -11,6 +11,8 @@
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
   ([#5367](https://github.com/facebook/jest/pull/5367))
+* `[jest-cli]` Fix npm update command for snapshot summary.
+  ([#5376](https://github.com/facebook/jest/pull/5376))
 
 ## jest 22.1.4
 
