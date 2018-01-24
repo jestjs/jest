@@ -30,7 +30,7 @@ make everything work well together. We are using the <code>babel-jest</code> pac
 the <code>react</code> babel preset to transform our code inside of the test environment.
 Also see <a href="/jest/docs/en/getting-started.html#using-babel">using babel</a>.</p>
 <p>Run</p>
-<pre><code class="hljs css bash">npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
+<pre><code class="hljs css bash">npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 </code></pre>
 <p>Your <code>package.json</code> should look something like this (where <code>&lt;current-version&gt;</code>
 is the actual latest version number for the package). Please add the scripts and
@@ -42,7 +42,7 @@ jest configuration entries:</p>
   },
   "devDependencies": {
     "babel-jest": "&lt;current-version&gt;",
-    "babel-preset-es2015": "&lt;current-version&gt;",
+    "babel-preset-env": "&lt;current-version&gt;",
     "babel-preset-react": "&lt;current-version&gt;",
     "jest": "&lt;current-version&gt;",
     "react-test-renderer": "&lt;current-version&gt;"
@@ -53,7 +53,7 @@ jest configuration entries:</p>
 </code></pre>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": ["es2015", "react"]
+  "presets": ["env", "react"]
 }
 </code></pre>
 <p><strong>And you're good to go!</strong></p>
