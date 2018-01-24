@@ -12,7 +12,8 @@
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
   ([#5367](https://github.com/facebook/jest/pull/5367))
 * `[jest-cli]` Fix npm update command for snapshot summary.
-  ([#5376](https://github.com/facebook/jest/pull/5376))
+  ([#5376](https://github.com/facebook/jest/pull/5376),
+  [5389](https://github.com/facebook/jest/pull/5389/))
 * `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
 
