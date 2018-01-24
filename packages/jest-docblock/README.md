@@ -56,7 +56,7 @@ const code = `
  * @everything is:awesome
  * @flow
  */
- 
+
  export const everything = Object.create(null);
  export default function isAwesome(something) {
    return something === everything;

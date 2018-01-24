@@ -27,7 +27,7 @@ Also see [using babel](GettingStarted.md#using-babel).
 Run
 
 ```bash
-npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
+npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>`
@@ -42,7 +42,7 @@ jest configuration entries:
   },
   "devDependencies": {
     "babel-jest": "<current-version>",
-    "babel-preset-es2015": "<current-version>",
+    "babel-preset-env": "<current-version>",
     "babel-preset-react": "<current-version>",
     "jest": "<current-version>",
     "react-test-renderer": "<current-version>"
@@ -55,7 +55,7 @@ jest configuration entries:
 ```json
 // .babelrc
 {
-  "presets": ["es2015", "react"]
+  "presets": ["env", "react"]
 }
 ```
 
@@ -195,7 +195,7 @@ jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
 
 Then you will see warnings in the console:
 
-```
+```bash
 Warning: <SomeComponent /> is using uppercase HTML. Always use lowercase HTML tags in React.
 
 # Or:

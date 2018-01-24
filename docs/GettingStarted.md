@@ -5,13 +5,13 @@ title: Getting Started
 
 Install Jest using [`npm`](https://www.npmjs.com/):
 
-```
+```bash
 npm install --save-dev jest
 ```
 
 Or via [`yarn`](https://yarnpkg.com/en/package/jest):
 
-```
+```bash
 yarn add --dev jest
 ```
 
@@ -47,7 +47,7 @@ Add the following section to your `package.json`:
 
 Finally, run `npm test` and Jest will print this message:
 
-```
+```bash
 PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 ```
@@ -80,14 +80,14 @@ a look at the [Jest CLI Options](CLI.md) page.
 To use [Babel](http://babeljs.io/), install the `babel-jest` and
 `regenerator-runtime` packages:
 
-```
+```bash
 npm install --save-dev babel-jest babel-core regenerator-runtime
 ```
 
 > Note: If you are using a babel version 7 then you need to install `babel-jest`
 > with the following command:
 >
-> ```
+> ```bash
 > npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
 > ```
 

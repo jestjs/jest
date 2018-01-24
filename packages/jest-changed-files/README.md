@@ -25,9 +25,7 @@ options: Object literal with keys
 * lastCommit: boolean
 * withAncestor: boolean
 
-### findRepos(roots: <Array
-
-<string>>): Promise<?object>
+### findRepos(roots: <Array<string>>): Promise<?object>
 
 Get a set of git and hg repositories.
 
