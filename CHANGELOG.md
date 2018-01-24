@@ -15,6 +15,8 @@
   ([#5376](https://github.com/facebook/jest/pull/5376))
 * `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
+* `[docs]` Add tutorial page for ES6 class mocks.
+  ([#5383]https://github.com/facebook/jest/pull/5383))
 
 ## jest 22.1.4
 
