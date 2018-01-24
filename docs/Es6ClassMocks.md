@@ -265,8 +265,6 @@ export default mock;
 
 Usage is similar to the module factory function, except that you can omit the second argument from `jest.mock()`, and you must import the mocked method into your test file, since it is no longer defined there. Use the original module path for this; don't include `__mocks__`.
 
-Note that, like all manual mocks, this will override the real implementation in all of your tests unless you call `jest.unmock('./sound-player)`.
-
 ### Cleaning up between tests
 To clear the record of calls to the mock constructor function and its methods, we call [`mockClear()`](MockFunctionAPI.md#mockfnmockclear) in the `beforeEach()` function:
 
