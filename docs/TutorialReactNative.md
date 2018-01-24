@@ -255,7 +255,7 @@ these mocks in a separate file and add it to the list of `setupFiles`.
 Currently it is required to require react-native before loading the test
 renderer:
 
-```
+```js
 import 'react-native';
 // Require after react-native
 import renderer from 'react-test-renderer';

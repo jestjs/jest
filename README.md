@@ -1,15 +1,21 @@
 # Jest
 
 [![CircleCI Build Status](https://circleci.com/gh/facebook/jest.svg?style=shield)](https://circleci.com/gh/facebook/jest)
-[![Travis Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master) [![npm version](https://badge.fury.io/js/jest.svg)](http://badge.fury.io/js/jest)
+[![Travis Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master)
+[![npm version](https://badge.fury.io/js/jest.svg)](http://badge.fury.io/js/jest)
 
 🃏 Delightful JavaScript Testing
 
-- **👩🏻‍💻 Easy Setup**: Complete and easy to set-up JavaScript testing solution. Works out of the box for any React project.
+* **👩🏻‍💻 Easy Setup**: Complete and easy to set-up JavaScript testing solution.
+  Works out of the box for any React project.
 
-- **🏃🏽 Instant Feedback**: Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.
+* **🏃🏽 Instant Feedback**: Fast interactive watch mode runs only test files
+  related to changed files and is optimized to give signal quickly.
 
-- **📸 Snapshot Testing**: Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.
+* **📸 Snapshot Testing**: Capture snapshots of React trees or other
+  serializable values to simplify testing and to analyze how state changes over
+  time.
 
 ## Getting Started
 
@@ -17,13 +23,13 @@
 
 Install Jest using [`npm`](https://www.npmjs.com/):
 
-```
+```bash
 npm install --save-dev jest
 ```
 
 Or via [`yarn`](https://yarnpkg.com/en/package/jest):
 
-```
+```bash
 yarn add --dev jest
 ```
 
@@ -59,7 +65,7 @@ Add the following section to your `package.json`:
 
 Finally, run `npm test` and Jest will print this message:
 
-```
+```bash
 PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 ```
@@ -83,7 +89,8 @@ jest my-test --notify --config=config.json
 ```
 
 If you'd like to learn more about running `jest` through the command line, take
-a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
+a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html)
+page.
 
 ## Additional Configuration
 
@@ -92,14 +99,14 @@ a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) 
 To use [Babel](http://babeljs.io/), install the `babel-jest` and
 `regenerator-runtime` packages:
 
-```
+```bash
 npm install --save-dev babel-jest babel-core regenerator-runtime
 ```
 
 > Note: If you are using a babel version 7 then you need to install `babel-jest`
 > with the following command:
 >
-> ```
+> ```bash
 > npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
 > ```
 
@@ -165,11 +172,13 @@ started.
 
 To use TypeScript in your tests you can use
 [ts-jest](https://github.com/kulshekhar/ts-jest).
+
 <!-- generated_getting_started_end -->
 
 ## Documentation
 
-Learn more about using Jest at http://facebook.github.io/jest
+Learn more about using
+[Jest on the official site!](http://facebook.github.io/jest)
 
 * [Getting Started](http://facebook.github.io/jest/docs/en/getting-started.html)
 * [Guides](http://facebook.github.io/jest/docs/en/snapshot-testing.html)
@@ -178,7 +187,8 @@ Learn more about using Jest at http://facebook.github.io/jest
 
 ## Badge
 
-Show the world you're using *Jest* → [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+Show the world you're using _Jest_ →
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
 
 ```md
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
@@ -186,6 +196,9 @@ Show the world you're using *Jest* → [![tested with jest](https://img.shields.
 
 ## Contributing
 
-Send issues and pull requests with your ideas. For more information about contributing PRs and issues, see our [Contribution Guidelines](https://github.com/facebook/jest/blob/master/CONTRIBUTING.md).
+Send issues and pull requests with your ideas. For more information about
+contributing PRs and issues, see our
+[Contribution Guidelines](https://github.com/facebook/jest/blob/master/CONTRIBUTING.md).
 
-[Good First Issue](https://github.com/facebook/jest/labels/Good%20First%20Issue) is a great starting point for PRs.
+[Good First Issue](https://github.com/facebook/jest/labels/Good%20First%20Issue)
+is a great starting point for PRs.

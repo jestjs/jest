@@ -591,7 +591,7 @@ module that exports a function expecting a string as the first argument for the
 path to resolve and an object with the following structure as the second
 argument:
 
-```
+```json
 {
   "basedir": string,
   "browser": bool,
@@ -766,7 +766,7 @@ test(() => {
 
 Rendered snapshot:
 
-```
+```json
 Pretty foo: Object {
   "x": 1,
   "y": 2,
@@ -907,7 +907,7 @@ specify both options.
 
 The following is a visualization of the default regex:
 
-```
+```bash
 ├── __tests__
 │   └── component.spec.js # test
 │   └── anything # test
@@ -925,7 +925,7 @@ This option allows the use of a custom results processor. This processor must be
 a node module that exports a function expecting an object with the following
 structure as the first argument and return it:
 
-```
+```json
 {
   "success": bool,
   "startTime": epoch,
@@ -976,13 +976,13 @@ implementation.
 
 The test runner module must export a function with the following signature:
 
-```
+```ts
 function testRunner(
   config: Config,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult>
+): Promise<TestResult>;
 ```
 
 An example of such function can be found in our default
