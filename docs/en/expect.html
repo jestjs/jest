@@ -160,9 +160,9 @@ expect.extend({
 });
 </code></pre>
 <p>This will print something like this:</p>
-<pre><code class="hljs">  expect(received).toBe(expected)
+<pre><code class="hljs css bash">  expect(received).toBe(expected)
 
-    Expected value <span class="hljs-keyword">to</span> be (<span class="hljs-keyword">using</span> <span class="hljs-built_in">Object</span>.<span class="hljs-keyword">is</span>):
+    Expected value to be (using Object.is):
       <span class="hljs-string">"banana"</span>
     Received:
       <span class="hljs-string">"apple"</span>
@@ -853,7 +853,7 @@ and is coded like this:</p>
 });
 </code></pre>
 <p>And it will generate the following snapshot:</p>
-<pre><code class="hljs">exports[`drinking flavors throws on octopus <span class="hljs-number">1</span>`] = `<span class="hljs-string">"yuck, octopus flavor"</span>`;
+<pre><code class="hljs css js">exports[<span class="hljs-string">`drinking flavors throws on octopus 1`</span>] = <span class="hljs-string">`"yuck, octopus flavor"`</span>;
 </code></pre>
 <p>Check out
 <a href="http://facebook.github.io/jest/blog/2016/07/27/jest-14.html">React Tree Snapshot Testing</a>

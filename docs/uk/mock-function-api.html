@@ -69,44 +69,44 @@ mockFn.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">
 mockFn.mock.calls[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] === <span class="hljs-number">1</span>; <span class="hljs-comment">// true</span>
 </code></pre>
 <p><code>mockImplementation</code> can also be used to mock class constructors:</p>
-<pre><code class="hljs">// SomeClass.js
-module.exports = class SomeClass {
+<pre><code class="hljs css js"><span class="hljs-comment">// SomeClass.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SomeClass</span> </span>{
   m(a, b) {}
-}
+};
 
-// OtherModule.test.js
-jest.mock('./SomeClass');  // this happens automatically with automocking
-const SomeClass = require('./SomeClass')
-const mMock = jest.fn()
-SomeClass.mockImplementation(() =&gt; {
-  return {
-    m: mMock
-  }
-})
+<span class="hljs-comment">// OtherModule.test.js</span>
+jest.mock(<span class="hljs-string">'./SomeClass'</span>); <span class="hljs-comment">// this happens automatically with automocking</span>
+<span class="hljs-keyword">const</span> SomeClass = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./SomeClass'</span>);
+<span class="hljs-keyword">const</span> mMock = jest.fn();
+SomeClass.mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">m</span>: mMock,
+  };
+});
 
-const some = new SomeClass()
-some.m('a', 'b')
-console.log('Calls to m: ', mMock.mock.calls)
+<span class="hljs-keyword">const</span> some = <span class="hljs-keyword">new</span> SomeClass();
+some.m(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Calls to m: '</span>, mMock.mock.calls);
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockimplementationoncefn"></a><a href="#mockfnmockimplementationoncefn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementationOnce(fn)</code></h3>
 <p>Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.</p>
-<pre><code class="hljs">var myMockFn = jest.fn()
-  .mockImplementationOnce(cb =&gt; cb(null, true))
-  .mockImplementationOnce(cb =&gt; cb(null, false));
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn()
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>))
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>));
 
-myMockFn((err, val) =&gt; console.log(val));
-&gt; true
+myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val)); <span class="hljs-comment">// true</span>
 
-myMockFn((err, val) =&gt; console.log(val));
-&gt; false
+myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val)); <span class="hljs-comment">// false</span>
 </code></pre>
 <p>When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with <code>jest.fn(() =&gt; defaultValue)</code> or <code>.mockImplementation(() =&gt; defaultValue)</code> if they were called:</p>
-<pre><code class="hljs">var myMockFn = jest.fn(() =&gt; 'default')
-  .mockImplementationOnce(() =&gt; 'first call')
-  .mockImplementationOnce(() =&gt; 'second call');
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'default'</span>)
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'first call'</span>)
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'second call'</span>);
 
-console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
-&gt; 'first call', 'second call', 'default', 'default'
+<span class="hljs-comment">// 'first call', 'second call', 'default', 'default'</span>
+<span class="hljs-built_in">console</span>.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmocknamevalue"></a><a href="#mockfnmocknamevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockName(value)</code></h3>
 <h5><a class="anchor" aria-hidden="true" name="jest-2200"></a><a href="#jest-2200" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Доступно в Jest <strong>22.0.0+</strong></h5>
@@ -117,9 +117,9 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 expect(mockFn).toHaveBeenCalled();
 </code></pre>
 <p>Will result in this error:</p>
-<pre><code class="hljs">    expect(mockedFunction).toHaveBeenCalled()
+<pre><code class="hljs css bash">    expect(mockedFunction).toHaveBeenCalled()
 
-    Expected mock function to have been called.
+    Expected mock <span class="hljs-keyword">function</span> to have been called.
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockreturnthis"></a><a href="#mockfnmockreturnthis" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnThis()</code></h3>
 <p>Просто цукрова функція для:</p>
@@ -137,13 +137,14 @@ mock(); <span class="hljs-comment">// 43</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockreturnvalueoncevalue"></a><a href="#mockfnmockreturnvalueoncevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnValueOnce(value)</code></h3>
 <p>Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more <code>mockReturnValueOnce</code> values to use, calls will return a value specified by <code>mockReturnValue</code>.</p>
-<pre><code class="hljs">const myMockFn = jest.fn()
-  .mockReturnValue('default')
-  .mockReturnValueOnce('first call')
-  .mockReturnValueOnce('second call');
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn()
+  .mockReturnValue(<span class="hljs-string">'default'</span>)
+  .mockReturnValueOnce(<span class="hljs-string">'first call'</span>)
+  .mockReturnValueOnce(<span class="hljs-string">'second call'</span>);
 
-console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
-&gt; 'first call', 'second call', 'default', 'default'
+<span class="hljs-comment">// 'first call', 'second call', 'default', 'default'</span>
+<span class="hljs-built_in">console</span>.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockresolvedvaluevalue"></a><a href="#mockfnmockresolvedvaluevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockResolvedValue(value)</code></h3>
 <p>Simple sugar function for:</p>
@@ -156,13 +157,14 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
   <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// 43</span>
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" name="mockfnmockrejectedvalueoncevalue"></a><a href="#mockfnmockrejectedvalueoncevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRejectedValueOnce(value)</code></h3>
+<h3><a class="anchor" aria-hidden="true" name="mockfnmockresolvedvalueoncevalue"></a><a href="#mockfnmockresolvedvalueoncevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockResolvedValueOnce(value)</code></h3>
 <p>Simple sugar function for:</p>
 <pre><code class="hljs css js">jest.fn().mockReturnValueOnce(<span class="hljs-built_in">Promise</span>.resolve(value));
 </code></pre>
 <p>Useful to resolve different values over multiple async calls:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> asyncMock = jest.fn()
+  <span class="hljs-keyword">const</span> asyncMock = jest
+    .fn()
     .mockResolvedValue(<span class="hljs-string">'default'</span>)
     .mockResolvedValueOnce(<span class="hljs-string">'first call'</span>)
     .mockResolvedValueOnce(<span class="hljs-string">'second call'</span>);
@@ -190,7 +192,8 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 </code></pre>
 <p>Example usage:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> asyncMock = jest.fn()
+  <span class="hljs-keyword">const</span> asyncMock = jest
+    .fn()
     .mockResolvedValueOnce(<span class="hljs-string">'first call'</span>)
     .mockRejectedValueOnce(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Async error'</span>));
 

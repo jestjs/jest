@@ -315,13 +315,13 @@
 <p>デフォルト: <code>undefined</code></p>
 <h5><a class="anchor" aria-hidden="true" name="jest-2000"></a><a href="#jest-2000" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>jest バージョン<strong>20.0.0+</strong>で利用可能</h5>
 <p>カスタムのリゾルバを利用する場合はこのオプションを指定します。 このリゾルバは、第1引数に依存関係の解決に用いるパスの文字列を、第2引数に以下の構造のオブジェクトを受け取る関数をエクスポートする nodeモジュールでなければなりません:</p>
-<pre><code class="hljs">{
-  &quot;basedir&quot;: string,
-  &quot;browser&quot;: bool,
-  &quot;extensions&quot;: [string],
-  &quot;moduleDirectory&quot;: [string],
-  &quot;paths&quot;: [string],
-  &quot;rootDir&quot;: [string]
+<pre><code class="hljs css json">{
+  <span class="hljs-attr">"basedir"</span>: string,
+  <span class="hljs-attr">"browser"</span>: bool,
+  <span class="hljs-attr">"extensions"</span>: [string],
+  <span class="hljs-attr">"moduleDirectory"</span>: [string],
+  <span class="hljs-attr">"paths"</span>: [string],
+  <span class="hljs-attr">"rootDir"</span>: [string]
 }
 </code></pre>
 <p>関数は解決されるべきモジュールへのパスかモジュールが見つからなければエラーを返します。</p>
@@ -405,9 +405,9 @@
 });
 </code></pre>
 <p>レンダリングされたスナップショット:</p>
-<pre><code class="hljs">Pretty foo: Object {
-  &quot;x&quot;: 1,
-  &quot;y&quot;: 2,
+<pre><code class="hljs css json">Pretty foo: Object {
+  "x": 1,
+  "y": 2,
 }
 </code></pre>
 <p>シリアライザーの依存関係を暗黙的から明示的なものにするには、Jest の設定に <code>snapshotSerializers</code> へのパスを追加する代わりに、個々のテストファイルにモジュールを <a href="/jest/docs/ja/expect.html#expectaddsnapshotserializerserializer"><code>expect.addSnapshotSerializer</code></a> を呼び出して追加して下さい。</p>
@@ -479,51 +479,51 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>デフォルト: <code>(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$</code></p>
 <p>テストファイルを検出するのにJestが使用するパターンを指定します。 デフォルトでは <code>__tests__</code> ディレクトリ配下の <code>.js</code> および <code>.jsx</code> ファイルを探し、そして<code>.test</code> または <code>.spec</code> のサフィックスが付いたファイルを探します(例えば <code>Component.test.js</code> または <code>Component.spec.js</code> など)。 <code>test.js</code> または <code>spec.js</code> といったファイルについても同様に見つけます。 <a href="#testmatch-array-string"><code>testMatch</code> [array<string>]</a>についても参照して下さい、ただし両方のオプションを同時には指定できないことに注意してください。</p>
 <p>以下はデフォルトの正規表現を可視化したものです。</p>
-<pre><code class="hljs">├── __tests__
-│   └── component.spec.js # test
-│   └── anything # test
-├── package.json # not test
-├── foo.test.js # test
-├── bar.spec.jsx # test
-└── component.js # not test
+<pre><code class="hljs css bash">├── __tests__
+│   └── component.spec.js <span class="hljs-comment"># test</span>
+│   └── anything <span class="hljs-comment"># test</span>
+├── package.json <span class="hljs-comment"># not test</span>
+├── foo.test.js <span class="hljs-comment"># test</span>
+├── bar.spec.jsx <span class="hljs-comment"># test</span>
+└── component.js <span class="hljs-comment"># not test</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="testresultsprocessor-string"></a><a href="#testresultsprocessor-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testResultsProcessor</code> [string]</h3>
 <p>デフォルト: <code>undefined</code></p>
 <p>独自の results processor を利用する場合はこのオプションを指定します。 results processor は、以下の構造のオブジェクトを第一引数として期待する関数をエクスポートする node モジュールで、引数に取ったオブジェクトを返す必要があります：</p>
-<pre><code class="hljs">{
-  &quot;success&quot;: bool,
-  &quot;startTime&quot;: epoch,
-  &quot;numTotalTestSuites&quot;: number,
-  &quot;numPassedTestSuites&quot;: number,
-  &quot;numFailedTestSuites&quot;: number,
-  &quot;numRuntimeErrorTestSuites&quot;: number,
-  &quot;numTotalTests&quot;: number,
-  &quot;numPassedTests&quot;: number,
-  &quot;numFailedTests&quot;: number,
-  &quot;numPendingTests&quot;: number,
-  &quot;testResults&quot;: [{
-    &quot;numFailingTests&quot;: number,
-    &quot;numPassingTests&quot;: number,
-    &quot;numPendingTests&quot;: number,
-    &quot;testResults&quot;: [{
-      &quot;title&quot;: string (message in it block),
-      &quot;status&quot;: &quot;failed&quot; | &quot;pending&quot; | &quot;passed&quot;,
-      &quot;ancestorTitles&quot;: [string (message in describe blocks)],
-      &quot;failureMessages&quot;: [string],
-      &quot;numPassingAsserts&quot;: number,
-      &quot;location&quot;: {
-        &quot;column&quot;: number,
-        &quot;line&quot;: number
+<pre><code class="hljs css json">{
+  <span class="hljs-attr">"success"</span>: bool,
+  <span class="hljs-attr">"startTime"</span>: epoch,
+  <span class="hljs-attr">"numTotalTestSuites"</span>: number,
+  <span class="hljs-attr">"numPassedTestSuites"</span>: number,
+  <span class="hljs-attr">"numFailedTestSuites"</span>: number,
+  <span class="hljs-attr">"numRuntimeErrorTestSuites"</span>: number,
+  <span class="hljs-attr">"numTotalTests"</span>: number,
+  <span class="hljs-attr">"numPassedTests"</span>: number,
+  <span class="hljs-attr">"numFailedTests"</span>: number,
+  <span class="hljs-attr">"numPendingTests"</span>: number,
+  <span class="hljs-attr">"testResults"</span>: [{
+    <span class="hljs-attr">"numFailingTests"</span>: number,
+    <span class="hljs-attr">"numPassingTests"</span>: number,
+    <span class="hljs-attr">"numPendingTests"</span>: number,
+    <span class="hljs-attr">"testResults"</span>: [{
+      <span class="hljs-attr">"title"</span>: string (message in it block),
+      <span class="hljs-attr">"status"</span>: <span class="hljs-string">"failed"</span> | <span class="hljs-string">"pending"</span> | <span class="hljs-string">"passed"</span>,
+      <span class="hljs-attr">"ancestorTitles"</span>: [string (message in describe blocks)],
+      <span class="hljs-attr">"failureMessages"</span>: [string],
+      <span class="hljs-attr">"numPassingAsserts"</span>: number,
+      <span class="hljs-attr">"location"</span>: {
+        <span class="hljs-attr">"column"</span>: number,
+        <span class="hljs-attr">"line"</span>: number
       }
     },
     ...
     ],
-    &quot;perfStats&quot;: {
-      &quot;start&quot;: epoch,
-      &quot;end&quot;: epoch
+    <span class="hljs-attr">"perfStats"</span>: {
+      <span class="hljs-attr">"start"</span>: epoch,
+      <span class="hljs-attr">"end"</span>: epoch
     },
-    &quot;testFilePath&quot;: absolute path to test file,
-    &quot;coverage&quot;: {}
+    <span class="hljs-attr">"testFilePath"</span>: absolute path to test file,
+    <span class="hljs-attr">"coverage"</span>: {}
   },
   ...
   ]
@@ -533,12 +533,12 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>デフォルト: <code>jasmine2</code></p>
 <p>このオプションでカスタムのテストランナーを指定できます。既定値は jasmine2 です。カスタムのテストランナーは、テストランナーの実装へのパスを指定することによって提供されます。</p>
 <p>テストランナーのモジュールは、下記のシグネチャを持つ関数をエクスポートしなければなりません:</p>
-<pre><code class="hljs">function testRunner(
+<pre><code class="hljs css ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
   config: Config,
   environment: Environment,
   runtime: Runtime,
-  testPath: string,
-): Promise&lt;TestResult&gt;
+  testPath: <span class="hljs-built_in">string</span>,
+</span>): <span class="hljs-title">Promise</span>&lt;<span class="hljs-title">TestResult</span>&gt;</span>;
 </code></pre>
 <p>このような関数の例は、デフォルトの <a href="https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js">jasmine2 test runner パッケージ</a> で確認できます。</p>
 <h3><a class="anchor" aria-hidden="true" name="testurl-string"></a><a href="#testurl-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testURL</code> [string]</h3>

@@ -486,7 +486,7 @@ programmatically using <a href="#jest-resetmodules"><code>jest.resetModules()</c
 module that exports a function expecting a string as the first argument for the
 path to resolve and an object with the following structure as the second
 argument:</p>
-<pre><code class="hljs">{
+<pre><code class="hljs css json">{
   <span class="hljs-attr">"basedir"</span>: string,
   <span class="hljs-attr">"browser"</span>: bool,
   <span class="hljs-attr">"extensions"</span>: [string],
@@ -615,9 +615,9 @@ follows:</p>
 });
 </code></pre>
 <p>Rendered snapshot:</p>
-<pre><code class="hljs">Pretty foo: <span class="hljs-built_in">Object</span> {
-  <span class="hljs-string">"x"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"y"</span>: <span class="hljs-number">2</span>,
+<pre><code class="hljs css json">Pretty foo: Object {
+  "x": 1,
+  "y": 2,
 }
 </code></pre>
 <p>To make a dependency explicit instead of implicit, you can call
@@ -720,20 +720,20 @@ also find files called <code>test.js</code> or <code>spec.js</code>. See also
 <a href="#testmatch-array-string"><code>testMatch</code> [array<string>]</a>, but note that you cannot
 specify both options.</p>
 <p>The following is a visualization of the default regex:</p>
-<pre><code class="hljs">├── __tests__
-│   └── component.spec.<span class="hljs-keyword">js </span><span class="hljs-comment"># test</span>
+<pre><code class="hljs css bash">├── __tests__
+│   └── component.spec.js <span class="hljs-comment"># test</span>
 │   └── anything <span class="hljs-comment"># test</span>
-├── package.<span class="hljs-keyword">json </span><span class="hljs-comment"># not test</span>
-├── foo.test.<span class="hljs-keyword">js </span><span class="hljs-comment"># test</span>
-├── <span class="hljs-keyword">bar.spec.jsx </span><span class="hljs-comment"># test</span>
-└── component.<span class="hljs-keyword">js </span><span class="hljs-comment"># not test</span>
+├── package.json <span class="hljs-comment"># not test</span>
+├── foo.test.js <span class="hljs-comment"># test</span>
+├── bar.spec.jsx <span class="hljs-comment"># test</span>
+└── component.js <span class="hljs-comment"># not test</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="testresultsprocessor-string"></a><a href="#testresultsprocessor-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testResultsProcessor</code> [string]</h3>
 <p>Default: <code>undefined</code></p>
 <p>This option allows the use of a custom results processor. This processor must be
 a node module that exports a function expecting an object with the following
 structure as the first argument and return it:</p>
-<pre><code class="hljs">{
+<pre><code class="hljs css json">{
   <span class="hljs-attr">"success"</span>: bool,
   <span class="hljs-attr">"startTime"</span>: epoch,
   <span class="hljs-attr">"numTotalTestSuites"</span>: number,
@@ -778,12 +778,12 @@ structure as the first argument and return it:</p>
 custom test runner can be provided by specifying a path to a test runner
 implementation.</p>
 <p>The test runner module must export a function with the following signature:</p>
-<pre><code class="hljs">function testRunner(
-<span class="hljs-symbol">  config:</span> Config,
-<span class="hljs-symbol">  environment:</span> Environment,
-<span class="hljs-symbol">  runtime:</span> Runtime,
-<span class="hljs-symbol">  testPath:</span> string,
-): Promise<span class="hljs-params">&lt;TestResult&gt;</span>
+<pre><code class="hljs css ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
+  config: Config,
+  environment: Environment,
+  runtime: Runtime,
+  testPath: <span class="hljs-built_in">string</span>,
+</span>): <span class="hljs-title">Promise</span>&lt;<span class="hljs-title">TestResult</span>&gt;</span>;
 </code></pre>
 <p>An example of such function can be found in our default
 <a href="https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js">jasmine2 test runner package</a>.</p>

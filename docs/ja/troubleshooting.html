@@ -18,7 +18,7 @@
 <h3><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>理由は分からないがテストが失敗する</h3>
 <p>Node に組み込まれているデバッグサポート機能を試してみて下さい。</p>
 <p><code>debugger;</code>ステートメントをテストの任意の箇所に記述し、プロジェクトのディレクトリで以下のコマンドを実行して下さい。</p>
-<pre><code class="hljs">node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
+<pre><code class="hljs css bash">node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 </code></pre>
@@ -31,7 +31,7 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 <h3><a class="anchor" aria-hidden="true" name="vs-code"></a><a href="#vs-code" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>VS Codeでデバッグする</h3>
 <p><a href="https://code.visualstudio.com">Visual Studio Code</a> に組み込みの<a href="https://code.visualstudio.com/docs/nodejs/nodejs-debugging">デバッガ</a>で Jest のテストをデバッグする方法があります。</p>
 <p>組み込みのデバッガを追加するには、前述した形でテストを実行して下さい。</p>
-<pre><code class="hljs">node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
+<pre><code class="hljs css bash">node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 </code></pre>
@@ -114,11 +114,11 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 <p><a href="/jest/docs/ja/cli.html#cache"><code>--no-cache</code></a>オプションを付けて再実行してみて下さい。 Jest はテスト実行の高速化のために変換されたモジュールファイルをキャッシュします。 独自のトランスパイラを使用している場合は、<code>getCacheKey</code>関数を追加することを検討して下さい:<a href="https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61">getCacheKey in Relay</a>。</p>
 <h3><a class="anchor" aria-hidden="true" name="promise"></a><a href="#promise" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Promiseが解決されない</h3>
 <p>promiseが全く解決されない場合、このエラーが投げられるでしょう:</p>
-<pre><code class="hljs">- Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
+<pre><code class="hljs css bash">- Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 </code></pre>
 <p>最も多い原因はPromiseの実装が競合していることです。 グローバルな Promise の実装を独自のものに置き換えます、例えば <code>global.Promise = require.requireActual('promise');</code> とします。そして(もしくは)使用している Promise のライブラリを１つだけに統合してみることを検討して下さい。</p>
 <p>テストの実行が長時間かかる場合は、<code>jest.setTimeout</code> を呼び出してタイムアウト時間を伸ばすことも検討したくなるでしょう。</p>
-<pre><code class="hljs">jest.setTimeout(10000); // 10 second timeout
+<pre><code class="hljs css js">jest.setTimeout(<span class="hljs-number">10000</span>); <span class="hljs-comment">// 10 second timeout</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="watchman"></a><a href="#watchman" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Watchman関連の問題</h3>
 <p>Jest を <a href="/jest/docs/ja/cli.html#watchman"><code>--no-watchman</code></a> オプション付きで実行するか、構成オプションで <code>watchman</code> を <code>false</code> に設定してみてください。</p>

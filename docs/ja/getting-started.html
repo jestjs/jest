@@ -15,10 +15,10 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GettingStarted.md" target="_blank">Edit</a><h1>Getting Started</h1></header><article><div><span><p><a href="https://www.npmjs.com/"><code>npm</code></a> で Jest をインストールする場合：</p>
-<pre><code class="hljs">npm install --save-dev jest
+<pre><code class="hljs css bash">npm install --save-dev jest
 </code></pre>
 <p><a href="https://yarnpkg.com/en/package/jest"><code>yarn</code></a> を使用する場合</p>
-<pre><code class="hljs">yarn add --dev jest
+<pre><code class="hljs css bash">yarn add --dev jest
 </code></pre>
 <p>2つの数値を加算する関数のテストを書くことから始めてみましょう。まず <code>sum.js</code> ファイルを作成します。</p>
 <pre><code class="hljs css javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
@@ -41,7 +41,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 }
 </code></pre>
 <p>最後に、<code>npm test</code> を実行すると、Jest は以下のメッセージを出力します。</p>
-<pre><code class="hljs">PASS  ./sum.test.js
+<pre><code class="hljs css bash">PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 </code></pre>
 <p><strong>あなたは Jest を使用して、最初のテストを書き、うまくいきました!</strong></p>
@@ -55,19 +55,23 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <h2><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>追加設定</h2>
 <h3><a class="anchor" aria-hidden="true" name="babel"></a><a href="#babel" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Babel を使用する</h3>
 <p><a href="http://babeljs.io/"> Babel</a> を使用するには、<code>babel-jest</code> および <code>regenerator-runtime</code> パッケージをインストールします。</p>
-<pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
+<pre><code class="hljs css bash">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
 <p>注意：バージョン 7 の Babel を使用している場合は、以下のコマンドで <code>babel-jest</code> をインストールする必要があります：</p>
-<pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
-</code></pre>
+<pre><code class="hljs css bash"></code></pre>
 </blockquote>
-<p><em>注: <code>npm</code> v3,4 か <code>yarn</code> を使用している場合は、<code>regenerator-runtime</code> を明示的にインストールする必要ありません。</em></p>
-<p>プロジェクトのルートフォルダーに <a href="https://babeljs.io/docs/usage/babelrc/"> <code>.babelrc</code></a> ファイルを追加することを忘れないでください。 For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
-<pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
+<p>npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime</p>
+<pre><code class="hljs">
+<span class="hljs-emphasis">*注: `npm` v3,4 か `yarn` を使用している場合は、`regenerator-runtime` を明示的にインストールする必要ありません。*</span>
+
+プロジェクトのルートフォルダーに [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) ファイルを追加することを忘れないでください。 For example, if you are using ES6 and [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) with the [<span class="hljs-string">`babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) and [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>) presets:
+
+<span class="hljs-code">```json
+{
+  "presets": ["env", "react"]
 }
-</code></pre>
+</span></code></pre>
 <p>ES6 と React の構文が使用できるように設定されました。</p>
 <blockquote>
 <p>注意: もし Babel の <code>env</code> オプションでより複雑な Babel の設定を行っている場合は、Jest は自動的に <code>NODE_ENV</code> を <code>test</code> に設定することに注意して下さい。 Jest では Babel が デフォルトで行うような、<code>NODE_ENV</code> が設定されていない場合に, <code>development</code> セクションを利用するといった事をしません。</p>

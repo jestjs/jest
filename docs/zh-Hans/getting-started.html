@@ -15,10 +15,10 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GettingStarted.md" target="_blank">Edit</a><h1>Getting Started</h1></header><article><div><span><p>使用 <a href="https://www.npmjs.com/"><code>npm</code></a> 来安装 Jest︰</p>
-<pre><code class="hljs">npm install --save-dev jest
+<pre><code class="hljs css bash">npm install --save-dev jest
 </code></pre>
 <p>或者通过<a href="https://yarnpkg.com/en/package/jest"><code>yarn</code></a>：</p>
-<pre><code class="hljs">yarn add --dev jest
+<pre><code class="hljs css bash">yarn add --dev jest
 </code></pre>
 <p>让我们先从写一个两个数相加的示例函数开始。首先，要创建一个 <code>sum.js</code>文件。</p>
 <pre><code class="hljs css javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
@@ -41,7 +41,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 }
 </code></pre>
 <p>最后，运行 <code>npm test</code>，Jest将会打印以下消息︰</p>
-<pre><code class="hljs">PASS  ./sum.test.js
+<pre><code class="hljs css bash">PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 </code></pre>
 <p><strong>你刚刚成功地写了第一个Jest测试 ！</strong></p>
@@ -55,19 +55,23 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <h2><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>更多配置</h2>
 <h3><a class="anchor" aria-hidden="true" name="babel"></a><a href="#babel" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>使用 Babel</h3>
 <p>要使用 <a href="http://babeljs.io/">Babel</a>，请安装 <code>babel-jest</code> 和 <code>regenerator-runtime</code> 两个包：</p>
-<pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
+<pre><code class="hljs css bash">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
 <p>注意: 如果您使用的是 babel 7, 那么您需要用下面的命令安装 <code>babel-jest</code>:</p>
-<pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
-</code></pre>
+<pre><code class="hljs css bash"></code></pre>
 </blockquote>
-<p><em>注意：如果您在使用 <code>npm</code> 3 或 4 ，或者 Yarn，您就不用再显式地安装 <code>regenerator-runtime</code>了。</em></p>
-<p>别忘了在你的项目根文件夹下添加一个 <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> 配置文件。 For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
-<pre><code class="hljs css json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
+<p>npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime</p>
+<pre><code class="hljs">
+<span class="hljs-emphasis">*注意：如果您在使用 `npm` 3 或 4 ，或者 Yarn，您就不用再显式地安装 `regenerator-runtime`了。*</span>
+
+别忘了在你的项目根文件夹下添加一个 [<span class="hljs-string">`.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) 配置文件。 For example, if you are using ES6 and [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) with the [<span class="hljs-string">`babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) and [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>) presets:
+
+<span class="hljs-code">```json
+{
+  "presets": ["env", "react"]
 }
-</code></pre>
+</span></code></pre>
 <p>现在你就完成了使用所有 ES6 特性和 React 特殊语法所需的配置了。</p>
 <blockquote>
 <p>注意：如果你正在使用一个更复杂的 Babel 配置，并使用 Babel 的 <code>env</code> 选项，请记住 Jest 将自动把 <code>NODE_ENV</code> 设为 <code>test</code>。 它不会像 Babel 那样在 <code>NODE_ENV</code> 没有被设置时默认设为<code>development</code> 。</p>

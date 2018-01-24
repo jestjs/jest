@@ -315,13 +315,13 @@
 <p>默认值：<code>undefined</code></p>
 <h5><a class="anchor" aria-hidden="true" name="jest-2000"></a><a href="#jest-2000" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>仅用于jest <strong>20.0.0+</strong></h5>
 <p>This option allows the use of a custom resolver. This resolver must be a node module that exports a function expecting a string as the first argument for the path to resolve and an object with the following structure as the second argument:</p>
-<pre><code class="hljs">{
-  &quot;basedir&quot;: string,
-  &quot;browser&quot;: bool,
-  &quot;extensions&quot;: [string],
-  &quot;moduleDirectory&quot;: [string],
-  &quot;paths&quot;: [string],
-  &quot;rootDir&quot;: [string]
+<pre><code class="hljs css json">{
+  <span class="hljs-attr">"basedir"</span>: string,
+  <span class="hljs-attr">"browser"</span>: bool,
+  <span class="hljs-attr">"extensions"</span>: [string],
+  <span class="hljs-attr">"moduleDirectory"</span>: [string],
+  <span class="hljs-attr">"paths"</span>: [string],
+  <span class="hljs-attr">"rootDir"</span>: [string]
 }
 </code></pre>
 <p>The function should either return a path to the module that should be resolved or throw an error if the module can't be found.</p>
@@ -405,9 +405,9 @@
 });
 </code></pre>
 <p>Rendered snapshot:</p>
-<pre><code class="hljs">Pretty foo: Object {
-  &quot;x&quot;: 1,
-  &quot;y&quot;: 2,
+<pre><code class="hljs css json">Pretty foo: Object {
+  "x": 1,
+  "y": 2,
 }
 </code></pre>
 <p>To make a dependency explicit instead of implicit, you can call <a href="/jest/docs/zh-Hans/expect.html#expectaddsnapshotserializerserializer"><code>expect.addSnapshotSerializer</code></a> to add a module for an individual test file instead of adding its path to <code>snapshotSerializers</code> in Jest configuration.</p>
@@ -479,51 +479,51 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>默认值：<code>(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$</code></p>
 <p>The pattern Jest uses to detect test files. By default it looks for <code>.js</code> and <code>.jsx</code> files inside of <code>__tests__</code> folders, as well as any files with a suffix of <code>.test</code> or <code>.spec</code> (e.g. <code>Component.test.js</code> or <code>Component.spec.js</code>). It will also find files called <code>test.js</code> or <code>spec.js</code>. See also <a href="#testmatch-array-string"><code>testMatch</code> [array<string>]</a>, but note that you cannot specify both options.</p>
 <p>The following is a visualization of the default regex:</p>
-<pre><code class="hljs">├── __tests__
-│   └── component.spec.js # test
-│   └── anything # test
-├── package.json # not test
-├── foo.test.js # test
-├── bar.spec.jsx # test
-└── component.js # not test
+<pre><code class="hljs css bash">├── __tests__
+│   └── component.spec.js <span class="hljs-comment"># test</span>
+│   └── anything <span class="hljs-comment"># test</span>
+├── package.json <span class="hljs-comment"># not test</span>
+├── foo.test.js <span class="hljs-comment"># test</span>
+├── bar.spec.jsx <span class="hljs-comment"># test</span>
+└── component.js <span class="hljs-comment"># not test</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="testresultsprocessor-string"></a><a href="#testresultsprocessor-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testResultsProcessor</code> [string]</h3>
 <p>默认值：<code>undefined</code></p>
 <p>This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument and return it:</p>
-<pre><code class="hljs">{
-  &quot;success&quot;: bool,
-  &quot;startTime&quot;: epoch,
-  &quot;numTotalTestSuites&quot;: number,
-  &quot;numPassedTestSuites&quot;: number,
-  &quot;numFailedTestSuites&quot;: number,
-  &quot;numRuntimeErrorTestSuites&quot;: number,
-  &quot;numTotalTests&quot;: number,
-  &quot;numPassedTests&quot;: number,
-  &quot;numFailedTests&quot;: number,
-  &quot;numPendingTests&quot;: number,
-  &quot;testResults&quot;: [{
-    &quot;numFailingTests&quot;: number,
-    &quot;numPassingTests&quot;: number,
-    &quot;numPendingTests&quot;: number,
-    &quot;testResults&quot;: [{
-      &quot;title&quot;: string (message in it block),
-      &quot;status&quot;: &quot;failed&quot; | &quot;pending&quot; | &quot;passed&quot;,
-      &quot;ancestorTitles&quot;: [string (message in describe blocks)],
-      &quot;failureMessages&quot;: [string],
-      &quot;numPassingAsserts&quot;: number,
-      &quot;location&quot;: {
-        &quot;column&quot;: number,
-        &quot;line&quot;: number
+<pre><code class="hljs css json">{
+  <span class="hljs-attr">"success"</span>: bool,
+  <span class="hljs-attr">"startTime"</span>: epoch,
+  <span class="hljs-attr">"numTotalTestSuites"</span>: number,
+  <span class="hljs-attr">"numPassedTestSuites"</span>: number,
+  <span class="hljs-attr">"numFailedTestSuites"</span>: number,
+  <span class="hljs-attr">"numRuntimeErrorTestSuites"</span>: number,
+  <span class="hljs-attr">"numTotalTests"</span>: number,
+  <span class="hljs-attr">"numPassedTests"</span>: number,
+  <span class="hljs-attr">"numFailedTests"</span>: number,
+  <span class="hljs-attr">"numPendingTests"</span>: number,
+  <span class="hljs-attr">"testResults"</span>: [{
+    <span class="hljs-attr">"numFailingTests"</span>: number,
+    <span class="hljs-attr">"numPassingTests"</span>: number,
+    <span class="hljs-attr">"numPendingTests"</span>: number,
+    <span class="hljs-attr">"testResults"</span>: [{
+      <span class="hljs-attr">"title"</span>: string (message in it block),
+      <span class="hljs-attr">"status"</span>: <span class="hljs-string">"failed"</span> | <span class="hljs-string">"pending"</span> | <span class="hljs-string">"passed"</span>,
+      <span class="hljs-attr">"ancestorTitles"</span>: [string (message in describe blocks)],
+      <span class="hljs-attr">"failureMessages"</span>: [string],
+      <span class="hljs-attr">"numPassingAsserts"</span>: number,
+      <span class="hljs-attr">"location"</span>: {
+        <span class="hljs-attr">"column"</span>: number,
+        <span class="hljs-attr">"line"</span>: number
       }
     },
     ...
     ],
-    &quot;perfStats&quot;: {
-      &quot;start&quot;: epoch,
-      &quot;end&quot;: epoch
+    <span class="hljs-attr">"perfStats"</span>: {
+      <span class="hljs-attr">"start"</span>: epoch,
+      <span class="hljs-attr">"end"</span>: epoch
     },
-    &quot;testFilePath&quot;: absolute path to test file,
-    &quot;coverage&quot;: {}
+    <span class="hljs-attr">"testFilePath"</span>: absolute path to test file,
+    <span class="hljs-attr">"coverage"</span>: {}
   },
   ...
   ]
@@ -533,12 +533,12 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>默认值︰<code>jasmine2</code></p>
 <p>This option allows use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.</p>
 <p>The test runner module must export a function with the following signature:</p>
-<pre><code class="hljs">function testRunner(
+<pre><code class="hljs css ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
   config: Config,
   environment: Environment,
   runtime: Runtime,
-  testPath: string,
-): Promise&lt;TestResult&gt;
+  testPath: <span class="hljs-built_in">string</span>,
+</span>): <span class="hljs-title">Promise</span>&lt;<span class="hljs-title">TestResult</span>&gt;</span>;
 </code></pre>
 <p>An example of such function can be found in our default <a href="https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js">jasmine2 test runner package</a>.</p>
 <h3><a class="anchor" aria-hidden="true" name="testurl-string"></a><a href="#testurl-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testURL</code> [string]</h3>

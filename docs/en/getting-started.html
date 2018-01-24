@@ -15,11 +15,11 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GettingStarted.md" target="_blank">Edit</a><h1>Getting Started</h1></header><article><div><span><p>Install Jest using <a href="https://www.npmjs.com/"><code>npm</code></a>:</p>
-<pre><code class="hljs">npm <span class="hljs-keyword">install </span>--save-dev <span class="hljs-keyword">jest
-</span></code></pre>
+<pre><code class="hljs css bash">npm install --save-dev jest
+</code></pre>
 <p>Or via <a href="https://yarnpkg.com/en/package/jest"><code>yarn</code></a>:</p>
-<pre><code class="hljs">yarn <span class="hljs-keyword">add</span><span class="bash"> --dev jest
-</span></code></pre>
+<pre><code class="hljs css bash">yarn add --dev jest
+</code></pre>
 <p>Let's get started by writing a test for a hypothetical function that adds two
 numbers. First, create a <code>sum.js</code> file:</p>
 <pre><code class="hljs css javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
@@ -42,8 +42,8 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 }
 </code></pre>
 <p>Finally, run <code>npm test</code> and Jest will print this message:</p>
-<pre><code class="hljs">PASS  ./sum.test.js
-✓ adds <span class="hljs-number">1</span> + <span class="hljs-number">2</span> to equal <span class="hljs-number">3</span> (<span class="hljs-number">5</span>ms)
+<pre><code class="hljs css bash">PASS  ./sum.test.js
+✓ adds 1 + 2 to equal 3 (5ms)
 </code></pre>
 <p><strong>You just successfully wrote your first test using Jest!</strong></p>
 <p>This test used <code>expect</code> and <code>toBe</code> to test that two values were exactly
@@ -62,12 +62,12 @@ a look at the <a href="/jest/docs/en/cli.html">Jest CLI Options</a> page.</p>
 <h3><a class="anchor" aria-hidden="true" name="using-babel"></a><a href="#using-babel" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using Babel</h3>
 <p>To use <a href="http://babeljs.io/">Babel</a>, install the <code>babel-jest</code> and
 <code>regenerator-runtime</code> packages:</p>
-<pre><code class="hljs">npm <span class="hljs-keyword">install </span>--save-dev <span class="hljs-keyword">babel-jest </span><span class="hljs-keyword">babel-core </span>regenerator-runtime
+<pre><code class="hljs css bash">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
 <p>Note: If you are using a babel version 7 then you need to install <code>babel-jest</code>
 with the following command:</p>
-<pre><code class="hljs"><span class="hljs-built_in">npm</span> install --save-dev babel-jest <span class="hljs-string">'babel-core@^7.0.0-0'</span> @babel/core regenerator-runtime
+<pre><code class="hljs css bash">npm install --save-dev babel-jest <span class="hljs-string">'babel-core@^7.0.0-0'</span> @babel/core regenerator-runtime
 </code></pre>
 </blockquote>
 <p><em>Note: Explicitly installing <code>regenerator-runtime</code> is not needed if you use

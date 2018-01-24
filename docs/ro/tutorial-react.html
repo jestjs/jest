@@ -155,10 +155,10 @@ exports[<span class="hljs-string">`Link changes the class when hovered 3`</span>
 <pre><code class="hljs css js">jest.mock(<span class="hljs-string">'../SomeDirectory/SomeComponent'</span>, () =&gt; <span class="hljs-string">'SomeComponent'</span>);
 </code></pre>
 <p>Then you will see warnings in the console:</p>
-<pre><code class="hljs">Warning: &lt;SomeComponent /&gt; is using uppercase HTML. Always use lowercase HTML tags in React.
+<pre><code class="hljs css bash">Warning: &lt;SomeComponent /&gt; is using uppercase HTML. Always use lowercase HTML tags <span class="hljs-keyword">in</span> React.
 
-# Or:
-Warning: The tag &lt;SomeComponent&gt; is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
+<span class="hljs-comment"># Or:</span>
+Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword">in</span> this browser. If you meant to render a React component, start its name with an uppercase letter.
 </code></pre>
 <p>React 16 triggers these warnings due to how it checks element types, and the mocked module fails these checks. Your options are:</p>
 <ol>
