@@ -27,7 +27,7 @@ Inspects the argument and returns its schema in the following recursive format:
 ```
 {
   type: ...
-  members : {}
+  members: {}
 }
 ```
 

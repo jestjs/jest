@@ -32,14 +32,14 @@ dirty migration work. It runs a code transformation on your codebase using
 
 Install Jest Codemods with `npm` by running:
 
-```
+```bash
 npm install -g jest-codemods
 ```
 
 To transform your existing tests, navigate to the project containing the tests
 and run:
 
-```
+```bash
 jest-codemods
 ```
 

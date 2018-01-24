@@ -127,25 +127,25 @@ mockFn.mock.calls[1][0] === 1; // true
 
 `mockImplementation` can also be used to mock class constructors:
 
-```
+```js
 // SomeClass.js
 module.exports = class SomeClass {
   m(a, b) {}
-}
+};
 
 // OtherModule.test.js
-jest.mock('./SomeClass');  // this happens automatically with automocking
-const SomeClass = require('./SomeClass')
-const mMock = jest.fn()
+jest.mock('./SomeClass'); // this happens automatically with automocking
+const SomeClass = require('./SomeClass');
+const mMock = jest.fn();
 SomeClass.mockImplementation(() => {
   return {
-    m: mMock
-  }
-})
+    m: mMock,
+  };
+});
 
-const some = new SomeClass()
-some.m('a', 'b')
-console.log('Calls to m: ', mMock.mock.calls)
+const some = new SomeClass();
+some.m('a', 'b');
+console.log('Calls to m: ', mMock.mock.calls);
 ```
 
 ### `mockFn.mockImplementationOnce(fn)`
@@ -154,16 +154,15 @@ Accepts a function that will be used as an implementation of the mock for one
 call to the mocked function. Can be chained so that multiple function calls
 produce different results.
 
-```
-var myMockFn = jest.fn()
+```js
+const myMockFn = jest
+  .fn()
   .mockImplementationOnce(cb => cb(null, true))
   .mockImplementationOnce(cb => cb(null, false));
 
-myMockFn((err, val) => console.log(val));
-> true
+myMockFn((err, val) => console.log(val)); // true
 
-myMockFn((err, val) => console.log(val));
-> false
+myMockFn((err, val) => console.log(val)); // false
 ```
 
 When the mocked function runs out of implementations defined with
@@ -171,13 +170,14 @@ mockImplementationOnce, it will execute the default implementation set with
 `jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if
 they were called:
 
-```
-var myMockFn = jest.fn(() => 'default')
+```js
+const myMockFn = jest
+  .fn(() => 'default')
   .mockImplementationOnce(() => 'first call')
   .mockImplementationOnce(() => 'second call');
 
+// 'first call', 'second call', 'default', 'default'
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
-> 'first call', 'second call', 'default', 'default'
 ```
 
 ### `mockFn.mockName(value)`
@@ -197,7 +197,7 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```
+```bash
     expect(mockedFunction).toHaveBeenCalled()
 
     Expected mock function to have been called.
@@ -232,14 +232,15 @@ chained so that successive calls to the mock function return different values.
 When there are no more `mockReturnValueOnce` values to use, calls will return a
 value specified by `mockReturnValue`.
 
-```
-const myMockFn = jest.fn()
+```js
+const myMockFn = jest
+  .fn()
   .mockReturnValue('default')
   .mockReturnValueOnce('first call')
   .mockReturnValueOnce('second call');
 
+// 'first call', 'second call', 'default', 'default'
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
-> 'first call', 'second call', 'default', 'default'
 ```
 
 ### `mockFn.mockResolvedValue(value)`
@@ -255,12 +256,12 @@ Useful to mock async functions in async tests:
 ```js
 test('async test', async () => {
   const asyncMock = jest.fn().mockResolvedValue(43);
-  
+
   await asyncMock(); // 43
 });
 ```
 
-### `mockFn.mockRejectedValueOnce(value)`
+### `mockFn.mockResolvedValueOnce(value)`
 
 Simple sugar function for:
 
@@ -272,11 +273,12 @@ Useful to resolve different values over multiple async calls:
 
 ```js
 test('async test', async () => {
-  const asyncMock = jest.fn()
+  const asyncMock = jest
+    .fn()
     .mockResolvedValue('default')
     .mockResolvedValueOnce('first call')
     .mockResolvedValueOnce('second call');
-  
+
   await asyncMock(); // first call
   await asyncMock(); // second call
   await asyncMock(); // default
@@ -297,7 +299,7 @@ Useful to create async mock functions that will always reject:
 ```js
 test('async test', async () => {
   const asyncMock = jest.fn().mockRejectedValue(new Error('Async error'));
-  
+
   await asyncMock(); // throws "Async error"
 });
 ```
@@ -314,10 +316,11 @@ Example usage:
 
 ```js
 test('async test', async () => {
-  const asyncMock = jest.fn()
+  const asyncMock = jest
+    .fn()
     .mockResolvedValueOnce('first call')
     .mockRejectedValueOnce(new Error('Async error'));
-  
+
   await asyncMock(); // first call
   await asyncMock(); // throws "Async error"
 });
