@@ -24,7 +24,7 @@ function createProcessEnv() {
 
   const proxy = new Proxy(real, {
     get(target, key) {
-      if ((typeof key === 'string') && (process.platform === 'win32')) {
+      if (typeof key === 'string' && process.platform === 'win32') {
         return lookup[key in proto ? key : key.toLowerCase()];
       } else {
         return real[key];
