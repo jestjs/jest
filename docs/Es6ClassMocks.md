@@ -47,6 +47,7 @@ If you don't need to replace the implementation of the class, this is the easies
 
 ```javascript
 import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
 jest.mock('./sound-player'); // SoundPlayer is now a mock constructor
 
 beforeEach(() => {
@@ -88,7 +89,7 @@ const mock = jest.fn().mockImplementation(() => {
 export default mock;
 ```
 
-Import the mock and the shared
+Import the mock and the mock method shared by all instances:
 ```javascript
 // sound-player-consumer.test.js
 import SoundPlayer, { mockPlaySoundFile } from './sound-player';
@@ -129,6 +130,8 @@ jest.mock('./sound-player', () => {
 });
 ```
 
+A limitation with the factory parameter is that, since calls to `jest.mock()` are hoisted to the top of the file, it's not possible to first define a variable and then use it in the factory. An exception is made for variables that start with the word 'mock'. It's up to you to guarantee that they will be initialized on time!
+
 ### Replacing the mock using [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn) or [`mockImplementationOnce()`](MockFunctionAPI.md#mockfnmockimplementationoncefn)
 You can replace all of the above mocks in order to change the implementation, for a single test or all tests, by calling `mockImplementation()` on the existing mock.
 
@@ -156,7 +159,7 @@ describe('When SoundPlayer throws an error', () => {
 Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own simple mocks to illustrate how mocking works.
 
 ### Manual mock that is another ES6 class
-If you define an ES6 class using the same filename as the mocked class in the \__mocks\__ folder, it will serve as the mock. This class will be used in place of the real class. This allows you to inject a test implementation for the class, but does not provide a way to spy on calls.
+If you define an ES6 class using the same filename as the mocked class in the `__mocks__` folder, it will serve as the mock. This class will be used in place of the real class. This allows you to inject a test implementation for the class, but does not provide a way to spy on calls.
 
 For the contrived example, the mock might look like this:
 
@@ -174,9 +177,7 @@ export default class SoundPlayer {
 ```
 
 ### Simple mock using module factory parameter
-The module factory function passed to `jest.mock(path, moduleFactory)`
-or `mockImplementation()` **** Is this true?
-can be a HOF that returns a function. This will allow calling `new` on the mock. Again, this allows you to inject different behavior for testing, but does not provide a way to spy on calls.
+The module factory function passed to `jest.mock(path, moduleFactory)` can be a HOF that returns a function*. This will allow calling `new` on the mock. Again, this allows you to inject different behavior for testing, but does not provide a way to spy on calls.
 
 #### * Module factory function must return a function
 In order to mock a constructor function, the module factory must return a constructor function. In other words, the module factory must be a function that returns a function - a higher-order function (HOF).
@@ -250,7 +251,7 @@ const mock = jest.fn().mockImplementation(() => {
 export default mock;
 ```
 
-Usage is identical, except that you don't need to pass a factory function to jest.mock(), and you must import the mocked method into your test file, since it is no longer defined there. Use the original module path for this; don't include `__mocks__`.
+Usage is similar to the module factory function, except that you can omit the second argument from `jest.mock()`, and you must import the mocked method into your test file, since it is no longer defined there. Use the original module path for this; don't include `__mocks__`.
 
 Note that, like all manual mocks, this will override the real implementation in all of your tests unless you call `jest.unmock('./sound-player)`.
 
