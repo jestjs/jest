@@ -11,6 +11,8 @@
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
   ([#5367](https://github.com/facebook/jest/pull/5367))
+* `[docs]` Add tutorial page for ES6 class mocks.
+  ([#5023]https://github.com/facebook/jest/issues/5023))
 
 ## jest 22.1.4
 
