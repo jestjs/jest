@@ -9,6 +9,7 @@
 
 import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
+import exit from 'exit';
 import fs from 'fs';
 import generateEmptyCoverage from '../generate_empty_coverage';
 import type {CoverageWorkerResult} from '../generate_empty_coverage';
@@ -24,7 +25,7 @@ export type {CoverageWorkerResult};
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
   console.error(err.stack);
-  process.exit(1);
+  exit(1);
 });
 
 export function worker({

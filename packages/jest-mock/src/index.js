@@ -227,6 +227,17 @@ function getSlots(object?: Object): Array<string> {
   return Object.keys(slots);
 }
 
+function wrapAsyncParam(
+  fn: any => any,
+  asyncAction: 'resolve' | 'reject',
+): any => any {
+  if (asyncAction === 'reject') {
+    return value => fn(Promise.reject(value));
+  }
+
+  return value => fn(Promise.resolve(value));
+}
+
 class ModuleMockerClass {
   _environmentGlobal: Global;
   _mockState: WeakMap<Function, MockFunctionState>;
@@ -407,6 +418,13 @@ class ModuleMockerClass {
         return f;
       };
 
+      f.mockResolvedValueOnce = wrapAsyncParam(
+        f.mockReturnValueOnce,
+        'resolve',
+      );
+
+      f.mockRejectedValueOnce = wrapAsyncParam(f.mockReturnValueOnce, 'reject');
+
       f.mockReturnValue = value => {
         // next function call will return specified return value or this one
         const mockConfig = this._ensureMockConfig(f);
@@ -414,6 +432,10 @@ class ModuleMockerClass {
         mockConfig.defaultReturnValue = value;
         return f;
       };
+
+      f.mockResolvedValue = wrapAsyncParam(f.mockReturnValue, 'resolve');
+
+      f.mockRejectedValue = wrapAsyncParam(f.mockReturnValue, 'reject');
 
       f.mockImplementationOnce = fn => {
         // next function call will use this mock implementation return value

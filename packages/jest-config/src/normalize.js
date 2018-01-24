@@ -289,7 +289,14 @@ const buildTestPathPattern = (argv: Argv): string => {
     patterns.push(...argv.testPathPattern);
   }
 
-  const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
+  const replacePosixSep = (pattern: string) => {
+    if (path.sep === '/') {
+      return pattern;
+    }
+    return pattern.replace(/\//g, '\\\\');
+  };
+
+  const testPathPattern = patterns.map(replacePosixSep).join('|');
   if (validatePattern(testPathPattern)) {
     return testPathPattern;
   } else {
@@ -454,6 +461,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'changedSince':
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
@@ -480,6 +488,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
+      case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
       case 'silent':

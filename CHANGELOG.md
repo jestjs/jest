@@ -1,20 +1,126 @@
 ## master
 
+### features
+
+* `[jest-mock]` Add util methods to create async functions.
+  ([#5318](https://github.com/facebook/jest/pull/5318))
+
 ### Fixes
 
-* `[expect]` Fail test when the types of `stringContaining` and `stringMatching` matchers do not match.
-* `[jest-cli]` Treat dumb terminals as noninteractive ([#5237](https://github.com/facebook/jest/pull/5237))
+* `[jest]` Add `import-local` to `jest` package.
+  ([#5353](https://github.com/facebook/jest/pull/5353))
+* `[expect]` Support class instances in `.toHaveProperty()` matcher.
+  ([#5367](https://github.com/facebook/jest/pull/5367))
+
+## jest 22.1.4
+
+### Fixes
+
+* `[jest-util]` Add "debug" method to "console" implementations
+  ([#5350](https://github.com/facebook/jest/pull/5350))
+* `[jest-resolve]` Add condition to avoid infinite loop when node module package
+  main is ".". ([#5344)](https://github.com/facebook/jest/pull/5344)
+
+### Features
+
+* `[jest-cli]` `--changedSince`: allow selectively running tests for code
+  changed since arbitrary revisions.
+  ([#5312](https://github.com/facebook/jest/pull/5312))
+
+## jest 22.1.3
+
+### Fixes
+
+* `[jest-cli]` Check if the file belongs to the checked project before adding it
+  to the list, also checking that the file name is not explicitly blacklisted
+  ([#5341](https://github.com/facebook/jest/pull/5341))
+* `[jest-editor-support]` Add option to spawn command in shell
+  ([#5340](https://github.com/facebook/jest/pull/5340))
+
+## jest 22.1.2
+
+### Fixes
+
+* `[jest-cli]` Check if the file belongs to the checked project before adding it
+  to the list ([#5335](https://github.com/facebook/jest/pull/5335))
+* `[jest-cli]` Fix `EISDIR` when a directory is passed as an argument to `jest`.
+  ([#5317](https://github.com/facebook/jest/pull/5317))
+* `[jest-config]` Added restoreMocks config option.
+  ([#5327](https://github.com/facebook/jest/pull/5327))
+
+## jest 22.1.1
+
+### Fixes
+
+* `[*]` Move from "process.exit" to "exit.
+  ([#5313](https://github.com/facebook/jest/pull/5313))
+
+## jest 22.1.0
+
+### Features
+
+* `[jest-cli]` Make Jest exit without an error when no tests are found in the
+  case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
+  having been passed to the CLI
+
+### Fixes
+
+* `[jest-cli]` Use `import-local` to support global Jest installations.
+  ([#5304](https://github.com/facebook/jest/pull/5304))
+* `[jest-runner]` Fix memory leak in coverage reporting
+  ([#5289](https://github.com/facebook/jest/pull/5289))
+* `[docs]` Update mention of the minimal version of node supported
+  ([#4947](https://github.com/facebook/jest/issues/4947))
+* `[jest-cli]` Fix missing newline in console message
+  ([#5308](https://github.com/facebook/jest/pull/5308))
+* `[jest-cli]` `--lastCommit` and `--changedFilesWithAncestor` now take effect
+  even when `--onlyChanged` is not specified.
+  ([#5307](https://github.com/facebook/jest/pull/5307))
+
+### Chore & Maintenance
+
+* `[filenames]` Standardize folder names under `integration-tests/`
+  ([#5298](https://github.com/facebook/jest/pull/5298))
+
+## jest 22.0.6
+
+### Fixes
+
+* `[jest-jasmine2]` Fix memory leak in snapshot reporting
+  ([#5279](https://github.com/facebook/jest/pull/5279))
+* `[jest-config]` Fix breaking change in `--testPathPattern`
+  ([#5269](https://github.com/facebook/jest/pull/5269))
+
+### Fixes
+
+* `[docs]` Document caveat with mocks, Enzyme, snapshots and React 16
+  ([#5258](https://github.com/facebook/jest/issues/5258))
+
+## jest 22.0.5
+
+### Fixes
+
+* `[jest-leak-detector]` Removed the reference to `weak`. Now, parent projects
+  must install it by hand for the module to work.
+* `[expect]` Fail test when the types of `stringContaining` and `stringMatching`
+  matchers do not match. ([#5069](https://github.com/facebook/jest/pull/5069))
+* `[jest-cli]` Treat dumb terminals as noninteractive
+  ([#5237](https://github.com/facebook/jest/pull/5237))
 * `[jest-cli]` `jest --onlyChanged --changedFilesWithAncestor` now also works
   with git. ([#5189](https://github.com/facebook/jest/pull/5189))
 * `[jest-config]` fix unexpected condition to avoid infinite recursion in
   Windows platform. ([#5161](https://github.com/facebook/jest/pull/5161))
-* `[jest-config]` Escape parentheses and other glob characters in `rootDir` before interpolating with `testMatch`. ([#4838](https://github.com/facebook/jest/issues/4838))
+* `[jest-config]` Escape parentheses and other glob characters in `rootDir`
+  before interpolating with `testMatch`.
+  ([#4838](https://github.com/facebook/jest/issues/4838))
 * `[jest-regex-util]` Fix breaking change in `--testPathPattern`
   ([#5230](https://github.com/facebook/jest/pull/5230))
 * `[expect]` Do not override `Error` stack (with `Error.captureStackTrace`) for
   custom matchers. ([#5162](https://github.com/facebook/jest/pull/5162))
 * `[pretty-format]` Pretty format for DOMStringMap and NamedNodeMap
   ([#5233](https://github.com/facebook/jest/pull/5233))
+* `[jest-cli]` Use a better console-clearing string on Windows
+  ([#5251](https://github.com/facebook/jest/pull/5251))
 
 ### Features
 
@@ -22,6 +128,8 @@
   ([#5154](https://github.com/facebook/jest/pull/5154))
 * `[jest-jasmine2]` Support generator functions as specs.
   ([#5166](https://github.com/facebook/jest/pull/5166))
+* `[jest-jasmine2]` Allow `spyOn` with getters and setters.
+  ([#5107](https://github.com/facebook/jest/pull/5107))
 * `[jest-config]` Allow configuration objects inside `projects` array
   ([#5176](https://github.com/facebook/jest/pull/5176))
 * `[expect]` Add support to `.toHaveProperty` matcher to accept the keyPath
@@ -33,15 +141,17 @@
 * `[jest-runner]` test environments are now passed a new `options` parameter.
   Currently this only has the `console` which is the test console that Jest will
   expose to tests. ([#5223](https://github.com/facebook/jest/issues/5223))
-* `[jest-environment-jsdom]` pass the `options.console` to a custom
-  instance of `virtualConsole` so jsdom is using the same console as the
-  test. ([#5223](https://github.com/facebook/jest/issues/5223))
+* `[jest-environment-jsdom]` pass the `options.console` to a custom instance of
+  `virtualConsole` so jsdom is using the same console as the test.
+  ([#5223](https://github.com/facebook/jest/issues/5223))
 
 ### Chore & Maintenance
 
 * `[docs]` Describe the order of execution of describe and test blocks.
-  ([#5217](https://github.com/facebook/jest/pull/5217), [#5238](https://github.com/facebook/jest/pull/5238))
-* `[docs]` Add a note on `moduleNameMapper` ordering. ([#5249](https://github.com/facebook/jest/pull/5249))
+  ([#5217](https://github.com/facebook/jest/pull/5217),
+  [#5238](https://github.com/facebook/jest/pull/5238))
+* `[docs]` Add a note on `moduleNameMapper` ordering.
+  ([#5249](https://github.com/facebook/jest/pull/5249))
 
 ## jest 22.0.4
 

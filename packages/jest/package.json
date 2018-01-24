@@ -1,10 +1,11 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "22.0.4",
+  "version": "22.1.4",
   "main": "build/jest.js",
   "dependencies": {
-    "jest-cli": "^22.0.4"
+    "import-local": "^1.0.0",
+    "jest-cli": "^22.1.4"
   },
   "bin": {
     "jest": "./bin/jest.js"

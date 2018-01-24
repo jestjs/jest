@@ -34,6 +34,10 @@ export default class CustomConsole extends Console {
     super.log(this._formatBuffer(type, message));
   }
 
+  debug(...args: Array<mixed>) {
+    this._log('debug', format.apply(null, arguments));
+  }
+
   log(...args: Array<mixed>) {
     this._log('log', format.apply(null, arguments));
   }

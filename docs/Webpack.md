@@ -42,7 +42,7 @@ module.exports = {
 ```
 
 If you have JavaScript files that are transformed by Babel, you can
-[enable support for Babel](GettingStarted.md#using-babel-with-jest) by
+[enable support for Babel](GettingStarted.md#using-babel) by
 installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be
 handled with Jest's
 [`transform`](Configuration.md#transform-object-string-string) config option.
@@ -180,9 +180,10 @@ direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 }
 ```
 
-> Note: <rootDir> is a special token that gets replaced by Jest with the root of
-> your project. Most of the time this will be the folder where your package.json
-> is located unless you specify a custom `rootDir` option in your configuration.
+> Note: `<rootDir>` is a special token that gets replaced by Jest with the root
+> of your project. Most of the time this will be the folder where your
+> `package.json` is located unless you specify a custom `rootDir` option in your
+> configuration.
 
 Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 env variable, which you can set, or make use of the `modulePaths` option.

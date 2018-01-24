@@ -310,7 +310,7 @@ Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or
 
 When this API is called, all timers are advanced by `msToRun` milliseconds. All
 pending "macro-tasks" that have been queued via `setTimeout()` or
-`setInterval()`, and would be executed within this timeframe will be executed.
+`setInterval()`, and would be executed within this time frame will be executed.
 Additionally if those macro-tasks schedule new macro-tasks that would be
 executed within the same time frame, those will be executed until there are no
 more macro-tasks remaining in the queue, that should be run within `msToRun`
@@ -420,15 +420,19 @@ test('plays video', () => {
 ```
 
 ### `jest.spyOn(object, methodName, accessType?)`
-##### available in Jest **x.x.x+**
 
-Since Jest x.x.x+, the `jest.spyOn` method takes an optional third argument that can be `'get'` or `'get'` in order to install a spy as a getter or a setter respectively. This is also needed when you need a spy an existing getter/setter method.
+##### available in Jest **22.1.0+**
+
+Since Jest 22.1.0+, the `jest.spyOn` method takes an optional third argument of
+`accessType` that can be either `'get'` or `'set'`, which proves to be useful
+when you want to spy on a getter or a setter, respectively.
 
 Example:
 
 ```js
 const video = {
-  get play() { // it's a getter!
+  // it's a getter!
+  get play() {
     return true;
   },
 };
@@ -437,12 +441,13 @@ module.exports = video;
 
 const audio = {
   _volume: false,
-  set volume(value) { // it's a setter!
+  // it's a setter!
+  set volume(value) {
     this._volume = value;
   },
   get volume() {
     return this._volume;
-  }
+  },
 };
 
 module.exports = video;

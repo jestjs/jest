@@ -14,15 +14,17 @@ import type {WatchPlugin} from './types';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import getChangedFilesPromise from './get_changed_files_promise';
+import exit from 'exit';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
-import {isInteractive} from 'jest-util';
+import {getFailedSnapshotTests, isInteractive} from 'jest-util';
 import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
 import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './search_source';
+import SnapshotInteractiveMode from './snapshot_interactive_mode';
 import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import TestPathPatternPrompt from './test_path_pattern_prompt';
@@ -60,6 +62,8 @@ export default function watch(
   const prompt = new Prompt();
   const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
+  const snapshotInteractiveMode = new SnapshotInteractiveMode(outputStream);
+  let failedSnapshotTestPaths = [];
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
@@ -127,14 +131,22 @@ export default function watch(
       onComplete: results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;
+        failedSnapshotTestPaths = getFailedSnapshotTests(results);
+
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
 
+        testNamePatternPrompt.updateCachedTestResults(results.testResults);
+
         // Do not show any Watch Usage related stuff when running in a
         // non-interactive environment
         if (isInteractive) {
+          if (snapshotInteractiveMode.isActive()) {
+            snapshotInteractiveMode.updateWithResults(results);
+            return;
+          }
           if (shouldDisplayWatchUsage) {
             outputStream.write(
               usage(globalConfig, watchPlugins, hasSnapshotFailure),
@@ -162,7 +174,7 @@ export default function watch(
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       outputStream.write('\n');
-      process.exit(0);
+      exit(0);
       return;
     }
 
@@ -174,6 +186,11 @@ export default function watch(
 
     if (prompt.isEntering()) {
       prompt.put(key);
+      return;
+    }
+
+    if (snapshotInteractiveMode.isActive()) {
+      snapshotInteractiveMode.put(key);
       return;
     }
 
@@ -206,20 +223,42 @@ export default function watch(
     switch (key) {
       case KEYS.Q:
         outputStream.write('\n');
-        process.exit(0);
+        exit(0);
         return;
       case KEYS.ENTER:
         startRun(globalConfig);
         break;
       case KEYS.U:
+        const previousUpdateSnapshot = globalConfig.updateSnapshot;
+
         globalConfig = updateGlobalConfig(globalConfig, {
           updateSnapshot: 'all',
         });
         startRun(globalConfig);
         globalConfig = updateGlobalConfig(globalConfig, {
           // updateSnapshot is not sticky after a run.
-          updateSnapshot: 'none',
+          updateSnapshot: previousUpdateSnapshot,
         });
+        break;
+      case KEYS.I:
+        if (hasSnapshotFailure) {
+          snapshotInteractiveMode.run(
+            failedSnapshotTestPaths,
+            (path: string, shouldUpdateSnapshot: boolean) => {
+              globalConfig = updateGlobalConfig(globalConfig, {
+                mode: 'watch',
+                testNamePattern: '',
+                testPathPattern: replacePathSepForRegex(path),
+                updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
+              });
+              startRun(globalConfig);
+              globalConfig = updateGlobalConfig(globalConfig, {
+                // updateSnapshot is not sticky after a run.
+                updateSnapshot: 'none',
+              });
+            },
+          );
+        }
         break;
       case KEYS.A:
         globalConfig = updateGlobalConfig(globalConfig, {
@@ -374,6 +413,12 @@ const usage = (
       ? chalk.dim(' \u203A Press ') +
         'u' +
         chalk.dim(' to update failing snapshots.')
+      : null,
+
+    snapshotFailure
+      ? chalk.dim(' \u203A Press ') +
+        'i' +
+        chalk.dim(' to update failing snapshots interactively.')
       : null,
 
     chalk.dim(' \u203A Press ') +

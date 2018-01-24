@@ -16,6 +16,7 @@ import type TestWatcher from './test_watcher';
 import chalk from 'chalk';
 import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
+import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './get_no_test_found_message';
 import SearchSource from './search_source';
@@ -94,10 +95,6 @@ export default (async function runJest({
   onComplete: (testResults: AggregatedResult) => any,
   failedTestsCache: ?FailedTestsCache,
 }) {
-  if (globalConfig.globalSetup) {
-    // $FlowFixMe
-    await require(globalConfig.globalSetup)();
-  }
   const sequencer = new TestSequencer();
   let allTests = [];
 
@@ -111,7 +108,7 @@ export default (async function runJest({
           ' is not supported without git/hg, please use --watchAll ' +
           '\n',
       );
-      process.exit(1);
+      exit(1);
     }
   }
 
@@ -153,12 +150,17 @@ export default (async function runJest({
       globalConfig,
     );
 
-    if (globalConfig.passWithNoTests) {
+    if (
+      globalConfig.passWithNoTests ||
+      globalConfig.findRelatedTests ||
+      globalConfig.lastCommit ||
+      globalConfig.onlyChanged
+    ) {
       new Console(outputStream, outputStream).log(noTestsFoundMessage);
     } else {
       new Console(outputStream, outputStream).error(noTestsFoundMessage);
 
-      process.exit(1);
+      exit(1);
     }
   } else if (
     allTests.length === 1 &&
@@ -178,7 +180,10 @@ export default (async function runJest({
   // original value of rootDir. Instead, use the {cwd: Path} property to resolve
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
-
+  if (globalConfig.globalSetup) {
+    // $FlowFixMe
+    await require(globalConfig.globalSetup)();
+  }
   const results = await new TestScheduler(globalConfig, {
     startRun,
   }).scheduleTests(allTests, testWatcher);

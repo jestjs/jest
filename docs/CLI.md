@@ -85,8 +85,9 @@ CLI options take precedence over values from the
 When you run `jest` with an argument, that argument is treated as a regular
 expression to match against files in your project. It is possible to run test
 suites by providing a pattern. Only the files that the pattern matches will be
-picked up and executed. Note: depending on your terminal, you may need to quote
-this argument: `jest "my.*(complex)?pattern"`.
+picked up and executed. Depending on your terminal, you may need to quote this
+argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/`
+as a path separator or escape `\` as `\\`.
 
 ### `--bail`
 
@@ -104,8 +105,16 @@ If you want to inspect the cache, use `--showConfig` and look at the
 
 ### `--changedFilesWithAncestor`
 
-When used together with `--onlyChanged` or `--watch`, it runs tests related to
-the current changes and the changes made in the last commit.
+Runs tests related to the current changes and the changes made in the last
+commit. Behaves similarly to `--onlyChanged`.
+
+### `--changedSince`
+
+##### available in Jest **22.2.0+**
+
+Runs tests related the changes since the provided branch. If the current branch
+has diverged from the given branch, then only changes made locally will be
+tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -187,8 +196,8 @@ Write test results to a file when the `--json` option is also specified.
 
 ### `--lastCommit`
 
-When used together with `--onlyChanged`, it will run all tests affected by file
-changes in the last commit made.
+Run all tests affected by file changes in the last commit made. Behaves
+similarly to `--onlyChanged`.
 
 ### `--listTests`
 
@@ -276,7 +285,8 @@ Note that `column` is 0-indexed while `line` is not.
 ### `--testPathPattern=<regex>`
 
 A regexp pattern string that is matched against all tests paths before executing
-the test.
+the test. On Windows, you will need to use `/` as a path separator or escape `\`
+as `\\`.
 
 ### `--testRunner=<path>`
 

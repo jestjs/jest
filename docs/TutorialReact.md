@@ -114,7 +114,7 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 the component and capture the rendered output and create a snapshot file:
 
 ```javascript
-// Link.react-test.js
+// Link.react.test.js
 import React from 'react';
 import Link from '../Link.react';
 import renderer from 'react-test-renderer';
@@ -143,7 +143,7 @@ test('Link changes the class when hovered', () => {
 When you run `npm test` or `jest`, this will produce an output file like this:
 
 ```javascript
-// __tests__/__snapshots__/Link.react-test.js.snap
+// __tests__/__snapshots__/Link.react.test.js.snap
 exports[`Link changes the class when hovered 1`] = `
 <a
   className="normal"
@@ -183,6 +183,41 @@ with `jest -u` to overwrite the existing snapshot.
 
 The code for this example is available at
 [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
+
+#### Snapshot Testing with Mocks, Enzyme and React 16
+
+There's a caveat around snapshot testing when using Enzyme and React 16+. If you
+mock out a module using the following style:
+
+```js
+jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
+```
+
+Then you will see warnings in the console:
+
+```
+Warning: <SomeComponent /> is using uppercase HTML. Always use lowercase HTML tags in React.
+
+# Or:
+Warning: The tag <SomeComponent> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
+```
+
+React 16 triggers these warnings due to how it checks element types, and the
+mocked module fails these checks. Your options are:
+
+1. Render as text. This way you won't see the props passed to the mock component
+   in the snapshot, but it's straightforward:
+   ```js
+   jest.mock('./SomeComponent', () => () => 'SomeComponent');
+   ```
+2. Render as a custom element. DOM "custom elements" aren't checked for anything
+   and shouldn't fire warnings. They are lowercase and have a dash in the name.
+   ```js
+   jest.mock('./Widget', () => 'mock-widget');
+   ```
+3. Use `react-test-renderer`. The test renderer doesn't care about element types
+   and will happily accept e.g. `SomeComponent`. You could check snapshots using
+   the test renderer, and check component behaviour separately using Enzyme.
 
 ### DOM Testing
 

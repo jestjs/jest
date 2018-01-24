@@ -14,6 +14,7 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   bail: false,
   changedFilesWithAncestor: false,
+  changedSince: '',
   collectCoverage: false,
   collectCoverageFrom: [],
   collectCoverageOnlyFrom: null,
@@ -85,6 +86,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   resetMocks: false,
   resetModules: false,
   resolver: null,
+  restoreMocks: false,
   rootDir: '/test_root_dir/',
   roots: [],
   runner: 'jest-runner',

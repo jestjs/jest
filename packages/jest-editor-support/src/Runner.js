@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {Options, MessageType} from './types';
+import type {Options, MessageType, SpawnOptions} from './types';
 import {messageTypes} from './types';
 
 import {ChildProcess, spawn} from 'child_process';
@@ -27,6 +27,7 @@ export default class Runner extends EventEmitter {
   _createProcess: (
     workspace: ProjectWorkspace,
     args: Array<string>,
+    options?: SpawnOptions,
   ) => ChildProcess;
   watchMode: boolean;
   options: Options;
@@ -64,7 +65,11 @@ export default class Runner extends EventEmitter {
       args.push(this.options.testFileNamePattern);
     }
 
-    this.debugprocess = this._createProcess(this.workspace, args);
+    const options = {
+      shell: this.options.shell,
+    };
+
+    this.debugprocess = this._createProcess(this.workspace, args, options);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       // Make jest save to a file, otherwise we get chunked data
       // and it can be hard to put it back together.
@@ -118,10 +123,13 @@ export default class Runner extends EventEmitter {
 
   runJestWithUpdateForSnapshots(completion: any, args: string[]) {
     const defaultArgs = ['--updateSnapshot'];
-    const updateProcess = this._createProcess(this.workspace, [
-      ...defaultArgs,
-      ...(args ? args : []),
-    ]);
+
+    const options = {shell: this.options.shell};
+    const updateProcess = this._createProcess(
+      this.workspace,
+      [...defaultArgs, ...(args ? args : [])],
+      options,
+    );
     updateProcess.on('close', () => {
       completion();
     });

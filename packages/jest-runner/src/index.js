@@ -19,6 +19,7 @@ import type {
 
 import typeof {worker} from './test_worker';
 
+import exit from 'exit';
 import runTest from './run_test';
 import throat from 'throat';
 import Worker from 'jest-worker';
@@ -129,7 +130,7 @@ class TestRunner {
           'A worker process has quit unexpectedly! ' +
             'Most likely this is an initialization error.',
         );
-        process.exit(1);
+        exit(1);
       }
     };
 

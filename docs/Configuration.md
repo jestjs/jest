@@ -295,7 +295,9 @@ For example, the following would create a global `__DEV__` variable set to
 
 Note that, if you specify a global reference value (like an object or array)
 here, and some code mutates that value in the midst of running a test, that
-mutation will _not_ be persisted across test runs for other test files.
+mutation will _not_ be persisted across test runs for other test files. In
+addition the `globals` object must be json-serializable, so it can't be used to
+specify global functions. For that you should use `setupFiles`.
 
 ### `globalSetup` [string]
 
@@ -330,7 +332,7 @@ Both inline source maps and source maps returned directly from a transformer are
 supported. Source map URLs are not supported because Jest may not be able to
 locate them. To return source maps from a transformer, the `process` function
 can return an object like the following. The `map` property may either be the
-source map object, or the source map object as a JSON string.
+source map object, or the source map object as a string.
 
 ```js
 return {
@@ -386,8 +388,8 @@ Example:
 }
 ```
 
-The order in which the mappings are defined matters. Patterns are checked one
-by one until one fits. The most specific rule should be listed first.
+The order in which the mappings are defined matters. Patterns are checked one by
+one until one fits. The most specific rule should be listed first.
 
 _Note: If you provide module name without boundaries `^$` it may cause hard to
 spot errors. E.g. `relay` will replace all modules which contain `relay` as a
@@ -603,6 +605,14 @@ argument:
 The function should either return a path to the module that should be resolved
 or throw an error if the module can't be found.
 
+### `restoreMocks` [boolean]
+
+Default: `false`
+
+Automatically restore mock state between every test. Equivalent to calling
+`jest.restoreAllMocks()` between each test. This will lead to any mocks having
+their fake implementations removed and restores their initial implementation.
+
 ### `rootDir` [string]
 
 Default: The root of the directory containing your jest's [config file](#) _or_
@@ -795,9 +805,9 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test
 environment. The module must export a class with `setup`, `teardown` and
-`runScript` methods. You can also pass variables from this module to your
-test suites by assigning them to `this.global` object &ndash; this will
-make them available in your test suites as global variables.
+`runScript` methods. You can also pass variables from this module to your test
+suites by assigning them to `this.global` object &ndash; this will make them
+available in your test suites as global variables.
 
 ##### available in Jest **22.0.0+**
 
@@ -839,8 +849,7 @@ let someGlobalObject;
 
 beforeAll(() => {
   someGlobalObject = global.someGlobalObject;
-})
-
+});
 ```
 
 ### `testEnvironmentOptions` [Object]
