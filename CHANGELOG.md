@@ -13,7 +13,7 @@
   ([#5367](https://github.com/facebook/jest/pull/5367))
 * `[jest-cli]` Fix npm update command for snapshot summary.
   ([#5376](https://github.com/facebook/jest/pull/5376))
-* `[expect]` Make `rejects` and `resolves` synchronous.
+* `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
 
 ## jest 22.1.4
