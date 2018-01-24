@@ -62,16 +62,22 @@ it('We can check if the consumer called the class constructor', () => {
 
 
 it('We can check if the consumer called a method on the class instance', () => {
-  expect(SoundPlayer).not.toHaveBeenCalled(); // Illustrates that mockClear() is working
+  // Show that mockClear() is working:
+  expect(SoundPlayer).not.toHaveBeenCalled();
+
   const soundPlayerConsumer = new SoundPlayerConsumer();
+  // Constructor should have been called again:
   expect(SoundPlayer).toHaveBeenCalledTimes(1);
 
   const coolSoundFileName = 'song.mp3';
   soundPlayerConsumer.playSomethingCool();
-  const mockSoundPlayerInstance = SoundPlayer.mock.instances[0]; // Available with automatic mocks
+
+  // mock.instances is available with automatic mocks:
+  const mockSoundPlayerInstance = SoundPlayer.mock.instances[0];
   const mockPlaySoundFile = mockSoundPlayerInstance.playSoundFile;
   expect(mockPlaySoundFile.mock.calls[0][0]).toEqual(coolSoundFileName);
-  expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName); // Equivalent to above check
+  // Equivalent to above check:
+  expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
   expect(mockPlaySoundFile).toHaveBeenCalledTimes(1);
 });
 ```
@@ -81,7 +87,9 @@ Create a [manual mock](ManualMocks.md) by saving a mock implementation in the `_
 
 ```javascript
 // __mocks__/sound-player.js
-export const mockPlaySoundFile = jest.fn(); // Import this named export into your test file
+
+// Import this named export into your test file:
+export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
   return { playSoundFile: mockPlaySoundFile };
 });
@@ -214,7 +222,8 @@ In order to track calls to the constructor, replace the function returned by the
 ```javascript
 import SoundPlayer from './sound-player';
 jest.mock('./sound-player', () => {
-  return jest.fn().mockImplementation(() => { // Works and lets you check for constructor calls
+   // Works and lets you check for constructor calls:
+  return jest.fn().mockImplementation(() => {
     return { playSoundFile: () => {} };
   });
 });
@@ -234,8 +243,9 @@ A new object will be created each time the mock constructor function is called d
 import SoundPlayer from './sound-player';
 let mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
-  return jest.fn().mockImplementation(() => { // Works and lets us check for constructor calls
-    return { playSoundFile: mockPlaySoundFile }; // Now we can track calls to playSoundFile
+  return jest.fn().mockImplementation(() => {
+    return { playSoundFile: mockPlaySoundFile };
+     // Now we can track calls to playSoundFile
   });
 });
 ```
@@ -243,7 +253,9 @@ jest.mock('./sound-player', () => {
 The manual mock equivalent of this would be:
 ```javascript
 // __mocks__/sound-player.js
-export const mockPlaySoundFile = jest.fn(); // Import this named export into your test file
+
+// Import this named export into your test file
+export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
   return { playSoundFile: mockPlaySoundFile }
 });
@@ -287,12 +299,13 @@ beforeEach(() => {
 
 it('The consumer should be able to call new() on SoundPlayer', () => {
   const soundPlayerConsumer = new SoundPlayerConsumer();
-  expect(soundPlayerConsumer).toBeTruthy(); // Constructor ran with no errors
+  // Ensure constructor created the object:
+  expect(soundPlayerConsumer).toBeTruthy();
 });
 
 it('We can check if the consumer called the class constructor', () => {
   const soundPlayerConsumer = new SoundPlayerConsumer();
-  expect(SoundPlayer).toHaveBeenCalledTimes(1); // This would be 2 without mockClear
+  expect(SoundPlayer).toHaveBeenCalledTimes(1);
 });
 
 it('We can check if the consumer called a method on the class instance', () => {
