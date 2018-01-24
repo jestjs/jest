@@ -982,7 +982,7 @@ function testRunner(
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult>
+): Promise<TestResult>;
 ```
 
 An example of such function can be found in our default

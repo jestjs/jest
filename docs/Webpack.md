@@ -42,10 +42,10 @@ module.exports = {
 ```
 
 If you have JavaScript files that are transformed by Babel, you can
-[enable support for Babel](GettingStarted.md#using-babel) by
-installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be
-handled with Jest's
-[`transform`](Configuration.md#transform-object-string-string) config option.
+[enable support for Babel](GettingStarted.md#using-babel) by installing the
+`babel-jest` plugin. Non-Babel JavaScript transformations can be handled with
+Jest's [`transform`](Configuration.md#transform-object-string-string) config
+option.
 
 ### Handling Static Assets
 
