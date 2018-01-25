@@ -52,7 +52,6 @@ export default function(j$) {
     const realClearTimeout = global.clearTimeout;
 
     const runnableResources = {};
-
     let currentSpec = null;
     const currentlyExecutingSuites = [];
     let currentDeclarationSuite = null;
@@ -291,6 +290,9 @@ export default function(j$) {
         description,
         parentSuite: currentDeclarationSuite,
         throwOnExpectationFailure,
+        getTestPath() {
+          return j$.testPath;
+        },
       });
 
       return suite;
