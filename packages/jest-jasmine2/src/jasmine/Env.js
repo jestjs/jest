@@ -172,6 +172,9 @@ export default function(j$) {
 
     const topSuite = new j$.Suite({
       id: getNextSuiteId(),
+      getTestPath() {
+        return j$.testPath;
+      },
     });
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
