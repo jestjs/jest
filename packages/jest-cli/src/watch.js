@@ -18,19 +18,18 @@ import exit from 'exit';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
-import {getFailedSnapshotTests, isInteractive} from 'jest-util';
+import {isInteractive} from 'jest-util';
 import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
 import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './search_source';
-import SnapshotInteractiveMode from './snapshot_interactive_mode';
 import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import FailedTestsCache from './failed_tests_cache';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
-import {AsyncSeriesWaterfallHook} from 'tapable';
+import {AsyncSeriesWaterfallHook, SyncHook} from 'tapable';
 
 let hasExitListener = false;
 
@@ -38,6 +37,7 @@ const internalPlugins = [
   require.resolve('./plugins/test_path_pattern'),
   require.resolve('./plugins/test_name_pattern'),
   require.resolve('./plugins/update_snapshots'),
+  require.resolve('./plugins/update_snapshots_interactive'),
   require.resolve('./plugins/quit'),
 ];
 
@@ -59,7 +59,11 @@ export default function watch(
   });
 
   const hooks = {
-    showPrompt: new AsyncSeriesWaterfallHook(['globalConfig']),
+    showPrompt: new AsyncSeriesWaterfallHook([
+      'globalConfig',
+      'updateConfigAndRun',
+    ]),
+    testRunComplete: new SyncHook(['results']),
   };
 
   hooks.showPrompt.intercept({
@@ -75,6 +79,27 @@ export default function watch(
       });
     },
   });
+
+  const updateConfigAndRun = ({
+    testNamePattern,
+    testPathPattern,
+    updateSnapshot,
+  } = {}) => {
+    const previousUpdateSnapshot = globalConfig.updateSnapshot;
+    globalConfig = updateGlobalConfig(globalConfig, {
+      mode: 'watch',
+      testNamePattern,
+      testPathPattern: replacePathSepForRegex(testPathPattern || ''),
+      updateSnapshot: updateSnapshot || globalConfig.updateSnapshot,
+    });
+
+    startRun(globalConfig);
+    globalConfig = updateGlobalConfig(globalConfig, {
+      // updateSnapshot is not sticky after a run.
+      updateSnapshot:
+        previousUpdateSnapshot === 'all' ? 'none' : previousUpdateSnapshot,
+    });
+  };
 
   const watchPlugins = new WatchPluginRegistry(globalConfig.rootDir);
 
@@ -97,8 +122,6 @@ export default function watch(
 
   const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
-  const snapshotInteractiveMode = new SnapshotInteractiveMode(outputStream);
-  let failedSnapshotTestPaths = [];
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
@@ -163,7 +186,7 @@ export default function watch(
       onComplete: results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;
-        failedSnapshotTestPaths = getFailedSnapshotTests(results);
+        hooks.testRunComplete.call(results);
 
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
@@ -173,10 +196,6 @@ export default function watch(
         // Do not show any Watch Usage related stuff when running in a
         // non-interactive environment
         if (isInteractive) {
-          if (snapshotInteractiveMode.isActive()) {
-            snapshotInteractiveMode.updateWithResults(results);
-            return;
-          }
           if (shouldDisplayWatchUsage) {
             outputStream.write(
               usage(globalConfig, watchPlugins, hasSnapshotFailure),
@@ -217,11 +236,6 @@ export default function watch(
       return;
     }
 
-    if (snapshotInteractiveMode.isActive()) {
-      snapshotInteractiveMode.put(key);
-      return;
-    }
-
     // Abort test run
     const pluginKeys = watchPlugins
       .getPluginsOrderedByKey()
@@ -245,25 +259,10 @@ export default function watch(
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
-      hooks.showPrompt.promise(globalConfig).then(
-        ({testNamePattern, testPathPattern, updateSnapshot} = {}) => {
+      hooks.showPrompt.promise(globalConfig, updateConfigAndRun).then(
+        () => {
           activePlugin = null;
-          const previousUpdateSnapshot = globalConfig.updateSnapshot;
-          globalConfig = updateGlobalConfig(globalConfig, {
-            mode: 'watch',
-            testNamePattern,
-            testPathPattern: replacePathSepForRegex(testPathPattern || ''),
-            updateSnapshot: updateSnapshot || globalConfig.updateSnapshot,
-          });
-
-          startRun(globalConfig);
-          globalConfig = updateGlobalConfig(globalConfig, {
-            // updateSnapshot is not sticky after a run.
-            updateSnapshot:
-              previousUpdateSnapshot === 'all'
-                ? 'none'
-                : previousUpdateSnapshot,
-          });
+          updateConfigAndRun();
         },
         () => {
           activePlugin = null;
@@ -276,26 +275,6 @@ export default function watch(
       case KEYS.ENTER:
         startRun(globalConfig);
         break;
-      case KEYS.I:
-        if (hasSnapshotFailure) {
-          snapshotInteractiveMode.run(
-            failedSnapshotTestPaths,
-            (path: string, shouldUpdateSnapshot: boolean) => {
-              globalConfig = updateGlobalConfig(globalConfig, {
-                mode: 'watch',
-                testNamePattern: '',
-                testPathPattern: replacePathSepForRegex(path),
-                updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
-              });
-              startRun(globalConfig);
-              globalConfig = updateGlobalConfig(globalConfig, {
-                // updateSnapshot is not sticky after a run.
-                updateSnapshot: 'none',
-              });
-            },
-          );
-        }
-        break;
       case KEYS.A:
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watchAll',
@@ -305,12 +284,10 @@ export default function watch(
         startRun(globalConfig);
         break;
       case KEYS.C:
-        globalConfig = updateGlobalConfig(globalConfig, {
-          mode: 'watch',
+        updateConfigAndRun({
           testNamePattern: '',
           testPathPattern: '',
         });
-        startRun(globalConfig);
         break;
       case KEYS.F:
         globalConfig = updateGlobalConfig(globalConfig, {
@@ -413,12 +390,6 @@ const usage = (
       ? chalk.dim(' \u203A Press ') +
         'o' +
         chalk.dim(' to only run tests related to changed files.')
-      : null,
-
-    snapshotFailure
-      ? chalk.dim(' \u203A Press ') +
-        'i' +
-        chalk.dim(' to update failing snapshots interactively.')
       : null,
 
     ...watchPlugins

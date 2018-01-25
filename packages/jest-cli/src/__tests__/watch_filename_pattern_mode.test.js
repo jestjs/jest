@@ -113,6 +113,7 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
+    await nextTick();
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
@@ -168,8 +169,10 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     stdin.emit(KEYS.C);
+    await nextTick();
     pipe.write.mockReset();
     stdin.emit(KEYS.P);
+    await nextTick();
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 });

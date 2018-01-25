@@ -10,6 +10,7 @@ import type {GlobalConfig} from 'types/Config';
 
 export type JestHooks = {
   showPrompt: any,
+  testRunComplete: any,
 };
 
 export type WatchPlugin = {

@@ -11,8 +11,12 @@ import type {WatchPlugin} from '../types';
 const PLUGIN_NAME = 'update-snapshots';
 const updateSnapshotsPlugin: WatchPlugin = {
   apply: (watchPromptHooks, {stdin, stdout}) => {
-    watchPromptHooks.showPrompt.tapPromise(PLUGIN_NAME, () =>
-      Promise.resolve({updateSnapshot: 'all'}),
+    watchPromptHooks.showPrompt.tapPromise(
+      PLUGIN_NAME,
+      (globalConfig, updateConfigAndRun) => {
+        updateConfigAndRun({updateSnapshot: 'all'});
+        return Promise.resolve();
+      },
     );
   },
   key: 'u'.codePointAt(0),

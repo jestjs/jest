@@ -177,6 +177,10 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
+  it('Failing snapshot', () => {
+    expect(1).toMatchSnapshot();
+  });
+
   xit('triggers enter on a WatchPlugin when its key is pressed', () => {
     const plugin = require(watchPluginPath);
 
@@ -275,7 +279,7 @@ describe('Watch mode flows', () => {
     // updateSnapshot is not sticky after a run.
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
       updateSnapshot: 'new',
-      watch: false,
+      watch: true,
     });
   });
   it('passWithNoTest should be set to true in watch mode', () => {

@@ -14,7 +14,7 @@ import Prompt from '../lib/Prompt';
 const PLUGIN_NAME = 'test-name-pattern';
 const testPathPatternPlugin: WatchPlugin = {
   apply: (jestHooks, {stdin, stdout}) => {
-    const showPrompt = globalConfig => {
+    const showPrompt = (globalConfig, updateConfigAndRun) => {
       return new Promise((res, rej) => {
         let exited = false;
         const prompt = new Prompt();
@@ -29,7 +29,8 @@ const testPathPatternPlugin: WatchPlugin = {
         testPathPatternPrompt.run(
           (value: string) => {
             exited = true;
-            res({testNamePattern: value});
+            updateConfigAndRun({testNamePattern: value});
+            res();
           },
           () => {
             exited = true;
