@@ -36,7 +36,7 @@ afterEach(() => {
   process.stderr.write = write;
 });
 
-test('npm test', () => {
+test('snapshots needs update with npm test', () => {
   process.env.npm_config_user_agent = 'npm';
   process.stderr.write = result => results.push(result);
   const testReporter = new SummaryReporter(globalConfig);
@@ -44,7 +44,7 @@ test('npm test', () => {
   expect(results[0] + results[1]).toMatchSnapshot();
 });
 
-test('yarn test', () => {
+test('snapshots needs update with yarn test', () => {
   process.env.npm_config_user_agent = 'yarn';
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
