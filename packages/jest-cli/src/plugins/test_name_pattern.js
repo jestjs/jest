@@ -6,48 +6,57 @@
  *
  * @flow
  */
-import type {WatchPlugin} from '../types';
+import type {JestHooks} from '../types';
+import type {GlobalConfig} from 'types/Config';
+import WatchPlugin from '../watch_plugin';
 import TestNamePatternPrompt from '../test_name_pattern_prompt';
 import activeFilters from '../lib/active_filters_message';
 import Prompt from '../lib/Prompt';
 
-const PLUGIN_NAME = 'test-name-pattern';
-const testPathPatternPlugin: WatchPlugin = {
-  apply: (jestHooks, {stdin, stdout}) => {
-    const showPrompt = (globalConfig, updateConfigAndRun) => {
-      return new Promise((res, rej) => {
-        let exited = false;
-        const prompt = new Prompt();
-        const testPathPatternPrompt = new TestNamePatternPrompt(stdout, prompt);
+class TestNamePatternPlugin extends WatchPlugin {
+  _prompt: Prompt;
 
-        stdin.on('data', (value, ...args) => {
-          if (!exited) {
-            prompt.put(value);
-          }
-        });
+  constructor(options: {
+    stdin: stream$Readable | tty$ReadStream,
+    stdout: stream$Writable | tty$WriteStream,
+  }) {
+    super(options);
+    this._prompt = new Prompt();
+  }
 
-        testPathPatternPrompt.run(
-          (value: string) => {
-            exited = true;
-            updateConfigAndRun({testNamePattern: value});
-            res();
-          },
-          () => {
-            exited = true;
-            rej();
-          },
-          {
-            header: activeFilters(globalConfig),
-          },
-        );
-      });
+  getUsageRow() {
+    return {
+      key: 't'.codePointAt(0),
+      prompt: 'filter by a test regex pattern',
     };
+  }
 
-    jestHooks.showPrompt.tapPromise(PLUGIN_NAME, showPrompt);
-  },
-  key: 't'.codePointAt(0),
-  name: PLUGIN_NAME,
-  prompt: 'filter by a test regex pattern',
-};
+  onData(key: string) {
+    this._prompt.put(key);
+  }
 
-export default testPathPatternPlugin;
+  showPrompt(
+    globalConfig: GlobalConfig,
+    updateConfigAndRun: Function,
+  ): Promise<void> {
+    return new Promise((res, rej) => {
+      const testPathPatternPrompt = new TestNamePatternPrompt(
+        this._stdout,
+        this._prompt,
+      );
+
+      testPathPatternPrompt.run(
+        (value: string) => {
+          updateConfigAndRun({testNamePattern: value});
+          res();
+        },
+        rej,
+        {
+          header: activeFilters(globalConfig),
+        },
+      );
+    });
+  }
+}
+
+export default TestNamePatternPlugin;

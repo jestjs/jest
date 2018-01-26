@@ -6,19 +6,21 @@
  *
  * @flow
  */
-import type {WatchPlugin} from '../types';
+import WatchPlugin from '../watch_plugin';
 
-const PLUGIN_NAME = 'quit';
-const quitPlugin: WatchPlugin = {
-  apply: (jestHooks, {stdin, stdout}) => {
-    jestHooks.showPrompt.tapPromise(PLUGIN_NAME, () => {
-      stdout.write('\n');
-      process.exit(0);
-    });
-  },
-  key: 'q'.codePointAt(0),
-  name: PLUGIN_NAME,
-  prompt: 'quit watch mode',
-};
+class QuitPlugin extends WatchPlugin {
+  showPrompt(): Promise<void> {
+    this._stdout.write('\n');
+    process.exit(0);
+    return Promise.resolve();
+  }
 
-export default quitPlugin;
+  getUsageRow() {
+    return {
+      key: 'q'.codePointAt(0),
+      prompt: 'quit watch mode',
+    };
+  }
+}
+
+export default QuitPlugin;

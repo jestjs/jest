@@ -6,23 +6,25 @@
  *
  * @flow
  */
-import type {WatchPlugin} from '../types';
+import type {GlobalConfig} from 'types/Config';
+import WatchPlugin from '../watch_plugin';
 
-const PLUGIN_NAME = 'update-snapshots';
-const updateSnapshotsPlugin: WatchPlugin = {
-  apply: (watchPromptHooks, {stdin, stdout}) => {
-    watchPromptHooks.showPrompt.tapPromise(
-      PLUGIN_NAME,
-      (globalConfig, updateConfigAndRun) => {
-        updateConfigAndRun({updateSnapshot: 'all'});
-        return Promise.resolve();
-      },
-    );
-  },
-  key: 'u'.codePointAt(0),
-  name: PLUGIN_NAME,
-  prompt: 'update failing snapshots',
-  shouldShowUsage: (globalConfig, hasSnapshotFailures) => hasSnapshotFailures,
-};
+class UpdateSnapshotsPlugin extends WatchPlugin {
+  showPrompt(
+    globalConfig: GlobalConfig,
+    updateConfigAndRun: Function,
+  ): Promise<void> {
+    updateConfigAndRun({updateSnapshot: 'all'});
+    return Promise.resolve();
+  }
 
-export default updateSnapshotsPlugin;
+  getUsageRow(globalConfig: GlobalConfig, hasSnapshotFailures: boolean) {
+    return {
+      hide: !hasSnapshotFailures,
+      key: 'u'.codePointAt(0),
+      prompt: 'update failing snapshots',
+    };
+  }
+}
+
+export default UpdateSnapshotsPlugin;

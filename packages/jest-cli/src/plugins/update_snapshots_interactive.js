@@ -6,58 +6,76 @@
  *
  * @flow
  */
-import type {WatchPlugin} from '../types';
+import type {JestHooks} from '../types';
+import type {AggregatedResult} from 'types/TestResult';
+import type {GlobalConfig} from 'types/Config';
+import WatchPlugin from '../watch_plugin';
 import {getFailedSnapshotTests} from 'jest-util';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
 const PLUGIN_NAME = 'update-snapshots-interactive';
-const updateSnapshotsInteractivePlugin: WatchPlugin = {
-  apply: (jestHooks, {stdin, stdout}) => {
-    let failedSnapshotTestPaths = [];
-    const snapshotInteractiveMode = new SnapshotInteractiveMode(stdout);
 
-    jestHooks.testRunComplete.tap(PLUGIN_NAME, results => {
-      failedSnapshotTestPaths = getFailedSnapshotTests(results);
-      if (snapshotInteractiveMode.isActive()) {
-        snapshotInteractiveMode.updateWithResults(results);
-      }
-    });
+class UpdateSnapshotInteractivePlugin extends WatchPlugin {
+  _snapshotInteractiveMode: SnapshotInteractiveMode;
+  _failedSnapshotTestPaths: Array<*>;
 
-    stdin.on('data', key => {
-      if (snapshotInteractiveMode.isActive()) {
-        snapshotInteractiveMode.put(key);
-      }
-    });
+  constructor(options: {
+    stdin: stream$Readable | tty$ReadStream,
+    stdout: stream$Writable | tty$WriteStream,
+  }) {
+    super(options);
+    this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
+  }
 
-    jestHooks.showPrompt.tapPromise(
-      PLUGIN_NAME,
-      (globalConfig, updateConfigAndRun) => {
-        if (failedSnapshotTestPaths.length) {
-          return new Promise(res => {
-            snapshotInteractiveMode.run(
-              failedSnapshotTestPaths,
-              (path: string, shouldUpdateSnapshot: boolean) => {
-                updateConfigAndRun({
-                  testNamePattern: '',
-                  testPathPattern: path,
-                  updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
-                });
-                if (!snapshotInteractiveMode.isActive()) {
-                  res();
-                }
-              },
-            );
-          });
-        } else {
-          return Promise.resolve();
-        }
-      },
-    );
-  },
-  key: 'i'.codePointAt(0),
-  name: PLUGIN_NAME,
-  prompt: 'update failing snapshots interactively',
-  shouldShowUsage: (globalConfig, hasSnapshotFailures) => hasSnapshotFailures,
-};
+  registerHooks(hooks: JestHooks) {
+    hooks.testRunComplete.tap(PLUGIN_NAME, this._onTestRunComplete.bind(this));
+  }
 
-export default updateSnapshotsInteractivePlugin;
+  onData(key: string) {
+    if (this._snapshotInteractiveMode.isActive()) {
+      this._snapshotInteractiveMode.put(key);
+    }
+  }
+
+  showPrompt(
+    globalConfig: GlobalConfig,
+    updateConfigAndRun: Function,
+  ): Promise<void> {
+    if (this._failedSnapshotTestPaths.length) {
+      return new Promise(res => {
+        this._snapshotInteractiveMode.run(
+          this._failedSnapshotTestPaths,
+          (path: string, shouldUpdateSnapshot: boolean) => {
+            updateConfigAndRun({
+              testNamePattern: '',
+              testPathPattern: path,
+              updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
+            });
+            if (!this._snapshotInteractiveMode.isActive()) {
+              res();
+            }
+          },
+        );
+      });
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+  getUsageRow(globalConfig: GlobalConfig, hasSnapshotFailures: boolean) {
+    return {
+      hide: !hasSnapshotFailures,
+      key: 'i'.codePointAt(0),
+      prompt: 'update failing snapshots interactively',
+    };
+  }
+
+  _onTestRunComplete(results: AggregatedResult) {
+    this._failedSnapshotTestPaths = getFailedSnapshotTests(results);
+    if (this._snapshotInteractiveMode.isActive()) {
+      this._snapshotInteractiveMode.updateWithResults(results);
+    }
+  }
+}
+
+export default UpdateSnapshotInteractivePlugin;

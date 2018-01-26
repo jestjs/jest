@@ -8,8 +8,13 @@
  */
 import type {GlobalConfig} from 'types/Config';
 
+export type UsageRow = {
+  key: number,
+  prompt: string,
+  hide?: boolean,
+};
+
 export type JestHooks = {
-  showPrompt: any,
   testRunComplete: any,
 };
 

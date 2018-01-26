@@ -9,7 +9,6 @@
 
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
-import type {WatchPlugin} from './types';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
@@ -30,6 +29,7 @@ import FailedTestsCache from './failed_tests_cache';
 import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
 import {AsyncSeriesWaterfallHook, SyncHook} from 'tapable';
+import WatchPlugin from './watch_plugin';
 
 let hasExitListener = false;
 
@@ -59,26 +59,8 @@ export default function watch(
   });
 
   const hooks = {
-    showPrompt: new AsyncSeriesWaterfallHook([
-      'globalConfig',
-      'updateConfigAndRun',
-    ]),
     testRunComplete: new SyncHook(['results']),
   };
-
-  hooks.showPrompt.intercept({
-    register: tapInfo => {
-      return Object.assign({}, tapInfo, {
-        fn: (...args) => {
-          if (activePlugin && tapInfo.name === activePlugin.name) {
-            return tapInfo.fn(...args);
-          }
-
-          return Promise.resolve();
-        },
-      });
-    },
-  });
 
   const updateConfigAndRun = ({
     testNamePattern,
@@ -101,23 +83,18 @@ export default function watch(
     });
   };
 
-  const watchPlugins = new WatchPluginRegistry(globalConfig.rootDir);
+  const watchPlugins: Array<WatchPlugin> = internalPlugins
+    .map(pluginPath => require(pluginPath).default)
+    .map(PluginClass => new PluginClass({stdin, stdout: outputStream}));
 
-  internalPlugins.forEach(pluginPath => {
-    watchPlugins.loadPluginPath(pluginPath);
-  });
+  // if (globalConfig.watchPlugins != null) {
+  //   for (const pluginModulePath of globalConfig.watchPlugins) {
+  //     watchPlugins.loadPluginPath(pluginModulePath);
+  //   }
+  // }
 
-  if (globalConfig.watchPlugins != null) {
-    for (const pluginModulePath of globalConfig.watchPlugins) {
-      watchPlugins.loadPluginPath(pluginModulePath);
-    }
-  }
-
-  watchPlugins.getPluginsOrderedByKey().forEach(plugin => {
-    plugin.apply(hooks, {
-      stdin,
-      stdout: outputStream,
-    });
+  watchPlugins.forEach((plugin: WatchPlugin) => {
+    plugin.registerHooks(hooks);
   });
 
   const failedTestsCache = new FailedTestsCache();
@@ -228,6 +205,7 @@ export default function watch(
     if (activePlugin != null) {
       // if a plugin is activate, Jest should let it handle keystrokes, so ignore
       // them here
+      activePlugin.onData(key);
       return;
     }
 
@@ -238,8 +216,10 @@ export default function watch(
 
     // Abort test run
     const pluginKeys = watchPlugins
-      .getPluginsOrderedByKey()
-      .map(p => p.key)
+      .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
+      .map(p => (p ? p.key : undefined))
+      .filter(p => p !== undefined)
+      .sort((a, b) => a - b)
       .map(key => Number(key).toString(16));
     if (
       isRunning &&
@@ -252,14 +232,18 @@ export default function watch(
       return;
     }
 
-    const matchingWatchPlugin = watchPlugins.getPluginByPressedKey(
-      parseInt(key, 16),
-    );
+    const matchingWatchPlugin = watchPlugins.find(plugin => {
+      const usageRow =
+        plugin.getUsageRow(globalConfig, hasSnapshotFailure) || {};
+
+      return usageRow.key === parseInt(key, 16);
+    });
+
     if (matchingWatchPlugin != null) {
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
-      hooks.showPrompt.promise(globalConfig, updateConfigAndRun).then(
+      activePlugin.showPrompt(globalConfig, updateConfigAndRun).then(
         () => {
           activePlugin = null;
           updateConfigAndRun();
@@ -361,7 +345,7 @@ const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
 
 const usage = (
   globalConfig,
-  watchPlugins: WatchPluginRegistry,
+  watchPlugins: Array<WatchPlugin>,
   snapshotFailure,
   delimiter = '\n',
 ) => {
@@ -393,14 +377,9 @@ const usage = (
       : null,
 
     ...watchPlugins
-      .getPluginsOrderedByKey()
-      .filter(plugin => {
-        if (plugin.shouldShowUsage) {
-          return plugin.shouldShowUsage(globalConfig, snapshotFailure);
-        } else {
-          return true;
-        }
-      })
+      .map(p => p.getUsageRow(globalConfig, snapshotFailure))
+      .filter(p => p && !p.hide)
+      .sort((a, b) => a.key - b.key)
       .map(
         plugin =>
           chalk.dim(' \u203A Press') +
