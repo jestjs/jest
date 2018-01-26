@@ -12,7 +12,7 @@ Try using the debugging support built into Node.
 Place a `debugger;` statement in any of your tests, and then, in your project's
 directory, run:
 
-```
+```bash
 node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
@@ -49,7 +49,7 @@ There are multiple ways to debug Jest tests with
 
 To attach the built-in debugger, run your tests as aforementioned:
 
-```
+```bash
 node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
@@ -173,7 +173,7 @@ adding a `getCacheKey` function to it:
 
 If a promise doesn't resolve at all, this error might be thrown:
 
-```
+```bash
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
@@ -185,7 +185,7 @@ Promise libraries to a single one.
 If your test is long running, you may want to consider to increase the timeout
 by calling `jest.setTimeout`
 
-```
+```js
 jest.setTimeout(10000); // 10 second timeout
 ```
 

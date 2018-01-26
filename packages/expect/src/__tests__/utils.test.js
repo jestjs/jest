@@ -46,6 +46,30 @@ describe('getPath()', () => {
     });
   });
 
+  test('property is a getter on class instance', () => {
+    class A {
+      get a() {
+        return 'a';
+      }
+      get b() {
+        return {c: 'c'};
+      }
+    }
+
+    expect(getPath(new A(), 'a')).toEqual({
+      hasEndProp: true,
+      lastTraversedObject: new A(),
+      traversedPath: ['a'],
+      value: 'a',
+    });
+    expect(getPath(new A(), 'b.c')).toEqual({
+      hasEndProp: true,
+      lastTraversedObject: {c: 'c'},
+      traversedPath: ['b', 'c'],
+      value: 'c',
+    });
+  });
+
   test('path breaks', () => {
     expect(getPath({a: {}}, 'a.b.c')).toEqual({
       hasEndProp: false,
@@ -55,11 +79,12 @@ describe('getPath()', () => {
     });
   });
 
-  test('empry object at the end', () => {
+  test('empty object at the end', () => {
     expect(getPath({a: {b: {c: {}}}}, 'a.b.c.d')).toEqual({
       hasEndProp: false,
       lastTraversedObject: {},
       traversedPath: ['a', 'b', 'c'],
+      value: undefined,
     });
   });
 });

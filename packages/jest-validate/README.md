@@ -3,7 +3,7 @@
 Generic configuration validation tool that helps you with warnings, errors and
 deprecation messages as well as showing users examples of correct configuration.
 
-```
+```bash
 npm install --save jest-validate
 ```
 
@@ -101,7 +101,7 @@ This will output:
 
 #### Warning:
 
-```
+```bash
 ● Validation Warning:
 
   Unknown option transformx with value "<rootDir>/node_modules/babel-jest" was found.
@@ -112,7 +112,7 @@ This will output:
 
 #### Error:
 
-```
+```bash
 ● Validation Error:
 
   Option transform must be of type:
@@ -133,7 +133,7 @@ This will output:
 Based on `deprecatedConfig` object with proper deprecation messages. Note custom
 title:
 
-```
+```bash
 Custom Deprecation:
 
   Option scriptPreprocessor was replaced by transform, which support multiple preprocessors.

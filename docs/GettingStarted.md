@@ -5,13 +5,13 @@ title: Getting Started
 
 Install Jest using [`npm`](https://www.npmjs.com/):
 
-```
+```bash
 npm install --save-dev jest
 ```
 
 Or via [`yarn`](https://yarnpkg.com/en/package/jest):
 
-```
+```bash
 yarn add --dev jest
 ```
 
@@ -47,7 +47,7 @@ Add the following section to your `package.json`:
 
 Finally, run `npm test` and Jest will print this message:
 
-```
+```bash
 PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 ```
@@ -80,14 +80,14 @@ a look at the [Jest CLI Options](CLI.md) page.
 To use [Babel](http://babeljs.io/), install the `babel-jest` and
 `regenerator-runtime` packages:
 
-```
+```bash
 npm install --save-dev babel-jest babel-core regenerator-runtime
 ```
 
 > Note: If you are using a babel version 7 then you need to install `babel-jest`
 > with the following command:
 >
-> ```
+> ```bash
 > npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
 > ```
 
@@ -97,12 +97,12 @@ _Note: Explicitly installing `regenerator-runtime` is not needed if you use
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file
 in your project's root folder. For example, if you are using ES6 and
 [React.js](https://facebook.github.io/react/) with the
-[`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and
+[`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and
 [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
 
 ```json
 {
-  "presets": ["es2015", "react"]
+  "presets": ["env", "react"]
 }
 ```
 
@@ -113,16 +113,16 @@ You are now set up to use all ES6 features and React specific syntax.
 > `test`. It will not use `development` section like Babel does by default when
 > no `NODE_ENV` is set.
 
-> Note: If you've turned off transpilation of ES2015 modules with the option
+> Note: If you've turned off transpilation of ES6 modules with the option
 > `{ "modules": false }`, you have to make sure to turn this on in your test
 > environment.
 
 ```json
 {
-  "presets": [["es2015", {"modules": false}], "react"],
+  "presets": [["env", {"modules": false}], "react"],
   "env": {
     "test": {
-      "presets": [["es2015"], "react"]
+      "presets": [["env"], "react"]
     }
   }
 }

@@ -461,6 +461,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'changedSince':
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
@@ -487,6 +488,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
+      case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
       case 'silent':

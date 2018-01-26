@@ -27,7 +27,7 @@ Also see [using babel](GettingStarted.md#using-babel).
 Run
 
 ```bash
-npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
+npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>`
@@ -42,7 +42,7 @@ jest configuration entries:
   },
   "devDependencies": {
     "babel-jest": "<current-version>",
-    "babel-preset-es2015": "<current-version>",
+    "babel-preset-env": "<current-version>",
     "babel-preset-react": "<current-version>",
     "jest": "<current-version>",
     "react-test-renderer": "<current-version>"
@@ -55,7 +55,7 @@ jest configuration entries:
 ```json
 // .babelrc
 {
-  "presets": ["es2015", "react"]
+  "presets": ["env", "react"]
 }
 ```
 
@@ -186,8 +186,8 @@ The code for this example is available at
 
 #### Snapshot Testing with Mocks, Enzyme and React 16
 
-There's a caveat around snapshot testing when using Enzyme and React 16+.
-If you mock out a module using the following style:
+There's a caveat around snapshot testing when using Enzyme and React 16+. If you
+mock out a module using the following style:
 
 ```js
 jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
@@ -195,31 +195,29 @@ jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
 
 Then you will see warnings in the console:
 
-```
+```bash
 Warning: <SomeComponent /> is using uppercase HTML. Always use lowercase HTML tags in React.
 
 # Or:
 Warning: The tag <SomeComponent> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
 ```
 
-React 16 triggers these warnings due to how it checks element types, and
-the mocked module fails these checks. Your options are:
+React 16 triggers these warnings due to how it checks element types, and the
+mocked module fails these checks. Your options are:
 
-   1. Render as text. This way you won't see the props passed to the mock
-      component in the snapshot, but it's straightforward:
-      ```js
-      jest.mock('./SomeComponent', () => () => 'SomeComponent');
-      ```
-   2. Render as a custom element. DOM "custom elements" aren't checked for
-      anything and shouldn't fire warnings. They are lowercase and have a
-      dash in the name.
-      ```js
-      jest.mock('./Widget', () => 'mock-widget');
-      ```
-   3. Use `react-test-renderer`. The test renderer doesn't care about
-      element types and will happily accept e.g. `SomeComponent`. You could
-      check snapshots using the test renderer, and check component
-      behaviour separately using Enzyme.
+1. Render as text. This way you won't see the props passed to the mock component
+   in the snapshot, but it's straightforward:
+   ```js
+   jest.mock('./SomeComponent', () => () => 'SomeComponent');
+   ```
+2. Render as a custom element. DOM "custom elements" aren't checked for anything
+   and shouldn't fire warnings. They are lowercase and have a dash in the name.
+   ```js
+   jest.mock('./Widget', () => 'mock-widget');
+   ```
+3. Use `react-test-renderer`. The test renderer doesn't care about element types
+   and will happily accept e.g. `SomeComponent`. You could check snapshots using
+   the test renderer, and check component behaviour separately using Enzyme.
 
 ### DOM Testing
 
