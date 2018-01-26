@@ -26,20 +26,16 @@ import SearchSource from './search_source';
 import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import FailedTestsCache from './failed_tests_cache';
-import WatchPluginRegistry from './lib/watch_plugin_registry';
 import {KEYS, CLEAR} from './constants';
-import {AsyncSeriesWaterfallHook, SyncHook} from 'tapable';
+import {SyncHook} from 'tapable';
 import WatchPlugin from './watch_plugin';
+import TestPathPatternPlugin from './plugins/test_path_pattern';
+import TestNamePatternPlugin from './plugins/test_name_pattern';
+import UpdateSnapshotsPlugin from './plugins/update_snapshots';
+import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
+import QuitPlugin from './plugins/quit';
 
 let hasExitListener = false;
-
-const internalPlugins = [
-  require.resolve('./plugins/test_path_pattern'),
-  require.resolve('./plugins/test_name_pattern'),
-  require.resolve('./plugins/update_snapshots'),
-  require.resolve('./plugins/update_snapshots_interactive'),
-  require.resolve('./plugins/quit'),
-];
 
 export default function watch(
   initialGlobalConfig: GlobalConfig,
@@ -70,9 +66,18 @@ export default function watch(
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
       mode: 'watch',
-      testNamePattern,
-      testPathPattern: replacePathSepForRegex(testPathPattern || ''),
-      updateSnapshot: updateSnapshot || globalConfig.updateSnapshot,
+      testNamePattern:
+        testNamePattern !== undefined
+          ? testNamePattern
+          : globalConfig.testNamePattern,
+      testPathPattern:
+        testPathPattern !== undefined
+          ? replacePathSepForRegex(testPathPattern)
+          : globalConfig.testPathPattern,
+      updateSnapshot:
+        updateSnapshot !== undefined
+          ? updateSnapshot
+          : globalConfig.updateSnapshot,
     });
 
     startRun(globalConfig);
@@ -83,19 +88,23 @@ export default function watch(
     });
   };
 
-  const watchPlugins: Array<WatchPlugin> = internalPlugins
-    .map(pluginPath => require(pluginPath).default)
-    .map(PluginClass => new PluginClass({stdin, stdout: outputStream}));
+  const watchPlugins: Array<WatchPlugin> = [
+    new TestPathPatternPlugin({stdin, stdout: outputStream}),
+    new TestNamePatternPlugin({stdin, stdout: outputStream}),
+    new UpdateSnapshotsPlugin({stdin, stdout: outputStream}),
+    new UpdateSnapshotsInteractivePlugin({stdin, stdout: outputStream}),
+    new QuitPlugin({stdin, stdout: outputStream}),
+  ];
+
+  watchPlugins.forEach((plugin: WatchPlugin) => {
+    plugin.registerHooks(hooks);
+  });
 
   // if (globalConfig.watchPlugins != null) {
   //   for (const pluginModulePath of globalConfig.watchPlugins) {
   //     watchPlugins.loadPluginPath(pluginModulePath);
   //   }
   // }
-
-  watchPlugins.forEach((plugin: WatchPlugin) => {
-    plugin.registerHooks(hooks);
-  });
 
   const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
@@ -214,12 +223,19 @@ export default function watch(
       return;
     }
 
+    const getSortedUsageRows = () => {
+      return (
+        watchPlugins
+          .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
+          // $FlowFixMe
+          .sort((a = {}, b = {}) => a.key - b.key)
+      );
+    };
+
     // Abort test run
-    const pluginKeys = watchPlugins
-      .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
+    const pluginKeys = getSortedUsageRows()
       .map(p => (p ? p.key : undefined))
       .filter(p => p !== undefined)
-      .sort((a, b) => a - b)
       .map(key => Number(key).toString(16));
     if (
       isRunning &&
@@ -244,9 +260,11 @@ export default function watch(
       // can handle them
       activePlugin = matchingWatchPlugin;
       activePlugin.showPrompt(globalConfig, updateConfigAndRun).then(
-        () => {
+        shouldRerun => {
           activePlugin = null;
-          updateConfigAndRun();
+          if (shouldRerun) {
+            updateConfigAndRun();
+          }
         },
         () => {
           activePlugin = null;

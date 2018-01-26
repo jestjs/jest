@@ -15,7 +15,7 @@ class UpdateSnapshotsPlugin extends WatchPlugin {
     updateConfigAndRun: Function,
   ): Promise<void> {
     updateConfigAndRun({updateSnapshot: 'all'});
-    return Promise.resolve();
+    return Promise.resolve(false);
   }
 
   getUsageRow(globalConfig: GlobalConfig, hasSnapshotFailures: boolean) {

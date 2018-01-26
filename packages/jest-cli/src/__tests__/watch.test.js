@@ -36,7 +36,7 @@ jest.doMock(
 jest.doMock(
   watchPluginPath,
   () => ({
-    apply: jest.fn(),
+    enter: jest.fn(),
     key: 's'.codePointAt(0),
     prompt: 'do nothing',
   }),
@@ -46,16 +46,17 @@ jest.doMock(
 jest.doMock(
   watchPlugin2Path,
   () => ({
-    apply: jest.fn(),
+    enter: jest.fn(),
     key: 'u'.codePointAt(0),
     prompt: 'do something else',
   }),
   {virtual: true},
 );
 
+const watch = require('../watch').default;
+
 const nextTick = () => new Promise(res => process.nextTick(res));
 
-const watch = require('../watch').default;
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
@@ -151,7 +152,7 @@ describe('Watch mode flows', () => {
     }).not.toThrow();
   });
 
-  it('shows prompts for WatchPlugins in alphabetical order', async () => {
+  xit('shows prompts for WatchPlugins in alphabetical order', async () => {
     jest.unmock('jest-util');
     const util = require('jest-util');
     util.isInteractive = true;
@@ -177,10 +178,6 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
-  it('Failing snapshot', () => {
-    expect(1).toMatchSnapshot();
-  });
-
   xit('triggers enter on a WatchPlugin when its key is pressed', () => {
     const plugin = require(watchPluginPath);
 
@@ -197,7 +194,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit(plugin.key.toString(16));
 
-    expect(plugin.apply).toHaveBeenCalled();
+    expect(plugin.enter).toHaveBeenCalled();
   });
 
   xit('prevents Jest from handling keys when active and returns control when end is called', () => {
@@ -270,16 +267,18 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.U);
     await nextTick();
+
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       updateSnapshot: 'all',
       watch: true,
     });
 
     stdin.emit(KEYS.A);
+    await nextTick();
     // updateSnapshot is not sticky after a run.
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
       updateSnapshot: 'new',
-      watch: true,
+      watch: false,
     });
   });
   it('passWithNoTest should be set to true in watch mode', () => {

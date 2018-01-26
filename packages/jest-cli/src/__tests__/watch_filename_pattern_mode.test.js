@@ -83,9 +83,9 @@ jest.doMock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => terminalWidth,
 }));
 
-const nextTick = () => new Promise(res => process.nextTick(res));
-
 const watch = require('../watch').default;
+
+const nextTick = () => new Promise(res => process.nextTick(res));
 
 const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
@@ -107,13 +107,12 @@ describe('Watch mode flows', () => {
     stdin = new MockStdin();
   });
 
-  it('Pressing "P" enters pattern mode', async () => {
+  it('Pressing "P" enters pattern mode', () => {
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
-    await nextTick();
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
@@ -132,7 +131,6 @@ describe('Watch mode flows', () => {
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
-    await nextTick();
     expect(runJestMock).toBeCalled();
 
     // globalConfig is updated with the current pattern
@@ -157,22 +155,22 @@ describe('Watch mode flows', () => {
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
-    await nextTick();
 
     stdin.emit(KEYS.T);
     await nextTick();
 
-    ['t', 'e', 's', 't']
+    [('t', 'e', 's', 't')]
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
-    await nextTick();
 
     stdin.emit(KEYS.C);
     await nextTick();
+
     pipe.write.mockReset();
     stdin.emit(KEYS.P);
     await nextTick();
+
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 });

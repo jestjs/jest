@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Watch mode flows Failing snapshot 1`] = `1`;
-
 exports[`Watch mode flows Runs Jest in a non-interactive environment not showing usage 1`] = `
 Array [
   "
