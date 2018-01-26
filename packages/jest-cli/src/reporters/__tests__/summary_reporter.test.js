@@ -6,6 +6,8 @@
  */
 'use strict';
 
+import SummaryReporter from '../summary_reporter';
+
 const env = Object.assign({}, process.env);
 const write = process.stderr.write;
 const globalConfig = {
@@ -21,13 +23,11 @@ const aggregatedResults = {
 };
 
 let results = [];
-let SummaryReporter;
 
 beforeEach(() => {
   process.env.npm_lifecycle_event = 'test';
   process.env.npm_lifecycle_script = 'jest';
   process.stderr.write = result => results.push(result);
-  SummaryReporter = require('../summary_reporter').default;
 });
 
 afterEach(() => {
