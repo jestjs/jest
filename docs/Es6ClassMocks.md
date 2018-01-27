@@ -101,6 +101,7 @@ Import the mock and the mock method shared by all instances:
 ```javascript
 // sound-player-consumer.test.js
 import SoundPlayer, { mockPlaySoundFile } from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
 jest.mock('./sound-player'); // SoundPlayer is now a mock constructor
 
 beforeEach(() => {
