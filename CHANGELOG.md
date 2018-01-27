@@ -7,6 +7,7 @@
 
 ### Fixes
 
+* `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a malformed source-map.
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
