@@ -32,6 +32,7 @@ behavior.
 * [`jest.useFakeTimers()`](#jestusefaketimers)
 * [`jest.useRealTimers()`](#jestuserealtimers)
 * [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
+* [`jest.spyOn(object, methodName, accessType?)`](#jestspyonobject-methodname-accesstype)
 
 ---
 
