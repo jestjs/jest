@@ -97,6 +97,7 @@ it(<span class="hljs-string">'We can check if the consumer called a method on th
 <p>Import the mock and the mock method shared by all instances:</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// sound-player-consumer.test.js</span>
 <span class="hljs-keyword">import</span> SoundPlayer, { mockPlaySoundFile } <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
 jest.mock(<span class="hljs-string">'./sound-player'</span>); <span class="hljs-comment">// SoundPlayer is now a mock constructor</span>
 
 beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
