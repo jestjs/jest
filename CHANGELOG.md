@@ -2,6 +2,9 @@
 
 ### features
 
+* `[diff-sequences]` New package compares items in two sequences to find a
+  **longest common subsequence**.
+  ([#5407](https://github.com/facebook/jest/pull/5407))
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
 
