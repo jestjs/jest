@@ -17,6 +17,9 @@
   ([#5364](https://github.com/facebook/jest/pull/5364))
 * `[docs]` Add tutorial page for ES6 class mocks.
   ([#5383]https://github.com/facebook/jest/pull/5383))
+* `[jest-resolve]` Search required modules in node_modules and then in custom
+  paths.
+  ([#5403](https://github.com/facebook/jest/pull/5403))
 
 ## jest 22.1.4
 
