@@ -38,7 +38,6 @@ afterEach(() => {
 
 test('snapshots needs update with npm test', () => {
   process.env.npm_config_user_agent = 'npm';
-  process.stderr.write = result => results.push(result);
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results[0] + results[1]).toMatchSnapshot();
