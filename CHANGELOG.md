@@ -13,6 +13,9 @@
   ([#5367](https://github.com/facebook/jest/pull/5367))
 * `[jest-cli]` Fix npm update command for snapshot summary.
   ([#5376](https://github.com/facebook/jest/pull/5376))
+* `[jest-resolve]` Search required modules in node_modules and then in custom
+  paths.
+  ([#5403](https://github.com/facebook/jest/pull/5403))
 
 ## jest 22.1.4
 
