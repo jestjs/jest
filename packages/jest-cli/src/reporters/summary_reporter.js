@@ -89,7 +89,7 @@ export default class SummaryReporter extends BaseReporter {
         !lastResult.numFailingTests &&
         !lastResult.testExecError
       ) {
-        this.log('');
+        this.info('');
       }
 
       this._printSummary(aggregatedResults, this._globalConfig);
@@ -110,7 +110,7 @@ export default class SummaryReporter extends BaseReporter {
               ? chalk.bold.red('Test run was interrupted.')
               : this._getTestSummary(contexts, this._globalConfig));
         }
-        this.log(message);
+        this.info(message);
       }
     }
   }
