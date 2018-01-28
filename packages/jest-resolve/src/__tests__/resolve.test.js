@@ -236,7 +236,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     const Resolver = require('../');
 
     const cwd = '/temp/project';
-    const src = '/root/path/to/node_modules';
+    const src = '/path/to/node_modules';
     const resolver = new Resolver(moduleMap, {
       moduleDirectories: [src, 'node_modules'],
     });
