@@ -40,3 +40,21 @@ Array [
   ".",
 ]
 `;
+
+exports[`common substrings wrapping 1`] = `
+Array [
+  "When engineers ",
+  "a",
+  "v",
+  "e",
+  " ",
+  "ready-to-use tools, they",
+  " writ",
+  " more",
+  "tests, which",
+  " results in",
+  "more stabl",
+  "e",
+  " code bases.",
+]
+`;

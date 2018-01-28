@@ -223,6 +223,34 @@ describe('input callback encapsulates sequences', () => {
 
 describe('no common items', () => {
   // default export does not call findSubsequences nor divide
+
+  describe('negative zero is equivalent to zero for length', () => {
+    const countItemsNegativeZero = (aLength, bLength) => {
+      let n = 0;
+      diff(
+        aLength,
+        bLength,
+        () => {
+          throw new Error('input function should not have been called');
+        },
+        (nCommon) => {
+          n += nCommon;
+        }
+      )
+      return n;
+    }
+
+    test('of a', () => {
+      expect(countItemsNegativeZero(-0, 1)).toEqual(0);
+    });
+    test('of b', () => {
+      expect(countItemsNegativeZero(1, -0)).toEqual(0);
+    });
+    test('of a and b', () => {
+      expect(countItemsNegativeZero(-0, -0)).toEqual(0);
+    });
+  });
+
   test('a empty and b empty', () => {
     const a = [];
     const b = [];
@@ -710,6 +738,20 @@ describe('common substrings', () => {
     // English translation and French quotation by Antoine de Saint Exupéry:
     const a = `It seems that perfection is attained not when there is nothing more to add, but when there is nothing more to remove.`;
     const b = `Il semble que la perfection soit atteinte non quand il n'y a plus rien à ajouter, mais quand il n'y a plus rien à retrancher.`;
+    const abCommonSubstrings = findCommonSubstrings(a, b);
+    const baCommonSubstrings = findCommonSubstrings(b, a);
+    expect(abCommonSubstrings).toEqual(baCommonSubstrings);
+    expect(abCommonSubstrings).toMatchSnapshot();
+  });
+  test('wrapping', () => {
+    const a = [
+      'When engineers are provided with ready-to-use tools, they end up writing more',
+      'tests, which in turn results in more stable code bases.',
+    ].join('\n');
+    const b = [
+      'When engineers have ready-to-use tools, they write more tests, which results in',
+      'more stable and healthy code bases.',
+    ].join('\n');
     const abCommonSubstrings = findCommonSubstrings(a, b);
     const baCommonSubstrings = findCommonSubstrings(b, a);
     expect(abCommonSubstrings).toEqual(baCommonSubstrings);
