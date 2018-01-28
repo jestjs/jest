@@ -70,6 +70,22 @@ const trim = string => (string || '').replace(/^\s+/, '').replace(/\s+$/, '');
 const trimPaths = string =>
   string.match(STACK_PATH_REGEXP) ? trim(string) : string;
 
+const getRenderedCallsite = (fileContent: string, line: number) => {
+  let renderedCallsite = codeFrameColumns(
+    fileContent,
+    {start: {line}},
+    {highlightCode: true},
+  );
+
+  renderedCallsite = renderedCallsite
+    .split('\n')
+    .map(line => MESSAGE_INDENT + line)
+    .join('\n');
+
+  renderedCallsite = `\n${renderedCallsite}\n`;
+  return renderedCallsite;
+};
+
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
@@ -227,21 +243,16 @@ export const formatStackTrace = (
   if (topFrame) {
     const filename = topFrame.file;
 
-    if (path.isAbsolute(filename) && fs.existsSync(filename)) {
-      renderedCallsite = codeFrameColumns(
-        fs.readFileSync(filename, 'utf8'),
-        {
-          start: {line: topFrame.line},
-        },
-        {highlightCode: true},
-      );
-
-      renderedCallsite = renderedCallsite
-        .split('\n')
-        .map(line => MESSAGE_INDENT + line)
-        .join('\n');
-
-      renderedCallsite = `\n${renderedCallsite}\n`;
+    if (path.isAbsolute(filename)) {
+      let fileContent;
+      try {
+        // TODO: check & read HasteFS instead of reading the filesystem:
+        // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+        fileContent = fs.readFileSync(filename, 'utf8');
+        renderedCallsite = getRenderedCallsite(fileContent, topFrame.line);
+      } catch (e) {
+        // the file does not exist or is inaccessible, we ignore
+      }
     }
   }
 
