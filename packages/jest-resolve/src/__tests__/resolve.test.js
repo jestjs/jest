@@ -211,6 +211,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
 
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
     jest.doMock('path', () => path.win32);
+    const path = require('path');
     const Resolver = require('../');
 
     const cwd = 'D:\\project';
@@ -221,7 +222,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     const dirs_expected = [
       src,
       cwd + '\\node_modules',
-      path.win32.dirname(cwd).replace(/\\$/, '') + '\\node_modules',
+      path.dirname(cwd).replace(/\\$/, '') + '\\node_modules',
     ];
     const dirs_actual = resolver.getModulePaths(cwd);
     expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
@@ -229,6 +230,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
 
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
     jest.doMock('path', () => path.posix);
+    const path = require('path');
     const Resolver = require('../');
 
     const cwd = '/temp/project';
@@ -239,7 +241,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     const dirs_expected = [
       src,
       cwd + '/node_modules',
-      path.posix.dirname(cwd) + '/node_modules',
+      path.dirname(cwd) + '/node_modules',
       '/node_modules',
     ];
     const dirs_actual = resolver.getModulePaths(cwd);
