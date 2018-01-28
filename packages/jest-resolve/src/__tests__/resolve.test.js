@@ -14,9 +14,8 @@ const fs = require('fs');
 const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const userResolver = require('../__mocks__/userResolver');
+const Resolver = require('../');
 const nodeModulesPaths = require('../node_modules_paths').default;
-
-let Resolver = require('../');
 
 beforeEach(() => {
   userResolver.mockClear();
@@ -195,11 +194,9 @@ describe('nodeModulesPaths', () => {
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   let moduleMap;
 
-  beforeAll(() => {
-    jest.resetModules();
-  });
-
   beforeEach(() => {
+    jest.resetModules();
+
     moduleMap = new ModuleMap({
       duplicates: [],
       map: [],
@@ -207,18 +204,14 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     });
   });
 
-  afterEach(() => {
-    jest.resetModules();
-  });
-
   afterAll(() => {
+    jest.resetModules();
     jest.dontMock('path');
-    Resolver = require('../');
   });
 
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
     jest.doMock('path', () => path.win32);
-    Resolver = require('../');
+    const Resolver = require('../');
 
     const cwd = 'D:\\project';
     const src = 'C:\\path\\to\\node_modules';
@@ -236,7 +229,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
 
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
     jest.doMock('path', () => path.posix);
-    Resolver = require('../');
+    const Resolver = require('../');
 
     const cwd = '/temp/project';
     const src = '/root/path/to/node_modules';
