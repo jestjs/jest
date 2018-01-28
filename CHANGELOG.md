@@ -20,9 +20,9 @@
 * `[jest-resolve]` Search required modules in node_modules and then in custom
   paths.
   ([#5403](https://github.com/facebook/jest/pull/5403))
-* `[jest-resolve]` Detect absolute paths in `moduleDirectories`. Do not generate
-  additional (invalid) paths by prepending each ancestor of `cwd` to the
-  absolute path. Additionally, this patch fixes the functionality in Windows OS.
+* `[jest-resolve]` Detect and preserve absolute paths in `moduleDirectories`. Do
+  not generate additional (invalid) paths by prepending each ancestor of `cwd`
+  to the absolute path. Additionally, this fixes functionality in Windows OS.
   ([#5398](https://github.com/facebook/jest/pull/5398))
 
 ## jest 22.1.4
