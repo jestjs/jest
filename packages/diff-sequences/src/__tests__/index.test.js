@@ -146,9 +146,7 @@ const assertCommonItems = (
   for (; nCommon !== 0; nCommon -= 1, aCommon += 1, bCommon += 1) {
     if (a[aCommon] !== b[bCommon]) {
       throw new Error(
-        `output item ${a[aCommon]} and ${
-          b[bCommon]
-        } is not common for aCommon=${aCommon} and bCommon=${bCommon}`,
+        `output item is not common for aCommon=${aCommon} and bCommon=${bCommon}`,
       );
     }
   }
@@ -689,10 +687,17 @@ describe('common substrings', () => {
   test('progress', () => {
     // Confirm expected progress. If change is correct, then update test.
     // A property value changes from an object to an array of objects.
-    const a = ['"sorting": Object {', '"ascending": true,'].join('\n');
-    const b = ['"sorting": Array [', 'Object {', '"descending": false,'].join(
-      '\n',
-    );
+    // prettier-ignore
+    const a = [
+      '"sorting": Object {',
+      '"ascending": true,',
+    ].join('\n');
+    // prettier-ignore
+    const b = [
+      '"sorting": Array [',
+      'Object {',
+      '"descending": false,',
+    ].join('\n');
     const expected = ['"sorting": ', 'Object {\n"', 'scending": ', 'e,'];
     const abCommonSubstrings = findCommonSubstrings(a, b);
     const baCommonSubstrings = findCommonSubstrings(b, a);
