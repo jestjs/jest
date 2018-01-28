@@ -1,12 +1,14 @@
 ## master
 
-### features
+### Features
 
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
 
 ### Fixes
 
+* `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
+  malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
