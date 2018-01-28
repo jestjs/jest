@@ -21,8 +21,9 @@
 * `[docs]` Add tutorial page for ES6 class mocks.
   ([#5383]https://github.com/facebook/jest/pull/5383))
 * `[jest-resolve]` Search required modules in node_modules and then in custom
-  paths.
-  ([#5403](https://github.com/facebook/jest/pull/5403))
+  paths. ([#5403](https://github.com/facebook/jest/pull/5403))
+* `[jest-resolve]` Get builtin modules from node core.
+  ([#5411](https://github.com/facebook/jest/pull/5411))
 
 ## jest 22.1.4
 
