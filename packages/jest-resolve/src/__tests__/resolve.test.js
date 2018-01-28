@@ -192,6 +192,7 @@ describe('nodeModulesPaths', () => {
 });
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
+  const _path = path;
   let moduleMap;
 
   beforeEach(() => {
@@ -210,7 +211,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   });
 
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
-    jest.doMock('path', () => path.win32);
+    jest.doMock('path', () => _path.win32);
     const path = require('path');
     const Resolver = require('../');
 
@@ -229,7 +230,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   });
 
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
-    jest.doMock('path', () => path.posix);
+    jest.doMock('path', () => _path.posix);
     const path = require('path');
     const Resolver = require('../');
 
