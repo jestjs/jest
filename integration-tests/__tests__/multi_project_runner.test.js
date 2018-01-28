@@ -155,9 +155,7 @@ test('"No tests found" message for projects', () => {
 });
 
 test('projects can be workspaces with non-JS/JSON files', () => {
-  const testDir = path.resolve(DIR, 'workspaces-test');
-
-  writeFiles(testDir, {
+  writeFiles(DIR, {
     'package.json': JSON.stringify({
       jest: {
         projects: ['packages/*'],
@@ -179,7 +177,7 @@ test('projects can be workspaces with non-JS/JSON files', () => {
     'packages/project2/package.json': '{}',
   });
 
-  const {status, stdout, stderr} = runJest(testDir);
+  const {status, stdout, stderr} = runJest(DIR);
 
   expect(stderr).toContain('Test Suites: 2 passed, 2 total');
   expect(stderr).toContain('PASS packages/project1/__tests__/file1.test.js');
