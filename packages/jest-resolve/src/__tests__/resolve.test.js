@@ -13,8 +13,8 @@ jest.mock('../__mocks__/userResolver');
 const fs = require('fs');
 const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
-const userResolver = require('../__mocks__/userResolver');
 const Resolver = require('../');
+const userResolver = require('../__mocks__/userResolver');
 const nodeModulesPaths = require('../node_modules_paths').default;
 
 beforeEach(() => {
