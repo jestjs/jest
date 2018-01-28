@@ -13,9 +13,10 @@ jest.mock('../__mocks__/userResolver');
 const fs = require('fs');
 const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
-const Resolver = require('../');
 const userResolver = require('../__mocks__/userResolver');
 const nodeModulesPaths = require('../node_modules_paths').default;
+
+let Resolver = require('../');
 
 beforeEach(() => {
   userResolver.mockClear();
@@ -188,5 +189,67 @@ describe('nodeModulesPaths', () => {
     const src = require.resolve('../');
     const result = nodeModulesPaths(src, {paths: ['./customFolder']});
     expect(result[result.length - 1]).toBe('./customFolder');
+  });
+});
+
+describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
+  let moduleMap;
+
+  beforeAll(() => {
+    jest.resetModules();
+  });
+
+  beforeEach(() => {
+    moduleMap = new ModuleMap({
+      duplicates: [],
+      map: [],
+      mocks: [],
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  afterAll(() => {
+    jest.dontMock('path');
+    Resolver = require('../');
+  });
+
+  it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
+    jest.doMock('path', () => path.win32);
+    Resolver = require('../');
+
+    const cwd = 'D:\\project';
+    const src = 'C:\\path\\to\\node_modules';
+    const resolver = new Resolver(moduleMap, {
+      moduleDirectories: [src, 'node_modules'],
+    });
+    const dirs_expected = [
+      src,
+      cwd + '\\node_modules',
+      path.win32.dirname(cwd).replace(/\\$/, '') + '\\node_modules',
+    ];
+    const dirs_actual = resolver.getModulePaths(cwd);
+    expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
+  });
+
+  it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
+    jest.doMock('path', () => path.posix);
+    Resolver = require('../');
+
+    const cwd = '/temp/project';
+    const src = '/root/path/to/node_modules';
+    const resolver = new Resolver(moduleMap, {
+      moduleDirectories: [src, 'node_modules'],
+    });
+    const dirs_expected = [
+      src,
+      cwd + '/node_modules',
+      path.posix.dirname(cwd) + '/node_modules',
+      '/node_modules',
+    ];
+    const dirs_actual = resolver.getModulePaths(cwd);
+    expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
   });
 });
