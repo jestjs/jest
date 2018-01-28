@@ -154,6 +154,41 @@ test('"No tests found" message for projects', () => {
   );
 });
 
+test('projects can be workspaces with non-JS/JSON files', () => {
+  const testDir = path.resolve(DIR, 'workspaces-test');
+
+  writeFiles(testDir, {
+    'package.json': JSON.stringify({
+      jest: {
+        projects: ['packages/*'],
+      },
+    }),
+    'packages/README.md': '# Packages README',
+    'packages/project1/README.md': '# Project1 README',
+    'packages/project1/__tests__/file1.test.js': `
+    const file1 = require('file1');
+    test('file1', () => {});
+    `,
+    'packages/project1/file1.js': fileContentWithProvidesModule('file1'),
+    'packages/project1/package.json': '{}',
+    'packages/project2/__tests__/file2.test.js': `
+    const file2 = require('file2');
+    test('file2', () => {});
+    `,
+    'packages/project2/file2.js': fileContentWithProvidesModule('file2'),
+    'packages/project2/package.json': '{}',
+  });
+
+  const {status, stdout, stderr} = runJest(testDir);
+
+  expect(stderr).toContain('Test Suites: 2 passed, 2 total');
+  expect(stderr).toContain('PASS packages/project1/__tests__/file1.test.js');
+  expect(stderr).toContain('PASS packages/project2/__tests__/file2.test.js');
+  expect(stderr).toContain('Ran all test suites in 2 projects.');
+  expect(stdout).toEqual('');
+  expect(status).toEqual(0);
+});
+
 test('objects in project configuration', () => {
   writeFiles(DIR, {
     '__tests__/file1.test.js': `
