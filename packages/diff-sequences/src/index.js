@@ -52,14 +52,14 @@
 // Find shortest edit script: path with minimum number of non-diagonal edges
 
 // Input callback function compares items at indexes in the sequences.
-export type IsCommon = (
+type IsCommon = (
   aIndex: number, // caller can assume: 0 <= aIndex && aIndex < aLength
   bIndex: number, // caller can assume: 0 <= bIndex && bIndex < bLength
 ) => boolean;
 
 // Output callback function receives the number of adjacent items
 // and starting indexes of each common subsequence.
-export type FoundSubsequence = (
+type FoundSubsequence = (
   nCommon: number, // caller can assume: 0 < nCommon
   aCommon: number, // caller can assume: 0 <= aCommon && aCommon < aLength
   bCommon: number, // caller can assume: 0 <= bCommon && bCommon < bLength
