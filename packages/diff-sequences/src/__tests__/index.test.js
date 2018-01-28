@@ -16,8 +16,7 @@ describe('invalid arg', () => {
   describe('length', () => {
     test('is not a number', () => {
       expect(() => {
-        // $FlowFixMe: This type is incompatible with the expected param type of
-        diff('0', 0, isCommon, foundSubsequence);
+        diff(('0': any), 0, isCommon, foundSubsequence);
       }).toThrow(/aLength/);
     });
     test('Infinity is not a safe integer', () => {
@@ -51,14 +50,12 @@ describe('invalid arg', () => {
   describe('callback', () => {
     test('null is not a function', () => {
       expect(() => {
-        // $FlowFixMe: This type is incompatible with the expected param type of
-        diff(0, 0, null, foundSubsequence);
+        diff(0, 0, (null: any), foundSubsequence);
       }).toThrow(/isCommon/);
     });
     test('undefined is not a function', () => {
       expect(() => {
-        // $FlowFixMe: This type is incompatible with the expected param type of
-        diff(0, 0, isCommon, undefined);
+        diff(0, 0, isCommon, (undefined: any));
       }).toThrow(/foundSubsequence/);
     });
   });
