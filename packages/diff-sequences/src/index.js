@@ -102,7 +102,7 @@ type Division = {|
 |};
 
 const pkg = 'diff-sequences'; // for error messages
-const NOT_YET_USED = 0; // small int instead of undefined to avoid deopt in V8
+const NOT_YET_SET = 0; // small int instead of undefined to avoid deopt in V8
 
 // Return the number of common items that follow in forward direction.
 // The length of what Myers paper calls a “snake” in a forward path.
@@ -276,7 +276,7 @@ const extendOverlappablePathsF = (
   const kMinOverlapF = -baDeltaLength - (d - 1); // -(d - 1) <= kR
   const kMaxOverlapF = -baDeltaLength + (d - 1); // kR <= (d - 1)
 
-  let aIndexPrev1 = NOT_YET_USED; // prev value of [iF - 1] in next iteration
+  let aIndexPrev1 = NOT_YET_SET; // prev value of [iF - 1] in next iteration
 
   // Optimization: skip diagonals in which paths cannot ever overlap.
   const nF = d < iMaxF ? d : iMaxF;
@@ -409,7 +409,7 @@ const extendOverlappablePathsR = (
   const kMinOverlapR = baDeltaLength - d; // -d <= kF
   const kMaxOverlapR = baDeltaLength + d; // kF <= d
 
-  let aIndexPrev1 = NOT_YET_USED; // prev value of [iR - 1] in next iteration
+  let aIndexPrev1 = NOT_YET_SET; // prev value of [iR - 1] in next iteration
 
   // Optimization: skip diagonals in which paths cannot ever overlap.
   const nR = d < iMaxR ? d : iMaxR;
@@ -832,24 +832,24 @@ export default (
 
       // Indexes in sequence a of last points in furthest reaching paths
       // from outside the start at top left in the forward direction:
-      const aIndexesF = [NOT_YET_USED];
+      const aIndexesF = [NOT_YET_SET];
       // from the end at bottom right in the reverse direction:
-      const aIndexesR = [NOT_YET_USED];
+      const aIndexesR = [NOT_YET_SET];
 
       // Initialize one object as output of all calls to divide function.
       const division = {
-        aCommonFollowing: NOT_YET_USED,
-        aCommonPreceding: NOT_YET_USED,
-        aEndPreceding: NOT_YET_USED,
-        aStartFollowing: NOT_YET_USED,
-        bCommonFollowing: NOT_YET_USED,
-        bCommonPreceding: NOT_YET_USED,
-        bEndPreceding: NOT_YET_USED,
-        bStartFollowing: NOT_YET_USED,
-        nChangeFollowing: NOT_YET_USED,
-        nChangePreceding: NOT_YET_USED,
-        nCommonFollowing: NOT_YET_USED,
-        nCommonPreceding: NOT_YET_USED,
+        aCommonFollowing: NOT_YET_SET,
+        aCommonPreceding: NOT_YET_SET,
+        aEndPreceding: NOT_YET_SET,
+        aStartFollowing: NOT_YET_SET,
+        bCommonFollowing: NOT_YET_SET,
+        bCommonPreceding: NOT_YET_SET,
+        bEndPreceding: NOT_YET_SET,
+        bStartFollowing: NOT_YET_SET,
+        nChangeFollowing: NOT_YET_SET,
+        nChangePreceding: NOT_YET_SET,
+        nCommonFollowing: NOT_YET_SET,
+        nCommonPreceding: NOT_YET_SET,
       };
 
       // Find and return common subsequences in the trimmed index intervals.
