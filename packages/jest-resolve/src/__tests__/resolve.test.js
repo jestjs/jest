@@ -215,7 +215,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     const path = require('path');
     const Resolver = require('../');
 
-    const cwd = 'D:\\project';
+    const cwd = 'D:\\temp\\project';
     const src = 'C:\\path\\to\\node_modules';
     const resolver = new Resolver(moduleMap, {
       moduleDirectories: [src, 'node_modules'],
@@ -223,7 +223,8 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     const dirs_expected = [
       src,
       cwd + '\\node_modules',
-      path.dirname(cwd).replace(/\\$/, '') + '\\node_modules',
+      path.dirname(cwd) + '\\node_modules',
+      'D:\\node_modules',
     ];
     const dirs_actual = resolver.getModulePaths(cwd);
     expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
