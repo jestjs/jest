@@ -1,6 +1,6 @@
 ## master
 
-### features
+### Features
 
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
@@ -9,6 +9,8 @@
 
 * `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
   ([#5199](https://github.com/facebook/jest/issues/5199))
+* `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
+  malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
@@ -21,8 +23,9 @@
 * `[docs]` Add tutorial page for ES6 class mocks.
   ([#5383]https://github.com/facebook/jest/pull/5383))
 * `[jest-resolve]` Search required modules in node_modules and then in custom
-  paths.
-  ([#5403](https://github.com/facebook/jest/pull/5403))
+  paths. ([#5403](https://github.com/facebook/jest/pull/5403))
+* `[jest-resolve]` Get builtin modules from node core.
+  ([#5411](https://github.com/facebook/jest/pull/5411))
 
 ## jest 22.1.4
 
