@@ -21,6 +21,10 @@ export default class BaseReporter {
     process.stderr.write(message + '\n');
   }
 
+  info(message: string) {
+    process.stdout.write(message + '\n');
+  }
+
   onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
     preRunMessageRemove(process.stderr);
   }
