@@ -230,12 +230,12 @@ describe('no common items', () => {
         () => {
           throw new Error('input function should not have been called');
         },
-        (nCommon) => {
+        nCommon => {
           n += nCommon;
-        }
-      )
+        },
+      );
       return n;
-    }
+    };
 
     test('of a', () => {
       expect(countItemsNegativeZero(-0, 1)).toEqual(0);
