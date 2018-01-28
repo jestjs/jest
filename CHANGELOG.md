@@ -7,6 +7,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
+  ([#5199](https://github.com/facebook/jest/issues/5199))
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
