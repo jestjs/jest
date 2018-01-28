@@ -277,8 +277,8 @@ const formatDiffLines = (a, b) => {
   const aLinesIn = format(a, {indent: 2 /*, other options*/}).split('\n');
   const bLinesIn = format(b, {indent: 2 /*, other options*/}).split('\n');
 
-  const aLines = aLinesIn.length; // Validate: aLinesUn.length === aLength
-  const bLines = bLinesIn.length; // Validate: bLinesUn.length === bLength
+  const aLength = aLinesIn.length; // Validate: aLinesUn.length === aLength
+  const bLength = bLinesIn.length; // Validate: bLinesUn.length === bLength
 
   const isCommon = (aIndex, bIndex) => aLinesUn[aIndex] === bLinesUn[bIndex];
 
