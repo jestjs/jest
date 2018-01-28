@@ -190,9 +190,9 @@ const diffIndexIntervals = (a, aStart, aEnd, b, bStart, bEnd) => {
 };
 ```
 
-## Example of callback functions to emulate diff utility
+## Example of callback functions to emulate diff command
 
-Linux or Unix has a `diff` utility to compare files line by line. Its output is
+Linux or Unix has a `diff` command to compare files line by line. Its output is
 a **shortest edit script**:
 
 * **c**hange adjacent lines from the first file to lines from the second file
