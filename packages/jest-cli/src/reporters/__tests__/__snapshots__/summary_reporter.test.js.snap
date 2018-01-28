@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshots needs update with npm test 1`] = `
+"<bold>Snapshot Summary</>
+<bold><red> › 2 snapshot tests</></> failed in 1 test suite. <dim>Inspect your code changes or run \`npm test -- -u\` to update them.</>
+
+<bold>Test Suites: </><bold><red>1 failed</></>, 1 total
+<bold>Tests:       </><bold><red>1 failed</></>, 1 total
+<bold>Snapshots:   </><bold><red>2 failed</></>, 2 total
+<bold>Time:</>        0.01s
+<dim>Ran all test suites</><dim>.</>
+"
+`;
+
+exports[`snapshots needs update with yarn test 1`] = `
+"<bold>Snapshot Summary</>
+<bold><red> › 2 snapshot tests</></> failed in 1 test suite. <dim>Inspect your code changes or run \`yarn test -u\` to update them.</>
+
+<bold>Test Suites: </><bold><red>1 failed</></>, 1 total
+<bold>Tests:       </><bold><red>1 failed</></>, 1 total
+<bold>Snapshots:   </><bold><red>2 failed</></>, 2 total
+<bold>Time:</>        0.01s
+<dim>Ran all test suites</><dim>.</>
+"
+`;
