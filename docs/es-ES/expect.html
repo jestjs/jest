@@ -27,9 +27,9 @@
 });
 </code></pre>
 <p>En este caso, <code>toBe</code> es la función comparadora. Hay muchas funciones comparadoras diferentes, documentadas más abajo, para dejarle probar diferentes cosas.</p>
-<p>El argumento a <code>expect</code> debería ser el valor que su código produzca, y cualquier argumento para el comparador debería ser el valor correcto. If you mix them up, your tests will still work, but the error messages on failing tests will look strange.</p>
+<p>El argumento a <code>expect</code> debería ser el valor que su código produzca, y cualquier argumento para el comparador debería ser el valor correcto. Si los mezcla, sus pruebas aún funcionarán, pero los mensajes de error en las pruebas que fallen se verán extraños.</p>
 <h3><a class="anchor" aria-hidden="true" name="expectextendmatchers"></a><a href="#expectextendmatchers" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.extend(matchers)</code></h3>
-<p>Puedes utilizar <code>expect.extend</code> para añadir tus propios comparadores a Jest. Por ejemplo, supongamos que usted está testeando una biblioteca de teoría de números y afirma frecuentemente que los números son divisibles por otros números. You could abstract that into a <code>toBeDivisibleBy</code> matcher:</p>
+<p>Puedes utilizar <code>expect.extend</code> para añadir tus propios comparadores a Jest. Por ejemplo, supongamos que usted está testeando una biblioteca de teoría de números y afirma frecuentemente que los números son divisibles por otros números. Puede extraer eso a un comparador <code>toBeDivisibleBy</code>:</p>
 <pre><code class="hljs css js">expect.extend({
   toBeDivisibleBy(received, argument) {
     <span class="hljs-keyword">const</span> pass = received % argument == <span class="hljs-number">0</span>;
@@ -53,15 +53,15 @@ test(<span class="hljs-string">'even and odd numbers'</span>, () =&gt; {
   expect(<span class="hljs-number">101</span>).not.toBeDivisibleBy(<span class="hljs-number">2</span>);
 });
 </code></pre>
-<p>Los comparadores deben devolver un objeto con dos parámetros. <code>pass</code> indicates whether there was a match or not, and <code>message</code> provides a function with no arguments that returns an error message in case of failure. Thus, when <code>pass</code> is false, <code>message</code> should return the error message for when <code>expect(x).yourMatcher()</code> fails. And when <code>pass</code> is true, <code>message</code> should return the error message for when <code>expect(x).not.yourMatcher()</code> fails.</p>
+<p>Los comparadores deben devolver un objeto con dos parámetros. <code>pass</code> indica si hay o no hay coincidencia, y <code>message</code> proporciona una función sin argumentos que arroja un mensaje de error en caso de fallo. De esta forma, cuando <code>pass</code> resulta falso, <code>message</code> debería arrojar un mensaje de error para cuando <code>expect(x).yourMatcher()</code> falla. Y cuando <code>pass</code> resulta verdadero, <code>message</code> debería arrojar el mensaje de error para cuando <code>expect(x).not.yourMatcher()</code> falla.</p>
 <p>Éstas funciones auxiliares se pueden encontrar dentro de <code>this</code> como comparador personalizado:</p>
 <h4><a class="anchor" aria-hidden="true" name="thisisnot"></a><a href="#thisisnot" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.isNot</code></h4>
 <p>Un boolean para dejarle saber que esta correspondencia fue llamada con el modificador invalidado <code>.not</code> permitiéndole invertir su afirmación.</p>
 <h4><a class="anchor" aria-hidden="true" name="thisequalsa-b"></a><a href="#thisequalsa-b" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.equals(a, b)</code></h4>
 <p>Esta es una función de equidad que retornará <code>true</code> si dos objetos tienen el mismo valor (recurrentemente).</p>
 <h4><a class="anchor" aria-hidden="true" name="thisutils"></a><a href="#thisutils" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.utils</code></h4>
-<p>There are a number of helpful tools exposed on <code>this.utils</code> primarily consisting of the exports from <a href="https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils"><code>jest-matcher-utils</code></a>.</p>
-<p>The most useful ones are <code>matcherHint</code>, <code>printExpected</code> and <code>printReceived</code> to format the error messages nicely. For example, take a look at the implementation for the <code>toBe</code> matcher:</p>
+<p>Existen un número de herramientas útiles expuestas en <code>this.utils</code> consistiendo principalemente de los resultados de <a href="https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils"><code>jest-matcher-utils</code></a>.</p>
+<p>Lo más útiles son <code>matcherHint</code>, <code>printExpected</code> y <code>printReceived</code> para formatear los mensajes de error apropiadamente. Por ejemplo, echa un vistazo a la implementación para el comparador <code>toBe</code>:</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-diff'</span>);
 expect.extend({
   toBe(received, expected) {
@@ -102,9 +102,9 @@ expect.extend({
     Received:
       <span class="hljs-string">"apple"</span>
 </code></pre>
-<p>When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. Debe elaborar un mensaje de error preciso para asegurarse de que los usuarios de sus afirmaciones modificadas tengan una buena experiencia de desarrollador.</p>
+<p>Cuando falla la afirmación, los mensajes de error deberían aportar la señal sea necesaria al usuario para que estas puedan resolver su problema rápidamente. Debe elaborar un mensaje de error preciso para asegurarse de que los usuarios de sus afirmaciones modificadas tengan una buena experiencia de desarrollador.</p>
 <h3><a class="anchor" aria-hidden="true" name="expectanything"></a><a href="#expectanything" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.anything()</code></h3>
-<p><code>expect.anything()</code> aprobará cualquier cosa excepto <code>null</code> o <code>undefined</code>. You can use it inside <code>toEqual</code> or <code>toBeCalledWith</code> instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:</p>
+<p><code>expect.anything()</code> aprobará cualquier cosa excepto <code>null</code> o <code>undefined</code>. Puede usarlo adentro de inside <code>toEqual</code> o <code>toBeCalledWith</code> en lugar de un valor literal. Por ejemplo, si desea verificar que una función de simulación es llamada con un argumento no nulo:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'map calls its argument with a non-null argument'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> mock = jest.fn();
   [<span class="hljs-number">1</span>].map(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> mock(x));
@@ -112,7 +112,7 @@ expect.extend({
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectanyconstructor"></a><a href="#expectanyconstructor" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.any(constructor)</code></h3>
-<p><code>expect.any(constructor)</code> matches anything that was created with the given constructor. You can use it inside <code>toEqual</code> or <code>toBeCalledWith</code> instead of a literal value. Por ejemplo, si desea controlar que se denomina una función de prueba con un número:</p>
+<p><code>expect.any(constructor)</code> compara cualquier cosa que haya sido creada con el constructor dado. Puede usarlo dentro de <code>toEqual</code> o <code>toBeCalledWith</code> en lugar de un valor literal. Por ejemplo, si desea controlar que se denomina una función de prueba con un número:</p>
 <pre><code class="hljs css js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">randocall</span>(<span class="hljs-params">fn</span>) </span>{
   <span class="hljs-keyword">return</span> fn(<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">6</span> + <span class="hljs-number">1</span>));
 }
@@ -124,7 +124,7 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectarraycontainingarray"></a><a href="#expectarraycontainingarray" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.arrayContaining(array)</code></h3>
-<p><code>expect.arrayContaining(array)</code> matches a received array which contains all of the elements in the expected array. That is, the expected array is a <strong>subset</strong> of the received array. Por esta razón, combina con una matriz recibida que consta con elementos <strong>not</strong> en la matriz esperada.</p>
+<p><code>expect.arrayContaining(array)</code> compara un arreglo recibido que contenga todos los elementos en el arreglo esperado. That is, the expected array is a <strong>subset</strong> of the received array. Por esta razón, combina con una matriz recibida que consta con elementos <strong>not</strong> en la matriz esperada.</p>
 <p>Puedes utilizarla en vez de usar un valor literal:</p>
 <ul>
 <li>en <code>toEqual</code> o <code>toBeCalledWith</code></li>
@@ -155,8 +155,8 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectassertionsnumber"></a><a href="#expectassertionsnumber" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.assertions(number)</code></h3>
-<p><code>expect.assertions(number)</code> verifies that a certain number of assertions are called during a test. Esto es útil frecuentemente cuando se prueba el código asíncrono con el fin de asegurarnos de que las aserciones en una devolución de llamada realmente se invocaron.</p>
-<p>For example, let's say that we have a function <code>doAsync</code> that receives two callbacks <code>callback1</code> and <code>callback2</code>, it will asynchronously call both of them in an unknown order. Podemos comprobarlo con:</p>
+<p><code>expect.assertions(number)</code> verifica que un cierto número de afirmaciones son llamadas durante la prueba. Esto es útil frecuentemente cuando se prueba el código asíncrono con el fin de asegurarnos de que las aserciones en una devolución de llamada realmente se invocaron.</p>
+<p>Por ejemplo, digamos que tenemos una función <code>doAsync</code> que recibe dos callbacks <code>callback1</code> and <code>callback2</code>, llamará a ambas asincrónicamente en un orden desconocido. Podemos comprobarlo con:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'doAsync llama a ambos callbacks'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">2</span>);
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback1</span>(<span class="hljs-params">data</span>) </span>{
@@ -171,8 +171,8 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 </code></pre>
 <p>La llamada de <code>expect.assertions(2)</code> asegura que ambas devoluciones de llamada son efectivamente ejecutadas.</p>
 <h3><a class="anchor" aria-hidden="true" name="expecthasassertions"></a><a href="#expecthasassertions" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.hasAssertions()</code></h3>
-<p><code>expect.hasAssertions()</code> verifies that at least one assertion is called during a test. This is often useful when testing asynchronous code, in order to make sure that assertions in a callback actually got called.</p>
-<p>Por ejemplo, digamos que tenemos unas pocas funciones y todas tratan con un estado. <code>prepareState</code> calls a callback with a state object, <code>validateState</code> runs on that state object, and <code>waitOnState</code> returns a promise that waits until all <code>prepareState</code> callbacks complete. Podemos comprobarlo con:</p>
+<p><code>expect.hasAssertions()</code> verifica que al menos una afirmación es llamada durante una prueba. Esto es útil cuando se prueba código asincrónico, para poder segurar que las afirmaciones en un callback fueron de hecho llamadas.</p>
+<p>Por ejemplo, digamos que tenemos unas pocas funciones y todas tratan con un estado. <code>prepareState</code> llama a un callback con un objeto de estado, <code>validateState</code> ejecuta en ese objeto de estado y <code>waitOnState</code> arroja una promesa que espera hasta que se completen todos los callbacks <code>prepareState</code>. Podemos comprobarlo con:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'prepareState prepara un estado valido'</span>, () =&gt; {
   expect.hasAssertions();
   prepareState(<span class="hljs-function"><span class="hljs-params">state</span> =&gt;</span> {
@@ -181,11 +181,11 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
   <span class="hljs-keyword">return</span> waitOnState();
 });
 </code></pre>
-<p>The <code>expect.hasAssertions()</code> call ensures that the <code>prepareState</code> callback actually gets called.</p>
+<p>La llamada <code>expect.hasAssertions()</code> se segura de que el callback <code>prepareState</code> sea realmente llamado.</p>
 <h3><a class="anchor" aria-hidden="true" name="expectobjectcontainingobject"></a><a href="#expectobjectcontainingobject" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.objectContaining(object)</code></h3>
-<p><code>expect.objectContaining(object)</code> matches any received object that recursively matches the expected properties. That is, the expected object is a <strong>subset</strong> of the received object. Por lo tanto, coincide con un objeto aceptado que contiene propiedades que ** not ** en el objeto esperado.</p>
-<p>Instead of literal property values in the expected object, you can use matchers, <code>expect.anything()</code>, and so on.</p>
-<p>For example, let's say that we expect an <code>onPress</code> function to be called with an <code>Event</code> object, and all we need to verify is that the event has <code>event.x</code> and <code>event.y</code> properties. Puedes hacer esto con:</p>
+<p><code>expect.objectContaining(object)</code> compara cualquier objeto recibido que compare recursivamente a las propiedades esperadas. That is, the expected object is a <strong>subset</strong> of the received object. Por lo tanto, coincide con un objeto aceptado que contiene propiedades que ** not ** en el objeto esperado.</p>
+<p>En lugar de valores de propiedad literales en el objeto esperado, puede utilizar los comparadores,<code>expect.anything()</code>, y así sucesivamente.</p>
+<p>Por ejemplo, digamos que esperamos que sea llamada una función <code>onPress</code> con un objeto <code>Event</code>, y todo lo que queremos verificar es que el evento tenga <code>event.x</code> y propiedades <code>event.y</code>. Puedes hacer esto con:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'onPress gets called with the right thing'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> onPress = jest.fn();
   simulatePresses(onPress);
@@ -199,16 +199,16 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectstringcontainingstring"></a><a href="#expectstringcontainingstring" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringContaining(string)</code></h3>
 <h5><a class="anchor" aria-hidden="true" name="disponible-en-jest-1900"></a><a href="#disponible-en-jest-1900" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disponible en Jest <strong>19.0.0+</strong></h5>
-<p><code>expect.stringContaining(string)</code> matches any received string that contains the exact expected string.</p>
+<p><code>expect.stringContaining(string)</code> coincide cualquier cuerda recibida que contenga exactamente la cuerda esperada.</p>
 <h3><a class="anchor" aria-hidden="true" name="expectstringmatchingregexp"></a><a href="#expectstringmatchingregexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(regexp)</code></h3>
-<p><code>expect.stringMatching(regexp)</code> matches any received string that matches the expected regexp.</p>
+<p><code>expect.stringMatching(regexp)</code> compara cualquier cuerda recibida que coincida con el regexp esperado.</p>
 <p>Puedes utilizarla en vez de usar un valor literal:</p>
 <ul>
 <li>en <code>toEqual</code> o <code>toBeCalledWith</code></li>
 <li>para que coincida con un elemento en <code>arrayContaining</code></li>
 <li>para aprobar una propiedad en <code>objectContaining</code> o <code>toMatchObject</code></li>
 </ul>
-<p>This example also shows how you can nest multiple asymmetric matchers, with <code>expect.stringMatching</code> inside the <code>expect.arrayContaining</code>.</p>
+<p>Este ejemplo también muestra como puede anidar multiples comparadores asimétricos, con <code>expect.stringMatching</code> adentro de <code>expect.arrayContaining</code>.</p>
 <pre><code class="hljs css js">describe(<span class="hljs-string">'stringMatching in arrayContaining'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = [
     expect.stringMatching(<span class="hljs-regexp">/^Alic/</span>),
@@ -227,7 +227,7 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectaddsnapshotserializerserializer"></a><a href="#expectaddsnapshotserializerserializer" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.addSnapshotSerializer(serializer)</code></h3>
-<p>You can call <code>expect.addSnapshotSerializer</code> to add a module that formats application-specific data structures.</p>
+<p>Puede llamar <code>expect.addSnapshotSerializer</code> para añadir un módulo que formatee las estructura de datos de aplicaciones específicas.</p>
 <p>For an individual test file, an added module precedes any modules from <code>snapshotSerializers</code> configuration, which precede the default snapshot serializers for built-in JavaScript types and for React elements. The last module added is the first module tested.</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">import</span> serializer <span class="hljs-keyword">from</span> <span class="hljs-string">'my-serializer-module'</span>;
 expect.addSnapshotSerializer(serializer);
