@@ -24,6 +24,10 @@
   paths. ([#5403](https://github.com/facebook/jest/pull/5403))
 * `[jest-resolve]` Get builtin modules from node core.
   ([#5411](https://github.com/facebook/jest/pull/5411))
+* `[jest-resolve]` Detect and preserve absolute paths in `moduleDirectories`. Do
+  not generate additional (invalid) paths by prepending each ancestor of `cwd`
+  to the absolute path. Additionally, this fixes functionality in Windows OS.
+  ([#5398](https://github.com/facebook/jest/pull/5398))
 
 ## jest 22.1.4
 
