@@ -19,6 +19,7 @@ import b from '../__test_modules__/b';
 import c from '../__test_modules__/c';
 import d from '../__test_modules__/d';
 import e from '../__test_modules__/e';
+import jestBackticks from '../__test_modules__/jest-backticks';
 
 // The virtual mock call below will be hoisted above this `require` call.
 const virtualModule = require('virtual-module');
@@ -44,6 +45,7 @@ jest.mock('../__test_modules__/e', () => {
     },
   };
 });
+jest.mock('../__test_modules__/jest-backticks');
 jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 // This has types that should be ignored by the out-of-scope variables check.
 jest.mock('has-flow-types', () => (props: {children: mixed}) => 3, {
@@ -124,5 +126,9 @@ describe('babel-plugin-jest-hoist', () => {
 
   it('works with virtual modules', () => {
     expect(virtualModule).toBe('kiwi');
+  });
+
+  it('works if the file name is mocked via backticks and defined in the "__mocks__" directory', () => {
+    expect(jestBackticks.name).toBe('backticks-with-jest');
   });
 });
