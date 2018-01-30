@@ -1,6 +1,6 @@
 ## master
 
-### features
+### Features
 
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
@@ -8,16 +8,27 @@
 ### Fixes
 
 * `[mock]` Add backticks support (\`\`) to `mock` a certain package via the `__mocks__` folder.
+* `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
+  malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
   ([#5367](https://github.com/facebook/jest/pull/5367))
 * `[jest-cli]` Fix npm update command for snapshot summary.
-  ([#5376](https://github.com/facebook/jest/pull/5376))
+  ([#5376](https://github.com/facebook/jest/pull/5376),
+  [5389](https://github.com/facebook/jest/pull/5389/))
 * `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
 * `[docs]` Add tutorial page for ES6 class mocks.
   ([#5383]https://github.com/facebook/jest/pull/5383))
+* `[jest-resolve]` Search required modules in node_modules and then in custom
+  paths. ([#5403](https://github.com/facebook/jest/pull/5403))
+* `[jest-resolve]` Get builtin modules from node core.
+  ([#5411](https://github.com/facebook/jest/pull/5411))
+* `[jest-resolve]` Detect and preserve absolute paths in `moduleDirectories`. Do
+  not generate additional (invalid) paths by prepending each ancestor of `cwd`
+  to the absolute path. Additionally, this fixes functionality in Windows OS.
+  ([#5398](https://github.com/facebook/jest/pull/5398))
 
 ## jest 22.1.4
 

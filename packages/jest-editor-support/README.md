@@ -7,8 +7,9 @@ The engine that allows editors to build on top of Jest.
 This is only useful if you are interested in building an editor integration for
 Jest.
 
-For now as an end user, I'd recommend looking at Orta's
-[vscode-jest](https://github.com/orta/vscode-jest/).
+For now as an end user, we'd recommend looking at either
+[vscode-jest](https://github.com/jest-community/vscode-jest/) or 
+[majestic](https://github.com/Raathigesh/majestic/).
 
 ## Note
 
