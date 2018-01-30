@@ -7,6 +7,7 @@
 
 ### Fixes
 
+* `[mock]` Add backticks support (\`\`) to `mock` a certain package via the `__mocks__` folder.
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
