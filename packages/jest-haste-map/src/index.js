@@ -18,7 +18,7 @@ import type {
   MockData,
 } from 'types/HasteMap';
 
-import typeof {worker} from './worker';
+import {worker} from './worker';
 
 // eslint-disable-next-line import/no-duplicates
 import typeof HType from './constants';
@@ -87,7 +87,7 @@ type Watcher = {
   close(callback: () => void): void,
 };
 
-type WorkerInterface = {worker: worker};
+type WorkerInterface = {worker: typeof worker};
 
 export type ModuleMap = HasteModuleMap;
 export type FS = HasteFS;
@@ -199,7 +199,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
 class HasteMap extends EventEmitter {
   _buildPromise: ?Promise<HasteMapObject>;
   _cachePath: Path;
-  _changeInterval: number;
+  _changeInterval: IntervalID;
   _console: Console;
   _options: InternalOptions;
   _watchers: Array<Watcher>;
@@ -519,14 +519,14 @@ class HasteMap extends EventEmitter {
   _getWorker(options: ?{forceInBand: boolean}): WorkerInterface {
     if (!this._worker) {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
-        this._worker = require('./worker');
+        this._worker = {worker};
       } else {
         // $FlowFixMe: assignment of a worker with custom properties.
-        this._worker = new Worker(require.resolve('./worker'), {
+        this._worker = (new Worker(require.resolve('./worker'), {
           exposedMethods: ['worker'],
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
-        });
+        }): {worker: typeof worker});
       }
     }
 

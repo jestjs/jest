@@ -9,6 +9,8 @@
 
 * `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
   ([#5199](https://github.com/facebook/jest/issues/5199))
+* `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
+  `__mocks__` folder. ([#5426](https://github.com/facebook/jest/pull/5426))
 * `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
   malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
@@ -26,6 +28,10 @@
   paths. ([#5403](https://github.com/facebook/jest/pull/5403))
 * `[jest-resolve]` Get builtin modules from node core.
   ([#5411](https://github.com/facebook/jest/pull/5411))
+* `[jest-resolve]` Detect and preserve absolute paths in `moduleDirectories`. Do
+  not generate additional (invalid) paths by prepending each ancestor of `cwd`
+  to the absolute path. Additionally, this fixes functionality in Windows OS.
+  ([#5398](https://github.com/facebook/jest/pull/5398))
 
 ## jest 22.1.4
 
