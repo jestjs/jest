@@ -7,7 +7,8 @@
 
 ### Fixes
 
-* `[mock]` Add backticks support (\`\`) to `mock` a certain package via the `__mocks__` folder.([#5426](https://github.com/facebook/jest/pull/5426))
+* `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
+  `__mocks__` folder.([#5426](https://github.com/facebook/jest/pull/5426))
 * `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
   malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
