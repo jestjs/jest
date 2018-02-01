@@ -51,7 +51,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
 });
 </code></pre>
 <p>Be sure to return the promise - if you omit this <code>return</code> statement, your test will complete before <code>fetchData</code> completes.</p>
-<p>Si esperas que una promesa se rechazada, usa el método <code>.catch</code>. Make sure to add <code>expect.assertions</code> to verify that a certain number of assertions are called. De lo contrario una promesa cumplida no hará que el test falle.</p>
+<p>Si esperas que una promesa se rechazada, usa el método <code>.catch</code>. Asegurese de añadir <code>expect.assertions</code> para verificar que un cierto número de afirmaciones son llamadas. De lo contrario una promesa cumplida no hará que el test falle.</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> fetchData().catch(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> expect(e).toMatch(<span class="hljs-string">'error'</span>));
