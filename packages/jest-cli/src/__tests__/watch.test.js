@@ -35,21 +35,29 @@ jest.doMock(
 
 jest.doMock(
   watchPluginPath,
-  () => ({
-    enter: jest.fn(),
-    key: 's'.codePointAt(0),
-    prompt: 'do nothing',
-  }),
+  () =>
+    class WatchPlugin1 {
+      getUsageRow() {
+        return {
+          key: 's'.codePointAt(0),
+          prompt: 'do nothing',
+        };
+      }
+    },
   {virtual: true},
 );
 
 jest.doMock(
   watchPlugin2Path,
-  () => ({
-    enter: jest.fn(),
-    key: 'u'.codePointAt(0),
-    prompt: 'do something else',
-  }),
+  () =>
+    class WatchPlugin2 {
+      getUsageRow() {
+        return {
+          key: 'u'.codePointAt(0),
+          prompt: 'do something else',
+        };
+      }
+    },
   {virtual: true},
 );
 
@@ -152,7 +160,7 @@ describe('Watch mode flows', () => {
     }).not.toThrow();
   });
 
-  xit('shows prompts for WatchPlugins in alphabetical order', async () => {
+  it('shows prompts for WatchPlugins in alphabetical order', async () => {
     jest.unmock('jest-util');
     const util = require('jest-util');
     util.isInteractive = true;
@@ -178,13 +186,30 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
-  xit('triggers enter on a WatchPlugin when its key is pressed', () => {
-    const plugin = require(watchPluginPath);
+  it('triggers enter on a WatchPlugin when its key is pressed', async () => {
+    const showPrompt = jest.fn(() => Promise.resolve());
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin1 {
+          constructor() {
+            this.showPrompt = showPrompt;
+          }
+          getUsageRow() {
+            return {
+              key: 's'.codePointAt(0),
+              prompt: 'do nothing',
+            };
+          }
+        },
+      {virtual: true},
+    );
 
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [watchPluginPath],
+        watchPlugins: [pluginPath],
       }),
       contexts,
       pipe,
@@ -192,11 +217,14 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    stdin.emit(plugin.key.toString(16));
+    stdin.emit(Number('s'.charCodeAt(0)).toString(16));
+    // showPrompt();
+    await nextTick();
 
-    expect(plugin.enter).toHaveBeenCalled();
+    expect(showPrompt).toHaveBeenCalled();
   });
 
+  // TODO: Fix or remove before merging
   xit('prevents Jest from handling keys when active and returns control when end is called', () => {
     const plugin = require(watchPluginPath);
     const plugin2 = require(watchPlugin2Path);

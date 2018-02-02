@@ -126,11 +126,13 @@ export default function watch(
     plugin.registerHooks(hooks.getSubscriber());
   });
 
-  // if (globalConfig.watchPlugins != null) {
-  //   for (const pluginModulePath of globalConfig.watchPlugins) {
-  //     watchPlugins.loadPluginPath(pluginModulePath);
-  //   }
-  // }
+  if (globalConfig.watchPlugins != null) {
+    for (const pluginModulePath of globalConfig.watchPlugins) {
+      // $FlowFixMe dynamic require
+      const ThirdPluginPath = require(pluginModulePath);
+      watchPlugins.push(new ThirdPluginPath({stdin, stdout: outputStream}));
+    }
+  }
 
   const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
