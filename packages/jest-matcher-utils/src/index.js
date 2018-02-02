@@ -151,18 +151,22 @@ export const matcherHint = (
   received: string = 'received',
   expected: string = 'expected',
   options: ?{
-    secondArgument?: ?string,
+    comment?: string,
     isDirectExpectCall?: boolean,
+    secondArgument?: ?string,
   },
 ) => {
-  const secondArgument = options && options.secondArgument;
+  const comment = options && options.comment ? ` // ${options.comment}` : '';
   const isDirectExpectCall = options && options.isDirectExpectCall;
+  const secondArgument = options && options.secondArgument;
   return (
     chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
     RECEIVED_COLOR(received) +
     chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(') +
     EXPECTED_COLOR(expected) +
-    (secondArgument ? `, ${EXPECTED_COLOR(secondArgument)}` : '') +
-    chalk.dim(')')
+    (secondArgument
+      ? `${chalk.dim(', ')}${EXPECTED_COLOR(secondArgument)}`
+      : '') +
+    chalk.dim(`)${comment}`)
   );
 };
