@@ -7,6 +7,8 @@
 
 ### Fixes
 
+* `[babel-jest]` Remove retainLines from babel-jest
+  ([#5326](https://github.com/facebook/jest/issues/5326))
 * `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
   ([#5199](https://github.com/facebook/jest/issues/5199))
 * `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
