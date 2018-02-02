@@ -201,6 +201,11 @@ const users = [
     infoLink: 'https://www.reddit.com/',
   },
   {
+    caption: 'Rogue Pixxel',
+    image: '/jest/img/logos/roguepixxel.png',
+    infoLink: 'http://roguepixel.com/',
+  },
+  {
     caption: 'SeatGeek',
     image: '/jest/img/logos/seatgeek.png',
     infoLink: 'https://seatgeek.com/',
