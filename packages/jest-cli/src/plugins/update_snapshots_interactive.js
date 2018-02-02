@@ -7,13 +7,10 @@
  * @flow
  */
 import type {JestHookSubscriber} from '../jest_hooks';
-import type {AggregatedResult} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import WatchPlugin from '../watch_plugin';
 import {getFailedSnapshotTests} from 'jest-util';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
-
-const PLUGIN_NAME = 'update-snapshots-interactive';
 
 class UpdateSnapshotInteractivePlugin extends WatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;

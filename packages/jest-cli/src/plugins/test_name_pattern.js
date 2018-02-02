@@ -6,7 +6,6 @@
  *
  * @flow
  */
-import type {JestHooks} from '../types';
 import type {GlobalConfig} from 'types/Config';
 import WatchPlugin from '../watch_plugin';
 import TestNamePatternPrompt from '../test_name_pattern_prompt';
