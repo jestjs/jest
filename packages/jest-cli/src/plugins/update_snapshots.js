@@ -13,7 +13,7 @@ class UpdateSnapshotsPlugin extends WatchPlugin {
   showPrompt(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
-  ): Promise<void> {
+  ): Promise<boolean> {
     updateConfigAndRun({updateSnapshot: 'all'});
     return Promise.resolve(false);
   }

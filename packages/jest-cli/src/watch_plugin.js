@@ -36,7 +36,7 @@ class WatchPlugin {
   showPrompt(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
-  ): Promise<void> {
+  ): Promise<void | boolean> {
     return Promise.resolve();
   }
 }
