@@ -150,15 +150,13 @@ export const matcherHint = (
   matcherName: string,
   received: string = 'received',
   expected: string = 'expected',
-  options: ?{
+  options: {
     comment?: string,
     isDirectExpectCall?: boolean,
     secondArgument?: ?string,
-  },
+  } = {},
 ) => {
-  const comment = options && options.comment ? ` // ${options.comment}` : '';
-  const isDirectExpectCall = options && options.isDirectExpectCall;
-  const secondArgument = options && options.secondArgument;
+  const {comment, isDirectExpectCall, secondArgument} = options;
   return (
     chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
     RECEIVED_COLOR(received) +
@@ -167,6 +165,6 @@ export const matcherHint = (
     (secondArgument
       ? `${chalk.dim(', ')}${EXPECTED_COLOR(secondArgument)}`
       : '') +
-    chalk.dim(`)${comment}`)
+    chalk.dim(`)${comment ? ` // ${comment}` : ''}`)
   );
 };
