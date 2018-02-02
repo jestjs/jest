@@ -14,8 +14,8 @@ Watch Usage
  › Press a to run all tests.
  › Press f to run only failed tests.
  › Press p to filter by a filename regex pattern.
- › Press q to quit watch mode.
  › Press t to filter by a test regex pattern.
+ › Press q to quit watch mode.
  › Press Enter to trigger a test run.
 ",
 ]

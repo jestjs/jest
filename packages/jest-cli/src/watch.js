@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {GlobalConfig} from 'types/Config';
+import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
 import type {Context} from 'types/Context';
 
 import ansiEscapes from 'ansi-escapes';
@@ -37,6 +37,34 @@ import QuitPlugin from './plugins/quit';
 
 let hasExitListener = false;
 
+const INTERNAL_PLUGINS = [
+  TestPathPatternPlugin,
+  TestNamePatternPlugin,
+  UpdateSnapshotsPlugin,
+  UpdateSnapshotsInteractivePlugin,
+  QuitPlugin,
+];
+
+const getSortedUsageRows = (
+  watchPlugins: Array<WatchPlugin>,
+  globalConfig: GlobalConfig,
+  hasSnapshotFailure: boolean,
+) => {
+  const internalPlugins = watchPlugins
+    .slice(0, INTERNAL_PLUGINS.length)
+    .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
+    .filter(usage => usage && !usage.hide);
+
+  const thirdPartyPlugins = watchPlugins
+    .slice(INTERNAL_PLUGINS.length)
+    .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
+    .filter(usage => usage && !usage.hide)
+    // $FlowFixMe a and b will not be null or undefined
+    .sort((a, b) => a.key - b.key);
+
+  return internalPlugins.concat(thirdPartyPlugins);
+};
+
 export default function watch(
   initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
@@ -60,6 +88,10 @@ export default function watch(
     testNamePattern,
     testPathPattern,
     updateSnapshot,
+  }: {
+    testNamePattern?: string,
+    testPathPattern?: string,
+    updateSnapshot?: SnapshotUpdateState,
   } = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
@@ -86,13 +118,9 @@ export default function watch(
     });
   };
 
-  const watchPlugins: Array<WatchPlugin> = [
-    new TestPathPatternPlugin({stdin, stdout: outputStream}),
-    new TestNamePatternPlugin({stdin, stdout: outputStream}),
-    new UpdateSnapshotsPlugin({stdin, stdout: outputStream}),
-    new UpdateSnapshotsInteractivePlugin({stdin, stdout: outputStream}),
-    new QuitPlugin({stdin, stdout: outputStream}),
-  ];
+  const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
+    InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
+  );
 
   watchPlugins.forEach((plugin: WatchPlugin) => {
     plugin.registerHooks(hooks.getSubscriber());
@@ -221,20 +249,13 @@ export default function watch(
       return;
     }
 
-    const getSortedUsageRows = () => {
-      return (
-        watchPlugins
-          .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
-          // $FlowFixMe
-          .sort((a = {}, b = {}) => a.key - b.key)
-      );
-    };
-
     // Abort test run
-    const pluginKeys = getSortedUsageRows()
-      .map(p => (p ? p.key : undefined))
-      .filter(p => p !== undefined)
-      .map(key => Number(key).toString(16));
+    const pluginKeys = getSortedUsageRows(
+      watchPlugins,
+      globalConfig,
+      hasSnapshotFailure,
+      // $FlowFixMe usage will be present
+    ).map(usage => Number(usage.key).toString(16));
     if (
       isRunning &&
       testWatcher &&
@@ -392,18 +413,16 @@ const usage = (
         chalk.dim(' to only run tests related to changed files.')
       : null,
 
-    ...watchPlugins
-      .map(p => p.getUsageRow(globalConfig, snapshotFailure))
-      .filter(p => p && !p.hide)
-      .sort((a, b) => a.key - b.key)
-      .map(
-        plugin =>
-          chalk.dim(' \u203A Press') +
-          ' ' +
-          String.fromCodePoint(plugin.key) +
-          ' ' +
-          chalk.dim(`to ${plugin.prompt}.`),
-      ),
+    ...getSortedUsageRows(watchPlugins, globalConfig, snapshotFailure).map(
+      plugin =>
+        chalk.dim(' \u203A Press') +
+        ' ' +
+        // $FlowFixMe plugin will be present
+        String.fromCodePoint(plugin.key) +
+        ' ' +
+        // $FlowFixMe plugin will be present
+        chalk.dim(`to ${plugin.prompt}.`),
+    ),
 
     chalk.dim(' \u203A Press ') +
       'Enter' +
