@@ -69,7 +69,6 @@ const createTransformer = (options: any) => {
   options = Object.assign({}, options, {
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
-    retainLines: true,
     sourceMaps: 'inline',
   });
   delete options.cacheDirectory;
