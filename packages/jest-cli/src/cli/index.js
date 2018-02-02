@@ -114,7 +114,7 @@ const readResultsAndExit = (
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
 
-  process.on('exit', () => exit(code));
+  process.on('exit', () => (process.exitCode = code));
 
   if (globalConfig.forceExit) {
     exit(code);
