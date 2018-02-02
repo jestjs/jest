@@ -11,7 +11,6 @@ import type {Argv} from 'types/Argv';
 import type {EnvironmentClass} from 'types/Environment';
 
 import chalk from 'chalk';
-import exit from 'exit';
 import os from 'os';
 import path from 'path';
 import yargs from 'yargs';
@@ -43,7 +42,7 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
 
   if (argv.help) {
     yargs.showHelp();
-    process.on('exit', () => exit(1));
+    process.on('exit', () => (process.exitCode = 1));
     return;
   }
 
@@ -54,7 +53,7 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
 
   if (!argv._.length) {
     console.log('Please provide a path to a script. (See --help for details)');
-    process.on('exit', () => exit(1));
+    process.on('exit', () => (process.exitCode = 1));
     return;
   }
 
@@ -93,6 +92,6 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     })
     .catch(e => {
       console.error(chalk.red(e.stack || e));
-      process.on('exit', () => exit(1));
+      process.on('exit', () => (process.exitCode = 1));
     });
 }
