@@ -7,7 +7,8 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import type {JestHooks, UsageRow} from './types';
+import type {JestHookSubscriber} from './jest_hooks';
+import type {UsageRow} from './types';
 
 class WatchPlugin {
   _stdin: stream$Readable | tty$ReadStream;
@@ -23,7 +24,7 @@ class WatchPlugin {
     this._stdout = stdout;
   }
 
-  registerHooks(hooks: JestHooks) {}
+  registerHooks(hooks: JestHookSubscriber) {}
 
   getUsageRow(
     globalConfig: GlobalConfig,

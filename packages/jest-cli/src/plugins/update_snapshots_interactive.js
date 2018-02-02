@@ -6,7 +6,7 @@
  *
  * @flow
  */
-import type {JestHooks} from '../types';
+import type {JestHookSubscriber} from '../jest_hooks';
 import type {AggregatedResult} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import WatchPlugin from '../watch_plugin';
@@ -27,8 +27,13 @@ class UpdateSnapshotInteractivePlugin extends WatchPlugin {
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
   }
 
-  registerHooks(hooks: JestHooks) {
-    hooks.testRunComplete.tap(PLUGIN_NAME, this._onTestRunComplete.bind(this));
+  registerHooks(hooks: JestHookSubscriber) {
+    hooks.testRunComplete(results => {
+      this._failedSnapshotTestPaths = getFailedSnapshotTests(results);
+      if (this._snapshotInteractiveMode.isActive()) {
+        this._snapshotInteractiveMode.updateWithResults(results);
+      }
+    });
   }
 
   onData(key: string) {
@@ -68,13 +73,6 @@ class UpdateSnapshotInteractivePlugin extends WatchPlugin {
       key: 'i'.codePointAt(0),
       prompt: 'update failing snapshots interactively',
     };
-  }
-
-  _onTestRunComplete(results: AggregatedResult) {
-    this._failedSnapshotTestPaths = getFailedSnapshotTests(results);
-    if (this._snapshotInteractiveMode.isActive()) {
-      this._snapshotInteractiveMode.updateWithResults(results);
-    }
   }
 }
 

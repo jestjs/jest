@@ -27,7 +27,7 @@ import TestWatcher from './test_watcher';
 import Prompt from './lib/Prompt';
 import FailedTestsCache from './failed_tests_cache';
 import {KEYS, CLEAR} from './constants';
-import {SyncHook} from 'tapable';
+import JestHooks from './jest_hooks';
 import WatchPlugin from './watch_plugin';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
 import TestNamePatternPlugin from './plugins/test_name_pattern';
@@ -54,9 +54,7 @@ export default function watch(
     passWithNoTests: true,
   });
 
-  const hooks = {
-    testRunComplete: new SyncHook(['results']),
-  };
+  const hooks = new JestHooks();
 
   const updateConfigAndRun = ({
     testNamePattern,
@@ -97,7 +95,7 @@ export default function watch(
   ];
 
   watchPlugins.forEach((plugin: WatchPlugin) => {
-    plugin.registerHooks(hooks);
+    plugin.registerHooks(hooks.getSubscriber());
   });
 
   // if (globalConfig.watchPlugins != null) {
@@ -172,7 +170,7 @@ export default function watch(
       onComplete: results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;
-        hooks.testRunComplete.call(results);
+        hooks.getEmitter().testRunComplete(results);
 
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
