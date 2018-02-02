@@ -26,7 +26,7 @@ class TestNamePatternPlugin extends WatchPlugin {
   getUsageRow() {
     return {
       key: 't'.codePointAt(0),
-      prompt: 'filter by a test regex pattern',
+      prompt: 'filter by a test name regex pattern',
     };
   }
 
