@@ -34,7 +34,7 @@
   not generate additional (invalid) paths by prepending each ancestor of `cwd`
   to the absolute path. Additionally, this fixes functionality in Windows OS.
   ([#5398](https://github.com/facebook/jest/pull/5398))
-* `[doc]` Add information about Interactive Snapshot update
+* `[docs]` Add information about Interactive Snapshot update
   ([#5291](https://github.com/facebook/jest/pull/5291))
 
 ## jest 22.1.4
