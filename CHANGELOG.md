@@ -51,7 +51,6 @@
 * `[jest-cli]` `--changedSince`: allow selectively running tests for code
   changed since arbitrary revisions.
   ([#5312](https://github.com/facebook/jest/pull/5312))
->>>>>>> upstream/master
 
 ## jest 22.1.3
 

@@ -123,17 +123,17 @@ modifying the `Link` component, and running Jest.
 
 #### Interactive Updates
 
-Snapshots can also be updated one at a time in the Jest watch mode:
+The snapshots of one test file can be updated in the Jest watch mode:
 
 ![](/jest/img/content/interactiveSnapshot.png)
 
 Once you enter the Interactive Snapshot Updates mode, Jest will walk you though
-the failed snapshots one at a time and give you an opportunity to review the
-failed output.
+the failed snapshots of one test file at a time and give you an opportunity to
+review the failed output.
 
 From here you can choose to update that snapshot or skip to the next:
 
-![](/jest/img/content/interactiveSnapshotUpdate.png)
+![](/jest/img/content/interactiveSnapshotUpdate.gif)
 
 ### Tests Should Be Deterministic
 
