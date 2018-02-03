@@ -77,6 +77,7 @@ export type InitialOptions = {
   cacheDirectory?: Path,
   clearMocks?: boolean,
   changedFilesWithAncestor?: boolean,
+  changedSince?: string,
   collectCoverage?: boolean,
   collectCoverageFrom?: Array<Glob>,
   collectCoverageOnlyFrom?: {[key: string]: boolean},
@@ -159,6 +160,7 @@ export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
 export type GlobalConfig = {|
   bail: boolean,
+  changedSince: string,
   changedFilesWithAncestor: boolean,
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,

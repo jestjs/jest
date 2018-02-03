@@ -10,7 +10,7 @@ UnitTestEngine reference implementation.
 
 You need to add the jest unit engine to your .arcconfig:
 
-```
+```json
 ...
 
 "unit.engine" : "JestUnitTestEngine",

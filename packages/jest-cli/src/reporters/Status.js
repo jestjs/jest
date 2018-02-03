@@ -70,7 +70,7 @@ export default class Status {
   _emitScheduled: boolean;
   _estimatedTime: number;
   _height: number;
-  _interval: number;
+  _interval: IntervalID;
   _aggregatedResults: AggregatedResult;
   _lastUpdated: number;
   _showStatus: boolean;

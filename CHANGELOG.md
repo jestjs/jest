@@ -1,9 +1,57 @@
 ## master
 
+### Features
+
+* `[jest-mock]` Add util methods to create async functions.
+  ([#5318](https://github.com/facebook/jest/pull/5318))
+
 ### Fixes
 
+* `[babel-jest]` Remove retainLines from babel-jest
+  ([#5326](https://github.com/facebook/jest/pull/5439))
+* `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
+  ([#5199](https://github.com/facebook/jest/issues/5199))
+* `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
+  `__mocks__` folder. ([#5426](https://github.com/facebook/jest/pull/5426))
+* `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
+  malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
+* `[jest]` Add `import-local` to `jest` package.
+  ([#5353](https://github.com/facebook/jest/pull/5353))
+* `[expect]` Support class instances in `.toHaveProperty()` matcher.
+  ([#5367](https://github.com/facebook/jest/pull/5367))
+* `[jest-cli]` Fix npm update command for snapshot summary.
+  ([#5376](https://github.com/facebook/jest/pull/5376),
+  [5389](https://github.com/facebook/jest/pull/5389/))
+* `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
+  ([#5364](https://github.com/facebook/jest/pull/5364))
+* `[docs]` Add tutorial page for ES6 class mocks.
+  ([#5383]https://github.com/facebook/jest/pull/5383))
+* `[jest-resolve]` Search required modules in node_modules and then in custom
+  paths. ([#5403](https://github.com/facebook/jest/pull/5403))
+* `[jest-resolve]` Get builtin modules from node core.
+  ([#5411](https://github.com/facebook/jest/pull/5411))
+* `[jest-resolve]` Detect and preserve absolute paths in `moduleDirectories`. Do
+  not generate additional (invalid) paths by prepending each ancestor of `cwd`
+  to the absolute path. Additionally, this fixes functionality in Windows OS.
+  ([#5398](https://github.com/facebook/jest/pull/5398))
 * `[doc]` Add information about Interactive Snapshot update
   ([#5291](https://github.com/facebook/jest/pull/5291))
+
+## jest 22.1.4
+
+### Fixes
+
+* `[jest-util]` Add "debug" method to "console" implementations
+  ([#5350](https://github.com/facebook/jest/pull/5350))
+* `[jest-resolve]` Add condition to avoid infinite loop when node module package
+  main is ".". ([#5344)](https://github.com/facebook/jest/pull/5344)
+
+### Features
+
+* `[jest-cli]` `--changedSince`: allow selectively running tests for code
+  changed since arbitrary revisions.
+  ([#5312](https://github.com/facebook/jest/pull/5312))
+>>>>>>> upstream/master
 
 ## jest 22.1.3
 
@@ -26,6 +74,13 @@
 * `[jest-config]` Added restoreMocks config option.
   ([#5327](https://github.com/facebook/jest/pull/5327))
 
+## jest 22.1.1
+
+### Fixes
+
+* `[*]` Move from "process.exit" to "exit.
+  ([#5313](https://github.com/facebook/jest/pull/5313))
+
 ## jest 22.1.0
 
 ### Features
@@ -44,7 +99,7 @@
 * `[jest-runner]` Fix memory leak in coverage reporting
   ([#5289](https://github.com/facebook/jest/pull/5289))
 * `[docs]` Update mention of the minimal version of node supported
-  [#4947](https://github.com/facebook/jest/issues/4947)
+  ([#4947](https://github.com/facebook/jest/issues/4947))
 * `[jest-cli]` Fix missing newline in console message
   ([#5308](https://github.com/facebook/jest/pull/5308))
 * `[jest-cli]` `--lastCommit` and `--changedFilesWithAncestor` now take effect

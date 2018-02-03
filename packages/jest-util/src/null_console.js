@@ -11,6 +11,7 @@ import Console from './Console';
 
 export default class NullConsole extends Console {
   assert() {}
+  debug() {}
   dir() {}
   error() {}
   info() {}

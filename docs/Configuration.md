@@ -296,8 +296,8 @@ For example, the following would create a global `__DEV__` variable set to
 Note that, if you specify a global reference value (like an object or array)
 here, and some code mutates that value in the midst of running a test, that
 mutation will _not_ be persisted across test runs for other test files. In
-addition the `globals` object must be json-serializable, so it can't be used
-to specify global functions. For that you should use `setupFiles`.
+addition the `globals` object must be json-serializable, so it can't be used to
+specify global functions. For that you should use `setupFiles`.
 
 ### `globalSetup` [string]
 
@@ -591,7 +591,7 @@ module that exports a function expecting a string as the first argument for the
 path to resolve and an object with the following structure as the second
 argument:
 
-```
+```json
 {
   "basedir": string,
   "browser": bool,
@@ -611,8 +611,7 @@ Default: `false`
 
 Automatically restore mock state between every test. Equivalent to calling
 `jest.restoreAllMocks()` between each test. This will lead to any mocks having
-their fake implementations removed and restores their initial
-implementation.
+their fake implementations removed and restores their initial implementation.
 
 ### `rootDir` [string]
 
@@ -767,7 +766,7 @@ test(() => {
 
 Rendered snapshot:
 
-```
+```json
 Pretty foo: Object {
   "x": 1,
   "y": 2,
@@ -908,7 +907,7 @@ specify both options.
 
 The following is a visualization of the default regex:
 
-```
+```bash
 ├── __tests__
 │   └── component.spec.js # test
 │   └── anything # test
@@ -926,7 +925,7 @@ This option allows the use of a custom results processor. This processor must be
 a node module that exports a function expecting an object with the following
 structure as the first argument and return it:
 
-```
+```json
 {
   "success": bool,
   "startTime": epoch,
@@ -977,13 +976,13 @@ implementation.
 
 The test runner module must export a function with the following signature:
 
-```
+```ts
 function testRunner(
   config: Config,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult>
+): Promise<TestResult>;
 ```
 
 An example of such function can be found in our default

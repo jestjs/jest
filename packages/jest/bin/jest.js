@@ -6,4 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-require('jest-cli/bin/jest');
+const importLocal = require('import-local');
+
+if (!importLocal(__filename)) {
+  require('jest-cli/bin/jest');
+}

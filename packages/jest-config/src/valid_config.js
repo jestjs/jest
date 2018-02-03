@@ -21,6 +21,7 @@ export default ({
   cache: true,
   cacheDirectory: '/tmp/user/jest',
   changedFilesWithAncestor: false,
+  changedSince: '',
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
