@@ -69,6 +69,7 @@ export default function watch(
     searchSource: new SearchSource(context),
   }));
   let hasSnapshotFailure = false;
+  let hasSnapshotFailureInteractive = false;
   let isRunning = false;
   let testWatcher;
   let shouldDisplayWatchUsage = true;
@@ -130,8 +131,9 @@ export default function watch(
       globalConfig,
       onComplete: results => {
         isRunning = false;
-        hasSnapshotFailure = !!results.snapshot.failure;
         failedSnapshotTestPaths = getFailedSnapshotTests(results);
+        hasSnapshotFailure = !!results.snapshot.failure;
+        hasSnapshotFailureInteractive = failedSnapshotTestPaths.length > 0;
 
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
@@ -149,7 +151,12 @@ export default function watch(
           }
           if (shouldDisplayWatchUsage) {
             outputStream.write(
-              usage(globalConfig, watchPlugins, hasSnapshotFailure),
+              usage(
+                globalConfig,
+                watchPlugins,
+                hasSnapshotFailure,
+                hasSnapshotFailureInteractive,
+              ),
             );
             shouldDisplayWatchUsage = false; // hide Watch Usage after first run
             isWatchUsageDisplayed = true;
@@ -327,7 +334,12 @@ export default function watch(
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
           outputStream.write(
-            usage(globalConfig, watchPlugins, hasSnapshotFailure),
+            usage(
+              globalConfig,
+              watchPlugins,
+              hasSnapshotFailure,
+              hasSnapshotFailureInteractive,
+            ),
           );
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
@@ -339,7 +351,14 @@ export default function watch(
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
     outputStream.write(ansiEscapes.clearScreen);
-    outputStream.write(usage(globalConfig, watchPlugins, hasSnapshotFailure));
+    outputStream.write(
+      usage(
+        globalConfig,
+        watchPlugins,
+        hasSnapshotFailure,
+        hasSnapshotFailureInteractive,
+      ),
+    );
     outputStream.write(ansiEscapes.cursorShow);
   };
 
@@ -380,6 +399,7 @@ const usage = (
   globalConfig,
   watchPlugins: WatchPluginRegistry,
   snapshotFailure,
+  snapshotFailureInteractive,
   delimiter = '\n',
 ) => {
   const messages = [
@@ -415,7 +435,7 @@ const usage = (
         chalk.dim(' to update failing snapshots.')
       : null,
 
-    snapshotFailure
+    snapshotFailureInteractive
       ? chalk.dim(' \u203A Press ') +
         'i' +
         chalk.dim(' to update failing snapshots interactively.')
