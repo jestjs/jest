@@ -8,5 +8,6 @@
     "transform-async-to-generator",
     "transform-strict-mode",
     ["transform-es2015-modules-commonjs", {"allowTopLevelThis": true}]
-  ]
+  ],
+  "retainLines": true
 }
