@@ -7,6 +7,7 @@
 
 ### Fixes
 
+* `[jest-cli]` Hide interactive mode if there are no failed snapshot tests ([#5450](https://github.com/facebook/jest/pull/5450))
 * `[babel-jest]` Remove retainLines from babel-jest
   ([#5326](https://github.com/facebook/jest/pull/5439))
 * `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
@@ -25,7 +26,7 @@
 * `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
 * `[docs]` Add tutorial page for ES6 class mocks.
-  ([#5383]https://github.com/facebook/jest/pull/5383))
+  ([#5383](https://github.com/facebook/jest/pull/5383))
 * `[jest-resolve]` Search required modules in node_modules and then in custom
   paths. ([#5403](https://github.com/facebook/jest/pull/5403))
 * `[jest-resolve]` Get builtin modules from node core.

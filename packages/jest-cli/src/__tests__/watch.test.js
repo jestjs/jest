@@ -13,9 +13,9 @@ import TestWatcher from '../test_watcher';
 import {KEYS} from '../constants';
 
 const runJestMock = jest.fn();
-
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
 const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
+let results;
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
 jest.doMock(
@@ -27,7 +27,7 @@ jest.doMock(
       runJestMock.apply(null, args);
 
       // Call the callback
-      onComplete({snapshot: {}});
+      onComplete(results);
 
       return Promise.resolve();
     },
@@ -70,6 +70,7 @@ describe('Watch mode flows', () => {
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config}];
     stdin = new MockStdin();
+    results = {snapshot: {}};
   });
 
   it('Correctly passing test path pattern', () => {
@@ -159,6 +160,61 @@ describe('Watch mode flows', () => {
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
         watchPlugins: [watchPlugin2Path, watchPluginPath],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    const pipeMockCalls = pipe.write.mock.calls;
+
+    const determiningTestsToRun = pipeMockCalls.findIndex(
+      ([c]) => c === 'Determining test suites to run...',
+    );
+
+    expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
+  });
+
+  it('shows update snapshot prompt (without interactive)', async () => {
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
+    results = {snapshot: {failure: true}};
+
+    const ci_watch = require('../watch').default;
+    ci_watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    const pipeMockCalls = pipe.write.mock.calls;
+
+    const determiningTestsToRun = pipeMockCalls.findIndex(
+      ([c]) => c === 'Determining test suites to run...',
+    );
+
+    expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
+  });
+
+  it('shows update snapshot prompt (with interactive)', async () => {
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
+    util.getFailedSnapshotTests = jest.fn(() => ['test.js']);
+    results = {snapshot: {failure: true}};
+
+    const ci_watch = require('../watch').default;
+    ci_watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [],
       }),
       contexts,
       pipe,
