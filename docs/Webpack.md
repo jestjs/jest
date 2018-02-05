@@ -3,7 +3,7 @@ id: webpack
 title: Using with webpack
 ---
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to
+Jest can be used in projects that use [webpack](https://webpack.js.org/) to
 manage assets, styles, and compilation. webpack _does_ offer some unique
 challenges over other tools because it integrates directly with your application
 to allow managing stylesheets, assets like images and fonts, along with the
