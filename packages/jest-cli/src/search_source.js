@@ -78,7 +78,7 @@ export default class SearchSource {
     const {config} = context;
     this._context = context;
     this._rootPattern = new RegExp(
-      config.roots.map(dir => escapePathForRegex(dir)).join('|'),
+      config.roots.map(dir => escapePathForRegex(dir + path.sep)).join('|'),
     );
 
     const ignorePattern = config.testPathIgnorePatterns;
