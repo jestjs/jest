@@ -3,32 +3,26 @@
 exports[`test always 1`] = `
 Array [
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
@@ -38,22 +32,18 @@ Array [
 exports[`test change 1`] = `
 Array [
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
@@ -63,27 +53,22 @@ Array [
 exports[`test failure-change 1`] = `
 Array [
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
@@ -93,17 +78,14 @@ Array [
 exports[`test success 1`] = `
 Array [
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
@@ -113,27 +95,22 @@ Array [
 exports[`test success-change 1`] = `
 Array [
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 tests passed",
     "title": "100% Passed",
   },
   Object {
-    "icon": true,
     "message": "3 of 3 tests failed",
     "title": "100% Failed",
   },

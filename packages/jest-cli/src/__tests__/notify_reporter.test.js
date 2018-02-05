@@ -13,8 +13,6 @@ import NotifyReporter from '../reporters/notify_reporter';
 import type {TestSchedulerContext} from '../test_scheduler';
 import type {AggregatedResult} from '../../../../types/TestResult';
 
-const ICON_PATH = '/assets/jest_logo.png';
-
 jest.mock('../reporters/default_reporter');
 jest.mock('node-notifier', () => ({
   notify: jest.fn(),
@@ -57,8 +55,6 @@ const notifyEvents = [
   aggregatedResultsFailure,
 ];
 
-const iconShown = path => path.endsWith(ICON_PATH);
-
 test('.addReporter() .removeReporter()', () => {
   const scheduler = new TestScheduler(
     {},
@@ -74,7 +70,6 @@ test('.addReporter() .removeReporter()', () => {
 
 const testModes = (notifyMode: string, arl: Array<AggregatedResult>) => {
   const notify = require('node-notifier');
-  notify.notify.mock.calls = [];
 
   let previousContext = initialContext;
   arl.forEach((ar, i) => {
@@ -92,8 +87,7 @@ const testModes = (notifyMode: string, arl: Array<AggregatedResult>) => {
   });
 
   expect(
-    notify.notify.mock.calls.map(([{icon, message, title}]) => ({
-      icon: iconShown(icon),
+    notify.notify.mock.calls.map(([{message, title}]) => ({
       message: message.replace('\u26D4\uFE0F ', '').replace('\u2705 ', ''),
       title,
     })),
@@ -118,4 +112,8 @@ test('test success-change', () => {
 
 test('test failure-change', () => {
   testModes('failure-change', notifyEvents);
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
