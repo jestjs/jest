@@ -23,8 +23,28 @@ function createProcessEnv() {
   const lookup = {};
 
   const proxy = new Proxy(real, {
+    deleteProperty(target, key) {
+      for (const name in real) {
+        if (real.hasOwnProperty(name)) {
+          if (typeof key === 'string' && process.platform === 'win32') {
+            if (name.toLowerCase() === key.toLowerCase()) {
+              delete real[name];
+              delete lookup[name.toLowerCase()];
+            }
+          } else {
+            if (key === name) {
+              delete real[name];
+              delete lookup[name];
+            }
+          }
+        }
+      }
+
+      return true;
+    },
+
     get(target, key) {
-      if ((typeof key === 'string') && (process.platform === 'win32')) {
+      if (typeof key === 'string' && process.platform === 'win32') {
         return lookup[key in proto ? key : key.toLowerCase()];
       } else {
         return real[key];
