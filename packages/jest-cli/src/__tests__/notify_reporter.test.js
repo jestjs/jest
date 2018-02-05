@@ -94,7 +94,7 @@ const testModes = (notifyMode: string, arl: Array<AggregatedResult>) => {
   expect(
     notify.notify.mock.calls.map(([{icon, message, title}]) => ({
       icon: iconShown(icon),
-      message,
+      message: message.replace('\u26D4\uFE0F ', '').replace('\u2705 ', ''),
       title,
     })),
   ).toMatchSnapshot();
