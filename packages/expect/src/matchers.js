@@ -40,12 +40,13 @@ type ContainIterable =
 
 const matchers: MatchersObject = {
   toBe(received: any, expected: number) {
+    const comment = 'Object.is equality';
     const pass = Object.is(received, expected);
 
     const message = pass
       ? () =>
           matcherHint('.not.toBe', undefined, undefined, {
-            comment: 'using Object.is',
+            comment,
           }) +
           '\n\n' +
           `Expected value to not be:\n` +
@@ -64,7 +65,7 @@ const matchers: MatchersObject = {
 
           return (
             matcherHint('.toBe', undefined, undefined, {
-              comment: 'using Object.is',
+              comment,
             }) +
             '\n\n' +
             `Expected value to be:\n` +
