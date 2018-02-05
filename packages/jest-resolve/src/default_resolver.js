@@ -126,7 +126,8 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     let pkgmain;
     try {
       const body = fs.readFileSync(pkgfile, 'utf8');
-      pkgmain = JSON.parse(body).main;
+      const parsedBody = JSON.parse(body);
+      pkgmain = parsedBody.module || parsedBody.main;
     } catch (e) {}
 
     if (pkgmain && pkgmain !== '.') {
