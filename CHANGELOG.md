@@ -2,12 +2,19 @@
 
 ### Features
 
+* `[jest-util]` Add deletion to `process.env` as well
+  ([#5466](https://github.com/facebook/jest/pull/5466))
+* `[jest-util]` Add case-insensitive getters/setters to `process.env`
+  ([#5465](https://github.com/facebook/jest/pull/5465))
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
 
 ### Fixes
 
-* `[jest-cli]` Hide interactive mode if there are no failed snapshot tests ([#5450](https://github.com/facebook/jest/pull/5450))
+* `[jest-cli]` Add trailing slash when checking root folder
+  ([#5464](https://github.com/facebook/jest/pull/5464))
+* `[jest-cli]` Hide interactive mode if there are no failed snapshot tests
+  ([#5450](https://github.com/facebook/jest/pull/5450))
 * `[babel-jest]` Remove retainLines from babel-jest
   ([#5326](https://github.com/facebook/jest/pull/5439))
 * `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
