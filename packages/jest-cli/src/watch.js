@@ -24,7 +24,6 @@ import runJest from './run_jest';
 import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './search_source';
 import TestWatcher from './test_watcher';
-import Prompt from './lib/Prompt';
 import FailedTestsCache from './failed_tests_cache';
 import {KEYS, CLEAR} from './constants';
 import JestHooks from './jest_hooks';
@@ -34,6 +33,7 @@ import TestNamePatternPlugin from './plugins/test_name_pattern';
 import UpdateSnapshotsPlugin from './plugins/update_snapshots';
 import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
 import QuitPlugin from './plugins/quit';
+import activeFilters from './lib/active_filters_message';
 
 let hasExitListener = false;
 
@@ -133,7 +133,6 @@ export default function watch(
   }
 
   const failedTestsCache = new FailedTestsCache();
-  const prompt = new Prompt();
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
@@ -160,7 +159,6 @@ export default function watch(
 
         activePlugin = null;
 
-        prompt.abort();
         searchSources = searchSources.slice();
         searchSources[index] = {
           context,
@@ -174,7 +172,7 @@ export default function watch(
   if (!hasExitListener) {
     hasExitListener = true;
     process.on('exit', () => {
-      if (prompt.isEntering()) {
+      if (activePlugin) {
         outputStream.write(ansiEscapes.cursorDown());
         outputStream.write(ansiEscapes.eraseDown);
       }
@@ -241,11 +239,6 @@ export default function watch(
       // if a plugin is activate, Jest should let it handle keystrokes, so ignore
       // them here
       activePlugin.onData(key);
-      return;
-    }
-
-    if (prompt.isEntering()) {
-      prompt.put(key);
       return;
     }
 
@@ -351,28 +344,6 @@ export default function watch(
   startRun(globalConfig);
   return Promise.resolve();
 }
-
-const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
-  const {testNamePattern, testPathPattern} = globalConfig;
-  if (testNamePattern || testPathPattern) {
-    const filters = [
-      testPathPattern
-        ? chalk.dim('filename ') + chalk.yellow('/' + testPathPattern + '/')
-        : null,
-      testNamePattern
-        ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
-        : null,
-    ]
-      .filter(f => !!f)
-      .join(', ');
-
-    const messages = ['\n' + chalk.bold('Active Filters: ') + filters];
-
-    return messages.filter(message => !!message).join(delimiter);
-  }
-
-  return '';
-};
 
 const usage = (
   globalConfig,
