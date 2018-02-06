@@ -84,9 +84,6 @@ exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
 "[MOCK - cursorHide]
 [MOCK - clearScreen]
 
-Active Filters: filename /p.*10/
-
-
 Pattern Mode Usage
  › Press Esc to exit pattern mode.
  › Press Enter to filter by a filenames regex pattern.
@@ -98,6 +95,6 @@ Pattern Mode Usage
 
  pattern › 
 [MOCK - cursorSavePosition]
-[MOCK - cursorTo(11, 7)]
+[MOCK - cursorTo(11, 5)]
 [MOCK - cursorRestorePosition]"
 `;

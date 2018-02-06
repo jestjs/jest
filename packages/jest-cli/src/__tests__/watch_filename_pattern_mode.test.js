@@ -159,10 +159,12 @@ describe('Watch mode flows', () => {
     stdin.emit(KEYS.T);
     await nextTick();
 
-    [('t', 'e', 's', 't')]
+    ['t', 'e', 's', 't']
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
+
+    await nextTick();
 
     stdin.emit(KEYS.C);
     await nextTick();
