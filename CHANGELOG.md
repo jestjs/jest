@@ -43,6 +43,11 @@
   to the absolute path. Additionally, this fixes functionality in Windows OS.
   ([#5398](https://github.com/facebook/jest/pull/5398))
 
+### Chore & Maintenance
+
+* `[jest-util]` Implement watch plugins
+  ([#5399](https://github.com/facebook/jest/pull/5399))
+
 ## jest 22.1.4
 
 ### Fixes
