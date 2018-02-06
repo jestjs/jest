@@ -157,8 +157,10 @@ export default function watch(
             moduleMap,
           },
         ));
-        prompt.abort();
+
         activePlugin = null;
+
+        prompt.abort();
         searchSources = searchSources.slice();
         searchSources[index] = {
           context,
@@ -195,6 +197,7 @@ export default function watch(
       contexts,
       failedTestsCache,
       globalConfig,
+      jestHooks: hooks.getEmitter(),
       onComplete: results => {
         isRunning = false;
         hooks.getEmitter().testRunComplete(results);

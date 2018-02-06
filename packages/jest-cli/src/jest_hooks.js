@@ -9,7 +9,7 @@
 
 import type {AggregatedResult} from 'types/TestResult';
 
-type ShouldRunTestSuite = (testPath: string) => boolean;
+type ShouldRunTestSuite = (testPath: string) => Promise<boolean>;
 type TestRunComplete = (results: AggregatedResult) => void;
 
 export type JestHookSubscriber = {
@@ -18,7 +18,7 @@ export type JestHookSubscriber = {
 };
 
 export type JestHookEmitter = {
-  shouldRunTestSuite: (testPath: string) => boolean,
+  shouldRunTestSuite: (testPath: string) => Promise<boolean>,
   testRunComplete: (results: AggregatedResult) => void,
 };
 
@@ -48,9 +48,13 @@ class JestHooks {
 
   getEmitter(): JestHookEmitter {
     return {
-      shouldRunTestSuite: testPath =>
-        this._listeners.shouldRunTestSuite.every(listener =>
-          listener(testPath),
+      shouldRunTestSuite: async testPath =>
+        Promise.all(
+          this._listeners.shouldRunTestSuite.map(listener =>
+            listener(testPath),
+          ),
+        ).then(result =>
+          result.every(shouldRunTestSuite => shouldRunTestSuite),
         ),
       testRunComplete: results =>
         this._listeners.testRunComplete.forEach(listener => listener(results)),

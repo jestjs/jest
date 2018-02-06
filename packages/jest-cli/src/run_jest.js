@@ -24,6 +24,7 @@ import TestScheduler from './test_scheduler';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 import FailedTestsCache from './failed_tests_cache';
+import JestHooks, {type JestHookEmitter} from './jest_hooks';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -38,6 +39,7 @@ const getTestPaths = async (
   context,
   outputStream,
   changedFilesPromise,
+  jestHooks,
 ) => {
   const source = new SearchSource(context);
   const data = await source.getTestPaths(globalConfig, changedFilesPromise);
@@ -51,7 +53,17 @@ const getTestPaths = async (
         'commit.',
     );
   }
-  return data;
+
+  const shouldTestArray = await Promise.all(
+    data.tests.map(test => jestHooks.shouldRunTestSuite(test.path)),
+  );
+
+  const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);
+
+  return Object.assign({}, data, {
+    allTests: filteredTests.length,
+    tests: filteredTests,
+  });
 };
 
 const processResults = (runResults, options) => {
@@ -81,6 +93,7 @@ export default (async function runJest({
   globalConfig,
   outputStream,
   testWatcher,
+  jestHooks = new JestHooks().getEmitter(),
   startRun,
   changedFilesPromise,
   onComplete,
@@ -90,6 +103,7 @@ export default (async function runJest({
   contexts: Array<Context>,
   outputStream: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
+  jestHooks?: JestHookEmitter,
   startRun: (globalConfig: GlobalConfig) => *,
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
@@ -119,6 +133,7 @@ export default (async function runJest({
         context,
         outputStream,
         changedFilesPromise,
+        jestHooks,
       );
       allTests = allTests.concat(matches.tests);
       return {context, matches};
