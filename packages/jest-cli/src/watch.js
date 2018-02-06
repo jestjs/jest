@@ -17,7 +17,7 @@ import exit from 'exit';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
-import {isInteractive} from 'jest-util';
+import {getFailedSnapshotTests, isInteractive} from 'jest-util';
 import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
@@ -136,11 +136,13 @@ export default function watch(
 
   const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
+  let failedSnapshotTestPaths = [];
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
   }));
   let hasSnapshotFailure = false;
+  let hasSnapshotFailureInteractive = false;
   let isRunning = false;
   let testWatcher;
   let shouldDisplayWatchUsage = true;
@@ -199,8 +201,10 @@ export default function watch(
       globalConfig,
       onComplete: results => {
         isRunning = false;
-        hasSnapshotFailure = !!results.snapshot.failure;
         hooks.getEmitter().testRunComplete(results);
+        failedSnapshotTestPaths = getFailedSnapshotTests(results);
+        hasSnapshotFailure = !!results.snapshot.failure;
+        hasSnapshotFailureInteractive = failedSnapshotTestPaths.length > 0;
 
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
@@ -212,7 +216,12 @@ export default function watch(
         if (isInteractive) {
           if (shouldDisplayWatchUsage) {
             outputStream.write(
-              usage(globalConfig, watchPlugins, hasSnapshotFailure),
+              usage(
+                globalConfig,
+                watchPlugins,
+                hasSnapshotFailure,
+                hasSnapshotFailureInteractive,
+              ),
             );
             shouldDisplayWatchUsage = false; // hide Watch Usage after first run
             isWatchUsageDisplayed = true;
@@ -333,7 +342,12 @@ export default function watch(
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
           outputStream.write(
-            usage(globalConfig, watchPlugins, hasSnapshotFailure),
+            usage(
+              globalConfig,
+              watchPlugins,
+              hasSnapshotFailure,
+              hasSnapshotFailureInteractive,
+            ),
           );
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
@@ -345,7 +359,14 @@ export default function watch(
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
     outputStream.write(ansiEscapes.clearScreen);
-    outputStream.write(usage(globalConfig, watchPlugins, hasSnapshotFailure));
+    outputStream.write(
+      usage(
+        globalConfig,
+        watchPlugins,
+        hasSnapshotFailure,
+        hasSnapshotFailureInteractive,
+      ),
+    );
     outputStream.write(ansiEscapes.cursorShow);
   };
 
@@ -386,6 +407,7 @@ const usage = (
   globalConfig,
   watchPlugins: Array<WatchPlugin>,
   snapshotFailure,
+  snapshotFailureInteractive,
   delimiter = '\n',
 ) => {
   const messages = [

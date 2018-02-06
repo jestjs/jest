@@ -163,9 +163,9 @@ You are now set up to use all ES6 features and React specific syntax.
 
 ### Using webpack
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to
+Jest can be used in projects that use [webpack](https://webpack.js.org/) to
 manage assets, styles, and compilation. webpack does offer some unique
-challenges over other tools. Refer to the [webpack guide](Webpack.md) to get
+challenges over other tools. Refer to the [webpack guide](docs/Webpack.md) to get
 started.
 
 ### Using TypeScript
@@ -188,10 +188,11 @@ Learn more about using
 ## Badge
 
 Show the world you're using _Jest_ →
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://facebook.github.io/jest/img/jest-badge.svg)](https://github.com/facebook/jest)
 
 ```md
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![jest](https://facebook.github.io/jest/img/jest-badge.svg)](https://github.com/facebook/jest)
 ```
 
 ## Contributing

@@ -66,7 +66,9 @@ class UpdateSnapshotInteractivePlugin extends WatchPlugin {
 
   getUsageRow(globalConfig: GlobalConfig, hasSnapshotFailures: boolean) {
     return {
-      hide: !hasSnapshotFailures,
+      hide:
+        !this._failedSnapshotTestPaths ||
+        this._failedSnapshotTestPaths.length === 0,
       key: 'i'.codePointAt(0),
       prompt: 'update failing snapshots interactively',
     };
