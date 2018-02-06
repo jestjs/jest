@@ -64,7 +64,7 @@ class UpdateSnapshotInteractivePlugin extends WatchPlugin {
     }
   }
 
-  getUsageRow(globalConfig: GlobalConfig, hasSnapshotFailures: boolean) {
+  getUsageRow(globalConfig: GlobalConfig) {
     return {
       hide:
         !this._failedSnapshotTestPaths ||

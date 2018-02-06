@@ -17,7 +17,7 @@ import exit from 'exit';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
-import {getFailedSnapshotTests, isInteractive} from 'jest-util';
+import {isInteractive} from 'jest-util';
 import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
@@ -48,18 +48,16 @@ const INTERNAL_PLUGINS = [
 const getSortedUsageRows = (
   watchPlugins: Array<WatchPlugin>,
   globalConfig: GlobalConfig,
-  hasSnapshotFailure: boolean,
 ) => {
   const internalPlugins = watchPlugins
     .slice(0, INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
-    .filter(usage => usage && !usage.hide);
+    .map(p => p.getUsageRow(globalConfig))
+    .filter(usage => !usage.hide);
 
   const thirdPartyPlugins = watchPlugins
     .slice(INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow(globalConfig, hasSnapshotFailure))
-    .filter(usage => usage && !usage.hide)
-    // $FlowFixMe a and b will not be null or undefined
+    .map(p => p.getUsageRow(globalConfig))
+    .filter(usage => !usage.hide)
     .sort((a, b) => a.key - b.key);
 
   return internalPlugins.concat(thirdPartyPlugins);
@@ -136,13 +134,10 @@ export default function watch(
 
   const failedTestsCache = new FailedTestsCache();
   const prompt = new Prompt();
-  let failedSnapshotTestPaths = [];
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
   }));
-  let hasSnapshotFailure = false;
-  let hasSnapshotFailureInteractive = false;
   let isRunning = false;
   let testWatcher;
   let shouldDisplayWatchUsage = true;
@@ -202,9 +197,6 @@ export default function watch(
       onComplete: results => {
         isRunning = false;
         hooks.getEmitter().testRunComplete(results);
-        failedSnapshotTestPaths = getFailedSnapshotTests(results);
-        hasSnapshotFailure = !!results.snapshot.failure;
-        hasSnapshotFailureInteractive = failedSnapshotTestPaths.length > 0;
 
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
@@ -215,14 +207,7 @@ export default function watch(
         // non-interactive environment
         if (isInteractive) {
           if (shouldDisplayWatchUsage) {
-            outputStream.write(
-              usage(
-                globalConfig,
-                watchPlugins,
-                hasSnapshotFailure,
-                hasSnapshotFailureInteractive,
-              ),
-            );
+            outputStream.write(usage(globalConfig, watchPlugins));
             shouldDisplayWatchUsage = false; // hide Watch Usage after first run
             isWatchUsageDisplayed = true;
           } else {
@@ -261,12 +246,9 @@ export default function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(
-      watchPlugins,
-      globalConfig,
-      hasSnapshotFailure,
-      // $FlowFixMe usage will be present
-    ).map(usage => Number(usage.key).toString(16));
+    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
+      usage => Number(usage.key).toString(16),
+    );
     if (
       isRunning &&
       testWatcher &&
@@ -279,8 +261,7 @@ export default function watch(
     }
 
     const matchingWatchPlugin = watchPlugins.find(plugin => {
-      const usageRow =
-        plugin.getUsageRow(globalConfig, hasSnapshotFailure) || {};
+      const usageRow = plugin.getUsageRow(globalConfig) || {};
 
       return usageRow.key === parseInt(key, 16);
     });
@@ -341,14 +322,7 @@ export default function watch(
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
-          outputStream.write(
-            usage(
-              globalConfig,
-              watchPlugins,
-              hasSnapshotFailure,
-              hasSnapshotFailureInteractive,
-            ),
-          );
+          outputStream.write(usage(globalConfig, watchPlugins));
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
         }
@@ -359,14 +333,7 @@ export default function watch(
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
     outputStream.write(ansiEscapes.clearScreen);
-    outputStream.write(
-      usage(
-        globalConfig,
-        watchPlugins,
-        hasSnapshotFailure,
-        hasSnapshotFailureInteractive,
-      ),
-    );
+    outputStream.write(usage(globalConfig, watchPlugins));
     outputStream.write(ansiEscapes.cursorShow);
   };
 
@@ -406,8 +373,6 @@ const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
 const usage = (
   globalConfig,
   watchPlugins: Array<WatchPlugin>,
-  snapshotFailure,
-  snapshotFailureInteractive,
   delimiter = '\n',
 ) => {
   const messages = [
@@ -437,14 +402,12 @@ const usage = (
         chalk.dim(' to only run tests related to changed files.')
       : null,
 
-    ...getSortedUsageRows(watchPlugins, globalConfig, snapshotFailure).map(
+    ...getSortedUsageRows(watchPlugins, globalConfig).map(
       plugin =>
         chalk.dim(' \u203A Press') +
         ' ' +
-        // $FlowFixMe plugin will be present
         String.fromCodePoint(plugin.key) +
         ' ' +
-        // $FlowFixMe plugin will be present
         chalk.dim(`to ${plugin.prompt}.`),
     ),
 

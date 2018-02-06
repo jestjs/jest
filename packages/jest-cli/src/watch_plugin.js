@@ -26,10 +26,9 @@ class WatchPlugin {
 
   registerHooks(hooks: JestHookSubscriber) {}
 
-  getUsageRow(
-    globalConfig: GlobalConfig,
-    hasFailedSnapshots: boolean,
-  ): ?UsageRow {}
+  getUsageRow(globalConfig: GlobalConfig): UsageRow {
+    return {hide: true, key: 0, prompt: ''};
+  }
 
   onData(value: string) {}
 
