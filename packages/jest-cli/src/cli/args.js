@@ -26,9 +26,6 @@ export const check = (argv: Argv) => {
     'changedFilesWithAncestor',
     'changedSince',
   ]) {
-    if (argv[key]) {
-      argv.onlyChanged = true;
-    }
     if (argv[key] && argv.watchAll) {
       throw new Error(
         `Both --${key} and --watchAll were specified, but these two ` +
@@ -113,6 +110,7 @@ export const options = {
     type: 'string',
   },
   changedFilesWithAncestor: {
+    default: undefined,
     description:
       'Runs tests related to the current changes and the changes made in the ' +
       'last commit. Behaves similarly to `--onlyChanged`.',

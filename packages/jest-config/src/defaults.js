@@ -33,6 +33,7 @@ export default ({
   browser: false,
   cache: true,
   cacheDirectory,
+  changedFilesWithAncestor: false,
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
