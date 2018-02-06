@@ -39,6 +39,7 @@ import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
 import normalizePathSep from './lib/normalize_path_sep';
 import Worker from 'jest-worker';
+import WatchmanWatcher from './lib/watchman_watcher';
 
 // eslint-disable-next-line import/default
 import nodeCrawl from './crawlers/node';
@@ -608,7 +609,7 @@ class HasteMap extends EventEmitter {
 
     const Watcher =
       canUseWatchman && this._options.useWatchman
-        ? sane.WatchmanWatcher
+        ? WatchmanWatcher
         : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
