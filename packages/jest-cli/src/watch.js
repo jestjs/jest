@@ -158,6 +158,7 @@ export default function watch(
           },
         ));
         prompt.abort();
+        activePlugin = null;
         searchSources = searchSources.slice();
         searchSources[index] = {
           context,

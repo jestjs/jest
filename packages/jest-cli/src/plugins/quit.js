@@ -9,10 +9,9 @@
 import WatchPlugin from '../watch_plugin';
 
 class QuitPlugin extends WatchPlugin {
-  showPrompt(): Promise<void> {
+  async showPrompt() {
     this._stdout.write('\n');
     process.exit(0);
-    return Promise.resolve();
   }
 
   getUsageRow() {
