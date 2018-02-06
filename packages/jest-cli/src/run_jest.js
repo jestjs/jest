@@ -182,7 +182,7 @@ export default (async function runJest({
   setConfig(contexts, {cwd: process.cwd()});
   if (globalConfig.globalSetup) {
     // $FlowFixMe
-    await require(globalConfig.globalSetup)();
+    await require(globalConfig.globalSetup)(contexts);
   }
   const results = await new TestScheduler(globalConfig, {
     startRun,
