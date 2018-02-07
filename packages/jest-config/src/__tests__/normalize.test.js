@@ -859,6 +859,24 @@ describe('preset', () => {
       }),
       {virtual: true},
     );
+    jest.mock(
+      '/node_modules/with-json-ext/jest-preset.json',
+      () => ({
+        moduleNameMapper: {
+          json: true,
+        },
+      }),
+      {virtual: true},
+    );
+    jest.mock(
+      '/node_modules/with-js-ext/jest-preset.js',
+      () => ({
+        moduleNameMapper: {
+          js: true,
+        },
+      }),
+      {virtual: true},
+    );
   });
 
   afterEach(() => {
@@ -903,6 +921,30 @@ describe('preset', () => {
         {},
       );
     }).not.toThrow();
+  });
+
+  test('supports .json preset files', () => {
+    const {options} = normalize(
+      {
+        preset: 'with-json-ext',
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    expect(options.moduleNameMapper).toEqual([['json', true]]);
+  });
+
+  test('supports .js preset files', () => {
+    const {options} = normalize(
+      {
+        preset: 'with-js-ext',
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    expect(options.moduleNameMapper).toEqual([['js', true]]);
   });
 
   test('merges with options', () => {
