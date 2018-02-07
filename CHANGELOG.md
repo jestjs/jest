@@ -4,6 +4,8 @@
 
 * `[jest-cli]` Added `--notifyMode` to specify when to be notified.
   ([#5125](https://github.com/facebook/jest/pull/5125))
+* `[jest-config]` Allow lastComit and changedFilesWithAncestor via JSON config
+  ([#5476](https://github.com/facebook/jest/pull/5476))
 * `[jest-util]` Add deletion to `process.env` as well
   ([#5466](https://github.com/facebook/jest/pull/5466))
 * `[jest-util]` Add case-insensitive getters/setters to `process.env`

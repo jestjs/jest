@@ -47,6 +47,7 @@ export default ({
     providesModuleNodeModules: ['react', 'react-native'],
   },
   json: false,
+  lastCommit: false,
   logHeapUsage: true,
   mapCoverage: false,
   moduleDirectories: ['node_modules'],

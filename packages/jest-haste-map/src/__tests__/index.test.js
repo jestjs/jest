@@ -46,18 +46,23 @@ jest.mock('../crawlers/watchman', () =>
   }),
 );
 
+const mockWatcherConstructor = jest.fn(root => {
+  const EventEmitter = require('events').EventEmitter;
+  mockEmitters[root] = new EventEmitter();
+  mockEmitters[root].close = jest.fn(callback => callback());
+  setTimeout(() => mockEmitters[root].emit('ready'), 0);
+  return mockEmitters[root];
+});
+
 jest.mock('sane', () => {
-  const watcher = jest.fn(root => {
-    const EventEmitter = require('events').EventEmitter;
-    mockEmitters[root] = new EventEmitter();
-    mockEmitters[root].close = jest.fn(callback => callback());
-    setTimeout(() => mockEmitters[root].emit('ready'), 0);
-    return mockEmitters[root];
-  });
   return {
-    NodeWatcher: watcher,
-    WatchmanWatcher: watcher,
+    NodeWatcher: mockWatcherConstructor,
+    WatchmanWatcher: mockWatcherConstructor,
   };
+});
+
+jest.mock('../lib/watchman_watcher.js', () => {
+  return mockWatcherConstructor;
 });
 
 let mockChangedFiles;
