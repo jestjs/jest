@@ -42,6 +42,8 @@
   not generate additional (invalid) paths by prepending each ancestor of `cwd`
   to the absolute path. Additionally, this fixes functionality in Windows OS.
   ([#5398](https://github.com/facebook/jest/pull/5398))
+* `[jest-config]` Allow users to specify `rootDir` from within project configurations.
+  ([#5479](https://github.com/facebook/jest/pull/5479))
 
 ### Chore & Maintenance
 
