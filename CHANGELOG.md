@@ -4,6 +4,8 @@
 
 ### Features
 
+* `[jest-runner]` Move test summary to after coverage report
+  ([#4512](https://github.com/facebook/jest/pull/4512))
 * `[jest-cli]` Added `--notifyMode` to specify when to be notified.
   ([#5125](https://github.com/facebook/jest/pull/5125))
 * `[diff-sequences]` New package compares items in two sequences to find a
