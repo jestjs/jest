@@ -4,6 +4,9 @@
 
 * `[jest-cli]` Added `--notifyMode` to specify when to be notified.
   ([#5125](https://github.com/facebook/jest/pull/5125))
+* `[diff-sequences]` New package compares items in two sequences to find a
+  **longest common subsequence**.
+  ([#5407](https://github.com/facebook/jest/pull/5407))
 * `[jest-config]` Allow lastComit and changedFilesWithAncestor via JSON config
   ([#5476](https://github.com/facebook/jest/pull/5476))
 * `[jest-util]` Add deletion to `process.env` as well

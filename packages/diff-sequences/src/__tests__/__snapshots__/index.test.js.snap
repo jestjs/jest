@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`common substrings regression 1`] = `
+Array [
+  "I",
+  " se",
+  "e",
+  " ",
+  "a",
+  " perfection ",
+  "i",
+  " att",
+  "in",
+  "e",
+  " no",
+  " ",
+  "n",
+  " i",
+  " n",
+  " ",
+  "a",
+  " ",
+  "u",
+  " ",
+  "en",
+  " ",
+  "t",
+  "er",
+  " ",
+  "is ",
+  "n",
+  "i",
+  "n",
+  " ",
+  "r",
+  "e",
+  " ",
+  " re",
+  "e",
+  ".",
+]
+`;
+
+exports[`common substrings wrapping 1`] = `
+Array [
+  "When engineers ",
+  "a",
+  "v",
+  "e",
+  " ",
+  "ready-to-use tools, they",
+  " writ",
+  " more",
+  "tests, which",
+  " results in",
+  "more stabl",
+  "e",
+  " code bases.",
+]
+`;
