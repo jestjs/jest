@@ -45,7 +45,7 @@ export function readConfig(
   if (typeof packageRootOrConfig !== 'string') {
     if (parentConfigPath) {
       rawOptions = packageRootOrConfig;
-      rawOptions.rootDir = path.dirname(parentConfigPath);
+      rawOptions.rootDir = rawOptions.rootDir || path.dirname(parentConfigPath);
     } else {
       throw new Error(
         'Jest: Cannot use configuration as an object without a file path.',
