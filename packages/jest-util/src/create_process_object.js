@@ -17,6 +17,10 @@ const BLACKLIST = new Set(['env', 'mainModule', '_events']);
 // mimic it (see https://nodejs.org/api/process.html#process_process_env).
 
 function createProcessEnv() {
+  if (typeof Proxy === 'undefined') {
+    return deepCyclicCopy(process.env);
+  }
+
   // $FlowFixMe: Apparently Flow does not understand that this is a prototype.
   const proto: Object = Object.getPrototypeOf(process.env);
   const real = Object.create(proto);
