@@ -6,7 +6,24 @@
       "asynchronous",
       "setup-teardown",
       "mock-functions",
+      "jest-platform",
       "more-resources"
+    ],
+    "Guides": [
+      "snapshot-testing",
+      "tutorial-async",
+      "timer-mocks",
+      "manual-mocks",
+      "es6-class-mocks",
+      "webpack",
+      "puppeteer",
+      "migration-guide",
+      "troubleshooting"
+    ],
+    "Framework Guides": [
+      "tutorial-react",
+      "tutorial-react-native",
+      "testing-frameworks"
     ],
     "API Reference": [
       "api",
@@ -15,20 +32,6 @@
       "jest-object",
       "configuration",
       "cli"
-    ],
-    "Framework Guides": [
-      "tutorial-react",
-      "tutorial-react-native",
-      "testing-frameworks"
-    ],
-    "Guides": [
-      "snapshot-testing",
-      "tutorial-async",
-      "timer-mocks",
-      "manual-mocks",
-      "webpack",
-      "migration-guide",
-      "troubleshooting"
     ]
   }
 }

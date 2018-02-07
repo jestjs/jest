@@ -1,0 +1,6 @@
+{
+  "jest": {
+    "moduleFileExtensions": ["js", "json", "jsx"],
+    "testEnvironment": "node"
+  }
+}

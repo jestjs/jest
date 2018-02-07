@@ -15,6 +15,7 @@ const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const Resolver = require('../');
 const userResolver = require('../__mocks__/userResolver');
+const nodeModulesPaths = require('../node_modules_paths').default;
 
 beforeEach(() => {
   userResolver.mockClear();
@@ -78,6 +79,58 @@ describe('findNodeModule', () => {
   });
 });
 
+describe('resolveModule', () => {
+  let moduleMap;
+  beforeEach(() => {
+    moduleMap = new ModuleMap({
+      duplicates: [],
+      map: [],
+      mocks: [],
+    });
+  });
+
+  it('is possible to resolve node modules', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    });
+    const src = require.resolve('../');
+    const resolved = resolver.resolveModule(
+      src,
+      './__mocks__/mockJsDependency',
+    );
+    expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
+  });
+
+  it('is possible to resolve node modules with custom extensions', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js', '.jsx'],
+    });
+    const src = require.resolve('../');
+    const resolvedJsx = resolver.resolveModule(
+      src,
+      './__mocks__/mockJsxDependency',
+    );
+    expect(resolvedJsx).toBe(
+      require.resolve('../__mocks__/mockJsxDependency.jsx'),
+    );
+  });
+
+  it('is possible to resolve node modules with custom extensions and platforms', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js', '.jsx'],
+      platforms: ['native'],
+    });
+    const src = require.resolve('../');
+    const resolvedJsx = resolver.resolveModule(
+      src,
+      './__mocks__/mockJsxDependency',
+    );
+    expect(resolvedJsx).toBe(
+      require.resolve('../__mocks__/mockJsxDependency.native.jsx'),
+    );
+  });
+});
+
 describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
     userResolver.mockImplementation(() => 'module');
@@ -106,6 +159,7 @@ describe('getMockModule', () => {
       path.dirname(src),
     );
   });
+
   it('is possible to use custom resolver to resolve deps inside mock modules without moduleNameMapper', () => {
     userResolver.mockImplementation(() => 'module');
 
@@ -126,5 +180,73 @@ describe('getMockModule', () => {
       'basedir',
       path.dirname(src),
     );
+  });
+});
+
+describe('nodeModulesPaths', () => {
+  it('provides custom module paths after node_modules', () => {
+    const src = require.resolve('../');
+    const result = nodeModulesPaths(src, {paths: ['./customFolder']});
+    expect(result[result.length - 1]).toBe('./customFolder');
+  });
+});
+
+describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
+  const _path = path;
+  let moduleMap;
+
+  beforeEach(() => {
+    jest.resetModules();
+
+    moduleMap = new ModuleMap({
+      duplicates: [],
+      map: [],
+      mocks: [],
+    });
+  });
+
+  afterAll(() => {
+    jest.resetModules();
+    jest.dontMock('path');
+  });
+
+  it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
+    jest.doMock('path', () => _path.win32);
+    const path = require('path');
+    const Resolver = require('../');
+
+    const cwd = 'D:\\temp\\project';
+    const src = 'C:\\path\\to\\node_modules';
+    const resolver = new Resolver(moduleMap, {
+      moduleDirectories: [src, 'node_modules'],
+    });
+    const dirs_expected = [
+      src,
+      cwd + '\\node_modules',
+      path.dirname(cwd) + '\\node_modules',
+      'D:\\node_modules',
+    ];
+    const dirs_actual = resolver.getModulePaths(cwd);
+    expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
+  });
+
+  it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
+    jest.doMock('path', () => _path.posix);
+    const path = require('path');
+    const Resolver = require('../');
+
+    const cwd = '/temp/project';
+    const src = '/path/to/node_modules';
+    const resolver = new Resolver(moduleMap, {
+      moduleDirectories: [src, 'node_modules'],
+    });
+    const dirs_expected = [
+      src,
+      cwd + '/node_modules',
+      path.dirname(cwd) + '/node_modules',
+      '/node_modules',
+    ];
+    const dirs_actual = resolver.getModulePaths(cwd);
+    expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
   });
 });

@@ -72,14 +72,14 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 
   let report;
   if (pass) {
-    return {message: '', pass: true};
+    return {message: () => '', pass: true};
   } else if (!expected) {
     report = () =>
       `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
       `must be explicitly passed to write a new snapshot.\n\n` +
       `This is likely because this test is run in a continuous integration ` +
       `(CI) environment in which snapshots are not written by default.\n\n` +
-      `${RECEIVED_COLOR('Received value')}` +
+      `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
   } else {
     expected = (expected || '').trim();
@@ -115,8 +115,10 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 const toThrowErrorMatchingSnapshot = function(
   received: any,
   testName?: string,
+  fromPromise: boolean,
 ) {
   this.dontThrow && this.dontThrow();
+
   const {isNot} = this;
 
   if (isNot) {
@@ -127,10 +129,14 @@ const toThrowErrorMatchingSnapshot = function(
 
   let error;
 
-  try {
-    received();
-  } catch (e) {
-    error = e;
+  if (fromPromise) {
+    error = received;
+  } else {
+    try {
+      received();
+    } catch (e) {
+      error = e;
+    }
   }
 
   if (error === undefined) {

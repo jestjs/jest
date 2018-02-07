@@ -22,8 +22,9 @@ import {version as VERSION} from '../../package.json';
 import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
+import exit from 'exit';
 import getChangedFilesPromise from '../get_changed_files_promise';
-import getJest from './get_jest';
+import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
 import {print as preRunMessagePrint} from '../pre_run_message';
@@ -33,22 +34,20 @@ import TestWatcher from '../test_watcher';
 import watch from '../watch';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
+import {sync as realpath} from 'realpath-native';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
     const projects = getProjectListFromCLIArgs(argv, project);
-    // If we're running a single Jest project, we might want to use another
-    // version of Jest (the one that is specified in this project's package.json)
-    const runCLIFn = getRunCLIFn(projects);
 
-    const {results, globalConfig} = await runCLIFn(argv, projects);
+    const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
     console.error(chalk.red(error.stack));
-    process.exit(1);
+    exit(1);
     throw error;
   }
 }
@@ -82,7 +81,7 @@ export const runCLI = async (
       process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
     });
 
-    process.exit(0);
+    exit(0);
   }
 
   await _run(
@@ -114,9 +113,11 @@ const readResultsAndExit = (
   globalConfig: GlobalConfig,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
-  process.on('exit', () => process.exit(code));
+
+  process.on('exit', () => (process.exitCode = code));
+
   if (globalConfig.forceExit) {
-    process.exit(code);
+    exit(code);
   }
 };
 
@@ -141,15 +142,21 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
     projects.push(project);
   }
 
+  if (!projects.length && process.platform === 'win32') {
+    try {
+      projects.push(realpath(process.cwd()));
+    } catch (err) {
+      // do nothing, just catch error
+      // process.binding('fs').realpath can throw, e.g. on mapped drives
+    }
+  }
+
   if (!projects.length) {
     projects.push(process.cwd());
   }
 
   return projects;
 };
-
-const getRunCLIFn = (projects: Array<Path>) =>
-  projects.length === 1 ? getJest(projects[0]).runCLI : runCLI;
 
 const printDebugInfoAndExitIfNeeded = (
   argv,
@@ -161,13 +168,13 @@ const printDebugInfoAndExitIfNeeded = (
     logDebugMessages(globalConfig, configs, outputStream);
   }
   if (argv.showConfig) {
-    process.exit(0);
+    exit(0);
   }
 };
 
 const printVersionAndExit = outputStream => {
   outputStream.write(`v${VERSION}\n`);
-  process.exit(0);
+  exit(0);
 };
 
 const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
@@ -189,7 +196,9 @@ const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
       });
       throw new Error(message);
     }
-    configPathSet.add(configPath);
+    if (configPath !== null) {
+      configPathSet.add(configPath);
+    }
   }
 };
 
@@ -215,9 +224,11 @@ const getConfigs = (
   let hasDeprecationWarnings;
   let configs: Array<ProjectConfig> = [];
   let projects = projectsFromCLIArgs;
+  let configPath: ?Path;
 
   if (projectsFromCLIArgs.length === 1) {
     const parsedConfig = readConfig(argv, projects[0]);
+    configPath = parsedConfig.configPath;
 
     if (parsedConfig.globalConfig.projects) {
       // If this was a single project, and its config has `projects`
@@ -236,7 +247,22 @@ const getConfigs = (
   }
 
   if (projects.length > 1) {
-    const parsedConfigs = projects.map(root => readConfig(argv, root, true));
+    const parsedConfigs = projects
+      .filter(root => {
+        // Ignore globbed files that cannot be `require`d.
+        if (
+          fs.existsSync(root) &&
+          !fs.lstatSync(root).isDirectory() &&
+          !root.endsWith('.js') &&
+          !root.endsWith('.json')
+        ) {
+          return false;
+        }
+
+        return true;
+      })
+      .map(root => readConfig(argv, root, true, configPath));
+
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
@@ -298,14 +324,6 @@ const _run = async (
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
-  if (globalConfig.watch && !changedFilesPromise) {
-    process.stderr.write(
-      chalk.bold('--watch') +
-        ' is not supported without git/hg, please use --watchAll',
-    );
-    process.exit(1);
-  }
-
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,
@@ -345,7 +363,7 @@ const runWatch = async (
       await handleDeprecationWarnings(outputStream, process.stdin);
       return watch(globalConfig, contexts, outputStream, hasteMapInstances);
     } catch (e) {
-      process.exit(0);
+      exit(0);
     }
   }
 
@@ -366,6 +384,7 @@ const runWithoutWatch = async (
     return await runJest({
       changedFilesPromise,
       contexts,
+      failedTestsCache: null,
       globalConfig,
       onComplete,
       outputStream,

@@ -12,8 +12,12 @@ import type {Global} from './Global';
 import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
+export type EnvironmentOptions = {
+  console?: Object,
+};
+
 declare class $JestEnvironment {
-  constructor(config: ProjectConfig): void;
+  constructor(config: ProjectConfig, options?: EnvironmentOptions): void;
   runScript(script: Script): any;
   global: Global;
   fakeTimers: {

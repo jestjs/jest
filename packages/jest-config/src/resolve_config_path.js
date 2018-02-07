@@ -28,7 +28,7 @@ export default (pathToResolve: Path, cwd: Path): Path => {
     return absolutePath;
   }
 
-  // This is a guard agains passing non existing path as a project/config,
+  // This is a guard against passing non existing path as a project/config,
   // that will otherwise result in a very confusing situation.
   // e.g.
   // With a directory structure like this:
@@ -66,7 +66,7 @@ const resolveConfigPathByTraversing = (
 
   // This is the system root.
   // We tried everything, config is nowhere to be found ¯\_(ツ)_/¯
-  if (pathToResolve === path.sep) {
+  if (pathToResolve === path.dirname(pathToResolve)) {
     throw new Error(makeResolutionErrorMessage(initialPath, cwd));
   }
 

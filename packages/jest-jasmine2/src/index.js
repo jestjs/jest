@@ -37,6 +37,7 @@ async function jasmine2(
   );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create({
+    process,
     testPath,
   });
 
@@ -88,6 +89,10 @@ async function jasmine2(
         environment.fakeTimers.useFakeTimers();
       }
     }
+
+    if (config.restoreMocks) {
+      runtime.restoreAllMocks();
+    }
   });
 
   env.addReporter(reporter);
@@ -114,6 +119,7 @@ async function jasmine2(
   runtime
     .requireModule(require.resolve('source-map-support'), 'source-map-support')
     .install({
+      environment: 'node',
       handleUncaughtExceptions: false,
       retrieveSourceMap: source => {
         if (runtime._sourceMapRegistry[source]) {
@@ -130,7 +136,14 @@ async function jasmine2(
       },
     });
 
-  if (globalConfig.testNamePattern) {
+  if (globalConfig.enabledTestsMap) {
+    env.specFilter = spec => {
+      const suiteMap =
+        globalConfig.enabledTestsMap &&
+        globalConfig.enabledTestsMap[spec.result.testPath];
+      return suiteMap && suiteMap[spec.result.fullName];
+    };
+  } else if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
@@ -152,6 +165,8 @@ const addSnapshotData = (results, snapshotState) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
+  const uncheckedKeys = snapshotState.getUncheckedKeys();
+
   if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
@@ -163,6 +178,9 @@ const addSnapshotData = (results, snapshotState) => {
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  // Copy the array to prevent memory leaks
+  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+
   return results;
 };
 

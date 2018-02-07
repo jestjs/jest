@@ -129,11 +129,10 @@ export default class SummaryReporter extends BaseReporter {
       let updateCommand;
       const event = process.env.npm_lifecycle_event;
       const prefix = NPM_EVENTS.has(event) ? '' : 'run ';
-      const client =
+      const isYarn =
         typeof process.env.npm_config_user_agent === 'string' &&
-        process.env.npm_config_user_agent.match('yarn') !== null
-          ? 'yarn'
-          : 'npm';
+        process.env.npm_config_user_agent.match('yarn') !== null;
+      const client = isYarn ? 'yarn' : 'npm';
       const scriptUsesJest =
         typeof process.env.npm_lifecycle_script === 'string' &&
         process.env.npm_lifecycle_script.indexOf('jest') !== -1;
@@ -141,7 +140,11 @@ export default class SummaryReporter extends BaseReporter {
       if (globalConfig.watch) {
         updateCommand = 'press `u`';
       } else if (event && scriptUsesJest) {
-        updateCommand = `run \`${client + ' ' + prefix + event} -u\``;
+        updateCommand = `run \`${client +
+          ' ' +
+          prefix +
+          event +
+          (isYarn ? '' : ' --')} -u\``;
       } else {
         updateCommand = 're-run jest with `-u`';
       }

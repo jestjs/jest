@@ -7,29 +7,61 @@
  * @flow
  */
 
-import type {GlobalConfig} from 'types/Config';
+import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
 import type {Context} from 'types/Context';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import getChangedFilesPromise from './get_changed_files_promise';
+import exit from 'exit';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
-import isCI from 'is-ci';
 import isValidPath from './lib/is_valid_path';
+import {isInteractive} from 'jest-util';
 import {print as preRunMessagePrint} from './pre_run_message';
 import createContext from './lib/create_context';
 import runJest from './run_jest';
 import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './search_source';
 import TestWatcher from './test_watcher';
-import Prompt from './lib/Prompt';
-import TestPathPatternPrompt from './test_path_pattern_prompt';
-import TestNamePatternPrompt from './test_name_pattern_prompt';
+import FailedTestsCache from './failed_tests_cache';
 import {KEYS, CLEAR} from './constants';
+import JestHooks from './jest_hooks';
+import WatchPlugin from './watch_plugin';
+import TestPathPatternPlugin from './plugins/test_path_pattern';
+import TestNamePatternPlugin from './plugins/test_name_pattern';
+import UpdateSnapshotsPlugin from './plugins/update_snapshots';
+import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
+import QuitPlugin from './plugins/quit';
+import activeFilters from './lib/active_filters_message';
 
-const isInteractive = process.stdout.isTTY && !isCI;
 let hasExitListener = false;
+
+const INTERNAL_PLUGINS = [
+  TestPathPatternPlugin,
+  TestNamePatternPlugin,
+  UpdateSnapshotsPlugin,
+  UpdateSnapshotsInteractivePlugin,
+  QuitPlugin,
+];
+
+const getSortedUsageRows = (
+  watchPlugins: Array<WatchPlugin>,
+  globalConfig: GlobalConfig,
+) => {
+  const internalPlugins = watchPlugins
+    .slice(0, INTERNAL_PLUGINS.length)
+    .map(p => p.getUsageRow(globalConfig))
+    .filter(usage => !usage.hide);
+
+  const thirdPartyPlugins = watchPlugins
+    .slice(INTERNAL_PLUGINS.length)
+    .map(p => p.getUsageRow(globalConfig))
+    .filter(usage => !usage.hide)
+    .sort((a, b) => a.key - b.key);
+
+  return internalPlugins.concat(thirdPartyPlugins);
+};
 
 export default function watch(
   initialGlobalConfig: GlobalConfig,
@@ -41,26 +73,74 @@ export default function watch(
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
   let globalConfig = initialGlobalConfig;
+  let activePlugin: ?WatchPlugin;
 
   globalConfig = updateGlobalConfig(globalConfig, {
     mode: globalConfig.watch ? 'watch' : 'watchAll',
     passWithNoTests: true,
   });
 
-  const prompt = new Prompt();
-  const testPathPatternPrompt = new TestPathPatternPrompt(outputStream, prompt);
-  const testNamePatternPrompt = new TestNamePatternPrompt(outputStream, prompt);
+  const hooks = new JestHooks();
+
+  const updateConfigAndRun = ({
+    testNamePattern,
+    testPathPattern,
+    updateSnapshot,
+  }: {
+    testNamePattern?: string,
+    testPathPattern?: string,
+    updateSnapshot?: SnapshotUpdateState,
+  } = {}) => {
+    const previousUpdateSnapshot = globalConfig.updateSnapshot;
+    globalConfig = updateGlobalConfig(globalConfig, {
+      mode: 'watch',
+      testNamePattern:
+        testNamePattern !== undefined
+          ? testNamePattern
+          : globalConfig.testNamePattern,
+      testPathPattern:
+        testPathPattern !== undefined
+          ? replacePathSepForRegex(testPathPattern)
+          : globalConfig.testPathPattern,
+      updateSnapshot:
+        updateSnapshot !== undefined
+          ? updateSnapshot
+          : globalConfig.updateSnapshot,
+    });
+
+    startRun(globalConfig);
+    globalConfig = updateGlobalConfig(globalConfig, {
+      // updateSnapshot is not sticky after a run.
+      updateSnapshot:
+        previousUpdateSnapshot === 'all' ? 'none' : previousUpdateSnapshot,
+    });
+  };
+
+  const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
+    InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
+  );
+
+  watchPlugins.forEach((plugin: WatchPlugin) => {
+    plugin.registerHooks(hooks.getSubscriber());
+  });
+
+  if (globalConfig.watchPlugins != null) {
+    for (const pluginModulePath of globalConfig.watchPlugins) {
+      // $FlowFixMe dynamic require
+      const ThirdPluginPath = require(pluginModulePath);
+      watchPlugins.push(new ThirdPluginPath({stdin, stdout: outputStream}));
+    }
+  }
+
+  const failedTestsCache = new FailedTestsCache();
   let searchSources = contexts.map(context => ({
     context,
     searchSource: new SearchSource(context),
   }));
-  let hasSnapshotFailure = false;
   let isRunning = false;
   let testWatcher;
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
-
-  testPathPatternPrompt.updateSearchSources(searchSources);
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
@@ -76,13 +156,14 @@ export default function watch(
             moduleMap,
           },
         ));
-        prompt.abort();
+
+        activePlugin = null;
+
         searchSources = searchSources.slice();
         searchSources[index] = {
           context,
           searchSource: new SearchSource(context),
         };
-        testPathPatternPrompt.updateSearchSources(searchSources);
         startRun(globalConfig);
       }
     });
@@ -91,7 +172,7 @@ export default function watch(
   if (!hasExitListener) {
     hasExitListener = true;
     process.on('exit', () => {
-      if (prompt.isEntering()) {
+      if (activePlugin) {
         outputStream.write(ansiEscapes.cursorDown());
         outputStream.write(ansiEscapes.eraseDown);
       }
@@ -112,25 +193,34 @@ export default function watch(
     return runJest({
       changedFilesPromise,
       contexts,
+      failedTestsCache,
       globalConfig,
+      jestHooks: hooks.getEmitter(),
       onComplete: results => {
         isRunning = false;
-        hasSnapshotFailure = !!results.snapshot.failure;
+        hooks.getEmitter().testRunComplete(results);
+
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
-        if (shouldDisplayWatchUsage) {
-          outputStream.write(usage(globalConfig, hasSnapshotFailure));
-          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-          isWatchUsageDisplayed = true;
-        } else {
-          outputStream.write(showToggleUsagePrompt());
-          shouldDisplayWatchUsage = false;
-          isWatchUsageDisplayed = false;
-        }
 
-        testNamePatternPrompt.updateCachedTestResults(results.testResults);
+        // Do not show any Watch Usage related stuff when running in a
+        // non-interactive environment
+        if (isInteractive) {
+          if (shouldDisplayWatchUsage) {
+            outputStream.write(usage(globalConfig, watchPlugins));
+            shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+            isWatchUsageDisplayed = true;
+          } else {
+            outputStream.write(showToggleUsagePrompt());
+            shouldDisplayWatchUsage = false;
+            isWatchUsageDisplayed = false;
+          }
+        } else {
+          outputStream.write('\n');
+        }
+        failedTestsCache.setTestResults(results.testResults);
       },
       outputStream,
       startRun,
@@ -140,41 +230,60 @@ export default function watch(
 
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
-      process.exit(0);
+      outputStream.write('\n');
+      exit(0);
       return;
     }
 
-    if (prompt.isEntering()) {
-      prompt.put(key);
+    if (activePlugin != null) {
+      // if a plugin is activate, Jest should let it handle keystrokes, so ignore
+      // them here
+      activePlugin.onData(key);
       return;
     }
 
     // Abort test run
+    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
+      usage => Number(usage.key).toString(16),
+    );
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.F]
+        .concat(pluginKeys)
+        .indexOf(key) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
     }
 
+    const matchingWatchPlugin = watchPlugins.find(plugin => {
+      const usageRow = plugin.getUsageRow(globalConfig) || {};
+
+      return usageRow.key === parseInt(key, 16);
+    });
+
+    if (matchingWatchPlugin != null) {
+      // "activate" the plugin, which has jest ignore keystrokes so the plugin
+      // can handle them
+      activePlugin = matchingWatchPlugin;
+      activePlugin.showPrompt(globalConfig, updateConfigAndRun).then(
+        shouldRerun => {
+          activePlugin = null;
+          if (shouldRerun) {
+            updateConfigAndRun();
+          }
+        },
+        () => {
+          activePlugin = null;
+          onCancelPatternPrompt();
+        },
+      );
+    }
+
     switch (key) {
-      case KEYS.Q:
-        process.exit(0);
-        return;
       case KEYS.ENTER:
         startRun(globalConfig);
-        break;
-      case KEYS.U:
-        globalConfig = updateGlobalConfig(globalConfig, {
-          updateSnapshot: 'all',
-        });
-        startRun(globalConfig);
-        globalConfig = updateGlobalConfig(globalConfig, {
-          // updateSnapshot is not sticky after a run.
-          updateSnapshot: 'none',
-        });
         break;
       case KEYS.A:
         globalConfig = updateGlobalConfig(globalConfig, {
@@ -185,10 +294,14 @@ export default function watch(
         startRun(globalConfig);
         break;
       case KEYS.C:
-        globalConfig = updateGlobalConfig(globalConfig, {
-          mode: 'watch',
+        updateConfigAndRun({
           testNamePattern: '',
           testPathPattern: '',
+        });
+        break;
+      case KEYS.F:
+        globalConfig = updateGlobalConfig(globalConfig, {
+          onlyFailures: !globalConfig.onlyFailures,
         });
         startRun(globalConfig);
         break;
@@ -200,43 +313,13 @@ export default function watch(
         });
         startRun(globalConfig);
         break;
-      case KEYS.P:
-        testPathPatternPrompt.run(
-          testPathPattern => {
-            globalConfig = updateGlobalConfig(globalConfig, {
-              mode: 'watch',
-              testNamePattern: '',
-              testPathPattern: replacePathSepForRegex(testPathPattern),
-            });
-
-            startRun(globalConfig);
-          },
-          onCancelPatternPrompt,
-          {header: activeFilters(globalConfig)},
-        );
-        break;
-      case KEYS.T:
-        testNamePatternPrompt.run(
-          testNamePattern => {
-            globalConfig = updateGlobalConfig(globalConfig, {
-              mode: 'watch',
-              testNamePattern,
-              testPathPattern: globalConfig.testPathPattern,
-            });
-
-            startRun(globalConfig);
-          },
-          onCancelPatternPrompt,
-          {header: activeFilters(globalConfig)},
-        );
-        break;
       case KEYS.QUESTION_MARK:
         break;
       case KEYS.W:
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
-          outputStream.write(usage(globalConfig, hasSnapshotFailure));
+          outputStream.write(usage(globalConfig, watchPlugins));
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
         }
@@ -247,7 +330,7 @@ export default function watch(
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
     outputStream.write(ansiEscapes.clearScreen);
-    outputStream.write(usage(globalConfig, hasSnapshotFailure));
+    outputStream.write(usage(globalConfig, watchPlugins));
     outputStream.write(ansiEscapes.cursorShow);
   };
 
@@ -262,29 +345,11 @@ export default function watch(
   return Promise.resolve();
 }
 
-const activeFilters = (globalConfig: GlobalConfig, delimiter = '\n') => {
-  const {testNamePattern, testPathPattern} = globalConfig;
-  if (testNamePattern || testPathPattern) {
-    const filters = [
-      testPathPattern
-        ? chalk.dim('filename ') + chalk.yellow('/' + testPathPattern + '/')
-        : null,
-      testNamePattern
-        ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
-        : null,
-    ]
-      .filter(f => !!f)
-      .join(', ');
-
-    const messages = ['\n' + chalk.bold('Active Filters: ') + filters];
-
-    return messages.filter(message => !!message).join(delimiter);
-  }
-
-  return '';
-};
-
-const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
+const usage = (
+  globalConfig,
+  watchPlugins: Array<WatchPlugin>,
+  delimiter = '\n',
+) => {
   const messages = [
     activeFilters(globalConfig),
 
@@ -297,6 +362,12 @@ const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
 
+    globalConfig.onlyFailures
+      ? chalk.dim(' \u203A Press ') + 'f' + chalk.dim(' to run all tests.')
+      : chalk.dim(' \u203A Press ') +
+        'f' +
+        chalk.dim(' to run only failed tests.'),
+
     (globalConfig.watchAll ||
       globalConfig.testPathPattern ||
       globalConfig.testNamePattern) &&
@@ -306,21 +377,14 @@ const usage = (globalConfig, snapshotFailure, delimiter = '\n') => {
         chalk.dim(' to only run tests related to changed files.')
       : null,
 
-    snapshotFailure
-      ? chalk.dim(' \u203A Press ') +
-        'u' +
-        chalk.dim(' to update failing snapshots.')
-      : null,
-
-    chalk.dim(' \u203A Press ') +
-      'p' +
-      chalk.dim(' to filter by a filename regex pattern.'),
-
-    chalk.dim(' \u203A Press ') +
-      't' +
-      chalk.dim(' to filter by a test name regex pattern.'),
-
-    chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
+    ...getSortedUsageRows(watchPlugins, globalConfig).map(
+      plugin =>
+        chalk.dim(' \u203A Press') +
+        ' ' +
+        String.fromCodePoint(plugin.key) +
+        ' ' +
+        chalk.dim(`to ${plugin.prompt}.`),
+    ),
 
     chalk.dim(' \u203A Press ') +
       'Enter' +

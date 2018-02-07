@@ -8,12 +8,13 @@
 
 import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';
+import type {EnvironmentOptions} from 'types/Environment';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
 import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
-import {JSDOM} from 'jsdom';
+import {JSDOM, VirtualConsole} from 'jsdom';
 
 class JSDOMEnvironment {
   dom: ?Object;
@@ -22,31 +23,26 @@ class JSDOMEnvironment {
   errorEventListener: ?Function;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: ProjectConfig) {
-    const jsdomInitialized = process.hrtime();
-
-    this.dom = new JSDOM('<!DOCTYPE html>', {
-      runScripts: 'dangerously',
-      url: config.testURL,
-    });
+  constructor(config: ProjectConfig, options?: EnvironmentOptions = {}) {
+    this.dom = new JSDOM(
+      '<!DOCTYPE html>',
+      Object.assign(
+        {
+          pretendToBeVisual: true,
+          runScripts: 'dangerously',
+          url: config.testURL,
+          virtualConsole: new VirtualConsole().sendTo(
+            options.console || console,
+          ),
+        },
+        config.testEnvironmentOptions,
+      ),
+    );
     const global = (this.global = this.dom.window.document.defaultView);
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global, config.globals);
-
-    if (!global.requestAnimationFrame || !global.cancelAnimationFrame) {
-      global.requestAnimationFrame = callback => {
-        const hr = process.hrtime(jsdomInitialized);
-        const hrInNano = hr[0] * 1e9 + hr[1];
-        const hrInMicro = hrInNano / 1e6;
-
-        return global.setTimeout(callback, 0, hrInMicro);
-      };
-      global.cancelAnimationFrame = id => {
-        return global.clearTimeout(id);
-      };
-    }
 
     // Report uncaught errors.
     this.errorEventListener = event => {

@@ -30,6 +30,7 @@ import {
 
 import AsymmetricMatcher from './plugins/asymmetric_matcher';
 import ConvertAnsi from './plugins/convert_ansi';
+import DOMCollection from './plugins/dom_collection';
 import DOMElement from './plugins/dom_element';
 import Immutable from './plugins/immutable';
 import ReactElement from './plugins/react_element';
@@ -40,6 +41,11 @@ const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
+
+// Explicitly comparing typeof constructor to function avoids undefined as name
+// when mock identity-obj-proxy returns the key as the value for any key.
+const getConstructorName = val =>
+  (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
 
 // Is val is equal to global window object? Works even if it does not exist :)
 /* global window */
@@ -170,6 +176,7 @@ function printComplexValue(
   indentation: string,
   depth: number,
   refs: Refs,
+  hasCalledToJSON?: boolean,
 ): string {
   if (refs.indexOf(val) !== -1) {
     return '[Circular]';
@@ -184,9 +191,10 @@ function printComplexValue(
     config.callToJSON &&
     !hitMaxDepth &&
     val.toJSON &&
-    typeof val.toJSON === 'function'
+    typeof val.toJSON === 'function' &&
+    !hasCalledToJSON
   ) {
-    return printer(val.toJSON(), config, indentation, depth, refs);
+    return printer(val.toJSON(), config, indentation, depth, refs, true);
   }
 
   const toStringed = toString.call(val);
@@ -239,8 +247,8 @@ function printComplexValue(
   // Avoid failure to serialize global window object in jsdom test environment.
   // For example, not even relevant if window is prop of React element.
   return hitMaxDepth || isWindow(val)
-    ? '[' + (val.constructor ? val.constructor.name : 'Object') + ']'
-    : (min ? '' : (val.constructor ? val.constructor.name : 'Object') + ' ') +
+    ? '[' + getConstructorName(val) + ']'
+    : (min ? '' : getConstructorName(val) + ' ') +
         '{' +
         printObjectProperties(val, config, indentation, depth, refs, printer) +
         '}';
@@ -307,6 +315,7 @@ function printer(
   indentation: string,
   depth: number,
   refs: Refs,
+  hasCalledToJSON?: boolean,
 ): string {
   const plugin = findPlugin(config.plugins, val);
   if (plugin !== null) {
@@ -322,7 +331,14 @@ function printer(
     return basicResult;
   }
 
-  return printComplexValue(val, config, indentation, depth, refs);
+  return printComplexValue(
+    val,
+    config,
+    indentation,
+    depth,
+    refs,
+    hasCalledToJSON,
+  );
 }
 
 const DEFAULT_THEME: Theme = {
@@ -389,9 +405,7 @@ const getColorsHighlight = (options: OptionsReceived): Colors =>
       colors[key] = color;
     } else {
       throw new Error(
-        `pretty-format: Option "theme" has a key "${key}" whose value "${
-          value
-        }" is undefined in ansi-styles.`,
+        `pretty-format: Option "theme" has a key "${key}" whose value "${value}" is undefined in ansi-styles.`,
       );
     }
     return colors;
@@ -476,6 +490,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
 prettyFormat.plugins = {
   AsymmetricMatcher,
   ConvertAnsi,
+  DOMCollection,
   DOMElement,
   Immutable,
   ReactElement,

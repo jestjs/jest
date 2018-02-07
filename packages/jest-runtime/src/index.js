@@ -19,7 +19,7 @@ import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 import path from 'path';
 import HasteMap from 'jest-haste-map';
 import Resolver from 'jest-resolve';
-import {createDirectory} from 'jest-util';
+import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
@@ -300,8 +300,7 @@ class Runtime {
     }
 
     if (moduleName && this._resolver.isCoreModule(moduleName)) {
-      // $FlowFixMe
-      return require(moduleName);
+      return this._requireCoreModule(moduleName);
     }
 
     if (!modulePath) {
@@ -434,8 +433,8 @@ class Runtime {
     }
   }
 
-  getAllCoverageInfo() {
-    return this._environment.global.__coverage__;
+  getAllCoverageInfoCopy() {
+    return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
   getSourceMapInfo() {
@@ -556,6 +555,15 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+  }
+
+  _requireCoreModule(moduleName: string) {
+    if (moduleName === 'process') {
+      return this._environment.global.process;
+    }
+
+    // $FlowFixMe
+    return require(moduleName);
   }
 
   _generateMock(from: Path, moduleName: string) {

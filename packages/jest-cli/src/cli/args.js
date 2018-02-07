@@ -20,12 +20,19 @@ export const check = (argv: Argv) => {
     );
   }
 
-  if (argv.onlyChanged && argv.watchAll) {
-    throw new Error(
-      'Both --onlyChanged and --watchAll were specified, but these two ' +
-        'options do not make sense together. Try the --watch option which ' +
-        'reruns only tests related to changed files.',
-    );
+  for (const key of [
+    'onlyChanged',
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedSince',
+  ]) {
+    if (argv[key] && argv.watchAll) {
+      throw new Error(
+        `Both --${key} and --watchAll were specified, but these two ` +
+          'options do not make sense together. Try the --watch option which ' +
+          'reruns only tests related to changed files.',
+      );
+    }
   }
 
   if (argv.findRelatedTests && argv._.length === 0) {
@@ -103,11 +110,19 @@ export const options = {
     type: 'string',
   },
   changedFilesWithAncestor: {
+    default: undefined,
     description:
-      'When used together with `--onlyChanged`, it runs tests ' +
-      'related to the current changes and the changes made in the last commit. ' +
-      '(NOTE: this only works for hg repos)',
+      'Runs tests related to the current changes and the changes made in the ' +
+      'last commit. Behaves similarly to `--onlyChanged`.',
     type: 'boolean',
+  },
+  changedSince: {
+    description:
+      'Runs tests related the changes since the provided branch. If the ' +
+      'current branch has diverged from the given branch, then only changes ' +
+      'made locally will be tested. Behaves similarly to `--onlyChanged`.',
+    nargs: 1,
+    type: 'string',
   },
   ci: {
     default: isCI,
@@ -202,6 +217,14 @@ export const options = {
     description: 'Print debugging info about your jest config.',
     type: 'boolean',
   },
+  detectLeaks: {
+    default: false,
+    description:
+      '**EXPERIMENTAL**: Detect memory leaks in tests. After executing a ' +
+      'test, it will try to garbage collect the global object used, and fail ' +
+      'if it was leaked',
+    type: 'boolean',
+  },
   env: {
     description:
       'The test environment used for all tests. This can point to ' +
@@ -231,6 +254,14 @@ export const options = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  globalSetup: {
+    description: 'The path to a module that runs before All Tests.',
+    type: 'string',
+  },
+  globalTeardown: {
+    description: 'The path to a module that runs after All Tests.',
+    type: 'string',
+  },
   globals: {
     description:
       'A JSON string with map of global variables that need ' +
@@ -252,8 +283,8 @@ export const options = {
   lastCommit: {
     default: undefined,
     description:
-      'Will run all tests affected by file changes in the last ' +
-      'commit made.',
+      'Run all tests affected by file changes in the last commit made. ' +
+      'Behaves similarly to `--onlyChanged`.',
     type: 'boolean',
   },
   listTests: {
@@ -332,13 +363,24 @@ export const options = {
     description: 'Activates notifications for test results.',
     type: 'boolean',
   },
+  notifyMode: {
+    default: 'always',
+    description: 'Specifies when notifications will appear for test results.',
+    type: 'string',
+  },
   onlyChanged: {
     alias: 'o',
     default: undefined,
     description:
       'Attempts to identify which tests to run based on which ' +
       "files have changed in the current repository. Only works if you're " +
-      'running tests in a git repository at the moment.',
+      'running tests in a git or hg repository at the moment.',
+    type: 'boolean',
+  },
+  onlyFailures: {
+    alias: 'f',
+    default: undefined,
+    description: 'Run tests that failed in the previous execution.',
     type: 'boolean',
   },
   outputFile: {
@@ -384,6 +426,13 @@ export const options = {
   resolver: {
     description: 'A JSON string which allows the use of a custom resolver.',
     type: 'string',
+  },
+  restoreMocks: {
+    default: undefined,
+    description:
+      'Automatically restore mock state and implementation between every test. ' +
+      'Equivalent to calling jest.restoreAllMocks() between each test.',
+    type: 'boolean',
   },
   rootDir: {
     description:
@@ -476,7 +525,7 @@ export const options = {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
-    type: 'string',
+    type: 'array',
   },
   testRegex: {
     description: 'The regexp pattern Jest uses to detect test files.',

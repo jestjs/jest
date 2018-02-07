@@ -85,6 +85,8 @@ jest.doMock('../lib/terminal_utils', () => ({
 
 const watch = require('../watch').default;
 
+const nextTick = () => new Promise(res => process.nextTick(res));
+
 const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
 const globalConfig = {watch: true};
@@ -142,11 +144,12 @@ describe('Watch mode flows', () => {
     });
   });
 
-  it('Pressing "c" clears the filters', () => {
+  it('Pressing "c" clears the filters', async () => {
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
+    await nextTick();
 
     ['p', '.', '*', '1', '0']
       .map(toHex)
@@ -154,15 +157,22 @@ describe('Watch mode flows', () => {
       .forEach(key => stdin.emit(key));
 
     stdin.emit(KEYS.T);
+    await nextTick();
+
     ['t', 'e', 's', 't']
       .map(toHex)
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
+    await nextTick();
+
     stdin.emit(KEYS.C);
+    await nextTick();
 
     pipe.write.mockReset();
     stdin.emit(KEYS.P);
+    await nextTick();
+
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 });

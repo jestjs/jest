@@ -69,7 +69,6 @@ const createTransformer = (options: any) => {
   options = Object.assign({}, options, {
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
-    retainLines: true,
     sourceMaps: 'inline',
   });
   delete options.cacheDirectory;
@@ -104,7 +103,10 @@ const createTransformer = (options: any) => {
       config: ProjectConfig,
       transformOptions: TransformOptions,
     ): string {
-      if (babelUtil && !babelUtil.canCompile(filename)) {
+      const altExts = config.moduleFileExtensions.map(
+        extension => '.' + extension,
+      );
+      if (babelUtil && !babelUtil.canCompile(filename, altExts)) {
         return src;
       }
 

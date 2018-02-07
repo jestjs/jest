@@ -928,7 +928,7 @@ describe('preset', () => {
 
   test('merges with options and moduleNameMapper preset is overridden by options', () => {
     // Object initializer not used for properties as a workaround for
-    //  sort-keys eslint rule while specifing properties in
+    //  sort-keys eslint rule while specifying properties in
     //  non-alphabetical order for a better test
     const moduleNameMapper = {};
     moduleNameMapper.e = 'ee';
@@ -990,5 +990,154 @@ describe('preset without setupFiles', () => {
         setupFiles: expect.arrayContaining(['/node_modules/a']),
       }),
     );
+  });
+});
+
+describe('watchPlugins', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name.startsWith(path.sep)) {
+        return name;
+      }
+      return path.sep + 'node_modules' + path.sep + name;
+    });
+  });
+
+  it('defaults to undefined', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.watchPlugins).toEqual(undefined);
+  });
+
+  it('normalizes watchPlugins', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        watchPlugins: ['my-watch-plugin', '<rootDir>/path/to/plugin'],
+      },
+      {},
+    );
+
+    expect(options.watchPlugins).toEqual([
+      '/node_modules/my-watch-plugin',
+      '/root/path/to/plugin',
+    ]);
+  });
+});
+
+describe('testPathPattern', () => {
+  const initialOptions = {rootDir: '/root'};
+  const consoleLog = console.log;
+
+  beforeEach(() => {
+    console.log = jest.fn();
+  });
+
+  afterEach(() => {
+    console.log = consoleLog;
+  });
+
+  it('defaults to empty', () => {
+    const {options} = normalize(initialOptions, {});
+    expect(options.testPathPattern).toBe('');
+  });
+
+  const cliOptions = [
+    {name: '--testPathPattern', property: 'testPathPattern'},
+    {name: '<regexForTestFiles>', property: '_'},
+  ];
+  for (const opt of cliOptions) {
+    describe(opt.name, () => {
+      it('uses ' + opt.name + ' if set', () => {
+        const argv = {[opt.property]: ['a/b']};
+        const {options} = normalize(initialOptions, argv);
+
+        expect(options.testPathPattern).toBe('a/b');
+      });
+
+      it('ignores invalid regular expressions and logs a warning', () => {
+        const argv = {[opt.property]: ['a(']};
+        const {options} = normalize(initialOptions, argv);
+
+        expect(options.testPathPattern).toBe('');
+        expect(console.log.mock.calls[0][0]).toMatchSnapshot();
+      });
+
+      it('joins multiple ' + opt.name + ' if set', () => {
+        const argv = {testPathPattern: ['a/b', 'c/d']};
+        const {options} = normalize(initialOptions, argv);
+
+        expect(options.testPathPattern).toBe('a/b|c/d');
+      });
+
+      describe('posix', () => {
+        it('should not escape the pattern', () => {
+          const argv = {[opt.property]: ['a\\/b', 'a/b', 'a\\b', 'a\\\\b']};
+          const {options} = normalize(initialOptions, argv);
+
+          expect(options.testPathPattern).toBe('a\\/b|a/b|a\\b|a\\\\b');
+        });
+      });
+
+      describe('win32', () => {
+        beforeEach(() => {
+          jest.mock('path', () => require.requireActual('path').win32);
+          require('jest-resolve').findNodeModule = findNodeModule;
+        });
+
+        afterEach(() => {
+          jest.resetModules();
+        });
+
+        it('preserves any use of "\\"', () => {
+          const argv = {[opt.property]: ['a\\b', 'c\\\\d']};
+          const {options} = require('../normalize').default(
+            initialOptions,
+            argv,
+          );
+
+          expect(options.testPathPattern).toBe('a\\b|c\\\\d');
+        });
+
+        it('replaces POSIX path separators', () => {
+          const argv = {[opt.property]: ['a/b']};
+          const {options} = require('../normalize').default(
+            initialOptions,
+            argv,
+          );
+
+          expect(options.testPathPattern).toBe('a\\\\b');
+        });
+
+        it('replaces POSIX paths in multiple args', () => {
+          const argv = {[opt.property]: ['a/b', 'c/d']};
+          const {options} = require('../normalize').default(
+            initialOptions,
+            argv,
+          );
+
+          expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
+        });
+      });
+    });
+  }
+
+  it('joins multiple --testPathPatterns and <regexForTestFiles>', () => {
+    const {options} = normalize(initialOptions, {
+      _: ['a', 'b'],
+      testPathPattern: ['c', 'd'],
+    });
+    expect(options.testPathPattern).toBe('a|b|c|d');
+  });
+
+  it('gives precedence to --all', () => {
+    const {options} = normalize(initialOptions, {
+      all: true,
+      onlyChanged: true,
+    });
+
+    expect(options.onlyChanged).toBe(false);
   });
 });

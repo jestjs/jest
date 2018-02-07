@@ -17,6 +17,7 @@ import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 
 const {
   AsymmetricMatcher,
+  DOMCollection,
   DOMElement,
   Immutable,
   ReactElement,
@@ -27,6 +28,7 @@ const PLUGINS = [
   ReactTestComponent,
   ReactElement,
   DOMElement,
+  DOMCollection,
   Immutable,
   AsymmetricMatcher,
 ];

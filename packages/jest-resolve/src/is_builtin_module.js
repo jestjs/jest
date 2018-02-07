@@ -7,14 +7,19 @@
  * @flow
  */
 
+// $FlowFixMe: Flow doesn't know about the `module` module
+import {builtinModules} from 'module';
+
 // https://github.com/facebook/flow/pull/5160
 declare var process: {
   binding(type: string): {},
 };
 
-const BUILTIN_MODULES = Object.keys(process.binding('natives')).filter(
-  (module: string) => !/^internal\//.test(module),
-);
+const BUILTIN_MODULES =
+  builtinModules ||
+  Object.keys(process.binding('natives')).filter(
+    (module: string) => !/^internal\//.test(module),
+  );
 
 export default function isBuiltinModule(module: string): boolean {
   return BUILTIN_MODULES.indexOf(module) !== -1;

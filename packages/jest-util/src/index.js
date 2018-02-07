@@ -14,11 +14,14 @@ import clearLine from './clear_line';
 import Console from './Console';
 import FakeTimers from './fake_timers';
 import formatTestResults from './format_test_results';
+import getFailedSnapshotTests from './get_failed_snapshot_tests';
 import getConsoleOutput from './get_console_output';
 import installCommonGlobals from './install_common_globals';
 import NullConsole from './null_console';
+import isInteractive from './is_interative';
 import setGlobal from './set_global';
 import validateCLIOptions from './validate_cli_options';
+import deepCyclicCopy from './deep_cyclic_copy';
 
 const createDirectory = (path: string) => {
   try {
@@ -37,9 +40,12 @@ module.exports = {
   NullConsole,
   clearLine,
   createDirectory,
+  deepCyclicCopy,
   formatTestResults,
   getConsoleOutput,
+  getFailedSnapshotTests,
   installCommonGlobals,
+  isInteractive,
   setGlobal,
   validateCLIOptions,
 };

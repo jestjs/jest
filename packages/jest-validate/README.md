@@ -1,8 +1,9 @@
 # jest-validate
 
-Generic configuration validation tool that helps you with warnings, errors and deprecation messages as well as showing users examples of correct configuration.
+Generic configuration validation tool that helps you with warnings, errors and
+deprecation messages as well as showing users examples of correct configuration.
 
-```
+```bash
 npm install --save jest-validate
 ```
 
@@ -11,13 +12,11 @@ npm install --save jest-validate
 ```js
 import {validate} from 'jest-validate';
 
-validate(
-  config: Object,
-  options: ValidationOptions,
-); // => {hasDeprecationWarnings: boolean, isValid: boolean}
+validate((config: Object), (options: ValidationOptions)); // => {hasDeprecationWarnings: boolean, isValid: boolean}
 ```
 
 Where `ValidationOptions` are:
+
 ```js
 type ValidationOptions = {
   comment?: string,
@@ -26,7 +25,7 @@ type ValidationOptions = {
     config: Object,
     option: string,
     deprecatedOptions: Object,
-    options: ValidationOptions
+    options: ValidationOptions,
   ) => true,
   deprecatedConfig?: {[key: string]: Function},
   error?: (
@@ -41,22 +40,24 @@ type ValidationOptions = {
     config: Object,
     exampleConfig: Object,
     option: string,
-    options: ValidationOptions
+    options: ValidationOptions,
   ) => void,
-}
+};
 
 type Title = {|
   deprecation?: string,
   error?: string,
   warning?: string,
-|}
+|};
 ```
 
 `exampleConfig` is the only option required.
 
 ## API
 
-By default `jest-validate` will print generic warning and error messages. You can however customize this behavior by providing `options: ValidationOptions` object as a second argument:
+By default `jest-validate` will print generic warning and error messages. You
+can however customize this behavior by providing `options: ValidationOptions`
+object as a second argument:
 
 Almost anything can be overwritten to suite your needs.
 
@@ -64,12 +65,15 @@ Almost anything can be overwritten to suite your needs.
 
 * `comment` – optional string to be rendered below error/warning message.
 * `condition` – an optional function with validation condition.
-* `deprecate`, `error`, `unknown` – optional functions responsible for displaying warning and error messages.
+* `deprecate`, `error`, `unknown` – optional functions responsible for
+  displaying warning and error messages.
 * `deprecatedConfig` – optional object with deprecated config keys.
-* `exampleConfig` – the only **required** option with configuration against which you'd like to test.
+* `exampleConfig` – the only **required** option with configuration against
+  which you'd like to test.
 * `title` – optional object of titles for errors and messages.
 
-You will find examples of `condition`, `deprecate`, `error`, `unknown`, and `deprecatedConfig` inside source of this repository, named respectively.
+You will find examples of `condition`, `deprecate`, `error`, `unknown`, and
+`deprecatedConfig` inside source of this repository, named respectively.
 
 ## Examples
 
@@ -97,7 +101,7 @@ This will output:
 
 #### Warning:
 
-```
+```bash
 ● Validation Warning:
 
   Unknown option transformx with value "<rootDir>/node_modules/babel-jest" was found.
@@ -108,7 +112,7 @@ This will output:
 
 #### Error:
 
-```
+```bash
 ● Validation Error:
 
   Option transform must be of type:
@@ -125,9 +129,11 @@ This will output:
 ```
 
 #### Deprecation
-Based on `deprecatedConfig` object with proper deprecation messages. Note custom title:
 
-```
+Based on `deprecatedConfig` object with proper deprecation messages. Note custom
+title:
+
+```bash
 Custom Deprecation:
 
   Option scriptPreprocessor was replaced by transform, which support multiple preprocessors.

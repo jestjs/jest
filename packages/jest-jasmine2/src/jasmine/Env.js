@@ -31,8 +31,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import queueRunner from '../queue_runner';
-
 import treeProcessor from '../tree_processor';
+
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test. Async functions return it implicitly.
+// eslint-disable-next-line no-unused-vars
+const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
 
 export default function(j$) {
   function Env(options) {
@@ -204,11 +208,11 @@ export default function(j$) {
         .listeners('unhandledRejection')
         .slice();
 
-      process.removeAllListeners('uncaughtException');
-      process.removeAllListeners('unhandledRejection');
+      j$.process.removeAllListeners('uncaughtException');
+      j$.process.removeAllListeners('unhandledRejection');
 
-      process.on('uncaughtException', uncaught);
-      process.on('unhandledRejection', uncaught);
+      j$.process.on('uncaughtException', uncaught);
+      j$.process.on('unhandledRejection', uncaught);
 
       reporter.jasmineStarted({totalSpecsDefined});
 
@@ -237,16 +241,16 @@ export default function(j$) {
         failedExpectations: topSuite.result.failedExpectations,
       });
 
-      process.removeListener('uncaughtException', uncaught);
-      process.removeListener('unhandledRejection', uncaught);
+      j$.process.removeListener('uncaughtException', uncaught);
+      j$.process.removeListener('unhandledRejection', uncaught);
 
       // restore previous exception handlers
       oldListenersException.forEach(listener => {
-        process.on('uncaughtException', listener);
+        j$.process.on('uncaughtException', listener);
       });
 
       oldListenersRejection.forEach(listener => {
-        process.on('unhandledRejection', listener);
+        j$.process.on('unhandledRejection', listener);
       });
     };
 

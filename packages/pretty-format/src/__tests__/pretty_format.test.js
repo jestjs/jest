@@ -649,6 +649,17 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(Object.create(null))).toEqual('Object {}');
   });
 
+  it('prints identity-obj-proxy with string constructor', () => {
+    const val = Object.create(null);
+    val.constructor = 'constructor'; // mock the mock object :)
+    const expected = [
+      'Object {', // Object instead of undefined
+      '  "constructor": "constructor",',
+      '}',
+    ].join('\n');
+    expect(prettyFormat(val)).toEqual(expected);
+  });
+
   it('calls toJSON and prints its return value', () => {
     expect(
       prettyFormat({
@@ -676,13 +687,13 @@ describe('prettyFormat()', () => {
     ).toEqual('Object {\n  "toJSON": false,\n  "value": true,\n}');
   });
 
-  it('calls toJSON recursively', () => {
+  it('does not call toJSON recursively', () => {
     expect(
       prettyFormat({
         toJSON: () => ({toJSON: () => ({value: true})}),
         value: false,
       }),
-    ).toEqual('Object {\n  "value": true,\n}');
+    ).toEqual('Object {\n  "toJSON": [Function toJSON],\n}');
   });
 
   it('calls toJSON on Sets', () => {

@@ -12,6 +12,7 @@ import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
 
+import chalk from 'chalk';
 import {formatExecError} from 'jest-message-util';
 import {
   addResult,
@@ -20,6 +21,7 @@ import {
 } from './test_result_helpers';
 import CoverageReporter from './reporters/coverage_reporter';
 import DefaultReporter from './reporters/default_reporter';
+import exit from 'exit';
 import NotifyReporter from './reporters/notify_reporter';
 import ReporterDispatcher from './reporter_dispatcher';
 import snapshot from 'jest-snapshot';
@@ -37,16 +39,25 @@ TestRunner;
 export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
 |};
-
+export type TestSchedulerContext = {|
+  firstRun: boolean,
+  previousSuccess: boolean,
+|};
 export default class TestScheduler {
   _dispatcher: ReporterDispatcher;
   _globalConfig: GlobalConfig;
   _options: TestSchedulerOptions;
+  _context: TestSchedulerContext;
 
-  constructor(globalConfig: GlobalConfig, options: TestSchedulerOptions) {
+  constructor(
+    globalConfig: GlobalConfig,
+    options: TestSchedulerOptions,
+    context: TestSchedulerContext,
+  ) {
     this._dispatcher = new ReporterDispatcher();
     this._globalConfig = globalConfig;
     this._options = options;
+    this._context = context;
     this._setupReporters();
   }
 
@@ -88,14 +99,33 @@ export default class TestScheduler {
       if (watcher.isInterrupted()) {
         return Promise.resolve();
       }
+
       if (testResult.testResults.length === 0) {
         const message = 'Your test suite must contain at least one test.';
-        await onFailure(test, {
+
+        return onFailure(test, {
           message,
           stack: new Error(message).stack,
         });
-        return Promise.resolve();
       }
+
+      // Throws when the context is leaked after executinga test.
+      if (testResult.leaks) {
+        const message =
+          chalk.red.bold('EXPERIMENTAL FEATURE!\n') +
+          'Your test suite is leaking memory. Please ensure all references are cleaned.\n' +
+          '\n' +
+          'There is a number of things that can leak memory:\n' +
+          '  - Async operations that have not finished (e.g. fs.readFile).\n' +
+          '  - Timers not properly mocked (e.g. setInterval, setTimeout).\n' +
+          '  - Keeping references to the global scope.';
+
+        return onFailure(test, {
+          message,
+          stack: new Error(message).stack,
+        });
+      }
+
       addResult(aggregatedResults, testResult);
       await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
@@ -122,6 +152,7 @@ export default class TestScheduler {
           context.hasteFS,
           this._globalConfig.updateSnapshot,
         );
+
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
@@ -226,16 +257,20 @@ export default class TestScheduler {
     const isDefault = this._shouldAddDefaultReporters(reporters);
 
     if (isDefault) {
-      this._setupDefaultReporters();
+      this._setupDefaultReporters(collectCoverage);
     }
 
-    if (collectCoverage) {
+    if (!isDefault && collectCoverage) {
       this.addReporter(new CoverageReporter(this._globalConfig));
     }
 
     if (notify) {
       this.addReporter(
-        new NotifyReporter(this._globalConfig, this._options.startRun),
+        new NotifyReporter(
+          this._globalConfig,
+          this._options.startRun,
+          this._context,
+        ),
       );
     }
 
@@ -244,12 +279,16 @@ export default class TestScheduler {
     }
   }
 
-  _setupDefaultReporters() {
+  _setupDefaultReporters(collectCoverage: boolean) {
     this.addReporter(
       this._globalConfig.verbose
         ? new VerboseReporter(this._globalConfig)
         : new DefaultReporter(this._globalConfig),
     );
+
+    if (collectCoverage) {
+      this.addReporter(new CoverageReporter(this._globalConfig));
+    }
 
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
@@ -303,11 +342,12 @@ export default class TestScheduler {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {
-        const exit = () => process.exit(1);
+        const failureExit = () => exit(1);
+
         return this._dispatcher
           .onRunComplete(contexts, aggregatedResults)
-          .then(exit)
-          .catch(exit);
+          .then(failureExit)
+          .catch(failureExit);
       }
     }
     return Promise.resolve();

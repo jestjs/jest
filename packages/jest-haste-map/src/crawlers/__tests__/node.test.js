@@ -77,6 +77,9 @@ describe('node crawler', () => {
   beforeEach(() => {
     jest.resetModules();
 
+    // Remove the "process.platform" property descriptor so it can be writable.
+    delete process.platform;
+
     mockResponse = [
       '/fruits/pear.js',
       '/fruits/strawberry.js',
@@ -198,7 +201,7 @@ describe('node crawler', () => {
     });
   });
 
-  it('completes with emtpy roots', () => {
+  it('completes with empty roots', () => {
     process.platform = 'win32';
 
     nodeCrawl = require('../node');

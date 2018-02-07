@@ -14,6 +14,9 @@
 
 import type {Global} from 'types/Global';
 
+import isGeneratorFn from 'is-generator-fn';
+import co from 'co';
+
 function isPromise(obj) {
   return obj && typeof obj.then === 'function';
 }
@@ -34,7 +37,8 @@ function promisifyLifeCycleFunction(originalFn, env) {
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
     const asyncFn = function(done) {
-      const returnValue = fn.call({});
+      const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
+      const returnValue = wrappedFn.call({});
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), done.fail);
@@ -64,7 +68,8 @@ function promisifyIt(originalFn, env) {
     }
 
     const asyncFn = function(done) {
-      const returnValue = fn.call({});
+      const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
+      const returnValue = wrappedFn.call({});
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), done.fail);

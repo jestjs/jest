@@ -13,5 +13,5 @@ export type LogEntry = {|
   origin: string,
   type: LogType,
 |};
-export type LogType = 'log' | 'info' | 'warn' | 'error';
+export type LogType = 'debug' | 'log' | 'info' | 'warn' | 'error';
 export type ConsoleBuffer = Array<LogEntry>;

@@ -4,9 +4,9 @@
 *~
 /examples/*/node_modules/
 
-/integration_tests/*/node_modules
-/integration_tests/transform/*/coverage
-/integration_tests/transform/*/node_modules
+/integration-tests/*/node_modules
+/integration-tests/transform/*/coverage
+/integration-tests/transform/*/node_modules
 
 /node_modules
 

@@ -7,7 +7,12 @@
  * @flow
  */
 
-import PCancelable from 'p-cancelable';
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test.
+const Promise: Class<Promise> =
+  global[Symbol.for('jest-native-promise')] || global.Promise;
+
+import PCancelable from './p_cancelable';
 import pTimeout from './p_timeout';
 
 type Options = {
@@ -55,15 +60,19 @@ export default function queueRunner(options: Options) {
     if (!timeout) {
       return promise;
     }
+
+    const timeoutMs: number = timeout();
+
     return pTimeout(
       promise,
-      timeout(),
+      timeoutMs,
       options.clearTimeout,
       options.setTimeout,
       () => {
         const error = new Error(
-          'Timeout - Async callback was not invoked within timeout specified ' +
-            'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+          'Timeout - Async callback was not invoked within the ' +
+            timeoutMs +
+            'ms timeout specified by jest.setTimeout.',
         );
         options.onException(error);
       },

@@ -16,6 +16,7 @@ test('Retrieves the snapshot status', () => {
     fileDeleted: false,
     matched: 1,
     unchecked: 1,
+    uncheckedKeys: ['test suite with unchecked snapshot'],
     unmatched: 1,
     updated: 1,
   };
@@ -29,6 +30,7 @@ test('Shows no snapshot updates if all snapshots matched', () => {
     fileDeleted: false,
     matched: 1,
     unchecked: 0,
+    uncheckedKeys: [],
     unmatched: 0,
     updated: 0,
   };
@@ -42,6 +44,10 @@ test('Retrieves the snapshot status after a snapshot update', () => {
     fileDeleted: true,
     matched: 2,
     unchecked: 2,
+    uncheckedKeys: [
+      'first test suite with unchecked snapshot',
+      'second test suite with unchecked snapshot',
+    ],
     unmatched: 2,
     updated: 2,
   };

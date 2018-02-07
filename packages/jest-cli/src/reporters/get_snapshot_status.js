@@ -45,6 +45,10 @@ export default (
         (afterUpdate ? ' removed' : ' found') +
         '.',
     );
+
+    snapshot.uncheckedKeys.forEach(key => {
+      statuses.push(FAIL_COLOR(`  - ${key}`));
+    });
   }
 
   if (snapshot.fileDeleted) {

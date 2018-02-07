@@ -1,0 +1,18 @@
+{
+  "name": "diff-sequences",
+  "version": "22.2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "description": "Compare items in two sequences to find a longest common subsequence",
+  "keywords": [
+    "fast",
+    "linear",
+    "space",
+    "callback",
+    "diff"
+  ],
+  "main": "build/index.js"
+}

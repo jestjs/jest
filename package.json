@@ -11,32 +11,33 @@
     "babel-plugin-transform-es2015-destructuring": "^6.23.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-plugin-transform-es2015-parameters": "^6.23.0",
+    "babel-plugin-transform-es2015-spread": "^6.22.0",
     "babel-plugin-transform-flow-strip-types": "^6.18.0",
     "babel-plugin-transform-inline-imports-commonjs": "^1.2.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-plugin-transform-strict-mode": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "babel-preset-react": "^6.24.1",
-    "babel-preset-react-native": "^1.9.1",
+    "babel-preset-react-native": "^4.0.0",
     "browserify": "^14.4.0",
     "chalk": "^2.0.1",
-    "codecov": "^2.3.0",
+    "codecov": "^3.0.0",
     "cross-spawn": "^5.1.0",
     "debug": "^3.0.1",
     "enzyme": "^2.8.2",
-    "eslint": "^4.2.0",
-    "eslint-config-prettier": "^2.4.0",
+    "eslint": "~4.13.0",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-flowtype": "^2.35.0",
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^21.0.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-markdown": "^1.0.0-beta.6",
-    "eslint-plugin-prettier": "^2.2.0",
+    "eslint-plugin-prettier": "^2.3.1",
     "eslint-plugin-react": "^7.1.0",
-    "eslint-plugin-relay": "0.0.8",
-    "eslint-plugin-unicorn": "^2.1.2",
-    "flow-bin": "^0.58.0",
+    "eslint-plugin-relay": "~0.0.19",
+    "eslint-plugin-unicorn": "^3.0.0",
+    "flow-bin": "^0.64.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
     "immutable": "^4.0.0-rc.7",
@@ -44,26 +45,26 @@
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "jquery": "^3.2.1",
-    "karma": "^1.7.0",
+    "karma": "^2.0.0",
     "karma-browserify": "^5.1.1",
     "karma-chrome-launcher": "^2.1.1",
     "karma-mocha": "^1.3.0",
     "left-pad": "^1.1.1",
-    "lerna": "2.4.0",
+    "lerna": "2.5.1",
     "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "mock-fs": "^4.4.1",
-    "prettier": "^1.8.0",
+    "prettier": "^1.10.1",
     "progress": "^2.0.0",
     "react": "^15.4.2",
-    "react-addons-test-utils": "15.4.2",
+    "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.6.1",
-    "react-test-renderer": "15.4.2",
+    "react-test-renderer": "^15.4.2",
     "regenerator-runtime": "^0.11.0",
     "resolve": "^1.4.0",
     "rimraf": "^2.6.2",
-    "rollup": "^0.50.0",
+    "rollup": "^0.53.0",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.2.1",
     "rollup-plugin-flow": "^1.1.1",
@@ -80,24 +81,26 @@
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
-    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn build-clean",
+    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration-tests/*/*/node_modules && yarn build-clean",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
+    "lint:md": "prettier docs/**/*.md packages/*/README.md packages/*/docs/**/*.md website/blog/*.md .github/*.md CHANGELOG.md CONTRIBUTING.md website/README.md README.md --write",
     "postinstall": "yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
-    "test-ci": "yarn typecheck && yarn lint && yarn lint-es5-build && yarn jest-coverage -- -i && yarn test-examples && node scripts/mapCoverage.js && codecov",
-    "test-ci-partial": "yarn jest -i && yarn test-examples",
-    "test-examples": "node scripts/test_examples.js",
+    "test-ci": "yarn typecheck && yarn lint && yarn lint-es5-build && yarn jest-coverage -- -i && node scripts/mapCoverage.js && codecov",
+    "test-ci-partial": "yarn jest -i",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
-    "test": "yarn typecheck && yarn lint && yarn jest && yarn test-examples",
+    "test": "yarn typecheck && yarn lint && yarn jest",
     "typecheck": "flow check --include-warnings",
     "watch": "yarn build && node ./scripts/watch.js"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "website",
+    "examples/react-native"
   ],
   "jest": {
     "modulePathIgnorePatterns": [
@@ -106,7 +109,7 @@
       "packages/.*/build-es5",
       "packages/jest-runtime/src/__tests__/test_root.*",
       "website/.*",
-      "integration_tests/runtime-internal-module-registry/__mocks__"
+      "integration-tests/runtime-internal-module-registry/__mocks__"
     ],
     "collectCoverageFrom": [
       "**/packages/jest-*/**/*.js",
@@ -117,10 +120,14 @@
       "!**/perf/**",
       "!**/__mocks__/**",
       "!**/__tests__/**",
-      "!integration_tests/**"
+      "!integration-tests/**"
     ],
     "coverageReporters": [
       "json"
+    ],
+    "projects": [
+      "<rootDir>",
+      "<rootDir>/examples/*/"
     ],
     "transform": {
       "^.+\\.js$": "<rootDir>/packages/babel-jest"
@@ -133,13 +140,29 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/examples/",
-      "/integration_tests/.*/__tests__",
+      "/integration-tests/.*/__tests__",
       "\\.snap$",
       "/packages/.*/build",
-      "/packages/.*/build-es5"
-    ],
-    "testMatch": [
-      "**/*.test.js"
+      "/packages/.*/build-es5",
+      "/packages/.*/src/__tests__/expect_util.js",
+      "/packages/jest-cli/src/__tests__/test_root",
+      "/packages/jest-cli/src/__tests__/__fixtures__/",
+      "/packages/jest-haste-map/src/__tests__/haste_impl.js",
+      "/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/",
+      "/packages/jest-runtime/src/__tests__/defaultResolver.js",
+      "/packages/jest-runtime/src/__tests__/module_dir/",
+      "/packages/jest-runtime/src/__tests__/NODE_PATH_dir",
+      "/packages/jest-snapshot/src/__tests__/plugins",
+      "/packages/jest-validate/src/__tests__/fixtures/",
+      "/packages/jest-worker/src/__performance_tests__",
+      "/packages/pretty-format/perf/test.js",
+      "/integration-tests/__tests__/iterator-to-null-test.js"
     ]
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "proseWrap": "always",
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }

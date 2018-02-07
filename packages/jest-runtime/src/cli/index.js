@@ -10,9 +10,9 @@
 import type {Argv} from 'types/Argv';
 import type {EnvironmentClass} from 'types/Environment';
 
+import chalk from 'chalk';
 import os from 'os';
 import path from 'path';
-import chalk from 'chalk';
 import yargs from 'yargs';
 import {Console, setGlobal, validateCLIOptions} from 'jest-util';
 import {readConfig} from 'jest-config';
@@ -42,7 +42,7 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
 
   if (argv.help) {
     yargs.showHelp();
-    process.on('exit', () => process.exit(1));
+    process.on('exit', () => (process.exitCode = 1));
     return;
   }
 
@@ -53,7 +53,7 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
 
   if (!argv._.length) {
     console.log('Please provide a path to a script. (See --help for details)');
-    process.on('exit', () => process.exit(1));
+    process.on('exit', () => (process.exitCode = 1));
     return;
   }
 
@@ -92,6 +92,6 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     })
     .catch(e => {
       console.error(chalk.red(e.stack || e));
-      process.on('exit', () => process.exit(1));
+      process.on('exit', () => (process.exitCode = 1));
     });
 }
