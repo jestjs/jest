@@ -118,6 +118,7 @@ const getConfigs = (
       noStackTrace: options.noStackTrace,
       nonFlagArgs: options.nonFlagArgs,
       notify: options.notify,
+      notifyMode: options.notifyMode,
       onlyChanged: options.onlyChanged,
       onlyFailures: options.onlyFailures,
       outputFile: options.outputFile,

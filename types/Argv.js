@@ -54,6 +54,7 @@ export type Argv = {|
   noSCM: boolean,
   noStackTrace: boolean,
   notify: boolean,
+  notifyMode: string,
   onlyChanged: boolean,
   outputFile: string,
   preset: ?string,
