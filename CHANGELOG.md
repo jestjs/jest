@@ -1,5 +1,7 @@
 ## master
 
+## jest 22.2.0
+
 ### Features
 
 * `[jest-cli]` Added `--notifyMode` to specify when to be notified.
