@@ -105,7 +105,6 @@ class Resolver {
         module: options.module,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
-        rootDir: options.rootDir,
       });
     } catch (e) {}
     return null;
