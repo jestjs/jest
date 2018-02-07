@@ -154,6 +154,7 @@ const getConfigs = (
       forceCoverageMatch: options.forceCoverageMatch,
       globals: options.globals,
       haste: options.haste,
+      module: options.module,
       moduleDirectories: options.moduleDirectories,
       moduleFileExtensions: options.moduleFileExtensions,
       moduleLoader: options.moduleLoader,

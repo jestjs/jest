@@ -226,6 +226,7 @@ export type ProjectConfig = {|
   forceCoverageMatch: Array<Glob>,
   globals: ConfigGlobals,
   haste: HasteConfig,
+  module?: boolean,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
   moduleLoader: Path,

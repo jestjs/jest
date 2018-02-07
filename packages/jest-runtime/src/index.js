@@ -113,6 +113,10 @@ class Runtime {
     cacheFS?: CacheFS,
     coverageOptions?: CoverageOptions,
   ) {
+
+  if (config.module) {
+    console.log('aap');
+  }
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
     this._coverageOptions = coverageOptions || {

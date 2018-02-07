@@ -15,6 +15,7 @@ type ResolverOptions = {|
   basedir: Path,
   browser?: boolean,
   extensions?: Array<string>,
+  module?: boolean,
   moduleDirectory?: Array<string>,
   paths?: ?Array<Path>,
   rootDir: ?Path,
@@ -29,6 +30,7 @@ export default function defaultResolver(
   return resolve(path, {
     basedir: options.basedir,
     extensions: options.extensions,
+    module: options.module,
     moduleDirectory: options.moduleDirectory,
     paths: options.paths,
     rootDir: options.rootDir,
@@ -123,14 +125,14 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     }
 
     const pkgfile = path.join(name, 'package.json');
-    let pkgmain;
+    let pkgentry;
     try {
-      const body = fs.readFileSync(pkgfile, 'utf8');
-      pkgmain = JSON.parse(body).main;
+      const body = JSON.parse(fs.readFileSync(pkgfile, 'utf8'));
+      pkgentry = options.module && body.module ? body.module : body.main;
     } catch (e) {}
 
-    if (pkgmain && pkgmain !== '.') {
-      const resolveTarget = path.resolve(name, pkgmain);
+    if (pkgentry && pkgentry !== '.') {
+      const resolveTarget = path.resolve(name, pkgentry);
       const result = tryResolve(resolveTarget);
       if (result) {
         return result;
