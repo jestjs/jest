@@ -1,5 +1,12 @@
 ## master
 
+## jest 22.2.1
+
+### Fixes
+
+* `[jest-config]` "all" takes precedence over "lastCommit"
+  ([#5486](https://github.com/facebook/jest/pull/5486))
+
 ## jest 22.2.0
 
 ### Features
