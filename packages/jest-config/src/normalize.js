@@ -474,6 +474,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
@@ -521,7 +522,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = argv.json;
-  newOptions.lastCommit = argv.lastCommit;
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
 
@@ -569,6 +569,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
       reporter => reporter !== 'text',
     );
+  }
+
+  for (const key of [
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedSince',
+  ]) {
+    if (newOptions[key]) {
+      newOptions.onlyChanged = true;
+    }
   }
 
   return {

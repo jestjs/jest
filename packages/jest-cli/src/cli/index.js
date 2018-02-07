@@ -24,6 +24,7 @@ import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import exit from 'exit';
 import getChangedFilesPromise from '../get_changed_files_promise';
+import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
 import {print as preRunMessagePrint} from '../pre_run_message';
@@ -113,7 +114,7 @@ const readResultsAndExit = (
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
 
-  process.on('exit', () => exit(code));
+  process.on('exit', () => (process.exitCode = code));
 
   if (globalConfig.forceExit) {
     exit(code);
@@ -246,9 +247,22 @@ const getConfigs = (
   }
 
   if (projects.length > 1) {
-    const parsedConfigs = projects.map(root =>
-      readConfig(argv, root, true, configPath),
-    );
+    const parsedConfigs = projects
+      .filter(root => {
+        // Ignore globbed files that cannot be `require`d.
+        if (
+          fs.existsSync(root) &&
+          !fs.lstatSync(root).isDirectory() &&
+          !root.endsWith('.js') &&
+          !root.endsWith('.json')
+        ) {
+          return false;
+        }
+
+        return true;
+      })
+      .map(root => readConfig(argv, root, true, configPath));
+
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {

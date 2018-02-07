@@ -1,28 +1,57 @@
 ## master
 
-### features
+### Features
 
 * `[diff-sequences]` New package compares items in two sequences to find a
   **longest common subsequence**.
   ([#5407](https://github.com/facebook/jest/pull/5407))
+* `[jest-config]` Allow lastComit and changedFilesWithAncestor via JSON config
+  ([#5476](https://github.com/facebook/jest/pull/5476))
+* `[jest-util]` Add deletion to `process.env` as well
+  ([#5466](https://github.com/facebook/jest/pull/5466))
+* `[jest-util]` Add case-insensitive getters/setters to `process.env`
+  ([#5465](https://github.com/facebook/jest/pull/5465))
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
 
 ### Fixes
 
+* `[jest-cli]` Add trailing slash when checking root folder
+  ([#5464](https://github.com/facebook/jest/pull/5464))
+* `[jest-cli]` Hide interactive mode if there are no failed snapshot tests
+  ([#5450](https://github.com/facebook/jest/pull/5450))
+* `[babel-jest]` Remove retainLines from babel-jest
+  ([#5326](https://github.com/facebook/jest/pull/5439))
+* `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
+  ([#5199](https://github.com/facebook/jest/issues/5199))
+* `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
+  `__mocks__` folder. ([#5426](https://github.com/facebook/jest/pull/5426))
+* `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
+  malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
   ([#5367](https://github.com/facebook/jest/pull/5367))
 * `[jest-cli]` Fix npm update command for snapshot summary.
-  ([#5376](https://github.com/facebook/jest/pull/5376))
+  ([#5376](https://github.com/facebook/jest/pull/5376),
+  [5389](https://github.com/facebook/jest/pull/5389/))
 * `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
 * `[docs]` Add tutorial page for ES6 class mocks.
-  ([#5383]https://github.com/facebook/jest/pull/5383))
+  ([#5383](https://github.com/facebook/jest/pull/5383))
 * `[jest-resolve]` Search required modules in node_modules and then in custom
-  paths.
-  ([#5403](https://github.com/facebook/jest/pull/5403))
+  paths. ([#5403](https://github.com/facebook/jest/pull/5403))
+* `[jest-resolve]` Get builtin modules from node core.
+  ([#5411](https://github.com/facebook/jest/pull/5411))
+* `[jest-resolve]` Detect and preserve absolute paths in `moduleDirectories`. Do
+  not generate additional (invalid) paths by prepending each ancestor of `cwd`
+  to the absolute path. Additionally, this fixes functionality in Windows OS.
+  ([#5398](https://github.com/facebook/jest/pull/5398))
+
+### Chore & Maintenance
+
+* `[jest-util]` Implement watch plugins
+  ([#5399](https://github.com/facebook/jest/pull/5399))
 
 ## jest 22.1.4
 

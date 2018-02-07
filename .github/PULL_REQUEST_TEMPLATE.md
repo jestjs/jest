@@ -2,10 +2,10 @@
 
 <!-- Please remember to update CHANGELOG.md in the root of the project if you have not done so. -->
 
-**Summary**
+## Summary
 
 <!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
 
-**Test plan**
+## Test plan
 
 <!-- Demonstrate the code is solid. Example: The exact commands you ran and their output, screenshots / videos if the pull request changes UI. -->
