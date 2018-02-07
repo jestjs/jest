@@ -257,10 +257,10 @@ export default class TestScheduler {
     const isDefault = this._shouldAddDefaultReporters(reporters);
 
     if (isDefault) {
-      this._setupDefaultReporters();
+      this._setupDefaultReporters(collectCoverage);
     }
 
-    if (collectCoverage) {
+    if (!isDefault && collectCoverage) {
       this.addReporter(new CoverageReporter(this._globalConfig));
     }
 
@@ -279,12 +279,16 @@ export default class TestScheduler {
     }
   }
 
-  _setupDefaultReporters() {
+  _setupDefaultReporters(collectCoverage: boolean) {
     this.addReporter(
       this._globalConfig.verbose
         ? new VerboseReporter(this._globalConfig)
         : new DefaultReporter(this._globalConfig),
     );
+
+    if (collectCoverage) {
+      this.addReporter(new CoverageReporter(this._globalConfig));
+    }
 
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
