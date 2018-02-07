@@ -15,7 +15,7 @@ import fs from 'fs';
 import path from 'path';
 import nodeModulesPaths from './node_modules_paths';
 import isBuiltinModule from './is_builtin_module';
-import defaultResolver from './default_resolver.js';
+import defaultResolver, {couldBeRequiredByModuleField} from './default_resolver.js';
 import chalk from 'chalk';
 
 type ResolverConfig = {|
@@ -109,6 +109,10 @@ class Resolver {
       });
     } catch (e) {}
     return null;
+  }
+
+  isRequiredByModuleField(path: Path): boolean {
+    return this._options.module && couldBeRequiredByModuleField(path);
   }
 
   resolveModule(

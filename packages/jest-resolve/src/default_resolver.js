@@ -49,6 +49,7 @@ import isBuiltinModule from './is_builtin_module';
 import nodeModulesPaths from './node_modules_paths';
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
+const REQUIRED_BY_MODULE_FIELD_CACHE = {};
 
 function resolveSync(target: Path, options: ResolverOptions): Path {
   const basedir = options.basedir;
@@ -124,15 +125,25 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
       return undefined;
     }
 
-    const pkgfile = path.join(name, 'package.json');
-    let pkgentry;
+    let pkgentry, isRequiredByModuleField;
     try {
-      const body = JSON.parse(fs.readFileSync(pkgfile, 'utf8'));
-      pkgentry = options.module && body.module ? body.module : body.main;
+      const pkgfile = getPackageFile(name);
+
+      if (hasModuleField(pkgfile)) {
+        isRequiredByModuleField = true;
+        pkgentry = pkgfile.module;
+      } else {
+        pkgentry = pkgfile.main;
+      }
     } catch (e) {}
 
     if (pkgentry && pkgentry !== '.') {
       const resolveTarget = path.resolve(name, pkgentry);
+
+      if (isRequiredByModuleField) {
+        REQUIRED_BY_MODULE_FIELD_CACHE[name] = true;
+      }
+
       const result = tryResolve(resolveTarget);
       if (result) {
         return result;
@@ -141,6 +152,21 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
 
     return resolveAsFile(path.join(name, 'index'));
   }
+}
+
+function hasModuleField(pkgfile: string): boolean {
+  return !!pkgfile.module;
+}
+
+function getPackageFile(file: Path): string {
+  const pkgfile = path.join(file, 'package.json');
+
+  return JSON.parse(fs.readFileSync(pkgfile, 'utf8'));
+}
+
+export function couldBeRequiredByModuleField(file: Path): boolean {
+  return !!Object.keys(REQUIRED_BY_MODULE_FIELD_CACHE)
+    .find(moduleFieldCache => file.startsWith(moduleFieldCache));
 }
 
 /*

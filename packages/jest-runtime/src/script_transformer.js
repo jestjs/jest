@@ -177,7 +177,17 @@ export default class ScriptTransformer {
     }
   }
 
+<<<<<<< HEAD
   transformSource(filepath: Path, content: string, instrument: boolean) {
+=======
+  transformSource(
+    filepath: Path,
+    content: string,
+    instrument: boolean,
+    isRequiredByModuleField: boolean,
+    mapCoverage: boolean,
+  ) {
+>>>>>>> 475878ed... Add external libaries and more logic
     const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(filename, content, instrument);
@@ -214,7 +224,11 @@ export default class ScriptTransformer {
       map: null,
     };
 
+<<<<<<< HEAD
     if (transform && shouldCallTransform) {
+=======
+    if (isRequiredByModuleField || (transform && shouldTransform(filename, this._config))) {
+>>>>>>> 475878ed... Add external libaries and more logic
       const processed = transform.process(content, filename, this._config, {
         instrument,
         returnSourceString: false,
@@ -283,9 +297,12 @@ export default class ScriptTransformer {
     let mapCoverage = false;
 
     const willTransform =
-      !isInternalModule &&
-      !isCoreModule &&
-      (shouldTransform(filename, this._config) || instrument);
+      options.isRequiredByModuleField ||
+      (
+        !isInternalModule &&
+        !isCoreModule &&
+        (shouldTransform(filename, this._config) || instrument)
+      );
 
     try {
       if (willTransform) {
@@ -293,6 +310,11 @@ export default class ScriptTransformer {
           filename,
           content,
           instrument,
+<<<<<<< HEAD
+=======
+          options.isRequiredByModuleField,
+          !!(options && options.mapCoverage),
+>>>>>>> 475878ed... Add external libaries and more logic
         );
 
         wrappedCode = wrap(transformedSource.code);

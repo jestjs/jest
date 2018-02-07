@@ -4,10 +4,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+
+import { connect } from 'react-redux';
 import Contents from '../sample';
 
 describe('module field resolution', () => {
   it('should return the correct file exports', () => {
+    expect(typeof connect).toBe('function');
     expect(Contents).toBe('👏');
   });
 });
