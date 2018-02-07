@@ -376,6 +376,36 @@ class Index extends React.Component {
             </div>
           </Container>
 
+           <Container padding={['bottom', 'top']}>
+            <div className="blockElement imageAlignSide twoByGridBlock">
+              <div className="video">
+                <iframe
+                  width="560"
+                  height="315"
+                  src="https://www.youtube.com/embed/8Ww2QBVIw0I?rel=0"
+                  frameBorder="0"
+                  allowFullScreen
+                />
+              </div>
+              <div className="blockContent">
+                <h2>
+                  <translate>Test React applications using Enzyme & Jest</translate>
+                </h2>
+                <div>
+                  <MarkdownBlock>
+                    <translate>
+                      This
+                      [talk](https://www.youtube.com/watch?v=8Ww2QBVIw0I)
+                      by [Ryan Walsh](https://twitter.com/_rtwalsh) gives
+                      an introduction to testing [React](https://facebook.github.io/react/)
+                      components using [Enzyme](http://airbnb.io/enzyme/) and Jest.
+                    </translate>
+                  </MarkdownBlock>
+                </div>
+              </div>
+            </div>
+          </Container>
+
           <div className="productShowcaseSection paddingBottom">
             <h2>
               <translate>Who's using Jest?</translate>
