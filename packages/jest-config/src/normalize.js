@@ -526,6 +526,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
 
+  for (const key of [
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedSince',
+  ]) {
+    if (newOptions[key]) {
+      newOptions.onlyChanged = true;
+    }
+  }
+
   if (argv.all) {
     newOptions.onlyChanged = false;
   } else if (newOptions.testPathPattern) {
@@ -570,16 +580,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
       reporter => reporter !== 'text',
     );
-  }
-
-  for (const key of [
-    'lastCommit',
-    'changedFilesWithAncestor',
-    'changedSince',
-  ]) {
-    if (newOptions[key]) {
-      newOptions.onlyChanged = true;
-    }
   }
 
   return {
