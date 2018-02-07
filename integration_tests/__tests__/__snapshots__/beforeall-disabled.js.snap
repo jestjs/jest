@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should not run beforeall for disabled tests 1`] = `""`;
+
+exports[`should not run beforeall for disabled tests 2`] = `
+"PASS ./skip.test.js
+  abc
+    ✓ runs abc
+  def
+    ○ skipped 1 test
+
+  ● def › does not run def
+
+    Failed: Ran beforeAll for def
+      
+      at ../../packages/jest-jasmine2/build/expectation_result_factory.js:49:427
+      at skip.test.js:8:19
+
+"
+`;
