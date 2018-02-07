@@ -38,12 +38,6 @@ describe('check', () => {
     );
   });
 
-  it('sets onlyChanged if lastCommit is specified', () => {
-    const argv: Argv = {lastCommit: true};
-    check(argv);
-    expect(argv.onlyChanged).toBe(true);
-  });
-
   it('raises an exception if findRelatedTests is specified with no file paths', () => {
     const argv: Argv = {_: [], findRelatedTests: true};
     expect(() => check(argv)).toThrow(
