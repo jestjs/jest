@@ -36,7 +36,6 @@ export type Options = {|
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
   isCoreModule?: boolean,
   isInternalModule?: boolean,
-  mapCoverage: boolean,
 |};
 
 const cache: Map<string, TransformResult> = new Map();
@@ -57,12 +56,7 @@ export default class ScriptTransformer {
     this._transformCache = new Map();
   }
 
-  _getCacheKey(
-    fileData: string,
-    filename: Path,
-    instrument: boolean,
-    mapCoverage: boolean,
-  ): string {
+  _getCacheKey(fileData: string, filename: Path, instrument: boolean): string {
     if (!configToJsonMap.has(this._config)) {
       // We only need this set of config options that can likely influence
       // cached output instead of all config options.
@@ -77,7 +71,6 @@ export default class ScriptTransformer {
         .update(
           transformer.getCacheKey(fileData, filename, configString, {
             instrument,
-            mapCoverage,
             rootDir: this._config.rootDir,
           }),
         )
@@ -89,7 +82,6 @@ export default class ScriptTransformer {
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
-        .update(mapCoverage ? 'mapCoverage' : '')
         .update(CACHE_VERSION)
         .digest('hex');
     }
@@ -99,19 +91,13 @@ export default class ScriptTransformer {
     filename: Path,
     content: string,
     instrument: boolean,
-    mapCoverage: boolean,
   ): Path {
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
       VERSION,
     );
-    const cacheKey = this._getCacheKey(
-      content,
-      filename,
-      instrument,
-      mapCoverage,
-    );
+    const cacheKey = this._getCacheKey(content, filename, instrument);
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
@@ -191,20 +177,10 @@ export default class ScriptTransformer {
     }
   }
 
-  transformSource(
-    filepath: Path,
-    content: string,
-    instrument: boolean,
-    mapCoverage: boolean,
-  ) {
+  transformSource(filepath: Path, content: string, instrument: boolean) {
     const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
-    const cacheFilePath = this._getFileCachePath(
-      filename,
-      content,
-      instrument,
-      mapCoverage,
-    );
+    const cacheFilePath = this._getFileCachePath(filename, content, instrument);
     let sourceMapPath = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
@@ -228,6 +204,7 @@ export default class ScriptTransformer {
     if (transform && shouldTransform(filename, this._config)) {
       const processed = transform.process(content, filename, this._config, {
         instrument,
+        returnSourceString: false,
       });
 
       if (typeof processed === 'string') {
@@ -305,7 +282,6 @@ export default class ScriptTransformer {
           filename,
           content,
           instrument,
-          !!(options && options.mapCoverage),
         );
 
         wrappedCode = wrap(transformedSource.code);

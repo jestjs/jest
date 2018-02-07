@@ -55,7 +55,6 @@ type CoverageOptions = {
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
-  mapCoverage: boolean,
 };
 
 type ModuleRegistry = {[key: string]: Module, __proto__: null};
@@ -181,7 +180,6 @@ class Runtime {
         collectCoverage: options.collectCoverage,
         collectCoverageFrom: options.collectCoverageFrom,
         collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
-        mapCoverage: options.mapCoverage,
       },
       config,
     );
@@ -529,7 +527,6 @@ class Runtime {
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
         isInternalModule,
-        mapCoverage: this._coverageOptions.mapCoverage,
       },
       this._cacheFS[filename],
     );

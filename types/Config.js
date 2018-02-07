@@ -183,7 +183,6 @@ export type GlobalConfig = {|
   lastCommit: boolean,
   logHeapUsage: boolean,
   listTests: boolean,
-  mapCoverage: boolean,
   maxWorkers: number,
   noStackTrace: boolean,
   nonFlagArgs: Array<string>,

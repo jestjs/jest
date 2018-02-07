@@ -3,6 +3,7 @@
 exports[`maps code coverage against original source 1`] = `
 Object {
   "covered.js": Object {
+    "_coverageSchema": "332fd63041d2c1bcb487cc26dd0d5f7d97098a6c",
     "b": Object {},
     "branchMap": Object {},
     "f": Object {
@@ -12,7 +13,7 @@ Object {
       "0": Object {
         "decl": Object {
           "end": Object {
-            "column": 17,
+            "column": 36,
             "line": 2,
           },
           "start": Object {
@@ -20,10 +21,11 @@ Object {
             "line": 2,
           },
         },
+        "line": 2,
         "loc": Object {
           "end": Object {
-            "column": 0,
-            "line": 2,
+            "column": 1,
+            "line": 5,
           },
           "start": Object {
             "column": 58,
@@ -42,8 +44,8 @@ Object {
     "statementMap": Object {
       "0": Object {
         "end": Object {
-          "column": -1,
-          "line": null,
+          "column": 2,
+          "line": 5,
         },
         "start": Object {
           "column": 0,
@@ -52,18 +54,18 @@ Object {
       },
       "1": Object {
         "end": Object {
-          "column": 24,
+          "column": 41,
           "line": 3,
         },
         "start": Object {
-          "column": 9,
+          "column": 34,
           "line": 3,
         },
       },
       "2": Object {
         "end": Object {
-          "column": -1,
-          "line": null,
+          "column": 33,
+          "line": 4,
         },
         "start": Object {
           "column": 2,

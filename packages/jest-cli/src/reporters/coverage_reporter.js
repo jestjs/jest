@@ -83,7 +83,15 @@ export default class CoverageReporter extends BaseReporter {
     await this._addUntestedFiles(this._globalConfig, contexts);
     let map = this._coverageMap;
     let sourceFinder: Object;
-    ({map, sourceFinder} = this._sourceMapStore.transformCoverage(map)); //eslint-disable-line
+    const transformedCoverage = this._sourceMapStore.transformCoverage(map);
+
+    if (
+      transformedCoverage.map &&
+      transformedCoverage.map.data &&
+      Object.keys(transformedCoverage.map.data).length > 0
+    ) {
+      ({map, sourceFinder} = transformedCoverage);
+    }
 
     const reporter = createReporter();
     try {

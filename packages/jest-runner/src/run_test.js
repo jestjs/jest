@@ -105,7 +105,6 @@ async function runTestInternal(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    mapCoverage: globalConfig.mapCoverage,
   });
 
   const start = Date.now();
