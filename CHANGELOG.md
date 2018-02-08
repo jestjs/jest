@@ -1,5 +1,11 @@
 ## master
 
+### Features
+
+* `[jest-worker]` Assign a unique id for each worker and pass it to the child
+  process. It will be available via `process.env.JEST_WORKER_ID`
+  ([#5494](https://github.com/facebook/jest/pull/5494))
+
 ## jest 22.2.1
 
 ### Fixes
