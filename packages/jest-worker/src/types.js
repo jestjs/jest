@@ -46,8 +46,8 @@ export type FarmOptions = {
 export type WorkerOptions = {|
   forkOptions: ForkOptions,
   maxRetries: number,
-  workerPath: string,
   workerId: number,
+  workerPath: string,
 |};
 
 // Messages passed from the parent to the children.
