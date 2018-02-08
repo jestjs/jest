@@ -67,13 +67,16 @@ export default class {
     }
 
     // Build the options once for all workers to avoid allocating extra objects.
-    const workerOptions = {
+    const sharedWorkerOptions = {
       forkOptions: options.forkOptions || {},
       maxRetries: options.maxRetries || 3,
       workerPath,
     };
 
     for (let i = 0; i < numWorkers; i++) {
+      const workerOptions = Object.assign({}, sharedWorkerOptions, {
+        workerId: i + 1,
+      });
       const worker = new Worker(workerOptions);
       const workerStdout = worker.getStdout();
       const workerStderr = worker.getStderr();

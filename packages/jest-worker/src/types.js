@@ -47,6 +47,7 @@ export type WorkerOptions = {|
   forkOptions: ForkOptions,
   maxRetries: number,
   workerPath: string,
+  workerId: number,
 |};
 
 // Messages passed from the parent to the children.
