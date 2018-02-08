@@ -16,6 +16,7 @@ import path from 'path';
 import util from 'util';
 import notifier from 'node-notifier';
 import BaseReporter from './base_reporter';
+import type {TestSchedulerContext} from '../test_scheduler';
 
 const isDarwin = process.platform === 'darwin';
 
@@ -24,21 +25,33 @@ const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 export default class NotifyReporter extends BaseReporter {
   _startRun: (globalConfig: GlobalConfig) => *;
   _globalConfig: GlobalConfig;
-
+  _context: TestSchedulerContext;
   constructor(
     globalConfig: GlobalConfig,
     startRun: (globalConfig: GlobalConfig) => *,
+    context: TestSchedulerContext,
   ) {
     super();
     this._globalConfig = globalConfig;
     this._startRun = startRun;
+    this._context = context;
   }
 
   onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 
-    if (success) {
+    const notifyMode = this._globalConfig.notifyMode;
+    const statusChanged =
+      this._context.previousSuccess !== success || this._context.firstRun;
+    if (
+      success &&
+      (notifyMode === 'always' ||
+        notifyMode === 'success' ||
+        notifyMode === 'success-change' ||
+        (notifyMode === 'change' && statusChanged) ||
+        (notifyMode === 'failure-change' && statusChanged))
+    ) {
       const title = util.format('%d%% Passed', 100);
       const message = util.format(
         (isDarwin ? '\u2705 ' : '') + '%d tests passed',
@@ -46,7 +59,14 @@ export default class NotifyReporter extends BaseReporter {
       );
 
       notifier.notify({icon, message, title});
-    } else {
+    } else if (
+      !success &&
+      (notifyMode === 'always' ||
+        notifyMode === 'failure' ||
+        notifyMode === 'failure-change' ||
+        (notifyMode === 'change' && statusChanged) ||
+        (notifyMode === 'success-change' && statusChanged))
+    ) {
       const failed = result.numFailedTests / result.numTotalTests;
 
       const title = util.format(
@@ -83,5 +103,7 @@ export default class NotifyReporter extends BaseReporter {
         },
       );
     }
+    this._context.previousSuccess = success;
+    this._context.firstRun = false;
   }
 }

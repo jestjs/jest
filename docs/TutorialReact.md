@@ -217,7 +217,7 @@ mocked module fails these checks. Your options are:
    ```
 3. Use `react-test-renderer`. The test renderer doesn't care about element types
    and will happily accept e.g. `SomeComponent`. You could check snapshots using
-   the test renderer, and check component behaviour separately using Enzyme.
+   the test renderer, and check component behavior separately using Enzyme.
 
 ### DOM Testing
 
