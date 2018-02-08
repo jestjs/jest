@@ -7,6 +7,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* List of talks & videos */
+
+const videoTypes = {
+  YOUTUBE: 'youtube',
+  IFRAME: 'iframe',
+};
+
+const videos = [
+  {
+    title: 'Learn how to test JavaScript with Jest',
+    description: 'In this [video](https://egghead.io/lessons/javascript-test-javascript-with-jest) by [Kent C. Dodds](https://twitter.com/kentcdodds) you will learn how to install Jest and write your first unit test.',
+    type: videoTypes.IFRAME,
+    url: 'https://fast.wistia.net/embed/iframe/78j73pyz17',
+  },
+  {
+    title: 'Test React applications using Enzyme & Jest',
+    description: 'This talk by [Ryan Walsh](https://twitter.com/_rtwalsh) gives an introduction to testing [React](https://facebook.github.io/react/) components using [Enzyme](http://airbnb.io/enzyme/) and Jest.',
+    type: videoTypes.YOUTUBE,
+    url: 'https://www.youtube.com/embed/8Ww2QBVIw0I?rel=0',
+  },
+];
+
 /* List of projects/orgs using your project for the users page */
 const users = [
   {
@@ -257,15 +279,17 @@ const siteConfig = {
   projectName: 'jest',
   repo: 'facebook/jest',
   users,
+  videos,
+  videoTypes,
   editUrl: repoUrl + '/edit/master/docs/',
   headerLinks: [
-    {doc: 'getting-started', label: 'Docs'},
-    {doc: 'api', label: 'API'},
-    {page: 'help', label: 'Help'},
-    {blog: true, label: 'Blog'},
-    {languages: true},
-    {search: true},
-    {href: repoUrl, label: 'GitHub'},
+    { doc: 'getting-started', label: 'Docs' },
+    { doc: 'api', label: 'API' },
+    { page: 'help', label: 'Help' },
+    { blog: true, label: 'Blog' },
+    { languages: true },
+    { search: true },
+    { href: repoUrl, label: 'GitHub' },
   ],
   headerIcon: 'img/jest.svg',
   footerIcon: 'img/jest-outline.svg',
@@ -284,6 +308,7 @@ const siteConfig = {
   },
   scripts: ['https://buttons.github.io/buttons.js'],
   repoUrl,
+  siteConfigUrl: 'https://github.com/facebook/jest/edit/master/website/siteConfig.js',
 };
 
 module.exports = siteConfig;
