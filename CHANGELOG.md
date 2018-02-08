@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[babel-jest]` Revert "Remove retainLines from babel-jest"
+  ([#5496](https://github.com/facebook/jest/pull/5496))
+
 ### Features
 
 * `[jest-worker]` Assign a unique id for each worker and pass it to the child
@@ -40,7 +45,7 @@
 * `[jest-cli]` Hide interactive mode if there are no failed snapshot tests
   ([#5450](https://github.com/facebook/jest/pull/5450))
 * `[babel-jest]` Remove retainLines from babel-jest
-  ([#5326](https://github.com/facebook/jest/pull/5439))
+  ([#5439](https://github.com/facebook/jest/pull/5439))
 * `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
   ([#5199](https://github.com/facebook/jest/issues/5199))
 * `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
