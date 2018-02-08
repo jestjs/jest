@@ -1,5 +1,7 @@
 ## master
 
+### Fixes
+
 * `[babel-jest]` Revert "Remove retainLines from babel-jest"
   ([#5496](https://github.com/facebook/jest/pull/5496))
 
