@@ -66,7 +66,6 @@ export default class {
       workerPath = require.resolve(workerPath);
     }
 
-    // Build the options once for all workers to avoid allocating extra objects.
     const sharedWorkerOptions = {
       forkOptions: options.forkOptions || {},
       maxRetries: options.maxRetries || 3,
