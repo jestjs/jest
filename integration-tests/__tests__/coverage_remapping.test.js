@@ -11,7 +11,7 @@
 
 const {readFileSync} = require('fs');
 const path = require('path');
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const skipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, run} = require('../utils');
 const runJest = require('../runJest');
 

@@ -11,7 +11,7 @@
 
 const path = require('path');
 const os = require('os');
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const skipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
 const {createEmptyPackage, writeFiles, cleanup} = require('../utils');

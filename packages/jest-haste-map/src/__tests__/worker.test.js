@@ -10,7 +10,7 @@
 
 import path from 'path';
 import fs from 'graceful-fs';
-import skipOnWindows from '../../../../scripts/skip_on_windows';
+import skipOnWindows from '../../../../scripts/SkipOnWindows';
 
 import H from '../constants';
 

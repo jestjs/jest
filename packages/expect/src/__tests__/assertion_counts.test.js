@@ -10,7 +10,7 @@
 
 const jestExpect = require('../');
 
-const skipOnWindows = require('../../../../scripts/skip_on_windows');
+const skipOnWindows = require('../../../../scripts/SkipOnWindows');
 
 describe('.assertions()', () => {
   it('does not throw', () => {

@@ -15,7 +15,7 @@ import {
   findRepos,
   getChangedFilesForRoots,
 } from '../../packages/jest-changed-files/src';
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const skipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, run, writeFiles} = require('../utils');
 
 skipOnWindows.suite();

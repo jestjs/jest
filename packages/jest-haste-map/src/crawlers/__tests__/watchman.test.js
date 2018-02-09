@@ -8,7 +8,7 @@
 
 'use strict';
 
-const skipOnWindows = require('../../../../../scripts/skip_on_windows');
+const skipOnWindows = require('../../../../../scripts/SkipOnWindows');
 
 jest.mock('fb-watchman', () => {
   const Client = jest.fn();

@@ -2,7 +2,7 @@
 
 'use strict';
 
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const skipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 
 skipOnWindows.suite();
