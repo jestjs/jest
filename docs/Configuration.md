@@ -295,7 +295,9 @@ For example, the following would create a global `__DEV__` variable set to
 
 Note that, if you specify a global reference value (like an object or array)
 here, and some code mutates that value in the midst of running a test, that
-mutation will _not_ be persisted across test runs for other test files.
+mutation will _not_ be persisted across test runs for other test files. In
+addition the `globals` object must be json-serializable, so it can't be used to
+specify global functions. For that you should use `setupFiles`.
 
 ### `globalSetup` [string]
 
@@ -330,7 +332,7 @@ Both inline source maps and source maps returned directly from a transformer are
 supported. Source map URLs are not supported because Jest may not be able to
 locate them. To return source maps from a transformer, the `process` function
 can return an object like the following. The `map` property may either be the
-source map object, or the source map object as a JSON string.
+source map object, or the source map object as a string.
 
 ```js
 return {
@@ -386,6 +388,9 @@ Example:
 }
 ```
 
+The order in which the mappings are defined matters. Patterns are checked one by
+one until one fits. The most specific rule should be listed first.
+
 _Note: If you provide module name without boundaries `^$` it may cause hard to
 spot errors. E.g. `relay` will replace all modules which contain `relay` as a
 substring in its name: `relay`, `react-relay` and `graphql-relay` will all be
@@ -420,6 +425,21 @@ Default: `false`
 
 Activates notifications for test results.
 
+### `notifyMode` [string]
+
+Default: `always`
+
+Specifies notification mode. Requires `notify: true`.
+
+#### Modes
+
+* `always`: always send a notification.
+* `failure`: send a notification when tests fail.
+* `success`: send a notification when tests pass.
+* `change`: send a notification when the status changed.
+* `success-change`: send a notification when tests pass or once when it fails.
+* `failure-success`: send a notification when tests fails or once when it passes.
+
 ### `preset` [string]
 
 Default: `undefined`
@@ -427,7 +447,7 @@ Default: `undefined`
 A preset that is used as a base for Jest's configuration. A preset should point
 to an npm module that exports a `jest-preset.json` module on its top level.
 
-### `projects` [array<string>]
+### `projects` [array<string | ProjectConfig>]
 
 Default: `undefined`
 
@@ -445,6 +465,27 @@ time.
 This example configuration will run Jest in the root directory as well as in
 every folder in the examples directory. You can have an unlimited amount of
 projects running in the same Jest instance.
+
+The projects feature can also be used to run multiple configurations or multiple
+[runners](#runner-string). For this purpose you can pass an array of
+configuration objects. For example, to run both tests and ESLint (via
+[jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in
+the same invocation of Jest:
+
+```json
+{
+  "projects": [
+    {
+      "displayName": "test"
+    },
+    {
+      "displayName": "lint",
+      "runner": "jest-runner-eslint",
+      "testMatch": ["<rootDir>/**/*.js"]
+    }
+  ]
+}
+```
 
 ### `clearMocks` [boolean]
 
@@ -565,7 +606,7 @@ module that exports a function expecting a string as the first argument for the
 path to resolve and an object with the following structure as the second
 argument:
 
-```
+```json
 {
   "basedir": string,
   "browser": bool,
@@ -578,6 +619,14 @@ argument:
 
 The function should either return a path to the module that should be resolved
 or throw an error if the module can't be found.
+
+### `restoreMocks` [boolean]
+
+Default: `false`
+
+Automatically restore mock state between every test. Equivalent to calling
+`jest.restoreAllMocks()` between each test. This will lead to any mocks having
+their fake implementations removed and restores their initial implementation.
 
 ### `rootDir` [string]
 
@@ -618,6 +667,34 @@ modules from `node_modules` (`__mocks__` will need to live in one of the
 _Note: By default, `roots` has a single entry `<rootDir>` but there are cases
 where you may want to have multiple roots within one project, for example
 `roots: ["<rootDir>/src/", "<rootDir>/tests/"]`._
+
+### `runner` [string]
+
+##### available in Jest **21.0.0+**
+
+Default: `"jest-runner"`
+
+This option allows you to use a custom runner instead of Jest's default test
+runner. Examples of runners include:
+
+* [`jest-runner-eslint`](https://github.com/jest-community/jest-runner-eslint)
+* [`jest-runner-mocha`](https://github.com/rogeliog/jest-runner-mocha)
+* [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc)
+* [`jest-runner-prettier`](https://github.com/keplersj/jest-runner-prettier)
+
+To write a test-runner, export a class with which accepts `globalConfig` in the
+constructor, and has a `runTests` method with the signature:
+
+```ts
+async runTests(
+  tests: Array<Test>,
+  watcher: TestWatcher,
+  onStart: OnTestStart,
+  onResult: OnTestSuccess,
+  onFailure: OnTestFailure,
+  options: TestRunnerOptions,
+): Promise<void>
+```
 
 ### `setupFiles` [array]
 
@@ -704,7 +781,7 @@ test(() => {
 
 Rendered snapshot:
 
-```
+```json
 Pretty foo: Object {
   "x": 1,
   "y": 2,
@@ -743,7 +820,9 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test
 environment. The module must export a class with `setup`, `teardown` and
-`runScript` methods.
+`runScript` methods. You can also pass variables from this module to your test
+suites by assigning them to `this.global` object &ndash; this will make them
+available in your test suites as global variables.
 
 ##### available in Jest **22.0.0+**
 
@@ -753,6 +832,7 @@ in their own TestEnvironment._
 Example:
 
 ```js
+// my-custom-environment
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
@@ -763,9 +843,11 @@ class CustomEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
     await someSetupTasks();
+    this.global.someGlobalObject = createGlobalObject();
   }
 
   async teardown() {
+    this.global.someGlobalObject = destroyGlobalObject();
     await someTeardownTasks();
     await super.teardown();
   }
@@ -774,6 +856,15 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+```
+
+```js
+// my-test-suite
+let someGlobalObject;
+
+beforeAll(() => {
+  someGlobalObject = global.someGlobalObject;
+});
 ```
 
 ### `testEnvironmentOptions` [Object]
@@ -831,7 +922,7 @@ specify both options.
 
 The following is a visualization of the default regex:
 
-```
+```bash
 ├── __tests__
 │   └── component.spec.js # test
 │   └── anything # test
@@ -849,7 +940,7 @@ This option allows the use of a custom results processor. This processor must be
 a node module that exports a function expecting an object with the following
 structure as the first argument and return it:
 
-```
+```json
 {
   "success": bool,
   "startTime": epoch,
@@ -900,13 +991,13 @@ implementation.
 
 The test runner module must export a function with the following signature:
 
-```
+```ts
 function testRunner(
   config: Config,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult>
+): Promise<TestResult>;
 ```
 
 An example of such function can be found in our default
@@ -946,7 +1037,7 @@ Examples of such compilers include [Babel](https://babeljs.io/),
 
 _Note: a transformer is only ran once per file unless the file has changed.
 During development of a transformer it can be useful to run Jest with
-`--no-cache` or to frequently
+`--no-cache` to frequently
 [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
 _Note: if you are using the `babel-jest` transformer and want to use an

@@ -10,13 +10,13 @@
 import type {ConfigGlobals} from 'types/Config';
 import type {Global} from 'types/Global';
 
-import createProcesObject from './create_process_object';
+import createProcessObject from './create_process_object';
 import deepCyclicCopy from './deep_cyclic_copy';
 
 const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 
 export default function(globalObject: Global, globals: ConfigGlobals) {
-  globalObject.process = createProcesObject();
+  globalObject.process = createProcessObject();
 
   // Keep a reference to "Promise", since "jasmine_light.js" needs it.
   globalObject[globalObject.Symbol.for('jest-native-promise')] = Promise;

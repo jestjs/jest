@@ -32,6 +32,7 @@ behavior.
 * [`jest.useFakeTimers()`](#jestusefaketimers)
 * [`jest.useRealTimers()`](#jestuserealtimers)
 * [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
+* [`jest.spyOn(object, methodName, accessType?)`](#jestspyonobject-methodname-accesstype)
 
 ---
 
@@ -310,7 +311,7 @@ Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or
 
 When this API is called, all timers are advanced by `msToRun` milliseconds. All
 pending "macro-tasks" that have been queued via `setTimeout()` or
-`setInterval()`, and would be executed within this timeframe will be executed.
+`setInterval()`, and would be executed within this time frame will be executed.
 Additionally if those macro-tasks schedule new macro-tasks that would be
 executed within the same time frame, those will be executed until there are no
 more macro-tasks remaining in the queue, that should be run within `msToRun`
@@ -413,6 +414,68 @@ test('plays video', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
+
+  spy.mockReset();
+  spy.mockRestore();
+});
+```
+
+### `jest.spyOn(object, methodName, accessType?)`
+
+##### available in Jest **22.1.0+**
+
+Since Jest 22.1.0+, the `jest.spyOn` method takes an optional third argument of
+`accessType` that can be either `'get'` or `'set'`, which proves to be useful
+when you want to spy on a getter or a setter, respectively.
+
+Example:
+
+```js
+const video = {
+  // it's a getter!
+  get play() {
+    return true;
+  },
+};
+
+module.exports = video;
+
+const audio = {
+  _volume: false,
+  // it's a setter!
+  set volume(value) {
+    this._volume = value;
+  },
+  get volume() {
+    return this._volume;
+  },
+};
+
+module.exports = video;
+```
+
+Example test:
+
+```js
+const video = require('./video');
+
+test('plays video', () => {
+  const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
+  const isPlaying = video.play;
+
+  expect(spy).toHaveBeenCalled();
+  expect(isPlaying).toBe(true);
+
+  spy.mockReset();
+  spy.mockRestore();
+});
+
+test('plays audio', () => {
+  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
+  video.volume = 100;
+
+  expect(spy).toHaveBeenCalled();
+  expect(video.volume).toBe(100);
 
   spy.mockReset();
   spy.mockRestore();

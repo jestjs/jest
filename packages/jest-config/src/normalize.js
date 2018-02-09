@@ -25,6 +25,7 @@ import {
   DOCUMENTATION_NOTE,
   _replaceRootDirInPath,
   _replaceRootDirTags,
+  escapeGlobCharacters,
   getTestEnvironment,
   resolve,
 } from './utils';
@@ -282,13 +283,20 @@ const buildTestPathPattern = (argv: Argv): string => {
   const patterns = [];
 
   if (argv._) {
-    patterns.push.apply(patterns, argv._);
+    patterns.push(...argv._);
   }
   if (argv.testPathPattern) {
-    patterns.push.apply(patterns, argv.testPathPattern);
+    patterns.push(...argv.testPathPattern);
   }
 
-  const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
+  const replacePosixSep = (pattern: string) => {
+    if (path.sep === '/') {
+      return pattern;
+    }
+    return pattern.replace(/\//g, '\\\\');
+  };
+
+  const testPathPattern = patterns.map(replacePosixSep).join('|');
   if (validatePattern(testPathPattern)) {
     return testPathPattern;
   } else {
@@ -437,18 +445,23 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
-            const globMatches = glob.sync(project);
+            const globMatches =
+              typeof project === 'string' ? glob.sync(project) : [];
             return projects.concat(globMatches.length ? globMatches : project);
           }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(options.rootDir, options[key]);
+        value = _replaceRootDirTags(
+          escapeGlobCharacters(options.rootDir),
+          options[key],
+        );
         break;
       case 'automock':
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'changedSince':
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
@@ -461,6 +474,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
@@ -468,6 +482,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'name':
       case 'noStackTrace':
       case 'notify':
+      case 'notifyMode':
       case 'onlyChanged':
       case 'outputFile':
       case 'passWithNoTests':
@@ -475,6 +490,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'reporters':
       case 'resetMocks':
       case 'resetModules':
+      case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
       case 'silent':
@@ -507,9 +523,18 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = argv.json;
-  newOptions.lastCommit = argv.lastCommit;
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
+
+  for (const key of [
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedSince',
+  ]) {
+    if (newOptions[key]) {
+      newOptions.onlyChanged = true;
+    }
+  }
 
   if (argv.all) {
     newOptions.onlyChanged = false;

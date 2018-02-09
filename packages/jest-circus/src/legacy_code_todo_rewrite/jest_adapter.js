@@ -52,6 +52,10 @@ const jestAdapter = async (
       runtime.resetAllMocks();
     }
 
+    if (config.restoreMocks) {
+      runtime.restoreAllMocks();
+    }
+
     if (config.timers === 'fake') {
       environment.fakeTimers.useFakeTimers();
     }

@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-jest",
-  "version": "22.0.3",
+  "version": "22.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,7 +8,7 @@
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
-    "babel-plugin-jest-hoist": "^22.0.3",
+    "babel-plugin-jest-hoist": "^22.2.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0"
   }
 }

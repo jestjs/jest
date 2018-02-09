@@ -17,7 +17,8 @@ environment. You don't have to require or import anything to use them.
 ### `afterAll(fn, timeout)`
 
 Runs a function after all the tests in this file have completed. If the function
-returns a promise, Jest waits for that promise to resolve before continuing.
+returns a promise or is a generator, Jest waits for that promise to resolve
+before continuing.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how
 long to wait before aborting. _Note: The default timeout is 5 seconds._
@@ -63,8 +64,8 @@ If you want to run some cleanup after every test instead of after all tests, use
 ### `afterEach(fn, timeout)`
 
 Runs a function after each one of the tests in this file completes. If the
-function returns a promise, Jest waits for that promise to resolve before
-continuing.
+function returns a promise or is a generator, Jest waits for that promise to
+resolve before continuing.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how
 long to wait before aborting. _Note: The default timeout is 5 seconds._
@@ -110,7 +111,8 @@ If you want to run some cleanup just once, after all of the tests run, use
 ### `beforeAll(fn, timeout)`
 
 Runs a function before any of the tests in this file run. If the function
-returns a promise, Jest waits for that promise to resolve before running tests.
+returns a promise or is a generator, Jest waits for that promise to resolve
+before running tests.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how
 long to wait before aborting. _Note: The default timeout is 5 seconds._
@@ -154,8 +156,8 @@ use `beforeEach` instead.
 ### `beforeEach(fn, timeout)`
 
 Runs a function before each of the tests in this file runs. If the function
-returns a promise, Jest waits for that promise to resolve before running the
-test.
+returns a promise or is a generator, Jest waits for that promise to resolve
+before running the test.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how
 long to wait before aborting. _Note: The default timeout is 5 seconds._
@@ -355,9 +357,9 @@ until the promise resolves as well.
 
 Also under the aliases: `it.only(name, fn, timeout)` or `fit(name, fn, timeout)`
 
-When you are debugging a large codebase, you will often only want to run a
+When you are debugging a large test file, you will often only want to run a
 subset of tests. You can use `.only` to specify which tests are the only ones
-you want to run.
+you want to run in that test file.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how
 long to wait before aborting. _Note: The default timeout is 5 seconds._
@@ -374,7 +376,8 @@ test('it is not snowing', () => {
 });
 ```
 
-Only the "it is raining" test will run, since it is run with `test.only`.
+Only the "it is raining" test will run in that test file, since it is run with
+`test.only`.
 
 Usually you wouldn't check code using `test.only` into source control - you
 would use it just for debugging, and remove it once you have fixed the broken

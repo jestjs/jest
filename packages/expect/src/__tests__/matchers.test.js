@@ -8,6 +8,7 @@
 
 const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
+const Immutable = require('immutable');
 
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
@@ -35,6 +36,18 @@ describe('.rejects', () => {
       throw new Error('some error');
     }
     await jestExpect(fn()).rejects.toThrow('some error');
+  });
+
+  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).rejects.toBe(111);
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+    });
   });
 
   [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
@@ -79,6 +92,19 @@ describe('.resolves', () => {
         throw new Error();
       }),
     ).resolves.toThrow();
+  });
+
+  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).resolves.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
   });
 
   [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
@@ -175,12 +201,31 @@ describe('.toEqual()', () => {
     [null, undefined],
     [[1], [2]],
     [[1, 2], [2, 1]],
+    [Immutable.List([1]), Immutable.List([2])],
+    [Immutable.List([1, 2]), Immutable.List([2, 1])],
     [new Map(), new Set()],
     [new Set([1, 2]), new Set()],
     [new Set([1, 2]), new Set([1, 2, 3])],
+    [Immutable.Set([1, 2]), Immutable.Set()],
+    [Immutable.Set([1, 2]), Immutable.Set([1, 2, 3])],
+    [Immutable.OrderedSet([1, 2]), Immutable.OrderedSet([2, 1])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one']])],
     [new Map([['a', 0]]), new Map([['b', 0]])],
     [new Map([['v', 1]]), new Map([['v', 2]])],
+    [Immutable.Map({a: 0}), Immutable.Map({b: 0})],
+    [Immutable.Map({v: 1}), Immutable.Map({v: 2})],
+    [
+      Immutable.OrderedMap()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.OrderedMap()
+        .set(2, 'two')
+        .set(1, 'one'),
+    ],
+    [
+      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
+      Immutable.Map({1: Immutable.Map({2: {a: 11}})}),
+    ],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
     [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
@@ -211,14 +256,50 @@ describe('.toEqual()', () => {
     ['abc', 'abc'],
     [[1], [1]],
     [[1, 2], [1, 2]],
+    [Immutable.List([1]), Immutable.List([1])],
+    [Immutable.List([1, 2]), Immutable.List([1, 2])],
     [{}, {}],
     [{a: 99}, {a: 99}],
     [new Set(), new Set()],
     [new Set([1, 2]), new Set([1, 2])],
     [new Set([1, 2]), new Set([2, 1])],
+    [Immutable.Set(), Immutable.Set()],
+    [Immutable.Set([1, 2]), Immutable.Set([1, 2])],
+    [Immutable.Set([1, 2]), Immutable.Set([2, 1])],
+    [Immutable.OrderedSet(), Immutable.OrderedSet()],
+    [Immutable.OrderedSet([1, 2]), Immutable.OrderedSet([1, 2])],
     [new Map(), new Map()],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one'], [2, 'two']])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[2, 'two'], [1, 'one']])],
+    [Immutable.Map(), Immutable.Map()],
+    [
+      Immutable.Map()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.Map()
+        .set(1, 'one')
+        .set(2, 'two'),
+    ],
+    [
+      Immutable.Map()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.Map()
+        .set(2, 'two')
+        .set(1, 'one'),
+    ],
+    [
+      Immutable.OrderedMap()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.OrderedMap()
+        .set(1, 'one')
+        .set(2, 'two'),
+    ],
+    [
+      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
+      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
+    ],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
     [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
     ['abcd', jestExpect.stringContaining('bc')],
@@ -749,12 +830,26 @@ describe('.toHaveLength', () => {
 });
 
 describe('.toHaveProperty()', () => {
+  class Foo {
+    get a() {
+      return undefined;
+    }
+    get b() {
+      return 'b';
+    }
+  }
+
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
+    [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
+    [{'a.b.c.d': 1}, ['a.b.c.d'], 1],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], 2],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
+    [new Foo(), 'a', undefined],
+    [new Foo(), 'b', 'b'],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(
       obj,
@@ -769,6 +864,9 @@ describe('.toHaveProperty()', () => {
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.ttt.d', 1],
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
+    [{'a.b.c.d': 1}, 'a.b.c.d', 2],
+    [{'a.b.c.d': 1}, ['a.b.c.d'], 2],
+    [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 2],
     [{a: {b: {c: {}}}}, 'a.b.c.d', 1],
     [{a: 1}, 'a.b.c.d', 5],
     [{}, 'a', 'test'],
@@ -776,6 +874,8 @@ describe('.toHaveProperty()', () => {
     [1, 'a.b.c', 'test'],
     ['abc', 'a.b.c', {a: 5}],
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
+    [new Foo(), 'a', 'a'],
+    [new Foo(), 'b', undefined],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,
@@ -789,12 +889,15 @@ describe('.toHaveProperty()', () => {
 
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d'],
+    [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd']],
+    [{'a.b.c.d': 1}, ['a.b.c.d']],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1]],
     [{a: 0}, 'a'],
     [{a: {b: undefined}}, 'a.b'],
   ].forEach(([obj, keyPath]) => {
     test(`{pass: true} expect(${stringify(
       obj,
-    )}).toHaveProperty('${keyPath}')'`, () => {
+    )}).toHaveProperty('${keyPath}')`, () => {
       jestExpect(obj).toHaveProperty(keyPath);
       expect(() =>
         jestExpect(obj).not.toHaveProperty(keyPath),

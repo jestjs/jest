@@ -57,6 +57,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
       execPath: 'hello',
     },
     maxRetries: 3,
+    workerId: process.env.JEST_WORKER_ID,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -68,6 +69,17 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
     execPath: 'hello', // Added option.
     silent: true, // Default option.
   });
+});
+
+it('passes workerId to the child process and assign it to env.JEST_WORKER_ID', () => {
+  new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerId: 2,
+    workerPath: '/tmp/foo',
+  });
+
+  expect(childProcess.fork.mock.calls[0][1].env.JEST_WORKER_ID).toEqual(2);
 });
 
 it('initializes the child process with the given workerPath', () => {

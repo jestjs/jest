@@ -211,7 +211,8 @@ jest.mock('react-native-video', () => 'Video');
 ```
 
 This will render the component as `<Video {...props} />` with all of its props
-in the snapshot output.
+in the snapshot output. See also
+[caveats around Enzyme and React 16](tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16).
 
 Sometimes you need to provide a more complex manual mock. For example if you'd
 like to forward the prop types or static fields of a native component to a mock,
@@ -254,7 +255,7 @@ these mocks in a separate file and add it to the list of `setupFiles`.
 Currently it is required to require react-native before loading the test
 renderer:
 
-```
+```js
 import 'react-native';
 // Require after react-native
 import renderer from 'react-test-renderer';

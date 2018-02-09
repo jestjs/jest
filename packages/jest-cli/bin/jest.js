@@ -6,8 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-if (process.env.NODE_ENV == null) {
-  process.env.NODE_ENV = 'test';
-}
+const importLocal = require('import-local');
 
-require('../build/cli').run();
+if (!importLocal(__filename)) {
+  if (process.env.NODE_ENV == null) {
+    process.env.NODE_ENV = 'test';
+  }
+
+  require('../build/cli').run();
+}

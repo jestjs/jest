@@ -12,7 +12,7 @@ Try using the debugging support built into Node.
 Place a `debugger;` statement in any of your tests, and then, in your project's
 directory, run:
 
-```
+```bash
 node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
@@ -49,7 +49,7 @@ There are multiple ways to debug Jest tests with
 
 To attach the built-in debugger, run your tests as aforementioned:
 
-```
+```bash
 node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
@@ -129,8 +129,7 @@ can debug your Jest tests with the following configuration:
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-      "runtimeArgs": ["--inspect-brk", "test"],
-      "args": ["--runInBand", "--no-cache", "--env=jsdom"],
+      "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
       "console": "integratedTerminal",
@@ -174,7 +173,7 @@ adding a `getCacheKey` function to it:
 
 If a promise doesn't resolve at all, this error might be thrown:
 
-```
+```bash
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
@@ -186,7 +185,7 @@ Promise libraries to a single one.
 If your test is long running, you may want to consider to increase the timeout
 by calling `jest.setTimeout`
 
-```
+```js
 jest.setTimeout(10000); // 10 second timeout
 ```
 
@@ -300,9 +299,9 @@ option to `jasmine1` or pass `--testRunner=jasmine1` as a command line option.
 
 ### Compatibility issues
 
-Jest takes advantage of new features added to Node 4. We recommend that you
+Jest takes advantage of new features added to Node 6. We recommend that you
 upgrade to the latest stable release of Node. The minimum supported version is
-`v4.0.0`. Versions `0.x.x` are not supported.
+`v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported.
 
 ### `coveragePathIgnorePatterns` seems to not have any effect.
 

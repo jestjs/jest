@@ -16,6 +16,7 @@ import type TestWatcher from './test_watcher';
 import chalk from 'chalk';
 import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
+import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './get_no_test_found_message';
 import SearchSource from './search_source';
@@ -23,6 +24,7 @@ import TestScheduler from './test_scheduler';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 import FailedTestsCache from './failed_tests_cache';
+import JestHooks, {type JestHookEmitter} from './jest_hooks';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -37,6 +39,7 @@ const getTestPaths = async (
   context,
   outputStream,
   changedFilesPromise,
+  jestHooks,
 ) => {
   const source = new SearchSource(context);
   const data = await source.getTestPaths(globalConfig, changedFilesPromise);
@@ -50,7 +53,17 @@ const getTestPaths = async (
         'commit.',
     );
   }
-  return data;
+
+  const shouldTestArray = await Promise.all(
+    data.tests.map(test => jestHooks.shouldRunTestSuite(test.path)),
+  );
+
+  const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);
+
+  return Object.assign({}, data, {
+    allTests: filteredTests.length,
+    tests: filteredTests,
+  });
 };
 
 const processResults = (runResults, options) => {
@@ -75,11 +88,17 @@ const processResults = (runResults, options) => {
   return options.onComplete && options.onComplete(runResults);
 };
 
+const testSchedulerContext = {
+  firstRun: true,
+  previousSuccess: true,
+};
+
 export default (async function runJest({
   contexts,
   globalConfig,
   outputStream,
   testWatcher,
+  jestHooks = new JestHooks().getEmitter(),
   startRun,
   changedFilesPromise,
   onComplete,
@@ -89,15 +108,12 @@ export default (async function runJest({
   contexts: Array<Context>,
   outputStream: stream$Writable | tty$WriteStream,
   testWatcher: TestWatcher,
+  jestHooks?: JestHookEmitter,
   startRun: (globalConfig: GlobalConfig) => *,
   changedFilesPromise: ?ChangedFilesPromise,
   onComplete: (testResults: AggregatedResult) => any,
   failedTestsCache: ?FailedTestsCache,
 }) {
-  if (globalConfig.globalSetup) {
-    // $FlowFixMe
-    await require(globalConfig.globalSetup)();
-  }
   const sequencer = new TestSequencer();
   let allTests = [];
 
@@ -111,7 +127,7 @@ export default (async function runJest({
           ' is not supported without git/hg, please use --watchAll ' +
           '\n',
       );
-      process.exit(1);
+      exit(1);
     }
   }
 
@@ -122,6 +138,7 @@ export default (async function runJest({
         context,
         outputStream,
         changedFilesPromise,
+        jestHooks,
       );
       allTests = allTests.concat(matches.tests);
       return {context, matches};
@@ -153,12 +170,17 @@ export default (async function runJest({
       globalConfig,
     );
 
-    if (globalConfig.passWithNoTests) {
+    if (
+      globalConfig.passWithNoTests ||
+      globalConfig.findRelatedTests ||
+      globalConfig.lastCommit ||
+      globalConfig.onlyChanged
+    ) {
       new Console(outputStream, outputStream).log(noTestsFoundMessage);
     } else {
       new Console(outputStream, outputStream).error(noTestsFoundMessage);
 
-      process.exit(1);
+      exit(1);
     }
   } else if (
     allTests.length === 1 &&
@@ -178,10 +200,17 @@ export default (async function runJest({
   // original value of rootDir. Instead, use the {cwd: Path} property to resolve
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
-
-  const results = await new TestScheduler(globalConfig, {
-    startRun,
-  }).scheduleTests(allTests, testWatcher);
+  if (globalConfig.globalSetup) {
+    // $FlowFixMe
+    await require(globalConfig.globalSetup)();
+  }
+  const results = await new TestScheduler(
+    globalConfig,
+    {
+      startRun,
+    },
+    testSchedulerContext,
+  ).scheduleTests(allTests, testWatcher);
 
   sequencer.cacheResults(allTests, results);
 

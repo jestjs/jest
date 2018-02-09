@@ -13,7 +13,7 @@ const path = require('path');
 const {
   makeGlobalConfig,
   makeProjectConfig,
-} = require('../../../../../test_utils');
+} = require('../../../../../TestUtils');
 
 const rootDir = path.resolve(path.sep, 'root');
 

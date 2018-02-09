@@ -84,7 +84,23 @@ Received:
   string: <red>\\"a\\"</>"
 `;
 
+exports[`.resolves fails non-promise value "a" synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  string: <red>\\"a\\"</>"
+`;
+
 exports[`.resolves fails non-promise value [1] 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  array: <red>[1]</>"
+`;
+
+exports[`.resolves fails non-promise value [1] synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
 <red>received</> value must be a Promise.
@@ -100,7 +116,23 @@ Received:
   function: <red>[Function anonymous]</>"
 `;
 
+exports[`.resolves fails non-promise value [Function anonymous] synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  function: <red>[Function anonymous]</>"
+`;
+
 exports[`.resolves fails non-promise value {"a": 1} 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  object: <red>{\\"a\\": 1}</>"
+`;
+
+exports[`.resolves fails non-promise value {"a": 1} synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
 <red>received</> value must be a Promise.
@@ -116,7 +148,22 @@ Received:
   number: <red>4</>"
 `;
 
+exports[`.resolves fails non-promise value 4 synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  number: <red>4</>"
+`;
+
 exports[`.resolves fails non-promise value null 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received: <red>null</>"
+`;
+
+exports[`.resolves fails non-promise value null synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
 <red>received</> value must be a Promise.
@@ -131,6 +178,14 @@ Received:
   boolean: <red>true</>"
 `;
 
+exports[`.resolves fails non-promise value true synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+
+<red>received</> value must be a Promise.
+Received:
+  boolean: <red>true</>"
+`;
+
 exports[`.resolves fails non-promise value undefined 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
@@ -138,10 +193,17 @@ exports[`.resolves fails non-promise value undefined 1`] = `
 Received: <red>undefined</>"
 `;
 
-exports[`.toBe() does not crash on circular references 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+exports[`.resolves fails non-promise value undefined synchronously 1`] = `
+"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-Expected value to be (using Object.is):
+<red>received</> value must be a Promise.
+Received: <red>undefined</>"
+`;
+
+exports[`.toBe() does not crash on circular references 1`] = `
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+
+Expected value to be:
   <green>{}</>
 Received:
   <red>{\\"circular\\": [Circular]}</>
@@ -158,72 +220,72 @@ Difference:
 `;
 
 exports[`.toBe() fails for '"a"' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to not be (using Object.is):
+Expected value to not be:
   <green>\\"a\\"</>
 Received:
   <red>\\"a\\"</>"
 `;
 
 exports[`.toBe() fails for '[]' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to not be (using Object.is):
+Expected value to not be:
   <green>[]</>
 Received:
   <red>[]</>"
 `;
 
 exports[`.toBe() fails for '{}' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to not be (using Object.is):
+Expected value to not be:
   <green>{}</>
 Received:
   <red>{}</>"
 `;
 
 exports[`.toBe() fails for '1' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to not be (using Object.is):
+Expected value to not be:
   <green>1</>
 Received:
   <red>1</>"
 `;
 
 exports[`.toBe() fails for 'false' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to not be (using Object.is):
+Expected value to not be:
   <green>false</>
 Received:
   <red>false</>"
 `;
 
 exports[`.toBe() fails for 'null' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to not be (using Object.is):
+Expected value to not be:
   <green>null</>
 Received:
   <red>null</>"
 `;
 
 exports[`.toBe() fails for 'undefined' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to not be (using Object.is):
+Expected value to not be:
   <green>undefined</>
 Received:
   <red>undefined</>"
 `;
 
 exports[`.toBe() fails for: "abc" and "cde" 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>\\"cde\\"</>
 Received:
   <red>\\"abc\\"</>"
@@ -231,9 +293,9 @@ Received:
 
 exports[`.toBe() fails for: "with 
 trailing space" and "without trailing space" 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>\\"without trailing space\\"</>
 Received:
   <red>\\"with<inverse> </></>
@@ -241,9 +303,9 @@ Received:
 `;
 
 exports[`.toBe() fails for: [] and [] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>[]</>
 Received:
   <red>[]</>
@@ -254,9 +316,9 @@ Difference:
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>{\\"a\\": 1}</>
 Received:
   <red>{\\"a\\": 1}</>
@@ -267,9 +329,9 @@ Difference:
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>{\\"a\\": 5}</>
 Received:
   <red>{\\"a\\": 1}</>
@@ -286,9 +348,9 @@ Difference:
 `;
 
 exports[`.toBe() fails for: {} and {} 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>{}</>
 Received:
   <red>{}</>
@@ -299,9 +361,9 @@ Difference:
 `;
 
 exports[`.toBe() fails for: -0 and 0 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>0</>
 Received:
   <red>-0</>
@@ -312,18 +374,18 @@ Difference:
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>2</>
 Received:
   <red>1</>"
 `;
 
 exports[`.toBe() fails for: null and undefined 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>undefined</>
 Received:
   <red>null</>
@@ -334,16 +396,16 @@ Difference:
 `;
 
 exports[`.toBe() fails for: true and false 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
-Expected value to be (using Object.is):
+Expected value to be:
   <green>false</>
 Received:
   <red>true</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value not to be close to (with <green>2</>-digit precision):
   <green>0</>
@@ -352,7 +414,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0.001) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value not to be close to (with <green>2</>-digit precision):
   <green>0.001</>
@@ -361,7 +423,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.225) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value not to be close to (with <green>2</>-digit precision):
   <green>1.225</>
@@ -370,7 +432,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.226) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value not to be close to (with <green>2</>-digit precision):
   <green>1.226</>
@@ -379,7 +441,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.229) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value not to be close to (with <green>2</>-digit precision):
   <green>1.229</>
@@ -388,7 +450,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.234) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value not to be close to (with <green>2</>-digit precision):
   <green>1.234</>
@@ -397,7 +459,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.000004, 5] 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 Expected value not to be close to (with <green>5</>-digit precision):
   <green>0.000004</>
@@ -406,7 +468,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.0001, 3] 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 Expected value not to be close to (with <green>3</>-digit precision):
   <green>0.0001</>
@@ -415,7 +477,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.1, 0] 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).not.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 Expected value not to be close to (with <green>0</>-digit precision):
   <green>0.1</>
@@ -424,7 +486,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() throws: [0, 0.01] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value to be close to (with <green>2</>-digit precision):
   <green>0.01</>
@@ -433,7 +495,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() throws: [1, 1.23] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value to be close to (with <green>2</>-digit precision):
   <green>1.23</>
@@ -442,7 +504,7 @@ Received:
 `;
 
 exports[`.toBeCloseTo() throws: [1.23, 1.2249999] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected, precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Expected value to be close to (with <green>2</>-digit precision):
   <green>1.2249999</>
@@ -2185,6 +2247,294 @@ Difference:
   Comparing two different types of values. Expected <green>array</> but received <red>number</>."
 `;
 
+exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).not.toEqual(Immutable.List [1, 2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.List [1, 2]</>
+Received:
+  <red>Immutable.List [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).toEqual(Immutable.List [2, 1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.List [2, 1]</>
+Received:
+  <red>Immutable.List [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.List [</>
+<red>+   1,</>
+<dim>    2,</>
+<green>-   1,</>
+<dim>  ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.List [1]).not.toEqual(Immutable.List [1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.List [1]</>
+Received:
+  <red>Immutable.List [1]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.List [1]).toEqual(Immutable.List [2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.List [2]</>
+Received:
+  <red>Immutable.List [1]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.List [</>
+<green>-   2,</>
+<red>+   1,</>
+<dim>  ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).not.toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>
+Received:
+  <red>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 11}}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 11}}}</>
+Received:
+  <red>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Map {</>
+<dim>    \\"1\\": Immutable.Map {</>
+<dim>      \\"2\\": Object {</>
+<green>-       \\"a\\": 11,</>
+<red>+       \\"a\\": 99,</>
+<dim>      },</>
+<dim>    },</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"a": 0}).toEqual(Immutable.Map {"b": 0}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Map {\\"b\\": 0}</>
+Received:
+  <red>Immutable.Map {\\"a\\": 0}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Map {</>
+<green>-   \\"b\\": 0,</>
+<red>+   \\"a\\": 0,</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"v": 1}).toEqual(Immutable.Map {"v": 2}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Map {\\"v\\": 2}</>
+Received:
+  <red>Immutable.Map {\\"v\\": 1}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Map {</>
+<green>-   \\"v\\": 2,</>
+<red>+   \\"v\\": 1,</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {}).not.toEqual(Immutable.Map {}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {}</>
+Received:
+  <red>Immutable.Map {}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {1: "one", 2: "two"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>
+Received:
+  <red>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {2: "two", 1: "one"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {2: \\"two\\", 1: \\"one\\"}</>
+Received:
+  <red>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two"}).not.toEqual(Immutable.OrderedMap {1: "one", 2: "two"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>
+Received:
+  <red>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two"}).toEqual(Immutable.OrderedMap {2: "two", 1: "one"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.OrderedMap {2: \\"two\\", 1: \\"one\\"}</>
+Received:
+  <red>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.OrderedMap {</>
+<red>+   1: \\"one\\",</>
+<dim>    2: \\"two\\",</>
+<green>-   1: \\"one\\",</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet []).not.toEqual(Immutable.OrderedSet []) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.OrderedSet []</>
+Received:
+  <red>Immutable.OrderedSet []</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).not.toEqual(Immutable.OrderedSet [1, 2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.OrderedSet [1, 2]</>
+Received:
+  <red>Immutable.OrderedSet [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).toEqual(Immutable.OrderedSet [2, 1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.OrderedSet [2, 1]</>
+Received:
+  <red>Immutable.OrderedSet [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.OrderedSet [</>
+<red>+   1,</>
+<dim>    2,</>
+<green>-   1,</>
+<dim>  ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set []).not.toEqual(Immutable.Set []) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Set []</>
+Received:
+  <red>Immutable.Set []</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [1, 2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Set [1, 2]</>
+Received:
+  <red>Immutable.Set [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [2, 1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Set [2, 1]</>
+Received:
+  <red>Immutable.Set [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set []) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Set []</>
+Received:
+  <red>Immutable.Set [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- Immutable.Set []</>
+<red>+ Immutable.Set [</>
+<red>+   1,</>
+<red>+   2,</>
+<red>+ ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set [1, 2, 3]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Set [1, 2, 3]</>
+Received:
+  <red>Immutable.Set [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Set [</>
+<dim>    1,</>
+<dim>    2,</>
+<green>-   3,</>
+<dim>  ]</>"
+`;
+
 exports[`.toEqual() {pass: false} expect(Map {"a" => 0}).toEqual(Map {"b" => 0}) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
@@ -2562,21 +2912,21 @@ Expected value to have a 'length' property that is a number. Received:
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('1') 1`] = `
 "<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
 
-Expected <green>path</> to be a string. Received:
+Expected <green>path</> to be a string or an array. Received:
   number: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('null') 1`] = `
 "<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
 
-Expected <green>path</> to be a string. Received:
+Expected <green>path</> to be a string or an array. Received:
   null: <red>null</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('undefined') 1`] = `
 "<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
 
-Expected <green>path</> to be a string. Received:
+Expected <green>path</> to be a string or an array. Received:
   undefined: <red>undefined</>"
 `;
 
@@ -2605,7 +2955,7 @@ To have a nested property:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect("abc").toHaveProperty('a.b.c', {"a": 5}) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>\\"abc\\"</>
@@ -2616,8 +2966,21 @@ With a value of:
 "
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d', 2) 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
+To have a nested property:
+  <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
+With a value of:
+  <green>2</>
+Received:
+  <red>1</>"
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d', 2) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
@@ -2630,7 +2993,7 @@ Received:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.ttt.d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
@@ -2654,7 +3017,7 @@ Received:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('a.b.c.d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": {\\"c\\": {}}}}</>
@@ -2667,7 +3030,7 @@ Received:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": 5}}}).toHaveProperty('a.b', {"c": 4}) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": {\\"c\\": 5}}}</>
@@ -2690,7 +3053,7 @@ Difference:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": 3}}).toHaveProperty('a.b', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": 3}}</>
@@ -2718,7 +3081,7 @@ Received:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": 1}).toHaveProperty('a.b.c.d', 5) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": 1}</>
@@ -2728,6 +3091,31 @@ With a value of:
   <green>5</>
 Received:
   <red>object</>.a: <red>1</>"
+`;
+
+exports[`.toHaveProperty() {pass: false} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 2) 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"a.b.c.d\\": 1}</>
+To have a nested property:
+  <green>\\"a.b.c.d\\"</>
+With a value of:
+  <green>2</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: false} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 2) 2`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"a.b.c.d\\": 1}</>
+To have a nested property:
+  <green>[\\"a.b.c.d\\"]</>
+With a value of:
+  <green>2</>
+Received:
+  <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a') 1`] = `
@@ -2740,8 +3128,25 @@ To have a nested property:
 "
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a', "a") 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+To have a nested property:
+  <green>\\"a\\"</>
+With a value of:
+  <green>\\"a\\"</>
+Received:
+  <red>undefined</>
+
+Difference:
+
+  Comparing two different types of values. Expected <green>string</> but received <red>undefined</>."
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a', "test") 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{}</>
@@ -2750,6 +3155,23 @@ To have a nested property:
 With a value of:
   <green>\\"test\\"</>
 "
+`;
+
+exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('b', undefined) 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+To have a nested property:
+  <green>\\"b\\"</>
+With a value of:
+  <green>undefined</>
+Received:
+  <red>\\"b\\"</>
+
+Difference:
+
+  Comparing two different types of values. Expected <green>undefined</> but received <red>string</>."
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(1).toHaveProperty('a.b.c') 1`] = `
@@ -2763,7 +3185,7 @@ To have a nested property:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(1).toHaveProperty('a.b.c', "test") 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>1</>
@@ -2774,7 +3196,51 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1') 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>{\\"a\\": {\\"b\\": [1, 2, 3]}}</>
+Not to have a nested property:
+  <green>[\\"a\\", \\"b\\", 1]</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1', 2) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"a\\": {\\"b\\": [1, 2, 3]}}</>
+Not to have a nested property:
+  <green>[\\"a\\", \\"b\\", 1]</>
+With a value of:
+  <green>2</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d') 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
+Not to have a nested property:
+  <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d', 1) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
+Not to have a nested property:
+  <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
+With a value of:
+  <green>1</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2785,7 +3251,7 @@ Not to have a nested property:
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
@@ -2797,7 +3263,7 @@ With a value of:
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": 5}}}).toHaveProperty('a.b', {"c": 5}) 1`] = `
-"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": {\\"c\\": 5}}}</>
@@ -2808,7 +3274,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2819,7 +3285,7 @@ Not to have a nested property:
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": {\\"b\\": undefined}}</>
@@ -2830,7 +3296,7 @@ With a value of:
 "
 `;
 
-exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a')' 1`] = `
+exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a') 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
 
 Expected the object:
@@ -2841,7 +3307,7 @@ Not to have a nested property:
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a', 0) 1`] = `
-"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"a\\": 0}</>
@@ -2852,8 +3318,30 @@ With a value of:
 "
 `;
 
+exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d') 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>{\\"a.b.c.d\\": 1}</>
+Not to have a nested property:
+  <green>[\\"a.b.c.d\\"]</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 1) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"a.b.c.d\\": 1}</>
+Not to have a nested property:
+  <green>[\\"a.b.c.d\\"]</>
+With a value of:
+  <green>1</>
+"
+`;
+
 exports[`.toHaveProperty() {pass: true} expect({"property": 1}).toHaveProperty('property', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</>, <green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
 Expected the object:
   <red>{\\"property\\": 1}</>
@@ -2861,6 +3349,30 @@ Not to have a nested property:
   <green>\\"property\\"</>
 With a value of:
   <green>1</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('a', undefined) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+Not to have a nested property:
+  <green>\\"a\\"</>
+With a value of:
+  <green>undefined</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('b', "b") 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+Not to have a nested property:
+  <green>\\"b\\"</>
+With a value of:
+  <green>\\"b\\"</>
 "
 `;
 

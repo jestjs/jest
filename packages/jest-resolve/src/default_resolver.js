@@ -129,7 +129,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
       pkgmain = JSON.parse(body).main;
     } catch (e) {}
 
-    if (pkgmain) {
+    if (pkgmain && pkgmain !== '.') {
       const resolveTarget = path.resolve(name, pkgmain);
       const result = tryResolve(resolveTarget);
       if (result) {

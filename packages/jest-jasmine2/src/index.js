@@ -89,6 +89,10 @@ async function jasmine2(
         environment.fakeTimers.useFakeTimers();
       }
     }
+
+    if (config.restoreMocks) {
+      runtime.restoreAllMocks();
+    }
   });
 
   env.addReporter(reporter);
@@ -174,7 +178,8 @@ const addSnapshotData = (results, snapshotState) => {
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
-  results.snapshot.uncheckedKeys = uncheckedKeys;
+  // Copy the array to prevent memory leaks
+  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 
   return results;
 };

@@ -34,6 +34,7 @@ import {
   stringMatching,
 } from './asymmetric_matchers';
 import {
+  INTERNAL_MATCHER_FLAG,
   getState,
   setState,
   getMatchers,
@@ -129,7 +130,7 @@ const makeResolveMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
-): PromiseMatcherFn => async (...args) => {
+): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
@@ -140,19 +141,19 @@ const makeResolveMatcher = (
     );
   }
 
-  let result;
-  try {
-    result = await actual;
-  } catch (e) {
-    throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
-        'instead it rejected to value\n' +
-        `  ${utils.printReceived(e)}`,
-    );
-  }
-  return makeThrowingMatcher(matcher, isNot, result).apply(null, args);
+  return actual.then(
+    result => makeThrowingMatcher(matcher, isNot, result).apply(null, args),
+    reason => {
+      const err = new JestAssertionError(
+        utils.matcherHint(matcherStatement, 'received', '') +
+          '\n\n' +
+          `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
+          'instead it rejected to value\n' +
+          `  ${utils.printReceived(reason)}`,
+      );
+      return Promise.reject(err);
+    },
+  );
 };
 
 const makeRejectMatcher = (
@@ -160,7 +161,7 @@ const makeRejectMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
-): PromiseMatcherFn => async (...args) => {
+): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
@@ -171,19 +172,18 @@ const makeRejectMatcher = (
     );
   }
 
-  let result;
-  try {
-    result = await actual;
-  } catch (e) {
-    return makeThrowingMatcher(matcher, isNot, e).apply(null, args);
-  }
-
-  throw new JestAssertionError(
-    utils.matcherHint(matcherStatement, 'received', '') +
-      '\n\n' +
-      `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
-      'instead it resolved to value\n' +
-      `  ${utils.printReceived(result)}`,
+  return actual.then(
+    result => {
+      const err = new JestAssertionError(
+        utils.matcherHint(matcherStatement, 'received', '') +
+          '\n\n' +
+          `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
+          'instead it resolved to value\n' +
+          `  ${utils.printReceived(result)}`,
+      );
+      return Promise.reject(err);
+    },
+    reason => makeThrowingMatcher(matcher, isNot, reason).apply(null, args),
   );
 };
 
@@ -214,6 +214,7 @@ const makeThrowingMatcher = (
       result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
       if (
+        matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
         error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
@@ -252,7 +253,8 @@ const makeThrowingMatcher = (
   };
 };
 
-expect.extend = (matchers: MatchersObject): void => setMatchers(matchers);
+expect.extend = (matchers: MatchersObject): void =>
+  setMatchers(matchers, false);
 
 expect.anything = anything;
 expect.any = any;
@@ -280,9 +282,9 @@ const _validateResult = result => {
 };
 
 // add default jest matchers
-expect.extend(matchers);
-expect.extend(spyMatchers);
-expect.extend(toThrowMatchers);
+setMatchers(matchers, true);
+setMatchers(spyMatchers, true);
+setMatchers(toThrowMatchers, true);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {

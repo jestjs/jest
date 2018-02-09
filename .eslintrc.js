@@ -6,7 +6,7 @@
  */
 
 const path = require('path');
-const customImportResolver = path.resolve('./eslint_import_resolver');
+const customImportResolver = path.resolve('./eslintImportResolver');
 
 module.exports = {
   extends: [
@@ -46,7 +46,7 @@ module.exports = {
       },
     },
     {
-      files: ['scripts/**/*', 'integration_tests/**/*'],
+      files: ['scripts/**/*', 'integration-tests/**/*'],
       rules: {
         'babel/func-params-comma-dangle': 0,
         'unicorn/filename-case': 0,
@@ -83,13 +83,13 @@ module.exports = {
       },
     },
     {
-      excludedFiles: 'integration_tests/__tests__/**/*',
+      excludedFiles: 'integration-tests/__tests__/**/*',
       files: [
         'examples/**/*',
         'scripts/**/*',
-        'integration_tests/*/**/*',
+        'integration-tests/*/**/*',
         'website/*/**/*',
-        'eslint_import_resolver.js',
+        'eslintImportResolver.js',
       ],
       rules: {
         'prettier/prettier': [
@@ -105,7 +105,7 @@ module.exports = {
     },
     {
       files: [
-        'integration_tests/__tests__/**/*',
+        'integration-tests/__tests__/**/*',
         'packages/babel-jest/**/*.test.js',
         'packages/babel-plugin-jest-hoist/**/*.test.js',
         'packages/babel-preset-jest/**/*.test.js',
@@ -127,7 +127,7 @@ module.exports = {
       files: [
         'website/**',
         '**/__tests__/**',
-        'integration_tests/**',
+        'integration-tests/**',
         '**/pretty-format/perf/**',
       ],
       rules: {
@@ -150,8 +150,8 @@ module.exports = {
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'eslint_import_resolver.js',
-          'test_setup_file.js',
+          'eslintImportResolver.js',
+          'testSetupFile.js',
         ],
       },
     ],
@@ -168,7 +168,7 @@ module.exports = {
         trailingComma: 'all',
       },
     ],
-    'unicorn/filename-case': [2, {case: 'snakeCase'}],
+    'unicorn/filename-case': [1, {case: 'snakeCase'}],
   },
   settings: {
     'import/resolver': {

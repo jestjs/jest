@@ -227,6 +227,17 @@ function getSlots(object?: Object): Array<string> {
   return Object.keys(slots);
 }
 
+function wrapAsyncParam(
+  fn: any => any,
+  asyncAction: 'resolve' | 'reject',
+): any => any {
+  if (asyncAction === 'reject') {
+    return value => fn(Promise.reject(value));
+  }
+
+  return value => fn(Promise.resolve(value));
+}
+
 class ModuleMockerClass {
   _environmentGlobal: Global;
   _mockState: WeakMap<Function, MockFunctionState>;
@@ -407,6 +418,13 @@ class ModuleMockerClass {
         return f;
       };
 
+      f.mockResolvedValueOnce = wrapAsyncParam(
+        f.mockReturnValueOnce,
+        'resolve',
+      );
+
+      f.mockRejectedValueOnce = wrapAsyncParam(f.mockReturnValueOnce, 'reject');
+
       f.mockReturnValue = value => {
         // next function call will return specified return value or this one
         const mockConfig = this._ensureMockConfig(f);
@@ -414,6 +432,10 @@ class ModuleMockerClass {
         mockConfig.defaultReturnValue = value;
         return f;
       };
+
+      f.mockResolvedValue = wrapAsyncParam(f.mockReturnValue, 'resolve');
+
+      f.mockRejectedValue = wrapAsyncParam(f.mockReturnValue, 'reject');
 
       f.mockImplementationOnce = fn => {
         // next function call will use this mock implementation return value
@@ -659,7 +681,11 @@ class ModuleMockerClass {
     return fn;
   }
 
-  spyOn(object: any, methodName: any): any {
+  spyOn(object: any, methodName: any, accessType?: string): any {
+    if (accessType) {
+      return this._spyOnProperty(object, methodName, accessType);
+    }
+
     if (typeof object !== 'object' && typeof object !== 'function') {
       throw new Error(
         'Cannot spyOn on a primitive value; ' + this._typeOf(object) + ' given',
@@ -689,6 +715,66 @@ class ModuleMockerClass {
     }
 
     return object[methodName];
+  }
+
+  _spyOnProperty(obj: any, propertyName: any, accessType: string = 'get'): any {
+    if (typeof obj !== 'object' && typeof obj !== 'function') {
+      throw new Error(
+        'Cannot spyOn on a primitive value; ' + this._typeOf(obj) + ' given',
+      );
+    }
+
+    if (!obj) {
+      throw new Error(
+        'spyOn could not find an object to spy upon for ' + propertyName + '',
+      );
+    }
+
+    if (!propertyName) {
+      throw new Error('No property name supplied');
+    }
+
+    const descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
+
+    if (!descriptor) {
+      throw new Error(propertyName + ' property does not exist');
+    }
+
+    if (!descriptor.configurable) {
+      throw new Error(propertyName + ' is not declared configurable');
+    }
+
+    if (!descriptor[accessType]) {
+      throw new Error(
+        'Property ' + propertyName + ' does not have access type ' + accessType,
+      );
+    }
+
+    const original = descriptor[accessType];
+
+    if (!this.isMockFunction(original)) {
+      if (typeof original !== 'function') {
+        throw new Error(
+          'Cannot spy the ' +
+            propertyName +
+            ' property because it is not a function; ' +
+            this._typeOf(original) +
+            ' given instead',
+        );
+      }
+
+      descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
+        descriptor[accessType] = original;
+        Object.defineProperty(obj, propertyName, descriptor);
+      });
+
+      descriptor[accessType].mockImplementation(function() {
+        return original.apply(this, arguments);
+      });
+    }
+
+    Object.defineProperty(obj, propertyName, descriptor);
+    return descriptor[accessType];
   }
 
   clearAllMocks() {

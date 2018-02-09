@@ -1,16 +1,14 @@
 /**
  * Copyright (c) 2017-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 const React = require('react');
 
 const CompLibrary = require('../../core/CompLibrary.js');
-const Marked = CompLibrary.Marked; /* Used to read markdown */
+const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
@@ -18,20 +16,6 @@ const translate = require('../../server/translate.js').translate;
 const translation = require('../../server/translation.js');
 
 const siteConfig = require(process.cwd() + '/siteConfig.js');
-
-const githubButton = (
-  <a
-    className="github-button"
-    href="https://github.com/facebook/jest"
-    data-icon="octicon-star"
-    data-count-href="/facebook/jest/stargazers"
-    data-count-api="/repos/facebook/jest#stargazers_count"
-    data-count-aria-label="# stargazers on GitHub"
-    aria-label="Star facebook/jest on GitHub"
-  >
-    Star
-  </a>
-);
 
 class Button extends React.Component {
   render() {
@@ -104,7 +88,17 @@ class HomeSplash extends React.Component {
                 </div>
               </div>
               <div className="githubButton" style={{minHeight: '20px'}}>
-                {githubButton}
+                <a
+                  className="github-button"
+                  href={this.props.config.repoUrl}
+                  data-icon="octicon-star"
+                  data-count-href="/facebook/jest/stargazers"
+                  data-show-count={true}
+                  data-count-aria-label="# stargazers on GitHub"
+                  aria-label="Star facebook/jest on GitHub"
+                >
+                  Star
+                </a>
               </div>
             </div>
           </div>
@@ -120,9 +114,9 @@ class Index extends React.Component {
       .filter(user => {
         return user.pinned;
       })
-      .map(user => {
+      .map((user, i) => {
         return (
-          <a href={user.infoLink}>
+          <a href={user.infoLink} key={i}>
             <img src={user.image} title={user.caption} />
           </a>
         );
@@ -130,7 +124,7 @@ class Index extends React.Component {
 
     return (
       <div>
-        <HomeSplash language={this.props.language} />
+        <HomeSplash language={this.props.language} config={siteConfig} />
         <div className="mainContainer">
           <Container padding={['bottom', 'top']}>
             <GridBlock
@@ -174,6 +168,7 @@ class Index extends React.Component {
               layout="fourColumn"
             />
           </Container>
+
           <div
             className="productShowcaseSection paddingBottom"
             style={{textAlign: 'center'}}
@@ -181,7 +176,7 @@ class Index extends React.Component {
             <h2>
               <translate>Zero configuration testing platform</translate>
             </h2>
-            <Marked>
+            <MarkdownBlock>
               <translate>
                 Jest is used by Facebook to test all JavaScript code including
                 React applications. One of Jest's philosophies is to provide an
@@ -190,7 +185,7 @@ class Index extends React.Component {
                 writing more tests, which in turn results in more stable and
                 healthy code bases.
               </translate>
-            </Marked>
+            </MarkdownBlock>
           </div>
 
           <Container padding={['bottom', 'top']} background="light">
@@ -266,7 +261,7 @@ class Index extends React.Component {
                   <translate>Try it out!</translate>
                 </h2>
                 <div>
-                  <Marked>
+                  <MarkdownBlock>
                     <translate>
                       You can try out a real version of Jest using
                       [repl.it](https://repl.it/languages/jest). Consider a
@@ -274,7 +269,7 @@ class Index extends React.Component {
                       basic test in `add-test.js` to verify that 1 + 2 equals 3.
                       Hit \"run\" to try it out!
                     </translate>
-                  </Marked>
+                  </MarkdownBlock>
                 </div>
               </div>
               <div className="jest-repl">
@@ -302,6 +297,7 @@ class Index extends React.Component {
               ]}
             />
           </Container>
+
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               contents={[
@@ -330,7 +326,7 @@ class Index extends React.Component {
                 <iframe
                   width="560"
                   height="315"
-                  src="https://www.youtube.com/embed/HAuXJVI_bUs?rel=0"
+                  src="https://www.youtube.com/embed/PvabBs_utr8?rel=0"
                   frameBorder="0"
                   allowFullScreen
                 />
@@ -340,43 +336,31 @@ class Index extends React.Component {
                   <translate>Watch Talks about Jest</translate>
                 </h2>
                 <div>
-                  <Marked>
+                  <MarkdownBlock>
                     <translate>
                       The Jest core team and contributors regularly speak about
                       Jest and Delightful JavaScript Testing. Check out our
                       talks about [Building High-Quality JavaScript
-                      Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/)
-                      at f8 2017 or our talk about [Snapshot
-                      Testing](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs)
-                      at React Conf 2017.
+                      Tools](https://www.youtube.com/watch?v=PvabBs_utr8) at
+                      JSConf.eu 2017 or our talk about [Jest as a
+                      Platform](https://www.youtube.com/watch?v=NtjyeojAOBs) at
+                      ReactiveConf 2017.
                     </translate>
-                  </Marked>
+                  </MarkdownBlock>
                 </div>
               </div>
             </div>
-          </Container>
 
-          <Container padding={['bottom', 'top']} background="light">
-            <div className="blockElement imageAlignSide twoByGridBlock">
-              <div className="blockContent">
-                <h2>
-                  <translate>Learn how to test JavaScript with </translate>
-                </h2>
-                <div>
-                  <Marked>
-                    <translate>
-                      In this
-                      [video](https://egghead.io/lessons/javascript-test-javascript-with-jest)
-                      by [Kent C. Dodds](https://twitter.com/kentcdodds) you
-                      will learn how to install Jest and write your first unit
-                      test.
-                    </translate>
-                  </Marked>
-                </div>
-              </div>
-              <div className="video">
-                <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17" />
-              </div>
+            <div
+              className="productShowcaseSection paddingTop"
+              style={{textAlign: 'center'}}
+            >
+              <a
+                className="button"
+                href={siteConfig.baseUrl + this.props.language + '/videos.html'}
+              >
+                <translate>Watch more videos</translate>
+              </a>
             </div>
           </Container>
 
@@ -395,7 +379,6 @@ class Index extends React.Component {
               <a
                 className="button"
                 href={siteConfig.baseUrl + this.props.language + '/users.html'}
-                target="_self"
               >
                 <translate>More Jest Users</translate>
               </a>

@@ -21,6 +21,7 @@ import {
 } from './test_result_helpers';
 import CoverageReporter from './reporters/coverage_reporter';
 import DefaultReporter from './reporters/default_reporter';
+import exit from 'exit';
 import NotifyReporter from './reporters/notify_reporter';
 import ReporterDispatcher from './reporter_dispatcher';
 import snapshot from 'jest-snapshot';
@@ -38,16 +39,25 @@ TestRunner;
 export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
 |};
-
+export type TestSchedulerContext = {|
+  firstRun: boolean,
+  previousSuccess: boolean,
+|};
 export default class TestScheduler {
   _dispatcher: ReporterDispatcher;
   _globalConfig: GlobalConfig;
   _options: TestSchedulerOptions;
+  _context: TestSchedulerContext;
 
-  constructor(globalConfig: GlobalConfig, options: TestSchedulerOptions) {
+  constructor(
+    globalConfig: GlobalConfig,
+    options: TestSchedulerOptions,
+    context: TestSchedulerContext,
+  ) {
     this._dispatcher = new ReporterDispatcher();
     this._globalConfig = globalConfig;
     this._options = options;
+    this._context = context;
     this._setupReporters();
   }
 
@@ -247,16 +257,20 @@ export default class TestScheduler {
     const isDefault = this._shouldAddDefaultReporters(reporters);
 
     if (isDefault) {
-      this._setupDefaultReporters();
+      this._setupDefaultReporters(collectCoverage);
     }
 
-    if (collectCoverage) {
+    if (!isDefault && collectCoverage) {
       this.addReporter(new CoverageReporter(this._globalConfig));
     }
 
     if (notify) {
       this.addReporter(
-        new NotifyReporter(this._globalConfig, this._options.startRun),
+        new NotifyReporter(
+          this._globalConfig,
+          this._options.startRun,
+          this._context,
+        ),
       );
     }
 
@@ -265,12 +279,16 @@ export default class TestScheduler {
     }
   }
 
-  _setupDefaultReporters() {
+  _setupDefaultReporters(collectCoverage: boolean) {
     this.addReporter(
       this._globalConfig.verbose
         ? new VerboseReporter(this._globalConfig)
         : new DefaultReporter(this._globalConfig),
     );
+
+    if (collectCoverage) {
+      this.addReporter(new CoverageReporter(this._globalConfig));
+    }
 
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
@@ -324,11 +342,12 @@ export default class TestScheduler {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {
-        const exit = () => process.exit(1);
+        const failureExit = () => exit(1);
+
         return this._dispatcher
           .onRunComplete(contexts, aggregatedResults)
-          .then(exit)
-          .catch(exit);
+          .then(failureExit)
+          .catch(failureExit);
       }
     }
     return Promise.resolve();

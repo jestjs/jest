@@ -56,7 +56,7 @@ const code = `
  * @everything is:awesome
  * @flow
  */
- 
+
  export const everything = Object.create(null);
  export default function isAwesome(something) {
    return something === everything;
@@ -99,17 +99,17 @@ string (`""`).
 Strips the top docblock from a file and return the result. If a file does not
 have a docblock at the top, then return the file unchanged.
 
-### `parse(docblock: string): {[key: string]: string}`
+### `parse(docblock: string): {[key: string]: string | string[] }`
 
 Parses the pragmas in a docblock string into an object whose keys are the pragma
 tags and whose values are the arguments to those pragmas.
 
-### `parseWithComments(docblock: string): { comments: string, pragmas: {[key: string]: string} }`
+### `parseWithComments(docblock: string): { comments: string, pragmas: {[key: string]: string | string[]} }`
 
 Similar to `parse` except this method also returns the comments from the
 docblock. Useful when used with `print()`.
 
-### `print({ comments?: string, pragmas?: {[key: string]: string} }): string`
+### `print({ comments?: string, pragmas?: {[key: string]: string | string[]} }): string`
 
 Prints an object of key-value pairs back into a docblock. If `comments` are
 provided, they will be positioned on the top of the docblock.

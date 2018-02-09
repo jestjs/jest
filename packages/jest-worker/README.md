@@ -77,7 +77,7 @@ be exposed, even if they exist.
 
 #### `numWorkers: number` (optional)
 
-Amount of workers to spwan. Defaults to the number of CPUs minus 1.
+Amount of workers to spawn. Defaults to the number of CPUs minus 1.
 
 #### `maxRetries: number` (optional)
 
@@ -130,6 +130,9 @@ overriding options through `forkOptions`.
 Finishes the workers by killing all workers. No further calls can be done to the
 `Worker` instance.
 
+**Note:** Each worker has a unique id (index that starts with `1`) which is
+available on `process.env.JEST_WORKER_ID`
+
 # More examples
 
 ## Standard usage
@@ -143,12 +146,13 @@ import Worker from 'jest-worker';
 
 async function main() {
   const myWorker = new Worker(require.resolve('./worker'), {
-    exposedMethods: ['foo', 'bar'],
+    exposedMethods: ['foo', 'bar', 'getWorkerId'],
     numWorkers: 4,
   });
 
   console.log(await myWorker.foo('Alice')); // "Hello from foo: Alice"
   console.log(await myWorker.bar('Bob')); // "Hello from bar: Bob"
+  console.log(await myWorker.getWorkerId()); // "3" -> this message has sent from the 3rd worker
 
   myWorker.end();
 }
@@ -165,6 +169,10 @@ export function foo(param) {
 
 export function bar(param) {
   return 'Hello from bar: ' + param;
+}
+
+export function getWorkerId() {
+  return process.env.JEST_WORKER_ID;
 }
 ```
 

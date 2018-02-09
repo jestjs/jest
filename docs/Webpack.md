@@ -3,7 +3,7 @@ id: webpack
 title: Using with webpack
 ---
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to
+Jest can be used in projects that use [webpack](https://webpack.js.org/) to
 manage assets, styles, and compilation. webpack _does_ offer some unique
 challenges over other tools because it integrates directly with your application
 to allow managing stylesheets, assets like images and fonts, along with the
@@ -42,10 +42,10 @@ module.exports = {
 ```
 
 If you have JavaScript files that are transformed by Babel, you can
-[enable support for Babel](GettingStarted.md#using-babel-with-jest) by
-installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be
-handled with Jest's
-[`transform`](Configuration.md#transform-object-string-string) config option.
+[enable support for Babel](GettingStarted.md#using-babel) by installing the
+`babel-jest` plugin. Non-Babel JavaScript transformations can be handled with
+Jest's [`transform`](Configuration.md#transform-object-string-string) config
+option.
 
 ### Handling Static Assets
 
@@ -86,7 +86,7 @@ module.exports = 'test-file-stub';
 You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to
 mock [CSS Modules](https://github.com/css-modules/css-modules):
 
-```
+```bash
 npm install --save-dev identity-obj-proxy
 ```
 
@@ -180,9 +180,10 @@ direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 }
 ```
 
-> Note: <rootDir> is a special token that gets replaced by Jest with the root of
-> your project. Most of the time this will be the folder where your package.json
-> is located unless you specify a custom `rootDir` option in your configuration.
+> Note: `<rootDir>` is a special token that gets replaced by Jest with the root
+> of your project. Most of the time this will be the folder where your
+> `package.json` is located unless you specify a custom `rootDir` option in your
+> configuration.
 
 Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 env variable, which you can set, or make use of the `modulePaths` option.

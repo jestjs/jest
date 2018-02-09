@@ -13,6 +13,10 @@ import type {MatchersObject} from 'types/Matchers';
 // the state, that can hold matcher specific values that change over time.
 const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 
+// Notes a built-in/internal Jest matcher.
+// Jest may override the stack trace of Errors thrown by internal matchers.
+export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
+
 if (!global[JEST_MATCHERS_OBJECT]) {
   Object.defineProperty(global, JEST_MATCHERS_OBJECT, {
     value: {
@@ -35,6 +39,13 @@ export const setState = (state: Object) => {
 
 export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
 
-export const setMatchers = (matchers: MatchersObject) => {
+export const setMatchers = (matchers: MatchersObject, isInternal: boolean) => {
+  Object.keys(matchers).forEach(key => {
+    const matcher = matchers[key];
+    Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
+      value: isInternal,
+    });
+  });
+
   Object.assign(global[JEST_MATCHERS_OBJECT].matchers, matchers);
 };

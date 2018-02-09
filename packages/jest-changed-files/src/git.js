@@ -13,44 +13,70 @@ import type {Options, SCMAdapter} from 'types/ChangedFiles';
 import path from 'path';
 import childProcess from 'child_process';
 
+const findChangedFilesUsingCommand = async (
+  args: Array<string>,
+  cwd: Path,
+): Promise<Array<Path>> => {
+  return new Promise((resolve, reject) => {
+    const child = childProcess.spawn('git', args, {cwd});
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', data => (stdout += data));
+    child.stderr.on('data', data => (stderr += data));
+    child.on('error', e => reject(e));
+    child.on('close', code => {
+      if (code === 0) {
+        stdout = stdout.trim();
+        if (stdout === '') {
+          resolve([]);
+        } else {
+          resolve(
+            stdout
+              .split('\n')
+              .filter(s => s !== '')
+              .map(changedPath => path.resolve(cwd, changedPath)),
+          );
+        }
+      } else {
+        reject(code + ': ' + stderr);
+      }
+    });
+  });
+};
+
 const adapter: SCMAdapter = {
   findChangedFiles: async (
     cwd: string,
     options?: Options,
   ): Promise<Array<Path>> => {
-    if (options && options.withAncestor) {
-      throw new Error(
-        '`changedFilesWithAncestor` is not supported in git repos.',
+    const changedSince: ?string =
+      options && (options.withAncestor ? 'HEAD^' : options.changedSince);
+
+    if (options && options.lastCommit) {
+      return await findChangedFilesUsingCommand(
+        ['show', '--name-only', '--pretty=%b', 'HEAD'],
+        cwd,
+      );
+    } else if (changedSince) {
+      const committed = await findChangedFilesUsingCommand(
+        ['log', '--name-only', '--pretty=%b', 'HEAD', `^${changedSince}`],
+        cwd,
+      );
+      const staged = await findChangedFilesUsingCommand(
+        ['diff', '--cached', '--name-only'],
+        cwd,
+      );
+      const unstaged = await findChangedFilesUsingCommand(
+        ['ls-files', '--other', '--modified', '--exclude-standard'],
+        cwd,
+      );
+      return [...committed, ...staged, ...unstaged];
+    } else {
+      return await findChangedFilesUsingCommand(
+        ['ls-files', '--other', '--modified', '--exclude-standard'],
+        cwd,
       );
     }
-    return new Promise((resolve, reject) => {
-      const args =
-        options && options.lastCommit
-          ? ['show', '--name-only', '--pretty=%b', 'HEAD']
-          : ['ls-files', '--other', '--modified', '--exclude-standard'];
-      const child = childProcess.spawn('git', args, {cwd});
-      let stdout = '';
-      let stderr = '';
-      child.stdout.on('data', data => (stdout += data));
-      child.stderr.on('data', data => (stderr += data));
-      child.on('error', e => reject(e));
-      child.on('close', code => {
-        if (code === 0) {
-          stdout = stdout.trim();
-          if (stdout === '') {
-            resolve([]);
-          } else {
-            resolve(
-              stdout
-                .split('\n')
-                .map(changedPath => path.resolve(cwd, changedPath)),
-            );
-          }
-        } else {
-          reject(code + ': ' + stderr);
-        }
-      });
-    });
   },
 
   getRoot: async (cwd: string): Promise<?string> => {
