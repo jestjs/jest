@@ -16,17 +16,23 @@ const videoTypes = {
 
 const videos = [
   {
-    title: 'Learn how to test JavaScript with Jest',
-    description: 'In this [video](https://egghead.io/lessons/javascript-test-javascript-with-jest) by [Kent C. Dodds](https://twitter.com/kentcdodds) you will learn how to install Jest and write your first unit test.',
-    type: videoTypes.IFRAME,
-    url: 'https://fast.wistia.net/embed/iframe/78j73pyz17',
+    title: 'Rogelio Guzman - Jest Snapshots and Beyond - React Conf 2017',
+    type: videoTypes.YOUTUBE,
+    url: 'https://www.youtube.com/embed/HAuXJVI_bUs',
+    description: '[Rogelio](https://twitter.com/rogeliog) shows how Jest might help you overcome the inertia to write & maintain tests with the help of a simple React Application.',
+  },
+  {
+    title: 'Snapshot testing - Anna Doubkova, React London 2017',
+    type: videoTypes.YOUTUBE,
+    url: 'https://www.youtube.com/embed/sCbGfi40IWk',
+    description: 'In this talk, [Anna Doubkova](https://twitter.com/lithinn) explains Snapshot Testing in brief, while also touching some of the bad stuff.',
   },
   {
     title: 'Test React applications using Enzyme & Jest',
-    description: 'This talk by [Ryan Walsh](https://twitter.com/_rtwalsh) gives an introduction to testing [React](https://facebook.github.io/react/) components using [Enzyme](http://airbnb.io/enzyme/) and Jest.',
     type: videoTypes.YOUTUBE,
-    url: 'https://www.youtube.com/embed/8Ww2QBVIw0I?rel=0',
-  },
+    url: 'https://www.youtube.com/embed/8Ww2QBVIw0I',
+    description: 'This talk by [Ryan Walsh](https://twitter.com/_rtwalsh) gives an introduction to testing [React](https://facebook.github.io/react/) components using [Enzyme](http://airbnb.io/enzyme/) and Jest.',
+  }
 ];
 
 /* List of projects/orgs using your project for the users page */
