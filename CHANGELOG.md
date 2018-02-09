@@ -11,6 +11,10 @@
   process. It will be available via `process.env.JEST_WORKER_ID`
   ([#5494](https://github.com/facebook/jest/pull/5494))
 
+### Chore & Maintenance
+* `[filenames]` Standardize file names in root ([#5498](https://github.com/facebook/jest/pull/5498))
+
+
 ## jest 22.2.1
 
 ### Fixes
