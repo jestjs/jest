@@ -70,3 +70,11 @@ it('exposes an equality function to custom matchers', () => {
 
   expect(() => jestExpect().toBeOne()).not.toThrow();
 });
+
+it('defines asymmetric matchers', () => {
+  jestExpect({value: 2}).toEqual({value: expect.toBeDivisibleBy(2)});
+  jestExpect({value: 3}).toEqual({value: expect.not.toBeDivisibleBy(2)});
+  expect(() =>
+    jestExpect({value: 3}).toEqual({value: expect.toBeDivisibleBy(2)}),
+  ).toThrowErrorMatchingSnapshot();
+});
