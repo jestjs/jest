@@ -4,6 +4,8 @@
 
 * `[babel-jest]` Revert "Remove retainLines from babel-jest"
   ([#5496](https://github.com/facebook/jest/pull/5496))
+* `[jest-docblock]` Support multiple of the same `@pragma`.
+  ([#5154](https://github.com/facebook/jest/pull/5502))
 
 ### Features
 
