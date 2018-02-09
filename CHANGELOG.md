@@ -12,7 +12,7 @@
   ([#5494](https://github.com/facebook/jest/pull/5494))
 
 ### Chore & Maintenance
-* `[filenames]` Standardize file names in root ([#5498](https://github.com/facebook/jest/pull/5498))
+* `[filenames]` Standardize file names in root ([#5500](https://github.com/facebook/jest/pull/5500))
 
 
 ## jest 22.2.1
