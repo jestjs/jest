@@ -7,7 +7,12 @@
  * @flow
  */
 
-import {equals, isA} from './jasmine_utils';
+import {
+  equals,
+  isA,
+  isImmutableUnorderedKeyed,
+  isImmutableUnorderedSet,
+} from './jasmine_utils';
 
 type GetPath = {
   hasEndProp?: boolean,
@@ -119,7 +124,7 @@ export const iterableEquality = (a: any, b: any) => {
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
-    } else if (isA('Set', a)) {
+    } else if (isA('Set', a) || isImmutableUnorderedSet(a)) {
       let allFound = true;
       for (const aValue of a) {
         if (!b.has(aValue)) {
@@ -130,7 +135,7 @@ export const iterableEquality = (a: any, b: any) => {
       if (allFound) {
         return true;
       }
-    } else if (isA('Map', a)) {
+    } else if (isA('Map', a) || isImmutableUnorderedKeyed(a)) {
       let allFound = true;
       for (const aEntry of a) {
         if (

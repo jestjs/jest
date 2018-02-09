@@ -2247,6 +2247,294 @@ Difference:
   Comparing two different types of values. Expected <green>array</> but received <red>number</>."
 `;
 
+exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).not.toEqual(Immutable.List [1, 2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.List [1, 2]</>
+Received:
+  <red>Immutable.List [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).toEqual(Immutable.List [2, 1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.List [2, 1]</>
+Received:
+  <red>Immutable.List [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.List [</>
+<red>+   1,</>
+<dim>    2,</>
+<green>-   1,</>
+<dim>  ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.List [1]).not.toEqual(Immutable.List [1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.List [1]</>
+Received:
+  <red>Immutable.List [1]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.List [1]).toEqual(Immutable.List [2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.List [2]</>
+Received:
+  <red>Immutable.List [1]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.List [</>
+<green>-   2,</>
+<red>+   1,</>
+<dim>  ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).not.toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>
+Received:
+  <red>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 11}}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 11}}}</>
+Received:
+  <red>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Map {</>
+<dim>    \\"1\\": Immutable.Map {</>
+<dim>      \\"2\\": Object {</>
+<green>-       \\"a\\": 11,</>
+<red>+       \\"a\\": 99,</>
+<dim>      },</>
+<dim>    },</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"a": 0}).toEqual(Immutable.Map {"b": 0}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Map {\\"b\\": 0}</>
+Received:
+  <red>Immutable.Map {\\"a\\": 0}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Map {</>
+<green>-   \\"b\\": 0,</>
+<red>+   \\"a\\": 0,</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {"v": 1}).toEqual(Immutable.Map {"v": 2}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Map {\\"v\\": 2}</>
+Received:
+  <red>Immutable.Map {\\"v\\": 1}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Map {</>
+<green>-   \\"v\\": 2,</>
+<red>+   \\"v\\": 1,</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {}).not.toEqual(Immutable.Map {}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {}</>
+Received:
+  <red>Immutable.Map {}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {1: "one", 2: "two"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>
+Received:
+  <red>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {2: "two", 1: "one"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Map {2: \\"two\\", 1: \\"one\\"}</>
+Received:
+  <red>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two"}).not.toEqual(Immutable.OrderedMap {1: "one", 2: "two"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>
+Received:
+  <red>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two"}).toEqual(Immutable.OrderedMap {2: "two", 1: "one"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.OrderedMap {2: \\"two\\", 1: \\"one\\"}</>
+Received:
+  <red>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.OrderedMap {</>
+<red>+   1: \\"one\\",</>
+<dim>    2: \\"two\\",</>
+<green>-   1: \\"one\\",</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet []).not.toEqual(Immutable.OrderedSet []) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.OrderedSet []</>
+Received:
+  <red>Immutable.OrderedSet []</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).not.toEqual(Immutable.OrderedSet [1, 2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.OrderedSet [1, 2]</>
+Received:
+  <red>Immutable.OrderedSet [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).toEqual(Immutable.OrderedSet [2, 1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.OrderedSet [2, 1]</>
+Received:
+  <red>Immutable.OrderedSet [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.OrderedSet [</>
+<red>+   1,</>
+<dim>    2,</>
+<green>-   1,</>
+<dim>  ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set []).not.toEqual(Immutable.Set []) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Set []</>
+Received:
+  <red>Immutable.Set []</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [1, 2]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Set [1, 2]</>
+Received:
+  <red>Immutable.Set [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [2, 1]) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toEqual(</><green>expected</><dim>)</>
+
+Expected value to not equal:
+  <green>Immutable.Set [2, 1]</>
+Received:
+  <red>Immutable.Set [1, 2]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set []) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Set []</>
+Received:
+  <red>Immutable.Set [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- Immutable.Set []</>
+<red>+ Immutable.Set [</>
+<red>+   1,</>
+<red>+   2,</>
+<red>+ ]</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set [1, 2, 3]) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>Immutable.Set [1, 2, 3]</>
+Received:
+  <red>Immutable.Set [1, 2]</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Immutable.Set [</>
+<dim>    1,</>
+<dim>    2,</>
+<green>-   3,</>
+<dim>  ]</>"
+`;
+
 exports[`.toEqual() {pass: false} expect(Map {"a" => 0}).toEqual(Map {"b" => 0}) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
