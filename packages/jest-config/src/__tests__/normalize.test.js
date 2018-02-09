@@ -881,6 +881,7 @@ describe('preset', () => {
         moduleNameMapper: {b: 'b'},
         modulePathIgnorePatterns: ['b'],
         setupFiles: ['b'],
+        transform: {b: 'b'},
       }),
       {virtual: true},
     );
@@ -938,6 +939,7 @@ describe('preset', () => {
         preset: 'react-native',
         rootDir: '/root/path/foo',
         setupFiles: ['a'],
+        transform: {a: 'a'},
       },
       {},
     );
@@ -947,7 +949,10 @@ describe('preset', () => {
     expect(options.setupFiles.sort()).toEqual([
       '/node_modules/a',
       '/node_modules/b',
-      '/node_modules/regenerator-runtime/runtime',
+    ]);
+    expect(options.transform).toEqual([
+      ['a', '/node_modules/a'],
+      ['b', '/node_modules/b'],
     ]);
   });
 
@@ -976,6 +981,32 @@ describe('preset', () => {
       ['a', 'aa'],
     ]);
   });
+
+  test('merges with options and transform preset is overridden by options', () => {
+    // Object initializer not used for properties as a workaround for
+    //  sort-keys eslint rule while specifying properties in
+    //  non-alphabetical order for a better test
+    const transform = {};
+    transform.e = 'ee';
+    transform.b = 'bb';
+    transform.c = 'cc';
+    transform.a = 'aa';
+    const {options} = normalize(
+      {
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+        transform,
+      },
+      {},
+    );
+
+    expect(options.transform).toEqual([
+      ['e', '/node_modules/ee'],
+      ['b', '/node_modules/bb'],
+      ['c', '/node_modules/cc'],
+      ['a', '/node_modules/aa'],
+    ]);
+  });
 });
 
 describe('preset without setupFiles', () => {
@@ -989,7 +1020,7 @@ describe('preset without setupFiles', () => {
 
   beforeAll(() => {
     jest.mock(
-      '/node_modules/react-native/jest-preset.json',
+      '/node_modules/react-foo/jest-preset.json',
       () => {
         return {
           moduleNameMapper: {b: 'b'},
@@ -1003,7 +1034,7 @@ describe('preset without setupFiles', () => {
   it('should normalize setupFiles correctly', () => {
     const {options} = normalize(
       {
-        preset: 'react-native',
+        preset: 'react-foo',
         rootDir: '/root/path/foo',
         setupFiles: ['a'],
       },
@@ -1012,7 +1043,10 @@ describe('preset without setupFiles', () => {
 
     expect(options).toEqual(
       expect.objectContaining({
-        setupFiles: expect.arrayContaining(['/node_modules/a']),
+        setupFiles: [
+          '/node_modules/regenerator-runtime/runtime',
+          '/node_modules/a',
+        ],
       }),
     );
   });
