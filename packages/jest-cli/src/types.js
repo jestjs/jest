@@ -6,11 +6,31 @@
  *
  * @flow
  */
-
 import type {GlobalConfig} from 'types/Config';
+
+export type UsageRow = {
+  key: number,
+  prompt: string,
+  hide?: boolean,
+};
+
+export type JestHooks = {
+  testRunComplete: any,
+};
 
 export type WatchPlugin = {
   key: number,
+  name: string,
   prompt: string,
-  enter: (globalConfig: GlobalConfig, end: () => mixed) => mixed,
+  apply: (
+    jestHooks: JestHooks,
+    {
+      stdin: stream$Readable | tty$ReadStream,
+      stdout: stream$Writable | tty$WriteStream,
+    },
+  ) => void,
+  shouldShowUsage?: (
+    globalConfig: GlobalConfig,
+    hasSnapshotFailures: boolean,
+  ) => boolean,
 };

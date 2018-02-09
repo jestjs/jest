@@ -10,6 +10,8 @@
 import detectNewline from 'detect-newline';
 import {EOL} from 'os';
 
+type Pragmas = {[key: string]: string | string[], __proto__: null};
+
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
@@ -31,15 +33,13 @@ export function strip(contents: string) {
   return match && match[0] ? contents.substring(match[0].length) : contents;
 }
 
-export function parse(
-  docblock: string,
-): {[key: string]: string, __proto__: null} {
+export function parse(docblock: string): Pragmas {
   return parseWithComments(docblock).pragmas;
 }
 
 export function parseWithComments(
   docblock: string,
-): {comments: string, pragmas: {[key: string]: string, __proto__: null}} {
+): {comments: string, pragmas: Pragmas} {
   const line = detectNewline(docblock) || EOL;
 
   docblock = docblock
@@ -64,7 +64,15 @@ export function parseWithComments(
   let match;
   while ((match = propertyRe.exec(docblock))) {
     // strip linecomments from pragmas
-    result[match[1]] = match[2].replace(lineCommentRe, '');
+    const nextPragma = match[2].replace(lineCommentRe, '');
+    if (
+      typeof result[match[1]] === 'string' ||
+      Array.isArray(result[match[1]])
+    ) {
+      result[match[1]] = [].concat(result[match[1]], nextPragma);
+    } else {
+      result[match[1]] = nextPragma;
+    }
   }
   return {comments, pragmas: result};
 }
@@ -74,7 +82,7 @@ export function print({
   pragmas = {},
 }: {
   comments?: string,
-  pragmas?: {[key: string]: string, __proto__: null},
+  pragmas?: Pragmas,
   __proto__: null,
 }): string {
   const line = detectNewline(comments) || EOL;
@@ -85,15 +93,18 @@ export function print({
   const keys = Object.keys(pragmas);
 
   const printedObject = keys
-    .map(key => start + ' ' + printKeyValue(key, pragmas[key]) + line)
+    .map(key => printKeyValues(key, pragmas[key]))
+    .reduce((arr, next) => arr.concat(next), [])
+    .map(keyValue => start + ' ' + keyValue + line)
     .join('');
 
   if (!comments) {
     if (keys.length === 0) {
       return '';
     }
-    if (keys.length === 1) {
-      return `${head} ${printKeyValue(keys[0], pragmas[keys[0]])}${tail}`;
+    if (keys.length === 1 && !Array.isArray(pragmas[keys[0]])) {
+      const value = pragmas[keys[0]];
+      return `${head} ${printKeyValues(keys[0], value)[0]}${tail}`;
     }
   }
 
@@ -113,6 +124,6 @@ export function print({
   );
 }
 
-function printKeyValue(key, value) {
-  return `@${key} ${value}`.trim();
+function printKeyValues(key, valueOrArray) {
+  return [].concat(valueOrArray).map(value => `@${key} ${value}`.trim());
 }

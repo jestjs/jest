@@ -122,8 +122,24 @@ it('tries instantiating workers with the right options', () => {
   expect(Worker.mock.calls[0][0]).toEqual({
     forkOptions: {execArgv: []},
     maxRetries: 6,
+    workerId: 1,
     workerPath: '/tmp/baz.js',
   });
+});
+
+it('create multiple workers with unique worker ids', () => {
+  // eslint-disable-next-line no-new
+  new Farm('/tmp/baz.js', {
+    exposedMethods: ['foo', 'bar'],
+    forkOptions: {execArgv: []},
+    maxRetries: 6,
+    numWorkers: 3,
+  });
+
+  expect(Worker).toHaveBeenCalledTimes(3);
+  expect(Worker.mock.calls[0][0].workerId).toEqual(1);
+  expect(Worker.mock.calls[1][0].workerId).toEqual(2);
+  expect(Worker.mock.calls[2][0].workerId).toEqual(3);
 });
 
 it('makes a non-existing relative worker throw', () => {

@@ -52,7 +52,6 @@ export default function(j$) {
     const realClearTimeout = global.clearTimeout;
 
     const runnableResources = {};
-
     let currentSpec = null;
     const currentlyExecutingSuites = [];
     let currentDeclarationSuite = null;
@@ -173,6 +172,9 @@ export default function(j$) {
 
     const topSuite = new j$.Suite({
       id: getNextSuiteId(),
+      getTestPath() {
+        return j$.testPath;
+      },
     });
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
@@ -291,6 +293,9 @@ export default function(j$) {
         description,
         parentSuite: currentDeclarationSuite,
         throwOnExpectationFailure,
+        getTestPath() {
+          return j$.testPath;
+        },
       });
 
       return suite;

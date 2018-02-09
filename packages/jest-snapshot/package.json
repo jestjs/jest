@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "22.1.2",
+  "version": "22.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,7 +10,7 @@
   "dependencies": {
     "chalk": "^2.0.1",
     "jest-diff": "^22.1.0",
-    "jest-matcher-utils": "^22.1.0",
+    "jest-matcher-utils": "^22.2.0",
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
     "pretty-format": "^22.1.0"

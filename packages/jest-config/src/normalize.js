@@ -474,6 +474,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
@@ -481,6 +482,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'name':
       case 'noStackTrace':
       case 'notify':
+      case 'notifyMode':
       case 'onlyChanged':
       case 'outputFile':
       case 'passWithNoTests':
@@ -521,9 +523,18 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = argv.json;
-  newOptions.lastCommit = argv.lastCommit;
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
+
+  for (const key of [
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedSince',
+  ]) {
+    if (newOptions[key]) {
+      newOptions.onlyChanged = true;
+    }
+  }
 
   if (argv.all) {
     newOptions.onlyChanged = false;

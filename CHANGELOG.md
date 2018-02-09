@@ -1,14 +1,57 @@
 ## master
 
+### Fixes
+
+* `[babel-jest]` Revert "Remove retainLines from babel-jest"
+  ([#5496](https://github.com/facebook/jest/pull/5496))
+* `[jest-docblock]` Support multiple of the same `@pragma`.
+  ([#5154](https://github.com/facebook/jest/pull/5502))
+
 ### Features
 
+* `[jest-worker]` Assign a unique id for each worker and pass it to the child
+  process. It will be available via `process.env.JEST_WORKER_ID`
+  ([#5494](https://github.com/facebook/jest/pull/5494))
+
+### Chore & Maintenance
+* `[filenames]` Standardize file names in root ([#5500](https://github.com/facebook/jest/pull/5500))
+
+
+## jest 22.2.1
+
+### Fixes
+
+* `[jest-config]` "all" takes precedence over "lastCommit"
+  ([#5486](https://github.com/facebook/jest/pull/5486))
+
+## jest 22.2.0
+
+### Features
+
+* `[jest-runner]` Move test summary to after coverage report
+  ([#4512](https://github.com/facebook/jest/pull/4512))
+* `[jest-cli]` Added `--notifyMode` to specify when to be notified.
+  ([#5125](https://github.com/facebook/jest/pull/5125))
+* `[diff-sequences]` New package compares items in two sequences to find a
+  **longest common subsequence**.
+  ([#5407](https://github.com/facebook/jest/pull/5407))
+* `[jest-config]` Allow lastComit and changedFilesWithAncestor via JSON config
+  ([#5476](https://github.com/facebook/jest/pull/5476))
+* `[jest-util]` Add deletion to `process.env` as well
+  ([#5466](https://github.com/facebook/jest/pull/5466))
+* `[jest-util]` Add case-insensitive getters/setters to `process.env`
+  ([#5465](https://github.com/facebook/jest/pull/5465))
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
 
 ### Fixes
 
+* `[jest-cli]` Add trailing slash when checking root folder
+  ([#5464](https://github.com/facebook/jest/pull/5464))
+* `[jest-cli]` Hide interactive mode if there are no failed snapshot tests
+  ([#5450](https://github.com/facebook/jest/pull/5450))
 * `[babel-jest]` Remove retainLines from babel-jest
-  ([#5326](https://github.com/facebook/jest/pull/5439))
+  ([#5439](https://github.com/facebook/jest/pull/5439))
 * `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
   ([#5199](https://github.com/facebook/jest/issues/5199))
 * `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
@@ -25,7 +68,7 @@
 * `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
 * `[docs]` Add tutorial page for ES6 class mocks.
-  ([#5383]https://github.com/facebook/jest/pull/5383))
+  ([#5383](https://github.com/facebook/jest/pull/5383))
 * `[jest-resolve]` Search required modules in node_modules and then in custom
   paths. ([#5403](https://github.com/facebook/jest/pull/5403))
 * `[jest-resolve]` Get builtin modules from node core.
@@ -34,6 +77,11 @@
   not generate additional (invalid) paths by prepending each ancestor of `cwd`
   to the absolute path. Additionally, this fixes functionality in Windows OS.
   ([#5398](https://github.com/facebook/jest/pull/5398))
+
+### Chore & Maintenance
+
+* `[jest-util]` Implement watch plugins
+  ([#5399](https://github.com/facebook/jest/pull/5399))
 
 ## jest 22.1.4
 

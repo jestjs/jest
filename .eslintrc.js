@@ -6,7 +6,7 @@
  */
 
 const path = require('path');
-const customImportResolver = path.resolve('./eslint_import_resolver');
+const customImportResolver = path.resolve('./eslintImportResolver');
 
 module.exports = {
   extends: [
@@ -89,7 +89,7 @@ module.exports = {
         'scripts/**/*',
         'integration-tests/*/**/*',
         'website/*/**/*',
-        'eslint_import_resolver.js',
+        'eslintImportResolver.js',
       ],
       rules: {
         'prettier/prettier': [
@@ -150,8 +150,8 @@ module.exports = {
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'eslint_import_resolver.js',
-          'test_setup_file.js',
+          'eslintImportResolver.js',
+          'testSetupFile.js',
         ],
       },
     ],
@@ -168,7 +168,7 @@ module.exports = {
         trailingComma: 'all',
       },
     ],
-    'unicorn/filename-case': [2, {case: 'snakeCase'}],
+    'unicorn/filename-case': [1, {case: 'snakeCase'}],
   },
   settings: {
     'import/resolver': {

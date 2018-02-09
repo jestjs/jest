@@ -7,6 +7,37 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* List of talks & videos */
+
+const videoTypes = {
+  YOUTUBE: 'youtube',
+  IFRAME: 'iframe',
+};
+
+const videos = [
+  {
+    title: 'Rogelio Guzman - Jest Snapshots and Beyond - React Conf 2017',
+    type: videoTypes.YOUTUBE,
+    url: 'https://www.youtube.com/embed/HAuXJVI_bUs',
+    description:
+      '[Rogelio](https://twitter.com/rogeliog) shows how Jest might help you overcome the inertia to write & maintain tests with the help of a simple React Application.',
+  },
+  {
+    title: 'Snapshot testing - Anna Doubkova, React London 2017',
+    type: videoTypes.YOUTUBE,
+    url: 'https://www.youtube.com/embed/sCbGfi40IWk',
+    description:
+      'In this talk, [Anna Doubkova](https://twitter.com/lithinn) explains Snapshot Testing in brief while also highlighting testing pitfalls.',
+  },
+  {
+    title: 'Test React applications using Enzyme & Jest',
+    type: videoTypes.YOUTUBE,
+    url: 'https://www.youtube.com/embed/8Ww2QBVIw0I',
+    description:
+      'This talk by [Ryan Walsh](https://twitter.com/_rtwalsh) gives an introduction to testing [React](https://facebook.github.io/react/) components using [Enzyme](http://airbnb.io/enzyme/) and Jest.',
+  },
+];
+
 /* List of projects/orgs using your project for the users page */
 const users = [
   {
@@ -257,6 +288,8 @@ const siteConfig = {
   projectName: 'jest',
   repo: 'facebook/jest',
   users,
+  videos,
+  videoTypes,
   editUrl: repoUrl + '/edit/master/docs/',
   headerLinks: [
     {doc: 'getting-started', label: 'Docs'},
@@ -284,6 +317,8 @@ const siteConfig = {
   },
   scripts: ['https://buttons.github.io/buttons.js'],
   repoUrl,
+  siteConfigUrl:
+    'https://github.com/facebook/jest/edit/master/website/siteConfig.js',
 };
 
 module.exports = siteConfig;

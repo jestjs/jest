@@ -1131,4 +1131,13 @@ describe('testPathPattern', () => {
     });
     expect(options.testPathPattern).toBe('a|b|c|d');
   });
+
+  it('gives precedence to --all', () => {
+    const {options} = normalize(initialOptions, {
+      all: true,
+      onlyChanged: true,
+    });
+
+    expect(options.onlyChanged).toBe(false);
+  });
 });
