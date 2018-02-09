@@ -1,5 +1,7 @@
 ## master
 
+## jest 22.2.2
+
 ### Fixes
 
 * `[babel-jest]` Revert "Remove retainLines from babel-jest"
