@@ -25,7 +25,7 @@ const videos = [
     title: 'Snapshot testing - Anna Doubkova, React London 2017',
     type: videoTypes.YOUTUBE,
     url: 'https://www.youtube.com/embed/sCbGfi40IWk',
-    description: 'In this talk, [Anna Doubkova](https://twitter.com/lithinn) explains Snapshot Testing in brief, while also touching some of the bad stuff.',
+    description: 'In this talk, [Anna Doubkova](https://twitter.com/lithinn) explains Snapshot Testing in brief while also highlighting testing pitfalls.',
   },
   {
     title: 'Test React applications using Enzyme & Jest',
