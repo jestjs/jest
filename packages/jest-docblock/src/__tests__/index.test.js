@@ -119,6 +119,27 @@ describe('docblock', () => {
     });
   });
 
+  it('parses multiple of the same directives out of a docblock', () => {
+    const code =
+      '/**' +
+      os.EOL +
+      '' +
+      ' * @x foo' +
+      os.EOL +
+      '' +
+      ' * @x bar' +
+      os.EOL +
+      '' +
+      ' * @y' +
+      os.EOL +
+      '' +
+      ' */';
+    expect(docblock.parse(code)).toEqual({
+      x: ['foo', 'bar'],
+      y: '',
+    });
+  });
+
   it('parses directives out of a docblock with comments', () => {
     const code =
       '/**' +
@@ -392,6 +413,24 @@ describe('docblock', () => {
     };
     expect(docblock.print({pragmas})).toEqual(
       '/**' + os.EOL + ' * @flow' + os.EOL + ' * @format' + os.EOL + ' */',
+    );
+  });
+
+  it('prints docblocks with multiple of the same pragma', () => {
+    const pragmas = {
+      x: ['a', 'b'],
+      y: 'c',
+    };
+    expect(docblock.print({pragmas})).toEqual(
+      '/**' +
+        os.EOL +
+        ' * @x a' +
+        os.EOL +
+        ' * @x b' +
+        os.EOL +
+        ' * @y c' +
+        os.EOL +
+        ' */',
     );
   });
 
