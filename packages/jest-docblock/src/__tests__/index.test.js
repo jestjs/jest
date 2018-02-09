@@ -140,6 +140,26 @@ describe('docblock', () => {
     });
   });
 
+  it('parses >=3 of the same directives out of a docblock', () => {
+    const code =
+      '/**' +
+      os.EOL +
+      '' +
+      ' * @x foo' +
+      os.EOL +
+      '' +
+      ' * @x bar' +
+      os.EOL +
+      '' +
+      ' * @x baz' +
+      os.EOL +
+      '' +
+      ' */';
+    expect(docblock.parse(code)).toEqual({
+      x: ['foo', 'bar', 'baz'],
+    });
+  });
+
   it('parses directives out of a docblock with comments', () => {
     const code =
       '/**' +
@@ -433,7 +453,6 @@ describe('docblock', () => {
         ' */',
     );
   });
-
   it('prints docblocks with pragmas', () => {
     const pragmas = {
       flow: 'foo',

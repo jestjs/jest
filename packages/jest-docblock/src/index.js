@@ -10,6 +10,8 @@
 import detectNewline from 'detect-newline';
 import {EOL} from 'os';
 
+type Pragmas = {[key: string]: string | string[], __proto__: null};
+
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
@@ -31,15 +33,13 @@ export function strip(contents: string) {
   return match && match[0] ? contents.substring(match[0].length) : contents;
 }
 
-export function parse(
-  docblock: string,
-): {[key: string]: string, __proto__: null} {
+export function parse(docblock: string): Pragmas {
   return parseWithComments(docblock).pragmas;
 }
 
 export function parseWithComments(
   docblock: string,
-): {comments: string, pragmas: {[key: string]: string, __proto__: null}} {
+): {comments: string, pragmas: Pragmas} {
   const line = detectNewline(docblock) || EOL;
 
   docblock = docblock
@@ -82,7 +82,7 @@ export function print({
   pragmas = {},
 }: {
   comments?: string,
-  pragmas?: {[key: string]: string, __proto__: null},
+  pragmas?: Pragmas,
   __proto__: null,
 }): string {
   const line = detectNewline(comments) || EOL;
@@ -103,7 +103,8 @@ export function print({
       return '';
     }
     if (keys.length === 1 && !Array.isArray(pragmas[keys[0]])) {
-      return `${head} ${printKeyValues(keys[0], pragmas[keys[0]])}${tail}`;
+      const value = pragmas[keys[0]];
+      return `${head} ${printKeyValues(keys[0], value)[0]}${tail}`;
     }
   }
 
