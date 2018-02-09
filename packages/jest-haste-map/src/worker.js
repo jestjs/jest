@@ -37,7 +37,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   const filePath = data.filePath;
   const content = fs.readFileSync(filePath, 'utf8');
   let module;
-  let id;
+  let id: ?string;
   let dependencies;
 
   if (filePath.endsWith(PACKAGE_JSON)) {
@@ -51,7 +51,8 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       id = hasteImpl.getHasteName(filePath);
     } else {
       const doc = docblock.parse(docblock.extract(content));
-      id = doc.providesModule || doc.provides;
+      const idPragmas = [].concat(doc.providesModule || doc.provides);
+      id = idPragmas[0];
     }
     dependencies = extractRequires(content);
     if (id) {
