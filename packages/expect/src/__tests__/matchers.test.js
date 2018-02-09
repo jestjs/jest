@@ -8,6 +8,7 @@
 
 const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
+const Immutable = require('immutable');
 
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
@@ -200,12 +201,31 @@ describe('.toEqual()', () => {
     [null, undefined],
     [[1], [2]],
     [[1, 2], [2, 1]],
+    [Immutable.List([1]), Immutable.List([2])],
+    [Immutable.List([1, 2]), Immutable.List([2, 1])],
     [new Map(), new Set()],
     [new Set([1, 2]), new Set()],
     [new Set([1, 2]), new Set([1, 2, 3])],
+    [Immutable.Set([1, 2]), Immutable.Set()],
+    [Immutable.Set([1, 2]), Immutable.Set([1, 2, 3])],
+    [Immutable.OrderedSet([1, 2]), Immutable.OrderedSet([2, 1])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one']])],
     [new Map([['a', 0]]), new Map([['b', 0]])],
     [new Map([['v', 1]]), new Map([['v', 2]])],
+    [Immutable.Map({a: 0}), Immutable.Map({b: 0})],
+    [Immutable.Map({v: 1}), Immutable.Map({v: 2})],
+    [
+      Immutable.OrderedMap()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.OrderedMap()
+        .set(2, 'two')
+        .set(1, 'one'),
+    ],
+    [
+      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
+      Immutable.Map({1: Immutable.Map({2: {a: 11}})}),
+    ],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
     [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
@@ -236,14 +256,50 @@ describe('.toEqual()', () => {
     ['abc', 'abc'],
     [[1], [1]],
     [[1, 2], [1, 2]],
+    [Immutable.List([1]), Immutable.List([1])],
+    [Immutable.List([1, 2]), Immutable.List([1, 2])],
     [{}, {}],
     [{a: 99}, {a: 99}],
     [new Set(), new Set()],
     [new Set([1, 2]), new Set([1, 2])],
     [new Set([1, 2]), new Set([2, 1])],
+    [Immutable.Set(), Immutable.Set()],
+    [Immutable.Set([1, 2]), Immutable.Set([1, 2])],
+    [Immutable.Set([1, 2]), Immutable.Set([2, 1])],
+    [Immutable.OrderedSet(), Immutable.OrderedSet()],
+    [Immutable.OrderedSet([1, 2]), Immutable.OrderedSet([1, 2])],
     [new Map(), new Map()],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one'], [2, 'two']])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[2, 'two'], [1, 'one']])],
+    [Immutable.Map(), Immutable.Map()],
+    [
+      Immutable.Map()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.Map()
+        .set(1, 'one')
+        .set(2, 'two'),
+    ],
+    [
+      Immutable.Map()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.Map()
+        .set(2, 'two')
+        .set(1, 'one'),
+    ],
+    [
+      Immutable.OrderedMap()
+        .set(1, 'one')
+        .set(2, 'two'),
+      Immutable.OrderedMap()
+        .set(1, 'one')
+        .set(2, 'two'),
+    ],
+    [
+      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
+      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
+    ],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
     [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
     ['abcd', jestExpect.stringContaining('bc')],
