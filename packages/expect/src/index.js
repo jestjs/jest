@@ -254,7 +254,7 @@ const makeThrowingMatcher = (
 };
 
 expect.extend = (matchers: MatchersObject): void =>
-  setMatchers(matchers, false);
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
@@ -282,9 +282,9 @@ const _validateResult = result => {
 };
 
 // add default jest matchers
-setMatchers(matchers, true);
-setMatchers(spyMatchers, true);
-setMatchers(toThrowMatchers, true);
+setMatchers(matchers, true, expect);
+setMatchers(spyMatchers, true, expect);
+setMatchers(toThrowMatchers, true, expect);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {

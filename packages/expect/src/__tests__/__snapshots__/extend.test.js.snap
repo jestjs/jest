@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`defines asymmetric matchers 1`] = `"val.toAsymmetricMatcher is not a function"`;
+
 exports[`is available globally 1`] = `"expected 15 to be divisible by 2"`;
 
 exports[`is ok if there is no message specified 1`] = `"<red>No message was specified for this matcher.</>"`;

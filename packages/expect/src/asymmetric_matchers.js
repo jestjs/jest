@@ -15,7 +15,7 @@ import {
   isUndefined,
 } from './jasmine_utils';
 
-class AsymmetricMatcher {
+export class AsymmetricMatcher {
   $$typeof: Symbol;
 
   constructor() {
