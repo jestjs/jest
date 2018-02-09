@@ -1,12 +1,12 @@
 const React = require('react');
 
-const { Container, MarkdownBlock } = require('../../core/CompLibrary.js');
-const { translate } = require('../../server/translate.js');
+const {Container, MarkdownBlock} = require('../../core/CompLibrary.js');
+const {translate} = require('../../server/translate.js');
 const siteConfig = require(process.cwd() + '/siteConfig.js');
 
 class Video extends React.PureComponent {
     render() {
-        const { url, type } = this.props;
+        const {url, type} = this.props;
 
         switch (type) {
             case siteConfig.videoTypes.YOUTUBE: {
@@ -36,9 +36,7 @@ class Video extends React.PureComponent {
 
 class Videos extends React.Component {
     render() {
-        const showcase = siteConfig.videos.map((video, index) => {
-            const { title, description, type, url } = video;
-
+        const showcase = siteConfig.videos.map(({title, description, type, url}, index) => {
             const textMarkup = (
                 <div className="blockContent">
                     <h2>
@@ -98,7 +96,7 @@ class Videos extends React.Component {
                         </div>
                     </div>
                     {showcase}
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={{textAlign: 'center'}}>
                         <a href={siteConfig.siteConfigUrl} className="button">
                             <translate>
                                 Add your favorite talk
