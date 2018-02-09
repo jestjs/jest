@@ -364,7 +364,6 @@ class Index extends React.Component {
             </div>
           </Container>
 
-
           <div className="productShowcaseSection paddingBottom">
             <h2>
               <translate>Who's using Jest?</translate>
