@@ -16,11 +16,9 @@ describe('CustomConsole', () => {
 
   beforeEach(() => {
     _console = new CustomConsole(process.stdout, process.stderr);
-    // override the _logToParentConsole method to be able and assert on the stdout.
-    // $FlowFixMe
-    _console._logToParentConsole = message => {
+    jest.spyOn(_console, '_logToParentConsole').mockImplementation(message => {
       _stdout += message + '\n';
-    };
+    });
 
     _stdout = '';
   });
