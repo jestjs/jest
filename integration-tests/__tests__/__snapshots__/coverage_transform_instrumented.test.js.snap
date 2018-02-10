@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`maps code coverage against original source 1`] = `
+exports[`code coverage for transform instrumented code 1`] = `
 Object {
   "covered.js": Object {
     "_coverageSchema": "332fd63041d2c1bcb487cc26dd0d5f7d97098a6c",

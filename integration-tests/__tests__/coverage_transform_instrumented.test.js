@@ -15,7 +15,7 @@ const skipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, run} = require('../utils');
 const runJest = require('../runJest');
 
-const dir = path.resolve(__dirname, '../coverage-remapping-inline-sourcemap');
+const dir = path.resolve(__dirname, '../coverage-transform-instrumented');
 const coverageDir = path.join(dir, 'coverage');
 
 skipOnWindows.suite();
@@ -24,9 +24,9 @@ beforeAll(() => {
   cleanup(coverageDir);
 });
 
-it('maps code coverage against original source', () => {
+it('code coverage for transform instrumented code', () => {
   run('yarn', dir);
-  const result = runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
+  const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.status).toBe(0);
 
