@@ -12,7 +12,7 @@ exports[`SnapshotInteractiveMode updateWithResults overlay handle progress UI 1`
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test file.</>
+<dim> › Press </>s<dim> to skip the current test suite.</>
 <dim> › Press </>q<dim> to quit Interactive Snapshot Update Mode.</>
 <dim> › Press </>Enter<dim> to trigger a test run.</>
 "

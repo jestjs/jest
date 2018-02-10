@@ -54,7 +54,7 @@ export default class SnapshotInteractiveMode {
       this._testFilePaths.length > 1
         ? chalk.dim(' \u203A Press ') +
           's' +
-          chalk.dim(' to skip the current test file.')
+          chalk.dim(' to skip the current test suite.')
         : '',
 
       chalk.dim(' \u203A Press ') +
