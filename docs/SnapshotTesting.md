@@ -127,7 +127,7 @@ Failed snapshots can also be updated interactively in watch mode:
 
 ![](/jest/img/content/interactiveSnapshot.png)
 
-Once you enter the Interactive Snapshot Mode, Jest will step you through
+Once you enter Interactive Snapshot Mode, Jest will step you through
 the failed snapshots one test suite at a time and give you the opportunity to
 review the failed output.
 
