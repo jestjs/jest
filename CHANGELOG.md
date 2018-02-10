@@ -6,7 +6,7 @@
   `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
   `groupEnd`, `time`, `timeEnd`
   ([#5514](https://github.com/facebook/jest/pull/5514))
-* `[docs]` Add information about Interactive Snapshot update ([#5291](https://github.com/facebook/jest/pull/5291))
+* `[docs]` Add documentation for interactive snapshot mode ([#5291](https://github.com/facebook/jest/pull/5291))
 
 ## jest 22.2.2
 
@@ -144,9 +144,7 @@
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
   case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
-* `[jest-cli]` Interactive Snapshot Update: allow to review and update
-  individual snapshot failure
-  ([#3831](https://github.com/facebook/jest/pull/3831))
+* `[jest-cli]` Add interactive snapshot mode ([#3831](https://github.com/facebook/jest/pull/3831))
 
 ### Fixes
 
