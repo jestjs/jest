@@ -15,6 +15,8 @@ import {
   isUndefined,
 } from './jasmine_utils';
 
+import {emptyObject} from './utils';
+
 class AsymmetricMatcher {
   $$typeof: Symbol;
 
@@ -121,7 +123,7 @@ class ArrayContaining extends AsymmetricMatcher {
   asymmetricMatch(other: Array<any>) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
-        "You must provide an array to ArrayContaining, not '" +
+        `You must provide an array to ${this.toString()}, not '` +
           typeof this.sample +
           "'.",
       );
@@ -143,6 +145,16 @@ class ArrayContaining extends AsymmetricMatcher {
   }
 }
 
+class ArrayNotContaining extends ArrayContaining {
+  asymmetricMatch(other: Array<any>) {
+    return !super.asymmetricMatch(other);
+  }
+
+  toString() {
+    return 'ArrayNotContaining';
+  }
+}
+
 class ObjectContaining extends AsymmetricMatcher {
   sample: Object;
 
@@ -154,7 +166,7 @@ class ObjectContaining extends AsymmetricMatcher {
   asymmetricMatch(other: Object) {
     if (typeof this.sample !== 'object') {
       throw new Error(
-        "You must provide an object to ObjectContaining, not '" +
+        `You must provide an object to ${this.toString()}, not '` +
           typeof this.sample +
           "'.",
       );
@@ -178,6 +190,35 @@ class ObjectContaining extends AsymmetricMatcher {
 
   getExpectedType() {
     return 'object';
+  }
+}
+
+class ObjectNotContaining extends ObjectContaining {
+  asymmetricMatch(other: Object) {
+    if (typeof this.sample !== 'object') {
+      throw new Error(
+        `You must provide an object to ${this.toString()}, not '` +
+          typeof this.sample +
+          "'.",
+      );
+    }
+
+    for (const property in this.sample) {
+      if (
+        hasProperty(other, property) &&
+        equals(this.sample[property], other[property]) &&
+        !emptyObject(this.sample[property]) &&
+        !emptyObject(other[property])
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  toString() {
+    return 'ObjectNotContaining';
   }
 }
 
@@ -206,6 +247,16 @@ class StringContaining extends AsymmetricMatcher {
 
   getExpectedType() {
     return 'string';
+  }
+}
+
+class StringNotContaining extends StringContaining {
+  asymmetricMatch(other: string) {
+    return !super.asymmetricMatch(other);
+  }
+
+  toString() {
+    return 'StringNotContaining';
   }
 }
 
@@ -238,13 +289,27 @@ class StringMatching extends AsymmetricMatcher {
   }
 }
 
+class StringNotMatching extends StringMatching {
+  asymmetricMatch(other: string) {
+    return !super.asymmetricMatch(other);
+  }
+}
+
 export const any = (expectedObject: any) => new Any(expectedObject);
 export const anything = () => new Anything();
 export const arrayContaining = (sample: Array<any>) =>
   new ArrayContaining(sample);
+export const arrayNotContaining = (sample: Array<any>) =>
+  new ArrayNotContaining(sample);
 export const objectContaining = (sample: Object) =>
   new ObjectContaining(sample);
+export const objectNotContaining = (sample: Object) =>
+  new ObjectNotContaining(sample);
 export const stringContaining = (expected: string) =>
   new StringContaining(expected);
+export const stringNotContaining = (expected: string) =>
+  new StringNotContaining(expected);
 export const stringMatching = (expected: string | RegExp) =>
   new StringMatching(expected);
+export const stringNotMatching = (expected: string | RegExp) =>
+  new StringNotMatching(expected);

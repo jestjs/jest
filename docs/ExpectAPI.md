@@ -223,6 +223,14 @@ describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
 });
 ```
 
+### `expect.arrayNotContaining(array)`
+
+`expect.arrayNotContaining(array)` matches a received array which contains none of
+the elements in the expected array. That is, the expected array **is not a subset**
+of the received array.
+
+It is the inverse of `expect.arrayContaining`.
+
 ### `expect.assertions(number)`
 
 `expect.assertions(number)` verifies that a certain number of assertions are
@@ -273,6 +281,7 @@ test('prepareState prepares a valid state', () => {
 The `expect.hasAssertions()` call ensures that the `prepareState` callback
 actually gets called.
 
+
 ### `expect.objectContaining(object)`
 
 `expect.objectContaining(object)` matches any received object that recursively
@@ -300,12 +309,26 @@ test('onPress gets called with the right thing', () => {
 });
 ```
 
-### `expect.stringContaining(string)`
+### `expect.objectNotContaining(object)`
 
-##### available in Jest **19.0.0+**
+`expect.objectNotContaining(object)` matches any received object that does not recursively
+match the expected properties. That is, the expected object **is not a subset** of
+the received object. Therefore, it matches a received object which contains
+properties that are **not** in the expected object.
+
+It is the inverse of `expect.objectContaining`.
+
+### `expect.stringContaining(string)`
 
 `expect.stringContaining(string)` matches any received string that contains the
 exact expected string.
+
+### `expect.stringNotContaining(string)`
+
+`expect.stringNotContaining(string)` matches any received string that does not contain the
+exact expected string.
+
+It is the inverse of `expect.stringContaining`.
 
 ### `expect.stringMatching(regexp)`
 
@@ -339,6 +362,13 @@ describe('stringMatching in arrayContaining', () => {
   });
 });
 ```
+
+### `expect.stringNotMatching(regexp)`
+
+`expect.stringNotMatching(regexp)` matches any received string that does not match the
+expected regexp.
+
+It is the inverse of `expect.stringMatching`.
 
 ### `expect.addSnapshotSerializer(serializer)`
 

@@ -209,3 +209,7 @@ export const isError = (value: any) => {
       return value instanceof Error;
   }
 };
+
+export function emptyObject(obj: any) {
+  return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
+}
