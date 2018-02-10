@@ -80,35 +80,35 @@ export default class BufferedConsole extends Console {
     this._counters[label] = 0;
   }
 
-  debug(...args: Array<mixed>) {
-    this._log('debug', format.apply(null, arguments));
+  debug(...args: Array<any>) {
+    this._log('debug', format(...args));
   }
 
-  dir(...args: Array<mixed>) {
-    this._log('dir', format.apply(null, arguments));
+  dir(...args: Array<any>) {
+    this._log('dir', format(...args));
   }
 
-  dirxml(...args: Array<mixed>) {
-    this._log('dirxml', format.apply(null, arguments));
+  dirxml(...args: Array<any>) {
+    this._log('dirxml', format(...args));
   }
 
-  error(...args: Array<mixed>) {
-    this._log('error', format.apply(null, arguments));
+  error(...args: Array<any>) {
+    this._log('error', format(...args));
   }
 
-  group(...args: Array<mixed>) {
+  group(...args: Array<any>) {
     this._groupDepth++;
 
     if (args.length > 0) {
-      this._log('group', chalk.bold(format.apply(null, arguments)));
+      this._log('group', chalk.bold(format(...args)));
     }
   }
 
-  groupCollapsed(...args: Array<mixed>) {
+  groupCollapsed(...args: Array<any>) {
     this._groupDepth++;
 
     if (args.length > 0) {
-      this._log('groupCollapsed', chalk.bold(format.apply(null, arguments)));
+      this._log('groupCollapsed', chalk.bold(format(...args)));
     }
   }
 
@@ -118,12 +118,12 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  info(...args: Array<mixed>) {
-    this._log('info', format.apply(null, arguments));
+  info(...args: Array<any>) {
+    this._log('info', format(...args));
   }
 
-  log(...args: Array<mixed>) {
-    this._log('log', format.apply(null, arguments));
+  log(...args: Array<any>) {
+    this._log('log', format(...args));
   }
 
   time(label: string = 'default') {
@@ -145,8 +145,8 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  warn(...args: Array<mixed>) {
-    this._log('warn', format.apply(null, arguments));
+  warn(...args: Array<any>) {
+    this._log('warn', format(...args));
   }
 
   getBuffer() {
