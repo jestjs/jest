@@ -6,6 +6,7 @@
   `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
   `groupEnd`, `time`, `timeEnd`
   ([#5514](https://github.com/facebook/jest/pull/5514))
+* `[docs]` Add information about Interactive Snapshot update ([#5291](https://github.com/facebook/jest/pull/5291))
 
 ## jest 22.2.2
 
@@ -87,8 +88,6 @@
   not generate additional (invalid) paths by prepending each ancestor of `cwd`
   to the absolute path. Additionally, this fixes functionality in Windows OS.
   ([#5398](https://github.com/facebook/jest/pull/5398))
-* `[docs]` Add information about Interactive Snapshot update
-  ([#5291](https://github.com/facebook/jest/pull/5291))
 
 ### Chore & Maintenance
 
