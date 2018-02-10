@@ -17,6 +17,7 @@ export type TransformedSource = {|
 
 export type TransformResult = {|
   script: Script,
+  mapCoverage: boolean,
   sourceMapPath: ?string,
 |};
 

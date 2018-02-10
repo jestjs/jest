@@ -95,6 +95,7 @@ class Runtime {
   _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: ModuleRegistry;
+  _needsCoverageMapped: string[];
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -129,6 +130,7 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
     this._moduleRegistry = Object.create(null);
+    this._needsCoverageMapped = [];
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
@@ -435,10 +437,10 @@ class Runtime {
     return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
-  getSourceMapInfo(coveredFiles: Array<string>) {
+  getSourceMapInfo() {
     return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
       if (
-        coveredFiles.includes(sourcePath) &&
+        this._needsCoverageMapped.includes(sourcePath) &&
         fs.existsSync(this._sourceMapRegistry[sourcePath])
       ) {
         result[sourcePath] = this._sourceMapRegistry[sourcePath];
@@ -533,6 +535,9 @@ class Runtime {
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
+      if (transformedFile.mapCoverage) {
+        this._needsCoverageMapped.push(filename);
+      }
     }
 
     const wrapper = this._environment.runScript(transformedFile.script)[

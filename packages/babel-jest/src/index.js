@@ -74,6 +74,7 @@ const createTransformer = (options: any): Transformer => {
   options = Object.assign({}, options, {
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
+    sourceMaps: 'both',
   });
   delete options.cacheDirectory;
   delete options.filename;
@@ -110,18 +111,11 @@ const createTransformer = (options: any): Transformer => {
       const altExts = config.moduleFileExtensions.map(
         extension => '.' + extension,
       );
-      const shouldUseInline =
-        transformOptions &&
-        (transformOptions.returnSourceString == null ||
-          transformOptions.returnSourceString);
-      const sourceMapOpts = {
-        sourceMaps: shouldUseInline ? 'inline' : true,
-      };
       if (babelUtil && !babelUtil.canCompile(filename, altExts)) {
         return src;
       }
 
-      const theseOptions = Object.assign({filename}, options, sourceMapOpts);
+      const theseOptions = Object.assign({filename}, options);
       if (transformOptions && transformOptions.instrument) {
         theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js
@@ -144,7 +138,12 @@ const createTransformer = (options: any): Transformer => {
         return src;
       }
 
-      return shouldUseInline ? transformResult.code : transformResult;
+      const shouldReturnCodeOnly =
+        transformOptions &&
+        (transformOptions.returnSourceString == null ||
+          transformOptions.returnSourceString);
+
+      return shouldReturnCodeOnly ? transformResult.code : transformResult;
     },
   };
 };

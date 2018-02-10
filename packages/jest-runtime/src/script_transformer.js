@@ -185,6 +185,18 @@ export default class ScriptTransformer {
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
+    const shouldCallTransform =
+      transform && shouldTransform(filename, this._config);
+
+    // That means that the transform has a custom instrumentation
+    // logic and will handle it based on `config.collectCoverage` option
+    const transformWillInstrument =
+      shouldCallTransform && transform && transform.canInstrument;
+
+    // If we handle the coverage instrumentation, we should try to map code
+    // coverage against original source with any provided source map
+    const mapCoverage = instrument && !transformWillInstrument;
+
     if (code) {
       // This is broken: we return the code, and a path for the source map
       // directly from the cache. But, nothing ensures the source map actually
@@ -192,6 +204,7 @@ export default class ScriptTransformer {
       // two separate processes write concurrently to the same cache files.
       return {
         code,
+        mapCoverage,
         sourceMapPath,
       };
     }
@@ -201,7 +214,7 @@ export default class ScriptTransformer {
       map: null,
     };
 
-    if (transform && shouldTransform(filename, this._config)) {
+    if (transform && shouldCallTransform) {
       const processed = transform.process(content, filename, this._config, {
         instrument,
         returnSourceString: false,
@@ -228,11 +241,7 @@ export default class ScriptTransformer {
       }
     }
 
-    // That means that the transform has a custom instrumentation
-    // logic and will handle it based on `config.collectCoverage` option
-    const transformDidInstrument = transform && transform.canInstrument;
-
-    if (!transformDidInstrument && instrument) {
+    if (!transformWillInstrument && instrument) {
       code = this._instrumentFile(filename, transformed.code);
     } else {
       code = transformed.code;
@@ -252,6 +261,7 @@ export default class ScriptTransformer {
 
     return {
       code,
+      mapCoverage,
       sourceMapPath,
     };
   }
@@ -270,6 +280,7 @@ export default class ScriptTransformer {
 
     let wrappedCode: string;
     let sourceMapPath: ?string = null;
+    let mapCoverage = false;
 
     const willTransform =
       !isInternalModule &&
@@ -286,11 +297,13 @@ export default class ScriptTransformer {
 
         wrappedCode = wrap(transformedSource.code);
         sourceMapPath = transformedSource.sourceMapPath;
+        mapCoverage = transformedSource.mapCoverage;
       } else {
         wrappedCode = wrap(content);
       }
 
       return {
+        mapCoverage,
         script: new vm.Script(wrappedCode, {
           displayErrors: true,
           filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,

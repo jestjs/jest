@@ -55,12 +55,9 @@
 
 ### Chore & Maintenance
 
-<<<<<<< HEAD
 * `[filenames]` Standardize file names in root
   ([#5500](https://github.com/facebook/jest/pull/5500))
 
-=======
->>>>>>> 429db664... * Removed usage of mapCoverage.
 ## jest 22.2.1
 
 ### Fixes
