@@ -10,9 +10,9 @@
 
 const path = require('path');
 const {sync: spawnSync} = require('cross-spawn');
-const skipOnWindows = require('../../../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 

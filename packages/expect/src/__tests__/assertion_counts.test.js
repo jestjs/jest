@@ -10,7 +10,7 @@
 
 const jestExpect = require('../');
 
-const skipOnWindows = require('../../../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
 
 describe('.assertions()', () => {
   it('does not throw', () => {
@@ -31,7 +31,7 @@ describe('.assertions()', () => {
 });
 
 describe('.hasAssertions()', () => {
-  skipOnWindows.suite();
+  SkipOnWindows.suite();
   it('does not throw if there is an assertion', () => {
     jestExpect.hasAssertions();
     jestExpect('a').toBe('a');

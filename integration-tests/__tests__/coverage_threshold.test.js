@@ -10,13 +10,13 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, writeFiles} = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage-threshold');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

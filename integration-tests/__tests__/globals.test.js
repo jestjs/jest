@@ -11,7 +11,7 @@
 
 const path = require('path');
 const os = require('os');
-const skipOnWindows = require('../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
 const {createEmptyPackage, writeFiles, cleanup} = require('../utils');
@@ -19,7 +19,7 @@ const {createEmptyPackage, writeFiles, cleanup} = require('../utils');
 const DIR = path.resolve(os.tmpdir(), 'global-variables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => {
   cleanup(DIR);

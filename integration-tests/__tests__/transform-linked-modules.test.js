@@ -2,10 +2,10 @@
 
 'use strict';
 
-const skipOnWindows = require('../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 it('should transform linked modules', () => {
   const result = runJest.json('transform-linked-modules', ['--no-cache']).json;

@@ -11,13 +11,13 @@
 
 const path = require('path');
 const os = require('os');
-const skipOnWindows = require('../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, writeFiles} = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(os.tmpdir(), 'log_heap_usage_test');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
