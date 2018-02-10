@@ -8,7 +8,7 @@
  */
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {
   run,
   cleanup,
@@ -20,7 +20,7 @@ const runJest = require('../runJest');
 const os = require('os');
 
 describe('babel-jest', () => {
-  skipOnWindows.suite();
+  SkipOnWindows.suite();
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {

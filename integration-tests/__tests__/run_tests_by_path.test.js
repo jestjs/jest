@@ -14,10 +14,10 @@ import os from 'os';
 import path from 'path';
 const {cleanup, writeFiles} = require('../utils');
 
-const skipOnWindows = require('../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const DIR = path.resolve(os.tmpdir(), 'run_tests_by_path_test');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

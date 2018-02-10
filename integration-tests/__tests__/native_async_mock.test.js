@@ -10,11 +10,11 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/SkipOnWindows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {run, extractSummary} = require('../utils');
 const runJest = require('../runJest');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 const dir = path.resolve(__dirname, '..', 'native-async-mock');
 
 test('mocks async functions', () => {
