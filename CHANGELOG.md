@@ -1,5 +1,12 @@
 ## master
 
+### Features
+
+* `[jest-util]` Add the following methods to the "console" implementations:
+  `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
+  `groupEnd`, `time`, `timeEnd`
+  ([#5514](https://github.com/facebook/jest/pull/5514))
+
 ## jest 22.2.2
 
 ### Fixes
@@ -16,8 +23,9 @@
   ([#5494](https://github.com/facebook/jest/pull/5494))
 
 ### Chore & Maintenance
-* `[filenames]` Standardize file names in root ([#5500](https://github.com/facebook/jest/pull/5500))
 
+* `[filenames]` Standardize file names in root
+  ([#5500](https://github.com/facebook/jest/pull/5500))
 
 ## jest 22.2.1
 
