@@ -1,15 +1,23 @@
 ## master
 
+## jest 22.2.2
+
 ### Fixes
 
 * `[babel-jest]` Revert "Remove retainLines from babel-jest"
   ([#5496](https://github.com/facebook/jest/pull/5496))
+* `[jest-docblock]` Support multiple of the same `@pragma`.
+  ([#5154](https://github.com/facebook/jest/pull/5502))
 
 ### Features
 
 * `[jest-worker]` Assign a unique id for each worker and pass it to the child
   process. It will be available via `process.env.JEST_WORKER_ID`
   ([#5494](https://github.com/facebook/jest/pull/5494))
+
+### Chore & Maintenance
+* `[filenames]` Standardize file names in root ([#5500](https://github.com/facebook/jest/pull/5500))
+
 
 ## jest 22.2.1
 

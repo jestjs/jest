@@ -54,6 +54,7 @@ export default function Suite(attrs: Object) {
     description: this.description,
     fullName: this.getFullName(),
     failedExpectations: [],
+    testPath: attrs.getTestPath(),
   };
 }
 

@@ -350,6 +350,18 @@ class Index extends React.Component {
                 </div>
               </div>
             </div>
+
+            <div
+              className="productShowcaseSection paddingTop"
+              style={{textAlign: 'center'}}
+            >
+              <a
+                className="button"
+                href={siteConfig.baseUrl + this.props.language + '/videos.html'}
+              >
+                <translate>Watch more videos</translate>
+              </a>
+            </div>
           </Container>
 
           <div className="productShowcaseSection paddingBottom">
