@@ -7,19 +7,32 @@
  * @flow
  */
 
-import type {ConsoleBuffer, LogMessage, LogType} from 'types/Console';
+import type {
+  ConsoleBuffer,
+  LogMessage,
+  LogType,
+  LogCounters,
+  LogTimers,
+} from 'types/Console';
 
 import {Console} from 'console';
 import {format} from 'util';
+import chalk from 'chalk';
 import callsites from 'callsites';
 
 export default class BufferedConsole extends Console {
   _buffer: ConsoleBuffer;
+  _counters: LogCounters;
+  _timers: LogTimers;
+  _groupDepth: number;
 
   constructor() {
     const buffer = [];
     super({write: message => BufferedConsole.write(buffer, 'log', message)});
     this._buffer = buffer;
+    this._counters = {};
+    this._timers = {};
+    this._groupDepth = 0;
   }
 
   static write(
@@ -30,28 +43,110 @@ export default class BufferedConsole extends Console {
   ) {
     const call = callsites()[level != null ? level : 2];
     const origin = call.getFileName() + ':' + call.getLineNumber();
-    buffer.push({message, origin, type});
+
+    buffer.push({
+      message,
+      origin,
+      type,
+    });
+
     return buffer;
   }
 
-  debug() {
-    BufferedConsole.write(this._buffer, 'debug', format.apply(null, arguments));
+  _log(type: LogType, message: LogMessage) {
+    BufferedConsole.write(
+      this._buffer,
+      type,
+      '  '.repeat(this._groupDepth) + message,
+      3,
+    );
   }
 
-  log() {
-    BufferedConsole.write(this._buffer, 'log', format.apply(null, arguments));
+  assert(...args: Array<any>) {
+    if (args[0]) {
+      this._log('assert', format(...args.slice(1)));
+    }
   }
 
-  info() {
-    BufferedConsole.write(this._buffer, 'info', format.apply(null, arguments));
+  count(label: string = 'default') {
+    if (!this._counters[label]) {
+      this._counters[label] = 0;
+    }
+
+    this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  warn() {
-    BufferedConsole.write(this._buffer, 'warn', format.apply(null, arguments));
+  countReset(label: string = 'default') {
+    this._counters[label] = 0;
   }
 
-  error() {
-    BufferedConsole.write(this._buffer, 'error', format.apply(null, arguments));
+  debug(...args: Array<any>) {
+    this._log('debug', format(...args));
+  }
+
+  dir(...args: Array<any>) {
+    this._log('dir', format(...args));
+  }
+
+  dirxml(...args: Array<any>) {
+    this._log('dirxml', format(...args));
+  }
+
+  error(...args: Array<any>) {
+    this._log('error', format(...args));
+  }
+
+  group(...args: Array<any>) {
+    this._groupDepth++;
+
+    if (args.length > 0) {
+      this._log('group', chalk.bold(format(...args)));
+    }
+  }
+
+  groupCollapsed(...args: Array<any>) {
+    this._groupDepth++;
+
+    if (args.length > 0) {
+      this._log('groupCollapsed', chalk.bold(format(...args)));
+    }
+  }
+
+  groupEnd() {
+    if (this._groupDepth > 0) {
+      this._groupDepth--;
+    }
+  }
+
+  info(...args: Array<any>) {
+    this._log('info', format(...args));
+  }
+
+  log(...args: Array<any>) {
+    this._log('log', format(...args));
+  }
+
+  time(label: string = 'default') {
+    if (this._timers[label]) {
+      return;
+    }
+
+    this._timers[label] = new Date();
+  }
+
+  timeEnd(label: string = 'default') {
+    const startTime = this._timers[label];
+
+    if (startTime) {
+      const endTime = new Date();
+      const time = (endTime - startTime) / 1000;
+      this._log('time', format(`${label}: ${time}ms`));
+      delete this._timers[label];
+    }
+  }
+
+  warn(...args: Array<any>) {
+    this._log('warn', format(...args));
   }
 
   getBuffer() {

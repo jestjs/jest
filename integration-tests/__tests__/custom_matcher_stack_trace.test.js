@@ -10,9 +10,9 @@
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../utils');
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 test('works with custom matchers', () => {
   const {stderr} = runJest('custom-matcher-stack-trace');

@@ -9,13 +9,13 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {run} = require('../utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 if (process.platform !== 'win32') {
   beforeEach(() => {

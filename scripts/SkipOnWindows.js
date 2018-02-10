@@ -9,7 +9,7 @@
 
 /* eslint-disable jest/no-focused-tests */
 
-const skipOnWindows = {
+const SkipOnWindows = {
   suite() {
     if (process.platform === 'win32') {
       fit('does not work on Windows', () => {
@@ -27,4 +27,4 @@ const skipOnWindows = {
   },
 };
 
-module.exports = skipOnWindows;
+module.exports = SkipOnWindows;
