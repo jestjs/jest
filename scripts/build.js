@@ -29,7 +29,7 @@ const babel = require('babel-core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const stringLength = require('string-length');
-const getPackages = require('./_getPackages');
+const getPackages = require('./getPackages');
 const browserBuild = require('./browserBuild');
 
 const OK = chalk.reset.inverse.bold.green(' DONE ');

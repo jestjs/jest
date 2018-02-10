@@ -9,7 +9,7 @@
 
 const {spawnSync} = require('child_process');
 const path = require('path');
-const skipOnWindows = require('../../../../scripts/skip_on_windows');
+const skipOnWindows = require('../../../../scripts/SkipOnWindows');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 
