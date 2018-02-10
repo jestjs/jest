@@ -6,6 +6,7 @@
   `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
   `groupEnd`, `time`, `timeEnd`
   ([#5514](https://github.com/facebook/jest/pull/5514))
+* `[docs]` Add documentation for interactive snapshot mode ([#5291](https://github.com/facebook/jest/pull/5291))
 
 ## jest 22.2.2
 
@@ -143,6 +144,7 @@
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
   case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
+* `[jest-cli]` Add interactive snapshot mode ([#3831](https://github.com/facebook/jest/pull/3831))
 
 ### Fixes
 
@@ -171,9 +173,6 @@
   ([#5279](https://github.com/facebook/jest/pull/5279))
 * `[jest-config]` Fix breaking change in `--testPathPattern`
   ([#5269](https://github.com/facebook/jest/pull/5269))
-
-### Fixes
-
 * `[docs]` Document caveat with mocks, Enzyme, snapshots and React 16
   ([#5258](https://github.com/facebook/jest/issues/5258))
 
