@@ -11,7 +11,7 @@
 
 const path = require('path');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {extractSummary, cleanup, writeFiles} = require('../utils');
+const {extractSummary, cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../console_log_output_when_run_in_band');

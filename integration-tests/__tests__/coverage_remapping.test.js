@@ -12,7 +12,7 @@
 const {readFileSync} = require('fs');
 const path = require('path');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {cleanup, run} = require('../utils');
+const {cleanup, run} = require('../Utils');
 const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../coverage-remapping');

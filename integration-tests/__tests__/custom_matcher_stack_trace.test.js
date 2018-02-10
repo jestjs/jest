@@ -9,7 +9,7 @@
 'use strict';
 
 const runJest = require('../runJest');
-const {extractSummary} = require('../utils');
+const {extractSummary} = require('../Utils');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
 
 SkipOnWindows.suite();

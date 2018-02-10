@@ -14,7 +14,7 @@ const {
   createEmptyPackage,
   linkJestPackage,
   copyDir,
-} = require('../utils');
+} = require('../Utils');
 const runJest = require('../runJest');
 const os = require('os');
 
@@ -34,9 +34,9 @@ describe('babel-jest', () => {
 
   it('instruments only specific files and collects coverage', () => {
     const {stdout} = runJest(dir, ['--coverage', '--no-cache']);
-    expect(stdout).toMatch('covered.js');
-    expect(stdout).not.toMatch('not_covered.js');
-    expect(stdout).not.toMatch('excluded_from_coverage.js');
+    expect(stdout).toMatch('Covered.js');
+    expect(stdout).not.toMatch('NotCovered.js');
+    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
     expect(stdout).toMatchSnapshot();
   });
@@ -68,8 +68,8 @@ describe('no babel-jest', () => {
       '--coverage',
       '--no-watchman',
     ]);
-    expect(stdout).toMatch('covered.js');
-    expect(stdout).not.toMatch('excluded_from_coverage.js');
+    expect(stdout).toMatch('Covered.js');
+    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
     expect(stdout).toMatchSnapshot();
   });

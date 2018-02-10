@@ -10,7 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {extractSummary} = require('../utils');
+const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const SkipOnWindows = require('../../scripts/SkipOnWindows');

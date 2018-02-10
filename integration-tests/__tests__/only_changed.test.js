@@ -12,7 +12,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-const {cleanup, run, writeFiles} = require('../utils');
+const {cleanup, run, writeFiles} = require('../Utils');
 
 const DIR = path.resolve(os.tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';

@@ -2,9 +2,9 @@
 
 'use strict';
 
-jest.mock('../native');
+jest.mock('../Native');
 
-const native = require('../native');
+const native = require('../Native');
 
 test('mock works with native async', () => {
   expect(native.asyncMethod).toBeDefined();

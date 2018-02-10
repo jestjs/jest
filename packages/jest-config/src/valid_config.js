@@ -26,7 +26,7 @@ export default ({
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
   collectCoverageOnlyFrom: {
-    '<rootDir>/this-directory-is-covered/covered.js': true,
+    '<rootDir>/this-directory-is-covered/Covered.js': true,
   },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],

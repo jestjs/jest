@@ -8,7 +8,7 @@
  */
 
 const path = require('path');
-const {run} = require('../utils');
+const {run} = require('../Utils');
 const runJest = require('../runJest');
 
 it('instruments and collects coverage for typescript files', () => {

@@ -9,7 +9,7 @@
 
 const path = require('path');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {extractSummary} = require('../utils');
+const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../failures');
