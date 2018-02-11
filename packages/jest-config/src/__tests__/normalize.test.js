@@ -186,6 +186,31 @@ describe('collectCoverageOnlyFrom', () => {
   });
 });
 
+describe('collectCoverageFrom', () => {
+  it('substitutes <rootDir> tokens', () => {
+    const barBaz = 'bar/baz';
+    const quxQuux = 'qux/quux/';
+    const notQuxQuux = `!${quxQuux}`;
+
+    const {options} = normalize(
+      {
+        collectCoverageFrom: [
+          barBaz,
+          notQuxQuux,
+          `<rootDir>/${barBaz}`,
+          `!<rootDir>/${quxQuux}`,
+        ],
+        rootDir: '/root/path/foo/',
+      },
+      {},
+    );
+
+    const expected = [barBaz, notQuxQuux, barBaz, notQuxQuux];
+
+    expect(options.collectCoverageFrom).toEqual(expected);
+  });
+});
+
 function testPathArray(key) {
   it('normalizes all paths relative to rootDir', () => {
     const {options} = normalize(
