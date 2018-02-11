@@ -9,6 +9,10 @@
 * `[docs]` Add documentation for interactive snapshot mode ([#5291](https://github.com/facebook/jest/pull/5291))
 * `[jest-editor-support]` Add watchAll flag ([#5523](https://github.com/facebook/jest/pull/5523))
 
+### Chore & Maintenance
+
+* `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom` ([#5524](https://github.com/facebook/jest/pull/5524))
+
 ## jest 22.2.2
 
 ### Fixes

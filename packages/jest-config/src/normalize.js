@@ -160,6 +160,12 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
     value = options[key];
   }
 
+  if (value) {
+    value = value.map(filePath => {
+      return filePath.replace(/^(!?)(<rootDir>\/)(.*)/, '$1$3');
+    });
+  }
+
   return value;
 };
 
