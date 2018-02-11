@@ -95,7 +95,7 @@ class Runtime {
   _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: ModuleRegistry;
-  _needsCoverageMapped: string[];
+  _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -119,7 +119,6 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: null,
-      mapCoverage: false,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -130,7 +129,7 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
     this._moduleRegistry = Object.create(null);
-    this._needsCoverageMapped = [];
+    this._needsCoverageMapped = new Set();
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
@@ -440,7 +439,7 @@ class Runtime {
   getSourceMapInfo() {
     return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
       if (
-        this._needsCoverageMapped.includes(sourcePath) &&
+        this._needsCoverageMapped.has(sourcePath) &&
         fs.existsSync(this._sourceMapRegistry[sourcePath])
       ) {
         result[sourcePath] = this._sourceMapRegistry[sourcePath];
@@ -536,7 +535,7 @@ class Runtime {
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
       if (transformedFile.mapCoverage) {
-        this._needsCoverageMapped.push(filename);
+        this._needsCoverageMapped.add(filename);
       }
     }
 

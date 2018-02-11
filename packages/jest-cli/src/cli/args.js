@@ -307,7 +307,7 @@ export const options = {
     default: undefined,
     description:
       'Maps code coverage reports against original source code ' +
-      'when transformers supply source maps.',
+      'when transformers supply source maps.\n\nDEPRECATED',
     type: 'boolean',
   },
   maxWorkers: {

@@ -2,19 +2,6 @@
 
 ### Fixes
 
-* `[jest-runtime]` Align handling of testRegex on Windows between searching for
-  tests and instrumentation checks
-  ([#5560](https://github.com/facebook/jest/pull/5560))
-
-### Features
-* `[docs]` Add MongoDB guide ([#5571](https://github.com/facebook/jest/pull/5571))
-
-## jest 22.3.0
-
-### Fixes
-
-* `[jest-cli]` Fix inability to quit watch mode while debugger is still attached
-  ([#5029](https://github.com/facebook/jest/pull/5029))
 * `[jest-haste-map]` Properly handle platform-specific file deletions
   ([#5534](https://github.com/facebook/jest/pull/5534))
 
@@ -30,13 +17,15 @@
   ([#5523](https://github.com/facebook/jest/pull/5523))
 * `[jest-cli]` Support multiple glob patterns for `collectCoverageFrom`
   ([#5537](https://github.com/facebook/jest/pull/5537))
+* `[jest-runtime]` Deprecate mapCoverage option.
+  ([#5177](https://github.com/facebook/jest/pull/5177))
+* `[babel-jest]` Add option to return sourcemap from the transformer separately
+  from source. ([#5177](https://github.com/facebook/jest/pull/5177))
 
 ### Chore & Maintenance
 
 * `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom`
   ([#5524](https://github.com/facebook/jest/pull/5524))
-* `[filenames]` Standardize files names in "integration-tests" folder ([#5513](https://github.com/facebook/jest/pull/5513))
-
 
 ## jest 22.2.2
 

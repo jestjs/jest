@@ -11,14 +11,11 @@
 
 const {readFileSync} = require('fs');
 const path = require('path');
-const skipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, run} = require('../utils');
 const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../coverage-transform-instrumented');
 const coverageDir = path.join(dir, 'coverage');
-
-skipOnWindows.suite();
 
 beforeAll(() => {
   cleanup(coverageDir);

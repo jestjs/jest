@@ -23,7 +23,7 @@ beforeAll(() => {
 
 it('maps code coverage against original source', () => {
   run('yarn', dir);
-  const result = runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
+  const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.status).toBe(0);
 

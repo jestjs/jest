@@ -7,7 +7,6 @@
 
 const jestPreset = require('babel-preset-jest');
 const babelTransform = require('babel-core').transform;
-const babelUtil = require('babel-core').util;
 const babelIstanbulPlugin = require('babel-plugin-istanbul').default;
 
 const options = {
@@ -19,10 +18,10 @@ const options = {
 module.exports = {
   canInstrument: true,
   process(src, filename, config, transformOptions) {
-    const theseOptions = Object.assign({filename}, options);
+    options.filename = filename;
     if (transformOptions && transformOptions.instrument) {
-      theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
-      theseOptions.plugins = [
+      options.auxiliaryCommentBefore = ' istanbul ignore next ';
+      options.plugins = [
         [
           babelIstanbulPlugin,
           {
@@ -33,7 +32,7 @@ module.exports = {
       ];
     }
 
-    const transformResult = babelTransform(src, theseOptions);
+    const transformResult = babelTransform(src, options);
 
     if (!transformResult) {
       return src;

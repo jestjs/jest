@@ -14,22 +14,22 @@ Object {
         "decl": Object {
           "end": Object {
             "column": 36,
-            "line": 2,
+            "line": 9,
           },
           "start": Object {
             "column": 26,
-            "line": 2,
+            "line": 9,
           },
         },
-        "line": 2,
+        "line": 9,
         "loc": Object {
           "end": Object {
             "column": 1,
-            "line": 5,
+            "line": 12,
           },
           "start": Object {
             "column": 58,
-            "line": 2,
+            "line": 9,
           },
         },
         "name": "doES6Stuff",
@@ -45,31 +45,31 @@ Object {
       "0": Object {
         "end": Object {
           "column": 2,
-          "line": 5,
+          "line": 12,
         },
         "start": Object {
           "column": 0,
-          "line": 2,
+          "line": 9,
         },
       },
       "1": Object {
         "end": Object {
           "column": 41,
-          "line": 3,
+          "line": 10,
         },
         "start": Object {
           "column": 34,
-          "line": 3,
+          "line": 10,
         },
       },
       "2": Object {
         "end": Object {
           "column": 33,
-          "line": 4,
+          "line": 11,
         },
         "start": Object {
           "column": 2,
-          "line": 4,
+          "line": 11,
         },
       },
     },

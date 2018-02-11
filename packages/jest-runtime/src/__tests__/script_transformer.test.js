@@ -318,7 +318,6 @@ describe('ScriptTransformer', () => {
 
     const result = scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
-      mapCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
@@ -347,7 +346,6 @@ describe('ScriptTransformer', () => {
 
     const result = scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
-      mapCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(writeFileAtomic.sync).toBeCalledWith(
@@ -375,7 +373,6 @@ describe('ScriptTransformer', () => {
 
     const result = scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
-      mapCoverage: false,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(writeFileAtomic.sync).toBeCalledWith(
@@ -400,7 +397,6 @@ describe('ScriptTransformer', () => {
 
     const result = scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
-      mapCoverage: false,
     });
     expect(result.sourceMapPath).toBeFalsy();
     expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
@@ -414,7 +410,6 @@ describe('ScriptTransformer', () => {
 
     scriptTransformer.transform('/fruits/banana.js', {
       collectCoverage: true,
-      mapCoverage: true,
     });
 
     const {getCacheKey} = require('test_preprocessor');
