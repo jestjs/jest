@@ -4,6 +4,8 @@
 *~
 /examples/*/node_modules/
 
+/.idea
+
 /integration-tests/*/node_modules
 /integration-tests/transform/*/coverage
 /integration-tests/transform/*/node_modules
