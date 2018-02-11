@@ -7,6 +7,7 @@
   `groupEnd`, `time`, `timeEnd`
   ([#5514](https://github.com/facebook/jest/pull/5514))
 * `[docs]` Add documentation for interactive snapshot mode ([#5291](https://github.com/facebook/jest/pull/5291))
+* `[jest-editor-support]` Add watchAll flag ([#5523](https://github.com/facebook/jest/pull/5523))
 
 ## jest 22.2.2
 
