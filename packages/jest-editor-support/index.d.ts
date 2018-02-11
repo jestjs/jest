@@ -22,7 +22,8 @@ export interface Options {
 export class Runner extends EventEmitter {
   constructor(workspace: ProjectWorkspace, options?: Options);
   watchMode: boolean;
-  start(watchMode?: boolean): void;
+  watchAll: boolean;
+  start(watchMode?: boolean, watchAll?: boolean): void;
   closeProcess(): void;
   runJestWithUpdateForSnapshots(completion: any): void;
 }

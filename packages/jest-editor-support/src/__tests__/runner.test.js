@@ -48,6 +48,13 @@ describe('Runner', () => {
       expect(sut.watchMode).not.toBeDefined();
     });
 
+    it('does not set watchAll', () => {
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+
+      expect(sut.watchAll).not.toBeDefined();
+    });
+
     it('sets the output filepath', () => {
       tmpdir.mockReturnValueOnce('tmpdir');
 
@@ -105,6 +112,18 @@ describe('Runner', () => {
       sut.start(expected);
 
       expect(sut.watchMode).toBe(expected);
+    });
+
+    it('sets watchAll', () => {
+      const watchMode = true;
+      const watchAll = true;
+
+      const workspace: any = {};
+      const sut = new Runner(workspace);
+      sut.start(watchMode, watchAll);
+
+      expect(sut.watchMode).toBe(watchMode);
+      expect(sut.watchAll).toBe(watchAll);
     });
 
     it('calls createProcess', () => {
