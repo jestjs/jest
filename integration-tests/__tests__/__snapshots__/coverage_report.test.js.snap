@@ -24,7 +24,7 @@ All files      |      100 |      100 |      100 |      100 |                |
 "
 `;
 
-exports[`collects coverage only from specified files 1`] = `
+exports[`collects coverage only from specified file 1`] = `
 "----------|----------|----------|----------|----------|----------------|
 File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------|----------|----------|----------|----------|----------------|
