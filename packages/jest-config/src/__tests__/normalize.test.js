@@ -875,7 +875,7 @@ describe('preset', () => {
       }
       return '/node_modules/' + name;
     });
-    jest.mock(
+    jest.doMock(
       '/node_modules/react-native/jest-preset.json',
       () => ({
         moduleNameMapper: {b: 'b'},
@@ -888,7 +888,7 @@ describe('preset', () => {
   });
 
   afterEach(() => {
-    jest.unmock('/node_modules/react-native/jest-preset.json');
+    jest.dontMock('/node_modules/react-native/jest-preset.json');
   });
 
   test('throws when preset not found', () => {
@@ -904,7 +904,7 @@ describe('preset', () => {
   });
 
   test('throws when preset is invalid', () => {
-    jest.mock('/node_modules/react-native/jest-preset.json', () =>
+    jest.doMock('/node_modules/react-native/jest-preset.json', () =>
       require.requireActual('./jest-preset.json'),
     );
 
@@ -983,14 +983,14 @@ describe('preset', () => {
   });
 
   test('merges with options and transform preset is overridden by options', () => {
-    // Object initializer not used for properties as a workaround for
-    //  sort-keys eslint rule while specifying properties in
-    //  non-alphabetical order for a better test
-    const transform = {};
-    transform.e = 'ee';
-    transform.b = 'bb';
-    transform.c = 'cc';
-    transform.a = 'aa';
+    /* eslint-disable sort-keys */
+    const transform = {
+      e: 'ee',
+      b: 'bb',
+      c: 'cc',
+      a: 'aa',
+    };
+    /* eslint-disable sort-keys */
     const {options} = normalize(
       {
         preset: 'react-native',
@@ -1019,7 +1019,7 @@ describe('preset without setupFiles', () => {
   });
 
   beforeAll(() => {
-    jest.mock(
+    jest.doMock(
       '/node_modules/react-foo/jest-preset.json',
       () => {
         return {
@@ -1029,6 +1029,10 @@ describe('preset without setupFiles', () => {
       },
       {virtual: true},
     );
+  });
+
+  afterAll(() => {
+    jest.dontMock('/node_modules/react-foo/jest-preset.json');
   });
 
   it('should normalize setupFiles correctly', () => {
