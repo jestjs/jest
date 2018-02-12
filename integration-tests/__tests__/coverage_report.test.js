@@ -33,7 +33,7 @@ test('outputs coverage report', () => {
   expect(status).toBe(0);
 });
 
-test('collects coverage only from specified files', () => {
+test('collects coverage only from specified file', () => {
   const {stdout} = runJest(DIR, [
     '--no-cache',
     '--coverage',
@@ -42,6 +42,18 @@ test('collects coverage only from specified files', () => {
   ]);
 
   // Coverage report should only have `setup.js` coverage info
+  expect(stdout).toMatchSnapshot();
+});
+
+test('collects coverage only from multiple specified files', () => {
+  const {stdout} = runJest(DIR, [
+    '--no-cache',
+    '--coverage',
+    '--collectCoverageFrom', // overwrites the one in package.json
+    'setup.js',
+    'other-file.js',
+  ]);
+
   expect(stdout).toMatchSnapshot();
 });
 

@@ -13,7 +13,18 @@ All files      |      100 |      100 |      100 |      100 |                |
 "
 `;
 
-exports[`collects coverage only from specified files 1`] = `
+exports[`collects coverage only from multiple specified files 1`] = `
+"---------------|----------|----------|----------|----------|----------------|
+File           |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+---------------|----------|----------|----------|----------|----------------|
+All files      |      100 |      100 |      100 |      100 |                |
+ other-file.js |      100 |      100 |      100 |      100 |                |
+ setup.js      |      100 |      100 |      100 |      100 |                |
+---------------|----------|----------|----------|----------|----------------|
+"
+`;
+
+exports[`collects coverage only from specified file 1`] = `
 "----------|----------|----------|----------|----------|----------------|
 File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------|----------|----------|----------|----------|----------------|
