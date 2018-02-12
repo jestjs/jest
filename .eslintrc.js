@@ -168,7 +168,6 @@ module.exports = {
         trailingComma: 'all',
       },
     ],
-    'unicorn/filename-case': [1, {case: 'snakeCase'}],
   },
   settings: {
     'import/resolver': {
