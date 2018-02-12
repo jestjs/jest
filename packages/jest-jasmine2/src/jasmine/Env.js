@@ -424,6 +424,15 @@ export default function(j$) {
     };
 
     this.it = function(description, fn, timeout) {
+      if (typeof description !== 'string') {
+        throw new Error(`first argument, "name", must be a string`);
+      }
+      if (fn === undefined) {
+        throw new Error('missing second argument function');
+      }
+      if (typeof fn !== 'function') {
+        throw new Error(`second argument must be a function`);
+      }
       const spec = specFactory(
         description,
         fn,
