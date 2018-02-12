@@ -134,7 +134,7 @@ directory. The default cache directory can be found by calling
 
 ### `--collectCoverageFrom=<glob>`
 
-Relative to the root directory, glob pattern matching the files that coverage
+An array of glob patterns relative to <rootDir> matching the files that coverage
 info needs to be collected from.
 
 ### `--colors`
