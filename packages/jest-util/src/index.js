@@ -20,7 +20,6 @@ import installCommonGlobals from './install_common_globals';
 import NullConsole from './null_console';
 import isInteractive from './is_interative';
 import setGlobal from './set_global';
-import validateCLIOptions from './validate_cli_options';
 import deepCyclicCopy from './deep_cyclic_copy';
 
 const createDirectory = (path: string) => {
@@ -47,5 +46,4 @@ module.exports = {
   installCommonGlobals,
   isInteractive,
   setGlobal,
-  validateCLIOptions,
 };
