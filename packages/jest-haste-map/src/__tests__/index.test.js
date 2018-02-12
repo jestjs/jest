@@ -586,7 +586,7 @@ describe('HasteMap', () => {
     });
   });
 
-  it('correctly handles platform-specific file deletions (broken)', async () => {
+  it('correctly handles platform-specific file deletions', async () => {
     mockFs = Object.create(null);
     mockFs['/fruits/strawberry.js'] = [
       '/**',
@@ -613,8 +613,6 @@ describe('HasteMap', () => {
     ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
     expect(data.map['Strawberry']).toEqual({
       g: ['/fruits/strawberry.js', 0],
-      // FIXME: this file should NOT exist anymore!
-      ios: ['/fruits/strawberry.ios.js', 0],
     });
   });
 

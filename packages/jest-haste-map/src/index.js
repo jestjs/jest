@@ -422,8 +422,18 @@ class HasteMap extends EventEmitter {
     if (fileMetadata[H.VISITED]) {
       if (!fileMetadata[H.ID]) {
         return null;
-      } else if (fileMetadata[H.ID] && moduleMetadata) {
-        map[fileMetadata[H.ID]] = moduleMetadata;
+      }
+      if (moduleMetadata != null) {
+        const platform =
+          getPlatformExtension(filePath, this._options.platforms) ||
+          H.GENERIC_PLATFORM;
+        const module = moduleMetadata[platform];
+        if (module == null) {
+          return null;
+        }
+        const modulesByPlatform =
+          map[fileMetadata[H.ID]] || (map[fileMetadata[H.ID]] = {});
+        modulesByPlatform[platform] = module;
         return null;
       }
     }
