@@ -36,7 +36,7 @@ class Videos extends React.Component {
       ({title, description, type, url}, index) => {
         const textMarkup = (
           <div className="blockContent">
-            <h2>{title}</h2>
+            <h2><a href={url}>{title}</a></h2>
             <div>
               <MarkdownBlock>{description}</MarkdownBlock>
             </div>
