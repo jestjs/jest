@@ -20,7 +20,7 @@
     "jest-regex-util": "^22.1.0",
     "jest-resolve": "^22.3.0",
     "jest-util": "^22.3.0",
-    "jest-validate": "^22.3.0",
+    "jest-validate": "^22.2.2",
     "json-stable-stringify": "^1.0.1",
     "micromatch": "^2.3.11",
     "realpath-native": "^1.0.0",
