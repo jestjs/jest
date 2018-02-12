@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[jest-haste-map]` Properly handle platform-specific file deletions
+  ([#5534](https://github.com/facebook/jest/pull/5534))
+
 ### Features
 
 * `[jest-util]` Add the following methods to the "console" implementations:
