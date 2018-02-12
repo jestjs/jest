@@ -11,12 +11,17 @@
   `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
   `groupEnd`, `time`, `timeEnd`
   ([#5514](https://github.com/facebook/jest/pull/5514))
-* `[docs]` Add documentation for interactive snapshot mode ([#5291](https://github.com/facebook/jest/pull/5291))
-* `[jest-editor-support]` Add watchAll flag ([#5523](https://github.com/facebook/jest/pull/5523))
+* `[docs]` Add documentation for interactive snapshot mode
+  ([#5291](https://github.com/facebook/jest/pull/5291))
+* `[jest-editor-support]` Add watchAll flag
+  ([#5523](https://github.com/facebook/jest/pull/5523))
+* `[jest-cli]` Support multiple glob patterns for `collectCoverageFrom`
+  ([#5537](https://github.com/facebook/jest/pull/5537))
 
 ### Chore & Maintenance
 
-* `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom` ([#5524](https://github.com/facebook/jest/pull/5524))
+* `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom`
+  ([#5524](https://github.com/facebook/jest/pull/5524))
 
 ## jest 22.2.2
 
@@ -154,7 +159,8 @@
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
   case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
-* `[jest-cli]` Add interactive snapshot mode ([#3831](https://github.com/facebook/jest/pull/3831))
+* `[jest-cli]` Add interactive snapshot mode
+  ([#3831](https://github.com/facebook/jest/pull/3831))
 
 ### Fixes
 
