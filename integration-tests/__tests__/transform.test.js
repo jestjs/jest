@@ -103,9 +103,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    if (process.platform !== 'win32') {
-      run('yarn', dir);
-    }
+    run('yarn', dir);
   });
 
   it('transforms dependencies using specific transformers', () => {

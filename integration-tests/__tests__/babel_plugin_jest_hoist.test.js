@@ -14,11 +14,9 @@ const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
 
-if (process.platform !== 'win32') {
-  beforeEach(() => {
-    run('yarn', DIR);
-  });
-}
+beforeEach(() => {
+  run('yarn', DIR);
+});
 
 it('sucessfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
   const {json} = runJest.json(DIR, ['--no-cache', '--coverage']);
