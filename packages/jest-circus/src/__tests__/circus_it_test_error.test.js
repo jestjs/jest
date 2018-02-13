@@ -10,7 +10,10 @@
 'use strict';
 
 let circusIt;
+<<<<<<< HEAD
 let circusTest;
+=======
+>>>>>>> fix: variable names for circus it
 
 //using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
 //the two with this aliaser.
