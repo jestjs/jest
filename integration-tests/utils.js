@@ -11,7 +11,7 @@
 
 import type {Path} from 'types/Config';
 
-const {spawnSync} = require('child_process');
+const {sync: spawnSync} = require('cross-spawn');
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
@@ -43,8 +43,9 @@ const linkJestPackage = (packageName: string, cwd: Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/');
-  run(`mkdir -p ${destination}`);
-  return run(`ln -sf ${packagePath} ${destination}`);
+  mkdirp.sync(destination);
+  rimraf.sync(destination);
+  fs.symlinkSync(packagePath, destination, 'dir');
 };
 
 const fileExists = (filePath: Path) => {

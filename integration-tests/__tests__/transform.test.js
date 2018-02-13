@@ -8,7 +8,6 @@
  */
 
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {
   run,
   cleanup,
@@ -20,13 +19,10 @@ const runJest = require('../runJest');
 const os = require('os');
 
 describe('babel-jest', () => {
-  SkipOnWindows.suite();
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    if (process.platform !== 'win32') {
-      run('yarn', dir);
-    }
+    run('yarn', dir);
   });
 
   it('runs transpiled code', () => {
@@ -60,7 +56,7 @@ describe('no babel-jest', () => {
     linkJestPackage('babel-jest', tempDir);
   });
 
-  it('fails with syntax error on flow types', () => {
+  test('fails with syntax error on flow types', () => {
     const {stderr} = runJest(tempDir, ['--no-cache', '--no-watchman']);
     expect(stderr).toMatch(/FAIL.*fails_with_syntax_error/);
     expect(stderr).toMatch('Unexpected token');
@@ -107,9 +103,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    if (process.platform !== 'win32') {
-      run('yarn', dir);
-    }
+    run('yarn', dir);
   });
 
   it('transforms dependencies using specific transformers', () => {
