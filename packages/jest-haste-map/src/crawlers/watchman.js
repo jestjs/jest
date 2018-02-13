@@ -33,12 +33,18 @@ module.exports = function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   const {data, extensions, ignore, roots} = options;
+  // Watchman always returns POSIX style paths so use posixRoots
+  // instead of roots to avoid on-the-fly checks inside the loop.
+  const posixRoots =
+    path.sep === '/'
+      ? Array.from(roots)
+      : roots.map(root => root.replace(/\\/g, '/'));
 
   return new Promise((resolve, reject) => {
     const client = new watchman.Client();
     client.on('error', error => reject(error));
 
-    const cmd = args =>
+    const cmd = (...args) =>
       new Promise((resolve, reject) => {
         client.command(args, (error, result) => {
           if (error) {
@@ -52,42 +58,41 @@ module.exports = function watchmanCrawl(
     const clocks = data.clocks;
     let files = data.files;
 
-    return Promise.all(roots.map(root => cmd(['watch-project', root])))
-      .then(responses => {
-        const watchmanRoots = Array.from(
-          new Set(responses.map(response => response.watch)),
-        );
-        return Promise.all(
-          watchmanRoots.map(root => {
-            // Build an expression to filter the output by the relevant roots.
-            const dirExpr = (['anyof']: Array<string | Array<string>>);
-            roots.forEach(subRoot => {
-              if (isDescendant(root, subRoot)) {
-                dirExpr.push(['dirname', path.relative(root, subRoot)]);
+    return Promise.all(roots.map(root => cmd('watch-project', root)))
+      .then(responses =>
+        Promise.all(
+          Array.from(new Set(responses.map(response => response.watch))).map(
+            root => {
+              // Build an expression to filter the output by the relevant roots.
+              const dirExpr = (['anyof']: Array<string | Array<string>>);
+              posixRoots.forEach(subRoot => {
+                if (isDescendant(root, subRoot)) {
+                  dirExpr.push(['dirname', path.relative(root, subRoot)]);
+                }
+              });
+              const expression = [
+                'allof',
+                ['type', 'f'],
+                ['anyof'].concat(
+                  extensions.map(extension => ['suffix', extension]),
+                ),
+              ];
+              if (dirExpr.length > 1) {
+                expression.push(dirExpr);
               }
-            });
-            const expression = [
-              'allof',
-              ['type', 'f'],
-              ['anyof'].concat(
-                extensions.map(extension => ['suffix', extension]),
-              ),
-            ];
-            if (dirExpr.length > 1) {
-              expression.push(dirExpr);
-            }
-            const fields = ['name', 'exists', 'mtime_ms'];
+              const fields = ['name', 'exists', 'mtime_ms'];
 
-            const query = clocks[root]
-              ? // Use the `since` generator if we have a clock available
-                {expression, fields, since: clocks[root]}
-              : // Otherwise use the `suffix` generator
-                {expression, fields, suffix: extensions};
-            return cmd(['query', root, query]).then(response => ({
-              response,
-              root,
-            }));
-          }),
+              const query = clocks[root]
+                ? // Use the `since` generator if we have a clock available
+                  {expression, fields, since: clocks[root]}
+                : // Otherwise use the `suffix` generator
+                  {expression, fields, suffix: extensions};
+              return cmd('query', root, query).then(response => ({
+                response,
+                root,
+              }));
+            },
+          ),
         ).then(pairs => {
           // Reset the file map if watchman was restarted and sends us a list of
           // files.
@@ -123,8 +128,8 @@ module.exports = function watchmanCrawl(
               }
             });
           });
-        });
-      })
+        }),
+      )
       .then(() => {
         client.end();
         data.files = files;
