@@ -10,8 +10,7 @@ init:
 install:
   - ps: Install-Product node $env:nodejs_version x64
   - node --version
-  - yarn install
-  - yarn run build
+  - yarn
 
 cache:
   - node_modules
@@ -19,7 +18,7 @@ cache:
   - "%LOCALAPPDATA%\\Yarn"
 
 test_script:
-  - yarn run jest --color
+  - yarn jest --color
 
 # Don't actually build.
 build: off
