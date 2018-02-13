@@ -120,7 +120,7 @@ test('tests with no implementation', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-  expect(status).toBe(0);
+  expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr);
   expect(rest).toMatchSnapshot();
@@ -198,7 +198,7 @@ test('tests with no implementation with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR, ['--expand']);
-  expect(status).toBe(0);
+  expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr);
   expect(rest).toMatchSnapshot();
