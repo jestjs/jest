@@ -10,7 +10,7 @@
 'use strict';
 
 const path = require('path');
-const {run} = require('../utils');
+const {run} = require('../Utils');
 const runJest = require('../runJest');
 
 it('processes stack traces and code frames with source maps', () => {

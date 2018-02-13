@@ -2,18 +2,14 @@
   "jest": {
     "rootDir": "./",
     "transform": {
-      "^.+\\.(js)$": "<rootDir>/preprocessor.js"
+      "^.+\\.(js)$": "<rootDir>/Preprocessor.js"
     },
     "testRegex": "/__tests__/.*\\.(js)$",
     "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "js"
-    ]
+    "moduleFileExtensions": ["js"]
   },
   "babel": {
-    "presets": [
-      "env"
-    ]
+    "presets": ["env"]
   },
   "dependencies": {
     "babel-core": "6.26.0",

@@ -1,17 +1,14 @@
 {
-    "jest": {
-        "rootDir": "./",
-        "transform": {
-            "^.+\\.(ts)$": "<rootDir>/preprocessor.js"
-        },
-        "testEnvironment": "node",
-        "moduleFileExtensions": [
-            "ts",
-            "js"
-        ],
-        "testRegex": "fails"
+  "jest": {
+    "rootDir": "./",
+    "transform": {
+      "^.+\\.(ts)$": "<rootDir>/Preprocessor.js"
     },
-    "dependencies": {
-        "typescript": "^2.7.1"
-    }
+    "testEnvironment": "node",
+    "moduleFileExtensions": ["ts", "js"],
+    "testRegex": "fails"
+  },
+  "dependencies": {
+    "typescript": "^2.7.1"
+  }
 }
