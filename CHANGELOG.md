@@ -1,5 +1,7 @@
 ## master
 
+## jest 22.3.0
+
 ### Fixes
 
 * `[jest-haste-map]` Properly handle platform-specific file deletions

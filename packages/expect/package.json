@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "22.2.2",
+  "version": "22.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
