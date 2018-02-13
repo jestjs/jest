@@ -61,7 +61,7 @@ const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const ERROR_TEXT = 'Error: ';
 
-const trim = string => (string || '').replace(/^\s+/, '').replace(/\s+$/, '');
+const trim = string => (string || '').trim();
 
 // Some errors contain not only line numbers in stack traces
 // e.g. SyntaxErrors can contain snippets of code, and we don't
