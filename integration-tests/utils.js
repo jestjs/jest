@@ -11,7 +11,7 @@
 
 import type {Path} from 'types/Config';
 
-const {spawnSync} = require('child_process');
+const {sync: spawnSync} = require('cross-spawn');
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
