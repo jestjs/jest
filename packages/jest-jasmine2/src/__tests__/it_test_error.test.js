@@ -11,7 +11,7 @@
 describe('test/it error throwing', () => {
   it(`throws error with missing callback function`, () => {
     expect(() => {
-      it('test2');
+      it('test1');
     }).toThrowError('Missing second argument. It must be a callback function.');
   });
   it(`throws an error when first argument isn't a string`, () => {
@@ -21,9 +21,9 @@ describe('test/it error throwing', () => {
   });
   it('throws an error when callback function is not a function', () => {
     expect(() => {
-      it('test3', 'test4');
+      it('test2', 'test3');
     }).toThrowError(
-      `Invalid second argument, test4. It must be a callback function.`,
+      `Invalid second argument, test3. It must be a callback function.`,
     );
   });
 });
