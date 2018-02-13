@@ -42,6 +42,9 @@
 
 ### Features
 
+* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test` 
+  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive 
+  errors to `it`/ `test` for invalid arguements. 
 * `[jest-util]` Add the following methods to the "console" implementations:
   `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
   `groupEnd`, `time`, `timeEnd`
