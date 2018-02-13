@@ -10,13 +10,15 @@
 'use strict';
 
 let circusIt;
+let circusTest;
 
 //using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
 //the two with this aliaser.
 
 const aliasCircusIt = () => {
-  const {it} = require('../index.js');
+  const {it, test} = require('../index.js');
   circusIt = it;
+  circusTest = test;
 };
 
 aliasCircusIt();
@@ -26,26 +28,48 @@ aliasCircusIt();
 //this file has been listed in the .flowconfig ignore section.
 
 describe('test/it error throwing', () => {
-  it(`doesn't throw an error with valid arguments`, () => {
+  it(`it doesn't throw an error with valid arguments`, () => {
     expect(() => {
-      circusIt('test', () => {});
+      circusIt('test1', () => {});
     }).not.toThrowError();
   });
-  it(`throws error with missing callback function`, () => {
+  it(`it throws error with missing callback function`, () => {
     expect(() => {
-      circusIt('test');
+      circusIt('test2');
     }).toThrowError('Missing second argument. It must be a callback function.');
   });
-  it(`throws an error when first argument isn't a string`, () => {
+  it(`it throws an error when first argument isn't a string`, () => {
     expect(() => {
       circusIt(() => {});
     }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
   });
-  it('throws an error when callback function is not a function', () => {
+  it('it throws an error when callback function is not a function', () => {
     expect(() => {
-      circusIt('test', 'test2');
+      circusIt('test4', 'test4b');
     }).toThrowError(
-      `Invalid second argument, test2. It must be a callback function.`,
+      `Invalid second argument, test4b. It must be a callback function.`,
+    );
+  });
+  it(`test doesn't throw an error with valid arguments`, () => {
+    expect(() => {
+      circusTest('test5', () => {});
+    }).not.toThrowError();
+  });
+  it(`test throws error with missing callback function`, () => {
+    expect(() => {
+      circusTest('test6');
+    }).toThrowError('Missing second argument. It must be a callback function.');
+  });
+  it(`test throws an error when first argument isn't a string`, () => {
+    expect(() => {
+      circusTest(() => {});
+    }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
+  });
+  it('test throws an error when callback function is not a function', () => {
+    expect(() => {
+      circusTest('test8', 'test8b');
+    }).toThrowError(
+      `Invalid second argument, test8b. It must be a callback function.`,
     );
   });
 });

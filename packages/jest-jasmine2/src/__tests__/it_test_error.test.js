@@ -9,21 +9,38 @@
 'use strict';
 
 describe('test/it error throwing', () => {
-  it(`throws error with missing callback function`, () => {
+  it(`it throws error with missing callback function`, () => {
     expect(() => {
       it('test1');
     }).toThrowError('Missing second argument. It must be a callback function.');
   });
-  it(`throws an error when first argument isn't a string`, () => {
+  it(`it throws an error when first argument isn't a string`, () => {
     expect(() => {
       it(() => {});
     }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
   });
-  it('throws an error when callback function is not a function', () => {
+  it('it throws an error when callback function is not a function', () => {
     expect(() => {
-      it('test2', 'test3');
+      it('test3', 'test3b');
     }).toThrowError(
-      `Invalid second argument, test3. It must be a callback function.`,
+      `Invalid second argument, test3b. It must be a callback function.`,
+    );
+  });
+  test(`test throws error with missing callback function`, () => {
+    expect(() => {
+      test('test4');
+    }).toThrowError('Missing second argument. It must be a callback function.');
+  });
+  test(`test throws an error when first argument isn't a string`, () => {
+    expect(() => {
+      test(() => {});
+    }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
+  });
+  test('test throws an error when callback function is not a function', () => {
+    expect(() => {
+      test('test6', 'test6b');
+    }).toThrowError(
+      `Invalid second argument, test6b. It must be a callback function.`,
     );
   });
 });
