@@ -9,34 +9,41 @@
 
 'use strict';
 
-let testIt;
+let circusIt;
 
-const itAliaser = () => {
+//using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
+//the two with this aliaser.
+
+const aliasCircusIt = () => {
   const {it} = require('../index.js');
-  testIt = it;
+  circusIt = it;
 };
 
-itAliaser();
+aliasCircusIt();
+
+//A few of these tests require incorrect types to throw errors and thus pass
+//the test. The typechecks on jest-circus would prevent that, so
+//this file has been listed in the .flowconfig ignore section.
 
 describe('test/it error throwing', () => {
   it(`doesn't throw an error with valid arguments`, () => {
     expect(() => {
-      testIt('test', () => {});
+      circusIt('test', () => {});
     }).not.toThrowError();
   });
   it(`throws error with missing callback function`, () => {
     expect(() => {
-      testIt('test');
+      circusIt('test');
     }).toThrowError('Missing second argument. It must be a callback function.');
   });
   it(`throws an error when first argument isn't a string`, () => {
     expect(() => {
-      testIt(() => {});
+      circusIt(() => {});
     }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
   });
   it('throws an error when callback function is not a function', () => {
     expect(() => {
-      testIt('test', 'test2');
+      circusIt('test', 'test2');
     }).toThrowError(
       `Invalid second argument, test2. It must be a callback function.`,
     );
