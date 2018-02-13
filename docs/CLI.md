@@ -89,6 +89,8 @@ picked up and executed. Depending on your terminal, you may need to quote this
 argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/`
 as a path separator or escape `\` as `\\`.
 
+*Note: Jest 22+ will test any files matched, including those that would normally not be matched based on other [configurations](Configuration.md).*
+
 ### `--bail`
 
 Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
