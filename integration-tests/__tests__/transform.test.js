@@ -56,7 +56,7 @@ describe('no babel-jest', () => {
     linkJestPackage('babel-jest', tempDir);
   });
 
-  it('fails with syntax error on flow types', () => {
+  test('fails with syntax error on flow types', () => {
     const {stderr} = runJest(tempDir, ['--no-cache', '--no-watchman']);
     expect(stderr).toMatch(/FAIL.*fails_with_syntax_error/);
     expect(stderr).toMatch('Unexpected token');
