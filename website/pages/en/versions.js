@@ -25,8 +25,7 @@ class Versions extends React.Component {
             <header className="postHeader">
               <h2>{siteConfig.title + ' Versions'}</h2>
             </header>
-            <a name="latest" />
-            <h3>Current version (Stable)</h3>
+            <h3 id="latest">Current version (Stable)</h3>
             <p>Latest stable version of Jest</p>
             <table className="versions">
               <tbody>
@@ -47,8 +46,7 @@ class Versions extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <a name="rc" />
-            <h3>Latest version</h3>
+            <h3 id="rc">Latest version</h3>
             <p>
               Here you can find the latest unreleased documentation and code.
             </p>
@@ -71,8 +69,7 @@ class Versions extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <a name="archive" />
-            <h3>Past Versions</h3>
+            <h3 id="archive">Past Versions</h3>
             <p>
               Here you can find documentation for previous versions of Jest.
             </p>
