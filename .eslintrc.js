@@ -56,7 +56,10 @@ module.exports = {
       },
     },
     {
-      excludedFiles: 'integration-tests/__tests__/**/*',
+      excludedFiles: [
+        'integration-tests/__tests__/**/*',
+        'website/versioned_docs/**/*.md',
+      ],
       files: [
         'examples/**/*',
         'scripts/**/*',
