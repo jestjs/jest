@@ -424,6 +424,21 @@ export default function(j$) {
     };
 
     this.it = function(description, fn, timeout) {
+      if (typeof description !== 'string') {
+        throw new Error(
+          `Invalid first argument, ${description}. It must be a string.`,
+        );
+      }
+      if (fn === undefined) {
+        throw new Error(
+          'Missing second argument. It must be a callback function.',
+        );
+      }
+      if (typeof fn !== 'function') {
+        throw new Error(
+          `Invalid second argument, ${fn}. It must be a callback function.`,
+        );
+      }
       const spec = specFactory(
         description,
         fn,
