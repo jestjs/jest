@@ -20,23 +20,6 @@ Ran all test suites.
 "
 `;
 
-exports[`function as descriptor 1`] = `
-"PASS __tests__/function-as-descriptor.test.js
-  Foo
-    ✓ it
-
-"
-`;
-
-exports[`function as descriptor 2`] = `
-"Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-"
-`;
-
 exports[`only 1`] = `
 "PASS __tests__/only-constructs.test.js
   ✓ test.only
@@ -140,27 +123,16 @@ Ran all test suites.
 `;
 
 exports[`tests with no implementation 1`] = `
-"FAIL __tests__/only-constructs.test.js
-  ● Test suite failed to run
-
-    Missing second argument. It must be a callback function.
-
-      431 |       }
-      432 |       if (fn === undefined) {
-    > 433 |         throw new Error(
-      434 |         'Missing second argument. It must be a callback function.');
-      435 | 
-      436 |       }
-      
-      at ../../../../../../../Users/brian/Documents/projects/opensource/jest/packages/jest-jasmine2/build/jasmine/Env.js:433:15
-      at __tests__/only-constructs.test.js:3:5
+"PASS __tests__/only-constructs.test.js
+  ✓ it
+  ○ skipped 2 tests
 
 "
 `;
 
 exports[`tests with no implementation 2`] = `
-"Test Suites: 1 failed, 1 total
-Tests:       0 total
+"Test Suites: 1 passed, 1 total
+Tests:       2 skipped, 1 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
@@ -168,27 +140,34 @@ Ran all test suites.
 `;
 
 exports[`tests with no implementation with expand arg 1`] = `
-"FAIL __tests__/only-constructs.test.js
-  ● Test suite failed to run
-
-    Missing second argument. It must be a callback function.
-
-      431 |       }
-      432 |       if (fn === undefined) {
-    > 433 |         throw new Error(
-      434 |         'Missing second argument. It must be a callback function.');
-      435 | 
-      436 |       }
-      
-      at ../../../../../../../Users/brian/Documents/projects/opensource/jest/packages/jest-jasmine2/build/jasmine/Env.js:433:15
-      at __tests__/only-constructs.test.js:3:5
+"PASS __tests__/only-constructs.test.js
+  ✓ it
+  ○ it, no implementation
+  ○ test, no implementation
 
 "
 `;
 
 exports[`tests with no implementation with expand arg 2`] = `
-"Test Suites: 1 failed, 1 total
-Tests:       0 total
+"Test Suites: 1 passed, 1 total
+Tests:       2 skipped, 1 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
+exports[`function as descriptor 1`] = `
+"PASS __tests__/function-as-descriptor.test.js
+  Foo
+    ✓ it
+
+"
+`;
+
+exports[`function as descriptor 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
