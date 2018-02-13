@@ -104,6 +104,7 @@ const getConfigs = (
       detectLeaks: options.detectLeaks,
       enabledTestsMap: options.enabledTestsMap,
       expand: options.expand,
+      failsOnly: options.failsOnly,
       findRelatedTests: options.findRelatedTests,
       forceExit: options.forceExit,
       globalSetup: options.globalSetup,

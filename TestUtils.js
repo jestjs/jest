@@ -24,6 +24,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   detectLeaks: false,
   enabledTestsMap: null,
   expand: false,
+  failsOnly: false,
   findRelatedTests: false,
   forceExit: false,
   globalSetup: null,

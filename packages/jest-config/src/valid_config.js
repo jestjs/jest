@@ -38,6 +38,7 @@ export default ({
   },
   displayName: 'project-name',
   expand: false,
+  failsOnly: true,
   forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,
   globalSetup: 'setup.js',

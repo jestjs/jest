@@ -166,6 +166,10 @@ module. Examples: `jsdom`, `node` or `path/to/my-environment.js`.
 
 Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
+### `--failsOnly`
+
+Print only failing tests logs and summary.
+
 ### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
 Find and run the tests that cover a space separated list of source files that
