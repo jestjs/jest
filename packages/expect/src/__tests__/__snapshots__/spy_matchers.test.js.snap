@@ -79,6 +79,13 @@ Expected mock function to have been last called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
 `;
 
+exports[`lastCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalled(</><dim>)</>
 
@@ -302,6 +309,13 @@ Expected mock function to have been called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
 `;
 
+exports[`toHaveBeenCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
 exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(</><dim>)</>
 
@@ -379,4 +393,11 @@ exports[`toHaveBeenLastCalledWith works with many arguments that don't match 1`]
 
 Expected mock function to have been last called with:
   <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
+`;
+
+exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
 `;

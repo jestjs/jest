@@ -168,10 +168,8 @@ describe('toHaveBeenCalledTimes', () => {
       const fn = jest.fn();
       fn('foo', undefined);
 
-      jestExpect(fn)[calledWith]('foo');
-
       expect(() =>
-        jestExpect(fn).not[calledWith]('foo'),
+        jestExpect(fn)[calledWith]('foo'),
       ).toThrowErrorMatchingSnapshot();
     });
 
