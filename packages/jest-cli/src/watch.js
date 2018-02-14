@@ -51,15 +51,13 @@ const getSortedUsageRows = (
 ) => {
   const internalPlugins = watchPlugins
     .slice(0, INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow && p.getUsageRow(globalConfig))
-    .filter(Boolean)
-    .filter(usage => !usage.hide);
+    .map(p => p.getUsageData && p.getUsageData(globalConfig))
+    .filter(Boolean);
 
   const thirdPartyPlugins = watchPlugins
     .slice(INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow && p.getUsageRow(globalConfig))
+    .map(p => p.getUsageData && p.getUsageData(globalConfig))
     .filter(Boolean)
-    .filter(usage => !usage.hide)
     .sort((a, b) => a.key - b.key);
 
   return internalPlugins.concat(thirdPartyPlugins);
@@ -71,6 +69,7 @@ export default function watch(
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
+  hooks?: JestHooks = new JestHooks(),
 ): Promise<void> {
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
@@ -81,8 +80,6 @@ export default function watch(
     mode: globalConfig.watch ? 'watch' : 'watchAll',
     passWithNoTests: true,
   });
-
-  const hooks = new JestHooks();
 
   const updateConfigAndRun = ({
     testNamePattern,
@@ -275,10 +272,9 @@ export default function watch(
     }
 
     const matchingWatchPlugin = watchPlugins.find(plugin => {
-      const usageRow =
-        (plugin.getUsageRow && plugin.getUsageRow(globalConfig)) || {};
-
-      return usageRow.key === parseInt(key, 16);
+      const UsageData =
+        (plugin.getUsageData && plugin.getUsageData(globalConfig)) || {};
+      return UsageData.key === parseInt(key, 16);
     });
 
     if (matchingWatchPlugin != null) {

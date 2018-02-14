@@ -8,7 +8,7 @@
  */
 import type {GlobalConfig} from 'types/Config';
 import type {JestHookSubscriber} from './jest_hooks';
-import type {UsageRow} from './types';
+import type {UsageData} from './types';
 
 class BaseWatchPlugin {
   _stdin: stream$Readable | tty$ReadStream;
@@ -26,8 +26,8 @@ class BaseWatchPlugin {
 
   registerHooks(hooks: JestHookSubscriber) {}
 
-  getUsageRow(globalConfig: GlobalConfig): UsageRow {
-    return {hide: true, key: 0, prompt: ''};
+  getUsageData(globalConfig: GlobalConfig): ?UsageData {
+    return null;
   }
 
   onData(value: string) {}

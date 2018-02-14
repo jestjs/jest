@@ -10,6 +10,7 @@
 
 import chalk from 'chalk';
 import TestWatcher from '../test_watcher';
+import JestHooks from '../jest_hooks';
 import {KEYS} from '../constants';
 
 const runJestMock = jest.fn();
@@ -37,7 +38,7 @@ jest.doMock(
   watchPluginPath,
   () =>
     class WatchPlugin1 {
-      getUsageRow() {
+      getUsageData() {
         return {
           key: 's'.codePointAt(0),
           prompt: 'do nothing',
@@ -51,7 +52,7 @@ jest.doMock(
   watchPlugin2Path,
   () =>
     class WatchPlugin2 {
-      getUsageRow() {
+      getUsageData() {
         return {
           key: 'u'.codePointAt(0),
           prompt: 'do something else',
@@ -282,7 +283,7 @@ describe('Watch mode flows', () => {
           constructor() {
             this.showPrompt = showPrompt;
           }
-          getUsageRow() {
+          getUsageData() {
             return {
               key: 's'.codePointAt(0),
               prompt: 'do nothing',
@@ -324,7 +325,7 @@ describe('Watch mode flows', () => {
             this.showPrompt = showPrompt;
           }
           onData() {}
-          getUsageRow() {
+          getUsageData() {
             return {
               key: 's'.codePointAt(0),
               prompt: 'do nothing',
@@ -344,7 +345,7 @@ describe('Watch mode flows', () => {
             this.showPrompt = showPrompt2;
           }
           onData() {}
-          getUsageRow() {
+          getUsageData() {
             return {
               key: 'z'.codePointAt(0),
               prompt: 'also do nothing',
@@ -412,10 +413,14 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
+    const hooks = new JestHooks();
+
     globalConfig.updateSnapshot = 'new';
 
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
+
+    hooks.getEmitter().testRunComplete({snapshot: {failure: true}});
 
     stdin.emit(KEYS.U);
     await nextTick();
@@ -433,6 +438,7 @@ describe('Watch mode flows', () => {
       watch: false,
     });
   });
+
   it('passWithNoTest should be set to true in watch mode', () => {
     globalConfig.passWithNoTests = false;
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);

@@ -9,10 +9,9 @@
 import type {GlobalConfig} from 'types/Config';
 import type {JestHookSubscriber} from './jest_hooks';
 
-export type UsageRow = {
+export type UsageData = {
   key: number,
   prompt: string,
-  hide?: boolean,
 };
 
 export type JestHooks = {
@@ -21,7 +20,7 @@ export type JestHooks = {
 
 export type WatchPlugin = {
   registerHooks?: (hooks: JestHookSubscriber) => void,
-  getUsageRow?: (globalConfig: GlobalConfig) => UsageRow,
+  getUsageData?: (globalConfig: GlobalConfig) => ?UsageData,
   onData?: (value: string) => void,
   showPrompt?: (
     globalConfig: GlobalConfig,

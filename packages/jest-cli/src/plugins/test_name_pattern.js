@@ -23,7 +23,7 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
     this._prompt = new Prompt();
   }
 
-  getUsageRow() {
+  getUsageData() {
     return {
       key: 't'.codePointAt(0),
       prompt: 'filter by a test name regex pattern',

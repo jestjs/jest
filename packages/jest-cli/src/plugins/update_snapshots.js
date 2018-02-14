@@ -21,17 +21,21 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   }
 
   registerHooks(hooks: JestHookSubscriber) {
+    this._hasSnapshotFailure = true;
     hooks.testRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
     });
   }
 
-  getUsageRow(globalConfig: GlobalConfig) {
-    return {
-      hide: !this._hasSnapshotFailure,
-      key: 'u'.codePointAt(0),
-      prompt: 'update failing snapshots',
-    };
+  getUsageData(globalConfig: GlobalConfig) {
+    if (this._hasSnapshotFailure) {
+      return {
+        key: 'u'.codePointAt(0),
+        prompt: 'update failing snapshots',
+      };
+    }
+
+    return null;
   }
 }
 

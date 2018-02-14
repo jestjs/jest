@@ -64,14 +64,18 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     }
   }
 
-  getUsageRow(globalConfig: GlobalConfig) {
-    return {
-      hide:
-        !this._failedSnapshotTestPaths ||
-        this._failedSnapshotTestPaths.length === 0,
-      key: 'i'.codePointAt(0),
-      prompt: 'update failing snapshots interactively',
-    };
+  getUsageData(globalConfig: GlobalConfig) {
+    if (
+      this._failedSnapshotTestPaths &&
+      this._failedSnapshotTestPaths.length > 0
+    ) {
+      return {
+        key: 'i'.codePointAt(0),
+        prompt: 'update failing snapshots interactively',
+      };
+    }
+
+    return null;
   }
 }
 

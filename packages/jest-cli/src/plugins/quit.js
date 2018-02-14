@@ -17,7 +17,7 @@ class QuitPlugin extends BaseWatchPlugin {
     process.exit(0);
   }
 
-  getUsageRow() {
+  getUsageData() {
     return {
       key: 'q'.codePointAt(0),
       prompt: 'quit watch mode',
