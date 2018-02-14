@@ -266,9 +266,11 @@ export const formatStackTrace = (
   }
 
   const stacktrace = lines
-    .map(trimPaths)
-    .map(formatPaths.bind(null, config, options, relativeTestPath))
-    .map(line => STACK_INDENT + line)
+    .map(
+      line =>
+        STACK_INDENT +
+        formatPaths(config, options, relativeTestPath, trimPaths(line)),
+    )
     .join('\n');
 
   return renderedCallsite + stacktrace;
