@@ -28,9 +28,11 @@ const jestAdapter = async (
     runAndTransformResultsToJestFormat,
   } = runtime.requireInternalModule(FRAMEWORK_INITIALIZER);
 
-  runtime.requireInternalModule(path.resolve(__dirname, './jest_expect.js'))({
-    expand: globalConfig.expand,
-  });
+  runtime
+    .requireInternalModule(path.resolve(__dirname, './jest_expect.js'))
+    .default({
+      expand: globalConfig.expand,
+    });
 
   const {globals, snapshotState} = initialize({
     config,
