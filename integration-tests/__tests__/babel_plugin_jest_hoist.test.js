@@ -9,7 +9,7 @@
 'use strict';
 
 const path = require('path');
-const {run} = require('../utils');
+const {run} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');

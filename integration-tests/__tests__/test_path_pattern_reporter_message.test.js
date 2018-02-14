@@ -11,7 +11,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-const {cleanup, writeFiles} = require('../utils');
+const {cleanup, writeFiles} = require('../Utils');
 
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const DIR = path.resolve(os.tmpdir(), 'jest_path_pattern_reporter_message');

@@ -16,7 +16,7 @@ import {
   getChangedFilesForRoots,
 } from '../../packages/jest-changed-files/src';
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {cleanup, run, writeFiles} = require('../utils');
+const {cleanup, run, writeFiles} = require('../Utils');
 
 SkipOnWindows.suite();
 

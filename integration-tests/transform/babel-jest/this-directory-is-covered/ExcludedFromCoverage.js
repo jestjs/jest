@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-require('./covered');
+require('./Covered');
+require('../NotCovered');
 
 const thisFunctionIsNeverInstrumented = () => {
   return null;

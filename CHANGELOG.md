@@ -26,6 +26,8 @@
 
 * `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom`
   ([#5524](https://github.com/facebook/jest/pull/5524))
+* `[filenames]` Standardize files names in "integration-tests" folder ([#5513](https://github.com/facebook/jest/pull/5513))
+
 
 ## jest 22.2.2
 

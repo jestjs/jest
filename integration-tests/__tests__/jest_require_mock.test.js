@@ -12,7 +12,7 @@
 const path = require('path');
 const os = require('os');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {cleanup, writeFiles} = require('../utils');
+const {cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(os.tmpdir(), 'jest_require_mock_test');

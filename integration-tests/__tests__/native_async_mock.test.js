@@ -10,7 +10,7 @@
 'use strict';
 
 const path = require('path');
-const {run, extractSummary} = require('../utils');
+const {run, extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '..', 'native-async-mock');

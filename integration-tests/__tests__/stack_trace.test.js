@@ -9,7 +9,7 @@
 'use strict';
 
 const runJest = require('../runJest');
-const {extractSummary} = require('../utils');
+const {extractSummary} = require('../Utils');
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {
