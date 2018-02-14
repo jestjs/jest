@@ -133,7 +133,9 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   onTestStart(test: Test) {
-    this._status.testStarted(test.path, test.context.config);
+    if (!this._globalConfig.failsOnly) {
+      this._status.testStarted(test.path, test.context.config);
+    }
   }
 
   onRunComplete() {
@@ -153,11 +155,13 @@ export default class DefaultReporter extends BaseReporter {
   ) {
     this.testFinished(test.context.config, testResult, aggregatedResults);
     if (!testResult.skipped) {
-      this.printTestFileHeader(
-        testResult.testFilePath,
-        test.context.config,
-        testResult,
-      );
+      if (!this._globalConfig.failsOnly) {
+        this.printTestFileHeader(
+          testResult.testFilePath,
+          test.context.config,
+          testResult,
+        );
+      }
       this.printTestFileFailureMessage(
         testResult.testFilePath,
         test.context.config,
@@ -172,7 +176,9 @@ export default class DefaultReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    this._status.testFinished(config, testResult, aggregatedResults);
+    if (!this._globalConfig.failsOnly) {
+      this._status.testFinished(config, testResult, aggregatedResults);
+    }
   }
 
   printTestFileHeader(

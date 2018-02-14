@@ -21,6 +21,8 @@
   ([#5523](https://github.com/facebook/jest/pull/5523))
 * `[jest-cli]` Support multiple glob patterns for `collectCoverageFrom`
   ([#5537](https://github.com/facebook/jest/pull/5537))
+* `[jest-cli]` Add failsOnly option to only print failed tests + summary
+  ([#5537](https://github.com/facebook/jest/pull/5554))
 
 ### Chore & Maintenance
 

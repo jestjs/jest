@@ -238,6 +238,11 @@ export const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
+  failsOnly: {
+    default: undefined,
+    description: 'Print only failing tests logs and summary.',
+    type: 'boolean',
+  },
   findRelatedTests: {
     default: undefined,
     description:
