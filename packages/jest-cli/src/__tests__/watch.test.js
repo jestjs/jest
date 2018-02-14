@@ -242,6 +242,36 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
+  it('allows WatchPlugins to hook into JestHooks', async () => {
+    const registerHooks = jest.fn();
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_register`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          constructor() {
+            this.registerHooks = registerHooks;
+          }
+        },
+      {virtual: true},
+    );
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [pluginPath],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    await nextTick();
+
+    expect(registerHooks).toHaveBeenCalled();
+  });
+
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
     const showPrompt = jest.fn(() => Promise.resolve());
     const pluginPath = `${__dirname}/__fixtures__/plugin_path`;

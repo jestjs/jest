@@ -7,10 +7,10 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 import type {JestHookSubscriber} from '../jest_hooks';
 
-class UpdateSnapshotsPlugin extends WatchPlugin {
+class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
   showPrompt(
     globalConfig: GlobalConfig,

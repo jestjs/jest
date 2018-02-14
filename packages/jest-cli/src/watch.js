@@ -9,6 +9,7 @@
 
 import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
 import type {Context} from 'types/Context';
+import type {WatchPlugin} from './types';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
@@ -27,7 +28,6 @@ import TestWatcher from './test_watcher';
 import FailedTestsCache from './failed_tests_cache';
 import {KEYS, CLEAR} from './constants';
 import JestHooks from './jest_hooks';
-import WatchPlugin from './watch_plugin';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
 import TestNamePatternPlugin from './plugins/test_name_pattern';
 import UpdateSnapshotsPlugin from './plugins/update_snapshots';
@@ -51,12 +51,14 @@ const getSortedUsageRows = (
 ) => {
   const internalPlugins = watchPlugins
     .slice(0, INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow(globalConfig))
+    .map(p => p.getUsageRow && p.getUsageRow(globalConfig))
+    .filter(Boolean)
     .filter(usage => !usage.hide);
 
   const thirdPartyPlugins = watchPlugins
     .slice(INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow(globalConfig))
+    .map(p => p.getUsageRow && p.getUsageRow(globalConfig))
+    .filter(Boolean)
     .filter(usage => !usage.hide)
     .sort((a, b) => a.key - b.key);
 
@@ -116,19 +118,31 @@ export default function watch(
     });
   };
 
+  // $FlowFixMe
   const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
     InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
   );
 
   watchPlugins.forEach((plugin: WatchPlugin) => {
-    plugin.registerHooks(hooks.getSubscriber());
+    const hookSubscriber = hooks.getSubscriber();
+    if (plugin.registerHooks) {
+      plugin.registerHooks(hookSubscriber);
+    }
   });
 
   if (globalConfig.watchPlugins != null) {
     for (const pluginModulePath of globalConfig.watchPlugins) {
       // $FlowFixMe dynamic require
-      const ThirdPluginPath = require(pluginModulePath);
-      watchPlugins.push(new ThirdPluginPath({stdin, stdout: outputStream}));
+      const ThirdPartyPlugin = require(pluginModulePath);
+      const plugin: WatchPlugin = new ThirdPartyPlugin({
+        stdin,
+        stdout: outputStream,
+      });
+      const hookSubscriber = hooks.getSubscriber();
+      if (plugin.registerHooks) {
+        plugin.registerHooks(hookSubscriber);
+      }
+      watchPlugins.push(plugin);
     }
   }
 
@@ -238,7 +252,7 @@ export default function watch(
       return;
     }
 
-    if (activePlugin != null) {
+    if (activePlugin != null && activePlugin.onData) {
       // if a plugin is activate, Jest should let it handle keystrokes, so ignore
       // them here
       activePlugin.onData(key);
@@ -261,7 +275,8 @@ export default function watch(
     }
 
     const matchingWatchPlugin = watchPlugins.find(plugin => {
-      const usageRow = plugin.getUsageRow(globalConfig) || {};
+      const usageRow =
+        (plugin.getUsageRow && plugin.getUsageRow(globalConfig)) || {};
 
       return usageRow.key === parseInt(key, 16);
     });
@@ -270,18 +285,22 @@ export default function watch(
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
-      activePlugin.showPrompt(globalConfig, updateConfigAndRun).then(
-        shouldRerun => {
-          activePlugin = null;
-          if (shouldRerun) {
-            updateConfigAndRun();
-          }
-        },
-        () => {
-          activePlugin = null;
-          onCancelPatternPrompt();
-        },
-      );
+      if (activePlugin.showPrompt) {
+        activePlugin.showPrompt(globalConfig, updateConfigAndRun).then(
+          shouldRerun => {
+            activePlugin = null;
+            if (shouldRerun) {
+              updateConfigAndRun();
+            }
+          },
+          () => {
+            activePlugin = null;
+            onCancelPatternPrompt();
+          },
+        );
+      } else {
+        activePlugin = null;
+      }
     }
 
     switch (key) {

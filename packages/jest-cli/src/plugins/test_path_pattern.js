@@ -8,12 +8,12 @@
  */
 
 import type {GlobalConfig} from 'types/Config';
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 import TestPathPatternPrompt from '../test_path_pattern_prompt';
 import activeFilters from '../lib/active_filters_message';
 import Prompt from '../lib/Prompt';
 
-class TestPathPatternPlugin extends WatchPlugin {
+class TestPathPatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
 
   constructor(options: {

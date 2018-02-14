@@ -10,7 +10,7 @@ import type {GlobalConfig} from 'types/Config';
 import type {JestHookSubscriber} from './jest_hooks';
 import type {UsageRow} from './types';
 
-class WatchPlugin {
+class BaseWatchPlugin {
   _stdin: stream$Readable | tty$ReadStream;
   _stdout: stream$Writable | tty$WriteStream;
   constructor({
@@ -40,4 +40,4 @@ class WatchPlugin {
   }
 }
 
-export default WatchPlugin;
+export default BaseWatchPlugin;

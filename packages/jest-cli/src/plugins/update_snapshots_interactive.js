@@ -8,11 +8,11 @@
  */
 import type {JestHookSubscriber} from '../jest_hooks';
 import type {GlobalConfig} from 'types/Config';
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 import {getFailedSnapshotTests} from 'jest-util';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
-class UpdateSnapshotInteractivePlugin extends WatchPlugin {
+class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;
   _failedSnapshotTestPaths: Array<*>;
 
