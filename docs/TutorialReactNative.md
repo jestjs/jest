@@ -82,11 +82,9 @@ the component and capture the rendered output and create a snapshot file:
 
 ```javascript
 // __tests__/Intro-test.js
-import 'react-native';
 import React from 'react';
 import Intro from '../Intro';
 
-// Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
 test('renders correctly', () => {
@@ -249,17 +247,6 @@ real device and then modeling a manual mock after the real module.
 
 If you end up mocking the same modules over and over it is recommended to define
 these mocks in a separate file and add it to the list of `setupFiles`.
-
-### require react-native before the test renderer
-
-Currently it is required to require react-native before loading the test
-renderer:
-
-```js
-import 'react-native';
-// Require after react-native
-import renderer from 'react-test-renderer';
-```
 
 ### `@providesModule`
 
