@@ -1,5 +1,11 @@
 ## master
 
+### Fixes
+
+* `[jest-runtime]` Replace path sep for testRegex in should_instrument so test
+files don't get instrumented on windows given a pattern like /__tests__/*.js
+  ([#5560](https://github.com/facebook/jest/pull/5560))
+
 ## jest 22.3.0
 
 ### Fixes
