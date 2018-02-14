@@ -230,6 +230,9 @@ export default function watch(
 
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
+      if (typeof stdin.setRawMode === 'function') {
+        stdin.setRawMode(false);
+      }
       outputStream.write('\n');
       exit(0);
       return;

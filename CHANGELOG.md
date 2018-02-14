@@ -4,6 +4,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Fix inability to quit watch mode while debugger is still attached
+  ([#5029](https://github.com/facebook/jest/pull/5029))
 * `[jest-haste-map]` Properly handle platform-specific file deletions
   ([#5534](https://github.com/facebook/jest/pull/5534))
 
