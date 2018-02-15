@@ -140,9 +140,9 @@ const createTransformer = (options: any): Transformer => {
       }
 
       const shouldReturnCodeOnly =
-        transformOptions &&
-        (transformOptions.returnSourceString == null ||
-          transformOptions.returnSourceString);
+        transformOptions == null ||
+        transformOptions.returnSourceString == null ||
+        transformOptions.returnSourceString === true;
 
       return shouldReturnCodeOnly ? transformResult.code : transformResult;
     },

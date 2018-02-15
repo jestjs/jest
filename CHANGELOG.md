@@ -7,7 +7,7 @@
   ([#5560](https://github.com/facebook/jest/pull/5560))
 
 ### Features
-
+* `[docs]` Add MongoDB guide ([#5571](https://github.com/facebook/jest/pull/5571))
 * `[jest-runtime]` Deprecate mapCoverage option.
   ([#5177](https://github.com/facebook/jest/pull/5177))
 * `[babel-jest]` Add option to return sourcemap from the transformer separately
