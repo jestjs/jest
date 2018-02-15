@@ -122,8 +122,8 @@ export default function watch(
 
   watchPlugins.forEach((plugin: WatchPlugin) => {
     const hookSubscriber = hooks.getSubscriber();
-    if (plugin.registerHooks) {
-      plugin.registerHooks(hookSubscriber);
+    if (plugin.apply) {
+      plugin.apply(hookSubscriber);
     }
   });
 
@@ -136,8 +136,8 @@ export default function watch(
         stdout: outputStream,
       });
       const hookSubscriber = hooks.getSubscriber();
-      if (plugin.registerHooks) {
-        plugin.registerHooks(hookSubscriber);
+      if (plugin.apply) {
+        plugin.apply(hookSubscriber);
       }
       watchPlugins.push(plugin);
     }
@@ -249,10 +249,10 @@ export default function watch(
       return;
     }
 
-    if (activePlugin != null && activePlugin.onData) {
+    if (activePlugin != null && activePlugin.onKey) {
       // if a plugin is activate, Jest should let it handle keystrokes, so ignore
       // them here
-      activePlugin.onData(key);
+      activePlugin.onKey(key);
       return;
     }
 
@@ -281,8 +281,8 @@ export default function watch(
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
-      if (activePlugin.showPrompt) {
-        activePlugin.showPrompt(globalConfig, updateConfigAndRun).then(
+      if (activePlugin.runInteractive) {
+        activePlugin.runInteractive(globalConfig, updateConfigAndRun).then(
           shouldRerun => {
             activePlugin = null;
             if (shouldRerun) {

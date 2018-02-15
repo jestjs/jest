@@ -24,15 +24,15 @@ class BaseWatchPlugin {
     this._stdout = stdout;
   }
 
-  registerHooks(hooks: JestHookSubscriber) {}
+  apply(hooks: JestHookSubscriber) {}
 
   getUsageData(globalConfig: GlobalConfig): ?UsageData {
     return null;
   }
 
-  onData(value: string) {}
+  onKey(value: string) {}
 
-  showPrompt(
+  runInteractive(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void | boolean> {

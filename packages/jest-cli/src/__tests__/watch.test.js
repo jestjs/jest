@@ -244,14 +244,14 @@ describe('Watch mode flows', () => {
   });
 
   it('allows WatchPlugins to hook into JestHooks', async () => {
-    const registerHooks = jest.fn();
+    const apply = jest.fn();
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_register`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin {
           constructor() {
-            this.registerHooks = registerHooks;
+            this.apply = apply;
           }
         },
       {virtual: true},
@@ -270,18 +270,18 @@ describe('Watch mode flows', () => {
 
     await nextTick();
 
-    expect(registerHooks).toHaveBeenCalled();
+    expect(apply).toHaveBeenCalled();
   });
 
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
-    const showPrompt = jest.fn(() => Promise.resolve());
+    const runInteractive = jest.fn(() => Promise.resolve());
     const pluginPath = `${__dirname}/__fixtures__/plugin_path`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.showPrompt = showPrompt;
+            this.runInteractive = runInteractive;
           }
           getUsageData() {
             return {
@@ -308,12 +308,12 @@ describe('Watch mode flows', () => {
 
     await nextTick();
 
-    expect(showPrompt).toHaveBeenCalled();
+    expect(runInteractive).toHaveBeenCalled();
   });
 
   it('prevents Jest from handling keys when active and returns control when end is called', async () => {
     let resolveShowPrompt;
-    const showPrompt = jest.fn(
+    const runInteractive = jest.fn(
       () => new Promise(res => (resolveShowPrompt = res)),
     );
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_1`;
@@ -322,9 +322,9 @@ describe('Watch mode flows', () => {
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.showPrompt = showPrompt;
+            this.runInteractive = runInteractive;
           }
-          onData() {}
+          onKey() {}
           getUsageData() {
             return {
               key: 's'.codePointAt(0),
@@ -342,9 +342,9 @@ describe('Watch mode flows', () => {
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.showPrompt = showPrompt2;
+            this.runInteractive = showPrompt2;
           }
-          onData() {}
+          onKey() {}
           getUsageData() {
             return {
               key: 'z'.codePointAt(0),
@@ -368,7 +368,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit(Number('s'.charCodeAt(0)).toString(16));
     await nextTick();
-    expect(showPrompt).toHaveBeenCalled();
+    expect(runInteractive).toHaveBeenCalled();
     stdin.emit(Number('z'.charCodeAt(0)).toString(16));
     await nextTick();
     expect(showPrompt2).not.toHaveBeenCalled();

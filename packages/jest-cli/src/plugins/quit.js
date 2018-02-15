@@ -9,7 +9,7 @@
 import BaseWatchPlugin from '../base_watch_plugin';
 
 class QuitPlugin extends BaseWatchPlugin {
-  async showPrompt() {
+  async runInteractive() {
     if (typeof this._stdin.setRawMode === 'function') {
       this._stdin.setRawMode(false);
     }

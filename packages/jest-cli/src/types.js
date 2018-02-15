@@ -19,10 +19,10 @@ export type JestHooks = {
 };
 
 export type WatchPlugin = {
-  registerHooks?: (hooks: JestHookSubscriber) => void,
+  apply?: (hooks: JestHookSubscriber) => void,
   getUsageData?: (globalConfig: GlobalConfig) => ?UsageData,
-  onData?: (value: string) => void,
-  showPrompt?: (
+  onKey?: (value: string) => void,
+  runInteractive?: (
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ) => Promise<void | boolean>,

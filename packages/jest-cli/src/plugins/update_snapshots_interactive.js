@@ -24,7 +24,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
   }
 
-  registerHooks(hooks: JestHookSubscriber) {
+  apply(hooks: JestHookSubscriber) {
     hooks.testRunComplete(results => {
       this._failedSnapshotTestPaths = getFailedSnapshotTests(results);
       if (this._snapshotInteractiveMode.isActive()) {
@@ -33,13 +33,13 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     });
   }
 
-  onData(key: string) {
+  onKey(key: string) {
     if (this._snapshotInteractiveMode.isActive()) {
       this._snapshotInteractiveMode.put(key);
     }
   }
 
-  showPrompt(
+  runInteractive(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {

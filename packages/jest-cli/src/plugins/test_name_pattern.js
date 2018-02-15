@@ -30,11 +30,11 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
     };
   }
 
-  onData(key: string) {
+  onKey(key: string) {
     this._prompt.put(key);
   }
 
-  showPrompt(
+  runInteractive(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {

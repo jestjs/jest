@@ -12,7 +12,7 @@ import type {JestHookSubscriber} from '../jest_hooks';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
-  showPrompt(
+  runInteractive(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<boolean> {
@@ -20,7 +20,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
     return Promise.resolve(false);
   }
 
-  registerHooks(hooks: JestHookSubscriber) {
+  apply(hooks: JestHookSubscriber) {
     this._hasSnapshotFailure = true;
     hooks.testRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
