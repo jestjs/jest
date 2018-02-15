@@ -32,15 +32,21 @@ exports[`cannot test with no implementation 1`] = `
       434 |         'Missing second argument. It must be a callback function.');
       435 | 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fix: cleans up stack using cleanUpStackTrace
       436 |       }
       
 
       at __tests__/only-constructs.test.js:3:5
 
 "
+<<<<<<< HEAD
 =======
       436 |       }"
 >>>>>>> fix: restores rest snapshot and removes abs path from snapshot stack
+=======
+>>>>>>> fix: cleans up stack using cleanUpStackTrace
 `;
 
 exports[`cannot test with no implementation 2`] = `

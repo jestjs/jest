@@ -146,7 +146,6 @@ const extractSummary = (stdout: string) => {
   const summary = match[0]
     .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
-
   const rest = cleanupStackTrace(
     // remove all timestamps
     stdout.slice(0, -match[0].length).replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
@@ -160,7 +159,7 @@ const extractSummary = (stdout: string) => {
 // TODO: Remove when we drop support for node 4
 const cleanupStackTrace = (output: string) => {
   return output
-    .replace(/^.*\b(at Env.it)\b.*$/gm, '')
+    .replace(/.*(?=packages)/g, '      at ')
     .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 };
 
