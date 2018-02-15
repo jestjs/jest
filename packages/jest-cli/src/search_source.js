@@ -17,7 +17,7 @@ import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './test_path_pattern_to_regexp';
-import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
+import {escapePathForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -36,8 +36,6 @@ export type TestSelectionConfig = {|
   watch?: boolean,
 |};
 
-const pathToRegex = p => replacePathSepForRegex(p);
-
 const globsToMatcher = (globs: ?Array<Glob>) => {
   if (globs == null || globs.length === 0) {
     return () => true;
@@ -52,7 +50,7 @@ const regexToMatcher = (testRegex: string) => {
     return () => true;
   }
 
-  const regex = new RegExp(pathToRegex(testRegex));
+  const regex = new RegExp(testRegex);
   return path => regex.test(path);
 };
 
