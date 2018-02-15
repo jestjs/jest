@@ -49,7 +49,6 @@ export default ({
   json: false,
   lastCommit: false,
   logHeapUsage: true,
-  mapCoverage: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',

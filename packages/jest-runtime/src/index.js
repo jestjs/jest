@@ -55,7 +55,6 @@ type CoverageOptions = {
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
-  mapCoverage: boolean,
 };
 
 type ModuleRegistry = {[key: string]: Module, __proto__: null};
@@ -96,6 +95,7 @@ class Runtime {
   _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: ModuleRegistry;
+  _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -119,7 +119,6 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: null,
-      mapCoverage: false,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -130,6 +129,7 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
     this._moduleRegistry = Object.create(null);
+    this._needsCoverageMapped = new Set();
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
@@ -181,7 +181,6 @@ class Runtime {
         collectCoverage: options.collectCoverage,
         collectCoverageFrom: options.collectCoverageFrom,
         collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
-        mapCoverage: options.mapCoverage,
       },
       config,
     );
@@ -437,9 +436,13 @@ class Runtime {
     return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
-  getSourceMapInfo() {
+  getSourceMapInfo(coveredFiles: Set<string>) {
     return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
-      if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
+      if (
+        coveredFiles.has(sourcePath) &&
+        this._needsCoverageMapped.has(sourcePath) &&
+        fs.existsSync(this._sourceMapRegistry[sourcePath])
+      ) {
         result[sourcePath] = this._sourceMapRegistry[sourcePath];
       }
       return result;
@@ -526,13 +529,15 @@ class Runtime {
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
         isInternalModule,
-        mapCoverage: this._coverageOptions.mapCoverage,
       },
       this._cacheFS[filename],
     );
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
+      if (transformedFile.mapCoverage) {
+        this._needsCoverageMapped.add(filename);
+      }
     }
 
     const wrapper = this._environment.runScript(transformedFile.script)[

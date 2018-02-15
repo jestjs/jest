@@ -112,7 +112,6 @@ const getConfigs = (
       lastCommit: options.lastCommit,
       listTests: options.listTests,
       logHeapUsage: options.logHeapUsage,
-      mapCoverage: options.mapCoverage,
       maxWorkers: options.maxWorkers,
       noSCM: undefined,
       noStackTrace: options.noStackTrace,
