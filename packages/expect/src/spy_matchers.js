@@ -219,8 +219,14 @@ const formatMismatchedArgs = (expected, received) => {
         `  ${printExpected(expected[i])} as argument ${i + 1}, ` +
           `but it was called with ${printReceived(received[i])}.`,
       );
+    } else if (i >= expected.length) {
+      printedArgs.push(
+        `  Did not expect argument ${i + 1} ` +
+          `but it was called with ${printReceived(received[i])}.`,
+      );
     }
   }
+
   return printedArgs.join('\n');
 };
 

@@ -164,6 +164,15 @@ describe('toHaveBeenCalledTimes', () => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test(`${calledWith} works with trailing undefined arguments`, () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
+
+      expect(() =>
+        jestExpect(fn)[calledWith]('foo'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test(`${calledWith} works with Map`, () => {
       const fn = jest.fn();
 

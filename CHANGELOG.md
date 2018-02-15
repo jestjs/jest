@@ -13,6 +13,8 @@
 
 ### Fixes
 
+* `[expect]` Add descriptive error message to CalledWith methods when missing
+  optional arguments ([#5547](https://github.com/facebook/jest/pull/5547))
 * `[jest-cli]` Fix inability to quit watch mode while debugger is still attached
   ([#5029](https://github.com/facebook/jest/pull/5029))
 * `[jest-haste-map]` Properly handle platform-specific file deletions
