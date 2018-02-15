@@ -150,7 +150,6 @@ const extractSummary = (stdout: string) => {
     // remove all timestamps
     stdout.slice(0, -match[0].length).replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
   );
-
   return {rest, summary};
 };
 
