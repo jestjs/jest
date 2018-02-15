@@ -17,6 +17,7 @@
       "es6-class-mocks",
       "webpack",
       "puppeteer",
+      "mongodb",
       "migration-guide",
       "troubleshooting"
     ],

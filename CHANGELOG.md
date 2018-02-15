@@ -6,6 +6,9 @@
   tests and instrumentation checks
   ([#5560](https://github.com/facebook/jest/pull/5560))
 
+### Features
+* `[docs]` Add MongoDB guide ([#5571](https://github.com/facebook/jest/pull/5571))
+
 ## jest 22.3.0
 
 ### Fixes
