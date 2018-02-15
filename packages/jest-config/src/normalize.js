@@ -463,6 +463,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           options[key],
         );
         break;
+      case 'testRegex':
+        value = options[key] && replacePathSepForRegex(options[key]);
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
@@ -506,7 +509,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testRegex':
       case 'testURL':
       case 'timers':
       case 'useStderr':

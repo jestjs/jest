@@ -11,7 +11,7 @@ import type {Path, ProjectConfig} from 'types/Config';
 import type {Options} from './script_transformer';
 
 import path from 'path';
-import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
+import {escapePathForRegex} from 'jest-regex-util';
 import micromatch from 'micromatch';
 
 const MOCKS_PATTERN = new RegExp(
@@ -35,10 +35,7 @@ export default function shouldInstrument(
     return true;
   }
 
-  if (
-    config.testRegex &&
-    new RegExp(replacePathSepForRegex(config.testRegex)).test(filename)
-  ) {
+  if (config.testRegex && filename.match(config.testRegex)) {
     return false;
   }
 
