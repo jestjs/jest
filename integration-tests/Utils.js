@@ -148,12 +148,8 @@ const extractSummary = (stdout: string) => {
     .replace(/, estimated <<REPLACED>>/g, '');
   const rest = cleanupStackTrace(
     // remove all timestamps
-    stdout
-      .slice(0, -match[0].length)
-      .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '')
-      .replace(/^.*\b(at Env.it)\b.*$/gm, ''),
+    stdout.slice(0, -match[0].length).replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
   );
-
   return {rest, summary};
 };
 
@@ -161,7 +157,7 @@ const extractSummary = (stdout: string) => {
 // unifies their output to make it possible to snapshot them.
 // TODO: Remove when we drop support for node 4
 const cleanupStackTrace = (output: string) => {
-  return output.replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
+  return output.replace(/^.*\b(at)\b.*$/gm, '      at $1');
 };
 
 module.exports = {
