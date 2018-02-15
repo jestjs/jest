@@ -58,7 +58,6 @@ configuration power.</p>
 <li><a href="#globals-object"><code>globals</code> [object]</a></li>
 <li><a href="#globalsetup-string"><code>globalSetup</code> [string]</a></li>
 <li><a href="#globalteardown-string"><code>globalTeardown</code> [string]</a></li>
-<li><a href="#mapcoverage-boolean"><code>mapCoverage</code> [boolean]</a></li>
 <li><a href="#modulefileextensions-array-string"><code>moduleFileExtensions</code> [array<string>]</a></li>
 <li><a href="#moduledirectories-array-string"><code>moduleDirectories</code> [array<string>]</a></li>
 <li><a href="#modulenamemapper-object-string-string"><code>moduleNameMapper</code> [object&lt;string, string&gt;]</a></li>
@@ -291,27 +290,6 @@ async function that is triggered once before all test suites.</p>
 <p>Default: <code>undefined</code></p>
 <p>This option allows the use of a custom global teardown module which exports an
 async function that is triggered once after all test suites.</p>
-<h3><a class="anchor" aria-hidden="true" name="mapcoverage-boolean"></a><a href="#mapcoverage-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mapCoverage</code> [boolean]</h3>
-<h5><a class="anchor" aria-hidden="true" name="available-in-jest-2000"></a><a href="#available-in-jest-2000" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>available in Jest <strong>20.0.0+</strong></h5>
-<p>Default: <code>false</code></p>
-<p>If you have <a href="#transform-object-string-string">transformers</a> configured that emit
-source maps, Jest will use them to try and map code coverage against the
-original source code when writing <a href="#coveragereporters-array-string">reports</a> and
-checking <a href="#coveragethreshold-object">thresholds</a>. This is done on a best-effort
-basis as some compile-to-JavaScript languages may provide more accurate source
-maps than others. This can also be resource-intensive. If Jest is taking a long
-time to calculate coverage at the end of a test run, try setting this option to
-<code>false</code>.</p>
-<p>Both inline source maps and source maps returned directly from a transformer are
-supported. Source map URLs are not supported because Jest may not be able to
-locate them. To return source maps from a transformer, the <code>process</code> function
-can return an object like the following. The <code>map</code> property may either be the
-source map object, or the source map object as a string.</p>
-<pre><code class="hljs css js"><span class="hljs-keyword">return</span> {
-  <span class="hljs-attr">code</span>: <span class="hljs-string">'the code'</span>,
-  <span class="hljs-attr">map</span>: <span class="hljs-string">'the source map'</span>,
-};
-</code></pre>
 <h3><a class="anchor" aria-hidden="true" name="modulefileextensions-array-string"></a><a href="#modulefileextensions-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleFileExtensions</code> [array<string>]</h3>
 <p>Default: <code>[&quot;js&quot;, &quot;json&quot;, &quot;jsx&quot;, &quot;node&quot;]</code></p>
 <p>An array of file extensions your modules use. If you require modules without
