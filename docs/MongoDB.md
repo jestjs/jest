@@ -92,6 +92,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await connection.close();
   await db.close();
 });
 
@@ -118,9 +119,6 @@ it('should aggregate docs from collection', async () => {
   ]);
 });
 ```
-
-Note: you may need to modify test script to run jest sequentially, like that:
-`jest --runInBand --forceExit`.
 
 Here's the code of
 [full working example](https://github.com/vladgolubev/jest-mongodb).
