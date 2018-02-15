@@ -8,9 +8,9 @@
  */
 import type {GlobalConfig} from 'types/Config';
 import type {JestHookSubscriber} from './jest_hooks';
-import type {UsageData} from './types';
+import type {WatchPlugin, UsageData} from './types';
 
-class BaseWatchPlugin {
+class BaseWatchPlugin implements WatchPlugin {
   _stdin: stream$Readable | tty$ReadStream;
   _stdout: stream$Writable | tty$WriteStream;
   constructor({

@@ -18,12 +18,12 @@ export type JestHooks = {
   testRunComplete: any,
 };
 
-export type WatchPlugin = {
-  apply?: (hooks: JestHookSubscriber) => void,
-  getUsageData?: (globalConfig: GlobalConfig) => ?UsageData,
-  onKey?: (value: string) => void,
-  runInteractive?: (
+export interface WatchPlugin {
+  +apply?: (hooks: JestHookSubscriber) => void;
+  +getUsageData?: (globalConfig: GlobalConfig) => ?UsageData;
+  +onKey?: (value: string) => void;
+  +runInteractive?: (
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
-  ) => Promise<void | boolean>,
-};
+  ) => Promise<void | boolean>;
+}

@@ -115,7 +115,6 @@ export default function watch(
     });
   };
 
-  // $FlowFixMe
   const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
     InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
   );
