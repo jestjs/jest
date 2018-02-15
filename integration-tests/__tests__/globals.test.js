@@ -13,8 +13,8 @@ const path = require('path');
 const os = require('os');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
-const {extractSummary} = require('../utils');
-const {createEmptyPackage, writeFiles, cleanup} = require('../utils');
+const {extractSummary} = require('../Utils');
+const {createEmptyPackage, writeFiles, cleanup} = require('../Utils');
 
 const DIR = path.resolve(os.tmpdir(), 'global-variables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');

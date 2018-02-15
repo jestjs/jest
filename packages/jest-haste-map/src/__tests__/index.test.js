@@ -70,8 +70,6 @@ let mockFs;
 
 jest.mock('graceful-fs', () => ({
   readFileSync: jest.fn((path, options) => {
-    expect(options).toBe('utf8');
-
     // A file change can be triggered by writing into the
     // mockChangedFiles object.
     if (mockChangedFiles && path in mockChangedFiles) {
@@ -87,7 +85,7 @@ jest.mock('graceful-fs', () => ({
     throw error;
   }),
   writeFileSync: jest.fn((path, data, options) => {
-    expect(options).toBe('utf8');
+    expect(options).toBe(require('v8').serialize ? undefined : 'utf8');
     mockFs[path] = data;
   }),
 }));
@@ -468,8 +466,11 @@ describe('HasteMap', () => {
           .build()
           .then(({__hasteMapForTest: data}) => {
             expect(fs.readFileSync.mock.calls.length).toBe(1);
-            expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
-
+            if (require('v8').deserialize) {
+              expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
+            } else {
+              expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+            }
             expect(data.clocks).toEqual(mockClocks);
             expect(data.files).toEqual(initialData.files);
             expect(data.map).toEqual(initialData.map);
@@ -504,7 +505,11 @@ describe('HasteMap', () => {
           .then(({__hasteMapForTest: data}) => {
             expect(fs.readFileSync.mock.calls.length).toBe(2);
 
-            expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+            if (require('v8').serialize) {
+              expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
+            } else {
+              expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+            }
             expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
             expect(data.clocks).toEqual(mockClocks);

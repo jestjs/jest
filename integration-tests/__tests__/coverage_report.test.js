@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {extractSummary} = require('../utils');
+const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage-report');
@@ -23,9 +23,9 @@ test('outputs coverage report', () => {
   const coverageDir = path.resolve(__dirname, '../coverage-report/coverage');
 
   // - the `setup.js` file is ignored and should not be in the coverage report.
-  // - `sum_dependency.js` is mocked and the real module is never required but
+  // - `SumDependency.js` is mocked and the real module is never required but
   //  is listed with 0 % coverage.
-  // - `not-required-in-test-suite.js` is not required but it is listed
+  // - `notRequiredInTestSuite.js` is not required but it is listed
   //  with 0 % coverage.
   expect(stdout).toMatchSnapshot();
 
@@ -51,7 +51,7 @@ test('collects coverage only from multiple specified files', () => {
     '--coverage',
     '--collectCoverageFrom', // overwrites the one in package.json
     'setup.js',
-    'other-file.js',
+    'OtherFile.js',
   ]);
 
   expect(stdout).toMatchSnapshot();
@@ -62,9 +62,9 @@ test('collects coverage only from specified files avoiding dependencies', () => 
     '--no-cache',
     '--coverage',
     '--collectCoverageOnlyFrom',
-    'sum.js',
+    'Sum.js',
     '--',
-    'sum.test.js',
+    'Sum.test.js',
   ]);
 
   // Coverage report should only have `sum.js` coverage info
@@ -98,11 +98,11 @@ test('collects coverage from duplicate files avoiding shared cache', () => {
     '--coverageThreshold',
     '{"global": {"lines": 100}}',
     '--collectCoverageOnlyFrom',
-    'cached-duplicates/a/identical.js',
+    'cached-duplicates/a/Identical.js',
     '--collectCoverageOnlyFrom',
-    'cached-duplicates/b/identical.js',
+    'cached-duplicates/b/Identical.js',
     '--',
-    'identical.test.js',
+    'Identical.test.js',
   ];
   // Run once to prime the cache
   runJest(DIR, args);

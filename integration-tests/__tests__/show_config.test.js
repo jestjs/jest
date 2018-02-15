@@ -13,7 +13,7 @@ const path = require('path');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 const os = require('os');
-const {cleanup, writeFiles} = require('../utils');
+const {cleanup, writeFiles} = require('../Utils');
 
 SkipOnWindows.suite();
 const DIR = path.resolve(os.tmpdir(), 'show_config_test');

@@ -11,7 +11,7 @@
 
 const path = require('path');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {cleanup, writeFiles} = require('../utils');
+const {cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage-threshold');

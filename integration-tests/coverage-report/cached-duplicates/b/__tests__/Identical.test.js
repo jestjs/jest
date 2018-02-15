@@ -6,13 +6,7 @@
  */
 'use strict';
 
-jest.mock('../sum_dependency.js'); // call mock explicitly
-
-const sum = require('../sum').sum;
-
-if (!global.setup) {
-  throw new Error('setup.js was not called.');
-}
+const sum = require('../Identical').sum;
 
 describe('sum', () => {
   it('adds numbers', () => {

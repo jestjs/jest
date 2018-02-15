@@ -10,6 +10,9 @@ import WatchPlugin from '../watch_plugin';
 
 class QuitPlugin extends WatchPlugin {
   async showPrompt() {
+    if (typeof this._stdin.setRawMode === 'function') {
+      this._stdin.setRawMode(false);
+    }
     this._stdout.write('\n');
     process.exit(0);
   }

@@ -13,7 +13,7 @@ import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
 
-const {cleanup, extractSummary, writeFiles} = require('../utils');
+const {cleanup, extractSummary, writeFiles} = require('../Utils');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const DIR = path.resolve(os.tmpdir(), 'multi_project_runner_test');
 
