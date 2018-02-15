@@ -158,7 +158,9 @@ const extractSummary = (stdout: string) => {
 // unifies their output to make it possible to snapshot them.
 // TODO: Remove when we drop support for node 4
 const cleanupStackTrace = (output: string) => {
-  return output.replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
+  return output
+    .replace(/^.*\b(at Env.it)\b.*$/gm, '')
+    .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 };
 
 module.exports = {

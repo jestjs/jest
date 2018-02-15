@@ -33,7 +33,7 @@ exports[`cannot test with no implementation 1`] = `
       435 | 
       436 |       }
       
-      at ../../../../../../../Users/brian/Documents/projects/opensource/jest/packages/jest-jasmine2/build/jasmine/Env.js:433:15
+
       at __tests__/only-constructs.test.js:3:5
 
 "
@@ -61,7 +61,7 @@ exports[`cannot test with no implementation with expand arg 1`] = `
       435 | 
       436 |       }
       
-      at ../../../../../../../Users/brian/Documents/projects/opensource/jest/packages/jest-jasmine2/build/jasmine/Env.js:433:15
+
       at __tests__/only-constructs.test.js:3:5
 
 "
