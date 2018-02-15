@@ -38,13 +38,15 @@ describe('CustomConsole', () => {
     test('log the assertion error when the assertion is falsy', () => {
       _console.assert(false);
 
-      expect(stdout()).toEqual('AssertionError [ERR_ASSERTION]: false == true');
+      expect(stdout()).toMatch('AssertionError');
+      expect(stdout()).toMatch('false == true');
     });
 
     test('log the assertion error when the assertion is falsy with another message argument', () => {
       _console.assert(false, 'ok');
 
-      expect(stdout()).toEqual('AssertionError [ERR_ASSERTION]: ok');
+      expect(stdout()).toMatch('AssertionError');
+      expect(stdout()).toMatch('ok');
     });
   });
 
