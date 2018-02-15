@@ -31,7 +31,12 @@ exports[`cannot test with no implementation 1`] = `
     > 433 |         throw new Error(
       434 |         'Missing second argument. It must be a callback function.');
       435 | 
-      436 |       }"
+      436 |       }
+      
+
+      at __tests__/only-constructs.test.js:3:5
+
+"
 `;
 
 exports[`cannot test with no implementation 2`] = `
@@ -54,7 +59,12 @@ exports[`cannot test with no implementation with expand arg 1`] = `
     > 433 |         throw new Error(
       434 |         'Missing second argument. It must be a callback function.');
       435 | 
-      436 |       }"
+      436 |       }
+      
+
+      at __tests__/only-constructs.test.js:3:5
+
+"
 `;
 
 exports[`cannot test with no implementation with expand arg 2`] = `
