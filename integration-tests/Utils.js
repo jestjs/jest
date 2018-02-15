@@ -146,10 +146,12 @@ const extractSummary = (stdout: string) => {
   const summary = match[0]
     .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
-
   const rest = cleanupStackTrace(
     // remove all timestamps
-    stdout.slice(0, -match[0].length).replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
+    stdout
+      .slice(0, -match[0].length)
+      .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '')
+      .replace(/^.*\b(at Env.it)\b.*$/gm, ''),
   );
 
   return {rest, summary};
