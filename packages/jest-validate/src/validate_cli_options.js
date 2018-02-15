@@ -93,8 +93,8 @@ export default function validateCLIOptions(argv: Argv, options: Object) {
     {},
   );
   const deprecations = new Set(Object.keys(CLIDeprecations));
-  const deprecatedOptions = Object.keys(argv).filter(arg =>
-    deprecations.has(arg),
+  const deprecatedOptions = Object.keys(argv).filter(
+    arg => deprecations.has(arg) && argv[arg] != null,
   );
 
   if (deprecatedOptions.length) {
