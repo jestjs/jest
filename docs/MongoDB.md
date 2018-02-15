@@ -38,7 +38,7 @@ module.exports = function() {
 };
 ```
 
-Then we need a custom Test Environment for puppeteer
+Then we need a custom Test Environment for Mongo
 
 ```js
 // mongo-environment.js
