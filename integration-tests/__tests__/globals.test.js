@@ -123,8 +123,8 @@ test('cannot test with no implementation', () => {
   expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr);
-  const restWithoutStack = rest.slice(0, 343);
-  expect(restWithoutStack).toMatchSnapshot();
+
+  expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
 
@@ -202,8 +202,7 @@ test('cannot test with no implementation with expand arg', () => {
   expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr);
-  const restWithoutStack = rest.slice(0, 343);
-  expect(restWithoutStack).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
 
