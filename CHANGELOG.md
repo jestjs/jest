@@ -7,7 +7,9 @@
   ([#5560](https://github.com/facebook/jest/pull/5560))
 
 ### Features
-* `[docs]` Add MongoDB guide ([#5571](https://github.com/facebook/jest/pull/5571))
+
+* `[docs]` Add MongoDB guide
+  ([#5571](https://github.com/facebook/jest/pull/5571))
 * `[jest-runtime]` Deprecate mapCoverage option.
   ([#5177](https://github.com/facebook/jest/pull/5177))
 * `[babel-jest]` Add option to return sourcemap from the transformer separately
@@ -43,8 +45,8 @@
 
 * `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom`
   ([#5524](https://github.com/facebook/jest/pull/5524))
-* `[filenames]` Standardize files names in "integration-tests" folder ([#5513](https://github.com/facebook/jest/pull/5513))
-
+* `[filenames]` Standardize files names in "integration-tests" folder
+  ([#5513](https://github.com/facebook/jest/pull/5513))
 
 ## jest 22.2.2
 
