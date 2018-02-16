@@ -46,8 +46,7 @@ module.exports = function watchmanCrawl(
       if (err) {
         //Error out or Log warning?
         //https://facebook.github.io/watchman/docs/cmd/watch-project.html
-        reject(`You seem to have an older version of watchman installed.
-        Please install version 3.1 or later`);
+        reject(`You seem to have an older version of watchman installed. Please install version 3.1 or later`);
       }
     });
     client.on('error', error => reject(error));

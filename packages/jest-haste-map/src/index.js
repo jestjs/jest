@@ -582,7 +582,7 @@ class HasteMap extends EventEmitter {
             `empty \`.watchmanconfig\` file in your project's root folder or ` +
             `initialize a git or hg repository in your project.\n` +
             `  ` +
-            error,
+            error + '\n',
         );
         return nodeCrawl({
           data: hasteMap,
