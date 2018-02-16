@@ -32,9 +32,7 @@ projects.
 
 Ask questions and find answers from other Jest users like you.
 [Reactiflux](http://www.reactiflux.com/) is a Discord chat where a lot of Jest
-discussion happens. Check out the
-[#jest](https://discordapp.com/channels/102860784329052160/103622435865104384)
-channel.
+discussion happens. Check out the [#jest](https://discord.gg/MWRhKCj) channel.
 
 Follow the [Jest Twitter account](https://twitter.com/fbjest) and
 [blog](/jest/blog/) to find out what's happening in the world of Jest.

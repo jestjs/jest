@@ -25,11 +25,11 @@ const MongodbMemoryServer = require('mongodb-memory-server');
 const MONGO_DB_NAME = 'jest';
 const mongod = new MongodbMemoryServer.default({
   instance: {
-    dbName: MONGO_DB_NAME
+    dbName: MONGO_DB_NAME,
   },
   binary: {
-    version: '3.2.19'
-  }
+    version: '3.2.19',
+  },
 });
 
 module.exports = function() {
@@ -105,17 +105,20 @@ it('should aggregate docs from collection', async () => {
     {type: 'Image'},
     {type: 'Document'},
     {type: 'Image'},
-    {type: 'Document'}
+    {type: 'Document'},
   ]);
 
   const topFiles = await files
-    .aggregate([{$group: {_id: '$type', count: {$sum: 1}}}, {$sort: {count: -1}}])
+    .aggregate([
+      {$group: {_id: '$type', count: {$sum: 1}}},
+      {$sort: {count: -1}},
+    ])
     .toArray();
 
   expect(topFiles).toEqual([
     {_id: 'Document', count: 3},
     {_id: 'Image', count: 2},
-    {_id: 'Video', count: 1}
+    {_id: 'Video', count: 1},
   ]);
 });
 ```
