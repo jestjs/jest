@@ -80,11 +80,7 @@ function isToStringedArrayType(toStringed: string): boolean {
 }
 
 function printNumber(val: number): string {
-  if (val != +val) {
-    return 'NaN';
-  }
-  const isNegativeZero = val === 0 && 1 / val < 0;
-  return isNegativeZero ? '-0' : '' + val;
+  return Object.is(val, -0) ? '-0' : String(val);
 }
 
 function printFunction(val: Function, printFunctionName: boolean): string {
