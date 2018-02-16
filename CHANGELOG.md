@@ -12,6 +12,8 @@
   ([#5177](https://github.com/facebook/jest/pull/5177))
 * `[babel-jest]` Add option to return sourcemap from the transformer separately
   from source. ([#5177](https://github.com/facebook/jest/pull/5177))
+* `[jest-validate]` Add ability to log deprecation warnings for CLI flags.
+  ([#5536](https://github.com/facebook/jest/pull/5536))
 
 ## jest 22.3.0
 

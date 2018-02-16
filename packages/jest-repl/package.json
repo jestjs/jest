@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-runtime": "^22.3.0",
-    "jest-util": "^22.3.0",
+    "jest-validate": "^22.2.2",
     "repl": "^0.1.3",
     "yargs": "^10.0.3"
   },

@@ -11,12 +11,8 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
-import {
-  Console,
-  clearLine,
-  createDirectory,
-  validateCLIOptions,
-} from 'jest-util';
+import {Console, clearLine, createDirectory} from 'jest-util';
+import {validateCLIOptions} from 'jest-validate';
 import {readConfig} from 'jest-config';
 import {version as VERSION} from '../../package.json';
 import * as args from './args';
