@@ -2,6 +2,7 @@
 
 ### Fixes
 
+* `[jest-cli]` Don't skip matchers for exact files ([#5582](https://github.com/facebook/jest/pull/5582))
 * `[docs]` Update discord links ([#5586](https://github.com/facebook/jest/pull/5586))
 * `[jest-runtime]` Align handling of testRegex on Windows between searching for
   tests and instrumentation checks
