@@ -2,6 +2,7 @@
 
 ### Fixes
 
+* `[docs]` Update discord links ([#5586](https://github.com/facebook/jest/pull/5586))
 * `[jest-runtime]` Align handling of testRegex on Windows between searching for
   tests and instrumentation checks
   ([#5560](https://github.com/facebook/jest/pull/5560))
