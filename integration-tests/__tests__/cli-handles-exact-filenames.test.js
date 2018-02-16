@@ -23,21 +23,13 @@ afterAll(() => cleanup(DIR));
 
 test('CLI accepts exact file names if matchers matched', () => {
   writeFiles(DIR, {
-    'bar.spec.js': `
-      test('bar', () => {});
-    `,
     'foo/bar.spec.js': `
       test('foo', () => {});
     `,
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
-  const result = runJest(DIR, [
-    '-i',
-    '--forceExit',
-    './bar.spec.js',
-    './foo/bar.spec.js',
-  ]);
+  const result = runJest(DIR, ['-i', '--forceExit', './foo/bar.spec.js']);
 
   expect(result.status).toBe(0);
 
@@ -50,23 +42,15 @@ test('CLI accepts exact file names if matchers matched', () => {
 
 test('CLI skips exact file names if no matchers matched', () => {
   writeFiles(DIR, {
-    'bar.js': `
-      test('bar', () => {);
-    `,
     'foo/bar.js': `
       test('foo', () => {);
     `,
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
-  const result = runJest(DIR, [
-    '-i',
-    '--forceExit',
-    './bar.js',
-    './foo/bar.js',
-  ]);
+  const result = runJest(DIR, ['-i', '--forceExit', './foo/bar.js']);
 
   expect(result.status).toBe(1);
-  expect(result.stdout).toMatch(/No tests found([\S\s]*)3 files checked./);
+  expect(result.stdout).toMatch(/No tests found([\S\s]*)2 files checked./);
   expect(result.stderr).toEqual('');
 });
