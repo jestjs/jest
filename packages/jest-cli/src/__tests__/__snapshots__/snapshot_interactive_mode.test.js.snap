@@ -7,14 +7,14 @@ exports[`SnapshotInteractiveMode updateWithResults overlay handle progress UI 1`
 [MOCK - cursorUp]
 [MOCK - eraseDown]
 
-<bold>Interactive Snapshot Progress</>
- › <bold><red>2 suites failed</></>, <bold><green>1 suite passed</></>
+Interactive Snapshot Progress
+ › 2 suites failed, 1 suite passed
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test suite.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Update Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+Watch Usage
+ › Press u to update failing snapshots for this test.
+ › Press s to skip the current test suite.
+ › Press q to quit Interactive Snapshot Update Mode.
+ › Press Enter to trigger a test run.
 "
 `;
 
@@ -23,13 +23,13 @@ exports[`SnapshotInteractiveMode updateWithResults with a test failure simply up
 [MOCK - cursorUp]
 [MOCK - eraseDown]
 
-<bold>Interactive Snapshot Progress</>
- › <bold><red>1 suite failed</></>
+Interactive Snapshot Progress
+ › 1 suite failed
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Update Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+Watch Usage
+ › Press u to update failing snapshots for this test.
+ › Press q to quit Interactive Snapshot Update Mode.
+ › Press Enter to trigger a test run.
 "
 `;
 

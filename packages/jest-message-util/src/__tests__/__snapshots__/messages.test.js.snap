@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.formatExecError() 1`] = `
-"  <bold>● </>Test suite failed to run
+"  ● Test suite failed to run
 
     Whoops!
 "
 `;
 
 exports[`formatStackTrace should strip node internals 1`] = `
-"<bold><red>  <bold>● <bold>Unix test</></>
+"  ● Unix test
 
       
         Expected value to be of type:
@@ -17,19 +17,19 @@ exports[`formatStackTrace should strip node internals 1`] = `
           \\"\\"
         type:
           \\"string\\"
-<dim>      </>
-<dim>      </>
-<dim>      <dim>at Object.it (<dim>__tests__/test.js<dim>:8:14)<dim></>
-<dim>      </>
+      
+      
+      at Object.it (__tests__/test.js:8:14)
+      
 "
 `;
 
 exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
-"<bold><red>  <bold>● <bold>Unix test</></>
+"  ● Unix test
 
       at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
-<dim>      </>
-<dim>      <dim>at Object.addResult (<dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)<dim></>
-<dim>      <dim>at Object.it (<dim>build/__tests__/messages-test.js<dim>:45:41)<dim></>
+      
+      at Object.addResult (../jest-jasmine2/build/jasmine-2.4.1.js:1550:14)
+      at Object.it (build/__tests__/messages-test.js:45:41)
 "
 `;
