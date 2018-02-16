@@ -16,6 +16,7 @@
     "migration-guide": "Migrating to Jest",
     "mock-function-api": "Mock Functions",
     "mock-functions": "Mock Functions",
+    "mongodb": "Using with MongoDB",
     "more-resources": "More Resources",
     "puppeteer": "Using with puppeteer",
     "setup-teardown": "Setup and Teardown",
