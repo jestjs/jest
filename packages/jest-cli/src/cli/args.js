@@ -254,6 +254,12 @@ export const options = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  generateCoverageForFiles: {
+    description:
+      'Run related tests for a list of source files that were passed in as ' +
+      'arguments and collect coverage for them',
+    type: 'boolean',
+  },
   globalSetup: {
     description: 'The path to a module that runs before All Tests.',
     type: 'string',
