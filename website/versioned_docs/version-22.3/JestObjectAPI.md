@@ -1,5 +1,5 @@
 ---
-id: version-22.2.2-jest-object
+id: version-22.3-jest-object
 title: The Jest Object
 original_id: jest-object
 ---
@@ -159,7 +159,7 @@ as well as all the modules that it imports._
 
 Modules that are mocked with `jest.mock` are mocked only for the file that calls
 `jest.mock`. Another file that imports the module will get the original
-implementation even if run after the test file that mocks the module.
+implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
 

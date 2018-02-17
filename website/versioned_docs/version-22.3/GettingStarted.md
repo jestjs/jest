@@ -1,5 +1,5 @@
 ---
-id: version-22.2.2-getting-started
+id: version-22.3-getting-started
 title: Getting Started
 original_id: getting-started
 ---

@@ -1,5 +1,5 @@
 ---
-id: version-22.2.2-tutorial-jquery
+id: version-22.3-tutorial-jquery
 title: DOM Manipulation
 original_id: tutorial-jquery
 ---
