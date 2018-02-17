@@ -41,6 +41,7 @@ export default class BufferedConsole extends Console {
     message: LogMessage,
     level: ?number,
   ) {
+    // TODO: This callsite needs to read sourcemaps
     const call = callsites()[level != null ? level : 2];
     const origin = call.getFileName() + ':' + call.getLineNumber();
 

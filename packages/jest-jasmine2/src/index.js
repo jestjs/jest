@@ -15,12 +15,47 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
-import fs from 'fs';
 import callsites from 'callsites';
+import {SourceMapConsumer} from 'source-map';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
 
 const JASMINE = require.resolve('./jasmine/jasmine_light.js');
+
+// Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
+function extendCallsite(callsite, consumer) {
+  const getLineNumber = callsite.getLineNumber;
+  const getColumnNumber = callsite.getColumnNumber;
+  let position = null;
+
+  function getPosition() {
+    if (!position) {
+      position = consumer.originalPositionFor({
+        column: getColumnNumber.call(callsite),
+        line: getLineNumber.call(callsite),
+      });
+    }
+
+    return position;
+  }
+
+  Object.defineProperties(callsite, {
+    getColumnNumber: {
+      value() {
+        return getPosition().column || getColumnNumber.call(callsite);
+      },
+      writable: false,
+    },
+    getLineNumber: {
+      value() {
+        return getPosition().line || getLineNumber.call(callsite);
+      },
+      writable: false,
+    },
+  });
+
+  return callsite;
+}
 
 async function jasmine2(
   globalConfig: GlobalConfig,
@@ -53,6 +88,17 @@ async function jasmine2(
     environment.global.it = (...args) => {
       const stack = callsites()[1];
       const it = originalIt(...args);
+      const sourceMapForFile = runtime.getSourceMapForFile(stack.getFileName());
+
+      if (sourceMapForFile) {
+        try {
+          const consumer = new SourceMapConsumer(sourceMapForFile);
+
+          extendCallsite(stack, consumer);
+        } catch (e) {
+          // ignored
+        }
+      }
 
       it.result.__callsite = stack;
 
@@ -125,12 +171,11 @@ async function jasmine2(
       environment: 'node',
       handleUncaughtExceptions: false,
       retrieveSourceMap: source => {
-        if (runtime._sourceMapRegistry[source]) {
+        const sourceMap = runtime.getSourceMapForFile(source);
+        if (sourceMap) {
           try {
             return {
-              map: JSON.parse(
-                fs.readFileSync(runtime._sourceMapRegistry[source]),
-              ),
+              map: JSON.parse(sourceMap),
               url: source,
             };
           } catch (e) {}

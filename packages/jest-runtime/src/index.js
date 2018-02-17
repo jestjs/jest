@@ -449,6 +449,16 @@ class Runtime {
     }, {});
   }
 
+  getSourceMapForFile(filename: string): ?string {
+    const sourceMap = this._sourceMapRegistry[filename];
+
+    if (sourceMap && fs.existsSync(sourceMap)) {
+      return fs.readFileSync(sourceMap, 'utf8');
+    }
+
+    return null;
+  }
+
   setMock(
     from: string,
     moduleName: string,
