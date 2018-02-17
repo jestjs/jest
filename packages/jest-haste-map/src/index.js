@@ -12,7 +12,6 @@ import {version as VERSION} from '../package.json';
 import {worker} from './worker';
 import crypto from 'crypto';
 import EventEmitter from 'events';
-import fs from 'graceful-fs';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
 // eslint-disable-next-line import/no-duplicates
@@ -25,7 +24,7 @@ import normalizePathSep from './lib/normalize_path_sep';
 import os from 'os';
 import path from 'path';
 import sane from 'sane';
-import v8 from 'v8';
+import serializer from 'jest-serializer';
 // eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
 import WatchmanWatcher from './lib/watchman_watcher';
@@ -290,21 +289,14 @@ class HasteMap extends EventEmitter {
    * 1. read data from the cache or create an empty structure.
    */
   read(): InternalHasteMap {
-    if (v8.deserialize) {
-      // This may throw. `_buildFileMap` will catch it and create a new map.
-      const {version, hasteMap} = v8.deserialize(
-        fs.readFileSync(this._cachePath),
-      );
-      if (version !== process.versions.v8) {
-        throw new Error('jest-haste-map: v8 versions do not match.');
-      }
-      return removePrototypes(hasteMap);
-    } else {
-      const hasteMap = (JSON.parse(
-        fs.readFileSync(this._cachePath, 'utf8'),
-      ): InternalHasteMap);
-      return removePrototypes(hasteMap);
+    // This may throw. `_buildFileMap` will catch it and create a new map.
+    const hasteMap: InternalHasteMap = serializer.readFileSync(this._cachePath);
+
+    for (const key in hasteMap) {
+      Object.setPrototypeOf(hasteMap[key], null);
     }
+
+    return hasteMap;
   }
 
   readModuleMap(): ModuleMap {
@@ -534,17 +526,7 @@ class HasteMap extends EventEmitter {
    * 4. serialize the new `HasteMap` in a cache file.
    */
   _persist(hasteMap: InternalHasteMap) {
-    if (v8.serialize) {
-      fs.writeFileSync(
-        this._cachePath,
-        v8.serialize({
-          hasteMap,
-          version: process.versions.v8,
-        }),
-      );
-    } else {
-      fs.writeFileSync(this._cachePath, JSON.stringify(hasteMap), 'utf8');
-    }
+    serializer.writeFileSync(this._cachePath, hasteMap);
   }
 
   /**
@@ -913,12 +895,6 @@ class HasteMap extends EventEmitter {
 }
 
 const copy = object => Object.assign(Object.create(null), object);
-const removePrototypes = object => {
-  for (const key in object) {
-    Object.setPrototypeOf(object[key], null);
-  }
-  return object;
-};
 
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;
