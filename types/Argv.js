@@ -34,7 +34,6 @@ export type Argv = {|
   expand: boolean,
   findRelatedTests: boolean,
   forceExit: boolean,
-  generateCoverageForFiles: boolean,
   globalSetup: ?string,
   globalTeardown: ?string,
   globals: string,
