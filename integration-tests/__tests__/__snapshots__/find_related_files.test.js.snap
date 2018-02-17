@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`--generateCoverageForFiles 1`] = `
+exports[`--findRelatedTests flag generates coverage report for filename 1`] = `
 "Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
@@ -9,14 +9,14 @@ Ran all test suites.
 "
 `;
 
-exports[`--generateCoverageForFiles 2`] = `
+exports[`--findRelatedTests flag generates coverage report for filename 2`] = `
 "
 
 PASS __tests__/a.test.js
 PASS __tests__/b.test.js"
 `;
 
-exports[`--generateCoverageForFiles 3`] = `
+exports[`--findRelatedTests flag generates coverage report for filename 3`] = `
 "----------|----------|----------|----------|----------|----------------|
 File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------|----------|----------|----------|----------|----------------|
@@ -27,7 +27,7 @@ All files |      100 |      100 |      100 |      100 |                |
 "
 `;
 
-exports[`--generateCoverageForFiles 4`] = `
+exports[`--findRelatedTests flag generates coverage report for filename 4`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
@@ -36,14 +36,14 @@ Ran all test suites related to files matching /a.js/i.
 "
 `;
 
-exports[`--generateCoverageForFiles 5`] = `
+exports[`--findRelatedTests flag generates coverage report for filename 5`] = `
 "PASS __tests__/a.test.js
   ✓ a
 
 "
 `;
 
-exports[`--generateCoverageForFiles 6`] = `
+exports[`--findRelatedTests flag generates coverage report for filename 6`] = `
 "----------|----------|----------|----------|----------|----------------|
 File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------|----------|----------|----------|----------|----------------|
