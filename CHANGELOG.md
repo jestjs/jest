@@ -2,8 +2,10 @@
 
 ### Fixes
 
-* `[jest-cli]` Don't skip matchers for exact files ([#5582](https://github.com/facebook/jest/pull/5582))
-* `[docs]` Update discord links ([#5586](https://github.com/facebook/jest/pull/5586))
+* `[jest-cli]` Don't skip matchers for exact files
+  ([#5582](https://github.com/facebook/jest/pull/5582))
+* `[docs]` Update discord links
+  ([#5586](https://github.com/facebook/jest/pull/5586))
 * `[jest-runtime]` Align handling of testRegex on Windows between searching for
   tests and instrumentation checks
   ([#5560](https://github.com/facebook/jest/pull/5560))
@@ -18,6 +20,8 @@
   from source. ([#5177](https://github.com/facebook/jest/pull/5177))
 * `[jest-validate]` Add ability to log deprecation warnings for CLI flags.
   ([#5536](https://github.com/facebook/jest/pull/5536))
+* `[docs]` Add a documentation note for project `displayName` configuration
+  ([#5600](https://github.com/facebook/jest/pull/5600))
 
 ## jest 22.3.0
 
