@@ -65,7 +65,7 @@ export default class BufferedConsole extends Console {
 
   assert(...args: Array<any>) {
     try {
-      assert(!!args[0], ...args.slice(1));
+      assert(...args);
     } catch (error) {
       this._log('assert', error.toString());
     }
