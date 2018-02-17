@@ -132,6 +132,7 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
     'no-console': 0,
+    'no-unused-vars': 2,
     'prettier/prettier': [
       2,
       {

@@ -12,7 +12,6 @@ import type {Glob, GlobalConfig, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
-import fs from 'fs';
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
