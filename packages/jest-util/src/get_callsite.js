@@ -1,4 +1,4 @@
-import {SourceMapRegistry} from 'types/SourceMaps';
+import type {SourceMapRegistry} from 'types/SourceMaps';
 
 import fs from 'fs';
 import callsites from 'callsites';
