@@ -21,7 +21,6 @@ import {
   NullConsole,
   getConsoleOutput,
   setGlobal,
-  getCallsite,
 } from 'jest-util';
 import jasmine2 from 'jest-jasmine2';
 import LeakDetector from 'jest-leak-detector';

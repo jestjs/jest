@@ -36,8 +36,6 @@ const addSourceMapConsumer = (callsite, consumer) => {
         writable: false,
       },
     });
-
-    return callsite;
   } catch (e) {
     // ignored
   }

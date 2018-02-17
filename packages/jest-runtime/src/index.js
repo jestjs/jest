@@ -453,10 +453,11 @@ class Runtime {
   getSourceMapForFile(filename: string): ?string {
     const sourceMap = this._sourceMapRegistry[filename];
 
-    if (sourceMap && fs.existsSync(sourceMap)) {
+    try {
       return fs.readFileSync(sourceMap, 'utf8');
+    } catch (e) {
+      // ignore
     }
-
     return null;
   }
 
