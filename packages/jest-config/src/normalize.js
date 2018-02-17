@@ -599,13 +599,13 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     );
   }
 
-  // generateCoverageForFiles is an alias for
-  // `--findRelatedTests '/rootDir/file1.js' --coverage --collectCoverageFrom 'file1.js'`
+  // If collectCoverage is enabled while using --findRelatedTests we need to
+  // avoid having false negatives in the generated coverage report.
+  // The following: `--findRelatedTests '/rootDir/file1.js' --coverage`
+  // Is transformed to: `--findRelatedTests '/rootDir/file1.js' --coverage --collectCoverageFrom 'file1.js'`
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
-  if (argv.generateCoverageForFiles) {
-    newOptions.findRelatedTests = true;
-    newOptions.collectCoverage = true;
+  if (newOptions.collectCoverage && argv.findRelatedTests) {
     newOptions.collectCoverageFrom = argv._.map(filename => {
       filename = _replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)

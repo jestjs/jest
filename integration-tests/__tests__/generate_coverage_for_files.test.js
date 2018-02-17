@@ -37,13 +37,15 @@ test('--generateCoverageForFiles', () => {
     `,
     'a.js': 'module.exports = {}',
     'b.js': 'module.exports = {}',
-    'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+    'package.json': JSON.stringify({
+      jest: {collectCoverage: true, testEnvironment: 'node'},
+    }),
   });
 
   let stdout;
   let stderr;
 
-  ({stdout, stderr} = runJest(DIR, ['--coverage']));
+  ({stdout, stderr} = runJest(DIR));
   let summary;
   let rest;
   ({summary, rest} = extractSummary(stderr));
@@ -59,7 +61,7 @@ test('--generateCoverageForFiles', () => {
   // both a.js and b.js should be in the coverage
   expect(stdout).toMatchSnapshot();
 
-  ({stdout, stderr} = runJest(DIR, ['--generateCoverageForFiles', 'a.js']));
+  ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']));
 
   ({summary, rest} = extractSummary(stderr));
 
