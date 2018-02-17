@@ -42,19 +42,19 @@ const addSourceMapConsumer = (callsite, consumer) => {
 };
 
 export default (level: number, sourceMaps: SourceMapRegistry) => {
-  const sites = callsites();
-  const call = sites[level + 1];
-  const sourceMapFileName = sourceMaps && sourceMaps[call.getFileName()];
+  const levelAfterThisCall = level + 1;
+  const stack = callsites()[levelAfterThisCall];
+  const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName()];
 
   try {
-    if (sourceMaps && sourceMapFileName) {
-      const fileData = fs.readFileSync(sourceMapFileName, 'utf8');
-      if (fileData) {
-        addSourceMapConsumer(call, new SourceMapConsumer(fileData));
+    if (sourceMapFileName) {
+      const sourceMap = fs.readFileSync(sourceMapFileName, 'utf8');
+      if (sourceMap) {
+        addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
       }
     }
 
-    return call;
+    return stack;
   } catch (e) {
     return null;
   }
