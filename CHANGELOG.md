@@ -7,6 +7,7 @@
 * `[jest-runtime]` Align handling of testRegex on Windows between searching for
   tests and instrumentation checks
   ([#5560](https://github.com/facebook/jest/pull/5560))
+* `[jest-config]` Make it possible to merge `transform` option with preset ([#5505](https://github.com/facebook/jest/pull/5505))
 
 ### Features
 
