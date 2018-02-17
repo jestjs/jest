@@ -2,11 +2,15 @@
 
 ### Fixes
 
-* `[jest-cli]` Don't skip matchers for exact files ([#5582](https://github.com/facebook/jest/pull/5582))
-* `[docs]` Update discord links ([#5586](https://github.com/facebook/jest/pull/5586))
+* `[jest-cli]` Don't skip matchers for exact files
+  ([#5582](https://github.com/facebook/jest/pull/5582))
+* `[docs]` Update discord links
+  ([#5586](https://github.com/facebook/jest/pull/5586))
 * `[jest-runtime]` Align handling of testRegex on Windows between searching for
   tests and instrumentation checks
   ([#5560](https://github.com/facebook/jest/pull/5560))
+* `[babel-jest]` Remove `retainLines` argument to babel.
+  ([#5594](https://github.com/facebook/jest/pull/5594))
 
 ### Features
 
