@@ -22,6 +22,8 @@
   from source. ([#5177](https://github.com/facebook/jest/pull/5177))
 * `[jest-validate]` Add ability to log deprecation warnings for CLI flags.
   ([#5536](https://github.com/facebook/jest/pull/5536))
+* `[docs]` Add a documentation note for project `displayName` configuration
+  ([#5600](https://github.com/facebook/jest/pull/5600))
 
 ## jest 22.3.0
 
