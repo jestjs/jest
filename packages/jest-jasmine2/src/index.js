@@ -15,8 +15,7 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
-import callsites from 'callsites';
-import {SourceMapConsumer} from 'source-map';
+import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
 
@@ -86,19 +85,8 @@ async function jasmine2(
   if (config.testLocationInResults === true) {
     const originalIt = environment.global.it;
     environment.global.it = (...args) => {
-      const stack = callsites()[1];
+      const stack = getCallsite(1, runtime.getSourceMaps());
       const it = originalIt(...args);
-      const sourceMapForFile = runtime.getSourceMapForFile(stack.getFileName());
-
-      if (sourceMapForFile) {
-        try {
-          const consumer = new SourceMapConsumer(sourceMapForFile);
-
-          extendCallsite(stack, consumer);
-        } catch (e) {
-          // ignored
-        }
-      }
 
       it.result.__callsite = stack;
 

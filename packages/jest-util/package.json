@@ -13,7 +13,8 @@
     "graceful-fs": "^4.1.11",
     "is-ci": "^1.0.10",
     "jest-message-util": "^22.2.0",
-    "mkdirp": "^0.5.1"
+    "mkdirp": "^0.5.1",
+    "source-map": "^0.6.0"
   },
   "devDependencies": {
     "jest-mock": "^22.2.0"

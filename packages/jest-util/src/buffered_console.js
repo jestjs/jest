@@ -15,10 +15,12 @@ import type {
   LogTimers,
 } from 'types/Console';
 
+import type {SourceMapRegistry} from 'types/SourceMaps';
+
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
-import callsites from 'callsites';
+import getCallsite from './get_callsite';
 
 export default class BufferedConsole extends Console {
   _buffer: ConsoleBuffer;
@@ -40,10 +42,10 @@ export default class BufferedConsole extends Console {
     type: LogType,
     message: LogMessage,
     level: ?number,
+    sourceMaps: ?SourceMapRegistry,
   ) {
-    // TODO: This callsite needs to read sourcemaps
-    const call = callsites()[level != null ? level : 2];
-    const origin = call.getFileName() + ':' + call.getLineNumber();
+    const callsite = getCallsite(level != null ? level : 2, sourceMaps);
+    const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
 
     buffer.push({
       message,
