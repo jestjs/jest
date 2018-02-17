@@ -46,6 +46,21 @@ const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
+const mergeOptionWithPreset = (
+  options: InitialOptions,
+  preset: InitialOptions,
+  optionName: string,
+) => {
+  if (options[optionName] && preset[optionName]) {
+    options[optionName] = Object.assign(
+      {},
+      options[optionName],
+      preset[optionName],
+      options[optionName],
+    );
+  }
+};
+
 const setupPreset = (
   options: InitialOptions,
   optionsPreset: string,
@@ -81,14 +96,8 @@ const setupPreset = (
       options.modulePathIgnorePatterns,
     );
   }
-  if (options.moduleNameMapper && preset.moduleNameMapper) {
-    options.moduleNameMapper = Object.assign(
-      {},
-      options.moduleNameMapper,
-      preset.moduleNameMapper,
-      options.moduleNameMapper,
-    );
-  }
+  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
+  mergeOptionWithPreset(options, preset, 'transform');
 
   return Object.assign({}, preset, options);
 };
