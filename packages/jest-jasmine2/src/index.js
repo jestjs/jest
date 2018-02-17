@@ -15,6 +15,7 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
+import fs from 'graceful-fs';
 import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
@@ -124,14 +125,19 @@ async function jasmine2(
       environment: 'node',
       handleUncaughtExceptions: false,
       retrieveSourceMap: source => {
-        const sourceMap = runtime.getSourceMapForFile(source);
-        if (sourceMap) {
+        const sourceMaps = runtime.getSourceMaps();
+        const sourceMapSource = sourceMaps && sourceMaps[source];
+
+        if (sourceMapSource) {
           try {
+            const sourceMap = fs.readFileSync(sourceMapSource, 'utf8');
             return {
               map: JSON.parse(sourceMap),
               url: source,
             };
-          } catch (e) {}
+          } catch (e) {
+            // ignore
+          }
         }
         return null;
       },

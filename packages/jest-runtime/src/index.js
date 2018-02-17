@@ -450,17 +450,6 @@ class Runtime {
     }, {});
   }
 
-  getSourceMapForFile(filename: string): ?string {
-    const sourceMap = this._sourceMapRegistry[filename];
-
-    try {
-      return fs.readFileSync(sourceMap, 'utf8');
-    } catch (e) {
-      // ignore
-    }
-    return null;
-  }
-
   getSourceMaps(): SourceMapRegistry {
     return this._sourceMapRegistry;
   }
