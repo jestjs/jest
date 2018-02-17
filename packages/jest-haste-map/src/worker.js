@@ -12,11 +12,11 @@ import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 import path from 'path';
 import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
+import blacklist from './blacklist';
 import H from './constants';
 import extractRequires from './lib/extract_requires';
 
-const JSON_EXTENSION = '.json';
-const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
+const PACKAGE_JSON = path.sep + 'package.json';
 
 let hasteImpl: ?HasteImpl = null;
 let hasteImplModulePath: ?string = null;
@@ -35,26 +35,33 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   }
 
   const filePath = data.filePath;
-  const content = fs.readFileSync(filePath, 'utf8');
   let module;
   let id: ?string;
   let dependencies;
 
   if (filePath.endsWith(PACKAGE_JSON)) {
-    const fileData = JSON.parse(content);
+    const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
     if (fileData.name) {
       id = fileData.name;
       module = [filePath, H.PACKAGE];
     }
-  } else if (!filePath.endsWith(JSON_EXTENSION)) {
+
+    return {dependencies, id, module};
+  }
+
+  if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
+    const content = fs.readFileSync(filePath, 'utf8');
+
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);
     } else {
       const doc = docblock.parse(docblock.extract(content));
-      const idPragmas = [].concat(doc.providesModule || doc.provides);
-      id = idPragmas[0];
+      id = [].concat(doc.providesModule || doc.provides)[0];
     }
+
     dependencies = extractRequires(content);
+
     if (id) {
       module = [filePath, H.MODULE];
     }

@@ -141,10 +141,12 @@ describe('HasteMap', () => {
       '/vegetables/melon.js': ['/**', ' * @providesModule Melon', ' */'].join(
         '\n',
       ),
+      '/video/video.mp4': Buffer.from([0xfa, 0xce, 0xb0, 0x0c]).toString(),
     });
     mockClocks = object({
       '/fruits': 'c:fake-clock:1',
       '/vegetables': 'c:fake-clock:2',
+      '/video': 'c:fake-clock:3',
     });
 
     mockChangedFiles = null;
@@ -303,6 +305,28 @@ describe('HasteMap', () => {
       // from a build.
       expect(hasteMap.read()).toEqual(data);
     });
+  });
+
+  it('does not crawl native files even if requested to do so', async () => {
+    mockFs['/video/i-require-a-video.js'] = [
+      '/**',
+      ' * @providesModule IRequireAVideo',
+      ' */',
+      'module.exports = require("./video.mp4");',
+    ].join('\n');
+
+    const hasteMap = new HasteMap(
+      Object.assign({}, defaultConfig, {
+        extensions: [...defaultConfig.extensions],
+        roots: [...defaultConfig.roots, '/video'],
+      }),
+    );
+
+    const {__hasteMapForTest: data} = await hasteMap.build();
+
+    expect(data.map.IRequireAVideo).toBeDefined();
+    expect(data.files['/video/video.mp4']).toBeDefined();
+    expect(fs.readFileSync).not.toBeCalledWith('/video/video.mp4', 'utf8');
   });
 
   it('retains all files if `retainAllFiles` is specified', () => {
