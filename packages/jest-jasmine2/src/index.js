@@ -21,41 +21,6 @@ import {install as jasmineAsyncInstall} from './jasmine_async';
 
 const JASMINE = require.resolve('./jasmine/jasmine_light.js');
 
-// Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
-function extendCallsite(callsite, consumer) {
-  const getLineNumber = callsite.getLineNumber;
-  const getColumnNumber = callsite.getColumnNumber;
-  let position = null;
-
-  function getPosition() {
-    if (!position) {
-      position = consumer.originalPositionFor({
-        column: getColumnNumber.call(callsite),
-        line: getLineNumber.call(callsite),
-      });
-    }
-
-    return position;
-  }
-
-  Object.defineProperties(callsite, {
-    getColumnNumber: {
-      value() {
-        return getPosition().column || getColumnNumber.call(callsite);
-      },
-      writable: false,
-    },
-    getLineNumber: {
-      value() {
-        return getPosition().line || getLineNumber.call(callsite);
-      },
-      writable: false,
-    },
-  });
-
-  return callsite;
-}
-
 async function jasmine2(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
