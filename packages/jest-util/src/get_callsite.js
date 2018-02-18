@@ -1,6 +1,15 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
+
 import type {SourceMapRegistry} from 'types/SourceMaps';
 
-import fs from 'fs';
+import fs from 'graceful-fs';
 import callsites from 'callsites';
 import {SourceMapConsumer} from 'source-map';
 
@@ -37,7 +46,7 @@ const addSourceMapConsumer = (callsite, consumer) => {
   });
 };
 
-export default (level: number, sourceMaps?: SourceMapRegistry) => {
+export default (level: number, sourceMaps: ?SourceMapRegistry) => {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
   const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName()];

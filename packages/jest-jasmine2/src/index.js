@@ -130,14 +130,11 @@ async function jasmine2(
 
         if (sourceMapSource) {
           try {
-            const sourceMap = fs.readFileSync(sourceMapSource, 'utf8');
             return {
-              map: JSON.parse(sourceMap),
+              map: JSON.parse(fs.readFileSync(sourceMapSource)),
               url: source,
             };
-          } catch (e) {
-            // ignore
-          }
+          } catch (e) {}
         }
         return null;
       },
