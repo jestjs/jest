@@ -74,6 +74,11 @@ test('run only changed files', () => {
 });
 
 test('report test coverage for only changed files', () => {
+  if (process.platform === 'win32') {
+    // This have snapshots with file paths that use directory separators that fail on windows
+    return;
+  }
+
   writeFiles(DIR, {
     '__tests__/a.test.js': `
     require('../a');
