@@ -17,7 +17,7 @@ import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './test_path_pattern_to_regexp';
 import {escapePathForRegex} from 'jest-regex-util';
-import {_replaceRootDirInPath} from 'jest-config';
+import {replaceRootDirInPath} from 'jest-config';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -165,10 +165,7 @@ export default class SearchSource {
     // If we are collecting coverage, also return collectCoverageFrom patterns
     if (collectCoverage) {
       const collectCoverageFrom = Array.from(allPaths).map(filename => {
-        filename = _replaceRootDirInPath(
-          this._context.config.rootDir,
-          filename,
-        );
+        filename = replaceRootDirInPath(this._context.config.rootDir, filename);
         return path.isAbsolute(filename)
           ? path.relative(this._context.config.rootDir, filename)
           : filename;
