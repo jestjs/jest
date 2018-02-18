@@ -22,6 +22,7 @@ import {_replaceRootDirInPath} from 'jest-config';
 type SearchResult = {|
   noSCM?: boolean,
   stats?: {[key: string]: number},
+  collectCoverageFrom?: Array<string>,
   tests: Array<Test>,
   total?: number,
 |};
