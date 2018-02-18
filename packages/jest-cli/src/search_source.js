@@ -161,20 +161,19 @@ export default class SearchSource {
         },
       ),
     );
+    let collectCoverageFrom;
 
     // If we are collecting coverage, also return collectCoverageFrom patterns
     if (collectCoverage) {
-      const collectCoverageFrom = Array.from(allPaths).map(filename => {
+      collectCoverageFrom = Array.from(allPaths).map(filename => {
         filename = replaceRootDirInPath(this._context.config.rootDir, filename);
         return path.isAbsolute(filename)
           ? path.relative(this._context.config.rootDir, filename)
           : filename;
       });
-
-      return {collectCoverageFrom, tests};
     }
 
-    return {tests};
+    return {collectCoverageFrom, tests};
   }
 
   findTestsByPaths(paths: Array<Path>): SearchResult {
