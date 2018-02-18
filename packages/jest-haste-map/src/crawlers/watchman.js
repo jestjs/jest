@@ -42,6 +42,16 @@ module.exports = function watchmanCrawl(
 
   return new Promise((resolve, reject) => {
     const client = new watchman.Client();
+    client.capabilityCheck({required: ['watch-project']}, (err, resp) => {
+      if (err) {
+        //Error out or Log warning?
+        //https://facebook.github.io/watchman/docs/cmd/watch-project.html
+        reject(
+          'You seem to have an older version of watchman installed. ' +
+            'Please install version 3.1 or later.\n',
+        );
+      }
+    });
     client.on('error', error => reject(error));
 
     const cmd = (...args) =>
