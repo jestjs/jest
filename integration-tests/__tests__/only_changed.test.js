@@ -87,7 +87,11 @@ test('report test coverage for only changed files', () => {
     'a.js': 'module.exports = {}',
     'b.js': 'module.exports = {}',
     'package.json': JSON.stringify({
-      jest: {collectCoverage: true, testEnvironment: 'node'},
+      jest: {
+        collectCoverage: true,
+        coverageReporters: ['text'],
+        testEnvironment: 'node',
+      },
     }),
   });
 
