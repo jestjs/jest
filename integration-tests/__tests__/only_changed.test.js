@@ -12,7 +12,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-const {cleanup, run, writeFiles, extractSummary} = require('../Utils');
+const {cleanup, run, writeFiles} = require('../Utils');
 
 const DIR = path.resolve(os.tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
@@ -74,8 +74,6 @@ test('run only changed files', () => {
 });
 
 test('report test coverage for only changed files', () => {
-  const windowsSlashRegex = new RegExp(`__tests__\\${path.win32.sep}`, 'g');
-
   writeFiles(DIR, {
     '__tests__/a.test.js': `
     require('../a');
@@ -106,39 +104,17 @@ test('report test coverage for only changed files', () => {
   });
 
   let stdout;
-  let stderr;
 
-  ({stdout, stderr} = runJest(DIR));
-  let summary;
-  let rest;
-  ({summary, rest} = extractSummary(stderr));
-  expect(summary).toMatchSnapshot();
-  expect(
-    rest
-      .split('\n')
-      .map(s => s.trim())
-      .sort()
-      .join('\n')
-      .replace(windowsSlashRegex, '__tests__/'),
-  ).toMatchSnapshot();
+  ({stdout} = runJest(DIR));
 
   // both a.js and b.js should be in the coverage
-  expect(stdout).toMatchSnapshot();
+  expect(stdout).toMatch('a.js');
+  expect(stdout).toMatch('b.js');
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stdout} = runJest(DIR, ['-o']));
 
-  ({summary, rest} = extractSummary(stderr));
-
-  expect(summary).toMatchSnapshot();
-  // should only run a.js
-  expect(
-    rest
-      .replace(windowsSlashRegex, '__tests__/')
-      .replace(new RegExp('✓', 'g'), '√'),
-  ).toMatchSnapshot();
   // coverage should be collected only for a.js
-  expect(stdout).toMatchSnapshot();
-  // coverage for b.js should not be in the report
+  expect(stdout).toMatch('a.js');
   expect(stdout).not.toMatch('b.js');
 });
 
