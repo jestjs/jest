@@ -99,36 +99,131 @@ describe('toHaveBeenCalledTimes', () => {
   });
 });
 
-['lastCalledWith', 'toHaveBeenCalledWith', 'toHaveBeenLastCalledWith'].forEach(
-  calledWith => {
-    test(`${calledWith} works when not called`, () => {
-      const fn = jest.fn();
-      jestExpect(fn).not[calledWith]('foo', 'bar');
+[
+  'lastCalledWith',
+  'nthCalledWith',
+  'toHaveBeenCalledWith',
+  'toHaveBeenLastCalledWith',
+].forEach(calledWith => {
+  const caller = function(callee, ...args) {
+    if (calledWith == 'nthCalledWith') {
+      callee.apply(null, [1, ...args]);
+    } else {
+      callee.apply(null, args);
+    }
+  };
+  test(`${calledWith} works when not called`, () => {
+    const fn = jest.fn();
+    caller(jestExpect(fn).not[calledWith], 'foo', 'bar');
 
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    });
+    expect(() =>
+      caller(jestExpect(fn)[calledWith], 'foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test(`${calledWith} works with no arguments`, () => {
-      const fn = jest.fn();
-      fn();
-      jestExpect(fn)[calledWith]();
-    });
+  test(`${calledWith} works with no arguments`, () => {
+    const fn = jest.fn();
+    fn();
+    caller(jestExpect(fn)[calledWith]);
+  });
 
-    test(`${calledWith} works with arguments that don't match`, () => {
+  test(`${calledWith} works with arguments that don't match`, () => {
+    const fn = jest.fn();
+    fn('foo', 'bar1');
+
+    caller(jestExpect(fn).not[calledWith], 'foo', 'bar');
+
+    expect(() =>
+      caller(jestExpect(fn)[calledWith], 'foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with arguments that match`, () => {
+    const fn = jest.fn();
+    fn('foo', 'bar');
+
+    caller(jestExpect(fn)[calledWith], 'foo', 'bar');
+
+    expect(() =>
+      caller(jestExpect(fn).not[calledWith], 'foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with trailing undefined arguments`, () => {
+    const fn = jest.fn();
+    fn('foo', undefined);
+
+    expect(() =>
+      caller(jestExpect(fn)[calledWith], 'foo'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with Map`, () => {
+    const fn = jest.fn();
+
+    const m1 = new Map([[1, 2], [2, 1]]);
+    const m2 = new Map([[1, 2], [2, 1]]);
+    const m3 = new Map([['a', 'b'], ['b', 'a']]);
+
+    fn(m1);
+
+    caller(jestExpect(fn)[calledWith], m2);
+    caller(jestExpect(fn).not[calledWith], m3);
+
+    expect(() =>
+      caller(jestExpect(fn).not[calledWith], m2),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      caller(jestExpect(fn)[calledWith], m3),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with Set`, () => {
+    const fn = jest.fn();
+
+    const s1 = new Set([1, 2]);
+    const s2 = new Set([1, 2]);
+    const s3 = new Set([3, 4]);
+
+    fn(s1);
+
+    caller(jestExpect(fn)[calledWith], s2);
+    caller(jestExpect(fn).not[calledWith], s3);
+
+    expect(() =>
+      caller(jestExpect(fn).not[calledWith], s2),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      caller(jestExpect(fn)[calledWith], s3),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with Immutable.js objects`, () => {
+    const fn = jest.fn();
+    const directlyCreated = new Immutable.Map([['a', {b: 'c'}]]);
+    const indirectlyCreated = new Immutable.Map().set('a', {b: 'c'});
+    fn(directlyCreated, indirectlyCreated);
+
+    caller(jestExpect(fn)[calledWith], indirectlyCreated, directlyCreated);
+
+    expect(() =>
+      caller(
+        jestExpect(fn).not[calledWith],
+        indirectlyCreated,
+        directlyCreated,
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  [
+    'lastCalledWith',
+    'toHaveBeenCalledWith',
+    'toHaveBeenLastCalledWith',
+  ].forEach(calledWith => {
+    test(`${calledWith} works with many arguments`, () => {
       const fn = jest.fn();
+      fn('foo1', 'bar');
       fn('foo', 'bar1');
-
-      jestExpect(fn).not[calledWith]('foo', 'bar');
-
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
-    test(`${calledWith} works with arguments that match`, () => {
-      const fn = jest.fn();
       fn('foo', 'bar');
 
       jestExpect(fn)[calledWith]('foo', 'bar');
@@ -150,80 +245,61 @@ describe('toHaveBeenCalledTimes', () => {
         jestExpect(fn)[calledWith]('foo', 'bar'),
       ).toThrowErrorMatchingSnapshot();
     });
+  });
 
-    test(`${calledWith} works with many arguments`, () => {
+  describe('nthCalledWith', () => {
+    test(`nthCalledWith`, () => {
       const fn = jest.fn();
       fn('foo1', 'bar');
       fn('foo', 'bar1');
       fn('foo', 'bar');
 
-      jestExpect(fn)[calledWith]('foo', 'bar');
+      jestExpect(fn).nthCalledWith(1, 'foo1', 'bar');
+      jestExpect(fn).nthCalledWith(2, 'foo', 'bar1');
+      jestExpect(fn).nthCalledWith(3, 'foo', 'bar');
 
-      expect(() =>
-        jestExpect(fn).not[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
+      expect(() => {
+        jestExpect(fn).not.nthCalledWith(1, 'foo1', 'bar'),
+          jestExpect(fn).not.nthCalledWith(2, 'foo', 'bar1'),
+          jestExpect(fn).not.nthCalledWith(3, 'foo', 'bar');
+      }).toThrowErrorMatchingSnapshot();
     });
 
-    test(`${calledWith} works with trailing undefined arguments`, () => {
+    it('should replace 1st, 2nd, 3rd with first, second, third', async () => {
       const fn = jest.fn();
-      fn('foo', undefined);
+      fn('foo1', 'bar');
+      fn('foo', 'bar1');
+      fn('foo', 'bar');
 
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo'),
-      ).toThrowErrorMatchingSnapshot();
+      expect(() => {
+        jestExpect(fn).nthCalledWith(1, 'foo', 'bar');
+        jestExpect(fn).nthCalledWith(2, 'foo', 'bar');
+        jestExpect(fn).nthCalledWith(3, 'foo1', 'bar');
+      }).toThrowErrorMatchingSnapshot();
+
+      expect(() => {
+        jestExpect(fn).not.nthCalledWith(1, 'foo1', 'bar'),
+          jestExpect(fn).not.nthCalledWith(2, 'foo', 'bar1'),
+          jestExpect(fn).not.nthCalledWith(3, 'foo', 'bar');
+      }).toThrowErrorMatchingSnapshot();
     });
 
-    test(`${calledWith} works with Map`, () => {
+    it('should reject nth value smaller than 1', async () => {
       const fn = jest.fn();
+      fn('foo1', 'bar');
 
-      const m1 = new Map([[1, 2], [2, 1]]);
-      const m2 = new Map([[1, 2], [2, 1]]);
-      const m3 = new Map([['a', 'b'], ['b', 'a']]);
-
-      fn(m1);
-
-      jestExpect(fn)[calledWith](m2);
-      jestExpect(fn).not[calledWith](m3);
-
-      expect(() =>
-        jestExpect(fn).not[calledWith](m2),
-      ).toThrowErrorMatchingSnapshot();
-      expect(() =>
-        jestExpect(fn)[calledWith](m3),
-      ).toThrowErrorMatchingSnapshot();
+      expect(() => {
+        jestExpect(fn).nthCalledWith(0, 'foo1', 'bar');
+      }).toThrowErrorMatchingSnapshot();
     });
 
-    test(`${calledWith} works with Set`, () => {
+    it('should reject non integer nth value', async () => {
       const fn = jest.fn();
+      fn('foo1', 'bar');
 
-      const s1 = new Set([1, 2]);
-      const s2 = new Set([1, 2]);
-      const s3 = new Set([3, 4]);
-
-      fn(s1);
-
-      jestExpect(fn)[calledWith](s2);
-      jestExpect(fn).not[calledWith](s3);
-
-      expect(() =>
-        jestExpect(fn).not[calledWith](s2),
-      ).toThrowErrorMatchingSnapshot();
-      expect(() =>
-        jestExpect(fn)[calledWith](s3),
-      ).toThrowErrorMatchingSnapshot();
+      expect(() => {
+        jestExpect(fn).nthCalledWith(0.1, 'foo1', 'bar');
+      }).toThrowErrorMatchingSnapshot();
     });
-
-    test(`${calledWith} works with Immutable.js objects`, () => {
-      const fn = jest.fn();
-      const directlyCreated = new Immutable.Map([['a', {b: 'c'}]]);
-      const indirectlyCreated = new Immutable.Map().set('a', {b: 'c'});
-      fn(directlyCreated, indirectlyCreated);
-
-      jestExpect(fn)[calledWith](indirectlyCreated, directlyCreated);
-
-      expect(() =>
-        jestExpect(fn).not[calledWith](indirectlyCreated, directlyCreated),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  },
-);
+  });
+});
