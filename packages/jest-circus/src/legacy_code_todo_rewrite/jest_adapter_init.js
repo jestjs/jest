@@ -96,9 +96,6 @@ export const runAndTransformResultsToJestFormat = async ({
       case 'pass':
         status = 'passed';
         break;
-      case 'skip':
-        status = 'pending';
-        break;
       default:
         status = 'pending';
     }
