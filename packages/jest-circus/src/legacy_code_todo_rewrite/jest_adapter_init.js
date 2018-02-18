@@ -99,6 +99,8 @@ export const runAndTransformResultsToJestFormat = async ({
       case 'skip':
         status = 'pending';
         break;
+      default:
+        status = 'pending';
     }
 
     const ancestorTitles = testResult.testPath.filter(
