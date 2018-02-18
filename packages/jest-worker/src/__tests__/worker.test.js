@@ -18,24 +18,37 @@ import {
   PARENT_MESSAGE_OK,
 } from '../types';
 
+let Comms;
 let Worker;
+
 let forkInterface;
 let childProcess;
 let originalExecArgv;
+let comms;
 
 beforeEach(() => {
-  jest.mock('child_process');
+  jest.mock('child_process').mock('../comms');
+
   originalExecArgv = process.execArgv;
 
   childProcess = require('child_process');
   childProcess.fork.mockImplementation(() => {
     forkInterface = Object.assign(new EventEmitter(), {
-      send: jest.fn(),
       stderr: {},
+      stdio: [{}, {}, {}, {}, {}],
       stdout: {},
     });
 
     return forkInterface;
+  });
+
+  Comms = require('../comms');
+  Comms.default.mockImplementation(() => {
+    comms = Object.assign(new EventEmitter(), {
+      send: jest.fn(),
+    });
+
+    return comms;
   });
 
   Worker = require('../worker').default;
@@ -50,14 +63,16 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   const child = require.resolve('../child');
 
   process.execArgv = ['--inspect', '-p'];
+  process.env.JEST_WORKER_ID = '123';
 
   new Worker({
     forkOptions: {
       cwd: '/tmp',
       execPath: 'hello',
+      stdio: 'ignore',
     },
     maxRetries: 3,
-    workerId: process.env.JEST_WORKER_ID,
+    workerId: '123',
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -67,7 +82,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
     env: process.env, // Default option.
     execArgv: ['-p'], // Filtered option.
     execPath: 'hello', // Added option.
-    silent: true, // Default option.
+    stdio: ['ignore', 'ignore', 'ignore', 'ipc', 'pipe'], // Overridden option.
   });
 });
 
@@ -89,7 +104,7 @@ it('initializes the child process with the given workerPath', () => {
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  expect(forkInterface.send.mock.calls[0][0]).toEqual([
+  expect(comms.send.mock.calls[0][0]).toEqual([
     CHILD_MESSAGE_INITIALIZE,
     false,
     '/tmp/foo/bar/baz.js',
@@ -163,7 +178,7 @@ it('sends the task to the child process', () => {
   worker.send(request, () => {});
 
   // Skipping call "0" because it corresponds to the "initialize" one.
-  expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
+  expect(comms.send.mock.calls[1][0]).toEqual(request);
 });
 
 it('relates replies to requests, in order', () => {
@@ -186,7 +201,7 @@ it('relates replies to requests, in order', () => {
   expect(request2[1]).toBe(false);
 
   // then first call replies...
-  forkInterface.emit('message', [PARENT_MESSAGE_OK, 44]);
+  comms.emit('message', [PARENT_MESSAGE_OK, 44]);
 
   expect(callback1.mock.calls[0][0]).toBeFalsy();
   expect(callback1.mock.calls[0][1]).toBe(44);
@@ -196,7 +211,7 @@ it('relates replies to requests, in order', () => {
   expect(request2[1]).toBe(true);
 
   // and then the second call replies...
-  forkInterface.emit('message', [
+  comms.emit('message', [
     PARENT_MESSAGE_ERROR,
     'TypeError',
     'foo',
@@ -222,7 +237,7 @@ it('creates error instances for known errors', () => {
   // Testing a generic ECMAScript error.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback1);
 
-  forkInterface.emit('message', [
+  comms.emit('message', [
     PARENT_MESSAGE_ERROR,
     'TypeError',
     'bar',
@@ -238,7 +253,7 @@ it('creates error instances for known errors', () => {
   // Testing a custom error.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback2);
 
-  forkInterface.emit('message', [
+  comms.emit('message', [
     PARENT_MESSAGE_ERROR,
     'RandomCustomError',
     'bar',
@@ -255,13 +270,7 @@ it('creates error instances for known errors', () => {
   // Testing a non-object throw.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback3);
 
-  forkInterface.emit('message', [
-    PARENT_MESSAGE_ERROR,
-    'Number',
-    null,
-    null,
-    412,
-  ]);
+  comms.emit('message', [PARENT_MESSAGE_ERROR, 'Number', null, null, 412]);
 
   expect(callback3.mock.calls[0][0]).toBe(412);
 });
@@ -277,7 +286,7 @@ it('throws when the child process returns a strange message', () => {
 
   // Type 27 does not exist.
   expect(() => {
-    forkInterface.emit('message', [27]);
+    comms.emit('message', [27]);
   }).toThrow(TypeError);
 });
 
