@@ -2,9 +2,9 @@
 
 Module for serializing and deserializing object into memory and disk. By
 default, the `v8` implementations are used, but if not present, it defaults to
-`JSON` implementation. The V8 serializer has the advantage of being able to
-serialize `Map`, `Set`, `undefined`, circular references, etc. It is also a
-more compact format to be stored and sent over the wire.
+`JSON` implementation. Both serializers have the advantage of being able to
+serialize `Map`, `Set`, `undefined`, `NaN`, etc, although the JSON one does it
+through a replacer/reviver.
 
 ## Install
 
@@ -23,7 +23,7 @@ memory. This is useful when willing to transfer over HTTP, TCP or via UNIX
 pipes.
 
 ```javascript
-import {serialize, deserialize} serializer from 'jest-serializer';
+import {serialize, deserialize} from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',
@@ -40,7 +40,7 @@ This set of functions allow to send to disk a serialization result and retrieve
 it back, in a synchronous way. It mimics the `fs` API so it looks familiar.
 
 ```javascript
-import {readFileSync, writeFileSync} serializer from 'jest-serializer';
+import {readFileSync, writeFileSync} from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',
@@ -51,36 +51,4 @@ const myFile = '/tmp/obj';
 
 writeFileSync(myFile, myObject);
 const myCopyObject = readFileSync(myFile);
-```
-
-### Asynchronous persistent filesystem: `readFile` and `writeFile`
-
-Pretty similar to the synchronous one, but providing a callback. It also mimics
-the `fs` API.
-
-```javascript
-import {readFile, writeFile} from 'jest-serializer';
-
-const myObject = {
-  foo: 'bar',
-  baz: [0, true, '2', [], {}],
-};
-
-const myFile = '/tmp/obj';
-
-writeFile(myFile, myObject, (err) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-
-  readFile(myFile, (err, data) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-
-    const myCopyObject = data;
-  });
-});
 ```

@@ -7,6 +7,8 @@
 
 'use strict';
 
+import prettyFormat from 'pretty-format';
+
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -30,6 +32,10 @@ const objs = [
   null,
   [0, true, '2', [3.14, {}, null]],
   {key1: 'foo', key2: 'bar', key3: {array: [null, {}]}},
+  {minusInf: -Infinity, nan: NaN, plusInf: +Infinity},
+  {date: new Date(1234567890), re: /foo/gi},
+  {map: new Map([[NaN, 4], [undefined, 'm']]), set: new Set([undefined, NaN])},
+  {buf: Buffer.from([0, 255, 127])},
 ];
 
 const file = path.join(os.tmpdir(), '__jest-serialize-test__');
@@ -47,21 +53,19 @@ afterEach(() => {
 // encodings and cases work.
 v8s.forEach((mockV8, i) => {
   describe('Using V8 implementation ' + i, () => {
-    jest.mock('v8', () => mockV8);
+    beforeEach(() => {
+      v8.serialize = mockV8.serialize;
+      v8.deserialize = mockV8.deserialize;
+    });
 
-    it('throws the error with an invalid serialization', done => {
+    it('throws the error with an invalid serialization', () => {
       // No chance this is a valid serialization, neither in JSON nor V8.
-      const invalidBuffer = Buffer.from([0x00, 0x55, 0xaa, 0xff]);
+      const invalidBuffer = Buffer.from([0, 85, 170, 255]);
 
       fs.writeFileSync(file, invalidBuffer);
 
       expect(() => serializer.deserialize(invalidBuffer)).toThrow();
       expect(() => serializer.readFileSync(file)).toThrow();
-
-      serializer.readFile(file, err => {
-        expect(err).toBeDefined();
-        done();
-      });
     });
 
     objs.forEach((obj, i) => {
@@ -70,21 +74,18 @@ v8s.forEach((mockV8, i) => {
           const buf = serializer.serialize(obj);
 
           expect(buf).toBeInstanceOf(Buffer);
-          expect(serializer.deserialize(buf)).toEqual(obj);
+
+          expect(prettyFormat(serializer.deserialize(buf))).toEqual(
+            prettyFormat(obj),
+          );
         });
 
-        it('serializes/deserializes in disk, synchronously', () => {
+        it('serializes/deserializes in disk', () => {
           serializer.writeFileSync(file, obj);
-          expect(serializer.readFileSync(file)).toEqual(obj);
-        });
 
-        it('serializes/deserializes in disk, asynchronously', done => {
-          serializer.writeFile(file, obj, err => {
-            serializer.readFile(file, (err, data) => {
-              expect(data).toEqual(obj);
-              done();
-            });
-          });
+          expect(prettyFormat(serializer.readFileSync(file))).toEqual(
+            prettyFormat(obj),
+          );
         });
       });
     });
