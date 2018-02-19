@@ -18,17 +18,11 @@ import H from '../constants';
 const watchmanURL =
   'https://facebook.github.io/watchman/docs/troubleshooting.html';
 
-class WatchmanError extends Error {
-  constructor(error) {
-    super(
-      `Watchman error: ${error.message.trim()}. Make sure watchman ` +
-        `is running for this project. See ${watchmanURL}.`,
-    );
-    const stack = error.stack;
-    if (stack) {
-      this.stack = stack;
-    }
-  }
+function WatchmanError(error: Error): Error {
+  error.message =
+    `Watchman error: ${error.message.trim()}. Make sure watchman ` +
+    `is running for this project. See ${watchmanURL}.`;
+  return error;
 }
 
 module.exports = async function watchmanCrawl(
@@ -131,13 +125,13 @@ module.exports = async function watchmanCrawl(
       }
     }
   } catch (error) {
-    throw new WatchmanError(error);
+    throw WatchmanError(error);
   } finally {
     client.end();
   }
 
   if (clientError) {
-    throw new WatchmanError(clientError);
+    throw WatchmanError(clientError);
   }
   data.files = files;
   return data;
