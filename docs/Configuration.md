@@ -460,6 +460,10 @@ the same invocation of Jest:
 }
 ```
 
+_Note: When using multi project runner, it's recommended to add a `displayName`
+for each project. This will show the `displayName` of a project next to its
+tests._
+
 ### `clearMocks` [boolean]
 
 Default: `false`

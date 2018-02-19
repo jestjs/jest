@@ -28,6 +28,9 @@ describe('.rejects', () => {
     await jestExpect(Promise.reject({a: 1, b: 2})).rejects.not.toMatchObject({
       c: 1,
     });
+    await jestExpect(
+      Promise.reject(new Error('rejectMessage')),
+    ).rejects.toMatchObject({message: 'rejectMessage'});
     await jestExpect(Promise.reject(new Error())).rejects.toThrow();
   });
 
@@ -960,6 +963,7 @@ describe('toMatchObject()', () => {
     [{a: undefined}, {a: undefined}],
     [[], []],
     [new Error('foo'), new Error('foo')],
+    [new Error('bar'), {message: 'bar'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,

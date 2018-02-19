@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[expect]` Allow matching of Errors against plain objects
+  ([#5611](https://github.com/facebook/jest/pull/5611))
 * `[jest-cli]` Don't skip matchers for exact files
   ([#5582](https://github.com/facebook/jest/pull/5582))
 * `[docs]` Update discord links
@@ -11,6 +13,8 @@
   ([#5560](https://github.com/facebook/jest/pull/5560))
 * `[jest-config]` Make it possible to merge `transform` option with preset
   ([#5505](https://github.com/facebook/jest/pull/5505))
+* `[jest-util]` Fix `console.assert` behavior in custom & buffered consoles
+  ([#5576](https://github.com/facebook/jest/pull/5576))
 * `[babel-jest]` Remove `retainLines` argument to babel.
   ([#5594](https://github.com/facebook/jest/pull/5594))
 
@@ -24,6 +28,8 @@
   from source. ([#5177](https://github.com/facebook/jest/pull/5177))
 * `[jest-validate]` Add ability to log deprecation warnings for CLI flags.
   ([#5536](https://github.com/facebook/jest/pull/5536))
+* `[docs]` Add a documentation note for project `displayName` configuration
+  ([#5600](https://github.com/facebook/jest/pull/5600))
 
 ## jest 22.3.0
 

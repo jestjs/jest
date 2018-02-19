@@ -10,6 +10,7 @@
 
 import type {LogType, LogMessage, LogCounters, LogTimers} from 'types/Console';
 
+import assert from 'assert';
 import {format} from 'util';
 import {Console} from 'console';
 import chalk from 'chalk';
@@ -48,8 +49,10 @@ export default class CustomConsole extends Console {
   }
 
   assert(...args: Array<any>) {
-    if (args[0]) {
-      this._log('assert', format(...args.slice(1)));
+    try {
+      assert(...args);
+    } catch (error) {
+      this._log('assert', error.toString());
     }
   }
 
