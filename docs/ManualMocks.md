@@ -16,12 +16,12 @@ in the `models` directory, create a file called `user.js` and put it in the
 `models/__mocks__` directory. Note that the `__mocks__` folder is
 case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-> When we require that module on our tests then explicitly calling
+> When we require that module in our tests, then explicitly calling
 > `jest.mock('./moduleName')` is **required**.
 
-### Mocking node modules
+### Mocking Node modules
 
-If the module you are mocking is a node module (e.g.: `lodash`), the mock should
+If the module you are mocking is a Node module (e.g.: `lodash`), the mock should
 be placed in the `__mocks__` directory adjacent to `node_modules` (unless you
 configured [`roots`](Configuration.md#roots-array-string) to point to a folder
 other than the project root) and will be **automatically** mocked. There's no
