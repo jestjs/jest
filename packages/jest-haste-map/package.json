@@ -11,6 +11,7 @@
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.11",
     "jest-docblock": "^22.2.2",
+    "jest-serializer": "^22.3.0",
     "jest-worker": "^22.2.2",
     "micromatch": "^2.3.11",
     "sane": "^2.0.0"
