@@ -16,20 +16,19 @@ in the `models` directory, create a file called `user.js` and put it in the
 `models/__mocks__` directory. Note that the `__mocks__` folder is
 case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-> When we required that module on your test then is automatically get from
-> `__mocks__` folder rather form real place, and we don't need to explicitly
-> call `jest.mock('moduleName')`
+> When we required that module on your test then we need to explicitly call
+> `jest.mock('moduleName')`
 
-### Mocking core Node's modules
+### Mocking node_modules
 
-If the module you are mocking is a node module (eg: `fs`), the mock should be
-placed in the `__mocks__` directory adjacent to `node_modules` (unless you
-configured [`roots`](Configuration.md#roots-array-string) to point to a folder
-other than the project root).
+If the module you are mocking is a node module, the mock should be placed in the
+`__mocks__` directory adjacent to `node_modules` (unless you configured
+[`roots`](Configuration.md#roots-array-string) to point to a folder other than
+the project root).
 
-> In this case if we want to use our mock then we need to explicitly call
-> `jest.mock('module_name')` because Node's core modules are not mock by
-> default, like `fs` or `path`.
+In this case if we want to use our mock for Node's core modules (like `fs` or
+`path`) then we need to explicitly call `jest.mock('module_name')` because
+Node's core modules are not mock by default.
 
 ### Examples
 
@@ -54,7 +53,7 @@ called. To opt out of this behavior you will need to explicitly call
 implementation.
 
 Here's a contrived example where we have a module that provides a summary of all
-the files in a given directory. In this case we use real `fs` module.
+the files in a given directory. In this case we use core (built in) `fs` module.
 
 ```javascript
 // FileSummarizer.js
@@ -114,7 +113,7 @@ module.exports = fs;
 ```
 
 Now we write our test and need to explicitly tell that we want to mock `fs`
-modules because it's code Node's modules:
+modules because it’s a core Node module:
 
 ```javascript
 // __tests__/FileSummarizer-test.js
@@ -160,11 +159,6 @@ in your manual mock and amending it with mock functions before exporting it.
 
 The code for this example is available at
 [examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
-
-### When mocking
-
-If we create mock for our modules like in `models/user` then mocking are
-automatically. No needed to explicitly add `jest.mock('models/user')`.
 
 ### Using with ES module imports
 

@@ -1,6 +1,5 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-'use strict';
 import user from '../models/user';
 
 jest.mock('../models/user');
