@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[enzyme]` Allow matching of Errors against plain objects
+  ([#5611](https://github.com/facebook/jest/pull/5611))
 * `[jest-cli]` Don't skip matchers for exact files
   ([#5582](https://github.com/facebook/jest/pull/5582))
 * `[docs]` Update discord links
