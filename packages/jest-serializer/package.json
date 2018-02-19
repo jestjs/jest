@@ -6,8 +6,5 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "dependencies": {
-    "merge-stream": "^1.0.1"
-  }
+  "main": "build/index.js"
 }

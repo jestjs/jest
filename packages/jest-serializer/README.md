@@ -23,15 +23,15 @@ memory. This is useful when willing to transfer over HTTP, TCP or via UNIX
 pipes.
 
 ```javascript
-import serializer from 'jest-serializer';
+import {serialize, deserialize} serializer from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',
   baz: [0, true, '2', [], {}],
 };
 
-const buffer = serializer.serialize(myObject);
-const myCopyObject = serializer.deserialize(buffer);
+const buffer = serialize(myObject);
+const myCopyObject = deserialize(buffer);
 ```
 
 ### Synchronous persistent filesystem: `readFileSync` and `writeFileSync`
@@ -40,7 +40,7 @@ This set of functions allow to send to disk a serialization result and retrieve
 it back, in a synchronous way. It mimics the `fs` API so it looks familiar.
 
 ```javascript
-import serializer from 'jest-serializer';
+import {readFileSync, writeFileSync} serializer from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',
@@ -49,8 +49,8 @@ const myObject = {
 
 const myFile = '/tmp/obj';
 
-serializer.writeFileSync(myFile, myObject);
-const myCopyObject = serializer.readFileSync(myFile);
+writeFileSync(myFile, myObject);
+const myCopyObject = readFileSync(myFile);
 ```
 
 ### Asynchronous persistent filesystem: `readFile` and `writeFile`
@@ -59,7 +59,7 @@ Pretty similar to the synchronous one, but providing a callback. It also mimics
 the `fs` API.
 
 ```javascript
-import serializer from 'jest-serializer';
+import {readFile, writeFile} from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',
@@ -68,13 +68,13 @@ const myObject = {
 
 const myFile = '/tmp/obj';
 
-serializer.writeFile(myFile, myObject, (err) => {
+writeFile(myFile, myObject, (err) => {
   if (err) {
     console.error(err);
     return;
   }
 
-  serializer.readFile(myFile, (err, data) => {
+  readFile(myFile, (err, data) => {
     if (err) {
       console.error(err);
       return;
