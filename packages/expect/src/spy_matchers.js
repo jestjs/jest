@@ -172,15 +172,27 @@ const ensureMock = (mockOrSpy, matcherName) => {
   }
 };
 
+const getPrintedCalls = (
+  calls: any[],
+  limit: number,
+  sep: string,
+  fn: Function,
+): string => {
+  const result = [];
+  let i = calls.length;
+
+  while (--i >= 0 && --limit >= 0) {
+    result.push(fn(calls[i]));
+  }
+
+  return result.join(sep);
+};
+
 const formatReceivedCalls = (calls, limit, options) => {
   if (calls.length) {
     const but = options && options.sameSentence ? 'but' : 'But';
     const count = calls.length - limit;
-    const printedCalls = calls
-      .slice(-limit)
-      .reverse()
-      .map(printReceived)
-      .join(', ');
+    const printedCalls = getPrintedCalls(calls, limit, ', ', printReceived);
     return (
       `${but} it was ${options && options.isLast ? 'last ' : ''}called ` +
       `with:\n  ` +
@@ -196,11 +208,12 @@ const formatReceivedCalls = (calls, limit, options) => {
 
 const formatMismatchedCalls = (calls, expected, limit) => {
   if (calls.length) {
-    return calls
-      .slice(-limit)
-      .reverse()
-      .map(formatMismatchedArgs.bind(null, expected))
-      .join('\n\n');
+    return getPrintedCalls(
+      calls,
+      limit,
+      '\n\n',
+      formatMismatchedArgs.bind(null, expected),
+    );
   } else {
     return (
       `  ${printExpected(expected)}\n` +
