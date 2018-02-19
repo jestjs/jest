@@ -28,10 +28,15 @@ export default class BufferedConsole extends Console {
   _counters: LogCounters;
   _timers: LogTimers;
   _groupDepth: number;
+  _getSourceMaps: () => ?SourceMapRegistry;
 
-  constructor() {
+  constructor(getSourceMaps: () => ?SourceMapRegistry) {
     const buffer = [];
-    super({write: message => BufferedConsole.write(buffer, 'log', message)});
+    super({
+      write: message =>
+        BufferedConsole.write(buffer, 'log', message, null, getSourceMaps()),
+    });
+    this._getSourceMaps = getSourceMaps;
     this._buffer = buffer;
     this._counters = {};
     this._timers = {};
@@ -63,6 +68,7 @@ export default class BufferedConsole extends Console {
       type,
       '  '.repeat(this._groupDepth) + message,
       3,
+      this._getSourceMasp(),
     );
   }
 

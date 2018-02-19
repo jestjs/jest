@@ -98,8 +98,7 @@ async function runTestInternal(
   } else if (globalConfig.verbose) {
     testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
   } else {
-    // TODO: Should `BufferedConsole` receive `consoleFormatter` as well?
-    testConsole = new BufferedConsole();
+    testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
 
   const environment = new TestEnvironment(config, {console: testConsole});
