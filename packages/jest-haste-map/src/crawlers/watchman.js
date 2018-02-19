@@ -18,126 +18,121 @@ import H from '../constants';
 const watchmanURL =
   'https://facebook.github.io/watchman/docs/troubleshooting.html';
 
-function isDescendant(root: string, child: string): boolean {
-  return child.startsWith(root);
-}
-
 function WatchmanError(error: Error): Error {
-  return new Error(
+  error.message =
     `Watchman error: ${error.message.trim()}. Make sure watchman ` +
-      `is running for this project. See ${watchmanURL}.`,
-  );
+    `is running for this project. See ${watchmanURL}.`;
+  return error;
 }
 
-module.exports = function watchmanCrawl(
+module.exports = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   const {data, extensions, ignore, roots} = options;
-  // Watchman always returns POSIX style paths so use posixRoots
-  // instead of roots to avoid on-the-fly checks inside the loop.
-  const posixRoots =
-    path.sep === '/'
-      ? Array.from(roots)
-      : roots.map(root => root.replace(/\\/g, '/'));
+  const defaultWatchExpression = [
+    'allof',
+    ['type', 'f'],
+    ['anyof'].concat(extensions.map(extension => ['suffix', extension])),
+  ];
+  const client = new watchman.Client();
+  let clientError;
+  client.on('error', error => (clientError = error));
 
-  return new Promise((resolve, reject) => {
-    const client = new watchman.Client();
-    client.on('error', error => reject(error));
+  const cmd = (...args) =>
+    new Promise((resolve, reject) =>
+      client.command(
+        args,
+        (error, result) => (error ? reject(error) : resolve(result)),
+      ),
+    );
 
-    const cmd = (...args) =>
-      new Promise((resolve, reject) => {
-        client.command(args, (error, result) => {
-          if (error) {
-            reject(error);
+  const clocks = data.clocks;
+  let files = data.files;
+
+  try {
+    const watchmanRoots = new Map();
+    for (const root of roots) {
+      const response = await cmd('watch-project', root);
+      const existing = watchmanRoots.get(response.watch);
+      // A root can only be filtered if it was never seen with a relative_path before
+      const canBeFiltered = !existing || existing.length > 0;
+
+      if (canBeFiltered) {
+        if (response.relative_path) {
+          watchmanRoots.set(
+            response.watch,
+            (existing || []).concat(response.relative_path),
+          );
+        } else {
+          // Make the filter directories an empty array to signal that this root
+          // was already seen and needs to be watched for all files/directories
+          watchmanRoots.set(response.watch, []);
+        }
+      }
+    }
+
+    let shouldReset = false;
+    const watchmanFileResults = new Map();
+    for (const [root, directoryFilters] of watchmanRoots) {
+      const expression = Array.from(defaultWatchExpression);
+      if (directoryFilters.length > 0) {
+        expression.push([
+          'anyof',
+          ...directoryFilters.map(dir => ['dirname', dir]),
+        ]);
+      }
+      const fields = ['name', 'exists', 'mtime_ms'];
+
+      const query = clocks[root]
+        ? // Use the `since` generator if we have a clock available
+          {expression, fields, since: clocks[root]}
+        : // Otherwise use the `suffix` generator
+          {expression, fields, suffix: extensions};
+
+      const response = await cmd('query', root, query);
+      shouldReset = shouldReset || response.is_fresh_instance;
+      watchmanFileResults.set(root, response);
+    }
+
+    // Reset the file map if watchman was restarted and sends us a list of files.
+    if (shouldReset) {
+      files = Object.create(null);
+    }
+
+    for (const [watchRoot, response] of watchmanFileResults) {
+      const fsRoot = normalizePathSep(watchRoot);
+      if ('warning' in response) {
+        console.warn('watchman warning: ', response.warning);
+      }
+      clocks[fsRoot] = response.clock;
+      for (const fileData of response.files) {
+        const name = fsRoot + path.sep + normalizePathSep(fileData.name);
+        if (!fileData.exists) {
+          delete files[name];
+        } else if (!ignore(name)) {
+          const mtime =
+            typeof fileData.mtime_ms === 'number'
+              ? fileData.mtime_ms
+              : fileData.mtime_ms.toNumber();
+          const isOld = data.files[name] && data.files[name][H.MTIME] === mtime;
+          if (isOld) {
+            files[name] = data.files[name];
           } else {
-            resolve(result);
+            // See ../constants.js
+            files[name] = ['', mtime, 0, []];
           }
-        });
-      });
+        }
+      }
+    }
+  } catch (error) {
+    throw WatchmanError(error);
+  } finally {
+    client.end();
+  }
 
-    const clocks = data.clocks;
-    let files = data.files;
-
-    return Promise.all(roots.map(root => cmd('watch-project', root)))
-      .then(responses =>
-        Promise.all(
-          Array.from(new Set(responses.map(response => response.watch))).map(
-            root => {
-              // Build an expression to filter the output by the relevant roots.
-              const dirExpr = (['anyof']: Array<string | Array<string>>);
-              posixRoots.forEach(subRoot => {
-                if (isDescendant(root, subRoot)) {
-                  dirExpr.push(['dirname', path.relative(root, subRoot)]);
-                }
-              });
-              const expression = [
-                'allof',
-                ['type', 'f'],
-                ['anyof'].concat(
-                  extensions.map(extension => ['suffix', extension]),
-                ),
-              ];
-              if (dirExpr.length > 1) {
-                expression.push(dirExpr);
-              }
-              const fields = ['name', 'exists', 'mtime_ms'];
-
-              const query = clocks[root]
-                ? // Use the `since` generator if we have a clock available
-                  {expression, fields, since: clocks[root]}
-                : // Otherwise use the `suffix` generator
-                  {expression, fields, suffix: extensions};
-              return cmd('query', root, query).then(response => ({
-                response,
-                root,
-              }));
-            },
-          ),
-        ).then(pairs => {
-          // Reset the file map if watchman was restarted and sends us a list of
-          // files.
-          if (pairs.some(pair => pair.response.is_fresh_instance)) {
-            files = Object.create(null);
-          }
-
-          pairs.forEach(pair => {
-            const root = normalizePathSep(pair.root);
-            const response = pair.response;
-            if ('warning' in response) {
-              console.warn('watchman warning: ', response.warning);
-            }
-
-            clocks[root] = response.clock;
-            response.files.forEach(fileData => {
-              const name = root + path.sep + normalizePathSep(fileData.name);
-              if (!fileData.exists) {
-                delete files[name];
-              } else if (!ignore(name)) {
-                const mtime =
-                  typeof fileData.mtime_ms === 'number'
-                    ? fileData.mtime_ms
-                    : fileData.mtime_ms.toNumber();
-                const isNew =
-                  !data.files[name] || data.files[name][H.MTIME] !== mtime;
-                if (isNew) {
-                  // See ../constants.js
-                  files[name] = ['', mtime, 0, []];
-                } else {
-                  files[name] = data.files[name];
-                }
-              }
-            });
-          });
-        }),
-      )
-      .then(() => {
-        client.end();
-        data.files = files;
-        resolve(data);
-      })
-      .catch(error => {
-        client.end();
-        reject(WatchmanError(error));
-      });
-  });
+  if (clientError) {
+    throw WatchmanError(clientError);
+  }
+  data.files = files;
+  return data;
 };
