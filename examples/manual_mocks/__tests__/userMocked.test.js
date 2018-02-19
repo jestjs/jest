@@ -4,6 +4,6 @@ import user from '../models/user';
 
 jest.mock('../models/user');
 
-test('without mocked module', () => {
+test('if user model are mocked', () => {
   expect(user.getAuthenticated()).toEqual({age: 622, name: 'Mock name'});
 });

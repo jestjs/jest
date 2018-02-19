@@ -8,7 +8,7 @@ instead of accessing a remote resource like a website or a database, you might
 want to create a manual mock that allows you to use fake data. This ensures your
 tests will be fast and not flaky.
 
-### Mocking internals modules
+### Mocking internal modules
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory
 immediately adjacent to the module. For example, to mock a module called `user`
@@ -16,19 +16,20 @@ in the `models` directory, create a file called `user.js` and put it in the
 `models/__mocks__` directory. Note that the `__mocks__` folder is
 case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-> When we required that module on your test then we need to explicitly call
-> `jest.mock('moduleName')`
+> When we require that module on our tests then explicitly calling
+> `jest.mock('moduleName')` is **required**.
 
-### Mocking node_modules
+### Mocking node modules
 
-If the module you are mocking is a node module, the mock should be placed in the
-`__mocks__` directory adjacent to `node_modules` (unless you configured
-[`roots`](Configuration.md#roots-array-string) to point to a folder other than
-the project root).
+If the module you are mocking is a node module (e.g.: `lodash`), the mock should
+be placed in the `__mocks__` directory adjacent to `node_modules` (unless you
+configured [`roots`](Configuration.md#roots-array-string) to point to a folder
+other than the project root) and will be **automatically** mocked, not need to
+explicitly call `jest.mock('module_name')`.
 
-In this case if we want to use our mock for Node's core modules (like `fs` or
-`path`) then we need to explicitly call `jest.mock('module_name')` because
-Node's core modules are not mock by default.
+> Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then
+> explicitly call `jest.mock('module_name')` is **required**, because core Node
+> module are not mocked by default.
 
 ### Examples
 
@@ -53,7 +54,8 @@ called. To opt out of this behavior you will need to explicitly call
 implementation.
 
 Here's a contrived example where we have a module that provides a summary of all
-the files in a given directory. In this case we use core (built in) `fs` module.
+the files in a given directory. In this case we use the core (built in) `fs`
+module.
 
 ```javascript
 // FileSummarizer.js
@@ -112,8 +114,8 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test and need to explicitly tell that we want to mock `fs`
-modules because it’s a core Node module:
+Now we write our test and need to explicitly tell that we want to mock the `fs`
+module because it’s a core Node module:
 
 ```javascript
 // __tests__/FileSummarizer-test.js
