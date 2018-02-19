@@ -519,7 +519,7 @@ class Runtime {
 
     localModule.paths = this._resolver.getModulePaths(dirname);
     Object.defineProperty(localModule, 'require', {
-      value: this._createRequireImplementation(filename, options),
+      value: this._createRequireImplementation(localModule, options),
     });
 
     const transformedFile = this._scriptTransformer.transform(
@@ -678,18 +678,38 @@ class Runtime {
   }
 
   _createRequireImplementation(
-    from: Path,
+    from: Module,
     options: ?InternalModuleOptions,
   ): LocalModuleRequire {
     const moduleRequire =
       options && options.isInternalModule
-        ? (moduleName: string) => this.requireInternalModule(from, moduleName)
-        : this.requireModuleOrMock.bind(this, from);
+        ? (moduleName: string) =>
+            this.requireInternalModule(from.filename, moduleName)
+        : this.requireModuleOrMock.bind(this, from.filename);
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireModule.bind(this, from);
-    moduleRequire.requireMock = this.requireMock.bind(this, from);
-    moduleRequire.resolve = moduleName => this._resolveModule(from, moduleName);
+    moduleRequire.requireActual = this.requireModule.bind(this, from.filename);
+    moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
+    moduleRequire.resolve = moduleName =>
+      this._resolveModule(from.filename, moduleName);
+    Object.defineProperty(
+      moduleRequire,
+      'main',
+      ({
+        enumerable: true,
+        get() {
+          let mainModule = from.parent;
+          while (
+            mainModule &&
+            mainModule.parent &&
+            mainModule.id !== mainModule.parent.id
+          ) {
+            mainModule = mainModule.parent;
+          }
+          return mainModule;
+        },
+      }: Object),
+    );
     return moduleRequire;
   }
 
