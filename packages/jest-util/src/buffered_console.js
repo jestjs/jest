@@ -68,7 +68,7 @@ export default class BufferedConsole extends Console {
       type,
       '  '.repeat(this._groupDepth) + message,
       3,
-      this._getSourceMasp(),
+      this._getSourceMaps(),
     );
   }
 

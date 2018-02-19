@@ -19,7 +19,7 @@ describe('CustomConsole', () => {
       .join('\n');
 
   beforeEach(() => {
-    _console = new BufferedConsole();
+    _console = new BufferedConsole(() => null);
   });
 
   describe('assert', () => {
