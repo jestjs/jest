@@ -18,16 +18,16 @@ import {
   PARENT_MESSAGE_OK,
 } from '../types';
 
-let Comms;
+let Channel;
 let Worker;
 
 let forkInterface;
 let childProcess;
 let originalExecArgv;
-let comms;
+let channel;
 
 beforeEach(() => {
-  jest.mock('child_process').mock('../comms');
+  jest.mock('child_process').mock('../channel');
 
   originalExecArgv = process.execArgv;
 
@@ -42,13 +42,13 @@ beforeEach(() => {
     return forkInterface;
   });
 
-  Comms = require('../comms');
-  Comms.default.mockImplementation(() => {
-    comms = Object.assign(new EventEmitter(), {
+  Channel = require('../channel');
+  Channel.default.mockImplementation(() => {
+    channel = Object.assign(new EventEmitter(), {
       send: jest.fn(),
     });
 
-    return comms;
+    return channel;
   });
 
   Worker = require('../worker').default;
@@ -104,7 +104,7 @@ it('initializes the child process with the given workerPath', () => {
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  expect(comms.send.mock.calls[0][0]).toEqual([
+  expect(channel.send.mock.calls[0][0]).toEqual([
     CHILD_MESSAGE_INITIALIZE,
     false,
     '/tmp/foo/bar/baz.js',
@@ -178,7 +178,7 @@ it('sends the task to the child process', () => {
   worker.send(request, () => {});
 
   // Skipping call "0" because it corresponds to the "initialize" one.
-  expect(comms.send.mock.calls[1][0]).toEqual(request);
+  expect(channel.send.mock.calls[1][0]).toEqual(request);
 });
 
 it('relates replies to requests, in order', () => {
@@ -201,7 +201,7 @@ it('relates replies to requests, in order', () => {
   expect(request2[1]).toBe(false);
 
   // then first call replies...
-  comms.emit('message', [PARENT_MESSAGE_OK, 44]);
+  channel.emit('message', [PARENT_MESSAGE_OK, 44]);
 
   expect(callback1.mock.calls[0][0]).toBeFalsy();
   expect(callback1.mock.calls[0][1]).toBe(44);
@@ -211,7 +211,7 @@ it('relates replies to requests, in order', () => {
   expect(request2[1]).toBe(true);
 
   // and then the second call replies...
-  comms.emit('message', [
+  channel.emit('message', [
     PARENT_MESSAGE_ERROR,
     'TypeError',
     'foo',
@@ -237,7 +237,7 @@ it('creates error instances for known errors', () => {
   // Testing a generic ECMAScript error.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback1);
 
-  comms.emit('message', [
+  channel.emit('message', [
     PARENT_MESSAGE_ERROR,
     'TypeError',
     'bar',
@@ -253,7 +253,7 @@ it('creates error instances for known errors', () => {
   // Testing a custom error.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback2);
 
-  comms.emit('message', [
+  channel.emit('message', [
     PARENT_MESSAGE_ERROR,
     'RandomCustomError',
     'bar',
@@ -270,7 +270,7 @@ it('creates error instances for known errors', () => {
   // Testing a non-object throw.
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], callback3);
 
-  comms.emit('message', [PARENT_MESSAGE_ERROR, 'Number', null, null, 412]);
+  channel.emit('message', [PARENT_MESSAGE_ERROR, 'Number', null, null, 412]);
 
   expect(callback3.mock.calls[0][0]).toBe(412);
 });
@@ -286,7 +286,7 @@ it('throws when the child process returns a strange message', () => {
 
   // Type 27 does not exist.
   expect(() => {
-    comms.emit('message', [27]);
+    channel.emit('message', [27]);
   }).toThrow(TypeError);
 });
 

@@ -9,7 +9,7 @@
 
 'use strict';
 
-import Comms from './comms';
+import Channel from './channel';
 import {Socket} from 'net';
 
 import {
@@ -35,9 +35,9 @@ let file = null;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-const comms = new Comms(new Socket({fd: 4}));
+const channel = new Channel(new Socket({fd: 4}));
 
-comms.on('message', (request: any /* Should be ChildMessage */) => {
+channel.on('message', (request: any /* Should be ChildMessage */) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       file = request[2];
@@ -59,7 +59,7 @@ comms.on('message', (request: any /* Should be ChildMessage */) => {
 });
 
 function reportSuccess(result: any) {
-  comms.send([PARENT_MESSAGE_OK, result]);
+  channel.send([PARENT_MESSAGE_OK, result]);
 }
 
 function reportError(error: Error) {
@@ -67,7 +67,7 @@ function reportError(error: Error) {
     error = new Error('"null" or "undefined" thrown');
   }
 
-  comms.send([
+  channel.send([
     PARENT_MESSAGE_ERROR,
     error.constructor && error.constructor.name,
     error.message,

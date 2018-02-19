@@ -10,7 +10,7 @@
 'use strict';
 
 import childProcess from 'child_process';
-import Comms from './comms';
+import Channel from './channel';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -48,8 +48,8 @@ import type {
  */
 export default class {
   _busy: boolean;
+  _channel: Channel;
   _child: ChildProcess;
-  _comms: Comms;
   _last: ?QueueChildMessage;
   _options: WorkerOptions;
   _queue: ?QueueChildMessage;
@@ -116,15 +116,15 @@ export default class {
       ),
     );
 
-    const comms = new Comms(child.stdio[4]);
+    const channel = new Channel(child.stdio[4]);
 
-    comms.on('message', this._receive.bind(this));
+    channel.on('message', this._receive.bind(this));
     child.on('exit', this._exit.bind(this));
 
-    comms.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
+    channel.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
 
     this._retries++;
-    this._comms = comms;
+    this._channel = channel;
     this._child = child;
     this._busy = false;
 
@@ -167,7 +167,7 @@ export default class {
       this._retries = 0;
       this._busy = true;
 
-      this._comms.send(item.request);
+      this._channel.send(item.request);
     } else {
       this._last = item;
     }

@@ -8,18 +8,18 @@
 'use strict';
 
 import EventEmitter from 'events';
-import Comms from '../comms';
+import Channel from '../channel';
 import serializer from 'jest-serializer';
 
 let stream;
-let comms;
+let channel;
 
 beforeEach(() => {
   stream = Object.assign(new EventEmitter(), {
     write: jest.fn(),
   });
 
-  comms = new Comms(stream);
+  channel = new Channel(stream);
 });
 
 it('sends data prefixed with length', () => {
@@ -30,7 +30,7 @@ it('sends data prefixed with length', () => {
 
   const buffer = serializer.serialize(data);
 
-  comms.send(data);
+  channel.send(data);
 
   // Verify that the length is sent first.
   expect(stream.write.mock.calls[0]).toEqual([
@@ -50,7 +50,7 @@ it('processes a single message split into different buffers', () => {
   const message = serializer.serialize(data);
   const received = jest.fn();
 
-  comms.on('message', received);
+  channel.on('message', received);
 
   // Just received the length.
   stream.emit('data', Buffer.from([message.length, 0, 0, 0]));
@@ -86,7 +86,7 @@ it('can process multiple messages into a single buffer', () => {
   message.writeUInt32LE(message2.length, 4 + message1.length);
   message2.copy(message, 8 + message1.length);
 
-  comms.on('message', received);
+  channel.on('message', received);
   stream.emit('data', message);
 
   expect(received).toHaveBeenCalledTimes(2);
