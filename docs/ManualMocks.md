@@ -28,8 +28,8 @@ other than the project root) and will be **automatically** mocked. There's no
 need to explicitly call `jest.mock('module_name')`.
 
 > Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then
-> explicitly call e.g. `jest.mock('module_name')` is **required**, because core
-> Node modules are not mocked by default.
+> explicitly call e.g. `jest.mock('path')` is **required**, because core Node
+> modules are not mocked by default.
 
 ### Examples
 
