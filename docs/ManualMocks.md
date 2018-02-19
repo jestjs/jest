@@ -8,7 +8,7 @@ instead of accessing a remote resource like a website or a database, you might
 want to create a manual mock that allows you to use fake data. This ensures your
 tests will be fast and not flaky.
 
-### Mocking internal modules
+### Mocking user modules
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory
 immediately adjacent to the module. For example, to mock a module called `user`
@@ -17,19 +17,19 @@ in the `models` directory, create a file called `user.js` and put it in the
 case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
 > When we require that module on our tests then explicitly calling
-> `jest.mock('moduleName')` is **required**.
+> `jest.mock('./moduleName')` is **required**.
 
 ### Mocking node modules
 
 If the module you are mocking is a node module (e.g.: `lodash`), the mock should
 be placed in the `__mocks__` directory adjacent to `node_modules` (unless you
 configured [`roots`](Configuration.md#roots-array-string) to point to a folder
-other than the project root) and will be **automatically** mocked, not need to
-explicitly call `jest.mock('module_name')`.
+other than the project root) and will be **automatically** mocked. There's no
+need to explicitly call `jest.mock('module_name')`.
 
 > Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then
-> explicitly call `jest.mock('module_name')` is **required**, because core Node
-> module are not mocked by default.
+> explicitly call e.g. `jest.mock('module_name')` is **required**, because core
+> Node modules are not mocked by default.
 
 ### Examples
 
@@ -114,8 +114,8 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test and need to explicitly tell that we want to mock the `fs`
-module because it’s a core Node module:
+Now we write our test. Note that we need to explicitly tell that we want to mock
+the `fs` module because it’s a core Node module:
 
 ```javascript
 // __tests__/FileSummarizer-test.js
