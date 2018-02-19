@@ -16,9 +16,9 @@ in the `models` directory, create a file called `user.js` and put it in the
 `models/__mocks__` directory. Note that the `__mocks__` folder is
 case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-When we required that module on your test then is automatically get from
-`__mock__` folder rather form real place, and we don't need to explicitly call
-`jest.mock('moduleName')`
+> When we required that module on your test then is automatically get from
+> `__mocks__` folder rather form real place, and we don't need to explicitly
+> call `jest.mock('moduleName')`
 
 ### Mocking core Node's modules
 
@@ -27,8 +27,9 @@ placed in the `__mocks__` directory adjacent to `node_modules` (unless you
 configured [`roots`](Configuration.md#roots-array-string) to point to a folder
 other than the project root).
 
-In this case if we want to use our mock then we need to explicitly call
-`jest.mock('module_name')` because code Node's modules are not mock by default.
+> In this case if we want to use our mock then we need to explicitly call
+> `jest.mock('module_name')` because Node's core modules are not mock by
+> default, like `fs` or `path`.
 
 ### Examples
 
