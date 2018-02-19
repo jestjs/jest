@@ -3983,6 +3983,15 @@ Received:
   <red>[1, 2]</>"
 `;
 
+exports[`toMatchObject() {pass: true} expect([Error: bar]).toMatchObject({"message": "bar"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toMatchObject(</><green>expected</><dim>)</>
+
+Expected value not to match object:
+  <green>{\\"message\\": \\"bar\\"}</>
+Received:
+  <red>[Error: bar]</>"
+`;
+
 exports[`toMatchObject() {pass: true} expect([Error: foo]).toMatchObject([Error: foo]) 1`] = `
 "<dim>expect(</><red>received</><dim>).not.toMatchObject(</><green>expected</><dim>)</>
 
