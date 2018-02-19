@@ -15,7 +15,17 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ManualMocks.md" target="_blank">Edit</a><h1>Manual Mocks</h1></header><article><div><span><p>Mocks, ou simulações, manuais são usadas para esboçar funcionalidade com dados simulados. Por exemplo, em vez de acessar um recurso remoto como um site ou um banco de dados, convém criar uma simulação manual que permite a utilização de dados falsos. Isso garante que os seus testes serão rápidos e não fragmentados.</p>
-<p>Simulações manuais são definidas por escrever um módulo em um subdiretório <code>__mocks__/</code> imediatamente adjacente ao módulo. Por exemplo, para simular (mock, em inglês) um módulo chamado <code>user</code> no diretório <code>models</code>, crie um arquivo chamado <code>user.js</code> e coloque ele no diretório <code>models/__mocks__</code>. Observe que a pasta <code>__mocks__</code> é sensível a maiúsculas e minúsculas, então nomeando o diretório <code>__MOCKS__</code> vai quebrar em alguns sistemas. Se o módulo que você está simulando é um módulo Node (por exemplo: <code>fs</code>), a simulação deve ser colocada no diretório <code>__mocks__</code> adjacente ao <code>node_modules</code> (a menos que você configurou <a href="/jest/docs/pt-BR/configuration.html#roots-array-string"> <code>roots</code></a> para apontar para uma pasta diferente da raiz do projeto). Por exemplo:</p>
+<h3><a class="anchor" aria-hidden="true" name="mocking-user-modules"></a><a href="#mocking-user-modules" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mocking user modules</h3>
+<p>Simulações manuais são definidas por escrever um módulo em um subdiretório <code>__mocks__/</code> imediatamente adjacente ao módulo. Por exemplo, para simular (mock, em inglês) um módulo chamado <code>user</code> no diretório <code>models</code>, crie um arquivo chamado <code>user.js</code> e coloque ele no diretório <code>models/__mocks__</code>. Observe que a pasta <code>__mocks__</code> é sensível a maiúsculas e minúsculas, então nomeando o diretório <code>__MOCKS__</code> vai quebrar em alguns sistemas.</p>
+<blockquote>
+<p>When we require that module in our tests, then explicitly calling <code>jest.mock('./moduleName')</code> is <strong>required</strong>.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" name="mocking-node-modules"></a><a href="#mocking-node-modules" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mocking Node modules</h3>
+<p>If the module you are mocking is a Node module (e.g.: <code>lodash</code>), the mock should be placed in the <code>__mocks__</code> directory adjacent to <code>node_modules</code> (unless you configured <a href="/jest/docs/pt-BR/configuration.html#roots-array-string"><code>roots</code></a> to point to a folder other than the project root) and will be <strong>automatically</strong> mocked. There's no need to explicitly call <code>jest.mock('module_name')</code>.</p>
+<blockquote>
+<p>Warning: If we want to mock Node's core modules (e.g.: <code>fs</code> or <code>path</code>), then explicitly calling e.g. <code>jest.mock('path')</code> is <strong>required</strong>, because core Node modules are not mocked by default.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" name="exemplos"></a><a href="#exemplos" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Exemplos</h3>
 <pre><code class="hljs css bash">.
 ├── config
 ├── __mocks__
@@ -28,7 +38,7 @@
 └── views
 </code></pre>
 <p>Quando uma simulação manual existe para um determinado módulo, o sistema de módulo do Jest usará esse módulo ao chamar explicitamente <code>jest.mock('moduleName')</code>. No entanto, simulações manuais terão precedência sobre módulos Node mesmo se <code>jest.mock('moduleName')</code> não é chamado. Para desativar esse comportamento, você precisará chamar explicitamente <code>jest.unmock('moduleName')</code> em testes que devem usar a implementação efetiva do módulo.</p>
-<p>Aqui está um exemplo inventado, onde temos um módulo que fornece um resumo de todos os arquivos em um determinado diretório.</p>
+<p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) <code>fs</code> module.</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;
 
@@ -78,7 +88,7 @@ fs.readdirSync = readdirSync;
 
 <span class="hljs-built_in">module</span>.exports = fs;
 </code></pre>
-<p>Agora podemos escrever nosso teste:</p>
+<p>Now we write our test. Note that we need to explicitly tell that we want to mock the <code>fs</code> module because it’s a core Node module:</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// __tests__/FileSummarizer-test.js</span>
 <span class="hljs-meta">'use strict'</span>;
 
