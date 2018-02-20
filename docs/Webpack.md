@@ -87,7 +87,7 @@ You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to
 mock [CSS Modules](https://github.com/css-modules/css-modules):
 
 ```bash
-npm install --save-dev identity-obj-proxy
+yarn add --dev identity-obj-proxy
 ```
 
 Then all your className lookups on the styles object will be returned as-is
