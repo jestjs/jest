@@ -26,27 +26,16 @@ exports[`cannot test with no implementation 1`] = `
 
     Missing second argument. It must be a callback function.
 
-      431 |       }
-      432 |       if (fn === undefined) {
-    > 433 |         throw new Error(
-      434 |         'Missing second argument. It must be a callback function.');
-      435 | 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fix: cleans up stack using cleanUpStackTrace
-      436 |       }
+      1 | 
+      2 |     it('it', () => {});
+    > 3 |     it('it, no implementation');
+      4 |     test('test, no implementation');
+      5 |   
       
-
+      at packages/jest-jasmine2/build/jasmine/Env.js:433:15
       at __tests__/only-constructs.test.js:3:5
 
 "
-<<<<<<< HEAD
-=======
-      436 |       }"
->>>>>>> fix: restores rest snapshot and removes abs path from snapshot stack
-=======
->>>>>>> fix: cleans up stack using cleanUpStackTrace
 `;
 
 exports[`cannot test with no implementation 2`] = `
@@ -64,14 +53,13 @@ exports[`cannot test with no implementation with expand arg 1`] = `
 
     Missing second argument. It must be a callback function.
 
-      431 |       }
-      432 |       if (fn === undefined) {
-    > 433 |         throw new Error(
-      434 |         'Missing second argument. It must be a callback function.');
-      435 | 
-      436 |       }
+      1 | 
+      2 |     it('it', () => {});
+    > 3 |     it('it, no implementation');
+      4 |     test('test, no implementation');
+      5 |   
       
-
+      at packages/jest-jasmine2/build/jasmine/Env.js:433:15
       at __tests__/only-constructs.test.js:3:5
 
 "
