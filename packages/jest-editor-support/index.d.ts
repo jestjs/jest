@@ -8,7 +8,7 @@
 import {EventEmitter} from 'events';
 import {ChildProcess} from 'child_process';
 
-export interface SpawnOption {
+export interface SpawnOptions {
   shell?: boolean;
 };
 
