@@ -4,6 +4,7 @@
 
 * `[jest-runtime]` Provide `require.main` property set to module with test suite
   ([#5618](https://github.com/facebook/jest/pull/5618))
+* `[docs]` Add note about Node version support ([#5622](https://github.com/facebook/jest/pull/5622))
 
 ## 22.4.0
 

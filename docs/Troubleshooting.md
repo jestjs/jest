@@ -301,7 +301,12 @@ option to `jasmine1` or pass `--testRunner=jasmine1` as a command line option.
 
 Jest takes advantage of new features added to Node 6. We recommend that you
 upgrade to the latest stable release of Node. The minimum supported version is
-`v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported.
+`v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported because the `jsdom`
+version used in Jest doesn't support Node 4. However, if you need to run Jest on
+Node 4, you can use the `testEnvironment` config to use a
+[custom environment](https://facebook.github.io/jest/docs/en/configuration.html#testenvironment-string)
+that supports Node 4, such as
+[`jest-environment-node`](https://www.npmjs.com/package/jest-environment-node).
 
 ### `coveragePathIgnorePatterns` seems to not have any effect.
 
