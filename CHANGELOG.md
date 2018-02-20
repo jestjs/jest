@@ -2,7 +2,8 @@
 
 ### Fixes
 
-* `[jest-editor-support]` Update TypeScript definitions ([]())
+* `[jest-editor-support]` Update TypeScript definitions
+  ([#5625](https://github.com/facebook/jest/pull/5625))
 
 ### Features
 
