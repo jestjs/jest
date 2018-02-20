@@ -1,5 +1,10 @@
 ## master
 
+### Features
+
+* `[jest-runtime]` Provide `require.main` property set to module with test suite
+  ([#5618](https://github.com/facebook/jest/pull/5618))
+
 ## 22.4.0
 
 ### Fixes
