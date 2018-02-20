@@ -8,15 +8,19 @@
 import {EventEmitter} from 'events';
 import {ChildProcess} from 'child_process';
 
+export interface SpawnOption {
+  shell?: boolean;
+};
+
 export interface Options {
   createProcess?(
     workspace: ProjectWorkspace,
     args: string[],
-    debugPort?: number,
+    options?: SpawnOptions,
   ): ChildProcess;
-  debugPort?: number;
   testNamePattern?: string;
   testFileNamePattern?: string;
+  shell?: boolean;
 }
 
 export class Runner extends EventEmitter {
@@ -84,19 +88,32 @@ export class TestReconciler {
   updateFileWithJestStatus(data: any): TestFileAssertionStatus[];
 }
 
+/**
+ *  Did the thing pass, fail or was it not run?
+ */
 export type TestReconcilationState =
-  | 'Unknown'
-  | 'KnownSuccess'
-  | 'KnownFail'
-  | 'KnownSkip';
+  | 'Unknown' // The file has not changed, so the watcher didn't hit it
+  | 'KnownFail' // Definitely failed
+  | 'KnownSuccess' // Definitely passed
+  | 'KnownSkip'; // Definitely skipped
 
+/**
+ * The Jest Extension's version of a status for
+ * whether the file passed or not
+ *
+ */
 export interface TestFileAssertionStatus {
   file: string;
   message: string;
   status: TestReconcilationState;
-  assertions: Array<TestAssertionStatus>;
+  assertions: Array<TestAssertionStatus> | null;
 }
 
+/**
+ * The Jest Extension's version of a status for
+ * individual assertion fails
+ *
+ */
 export interface TestAssertionStatus {
   title: string;
   status: TestReconcilationState;
@@ -140,7 +157,7 @@ export interface JestTotalResultsMeta {
   noTestsFound: boolean;
 }
 
-export enum MessageTypes {
+export enum messageTypes {
   noTests = 1,
   unknown = 0,
   watchUsage = 2,
