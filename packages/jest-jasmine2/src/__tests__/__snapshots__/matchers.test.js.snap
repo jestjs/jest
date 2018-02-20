@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`matchers proxies matchers to expect 1`] = `
-"expect(received).toBe(expected) // Object.is equality
+"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
 Expected value to be:
-  2
+  <green>2</>
 Received:
-  1"
+  <red>1</>"
 `;

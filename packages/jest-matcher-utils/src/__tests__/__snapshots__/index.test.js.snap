@@ -5,21 +5,21 @@ exports[`.stringify() reduces maxDepth if stringifying very large objects 1`] = 
 exports[`.stringify() reduces maxDepth if stringifying very large objects 2`] = `"{\\"a\\": 1, \\"b\\": {\\"0\\": \\"test\\", \\"1\\": \\"test\\", \\"2\\": \\"test\\", \\"3\\": \\"test\\", \\"4\\": \\"test\\", \\"5\\": \\"test\\", \\"6\\": \\"test\\", \\"7\\": \\"test\\", \\"8\\": \\"test\\", \\"9\\": \\"test\\"}}"`;
 
 exports[`.stringify() toJSON errors when comparing two objects 1`] = `
-"expect(received).toEqual(expected)
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
 Expected value to equal:
-  {\\"b\\": 1, \\"toJSON\\": [Function toJSON]}
+  <green>{\\"b\\": 1, \\"toJSON\\": [Function toJSON]}</>
 Received:
-  {\\"a\\": 1, \\"toJSON\\": [Function toJSON]}
+  <red>{\\"a\\": 1, \\"toJSON\\": [Function toJSON]}</>
 
 Difference:
 
-- Expected
-+ Received
+<green>- Expected</>
+<red>+ Received</>
 
-  Object {
--   \\"b\\": 1,
-+   \\"a\\": 1,
-    \\"toJSON\\": [Function toJSON],
-  }"
+<dim>  Object {</>
+<green>-   \\"b\\": 1,</>
+<red>+   \\"a\\": 1,</>
+<dim>    \\"toJSON\\": [Function toJSON],</>
+<dim>  }</>"
 `;
