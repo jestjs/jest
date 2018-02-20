@@ -172,9 +172,8 @@ issues; go through the process outlined on that page.
 
 ## How to Get in Touch
 
-* Discord -
-  [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384)
-  on [Reactiflux](http://www.reactiflux.com/)
+* Discord - [#jest](https://discord.gg/MWRhKCj) on
+  [Reactiflux](http://www.reactiflux.com/)
 
 ## Code Conventions
 

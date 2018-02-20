@@ -44,6 +44,9 @@ type StackTraceOptions = {
   noStackTrace: boolean,
 };
 
+const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
+const PATH_EXPECT_BUILD = `${path.sep}expect${path.sep}build${path.sep}`;
+
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
 const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
@@ -61,7 +64,7 @@ const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const ERROR_TEXT = 'Error: ';
 
-const trim = string => (string || '').replace(/^\s+/, '').replace(/\s+$/, '');
+const trim = string => (string || '').trim();
 
 // Some errors contain not only line numbers in stack traces
 // e.g. SyntaxErrors can contain snippets of code, and we don't
@@ -215,6 +218,22 @@ const formatPaths = (
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
+const getTopFrame = (lines: string[]) => {
+  for (const line of lines) {
+    if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_EXPECT_BUILD)) {
+      continue;
+    }
+
+    const parsedFrame = stackUtils.parseLine(line.trim());
+
+    if (parsedFrame && parsedFrame.file) {
+      return parsedFrame;
+    }
+  }
+
+  return null;
+};
+
 export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
@@ -228,17 +247,7 @@ export const formatStackTrace = (
     : null;
   lines = removeInternalStackEntries(lines, options);
 
-  const topFrame = lines
-    .map(line => line.trim())
-    .filter(Boolean)
-    .filter(
-      line =>
-        !line.includes(`${path.sep}node_modules${path.sep}`) &&
-        !line.includes(`${path.sep}expect${path.sep}build${path.sep}`),
-    )
-    .map(line => stackUtils.parseLine(line))
-    .filter(Boolean)
-    .filter(parsedFrame => parsedFrame.file)[0];
+  const topFrame = getTopFrame(lines);
 
   if (topFrame) {
     const filename = topFrame.file;
@@ -257,9 +266,11 @@ export const formatStackTrace = (
   }
 
   const stacktrace = lines
-    .map(trimPaths)
-    .map(formatPaths.bind(null, config, options, relativeTestPath))
-    .map(line => STACK_INDENT + line)
+    .map(
+      line =>
+        STACK_INDENT +
+        formatPaths(config, options, relativeTestPath, trimPaths(line)),
+    )
     .join('\n');
 
   return renderedCallsite + stacktrace;

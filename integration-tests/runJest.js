@@ -10,7 +10,7 @@
 
 const path = require('path');
 const {sync: spawnSync} = require('cross-spawn');
-const {fileExists} = require('./utils');
+const {fileExists} = require('./Utils');
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 

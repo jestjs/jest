@@ -9,7 +9,7 @@
 'use strict';
 
 const path = require('path');
-const {cleanup} = require('../utils');
+const {cleanup} = require('../Utils');
 const runJest = require('../runJest');
 
 const testDir = path.resolve(__dirname, '../snapshot-serializers');

@@ -11,14 +11,11 @@
 
 const {readFileSync} = require('fs');
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {cleanup, run} = require('../utils');
+const {cleanup, run} = require('../Utils');
 const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../coverage-remapping');
 const coverageDir = path.join(dir, 'coverage');
-
-SkipOnWindows.suite();
 
 beforeAll(() => {
   cleanup(coverageDir);
@@ -26,7 +23,7 @@ beforeAll(() => {
 
 it('maps code coverage against original source', () => {
   run('yarn', dir);
-  const result = runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
+  const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.status).toBe(0);
 

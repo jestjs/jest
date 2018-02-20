@@ -43,7 +43,6 @@ export type Argv = {|
   json: boolean,
   lastCommit: boolean,
   logHeapUsage: boolean,
-  mapCoverage: boolean,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
   moduleLoader: string,

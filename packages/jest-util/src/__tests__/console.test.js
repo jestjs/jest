@@ -24,16 +24,30 @@ describe('CustomConsole', () => {
   });
 
   describe('assert', () => {
-    test('log when the assertion is truthy', () => {
-      _console.assert(true, 'ok');
+    test('do not log when the assertion is truthy', () => {
+      _console.assert(true);
 
-      expect(_stdout).toMatch('ok');
+      expect(_stdout).toMatch('');
     });
 
-    test('do not log when the assertion is falsy', () => {
+    test('do not log when the assertion is truthy and there is a message', () => {
+      _console.assert(true, 'ok');
+
+      expect(_stdout).toMatch('');
+    });
+
+    test('log the assertion error when the assertion is falsy', () => {
+      _console.assert(false);
+
+      expect(_stdout).toMatch('AssertionError');
+      expect(_stdout).toMatch('false == true');
+    });
+
+    test('log the assertion error when the assertion is falsy with another message argument', () => {
       _console.assert(false, 'ok');
 
-      expect(_stdout).toEqual('');
+      expect(_stdout).toMatch('AssertionError');
+      expect(_stdout).toMatch('ok');
     });
   });
 

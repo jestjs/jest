@@ -10,9 +10,15 @@
 import type {Argv} from 'types/Argv';
 
 import chalk from 'chalk';
-import {ValidationError, format, createDidYouMeanMessage} from 'jest-validate';
+import {deprecationEntries} from 'jest-config';
+import {createDidYouMeanMessage, format, ValidationError} from './utils';
+import {deprecationWarning} from './deprecated';
+import defaultConfig from './default_config';
 
 const BULLET: string = chalk.bold('\u25cf');
+export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
+  https://facebook.github.io/jest/docs/en/cli.html
+`;
 
 const createCLIValidationError = (
   unrecognizedOptions: Array<string>,
@@ -43,6 +49,23 @@ const createCLIValidationError = (
   return new ValidationError(title, message, comment);
 };
 
+const logDeprecatedOptions = (
+  deprecatedOptions: Array<string>,
+  deprecationEntries: Object,
+  argv: Argv,
+) => {
+  deprecatedOptions.forEach(opt => {
+    deprecationWarning(
+      argv,
+      opt,
+      deprecationEntries,
+      Object.assign({}, defaultConfig, {
+        comment: DOCUMENTATION_NOTE,
+      }),
+    );
+  });
+};
+
 export default function validateCLIOptions(argv: Argv, options: Object) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce(
@@ -55,6 +78,27 @@ export default function validateCLIOptions(argv: Argv, options: Object) {
 
   if (unrecognizedOptions.length) {
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
+  }
+
+  const CLIDeprecations = Object.keys(deprecationEntries).reduce(
+    (acc, entry) => {
+      if (options[entry]) {
+        acc[entry] = deprecationEntries[entry];
+        if (options[entry].alias) {
+          acc[options[entry].alias] = deprecationEntries[entry];
+        }
+      }
+      return acc;
+    },
+    {},
+  );
+  const deprecations = new Set(Object.keys(CLIDeprecations));
+  const deprecatedOptions = Object.keys(argv).filter(
+    arg => deprecations.has(arg) && argv[arg] != null,
+  );
+
+  if (deprecatedOptions.length) {
+    logDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
   }
 
   return true;

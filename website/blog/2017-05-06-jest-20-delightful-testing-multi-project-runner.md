@@ -179,4 +179,4 @@ community. We are incredibly grateful that we get the opportunity to work on
 improving JavaScript testing together. If you'd like to contribute to Jest,
 please don't hesitate to reach out to us on
 [GitHub](https://github.com/facebook/jest) or on
-[Discord](https://discordapp.com/channels/102860784329052160/103622435865104384)._
+[Discord](https://discord.gg/MWRhKCj)._

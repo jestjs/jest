@@ -313,34 +313,6 @@ Default: `undefined`
 This option allows the use of a custom global teardown module which exports an
 async function that is triggered once after all test suites.
 
-### `mapCoverage` [boolean]
-
-##### available in Jest **20.0.0+**
-
-Default: `false`
-
-If you have [transformers](#transform-object-string-string) configured that emit
-source maps, Jest will use them to try and map code coverage against the
-original source code when writing [reports](#coveragereporters-array-string) and
-checking [thresholds](#coveragethreshold-object). This is done on a best-effort
-basis as some compile-to-JavaScript languages may provide more accurate source
-maps than others. This can also be resource-intensive. If Jest is taking a long
-time to calculate coverage at the end of a test run, try setting this option to
-`false`.
-
-Both inline source maps and source maps returned directly from a transformer are
-supported. Source map URLs are not supported because Jest may not be able to
-locate them. To return source maps from a transformer, the `process` function
-can return an object like the following. The `map` property may either be the
-source map object, or the source map object as a string.
-
-```js
-return {
-  code: 'the code',
-  map: 'the source map',
-};
-```
-
 ### `moduleFileExtensions` [array<string>]
 
 Default: `["js", "json", "jsx", "node"]`
@@ -438,7 +410,8 @@ Specifies notification mode. Requires `notify: true`.
 * `success`: send a notification when tests pass.
 * `change`: send a notification when the status changed.
 * `success-change`: send a notification when tests pass or once when it fails.
-* `failure-success`: send a notification when tests fails or once when it passes.
+* `failure-success`: send a notification when tests fails or once when it
+  passes.
 
 ### `preset` [string]
 
@@ -486,6 +459,10 @@ the same invocation of Jest:
   ]
 }
 ```
+
+_Note: When using multi project runner, it's recommended to add a `displayName`
+for each project. This will show the `displayName` of a project next to its
+tests._
 
 ### `clearMocks` [boolean]
 

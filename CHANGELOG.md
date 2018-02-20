@@ -1,17 +1,64 @@
 ## master
 
+### Fixes
+
+* `[expect]` Allow matching of Errors against plain objects
+  ([#5611](https://github.com/facebook/jest/pull/5611))
+* `[jest-cli]` Don't skip matchers for exact files
+  ([#5582](https://github.com/facebook/jest/pull/5582))
+* `[docs]` Update discord links
+  ([#5586](https://github.com/facebook/jest/pull/5586))
+* `[jest-runtime]` Align handling of testRegex on Windows between searching for
+  tests and instrumentation checks
+  ([#5560](https://github.com/facebook/jest/pull/5560))
+* `[jest-config]` Make it possible to merge `transform` option with preset
+  ([#5505](https://github.com/facebook/jest/pull/5505))
+* `[jest-util]` Fix `console.assert` behavior in custom & buffered consoles
+  ([#5576](https://github.com/facebook/jest/pull/5576))
+
+### Features
+
+* `[docs]` Add MongoDB guide
+  ([#5571](https://github.com/facebook/jest/pull/5571))
+* `[jest-runtime]` Deprecate mapCoverage option.
+  ([#5177](https://github.com/facebook/jest/pull/5177))
+* `[babel-jest]` Add option to return sourcemap from the transformer separately
+  from source. ([#5177](https://github.com/facebook/jest/pull/5177))
+* `[jest-validate]` Add ability to log deprecation warnings for CLI flags.
+  ([#5536](https://github.com/facebook/jest/pull/5536))
+* `[docs]` Add a documentation note for project `displayName` configuration
+  ([#5600](https://github.com/facebook/jest/pull/5600))
+
+## jest 22.3.0
+
+### Fixes
+
+* `[expect]` Add descriptive error message to CalledWith methods when missing
+  optional arguments ([#5547](https://github.com/facebook/jest/pull/5547))
+* `[jest-cli]` Fix inability to quit watch mode while debugger is still attached
+  ([#5029](https://github.com/facebook/jest/pull/5029))
+* `[jest-haste-map]` Properly handle platform-specific file deletions
+  ([#5534](https://github.com/facebook/jest/pull/5534))
+
 ### Features
 
 * `[jest-util]` Add the following methods to the "console" implementations:
   `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
   `groupEnd`, `time`, `timeEnd`
   ([#5514](https://github.com/facebook/jest/pull/5514))
-* `[docs]` Add documentation for interactive snapshot mode ([#5291](https://github.com/facebook/jest/pull/5291))
-* `[jest-editor-support]` Add watchAll flag ([#5523](https://github.com/facebook/jest/pull/5523))
+* `[docs]` Add documentation for interactive snapshot mode
+  ([#5291](https://github.com/facebook/jest/pull/5291))
+* `[jest-editor-support]` Add watchAll flag
+  ([#5523](https://github.com/facebook/jest/pull/5523))
+* `[jest-cli]` Support multiple glob patterns for `collectCoverageFrom`
+  ([#5537](https://github.com/facebook/jest/pull/5537))
 
 ### Chore & Maintenance
 
-* `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom` ([#5524](https://github.com/facebook/jest/pull/5524))
+* `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom`
+  ([#5524](https://github.com/facebook/jest/pull/5524))
+* `[filenames]` Standardize files names in "integration-tests" folder
+  ([#5513](https://github.com/facebook/jest/pull/5513))
 
 ## jest 22.2.2
 
@@ -149,7 +196,8 @@
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
   case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
-* `[jest-cli]` Add interactive snapshot mode ([#3831](https://github.com/facebook/jest/pull/3831))
+* `[jest-cli]` Add interactive snapshot mode
+  ([#3831](https://github.com/facebook/jest/pull/3831))
 
 ### Fixes
 

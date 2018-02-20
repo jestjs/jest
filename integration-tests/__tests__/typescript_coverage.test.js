@@ -8,11 +8,8 @@
  */
 
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {run} = require('../utils');
+const {run} = require('../Utils');
 const runJest = require('../runJest');
-
-SkipOnWindows.suite();
 
 it('instruments and collects coverage for typescript files', () => {
   const dir = path.resolve(__dirname, '../typescript-coverage');

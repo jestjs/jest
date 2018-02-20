@@ -5,12 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-require('./covered');
+const doES6Stuff = require('../covered.js');
 
-const thisFunctionIsNeverInstrumented = () => {
-  return null;
-};
-
-module.exports = {
-  thisFunctionIsNeverInstrumented,
-};
+it('works correctly', () => {
+  const someObj = {someNumber: 10, this: 'is irrelevant'};
+  expect(doES6Stuff(someObj, 2)).toBe(20);
+});

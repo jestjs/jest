@@ -4,14 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+'use strict';
 
-require('./covered');
-require('../not-covered');
+const sum = require('../Identical').sum;
 
-const thisFunctionIsNeverInstrumented = () => {
-  return null;
-};
-
-module.exports = {
-  thisFunctionIsNeverInstrumented,
-};
+describe('sum', () => {
+  it('adds numbers', () => {
+    expect(sum(1, 2)).toEqual(3);
+  });
+});

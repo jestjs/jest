@@ -12,12 +12,11 @@ import type {Glob, GlobalConfig, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
-import fs from 'fs';
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './test_path_pattern_to_regexp';
-import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
+import {escapePathForRegex} from 'jest-regex-util';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -36,8 +35,6 @@ export type TestSelectionConfig = {|
   watch?: boolean,
 |};
 
-const pathToRegex = p => replacePathSepForRegex(p);
-
 const globsToMatcher = (globs: ?Array<Glob>) => {
   if (globs == null || globs.length === 0) {
     return () => true;
@@ -52,7 +49,7 @@ const regexToMatcher = (testRegex: string) => {
     return () => true;
   }
 
-  const regex = new RegExp(pathToRegex(testRegex));
+  const regex = new RegExp(testRegex);
   return path => regex.test(path);
 };
 
@@ -208,41 +205,12 @@ export default class SearchSource {
       return Promise.resolve(this.findTestsByPaths(paths));
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return Promise.resolve(this.findRelatedTestsFromPattern(paths));
+    } else if (globalConfig.testPathPattern != null) {
+      return Promise.resolve(
+        this.findMatchingTests(globalConfig.testPathPattern),
+      );
     } else {
-      const allFiles = new Set(this._context.hasteFS.getAllFiles());
-      const validTestPaths =
-        paths &&
-        paths.filter(name => {
-          const fullName = path.resolve(name);
-
-          try {
-            if (!fs.lstatSync(fullName).isFile()) {
-              // It exists, but it is not a file.
-              return false;
-            }
-          } catch (e) {
-            // It does not exist.
-            return false;
-          }
-
-          // The file exists, but it is explicitly blacklisted.
-          if (!this._testPathCases.testPathIgnorePatterns(fullName)) {
-            return false;
-          }
-
-          // It exists and it is a file; return true if it's in the project.
-          return allFiles.has(fullName);
-        });
-
-      if (validTestPaths && validTestPaths.length) {
-        return Promise.resolve({tests: toTests(this._context, validTestPaths)});
-      } else if (globalConfig.testPathPattern != null) {
-        return Promise.resolve(
-          this.findMatchingTests(globalConfig.testPathPattern),
-        );
-      } else {
-        return Promise.resolve({tests: []});
-      }
+      return Promise.resolve({tests: []});
     }
   }
 }
