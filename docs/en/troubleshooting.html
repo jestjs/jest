@@ -178,8 +178,8 @@ tests sequentially.</p>
 <pre><code class="hljs css bash"><span class="hljs-comment"># Using Jest CLI</span>
 jest --runInBand
 
-<span class="hljs-comment"># Using npm test (e.g. with create-react-app)</span>
-npm <span class="hljs-built_in">test</span> -- --runInBand
+<span class="hljs-comment"># Using yarn test (e.g. with create-react-app)</span>
+yarn <span class="hljs-built_in">test</span> --runInBand
 </code></pre>
 <p>Another alternative to expediting test execution time on Continuous Integration
 Servers such as Travis-CI is to set the max worker pool to ~<em>4</em>. Specifically on
@@ -188,8 +188,8 @@ Travis-CI, this can reduce test execution time in half. Note: The Travis CI
 <pre><code class="hljs css bash"><span class="hljs-comment"># Using Jest CLI</span>
 jest --maxWorkers=4
 
-<span class="hljs-comment"># Using npm test (e.g. with create-react-app)</span>
-npm <span class="hljs-built_in">test</span> -- --maxWorkers=4
+<span class="hljs-comment"># Using yarn test (e.g. with create-react-app)</span>
+yarn <span class="hljs-built_in">test</span> --maxWorkers=4
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="tests-are-slow-when-leveraging-automocking"></a><a href="#tests-are-slow-when-leveraging-automocking" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Tests are slow when leveraging automocking</h3>
 <p>Whether via <a href="configuration.html#automock-boolean"><code>automock: true</code></a> in config or
@@ -243,7 +243,7 @@ version used in Jest doesn't support Node 4. However, if you need to run Jest on
 Node 4, you can use the <code>testEnvironment</code> config to use a
 <a href="https://facebook.github.io/jest/docs/en/configuration.html#testenvironment-string">custom environment</a>
 that supports Node 4, such as
-<a href="https://www.npmjs.com/package/jest-environment-node"><code>jest-environment-node</code></a>.</p>
+<a href="https://yarnpkg.com/en/package/jest-environment-node"><code>jest-environment-node</code></a>.</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragepathignorepatterns-seems-to-not-have-any-effect"></a><a href="#coveragepathignorepatterns-seems-to-not-have-any-effect" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coveragePathIgnorePatterns</code> seems to not have any effect.</h3>
 <p>Make sure you are not using the <code>babel-plugin-istanbul</code> plugin. Jest wraps
 Istanbul, and therefore also tells Istanbul what files to instrument with

@@ -30,7 +30,7 @@ make everything work well together. We are using the <code>babel-jest</code> pac
 the <code>react</code> babel preset to transform our code inside of the test environment.
 Also see <a href="/jest/docs/en/getting-started.html#using-babel">using babel</a>.</p>
 <p>Run</p>
-<pre><code class="hljs css bash">npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+<pre><code class="hljs css bash">yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 </code></pre>
 <p>Your <code>package.json</code> should look something like this (where <code>&lt;current-version&gt;</code>
 is the actual latest version number for the package). Please add the scripts and
@@ -129,7 +129,7 @@ test(<span class="hljs-string">'Link changes the class when hovered'</span>, () 
   expect(tree).toMatchSnapshot();
 });
 </code></pre>
-<p>When you run <code>npm test</code> or <code>jest</code>, this will produce an output file like this:</p>
+<p>When you run <code>yarn test</code> or <code>jest</code>, this will produce an output file like this:</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// __tests__/__snapshots__/Link.react.test.js.snap</span>
 exports[<span class="hljs-string">`Link changes the class when hovered 1`</span>] = <span class="hljs-string">`
 &lt;a
@@ -199,9 +199,8 @@ the test renderer, and check component behavior separately using Enzyme.</li>
 <a href="http://airbnb.io/enzyme/">Enzyme</a> or React's
 <a href="http://facebook.github.io/react/docs/test-utils.html">TestUtils</a>. We use Enzyme
 for this example.</p>
-<p>You have to run <code>npm install --save-dev enzyme</code> to use Enzyme. If you are using
-a React below version 15.5.0, you will also need to install
-<code>react-addons-test-utils</code>.</p>
+<p>You have to run <code>yarn add --dev enzyme</code> to use Enzyme. If you are using a React
+version below 15.5.0, you will also need to install <code>react-addons-test-utils</code>.</p>
 <p>Let's implement a simple checkbox which swaps between two labels:</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// CheckboxWithLabel.js</span>
 

@@ -21,7 +21,7 @@
 <h3><a class="anchor" aria-hidden="true" name="create-react-app"></a><a href="#create-react-app" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create React Appを使わないセットアップ</h3>
 <p>既存のアプリケーションがある場合は、いくつかのパッケージをインストールしてうまく機能するようにする必要があります。 <code>babel-jest</code>パッケージと <code>react</code>の babel preset をテスト環境内のコードを変換するのに利用しています。 <a href="/jest/docs/ja/getting-started.html#using-babel">using babel</a>も参照して下さい。</p>
 <p>実行</p>
-<pre><code class="hljs css bash">npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+<pre><code class="hljs css bash">yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 </code></pre>
 <p><code>package.json</code> は以下のようなものになっているはずです( <code>&lt;current-version&gt;</code> はパッケージの実際の最新版のバージョンの数字になります)。 スクリプトと Jest の設定のエントリを追加して下さい:</p>
 <pre><code class="hljs css json">// package.json
@@ -116,7 +116,7 @@ test(<span class="hljs-string">'Link changes the class when hovered'</span>, () 
   expect(tree).toMatchSnapshot();
 });
 </code></pre>
-<p><code>npm test</code> または <code>jest</code>を実行すると、このようなファイルが出力されます:</p>
+<p>When you run <code>yarn test</code> or <code>jest</code>, this will produce an output file like this:</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// __tests__/__snapshots__/Link.react.test.js.snap</span>
 exports[<span class="hljs-string">`Link changes the class when hovered 1`</span>] = <span class="hljs-string">`
 &lt;a
@@ -172,7 +172,7 @@ jest.mock('./Widget', () =&gt; 'mock-widget');</p></li>
 </ol>
 <h3><a class="anchor" aria-hidden="true" name="dom"></a><a href="#dom" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>DOM のテスト</h3>
 <p>レンダリングされたコンポーネントをアサートし操作したいのなら、 <a href="http://airbnb.io/enzyme/">Enzyme</a> もしくは React の <a href="http://facebook.github.io/react/docs/test-utils.html">TestUtils</a> が利用できます。 この例では Enzyme を使用します。</p>
-<p>Enzyme を使用するには <code>npm install --save-dev enzyme</code> を実行する必要があります。15.5.0より以前のバージョンの React を使用している場合は、 <code>react-addons-test-utils</code> もインストールする必要があります。</p>
+<p>You have to run <code>yarn add --dev enzyme</code> to use Enzyme. If you are using a React version below 15.5.0, you will also need to install <code>react-addons-test-utils</code>.</p>
 <p>2 つのラベルを入れ替える単純なチェックボックスを実装してみましょう。</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// CheckboxWithLabel.js</span>
 

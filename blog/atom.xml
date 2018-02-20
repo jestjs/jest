@@ -122,10 +122,10 @@ flow-typed the entire codebase, built a ton of integration tests for Jest itself
 and adopted <a href="https://lernajs.io/">lerna</a> to turn Jest from a framework into a
 <a href="https://github.com/facebook/jest/tree/master/packages"><em>Painless JavaScript Testing platform</em></a>.</p>
 <p>The newly created
-<a href="https://www.npmjs.com/package/react-test-renderer">react-test-renderer</a> finally
-enabled testing of react-native components. Through the jest-react-native preset
-(now merged directly into react-native) Jest now works out of the box for any
-React project and comes pre-configured in
+<a href="https://yarnpkg.com/en/package/react-test-renderer">react-test-renderer</a>
+finally enabled testing of react-native components. Through the
+jest-react-native preset (now merged directly into react-native) Jest now works
+out of the box for any React project and comes pre-configured in
 <a href="https://github.com/facebookincubator/create-react-app">create-react-app</a> and
 <a href="https://github.com/facebook/react-native">react-native</a> projects. We integrated
 core pieces of Jest into
