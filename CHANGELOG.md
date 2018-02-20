@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+* `[jest-editor-support]` Update TypeScript definitions ([]())
+
 ### Features
 
 * `[jest-runtime]` Provide `require.main` property set to module with test suite
