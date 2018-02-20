@@ -49,8 +49,40 @@ will be cleared and will never have the opportunity to execute in the future.
 
 Disables automatic mocking in the module loader.
 
+> See `automock` section of [configuration](Configuration.md) for more
+> information
+
 After this method is called, all `require()`s will return the real versions of
 each module (rather than a mocked version).
+
+Jest configuration:
+
+```json
+"automocking": true
+```
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    // implementation
+    return 'token';
+  },
+};
+
+// __tests__/disableAutomocking.js
+jest.disableAutomock();
+
+import utils from '../utils';
+
+test('original implementation', () => {
+  // now we have the original implementation,
+  // even if we set the automocking in a jest configuration
+  expect(utils.authorize()).toBe('token');
+});
+```
 
 This is usually useful when you have a scenario where the number of dependencies
 you want to mock is far less than the number of dependencies that you don't. For
@@ -74,6 +106,8 @@ block. Use `autoMockOff` if you want to explicitly avoid this behavior._
 Enables automatic mocking in the module loader.
 
 Returns the `jest` object for chaining.
+
+> see [`jest.disableAutomock()`](#jestdisableautomock)
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`,
 calls to `enableAutomock` will automatically be hoisted to the top of the code

@@ -54,10 +54,44 @@ configuration power.
 
 Default: `false`
 
-This option is disabled by default. If you are introducing Jest to a large
-organization with an existing codebase but few tests, enabling this option can
-be helpful to introduce unit tests gradually. Modules can be explicitly
-auto-mocked using `jest.mock(moduleName)`.
+This option tell to jest that all imported modules in your tests should be me
+mocked, it means that the module will have a replacement implementation, but the
+shape will be the same as original module.
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    // implementation
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+Then the imported module in test have the same shape as the original, but
+implementations are replaced also will return `jest` API for each element.
+
+```js
+import utils from '../utils';
+
+test('if utils mocked automatically', () => {
+  expect(utils.authorize._isMockFunction).toBeTruthy();
+  expect(utils.isAuthorized._isMockFunction).toBeTruthy();
+
+  utils.authorize.mockReturnValue('mocked_token');
+  utils.isAuthorized.mockReturnValue(true);
+
+  expect(utils.authorize()).toBe('mocked_token');
+  expect(utils.isAuthorized('not_wizard')).toBeTruthy();
+});
+```
+
+If you are introducing Jest to a large organization with an existing codebase
+but few tests, enabling this option can be helpful to introduce unit tests
+gradually. Modules can be explicitly auto-mocked using `jest.mock(moduleName)`.
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked
 explicitly, like `jest.mock('fs')`._
