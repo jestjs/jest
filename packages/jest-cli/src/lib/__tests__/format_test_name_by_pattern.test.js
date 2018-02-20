@@ -7,55 +7,78 @@
  * @flow
  */
 
-import chalk from 'chalk';
+'use strict';
 
-import colorize from './colorize';
+import formatTestNameByPattern from '../format_test_name_by_pattern';
 
-const DOTS = '...';
-const ENTER = '⏎';
+describe('for multiline test name returns', () => {
+  const testNames = [
+    'should\n name the \nfunction you attach',
+    'should\r\n name the \r\nfunction you attach',
+    'should\r name the \rfunction you attach',
+  ];
 
-export default (testName: string, pattern: string, width: number) => {
-  const inlineTestName = testName.replace(/(\r\n|\n|\r)/gm, ENTER);
+  it('test name with highlighted pattern and replaced line breaks', () => {
+    const pattern = 'name';
 
-  let regexp;
+    testNames.forEach(testName => {
+      expect(formatTestNameByPattern(testName, pattern, 36)).toMatchSnapshot();
+    });
+  });
+});
 
-  try {
-    regexp = new RegExp(pattern, 'i');
-  } catch (e) {
-    return chalk.dim(inlineTestName);
-  }
+describe('for one line test name', () => {
+  const testName = 'should name the function you attach';
 
-  const match = inlineTestName.match(regexp);
+  describe('with pattern in the head returns', () => {
+    const pattern = 'should';
 
-  if (!match) {
-    return chalk.dim(inlineTestName);
-  }
+    it('test name with highlighted pattern', () => {
+      expect(formatTestNameByPattern(testName, pattern, 35)).toMatchSnapshot();
+    });
 
-  // $FlowFixMe
-  const startPatternIndex = Math.max(match.index, 0);
-  const endPatternIndex = startPatternIndex + match[0].length;
+    it('test name with cutted tail and highlighted pattern', () => {
+      expect(formatTestNameByPattern(testName, pattern, 30)).toMatchSnapshot();
+    });
 
-  if (inlineTestName.length <= width) {
-    return colorize(inlineTestName, startPatternIndex, endPatternIndex);
-  }
+    it('test name with cutted tail and cutted highlighted pattern', () => {
+      expect(formatTestNameByPattern(testName, pattern, 8)).toMatchSnapshot();
+    });
+  });
 
-  const slicedTestName = inlineTestName.slice(0, width - DOTS.length);
+  describe('pattern in the middle', () => {
+    const pattern = 'name';
 
-  if (startPatternIndex < slicedTestName.length) {
-    if (endPatternIndex > slicedTestName.length) {
-      return colorize(
-        slicedTestName + DOTS,
-        startPatternIndex,
-        slicedTestName.length + DOTS.length,
-      );
-    } else {
-      return colorize(
-        slicedTestName + DOTS,
-        Math.min(startPatternIndex, slicedTestName.length),
-        endPatternIndex,
-      );
-    }
-  }
+    it('test name with highlighted pattern returns', () => {
+      expect(formatTestNameByPattern(testName, pattern, 35)).toMatchSnapshot();
+    });
 
-  return `${chalk.dim(slicedTestName)}${chalk.reset(DOTS)}`;
-};
+    it('test name with cutted tail and highlighted pattern', () => {
+      expect(formatTestNameByPattern(testName, pattern, 25)).toMatchSnapshot();
+    });
+
+    it('test name with cutted tail and cutted highlighted pattern', () => {
+      expect(formatTestNameByPattern(testName, pattern, 13)).toMatchSnapshot();
+    });
+
+    it('test name with highlighted cutted', () => {
+      expect(formatTestNameByPattern(testName, pattern, 6)).toMatchSnapshot();
+    });
+  });
+
+  describe('pattern in the tail returns', () => {
+    const pattern = 'attach';
+
+    it('test name with highlighted pattern', () => {
+      expect(formatTestNameByPattern(testName, pattern, 35)).toMatchSnapshot();
+    });
+
+    it('test name with cutted tail and cutted highlighted pattern', () => {
+      expect(formatTestNameByPattern(testName, pattern, 33)).toMatchSnapshot();
+    });
+
+    it('test name with highlighted cutted', () => {
+      expect(formatTestNameByPattern(testName, pattern, 6)).toMatchSnapshot();
+    });
+  });
+});
