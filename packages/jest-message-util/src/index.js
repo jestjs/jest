@@ -205,8 +205,15 @@ const formatPaths = (
     return line;
   }
 
-  let filePath = slash(path.relative(config.rootDir, match[2]));
   // highlight paths from the current test file
+  const packageDir = match[2].includes(`${path.sep}packages${path.sep}`)
+    ? match[2].match(/(jest).*$/)
+    : null;
+
+  let filePath = packageDir
+    ? packageDir
+    : slash(path.relative(config.rootDir, match[2]));
+
   if (
     (config.testMatch &&
       config.testMatch.length &&
