@@ -46,6 +46,7 @@ type StackTraceOptions = {
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_EXPECT_BUILD = `${path.sep}expect${path.sep}build${path.sep}`;
+const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
@@ -205,15 +206,8 @@ const formatPaths = (
     return line;
   }
 
+  let filePath = slash(path.relative(config.rootDir, match[2]));
   // highlight paths from the current test file
-  const packageDir = match[2].includes(`${path.sep}packages${path.sep}`)
-    ? match[2].match(/(jest).*$/)
-    : null;
-
-  let filePath = packageDir
-    ? packageDir
-    : slash(path.relative(config.rootDir, match[2]));
-
   if (
     (config.testMatch &&
       config.testMatch.length &&
@@ -227,7 +221,11 @@ const formatPaths = (
 
 const getTopFrame = (lines: string[]) => {
   for (const line of lines) {
-    if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_EXPECT_BUILD)) {
+    if (
+      line.includes(PATH_NODE_MODULES) ||
+      line.includes(PATH_EXPECT_BUILD) ||
+      line.includes(PATH_JEST_PACKAGES)
+    ) {
       continue;
     }
 
