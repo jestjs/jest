@@ -164,3 +164,18 @@ export enum messageTypes {
 }
 
 export type MessageType = number;
+
+export type Node = any;
+
+export interface SnapshotMetadata {
+  exists: boolean;
+  name: string;
+  node: Node;
+  content?: string;
+};
+
+export class Snapshot {
+  constructor(parser: any, customMatchers?: string[]);
+  getMetadata(filepath: string): SnapshotMetadata[];
+
+}
