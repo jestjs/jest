@@ -26,6 +26,7 @@ exports[`cannot test with no implementation 1`] = `
 
     Missing second argument. It must be a callback function.
 
+<<<<<<< HEAD
       1 | 
       2 |     it('it', () => {});
     > 3 |     it('it, no implementation');
@@ -33,6 +34,16 @@ exports[`cannot test with no implementation 1`] = `
       5 |   
       
       at packages/jest-jasmine2/build/jasmine/Env.js:433:15
+=======
+      431 |       }
+      432 |       if (fn === undefined) {
+    > 433 |         throw new Error(
+      434 |         'Missing second argument. It must be a callback function.');
+      435 | 
+      436 |       }
+      
+
+>>>>>>> 0728d30e0864d3c2052f9d46715839b0ea96fab6
       at __tests__/only-constructs.test.js:3:5
 
 "
