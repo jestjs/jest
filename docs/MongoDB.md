@@ -5,7 +5,7 @@ title: Using with MongoDB
 
 With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and
 [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can
-work smoothly with [MongoDB](https://www.mongodb.com/).
+work smoothly with [MongoDB](https://www.mongodb.com/). With `mongodb-memory-server` package no need to install MongoDB on your machine or CI, it will do it for you.
 
 ## A jest-mongodb example
 
@@ -125,3 +125,5 @@ it('should aggregate docs from collection', async () => {
 
 Here's the code of
 [full working example](https://github.com/vladgolubev/jest-mongodb).
+
+More examples with [mongoose](http://mongoosejs.com/), different MongoDB versions in one test suite - you may find in [mongodb-memory-server](https://github.com/nodkz/mongodb-memory-server) repo. 
