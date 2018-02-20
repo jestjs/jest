@@ -9,10 +9,6 @@
 
 'use strict';
 
-const path = require('path');
-const os = require('os');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
-const {cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 test('provides `require.main` set to test suite module', () => {
