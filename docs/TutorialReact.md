@@ -226,8 +226,8 @@ If you'd like to assert, and manipulate your rendered components you can use
 [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme
 for this example.
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version
-below 15.5.0, you will also need to install `react-addons-test-utils`.
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React
+version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's implement a simple checkbox which swaps between two labels:
 
