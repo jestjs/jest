@@ -313,9 +313,7 @@ describe('Watch mode flows', () => {
 
   it('prevents Jest from handling keys when active and returns control when end is called', async () => {
     let resolveShowPrompt;
-    const run = jest.fn(
-      () => new Promise(res => (resolveShowPrompt = res)),
-    );
+    const run = jest.fn(() => new Promise(res => (resolveShowPrompt = res)));
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_1`;
     jest.doMock(
       pluginPath,

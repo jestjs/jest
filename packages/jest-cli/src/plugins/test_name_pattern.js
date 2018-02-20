@@ -34,10 +34,7 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
     this._prompt.put(key);
   }
 
-  run(
-    globalConfig: GlobalConfig,
-    updateConfigAndRun: Function,
-  ): Promise<void> {
+  run(globalConfig: GlobalConfig, updateConfigAndRun: Function): Promise<void> {
     return new Promise((res, rej) => {
       const testPathPatternPrompt = new TestNamePatternPrompt(
         this._stdout,
