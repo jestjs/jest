@@ -160,7 +160,7 @@ const extractSummary = (stdout: string) => {
 // TODO: Remove when we drop support for node 4
 const cleanupStackTrace = (output: string) => {
   return output
-    .replace(/^.*\b(at Env.it)\b.*$/gm, '')
+    .replace(/.*(?=packages)/g, '      at ')
     .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 };
 
