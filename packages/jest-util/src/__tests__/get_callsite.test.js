@@ -5,10 +5,6 @@ import getCallsite from '../get_callsite';
 jest.mock('fs');
 
 describe('getCallsite', () => {
-  beforeEach(() => {
-    fs.readFileSync = jest.fn();
-  });
-
   test('without source map', () => {
     const site = getCallsite(0);
 
@@ -32,6 +28,8 @@ describe('getCallsite', () => {
   });
 
   test('reads source map file to determine line and column', () => {
+    fs.readFileSync.mockImplementation(() => 'file data');
+
     const sourceMapColumn = 1;
     const sourceMapLine = 2;
     SourceMap.SourceMapConsumer = class {
