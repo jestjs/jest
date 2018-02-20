@@ -33,6 +33,11 @@ Or via [`yarn`](https://yarnpkg.com/en/package/jest):
 yarn add --dev jest
 ```
 
+The minimum supported Node version is `v6.0.0` by default. If you need to
+support Node 4, refer to the
+[Compatibility issues](https://facebook.github.io/jest/docs/en/troubleshooting.html#compatibility-issues)
+section.
+
 Let's get started by writing a test for a hypothetical function that adds two
 numbers. First, create a `sum.js` file:
 
@@ -96,22 +101,15 @@ page.
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and
-`regenerator-runtime` packages:
+[Babel](http://babeljs.io/) is automatically handled by Jest using `babel-jest`.
+You don't need install anything extra for using Babel.
 
-```bash
-npm install --save-dev babel-jest babel-core regenerator-runtime
-```
-
-> Note: If you are using a babel version 7 then you need to install `babel-jest`
-> with the following command:
+> Note: If you are using a babel version 7 then you need to install
+> `babel-core@^7.0.0-0` and `@babel/core` with the following command:
 >
 > ```bash
-> npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
+> npm install --save-dev 'babel-core@^7.0.0-0' @babel/core
 > ```
-
-_Note: Explicitly installing `regenerator-runtime` is not needed if you use
-`npm` 3 or 4 or Yarn_
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file
 in your project's root folder. For example, if you are using ES6 and
