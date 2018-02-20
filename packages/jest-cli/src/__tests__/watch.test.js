@@ -38,7 +38,7 @@ jest.doMock(
   watchPluginPath,
   () =>
     class WatchPlugin1 {
-      getUsageData() {
+      getUsageInfo() {
         return {
           key: 's'.codePointAt(0),
           prompt: 'do nothing',
@@ -52,7 +52,7 @@ jest.doMock(
   watchPlugin2Path,
   () =>
     class WatchPlugin2 {
-      getUsageData() {
+      getUsageInfo() {
         return {
           key: 'u'.codePointAt(0),
           prompt: 'do something else',
@@ -274,16 +274,16 @@ describe('Watch mode flows', () => {
   });
 
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
-    const runInteractive = jest.fn(() => Promise.resolve());
+    const run = jest.fn(() => Promise.resolve());
     const pluginPath = `${__dirname}/__fixtures__/plugin_path`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.runInteractive = runInteractive;
+            this.run = run;
           }
-          getUsageData() {
+          getUsageInfo() {
             return {
               key: 's'.codePointAt(0),
               prompt: 'do nothing',
@@ -308,12 +308,12 @@ describe('Watch mode flows', () => {
 
     await nextTick();
 
-    expect(runInteractive).toHaveBeenCalled();
+    expect(run).toHaveBeenCalled();
   });
 
   it('prevents Jest from handling keys when active and returns control when end is called', async () => {
     let resolveShowPrompt;
-    const runInteractive = jest.fn(
+    const run = jest.fn(
       () => new Promise(res => (resolveShowPrompt = res)),
     );
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_1`;
@@ -322,10 +322,10 @@ describe('Watch mode flows', () => {
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.runInteractive = runInteractive;
+            this.run = run;
           }
           onKey() {}
-          getUsageData() {
+          getUsageInfo() {
             return {
               key: 's'.codePointAt(0),
               prompt: 'do nothing',
@@ -342,10 +342,10 @@ describe('Watch mode flows', () => {
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.runInteractive = showPrompt2;
+            this.run = showPrompt2;
           }
           onKey() {}
-          getUsageData() {
+          getUsageInfo() {
             return {
               key: 'z'.codePointAt(0),
               prompt: 'also do nothing',
@@ -368,7 +368,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit(Number('s'.charCodeAt(0)).toString(16));
     await nextTick();
-    expect(runInteractive).toHaveBeenCalled();
+    expect(run).toHaveBeenCalled();
     stdin.emit(Number('z'.charCodeAt(0)).toString(16));
     await nextTick();
     expect(showPrompt2).not.toHaveBeenCalled();
@@ -414,6 +414,7 @@ describe('Watch mode flows', () => {
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
     const hooks = new JestHooks();
+    expect(2).toMatchSnapshot();
 
     globalConfig.updateSnapshot = 'new';
 

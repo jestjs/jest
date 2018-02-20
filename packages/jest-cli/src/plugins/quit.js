@@ -9,7 +9,7 @@
 import BaseWatchPlugin from '../base_watch_plugin';
 
 class QuitPlugin extends BaseWatchPlugin {
-  async runInteractive() {
+  async run() {
     if (typeof this._stdin.setRawMode === 'function') {
       this._stdin.setRawMode(false);
     }
@@ -17,7 +17,7 @@ class QuitPlugin extends BaseWatchPlugin {
     process.exit(0);
   }
 
-  getUsageData() {
+  getUsageInfo() {
     return {
       key: 'q'.codePointAt(0),
       prompt: 'quit watch mode',

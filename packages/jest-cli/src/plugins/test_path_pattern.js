@@ -24,7 +24,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
     this._prompt = new Prompt();
   }
 
-  getUsageData() {
+  getUsageInfo() {
     return {
       key: 'p'.codePointAt(0),
       prompt: 'filter by a filename regex pattern',
@@ -35,7 +35,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
     this._prompt.put(key);
   }
 
-  runInteractive(
+  run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {

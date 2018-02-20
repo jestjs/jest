@@ -26,13 +26,13 @@ class BaseWatchPlugin implements WatchPlugin {
 
   apply(hooks: JestHookSubscriber) {}
 
-  getUsageData(globalConfig: GlobalConfig): ?UsageData {
+  getUsageInfo(globalConfig: GlobalConfig): ?UsageData {
     return null;
   }
 
   onKey(value: string) {}
 
-  runInteractive(
+  run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void | boolean> {

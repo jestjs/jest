@@ -51,12 +51,12 @@ const getSortedUsageRows = (
 ) => {
   const internalPlugins = watchPlugins
     .slice(0, INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageData && p.getUsageData(globalConfig))
+    .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
     .filter(Boolean);
 
   const thirdPartyPlugins = watchPlugins
     .slice(INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageData && p.getUsageData(globalConfig))
+    .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
     .filter(Boolean)
     .sort((a, b) => a.key - b.key);
 
@@ -271,17 +271,17 @@ export default function watch(
     }
 
     const matchingWatchPlugin = watchPlugins.find(plugin => {
-      const UsageData =
-        (plugin.getUsageData && plugin.getUsageData(globalConfig)) || {};
-      return UsageData.key === parseInt(key, 16);
+      const usageData =
+        (plugin.getUsageInfo && plugin.getUsageInfo(globalConfig)) || {};
+      return usageData.key === parseInt(key, 16);
     });
 
     if (matchingWatchPlugin != null) {
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
-      if (activePlugin.runInteractive) {
-        activePlugin.runInteractive(globalConfig, updateConfigAndRun).then(
+      if (activePlugin.run) {
+        activePlugin.run(globalConfig, updateConfigAndRun).then(
           shouldRerun => {
             activePlugin = null;
             if (shouldRerun) {

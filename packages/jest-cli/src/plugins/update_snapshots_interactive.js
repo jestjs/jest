@@ -39,7 +39,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     }
   }
 
-  runInteractive(
+  run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {
@@ -64,7 +64,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     }
   }
 
-  getUsageData(globalConfig: GlobalConfig) {
+  getUsageInfo(globalConfig: GlobalConfig) {
     if (
       this._failedSnapshotTestPaths &&
       this._failedSnapshotTestPaths.length > 0
