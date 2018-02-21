@@ -67,7 +67,6 @@ Example:
 // utils.js
 export default {
   authorize: () => {
-    // implementation
     return 'token';
   },
 };
@@ -118,7 +117,6 @@ Example:
 // utils.js
 export default {
   authorize: () => {
-    // implementation
     return 'token';
   },
   isAuthorized: secret => secret === 'wizard',
@@ -175,7 +173,6 @@ Example:
 // utils.js
 export default {
   authorize: () => {
-    // implementation
     return 'token';
   },
   isAuthorized: secret => secret === 'wizard',

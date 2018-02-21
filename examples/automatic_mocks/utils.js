@@ -2,7 +2,6 @@
 
 export default {
   authorize: () => {
-    // implementation
     return 'token';
   },
   isAuthorized: secret => secret === 'wizard',
