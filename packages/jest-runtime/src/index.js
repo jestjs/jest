@@ -15,6 +15,7 @@ import type {Context} from 'types/Context';
 import type {Jest, LocalModuleRequire} from 'types/Jest';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
+import type {SourceMapRegistry} from 'types/SourceMaps';
 
 import path from 'path';
 import HasteMap from 'jest-haste-map';
@@ -100,7 +101,7 @@ class Runtime {
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  _sourceMapRegistry: {[key: string]: string, __proto__: null};
+  _sourceMapRegistry: SourceMapRegistry;
   _scriptTransformer: ScriptTransformer;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
@@ -447,6 +448,10 @@ class Runtime {
       }
       return result;
     }, {});
+  }
+
+  getSourceMaps(): SourceMapRegistry {
+    return this._sourceMapRegistry;
   }
 
   setMock(

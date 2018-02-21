@@ -19,6 +19,7 @@ import getConsoleOutput from './get_console_output';
 import installCommonGlobals from './install_common_globals';
 import NullConsole from './null_console';
 import isInteractive from './is_interative';
+import getCallsite from './get_callsite';
 import setGlobal from './set_global';
 import deepCyclicCopy from './deep_cyclic_copy';
 
@@ -41,6 +42,7 @@ module.exports = {
   createDirectory,
   deepCyclicCopy,
   formatTestResults,
+  getCallsite,
   getConsoleOutput,
   getFailedSnapshotTests,
   installCommonGlobals,
