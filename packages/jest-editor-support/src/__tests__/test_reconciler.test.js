@@ -10,7 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 import TestReconciler from '../test_reconciler';
-import type { TestFileAssertionStatus, TestAssertionStatus } from '../types';
+import type {TestFileAssertionStatus, TestAssertionStatus} from '../types';
 
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 
