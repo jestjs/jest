@@ -10,7 +10,7 @@ import {ChildProcess} from 'child_process';
 
 export interface SpawnOptions {
   shell?: boolean;
-};
+}
 
 export interface Options {
   createProcess?(
@@ -172,7 +172,7 @@ export interface SnapshotMetadata {
   name: string;
   node: Node;
   content?: string;
-};
+}
 
 export class Snapshot {
   constructor(parser: any, customMatchers?: string[]);
