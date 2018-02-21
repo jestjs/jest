@@ -425,7 +425,6 @@ export default function(j$) {
 
     this.it = function(description, fn, timeout) {
       if (typeof description !== 'string') {
-<<<<<<< HEAD
         throw new Error(
           `Invalid first argument, ${description}. It must be a string.`,
         );
@@ -439,15 +438,6 @@ export default function(j$) {
         throw new Error(
           `Invalid second argument, ${fn}. It must be a callback function.`,
         );
-=======
-        throw new Error(`first argument, "name", must be a string`);
-      }
-      if (fn === undefined) {
-        throw new Error('missing second argument function');
-      }
-      if (typeof fn !== 'function') {
-        throw new Error(`second argument must be a function`);
->>>>>>> feat: adds error when using it or test without proper arguments
       }
       const spec = specFactory(
         description,
