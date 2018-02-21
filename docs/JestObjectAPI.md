@@ -71,7 +71,9 @@ export default {
     return 'token';
   },
 };
+```
 
+```js
 // __tests__/disableAutomocking.js
 jest.disableAutomock();
 
@@ -112,7 +114,7 @@ Returns the `jest` object for chaining.
 
 Example:
 
-````js
+```js
 // utils.js
 export default {
   authorize: () => {
@@ -121,7 +123,9 @@ export default {
   },
   isAuthorized: secret => secret === 'wizard',
 };
+```
 
+```js
 // __tests__/disableAutomocking.js
 jest.enableAutomock();
 
@@ -132,7 +136,7 @@ test('original implementation', () => {
   expect(utils.authorize._isMockFunction).toBeTruthy();
   expect(utils.isAuthorized._isMockFunction).toBeTruthy();
 });
-``
+```
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`,
 calls to `enableAutomock` will automatically be hoisted to the top of the code
@@ -151,7 +155,7 @@ expect(mockFn).toHaveBeenCalled();
 // With a mock implementation:
 const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
-````
+```
 
 ### `jest.isMockFunction(fn)`
 
