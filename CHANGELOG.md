@@ -54,6 +54,11 @@
 * `[docs]` Add a documentation note for project `displayName` configuration
   ([#5600](https://github.com/facebook/jest/pull/5600))
 
+# Chore & Maintenance
+
+* `[docs]` Update automatic mocks documentation
+  ([#5630](https://github.com/facebook/jest/pull/5630))
+
 ## jest 22.3.0
 
 ### Fixes
