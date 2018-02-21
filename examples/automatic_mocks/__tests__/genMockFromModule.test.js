@@ -1,16 +1,16 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-//we need to disable automocking because is enabled on config in this example
-jest.disableAutomock();
+import utils from '../utils';
 
-import utils from '../utilsMocked';
-
-test('if exist additional implementation', () => {
-  console.log(utils.isAuthorized.getMockImplementation.getMockImplementation);
-  // expect(utils.authorized('wizzard')).toBeTruthy();
+test('implementation created by automock', () => {
+  expect(utils.authorize('wizzard')).toBeUndefined();
+  expect(utils.isAuthorized()).toBeUndefined();
 });
 
-test('mocked implementation', () => {
-  expect(utils.authorize._isMockFunction).toBe(true);
-  expect(utils.isAuthorized._isMockFunction).toBe(true);
+test('implementation created by jest.genMockFromModule', () => {
+  const utils = jest.genMockFromModule('../utils').default;
+  utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
+
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized('not wizard')).toEqual(true);
 });

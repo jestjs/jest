@@ -54,9 +54,9 @@ configuration power.
 
 Default: `false`
 
-This option tell to jest that all imported modules in your tests should be me
-mocked, it means that the module will have a replacement implementation, but the
-shape will be the same as original module.
+This option tells Jest that all imported modules in your tests should be mocked
+automatically. All modules used in your tests will have a replacement
+implementation, keeping the API surface.
 
 Example:
 
@@ -71,17 +71,17 @@ export default {
 };
 ```
 
-Then the imported module have the same shape as the original, but
-implementations are replaced also will return `jest` API for each element.
-
 ```js
 //__tests__/automocking.test.js
 import utils from '../utils';
 
 test('if utils mocked automatically', () => {
-  expect(utils.authorize._isMockFunction).toBeTruthy();
-  expect(utils.isAuthorized._isMockFunction).toBeTruthy();
+  // Public methods of `utils` are now mock functions
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized.mock).toBeTruthy();
 
+  // You can provide them with your own implementation
+  // or just pass the expected return value
   utils.authorize.mockReturnValue('mocked_token');
   utils.isAuthorized.mockReturnValue(true);
 
