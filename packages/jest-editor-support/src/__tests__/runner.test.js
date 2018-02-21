@@ -10,8 +10,8 @@
 'use strict';
 
 jest.mock('../Process');
-jest.mock('child_process', () => ({spawn: jest.fn()}));
-jest.mock('os', () => ({tmpdir: jest.fn()}));
+jest.mock('child_process', () => ({ spawn: jest.fn() }));
+jest.mock('os', () => ({ tmpdir: jest.fn() }));
 jest.mock('fs', () => {
   // $FlowFixMe requireActual
   const readFileSync = require.requireActual('fs').readFileSync;
@@ -29,15 +29,15 @@ jest.mock('fs', () => {
 const path = require('path');
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 import ProjectWorkspace from '../project_workspace';
-import {messageTypes} from '../types';
+import { messageTypes } from '../types';
 
-import {default as Runner} from '../Runner';
-import {createProcess} from '../Process';
-import {tmpdir} from 'os';
-import {spawn} from 'child_process';
-import {readFileSync} from 'fs';
+import { default as Runner } from '../Runner';
+import { createProcess } from '../Process';
+import { tmpdir } from 'os';
+import { spawn } from 'child_process';
+import { readFileSync } from 'fs';
 import EventEmitter from 'events';
-import type {ChildProcess} from 'child_process';
+import type { ChildProcess } from 'child_process';
 
 describe('Runner', () => {
   describe('constructor', () => {
@@ -151,7 +151,7 @@ describe('Runner', () => {
     });
 
     it('calls createProcess with the --jsonOutputFile arg for Jest 17 and below', () => {
-      const workspace: any = {localJestMajorVersion: 17};
+      const workspace: any = { localJestMajorVersion: 17 };
       const sut = new Runner(workspace);
       sut.start(false);
 
@@ -162,7 +162,7 @@ describe('Runner', () => {
     });
 
     it('calls createProcess with the --outputFile arg for Jest 18 and above', () => {
-      const workspace: any = {localJestMajorVersion: 18};
+      const workspace: any = { localJestMajorVersion: 18 };
       const sut = new Runner(workspace);
       sut.start(false);
 
@@ -184,7 +184,7 @@ describe('Runner', () => {
       const expected = 'testNamePattern';
 
       const workspace: any = {};
-      const options = {testNamePattern: expected};
+      const options = { testNamePattern: expected };
       const sut = new Runner(workspace, options);
       sut.start(false);
 
@@ -197,7 +197,7 @@ describe('Runner', () => {
     it('calls createProcess with a test path pattern when provided', () => {
       const expected = 'testPathPattern';
       const workspace: any = {};
-      const options = {testFileNamePattern: expected};
+      const options = { testFileNamePattern: expected };
       const sut = new Runner(workspace, options);
       sut.start(false);
 
@@ -206,11 +206,11 @@ describe('Runner', () => {
 
     it('calls createProcess with the shell option when provided', () => {
       const workspace: any = {};
-      const options = {shell: true};
+      const options = { shell: true };
       const sut = new Runner(workspace, options);
       sut.start(false);
 
-      expect((createProcess: any).mock.calls[0][2]).toEqual({shell: true});
+      expect((createProcess: any).mock.calls[0][2]).toEqual({ shell: true });
     });
   });
 
@@ -241,30 +241,30 @@ describe('Runner', () => {
       const workspace: any = {};
       const sut = new Runner(workspace);
       process.platform = 'win32';
-      sut.debugprocess = ({pid: 123}: any);
-      sut.closeProcess();
+      sut.debugprocess = ({ pid: 123 }: any);
+    sut.closeProcess();
 
-      expect(spawn).toBeCalledWith('taskkill', ['/pid', '123', '/T', '/F']);
-    });
+    expect(spawn).toBeCalledWith('taskkill', ['/pid', '123', '/T', '/F']);
+  });
 
-    it('calls kill() to close the process on POSIX', () => {
-      const workspace: any = {};
-      const sut = new Runner(workspace);
-      process.platform = 'posix';
-      const kill = jest.fn();
-      sut.debugprocess = ({kill}: any);
-      sut.closeProcess();
+  it('calls kill() to close the process on POSIX', () => {
+    const workspace: any = {};
+    const sut = new Runner(workspace);
+    process.platform = 'posix';
+    const kill = jest.fn();
+    sut.debugprocess = ({ kill }: any);
+  sut.closeProcess();
 
-      expect(kill).toBeCalledWith();
-    });
+  expect(kill).toBeCalledWith();
+});
 
-    it('clears the debugprocess property', () => {
-      const workspace: any = {};
-      const sut = new Runner(workspace);
-      sut.debugprocess = ({kill: () => {}}: any);
-      sut.closeProcess();
+it('clears the debugprocess property', () => {
+  const workspace: any = {};
+  const sut = new Runner(workspace);
+  sut.debugprocess = ({ kill: () => { } }: any);
+sut.closeProcess();
 
-      expect(sut.debugprocess).not.toBeDefined();
+expect(sut.debugprocess).not.toBeDefined();
     });
   });
 });
@@ -277,179 +277,179 @@ describe('events', () => {
     jest.resetAllMocks();
 
     fakeProcess = (new EventEmitter(): any);
-    fakeProcess.stdout = new EventEmitter();
-    fakeProcess.stderr = new EventEmitter();
-    fakeProcess.kill = () => {};
+  fakeProcess.stdout = new EventEmitter();
+  fakeProcess.stderr = new EventEmitter();
+  fakeProcess.kill = () => { };
 
-    (createProcess: any).mockImplementation(() => fakeProcess);
+  (createProcess: any).mockImplementation(() => fakeProcess);
 
-    const workspace = new ProjectWorkspace(
-      '.',
-      'node_modules/.bin/jest',
-      'test',
-      18,
-    );
-    runner = new Runner(workspace);
+  const workspace = new ProjectWorkspace(
+    '.',
+    'node_modules/.bin/jest',
+    'test',
+    18,
+  );
+  runner = new Runner(workspace);
 
-    // Sets it up and registers for notifications
-    runner.start();
-  });
+  // Sets it up and registers for notifications
+  runner.start();
+});
 
-  it('expects JSON from stdout, then it passes the JSON', () => {
-    const data = jest.fn();
-    runner.on('executableJSON', data);
+it('expects JSON from stdout, then it passes the JSON', () => {
+  const data = jest.fn();
+  runner.on('executableJSON', data);
 
-    runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+  runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
 
-    // Emitting data through stdout should trigger sending JSON
+  // Emitting data through stdout should trigger sending JSON
+  fakeProcess.stdout.emit('data', 'Test results written to file');
+  expect(data).toBeCalled();
+
+  // And lets check what we emit
+  const dataAtPath = readFileSync(runner.outputPath);
+  const storedJSON = JSON.parse(dataAtPath.toString());
+  expect(data.mock.calls[0][0]).toEqual(storedJSON);
+});
+
+it('emits errors when process errors', () => {
+  const error = jest.fn();
+  runner.on('terminalError', error);
+  fakeProcess.emit('error', {});
+  expect(error).toBeCalled();
+});
+
+it('emits debuggerProcessExit when process exits', () => {
+  const close = jest.fn();
+  runner.on('debuggerProcessExit', close);
+  fakeProcess.emit('exit');
+  expect(close).toBeCalled();
+});
+
+it('should start jest process after killing the old process', () => {
+  runner.closeProcess();
+  runner.start();
+
+  expect(createProcess).toHaveBeenCalledTimes(2);
+});
+
+describe('stdout.on("data")', () => {
+  it('should emit an "executableJSON" event with the "noTestsFound" meta data property set', () => {
+    const listener = jest.fn();
+    runner.on('executableJSON', listener);
+    runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
+    (runner: any).doResultsFollowNoTestsFoundMessage = jest
+      .fn()
+      .mockReturnValueOnce(true);
     fakeProcess.stdout.emit('data', 'Test results written to file');
-    expect(data).toBeCalled();
 
-    // And lets check what we emit
-    const dataAtPath = readFileSync(runner.outputPath);
-    const storedJSON = JSON.parse(dataAtPath.toString());
-    expect(data.mock.calls[0][0]).toEqual(storedJSON);
+    expect(listener.mock.calls[0].length).toBe(2);
+    expect(listener.mock.calls[0][1]).toEqual({ noTestsFound: true });
   });
 
-  it('emits errors when process errors', () => {
-    const error = jest.fn();
-    runner.on('terminalError', error);
-    fakeProcess.emit('error', {});
-    expect(error).toBeCalled();
+  it('should clear the message type history', () => {
+    runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
+    runner.prevMessageTypes.push(messageTypes.noTests);
+    fakeProcess.stdout.emit('data', 'Test results written to file');
+
+    expect(runner.prevMessageTypes.length).toBe(0);
+  });
+});
+
+describe('stderr.on("data")', () => {
+  it('should identify the message type', () => {
+    (runner: any).findMessageType = jest.fn();
+    const expected = {};
+    fakeProcess.stderr.emit('data', expected);
+
+    expect(runner.findMessageType).toBeCalledWith(expected);
   });
 
-  it('emits debuggerProcessExit when process exits', () => {
-    const close = jest.fn();
-    runner.on('debuggerProcessExit', close);
-    fakeProcess.emit('exit');
-    expect(close).toBeCalled();
+  it('should add the type to the message type history when known', () => {
+    (runner: any).findMessageType = jest
+      .fn()
+      .mockReturnValueOnce(messageTypes.noTests);
+    fakeProcess.stderr.emit('data', Buffer.from(''));
+
+    expect(runner.prevMessageTypes).toEqual([messageTypes.noTests]);
   });
 
-  it('should start jest process after killing the old process', () => {
-    runner.closeProcess();
-    runner.start();
+  it('should clear the message type history when the type is unknown', () => {
+    (runner: any).findMessageType = jest
+      .fn()
+      .mockReturnValueOnce(messageTypes.unknown);
+    fakeProcess.stderr.emit('data', Buffer.from(''));
 
-    expect(createProcess).toHaveBeenCalledTimes(2);
+    expect(runner.prevMessageTypes).toEqual([]);
   });
 
-  describe('stdout.on("data")', () => {
-    it('should emit an "executableJSON" event with the "noTestsFound" meta data property set', () => {
-      const listener = jest.fn();
-      runner.on('executableJSON', listener);
-      runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
-      (runner: any).doResultsFollowNoTestsFoundMessage = jest
-        .fn()
-        .mockReturnValueOnce(true);
-      fakeProcess.stdout.emit('data', 'Test results written to file');
+  it('should emit an "executableStdErr" event with the type', () => {
+    const listener = jest.fn();
+    const data = Buffer.from('');
+    const type = {};
+    const meta = { type };
+    (runner: any).findMessageType = jest.fn().mockReturnValueOnce(type);
 
-      expect(listener.mock.calls[0].length).toBe(2);
-      expect(listener.mock.calls[0][1]).toEqual({noTestsFound: true});
-    });
+    runner.on('executableStdErr', listener);
+    fakeProcess.stderr.emit('data', data, meta);
 
-    it('should clear the message type history', () => {
-      runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
-      runner.prevMessageTypes.push(messageTypes.noTests);
-      fakeProcess.stdout.emit('data', 'Test results written to file');
-
-      expect(runner.prevMessageTypes.length).toBe(0);
-    });
+    expect(listener).toBeCalledWith(data, meta);
   });
 
-  describe('stderr.on("data")', () => {
-    it('should identify the message type', () => {
-      (runner: any).findMessageType = jest.fn();
-      const expected = {};
-      fakeProcess.stderr.emit('data', expected);
+  it('should track when "No tests found related to files changed since the last commit" is received', () => {
+    const data = Buffer.from(
+      'No tests found related to files changed since last commit.\n' +
+      'Press `a` to run all tests, or run Jest with `--watchAll`.',
+    );
+    fakeProcess.stderr.emit('data', data);
 
-      expect(runner.findMessageType).toBeCalledWith(expected);
-    });
-
-    it('should add the type to the message type history when known', () => {
-      (runner: any).findMessageType = jest
-        .fn()
-        .mockReturnValueOnce(messageTypes.noTests);
-      fakeProcess.stderr.emit('data', Buffer.from(''));
-
-      expect(runner.prevMessageTypes).toEqual([messageTypes.noTests]);
-    });
-
-    it('should clear the message type history when the type is unknown', () => {
-      (runner: any).findMessageType = jest
-        .fn()
-        .mockReturnValueOnce(messageTypes.unknown);
-      fakeProcess.stderr.emit('data', Buffer.from(''));
-
-      expect(runner.prevMessageTypes).toEqual([]);
-    });
-
-    it('should emit an "executableStdErr" event with the type', () => {
-      const listener = jest.fn();
-      const data = Buffer.from('');
-      const type = {};
-      const meta = {type};
-      (runner: any).findMessageType = jest.fn().mockReturnValueOnce(type);
-
-      runner.on('executableStdErr', listener);
-      fakeProcess.stderr.emit('data', data, meta);
-
-      expect(listener).toBeCalledWith(data, meta);
-    });
-
-    it('should track when "No tests found related to files changed since the last commit" is received', () => {
-      const data = Buffer.from(
-        'No tests found related to files changed since last commit.\n' +
-          'Press `a` to run all tests, or run Jest with `--watchAll`.',
-      );
-      fakeProcess.stderr.emit('data', data);
-
-      expect(runner.prevMessageTypes).toEqual([messageTypes.noTests]);
-    });
-
-    it('should clear the message type history when any other other data is received', () => {
-      const data = Buffer.from('');
-      fakeProcess.stderr.emit('data', data);
-
-      expect(runner.prevMessageTypes).toEqual([]);
-    });
+    expect(runner.prevMessageTypes).toEqual([messageTypes.noTests]);
   });
 
-  describe('findMessageType()', () => {
-    it('should return "unknown" when the message is not matched', () => {
-      const buf = Buffer.from('');
-      expect(runner.findMessageType(buf)).toBe(messageTypes.unknown);
-    });
+  it('should clear the message type history when any other other data is received', () => {
+    const data = Buffer.from('');
+    fakeProcess.stderr.emit('data', data);
 
-    it('should identify "No tests found related to files changed since last commit."', () => {
-      const buf = Buffer.from(
-        'No tests found related to files changed since last commit.\n' +
-          'Press `a` to run all tests, or run Jest with `--watchAll`.',
-      );
-      expect(runner.findMessageType(buf)).toBe(messageTypes.noTests);
-    });
+    expect(runner.prevMessageTypes).toEqual([]);
+  });
+});
 
-    it('should identify the "Watch Usage" prompt', () => {
-      const buf = Buffer.from('\n\nWatch Usage\n...');
-      expect(runner.findMessageType(buf)).toBe(messageTypes.watchUsage);
-    });
+describe('findMessageType()', () => {
+  it('should return "unknown" when the message is not matched', () => {
+    const buf = Buffer.from('');
+    expect(runner.findMessageType(buf)).toBe(messageTypes.unknown);
   });
 
-  describe('doResultsFollowNoTestsFoundMessage()', () => {
-    it('should return true when the last message on stderr was "No tests found..."', () => {
-      runner.prevMessageTypes.push(messageTypes.noTests);
-      expect(runner.doResultsFollowNoTestsFoundMessage()).toBe(true);
-    });
-
-    it('should return true when the last two messages on stderr were "No tests found..." and "Watch Usage"', () => {
-      runner.prevMessageTypes.push(
-        messageTypes.noTests,
-        messageTypes.watchUsage,
-      );
-      expect(runner.doResultsFollowNoTestsFoundMessage()).toBe(true);
-    });
-
-    it('should return false otherwise', () => {
-      runner.prevMessageTypes.length = 0;
-      expect(runner.doResultsFollowNoTestsFoundMessage()).toBe(false);
-    });
+  it('should identify "No tests found related to files changed since last commit."', () => {
+    const buf = Buffer.from(
+      'No tests found related to files changed since last commit.\n' +
+      'Press `a` to run all tests, or run Jest with `--watchAll`.',
+    );
+    expect(runner.findMessageType(buf)).toBe(messageTypes.noTests);
   });
+
+  it('should identify the "Watch Usage" prompt', () => {
+    const buf = Buffer.from('\n\nWatch Usage\n...');
+    expect(runner.findMessageType(buf)).toBe(messageTypes.watchUsage);
+  });
+});
+
+describe('doResultsFollowNoTestsFoundMessage()', () => {
+  it('should return true when the last message on stderr was "No tests found..."', () => {
+    runner.prevMessageTypes.push(messageTypes.noTests);
+    expect(runner.doResultsFollowNoTestsFoundMessage()).toBe(true);
+  });
+
+  it('should return true when the last two messages on stderr were "No tests found..." and "Watch Usage"', () => {
+    runner.prevMessageTypes.push(
+      messageTypes.noTests,
+      messageTypes.watchUsage,
+    );
+    expect(runner.doResultsFollowNoTestsFoundMessage()).toBe(true);
+  });
+
+  it('should return false otherwise', () => {
+    runner.prevMessageTypes.length = 0;
+    expect(runner.doResultsFollowNoTestsFoundMessage()).toBe(false);
+  });
+});
 });

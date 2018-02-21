@@ -10,7 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 import TestReconciler from '../test_reconciler';
-import type {TestFileAssertionStatus, TestAssertionStatus} from '../types';
+import type { TestFileAssertionStatus, TestAssertionStatus } from '../types';
 
 const fixtures = path.resolve(__dirname, '../../../../fixtures');
 
@@ -18,7 +18,7 @@ function reconcilerWithFile(
   parser: TestReconciler,
   file: string,
 ): TestFileAssertionStatus[] {
-  const exampleJSON = fs.readFileSync(`${fixtures}/failing_jsons/${file}`);
+  const exampleJSON = fs.readFileSync(`${fixtures}/failing-jsons/${file}`);
   const json = JSON.parse(exampleJSON.toString());
   if (!parser) console.error('no parser for ', file);
   return parser.updateFileWithJestStatus(json);
