@@ -2,6 +2,8 @@
 
 ### Fixes
 
+* `[docs]` Update automatic mocks documentation
+  ([#5630](https://github.com/facebook/jest/pull/5630))
 * `[expect]` Allow matching of Errors against plain objects
   ([#5611](https://github.com/facebook/jest/pull/5611))
 * `[jest-cli]` Don't skip matchers for exact files
