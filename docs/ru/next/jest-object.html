@@ -49,7 +49,32 @@
 <p>This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.</p>
 <h3><a class="anchor" aria-hidden="true" name="jestdisableautomock"></a><a href="#jestdisableautomock" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.disableAutomock()</code></h3>
 <p>Отключает автоматическое создание mock-объектов в загрузчике модулей.</p>
+<blockquote>
+<p>See <code>automock</code> section of <a href="/jest/docs/ru/next/configuration.html#automock-boolean">configuration</a> for more information</p>
+</blockquote>
 <p>After this method is called, all <code>require()</code>s will return the real versions of each module (rather than a mocked version).</p>
+<p>Jest configuration:</p>
+<pre><code class="hljs css json">"automock": true
+</code></pre>
+<p>Пример:</p>
+<pre><code class="hljs css js"><span class="hljs-comment">// utils.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">authorize</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'token'</span>;
+  },
+};
+</code></pre>
+<pre><code class="hljs css js"><span class="hljs-comment">// __tests__/disableAutomocking.js</span>
+<span class="hljs-keyword">import</span> utils <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span>;
+
+jest.disableAutomock();
+
+test(<span class="hljs-string">'original implementation'</span>, () =&gt; {
+  <span class="hljs-comment">// now we have the original implementation,</span>
+  <span class="hljs-comment">// even if we set the automocking in a jest configuration</span>
+  expect(utils.authorize()).toBe(<span class="hljs-string">'token'</span>);
+});
+</code></pre>
 <p>This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as &quot;implementation details&quot; of the module, then you likely do not want to mock them.</p>
 <p>Examples of dependencies that might be considered &quot;implementation details&quot; are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities etc) and entire libraries like React.js.</p>
 <p>Возвращает объект <code>jest</code> для создания цепочки вызовов.</p>
@@ -57,6 +82,29 @@
 <h3><a class="anchor" aria-hidden="true" name="jestenableautomock"></a><a href="#jestenableautomock" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.enableAutomock()</code></h3>
 <p>Enables automatic mocking in the module loader.</p>
 <p>Возвращает объект <code>jest</code> для создания цепочки вызовов.</p>
+<blockquote>
+<p>See <code>automock</code> section of <a href="/jest/docs/ru/next/configuration.html#automock-boolean">configuration</a> for more information</p>
+</blockquote>
+<p>Пример:</p>
+<pre><code class="hljs css js"><span class="hljs-comment">// utils.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">authorize</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'token'</span>;
+  },
+  <span class="hljs-attr">isAuthorized</span>: <span class="hljs-function"><span class="hljs-params">secret</span> =&gt;</span> secret === <span class="hljs-string">'wizard'</span>,
+};
+</code></pre>
+<pre><code class="hljs css js"><span class="hljs-comment">// __tests__/disableAutomocking.js</span>
+jest.enableAutomock();
+
+<span class="hljs-keyword">import</span> utils <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span>;
+
+test(<span class="hljs-string">'original implementation'</span>, () =&gt; {
+  <span class="hljs-comment">// now we have the mocked implementation,</span>
+  expect(utils.authorize._isMockFunction).toBeTruthy();
+  expect(utils.isAuthorized._isMockFunction).toBeTruthy();
+});
+</code></pre>
 <p><em>Note: this method was previously called <code>autoMockOn</code>. When using <code>babel-jest</code>, calls to <code>enableAutomock</code> will automatically be hoisted to the top of the code block. Use <code>autoMockOn</code> if you want to explicitly avoid this behavior.</em></p>
 <h3><a class="anchor" aria-hidden="true" name="jestfnimplementation"></a><a href="#jestfnimplementation" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.fn(implementation)</code></h3>
 <p>Returns a new, unused <a href="/jest/docs/ru/next/mock-function-api.html">mock function</a>. Optionally takes a mock implementation.</p>
@@ -73,6 +121,24 @@ expect(mockFn).toHaveBeenCalled();
 <h3><a class="anchor" aria-hidden="true" name="jestgenmockfrommodulemodulename"></a><a href="#jestgenmockfrommodulemodulename" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.genMockFromModule(moduleName)</code></h3>
 <p>Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.</p>
 <p>This is useful when you want to create a <a href="/jest/docs/ru/next/manual-mocks.html">manual mock</a> that extends the automatic mock's behavior.</p>
+<p>Пример:</p>
+<pre><code class="hljs css js"><span class="hljs-comment">// utils.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">authorize</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'token'</span>;
+  },
+  <span class="hljs-attr">isAuthorized</span>: <span class="hljs-function"><span class="hljs-params">secret</span> =&gt;</span> secret === <span class="hljs-string">'wizard'</span>,
+};
+</code></pre>
+<pre><code class="hljs css js"><span class="hljs-comment">// __tests__/genMockFromModule.test.js</span>
+<span class="hljs-keyword">const</span> utils = jest.genMockFromModule(<span class="hljs-string">'../utils'</span>).default;
+utils.isAuthorized = jest.fn(<span class="hljs-function"><span class="hljs-params">secret</span> =&gt;</span> secret === <span class="hljs-string">'not wizard'</span>);
+
+test(<span class="hljs-string">'implementation created by jest.genMockFromModule'</span>, () =&gt; {
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized(<span class="hljs-string">'not wizard'</span>)).toEqual(<span class="hljs-literal">true</span>);
+});
+</code></pre>
 <h3><a class="anchor" aria-hidden="true" name="jestmockmodulename-factory-options"></a><a href="#jestmockmodulename-factory-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.mock(moduleName, factory, options)</code></h3>
 <p>Mocks a module with an auto-mocked version when it is being required. <code>factory</code> and <code>options</code> are optional. For example:</p>
 <pre><code class="hljs css js"><span class="hljs-comment">// banana.js</span>
