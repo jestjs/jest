@@ -160,7 +160,7 @@ be useful to require the real module using `require.requireActual(moduleName)`
 in your manual mock and amending it with mock functions before exporting it.
 
 The code for this example is available at
-[examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
+[examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
 
 ### Using with ES module imports
 
