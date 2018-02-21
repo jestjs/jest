@@ -21,16 +21,16 @@
 
 <!-- generated_getting_started_start -->
 
-Install Jest using [`npm`](https://www.npmjs.com/):
-
-```bash
-npm install --save-dev jest
-```
-
-Or via [`yarn`](https://yarnpkg.com/en/package/jest):
+Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 
 ```bash
 yarn add --dev jest
+```
+
+Or via [`npm`](https://www.npmjs.com/):
+
+```bash
+npm install --save-dev jest
 ```
 
 The minimum supported Node version is `v6.0.0` by default. If you need to
@@ -68,7 +68,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `npm test` and Jest will print this message:
+Finally, run `yarn test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -84,7 +84,7 @@ identical. To learn about the other things that Jest can test, see
 ## Running from command line
 
 You can run Jest directly from the CLI (if it's globally available in your
-`PATH`, e.g. by `npm install -g jest`) with variety of useful options.
+`PATH`, e.g. by `yarn global add jest`) with variety of useful options.
 
 Here's how to run Jest on files matching `my-test`, using `config.json` as a
 configuration file and display a native OS notification after the run:
@@ -108,7 +108,7 @@ You don't need install anything extra for using Babel.
 > `babel-core@^7.0.0-0` and `@babel/core` with the following command:
 >
 > ```bash
-> npm install --save-dev 'babel-core@^7.0.0-0' @babel/core
+> yarn add --dev 'babel-core@^7.0.0-0' @babel/core
 > ```
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file

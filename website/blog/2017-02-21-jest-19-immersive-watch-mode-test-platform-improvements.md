@@ -124,7 +124,7 @@ official ESLint plugin. It exposes three rules:
 * [no-identical-title](https://github.com/facebook/jest/blob/master/packages/eslint-plugin-jest/docs/rules/no-identical-title.md) -
   disallows identical titles in test names.
 
-You can install it using `npm install eslint-plugin-jest` or
+You can install it using `npm install --save-dev eslint-plugin-jest` or
 `yarn add --dev eslint eslint-plugin-jest` and it can be enabled by adding
 `{"plugins": ["jest"]}` to your eslint configuration.
 

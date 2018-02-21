@@ -8,9 +8,9 @@
  */
 import type {GlobalConfig} from 'types/Config';
 import type {JestHookSubscriber} from './jest_hooks';
-import type {UsageRow} from './types';
+import type {WatchPlugin, UsageData} from './types';
 
-class WatchPlugin {
+class BaseWatchPlugin implements WatchPlugin {
   _stdin: stream$Readable | tty$ReadStream;
   _stdout: stream$Writable | tty$WriteStream;
   constructor({
@@ -24,15 +24,15 @@ class WatchPlugin {
     this._stdout = stdout;
   }
 
-  registerHooks(hooks: JestHookSubscriber) {}
+  apply(hooks: JestHookSubscriber) {}
 
-  getUsageRow(globalConfig: GlobalConfig): UsageRow {
-    return {hide: true, key: 0, prompt: ''};
+  getUsageInfo(globalConfig: GlobalConfig): ?UsageData {
+    return null;
   }
 
-  onData(value: string) {}
+  onKey(value: string) {}
 
-  showPrompt(
+  run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void | boolean> {
@@ -40,4 +40,4 @@ class WatchPlugin {
   }
 }
 
-export default WatchPlugin;
+export default BaseWatchPlugin;
