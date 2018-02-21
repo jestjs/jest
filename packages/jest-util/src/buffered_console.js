@@ -15,21 +15,28 @@ import type {
   LogTimers,
 } from 'types/Console';
 
+import type {SourceMapRegistry} from 'types/SourceMaps';
+
 import assert from 'assert';
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
-import callsites from 'callsites';
+import getCallsite from './get_callsite';
 
 export default class BufferedConsole extends Console {
   _buffer: ConsoleBuffer;
   _counters: LogCounters;
   _timers: LogTimers;
   _groupDepth: number;
+  _getSourceMaps: () => ?SourceMapRegistry;
 
-  constructor() {
+  constructor(getSourceMaps: () => ?SourceMapRegistry) {
     const buffer = [];
-    super({write: message => BufferedConsole.write(buffer, 'log', message)});
+    super({
+      write: message =>
+        BufferedConsole.write(buffer, 'log', message, null, getSourceMaps()),
+    });
+    this._getSourceMaps = getSourceMaps;
     this._buffer = buffer;
     this._counters = {};
     this._timers = {};
@@ -41,9 +48,10 @@ export default class BufferedConsole extends Console {
     type: LogType,
     message: LogMessage,
     level: ?number,
+    sourceMaps: ?SourceMapRegistry,
   ) {
-    const call = callsites()[level != null ? level : 2];
-    const origin = call.getFileName() + ':' + call.getLineNumber();
+    const callsite = getCallsite(level != null ? level : 2, sourceMaps);
+    const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
 
     buffer.push({
       message,
@@ -60,6 +68,7 @@ export default class BufferedConsole extends Console {
       type,
       '  '.repeat(this._groupDepth) + message,
       3,
+      this._getSourceMaps(),
     );
   }
 

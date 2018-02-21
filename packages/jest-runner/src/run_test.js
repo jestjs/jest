@@ -74,13 +74,21 @@ async function runTestInternal(
     RuntimeClass,
   >);
 
+  let runtime = undefined;
+
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type, message) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
-      BufferedConsole.write([], type, message, 4),
+      BufferedConsole.write(
+        [],
+        type,
+        message,
+        4,
+        runtime && runtime.getSourceMaps(),
+      ),
     );
 
   let testConsole;
@@ -90,7 +98,7 @@ async function runTestInternal(
   } else if (globalConfig.verbose) {
     testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
   } else {
-    testConsole = new BufferedConsole();
+    testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
 
   const environment = new TestEnvironment(config, {console: testConsole});
@@ -101,7 +109,7 @@ async function runTestInternal(
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  const runtime = new Runtime(config, environment, resolver, cacheFS, {
+  runtime = new Runtime(config, environment, resolver, cacheFS, {
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,

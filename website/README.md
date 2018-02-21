@@ -13,7 +13,7 @@ in the root directory.
 Then, run the server via
 
 ```bash
-npm start
+yarn start
 Open http://localhost:3000
 ```
 
@@ -30,7 +30,7 @@ To deploy the website manually, run the following command as a Git user with
 write permissions:
 
 ```bash
-DEPLOY_USER=facebook GIT_USER=jest-bot CIRCLE_PROJECT_USERNAME=facebook CIRCLE_PROJECT_REPONAME=jest npm run gh-pages
+DEPLOY_USER=facebook GIT_USER=jest-bot CIRCLE_PROJECT_USERNAME=facebook CIRCLE_PROJECT_REPONAME=jest yarn gh-pages
 ```
 
 ## Staging
@@ -38,5 +38,5 @@ DEPLOY_USER=facebook GIT_USER=jest-bot CIRCLE_PROJECT_USERNAME=facebook CIRCLE_P
 Run the above command against your own fork of `facebook/jest`:
 
 ```bash
-DEPLOY_USER=YOUR_GITHUB_USERNAME GIT_USER=YOUR_GITHUB_USERNAME CIRCLE_PROJECT_USERNAME=YOUR_GITHUB_USERNAME CIRCLE_PROJECT_REPONAME=jest npm run gh-pages
+DEPLOY_USER=YOUR_GITHUB_USERNAME GIT_USER=YOUR_GITHUB_USERNAME CIRCLE_PROJECT_USERNAME=YOUR_GITHUB_USERNAME CIRCLE_PROJECT_REPONAME=jest yarn gh-pages
 ```

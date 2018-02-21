@@ -32,7 +32,7 @@ _Note: If you are upgrading your react-native application and previously used
 the `jest-react-native` preset, remove the dependency from your `package.json`
 file and change the preset to `react-native` instead._
 
-Simply run `npm test` to run tests with Jest.
+Simply run `yarn test` to run tests with Jest.
 
 ## Snapshot Test
 
@@ -93,7 +93,7 @@ test('renders correctly', () => {
 });
 ```
 
-When you run `npm test` or `jest`, this will produce an output file like this:
+When you run `yarn test` or `jest`, this will produce an output file like this:
 
 ```javascript
 // __tests__/__snapshots__/Intro-test.js.snap

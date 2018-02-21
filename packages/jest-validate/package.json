@@ -1,6 +1,6 @@
 {
   "name": "jest-validate",
-  "version": "22.2.2",
+  "version": "22.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,9 +9,9 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "jest-config": "^22.2.2",
+    "jest-config": "^22.4.0",
     "jest-get-type": "^22.1.0",
     "leven": "^2.1.0",
-    "pretty-format": "^22.1.0"
+    "pretty-format": "^22.4.0"
   }
 }

@@ -7,30 +7,23 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
+import type {JestHookSubscriber} from './jest_hooks';
 
-export type UsageRow = {
+export type UsageData = {
   key: number,
   prompt: string,
-  hide?: boolean,
 };
 
 export type JestHooks = {
   testRunComplete: any,
 };
 
-export type WatchPlugin = {
-  key: number,
-  name: string,
-  prompt: string,
-  apply: (
-    jestHooks: JestHooks,
-    {
-      stdin: stream$Readable | tty$ReadStream,
-      stdout: stream$Writable | tty$WriteStream,
-    },
-  ) => void,
-  shouldShowUsage?: (
+export interface WatchPlugin {
+  +apply?: (hooks: JestHookSubscriber) => void;
+  +getUsageInfo?: (globalConfig: GlobalConfig) => ?UsageData;
+  +onKey?: (value: string) => void;
+  +run?: (
     globalConfig: GlobalConfig,
-    hasSnapshotFailures: boolean,
-  ) => boolean,
-};
+    updateConfigAndRun: Function,
+  ) => Promise<void | boolean>;
+}
