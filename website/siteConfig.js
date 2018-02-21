@@ -167,6 +167,11 @@ const users = [
     infoLink: 'https://www.elastic.co/',
   },
   {
+    caption: 'FractalUp',
+    image: '/jest/img/logos/fractalup.svg',
+    infoLink: 'http://fractalup.com/',
+  },
+  {
     caption: 'Formidable',
     image: '/jest/img/logos/formidablelabs.png',
     infoLink: 'http://formidable.com/',
