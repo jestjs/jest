@@ -177,5 +177,4 @@ export interface SnapshotMetadata {
 export class Snapshot {
   constructor(parser: any, customMatchers?: string[]);
   getMetadata(filepath: string): SnapshotMetadata[];
-
 }
