@@ -2,12 +2,12 @@
 
 import utils from '../utils';
 
-test('if utils mocked', () => {
+test('if utils are mocked', () => {
   expect(utils.authorize._isMockFunction).toBeTruthy();
   expect(utils.isAuthorized._isMockFunction).toBeTruthy();
 });
 
-test('replace implementation', () => {
+test('mocked implementation', () => {
   utils.authorize.mockReturnValue('mocked_token');
   utils.isAuthorized.mockReturnValue(true);
 

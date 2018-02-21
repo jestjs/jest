@@ -71,10 +71,11 @@ export default {
 };
 ```
 
-Then the imported module in test have the same shape as the original, but
+Then the imported module have the same shape as the original, but
 implementations are replaced also will return `jest` API for each element.
 
 ```js
+//__tests__/automocking.test.js
 import utils from '../utils';
 
 test('if utils mocked automatically', () => {

@@ -107,7 +107,32 @@ Enables automatic mocking in the module loader.
 
 Returns the `jest` object for chaining.
 
-> see [`jest.disableAutomock()`](#jestdisableautomock)
+> See `automock` section of [configuration](Configuration.md) for more
+> information
+
+Example:
+
+````js
+// utils.js
+export default {
+  authorize: () => {
+    // implementation
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+
+// __tests__/disableAutomocking.js
+jest.enableAutomock();
+
+import utils from '../utils';
+
+test('original implementation', () => {
+  // now we have the mocked implementation,
+  expect(utils.authorize._isMockFunction).toBeTruthy();
+  expect(utils.isAuthorized._isMockFunction).toBeTruthy();
+});
+``
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`,
 calls to `enableAutomock` will automatically be hoisted to the top of the code
@@ -126,7 +151,7 @@ expect(mockFn).toHaveBeenCalled();
 // With a mock implementation:
 const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
-```
+````
 
 ### `jest.isMockFunction(fn)`
 

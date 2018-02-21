@@ -4,6 +4,6 @@ jest.disableAutomock();
 
 import utils from '../utils';
 
-test('replace implementation', () => {
+test('original implementation', () => {
   expect(utils.authorize()).toBe('token');
 });
