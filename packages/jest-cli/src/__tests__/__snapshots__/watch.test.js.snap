@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Watch mode flows Pressing "u" reruns the tests in "update snapshot" mode 1`] = `2`;
-
 exports[`Watch mode flows Runs Jest in a non-interactive environment not showing usage 1`] = `
 Array [
   "

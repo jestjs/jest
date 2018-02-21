@@ -412,7 +412,6 @@ describe('Watch mode flows', () => {
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
     const hooks = new JestHooks();
-    expect(2).toMatchSnapshot();
 
     globalConfig.updateSnapshot = 'new';
 

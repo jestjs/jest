@@ -21,6 +21,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     stdout: stream$Writable | tty$WriteStream,
   }) {
     super(options);
+    this._failedSnapshotTestPaths = [];
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
   }
 
