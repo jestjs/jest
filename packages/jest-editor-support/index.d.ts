@@ -165,12 +165,12 @@ export enum messageTypes {
 
 export type MessageType = number;
 
-export type Node = any;
-
 export interface SnapshotMetadata {
   exists: boolean;
   name: string;
-  node: Node;
+  node: {
+    loc: editor.Node
+  };
   content?: string;
 }
 
