@@ -49,8 +49,8 @@ will be cleared and will never have the opportunity to execute in the future.
 
 Disables automatic mocking in the module loader.
 
-> See `automock` section of [configuration](Configuration.md) for more
-> information
+> See `automock` section of [configuration](Configuration.md#automock-boolean)
+> for more information
 
 After this method is called, all `require()`s will return the real versions of
 each module (rather than a mocked version).
@@ -75,9 +75,9 @@ export default {
 
 ```js
 // __tests__/disableAutomocking.js
-jest.disableAutomock();
-
 import utils from '../utils';
+
+jest.disableAutomock();
 
 test('original implementation', () => {
   // now we have the original implementation,
@@ -109,8 +109,8 @@ Enables automatic mocking in the module loader.
 
 Returns the `jest` object for chaining.
 
-> See `automock` section of [configuration](Configuration.md) for more
-> information
+> See `automock` section of [configuration](Configuration.md#automock-boolean)
+> for more information
 
 Example:
 
@@ -184,8 +184,6 @@ export default {
 
 ```js
 // __tests__/genMockFromModule.test.js
-import utils from '../utils';
-
 const utils = jest.genMockFromModule('../utils').default;
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
