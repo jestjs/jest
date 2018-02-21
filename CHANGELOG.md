@@ -69,6 +69,8 @@
   ([#5523](https://github.com/facebook/jest/pull/5523))
 * `[jest-cli]` Support multiple glob patterns for `collectCoverageFrom`
   ([#5537](https://github.com/facebook/jest/pull/5537))
+* `[docs]` Add versioned documentation to the website
+  ([#5541](https://github.com/facebook/jest/pull/5541))
 
 ### Chore & Maintenance
 
