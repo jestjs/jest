@@ -3,8 +3,8 @@
 import utils from '../utils';
 
 test('if utils are mocked', () => {
-  expect(utils.authorize._isMockFunction).toBeTruthy();
-  expect(utils.isAuthorized._isMockFunction).toBeTruthy();
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized.mock).toBeTruthy();
 });
 
 test('mocked implementation', () => {
