@@ -150,6 +150,7 @@ export interface JestTotalResults {
   numPassedTests: number;
   numFailedTests: number;
   numPendingTests: number;
+  coverageMap: any;
   testResults: Array<JestFileResults>;
 }
 
