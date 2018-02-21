@@ -2,8 +2,6 @@
 
 ### Fixes
 
-* `[docs]` Update automatic mocks documentation
-  ([#5630](https://github.com/facebook/jest/pull/5630))
 * `[expect]` Allow matching of Errors against plain objects
   ([#5611](https://github.com/facebook/jest/pull/5611))
 * `[jest-cli]` Don't skip matchers for exact files
@@ -30,6 +28,11 @@
   ([#5536](https://github.com/facebook/jest/pull/5536))
 * `[docs]` Add a documentation note for project `displayName` configuration
   ([#5600](https://github.com/facebook/jest/pull/5600))
+
+# Chore & Maintenance
+
+* `[docs]` Update automatic mocks documentation
+  ([#5630](https://github.com/facebook/jest/pull/5630))
 
 ## jest 22.3.0
 
