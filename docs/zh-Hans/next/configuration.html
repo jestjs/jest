@@ -69,24 +69,24 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   expect(utils.isAuthorized(<span class="hljs-string">'not_wizard'</span>)).toBeTruthy();
 });
 </code></pre>
-<p><em>Note: Core modules, like <code>fs</code>, are not mocked by default. They can be mocked explicitly, like <code>jest.mock('fs')</code>.</em></p>
-<p><em>Note: Automocking has a performance cost most noticeable in large projects. See <a href="troubleshooting.html#tests-are-slow-when-leveraging-automocking">here</a> for details and a workaround.</em></p>
+<p><em>注意： <code>fs</code> 这种核心模块，默认是不模拟的。它们可以通过 <code>jest.mock('fs')</code> 来被显式地指定模拟。</em></p>
+<p><em>注意：自动模拟会有一些性能的消耗，在大型工程中会很明显。请参考 <a href="troubleshooting.html#tests-are-slow-when-leveraging-automocking">这里</a> 获取详细的应对方法。</em></p>
 <h3><a class="anchor" aria-hidden="true" name="browser-boolean"></a><a href="#browser-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>browser</code> [boolean]</h3>
 <p>默认值︰<code>false</code></p>
-<p>Respect Browserify's <a href="https://github.com/substack/browserify-handbook#browser-field"><code>&quot;browser&quot;</code> field</a> in <code>package.json</code> when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.</p>
+<p>当解析模块时，<code>package.json</code> 中的 Browserify 的 <a href="https://github.com/substack/browserify-handbook#browser-field"><code>&quot;browser&quot;</code> 字段</a>会发挥作用。 在 Node 和在浏览器中进行操作时某些模块会导出不同版本功能，与平台相关。</p>
 <h3><a class="anchor" aria-hidden="true" name="bail-boolean"></a><a href="#bail-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>bail</code> [boolean]</h3>
 <p>默认值︰<code>false</code></p>
-<p>By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.</p>
+<p>Jest默认会运行所有的测试用例然后导出所有的错误到控制台中直至结束。添加bail 配置选项后， Jest 遇到第一个失败就会停止继续运行测试用例。</p>
 <h3><a class="anchor" aria-hidden="true" name="cachedirectory-string"></a><a href="#cachedirectory-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>cacheDirectory</code> [string]</h3>
 <p>默认值︰ <code>&quot;/tmp/&lt;path&gt;&quot;</code></p>
 <p>Jest用来储存依赖信息缓存的目录。</p>
-<p>Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. 这一配置选项让你可以自定义Jest将缓存数据储存在磁盘的那个位置。</p>
+<p>Jest 前期(up-front) 会尝试去扫描一次项目的依赖树并将依赖树缓存起来，目的是省却掉某些在运行测试时需要进行的文件系统排序。 这一配置选项让你可以自定义Jest将缓存数据储存在磁盘的那个位置。</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoverage-boolean"></a><a href="#collectcoverage-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverage</code> [boolean]</h3>
 <p>默认值︰<code>false</code></p>
-<p>Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.</p>
+<p>此项配置指示是否收集测试时的覆盖率信息。 由于要带上覆盖率搜集语句重新访问所有执行过的文件，测试执行速度可能会明显减慢。</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoveragefrom-array"></a><a href="#collectcoveragefrom-array" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverageFrom</code> [array]</h3>
 <p>默认值：<code>undefined</code></p>
-<p>可以用一个 <a href="https://github.com/jonschlinkert/micromatch">通配模式</a> 的数组来指出仅哪些文件需要收集覆盖率信息。 If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
+<p>可以用一个 <a href="https://github.com/jonschlinkert/micromatch">通配模式</a> 的数组来指出仅哪些文件需要收集覆盖率信息。 如果一个文件复合glob文件语法匹配规则，即使没有关于它的测试用例存在，或也没有任何测试用例依赖它，它的覆盖率信息也将被收集。</p>
 <p>示例：</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"collectCoverageFrom"</span>: [
@@ -96,23 +96,23 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   ]
 }
 </code></pre>
-<p>This will collect coverage information for all the files inside the project's <code>rootDir</code>, except the ones that match <code>**/node_modules/**</code> or <code>**/vendor/**</code>.</p>
-<p><em>Note: This option requires <code>collectCoverage</code> to be set to true or Jest to be invoked with <code>--coverage</code>.</em></p>
+<p>这个配置将收集项目 <code>根目录</code> 下的，除了 <code>**/node_modules/**</code> 或 <code>**/vendor/**</code> 匹配的所有文件的覆盖率信息。</p>
+<p><em>注意：该选项要求 <code>collectCoverage</code> 被设成true，或者通过 <code>--coverage</code> 参数来调用 Jest。</em></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragedirectory-string"></a><a href="#coveragedirectory-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageDirectory</code> [string]</h3>
 <p>默认值：<code>undefined</code></p>
 <p>Jest输出覆盖信息文件的目录。</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragepathignorepatterns-array-string"></a><a href="#coveragepathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coveragePathIgnorePatterns</code> [array<string>]</h3>
 <p>默认值︰<code>[&quot;node_modules&quot;]</code></p>
-<p>An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.</p>
-<p>These pattern strings match against the full path. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: <code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
+<p>一组正则表达式字符串，在执行测试之前与所有文件路径进行匹配。如果文件路径与其中某个模式匹配，则将不会收集这个文件的覆盖率信息。</p>
+<p>These pattern strings match against the full path. 在路径中使用 <code>&lt;rootDir&gt;</code> 指代项目的根目录路径, 防止它在可能具有不同根目录的不同环境中意外的忽略文件。 例如：<code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>。</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragereporters-array-string"></a><a href="#coveragereporters-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageReporters</code> [array<string>]</h3>
 <p>默认值：<code>[&quot;json&quot;、&quot;lcov&quot;、&quot;text&quot;]</code></p>
-<p>A list of reporter names that Jest uses when writing coverage reports. Any <a href="https://github.com/gotwarlost/istanbul/tree/master/lib/report">istanbul reporter</a> can be used.</p>
-<p><em>Note: Setting this option overwrites the default values. Add <code>&quot;text&quot;</code> or <code>&quot;text-summary&quot;</code> to see a coverage summary in the console output.</em></p>
+<p>在输出覆盖率报告时使用的类型名称列表。可以使用任何的 <a href="https://github.com/gotwarlost/istanbul/tree/master/lib/report">istanbul reporter</a>。</p>
+<p><em>注意：设置这个选项将覆盖掉默认配置。使用 <code>&quot;text&quot;</code> 或者 <code>&quot;text-summary&quot;</code> 可以在控制台中看到覆盖率信息的摘要。</em></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragethreshold-object"></a><a href="#coveragethreshold-object" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageThreshold</code> [object]</h3>
 <p>默认值：<code>undefined</code></p>
-<p>This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as <code>global</code>, as a <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a>, and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.</p>
-<p>For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:</p>
+<p>这个选项用来设置覆盖率收集的最小执行阈值。 阈值可以按照 <code>global</code>，或者一个 <a href="https://github.com/isaacs/node-glob#glob-primer">通配符</a>，或者一个目录或文件的路径来指定。 如果没有达到阈值，Jest 执行测试时将会失败。 阈值如果被设置为一个正数值，将被当做需要的最小百分比来使用。 如果被设置为一个负数值，将被当做允许出现未覆盖到的条目的最大数值。</p>
+<p>例如，在下面的配置中，如果 branch、line 或者 function 的覆盖率低于 80%，或者未覆盖到的 statements 有超过 10 个，Jest 都将执行失败。</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -127,8 +127,8 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, error is returned.</p>
-<p>For example, with the following configuration:</p>
+<p>如果通配符模式配置或路径配置与 <code>global</code> 配置同时存在，根据路径匹配到的覆盖率数据将从全局覆盖率的计算中减去，并独立使用各自的阈值。 通配符模式设置的阈值将应用到所匹配的所有文件上并单独计算。 If the file specified by path is not found, error is returned.</p>
+<p>例如，基于下面的配置：</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -156,7 +156,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Jest will fail if:</p>
+<p>Jest 在以下情况下将失败：</p>
 <ul>
 <li><code>./src/components</code> 目录下的 branch 或 statement 的覆盖率低于 40%</li>
 <li>能够被 <code>./src/reducers/**/*.js</code> 匹配的任何一个文件的 statement 的覆盖率低于 90%</li>
@@ -165,8 +165,8 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </ul>
 <h3><a class="anchor" aria-hidden="true" name="forcecoveragematch-array-string"></a><a href="#forcecoveragematch-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>forceCoverageMatch</code> [array<string>]</h3>
 <p>Default: <code>['']</code></p>
-<p>Test files are normally ignored from collecting code coverage. With this option, you can overwrite this behavior and include otherwise ignored files in code coverage.</p>
-<p>For example, if you have tests in source files named with <code>.t.js</code> extension as following:</p>
+<p>测试文件通常将不被算入覆盖率。通过这个选项你可以覆盖这个行为并且在覆盖率中包含进本来被忽略的其他文件。</p>
+<p>例如，如果你有一些以 <code>.t.js</code> 为扩展名结尾的测试文件，像下面这样：</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// sum.t.js</span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
@@ -179,7 +179,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   });
 }
 </code></pre>
-<p>You can collect coverage from those files with setting <code>forceCoverageMatch</code>.</p>
+<p>你可以通过设置 <code>forceCoverageMatch</code> 从这些文件中收集覆盖率。</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -190,7 +190,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <h3><a class="anchor" aria-hidden="true" name="globals-object"></a><a href="#globals-object" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globals</code> [object]</h3>
 <p>默认值：<code>{}</code></p>
 <p>一组全局变量，在所有测试环境下都可以访问。</p>
-<p>For example, the following would create a global <code>__DEV__</code> variable set to <code>true</code> in all test environments:</p>
+<p>例如，下面这段代码将为所有测试环境创建一个值为 <code>true</code> 的全局变量 <code>__DEV__</code>：</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -200,20 +200,20 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will <em>not</em> be persisted across test runs for other test files. In addition the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. For that you should use <code>setupFiles</code>.</p>
+<p>注意，如果你在这指定了一个全局引用值 (例如，对象或者数组)，之后在测试运行中有些代码改变了这个被引用的值，这个改动对于其他测试 <em>不会</em> 生效。 此外，<code>globals</code> 对象必须是 json 序列化的，因此不能用于指定全局函数。 要实现这种功能，应该使用 <code>setupFiles</code>。</p>
 <h3><a class="anchor" aria-hidden="true" name="globalsetup-string"></a><a href="#globalsetup-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalSetup</code> [string]</h3>
 <p>默认值：<code>undefined</code></p>
-<p>This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.</p>
+<p>这个选项允许使用一个自定义的全局初始化模块，这个模块可以提供一个 async function，在所有测试套件执行前将被触发一次。</p>
 <h3><a class="anchor" aria-hidden="true" name="globalteardown-string"></a><a href="#globalteardown-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalTeardown</code> [string]</h3>
 <p>默认值：<code>undefined</code></p>
-<p>This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.</p>
+<p>这个选项允许使用一个自定义的全局清理模块，这个模块可以提供一个 async function，在所有测试套件执行完后将被触发一次。</p>
 <h3><a class="anchor" aria-hidden="true" name="modulefileextensions-array-string"></a><a href="#modulefileextensions-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleFileExtensions</code> [array<string>]</h3>
 <p>默认值：<code>[&quot;js&quot;、&quot;json&quot;、&quot;jsx&quot;、&quot;node&quot;]</code></p>
-<p>An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.</p>
-<p>If you are using TypeScript this should be <code>[&quot;js&quot;, &quot;jsx&quot;, &quot;json&quot;, &quot;ts&quot;, &quot;tsx&quot;]</code>, check <a href="https://github.com/kulshekhar/ts-jest">ts-jest's documentation</a>.</p>
+<p>模块使用的文件扩展名的数组。如果你在代码中 requie 的模块没有指定文件扩展名，Jest 将使用这些扩展名来寻找。</p>
+<p>如果你使用 TypeScript ，这里应该配置为 <code>[&quot;js&quot;, &quot;jsx&quot;, &quot;json&quot;, &quot;ts&quot;, &quot;tsx&quot;]</code>。参考 <a href="https://github.com/kulshekhar/ts-jest">ts-jest 文档</a>。</p>
 <h3><a class="anchor" aria-hidden="true" name="moduledirectories-array-string"></a><a href="#moduledirectories-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleDirectories</code> [array<string>]</h3>
 <p>默认值︰<code>[&quot;node_modules&quot;]</code></p>
-<p>An array of directory names to be searched recursively up from the requiring module's location. Setting this option will <em>override</em> the default, if you wish to still search <code>node_modules</code> for packages include it along with any other options: <code>[&quot;node_modules&quot;, &quot;bower_components&quot;]</code></p>
+<p>一组目录名数组，指出进行递归搜索模块的路径。 设置此选项将 * 覆盖 * 默认值。如果你想继续搜索 <code>node_modules</code> 中的模块，就把它和其他选项一起保留。例如：<code>[&quot;node_modules&quot;、&quot;bower_components&quot;]</code></p>
 <h3><a class="anchor" aria-hidden="true" name="modulenamemapper-object-string-string"></a><a href="#modulenamemapper-object-string-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleNameMapper</code> [object&lt;string, string&gt;]</h3>
 <p>默认值︰<code>null</code></p>
 <p>A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.</p>
@@ -234,7 +234,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <h3><a class="anchor" aria-hidden="true" name="modulepathignorepatterns-array-string"></a><a href="#modulepathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePathIgnorePatterns</code> [array<string>]</h3>
 <p>默认值：<code>[]</code></p>
 <p>An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be <code>require()</code>-able in the test environment.</p>
-<p>These pattern strings match against the full path. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: <code>[&quot;&lt;rootDir&gt;/build/&quot;]</code>.</p>
+<p>These pattern strings match against the full path. 在路径中使用 <code>&lt;rootDir&gt;</code> 指代项目的根目录路径, 防止它在可能具有不同根目录的不同环境中意外的忽略文件。 Example: <code>[&quot;&lt;rootDir&gt;/build/&quot;]</code>.</p>
 <h3><a class="anchor" aria-hidden="true" name="modulepaths-array-string"></a><a href="#modulepaths-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePaths</code> [array<string>]</h3>
 <p>默认值：<code>[]</code></p>
 <p>An alternative API to setting the <code>NODE_PATH</code> env variable, <code>modulePaths</code> is an array of absolute paths to additional locations to search when resolving modules. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory. Example: <code>[&quot;&lt;rootDir&gt;/app/&quot;]</code>.</p>
@@ -503,7 +503,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <h3><a class="anchor" aria-hidden="true" name="testpathignorepatterns-array-string"></a><a href="#testpathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testPathIgnorePatterns</code> [array<string>]</h3>
 <p>默认值︰<code>[&quot;node_modules&quot;]</code></p>
 <p>An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.</p>
-<p>These pattern strings match against the full path. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: <code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
+<p>These pattern strings match against the full path. 在路径中使用 <code>&lt;rootDir&gt;</code> 指代项目的根目录路径, 防止它在可能具有不同根目录的不同环境中意外的忽略文件。 例如：<code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>。</p>
 <h3><a class="anchor" aria-hidden="true" name="testregex-string"></a><a href="#testregex-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testRegex</code> [string]</h3>
 <p>默认值：<code>(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$</code></p>
 <p>The pattern Jest uses to detect test files. By default it looks for <code>.js</code> and <code>.jsx</code> files inside of <code>__tests__</code> folders, as well as any files with a suffix of <code>.test</code> or <code>.spec</code> (e.g. <code>Component.test.js</code> or <code>Component.spec.js</code>). It will also find files called <code>test.js</code> or <code>spec.js</code>. See also <a href="#testmatch-array-string"><code>testMatch</code> [array<string>]</a>, but note that you cannot specify both options.</p>
@@ -585,7 +585,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <h3><a class="anchor" aria-hidden="true" name="transformignorepatterns-array-string"></a><a href="#transformignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transformIgnorePatterns</code> [array<string>]</h3>
 <p>默认值︰<code>[&quot;node_modules&quot;]</code></p>
 <p>An array of regexp pattern strings that are matched against all source file paths before transformation. If the test path matches any of the patterns, it will not be transformed.</p>
-<p>These pattern strings match against the full path. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories.</p>
+<p>These pattern strings match against the full path. 在路径中使用 <code>&lt;rootDir&gt;</code> 指代项目的根目录路径, 防止它在可能具有不同根目录的不同环境中意外的忽略文件。</p>
 <p>Example: <code>[&quot;&lt;rootDir&gt;/bower_components/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
 <p>Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside <code>node_modules</code> are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use <code>transformIgnorePatterns</code> to whitelist such modules. You'll find a good example of this use case in <a href="http://facebook.github.io/jest/docs/en/tutorial-react-native.html#transformignorepatterns-customization">React Native Guide</a>.</p>
 <h3><a class="anchor" aria-hidden="true" name="unmockedmodulepathpatterns-array-string"></a><a href="#unmockedmodulepathpatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>unmockedModulePathPatterns</code> [array<string>]</h3>

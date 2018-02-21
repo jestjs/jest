@@ -69,24 +69,24 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   expect(utils.isAuthorized(<span class="hljs-string">'not_wizard'</span>)).toBeTruthy();
 });
 </code></pre>
-<p><em>Note: Core modules, like <code>fs</code>, are not mocked by default. They can be mocked explicitly, like <code>jest.mock('fs')</code>.</em></p>
-<p><em>Note: Automocking has a performance cost most noticeable in large projects. See <a href="troubleshooting.html#tests-are-slow-when-leveraging-automocking">here</a> for details and a workaround.</em></p>
+<p><em>Nota: Núcleo de módulos, como <code>fs</code>, não são ridicularizados por padrão. Eles podem ser escarnecido explicitamente, como <code>tom de brincadeira.de simulação (&quot;fs&quot;)</code>.</em></p>
+<p><em>Nota: Automocking tem um custo de desempenho mais evidente em grandes projetos. Ver [aqui](resolução de problemas.html#testes-são-lento-quando-aproveitando-automocking) detalhes e uma solução.</em></p>
 <h3><a class="anchor" aria-hidden="true" name="browser-boolean"></a><a href="#browser-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>browser</code> [boolean]</h3>
 <p>Padrão: <code>false</code></p>
-<p>Respect Browserify's <a href="https://github.com/substack/browserify-handbook#browser-field"><code>&quot;browser&quot;</code> field</a> in <code>package.json</code> when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.</p>
+<p>Respect Browserify's <a href="https://github.com/substack/browserify-handbook#browser-field"><code>&quot;browser&quot;</code> field</a> in <code>package.json</code> when resolving modules. Alguns módulos de exportação de versões diferentes baseados em se eles estão operando no Nó ou um navegador.</p>
 <h3><a class="anchor" aria-hidden="true" name="bail-boolean"></a><a href="#bail-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>bail</code> [boolean]</h3>
 <p>Padrão: <code>false</code></p>
-<p>By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.</p>
+<p>Por padrão, Brincadeira e executa todos os testes e produz todos os erros no console, mediante conclusão. A fiança de opções de configuração pode ser usado aqui para ter o tom de Brincadeira, pare de correr testes após a primeira falha.</p>
 <h3><a class="anchor" aria-hidden="true" name="cachedirectory-string"></a><a href="#cachedirectory-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>cacheDirectory</code> [string]</h3>
 <p>Padrão: <code>&quot;/tmp/&lt;path&gt;&quot;</code></p>
 <p>O diretório onde o Jest deve armazenar as informações de suas dependências cacheadas.</p>
-<p>Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. Esta opção permite você personalizar aonde o Jest armazena aquela informação cacheada em disco.</p>
+<p>Brincadeira tenta verificar a sua árvore de dependência de uma vez (up-front) e cache, a fim para aliviar um pouco o sistema de arquivos ajuntando que precisa acontecer durante a execução de testes. Esta opção permite você personalizar aonde o Jest armazena aquela informação cacheada em disco.</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoverage-boolean"></a><a href="#collectcoverage-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverage</code> [boolean]</h3>
 <p>Padrão: <code>false</code></p>
-<p>Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.</p>
+<p>Indica se a cobertura de informações devem ser coletadas durante a execução o teste. Porque este reformas de todos os executados arquivos com cobertura de coleta de instruções, pode reduzir significativamente seus testes.</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoveragefrom-array"></a><a href="#collectcoveragefrom-array" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverageFrom</code> [array]</h3>
 <p>Padrão: <code>undefined</code></p>
-<p>Um array de <a href="https://github.com/jonschlinkert/micromatch">padrões glob</a> indicando certos arquivos que devem ser coletados informações de cobertura. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
+<p>Um array de <a href="https://github.com/jonschlinkert/micromatch">padrões glob</a> indicando certos arquivos que devem ser coletados informações de cobertura. Se um arquivo coincide com o especificado padrão glob, informações de cobertura será coletados para ele, mesmo se não existem testes para este arquivo e que nunca é necessário em o conjunto de teste.</p>
 <p>Exemplo:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"collectCoverageFrom"</span>: [
@@ -401,10 +401,10 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Uma lista de caminhos para módulos de serializador de snapshot que Jest deve usar para teste de snapshot.</p>
 <p>Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See <a href="/jest/docs/pt-BR/next/tutorial-react-native.html#snapshot-test">snapshot test tutorial</a> for more information.</p>
 <p>Exemplo de módulo serializador:</p>
-<pre><code class="hljs css js"><span class="hljs-comment">// my-serializer-module</span>
+<pre><code class="hljs css js"><span class="hljs-comment">// meu-modulo-serializador</span>
 <span class="hljs-built_in">module</span>.exports = {
   print(val, serialize, indent) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">'Pretty foo: '</span> + serialize(val.foo);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'foo arrumado: '</span> + serialize(val.foo);
   },
 
   test(val) {
