@@ -1,5 +1,12 @@
 ## master
 
+## 22.4.2
+
+### Fixes
+
+* `[jest-haste-map]` Recreate Haste map when deserialization fails
+  ([#5642](https://github.com/facebook/jest/pull/5642))
+
 ## 22.4.1
 
 ### Fixes
