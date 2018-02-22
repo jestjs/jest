@@ -27,6 +27,12 @@ configured [`roots`](Configuration.md#roots-array-string) to point to a folder
 other than the project root) and will be **automatically** mocked. There's no
 need to explicitly call `jest.mock('module_name')`.
 
+Scoped modules can be mocked by creating a file in a directory structure that
+matches the name of the scoped module.  For example, to mock a scoped module
+called `@scope/project-name`, create a file at
+`__mocks__/@scope/project-name.js`, creating the `@scope/` directory
+accordingly.
+
 > Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then
 > explicitly calling e.g. `jest.mock('path')` is **required**, because core Node
 > modules are not mocked by default.
