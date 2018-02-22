@@ -1,19 +1,20 @@
 ## master
 
+## 22.4.1
+
 ### Fixes
 
+* `[jest-haste-map]` Parallelize Watchman calls in crawler
+  ([#5640](https://github.com/facebook/jest/pull/5640))
 * `[jest-editor-support]` Update TypeScript definitions
   ([#5625](https://github.com/facebook/jest/pull/5625))
+* `[babel-jest]` Remove `retainLines` argument to babel.
+  ([#5594](https://github.com/facebook/jest/pull/5594))
 
 ### Features
 
 * `[jest-runtime]` Provide `require.main` property set to module with test suite
   ([#5618](https://github.com/facebook/jest/pull/5618))
-
-### Fixes
-
-* `[babel-jest]` Remove `retainLines` argument to babel.
-  ([#5594](https://github.com/facebook/jest/pull/5594))
 
 ### Chore & Maintenance
 
