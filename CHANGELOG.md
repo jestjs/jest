@@ -21,6 +21,8 @@
   ([#5622](https://github.com/facebook/jest/pull/5622))
 * `[docs]` Update to use yarn
   ([#5624](https://github.com/facebook/jest/pull/5624))
+* `[docs]` Add how to mock scoped modules to Manual Mocks doc
+  ([#5638](https://github.com/facebook/jest/pull/5638))
 
 ## 22.4.0
 
