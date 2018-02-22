@@ -605,7 +605,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   // Is transformed to: `--findRelatedTests '/rootDir/file1.js' --coverage --collectCoverageFrom 'file1.js'`
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
-  if (newOptions.collectCoverage && newOptions.findRelatedTests) {
+  if (newOptions.collectCoverage && argv.findRelatedTests) {
     newOptions.collectCoverageFrom = argv._.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
