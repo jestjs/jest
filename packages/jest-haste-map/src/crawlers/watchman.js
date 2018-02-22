@@ -49,7 +49,7 @@ module.exports = async function watchmanCrawl(
       ),
     );
 
-  async function getWatcmanRoots(roots) {
+  async function getWatchmanRoots(roots) {
     const watchmanRoots = new Map();
     await Promise.all(
       roots.map(async root => {
@@ -115,7 +115,7 @@ module.exports = async function watchmanCrawl(
   let files = data.files;
   let watchmanFiles;
   try {
-    const watchmanRoots = await getWatcmanRoots(roots);
+    const watchmanRoots = await getWatchmanRoots(roots);
     const watchmanFileResults = await queryWatchmanForDirs(watchmanRoots);
     // Reset the file map if watchman was restarted and sends us a list of files.
     if (watchmanFileResults.isFresh) {
