@@ -289,8 +289,13 @@ class HasteMap extends EventEmitter {
    * 1. read data from the cache or create an empty structure.
    */
   read(): InternalHasteMap {
-    // This may throw. `_buildFileMap` will catch it and create a new map.
-    const hasteMap: InternalHasteMap = serializer.readFileSync(this._cachePath);
+    let hasteMap: InternalHasteMap;
+
+    try {
+      hasteMap = serializer.readFileSync(this._cachePath);
+    } catch (err) {
+      hasteMap = this._createEmptyMap();
+    }
 
     for (const key in hasteMap) {
       Object.setPrototypeOf(hasteMap[key], null);
