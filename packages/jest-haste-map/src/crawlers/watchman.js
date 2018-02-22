@@ -51,48 +51,52 @@ module.exports = async function watchmanCrawl(
 
   try {
     const watchmanRoots = new Map();
-    for (const root of roots) {
-      const response = await cmd('watch-project', root);
-      const existing = watchmanRoots.get(response.watch);
-      // A root can only be filtered if it was never seen with a relative_path before
-      const canBeFiltered = !existing || existing.length > 0;
+    await Promise.all(
+      roots.map(async root => {
+        const response = await cmd('watch-project', root);
+        const existing = watchmanRoots.get(response.watch);
+        // A root can only be filtered if it was never seen with a relative_path before
+        const canBeFiltered = !existing || existing.length > 0;
 
-      if (canBeFiltered) {
-        if (response.relative_path) {
-          watchmanRoots.set(
-            response.watch,
-            (existing || []).concat(response.relative_path),
-          );
-        } else {
-          // Make the filter directories an empty array to signal that this root
-          // was already seen and needs to be watched for all files/directories
-          watchmanRoots.set(response.watch, []);
+        if (canBeFiltered) {
+          if (response.relative_path) {
+            watchmanRoots.set(
+              response.watch,
+              (existing || []).concat(response.relative_path),
+            );
+          } else {
+            // Make the filter directories an empty array to signal that this root
+            // was already seen and needs to be watched for all files/directories
+            watchmanRoots.set(response.watch, []);
+          }
         }
-      }
-    }
+      }),
+    );
 
     let shouldReset = false;
     const watchmanFileResults = new Map();
-    for (const [root, directoryFilters] of watchmanRoots) {
-      const expression = Array.from(defaultWatchExpression);
-      if (directoryFilters.length > 0) {
-        expression.push([
-          'anyof',
-          ...directoryFilters.map(dir => ['dirname', dir]),
-        ]);
-      }
-      const fields = ['name', 'exists', 'mtime_ms'];
+    await Promise.all(
+      Array.from(watchmanRoots).map(async ([root, directoryFilters]) => {
+        const expression = Array.from(defaultWatchExpression);
+        if (directoryFilters.length > 0) {
+          expression.push([
+            'anyof',
+            ...directoryFilters.map(dir => ['dirname', dir]),
+          ]);
+        }
+        const fields = ['name', 'exists', 'mtime_ms'];
 
-      const query = clocks[root]
-        ? // Use the `since` generator if we have a clock available
-          {expression, fields, since: clocks[root]}
-        : // Otherwise use the `suffix` generator
-          {expression, fields, suffix: extensions};
+        const query = clocks[root]
+          ? // Use the `since` generator if we have a clock available
+            {expression, fields, since: clocks[root]}
+          : // Otherwise use the `suffix` generator
+            {expression, fields, suffix: extensions};
 
-      const response = await cmd('query', root, query);
-      shouldReset = shouldReset || response.is_fresh_instance;
-      watchmanFileResults.set(root, response);
-    }
+        const response = await cmd('query', root, query);
+        shouldReset = shouldReset || response.is_fresh_instance;
+        watchmanFileResults.set(root, response);
+      }),
+    );
 
     // Reset the file map if watchman was restarted and sends us a list of files.
     if (shouldReset) {
