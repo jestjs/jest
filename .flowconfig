@@ -1,7 +1,6 @@
 [ignore]
 .*/examples/.*
 .*/node_modules/metro-bundler/.*
-.*/circus_it_test_error.test.js*.
 
 [options]
 module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/src/index.js'
