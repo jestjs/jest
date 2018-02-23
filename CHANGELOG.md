@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[jest-resolve]` Update node module resolution algorithm to correctly handle
+  symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
+
 ## 22.4.2
 
 ### Fixes
