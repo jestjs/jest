@@ -4534,6 +4534,10 @@ jest-docblock@^21, jest-docblock@^21.0.0, jest-docblock@^21.2.0:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/jest-docblock/-/jest-docblock-21.2.0.tgz#51529c3b30d5fd159da60c27ceedc195faf8d414"
 
+jest-get-type@^21.2.0:
+  version "21.2.0"
+  resolved "https://onedrive.pkgs.visualstudio.com/_packaging/odsp-npm/npm/registry/jest-get-type/-/jest-get-type-21.2.0.tgz#f6376ab9db4b60d81e39f30749c6c466f40d4a23"
+
 jest-haste-map@^21:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/jest-haste-map/-/jest-haste-map-21.2.0.tgz#1363f0a8bb4338f24f001806571eff7a4b2ff3d8"
@@ -4544,6 +4548,39 @@ jest-haste-map@^21:
     micromatch "^2.3.11"
     sane "^2.0.0"
     worker-farm "^1.3.1"
+
+jest-message-util@^21.2.1:
+  version "21.2.1"
+  resolved "https://onedrive.pkgs.visualstudio.com/_packaging/odsp-npm/npm/registry/jest-message-util/-/jest-message-util-21.2.1.tgz#bfe5d4692c84c827d1dcf41823795558f0a1acbe"
+  dependencies:
+    chalk "^2.0.1"
+    micromatch "^2.3.11"
+    slash "^1.0.0"
+
+jest-mock@^21.2.0:
+  version "21.2.0"
+  resolved "https://onedrive.pkgs.visualstudio.com/_packaging/odsp-npm/npm/registry/jest-mock/-/jest-mock-21.2.0.tgz#7eb0770e7317968165f61ea2a7281131534b3c0f"
+
+jest-util@^21.2.1:
+  version "21.2.1"
+  resolved "https://onedrive.pkgs.visualstudio.com/_packaging/odsp-npm/npm/registry/jest-util/-/jest-util-21.2.1.tgz#a274b2f726b0897494d694a6c3d6a61ab819bb78"
+  dependencies:
+    callsites "^2.0.0"
+    chalk "^2.0.1"
+    graceful-fs "^4.1.11"
+    jest-message-util "^21.2.1"
+    jest-mock "^21.2.0"
+    jest-validate "^21.2.1"
+    mkdirp "^0.5.1"
+
+jest-validate@^21.2.1:
+  version "21.2.1"
+  resolved "https://onedrive.pkgs.visualstudio.com/_packaging/odsp-npm/npm/registry/jest-validate/-/jest-validate-21.2.1.tgz#cc0cbca653cd54937ba4f2a111796774530dd3c7"
+  dependencies:
+    chalk "^2.0.1"
+    jest-get-type "^21.2.0"
+    leven "^2.1.0"
+    pretty-format "^21.2.1"
 
 jquery@^3.2.1:
   version "3.2.1"
@@ -6199,6 +6236,13 @@ preserve@^0.2.0:
 prettier@^1.10.1:
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.10.1.tgz#01423fea6957ea23618d37d339ef0e7f7c967fc6"
+
+pretty-format@^21.2.1:
+  version "21.2.1"
+  resolved "https://onedrive.pkgs.visualstudio.com/_packaging/odsp-npm/npm/registry/pretty-format/-/pretty-format-21.2.1.tgz#ae5407f3cf21066cd011aa1ba5fce7b6a2eddb36"
+  dependencies:
+    ansi-regex "^3.0.0"
+    ansi-styles "^3.2.0"
 
 pretty-format@^4.2.1:
   version "4.3.1"
