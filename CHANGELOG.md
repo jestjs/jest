@@ -7,6 +7,9 @@
 
 ### Features
 
+* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test` 
+  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive 
+  errors to `it`/ `test` for invalid arguements. 
 * `[jest-runtime]` Provide `require.main` property set to module with test suite
   ([#5618](https://github.com/facebook/jest/pull/5618))
 
@@ -79,9 +82,6 @@
 
 ### Features
 
-* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test` 
-  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive 
-  errors to `it`/ `test` for invalid arguements. 
 * `[jest-util]` Add the following methods to the "console" implementations:
   `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
   `groupEnd`, `time`, `timeEnd`
