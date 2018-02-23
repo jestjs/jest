@@ -1,5 +1,10 @@
 ## master
 
+### Features
+
+* `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
+  ([#5512](https://github.com/facebook/jest/pull/5512))
+
 ### Fixes
 
 * `[jest-resolve]` Update node module resolution algorithm to correctly handle
@@ -150,6 +155,8 @@
 * `[diff-sequences]` New package compares items in two sequences to find a
   **longest common subsequence**.
   ([#5407](https://github.com/facebook/jest/pull/5407))
+* `[jest-matcher-utils]` Add `comment` option to `matcherHint` function
+  ([#5437](https://github.com/facebook/jest/pull/5437))
 * `[jest-config]` Allow lastComit and changedFilesWithAncestor via JSON config
   ([#5476](https://github.com/facebook/jest/pull/5476))
 * `[jest-util]` Add deletion to `process.env` as well
