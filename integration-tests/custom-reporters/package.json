@@ -1,7 +1,7 @@
 {
   "jest": {
     "reporters": [
-      ["<rootDir>/reporters/test_reporter.js", {
+      ["<rootDir>/reporters/TestReporter.js", {
         "hello": "world",
         "dmitrii": "abramov",
         "christoph": "pojer"

@@ -21,17 +21,22 @@
 
 <!-- generated_getting_started_start -->
 
-Install Jest using [`npm`](https://www.npmjs.com/):
+Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
+
+```bash
+yarn add --dev jest
+```
+
+Or via [`npm`](https://www.npmjs.com/):
 
 ```bash
 npm install --save-dev jest
 ```
 
-Or via [`yarn`](https://yarnpkg.com/en/package/jest):
-
-```bash
-yarn add --dev jest
-```
+The minimum supported Node version is `v6.0.0` by default. If you need to
+support Node 4, refer to the
+[Compatibility issues](https://facebook.github.io/jest/docs/en/troubleshooting.html#compatibility-issues)
+section.
 
 Let's get started by writing a test for a hypothetical function that adds two
 numbers. First, create a `sum.js` file:
@@ -63,7 +68,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `npm test` and Jest will print this message:
+Finally, run `yarn test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -79,7 +84,7 @@ identical. To learn about the other things that Jest can test, see
 ## Running from command line
 
 You can run Jest directly from the CLI (if it's globally available in your
-`PATH`, e.g. by `npm install -g jest`) with variety of useful options.
+`PATH`, e.g. by `yarn global add jest`) with variety of useful options.
 
 Here's how to run Jest on files matching `my-test`, using `config.json` as a
 configuration file and display a native OS notification after the run:
@@ -96,22 +101,15 @@ page.
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and
-`regenerator-runtime` packages:
+[Babel](http://babeljs.io/) is automatically handled by Jest using `babel-jest`.
+You don't need install anything extra for using Babel.
 
-```bash
-npm install --save-dev babel-jest babel-core regenerator-runtime
-```
-
-> Note: If you are using a babel version 7 then you need to install `babel-jest`
-> with the following command:
+> Note: If you are using a babel version 7 then you need to install
+> `babel-core@^7.0.0-0` and `@babel/core` with the following command:
 >
 > ```bash
-> npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
+> yarn add --dev 'babel-core@^7.0.0-0' @babel/core
 > ```
-
-_Note: Explicitly installing `regenerator-runtime` is not needed if you use
-`npm` 3 or 4 or Yarn_
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file
 in your project's root folder. For example, if you are using ES6 and
@@ -165,8 +163,8 @@ You are now set up to use all ES6 features and React specific syntax.
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to
 manage assets, styles, and compilation. webpack does offer some unique
-challenges over other tools. Refer to the [webpack guide](docs/Webpack.md) to get
-started.
+challenges over other tools. Refer to the [webpack guide](docs/Webpack.md) to
+get started.
 
 ### Using TypeScript
 
@@ -188,7 +186,8 @@ Learn more about using
 ## Badge
 
 Show the world you're using _Jest_ →
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://facebook.github.io/jest/img/jest-badge.svg)](https://github.com/facebook/jest)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![jest](https://facebook.github.io/jest/img/jest-badge.svg)](https://github.com/facebook/jest)
 
 ```md
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)

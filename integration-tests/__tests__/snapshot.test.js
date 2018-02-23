@@ -10,11 +10,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const {extractSummary} = require('../utils');
+const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
-const skipOnWindows = require('../../scripts/skip_on_windows');
-skipOnWindows.suite();
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+SkipOnWindows.suite();
 
 const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir = path.resolve(

@@ -8,15 +8,15 @@
  */
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/skip_on_windows');
-const {extractSummary} = require('../utils');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../failures');
 
 const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 const cleanupStackTrace = stderr => {
   const STACK_REGEXP = /^.*at.*(setup-jest-globals|extractExpectedAssertionsErrors).*\n/gm;

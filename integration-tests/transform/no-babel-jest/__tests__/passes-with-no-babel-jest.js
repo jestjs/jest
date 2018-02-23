@@ -7,6 +7,6 @@
 
 'use strict';
 
-require('../this-directory-is-covered/excluded-from-coverage');
+require('../this-directory-is-covered/ExcludedFromCoverage');
 
 test('1', () => {});

@@ -30,6 +30,7 @@ export default class Runner extends EventEmitter {
     options?: SpawnOptions,
   ) => ChildProcess;
   watchMode: boolean;
+  watchAll: boolean;
   options: Options;
   prevMessageTypes: MessageType[];
 
@@ -43,12 +44,13 @@ export default class Runner extends EventEmitter {
     this.prevMessageTypes = [];
   }
 
-  start(watchMode: boolean = true) {
+  start(watchMode: boolean = true, watchAll: boolean = false) {
     if (this.debugprocess) {
       return;
     }
 
     this.watchMode = watchMode;
+    this.watchAll = watchAll;
 
     // Handle the arg change on v18
     const belowEighteen = this.workspace.localJestMajorVersion < 18;
@@ -56,7 +58,7 @@ export default class Runner extends EventEmitter {
 
     const args = ['--json', '--useStderr', outputArg, this.outputPath];
     if (this.watchMode) {
-      args.push('--watch');
+      args.push(this.watchAll ? '--watchAll' : '--watch');
     }
     if (this.options.testNamePattern) {
       args.push('--testNamePattern', this.options.testNamePattern);

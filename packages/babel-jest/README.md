@@ -9,13 +9,13 @@ If you are already using `jest-cli`, just add `babel-jest` and it will
 automatically compile JavaScript code using babel.
 
 ```bash
-npm install --save-dev babel-jest babel-core
+yarn add --dev babel-jest babel-core
 ```
 
 > Note: If you are using babel version 7 you have to install `babel-jest` with
 >
 > ```bash
-> npm install --save-dev babel-jest babel-core@^7.0.0-0 @babel/core
+> yarn add --dev babel-jest babel-core@^7.0.0-0 @babel/core
 > ```
 
 If you would like to write your own preprocessor, uninstall and delete

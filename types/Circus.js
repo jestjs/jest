@@ -95,7 +95,7 @@ export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
   status: TestStatus,
-  testPath: Array<BlockName | TestName>,
+  testPath: Array<TestName>,
 |};
 
 export type TestResults = Array<TestResult>;

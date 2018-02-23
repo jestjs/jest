@@ -10,13 +10,13 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/skip_on_windows');
-const {extractSummary, cleanup, writeFiles} = require('../utils');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const {extractSummary, cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../jest.config.js');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

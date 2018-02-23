@@ -17,22 +17,23 @@ export type TransformedSource = {|
 
 export type TransformResult = {|
   script: Script,
+  mapCoverage: boolean,
   sourceMapPath: ?string,
 |};
 
 export type TransformOptions = {|
   instrument: boolean,
+  returnSourceString?: boolean,
 |};
 
 export type CacheKeyOptions = {|
   instrument: boolean,
-  mapCoverage: boolean,
   rootDir: string,
 |};
 
 export type Transformer = {|
   canInstrument?: boolean,
-  createTransformer(options: any): Transformer,
+  createTransformer?: (options: any) => Transformer,
 
   getCacheKey: (
     fileData: string,

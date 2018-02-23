@@ -6,15 +6,18 @@
  *
  * @flow
  */
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 
-class QuitPlugin extends WatchPlugin {
-  async showPrompt() {
+class QuitPlugin extends BaseWatchPlugin {
+  async run() {
+    if (typeof this._stdin.setRawMode === 'function') {
+      this._stdin.setRawMode(false);
+    }
     this._stdout.write('\n');
     process.exit(0);
   }
 
-  getUsageRow() {
+  getUsageInfo() {
     return {
       key: 'q'.codePointAt(0),
       prompt: 'quit watch mode',

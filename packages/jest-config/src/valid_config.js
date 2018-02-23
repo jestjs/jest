@@ -26,7 +26,7 @@ export default ({
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
   collectCoverageOnlyFrom: {
-    '<rootDir>/this-directory-is-covered/covered.js': true,
+    '<rootDir>/this-directory-is-covered/Covered.js': true,
   },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
@@ -49,7 +49,6 @@ export default ({
   json: false,
   lastCommit: false,
   logHeapUsage: true,
-  mapCoverage: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',

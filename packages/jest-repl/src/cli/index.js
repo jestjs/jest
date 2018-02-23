@@ -12,7 +12,7 @@ import path from 'path';
 
 import Runtime from 'jest-runtime';
 import yargs from 'yargs';
-import {validateCLIOptions} from 'jest-util';
+import {validateCLIOptions} from 'jest-validate';
 import {version as VERSION} from '../../package.json';
 import * as args from './args';
 

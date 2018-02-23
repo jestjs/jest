@@ -14,6 +14,7 @@ import {
   ValidationError,
 } from './utils';
 import validate from './validate';
+import validateCLIOptions from './validate_cli_options';
 
 module.exports = {
   ValidationError,
@@ -21,4 +22,5 @@ module.exports = {
   format,
   logValidationWarning,
   validate,
+  validateCLIOptions,
 };

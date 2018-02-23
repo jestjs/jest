@@ -15,8 +15,8 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
-import fs from 'fs';
-import callsites from 'callsites';
+import fs from 'graceful-fs';
+import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
 
@@ -51,7 +51,7 @@ async function jasmine2(
   if (config.testLocationInResults === true) {
     const originalIt = environment.global.it;
     environment.global.it = (...args) => {
-      const stack = callsites()[1];
+      const stack = getCallsite(1, runtime.getSourceMaps());
       const it = originalIt(...args);
 
       it.result.__callsite = stack;
@@ -117,17 +117,21 @@ async function jasmine2(
   }
 
   runtime
-    .requireModule(require.resolve('source-map-support'), 'source-map-support')
+    .requireInternalModule(
+      require.resolve('source-map-support'),
+      'source-map-support',
+    )
     .install({
       environment: 'node',
       handleUncaughtExceptions: false,
       retrieveSourceMap: source => {
-        if (runtime._sourceMapRegistry[source]) {
+        const sourceMaps = runtime.getSourceMaps();
+        const sourceMapSource = sourceMaps && sourceMaps[source];
+
+        if (sourceMapSource) {
           try {
             return {
-              map: JSON.parse(
-                fs.readFileSync(runtime._sourceMapRegistry[source]),
-              ),
+              map: JSON.parse(fs.readFileSync(sourceMapSource)),
               url: source,
             };
           } catch (e) {}

@@ -174,7 +174,7 @@ const isObjectWithKeys = a =>
   !(a instanceof Date);
 
 export const subsetEquality = (object: Object, subset: Object) => {
-  if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
+  if (!isObjectWithKeys(subset)) {
     return undefined;
   }
 

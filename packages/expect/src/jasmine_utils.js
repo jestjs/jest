@@ -75,10 +75,8 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
     return a.message == b.message;
   }
 
-  // Identical objects are equal. `0 === -0`, but they aren't identical.
-  // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
-  if (a === b) {
-    return a !== 0 || 1 / a == 1 / b;
+  if (Object.is(a, b)) {
+    return true;
   }
   // A strict comparison is necessary because `null == undefined`.
   if (a === null || b === null) {
