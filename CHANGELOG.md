@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[jest-resolve]` Update node module resolution algorithm to correctly handle
+  symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
+
 ## jest 22.2.2
 
 ### Fixes
@@ -266,8 +271,6 @@
 
 ### Fixes
 
-* `[jest-resolve]` Update node module resolution algorithm to correctly handle
-  symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
 * `[jest-resolve]` Use `module.builtinModules` as `BUILTIN_MODULES` when it
   exists
 * `[jest-worker]` Remove `debug` and `inspect` flags from the arguments sent to
