@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const {extractSummary} = require('../utils');
+const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 test('testNamePattern', () => {

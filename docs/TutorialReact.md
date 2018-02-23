@@ -27,7 +27,7 @@ Also see [using babel](GettingStarted.md#using-babel).
 Run
 
 ```bash
-npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>`
@@ -140,7 +140,7 @@ test('Link changes the class when hovered', () => {
 });
 ```
 
-When you run `npm test` or `jest`, this will produce an output file like this:
+When you run `yarn test` or `jest`, this will produce an output file like this:
 
 ```javascript
 // __tests__/__snapshots__/Link.react.test.js.snap
@@ -226,9 +226,8 @@ If you'd like to assert, and manipulate your rendered components you can use
 [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme
 for this example.
 
-You have to run `npm install --save-dev enzyme` to use Enzyme. If you are using
-a React below version 15.5.0, you will also need to install
-`react-addons-test-utils`.
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React
+version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's implement a simple checkbox which swaps between two labels:
 

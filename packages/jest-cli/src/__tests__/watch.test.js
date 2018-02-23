@@ -10,6 +10,7 @@
 
 import chalk from 'chalk';
 import TestWatcher from '../test_watcher';
+import JestHooks from '../jest_hooks';
 import {KEYS} from '../constants';
 
 const runJestMock = jest.fn();
@@ -37,7 +38,7 @@ jest.doMock(
   watchPluginPath,
   () =>
     class WatchPlugin1 {
-      getUsageRow() {
+      getUsageInfo() {
         return {
           key: 's'.codePointAt(0),
           prompt: 'do nothing',
@@ -51,7 +52,7 @@ jest.doMock(
   watchPlugin2Path,
   () =>
     class WatchPlugin2 {
-      getUsageRow() {
+      getUsageInfo() {
         return {
           key: 'u'.codePointAt(0),
           prompt: 'do something else',
@@ -242,17 +243,47 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
+  it('allows WatchPlugins to hook into JestHooks', async () => {
+    const apply = jest.fn();
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_register`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          constructor() {
+            this.apply = apply;
+          }
+        },
+      {virtual: true},
+    );
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [pluginPath],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    await nextTick();
+
+    expect(apply).toHaveBeenCalled();
+  });
+
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
-    const showPrompt = jest.fn(() => Promise.resolve());
+    const run = jest.fn(() => Promise.resolve());
     const pluginPath = `${__dirname}/__fixtures__/plugin_path`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.showPrompt = showPrompt;
+            this.run = run;
           }
-          getUsageRow() {
+          getUsageInfo() {
             return {
               key: 's'.codePointAt(0),
               prompt: 'do nothing',
@@ -277,24 +308,22 @@ describe('Watch mode flows', () => {
 
     await nextTick();
 
-    expect(showPrompt).toHaveBeenCalled();
+    expect(run).toHaveBeenCalled();
   });
 
   it('prevents Jest from handling keys when active and returns control when end is called', async () => {
     let resolveShowPrompt;
-    const showPrompt = jest.fn(
-      () => new Promise(res => (resolveShowPrompt = res)),
-    );
+    const run = jest.fn(() => new Promise(res => (resolveShowPrompt = res)));
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_1`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.showPrompt = showPrompt;
+            this.run = run;
           }
-          onData() {}
-          getUsageRow() {
+          onKey() {}
+          getUsageInfo() {
             return {
               key: 's'.codePointAt(0),
               prompt: 'do nothing',
@@ -311,10 +340,10 @@ describe('Watch mode flows', () => {
       () =>
         class WatchPlugin1 {
           constructor() {
-            this.showPrompt = showPrompt2;
+            this.run = showPrompt2;
           }
-          onData() {}
-          getUsageRow() {
+          onKey() {}
+          getUsageInfo() {
             return {
               key: 'z'.codePointAt(0),
               prompt: 'also do nothing',
@@ -337,7 +366,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit(Number('s'.charCodeAt(0)).toString(16));
     await nextTick();
-    expect(showPrompt).toHaveBeenCalled();
+    expect(run).toHaveBeenCalled();
     stdin.emit(Number('z'.charCodeAt(0)).toString(16));
     await nextTick();
     expect(showPrompt2).not.toHaveBeenCalled();
@@ -382,10 +411,14 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
+    const hooks = new JestHooks();
+
     globalConfig.updateSnapshot = 'new';
 
-    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
+
+    hooks.getEmitter().testRunComplete({snapshot: {failure: true}});
 
     stdin.emit(KEYS.U);
     await nextTick();
@@ -403,6 +436,7 @@ describe('Watch mode flows', () => {
       watch: false,
     });
   });
+
   it('passWithNoTest should be set to true in watch mode', () => {
     globalConfig.passWithNoTests = false;
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);

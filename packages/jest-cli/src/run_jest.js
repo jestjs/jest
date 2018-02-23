@@ -77,7 +77,7 @@ const processResults = (runResults, options) => {
       const filePath = path.resolve(process.cwd(), outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
-      process.stdout.write(
+      options.outputStream.write(
         `Test results written to: ` +
           `${path.relative(process.cwd(), filePath)}\n`,
       );
@@ -222,6 +222,7 @@ export default (async function runJest({
     isJSON: globalConfig.json,
     onComplete,
     outputFile: globalConfig.outputFile,
+    outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
 });

@@ -18,7 +18,7 @@ function reconcilerWithFile(
   parser: TestReconciler,
   file: string,
 ): TestFileAssertionStatus[] {
-  const exampleJSON = fs.readFileSync(`${fixtures}/failing_jsons/${file}`);
+  const exampleJSON = fs.readFileSync(`${fixtures}/failing-jsons/${file}`);
   const json = JSON.parse(exampleJSON.toString());
   if (!parser) console.error('no parser for ', file);
   return parser.updateFileWithJestStatus(json);

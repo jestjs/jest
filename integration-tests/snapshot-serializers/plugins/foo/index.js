@@ -6,5 +6,5 @@
  *
  */
 
-const createPlugin = require('../../utils').createPlugin;
+const createPlugin = require('../../Utils').createPlugin;
 module.exports = createPlugin('foo');

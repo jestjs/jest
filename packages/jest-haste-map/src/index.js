@@ -7,6 +7,29 @@
  * @flow
  */
 
+import {execSync} from 'child_process';
+import {version as VERSION} from '../package.json';
+import {worker} from './worker';
+import crypto from 'crypto';
+import EventEmitter from 'events';
+import getMockName from './get_mock_name';
+import getPlatformExtension from './lib/get_platform_extension';
+// eslint-disable-next-line import/no-duplicates
+import H from './constants';
+import HasteFS from './haste_fs';
+import HasteModuleMap from './module_map';
+// eslint-disable-next-line import/default
+import nodeCrawl from './crawlers/node';
+import normalizePathSep from './lib/normalize_path_sep';
+import os from 'os';
+import path from 'path';
+import sane from 'sane';
+import serializer from 'jest-serializer';
+// eslint-disable-next-line import/default
+import watchmanCrawl from './crawlers/watchman';
+import WatchmanWatcher from './lib/watchman_watcher';
+import Worker from 'jest-worker';
+
 import type {Console} from 'console';
 import type {Path} from 'types/Config';
 import type {
@@ -18,33 +41,8 @@ import type {
   MockData,
 } from 'types/HasteMap';
 
-import {worker} from './worker';
-
 // eslint-disable-next-line import/no-duplicates
 import typeof HType from './constants';
-
-import EventEmitter from 'events';
-import os from 'os';
-import path from 'path';
-import crypto from 'crypto';
-import {execSync} from 'child_process';
-import fs from 'graceful-fs';
-import sane from 'sane';
-import {version as VERSION} from '../package.json';
-// eslint-disable-next-line import/no-duplicates
-import H from './constants';
-import HasteFS from './haste_fs';
-import HasteModuleMap from './module_map';
-import getMockName from './get_mock_name';
-import getPlatformExtension from './lib/get_platform_extension';
-import normalizePathSep from './lib/normalize_path_sep';
-import Worker from 'jest-worker';
-import WatchmanWatcher from './lib/watchman_watcher';
-
-// eslint-disable-next-line import/default
-import nodeCrawl from './crawlers/node';
-// eslint-disable-next-line import/default
-import watchmanCrawl from './crawlers/watchman';
 
 type Options = {
   cacheDirectory?: string,
@@ -291,7 +289,19 @@ class HasteMap extends EventEmitter {
    * 1. read data from the cache or create an empty structure.
    */
   read(): InternalHasteMap {
-    return this._parse(fs.readFileSync(this._cachePath, 'utf8'));
+    let hasteMap: InternalHasteMap;
+
+    try {
+      hasteMap = serializer.readFileSync(this._cachePath);
+    } catch (err) {
+      hasteMap = this._createEmptyMap();
+    }
+
+    for (const key in hasteMap) {
+      Object.setPrototypeOf(hasteMap[key], null);
+    }
+
+    return hasteMap;
   }
 
   readModuleMap(): ModuleMap {
@@ -422,8 +432,18 @@ class HasteMap extends EventEmitter {
     if (fileMetadata[H.VISITED]) {
       if (!fileMetadata[H.ID]) {
         return null;
-      } else if (fileMetadata[H.ID] && moduleMetadata) {
-        map[fileMetadata[H.ID]] = moduleMetadata;
+      }
+      if (moduleMetadata != null) {
+        const platform =
+          getPlatformExtension(filePath, this._options.platforms) ||
+          H.GENERIC_PLATFORM;
+        const module = moduleMetadata[platform];
+        if (module == null) {
+          return null;
+        }
+        const modulesByPlatform =
+          map[fileMetadata[H.ID]] || (map[fileMetadata[H.ID]] = {});
+        modulesByPlatform[platform] = module;
         return null;
       }
     }
@@ -510,8 +530,8 @@ class HasteMap extends EventEmitter {
   /**
    * 4. serialize the new `HasteMap` in a cache file.
    */
-  _persist(hasteMap: InternalHasteMap): void {
-    fs.writeFileSync(this._cachePath, JSON.stringify(hasteMap), 'utf8');
+  _persist(hasteMap: InternalHasteMap) {
+    serializer.writeFileSync(this._cachePath, hasteMap);
   }
 
   /**
@@ -532,14 +552,6 @@ class HasteMap extends EventEmitter {
     }
 
     return this._worker;
-  }
-
-  _parse(hasteMapPath: string): InternalHasteMap {
-    const hasteMap = (JSON.parse(hasteMapPath): InternalHasteMap);
-    for (const key in hasteMap) {
-      Object.setPrototypeOf(hasteMap[key], null);
-    }
-    return hasteMap;
   }
 
   _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {

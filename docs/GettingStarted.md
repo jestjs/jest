@@ -3,16 +3,16 @@ id: getting-started
 title: Getting Started
 ---
 
-Install Jest using [`npm`](https://www.npmjs.com/):
-
-```bash
-npm install --save-dev jest
-```
-
-Or via [`yarn`](https://yarnpkg.com/en/package/jest):
+Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 
 ```bash
 yarn add --dev jest
+```
+
+Or [`npm`](https://www.npmjs.com/):
+
+```bash
+npm install --save-dev jest
 ```
 
 Let's get started by writing a test for a hypothetical function that adds two
@@ -45,7 +45,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `npm test` and Jest will print this message:
+Finally, run `yarn test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -61,7 +61,7 @@ identical. To learn about the other things that Jest can test, see
 ## Running from command line
 
 You can run Jest directly from the CLI (if it's globally available in your
-`PATH`, e.g. by `npm install -g jest`) with variety of useful options.
+`PATH`, e.g. by `yarn global add jest`) with variety of useful options.
 
 Here's how to run Jest on files matching `my-test`, using `config.json` as a
 configuration file and display a native OS notification after the run:
@@ -81,14 +81,14 @@ To use [Babel](http://babeljs.io/), install the `babel-jest` and
 `regenerator-runtime` packages:
 
 ```bash
-npm install --save-dev babel-jest babel-core regenerator-runtime
+yarn add --dev babel-jest babel-core regenerator-runtime
 ```
 
 > Note: If you are using a babel version 7 then you need to install `babel-jest`
 > with the following command:
 >
 > ```bash
-> npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
+> yarn add --dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
 > ```
 
 _Note: Explicitly installing `regenerator-runtime` is not needed if you use

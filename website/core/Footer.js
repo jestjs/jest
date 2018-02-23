@@ -69,9 +69,7 @@ class Footer extends React.Component {
             >
               Stack Overflow
             </a>
-            <a href="https://discordapp.com/channels/102860784329052160/103622435865104384">
-              Jest Chat
-            </a>
+            <a href="https://discord.gg/MWRhKCj">Jest Chat</a>
             <a href="https://twitter.com/fbjest" target="_blank">
               Twitter
             </a>

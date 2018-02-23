@@ -1,0 +1,10 @@
+{
+  "name": "jest-serializer",
+  "version": "22.4.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js"
+}

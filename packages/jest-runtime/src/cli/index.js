@@ -14,7 +14,8 @@ import chalk from 'chalk';
 import os from 'os';
 import path from 'path';
 import yargs from 'yargs';
-import {Console, setGlobal, validateCLIOptions} from 'jest-util';
+import {Console, setGlobal} from 'jest-util';
+import {validateCLIOptions} from 'jest-validate';
 import {readConfig} from 'jest-config';
 // eslint-disable-next-line import/default
 import Runtime from '../';

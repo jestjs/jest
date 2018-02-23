@@ -8,7 +8,7 @@ This is only useful if you are interested in building an editor integration for
 Jest.
 
 For now as an end user, we'd recommend looking at either
-[vscode-jest](https://github.com/jest-community/vscode-jest/) or 
+[vscode-jest](https://github.com/jest-community/vscode-jest/) or
 [majestic](https://github.com/Raathigesh/majestic/).
 
 ## Note
