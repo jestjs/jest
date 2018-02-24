@@ -10,7 +10,7 @@ const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
 const Immutable = require('immutable');
 const chalk = require('chalk');
-let chalkEnabled = chalk.enabled;
+const chalkEnabled = chalk.enabled;
 
 beforeAll(() => {
   chalk.enabled = true;
