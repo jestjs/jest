@@ -21,14 +21,14 @@ next section.
 ### Setup without Create React App
 
 If you have an existing application you'll need to install a few packages to
-make everything work well together. We are using the `babel-jest` package and
-the `react` babel preset to transform our code inside of the test environment.
+make everything work well together. We are using the `react` babel preset to
+transform our code inside of the test environment.
 Also see [using babel](GettingStarted.md#using-babel).
 
 Run
 
 ```bash
-npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+npm install --save-dev jest babel-preset-env babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>`
@@ -42,7 +42,6 @@ jest configuration entries:
     "react-dom": "<current-version>"
   },
   "devDependencies": {
-    "babel-jest": "<current-version>",
     "babel-preset-env": "<current-version>",
     "babel-preset-react": "<current-version>",
     "jest": "<current-version>",
