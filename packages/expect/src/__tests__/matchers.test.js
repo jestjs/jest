@@ -9,6 +9,16 @@
 const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
 const Immutable = require('immutable');
+const chalk = require('chalk');
+const chalkEnabled = chalk.enabled;
+
+beforeAll(() => {
+  chalk.enabled = true;
+});
+
+afterAll(() => {
+  chalk.enabled = chalkEnabled;
+});
 
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
