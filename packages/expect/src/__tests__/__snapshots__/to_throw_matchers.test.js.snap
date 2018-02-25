@@ -79,6 +79,16 @@ Expected the function to throw an error matching:
 But it didn't throw anything."
 `;
 
+exports[`.toThrow() strings threw, but expected message is substring of error message 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"apple\\"</>
+Instead, it threw:
+<red>  Error      </>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
 exports[`.toThrow() strings threw, but message did not match 1`] = `
 "<dim>expect(</><red>function</><dim>).toThrow(</><green>string</><dim>)</>
 
@@ -176,6 +186,16 @@ exports[`.toThrowError() strings did not throw at all 1`] = `
 Expected the function to throw an error matching:
   <green>\\"apple\\"</>
 But it didn't throw anything."
+`;
+
+exports[`.toThrowError() strings threw, but expected message is substring of error message 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"apple\\"</>
+Instead, it threw:
+<red>  Error      </>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
 `;
 
 exports[`.toThrowError() strings threw, but message did not match 1`] = `

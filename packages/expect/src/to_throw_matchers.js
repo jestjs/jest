@@ -47,7 +47,9 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
   }
 
   if (typeof expected === 'string') {
-    expected = new RegExp(escapeStrForRegex(expected));
+    // should match the exact string
+    const regExStr = `^${escapeStrForRegex(expected)}$`;
+    expected = new RegExp(regExStr);
   }
 
   if (typeof expected === 'function') {
