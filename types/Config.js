@@ -179,6 +179,7 @@ export type GlobalConfig = {|
   json: boolean,
   globalSetup: ?string,
   globalTeardown: ?string,
+  hideUsage?: boolean,
   lastCommit: boolean,
   logHeapUsage: boolean,
   listTests: boolean,

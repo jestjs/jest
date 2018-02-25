@@ -273,6 +273,11 @@ export const options = {
       'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
+  hideUsage: {
+    default: false,
+    description: 'Hide watch usage options when running jest in watch mode',
+    type: 'boolean',
+  },
   json: {
     default: undefined,
     description:

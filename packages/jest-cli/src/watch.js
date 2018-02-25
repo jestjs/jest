@@ -149,7 +149,7 @@ export default function watch(
   }));
   let isRunning = false;
   let testWatcher;
-  let shouldDisplayWatchUsage = true;
+  let shouldDisplayWatchUsage = !globalConfig.hideUsage;
   let isWatchUsageDisplayed = false;
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
