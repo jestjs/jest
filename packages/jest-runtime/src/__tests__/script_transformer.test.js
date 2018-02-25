@@ -244,7 +244,7 @@ describe('ScriptTransformer', () => {
           returnValue,
         );
         expect(() => scriptTransformer.transform(filePath, {})).toThrow(
-          'must return a string',
+          /must return a string/,
         );
       });
 

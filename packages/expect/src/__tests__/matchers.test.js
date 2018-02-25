@@ -623,10 +623,10 @@ describe('.toContain(), .toContainEqual()', () => {
     jestExpect(iterable).toContain(2);
     jestExpect(iterable).toContainEqual(2);
     expect(() => jestExpect(iterable).not.toContain(1)).toThrowError(
-      'toContain',
+      /toContain/,
     );
     expect(() => jestExpect(iterable).not.toContainEqual(1)).toThrowError(
-      'toContainEqual',
+      /toContainEqual/,
     );
   });
 
