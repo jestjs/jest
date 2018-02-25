@@ -28,6 +28,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   forceExit: false,
   globalSetup: null,
   globalTeardown: null,
+  hideUsage: false,
   json: false,
   lastCommit: false,
   listTests: false,
