@@ -13,6 +13,7 @@ import {ChildProcess} from 'child_process';
 import EventEmitter from 'events';
 import ProjectWorkspace from './project_workspace';
 import {createProcess} from './Process';
+import {SpawnOptions} from './types';
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
@@ -44,11 +45,13 @@ export default class Settings extends EventEmitter {
   configs: ConfigRepresentations;
   settings: ConfigRepresentation;
   workspace: ProjectWorkspace;
+  spawnOptions: SpawnOptions;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this.workspace = workspace;
     this._createProcess = (options && options.createProcess) || createProcess;
+    this.spawnOptions = {shell: options.shell};
 
     // Defaults for a Jest project
     this.settings = {
@@ -60,9 +63,13 @@ export default class Settings extends EventEmitter {
   }
 
   getConfigs(completed: any) {
-    this.getConfigProcess = this._createProcess(this.workspace, [
-      '--showConfig',
-    ]);
+    const args = ['--showConfig'];
+    const options = this.spawnOptions;
+    this.getConfigProcess = this._createProcess(
+      this.workspace,
+      ['--showConfig'],
+      this.spawnOptions,
+    );
 
     this.getConfigProcess.stdout.on('data', (data: Buffer) => {
       const settings = JSON.parse(data.toString());
