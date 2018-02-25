@@ -152,10 +152,7 @@ describe('Settings', () => {
       stdout: new EventEmitter(),
     });
     const spawnOptions = {shell: true};
-    const options: any = {
-      createProcess,
-      ...spawnOptions,
-    };
+    const options: any = Object.assign({}, createProcess, spawnOptions);
     const settings = new Settings(workspace, options);
     settings.getConfig(() => {});
 
