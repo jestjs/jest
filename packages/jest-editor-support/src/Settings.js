@@ -7,13 +7,12 @@
  * @flow
  */
 
-import type {Options} from './types';
+import type {Options, SpawnOptions} from './types';
 
 import {ChildProcess} from 'child_process';
 import EventEmitter from 'events';
 import ProjectWorkspace from './project_workspace';
 import {createProcess} from './Process';
-import {SpawnOptions} from './types';
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
@@ -41,6 +40,7 @@ export default class Settings extends EventEmitter {
   _createProcess: (
     workspace: ProjectWorkspace,
     args: Array<string>,
+    options: SpawnOptions,
   ) => ChildProcess;
   configs: ConfigRepresentations;
   settings: ConfigRepresentation;
@@ -51,7 +51,7 @@ export default class Settings extends EventEmitter {
     super();
     this.workspace = workspace;
     this._createProcess = (options && options.createProcess) || createProcess;
-    this.spawnOptions = {shell: options.shell};
+    this.spawnOptions = {shell: options && options.shell};
 
     // Defaults for a Jest project
     this.settings = {
@@ -63,8 +63,6 @@ export default class Settings extends EventEmitter {
   }
 
   getConfigs(completed: any) {
-    const args = ['--showConfig'];
-    const options = this.spawnOptions;
     this.getConfigProcess = this._createProcess(
       this.workspace,
       ['--showConfig'],

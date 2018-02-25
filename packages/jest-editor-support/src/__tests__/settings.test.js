@@ -152,7 +152,11 @@ describe('Settings', () => {
       stdout: new EventEmitter(),
     });
     const spawnOptions = {shell: true};
-    const settings = new Settings(workspace, {createProcess, ...spawnOptions});
+    const options: any = {
+      createProcess,
+      ...spawnOptions,
+    };
+    const settings = new Settings(workspace, options);
     settings.getConfig(() => {});
 
     expect(createProcess).toBeCalledWith(
