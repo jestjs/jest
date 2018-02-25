@@ -9,6 +9,8 @@
 
 * `[jest-resolve]` Update node module resolution algorithm to correctly handle
   symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
+* `[jest-editor-support]` Update `Settings` to use spawn in shell option
+  ([#5658](https://github.com/facebook/jest/pull/5658))
 
 ## 22.4.2
 

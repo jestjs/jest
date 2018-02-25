@@ -170,7 +170,7 @@ export interface SnapshotMetadata {
   exists: boolean;
   name: string;
   node: {
-    loc: editor.Node
+    loc: Node
   };
   content?: string;
 }
