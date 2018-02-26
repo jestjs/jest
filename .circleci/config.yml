@@ -50,7 +50,7 @@ jobs:
       - image: node:9
     steps:
       - attach_workspace:
-        - at: ~/jest
+          at: ~/jest
       - checkout
       - run: yarn --no-progress
       - run: yarn run test-ci-partial
@@ -61,7 +61,7 @@ jobs:
       - image: node:8
     steps:
       - attach_workspace:
-        - at: ~/jest
+          at: ~/jest
       - checkout
       - run: yarn --no-progress
       - run: yarn run test-ci
@@ -72,7 +72,7 @@ jobs:
       - image: node:6
     steps:
       - attach_workspace:
-        - at: ~/jest
+          at: ~/jest
       - checkout
       - run: yarn --no-progress
       - run: yarn run test-ci-partial
@@ -83,7 +83,7 @@ jobs:
       - image: node:9
     steps:
       - attach_workspace:
-        - at: ~/jest
+          at: ~/jest
       - checkout
       - restore-cache:
           keys:
@@ -103,7 +103,7 @@ jobs:
       - image: markhobson/node-chrome
     steps:
       - attach_workspace:
-        - at: ~/jest
+          at: ~/jest
       - checkout
       - run: |
           apt-get update && apt-get install make g++ -y
