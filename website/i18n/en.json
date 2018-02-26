@@ -5,6 +5,7 @@
     "previous": "Previous",
     "tagline": "🃏 Delightful JavaScript Testing",
     "cli": "Jest CLI Options",
+    "community-packages": "Community Packages",
     "configuration": "Configuring Jest",
     "es6-class-mocks": "ES6 Class Mocks",
     "expect": "Expect",
