@@ -925,6 +925,7 @@ const houseForSale = {
     amenities: ['oven', 'stove', 'washer'],
     area: 20,
     wallColor: 'white',
+    'nice.oven': true,
   },
 };
 
@@ -952,7 +953,7 @@ test('this house has my desired features', () => {
     ['oven', 'stove', 'washer'],
   );
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
-
+  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
 });
 ```
