@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-cli]` Add `hideUsage` option to hide usage instructions in watch mode
+  ([#5664] (https://github.com/facebook/jest/pull/5664))
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
 
