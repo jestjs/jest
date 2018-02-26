@@ -751,6 +751,7 @@ properties in the object.</p>
     <span class="hljs-attr">amenities</span>: [<span class="hljs-string">'oven'</span>, <span class="hljs-string">'stove'</span>, <span class="hljs-string">'washer'</span>],
     <span class="hljs-attr">area</span>: <span class="hljs-number">20</span>,
     <span class="hljs-attr">wallColor</span>: <span class="hljs-string">'white'</span>,
+    <span class="hljs-string">'nice.oven'</span>: <span class="hljs-literal">true</span>,
   },
 };
 
@@ -778,7 +779,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
     [<span class="hljs-string">'oven'</span>, <span class="hljs-string">'stove'</span>, <span class="hljs-string">'washer'</span>],
   );
   expect(houseForSale).toHaveProperty([<span class="hljs-string">'kitchen'</span>, <span class="hljs-string">'amenities'</span>, <span class="hljs-number">0</span>], <span class="hljs-string">'oven'</span>);
-
+  expect(houseForSale).toHaveProperty([<span class="hljs-string">'kitchen'</span>, <span class="hljs-string">'nice.oven'</span>]);
   expect(houseForSale).not.toHaveProperty([<span class="hljs-string">'kitchen'</span>, <span class="hljs-string">'open'</span>]);
 });
 </code></pre>
