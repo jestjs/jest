@@ -226,7 +226,7 @@ describe('ScriptTransformer', () => {
 
   it(
     "throws an error if `process` doesn't return a string or an object" +
-      'containing `code` key with processed string',
+      ' containing `code` key with processed string',
     () => {
       config = Object.assign(config, {
         transform: [['^.+\\.js$', 'passthrough-preprocessor']],
