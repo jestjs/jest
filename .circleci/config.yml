@@ -21,7 +21,7 @@ aliases:
 
 version: 2
 jobs:
-  build:
+  install-deps:
     working_directory: /tmp/jest
     docker:
       - image: node:9
@@ -36,12 +36,12 @@ jobs:
       - save-cache:
           paths:
             - node_modules
-            - build
+            - packages/*/build/*
           key: v1-deps-cache-{{ .Branch }}-{{ "yarn.lock" }}
       - persist_to_workspace:
           root: .
           paths:
-            - build
+            - packages/*/build/*
             - node_modules
 
   test-node-9:
@@ -116,19 +116,19 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build
+      - install-deps
       - test-node-8:
           requires:
-            - build
+            - install-deps
       - test-node-6:
           requires:
-            - build
+            - install-deps
       - test-node-9:
           requires:
-            - build
+            - install-deps
       - test-browser:
           requires:
-            - build
+            - install-deps
       - test-and-deploy-website:
           requires:
-            - build
+            - install-deps
