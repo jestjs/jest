@@ -2,6 +2,10 @@
 
 ### Features
 
+* `[jest-jasmine2]` Add an extra pass to the tree processor executing children
+  added _during_ the initial run, making it possible to define tests and suites
+  inside of other tests or their lifecycle hooks (except for `afterAll`) thus
+  enabling adding tests and suites asynchronously
 * `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test`
   for invalid arguements. `[jest-circus]` Adds error throwing and descriptive
   errors to `it`/ `test` for invalid arguements.
@@ -14,6 +18,11 @@
   symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
 * `[jest-editor-support]` Update `Settings` to use spawn in shell option
   ([#5658](https://github.com/facebook/jest/pull/5658))
+
+### Chore & Maintenance
+
+* `[jest-jasmine2]` Simplify `Env.execute` to setup and clean resources for the
+  top suite the same way as for all of the children suites.
 
 ## 22.4.2
 

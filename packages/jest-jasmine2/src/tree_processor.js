@@ -43,11 +43,8 @@ export default function treeProcessor(options: Options) {
     return parentEnabled || runnableIds.indexOf(node.id) !== -1;
   }
 
-  return queueRunnerFactory({
-    onException: error => tree.onException(error),
-    queueableFns: wrapChildren(tree, isEnabled(tree, false)),
-    userContext: tree.sharedUserContext(),
-  });
+  const processTree = getNodeWithChildrenHandler(tree, isEnabled(tree, false));
+  return processTree();
 
   function executeNode(node, parentEnabled) {
     const enabled = isEnabled(node, parentEnabled);
@@ -59,24 +56,52 @@ export default function treeProcessor(options: Options) {
       };
     }
     return {
-      async fn(done) {
-        nodeStart(node);
-        await queueRunnerFactory({
-          onException: error => node.onException(error),
-          queueableFns: wrapChildren(node, enabled),
-          userContext: node.sharedUserContext(),
-        });
-        nodeComplete(node);
-        done();
-      },
+      fn: getNodeWithChildrenHandler(node, enabled),
     };
   }
 
-  function wrapChildren(node: TreeNode, enabled: boolean) {
-    if (!node.children) {
-      throw new Error('`node.children` is not defined.');
-    }
-    const children = node.children.map(child => executeNode(child, enabled));
-    return node.beforeAllFns.concat(children).concat(node.afterAllFns);
+  function mapChildren(children: TreeNode[], enabled: boolean) {
+    return children.map(child => executeNode(child, enabled));
+  }
+
+  function getNodeWithChildrenHandler(node, enabled) {
+    return async function fn(done) {
+      nodeStart(node);
+      const userContext = node.sharedUserContext();
+      const onException = error => node.onException(error);
+      if (node.beforeAllFns.length) {
+        await queueRunnerFactory({
+          onException,
+          queueableFns: node.beforeAllFns,
+          userContext,
+        });
+      }
+      // Flow is pessimistic about node.children being undefined, the || [] is a no-op:
+      const syncChildren = node.children || [];
+      const childrenCount = syncChildren.length;
+      await queueRunnerFactory({
+        onException,
+        queueableFns: mapChildren(node.children || [], enabled),
+        userContext,
+      });
+      // if any new children were added during their execution, process them now:
+      const asyncChildren = (node.children || []).slice(childrenCount);
+      if (asyncChildren.length > 0) {
+        await queueRunnerFactory({
+          onException,
+          queueableFns: mapChildren(asyncChildren, enabled),
+          userContext,
+        });
+      }
+      if (node.afterAllFns.length) {
+        await queueRunnerFactory({
+          onException: error => node.onException(error),
+          queueableFns: node.afterAllFns,
+          userContext: node.sharedUserContext(),
+        });
+      }
+      nodeComplete(node);
+      if (done) done();
+    };
   }
 }

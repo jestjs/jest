@@ -1,0 +1,368 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`runs tests and suites defined inside other tests 1`] = `
+"  console.log __tests__/nested-tests.test.js:30
+    a:sync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    a:sync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    a:sync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    a:sync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    a:sync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    b:async > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    b:async > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    b:async > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    b:async > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    b:async > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    c:both:sync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    c:both:sync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:18
+    c:both:async > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    c:both:async > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:30
+    c:both:sync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    c:both:sync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:18
+    c:both:async > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    c:both:async > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    c:both:async > afterAll
+
+  console.log __tests__/nested-tests.test.js:86
+    c:both:sync > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeSync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeSync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeSync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeSync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    d:withNested:sync > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeAsync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeAsync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeAsync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    d:withNested:sync > describeAsync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    d:withNested:sync > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:86
+    d:withNested:sync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeSync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeSync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeSync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeSync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    e:withNested:async > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeAsync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeAsync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeAsync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    e:withNested:async > describeAsync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    e:withNested:async > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:86
+    e:withNested:async > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeSync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    beforeAll > describeAsync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeSync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    beforeAll > describeAsync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    beforeAll > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeSync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeSync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeSync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeSync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    f:withNested:both:sync > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeAsync > beforeAll > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeAsync > beforeAll > sync:failing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeAsync > test1 > sync:passing
+
+  console.log __tests__/nested-tests.test.js:30
+    f:withNested:both:sync > describeAsync > test2 > sync:failing
+
+  console.log __tests__/nested-tests.test.js:86
+    f:withNested:both:sync > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeSync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeSync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeSync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeSync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    f:withNested:both:async > describeSync > afterAll
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeAsync > beforeAll > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeAsync > beforeAll > async,failing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeAsync > test1 > async,passing
+
+  console.log __tests__/nested-tests.test.js:18
+    f:withNested:both:async > describeAsync > test2 > async,failing
+
+  console.log __tests__/nested-tests.test.js:86
+    f:withNested:both:async > describeAsync > afterAll
+
+  console.log __tests__/nested-tests.test.js:86
+    f:withNested:both:async > afterAll
+
+  console.log __tests__/nested-tests.test.js:86
+    f:withNested:both:sync > afterAll
+
+  console.log __tests__/nested-tests.test.js:115
+    { allSuitesCount: 16, allTestsCount: 152 }
+
+"
+`;
