@@ -489,6 +489,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'displayName':
       case 'expand':
       case 'globals':
+      case 'hideUsage':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':

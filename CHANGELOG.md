@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-cli]` Add `hideUsage` option to hide usage instructions in watch mode
+  ([#5664] (https://github.com/facebook/jest/pull/5664))
 * `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test` 
   for invalid arguements. `[jest-circus]` Adds error throwing and descriptive 
   errors to `it`/ `test` for invalid arguements. 

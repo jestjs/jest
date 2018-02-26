@@ -74,6 +74,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"expand\\": false,
     \\"globalSetup\\": null,
     \\"globalTeardown\\": null,
+    \\"hideUsage\\": false,
     \\"listTests\\": false,
     \\"maxWorkers\\": \\"[maxWorkers]\\",
     \\"noStackTrace\\": false,

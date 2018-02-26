@@ -46,6 +46,7 @@ export default ({
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],
   },
+  hideUsage: false,
   json: false,
   lastCommit: false,
   logHeapUsage: true,

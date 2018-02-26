@@ -40,6 +40,7 @@ export type Argv = {|
   h: boolean,
   haste: string,
   help: boolean,
+  hideUsage: boolean,
   json: boolean,
   lastCommit: boolean,
   logHeapUsage: boolean,

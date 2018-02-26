@@ -109,6 +109,7 @@ const getConfigs = (
       forceExit: options.forceExit,
       globalSetup: options.globalSetup,
       globalTeardown: options.globalTeardown,
+      hideUsage: options.hideUsage,
       json: options.json,
       lastCommit: options.lastCommit,
       listTests: options.listTests,
