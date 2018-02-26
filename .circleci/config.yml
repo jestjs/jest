@@ -1,26 +1,4 @@
 aliases:
-  - &restore-cache
-    keys:
-      - dependencies-{{ .Branch }}-{{ checksum "package.json" }}
-      # Fallback in case checksum fails
-      - dependencies-{{ .Branch }}-
-
-  - &save-cache
-    paths:
-      - node_modules
-      - website/node_modules
-    key: dependencies-{{ .Branch }}-{{ checksum "package.json" }}
-
-  - &yarn-install
-    run: |
-      sudo npm i -g yarn@^1.2.1
-      yarn --no-progress
-
-  - &yarn-install-no-sudo
-    run: |
-      npm i -g yarn@^1.2.1
-      yarn --no-progress
-
   - &deploy
     command: |
       # Deploy Jest website using Docusaurus bot
@@ -43,70 +21,115 @@ aliases:
 
 version: 2
 jobs:
-  test-browser:
+  build:
     working_directory: ~/jest
     docker:
-      - image: markhobson/node-chrome
+      - image: node:9
     steps:
       - checkout
-      - restore-cache: *restore-cache
-      - run: |
-          apt-get update && apt-get install make g++ -y
-      - *yarn-install-no-sudo
-      - save-cache: *save-cache
-      - run: yarn run test-ci-es5-build-in-browser
+      - restore-cache:
+          keys:
+            - v1-deps-cache-{{ .Branch }}-{{ "yarn.lock" }}
+            - v1-deps-cache-{{ .Branch }}-
+            - v1-deps-cache
+      - run: yarn --no-progress
+      - save-cache:
+          paths:
+            - node_modules
+            - build
+          key: v1-deps-cache-{{ .Branch }}-{{ "yarn.lock" }}
+      - run: yarn run test-ci-partial
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ~/build
+            - ~/node_modules
 
   test-node-9:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:9
+      - image: node:9
     steps:
+      - attach_workspace:
+        - at: ~/jest
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress
-      - save-cache: *save-cache
       - run: yarn run test-ci-partial
 
   test-node-8:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8
+      - image: node:8
     steps:
+      - attach_workspace:
+        - at: ~/jest
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress
-      - save-cache: *save-cache
       - run: yarn run test-ci
 
   test-node-6:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:6
+      - image: node:6
     steps:
+      - attach_workspace:
+        - at: ~/jest
       - checkout
-      - restore-cache: *restore-cache
-      - *yarn-install
-      - save-cache: *save-cache
+      - run: yarn --no-progress
       - run: yarn run test-ci-partial
 
   test-and-deploy-website:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8
+      - image: node:9
     steps:
+      - attach_workspace:
+        - at: ~/jest
       - checkout
-      - restore-cache: *restore-cache
+      - restore-cache:
+          keys:
+            - v1-deps-cache-{{ .Branch }}-{{ checksum "website/package.json" }}
+            - v1-deps-cache-{{ .Branch }}-
+            - v1-deps-cache
       - run: yarn --no-progress
-      - save-cache: *save-cache
+      - save-cache:
+          key: v1-deps-cache-{{ .Branch }}-{{ checksum "website/package.json" }}
+          paths:
+            - website/node_modules
       - deploy: *deploy
+
+  test-browser:
+    working_directory: ~/jest
+    docker:
+      - image: markhobson/node-chrome
+    steps:
+      - attach_workspace:
+        - at: ~/jest
+      - checkout
+      - run: |
+          apt-get update && apt-get install make g++ -y
+      - run: npm i -g yarn@^1.3.2
+      - run: yarn --no-progress
+      - run: yarn run test-ci-es5-build-in-browser
 
 # Workflows enables us to run multiple jobs in parallel
 workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - test-node-8
-      - test-node-6
-      - test-node-9
-      - test-browser
-      - test-and-deploy-website
+      - build
+      - test-node-8:
+          requires:
+            - build
+      - test-node-6:
+          requires:
+            - build
+      - test-node-9:
+          requires:
+            - build
+      - test-browser:
+          requires:
+            - build
+      - test-and-deploy-website:
+          requires:
+            - build
