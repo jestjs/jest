@@ -12,6 +12,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
+import stripAnsi from 'strip-ansi';
 
 const {cleanup, extractSummary, writeFiles} = require('../Utils');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
@@ -303,12 +304,15 @@ test('resolves projects and their <rootDir> properly', () => {
     }),
   });
 
-  ({stderr} = runJest(DIR));
+  ({stderr} = stripAnsi(runJest(DIR)));
   expect(stderr).toMatch(
-    /One or more specified projects share the same config file/,
+    /Whoops! Two projects resolved to the same config path/,
   );
+  expect(stderr).toMatch(`${path.join(DIR, 'package.json')}`);
+  expect(stderr).toMatch(/Project 1|2: dir1/);
+  expect(stderr).toMatch(/Project 1|2: dir2/);
 
-  // praject with a directory/file that does not exist
+  // project with a directory/file that does not exist
   writeFiles(DIR, {
     'package.json': JSON.stringify({
       jest: {
