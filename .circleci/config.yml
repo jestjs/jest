@@ -38,7 +38,6 @@ jobs:
             - node_modules
             - build
           key: v1-deps-cache-{{ .Branch }}-{{ "yarn.lock" }}
-      - run: yarn run test-ci-partial
       - persist_to_workspace:
           root: .
           paths:
