@@ -49,7 +49,6 @@ jobs:
     docker:
       - image: node:9
     steps:
-      checkout
       - attach_workspace:
           at: ~/jest
       - checkout
