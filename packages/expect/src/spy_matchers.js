@@ -124,9 +124,11 @@ const spyMatchers: MatchersObject = {
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
 
-    if (!isPositiveInteger(nth) || nth < 1) {
+    if (typeof nth !== 'number' || parseInt(nth) !== nth || nth < 1) {
       const message = () =>
-        `nth value must be a positive integer greater than 0`;
+        `nth value ${printReceived(
+          nth,
+        )} must be a positive integer greater than ${printExpected(0)}`;
       const pass = false;
       return {message, pass};
     }
@@ -266,10 +268,6 @@ const formatMismatchedArgs = (expected, received) => {
   }
 
   return printedArgs.join('\n');
-};
-
-const isPositiveInteger = (integer: number) => {
-  return typeof integer === 'number' && parseInt(integer) === integer;
 };
 
 const nthToString = (nth: number) => {

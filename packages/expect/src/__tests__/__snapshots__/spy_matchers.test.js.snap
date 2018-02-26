@@ -156,21 +156,21 @@ Expected mock function first call to not have been called with:
   <green>[\\"foo1\\", \\"bar\\"]</>"
 `;
 
-exports[`nthCalledWith should reject non integer nth value 1`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject non integer nth value 2`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject non integer nth value 2`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject non integer nth value 3`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject non integer nth value 3`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject non integer nth value 4`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject non integer nth value 4`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject nth value smaller than 1 1`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject nth value smaller than 1 2`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject nth value smaller than 1 2`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject nth value smaller than 1 3`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject nth value smaller than 1 3`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject nth value smaller than 1 4`] = `"nth value must be a positive integer greater than 0"`;
+exports[`nthCalledWith should reject nth value smaller than 1 4`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
 exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
