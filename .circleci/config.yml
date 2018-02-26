@@ -42,8 +42,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ~/build
-            - ~/node_modules
+            - build
+            - node_modules
 
   test-node-9:
     working_directory: ~/jest
