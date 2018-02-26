@@ -28,21 +28,24 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
   const value = expected;
   let error;
 
-  if (fromPromise) {
+  if (fromPromise && actual instanceof Error) {
     error = actual;
   } else {
     if (typeof actual !== 'function') {
-      throw new Error(
-        matcherHint(matcherName, 'function', getType(value)) +
-          '\n\n' +
-          'Received value must be a function, but instead ' +
-          `"${getType(actual)}" was found`,
-      );
-    }
-    try {
-      actual();
-    } catch (e) {
-      error = e;
+      if (!fromPromise) {
+        throw new Error(
+          matcherHint(matcherName, 'function', getType(value)) +
+            '\n\n' +
+            'Received value must be a function, but instead ' +
+            `"${getType(actual)}" was found`,
+        );
+      }
+    } else {
+      try {
+        actual();
+      } catch (e) {
+        error = e;
+      }
     }
   }
 
