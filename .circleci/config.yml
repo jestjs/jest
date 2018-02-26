@@ -50,7 +50,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/jest
-      - checkout
       - run: yarn --no-progress --ignore-scripts
       - run: yarn run test-ci-partial
 
@@ -61,7 +60,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/jest
-      - checkout
       - run: yarn --no-progress --ignore-scripts
       - run: yarn run test-ci
 
@@ -72,7 +70,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/jest
-      - checkout
       - run: yarn --no-progress --ignore-scripts
       - run: yarn run test-ci-partial
 
@@ -83,7 +80,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/jest
-      - checkout
       - restore-cache:
           keys:
             - v1-deps-cache-{{ .Branch }}-{{ checksum "website/package.json" }}
@@ -103,7 +99,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/jest
-      - checkout
       - run: |
           apt-get update && apt-get install make g++ -y
       - run: npm i -g yarn@^1.3.2
