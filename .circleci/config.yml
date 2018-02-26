@@ -39,9 +39,7 @@ jobs:
           key: v1-deps-cache-{{ .Branch }}-{{ "yarn.lock" }}
       - persist_to_workspace:
           root: .
-          paths:
-            - node_modules
-            - '{ packages/*/build/* }'
+          paths: .
 
   test-node-9:
     working_directory: /tmp/jest
