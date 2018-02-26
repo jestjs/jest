@@ -27,6 +27,10 @@ test('runs tests and suites defined inside other tests', () => {
     .filter(line => line.includes(' > afterAll'));
   expect(afterAlls).toHaveLength(24);
   expect(result.stderr).toMatch('48 failed, 104 passed, 152 total');
-  expect(result.stdout).toMatchSnapshot();
+  const normalizedStdout = result.stdout.replace(
+    /console\.log __tests__./g,
+    '',
+  );
+  expect(normalizedStdout).toMatchSnapshot();
   expect(result.status).toBe(1);
 });
