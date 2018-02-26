@@ -41,7 +41,7 @@ jobs:
           root: .
           paths:
             - node_modules
-            - { packages/*/build/* }
+            - '{ packages/*/build/* }'
 
   test-node-9:
     working_directory: /tmp/jest
