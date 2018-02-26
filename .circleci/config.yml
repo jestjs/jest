@@ -1,15 +1,15 @@
 aliases:
   - &restore-cache
     keys:
-      - dependencies-{{ .Branch }}-{{ checksum "package.json" }}
+      - v1-dependencies-{{ .Branch }}-{{ "yarn.lock" }}
       # Fallback in case checksum fails
-      - dependencies-{{ .Branch }}-
+      - v1-dependencies-{{ .Branch }}-
 
   - &save-cache
     paths:
       - node_modules
       - website/node_modules
-    key: dependencies-{{ .Branch }}-{{ checksum "package.json" }}
+    key: v1-dependencies-{{ .Branch }}-{{ "yarn.lock" }}
 
   - &yarn-install
     run: |
