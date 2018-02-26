@@ -4,6 +4,9 @@
 
 * `[jest-cli]` Add `hideUsage` option to hide usage instructions in watch mode
   ([#5664] (https://github.com/facebook/jest/pull/5664))
+* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test` 
+  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive 
+  errors to `it`/ `test` for invalid arguements. 
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
 
@@ -11,6 +14,8 @@
 
 * `[jest-resolve]` Update node module resolution algorithm to correctly handle
   symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
+* `[jest-editor-support]` Update `Settings` to use spawn in shell option
+  ([#5658](https://github.com/facebook/jest/pull/5658))
 
 ## 22.4.2
 
