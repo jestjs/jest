@@ -7,6 +7,8 @@
   errors to `it`/ `test` for invalid arguements.
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
+* `[expect]` Make toThrow matcher pass only if Error object is returned from
+  promises ([#5670](https://github.com/facebook/jest/pull/5670))
 
 ### Fixes
 
@@ -20,6 +22,8 @@
   ([#5692](https://github.com/facebook/jest/pull/5692))
 * `[jest-cli]` Fix update snapshot issue when using watchAll
   ([#5696](https://github.com/facebook/jest/pull/5696))
+* `[expect]` Fix rejects.not matcher
+  ([#5670](https://github.com/facebook/jest/pull/5670))
 
 ## 22.4.2
 
