@@ -52,7 +52,7 @@ jobs:
       - attach_workspace:
           at: ~/jest
       - checkout
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-scripts
       - run: yarn run test-ci-partial
 
   test-node-8:
@@ -63,7 +63,7 @@ jobs:
       - attach_workspace:
           at: ~/jest
       - checkout
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-scripts
       - run: yarn run test-ci
 
   test-node-6:
@@ -74,7 +74,7 @@ jobs:
       - attach_workspace:
           at: ~/jest
       - checkout
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-scripts
       - run: yarn run test-ci-partial
 
   test-and-deploy-website:
@@ -90,7 +90,7 @@ jobs:
             - v1-deps-cache-{{ .Branch }}-{{ checksum "website/package.json" }}
             - v1-deps-cache-{{ .Branch }}-
             - v1-deps-cache
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-scripts
       - save-cache:
           key: v1-deps-cache-{{ .Branch }}-{{ checksum "website/package.json" }}
           paths:
@@ -108,7 +108,7 @@ jobs:
       - run: |
           apt-get update && apt-get install make g++ -y
       - run: npm i -g yarn@^1.3.2
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-scripts
       - run: yarn run test-ci-es5-build-in-browser
 
 # Workflows enables us to run multiple jobs in parallel
