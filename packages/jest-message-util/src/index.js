@@ -44,6 +44,10 @@ type StackTraceOptions = {
   noStackTrace: boolean,
 };
 
+type ResultsErrorsOptions = StackTraceOptions & {
+  noErrorDetails: boolean,
+};
+
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
@@ -279,9 +283,13 @@ export const formatStackTrace = (
 export const formatResultsErrors = (
   testResults: Array<AssertionResult>,
   config: StackTraceConfig,
-  options: StackTraceOptions,
+  options: ResultsErrorsOptions,
   testPath: ?Path,
 ): ?string => {
+  if (options.noErrorDetails) {
+    return null;
+  }
+
   const failedResults = testResults.reduce((errors, result) => {
     result.failureMessages.forEach(content => errors.push({content, result}));
     return errors;
