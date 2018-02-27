@@ -59,6 +59,14 @@ class Error {
         }).toThrowErrorMatchingSnapshot();
       });
 
+      test('threw, but expected message is substring of error message', () => {
+        expect(() => {
+          jestExpect(() => {
+            throw new Error('banana and apple');
+          })[toThrow]('apple');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
       it('properly escapes strings when matching against errors', () => {
         jestExpect(() => {
           throw new TypeError('"this"? throws.');
