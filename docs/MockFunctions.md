@@ -157,7 +157,10 @@ jest.mock('axios')
 
 test('should fetch users', () => {
   const resp = Promise.resolve({ data: [{ name: 'Bob' }] })
-  jest.spyOn(axios, 'get').mockImplementationOnce(() => resp)
+  axios.get.mockReturnValue(resp)
+
+  // or you could use the follwing depending on your use case: 
+  // axios.get.mockImpementation(() => resp)
 
   return Users.all().then(users => expect(users).toEqual(resp.data))
 })
