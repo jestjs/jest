@@ -114,6 +114,7 @@ const getConfigs = (
       listTests: options.listTests,
       logHeapUsage: options.logHeapUsage,
       maxWorkers: options.maxWorkers,
+      noErrorDetails: options.noErrorDetails,
       noSCM: undefined,
       noStackTrace: options.noStackTrace,
       nonFlagArgs: options.nonFlagArgs,

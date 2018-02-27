@@ -58,6 +58,7 @@ export default ({
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],
   name: 'string',
+  noErrorDetails: false,
   noStackTrace: false,
   notify: false,
   notifyMode: 'always',

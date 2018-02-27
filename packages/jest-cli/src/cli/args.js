@@ -353,6 +353,11 @@ export const options = {
       'search when resolving modules.',
     type: 'array',
   },
+  noErrorDetails: {
+    default: undefined,
+    description: 'Disables reporting the cause of test failures',
+    type: 'boolean',
+  },
   noStackTrace: {
     default: undefined,
     description: 'Disables stack trace in test results output',

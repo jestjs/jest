@@ -50,6 +50,7 @@ export type Argv = {|
   modulePathIgnorePatterns: Array<string>,
   modulePaths: Array<string>,
   name: string,
+  noErrorDetails: boolean,
   noSCM: boolean,
   noStackTrace: boolean,
   notify: boolean,
