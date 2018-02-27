@@ -7,7 +7,7 @@
       "setup-teardown",
       "mock-functions",
       "jest-platform",
-      "community-packages",
+      "jest-community",
       "more-resources"
     ],
     "Guides": [
