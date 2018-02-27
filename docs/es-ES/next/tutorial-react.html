@@ -163,10 +163,10 @@ Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword
 </code></pre>
 <p>React 16 ocasiona estas advertencias debido a cómo éste verifica tipos de elemento, el módulo simulado falla estas verificaciones. Sus opciones son:</p>
 <ol>
-<li><p>Renderice como texto. De esta manera no verá los apoyos pasados al componente de simulación en el snapshot, pero es sencillo y directo:
+<li><p>Render as text. This way you won't see the props passed to the mock component in the snapshot, but it's straightforward:
 js
 jest.mock('./SomeComponent', () =&gt; () =&gt; 'SomeComponent');</p></li>
-<li><p>Renderice como elemento personalizado. Los &quot;elementos personalizados&quot; de DOM no son verificados para nada y no deberían disparar advertencias. Son de letras minúsculas y tienen un guión en el nombre.
+<li><p>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
 js
 jest.mock('./Widget', () =&gt; 'mock-widget');</p></li>
 <li><p>Use <code>react-test-renderer</code>. The test renderer doesn't care about element types and will happily accept e.g. <code>SomeComponent</code>. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.</p></li>

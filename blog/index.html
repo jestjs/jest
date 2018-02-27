@@ -155,22 +155,22 @@ write a blog post. So here is a quick summary of the main changes in version 21:
 <a href="https://github.com/mjackson/expect"><code>expect</code></a> package to the Jest project.
 As part of that transition, the Jest core team, with much help from
 <a href="https://github.com/skovhus/">Kenneth Skovhus</a>, made both <code>jest-matchers</code>
-(renamed to <code>expect</code>) and <code>jest-mock</code> work in browsers. This means that while
-you cannot use Jest itself in browsers
-(<a href="https://github.com/facebook/jest/issues/848">yet</a>), you can use its awesome
-assertions and mocks for instance as replacements for Chai and Sinon running
-in Mocha tests. If you are migrating from earlier <code>expect</code> to the new
-Jest-powered <code>expect</code>, you can use
+(renamed to <code>expect</code>) and <code>jest-mock</code> work in browsers. This means that
+while you cannot use Jest itself in browsers
+(<a href="https://github.com/facebook/jest/issues/848">yet</a>), you can use its
+awesome assertions and mocks for instance as replacements for Chai and Sinon
+running in Mocha tests. If you are migrating from earlier <code>expect</code> to the
+new Jest-powered <code>expect</code>, you can use
 <a href="https://github.com/skovhus/jest-codemods/"><code>jest-codemods</code></a> to automate the
 migration.</li>
 <li><strong>MIT License:</strong> We changed Jest's license to MIT. <em>Yay!</em></li>
 <li><strong>Fail test suites on async errors:</strong> Jest used to have a bug that made it
 crash when errors were thrown in certain parts of async code. This was fixed
 by community contributors.</li>
-<li><strong>Faster startup:</strong> With Jest 21 we fine tuned Jest's startup to be more than
-50% faster. The large overhead of Jest when running it on a small and fast
-test was always an issue for us and now this shouldn't be a reason to hold
-you back from using Jest any longer.</li>
+<li><strong>Faster startup:</strong> With Jest 21 we fine tuned Jest's startup to be more
+than 50% faster. The large overhead of Jest when running it on a small and
+fast test was always an issue for us and now this shouldn't be a reason to
+hold you back from using Jest any longer.</li>
 </ol>
 <h2><a class="anchor" aria-hidden="true" name="jest-community"></a><a href="#jest-community" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Jest Community</h2>
 <p>The community around Jest is working hard to make the testing experience even
