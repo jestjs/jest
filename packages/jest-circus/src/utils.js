@@ -199,17 +199,18 @@ export const getTestDuration = (test: TestEntry): ?number => {
 export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
   let testResults = [];
   for (const test of describeBlock.tests) {
+    const {status} = test;
+
+    if (!status) {
+      throw new Error('Status should be present after tests are run.');
+    }
+
     const testPath = [];
     let parent = test;
     do {
       testPath.unshift(parent.name);
     } while ((parent = parent.parent));
 
-    const {status} = test;
-
-    if (!status) {
-      throw new Error('Status should be present after tests are run.');
-    }
     testResults.push({
       duration: test.duration,
       errors: test.errors.map(_formatError),
