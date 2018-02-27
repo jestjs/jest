@@ -19,6 +19,7 @@
     "babel-preset-env": "^1.4.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-react-native": "^4.0.0",
+    "babel-register": "^6.26.0",
     "browserify": "^14.4.0",
     "chalk": "^2.0.1",
     "codecov": "^3.0.0",
