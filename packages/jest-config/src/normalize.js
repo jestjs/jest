@@ -498,6 +498,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'mapCoverage':
       case 'moduleFileExtensions':
       case 'name':
+      case 'noErrorDetails':
       case 'noStackTrace':
       case 'notify':
       case 'notifyMode':

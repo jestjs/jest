@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`--noErrorDetails switch suppresses printing the cause of a failed test 1`] = `
+"FAIL __tests__/test_error.test.js
+  ✕ failing test
+
+"
+`;

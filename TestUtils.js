@@ -33,6 +33,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   listTests: false,
   logHeapUsage: false,
   maxWorkers: 2,
+  noErrorDetails: false,
   noSCM: null,
   noStackTrace: false,
   nonFlagArgs: [],
