@@ -11,9 +11,9 @@ work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
 
 The basic idea is to:
 
-1. launch & file the websocket endpoint of puppeteer with Global Setup
-2. connect to puppeteer from each Test Environment
-3. close puppeteer with Global Teardown
+1.  launch & file the websocket endpoint of puppeteer with Global Setup
+2.  connect to puppeteer from each Test Environment
+3.  close puppeteer with Global Teardown
 
 Here's an example of the GlobalSetup script
 
