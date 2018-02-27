@@ -37,7 +37,7 @@
     "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
     "which": "^1.2.12",
-    "yargs": "^10.0.3"
+    "yargs": "^11.0.0"
   },
   "bin": {
     "jest": "./bin/jest.js"

@@ -1,6 +1,7 @@
 [ignore]
 .*/examples/.*
 .*/node_modules/metro-bundler/.*
+.*/node_modules/module-deps/.*
 
 [options]
 module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/src/index.js'
