@@ -28,7 +28,11 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
   const value = expected;
   let error;
 
-  if (fromPromise && actual instanceof Error) {
+  if (
+    fromPromise &&
+    typeof actual.name === 'string' &&
+    typeof actual.message === 'string'
+  ) {
     error = actual;
   } else {
     if (typeof actual !== 'function') {
