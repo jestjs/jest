@@ -146,11 +146,11 @@ class customError extends Error {
       });
     });
 
-    describe('promises/async', () => {
+    describe('promise/async throws if Error-like object is returned', () => {
       const asyncFn = async (shouldThrow?: boolean, resolve?: boolean) => {
         let err;
         if (shouldThrow) {
-          err = new Err('async apple');
+          err = new Err('apple');
         }
         if (resolve) {
           return await Promise.resolve(err || 'apple');
@@ -160,16 +160,20 @@ class customError extends Error {
       };
 
       test('passes', async () => {
-        expect.assertions(22);
+        expect.assertions(24);
+        await jestExpect(Promise.reject(new Error())).rejects[toThrow]();
+
         await jestExpect(asyncFn(true)).rejects[toThrow]();
         await jestExpect(asyncFn(true)).rejects[toThrow](Err);
         await jestExpect(asyncFn(true)).rejects[toThrow](Error);
         await jestExpect(asyncFn(true)).rejects[toThrow]('apple');
-        await jestExpect(asyncFn(true)).rejects[toThrow](/apple/);
+        await jestExpect(asyncFn(true)).rejects[toThrow](/app/);
 
         await jestExpect(asyncFn(true)).rejects.not[toThrow](Err2);
         await jestExpect(asyncFn(true)).rejects.not[toThrow]('banana');
         await jestExpect(asyncFn(true)).rejects.not[toThrow](/banana/);
+
+        await jestExpect(asyncFn(true, true)).resolves[toThrow]();
 
         await jestExpect(asyncFn(false, true)).resolves.not[toThrow]();
         await jestExpect(asyncFn(false, true)).resolves.not[toThrow](Error);
