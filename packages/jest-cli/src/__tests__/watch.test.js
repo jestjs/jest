@@ -65,6 +65,7 @@ jest.doMock(
 const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
+const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
 afterEach(runJestMock.mockReset);
 
@@ -410,6 +411,68 @@ describe('Watch mode flows', () => {
     expect(runJestMock).toHaveBeenCalledTimes(2);
   });
 
+  it('Pressing "t" reruns the tests in "test name pattern" mode', async () => {
+    const hooks = new JestHooks();
+
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
+    runJestMock.mockReset();
+
+    stdin.emit(KEYS.T);
+    ['t', 'e', 's', 't'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit(KEYS.ENTER);
+    await nextTick();
+
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
+      testNamePattern: 'test',
+      testPathPattern: '',
+      watch: true,
+      watchAll: false,
+    });
+  });
+
+  it('Pressing "p" reruns the tests in "filename pattern" mode', async () => {
+    const hooks = new JestHooks();
+
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
+    runJestMock.mockReset();
+
+    stdin.emit(KEYS.P);
+    ['f', 'i', 'l', 'e'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit(KEYS.ENTER);
+    await nextTick();
+
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
+      testNamePattern: '',
+      testPathPattern: 'file',
+      watch: true,
+      watchAll: false,
+    });
+  });
+
+  it('Can combine "p" and "t" filters', async () => {
+    const hooks = new JestHooks();
+
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
+    runJestMock.mockReset();
+
+    stdin.emit(KEYS.P);
+    ['f', 'i', 'l', 'e'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit(KEYS.ENTER);
+    await nextTick();
+
+    stdin.emit(KEYS.T);
+    ['t', 'e', 's', 't'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit(KEYS.ENTER);
+    await nextTick();
+
+    expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
+      testNamePattern: 'test',
+      testPathPattern: 'file',
+      watch: true,
+      watchAll: false,
+    });
+  });
+
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
     const hooks = new JestHooks();
 
@@ -426,14 +489,32 @@ describe('Watch mode flows', () => {
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       updateSnapshot: 'all',
       watch: true,
+      watchAll: false,
     });
 
     stdin.emit(KEYS.A);
+
     await nextTick();
     // updateSnapshot is not sticky after a run.
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
       updateSnapshot: 'new',
       watch: false,
+      watchAll: true,
+    });
+
+    results = {snapshot: {failure: true}};
+
+    stdin.emit(KEYS.A);
+    await nextTick();
+
+    runJestMock.mockReset();
+    stdin.emit(KEYS.U);
+    await nextTick();
+
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
+      updateSnapshot: 'all',
+      watch: false,
+      watchAll: true,
     });
   });
 
