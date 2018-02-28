@@ -61,12 +61,12 @@ const WHITELISTED_IDENTIFIERS = {
   WeakSet: true,
   arguments: true,
   expect: true,
+  isNaN: true,
   jest: true,
   require: true,
-  undefined: true,
-  parseInt: true,
   parseFloat: true,
-  isNaN: true
+  parseInt: true,
+  undefined: true,
 };
 Object.keys(global).forEach(name => (WHITELISTED_IDENTIFIERS[name] = true));
 
