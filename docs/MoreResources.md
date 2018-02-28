@@ -22,7 +22,7 @@ you might want to check out.
 You will find a number of example test cases in the
 [`examples`](https://github.com/facebook/jest/tree/master/examples) folder on
 GitHub. You can also learn from the excellent tests used by the
-[React](https://github.com/facebook/react/tree/master/src/renderers/__tests__),
+[React](https://github.com/facebook/react/tree/master/packages/react/src/__tests__),
 [Relay](https://github.com/facebook/relay/tree/master/packages/react-relay/modern/__tests__),
 and
 [React Native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
