@@ -64,6 +64,9 @@ const WHITELISTED_IDENTIFIERS = {
   jest: true,
   require: true,
   undefined: true,
+  parseInt: true,
+  parseFloat: true,
+  isNaN: true
 };
 Object.keys(global).forEach(name => (WHITELISTED_IDENTIFIERS[name] = true));
 
