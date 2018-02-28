@@ -501,8 +501,8 @@ export const options = {
   testEnvironmentOptions: {
     description:
       'Test environment options that will be passed to the testEnvironment. ' +
-      'The relevant options depend on the environment',
-    type: 'Object',
+      'The relevant options depend on the environment.',
+    type: 'string', // Object
   },
   testFailureExitCode: {
     description: 'Exit code of `jest` command if the test run failed',
