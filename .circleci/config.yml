@@ -1,15 +1,15 @@
 aliases:
   - &restore-cache
     keys:
-      - v1-dependencies-{{ .Branch }}-{{ "yarn.lock" }}
+      - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       # Fallback in case checksum fails
-      - v1-dependencies-{{ .Branch }}-
+      - v2-dependencies-{{ .Branch }}-
 
   - &save-cache
     paths:
       - node_modules
       - website/node_modules
-    key: v1-dependencies-{{ .Branch }}-{{ "yarn.lock" }}
+    key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
   - &yarn-install
     run: |
@@ -44,7 +44,7 @@ aliases:
 version: 2
 jobs:
   test-browser:
-    working_directory: ~/jest
+    working_directory: /home/circleci/jest
     docker:
       - image: markhobson/node-chrome
     steps:
