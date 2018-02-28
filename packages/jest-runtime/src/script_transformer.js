@@ -165,7 +165,6 @@ export default class ScriptTransformer {
           },
         ],
       ],
-      retainLines: true,
     }).code;
   }
 

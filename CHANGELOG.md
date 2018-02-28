@@ -16,6 +16,8 @@
   ([#5658](https://github.com/facebook/jest/pull/5658))
 * `[jest-cli]` Improve the error message when 2 projects resolve to the same
   config ([#5674](https://github.com/facebook/jest/pull/5674))
+* `[jest-runtime]` remove retainLines from coverage instrumentation
+  ([#5692](https://github.com/facebook/jest/pull/5692))
 
 ## 22.4.2
 
