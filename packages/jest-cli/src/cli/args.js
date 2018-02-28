@@ -461,6 +461,11 @@ export const options = {
       'every single file.',
     type: 'boolean',
   },
+  runner: {
+    description:
+      "Allows to use a custom runner instead of Jest's default test runner.",
+    type: 'string',
+  },
   setupFiles: {
     description:
       'The paths to modules that run some code to configure or ' +
@@ -492,6 +497,12 @@ export const options = {
   testEnvironment: {
     description: 'Alias for --env',
     type: 'string',
+  },
+  testEnvironmentOptions: {
+    description:
+      'Test environment options that will be passed to the testEnvironment. ' +
+      'The relevant options depend on the environment',
+    type: 'Object',
   },
   testFailureExitCode: {
     description: 'Exit code of `jest` command if the test run failed',
