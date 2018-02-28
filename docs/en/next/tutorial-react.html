@@ -273,8 +273,7 @@ transformer. Instead of using babel-jest, here is an example of using babel:</p>
       <span class="hljs-keyword">return</span> babel.transform(src, {
         filename,
         <span class="hljs-attr">presets</span>: [jestPreset],
-        <span class="hljs-attr">retainLines</span>: <span class="hljs-literal">true</span>,
-      }).code;
+      });
     }
     <span class="hljs-keyword">return</span> src;
   },

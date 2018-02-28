@@ -240,8 +240,7 @@ test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'<
       <span class="hljs-keyword">return</span> babel.transform(src, {
         filename,
         <span class="hljs-attr">presets</span>: [jestPreset],
-        <span class="hljs-attr">retainLines</span>: <span class="hljs-literal">true</span>,
-      }).code;
+      });
     }
     <span class="hljs-keyword">return</span> src;
   },
