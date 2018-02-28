@@ -54,6 +54,7 @@ export default function Suite(attrs: Object) {
     description: this.description,
     fullName: this.getFullName(),
     failedExpectations: [],
+    testPath: attrs.getTestPath(),
   };
 }
 
@@ -209,7 +210,7 @@ function convertDescriptorToString(descriptor) {
 }
 
 function isAfterAll(children) {
-  return children && children[0].result.status;
+  return children && children[0] && children[0].result.status;
 }
 
 function isFailure(args) {

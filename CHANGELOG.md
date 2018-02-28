@@ -1,12 +1,194 @@
 ## master
 
-### features
+### Features
 
+* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test`
+  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive
+  errors to `it`/ `test` for invalid arguements.
+* `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
+  ([#5512](https://github.com/facebook/jest/pull/5512))
+
+### Fixes
+
+* `[jest-resolve]` Update node module resolution algorithm to correctly handle
+  symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
+* `[jest-editor-support]` Update `Settings` to use spawn in shell option
+  ([#5658](https://github.com/facebook/jest/pull/5658))
+* `[jest-cli]` Improve the error message when 2 projects resolve to the same
+  config ([#5674](https://github.com/facebook/jest/pull/5674))
+* `[jest-runtime]` remove retainLines from coverage instrumentation
+  ([#5692](https://github.com/facebook/jest/pull/5692))
+
+## 22.4.2
+
+### Fixes
+
+* `[jest-haste-map]` Recreate Haste map when deserialization fails
+  ([#5642](https://github.com/facebook/jest/pull/5642))
+
+## 22.4.1
+
+### Fixes
+
+* `[jest-haste-map]` Parallelize Watchman calls in crawler
+  ([#5640](https://github.com/facebook/jest/pull/5640))
+* `[jest-editor-support]` Update TypeScript definitions
+  ([#5625](https://github.com/facebook/jest/pull/5625))
+* `[babel-jest]` Remove `retainLines` argument to babel.
+  ([#5594](https://github.com/facebook/jest/pull/5594))
+
+### Features
+
+* `[jest-runtime]` Provide `require.main` property set to module with test suite
+  ([#5618](https://github.com/facebook/jest/pull/5618))
+
+### Chore & Maintenance
+
+* `[docs]` Add note about Node version support
+  ([#5622](https://github.com/facebook/jest/pull/5622))
+* `[docs]` Update to use yarn
+  ([#5624](https://github.com/facebook/jest/pull/5624))
+* `[docs]` Add how to mock scoped modules to Manual Mocks doc
+  ([#5638](https://github.com/facebook/jest/pull/5638))
+
+## 22.4.0
+
+### Fixes
+
+* `[jest-haste-map]` Overhauls how Watchman crawler works fixing Windows
+  ([#5615](https://github.com/facebook/jest/pull/5615))
+* `[expect]` Allow matching of Errors against plain objects
+  ([#5611](https://github.com/facebook/jest/pull/5611))
+* `[jest-haste-map]` Do not read binary files in Haste, even when instructed to
+  do so ([#5612](https://github.com/facebook/jest/pull/5612))
+* `[jest-cli]` Don't skip matchers for exact files
+  ([#5582](https://github.com/facebook/jest/pull/5582))
+* `[docs]` Update discord links
+  ([#5586](https://github.com/facebook/jest/pull/5586))
+* `[jest-runtime]` Align handling of testRegex on Windows between searching for
+  tests and instrumentation checks
+  ([#5560](https://github.com/facebook/jest/pull/5560))
+* `[jest-config]` Make it possible to merge `transform` option with preset
+  ([#5505](https://github.com/facebook/jest/pull/5505))
+* `[jest-util]` Fix `console.assert` behavior in custom & buffered consoles
+  ([#5576](https://github.com/facebook/jest/pull/5576))
+
+### Features
+
+* `[docs]` Add MongoDB guide
+  ([#5571](https://github.com/facebook/jest/pull/5571))
+* `[jest-runtime]` Deprecate mapCoverage option.
+  ([#5177](https://github.com/facebook/jest/pull/5177))
+* `[babel-jest]` Add option to return sourcemap from the transformer separately
+  from source. ([#5177](https://github.com/facebook/jest/pull/5177))
+* `[jest-validate]` Add ability to log deprecation warnings for CLI flags.
+  ([#5536](https://github.com/facebook/jest/pull/5536))
+* `[jest-serializer]` Added new module for serializing. Works using V8 or JSON
+  ([#5609](https://github.com/facebook/jest/pull/5609))
+* `[docs]` Add a documentation note for project `displayName` configuration
+  ([#5600](https://github.com/facebook/jest/pull/5600))
+
+# Chore & Maintenance
+
+* `[docs]` Update automatic mocks documentation
+  ([#5630](https://github.com/facebook/jest/pull/5630))
+
+## jest 22.3.0
+
+### Fixes
+
+* `[expect]` Add descriptive error message to CalledWith methods when missing
+  optional arguments ([#5547](https://github.com/facebook/jest/pull/5547))
+* `[jest-cli]` Fix inability to quit watch mode while debugger is still attached
+  ([#5029](https://github.com/facebook/jest/pull/5029))
+* `[jest-haste-map]` Properly handle platform-specific file deletions
+  ([#5534](https://github.com/facebook/jest/pull/5534))
+
+### Features
+
+* `[jest-util]` Add the following methods to the "console" implementations:
+  `assert`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`,
+  `groupEnd`, `time`, `timeEnd`
+  ([#5514](https://github.com/facebook/jest/pull/5514))
+* `[docs]` Add documentation for interactive snapshot mode
+  ([#5291](https://github.com/facebook/jest/pull/5291))
+* `[jest-editor-support]` Add watchAll flag
+  ([#5523](https://github.com/facebook/jest/pull/5523))
+* `[jest-cli]` Support multiple glob patterns for `collectCoverageFrom`
+  ([#5537](https://github.com/facebook/jest/pull/5537))
+* `[docs]` Add versioned documentation to the website
+  ([#5541](https://github.com/facebook/jest/pull/5541))
+
+### Chore & Maintenance
+
+* `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom`
+  ([#5524](https://github.com/facebook/jest/pull/5524))
+* `[filenames]` Standardize files names in "integration-tests" folder
+  ([#5513](https://github.com/facebook/jest/pull/5513))
+
+## jest 22.2.2
+
+### Fixes
+
+* `[babel-jest]` Revert "Remove retainLines from babel-jest"
+  ([#5496](https://github.com/facebook/jest/pull/5496))
+* `[jest-docblock]` Support multiple of the same `@pragma`.
+  ([#5154](https://github.com/facebook/jest/pull/5502))
+
+### Features
+
+* `[jest-worker]` Assign a unique id for each worker and pass it to the child
+  process. It will be available via `process.env.JEST_WORKER_ID`
+  ([#5494](https://github.com/facebook/jest/pull/5494))
+
+### Chore & Maintenance
+
+* `[filenames]` Standardize file names in root
+  ([#5500](https://github.com/facebook/jest/pull/5500))
+
+## jest 22.2.1
+
+### Fixes
+
+* `[jest-config]` "all" takes precedence over "lastCommit"
+  ([#5486](https://github.com/facebook/jest/pull/5486))
+
+## jest 22.2.0
+
+### Features
+
+* `[jest-runner]` Move test summary to after coverage report
+  ([#4512](https://github.com/facebook/jest/pull/4512))
+* `[jest-cli]` Added `--notifyMode` to specify when to be notified.
+  ([#5125](https://github.com/facebook/jest/pull/5125))
+* `[diff-sequences]` New package compares items in two sequences to find a
+  **longest common subsequence**.
+  ([#5407](https://github.com/facebook/jest/pull/5407))
+* `[jest-matcher-utils]` Add `comment` option to `matcherHint` function
+  ([#5437](https://github.com/facebook/jest/pull/5437))
+* `[jest-config]` Allow lastComit and changedFilesWithAncestor via JSON config
+  ([#5476](https://github.com/facebook/jest/pull/5476))
+* `[jest-util]` Add deletion to `process.env` as well
+  ([#5466](https://github.com/facebook/jest/pull/5466))
+* `[jest-util]` Add case-insensitive getters/setters to `process.env`
+  ([#5465](https://github.com/facebook/jest/pull/5465))
 * `[jest-mock]` Add util methods to create async functions.
   ([#5318](https://github.com/facebook/jest/pull/5318))
 
 ### Fixes
 
+* `[jest-cli]` Add trailing slash when checking root folder
+  ([#5464](https://github.com/facebook/jest/pull/5464))
+* `[jest-cli]` Hide interactive mode if there are no failed snapshot tests
+  ([#5450](https://github.com/facebook/jest/pull/5450))
+* `[babel-jest]` Remove retainLines from babel-jest
+  ([#5439](https://github.com/facebook/jest/pull/5439))
+* `[jest-cli]` Glob patterns ignore non-`require`-able files (e.g. `README.md`)
+  ([#5199](https://github.com/facebook/jest/issues/5199))
+* `[jest-mock]` Add backticks support (\`\`) to `mock` a certain package via the
+  `__mocks__` folder. ([#5426](https://github.com/facebook/jest/pull/5426))
+* `[jest-message-util]` Prevent an `ENOENT` crash when the test file contained a
+  malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
 * `[expect]` Support class instances in `.toHaveProperty()` matcher.
@@ -17,10 +199,20 @@
 * `[expect]` Make `rejects` and `resolves` synchronously validate its argument.
   ([#5364](https://github.com/facebook/jest/pull/5364))
 * `[docs]` Add tutorial page for ES6 class mocks.
-  ([#5383]https://github.com/facebook/jest/pull/5383))
+  ([#5383](https://github.com/facebook/jest/pull/5383))
 * `[jest-resolve]` Search required modules in node_modules and then in custom
-  paths.
-  ([#5403](https://github.com/facebook/jest/pull/5403))
+  paths. ([#5403](https://github.com/facebook/jest/pull/5403))
+* `[jest-resolve]` Get builtin modules from node core.
+  ([#5411](https://github.com/facebook/jest/pull/5411))
+* `[jest-resolve]` Detect and preserve absolute paths in `moduleDirectories`. Do
+  not generate additional (invalid) paths by prepending each ancestor of `cwd`
+  to the absolute path. Additionally, this fixes functionality in Windows OS.
+  ([#5398](https://github.com/facebook/jest/pull/5398))
+
+### Chore & Maintenance
+
+* `[jest-util]` Implement watch plugins
+  ([#5399](https://github.com/facebook/jest/pull/5399))
 
 ## jest 22.1.4
 
@@ -72,6 +264,8 @@
 * `[jest-cli]` Make Jest exit without an error when no tests are found in the
   case of `--lastCommit`, `--findRelatedTests`, or `--onlyChanged` options
   having been passed to the CLI
+* `[jest-cli]` Add interactive snapshot mode
+  ([#3831](https://github.com/facebook/jest/pull/3831))
 
 ### Fixes
 
@@ -100,9 +294,6 @@
   ([#5279](https://github.com/facebook/jest/pull/5279))
 * `[jest-config]` Fix breaking change in `--testPathPattern`
   ([#5269](https://github.com/facebook/jest/pull/5269))
-
-### Fixes
-
 * `[docs]` Document caveat with mocks, Enzyme, snapshots and React 16
   ([#5258](https://github.com/facebook/jest/issues/5258))
 

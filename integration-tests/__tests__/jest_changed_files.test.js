@@ -15,10 +15,10 @@ import {
   findRepos,
   getChangedFilesForRoots,
 } from '../../packages/jest-changed-files/src';
-const skipOnWindows = require('../../scripts/skip_on_windows');
-const {cleanup, run, writeFiles} = require('../utils');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const {cleanup, run, writeFiles} = require('../Utils');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 const DIR = path.resolve(os.tmpdir(), 'jest_changed_files_test_dir');
 
@@ -306,7 +306,7 @@ test('gets changed files for hg', async () => {
       .sort(),
   ).toEqual(['file1.txt', 'file4.txt']);
 
-  run(`${HG} bookmark master`, DIR);
+  run(`${HG} bookmark main`, DIR);
   // Back up and develop on a different branch
   run(`${HG} checkout --rev=-2`, DIR);
 
@@ -317,9 +317,9 @@ test('gets changed files for hg', async () => {
   run(`${HG} commit -m "test4"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    changedSince: 'master',
+    changedSince: 'main',
   }));
-  // Returns files from this branch but not ones that only exist on master
+  // Returns files from this branch but not ones that only exist on main
   expect(
     Array.from(files)
       .map(filePath => path.basename(filePath))

@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test always 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;
+
+exports[`test change 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;
+
+exports[`test failure-change 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;
+
+exports[`test success 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+]
+`;
+
+exports[`test success-change 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;

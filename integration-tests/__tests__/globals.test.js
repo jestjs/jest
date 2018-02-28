@@ -11,15 +11,15 @@
 
 const path = require('path');
 const os = require('os');
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
-const {extractSummary} = require('../utils');
-const {createEmptyPackage, writeFiles, cleanup} = require('../utils');
+const {extractSummary} = require('../Utils');
+const {createEmptyPackage, writeFiles, cleanup} = require('../Utils');
 
 const DIR = path.resolve(os.tmpdir(), 'global-variables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => {
   cleanup(DIR);
@@ -110,7 +110,7 @@ test('only', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('tests with no implementation', () => {
+test('cannot test with no implementation', () => {
   const filename = 'only-constructs.test.js';
   const content = `
     it('it', () => {});
@@ -120,9 +120,10 @@ test('tests with no implementation', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-  expect(status).toBe(0);
+  expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr);
+
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
@@ -188,7 +189,7 @@ test('only with expand arg', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('tests with no implementation with expand arg', () => {
+test('cannot test with no implementation with expand arg', () => {
   const filename = 'only-constructs.test.js';
   const content = `
     it('it', () => {});
@@ -198,7 +199,7 @@ test('tests with no implementation with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR, ['--expand']);
-  expect(status).toBe(0);
+  expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr);
   expect(rest).toMatchSnapshot();

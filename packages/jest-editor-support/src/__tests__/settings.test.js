@@ -21,9 +21,11 @@ describe('Settings', () => {
       'test',
       1000,
     );
-    const settings = new Settings(workspace);
+    const options = {shell: true};
+    const settings = new Settings(workspace, options);
     expect(settings.workspace).toEqual(workspace);
     expect(settings.settings).toEqual(expect.any(Object));
+    expect(settings.spawnOptions).toEqual(options);
   });
 
   it('[jest 20] reads and parses the config', () => {
@@ -131,6 +133,42 @@ describe('Settings', () => {
     settings.getConfigProcess.emit('close');
 
     expect(completed).toHaveBeenCalled();
+  });
+
+  it('passes command, args, and options to createProcess', () => {
+    const localJestMajorVersion = 1000;
+    const pathToConfig = 'test';
+    const pathToJest = 'path_to_jest';
+    const rootPath = 'root_path';
+
+    const workspace = new ProjectWorkspace(
+      rootPath,
+      pathToJest,
+      pathToConfig,
+      localJestMajorVersion,
+    );
+    const createProcess = jest.fn().mockReturnValue({
+      on: () => {},
+      stdout: new EventEmitter(),
+    });
+
+    const options: any = {
+      createProcess,
+      shell: true,
+    };
+    const settings = new Settings(workspace, options);
+    settings.getConfig(() => {});
+
+    expect(createProcess).toBeCalledWith(
+      {
+        localJestMajorVersion,
+        pathToConfig,
+        pathToJest,
+        rootPath,
+      },
+      ['--showConfig'],
+      {shell: true},
+    );
   });
 });
 

@@ -10,12 +10,12 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 const os = require('os');
-const {cleanup, writeFiles} = require('../utils');
+const {cleanup, writeFiles} = require('../Utils');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 const DIR = path.resolve(os.tmpdir(), 'show_config_test');
 
 beforeEach(() => cleanup(DIR));

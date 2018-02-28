@@ -13,6 +13,12 @@ import prettyFormat from 'pretty-format';
 const format = (value: mixed) => prettyFormat(value, {min: true});
 
 export default {
+  mapCoverage: () => `  Option ${chalk.bold(
+    '"mapCoverage"',
+  )} has been removed, as it's no longer necessary.
+
+  Please update your configuration.`,
+
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns: Array<string>,
   }) => `  Option ${chalk.bold(
@@ -24,7 +30,7 @@ export default {
   Jest now treats your current configuration as:
   {
     ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(
-    `${format(options.preprocessorIgnorePatterns)}`,
+    format(options.preprocessorIgnorePatterns),
   )}
   }
 

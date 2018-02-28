@@ -8,7 +8,7 @@ automatically included when using
 ## Installation
 
 ```sh
-$ npm install babel-plugin-jest-hoist
+$ yarn add --dev babel-plugin-jest-hoist
 ```
 
 ## Usage

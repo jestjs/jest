@@ -186,6 +186,31 @@ describe('collectCoverageOnlyFrom', () => {
   });
 });
 
+describe('collectCoverageFrom', () => {
+  it('substitutes <rootDir> tokens', () => {
+    const barBaz = 'bar/baz';
+    const quxQuux = 'qux/quux/';
+    const notQuxQuux = `!${quxQuux}`;
+
+    const {options} = normalize(
+      {
+        collectCoverageFrom: [
+          barBaz,
+          notQuxQuux,
+          `<rootDir>/${barBaz}`,
+          `!<rootDir>/${quxQuux}`,
+        ],
+        rootDir: '/root/path/foo/',
+      },
+      {},
+    );
+
+    const expected = [barBaz, notQuxQuux, barBaz, notQuxQuux];
+
+    expect(options.collectCoverageFrom).toEqual(expected);
+  });
+});
+
 function testPathArray(key) {
   it('normalizes all paths relative to rootDir', () => {
     const {options} = normalize(
@@ -850,19 +875,20 @@ describe('preset', () => {
       }
       return '/node_modules/' + name;
     });
-    jest.mock(
+    jest.doMock(
       '/node_modules/react-native/jest-preset.json',
       () => ({
         moduleNameMapper: {b: 'b'},
         modulePathIgnorePatterns: ['b'],
         setupFiles: ['b'],
+        transform: {b: 'b'},
       }),
       {virtual: true},
     );
   });
 
   afterEach(() => {
-    jest.unmock('/node_modules/react-native/jest-preset.json');
+    jest.dontMock('/node_modules/react-native/jest-preset.json');
   });
 
   test('throws when preset not found', () => {
@@ -878,7 +904,7 @@ describe('preset', () => {
   });
 
   test('throws when preset is invalid', () => {
-    jest.mock('/node_modules/react-native/jest-preset.json', () =>
+    jest.doMock('/node_modules/react-native/jest-preset.json', () =>
       require.requireActual('./jest-preset.json'),
     );
 
@@ -913,6 +939,7 @@ describe('preset', () => {
         preset: 'react-native',
         rootDir: '/root/path/foo',
         setupFiles: ['a'],
+        transform: {a: 'a'},
       },
       {},
     );
@@ -922,7 +949,10 @@ describe('preset', () => {
     expect(options.setupFiles.sort()).toEqual([
       '/node_modules/a',
       '/node_modules/b',
-      '/node_modules/regenerator-runtime/runtime',
+    ]);
+    expect(options.transform).toEqual([
+      ['a', '/node_modules/a'],
+      ['b', '/node_modules/b'],
     ]);
   });
 
@@ -951,6 +981,32 @@ describe('preset', () => {
       ['a', 'aa'],
     ]);
   });
+
+  test('merges with options and transform preset is overridden by options', () => {
+    /* eslint-disable sort-keys */
+    const transform = {
+      e: 'ee',
+      b: 'bb',
+      c: 'cc',
+      a: 'aa',
+    };
+    /* eslint-disable sort-keys */
+    const {options} = normalize(
+      {
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+        transform,
+      },
+      {},
+    );
+
+    expect(options.transform).toEqual([
+      ['e', '/node_modules/ee'],
+      ['b', '/node_modules/bb'],
+      ['c', '/node_modules/cc'],
+      ['a', '/node_modules/aa'],
+    ]);
+  });
 });
 
 describe('preset without setupFiles', () => {
@@ -963,8 +1019,8 @@ describe('preset without setupFiles', () => {
   });
 
   beforeAll(() => {
-    jest.mock(
-      '/node_modules/react-native/jest-preset.json',
+    jest.doMock(
+      '/node_modules/react-foo/jest-preset.json',
       () => {
         return {
           moduleNameMapper: {b: 'b'},
@@ -975,10 +1031,14 @@ describe('preset without setupFiles', () => {
     );
   });
 
+  afterAll(() => {
+    jest.dontMock('/node_modules/react-foo/jest-preset.json');
+  });
+
   it('should normalize setupFiles correctly', () => {
     const {options} = normalize(
       {
-        preset: 'react-native',
+        preset: 'react-foo',
         rootDir: '/root/path/foo',
         setupFiles: ['a'],
       },
@@ -987,7 +1047,10 @@ describe('preset without setupFiles', () => {
 
     expect(options).toEqual(
       expect.objectContaining({
-        setupFiles: expect.arrayContaining(['/node_modules/a']),
+        setupFiles: [
+          '/node_modules/regenerator-runtime/runtime',
+          '/node_modules/a',
+        ],
       }),
     );
   });
@@ -1130,5 +1193,14 @@ describe('testPathPattern', () => {
       testPathPattern: ['c', 'd'],
     });
     expect(options.testPathPattern).toBe('a|b|c|d');
+  });
+
+  it('gives precedence to --all', () => {
+    const {options} = normalize(initialOptions, {
+      all: true,
+      onlyChanged: true,
+    });
+
+    expect(options.onlyChanged).toBe(false);
   });
 });

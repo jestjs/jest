@@ -15,6 +15,7 @@ import type {Context} from 'types/Context';
 import type {Jest, LocalModuleRequire} from 'types/Jest';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
+import type {SourceMapRegistry} from 'types/SourceMaps';
 
 import path from 'path';
 import HasteMap from 'jest-haste-map';
@@ -55,7 +56,6 @@ type CoverageOptions = {
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
-  mapCoverage: boolean,
 };
 
 type ModuleRegistry = {[key: string]: Module, __proto__: null};
@@ -96,11 +96,12 @@ class Runtime {
   _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: ModuleRegistry;
+  _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  _sourceMapRegistry: {[key: string]: string, __proto__: null};
+  _sourceMapRegistry: SourceMapRegistry;
   _scriptTransformer: ScriptTransformer;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
@@ -119,7 +120,6 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: null,
-      mapCoverage: false,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -130,6 +130,7 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
     this._moduleRegistry = Object.create(null);
+    this._needsCoverageMapped = new Set();
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
@@ -181,7 +182,6 @@ class Runtime {
         collectCoverage: options.collectCoverage,
         collectCoverageFrom: options.collectCoverageFrom,
         collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
-        mapCoverage: options.mapCoverage,
       },
       config,
     );
@@ -437,13 +437,21 @@ class Runtime {
     return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
-  getSourceMapInfo() {
+  getSourceMapInfo(coveredFiles: Set<string>) {
     return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
-      if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
+      if (
+        coveredFiles.has(sourcePath) &&
+        this._needsCoverageMapped.has(sourcePath) &&
+        fs.existsSync(this._sourceMapRegistry[sourcePath])
+      ) {
         result[sourcePath] = this._sourceMapRegistry[sourcePath];
       }
       return result;
     }, {});
+  }
+
+  getSourceMaps(): SourceMapRegistry {
+    return this._sourceMapRegistry;
   }
 
   setMock(
@@ -516,7 +524,7 @@ class Runtime {
 
     localModule.paths = this._resolver.getModulePaths(dirname);
     Object.defineProperty(localModule, 'require', {
-      value: this._createRequireImplementation(filename, options),
+      value: this._createRequireImplementation(localModule, options),
     });
 
     const transformedFile = this._scriptTransformer.transform(
@@ -526,13 +534,15 @@ class Runtime {
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
         isInternalModule,
-        mapCoverage: this._coverageOptions.mapCoverage,
       },
       this._cacheFS[filename],
     );
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
+      if (transformedFile.mapCoverage) {
+        this._needsCoverageMapped.add(filename);
+      }
     }
 
     const wrapper = this._environment.runScript(transformedFile.script)[
@@ -673,18 +683,38 @@ class Runtime {
   }
 
   _createRequireImplementation(
-    from: Path,
+    from: Module,
     options: ?InternalModuleOptions,
   ): LocalModuleRequire {
     const moduleRequire =
       options && options.isInternalModule
-        ? (moduleName: string) => this.requireInternalModule(from, moduleName)
-        : this.requireModuleOrMock.bind(this, from);
+        ? (moduleName: string) =>
+            this.requireInternalModule(from.filename, moduleName)
+        : this.requireModuleOrMock.bind(this, from.filename);
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireModule.bind(this, from);
-    moduleRequire.requireMock = this.requireMock.bind(this, from);
-    moduleRequire.resolve = moduleName => this._resolveModule(from, moduleName);
+    moduleRequire.requireActual = this.requireModule.bind(this, from.filename);
+    moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
+    moduleRequire.resolve = moduleName =>
+      this._resolveModule(from.filename, moduleName);
+    Object.defineProperty(
+      moduleRequire,
+      'main',
+      ({
+        enumerable: true,
+        get() {
+          let mainModule = from.parent;
+          while (
+            mainModule &&
+            mainModule.parent &&
+            mainModule.id !== mainModule.parent.id
+          ) {
+            mainModule = mainModule.parent;
+          }
+          return mainModule;
+        },
+      }: Object),
+    );
     return moduleRequire;
   }
 

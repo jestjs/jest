@@ -6,11 +6,24 @@
  *
  * @flow
  */
-
 import type {GlobalConfig} from 'types/Config';
+import type {JestHookSubscriber} from './jest_hooks';
 
-export type WatchPlugin = {
+export type UsageData = {
   key: number,
   prompt: string,
-  enter: (globalConfig: GlobalConfig, end: () => mixed) => mixed,
 };
+
+export type JestHooks = {
+  testRunComplete: any,
+};
+
+export interface WatchPlugin {
+  +apply?: (hooks: JestHookSubscriber) => void;
+  +getUsageInfo?: (globalConfig: GlobalConfig) => ?UsageData;
+  +onKey?: (value: string) => void;
+  +run?: (
+    globalConfig: GlobalConfig,
+    updateConfigAndRun: Function,
+  ) => Promise<void | boolean>;
+}

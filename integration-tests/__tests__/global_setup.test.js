@@ -11,7 +11,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const runJest = require('../runJest');
-const {cleanup} = require('../utils');
+const {cleanup} = require('../Utils');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 

@@ -8,10 +8,10 @@
  */
 'use strict';
 
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 test('does not crash when expect involving a DOM node fails', () => {
   const result = runJest('compare-dom-nodes');

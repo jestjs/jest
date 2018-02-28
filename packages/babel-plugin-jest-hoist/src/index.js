@@ -61,7 +61,10 @@ const WHITELISTED_IDENTIFIERS = {
   WeakSet: true,
   arguments: true,
   expect: true,
+  isNaN: true,
   jest: true,
+  parseFloat: true,
+  parseInt: true,
   require: true,
   undefined: true,
 };
@@ -78,7 +81,7 @@ const IDVisitor = {
 const FUNCTIONS: Object = Object.create(null);
 FUNCTIONS.mock = args => {
   if (args.length === 1) {
-    return args[0].isStringLiteral();
+    return args[0].isStringLiteral() || args[0].isLiteral();
   } else if (args.length === 2 || args.length === 3) {
     const moduleFactory = args[1];
     invariant(

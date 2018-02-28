@@ -23,6 +23,7 @@ import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
 
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
+export {default as deprecationEntries} from './deprecated';
 
 export function readConfig(
   argv: Argv,
@@ -112,12 +113,12 @@ const getConfigs = (
       lastCommit: options.lastCommit,
       listTests: options.listTests,
       logHeapUsage: options.logHeapUsage,
-      mapCoverage: options.mapCoverage,
       maxWorkers: options.maxWorkers,
       noSCM: undefined,
       noStackTrace: options.noStackTrace,
       nonFlagArgs: options.nonFlagArgs,
       notify: options.notify,
+      notifyMode: options.notifyMode,
       onlyChanged: options.onlyChanged,
       onlyFailures: options.onlyFailures,
       outputFile: options.outputFile,

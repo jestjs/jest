@@ -138,7 +138,7 @@ describe('async jasmine', () => {
 
     expect(result.status).toBe(1);
     expect(result.json.testResults[0].message).toEqual(
-      expect.stringContaining('Expected value to be truthy, instead received'),
+      expect.stringContaining('Received:'),
     );
   });
 

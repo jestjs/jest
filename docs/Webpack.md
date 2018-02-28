@@ -3,7 +3,7 @@ id: webpack
 title: Using with webpack
 ---
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to
+Jest can be used in projects that use [webpack](https://webpack.js.org/) to
 manage assets, styles, and compilation. webpack _does_ offer some unique
 challenges over other tools because it integrates directly with your application
 to allow managing stylesheets, assets like images and fonts, along with the
@@ -87,7 +87,7 @@ You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to
 mock [CSS Modules](https://github.com/css-modules/css-modules):
 
 ```bash
-npm install --save-dev identity-obj-proxy
+yarn add --dev identity-obj-proxy
 ```
 
 Then all your className lookups on the styles object will be returned as-is

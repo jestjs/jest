@@ -46,6 +46,21 @@ const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
+const mergeOptionWithPreset = (
+  options: InitialOptions,
+  preset: InitialOptions,
+  optionName: string,
+) => {
+  if (options[optionName] && preset[optionName]) {
+    options[optionName] = Object.assign(
+      {},
+      options[optionName],
+      preset[optionName],
+      options[optionName],
+    );
+  }
+};
+
 const setupPreset = (
   options: InitialOptions,
   optionsPreset: string,
@@ -81,14 +96,8 @@ const setupPreset = (
       options.modulePathIgnorePatterns,
     );
   }
-  if (options.moduleNameMapper && preset.moduleNameMapper) {
-    options.moduleNameMapper = Object.assign(
-      {},
-      options.moduleNameMapper,
-      preset.moduleNameMapper,
-      options.moduleNameMapper,
-    );
-  }
+  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
+  mergeOptionWithPreset(options, preset, 'transform');
 
   return Object.assign({}, preset, options);
 };
@@ -158,6 +167,12 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
     Array.isArray(value) || (value = [options[key]]);
   } else {
     value = options[key];
+  }
+
+  if (value) {
+    value = value.map(filePath => {
+      return filePath.replace(/^(!?)(<rootDir>\/)(.*)/, '$1$3');
+    });
   }
 
   return value;
@@ -457,6 +472,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           options[key],
         );
         break;
+      case 'testRegex':
+        value = options[key] && replacePathSepForRegex(options[key]);
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
@@ -474,6 +492,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
@@ -481,6 +500,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'name':
       case 'noStackTrace':
       case 'notify':
+      case 'notifyMode':
       case 'onlyChanged':
       case 'outputFile':
       case 'passWithNoTests':
@@ -498,7 +518,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testRegex':
       case 'testURL':
       case 'timers':
       case 'useStderr':
@@ -521,9 +540,18 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = argv.json;
-  newOptions.lastCommit = argv.lastCommit;
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
+
+  for (const key of [
+    'lastCommit',
+    'changedFilesWithAncestor',
+    'changedSince',
+  ]) {
+    if (newOptions[key]) {
+      newOptions.onlyChanged = true;
+    }
+  }
 
   if (argv.all) {
     newOptions.onlyChanged = false;

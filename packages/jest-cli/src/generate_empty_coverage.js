@@ -27,14 +27,13 @@ export default function(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    mapCoverage: globalConfig.mapCoverage,
   };
   if (Runtime.shouldInstrument(filename, coverageOptions, config)) {
     // Transform file without instrumentation first, to make sure produced
     // source code is ES6 (no flowtypes etc.) and can be instrumented
     const transformResult = new Runtime.ScriptTransformer(
       config,
-    ).transformSource(filename, source, false, globalConfig.mapCoverage);
+    ).transformSource(filename, source, false);
     const instrumenter = createInstrumenter();
     instrumenter.instrumentSync(transformResult.code, filename);
     return {

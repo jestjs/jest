@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-require('./some-other-file');
+require('./someOtherFile');
 
 module.exports = {a: 1};

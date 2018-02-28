@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "22.1.4",
+  "version": "22.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,9 +9,10 @@
   "main": "build/index.js",
   "dependencies": {
     "browser-resolve": "^1.11.2",
-    "chalk": "^2.0.1"
+    "chalk": "^2.0.1",
+    "realpath-native": "^1.0.0"
   },
   "devDependencies": {
-    "jest-haste-map": "^22.1.0"
+    "jest-haste-map": "^22.4.2"
   }
 }

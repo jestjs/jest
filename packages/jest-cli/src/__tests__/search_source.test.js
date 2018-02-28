@@ -12,7 +12,7 @@ import path from 'path';
 
 jest.setTimeout(15000);
 
-const skipOnWindows = require('../../../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
@@ -25,7 +25,7 @@ let findMatchingTests;
 let normalize;
 
 describe('SearchSource', () => {
-  skipOnWindows.suite();
+  SkipOnWindows.suite();
 
   const name = 'SearchSource';
   let Runtime;
@@ -462,6 +462,25 @@ describe('SearchSource', () => {
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
       ]);
+    });
+
+    it('does not mistake roots folders with prefix names', async () => {
+      const config = normalize(
+        {
+          name,
+          rootDir: '.',
+          roots: ['/foo/bar/prefix'],
+        },
+        {},
+      ).options;
+
+      searchSource = new SearchSource(
+        await Runtime.createContext(config, {maxWorkers}),
+      );
+
+      const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
+      const data = searchSource.findTestsByPaths(input);
+      expect(data.tests).toEqual([]);
     });
   });
 });

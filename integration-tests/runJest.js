@@ -10,7 +10,7 @@
 
 const path = require('path');
 const {sync: spawnSync} = require('cross-spawn');
-const {fileExists} = require('./utils');
+const {fileExists} = require('./Utils');
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
@@ -47,6 +47,7 @@ function runJest(
 
   const env = options.nodePath
     ? Object.assign({}, process.env, {
+        FORCE_COLOR: 0,
         NODE_PATH: options.nodePath,
       })
     : process.env;
@@ -66,7 +67,7 @@ function runJest(
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
 //   'numPendingTests', 'testResults'
 runJest.json = function(dir: string, args?: Array<string>) {
-  args = Array.prototype.concat(args || [], '--json');
+  args = [...(args || []), '--json'];
   const result = runJest(dir, args);
   try {
     result.json = JSON.parse((result.stdout || '').toString());

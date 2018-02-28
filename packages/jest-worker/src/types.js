@@ -46,6 +46,7 @@ export type FarmOptions = {
 export type WorkerOptions = {|
   forkOptions: ForkOptions,
   maxRetries: number,
+  workerId: number,
   workerPath: string,
 |};
 
