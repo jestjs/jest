@@ -7,6 +7,8 @@
   errors to `it`/ `test` for invalid arguements.
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
+* `[jest-config]` Add `<rootDir>` to runtime files not found error report
+  ([#5693](https://github.com/facebook/jest/pull/5693))
 
 ### Fixes
 
