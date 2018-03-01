@@ -21,6 +21,9 @@
   ([#5692](https://github.com/facebook/jest/pull/5692))
 * `[jest-cli]` Fix update snapshot issue when using watchAll
   ([#5696](https://github.com/facebook/jest/pull/5696))
+* `[jest-runtime]` Prevent Babel warnings on large files when running in
+  coverage mode
+  ([#5702](https://github.com/facebook/jest/pull/5702))
 
 ### Chore & Maintenance
 
