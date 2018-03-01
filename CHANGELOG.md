@@ -18,6 +18,8 @@
   config ([#5674](https://github.com/facebook/jest/pull/5674))
 * `[jest-runtime]` remove retainLines from coverage instrumentation
   ([#5692](https://github.com/facebook/jest/pull/5692))
+* `[jest-cli]` Fix update snapshot issue when using watchAll
+  ([#5696](https://github.com/facebook/jest/pull/5696))
 
 ## 22.4.2
 

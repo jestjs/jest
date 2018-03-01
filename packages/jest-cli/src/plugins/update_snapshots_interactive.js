@@ -47,6 +47,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
           this._failedSnapshotTestPaths,
           (path: string, shouldUpdateSnapshot: boolean) => {
             updateConfigAndRun({
+              mode: 'watch',
               testNamePattern: '',
               testPathPattern: path,
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',

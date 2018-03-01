@@ -82,17 +82,19 @@ export default function watch(
   });
 
   const updateConfigAndRun = ({
+    mode,
     testNamePattern,
     testPathPattern,
     updateSnapshot,
   }: {
+    mode?: 'watch' | 'watchAll',
     testNamePattern?: string,
     testPathPattern?: string,
     updateSnapshot?: SnapshotUpdateState,
   } = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
-      mode: 'watch',
+      mode,
       testNamePattern:
         testNamePattern !== undefined
           ? testNamePattern
@@ -312,6 +314,7 @@ export default function watch(
         break;
       case KEYS.C:
         updateConfigAndRun({
+          mode: 'watch',
           testNamePattern: '',
           testPathPattern: '',
         });
