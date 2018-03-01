@@ -162,6 +162,7 @@ export default class ScriptTransformer {
             cwd: this._config.rootDir,
             exclude: [],
             useInlineSourceMaps: false,
+            compact: false
           },
         ],
       ],
