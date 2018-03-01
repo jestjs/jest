@@ -9,6 +9,8 @@
   ([#5512](https://github.com/facebook/jest/pull/5512))
 * `[expect]` Make toThrow matcher pass only if Error object is returned from
   promises ([#5670](https://github.com/facebook/jest/pull/5670))
+* `[expect]` Add isError to utils
+  ([#5670](https://github.com/facebook/jest/pull/5670))
 
 ### Fixes
 
