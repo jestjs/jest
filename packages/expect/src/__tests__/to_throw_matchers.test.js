@@ -150,7 +150,7 @@ class customError extends Error {
       const asyncFn = async (shouldThrow?: boolean, resolve?: boolean) => {
         let err;
         if (shouldThrow) {
-          err = new Err('apple');
+          err = new Err('async apple');
         }
         if (resolve) {
           return await Promise.resolve(err || 'apple');
