@@ -114,6 +114,43 @@ filterTestFn.mockReturnValueOnce(<span class="hljs-literal">true</span>).mockRet
 dependent component and configuring that, but the technique is the same. In
 these cases, try to avoid the temptation to implement logic inside of any
 function that's not directly being tested.</p>
+<h2><a class="anchor" aria-hidden="true" name="mocking-modules"></a><a href="#mocking-modules" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mocking Modules</h2>
+<p>Suppose we have a class that fetches users from our API. The class uses
+<a href="https://github.com/axios/axios">axios</a> to call the API then returns the <code>data</code>
+attribute which contains all the users:</p>
+<pre><code class="hljs css js"><span class="hljs-comment">// users.js</span>
+<span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Users</span> </span>{
+  <span class="hljs-keyword">static</span> all() {
+    <span class="hljs-keyword">return</span> axios.get(<span class="hljs-string">'/users.json'</span>).then(<span class="hljs-function"><span class="hljs-params">resp</span> =&gt;</span> resp.data);
+  }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> Users;
+</code></pre>
+<p>Now, in order to test this method without actually hitting the API (and thus
+creating slow and fragile tests), we can use the <code>jest.mock(...)</code> function to
+automatically mock the axios module.</p>
+<p>Once we mock the module we can provide a <code>mockReturnValue</code> for <code>.get</code> that
+returns the data we want our test to assert against. In effect, we are saying
+that we want axios.get('/users.json') to return a fake response.</p>
+<pre><code class="hljs css js"><span class="hljs-comment">// users.test.js</span>
+<span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+<span class="hljs-keyword">import</span> Users <span class="hljs-keyword">from</span> <span class="hljs-string">'./users'</span>;
+
+jest.mock(<span class="hljs-string">'axios'</span>);
+
+test(<span class="hljs-string">'should fetch users'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> resp = {<span class="hljs-attr">data</span>: [{<span class="hljs-attr">name</span>: <span class="hljs-string">'Bob'</span>}]};
+  axios.get.mockResolvedValue(resp);
+
+  <span class="hljs-comment">// or you could use the follwing depending on your use case:</span>
+  <span class="hljs-comment">// axios.get.mockImpementation(() =&gt; Promise.resolve(resp))</span>
+
+  <span class="hljs-keyword">return</span> Users.all().then(<span class="hljs-function"><span class="hljs-params">users</span> =&gt;</span> expect(users).toEqual(resp.data));
+});
+</code></pre>
 <h2><a class="anchor" aria-hidden="true" name="mock-implementations"></a><a href="#mock-implementations" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock Implementations</h2>
 <p>Still, there are cases where it's useful to go beyond the ability to specify
 return values and full-on replace the implementation of a mock function. This
