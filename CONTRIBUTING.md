@@ -31,57 +31,57 @@ We'll do our best to provide updates and feedback throughout the process.
 
 _Before_ submitting a pull request, please make sure the following is done…
 
-1. Fork the repo and create your branch from `master`. A guide on how to fork a
-   repository: https://help.github.com/articles/fork-a-repo/
+1.  Fork the repo and create your branch from `master`. A guide on how to fork a
+    repository: https://help.github.com/articles/fork-a-repo/
 
-   Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
+    Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
 
-   ```sh
-   git clone https://github.com/<your_username>/jest
-   cd jest
-   git checkout -b my_branch
-   ```
+    ```sh
+    git clone https://github.com/<your_username>/jest
+    cd jest
+    git checkout -b my_branch
+    ```
 
-   Note: Replace `<your_username>` with your GitHub username
+    Note: Replace `<your_username>` with your GitHub username
 
-2. Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for
-   running development scripts. If you haven't already done so, please
-   [install yarn](https://yarnpkg.com/en/docs/install).
+2.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for
+    running development scripts. If you haven't already done so, please
+    [install yarn](https://yarnpkg.com/en/docs/install).
 
-3. Run `yarn install`. On Windows: To install
-   [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may
-   need to download either node.js or Chocolatey<br />
+3.  Run `yarn install`. On Windows: To install
+    [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may
+    need to download either node.js or Chocolatey<br />
 
-   ```sh
-   yarn install
-   ```
+    ```sh
+    yarn install
+    ```
 
-   To check your version of Yarn and ensure it's installed you can type:
+    To check your version of Yarn and ensure it's installed you can type:
 
-   ```sh
-   yarn --version
-   ```
+    ```sh
+    yarn --version
+    ```
 
-4. If you've added code that should be tested, add tests. You can use watch mode
-   that continuously transforms changed files to make your life easier.
+4.  If you've added code that should be tested, add tests. You can use watch
+    mode that continuously transforms changed files to make your life easier.
 
-   ```sh
-   # in the background
-   yarn run watch
-   ```
+    ```sh
+    # in the background
+    yarn run watch
+    ```
 
-5. If you've changed APIs, update the documentation.
+5.  If you've changed APIs, update the documentation.
 
-6. Ensure the test suite passes via `yarn test`. To run the test suite you may
-   need to install Mercurial (`hg`). On macOS, this can be done using
-   [homebrew](http://brew.sh/): `brew install hg`.
+6.  Ensure the test suite passes via `yarn test`. To run the test suite you may
+    need to install Mercurial (`hg`). On macOS, this can be done using
+    [homebrew](http://brew.sh/): `brew install hg`.
 
-   ```sh
-   brew install hg # maybe
-   yarn test
-   ```
+    ```sh
+    brew install hg # maybe
+    yarn test
+    ```
 
-7. If you haven't already, complete the CLA.
+7.  If you haven't already, complete the CLA.
 
 #### Additional Workflow for any changes made to website or docs
 
@@ -89,16 +89,16 @@ If you are making changes to the website or documentation, test the website
 folder and run the server to check if your changes are being displayed
 accurately.
 
-1. Locate to the website directory and install any website specific dependencies
-   by typing in `yarn`. Following steps are to be followed for this purpose from
-   the root directory.
-   ```sh
-   cd website       # Only needed if you are not already in the website directory
-   yarn
-   yarn start
-   ```
-2. You can run a development server to check if the changes you made are being
-   displayed accurately by running `yarn start` in the website directory.
+1.  Locate to the website directory and install any website specific
+    dependencies by typing in `yarn`. Following steps are to be followed for
+    this purpose from the root directory.
+    ```sh
+    cd website       # Only needed if you are not already in the website directory
+    yarn
+    yarn start
+    ```
+2.  You can run a development server to check if the changes you made are being
+    displayed accurately by running `yarn start` in the website directory.
 
 ### Contributor License Agreement (CLA)
 

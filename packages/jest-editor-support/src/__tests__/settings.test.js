@@ -151,8 +151,11 @@ describe('Settings', () => {
       on: () => {},
       stdout: new EventEmitter(),
     });
-    const spawnOptions = {shell: true};
-    const options: any = Object.assign({}, createProcess, spawnOptions);
+
+    const options: any = {
+      createProcess,
+      shell: true,
+    };
     const settings = new Settings(workspace, options);
     settings.getConfig(() => {});
 
@@ -164,7 +167,7 @@ describe('Settings', () => {
         rootPath,
       },
       ['--showConfig'],
-      spawnOptions,
+      {shell: true},
     );
   });
 });

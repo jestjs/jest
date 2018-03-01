@@ -12,6 +12,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
+import stripAnsi from 'strip-ansi';
 
 const {cleanup, extractSummary, writeFiles} = require('../Utils');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
@@ -79,7 +80,7 @@ test('can pass projects or global config', () => {
   });
   let stderr;
 
-  ({stderr} = runJest(DIR));
+  ({stderr} = runJest(DIR, ['--no-watchman']));
   expect(stderr).toMatch(
     'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
   );
@@ -95,6 +96,7 @@ test('can pass projects or global config', () => {
   });
 
   ({stderr} = runJest(DIR, [
+    '--no-watchman',
     '-i',
     '--projects',
     'project1',
@@ -106,7 +108,12 @@ test('can pass projects or global config', () => {
   expect(result1.summary).toMatchSnapshot();
   expect(sortLines(result1.rest)).toMatchSnapshot();
 
-  ({stderr} = runJest(DIR, ['-i', '--config', 'global_config.js']));
+  ({stderr} = runJest(DIR, [
+    '--no-watchman',
+    '-i',
+    '--config',
+    'global_config.js',
+  ]));
   const result2 = extractSummary(stderr);
 
   expect(result2.summary).toMatchSnapshot();
@@ -135,6 +142,7 @@ test('"No tests found" message for projects', () => {
     'project2/jest.config.js': `module.exports = {rootDir: './'}`,
   });
   const {stdout: verboseOutput} = runJest(DIR, [
+    '--no-watchman',
     'xyz321',
     '--verbose',
     '--projects',
@@ -143,6 +151,7 @@ test('"No tests found" message for projects', () => {
   ]);
   expect(verboseOutput).toContain('Pattern: xyz321 - 0 matches');
   const {stdout} = runJest(DIR, [
+    '--no-watchman',
     'xyz321',
     '--projects',
     'project1',
@@ -177,7 +186,7 @@ test('projects can be workspaces with non-JS/JSON files', () => {
     'packages/project2/package.json': '{}',
   });
 
-  const {status, stdout, stderr} = runJest(DIR);
+  const {status, stdout, stderr} = runJest(DIR, ['--no-watchman']);
 
   expect(stderr).toContain('Test Suites: 2 passed, 2 total');
   expect(stderr).toContain('PASS packages/project1/__tests__/file1.test.js');
@@ -204,7 +213,7 @@ test('objects in project configuration', () => {
     'package.json': '{}',
   });
 
-  const {stdout, stderr, status} = runJest(DIR);
+  const {stdout, stderr, status} = runJest(DIR, ['--no-watchman']);
   expect(stderr).toContain('Test Suites: 2 passed, 2 total');
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('PASS __tests__/file2.test.js');
@@ -226,7 +235,7 @@ test('allows a single project', () => {
     'package.json': '{}',
   });
 
-  const {stdout, stderr, status} = runJest(DIR);
+  const {stdout, stderr, status} = runJest(DIR, ['--no-watchman']);
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('Test Suites: 1 passed, 1 total');
   expect(stdout).toEqual('');
@@ -265,7 +274,7 @@ test('resolves projects and their <rootDir> properly', () => {
   });
 
   let stderr;
-  ({stderr} = runJest(DIR));
+  ({stderr} = runJest(DIR, ['--no-watchman']));
 
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
   expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
@@ -282,7 +291,7 @@ test('resolves projects and their <rootDir> properly', () => {
     }),
   });
 
-  ({stderr} = runJest(DIR));
+  ({stderr} = runJest(DIR, ['--no-watchman']));
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
   expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
   expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
@@ -303,12 +312,15 @@ test('resolves projects and their <rootDir> properly', () => {
     }),
   });
 
-  ({stderr} = runJest(DIR));
+  ({stderr} = stripAnsi(runJest(DIR, ['--no-watchman'])));
   expect(stderr).toMatch(
-    /One or more specified projects share the same config file/,
+    /Whoops! Two projects resolved to the same config path/,
   );
+  expect(stderr).toMatch(`${path.join(DIR, 'package.json')}`);
+  expect(stderr).toMatch(/Project 1|2: dir1/);
+  expect(stderr).toMatch(/Project 1|2: dir2/);
 
-  // praject with a directory/file that does not exist
+  // project with a directory/file that does not exist
   writeFiles(DIR, {
     'package.json': JSON.stringify({
       jest: {
@@ -321,7 +333,7 @@ test('resolves projects and their <rootDir> properly', () => {
     }),
   });
 
-  ({stderr} = runJest(DIR));
+  ({stderr} = runJest(DIR, ['--no-watchman']));
   expect(stderr).toMatch(
     `Can't find a root directory while resolving a config file path.`,
   );

@@ -124,7 +124,7 @@ const spyMatchers: MatchersObject = {
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
 
-    if (typeof nth !== 'number' || parseInt(nth) !== nth || nth < 1) {
+    if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
       const message = () =>
         `nth value ${printReceived(
           nth,

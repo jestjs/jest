@@ -75,10 +75,7 @@ export default class Runner extends EventEmitter {
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       // Make jest save to a file, otherwise we get chunked data
       // and it can be hard to put it back together.
-      const stringValue = data
-        .toString()
-        .replace(/\n$/, '')
-        .trim();
+      const stringValue = data.toString().trim();
 
       if (stringValue.startsWith('Test results written to')) {
         readFile(this.outputPath, 'utf8', (err, data) => {

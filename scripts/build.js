@@ -37,7 +37,7 @@ const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
 const BUILD_ES5_DIR = 'build-es5';
 const JS_FILES_PATTERN = '**/*.js';
-const IGNORE_PATTERN = '**/__tests__/**';
+const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;

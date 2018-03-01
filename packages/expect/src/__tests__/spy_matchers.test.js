@@ -107,9 +107,9 @@ describe('toHaveBeenCalledTimes', () => {
 ].forEach(calledWith => {
   const caller = function(callee, ...args) {
     if (calledWith == 'nthCalledWith') {
-      callee.apply(null, [1, ...args]);
+      callee(1, ...args);
     } else {
-      callee.apply(null, args);
+      callee(...args);
     }
   };
   test(`${calledWith} works when not called`, () => {
@@ -259,9 +259,9 @@ describe('toHaveBeenCalledTimes', () => {
       jestExpect(fn).nthCalledWith(3, 'foo', 'bar');
 
       expect(() => {
-        jestExpect(fn).not.nthCalledWith(1, 'foo1', 'bar'),
-          jestExpect(fn).not.nthCalledWith(2, 'foo', 'bar1'),
-          jestExpect(fn).not.nthCalledWith(3, 'foo', 'bar');
+        jestExpect(fn).not.nthCalledWith(1, 'foo1', 'bar');
+        jestExpect(fn).not.nthCalledWith(2, 'foo', 'bar1');
+        jestExpect(fn).not.nthCalledWith(3, 'foo', 'bar');
       }).toThrowErrorMatchingSnapshot();
     });
 

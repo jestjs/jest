@@ -2,9 +2,9 @@
 
 ### Features
 
-* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test` 
-  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive 
-  errors to `it`/ `test` for invalid arguements. 
+* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test`
+  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive
+  errors to `it`/ `test` for invalid arguements.
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
 
@@ -14,6 +14,10 @@
   symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
 * `[jest-editor-support]` Update `Settings` to use spawn in shell option
   ([#5658](https://github.com/facebook/jest/pull/5658))
+* `[jest-cli]` Improve the error message when 2 projects resolve to the same
+  config ([#5674](https://github.com/facebook/jest/pull/5674))
+* `[jest-runtime]` remove retainLines from coverage instrumentation
+  ([#5692](https://github.com/facebook/jest/pull/5692))
 * `[jest-cli]` Fix update snapshot issue when using watchAll ([#5696](https://github.com/facebook/jest/pull/5696))
 
 ## 22.4.2
