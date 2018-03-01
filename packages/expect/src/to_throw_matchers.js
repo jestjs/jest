@@ -28,11 +28,20 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
   const value = expected;
   let error;
 
-  if (
-    fromPromise &&
-    typeof actual.name === 'string' &&
-    typeof actual.message === 'string'
-  ) {
+  const isError = value => {
+    switch (Object.prototype.toString.call(value)) {
+      case '[object Error]':
+        return true;
+      case '[object Exception]':
+        return true;
+      case '[object DOMException]':
+        return true;
+      default:
+        return value instanceof Error;
+    }
+  };
+
+  if (fromPromise && isError(actual)) {
     error = actual;
   } else {
     if (typeof actual !== 'function') {
