@@ -13,12 +13,12 @@ aliases:
 
   - &yarn-install
     run: |
-      sudo npm i -g yarn@^1.5.1
+      sudo curl -o- -L https://yarnpkg.com/install.sh | bash
       yarn --no-progress
 
   - &yarn-install-no-sudo
     run: |
-      npm i -g yarn@^1.5.1
+      curl -o- -L https://yarnpkg.com/install.sh | bash
       yarn --no-progress
 
   - &deploy
