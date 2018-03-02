@@ -14,13 +14,13 @@ aliases:
   - &yarn-install
     run: |
       sudo which yarn || curl -o- -L https://yarnpkg.com/install.sh | bash
-      export PATH="$HOME/.yarn/bin:$PATH"
+      export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
       yarn --no-progress
 
   - &yarn-install-no-sudo
     run: |
       which yarn || curl -o- -L https://yarnpkg.com/install.sh | bash
-      export PATH="$HOME/.yarn/bin:$PATH"
+      export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
       yarn --no-progress
 
   - &deploy
@@ -56,7 +56,9 @@ jobs:
           apt-get update && apt-get install make g++ -y
       - *yarn-install-no-sudo
       - save-cache: *save-cache
-      - run: yarn run test-ci-es5-build-in-browser
+      - run: |
+          export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+          yarn run test-ci-es5-build-in-browser
 
   test-node-9:
     working_directory: ~/jest
