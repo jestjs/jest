@@ -109,7 +109,7 @@ const expect = (actual: any, ...rest): ExpectationObject => {
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
-      matcher,
+      promiseMatcher,
       true,
       actual,
     );
