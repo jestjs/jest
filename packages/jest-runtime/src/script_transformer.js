@@ -158,6 +158,7 @@ export default class ScriptTransformer {
         [
           babelPluginIstanbul,
           {
+            compact: false,
             // files outside `cwd` will not be instrumented
             cwd: this._config.rootDir,
             exclude: [],

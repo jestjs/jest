@@ -11,8 +11,9 @@
 const jestExpect = require('../');
 
 // Custom Error class because node versions have different stack trace strings.
-class Error {
+class customError extends Error {
   constructor(message) {
+    super();
     this.message = message;
     this.name = 'Error';
     this.stack =
@@ -24,12 +25,12 @@ class Error {
 
 ['toThrowError', 'toThrow'].forEach(toThrow => {
   describe('.' + toThrow + '()', () => {
-    class Err extends Error {}
-    class Err2 extends Error {}
+    class Err extends customError {}
+    class Err2 extends customError {}
 
     test('to throw or not to throw', () => {
       jestExpect(() => {
-        throw new Error('apple');
+        throw new customError('apple');
       })[toThrow]();
       jestExpect(() => {}).not[toThrow]();
     });
@@ -37,10 +38,10 @@ class Error {
     describe('strings', () => {
       it('passes', () => {
         jestExpect(() => {
-          throw new Error('apple');
+          throw new customError('apple');
         })[toThrow]('apple');
         jestExpect(() => {
-          throw new Error('banana');
+          throw new customError('banana');
         }).not[toThrow]('apple');
         jestExpect(() => {}).not[toThrow]('apple');
       });
@@ -54,7 +55,7 @@ class Error {
       test('threw, but message did not match', () => {
         expect(() => {
           jestExpect(() => {
-            throw new Error('apple');
+            throw new customError('apple');
           })[toThrow]('banana');
         }).toThrowErrorMatchingSnapshot();
       });
@@ -68,7 +69,7 @@ class Error {
       test('threw, but should not have', () => {
         expect(() => {
           jestExpect(() => {
-            throw new Error('apple');
+            throw new customError('apple');
           }).not[toThrow]('apple');
         }).toThrowErrorMatchingSnapshot();
       });
@@ -77,10 +78,10 @@ class Error {
     describe('regexp', () => {
       it('passes', () => {
         expect(() => {
-          throw new Error('apple');
+          throw new customError('apple');
         })[toThrow](/apple/);
         expect(() => {
-          throw new Error('banana');
+          throw new customError('banana');
         }).not[toThrow](/apple/);
         expect(() => {}).not[toThrow](/apple/);
       });
@@ -94,7 +95,7 @@ class Error {
       test('threw, but message did not match', () => {
         expect(() => {
           jestExpect(() => {
-            throw new Error('apple');
+            throw new customError('apple');
           })[toThrow](/banana/);
         }).toThrowErrorMatchingSnapshot();
       });
@@ -102,7 +103,7 @@ class Error {
       test('threw, but should not have', () => {
         expect(() => {
           jestExpect(() => {
-            throw new Error('apple');
+            throw new customError('apple');
           }).not[toThrow](/apple/);
         }).toThrowErrorMatchingSnapshot();
       });
@@ -115,7 +116,7 @@ class Error {
         })[toThrow](Err);
         jestExpect(() => {
           throw new Err();
-        })[toThrow](Error);
+        })[toThrow](customError);
         jestExpect(() => {
           throw new Err();
         }).not[toThrow](Err2);
@@ -142,6 +143,89 @@ class Error {
             throw new Err('apple');
           }).not[toThrow](Err);
         }).toThrowErrorMatchingSnapshot();
+      });
+    });
+
+    describe('promise/async throws if Error-like object is returned', () => {
+      const asyncFn = async (shouldThrow?: boolean, resolve?: boolean) => {
+        let err;
+        if (shouldThrow) {
+          err = new Err('async apple');
+        }
+        if (resolve) {
+          return await Promise.resolve(err || 'apple');
+        } else {
+          return await Promise.reject(err || 'apple');
+        }
+      };
+
+      test('passes', async () => {
+        expect.assertions(24);
+        await jestExpect(Promise.reject(new Error())).rejects[toThrow]();
+
+        await jestExpect(asyncFn(true)).rejects[toThrow]();
+        await jestExpect(asyncFn(true)).rejects[toThrow](Err);
+        await jestExpect(asyncFn(true)).rejects[toThrow](Error);
+        await jestExpect(asyncFn(true)).rejects[toThrow]('apple');
+        await jestExpect(asyncFn(true)).rejects[toThrow](/app/);
+
+        await jestExpect(asyncFn(true)).rejects.not[toThrow](Err2);
+        await jestExpect(asyncFn(true)).rejects.not[toThrow]('banana');
+        await jestExpect(asyncFn(true)).rejects.not[toThrow](/banana/);
+
+        await jestExpect(asyncFn(true, true)).resolves[toThrow]();
+
+        await jestExpect(asyncFn(false, true)).resolves.not[toThrow]();
+        await jestExpect(asyncFn(false, true)).resolves.not[toThrow](Error);
+        await jestExpect(asyncFn(false, true)).resolves.not[toThrow]('apple');
+        await jestExpect(asyncFn(false, true)).resolves.not[toThrow](/apple/);
+        await jestExpect(asyncFn(false, true)).resolves.not[toThrow]('banana');
+        await jestExpect(asyncFn(false, true)).resolves.not[toThrow](/banana/);
+
+        await jestExpect(asyncFn()).rejects.not[toThrow]();
+        await jestExpect(asyncFn()).rejects.not[toThrow](Error);
+        await jestExpect(asyncFn()).rejects.not[toThrow]('apple');
+        await jestExpect(asyncFn()).rejects.not[toThrow](/apple/);
+        await jestExpect(asyncFn()).rejects.not[toThrow]('banana');
+        await jestExpect(asyncFn()).rejects.not[toThrow](/banana/);
+
+        // Works with nested functions inside promises
+        await jestExpect(
+          Promise.reject(() => {
+            throw new Error();
+          }),
+        ).rejects[toThrow]();
+        await jestExpect(Promise.reject(() => {})).rejects.not[toThrow]();
+      });
+
+      test('did not throw at all', async () => {
+        let err;
+        try {
+          await jestExpect(asyncFn()).rejects.toThrow();
+        } catch (error) {
+          err = error;
+        }
+        expect(err).toMatchSnapshot();
+      });
+
+      test('threw, but class did not match', async () => {
+        let err;
+        try {
+          await jestExpect(asyncFn(true)).rejects.toThrow(Err2);
+        } catch (error) {
+          err = error;
+        }
+        expect(err).toMatchSnapshot();
+      });
+
+      test('threw, but should not have', async () => {
+        let err;
+        try {
+          await jestExpect(asyncFn(true)).rejects.not.toThrow();
+        } catch (error) {
+          err = error;
+        }
+        expect(err).toMatchSnapshot();
       });
     });
 

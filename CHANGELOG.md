@@ -3,12 +3,17 @@
 ### Features
 
 * `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test`
-  for invalid arguements. `[jest-circus]` Adds error throwing and descriptive
-  errors to `it`/ `test` for invalid arguements.
+  for invalid arguments. `[jest-circus]` Adds error throwing and descriptive
+  errors to `it`/ `test` for invalid arguments
+  ([#5558](https://github.com/facebook/jest/pull/5558))
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
 * `[jest-config]` Add `<rootDir>` to runtime files not found error report
   ([#5693](https://github.com/facebook/jest/pull/5693))
+* `[expect]` Make toThrow matcher pass only if Error object is returned from
+  promises ([#5670](https://github.com/facebook/jest/pull/5670))
+* `[expect]` Add isError to utils
+  ([#5670](https://github.com/facebook/jest/pull/5670))
 
 ### Fixes
 
@@ -22,6 +27,15 @@
   ([#5692](https://github.com/facebook/jest/pull/5692))
 * `[jest-cli]` Fix update snapshot issue when using watchAll
   ([#5696](https://github.com/facebook/jest/pull/5696))
+* `[expect]` Fix rejects.not matcher
+  ([#5670](https://github.com/facebook/jest/pull/5670))
+* `[jest-runtime]` Prevent Babel warnings on large files
+  ([#5702](https://github.com/facebook/jest/pull/5702))
+
+### Chore & Maintenance
+
+* `[docs]` Add docs on using `jest.mock(...)`
+  ([#5648](https://github.com/facebook/jest/pull/5648))
 
 ## 22.4.2
 

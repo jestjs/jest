@@ -18,6 +18,31 @@ const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
 const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
 let results;
 
+jest.mock(
+  '../search_source',
+  () =>
+    class {
+      constructor(context) {
+        this._context = context;
+      }
+
+      findMatchingTests(pattern) {
+        const paths = [
+          './path/to/file1-test.js',
+          './path/to/file2-test.js',
+        ].filter(path => path.match(pattern));
+
+        return {
+          tests: paths.map(path => ({
+            context: this._context,
+            duration: null,
+            path,
+          })),
+        };
+      }
+    },
+);
+
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
 jest.doMock(
   '../run_jest',
@@ -272,6 +297,41 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(apply).toHaveBeenCalled();
+  });
+
+  it('allows WatchPlugins to hook into file system changes', async () => {
+    const fileChange = jest.fn();
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_fs_change`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          apply(jestHooks) {
+            jestHooks.fileChange(fileChange);
+          }
+        },
+      {virtual: true},
+    );
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [pluginPath],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    expect(fileChange).toHaveBeenCalledWith({
+      projects: [
+        {
+          config: contexts[0].config,
+          testPaths: ['./path/to/file1-test.js', './path/to/file2-test.js'],
+        },
+      ],
+    });
   });
 
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
