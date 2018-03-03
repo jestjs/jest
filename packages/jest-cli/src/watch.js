@@ -155,12 +155,12 @@ export default function watch(
   let isWatchUsageDisplayed = false;
 
   const emitFsChange = () => {
-    if (hooks.isUsed('fsChange')) {
+    if (hooks.isUsed('fileChange')) {
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
         testPaths: searchSource.findMatchingTests('').tests.map(t => t.path),
       }));
-      hooks.getEmitter().fsChange({projects});
+      hooks.getEmitter().fileChange({projects});
     }
   };
 

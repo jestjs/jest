@@ -19,27 +19,27 @@ type ShouldRunTestSuite = (testPath: string) => Promise<boolean>;
 type TestRunComplete = (results: AggregatedResult) => void;
 
 export type JestHookSubscriber = {
-  fsChange: (fn: FsChange) => void,
+  fileChange: (fn: FsChange) => void,
   shouldRunTestSuite: (fn: ShouldRunTestSuite) => void,
   testRunComplete: (fn: TestRunComplete) => void,
 };
 
 export type JestHookEmitter = {
-  fsChange: (fs: JestHookExposedFS) => void,
+  fileChange: (fs: JestHookExposedFS) => void,
   shouldRunTestSuite: (testPath: string) => Promise<boolean>,
   testRunComplete: (results: AggregatedResult) => void,
 };
 
 class JestHooks {
   _listeners: {
-    fsChange: Array<FsChange>,
+    fileChange: Array<FsChange>,
     shouldRunTestSuite: Array<ShouldRunTestSuite>,
     testRunComplete: Array<TestRunComplete>,
   };
 
   constructor() {
     this._listeners = {
-      fsChange: [],
+      fileChange: [],
       shouldRunTestSuite: [],
       testRunComplete: [],
     };
@@ -51,8 +51,8 @@ class JestHooks {
 
   getSubscriber(): JestHookSubscriber {
     return {
-      fsChange: fn => {
-        this._listeners.fsChange.push(fn);
+      fileChange: fn => {
+        this._listeners.fileChange.push(fn);
       },
       shouldRunTestSuite: fn => {
         this._listeners.shouldRunTestSuite.push(fn);
@@ -65,8 +65,8 @@ class JestHooks {
 
   getEmitter(): JestHookEmitter {
     return {
-      fsChange: fs =>
-        this._listeners.fsChange.forEach(listener => listener(fs)),
+      fileChange: fs =>
+        this._listeners.fileChange.forEach(listener => listener(fs)),
       shouldRunTestSuite: async testPath =>
         Promise.all(
           this._listeners.shouldRunTestSuite.map(listener =>

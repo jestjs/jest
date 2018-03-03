@@ -300,14 +300,14 @@ describe('Watch mode flows', () => {
   });
 
   it('allows WatchPlugins to hook into file system changes', async () => {
-    const fsChange = jest.fn();
+    const fileChange = jest.fn();
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_fs_change`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin {
           apply(jestHooks) {
-            jestHooks.fsChange(fsChange);
+            jestHooks.fileChange(fileChange);
           }
         },
       {virtual: true},
@@ -324,7 +324,7 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    expect(fsChange).toHaveBeenCalledWith({
+    expect(fileChange).toHaveBeenCalledWith({
       projects: [
         {
           config: contexts[0].config,
