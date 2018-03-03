@@ -8,6 +8,8 @@
   ([#5558](https://github.com/facebook/jest/pull/5558))
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
+* `[jest-config]` Add `<rootDir>` to runtime files not found error report
+  ([#5693](https://github.com/facebook/jest/pull/5693))
 * `[expect]` Make toThrow matcher pass only if Error object is returned from
   promises ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[expect]` Add isError to utils
