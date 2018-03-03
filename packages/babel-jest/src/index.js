@@ -72,6 +72,7 @@ const createTransformer = (options: any): Transformer => {
   };
 
   options = Object.assign({}, options, {
+    compact: false,
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
     sourceMaps: 'both',

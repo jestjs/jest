@@ -27,6 +27,8 @@
   ([#5696](https://github.com/facebook/jest/pull/5696))
 * `[expect]` Fix rejects.not matcher
   ([#5670](https://github.com/facebook/jest/pull/5670))
+* `[jest-runtime]` Prevent Babel warnings on large files
+  ([#5702](https://github.com/facebook/jest/pull/5702))
 
 ### Chore & Maintenance
 
