@@ -14,12 +14,12 @@ type JestHookExposedFS = {
   projects: Array<{config: ProjectConfig, testPaths: Array<Path>}>,
 };
 
-type FsChange = (fs: JestHookExposedFS) => void;
+type FileChange = (fs: JestHookExposedFS) => void;
 type ShouldRunTestSuite = (testPath: string) => Promise<boolean>;
 type TestRunComplete = (results: AggregatedResult) => void;
 
 export type JestHookSubscriber = {
-  fileChange: (fn: FsChange) => void,
+  fileChange: (fn: FileChange) => void,
   shouldRunTestSuite: (fn: ShouldRunTestSuite) => void,
   testRunComplete: (fn: TestRunComplete) => void,
 };
@@ -32,7 +32,7 @@ export type JestHookEmitter = {
 
 class JestHooks {
   _listeners: {
-    fileChange: Array<FsChange>,
+    fileChange: Array<FileChange>,
     shouldRunTestSuite: Array<ShouldRunTestSuite>,
     testRunComplete: Array<TestRunComplete>,
   };

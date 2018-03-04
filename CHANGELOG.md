@@ -34,6 +34,8 @@
 
 ### Chore & Maintenance
 
+* `[#5708]` Add fileChange hook for plugins
+  ([#5648](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
 

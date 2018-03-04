@@ -154,7 +154,7 @@ export default function watch(
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
 
-  const emitFsChange = () => {
+  const emitFileChange = () => {
     if (hooks.isUsed('fileChange')) {
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
@@ -164,7 +164,7 @@ export default function watch(
     }
   };
 
-  emitFsChange();
+  emitFileChange();
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
@@ -188,7 +188,7 @@ export default function watch(
           context,
           searchSource: new SearchSource(context),
         };
-        emitFsChange();
+        emitFileChange();
         startRun(globalConfig);
       }
     });
