@@ -211,8 +211,8 @@
   malformed source-map. ([#5405](https://github.com/facebook/jest/pull/5405)).
 * `[jest]` Add `import-local` to `jest` package.
   ([#5353](https://github.com/facebook/jest/pull/5353))
-* `[expect]` Support class instances in `.toHaveProperty()` matcher.
-  ([#5367](https://github.com/facebook/jest/pull/5367))
+* `[expect]` Support class instances in `.toHaveProperty()` and `.toMatchObject`
+  matcher. ([#5367](https://github.com/facebook/jest/pull/5367))
 * `[jest-cli]` Fix npm update command for snapshot summary.
   ([#5376](https://github.com/facebook/jest/pull/5376),
   [5389](https://github.com/facebook/jest/pull/5389/))

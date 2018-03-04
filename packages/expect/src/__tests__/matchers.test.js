@@ -953,6 +953,15 @@ describe('.toHaveProperty()', () => {
 });
 
 describe('toMatchObject()', () => {
+  class Foo {
+    get a() {
+      return undefined;
+    }
+    get b() {
+      return 'b';
+    }
+  }
+
   [
     [{a: 'b', c: 'd'}, {a: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
@@ -974,6 +983,7 @@ describe('toMatchObject()', () => {
     [[], []],
     [new Error('foo'), new Error('foo')],
     [new Error('bar'), {message: 'bar'}],
+    [new Foo(), {a: undefined, b: 'b'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
