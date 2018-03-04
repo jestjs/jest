@@ -33,6 +33,8 @@
   ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[jest-runtime]` Prevent Babel warnings on large files
   ([#5702](https://github.com/facebook/jest/pull/5702))
+* `[jest-mock]` Prevent `mockRejectedValue` from causing unhandled rejection
+  ([#5720](https://github.com/facebook/jest/pull/5720))
 
 ### Chore & Maintenance
 
