@@ -29,9 +29,13 @@ import {
   any,
   anything,
   arrayContaining,
+  arrayNotContaining,
   objectContaining,
+  objectNotContaining,
   stringContaining,
+  stringNotContaining,
   stringMatching,
+  stringNotMatching,
 } from './asymmetric_matchers';
 import {
   INTERNAL_MATCHER_FLAG,
@@ -258,6 +262,14 @@ expect.extend = (matchers: MatchersObject): void =>
 
 expect.anything = anything;
 expect.any = any;
+
+expect.not = {
+  arrayContaining: arrayNotContaining,
+  objectContaining: objectNotContaining,
+  stringContaining: stringNotContaining,
+  stringMatching: stringNotMatching,
+};
+
 expect.objectContaining = objectContaining;
 expect.arrayContaining = arrayContaining;
 expect.stringContaining = stringContaining;

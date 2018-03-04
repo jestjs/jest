@@ -15,8 +15,11 @@ import {
   isUndefined,
 } from './jasmine_utils';
 
+import {emptyObject} from './utils';
+
 class AsymmetricMatcher {
   $$typeof: Symbol;
+  inverse: boolean;
 
   constructor() {
     this.$$typeof = Symbol.for('jest.asymmetricMatcher');
@@ -113,29 +116,33 @@ class Anything extends AsymmetricMatcher {
 class ArrayContaining extends AsymmetricMatcher {
   sample: Array<any>;
 
-  constructor(sample: Array<any>) {
+  constructor(sample: Array<any>, inverse: boolean = false) {
     super();
     this.sample = sample;
+    this.inverse = inverse;
   }
 
   asymmetricMatch(other: Array<any>) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
-        "You must provide an array to ArrayContaining, not '" +
+        `You must provide an array to ${this.toString()}, not '` +
           typeof this.sample +
           "'.",
       );
     }
 
-    return (
+    const result =
       this.sample.length === 0 ||
       (Array.isArray(other) &&
-        this.sample.every(item => other.some(another => equals(item, another))))
-    );
+        this.sample.every(item =>
+          other.some(another => equals(item, another)),
+        ));
+
+    return this.inverse ? !result : result;
   }
 
   toString() {
-    return 'ArrayContaining';
+    return `Array${this.inverse ? 'Not' : ''}Containing`;
   }
 
   getExpectedType() {
@@ -146,34 +153,50 @@ class ArrayContaining extends AsymmetricMatcher {
 class ObjectContaining extends AsymmetricMatcher {
   sample: Object;
 
-  constructor(sample: Object) {
+  constructor(sample: Object, inverse: boolean = false) {
     super();
     this.sample = sample;
+    this.inverse = inverse;
   }
 
   asymmetricMatch(other: Object) {
     if (typeof this.sample !== 'object') {
       throw new Error(
-        "You must provide an object to ObjectContaining, not '" +
+        `You must provide an object to ${this.toString()}, not '` +
           typeof this.sample +
           "'.",
       );
     }
 
-    for (const property in this.sample) {
-      if (
-        !hasProperty(other, property) ||
-        !equals(this.sample[property], other[property])
-      ) {
-        return false;
+    if (this.inverse) {
+      for (const property in this.sample) {
+        if (
+          hasProperty(other, property) &&
+          equals(this.sample[property], other[property]) &&
+          !emptyObject(this.sample[property]) &&
+          !emptyObject(other[property])
+        ) {
+          return false;
+        }
       }
-    }
 
-    return true;
+      return true;
+    } else {
+      for (const property in this.sample) {
+        if (
+          !hasProperty(other, property) ||
+          !equals(this.sample[property], other[property])
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    }
   }
 
   toString() {
-    return 'ObjectContaining';
+    return `Object${this.inverse ? 'Not' : ''}Containing`;
   }
 
   getExpectedType() {
@@ -184,24 +207,27 @@ class ObjectContaining extends AsymmetricMatcher {
 class StringContaining extends AsymmetricMatcher {
   sample: string;
 
-  constructor(sample: string) {
+  constructor(sample: string, inverse: boolean = false) {
     super();
     if (!isA('String', sample)) {
       throw new Error('Expected is not a string');
     }
     this.sample = sample;
+    this.inverse = inverse;
   }
 
   asymmetricMatch(other: string) {
     if (!isA('String', other)) {
-      return false;
+      throw new Error('Actual is not a string');
     }
 
-    return other.includes(this.sample);
+    const result = other.includes(this.sample);
+
+    return this.inverse ? !result : result;
   }
 
   toString() {
-    return 'StringContaining';
+    return `String${this.inverse ? 'Not' : ''}Containing`;
   }
 
   getExpectedType() {
@@ -212,25 +238,28 @@ class StringContaining extends AsymmetricMatcher {
 class StringMatching extends AsymmetricMatcher {
   sample: RegExp;
 
-  constructor(sample: string | RegExp) {
+  constructor(sample: string | RegExp, inverse: boolean = false) {
     super();
     if (!isA('String', sample) && !isA('RegExp', sample)) {
       throw new Error('Expected is not a String or a RegExp');
     }
 
     this.sample = new RegExp(sample);
+    this.inverse = inverse;
   }
 
   asymmetricMatch(other: string) {
     if (!isA('String', other)) {
-      return false;
+      throw new Error('Actual is not a string');
     }
 
-    return this.sample.test(other);
+    const result = this.sample.test(other);
+
+    return this.inverse ? !result : result;
   }
 
   toString() {
-    return 'StringMatching';
+    return `String${this.inverse ? 'Not' : ''}Matching`;
   }
 
   getExpectedType() {
@@ -242,9 +271,17 @@ export const any = (expectedObject: any) => new Any(expectedObject);
 export const anything = () => new Anything();
 export const arrayContaining = (sample: Array<any>) =>
   new ArrayContaining(sample);
+export const arrayNotContaining = (sample: Array<any>) =>
+  new ArrayContaining(sample, true);
 export const objectContaining = (sample: Object) =>
   new ObjectContaining(sample);
+export const objectNotContaining = (sample: Object) =>
+  new ObjectContaining(sample, true);
 export const stringContaining = (expected: string) =>
   new StringContaining(expected);
+export const stringNotContaining = (expected: string) =>
+  new StringContaining(expected, true);
 export const stringMatching = (expected: string | RegExp) =>
   new StringMatching(expected);
+export const stringNotMatching = (expected: string | RegExp) =>
+  new StringMatching(expected, true);
