@@ -3840,6 +3840,15 @@ Received:
   <red>{\\"a\\": undefined}</>"
 `;
 
+exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"a": undefined, "b": "b"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toMatchObject(</><green>expected</><dim>)</>
+
+Expected value not to match object:
+  <green>{\\"a\\": undefined, \\"b\\": \\"b\\"}</>
+Received:
+  <red>{}</>"
+`;
+
 exports[`toMatchObject() {pass: true} expect(2015-11-30T00:00:00.000Z).toMatchObject(2015-11-30T00:00:00.000Z) 1`] = `
 "<dim>expect(</><red>received</><dim>).not.toMatchObject(</><green>expected</><dim>)</>
 
