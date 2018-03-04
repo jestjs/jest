@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`returns fixit metadata for two numbers 1`] = `
+Object {
+  "expected": Object {
+    "value": 1,
+  },
+  "message": "Update toEquals expectation from 2 to 1",
+  "received": Object {
+    "value": 2,
+  },
+  "type": "number",
+}
+`;

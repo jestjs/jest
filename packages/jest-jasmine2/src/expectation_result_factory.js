@@ -57,6 +57,10 @@ export default function expectationResultFactory(options: Options) {
     actual: options.actual,
     error: options.error,
     expected: options.expected,
+    fixit:
+      options.error &&
+      options.error.matcherResult &&
+      options.error.matcherResult.fixit,
     matcherName: options.matcherName,
     message,
     passed: options.passed,

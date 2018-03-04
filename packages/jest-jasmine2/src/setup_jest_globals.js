@@ -20,7 +20,7 @@ export type SetupOptions = {|
   testPath: Path,
 |};
 
-// Get suppressed errors form  jest-matchers that weren't throw during
+// Get suppressed errors from jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const addSuppressedErrors = result => {
@@ -34,6 +34,7 @@ const addSuppressedErrors = result => {
       // passing error for custom test reporters
       error,
       expected: '',
+      fixit: error.matcherResult && error.matcherResult.fixit,
       message: error.message,
       passed: false,
       stack: error.stack,
@@ -48,6 +49,7 @@ const addAssertionErrors = result => {
       return {
         actual,
         expected,
+        fixit: error.matcherResult && error.matcherResult.fixit,
         message: error.stack,
         passed: false,
       };

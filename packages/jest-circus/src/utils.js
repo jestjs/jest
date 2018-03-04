@@ -213,6 +213,7 @@ export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
     testResults.push({
       duration: test.duration,
       errors: test.errors.map(_formatError),
+      fixits: test.fixits,
       status,
       testPath,
     });

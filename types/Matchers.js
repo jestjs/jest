@@ -10,9 +10,21 @@
 import type {Path} from 'types/Config';
 import type {SnapshotState} from 'jest-snapshot';
 
+export type ExpectationFixit = {
+  message: string,
+  type: 'number', // This will get built out as more types are supported
+  expected: {
+    value: any,
+  },
+  received: {
+    value: any,
+  },
+};
+
 export type ExpectationResult = {
   pass: boolean,
   message: () => string,
+  fixit?: ExpectationFixit,
 };
 
 export type RawMatcherFn = (

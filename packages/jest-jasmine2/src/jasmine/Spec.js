@@ -65,6 +65,7 @@ export default function Spec(attrs: Object) {
     fullName: this.getFullName(),
     failedExpectations: [],
     passedExpectations: [],
+    fixits: [],
     pendingReason: '',
     testPath: attrs.getTestPath(),
   };
@@ -76,7 +77,11 @@ Spec.prototype.addExpectationResult = function(passed, data, isError) {
     this.result.passedExpectations.push(expectationResult);
   } else {
     this.result.failedExpectations.push(expectationResult);
-
+    if (expectationResult.fixit) {
+      debugger; // eslint-disable-line
+      this.result.fixits.push(expectationResult.fixit);
+    }
+    debugger; // eslint-disable-line
     if (this.throwOnExpectationFailure && !isError) {
       throw new ExpectationFailed();
     }

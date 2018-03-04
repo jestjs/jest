@@ -7,6 +7,8 @@
  * @flow
  */
 
+import type {ExpectationFixit} from 'types/Matchers';
+
 export type Location = {
   column: number,
   line: number,
@@ -63,6 +65,7 @@ export type TestAssertionStatus = {
   shortMessage: ?string,
   terseMessage: ?string,
   line: ?number,
+  fixit: ?ExpectationFixit,
 };
 
 export type JestTotalResultsMeta = {

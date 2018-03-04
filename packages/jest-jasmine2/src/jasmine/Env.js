@@ -541,6 +541,7 @@ export default function(j$) {
         actual: '',
         message,
         error: error && error.message ? error : null,
+        fixit: error && error.fixit,
       });
     };
   }

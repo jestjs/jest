@@ -7,6 +7,8 @@
  * @flow
  */
 
+import type {ExpectationFixit} from 'types/Matchers';
+
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
 export type BlockName = string | Function;
@@ -94,6 +96,7 @@ export type TestStatus = 'pass' | 'fail' | 'skip';
 export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
+  fixits: Array<ExpectationFixit>,
   status: TestStatus,
   testPath: Array<TestName>,
 |};
@@ -119,6 +122,7 @@ export type DescribeBlock = {|
 
 export type TestEntry = {|
   errors: Array<Exception>,
+  fixits: Array<ExpectationFixit>,
   fn: ?TestFn,
   mode: TestMode,
   name: TestName,
