@@ -262,14 +262,18 @@ expect.extend = (matchers: MatchersObject): void =>
 
 expect.anything = anything;
 expect.any = any;
+
+expect.not = {
+  arrayContaining: arrayNotContaining,
+  objectContaining: objectNotContaining,
+  stringContaining: stringNotContaining,
+  stringMatching: stringNotMatching,
+};
+
 expect.objectContaining = objectContaining;
-expect.objectNotContaining = objectNotContaining;
 expect.arrayContaining = arrayContaining;
-expect.arrayNotContaining = arrayNotContaining;
 expect.stringContaining = stringContaining;
-expect.stringNotContaining = stringNotContaining;
 expect.stringMatching = stringMatching;
-expect.stringNotMatching = stringNotMatching;
 
 const _validateResult = result => {
   if (
