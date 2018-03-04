@@ -14,6 +14,8 @@
   promises ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[expect]` Add isError to utils
   ([#5670](https://github.com/facebook/jest/pull/5670))
+* `[expect]` Add inverse matchers (`expect.not.arrayContaining`, etc.,
+  [#5517](https://github.com/facebook/jest/pull/5517))
 
 ### Fixes
 
