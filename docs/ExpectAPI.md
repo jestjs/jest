@@ -281,6 +281,18 @@ subset** of the received array.
 
 It is the inverse of `expect.arrayContaining`.
 
+```js
+describe('not.arrayContaining', () => {
+  const expected = ['Samantha'];
+
+  it('matches if the actual array does not contain the expected elements', () => {
+    expect(['Alice', 'Bob', 'Eve']).toEqual(
+      expect.not.arrayContaining(expected),
+    );
+  });
+});
+```
+
 ### `expect.not.objectContaining(object)`
 
 `expect.not.objectContaining(object)` matches any received object that does not
@@ -290,6 +302,16 @@ contains properties that are **not** in the expected object.
 
 It is the inverse of `expect.objectContaining`.
 
+```js
+describe('not.objectContaining', () => {
+  const expected = {foo: 'bar'};
+
+  it('matches if the actual object does not contain expected key: value pairs', () => {
+    expect({bar: 'baz'}).toEqual(expect.not.objectContaining(expected));
+  });
+});
+```
+
 ### `expect.not.stringContaining(string)`
 
 `expect.not.stringContaining(string)` matches any received string that does not
@@ -297,12 +319,32 @@ contain the exact expected string.
 
 It is the inverse of `expect.stringContaining`.
 
+```js
+describe('not.stringContaining', () => {
+  const expected = 'Hello world!';
+
+  it('matches if the actual string does not contain the expected substring', () => {
+    expect('How are you?').toEqual(expect.not.stringContaining(expected));
+  });
+});
+```
+
 ### `expect.not.stringMatching(regexp)`
 
 `expect.not.stringMatching(regexp)` matches any received string that does not
 match the expected regexp.
 
 It is the inverse of `expect.stringMatching`.
+
+```js
+describe('not.stringMatching', () => {
+  const expected = /Hello world!/;
+
+  it('matches if the actual string does not match the expected regex', () => {
+    expect('How are you?').toEqual(expect.not.stringMatching(expected));
+  });
+});
+```
 
 ### `expect.objectContaining(object)`
 
