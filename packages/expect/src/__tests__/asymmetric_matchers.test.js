@@ -59,6 +59,15 @@ test('Anything matches any type', () => {
   });
 });
 
+test('Anything does not match null and undefined', () => {
+  [
+    anything().asymmetricMatch(null),
+    anything().asymmetricMatch(undefined),
+  ].forEach(test => {
+    jestExpect(test).toBe(false);
+  });
+});
+
 test('Anything.toAsymmetricMatcher()', () => {
   jestExpect(anything().toAsymmetricMatcher()).toBe('Anything');
 });
