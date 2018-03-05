@@ -7,7 +7,28 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and
 [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can
 work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
 
-## A jest-puppeteer example
+## Use Puppeteer Preset
+
+[Jest Puppeteer Preset](https://github.com/smooth-code/jest-puppeteer) provides
+all required configuration to run your tests using Puppeteer.
+
+1.  First install `jest-puppeteer-preset`
+
+```
+yarn add --dev jest-puppeteer-preset
+```
+
+2.  Specify preset in your Jest configuration:
+
+```json
+{
+  "preset": "jest-puppeteer-preset"
+}
+```
+
+See [documentation](https://github.com/smooth-code/jest-puppeteer).
+
+## Custom example
 
 The basic idea is to:
 

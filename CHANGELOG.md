@@ -42,6 +42,8 @@
   ([#5648](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
+* `[docs]` Mention Jest Puppeteer Preset
+  ([#5722](https://github.com/facebook/jest/pull/5722))
 
 ## 22.4.2
 
