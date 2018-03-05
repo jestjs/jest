@@ -86,6 +86,9 @@ export const setMatchers = (
       }
 
       expect[key] = (sample: any) => new CustomMatcher(sample);
+      if (!expect.not) {
+        expect.not = {};
+      }
       expect.not[key] = (sample: any) => new CustomMatcher(sample, true);
     }
   });
