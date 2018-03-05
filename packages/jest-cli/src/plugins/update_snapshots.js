@@ -7,12 +7,12 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 import type {JestHookSubscriber} from '../jest_hooks';
 
-class UpdateSnapshotsPlugin extends WatchPlugin {
+class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
-  showPrompt(
+  run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<boolean> {
@@ -20,18 +20,21 @@ class UpdateSnapshotsPlugin extends WatchPlugin {
     return Promise.resolve(false);
   }
 
-  registerHooks(hooks: JestHookSubscriber) {
+  apply(hooks: JestHookSubscriber) {
     hooks.testRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
     });
   }
 
-  getUsageRow(globalConfig: GlobalConfig) {
-    return {
-      hide: !this._hasSnapshotFailure,
-      key: 'u'.codePointAt(0),
-      prompt: 'update failing snapshots',
-    };
+  getUsageInfo(globalConfig: GlobalConfig) {
+    if (this._hasSnapshotFailure) {
+      return {
+        key: 'u'.codePointAt(0),
+        prompt: 'update failing snapshots',
+      };
+    }
+
+    return null;
   }
 }
 

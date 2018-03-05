@@ -6,7 +6,7 @@
  */
 
 const path = require('path');
-const customImportResolver = path.resolve('./eslint_import_resolver');
+const customImportResolver = path.resolve('./eslintImportResolver');
 
 module.exports = {
   extends: [
@@ -33,7 +33,6 @@ module.exports = {
         'react/jsx-no-undef': 0,
         'react/react-in-jsx-scope': 0,
         'sort-keys': 0,
-        'unicorn/filename-case': 0,
       },
     },
     {
@@ -42,54 +41,31 @@ module.exports = {
         'babel/func-params-comma-dangle': 0,
         'import/no-unresolved': [2, {ignore: ['^react-native$']}],
         'import/order': 0,
-        'unicorn/filename-case': 0,
       },
     },
     {
       files: ['scripts/**/*', 'integration-tests/**/*'],
       rules: {
         'babel/func-params-comma-dangle': 0,
-        'unicorn/filename-case': 0,
       },
     },
     {
       files: 'types/**/*',
       rules: {
         'import/no-extraneous-dependencies': 0,
-        'unicorn/filename-case': 0,
       },
     },
     {
-      files: [
-        '**/__mocks__/**/*',
-        'website/**/*',
-        '**/jest-runtime/**/*',
-        '**/src/Console*',
-        'packages/jest-cli/src/lib/Prompt.js',
-        'packages/jest-cli/src/reporters/Status.js',
-        'packages/jest-editor-support/src/Process.js',
-        'packages/jest-editor-support/src/Runner.js',
-        'packages/jest-editor-support/src/Settings.js',
-        'packages/jest-editor-support/src/Snapshot.js',
-        'packages/jest-editor-support/src/__tests__/Snapshot-test.js',
-        'packages/jest-jasmine2/src/jasmine/Env.js',
-        'packages/jest-jasmine2/src/jasmine/Spec.js',
-        'packages/jest-jasmine2/src/jasmine/Suite.js',
-        'packages/jest-jasmine2/src/jasmine/Timer.js',
-        'packages/jest-snapshot/src/State.js',
+      excludedFiles: [
+        'integration-tests/__tests__/**/*',
+        'website/versioned_docs/**/*.md',
       ],
-      rules: {
-        'unicorn/filename-case': 0,
-      },
-    },
-    {
-      excludedFiles: 'integration-tests/__tests__/**/*',
       files: [
         'examples/**/*',
         'scripts/**/*',
         'integration-tests/*/**/*',
         'website/*/**/*',
-        'eslint_import_resolver.js',
+        'eslintImportResolver.js',
       ],
       rules: {
         'prettier/prettier': [
@@ -136,7 +112,7 @@ module.exports = {
     },
   ],
   parser: 'babel-eslint',
-  plugins: ['markdown', 'import', 'unicorn', 'prettier'],
+  plugins: ['markdown', 'import', 'prettier'],
   rules: {
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
@@ -150,8 +126,8 @@ module.exports = {
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'eslint_import_resolver.js',
-          'test_setup_file.js',
+          'eslintImportResolver.js',
+          'testSetupFile.js',
         ],
       },
     ],
@@ -159,6 +135,7 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
     'no-console': 0,
+    'no-unused-vars': 2,
     'prettier/prettier': [
       2,
       {
@@ -168,7 +145,6 @@ module.exports = {
         trailingComma: 'all',
       },
     ],
-    'unicorn/filename-case': [2, {case: 'snakeCase'}],
   },
   settings: {
     'import/resolver': {

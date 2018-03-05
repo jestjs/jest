@@ -28,6 +28,6 @@ it('adds correct location info when provided with flag', () => {
   const assertions = result.testResults[0].assertionResults;
   expect(result.success).toBe(true);
   expect(result.numTotalTests).toBe(2);
-  expect(assertions[0].location).toEqual({column: 1, line: 9});
-  expect(assertions[1].location).toEqual({column: 3, line: 14});
+  expect(assertions[0].location).toEqual({column: 1, line: 10});
+  expect(assertions[1].location).toEqual({column: 2, line: 15});
 });

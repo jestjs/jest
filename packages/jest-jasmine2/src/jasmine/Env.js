@@ -52,7 +52,6 @@ export default function(j$) {
     const realClearTimeout = global.clearTimeout;
 
     const runnableResources = {};
-
     let currentSpec = null;
     const currentlyExecutingSuites = [];
     let currentDeclarationSuite = null;
@@ -173,6 +172,9 @@ export default function(j$) {
 
     const topSuite = new j$.Suite({
       id: getNextSuiteId(),
+      getTestPath() {
+        return j$.testPath;
+      },
     });
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
@@ -291,6 +293,9 @@ export default function(j$) {
         description,
         parentSuite: currentDeclarationSuite,
         throwOnExpectationFailure,
+        getTestPath() {
+          return j$.testPath;
+        },
       });
 
       return suite;
@@ -419,6 +424,21 @@ export default function(j$) {
     };
 
     this.it = function(description, fn, timeout) {
+      if (typeof description !== 'string') {
+        throw new Error(
+          `Invalid first argument, ${description}. It must be a string.`,
+        );
+      }
+      if (fn === undefined) {
+        throw new Error(
+          'Missing second argument. It must be a callback function.',
+        );
+      }
+      if (typeof fn !== 'function') {
+        throw new Error(
+          `Invalid second argument, ${fn}. It must be a callback function.`,
+        );
+      }
       const spec = specFactory(
         description,
         fn,

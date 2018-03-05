@@ -273,6 +273,79 @@ test('prepareState prepares a valid state', () => {
 The `expect.hasAssertions()` call ensures that the `prepareState` callback
 actually gets called.
 
+### `expect.not.arrayContaining(array)`
+
+`expect.not.arrayContaining(array)` matches a received array which contains none
+of the elements in the expected array. That is, the expected array **is not a
+subset** of the received array.
+
+It is the inverse of `expect.arrayContaining`.
+
+```js
+describe('not.arrayContaining', () => {
+  const expected = ['Samantha'];
+
+  it('matches if the actual array does not contain the expected elements', () => {
+    expect(['Alice', 'Bob', 'Eve']).toEqual(
+      expect.not.arrayContaining(expected),
+    );
+  });
+});
+```
+
+### `expect.not.objectContaining(object)`
+
+`expect.not.objectContaining(object)` matches any received object that does not
+recursively match the expected properties. That is, the expected object **is not
+a subset** of the received object. Therefore, it matches a received object which
+contains properties that are **not** in the expected object.
+
+It is the inverse of `expect.objectContaining`.
+
+```js
+describe('not.objectContaining', () => {
+  const expected = {foo: 'bar'};
+
+  it('matches if the actual object does not contain expected key: value pairs', () => {
+    expect({bar: 'baz'}).toEqual(expect.not.objectContaining(expected));
+  });
+});
+```
+
+### `expect.not.stringContaining(string)`
+
+`expect.not.stringContaining(string)` matches any received string that does not
+contain the exact expected string.
+
+It is the inverse of `expect.stringContaining`.
+
+```js
+describe('not.stringContaining', () => {
+  const expected = 'Hello world!';
+
+  it('matches if the actual string does not contain the expected substring', () => {
+    expect('How are you?').toEqual(expect.not.stringContaining(expected));
+  });
+});
+```
+
+### `expect.not.stringMatching(regexp)`
+
+`expect.not.stringMatching(regexp)` matches any received string that does not
+match the expected regexp.
+
+It is the inverse of `expect.stringMatching`.
+
+```js
+describe('not.stringMatching', () => {
+  const expected = /Hello world!/;
+
+  it('matches if the actual string does not match the expected regex', () => {
+    expect('How are you?').toEqual(expect.not.stringMatching(expected));
+  });
+});
+```
+
 ### `expect.objectContaining(object)`
 
 `expect.objectContaining(object)` matches any received object that recursively
@@ -301,8 +374,6 @@ test('onPress gets called with the right thing', () => {
 ```
 
 ### `expect.stringContaining(string)`
-
-##### available in Jest **19.0.0+**
 
 `expect.stringContaining(string)` matches any received string that contains the
 exact expected string.
@@ -925,6 +996,7 @@ const houseForSale = {
     amenities: ['oven', 'stove', 'washer'],
     area: 20,
     wallColor: 'white',
+    'nice.oven': true,
   },
 };
 
@@ -952,7 +1024,7 @@ test('this house has my desired features', () => {
     ['oven', 'stove', 'washer'],
   );
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
-
+  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
 });
 ```

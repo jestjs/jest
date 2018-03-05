@@ -11,7 +11,7 @@
 import generateEmptyCoverage from '../generate_empty_coverage';
 
 const os = require('os');
-const {makeGlobalConfig, makeProjectConfig} = require('../../../../test_utils');
+const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
 
 jest.mock('jest-runtime', () => {
   // $FlowFixMe requireActual

@@ -79,7 +79,9 @@ export default class {
       Object.assign(
         {
           cwd: process.cwd(),
-          env: process.env,
+          env: Object.assign({}, process.env, {
+            JEST_WORKER_ID: this._options.workerId,
+          }),
           // suppress --debug / --inspect flags while preserving others (like --harmony)
           execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
           silent: true,

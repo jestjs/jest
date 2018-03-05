@@ -7,7 +7,12 @@
  * @flow
  */
 
-import {equals, isA} from './jasmine_utils';
+import {
+  equals,
+  isA,
+  isImmutableUnorderedKeyed,
+  isImmutableUnorderedSet,
+} from './jasmine_utils';
 
 type GetPath = {
   hasEndProp?: boolean,
@@ -119,7 +124,7 @@ export const iterableEquality = (a: any, b: any) => {
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
-    } else if (isA('Set', a)) {
+    } else if (isA('Set', a) || isImmutableUnorderedSet(a)) {
       let allFound = true;
       for (const aValue of a) {
         if (!b.has(aValue)) {
@@ -130,7 +135,7 @@ export const iterableEquality = (a: any, b: any) => {
       if (allFound) {
         return true;
       }
-    } else if (isA('Map', a)) {
+    } else if (isA('Map', a) || isImmutableUnorderedKeyed(a)) {
       let allFound = true;
       for (const aEntry of a) {
         if (
@@ -169,7 +174,7 @@ const isObjectWithKeys = a =>
   !(a instanceof Date);
 
 export const subsetEquality = (object: Object, subset: Object) => {
-  if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
+  if (!isObjectWithKeys(subset)) {
     return undefined;
   }
 
@@ -190,3 +195,21 @@ export const partition = <T>(
 
   return result;
 };
+
+// Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/src/Angular.js#L685-L693
+export const isError = (value: any) => {
+  switch (Object.prototype.toString.call(value)) {
+    case '[object Error]':
+      return true;
+    case '[object Exception]':
+      return true;
+    case '[object DOMException]':
+      return true;
+    default:
+      return value instanceof Error;
+  }
+};
+
+export function emptyObject(obj: any) {
+  return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
+}

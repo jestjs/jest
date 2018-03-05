@@ -27,7 +27,7 @@ Also see [using babel](GettingStarted.md#using-babel).
 Run
 
 ```bash
-npm install --save-dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>`
@@ -140,7 +140,7 @@ test('Link changes the class when hovered', () => {
 });
 ```
 
-When you run `npm test` or `jest`, this will produce an output file like this:
+When you run `yarn test` or `jest`, this will produce an output file like this:
 
 ```javascript
 // __tests__/__snapshots__/Link.react.test.js.snap
@@ -205,19 +205,21 @@ Warning: The tag <SomeComponent> is unrecognized in this browser. If you meant t
 React 16 triggers these warnings due to how it checks element types, and the
 mocked module fails these checks. Your options are:
 
-1. Render as text. This way you won't see the props passed to the mock component
-   in the snapshot, but it's straightforward:
-   ```js
-   jest.mock('./SomeComponent', () => () => 'SomeComponent');
-   ```
-2. Render as a custom element. DOM "custom elements" aren't checked for anything
-   and shouldn't fire warnings. They are lowercase and have a dash in the name.
-   ```js
-   jest.mock('./Widget', () => 'mock-widget');
-   ```
-3. Use `react-test-renderer`. The test renderer doesn't care about element types
-   and will happily accept e.g. `SomeComponent`. You could check snapshots using
-   the test renderer, and check component behavior separately using Enzyme.
+1.  Render as text. This way you won't see the props passed to the mock
+    component in the snapshot, but it's straightforward:
+    ```js
+    jest.mock('./SomeComponent', () => () => 'SomeComponent');
+    ```
+2.  Render as a custom element. DOM "custom elements" aren't checked for
+    anything and shouldn't fire warnings. They are lowercase and have a dash in
+    the name.
+    ```js
+    jest.mock('./Widget', () => 'mock-widget');
+    ```
+3.  Use `react-test-renderer`. The test renderer doesn't care about element
+    types and will happily accept e.g. `SomeComponent`. You could check
+    snapshots using the test renderer, and check component behavior separately
+    using Enzyme.
 
 ### DOM Testing
 
@@ -226,9 +228,8 @@ If you'd like to assert, and manipulate your rendered components you can use
 [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme
 for this example.
 
-You have to run `npm install --save-dev enzyme` to use Enzyme. If you are using
-a React below version 15.5.0, you will also need to install
-`react-addons-test-utils`.
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React
+version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's implement a simple checkbox which swaps between two labels:
 
@@ -310,8 +311,7 @@ module.exports = {
       return babel.transform(src, {
         filename,
         presets: [jestPreset],
-        retainLines: true,
-      }).code;
+      });
     }
     return src;
   },

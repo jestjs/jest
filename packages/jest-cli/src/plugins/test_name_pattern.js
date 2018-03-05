@@ -7,12 +7,12 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 import TestNamePatternPrompt from '../test_name_pattern_prompt';
 import activeFilters from '../lib/active_filters_message';
 import Prompt from '../lib/Prompt';
 
-class TestNamePatternPlugin extends WatchPlugin {
+class TestNamePatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
 
   constructor(options: {
@@ -23,30 +23,27 @@ class TestNamePatternPlugin extends WatchPlugin {
     this._prompt = new Prompt();
   }
 
-  getUsageRow() {
+  getUsageInfo() {
     return {
       key: 't'.codePointAt(0),
       prompt: 'filter by a test name regex pattern',
     };
   }
 
-  onData(key: string) {
+  onKey(key: string) {
     this._prompt.put(key);
   }
 
-  showPrompt(
-    globalConfig: GlobalConfig,
-    updateConfigAndRun: Function,
-  ): Promise<void> {
+  run(globalConfig: GlobalConfig, updateConfigAndRun: Function): Promise<void> {
     return new Promise((res, rej) => {
-      const testPathPatternPrompt = new TestNamePatternPrompt(
+      const testNamePatternPrompt = new TestNamePatternPrompt(
         this._stdout,
         this._prompt,
       );
 
-      testPathPatternPrompt.run(
+      testNamePatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({testNamePattern: value});
+          updateConfigAndRun({mode: 'watch', testNamePattern: value});
           res();
         },
         rej,

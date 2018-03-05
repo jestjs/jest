@@ -40,7 +40,8 @@ export const resolve = (rootDir: string, key: string, filePath: Path) => {
     throw createValidationError(
       `  Module ${chalk.bold(filePath)} in the ${chalk.bold(
         key,
-      )} option was not found.`,
+      )} option was not found.
+         ${chalk.bold('<rootDir>')} is: ${rootDir}`,
     );
   }
 

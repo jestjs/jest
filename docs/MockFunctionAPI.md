@@ -245,10 +245,12 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockResolvedValue(value)`
 
+##### available in Jest **22.2.0+**
+
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValue(Promise.resolve(value));
+jest.fn().mockImplementation(() => Promise.resolve(value));
 ```
 
 Useful to mock async functions in async tests:
@@ -263,10 +265,12 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
+##### available in Jest **22.2.0+**
+
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValueOnce(Promise.resolve(value));
+jest.fn().mockImplementationOnce(() => Promise.resolve(value));
 ```
 
 Useful to resolve different values over multiple async calls:
@@ -288,10 +292,12 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
+##### available in Jest **22.2.0+**
+
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValue(Promise.reject(value));
+jest.fn().mockImplementation(() => Promise.reject(value));
 ```
 
 Useful to create async mock functions that will always reject:
@@ -306,10 +312,12 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
+##### available in Jest **22.2.0+**
+
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValueOnce(Promise.reject(value));
+jest.fn().mockImplementationOnce(() => Promise.reject(value));
 ```
 
 Example usage:

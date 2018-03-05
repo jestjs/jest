@@ -9,7 +9,7 @@
 'use strict';
 
 const {stringify} = require('jest-matcher-utils');
-const {getObjectSubset, getPath} = require('../utils');
+const {emptyObject, getObjectSubset, getPath} = require('../utils');
 
 describe('getPath()', () => {
   test('property exists', () => {
@@ -105,5 +105,20 @@ describe('getObjectSubset()', () => {
         expect(getObjectSubset(object, subset)).toEqual(expected);
       },
     );
+  });
+});
+
+describe('emptyObject()', () => {
+  test('matches an empty object', () => {
+    expect(emptyObject({})).toBe(true);
+  });
+
+  test('does not match an object with keys', () => {
+    expect(emptyObject({foo: undefined})).toBe(false);
+  });
+
+  test('does not match a non-object', () => {
+    expect(emptyObject(null)).toBe(false);
+    expect(emptyObject(34)).toBe(false);
   });
 });

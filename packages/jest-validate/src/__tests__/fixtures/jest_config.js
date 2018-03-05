@@ -69,7 +69,7 @@ const validConfig = {
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
   collectCoverageOnlyFrom: {
-    '<rootDir>/this-directory-is-covered/covered.js': true,
+    '<rootDir>/this-directory-is-covered/Covered.js': true,
   },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
@@ -105,7 +105,7 @@ const validConfig = {
   rootDir: '/',
   roots: ['<rootDir>'],
   setupFiles: ['<rootDir>/setup.js'],
-  setupTestFrameworkScriptFile: '<rootDir>/test_setup_file.js',
+  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',

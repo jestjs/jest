@@ -8,11 +8,11 @@
  */
 import type {JestHookSubscriber} from '../jest_hooks';
 import type {GlobalConfig} from 'types/Config';
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 import {getFailedSnapshotTests} from 'jest-util';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
-class UpdateSnapshotInteractivePlugin extends WatchPlugin {
+class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;
   _failedSnapshotTestPaths: Array<*>;
 
@@ -21,10 +21,11 @@ class UpdateSnapshotInteractivePlugin extends WatchPlugin {
     stdout: stream$Writable | tty$WriteStream,
   }) {
     super(options);
+    this._failedSnapshotTestPaths = [];
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
   }
 
-  registerHooks(hooks: JestHookSubscriber) {
+  apply(hooks: JestHookSubscriber) {
     hooks.testRunComplete(results => {
       this._failedSnapshotTestPaths = getFailedSnapshotTests(results);
       if (this._snapshotInteractiveMode.isActive()) {
@@ -33,22 +34,20 @@ class UpdateSnapshotInteractivePlugin extends WatchPlugin {
     });
   }
 
-  onData(key: string) {
+  onKey(key: string) {
     if (this._snapshotInteractiveMode.isActive()) {
       this._snapshotInteractiveMode.put(key);
     }
   }
 
-  showPrompt(
-    globalConfig: GlobalConfig,
-    updateConfigAndRun: Function,
-  ): Promise<void> {
+  run(globalConfig: GlobalConfig, updateConfigAndRun: Function): Promise<void> {
     if (this._failedSnapshotTestPaths.length) {
       return new Promise(res => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestPaths,
           (path: string, shouldUpdateSnapshot: boolean) => {
             updateConfigAndRun({
+              mode: 'watch',
               testNamePattern: '',
               testPathPattern: path,
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
@@ -64,14 +63,18 @@ class UpdateSnapshotInteractivePlugin extends WatchPlugin {
     }
   }
 
-  getUsageRow(globalConfig: GlobalConfig) {
-    return {
-      hide:
-        !this._failedSnapshotTestPaths ||
-        this._failedSnapshotTestPaths.length === 0,
-      key: 'i'.codePointAt(0),
-      prompt: 'update failing snapshots interactively',
-    };
+  getUsageInfo(globalConfig: GlobalConfig) {
+    if (
+      this._failedSnapshotTestPaths &&
+      this._failedSnapshotTestPaths.length > 0
+    ) {
+      return {
+        key: 'i'.codePointAt(0),
+        prompt: 'update failing snapshots interactively',
+      };
+    }
+
+    return null;
   }
 }
 

@@ -9,7 +9,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const {makeTemplate, writeFiles, cleanup} = require('../utils');
+const {makeTemplate, writeFiles, cleanup} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../toThrowErrorMatchingSnapshot');

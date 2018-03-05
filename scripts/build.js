@@ -29,7 +29,7 @@ const babel = require('babel-core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const stringLength = require('string-length');
-const getPackages = require('./_getPackages');
+const getPackages = require('./getPackages');
 const browserBuild = require('./browserBuild');
 
 const OK = chalk.reset.inverse.bold.green(' DONE ');
@@ -37,7 +37,7 @@ const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
 const BUILD_ES5_DIR = 'build-es5';
 const JS_FILES_PATTERN = '**/*.js';
-const IGNORE_PATTERN = '**/__tests__/**';
+const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;

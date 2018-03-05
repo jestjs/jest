@@ -75,10 +75,8 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
     return a.message == b.message;
   }
 
-  // Identical objects are equal. `0 === -0`, but they aren't identical.
-  // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
-  if (a === b) {
-    return a !== 0 || 1 / a == 1 / b;
+  if (Object.is(a, b)) {
+    return true;
   }
   // A strict comparison is necessary because `null == undefined`.
   if (a === null || b === null) {
@@ -274,4 +272,25 @@ export function hasProperty(obj: Object | null, property: string) {
   }
 
   return hasProperty(getPrototype(obj), property);
+}
+
+// SENTINEL constants are from https://github.com/facebook/immutable-js
+const IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
+const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
+const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+
+export function isImmutableUnorderedKeyed(maybeKeyed: any) {
+  return !!(
+    maybeKeyed &&
+    maybeKeyed[IS_KEYED_SENTINEL] &&
+    !maybeKeyed[IS_ORDERED_SENTINEL]
+  );
+}
+
+export function isImmutableUnorderedSet(maybeSet: any) {
+  return !!(
+    maybeSet &&
+    maybeSet[IS_SET_SENTINEL] &&
+    !maybeSet[IS_ORDERED_SENTINEL]
+  );
 }

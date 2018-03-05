@@ -117,6 +117,46 @@ const createLastCalledWithMatcher = matcherName => (
 
 const spyMatchers: MatchersObject = {
   lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
+  nthCalledWith(received: any, nth: number, ...expected: any) {
+    const matcherName = '.nthCalledWith';
+    ensureMock(received, matcherName);
+
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+
+    if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
+      const message = () =>
+        `nth value ${printReceived(
+          nth,
+        )} must be a positive integer greater than ${printExpected(0)}`;
+      const pass = false;
+      return {message, pass};
+    }
+
+    const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+    const calls = receivedIsSpy
+      ? received.calls.all().map(x => x.args)
+      : received.mock.calls;
+    const pass = equals(calls[nth - 1], expected, [iterableEquality]);
+
+    const message = pass
+      ? () =>
+          matcherHint('.not' + matcherName, receivedName) +
+          '\n\n' +
+          `Expected ${type} ${nthToString(
+            nth,
+          )} call to not have been called with:\n` +
+          `  ${printExpected(expected)}`
+      : () =>
+          matcherHint(matcherName, receivedName) +
+          '\n\n' +
+          `Expected ${type} ${nthToString(
+            nth,
+          )} call to have been called with:\n` +
+          formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
+
+    return {message, pass};
+  },
   toBeCalled: createToBeCalledMatcher('.toBeCalled'),
   toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
   toHaveBeenCalled: createToBeCalledMatcher('.toHaveBeenCalled'),
@@ -172,15 +212,27 @@ const ensureMock = (mockOrSpy, matcherName) => {
   }
 };
 
+const getPrintedCalls = (
+  calls: any[],
+  limit: number,
+  sep: string,
+  fn: Function,
+): string => {
+  const result = [];
+  let i = calls.length;
+
+  while (--i >= 0 && --limit >= 0) {
+    result.push(fn(calls[i]));
+  }
+
+  return result.join(sep);
+};
+
 const formatReceivedCalls = (calls, limit, options) => {
   if (calls.length) {
     const but = options && options.sameSentence ? 'but' : 'But';
     const count = calls.length - limit;
-    const printedCalls = calls
-      .slice(-limit)
-      .reverse()
-      .map(printReceived)
-      .join(', ');
+    const printedCalls = getPrintedCalls(calls, limit, ', ', printReceived);
     return (
       `${but} it was ${options && options.isLast ? 'last ' : ''}called ` +
       `with:\n  ` +
@@ -196,11 +248,12 @@ const formatReceivedCalls = (calls, limit, options) => {
 
 const formatMismatchedCalls = (calls, expected, limit) => {
   if (calls.length) {
-    return calls
-      .slice(-limit)
-      .reverse()
-      .map(formatMismatchedArgs.bind(null, expected))
-      .join('\n\n');
+    return getPrintedCalls(
+      calls,
+      limit,
+      '\n\n',
+      formatMismatchedArgs.bind(null, expected),
+    );
   } else {
     return (
       `  ${printExpected(expected)}\n` +
@@ -219,9 +272,27 @@ const formatMismatchedArgs = (expected, received) => {
         `  ${printExpected(expected[i])} as argument ${i + 1}, ` +
           `but it was called with ${printReceived(received[i])}.`,
       );
+    } else if (i >= expected.length) {
+      printedArgs.push(
+        `  Did not expect argument ${i + 1} ` +
+          `but it was called with ${printReceived(received[i])}.`,
+      );
     }
   }
+
   return printedArgs.join('\n');
+};
+
+const nthToString = (nth: number) => {
+  switch (nth) {
+    case 1:
+      return 'first';
+    case 2:
+      return 'second';
+    case 3:
+      return 'third';
+  }
+  return `${nth}th`;
 };
 
 export default spyMatchers;

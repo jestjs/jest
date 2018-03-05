@@ -8,25 +8,21 @@
  */
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/skip_on_windows');
 const {
   run,
   cleanup,
   createEmptyPackage,
   linkJestPackage,
   copyDir,
-} = require('../utils');
+} = require('../Utils');
 const runJest = require('../runJest');
 const os = require('os');
 
 describe('babel-jest', () => {
-  skipOnWindows.suite();
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    if (process.platform !== 'win32') {
-      run('yarn', dir);
-    }
+    run('yarn', dir);
   });
 
   it('runs transpiled code', () => {
@@ -38,9 +34,9 @@ describe('babel-jest', () => {
 
   it('instruments only specific files and collects coverage', () => {
     const {stdout} = runJest(dir, ['--coverage', '--no-cache']);
-    expect(stdout).toMatch('covered.js');
-    expect(stdout).not.toMatch('not_covered.js');
-    expect(stdout).not.toMatch('excluded_from_coverage.js');
+    expect(stdout).toMatch('Covered.js');
+    expect(stdout).not.toMatch('NotCovered.js');
+    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
     expect(stdout).toMatchSnapshot();
   });
@@ -60,7 +56,7 @@ describe('no babel-jest', () => {
     linkJestPackage('babel-jest', tempDir);
   });
 
-  it('fails with syntax error on flow types', () => {
+  test('fails with syntax error on flow types', () => {
     const {stderr} = runJest(tempDir, ['--no-cache', '--no-watchman']);
     expect(stderr).toMatch(/FAIL.*fails_with_syntax_error/);
     expect(stderr).toMatch('Unexpected token');
@@ -72,8 +68,8 @@ describe('no babel-jest', () => {
       '--coverage',
       '--no-watchman',
     ]);
-    expect(stdout).toMatch('covered.js');
-    expect(stdout).not.toMatch('excluded_from_coverage.js');
+    expect(stdout).toMatch('Covered.js');
+    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
     expect(stdout).toMatchSnapshot();
   });
@@ -107,9 +103,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    if (process.platform !== 'win32') {
-      run('yarn', dir);
-    }
+    run('yarn', dir);
   });
 
   it('transforms dependencies using specific transformers', () => {

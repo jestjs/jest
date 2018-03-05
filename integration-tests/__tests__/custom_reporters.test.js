@@ -8,8 +8,8 @@
  */
 'use strict';
 
-const skipOnWindows = require('../../scripts/skip_on_windows');
-const {cleanup, extractSummary, writeFiles} = require('../utils');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const {cleanup, extractSummary, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 const os = require('os');
 const path = require('path');
@@ -20,11 +20,11 @@ beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
 describe('Custom Reporters Integration', () => {
-  skipOnWindows.suite();
+  SkipOnWindows.suite();
 
   test('valid string format for adding reporters', () => {
     const reporterConfig = {
-      reporters: ['<rootDir>/reporters/test_reporter.js'],
+      reporters: ['<rootDir>/reporters/TestReporter.js'],
     };
 
     const {status} = runJest('custom-reporters', [
@@ -39,10 +39,7 @@ describe('Custom Reporters Integration', () => {
   test('valid array format for adding reporters', () => {
     const reporterConfig = {
       reporters: [
-        [
-          '<rootDir>/reporters/test_reporter.js',
-          {'Dmitrii Abramov': 'Awesome'},
-        ],
+        ['<rootDir>/reporters/TestReporter.js', {'Dmitrii Abramov': 'Awesome'}],
       ],
     };
 
@@ -75,7 +72,7 @@ describe('Custom Reporters Integration', () => {
     const {stderr, stdout, status} = runJest('custom-reporters', [
       '--config',
       JSON.stringify({
-        reporters: ['default', '<rootDir>/reporters/test_reporter.js'],
+        reporters: ['default', '<rootDir>/reporters/TestReporter.js'],
       }),
       'add.test.js',
     ]);
@@ -118,7 +115,7 @@ describe('Custom Reporters Integration', () => {
       '--no-cache',
       '--config',
       JSON.stringify({
-        reporters: ['<rootDir>/reporters/incomplete_reporter.js'],
+        reporters: ['<rootDir>/reporters/IncompleteReporter.js'],
       }),
       'add.test.js',
     ]);
