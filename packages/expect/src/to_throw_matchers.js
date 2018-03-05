@@ -56,7 +56,7 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
 
   if (typeof expected === 'function') {
     return toThrowMatchingError(matcherName, error, expected);
-  } else if (expected instanceof RegExp) {
+  } else if (expected && typeof expected.test === 'function') {
     return toThrowMatchingStringOrRegexp(matcherName, error, expected, value);
   } else if (expected && typeof expected === 'object') {
     return toThrowMatchingErrorInstance(matcherName, error, expected);

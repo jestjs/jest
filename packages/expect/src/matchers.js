@@ -518,7 +518,10 @@ const matchers: MatchersObject = {
       );
     }
 
-    if (!(expected instanceof RegExp) && !(typeof expected === 'string')) {
+    if (
+      !(expected && typeof expected.test === 'function') &&
+      !(typeof expected === 'string')
+    ) {
       throw new Error(
         matcherHint('[.not].toMatch', 'string', 'expected') +
           '\n\n' +
