@@ -57,9 +57,10 @@ export const setMatchers = (
       class CustomMatcher extends AsymmetricMatcher {
         sample: any;
 
-        constructor(sample: any) {
+        constructor(sample: any, inverse: boolean = false) {
           super();
           this.sample = sample;
+          this.inverse = inverse;
         }
 
         asymmetricMatch(other: any) {
@@ -68,19 +69,24 @@ export const setMatchers = (
             (this.sample: any),
           );
 
-          return pass;
+          return this.inverse ? !pass : pass;
         }
 
         toString() {
-          return key;
+          return `${this.inverse ? 'not.' : ''}${key}`;
         }
 
         getExpectedType() {
           return 'any';
         }
+
+        toAsymmetricMatcher() {
+          return `${this.toString()}<${this.sample}>`;
+        }
       }
 
       expect[key] = (sample: any) => new CustomMatcher(sample);
+      expect.not[key] = (sample: any) => new CustomMatcher(sample, true);
     }
   });
 

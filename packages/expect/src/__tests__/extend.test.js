@@ -72,12 +72,19 @@ it('exposes an equality function to custom matchers', () => {
 });
 
 it('defines asymmetric matchers', () => {
-  jestExpect({value: 2}).toEqual({value: jestExpect.toBeDivisibleBy(2)});
+  expect(() =>
+    jestExpect({value: 2}).toEqual({value: jestExpect.toBeDivisibleBy(2)}),
+  ).not.toThrow();
   expect(() =>
     jestExpect({value: 3}).toEqual({value: jestExpect.toBeDivisibleBy(2)}),
   ).toThrowErrorMatchingSnapshot();
 });
 
 it('defines asymmetric matchers that can be prefixed by not', () => {
-  jestExpect({value: 3}).toEqual({value: jestExpect.not.toBeDivisibleBy(2)});
+  expect(() =>
+    jestExpect({value: 2}).toEqual({value: jestExpect.not.toBeDivisibleBy(2)}),
+  ).toThrowErrorMatchingSnapshot();
+  expect(() =>
+    jestExpect({value: 3}).toEqual({value: jestExpect.not.toBeDivisibleBy(2)}),
+  ).not.toThrow();
 });
