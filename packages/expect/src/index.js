@@ -302,7 +302,7 @@ expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {
   getState().expectedAssertionsNumber = expected;
 };
-expect.hasAssertions = expected => {
+expect.hasAssertions = (expected: any) => {
   utils.ensureNoExpected(expected, '.hasAssertions');
   getState().isExpectingAssertions = true;
 };
