@@ -19,6 +19,9 @@
 
 ### Fixes
 
+* `[expect]` Do not rely on `instanceof RegExp`, since it will not work for
+  RegExps created inside of a different VM
+  ([#5729](https://github.com/facebook/jest/pull/5729))
 * `[jest-resolve]` Update node module resolution algorithm to correctly handle
   symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
 * `[jest-editor-support]` Update `Settings` to use spawn in shell option
