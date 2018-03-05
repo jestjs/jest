@@ -59,6 +59,7 @@ export type Expect = {
   objectContaining(sample: Object): AsymmetricMatcher,
   stringContaining(expected: string): AsymmetricMatcher,
   stringMatching(expected: string | RegExp): AsymmetricMatcher,
+  not: {[id: string]: ThrowingMatcherFn},
 };
 
 export type ExpectationObject = {
