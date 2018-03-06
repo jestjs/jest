@@ -23,6 +23,14 @@ const videos = [
       '[Rogelio](https://twitter.com/rogeliog) shows how Jest might help you overcome the inertia to write & maintain tests with the help of a simple React Application.',
   },
   {
+    title:
+      'Aaron Abramov – Establishing Testing Patterns with Software Design Principles',
+    type: videoTypes.YOUTUBE,
+    url: 'https://www.youtube.com/embed/_pnW-JjmyXE',
+    description:
+      '[Aaron](https://twitter.com/aaronabramov_) shows how the lack of clarity about testing applications leads engineers to write low-quality tests that don’t catch bugs, break unnecessarily, and are hard to write.',
+  },
+  {
     title: 'Snapshot testing - Anna Doubkova, React London 2017',
     type: videoTypes.YOUTUBE,
     url: 'https://www.youtube.com/embed/sCbGfi40IWk',

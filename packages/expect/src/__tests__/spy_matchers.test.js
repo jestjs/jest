@@ -278,9 +278,9 @@ describe('toHaveBeenCalledTimes', () => {
       }).toThrowErrorMatchingSnapshot();
 
       expect(() => {
-        jestExpect(fn).not.nthCalledWith(1, 'foo1', 'bar'),
-          jestExpect(fn).not.nthCalledWith(2, 'foo', 'bar1'),
-          jestExpect(fn).not.nthCalledWith(3, 'foo', 'bar');
+        jestExpect(fn).not.nthCalledWith(1, 'foo1', 'bar');
+        jestExpect(fn).not.nthCalledWith(2, 'foo', 'bar1');
+        jestExpect(fn).not.nthCalledWith(3, 'foo', 'bar');
       }).toThrowErrorMatchingSnapshot();
     });
 
