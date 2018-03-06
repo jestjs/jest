@@ -48,6 +48,13 @@
 * `[docs]` Mention Jest Puppeteer Preset
   ([#5722](https://github.com/facebook/jest/pull/5722))
 
+## 22.4.3
+
+### Features
+
+* `[expect]`Add nthCalledWith spy matcher
+  ([#5605](https://github.com/facebook/jest/pull/5605))
+
 ## 22.4.2
 
 ### Fixes
