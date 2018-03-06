@@ -40,6 +40,7 @@ describe('isError', () => {
       } catch (e) {
         return e;
       }
+      return null;
     });
   });
 });
