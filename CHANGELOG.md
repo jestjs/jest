@@ -16,6 +16,8 @@
   ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[expect]` Add inverse matchers (`expect.not.arrayContaining`, etc.,
   [#5517](https://github.com/facebook/jest/pull/5517))
+* `[expect]`Add nthCalledWith spy matcher
+  ([#5605](https://github.com/facebook/jest/pull/5605))
 
 ### Fixes
 
@@ -47,13 +49,6 @@
   ([#5648](https://github.com/facebook/jest/pull/5648))
 * `[docs]` Mention Jest Puppeteer Preset
   ([#5722](https://github.com/facebook/jest/pull/5722))
-
-## 22.4.3
-
-### Features
-
-* `[expect]`Add nthCalledWith spy matcher
-  ([#5605](https://github.com/facebook/jest/pull/5605))
 
 ## 22.4.2
 
