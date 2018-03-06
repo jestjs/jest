@@ -34,5 +34,4 @@ about integrating Jest into other popular JS libraries.
 
 ## Redux
 
-* [Writing Tests](https://redux.js.org/recipes/writing-tests) by Redux
-  docs
+* [Writing Tests](https://redux.js.org/recipes/writing-tests) by Redux docs
