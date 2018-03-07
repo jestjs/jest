@@ -5,7 +5,7 @@
     "**/node_modules": true,
     "**/build": true
   },
-  "eslint.autoFixOnSave": true,
+  "editor.formatOnSave": true,
   "flow.useNPMPackagedFlow": true,
   "javascript.validate.enable": false,
   "jest.pathToJest": "yarn jest --",
