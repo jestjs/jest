@@ -55,7 +55,7 @@ export default class Settings extends EventEmitter {
 
     // Defaults for a Jest project
     this.settings = {
-      testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
+      testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
 
