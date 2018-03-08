@@ -22,6 +22,7 @@ implementation is given, the mock function will return <code>undefined</code> wh
 <ul>
 <li><a href="#mockfngetmockname"><code>mockFn.getMockName()</code></a></li>
 <li><a href="#mockfnmockcalls"><code>mockFn.mock.calls</code></a></li>
+<li><a href="#mockfnmockreturnvalues"><code>mockFn.mock.returnValues</code></a></li>
 <li><a href="#mockfnmockinstances"><code>mockFn.mock.instances</code></a></li>
 <li><a href="#mockfnmockclear"><code>mockFn.mockClear()</code></a></li>
 <li><a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a></li>
@@ -47,9 +48,17 @@ implementation is given, the mock function will return <code>undefined</code> wh
 Each call is represented by an array of arguments that were passed during the
 call.</p>
 <p>For example: A mock function <code>f</code> that has been called twice, with the arguments
-<code>f('arg1', 'arg2')</code>, and then with the arguments <code>f('arg3', 'arg4')</code> would have
+<code>f('arg1', 'arg2')</code>, and then with the arguments <code>f('arg3', 'arg4')</code>, would have
 a <code>mock.calls</code> array that looks like this:</p>
 <pre><code class="hljs css js">[[<span class="hljs-string">'arg1'</span>, <span class="hljs-string">'arg2'</span>], [<span class="hljs-string">'arg3'</span>, <span class="hljs-string">'arg4'</span>]];
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="mockfnmockreturnvalues"></a><a href="#mockfnmockreturnvalues" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.returnValues</code></h3>
+<p>An array containing values that have been returned by all calls to this mock
+function.</p>
+<p>For example: A mock function <code>f</code> that has been called twice, returning
+<code>result1</code>, and then returning <code>result2</code>, would have a <code>mock.returnValues</code> array
+that looks like this:</p>
+<pre><code class="hljs css js">[<span class="hljs-string">'result1'</span>, <span class="hljs-string">'result2'</span>];
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockinstances"></a><a href="#mockfnmockinstances" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.instances</code></h3>
 <p>An array that contains all the object instances that have been instantiated from
