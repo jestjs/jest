@@ -703,6 +703,10 @@ async runTests(
 ): Promise<void>
 ```
 
+If you need to restrict your test-runner to only run in serial rather then being
+executed in parallel your class should have the property `isSerial` to be set as
+`true`.
+
 ### `setupFiles` [array]
 
 Default: `[]`
