@@ -16,6 +16,8 @@
   ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[expect]` Add inverse matchers (`expect.not.arrayContaining`, etc.,
   [#5517](https://github.com/facebook/jest/pull/5517))
+* `[expect]`Add nthCalledWith spy matcher
+  ([#5605](https://github.com/facebook/jest/pull/5605))
 * `[jest-cli]` Add `isSerial` property that runners can expose to specify that
   they can not run in parallel
   [#5706](https://github.com/facebook/jest/pull/5706)
