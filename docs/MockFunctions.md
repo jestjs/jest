@@ -172,7 +172,7 @@ test('should fetch users', () => {
   const resp = {data: [{name: 'Bob'}]};
   axios.get.mockResolvedValue(resp);
 
-  // or you could use the follwing depending on your use case:
+  // or you could use the following depending on your use case:
   // axios.get.mockImpementation(() => Promise.resolve(resp))
 
   return Users.all().then(users => expect(users).toEqual(resp.data));
