@@ -24,6 +24,7 @@ export type MockFunctionMetadata = {
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
+  returnValues: Array<any>,
   timestamps: Array<number>,
 };
 
@@ -280,6 +281,7 @@ class ModuleMockerClass {
     return {
       calls: [],
       instances: [],
+      returnValues: [],
       timestamps: [],
     };
   }
@@ -316,58 +318,69 @@ class ModuleMockerClass {
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
         mockState.timestamps.push(Date.now());
-        if (this instanceof f) {
-          // This is probably being called as a constructor
-          prototypeSlots.forEach(slot => {
-            // Copy prototype methods to the instance to make
-            // it easier to interact with mock instance call and
-            // return values
-            if (prototype[slot].type === 'function') {
-              const protoImpl = this[slot];
-              this[slot] = mocker.generateFromMetadata(prototype[slot]);
-              this[slot]._protoImpl = protoImpl;
+
+        // The bulk of the implementation is wrapped in an immediately executed
+        // arrow function so the return value of the mock function can
+        // be easily captured and recorded, despite the many separate return
+        // points within the logic.
+        const finalReturnValue = (() => {
+          if (this instanceof f) {
+            // This is probably being called as a constructor
+            prototypeSlots.forEach(slot => {
+              // Copy prototype methods to the instance to make
+              // it easier to interact with mock instance call and
+              // return values
+              if (prototype[slot].type === 'function') {
+                const protoImpl = this[slot];
+                this[slot] = mocker.generateFromMetadata(prototype[slot]);
+                this[slot]._protoImpl = protoImpl;
+              }
+            });
+
+            // Run the mock constructor implementation
+            const mockImpl = mockConfig.specificMockImpls.length
+              ? mockConfig.specificMockImpls.shift()
+              : mockConfig.mockImpl;
+            return mockImpl && mockImpl.apply(this, arguments);
+          }
+
+          const returnValue = mockConfig.defaultReturnValue;
+          // If return value is last set, either specific or default, i.e.
+          // mockReturnValueOnce()/mockReturnValue() is called and no
+          // mockImplementationOnce()/mockImplementation() is called after that.
+          // use the set return value.
+          if (mockConfig.specificReturnValues.length) {
+            return mockConfig.specificReturnValues.shift();
+          }
+
+          if (mockConfig.isReturnValueLastSet) {
+            return mockConfig.defaultReturnValue;
+          }
+
+          // If mockImplementationOnce()/mockImplementation() is last set,
+          // or specific return values are used up, use the mock implementation.
+          let specificMockImpl;
+          if (returnValue === undefined) {
+            specificMockImpl = mockConfig.specificMockImpls.shift();
+            if (specificMockImpl === undefined) {
+              specificMockImpl = mockConfig.mockImpl;
             }
-          });
-
-          // Run the mock constructor implementation
-          const mockImpl = mockConfig.specificMockImpls.length
-            ? mockConfig.specificMockImpls.shift()
-            : mockConfig.mockImpl;
-          return mockImpl && mockImpl.apply(this, arguments);
-        }
-
-        const returnValue = mockConfig.defaultReturnValue;
-        // If return value is last set, either specific or default, i.e.
-        // mockReturnValueOnce()/mockReturnValue() is called and no
-        // mockImplementationOnce()/mockImplementation() is called after that.
-        // use the set return value.
-        if (mockConfig.specificReturnValues.length) {
-          return mockConfig.specificReturnValues.shift();
-        }
-
-        if (mockConfig.isReturnValueLastSet) {
-          return mockConfig.defaultReturnValue;
-        }
-
-        // If mockImplementationOnce()/mockImplementation() is last set,
-        // or specific return values are used up, use the mock implementation.
-        let specificMockImpl;
-        if (returnValue === undefined) {
-          specificMockImpl = mockConfig.specificMockImpls.shift();
-          if (specificMockImpl === undefined) {
-            specificMockImpl = mockConfig.mockImpl;
+            if (specificMockImpl) {
+              return specificMockImpl.apply(this, arguments);
+            }
           }
-          if (specificMockImpl) {
-            return specificMockImpl.apply(this, arguments);
+
+          // Otherwise use prototype implementation
+          if (returnValue === undefined && f._protoImpl) {
+            return f._protoImpl.apply(this, arguments);
           }
-        }
 
-        // Otherwise use prototype implementation
-        if (returnValue === undefined && f._protoImpl) {
-          return f._protoImpl.apply(this, arguments);
-        }
+          return returnValue;
+        })();
 
-        return returnValue;
+        // Record the return value of the mock function before returning it.
+        mockState.returnValues.push(finalReturnValue);
+        return finalReturnValue;
       }, metadata.length || 0);
 
       f = this._createMockFunction(metadata, mockConstructor);
