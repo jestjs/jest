@@ -17,7 +17,7 @@ import {
 
 import {emptyObject} from './utils';
 
-class AsymmetricMatcher {
+export class AsymmetricMatcher {
   $$typeof: Symbol;
   inverse: boolean;
 
