@@ -38,7 +38,7 @@
 ├── node_modules
 └── views
 </code></pre>
-<p>Quando uma simulação manual existe para um determinado módulo, o sistema de módulo do Jest usará esse módulo ao chamar explicitamente <code>jest.mock('moduleName')</code>. No entanto, simulações manuais terão precedência sobre módulos Node mesmo se <code>jest.mock('moduleName')</code> não é chamado. Para desativar esse comportamento, você precisará chamar explicitamente <code>jest.unmock('moduleName')</code> em testes que devem usar a implementação efetiva do módulo.</p>
+<p>Quando uma simulação manual existe para um determinado módulo, o sistema de módulo do Jest usará esse módulo ao chamar explicitamente <code>jest.mock('moduleName')</code>. However, when <code>automock</code> is set to <code>true</code>, the manual mock implementation will be used instead of the automatically created mock, even if <code>jest.mock('moduleName')</code> is not called. Para desativar esse comportamento, você precisará chamar explicitamente <code>jest.unmock('moduleName')</code> em testes que devem usar a implementação efetiva do módulo.</p>
 <p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) <code>fs</code> module.</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;

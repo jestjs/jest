@@ -38,7 +38,7 @@
 ├── node_modules
 └── views
 </code></pre>
-<p>When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling <code>jest.mock('moduleName')</code>. However, manual mocks will take precedence over node modules even if <code>jest.mock('moduleName')</code> is not called. To opt out of this behavior you will need to explicitly call <code>jest.unmock('moduleName')</code> in tests that should use the actual module implementation.</p>
+<p>When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling <code>jest.mock('moduleName')</code>. However, when <code>automock</code> is set to <code>true</code>, the manual mock implementation will be used instead of the automatically created mock, even if <code>jest.mock('moduleName')</code> is not called. To opt out of this behavior you will need to explicitly call <code>jest.unmock('moduleName')</code> in tests that should use the actual module implementation.</p>
 <p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) <code>fs</code> module.</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;

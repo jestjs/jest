@@ -57,8 +57,9 @@ modules are not mocked by default.</p>
 └── views
 </code></pre>
 <p>When a manual mock exists for a given module, Jest's module system will use that
-module when explicitly calling <code>jest.mock('moduleName')</code>. However, manual mocks
-will take precedence over node modules even if <code>jest.mock('moduleName')</code> is not
+module when explicitly calling <code>jest.mock('moduleName')</code>. However, when
+<code>automock</code> is set to <code>true</code>, the manual mock implementation will be used instead
+of the automatically created mock, even if <code>jest.mock('moduleName')</code> is not
 called. To opt out of this behavior you will need to explicitly call
 <code>jest.unmock('moduleName')</code> in tests that should use the actual module
 implementation.</p>

@@ -33,8 +33,8 @@
 <pre><code class="hljs css js">[<span class="hljs-string">'result1'</span>, <span class="hljs-string">'result2'</span>];
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockinstances"></a><a href="#mockfnmockinstances" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.instances</code></h3>
-<p>An array that contains all the object instances that have been instantiated from this mock function using <code>new</code>.</p>
-<p>For example: A mock function that has been instantiated twice would have the following <code>mock.instances</code> array:</p>
+<p><code>new</code> によりモック関数からインスタンス化されたオブジェクトのインスタンス全ての配列。</p>
+<p>例: 2回インスタンス化されたモック関数は次のような <code>mock.instances</code> 配列を持ちます:</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> mockFn = jest.fn();
 
 <span class="hljs-keyword">const</span> a = <span class="hljs-keyword">new</span> mockFn();
@@ -44,22 +44,22 @@ mockFn.mock.instances[<span class="hljs-number">0</span>] === a; <span class="hl
 mockFn.mock.instances[<span class="hljs-number">1</span>] === b; <span class="hljs-comment">// true</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockclear"></a><a href="#mockfnmockclear" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockClear()</code></h3>
-<p>Resets all information stored in the <a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> and <a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a> arrays.</p>
-<p>Often this is useful when you want to clean up a mock's usage data between two assertions.</p>
-<p>Beware that <code>mockClear</code> will replace <code>mockFn.mock</code>, not just <a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> and <a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a>. You should therefore avoid assigning <code>mockFn.mock</code> to other variables, temporary or not, to make sure you don't access stale data.</p>
-<p>The <a href="configuration.html#clearmocks-boolean"><code>clearMocks</code></a> configuration option is available to clear mocks automatically between tests.</p>
+<p><a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> と <a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a> の配列に格納されている全ての情報をリセットします。</p>
+<p>2つのアサーションの間でモックの使用状況をクリーンアップしたいときにしばしば役立ちます。</p>
+<p><code>mockClear</code> は <a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> と <a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a> だけでなく <code>mockFn.mock</code> も置き換えることに注意して下さい。 そのため古く無効なデータにアクセスしないように、 <code>mockFn.mock</code> を他の変数に割り当てるのは一時的であっても、そうでなくても避けるべきです。</p>
+<p>テスト間で自動的にモックをクリアするために <a href="configuration.html#clearmocks-boolean"><code>clearMocks</code></a> の設定オプションが利用できます。</p>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockreset"></a><a href="#mockfnmockreset" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReset()</code></h3>
-<p>Resets all information stored in the mock, including any initial implementation and mock name given.</p>
-<p>This is useful when you want to completely restore a mock back to its initial state.</p>
-<p>Beware that <code>mockReset</code> will replace <code>mockFn.mock</code>, not just <a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> and <a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a>. You should therefore avoid assigning <code>mockFn.mock</code> to other variables, temporary or not, to make sure you don't access stale data.</p>
+<p>最初に与えられた設定およびモック名を含む、モックに格納された全ての情報をリセットします。</p>
+<p>モックを完全に初期状態に戻したいときに便利です。</p>
+<p><code>mockReset</code> は <a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> と<a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a>だけでなく <code>mockFn.mock</code> も置き換えることに注意して下さい。 そのため古く無効なデータにアクセスしないように、 <code>mockFn.mock</code> を他の変数に割り当てるのは一時的であっても、そうでなくても避けるべきです。</p>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockrestore"></a><a href="#mockfnmockrestore" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRestore()</code></h3>
 <p>モックを削除して本来の実装に戻します。</p>
-<p>This is useful when you want to mock functions in certain test cases and restore the original implementation in others.</p>
-<p>Beware that <code>mockFn.mockRestore</code> only works when mock was created with <code>jest.spyOn</code>. Thus you have to take care of restoration yourself when manually assigning <code>jest.fn()</code>.</p>
-<p>The <a href="configuration.html#restoremocks-boolean"><code>restoreMocks</code></a> configuration option is available to restore mocks automatically between tests.</p>
+<p>あるテストケースでモック関数を利用して他のテストケースでは本物のモジュールに戻したいときに便利です。</p>
+<p><code>mockFn.mockRestore</code> は <code>jest.spyOn</code> によって作成されたモックに対してのみ動作することに注意して下さい。 このため手動で <code>jest.fn()</code> を割り当てた場合は自分で復元作業を行わなければならないことに気をつけて下さい。</p>
+<p>テスト間で自動的にモックを復元するために <a href="configuration.html#restoremocks-boolean"><code>restoreMocks</code></a>の設定オプションが利用できます。</p>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockimplementationfn"></a><a href="#mockfnmockimplementationfn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementation(fn)</code></h3>
-<p>モックの実装として使用される関数を受け取ります。 The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.</p>
-<p><em>Note: <code>jest.fn(implementation)</code> is a shorthand for <code>jest.fn().mockImplementation(implementation)</code>.</em></p>
+<p>モックの実装として使用される関数を受け取ります。 モック自体はそれ自身から出てきたインスタンスと中に与えられた全てのコールをいまだ記録しています - 違いはモックがコールされたときに実装された関数も実行されることです。</p>
+<p><em>注意: <code>jest.fn(implementation)</code> は <code>jest.fn().mockImplementation(implementation)</code> の省略形です。</em></p>
 <p>例：</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> mockFn = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">scalar</span> =&gt;</span> <span class="hljs-number">42</span> + scalar);
 <span class="hljs-comment">// or: jest.fn(scalar =&gt; 42 + scalar);</span>
@@ -94,7 +94,7 @@ some.m(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Calls to m: '</span>, mMock.mock.calls);
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockimplementationoncefn"></a><a href="#mockfnmockimplementationoncefn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementationOnce(fn)</code></h3>
-<p>Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.</p>
+<p>モック関数への1回のコールに対する実装として使用される関数を受け取ります。関数への複数回のコールが異なる結果を返せるよう、チェーンすることができます。</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn()
   .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>))
@@ -104,7 +104,7 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 
 myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val)); <span class="hljs-comment">// false</span>
 </code></pre>
-<p>When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with <code>jest.fn(() =&gt; defaultValue)</code> or <code>.mockImplementation(() =&gt; defaultValue)</code> if they were called:</p>
+<p>モック関数が mockImplementationOnce によって定義された実装が全て使い切った時は、 呼び出された場合に<code>jest.fn(() =&gt; defaultValue)</code> または <code>.mockImplementation(() =&gt; defaultValue)</code> によって設定されたデフォルトの実装を実行します。</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'default'</span>)
   .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'first call'</span>)
@@ -115,13 +115,13 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmocknamevalue"></a><a href="#mockfnmocknamevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockName(value)</code></h3>
 <h5><a class="anchor" aria-hidden="true" name="jest-2200"></a><a href="#jest-2200" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>jest バージョン<strong>22.0.0+</strong>で利用可能</h5>
-<p>Accepts a string to use in test result output in place of &quot;jest.fn()&quot; to indicate which mock function is being referenced.</p>
+<p>どのモック関数が参照されているのかを示すために、&quot;jest.fn()&quot; の代わりにテスト結果で出力される文字列を引数に取ります。</p>
 <p>例：</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> mockFn = jest.fn().mockName(<span class="hljs-string">'mockedFunction'</span>);
 <span class="hljs-comment">// mockFn();</span>
 expect(mockFn).toHaveBeenCalled();
 </code></pre>
-<p>Will result in this error:</p>
+<p>は以下のエラーを出力します:</p>
 <pre><code class="hljs css bash">    expect(mockedFunction).toHaveBeenCalled()
 
     Expected mock <span class="hljs-keyword">function</span> to have been called.
@@ -141,7 +141,7 @@ mock.mockReturnValue(<span class="hljs-number">43</span>);
 mock(); <span class="hljs-comment">// 43</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockreturnvalueoncevalue"></a><a href="#mockfnmockreturnvalueoncevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnValueOnce(value)</code></h3>
-<p>モック関数を1回呼び出したときに返す値を受け取ります。 Can be chained so that successive calls to the mock function return different values. When there are no more <code>mockReturnValueOnce</code> values to use, calls will return a value specified by <code>mockReturnValue</code>.</p>
+<p>モック関数を1回呼び出したときに返す値を受け取ります。 次のモック関数へのコールが異なる値を返せるようチェーンすることができます。 使用できる <code>mockReturnValueOnce</code> の値が無い場合は、 <code>mockReturnValue</code> で設定された値を返します。</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn()
   .mockReturnValue(<span class="hljs-string">'default'</span>)
@@ -156,7 +156,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
 </code></pre>
-<p>Useful to mock async functions in async tests:</p>
+<p>次のように async テスト内で sync 関数をモックするのに便利です。</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest.fn().mockResolvedValue(<span class="hljs-number">43</span>);
 
@@ -168,7 +168,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
 </code></pre>
-<p>Useful to resolve different values over multiple async calls:</p>
+<p>複数の async 呼び出しを異なる値で解決させるのに便利です。</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest
     .fn()
@@ -187,7 +187,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
 </code></pre>
-<p>Useful to create async mock functions that will always reject:</p>
+<p>常に reject する async モック関数を作るのに便利です。</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest.fn().mockRejectedValue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Async error'</span>));
 
@@ -199,7 +199,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
 </code></pre>
-<p>Example usage:</p>
+<p>使用例</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest
     .fn()

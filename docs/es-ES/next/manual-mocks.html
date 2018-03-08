@@ -39,7 +39,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/jes
 ├── node_modules
 └── views
 </code></pre>
-<p>Cuando existe una simulación manual para un módulo dado, el sistema de módulos de Jest usará ese módulo cuando específicamente se llama <code>jest.mock('moduleName')</code>. Sin embargo, simulaciones manuales precederán a módulos de nodos hasta cuando <code>jest.mock('moduleName')</code> no sea llamado. Para ignorar este comportamiento necesitarás llamar explícitamente a <code>jest.unmock('moduleName')</code> en pruebas que deberían usar módulo de implementación correspondiente.</p>
+<p>Cuando existe una simulación manual para un módulo dado, el sistema de módulos de Jest usará ese módulo cuando específicamente se llama <code>jest.mock('moduleName')</code>. However, when <code>automock</code> is set to <code>true</code>, the manual mock implementation will be used instead of the automatically created mock, even if <code>jest.mock('moduleName')</code> is not called. Para ignorar este comportamiento necesitarás llamar explícitamente a <code>jest.unmock('moduleName')</code> en pruebas que deberían usar módulo de implementación correspondiente.</p>
 <p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) <code>fs</code> module.</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;
