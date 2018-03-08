@@ -1,6 +1,7 @@
 ---
-id: configuration
+id: version-22.4-configuration
 title: Configuring Jest
+original_id: configuration
 ---
 
 Jest's configuration can be defined in the `package.json` file of your project,
@@ -702,10 +703,6 @@ async runTests(
   options: TestRunnerOptions,
 ): Promise<void>
 ```
-
-If you need to restrict your test-runner to only run in serial rather then being
-executed in parallel your class should have the property `isSerial` to be set as
-`true`.
 
 ### `setupFiles` [array]
 

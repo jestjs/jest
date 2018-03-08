@@ -192,7 +192,7 @@ export default class TestScheduler {
             onResult,
             onFailure,
             {
-              serial: runInBand,
+              serial: runInBand || Boolean(testRunners[runner].isSerial),
             },
           );
         }

@@ -18,6 +18,9 @@
   [#5517](https://github.com/facebook/jest/pull/5517))
 * `[expect]`Add nthCalledWith spy matcher
   ([#5605](https://github.com/facebook/jest/pull/5605))
+* `[jest-cli]` Add `isSerial` property that runners can expose to specify that
+  they can not run in parallel
+  [#5706](https://github.com/facebook/jest/pull/5706)
 
 ### Fixes
 
@@ -49,6 +52,10 @@
   ([#5648](https://github.com/facebook/jest/pull/5648))
 * `[docs]` Mention Jest Puppeteer Preset
   ([#5722](https://github.com/facebook/jest/pull/5722))
+* `[docs]` Add jest-community section to website
+  ([#5675](https://github.com/facebook/jest/pull/5675))
+* `[docs]` Add versioned docs for v22.4
+  ([##5733](https://github.com/facebook/jest/pull/#5733))
 
 ## 22.4.2
 
