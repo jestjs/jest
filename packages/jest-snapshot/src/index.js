@@ -112,6 +112,21 @@ const toMatchSnapshot = function(received: any, testName?: string) {
   };
 };
 
+const toMatchSnapshotAndLog = function(received: any, testName?: string) {
+  this.dontThrow && this.dontThrow();
+
+  const {isNot} = this;
+
+  if (isNot) {
+    throw new Error(
+      'Jest: `.not` cannot be used with `.toMatchSnapshotAndLog()`.',
+    );
+  }
+
+  console.log(received);
+  return toMatchSnapshot.call(this, received, testName);
+};
+
 const toThrowErrorMatchingSnapshot = function(
   received: any,
   testName?: string,
@@ -158,6 +173,7 @@ module.exports = {
   cleanup,
   getSerializers,
   toMatchSnapshot,
+  toMatchSnapshotAndLog,
   toThrowErrorMatchingSnapshot,
   utils,
 };
