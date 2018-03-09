@@ -123,6 +123,14 @@ Jest attempts to scan your dependency tree once (up-front) and cache it in order
 to ease some of the filesystem raking that needs to happen while running tests.
 This config option lets you customize where Jest stores that cache data on disk.
 
+### `clearMocks` [boolean]
+
+Default: `false`
+
+Automatically clear mock calls and instances between every test. Equivalent to
+calling `jest.clearAllMocks()` between each test. This does not remove any mock
+implementation that may have been provided.
+
 ### `collectCoverage` [boolean]
 
 Default: `false`
@@ -493,14 +501,6 @@ the same invocation of Jest:
 _Note: When using multi project runner, it's recommended to add a `displayName`
 for each project. This will show the `displayName` of a project next to its
 tests._
-
-### `clearMocks` [boolean]
-
-Default: `false`
-
-Automatically clear mock calls and instances between every test. Equivalent to
-calling `jest.clearAllMocks()` between each test. This does not remove any mock
-implementation that may have been provided.
 
 ### `reporters` [array<moduleName | [moduleName, options]>]
 
