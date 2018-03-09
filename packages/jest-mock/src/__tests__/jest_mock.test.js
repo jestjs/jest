@@ -438,6 +438,44 @@ describe('moduleMocker', () => {
       ]);
     });
 
+    describe('return values', () => {
+      it('tracks return values', () => {
+        const fn = moduleMocker.fn(x => x * 2);
+
+        expect(fn.mock.returnValues).toEqual([]);
+
+        fn(1);
+        fn(2);
+
+        expect(fn.mock.returnValues).toEqual([2, 4]);
+      });
+
+      it('tracks mocked return values', () => {
+        const fn = moduleMocker.fn(x => x * 2);
+        fn.mockReturnValueOnce('MOCKED!');
+
+        fn(1);
+        fn(2);
+
+        expect(fn.mock.returnValues).toEqual(['MOCKED!', 4]);
+      });
+
+      it('supports resetting return values', () => {
+        const fn = moduleMocker.fn(x => x * 2);
+
+        expect(fn.mock.returnValues).toEqual([]);
+
+        fn(1);
+        fn(2);
+
+        expect(fn.mock.returnValues).toEqual([2, 4]);
+
+        fn.mockReset();
+
+        expect(fn.mock.returnValues).toEqual([]);
+      });
+    });
+
     describe('timestamps', () => {
       const RealDate = Date;
 

@@ -29,11 +29,24 @@ Each call is represented by an array of arguments that were passed during the
 call.
 
 For example: A mock function `f` that has been called twice, with the arguments
-`f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')` would have
+`f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')`, would have
 a `mock.calls` array that looks like this:
 
 ```js
 [['arg1', 'arg2'], ['arg3', 'arg4']];
+```
+
+### `mockFn.mock.returnValues`
+
+An array containing values that have been returned by all calls to this mock
+function.
+
+For example: A mock function `f` that has been called twice, returning
+`result1`, and then returning `result2`, would have a `mock.returnValues` array
+that looks like this:
+
+```js
+['result1', 'result2'];
 ```
 
 ### `mockFn.mock.instances`

@@ -7,7 +7,8 @@
  * @flow
  */
 
-import type {MatchersObject} from 'types/Matchers';
+import {AsymmetricMatcher} from './asymmetric_matchers';
+import type {Expect, MatchersObject} from 'types/Matchers';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -39,12 +40,57 @@ export const setState = (state: Object) => {
 
 export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
 
-export const setMatchers = (matchers: MatchersObject, isInternal: boolean) => {
+export const setMatchers = (
+  matchers: MatchersObject,
+  isInternal: boolean,
+  expect: Expect,
+) => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
     Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
       value: isInternal,
     });
+
+    if (!isInternal) {
+      // expect is defined
+
+      class CustomMatcher extends AsymmetricMatcher {
+        sample: any;
+
+        constructor(sample: any, inverse: boolean = false) {
+          super();
+          this.sample = sample;
+          this.inverse = inverse;
+        }
+
+        asymmetricMatch(other: any) {
+          const {pass}: {message: () => string, pass: boolean} = matcher(
+            (other: any),
+            (this.sample: any),
+          );
+
+          return this.inverse ? !pass : pass;
+        }
+
+        toString() {
+          return `${this.inverse ? 'not.' : ''}${key}`;
+        }
+
+        getExpectedType() {
+          return 'any';
+        }
+
+        toAsymmetricMatcher() {
+          return `${this.toString()}<${this.sample}>`;
+        }
+      }
+
+      expect[key] = (sample: any) => new CustomMatcher(sample);
+      if (!expect.not) {
+        expect.not = {};
+      }
+      expect.not[key] = (sample: any) => new CustomMatcher(sample, true);
+    }
   });
 
   Object.assign(global[JEST_MATCHERS_OBJECT].matchers, matchers);
