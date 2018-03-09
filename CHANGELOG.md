@@ -18,6 +18,8 @@
   [#5517](https://github.com/facebook/jest/pull/5517))
 * `[jest-mock]` Add tracking of return values in the `mock` property
   ([#5752](https://github.com/facebook/jest/pull/5752))
+* `[jest-mock]` Add tracking of thrown errors in the `mock` property
+  ([5764](https://github.com/facebook/jest/pull/5764))
 * `[expect]`Add nthCalledWith spy matcher
   ([#5605](https://github.com/facebook/jest/pull/5605))
 * `[jest-cli]` Add `isSerial` property that runners can expose to specify that
