@@ -81,12 +81,15 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>По умолчанию: <code>«/tmp/&lt;путь&gt;»</code></p>
 <p>Директория, в которой Jest следует хранить кэшированные сведения о зависимостях.</p>
 <p>Jest пытается сканировать дерево зависимостей один раз (вверх-вперед) и кэшировать его в порядке чтобы облегчить некоторые сгребания файловой системы, которые должны произойти во время выполнения тестов. Данная опция позволяет разработчику указать где именно в файловой системе следует хранить кэшированные данные.</p>
+<h3><a class="anchor" aria-hidden="true" name="clearmocks-boolean"></a><a href="#clearmocks-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>clearMocks</code> [boolean]</h3>
+<p>Значение по умолчанию: <code>false</code></p>
+<p>Automatically clear mock calls and instances between every test. Equivalent to calling <code>jest.clearAllMocks()</code> between each test. This does not remove any mock implementation that may have been provided.</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoverage-boolean"></a><a href="#collectcoverage-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverage</code> [boolean]</h3>
 <p>Значение по умолчанию: <code>false</code></p>
-<p>Указывает, должна ли информация о покрытии собираться во время выполнения испытание. Потому что это модифицирует все выполненные файлы с коллекцией покрытия утверждения, он может значительно замедлить ваши тесты.</p>
+<p>Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoveragefrom-array"></a><a href="#collectcoveragefrom-array" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverageFrom</code> [array]</h3>
 <p>Значение по умолчанию: <code>undefined</code></p>
-<p>Массив <a href="https://github.com/jonschlinkert/micromatch">glob patterns</a>, который указывает, для каких файлов необходимо собирать информацию о покрытии. Если файл соответствует указанному шаблону glob, информация о покрытии будет собранные в нем, даже если нет тестов для этого файла и не требуется тестовый набор.</p>
+<p>Массив <a href="https://github.com/jonschlinkert/micromatch">glob patterns</a>, который указывает, для каких файлов необходимо собирать информацию о покрытии. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
 <p>Пример:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"collectCoverageFrom"</span>: [
@@ -103,7 +106,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Каталог, куда Jest будет сохранять файлы с информацией о покрытии.</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragepathignorepatterns-array-string"></a><a href="#coveragepathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coveragePathIgnorePatterns</code> [array<string>]</h3>
 <p>Значение по умолчанию: <code>[&quot;/node_modules/&quot;]</code></p>
-<p>Массив строк шаблона регулярных выражений, сопоставленных со всеми путями файлов перед выполнением теста. Если путь к файлу соответствует любому из шаблонов, информация о покрытии будет пропущена.</p>
+<p>An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.</p>
 <p>Эти строки шаблонов проверяют на соответствие полный путь. Используйте <code>&lt;корневой каталог&gt;</code> строка маркер, чтобы включить путь к корневому каталогу проекта, чтобы предотвратить его случайно игнорируя все ваши файлы в различных средах, которые могут иметь разные корневые каталоги. Example: <code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragereporters-array-string"></a><a href="#coveragereporters-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageReporters</code> [array<string>]</h3>
 <p>Значение по умолчанию: <code>[&quot;json&quot;, &quot;lcov&quot;, &quot;text&quot;]</code></p>
@@ -111,8 +114,8 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p><em>Note: Setting this option overwrites the default values. Add <code>&quot;text&quot;</code> or <code>&quot;text-summary&quot;</code> to see a coverage summary in the console output.</em></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragethreshold-object"></a><a href="#coveragethreshold-object" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageThreshold</code> [object]</h3>
 <p>Значение по умолчанию: <code>undefined</code></p>
-<p>Это будет использоваться для настройки минимального применения порога для покрытия результаты. Thresholds can be specified as <code>global</code>, as a <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a>, and as a directory or file path. Если пороги не будут выполнены, шутка не удастся. Указанные пороговые значения как положительное число считается минимальным требуемым процентом. Пороги задается как отрицательное число, представляющее Максимальное число непокрытых сущности разрешены.</p>
-<p>Например, при следующей конфигурации jest завершится неудачей, если будет меньше чем ветвь 80%, линия, и охват функции, или если больше чем 10 непокрытые заявления:</p>
+<p>This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as <code>global</code>, as a <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a>, and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.</p>
+<p>For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -127,8 +130,8 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>If globs or paths are specified alongside <code>глобальный</code>, данные покрытия для сопоставления пути будут вычтены из общего покрытия и будут применены пороговые значения самостоятельно. Пороги для globs применяются ко всем файлам, соответствующим glob. If the file specified by path is not found, error is returned.</p>
-<p>Например, со следующей конфигурацией:</p>
+<p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, error is returned.</p>
+<p>For example, with the following configuration:</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -156,7 +159,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Шутка потерпит неудачу, если:</p>
+<p>Jest will fail if:</p>
 <ul>
 <li>The <code>./src/components</code> directory has less than 40% branch or statement coverage.</li>
 <li>One of the files matching the <code>./src/reducers/**/*.js</code> glob has less than 90% statement coverage.</li>
@@ -165,7 +168,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </ul>
 <h3><a class="anchor" aria-hidden="true" name="forcecoveragematch-array-string"></a><a href="#forcecoveragematch-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>forceCoverageMatch</code> [array<string>]</h3>
 <p>Default: <code>['']</code></p>
-<p>Тестовые файлы обычно игнорируются при сборе покрытия кода. С этой опцией, это поведение можно перезаписать и включить в код игнорируемые файлы охват.</p>
+<p>Test files are normally ignored from collecting code coverage. With this option, you can overwrite this behavior and include otherwise ignored files in code coverage.</p>
 <p>For example, if you have tests in source files named with <code>.t.js</code> extension as following:</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// sum.t.js</span>
 
@@ -200,7 +203,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Обратите внимание, что при указании значения глобальной ссылки (например, объекта или массива) вот, и какой-то код мутирует это значение посреди выполнения теста, что мутация будет <em>не</em> сохраняться во всех тестовых запусках для других тестовых файлов. In addition the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. For that you should use <code>setupFiles</code>.</p>
+<p>Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will <em>not</em> be persisted across test runs for other test files. In addition the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. For that you should use <code>setupFiles</code>.</p>
 <h3><a class="anchor" aria-hidden="true" name="globalsetup-string"></a><a href="#globalsetup-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalSetup</code> [string]</h3>
 <p>Значение по умолчанию: <code>undefined</code></p>
 <p>This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.</p>
@@ -279,9 +282,6 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 }
 </code></pre>
 <p><em>Note: When using multi project runner, it's recommended to add a <code>displayName</code> for each project. This will show the <code>displayName</code> of a project next to its tests.</em></p>
-<h3><a class="anchor" aria-hidden="true" name="clearmocks-boolean"></a><a href="#clearmocks-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>clearMocks</code> [boolean]</h3>
-<p>Значение по умолчанию: <code>false</code></p>
-<p>Automatically clear mock calls and instances between every test. Equivalent to calling <code>jest.clearAllMocks()</code> between each test. This does not remove any mock implementation that may have been provided.</p>
 <h3><a class="anchor" aria-hidden="true" name="reporters-array-modulename-modulename-options"></a><a href="#reporters-array-modulename-modulename-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>reporters</code> [array&lt;modulename | [modulename, options]&gt;]</h3>
 <p>Значение по умолчанию: <code>undefined</code></p>
 <h5><a class="anchor" aria-hidden="true" name="jest-2000"></a><a href="#jest-2000" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>доступно в версиях Jest <strong>20.0.0+</strong></h5>
