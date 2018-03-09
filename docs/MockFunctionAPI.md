@@ -49,6 +49,24 @@ that looks like this:
 ['result1', 'result2'];
 ```
 
+NOTE: For any call to the mock that throws an error, a value of `undefined` will
+be stored in `mock.returnValues`.
+
+### `mockFn.mock.thrownErrors`
+
+An array containing errors that have been thrown by all calls to this mock
+function.
+
+For example: A mock function `f` that has been called twice, throwing an
+`Error`, and then executing successfully without an error, would have the
+following `mock.thrownErrors` array:
+
+```js
+f.mock.thrownErrors.length === 2; // true
+f.mock.thrownErrors[0] instanceof Error; // true
+f.mock.thrownErrors[1] === undefined; // true
+```
+
 ### `mockFn.mock.instances`
 
 An array that contains all the object instances that have been instantiated from
