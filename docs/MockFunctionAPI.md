@@ -39,18 +39,16 @@ a `mock.calls` array that looks like this:
 ### `mockFn.mock.returnValues`
 
 An array containing values that have been returned by all calls to this mock
-function.
+function. For any call to the mock that throws an error, a value of `undefined`
+will be stored in `mock.returnValues`.
 
-For example: A mock function `f` that has been called twice, returning
-`result1`, and then returning `result2`, would have a `mock.returnValues` array
-that looks like this:
+For example: A mock function `f` that has been called three times, returning
+`result1`, throwing an error, and then returning `result2`, would have a
+`mock.returnValues` array that looks like this:
 
 ```js
-['result1', 'result2'];
+['result1', undefined, 'result2'];
 ```
-
-NOTE: For any call to the mock that throws an error, a value of `undefined` will
-be stored in `mock.returnValues`.
 
 ### `mockFn.mock.thrownErrors`
 
