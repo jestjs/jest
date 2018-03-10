@@ -83,13 +83,13 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Jest はテスト実行中に必要となるかもしれないファイルシステムを集めやすくするため、依存関係のツリーを一度(前もって) 読み込んでキャッシュします。 この設定オプションによりJestがディスク上にキャッシュを格納する場所を指定できます。</p>
 <h3><a class="anchor" aria-hidden="true" name="clearmocks-boolean"></a><a href="#clearmocks-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>clearMocks</code> [boolean]</h3>
 <p>デフォルト: <code>false</code></p>
-<p>各テストごとに自動的にモックコールとモックインスタンスをクリアします。 Equivalent to calling <code>jest.clearAllMocks()</code> between each test. This does not remove any mock implementation that may have been provided.</p>
+<p>各テストごとに自動的にモックコールとモックインスタンスをクリアします。 各テスト間で <code>jest.clearAllMocks()</code> を呼び出すのと同じです。 このオプションは与えられたモックの実装を削除することはしません。</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoverage-boolean"></a><a href="#collectcoverage-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverage</code> [boolean]</h3>
 <p>デフォルト: <code>false</code></p>
-<p>Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.</p>
+<p>テスト実行中にカバレッジ情報を取得するかどうかを指定します。 カバレッジ取得を指定して実行される全てのファイルについて書き換えるので、テストが大幅に遅くなることがあります。</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoveragefrom-array"></a><a href="#collectcoveragefrom-array" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverageFrom</code> [array]</h3>
 <p>デフォルト: <code>undefined</code></p>
-<p>カバレッジ情報を取得する対象のファイルを指定する <a href="https://github.com/jonschlinkert/micromatch">globパターン</a>の配列を設定します。 If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
+<p>カバレッジ情報を取得する対象のファイルを指定する <a href="https://github.com/jonschlinkert/micromatch">globパターン</a>の配列を設定します。 ファイルが指定された globパターンに一致すれば、ファイルにテストが存在せずテストスイートが必要としないファイルであってもカバレッジ情報を収集します。</p>
 <p>例:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"collectCoverageFrom"</span>: [
@@ -99,23 +99,23 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   ]
 }
 </code></pre>
-<p>This will collect coverage information for all the files inside the project's <code>rootDir</code>, except the ones that match <code>**/node_modules/**</code> or <code>**/vendor/**</code>.</p>
-<p><em>Note: This option requires <code>collectCoverage</code> to be set to true or Jest to be invoked with <code>--coverage</code>.</em></p>
+<p>上記の設定ではプロジェクトの <code>rootDir</code> 配下の<code>**/node_modules/**</code> または <code>**/vendor/**</code> に一致するものを除いたすべてのファイルからカバレッジ情報を取得します。</p>
+<p><em>注意: このオプションを使用するには <code>collectCoverage</code>パラメータが true に設定されているか <code>--coverage</code>オプションを付けて Jest を実行する必要があります。</em></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragedirectory-string"></a><a href="#coveragedirectory-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageDirectory</code> [string]</h3>
 <p>デフォルト: <code>undefined</code></p>
 <p>カバレッジ情報を出力するファイルを格納するディレクトリを指定します。</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragepathignorepatterns-array-string"></a><a href="#coveragepathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coveragePathIgnorePatterns</code> [array<string>]</h3>
 <p>デフォルト: <code>[&quot;/node_modules/&quot;]</code></p>
-<p>An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.</p>
+<p>テスト実行前に全てのファイルのパスに対して照合する正規表現パターンの配列を指定します。指定したパターンのいずれかに一致したファイルはカバレッジ情報が取得されません。</p>
 <p>パターン文字列はフルパスに対して照合されます。 <code>&lt;rootDir&gt;</code> 文字列トークンをプロジェクトのルートディレクトリとして指定することで、異なるルートディレクトリを持ちうる異なる環境のファイルを誤って無視してしまうことを防ぐことができます。 例: <code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragereporters-array-string"></a><a href="#coveragereporters-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageReporters</code> [array<string>]</h3>
 <p>デフォルト: <code>[&quot;json&quot;, &quot;lcov&quot;, &quot;text&quot;]</code></p>
-<p>A list of reporter names that Jest uses when writing coverage reports. Any <a href="https://github.com/gotwarlost/istanbul/tree/master/lib/report">istanbul reporter</a> can be used.</p>
-<p><em>Note: Setting this option overwrites the default values. Add <code>&quot;text&quot;</code> or <code>&quot;text-summary&quot;</code> to see a coverage summary in the console output.</em></p>
+<p>カバレッジの要約を出力する際のレポート形式のリストを指定します。任意の <a href="https://github.com/gotwarlost/istanbul/tree/master/lib/report">istanbulモジュールのレポート形式</a> が使用できます。</p>
+<p><em>注意: このオプションを設定した場合、既定値は上書きされます。コンソール出力でカバレッジ情報を確認するには、<code>&quot;text&quot;</code> または <code>&quot;text-summary&quot;</code> をリストに追加して下さい。</em></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragethreshold-object"></a><a href="#coveragethreshold-object" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageThreshold</code> [object]</h3>
 <p>デフォルト: <code>undefined</code></p>
-<p>This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as <code>global</code>, as a <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a>, and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.</p>
-<p>For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:</p>
+<p>このオプションは、カバレッジ取得結果の最小しきい値を強制的に設定します。 しきい値は、 <code>global</code>、 <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a> およびディレクトリもしくはファイルパスを指定できます。 しきい値に到達しなかった場合、Jest はテストが失敗したと判定します。 正の値で指定されたしきい値を、最小限求められるカバレッジのパーセンテージとして設定します。 負のしきい値を設定することで、カバーされなかった部分の最大許容量を指定します。</p>
+<p>例えば以下の設定では、ブランチ、行、関数でカバレッジが 80% を下回るものがある、もしくは １０個以上のステートメントがカバーされていなかった場合、Jest はテストが失敗したと判定します。</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -130,8 +130,8 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. 指定されたパスのファイルが見つからない場合は、エラーが返されます。</p>
-<p>For example, with the following configuration:</p>
+<p>もし glob またはパスが <code>global</code> として指定されていれば、一致したパスのカバレッジデータは全体のカバレッジからは除外され、独自のしきい値が適用されます。 glob へのしきい値はその globs と一致する全てのファイルに適用されます。 指定されたパスのファイルが見つからない場合は、エラーが返されます。</p>
+<p>例えば、以下の設定では：</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -159,7 +159,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Jest will fail if:</p>
+<p>Jest は以下の状況ではテストが失敗したと判断します：</p>
 <ul>
 <li><code>./src/components</code> ディレクトリで、ブランチまたはステートメントのカバレッジが 40% 未満。</li>
 <li><code>./src/reducers/**/*.js</code> のglob表現に一致するファイルの１つのカバレッジが 90% 未満。</li>
@@ -167,9 +167,9 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <li>残りのファイルのカバレッジが 50% 未満（<code>global</code> で設定）。</li>
 </ul>
 <h3><a class="anchor" aria-hidden="true" name="forcecoveragematch-array-string"></a><a href="#forcecoveragematch-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>forceCoverageMatch</code> [array<string>]</h3>
-<p>Default: <code>['']</code></p>
-<p>Test files are normally ignored from collecting code coverage. With this option, you can overwrite this behavior and include otherwise ignored files in code coverage.</p>
-<p>For example, if you have tests in source files named with <code>.t.js</code> extension as following:</p>
+<p>デフォルト: <code>['']</code></p>
+<p>テストファイル自体は、通常コードカバレッジの収集対象から除外されます。このオプションを使うことで、このふるまいを上書きし、通常は無視されるファイルをコードカバレッジに含めることができます。</p>
+<p>たとえば、次のような <code>.t.js</code> 拡張子を持つソースファイルがある時、</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// sum.t.js</span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
@@ -182,7 +182,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   });
 }
 </code></pre>
-<p>You can collect coverage from those files with setting <code>forceCoverageMatch</code>.</p>
+<p><code>forceCoverageMatch</code> を設定することで、これらのファイルからカバレッジを集めることができます。</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -193,7 +193,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <h3><a class="anchor" aria-hidden="true" name="globals-object"></a><a href="#globals-object" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globals</code> [object]</h3>
 <p>デフォルト: <code>{}</code></p>
 <p>全テスト環境で利用できるグローバル変数の配列を指定します。</p>
-<p>For example, the following would create a global <code>__DEV__</code> variable set to <code>true</code> in all test environments:</p>
+<p>例えば、下記の設定はグローバル変数 <code>__DEV__</code> は全てのテスト環境において <code>true</code> となります。</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -203,26 +203,26 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will <em>not</em> be persisted across test runs for other test files. In addition the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. For that you should use <code>setupFiles</code>.</p>
+<p>（オブジェクトや配列のような）グローバル参照値を指定して、一部のコードでテスト中にその値に変更を加える場合、その変更は異なるテストファイルで実行されるテスト間で保存され<em>ない</em> ことに注意して下さい。 さらに、<code>globals</code> オブジェクトは json シリアライズ可能でなければならないため、グローバルな関数を指定することはできません。 そのためには、<code>setupFiles</code> を使用します。</p>
 <h3><a class="anchor" aria-hidden="true" name="globalsetup-string"></a><a href="#globalsetup-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalSetup</code> [string]</h3>
 <p>デフォルト: <code>undefined</code></p>
-<p>This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.</p>
+<p>このオプションでは、カスタムのグローバルセットアップモジュールを指定することができます。モジュールでは、すべてのテストスイーツの前に一度だけトリガされる非同期関数をエクスポートします。</p>
 <h3><a class="anchor" aria-hidden="true" name="globalteardown-string"></a><a href="#globalteardown-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalTeardown</code> [string]</h3>
 <p>デフォルト: <code>undefined</code></p>
-<p>This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.</p>
+<p>このオプションでは、カスタムのグローバルティアダウンモジュールを指定することができます。モジュールでは、すべてのテストスイーツの後に一度だけトリガされる非同期関数をエクスポートします。</p>
 <h3><a class="anchor" aria-hidden="true" name="modulefileextensions-array-string"></a><a href="#modulefileextensions-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleFileExtensions</code> [array<string>]</h3>
 <p>デフォルト: <code>[&quot;js&quot;, &quot;json&quot;, &quot;jsx&quot;, &quot;node&quot;]</code></p>
-<p>An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.</p>
-<p>If you are using TypeScript this should be <code>[&quot;js&quot;, &quot;jsx&quot;, &quot;json&quot;, &quot;ts&quot;, &quot;tsx&quot;]</code>, check <a href="https://github.com/kulshekhar/ts-jest">ts-jest's documentation</a>.</p>
+<p>モジュールが使用するファイル拡張子の配列を指定します。ファイル拡張子を使用しないモジュールを呼び出す場合、Jest はこれらの拡張子から形式を推測します。</p>
+<p>TypeScript を使用している場合は、 <code>[&quot;js&quot;, &quot;jsx&quot;, &quot;json&quot;, &quot;ts&quot;, &quot;tsx&quot;]</code> となるはずです。 <a href="https://github.com/kulshekhar/ts-jest">ts-jest のドキュメント</a>を確認してください。</p>
 <h3><a class="anchor" aria-hidden="true" name="moduledirectories-array-string"></a><a href="#moduledirectories-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleDirectories</code> [array<string>]</h3>
 <p>デフォルト: <code>[&quot;node_modules&quot;]</code></p>
-<p>An array of directory names to be searched recursively up from the requiring module's location. Setting this option will <em>override</em> the default, if you wish to still search <code>node_modules</code> for packages include it along with any other options: <code>[&quot;node_modules&quot;, &quot;bower_components&quot;]</code></p>
+<p>必要なモジュールの格納場所から上方向に再帰的に探索を行うディレクトリ名の配列を指定します。 このオプションを指定することで既定値が<em>上書き</em>されるため、 <code>node_modules</code> 内でパッケージの探索を行いたい場合は他のオプションに加えて次の配列を追加して下さい: <code>[&quot;node_modules&quot;, &quot;bower_components&quot;]</code></p>
 <h3><a class="anchor" aria-hidden="true" name="modulenamemapper-object-string-string"></a><a href="#modulenamemapper-object-string-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleNameMapper</code> [object&lt;string, string&gt;]</h3>
 <p>デフォルト: <code>null</code></p>
-<p>A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.</p>
-<p>Modules that are mapped to an alias are unmocked by default, regardless of whether automocking is enabled or not.</p>
-<p>Use <code>&lt;rootDir&gt;</code> string token to refer to <a href="#rootdir-string"><code>rootDir</code></a> value if you want to use file paths.</p>
-<p>Additionally, you can substitute captured regex groups using numbered backreferences.</p>
+<p>単一のモジュールで画像やスタイルのようなリソースをスタブさせるために利用する正規表現パターンからモジュール名へのマップを指定します。</p>
+<p>別名にマップされているモジュールはデフォルトでは自動モック機能が有効かどうかに関わらずモックされません。</p>
+<p>ファイルパスで <a href="#rootdir-string"><code>rootDir</code></a> を使いたい場合は、<code>&lt;rootDir&gt;</code>文字列トークンを設定して下さい。</p>
+<p>加えて、正規表現によりキャプチャした文字列を数字付きの後方参照を使って代入することができます。</p>
 <p>例:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"moduleNameMapper"</span>: {
@@ -232,21 +232,21 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first.</p>
-<p><em>Note: If you provide module name without boundaries <code>^$</code> it may cause hard to spot errors. E.g. <code>relay</code> will replace all modules which contain <code>relay</code> as a substring in its name: <code>relay</code>, <code>react-relay</code> and <code>graphql-relay</code> will all be pointed to your stub.</em></p>
+<p>マッピングを定義する順序は重要です。パターンは、マッチするまで1つ1つ順番にチェックされます。そのため、最も特殊なルールはリストの一番上に指定するべきです。</p>
+<p><em>注意: モジュール名を 正規表現 <code>^$</code> による境界なしでモジュール名を指定するとエラーの特定が困難となることがあります。 例えば <code>relay</code> という表現では <code>relay</code> を名前に含む全てのモジュール名の置換を行います: <code>relay</code>、 <code>react-relay</code> そして <code>graphql-relay</code> の全てが指定したスタブに置き換わります。</em></p>
 <h3><a class="anchor" aria-hidden="true" name="modulepathignorepatterns-array-string"></a><a href="#modulepathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePathIgnorePatterns</code> [array<string>]</h3>
 <p>デフォルト: <code>[]</code></p>
-<p>An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be <code>require()</code>-able in the test environment.</p>
+<p>モジュールローダーから'見える'状態となる前に全てのモジュールパスに対して照合する正規表現の文字列の配列を指定します。 与えられたモジュールのパスがこの正規表現に一致した場合、テスト環境では当該モジュールは <code>require()</code> できなくなります。</p>
 <p>パターン文字列はフルパスに対して照合されます。 <code>&lt;rootDir&gt;</code> 文字列トークンをプロジェクトのルートディレクトリとして指定することで、異なるルートディレクトリを持ちうる異なる環境のファイルを誤って無視してしまうことを防ぐことができます。 例: <code>[「&lt; rootDir &gt; ビルド/」]</code>。</p>
 <h3><a class="anchor" aria-hidden="true" name="modulepaths-array-string"></a><a href="#modulepaths-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePaths</code> [array<string>]</h3>
 <p>デフォルト: <code>[]</code></p>
-<p>An alternative API to setting the <code>NODE_PATH</code> env variable, <code>modulePaths</code> is an array of absolute paths to additional locations to search when resolving modules. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory. 例: <code>[&quot;&lt;rootDir&gt;/app/&quot;]</code>。</p>
+<p><code>NODE_PATH</code> 環境変数を設定することの代替API として、<code>modulePaths</code> にはモジュールの依存関係の解決を行う際の追加のロケーションの絶対パスの配列を指定します。 プロジェクトのルートディレクトリへのパスを指定するには <code>&lt;rootDir&gt;</code> 文字列トークンを使用して下さい。 例: <code>[&quot;&lt;rootDir&gt;/app/&quot;]</code>。</p>
 <h3><a class="anchor" aria-hidden="true" name="notify-boolean"></a><a href="#notify-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>notify</code> [boolean]</h3>
 <p>デフォルト: <code>false</code></p>
 <p>テスト結果の通知機能を有効にします。</p>
 <h3><a class="anchor" aria-hidden="true" name="notifymode-string"></a><a href="#notifymode-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>notifyMode</code> [string]</h3>
-<p>Default: <code>always</code></p>
-<p>Specifies notification mode. Requires <code>notify: true</code>.</p>
+<p>デフォルト: <code>always</code></p>
+<p>通知のモードを指定します。<code>notify: true</code> が必要です。</p>
 <h4><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>モード</h4>
 <ul>
 <li><code>always</code>: 常に通知を送ります。</li>
@@ -258,16 +258,16 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </ul>
 <h3><a class="anchor" aria-hidden="true" name="preset-string"></a><a href="#preset-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>preset</code> [string]</h3>
 <p>デフォルト: <code>undefined</code></p>
-<p>A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a <code>jest-preset.json</code> module on its top level.</p>
+<p>Jest の設定の基盤として利用されるプリセットを指定します。<code>jest-preset.json</code> を出力する npmモジュールをプリセットのトップレベルに指定する必要があります。</p>
 <h3><a class="anchor" aria-hidden="true" name="projects-array-string-projectconfig"></a><a href="#projects-array-string-projectconfig" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>projects</code> [array&lt;string | projectconfig&gt;]</h3>
 <p>デフォルト: <code>undefined</code></p>
-<p>When the <code>projects</code> configuration is provided with an array of paths or glob patterns, Jest will run tests in all of the specified projects at the same time. This is great for monorepos or when working on multiple projects at the same time.</p>
+<p><code>projects</code>設定がパスや globパターンの配列で与えられた場合、Jest は指定されたプロジェクト全てで同時にテストを実行します。 このオプションは monorepo構成のプロジェクトや同時に複数のプロジェクトに従事している時に効果を発揮します。</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"projects"</span>: [<span class="hljs-string">"&lt;rootDir&gt;"</span>, <span class="hljs-string">"&lt;rootDir&gt;/examples/*"</span>]
 }
 </code></pre>
-<p>This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.</p>
-<p>The projects feature can also be used to run multiple configurations or multiple <a href="#runner-string">runners</a>. For this purpose you can pass an array of configuration objects. For example, to run both tests and ESLint (via <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) in the same invocation of Jest:</p>
+<p>この例の設定では Jest はルートディレクトリと同時に examples配下の各ディレクトリでテストを実行します。同じ Jest のインスタンスで無制限に複数のプロジェクトのテストを実行できます。</p>
+<p>プロジェクト機能は、複数の設定や複数の<a href="#runner-string">ランナー</a>を走らせるためにも使用できます。 この目的のために、設定オブジェクトの配列を渡すことができます。 たとえば、テストと ESLint (via <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) の両方を、Jest の同じ呼び出しで実行するには、次のような設定を書きます。</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"projects"</span>: [
     {
@@ -281,7 +281,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   ]
 }
 </code></pre>
-<p><em>Note: When using multi project runner, it's recommended to add a <code>displayName</code> for each project. This will show the <code>displayName</code> of a project next to its tests.</em></p>
+<p><em>注意: 複数のプロジェクトを走るランナーを使う時は、プロジェクトごとに <code>displayName</code> を指定することをおすすめします。そうすることで、プロジェクトの <code>displayName</code> がテストの隣に表示されるようになります。</em></p>
 <h3><a class="anchor" aria-hidden="true" name="reporters-array-modulename-modulename-options"></a><a href="#reporters-array-modulename-modulename-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>reporters</code> [array&lt;modulename | [modulename, options]&gt;]</h3>
 <p>デフォルト: <code>undefined</code></p>
 <h5><a class="anchor" aria-hidden="true" name="jest-2000"></a><a href="#jest-2000" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>jest バージョン<strong>20.0.0+</strong>で利用可能</h5>

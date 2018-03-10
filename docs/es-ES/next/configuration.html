@@ -84,13 +84,13 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Jest intenta escanear su árbol de dependencia una vez (up-front) y lo coloca en caché, para de esta manera facilitar algo del rastrilleo del sistema de archivos que necesita pasar mientras se ejecutan las pruebas. Esta opción permite configurar donde es que Jest guarda este caché en disco.</p>
 <h3><a class="anchor" aria-hidden="true" name="clearmocks-boolean"></a><a href="#clearmocks-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>clearMocks</code> [boolean]</h3>
 <p>Por defecto: <code>false</code></p>
-<p>Borra automáticamente las llamadas a mocks e instancias entre cada prueba. Equivalent to calling <code>jest.clearAllMocks()</code> between each test. This does not remove any mock implementation that may have been provided.</p>
+<p>Borra automáticamente las llamadas a mocks e instancias entre cada prueba. Igual que llamar a <code>jest.clearAllMocks()</code> entre cada prueba. Esto no quita ninguna implementación mock que hayan podido ser proporcionadas.</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoverage-boolean"></a><a href="#collectcoverage-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverage</code> [boolean]</h3>
 <p>Por defecto: <code>false</code></p>
-<p>Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.</p>
+<p>Indica si la información de cobertura debería ser recolectada mientras las pruebas se ejecutan. Debido a que esto reequipa todos los archivos ejecutados con estados de recolección de cobertura, la velocidad de sus pruebas puede verse significantemente reducida.</p>
 <h3><a class="anchor" aria-hidden="true" name="collectcoveragefrom-array"></a><a href="#collectcoveragefrom-array" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverageFrom</code> [array]</h3>
 <p>Por defecto: <code>undefined</code></p>
-<p>Arreglo de <a href="https://github.com/jonschlinkert/micromatch">patrones</a> que definen el conjunto de archivos para los cuales se debe recolectar información de cobertura. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
+<p>Arreglo de <a href="https://github.com/jonschlinkert/micromatch">patrones</a> que definen el conjunto de archivos para los cuales se debe recolectar información de cobertura. Si un archivo coincide con el patrón global específico, la información de cobertura será recolectada para eso incluso aunque ninguna prueba exista para este archivo y no se le requiera en el suite de pruebas.</p>
 <p>Ejemplo:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"collectCoverageFrom"</span>: [
@@ -100,23 +100,23 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   ]
 }
 </code></pre>
-<p>This will collect coverage information for all the files inside the project's <code>rootDir</code>, except the ones that match <code>**/node_modules/**</code> or <code>**/vendor/**</code>.</p>
-<p><em>Note: This option requires <code>collectCoverage</code> to be set to true or Jest to be invoked with <code>--coverage</code>.</em></p>
+<p>Esto recolectará la información de cobertura para todos los archivos dentro del <code>rootDir</code> del proyecto, exceptuando aquellos que coincidan con <code>**/node_modules/**</code> ó <code>**/vendor/**</code>.</p>
+<p><em>Nota: esta opción requiere que <code>collectCoverage</code> sea definida como verdadera o que Jest sea incovado con <code>--coverage</code>.</em></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragedirectory-string"></a><a href="#coveragedirectory-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageDirectory</code> [string]</h3>
 <p>Por defecto: <code>undefined</code></p>
 <p>El directorio donde Jest escribe los archivos de resultados del análisis de cobertura.</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragepathignorepatterns-array-string"></a><a href="#coveragepathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coveragePathIgnorePatterns</code> [array<string>]</h3>
 <p>Por defecto: <code>[&quot;/node_modules/&quot;]</code></p>
-<p>An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.</p>
+<p>Un arreglo de patrones de cuerdas regexp que coninciden con todas las rutas de archivo antes de ejecutar la prueba. Si la ruta de archivo coincide con alguno de los patrones, la información de cobertura será omitida.</p>
 <p>Estos patrones se comparan contra la ruta completa. Utilice el token de cuerda <code>&lt;rootDir&gt;</code> para incluir la ruta hacia el directorio raíz de su proyecto para prevenirlo de ignorar accidentalmente todos sus archivos en ambientes diferentes que puedan tener diferentes directorios raíz. Ejmplo: <code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
 <h3><a class="anchor" aria-hidden="true" name="coveragereporters-array-string"></a><a href="#coveragereporters-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageReporters</code> [array<string>]</h3>
 <p>Por defecto: <code>[&quot;json&quot;, &quot;lcov&quot;, &quot;text&quot;]</code></p>
-<p>A list of reporter names that Jest uses when writing coverage reports. Any <a href="https://github.com/gotwarlost/istanbul/tree/master/lib/report">istanbul reporter</a> can be used.</p>
-<p><em>Note: Setting this option overwrites the default values. Add <code>&quot;text&quot;</code> or <code>&quot;text-summary&quot;</code> to see a coverage summary in the console output.</em></p>
+<p>Es ina lista de nombres de reporte que Jest usa cuando escribe reportes de cobertura. Puede usarse cualquier <a href="https://github.com/gotwarlost/istanbul/tree/master/lib/report">istanbul reporter</a>.</p>
+<p><em>Nota: colocar esta opción sobre-escribe los valores por defecto. Añada <code>&quot;text&quot;</code> ó <code>&quot;text-summary&quot;</code> para ver un sumario de cobertura en la salida de la consola.</em></p>
 <h3><a class="anchor" aria-hidden="true" name="coveragethreshold-object"></a><a href="#coveragethreshold-object" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageThreshold</code> [object]</h3>
 <p>Por defecto: <code>undefined</code></p>
-<p>This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as <code>global</code>, as a <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a>, and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.</p>
-<p>For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:</p>
+<p>Esto será utilizado para configurar un límite mínima de realización para cubrir resultados. Los límites pueden ser específicados como <code>global</code>, como <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a> y como un directorio o ruta de archivos. Jest fallará si los límites no se cumplen. Los límites especificados como un número positivo deben ser tomados como el porcentaje mínimo requerido. Los límites especificados como un número negativo representan el número máximo de entidades descubiertas permitidas.</p>
+<p>Por ejemplo, con la siguiente configuración Jest fallará si el &quot;branch&quot;, &quot;line&quot; y la cobertura de &quot;function&quot; es menor que 80%, o si existen más de 10 estados descubiertos:</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -131,8 +131,8 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, error is returned.</p>
-<p>For example, with the following configuration:</p>
+<p>Si los globs o rutas son especificados junto a <code>global</code>, los datos encubiertos para las rutas coincidientes serán substraídas de la cobertura general y los límites serán aplicados independientemente. Los limites para los globs son aplicados a todos los archivos que coincidan con el glob. If the file specified by path is not found, error is returned.</p>
+<p>Por ejemplo, con la siguiente configuración:</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -160,7 +160,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Jest will fail if:</p>
+<p>Jest fallará si:</p>
 <ul>
 <li>El directorio de <code>./src/components</code> tiene menos del 40% de cobertura en branch o statement.</li>
 <li>Uno de los archivos coincidientes con el glob <code>./src/reducers/**/*.js</code> tiene menos del 90% de cobertura de statement.</li>
@@ -168,9 +168,9 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <li>Cada archivo restante combinado tiene menos del 50% de cobertura (<code>global</code>).</li>
 </ul>
 <h3><a class="anchor" aria-hidden="true" name="forcecoveragematch-array-string"></a><a href="#forcecoveragematch-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>forceCoverageMatch</code> [array<string>]</h3>
-<p>Default: <code>['']</code></p>
-<p>Test files are normally ignored from collecting code coverage. With this option, you can overwrite this behavior and include otherwise ignored files in code coverage.</p>
-<p>For example, if you have tests in source files named with <code>.t.js</code> extension as following:</p>
+<p>Por defecto: <code>['']</code></p>
+<p>Los archivos de prueba son ignorados normalmente al recolectar cobertura de código. Con esta opción, usted podrá sobre-escribir este comportamiento e incluir archivos que, de otra forma, habrían sido ignorados en cobertura de código.</p>
+<p>Por ejemplo, si tiene pruebas en archivos fuente nombrados con la extensión <code>.t.js</code> como por ejemplo:</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// sum.t.js</span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
@@ -183,7 +183,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   });
 }
 </code></pre>
-<p>You can collect coverage from those files with setting <code>forceCoverageMatch</code>.</p>
+<p>Puede recolectar la cobertura de esos archivos con el ajuste <code>forceCoverageMatch</code>.</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -194,7 +194,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <h3><a class="anchor" aria-hidden="true" name="globals-object"></a><a href="#globals-object" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globals</code> [object]</h3>
 <p>Por defecto: <code>false</code></p>
 <p>Conjunto de variables globales que necesitan estar disponibles en todos los ambientes de pruebas.</p>
-<p>For example, the following would create a global <code>__DEV__</code> variable set to <code>true</code> in all test environments:</p>
+<p>Por ejemplo, el siguiente crearía una variable global <code>__DEV__</code> ajustado a <code>true</code> en todos los ambientes de prueba:</p>
 <pre><code class="hljs css json">{
   ...
   "jest": {
@@ -204,26 +204,26 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will <em>not</em> be persisted across test runs for other test files. In addition the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. For that you should use <code>setupFiles</code>.</p>
+<p>Tenga en cuenta que, si especifica un valor de referencia global (como un objeto o matriz) aquí, y algún código se transforma ese valor en medio de la ejecución de una prueba, esa transformación <em>not</em> continuará en la prueba se ejecuta para otros archivos de prueba. Además, el objeto de <code>globals</code> debe ser serializable por json, para que de esta manera no pueda ser usado para especificar funciones globales. Por esto debería usar <code>globals</code>.</p>
 <h3><a class="anchor" aria-hidden="true" name="globalsetup-string"></a><a href="#globalsetup-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalSetup</code> [string]</h3>
 <p>Por defecto: <code>undefined</code></p>
-<p>This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.</p>
+<p>Esta opción permite el uso de un módulo de configuración global personalizado que exporta una función async que se ejecuta una vez antes que todas las suites de prueba.</p>
 <h3><a class="anchor" aria-hidden="true" name="globalteardown-string"></a><a href="#globalteardown-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalTeardown</code> [string]</h3>
 <p>Por defecto: <code>undefined</code></p>
-<p>This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.</p>
+<p>Esta opción permite el uso de un módulo de demolición global personalizada que exporta una función async que se ejecuta una vez antes que todas las suites de prueba.</p>
 <h3><a class="anchor" aria-hidden="true" name="modulefileextensions-array-string"></a><a href="#modulefileextensions-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleFileExtensions</code> [array<string>]</h3>
 <p>Por defecto: <code>[&quot;json&quot;, &quot;lcov&quot;, &quot;text&quot;]</code></p>
-<p>An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.</p>
-<p>If you are using TypeScript this should be <code>[&quot;js&quot;, &quot;jsx&quot;, &quot;json&quot;, &quot;ts&quot;, &quot;tsx&quot;]</code>, check <a href="https://github.com/kulshekhar/ts-jest">ts-jest's documentation</a>.</p>
+<p>Es un arreglo de extensiones de archivo que sus modulos usan. Si usted solicita módulos sin especificar la extensión del archivo, estas son las extensiones que Jest buscará.</p>
+<p>Si esá utilizando TypeScript esto debería ser <code>[&quot;js&quot;, &quot;jsx&quot;, &quot;json&quot;, &quot;ts&quot;, &quot;tsx&quot;]</code>, vea <a href="https://github.com/kulshekhar/ts-jest">ts-jest's documentation</a>.</p>
 <h3><a class="anchor" aria-hidden="true" name="moduledirectories-array-string"></a><a href="#moduledirectories-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleDirectories</code> [array<string>]</h3>
 <p>Por defecto: <code>[&quot;/node_modules/&quot;]</code></p>
-<p>An array of directory names to be searched recursively up from the requiring module's location. Setting this option will <em>override</em> the default, if you wish to still search <code>node_modules</code> for packages include it along with any other options: <code>[&quot;node_modules&quot;, &quot;bower_components&quot;]</code></p>
+<p>Un arreglo de nombres dedirectorio que se buscarán recursivamente al requerir la localización de modulo. Configurar esta opción hará <em>override</em> en el defecto, si aún desea buscar <code>node_modules</code> para paquetes, incluyalo junto a cualquier otra opción: <code>[&quot;node_modules&quot;, &quot;bower_components&quot;]</code></p>
 <h3><a class="anchor" aria-hidden="true" name="modulenamemapper-object-string-string"></a><a href="#modulenamemapper-object-string-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleNameMapper</code> [object&lt;string, string&gt;]</h3>
 <p>Por defecto: <code>null</code></p>
-<p>A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.</p>
-<p>Modules that are mapped to an alias are unmocked by default, regardless of whether automocking is enabled or not.</p>
-<p>Use <code>&lt;rootDir&gt;</code> string token to refer to <a href="#rootdir-string"><code>rootDir</code></a> value if you want to use file paths.</p>
-<p>Additionally, you can substitute captured regex groups using numbered backreferences.</p>
+<p>Un mapa de expresiones regulares a nombres de módulos que permiten archivar recursos, como imágenes o estilos con un solo módulo.</p>
+<p>Los modulos que estan mapeados a un alias se desactivan por defecto, independientemente de si esta habilitado o no el auto proyector.</p>
+<p>Utilice el string token <code>&lt;rootDir&gt;</code> para referirse al valor <a href="#rootdir-string"><code>rootDir</code></a> si desea usar rutas de archivo.</p>
+<p>Adicionalmente, puede substituir grupos regex capturados usando enumeradas referencias anteriores.</p>
 <p>Ejemplo:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"moduleNameMapper"</span>: {
@@ -233,15 +233,15 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   }
 }
 </code></pre>
-<p>The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first.</p>
-<p><em>Note: If you provide module name without boundaries <code>^$</code> it may cause hard to spot errors. E.g. <code>relay</code> will replace all modules which contain <code>relay</code> as a substring in its name: <code>relay</code>, <code>react-relay</code> and <code>graphql-relay</code> will all be pointed to your stub.</em></p>
+<p>Importa el órden en el cual los mapas son definidos. Los patrones son chequeados uno por uno hasta que alguno calce. La regla más específica debería ser la primera en la lista.</p>
+<p><em>Nota: Si proporciona un nombre de módulo sin límites <code>^$</code> podría causar errores dificiles de ver. Por ejemplo: <code>relay</code> reemplazará todos los módulos que contengan <code>relay</code> en su nombre como substring: <code>relay</code>, <code>react-relay</code> y <code>graphql-relay</code> estarán apuntando a su stub.</em></p>
 <h3><a class="anchor" aria-hidden="true" name="modulepathignorepatterns-array-string"></a><a href="#modulepathignorepatterns-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePathIgnorePatterns</code> [array<string>]</h3>
 <p>Por defecto: <code>[]</code></p>
-<p>An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be <code>require()</code>-able in the test environment.</p>
+<p>Un arreglo del patrón de cuerdas regexp que coincidan con todas las rutas de módulo antes de que esas rutas se consideren 'visibles' para el cargador del módulo. Si la ruta de un módulo en particular coincide con alguno de los patrones, no será <code>require()</code>-able (requerible) en el ambiente de prueba.</p>
 <p>Estos patrones se comparan contra la ruta completa. Utilice el token de cuerda <code>&lt;rootDir&gt;</code> para incluir la ruta hacia el directorio raíz de su proyecto para prevenirlo de ignorar accidentalmente todos sus archivos en ambientes diferentes que puedan tener diferentes directorios raíz. Ejemplo: <code>[&quot;&lt;rootDir&gt;/built/&quot;]</code>.</p>
 <h3><a class="anchor" aria-hidden="true" name="modulepaths-array-string"></a><a href="#modulepaths-array-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePaths</code> [array<string>]</h3>
 <p>Por defecto: <code>[]</code></p>
-<p>An alternative API to setting the <code>NODE_PATH</code> env variable, <code>modulePaths</code> is an array of absolute paths to additional locations to search when resolving modules. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory. Ejemplo: <code>[&quot;&lt;rootDir&gt;/app/&quot;]</code>.</p>
+<p>Un API alternativo para configurar la variable env <code>NODE_PATH</code>, <code>modulePaths</code> es un arreglo rutas ansolutas hacia localizaciones adicionales para buscar cuando se resuelvan módulos. Utilice el string token <code>&lt;rootDir&gt;</code> para incluir la ruta hacia el directorio raíz de su proyecto. Ejemplo: <code>[&quot;&lt;rootDir&gt;/app/&quot;]</code>.</p>
 <h3><a class="anchor" aria-hidden="true" name="notify-boolean"></a><a href="#notify-boolean" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>notify</code> [boolean]</h3>
 <p>Por defecto: <code>false</code></p>
 <p>Activa notificaciones para los resultados de pruebas.</p>
@@ -259,16 +259,16 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </ul>
 <h3><a class="anchor" aria-hidden="true" name="preset-string"></a><a href="#preset-string" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>preset</code> [string]</h3>
 <p>Por defecto: <code>undefined</code></p>
-<p>A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a <code>jest-preset.json</code> module on its top level.</p>
-<h3><a class="anchor" aria-hidden="true" name="projects-array-string-projectconfig"></a><a href="#projects-array-string-projectconfig" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>projects</code> [array&lt;string | projectconfig&gt;]</h3>
+<p>Es un ajuste que se utiliza como base para la configuración de Jest. Debe apuntar hacia un módulo npm que exporte un módulo <code>jest-preset.json</code> en su nivel superior.</p>
+<h3><a class="anchor" aria-hidden="true" name="proyectos-arreglo-string-projectconfig"></a><a href="#proyectos-arreglo-string-projectconfig" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>proyectos</code> [arreglo&lt;string | projectconfig&gt;]</h3>
 <p>Por defecto: <code>undefined</code></p>
-<p>When the <code>projects</code> configuration is provided with an array of paths or glob patterns, Jest will run tests in all of the specified projects at the same time. This is great for monorepos or when working on multiple projects at the same time.</p>
+<p>Cuando se proporcione la configuración de <code>projects</code> con un arreglo de rutas o patrones glob, Jest ejecutará pruebas en todos los proyectos especificados al mismo tiempo. Esto es ideal para mono-repositorios o cuando se trabaja en multiples proyectos al mismo tiempo.</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"projects"</span>: [<span class="hljs-string">"&lt;rootDir&gt;"</span>, <span class="hljs-string">"&lt;rootDir&gt;/examples/*"</span>]
 }
 </code></pre>
-<p>This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.</p>
-<p>The projects feature can also be used to run multiple configurations or multiple <a href="#runner-string">runners</a>. For this purpose you can pass an array of configuration objects. For example, to run both tests and ESLint (via <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) in the same invocation of Jest:</p>
+<p>Esta configuración ekemplo ejecutará a Jest tanto en el directorio raíz como en cada carpeta en el directorio de ejemplos. Puede tener una cantidad ilimitada de proyectos ejecutandose en la misma instancia Jest.</p>
+<p>Las característica de proyectos puede ser utilizada para ejecutar múltiples configuraciones o múltiples <a href="#runner-string">runners</a>. Por este proposito puede pasar un arreglo de objetos de configuración. Por ejemplo, para ejecutar ambas pruebas y ESLint (a través de <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) en la misma invocación de Jest:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"projects"</span>: [
     {
