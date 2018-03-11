@@ -476,6 +476,38 @@ describe('moduleMocker', () => {
       });
     });
 
+    it(`tracks thrown errors without interfering with other tracking`, () => {
+      const error = new Error('ODD!');
+      const fn = moduleMocker.fn((x, y) => {
+        // multiply params
+        const result = x * y;
+
+        if (result % 2 === 1) {
+          // throw error if result is odd
+          throw error;
+        } else {
+          return result;
+        }
+      });
+
+      expect(fn(2, 4)).toBe(8);
+
+      // Mock still throws the error even though it was internally
+      // caught and recorded
+      expect(() => {
+        fn(3, 5);
+      }).toThrow('ODD!');
+
+      expect(fn(6, 3)).toBe(18);
+
+      // All call args tracked
+      expect(fn.mock.calls).toEqual([[2, 4], [3, 5], [6, 3]]);
+      // tracked return value is undefined when an error is thrown
+      expect(fn.mock.returnValues).toEqual([8, undefined, 18]);
+      // tracked thrown error is undefined when an error is NOT thrown
+      expect(fn.mock.thrownErrors).toEqual([undefined, error, undefined]);
+    });
+
     describe('timestamps', () => {
       const RealDate = Date;
 
