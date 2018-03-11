@@ -757,7 +757,13 @@ class ModuleMockerClass {
       throw new Error('No property name supplied');
     }
 
-    const descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
+    let descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
+    let proto = Object.getPrototypeOf(obj);
+
+    while (!descriptor && proto !== null) {
+      descriptor = Object.getOwnPropertyDescriptor(proto, propertyName);
+      proto = Object.getPrototypeOf(proto);
+    }
 
     if (!descriptor) {
       throw new Error(propertyName + ' property does not exist');

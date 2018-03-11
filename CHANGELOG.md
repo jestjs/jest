@@ -16,6 +16,8 @@
   ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[expect]` Add inverse matchers (`expect.not.arrayContaining`, etc.,
   [#5517](https://github.com/facebook/jest/pull/5517))
+* `[jest-mock]` Update `spyOnProperty` to support spying on the prototype chain
+  ([#5753](https://github.com/facebook/jest/pull/5753))
 * `[jest-mock]` Add tracking of return values in the `mock` property
   ([#5752](https://github.com/facebook/jest/pull/5752))
 * `[jest-mock]` Add tracking of thrown errors in the `mock` property
