@@ -28,9 +28,16 @@
 <pre><code class="hljs css js">[[<span class="hljs-string">'arg1'</span>, <span class="hljs-string">'arg2'</span>], [<span class="hljs-string">'arg3'</span>, <span class="hljs-string">'arg4'</span>]];
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockreturnvalues"></a><a href="#mockfnmockreturnvalues" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.returnValues</code></h3>
-<p>このモック関数のすべての呼び出しから返される値からなる配列です。</p>
-<p>たとえば、それぞれの呼び出しで <code>return1</code> と <code>return2</code> を返すモック関数 <code>f</code> の場合、<code>mock.returnValues</code> の配列は次のような形になるでしょう。</p>
-<pre><code class="hljs css js">[<span class="hljs-string">'result1'</span>, <span class="hljs-string">'result2'</span>];
+<p>このモック関数のすべての呼び出しから返される値からなる配列です。 For any call to the mock that throws an error, a value of <code>undefined</code> will be stored in <code>mock.returnValues</code>.</p>
+<p>For example: A mock function <code>f</code> that has been called three times, returning <code>result1</code>, throwing an error, and then returning <code>result2</code>, would have a <code>mock.returnValues</code> array that looks like this:</p>
+<pre><code class="hljs css js">[<span class="hljs-string">'result1'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-string">'result2'</span>];
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="mockfnmockthrownerrors"></a><a href="#mockfnmockthrownerrors" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.thrownErrors</code></h3>
+<p>An array containing errors that have been thrown by all calls to this mock function.</p>
+<p>For example: A mock function <code>f</code> that has been called twice, throwing an <code>Error</code>, and then executing successfully without an error, would have the following <code>mock.thrownErrors</code> array:</p>
+<pre><code class="hljs css js">f.mock.thrownErrors.length === <span class="hljs-number">2</span>; <span class="hljs-comment">// true</span>
+f.mock.thrownErrors[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Error</span>; <span class="hljs-comment">// true</span>
+f.mock.thrownErrors[<span class="hljs-number">1</span>] === <span class="hljs-literal">undefined</span>; <span class="hljs-comment">// true</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockinstances"></a><a href="#mockfnmockinstances" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.instances</code></h3>
 <p><code>new</code> によりモック関数からインスタンス化されたオブジェクトのインスタンス全ての配列。</p>
@@ -115,13 +122,13 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmocknamevalue"></a><a href="#mockfnmocknamevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockName(value)</code></h3>
 <h5><a class="anchor" aria-hidden="true" name="jest-2200"></a><a href="#jest-2200" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>jest バージョン<strong>22.0.0+</strong>で利用可能</h5>
-<p>どのモック関数が参照されているのかを示すために、&quot;jest.fn()&quot; の代わりにテスト結果で出力される文字列を引数に取ります。</p>
+<p>Accepts a string to use in test result output in place of &quot;jest.fn()&quot; to indicate which mock function is being referenced.</p>
 <p>例：</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> mockFn = jest.fn().mockName(<span class="hljs-string">'mockedFunction'</span>);
 <span class="hljs-comment">// mockFn();</span>
 expect(mockFn).toHaveBeenCalled();
 </code></pre>
-<p>は以下のエラーを出力します:</p>
+<p>Will result in this error:</p>
 <pre><code class="hljs css bash">    expect(mockedFunction).toHaveBeenCalled()
 
     Expected mock <span class="hljs-keyword">function</span> to have been called.
@@ -141,7 +148,7 @@ mock.mockReturnValue(<span class="hljs-number">43</span>);
 mock(); <span class="hljs-comment">// 43</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockreturnvalueoncevalue"></a><a href="#mockfnmockreturnvalueoncevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnValueOnce(value)</code></h3>
-<p>モック関数を1回呼び出したときに返す値を受け取ります。 次のモック関数へのコールが異なる値を返せるようチェーンすることができます。 使用できる <code>mockReturnValueOnce</code> の値が無い場合は、 <code>mockReturnValue</code> で設定された値を返します。</p>
+<p>モック関数を1回呼び出したときに返す値を受け取ります。 Can be chained so that successive calls to the mock function return different values. When there are no more <code>mockReturnValueOnce</code> values to use, calls will return a value specified by <code>mockReturnValue</code>.</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn()
   .mockReturnValue(<span class="hljs-string">'default'</span>)
@@ -156,7 +163,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
 </code></pre>
-<p>次のように async テスト内で sync 関数をモックするのに便利です。</p>
+<p>Useful to mock async functions in async tests:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest.fn().mockResolvedValue(<span class="hljs-number">43</span>);
 
@@ -168,7 +175,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
 </code></pre>
-<p>複数の async 呼び出しを異なる値で解決させるのに便利です。</p>
+<p>Useful to resolve different values over multiple async calls:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest
     .fn()
@@ -187,7 +194,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
 </code></pre>
-<p>常に reject する async モック関数を作るのに便利です。</p>
+<p>Useful to create async mock functions that will always reject:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest.fn().mockRejectedValue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Async error'</span>));
 
@@ -199,7 +206,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
 </code></pre>
-<p>使用例</p>
+<p>Example usage:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">const</span> asyncMock = jest
     .fn()
