@@ -53,7 +53,7 @@ mockFn.mock.instances[<span class="hljs-number">1</span>] === b; <span class="hl
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockclear"></a><a href="#mockfnmockclear" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockClear()</code></h3>
 <p>Resets all information stored in the <a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> and <a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a> arrays.</p>
-<p>Often this is useful when you want to clean up a mock's usage data between two assertions.</p>
+<p>Esto suele ser útil cuando se quiere limpiar el uso de datos de un mock entre dos afirmaciones.</p>
 <p>Beware that <code>mockClear</code> will replace <code>mockFn.mock</code>, not just <a href="#mockfn-mock-calls"><code>mockFn.mock.calls</code></a> and <a href="#mockfn-mock-instances"><code>mockFn.mock.instances</code></a>. You should therefore avoid assigning <code>mockFn.mock</code> to other variables, temporary or not, to make sure you don't access stale data.</p>
 <p>The <a href="configuration.html#clearmocks-boolean"><code>clearMocks</code></a> configuration option is available to clear mocks automatically between tests.</p>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockreset"></a><a href="#mockfnmockreset" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReset()</code></h3>
@@ -102,7 +102,7 @@ some.m(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Calls to m: '</span>, mMock.mock.calls);
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmockimplementationoncefn"></a><a href="#mockfnmockimplementationoncefn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementationOnce(fn)</code></h3>
-<p>Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.</p>
+<p>Recibe una función que se usará como una implementación del parodia para una llamada a la función de prueba. Se puede encadenar para que las llamadas a múltiples funciones produzcan resultados distintos.</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn()
   .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>))
@@ -112,7 +112,7 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 
 myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val)); <span class="hljs-comment">// false</span>
 </code></pre>
-<p>When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with <code>jest.fn(() =&gt; defaultValue)</code> or <code>.mockImplementation(() =&gt; defaultValue)</code> if they were called:</p>
+<p>Cuando la función de prueba se queda sin implementaciones obvias con la Implementación de prueba una vez, ejecutará la serie de implementación predeterminado con <code>jest.fn(() =&gt; defaultValue)</code> or <code>.mockImplementation(() =&gt; defaultValue)</code> si fueron llamados:</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> myMockFn = jest
   .fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'default'</span>)
   .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'first call'</span>)
@@ -123,7 +123,7 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="mockfnmocknamevalue"></a><a href="#mockfnmocknamevalue" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockName(value)</code></h3>
 <h5><a class="anchor" aria-hidden="true" name="disponible-en-jest-2200"></a><a href="#disponible-en-jest-2200" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disponible en Jest <strong>22.0.0+</strong></h5>
-<p>Accepts a string to use in test result output in place of &quot;jest.fn()&quot; to indicate which mock function is being referenced.</p>
+<p>Acepta una cadena para usar en la salida del resultado de la prueba en lugar de &quot;&quot;jest.fn()&quot; para indicar a qué función de prueba tiene refenciado.</p>
 <p>Por ejemplo:</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> mockFn = jest.fn().mockName(<span class="hljs-string">'mockedFunction'</span>);
 <span class="hljs-comment">// mockFn();</span>
