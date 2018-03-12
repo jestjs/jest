@@ -51,6 +51,10 @@
 test(<span class="hljs-string">'even and odd numbers'</span>, () =&gt; {
   expect(<span class="hljs-number">100</span>).toBeDivisibleBy(<span class="hljs-number">2</span>);
   expect(<span class="hljs-number">101</span>).not.toBeDivisibleBy(<span class="hljs-number">2</span>);
+  expect({<span class="hljs-attr">apples</span>: <span class="hljs-number">6</span>, <span class="hljs-attr">bananas</span>: <span class="hljs-number">3</span>}).toEqual({
+    <span class="hljs-attr">apples</span>: expect.toBeDivisibleBy(<span class="hljs-number">2</span>),
+    <span class="hljs-attr">bananas</span>: expect.not.toBeDivisibleBy(<span class="hljs-number">2</span>),
+  });
 });
 </code></pre>
 <p>Comparatorii ar trebui să returneze un obiect cu două proprietăți. <code>pass</code> indicates whether there was a match or not, and <code>message</code> provides a function with no arguments that returns an error message in case of failure. Thus, when <code>pass</code> is false, <code>message</code> should return the error message for when <code>expect(x).yourMatcher()</code> fails. And when <code>pass</code> is true, <code>message</code> should return the error message for when <code>expect(x).not.yourMatcher()</code> fails.</p>

@@ -110,6 +110,10 @@ that numbers are divisible by other numbers. You could abstract that into a
 test(<span class="hljs-string">'even and odd numbers'</span>, () =&gt; {
   expect(<span class="hljs-number">100</span>).toBeDivisibleBy(<span class="hljs-number">2</span>);
   expect(<span class="hljs-number">101</span>).not.toBeDivisibleBy(<span class="hljs-number">2</span>);
+  expect({<span class="hljs-attr">apples</span>: <span class="hljs-number">6</span>, <span class="hljs-attr">bananas</span>: <span class="hljs-number">3</span>}).toEqual({
+    <span class="hljs-attr">apples</span>: expect.toBeDivisibleBy(<span class="hljs-number">2</span>),
+    <span class="hljs-attr">bananas</span>: expect.not.toBeDivisibleBy(<span class="hljs-number">2</span>),
+  });
 });
 </code></pre>
 <p>Matchers should return an object with two keys. <code>pass</code> indicates whether there

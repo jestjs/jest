@@ -52,6 +52,10 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/jes
 test(<span class="hljs-string">'even and odd numbers'</span>, () =&gt; {
   expect(<span class="hljs-number">100</span>).toBeDivisibleBy(<span class="hljs-number">2</span>);
   expect(<span class="hljs-number">101</span>).not.toBeDivisibleBy(<span class="hljs-number">2</span>);
+  expect({<span class="hljs-attr">apples</span>: <span class="hljs-number">6</span>, <span class="hljs-attr">bananas</span>: <span class="hljs-number">3</span>}).toEqual({
+    <span class="hljs-attr">apples</span>: expect.toBeDivisibleBy(<span class="hljs-number">2</span>),
+    <span class="hljs-attr">bananas</span>: expect.not.toBeDivisibleBy(<span class="hljs-number">2</span>),
+  });
 });
 </code></pre>
 <p>Los comparadores deben devolver un objeto con dos parámetros. <code>pass</code> indica si hay o no hay coincidencia, y <code>message</code> proporciona una función sin argumentos que arroja un mensaje de error en caso de fallo. De esta forma, cuando <code>pass</code> resulta falso, <code>message</code> debería arrojar un mensaje de error para cuando <code>expect(x).yourMatcher()</code> falla. Y cuando <code>pass</code> resulta verdadero, <code>message</code> debería arrojar el mensaje de error para cuando <code>expect(x).not.yourMatcher()</code> falla.</p>
