@@ -22,7 +22,7 @@ SkipOnWindows.suite();
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('works with jest.conf.js', () => {
+test('works with jest.config.js', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     'package.json': '{}',
