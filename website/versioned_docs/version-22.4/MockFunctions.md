@@ -1,6 +1,7 @@
 ---
-id: mock-functions
+id: version-22.4-mock-functions
 title: Mock Functions
+original_id: mock-functions
 ---
 
 Mock functions make it easy to test the links between code by erasing the actual
@@ -41,17 +42,13 @@ expect(mockCallback.mock.calls[0][0]).toBe(0);
 
 // The first argument of the second call to the function was 1
 expect(mockCallback.mock.calls[1][0]).toBe(1);
-
-// The return value of the first call to the function was 42
-expect(mockCallback.mock.returnValues[0]).toBe(42);
 ```
 
 ## `.mock` property
 
 All mock functions have this special `.mock` property, which is where data about
-how the function has been called and what the function returned is kept. The
-`.mock` property also tracks the value of `this` for each call, so it is
-possible to inspect this as well:
+how the function has been called is kept. The `.mock` property also tracks the
+value of `this` for each call, so it is possible to inspect this as well:
 
 ```javascript
 const myMock = jest.fn();
@@ -66,7 +63,7 @@ console.log(myMock.mock.instances);
 ```
 
 These mock members are very useful in tests to assert how these functions get
-called, instantiated, or what they returned:
+called, or instantiated:
 
 ```javascript
 // The function was called exactly once
@@ -77,9 +74,6 @@ expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
 
 // The second arg of the first call to the function was 'second arg'
 expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
-
-// The return value of the first call to the function was 'return value'
-expect(someMockFunction.mock.returnValues[0]).toBe('return value');
 
 // This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
@@ -172,7 +166,7 @@ test('should fetch users', () => {
   const resp = {data: [{name: 'Bob'}]};
   axios.get.mockResolvedValue(resp);
 
-  // or you could use the following depending on your use case:
+  // or you could use the follwing depending on your use case:
   // axios.get.mockImpementation(() => Promise.resolve(resp))
 
   return Users.all().then(users => expect(users).toEqual(resp.data));

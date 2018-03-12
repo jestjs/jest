@@ -1,6 +1,7 @@
 ---
-id: expect
+id: version-22.4-expect
 title: Expect
+original_id: expect
 ---
 
 When you're writing tests, you often need to check that values meet certain
@@ -619,25 +620,6 @@ test('applying to all flavors does mango last', () => {
   const drink = jest.fn();
   applyToAllFlavors(drink);
   expect(drink).toHaveBeenLastCalledWith('mango');
-});
-```
-
-### `.nthCalledWith(nthCall, arg1, arg2, ....)`
-
-If you have a mock function, you can use `.nthCalledWith` to test what arguments
-it was nth called with. For example, let's say you have a
-`drinkEach(drink, Array<flavor>)` function that applies `f` to a bunch of
-flavors, and you want to ensure that when you call it, the first flavor it
-operates on is `'lemon'` and the second one is `'octopus'`. You can write:
-
-Note that, nth argument must be positive integer starting from 1.
-
-```js
-test('drinkEach drinks each drink', () => {
-  const drink = jest.fn();
-  drinkEach(drink, ['lemon', 'octopus']);
-  expect(drink).nthCalledWith(1, 'lemon');
-  expect(drink).nthCalledWith(2, 'octopus');
 });
 ```
 

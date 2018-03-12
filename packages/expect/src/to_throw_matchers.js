@@ -56,10 +56,15 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
 
   if (typeof expected === 'function') {
     return toThrowMatchingError(matcherName, error, expected);
-  } else if (expected instanceof RegExp) {
-    return toThrowMatchingStringOrRegexp(matcherName, error, expected, value);
+  } else if (expected && typeof expected.test === 'function') {
+    return toThrowMatchingStringOrRegexp(
+      matcherName,
+      error,
+      (expected: any),
+      value,
+    );
   } else if (expected && typeof expected === 'object') {
-    return toThrowMatchingErrorInstance(matcherName, error, expected);
+    return toThrowMatchingErrorInstance(matcherName, error, (expected: any));
   } else if (expected === undefined) {
     const pass = error !== undefined;
     return {

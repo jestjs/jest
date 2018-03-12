@@ -1,6 +1,7 @@
 ---
-id: puppeteer
+id: version-22.4-puppeteer
 title: Using with puppeteer
+original_id: puppeteer
 ---
 
 With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and

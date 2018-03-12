@@ -86,7 +86,7 @@ export default ({
   testEnvironmentOptions: {},
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
+  testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',

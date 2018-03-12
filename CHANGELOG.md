@@ -16,9 +16,19 @@
   ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[expect]` Add inverse matchers (`expect.not.arrayContaining`, etc.,
   [#5517](https://github.com/facebook/jest/pull/5517))
+* `[jest-mock]` Add tracking of return values in the `mock` property
+  ([#5738](https://github.com/facebook/jest/issues/5738))
+* `[expect]`Add nthCalledWith spy matcher
+  ([#5605](https://github.com/facebook/jest/pull/5605))
+* `[jest-cli]` Add `isSerial` property that runners can expose to specify that
+  they can not run in parallel
+  [#5706](https://github.com/facebook/jest/pull/5706)
 
 ### Fixes
 
+* `[expect]` Do not rely on `instanceof RegExp`, since it will not work for
+  RegExps created inside of a different VM
+  ([#5729](https://github.com/facebook/jest/pull/5729))
 * `[jest-resolve]` Update node module resolution algorithm to correctly handle
   symlinked paths ([#5085](https://github.com/facebook/jest/pull/5085))
 * `[jest-editor-support]` Update `Settings` to use spawn in shell option
@@ -42,6 +52,12 @@
   ([#5648](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
+* `[docs]` Mention Jest Puppeteer Preset
+  ([#5722](https://github.com/facebook/jest/pull/5722))
+* `[docs]` Add jest-community section to website
+  ([#5675](https://github.com/facebook/jest/pull/5675))
+* `[docs]` Add versioned docs for v22.4
+  ([##5733](https://github.com/facebook/jest/pull/#5733))
 
 ## 22.4.2
 

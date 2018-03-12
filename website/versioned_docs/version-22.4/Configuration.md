@@ -1,6 +1,7 @@
 ---
-id: configuration
+id: version-22.4-configuration
 title: Configuring Jest
+original_id: configuration
 ---
 
 Jest's configuration can be defined in the `package.json` file of your project,
@@ -122,14 +123,6 @@ The directory where Jest should store its cached dependency information.
 Jest attempts to scan your dependency tree once (up-front) and cache it in order
 to ease some of the filesystem raking that needs to happen while running tests.
 This config option lets you customize where Jest stores that cache data on disk.
-
-### `clearMocks` [boolean]
-
-Default: `false`
-
-Automatically clear mock calls and instances between every test. Equivalent to
-calling `jest.clearAllMocks()` between each test. This does not remove any mock
-implementation that may have been provided.
 
 ### `collectCoverage` [boolean]
 
@@ -502,6 +495,14 @@ _Note: When using multi project runner, it's recommended to add a `displayName`
 for each project. This will show the `displayName` of a project next to its
 tests._
 
+### `clearMocks` [boolean]
+
+Default: `false`
+
+Automatically clear mock calls and instances between every test. Equivalent to
+calling `jest.clearAllMocks()` between each test. This does not remove any mock
+implementation that may have been provided.
+
 ### `reporters` [array<moduleName | [moduleName, options]>]
 
 Default: `undefined`
@@ -703,10 +704,6 @@ async runTests(
 ): Promise<void>
 ```
 
-If you need to restrict your test-runner to only run in serial rather then being
-executed in parallel your class should have the property `isSerial` to be set as
-`true`.
-
 ### `setupFiles` [array]
 
 Default: `[]`
@@ -893,7 +890,7 @@ given to [jsdom](https://github.com/tmpvar/jsdom) such as
 
 ##### available in Jest **19.0.0+**
 
-(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)' ]`)
+(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)' ]`)
 
 The glob patterns Jest uses to detect test files. By default it looks for `.js`
 and `.jsx` files inside of `__tests__` folders, as well as any files with a

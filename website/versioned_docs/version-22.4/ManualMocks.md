@@ -1,6 +1,7 @@
 ---
-id: manual-mocks
+id: version-22.4-manual-mocks
 title: Manual Mocks
+original_id: manual-mocks
 ---
 
 Manual mocks are used to stub out functionality with mock data. For example,
@@ -53,9 +54,8 @@ accordingly.
 ```
 
 When a manual mock exists for a given module, Jest's module system will use that
-module when explicitly calling `jest.mock('moduleName')`. However, when
-`automock` is set to `true`, the manual mock implementation will be used instead
-of the automatically created mock, even if `jest.mock('moduleName')` is not
+module when explicitly calling `jest.mock('moduleName')`. However, manual mocks
+will take precedence over node modules even if `jest.mock('moduleName')` is not
 called. To opt out of this behavior you will need to explicitly call
 `jest.unmock('moduleName')` in tests that should use the actual module
 implementation.
