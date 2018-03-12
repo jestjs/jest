@@ -16,6 +16,8 @@
   ([#5670](https://github.com/facebook/jest/pull/5670))
 * `[expect]` Add inverse matchers (`expect.not.arrayContaining`, etc.,
   [#5517](https://github.com/facebook/jest/pull/5517))
+* `[expect]` `expect.extend` now also extends asymmetric matchers
+  ([#5503](https://github.com/facebook/jest/pull/5503))
 * `[jest-mock]` Add tracking of return values in the `mock` property
   ([#5738](https://github.com/facebook/jest/issues/5738))
 * `[expect]`Add nthCalledWith spy matcher
