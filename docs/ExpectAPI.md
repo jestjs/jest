@@ -68,6 +68,10 @@ expect.extend({
 test('even and odd numbers', () => {
   expect(100).toBeDivisibleBy(2);
   expect(101).not.toBeDivisibleBy(2);
+  expect({apples: 6, bananas: 3}).toEqual({
+    apples: expect.toBeDivisibleBy(2),
+    bananas: expect.not.toBeDivisibleBy(2),
+  });
 });
 ```
 
