@@ -225,6 +225,11 @@ const users = [
     infoLink: 'https://www.klm.com/',
   },
   {
+    caption: 'Kuali',
+    image: '/jest/img/logos/kuali.svg',
+    infoLink: 'https://www.kuali.co',
+  },
+  {
     caption: 'NHL',
     image: '/jest/img/logos/nhl.png',
     infoLink: 'https://www.nhl.com/',
