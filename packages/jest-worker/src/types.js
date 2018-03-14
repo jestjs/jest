@@ -99,4 +99,5 @@ export type QueueCallback = (?Error, ?any) => void;
 export type QueueChildMessage = {|
   request: ChildMessage,
   callback: QueueCallback,
+  next: ?QueueChildMessage,
 |};
