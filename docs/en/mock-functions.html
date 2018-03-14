@@ -146,7 +146,7 @@ test(<span class="hljs-string">'should fetch users'</span>, () =&gt; {
   axios.get.mockResolvedValue(resp);
 
   <span class="hljs-comment">// or you could use the follwing depending on your use case:</span>
-  <span class="hljs-comment">// axios.get.mockImpementation(() =&gt; Promise.resolve(resp))</span>
+  <span class="hljs-comment">// axios.get.mockImplementation(() =&gt; Promise.resolve(resp))</span>
 
   <span class="hljs-keyword">return</span> Users.all().then(<span class="hljs-function"><span class="hljs-params">users</span> =&gt;</span> expect(users).toEqual(resp.data));
 });
