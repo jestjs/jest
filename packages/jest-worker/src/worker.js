@@ -48,9 +48,9 @@ import type {
 export default class {
   _busy: boolean;
   _child: ChildProcess;
+  _last: ?QueueChildMessage;
   _options: WorkerOptions;
   _queue: ?QueueChildMessage;
-  _last: ?QueueChildMessage;
   _retries: number;
 
   constructor(options: WorkerOptions) {
