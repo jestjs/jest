@@ -6,7 +6,6 @@
 [![npm version](https://badge.fury.io/js/jest.svg)](http://badge.fury.io/js/jest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-
 🃏 Delightful JavaScript Testing
 
 * **👩🏻‍💻 Easy Setup**: Complete and easy to set-up JavaScript testing solution.
