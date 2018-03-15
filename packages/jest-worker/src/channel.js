@@ -35,7 +35,7 @@ export default class extends EventEmitter {
   constructor(stream: Duplex) {
     super();
 
-    this._size = Buffer.allocUnsafe(4);
+    this._size = new Buffer(4);
     this._stream = stream;
     this._clearReceive();
 
