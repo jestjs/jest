@@ -1063,6 +1063,11 @@ from the test.
 _Note: While snapshot testing is most commonly used with React components, any
 serializable value can be used as a snapshot._
 
+### `.toMatchSnapshotAndLog(optionalString)`
+
+This runs `.toMatchSnapshot` and also `console.log`s the value passed in. It can
+be useful in development.
+
 ### `.toThrow(error)`
 
 Also under the alias: `.toThrowError(error)`

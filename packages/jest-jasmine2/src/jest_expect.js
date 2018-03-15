@@ -13,6 +13,7 @@ import expect from 'expect';
 import {
   addSerializer,
   toMatchSnapshot,
+  toMatchSnapshotAndLog,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
@@ -28,6 +29,7 @@ export default (config: {expand: boolean}) => {
   expect.setState({expand: config.expand});
   expect.extend({
     toMatchSnapshot,
+    toMatchSnapshotAndLog,
     toThrowErrorMatchingSnapshot,
   });
   (expect: Object).addSnapshotSerializer = addSerializer;

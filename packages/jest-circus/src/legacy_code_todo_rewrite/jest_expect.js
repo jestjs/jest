@@ -14,6 +14,7 @@ import expect from 'expect';
 import {
   addSerializer,
   toMatchSnapshot,
+  toMatchSnapshotAndLog,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
@@ -30,6 +31,7 @@ export default (config: {expand: boolean}) => {
   });
   expect.extend({
     toMatchSnapshot,
+    toMatchSnapshotAndLog,
     toThrowErrorMatchingSnapshot,
   });
 
