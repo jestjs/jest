@@ -182,7 +182,7 @@ export default {
 
 ```js
 // __tests__/genMockFromModule.test.js
-const utils = jest.genMockFromModule('../utils').default;
+const utils = jest.genMockFromModule('../utils');
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.genMockFromModule', () => {

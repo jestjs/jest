@@ -14,7 +14,7 @@ describe('FakeTimers', () => {
   let FakeTimers, moduleMocker, timerConfig;
 
   beforeEach(() => {
-    FakeTimers = require('../fake_timers').default;
+    FakeTimers = require('../fake_timers');
     const mock = require('jest-mock');
     const global = vm.runInNewContext('this');
     moduleMocker = new mock.ModuleMocker(global);

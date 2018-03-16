@@ -53,7 +53,7 @@ beforeEach(() => {
   process.stderr.write = jest.fn();
   stdout = process.stdout.write = jest.fn();
 
-  DefaultReporter = require('../default_reporter').default;
+  DefaultReporter = require('../default_reporter');
 });
 
 afterEach(() => {

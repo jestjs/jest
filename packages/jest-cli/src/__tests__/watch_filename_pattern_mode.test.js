@@ -83,7 +83,7 @@ jest.doMock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => terminalWidth,
 }));
 
-const watch = require('../watch').default;
+const watch = require('../watch');
 
 const nextTick = () => new Promise(res => process.nextTick(res));
 

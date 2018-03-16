@@ -133,7 +133,7 @@ Spec.prototype.onException = function onException(error) {
   }
 
   if (error instanceof require('assert').AssertionError) {
-    const assertionErrorMessage = require('../assert_support').default;
+    const assertionErrorMessage = require('../assert_support');
     error = assertionErrorMessage(error, {expand: this.expand});
   }
 

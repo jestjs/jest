@@ -17,7 +17,7 @@ it('Returns true when running on interactive environment', () => {
   process.stdout.isTTY = true;
   process.env.TERM = 'xterm-256color';
 
-  const isInteractive = require('../is_interative').default;
+  const isInteractive = require('../is_interative');
   expect(isInteractive).toBe(true);
 });
 
@@ -29,7 +29,7 @@ it('Returns false when running on a non-interactive environment', () => {
   jest.doMock('is-ci', () => true);
   process.stdout.isTTY = false;
   process.env.TERM = 'xterm-256color';
-  isInteractive = require('../is_interative').default;
+  isInteractive = require('../is_interative');
   expect(isInteractive).toBe(expectedResult);
 
   // Test with is-ci being false and isTTY false
@@ -37,7 +37,7 @@ it('Returns false when running on a non-interactive environment', () => {
   jest.doMock('is-ci', () => false);
   process.stdout.isTTY = false;
   process.env.TERM = 'xterm-256color';
-  isInteractive = require('../is_interative').default;
+  isInteractive = require('../is_interative');
   expect(isInteractive).toBe(expectedResult);
 
   // Test with is-ci being true and isTTY true
@@ -45,7 +45,7 @@ it('Returns false when running on a non-interactive environment', () => {
   jest.doMock('is-ci', () => true);
   process.stdout.isTTY = true;
   process.env.TERM = 'xterm-256color';
-  isInteractive = require('../is_interative').default;
+  isInteractive = require('../is_interative');
   expect(isInteractive).toBe(expectedResult);
 
   // Test with dumb terminal
@@ -53,6 +53,6 @@ it('Returns false when running on a non-interactive environment', () => {
   jest.doMock('is-ci', () => false);
   process.stdout.isTTY = false;
   process.env.TERM = 'dumb';
-  isInteractive = require('../is_interative').default;
+  isInteractive = require('../is_interative');
   expect(isInteractive).toBe(expectedResult);
 });

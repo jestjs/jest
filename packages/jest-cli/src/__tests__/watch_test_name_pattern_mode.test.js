@@ -97,7 +97,7 @@ jest.doMock('../lib/terminal_utils', () => ({
   getTerminalWidth: () => terminalWidth,
 }));
 
-const watch = require('../watch').default;
+const watch = require('../watch');
 
 const toHex = char => Number(char.charCodeAt(0)).toString(16);
 

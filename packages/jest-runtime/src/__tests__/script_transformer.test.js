@@ -163,7 +163,7 @@ describe('ScriptTransformer', () => {
       transformIgnorePatterns: ['/node_modules/'],
     };
 
-    ScriptTransformer = require('../script_transformer').default;
+    ScriptTransformer = require('../script_transformer');
   };
 
   beforeEach(reset);
@@ -207,7 +207,7 @@ describe('ScriptTransformer', () => {
   it('does not transform Node core modules', () => {
     jest.mock('../should_instrument');
 
-    const shouldInstrument = require('../should_instrument').default;
+    const shouldInstrument = require('../should_instrument');
     const scriptTransformer = new ScriptTransformer(config);
     const fsSourceCode = process.binding('natives').fs;
 

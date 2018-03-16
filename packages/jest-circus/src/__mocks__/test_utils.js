@@ -34,13 +34,13 @@ export const runTest = (source: string) => {
     global.beforeAll = circus.beforeAll;
     global.afterAll = circus.afterAll;
 
-    const testEventHandler = require('${TEST_EVENT_HANDLER_PATH}').default;
+    const testEventHandler = require('${TEST_EVENT_HANDLER_PATH}');
     const addEventHandler = require('${CIRCUS_STATE_PATH}').addEventHandler;
     addEventHandler(testEventHandler);
 
     ${source};
 
-    const run = require('${CIRCUS_RUN_PATH}').default;
+    const run = require('${CIRCUS_RUN_PATH}');
 
     run();
   `;

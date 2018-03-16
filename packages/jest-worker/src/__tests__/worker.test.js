@@ -38,7 +38,7 @@ beforeEach(() => {
     return forkInterface;
   });
 
-  Worker = require('../worker').default;
+  Worker = require('../worker');
 });
 
 afterEach(() => {

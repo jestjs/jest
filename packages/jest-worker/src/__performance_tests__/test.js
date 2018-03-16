@@ -3,7 +3,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
 const assert = require('assert');
-const JestWorker = require('../../build').default;
+const JestWorker = require('../../build');
 
 // Typical tests: node --expose-gc test.js empty 100000
 //                node --expose-gc test.js loadTest 10000

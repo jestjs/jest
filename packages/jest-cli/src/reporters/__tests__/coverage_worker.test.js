@@ -21,7 +21,7 @@ beforeEach(() => {
   jest.resetModules();
 
   fs = require('fs');
-  generateEmptyCoverage = require('../../generate_empty_coverage').default;
+  generateEmptyCoverage = require('../../generate_empty_coverage');
   worker = require('../coverage_worker').worker;
 });
 

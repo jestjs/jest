@@ -179,7 +179,7 @@ describe('HasteMap', () => {
   });
 
   it('exports constants', () => {
-    expect(HasteMap.H).toBe(require('../constants').default);
+    expect(HasteMap.H).toBe(require('../constants'));
   });
 
   it('creates valid cache file paths', () => {
@@ -1057,7 +1057,7 @@ describe('HasteMap', () => {
         } catch (error) {
           const {
             DuplicateHasteCandidatesError,
-          } = require('../module_map').default;
+          } = require('../module_map');
           expect(error).toBeInstanceOf(DuplicateHasteCandidatesError);
           expect(error.hasteName).toBe('Pear');
           expect(error.platform).toBe('g');

@@ -13,7 +13,7 @@ const wrap = obj => ({suites: obj, tests: [], title: ''});
 let groupTestsBySuites;
 
 beforeEach(() => {
-  const VerboseReporter = require('../verbose_reporter').default;
+  const VerboseReporter = require('../verbose_reporter');
   groupTestsBySuites = VerboseReporter.groupTestsBySuites;
 });
 

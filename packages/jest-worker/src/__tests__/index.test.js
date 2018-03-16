@@ -64,8 +64,8 @@ beforeEach(() => {
     {virtual: true},
   );
 
-  Worker = require('../worker').default;
-  Farm = require('../index').default;
+  Worker = require('../worker');
+  Farm = require('../index');
 });
 
 afterEach(() => {

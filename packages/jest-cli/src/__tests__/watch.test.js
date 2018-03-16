@@ -87,7 +87,7 @@ jest.doMock(
   {virtual: true},
 );
 
-const watch = require('../watch').default;
+const watch = require('../watch');
 
 const nextTick = () => new Promise(res => process.nextTick(res));
 const toHex = char => Number(char.charCodeAt(0)).toString(16);
@@ -144,7 +144,7 @@ describe('Watch mode flows', () => {
     const util = require('jest-util');
     util.isInteractive = true;
 
-    const ci_watch = require('../watch').default;
+    const ci_watch = require('../watch');
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
@@ -161,7 +161,7 @@ describe('Watch mode flows', () => {
     const util = require('jest-util');
     util.isInteractive = false;
 
-    const ci_watch = require('../watch').default;
+    const ci_watch = require('../watch');
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
@@ -193,7 +193,7 @@ describe('Watch mode flows', () => {
     const util = require('jest-util');
     util.isInteractive = true;
 
-    const ci_watch = require('../watch').default;
+    const ci_watch = require('../watch');
     ci_watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
@@ -220,7 +220,7 @@ describe('Watch mode flows', () => {
     util.isInteractive = true;
     results = {snapshot: {failure: true}};
 
-    const ci_watch = require('../watch').default;
+    const ci_watch = require('../watch');
     ci_watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
@@ -248,7 +248,7 @@ describe('Watch mode flows', () => {
     util.getFailedSnapshotTests = jest.fn(() => ['test.js']);
     results = {snapshot: {failure: true}};
 
-    const ci_watch = require('../watch').default;
+    const ci_watch = require('../watch');
     ci_watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,

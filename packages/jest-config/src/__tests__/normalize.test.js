@@ -1156,7 +1156,7 @@ describe('testPathPattern', () => {
 
         it('preserves any use of "\\"', () => {
           const argv = {[opt.property]: ['a\\b', 'c\\\\d']};
-          const {options} = require('../normalize').default(
+          const {options} = require('../normalize')(
             initialOptions,
             argv,
           );
@@ -1166,7 +1166,7 @@ describe('testPathPattern', () => {
 
         it('replaces POSIX path separators', () => {
           const argv = {[opt.property]: ['a/b']};
-          const {options} = require('../normalize').default(
+          const {options} = require('../normalize')(
             initialOptions,
             argv,
           );
@@ -1176,7 +1176,7 @@ describe('testPathPattern', () => {
 
         it('replaces POSIX paths in multiple args', () => {
           const argv = {[opt.property]: ['a/b', 'c/d']};
-          const {options} = require('../normalize').default(
+          const {options} = require('../normalize')(
             initialOptions,
             argv,
           );
