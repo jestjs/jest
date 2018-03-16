@@ -13,6 +13,7 @@ const React = require('react');
 const renderer = require('react-test-renderer');
 
 const elementSymbol = Symbol.for('react.element');
+const fragmentSymbol = Symbol.for('react.fragment');
 const testSymbol = Symbol.for('react.test.json');
 
 const prettyFormat = require('..');
@@ -87,6 +88,13 @@ test('supports a single element with mixed children', () => {
   assertPrintedJSX(
     React.createElement('Mouse', null, [[1, null], 2, undefined, [false, [3]]]),
     '<Mouse>\n  1\n  2\n  3\n</Mouse>',
+  );
+});
+
+test('supports a single fragment with one child', () => {
+  assertPrintedJSX(
+    React.createElement(fragmentSymbol, null, 0),
+    '<React.Fragment>\n  0\n</React.Fragment>',
   );
 });
 
