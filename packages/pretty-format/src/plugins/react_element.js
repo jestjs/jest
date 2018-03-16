@@ -17,6 +17,7 @@ import {
 } from './lib/markup';
 
 const elementSymbol = Symbol.for('react.element');
+const fragmentSymbol = Symbol.for('react.fragment');
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
@@ -37,6 +38,9 @@ const getType = element => {
   }
   if (typeof element.type === 'function') {
     return element.type.displayName || element.type.name || 'Unknown';
+  }
+  if (element.type === fragmentSymbol) {
+    return 'React.Fragment';
   }
   return 'UNDEFINED';
 };
