@@ -1,6 +1,7 @@
 {
   "plugins": [
     "syntax-trailing-function-commas",
+    "add-module-exports",
     "transform-flow-strip-types",
     "transform-es2015-destructuring",
     "transform-es2015-parameters",

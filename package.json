@@ -5,6 +5,7 @@
     "ansi-styles": "^3.2.0",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.2.3",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-syntax-trailing-function-commas": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
