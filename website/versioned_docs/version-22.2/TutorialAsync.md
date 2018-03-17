@@ -91,8 +91,6 @@ return a Promise at the end.
 
 ### `.resolves`
 
-##### available in Jest **20.0.0+**
-
 There is a less verbose way using `resolves` to unwrap the value of a fulfilled
 promise together with any other matcher. If the promise is rejected, the
 assertion will fail.
@@ -159,8 +157,6 @@ it('tests error with async/await', async () => {
 ```
 
 ### `.rejects`
-
-##### available in Jest **20.0.0+**
 
 The`.rejects` helper works like the `.resolves` helper. If the promise is
 fulfilled, the test will automatically fail.

@@ -303,8 +303,6 @@ test('onPress gets called with the right thing', () => {
 
 ### `expect.stringContaining(string)`
 
-##### available in Jest **19.0.0+**
-
 `expect.stringContaining(string)` matches any received string that contains the
 exact expected string.
 
@@ -381,8 +379,6 @@ test('the best flavor is not coconut', () => {
 
 ### `.resolves`
 
-##### available in Jest **20.0.0+**
-
 Use `resolves` to unwrap the value of a fulfilled promise so any other matcher
 can be chained. If the promise is rejected the assertion fails.
 
@@ -410,8 +406,6 @@ test('resolves to lemon', async () => {
 ```
 
 ### `.rejects`
-
-##### available in Jest **20.0.0+**
 
 Use `.rejects` to unwrap the reason of a rejected promise so any other matcher
 can be chained. If the promise is fulfilled the assertion fails.

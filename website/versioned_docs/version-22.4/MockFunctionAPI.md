@@ -19,8 +19,6 @@ implementation is given, the mock function will return `undefined` when invoked.
 
 ### `mockFn.getMockName()`
 
-##### available in Jest **22.0.0+**
-
 Returns the mock name string set by calling `mockFn.mockName(value)`.
 
 ### `mockFn.mock.calls`
@@ -183,8 +181,6 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockName(value)`
 
-##### available in Jest **22.0.0+**
-
 Accepts a string to use in test result output in place of "jest.fn()" to
 indicate which mock function is being referenced.
 
@@ -246,8 +242,6 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockResolvedValue(value)`
 
-##### available in Jest **22.2.0+**
-
 Simple sugar function for:
 
 ```js
@@ -265,8 +259,6 @@ test('async test', async () => {
 ```
 
 ### `mockFn.mockResolvedValueOnce(value)`
-
-##### available in Jest **22.2.0+**
 
 Simple sugar function for:
 
@@ -293,8 +285,6 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-##### available in Jest **22.2.0+**
-
 Simple sugar function for:
 
 ```js
@@ -312,8 +302,6 @@ test('async test', async () => {
 ```
 
 ### `mockFn.mockRejectedValueOnce(value)`
-
-##### available in Jest **22.2.0+**
 
 Simple sugar function for:
 
