@@ -1,13 +1,14 @@
 /// <reference path="./typings/react/react.d.ts" />
 
 import * as React from 'react'
+import * as createReactClass from 'create-react-class';
 
 interface CheckboxWithLabelProps extends React.Props<any> {
   labelOff: string;
   labelOn: string;
 }
 
-var CheckboxWithLabel = React.createClass<CheckboxWithLabelProps, any>( {
+var CheckboxWithLabel = createReactClass<CheckboxWithLabelProps, any>( {
   getInitialState: function() {
     return {isChecked: false}
   },

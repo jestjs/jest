@@ -91,13 +91,6 @@ test('supports a single element with mixed children', () => {
   );
 });
 
-test('supports a single fragment with one child', () => {
-  assertPrintedJSX(
-    React.createElement(fragmentSymbol, null, 0),
-    '<React.Fragment>\n  0\n</React.Fragment>',
-  );
-});
-
 test('supports props with strings', () => {
   assertPrintedJSX(
     React.createElement('Mouse', {style: 'color:red'}),
@@ -306,6 +299,30 @@ test('supports undefined element type', () => {
   expect(formatElement({$$typeof: elementSymbol, props: {}})).toEqual(
     '<UNDEFINED />',
   );
+});
+
+test('supports a fragment with no children', () => {
+  expect(formatElement(React.createElement(fragmentSymbol, null))).toEqual(
+    '<React.Fragment />',
+  );
+});
+
+test('supports a fragment with string child', () => {
+  expect(
+    formatElement(React.createElement(fragmentSymbol, null, 'test')),
+  ).toEqual('<React.Fragment>\n  test\n</React.Fragment>');
+});
+
+test('supports a fragment with element child', () => {
+  expect(
+    formatElement(
+      React.createElement(
+        fragmentSymbol,
+        null,
+        React.createElement('div', null, 'test'),
+      ),
+    ),
+  ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
 });
 
 test('supports a single element with React elements with a child', () => {
