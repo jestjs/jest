@@ -173,7 +173,7 @@
 <p>webpack 2 提供原生支持ES模块。 但是，Jest是通过Node运行，因此需要ES模块转换成CommonJS模块。 所以，如果你使用webpack2， 你很有可能需要配置Babel仅在<code>test</code>环境中转换ES模块到CommonJS模块。</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -188,7 +188,7 @@
 <p>如果你使用动态导入(<code>import('some-file.js').then(module =&gt; ...)</code>)， 你需要启用<code>dynamic-import-node</code>插件。</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 

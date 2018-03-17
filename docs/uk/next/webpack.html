@@ -173,7 +173,7 @@
 <p>webpack 2 пропонує вбудовану підтримку для ES модулів. Однак, Jest працює в Node і тому вимагає, щоб ES модулі були перетворені в CommonJS модулі. Таким чином, якщо ви використовуєте webpack 2, вам, скоріше за все, потрібно буде налаштувати Babel для перетворення ES модулів в CommonJS тільки для середовища <code>test</code>.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -188,7 +188,7 @@
 <p>Якщо ви використовуєте динамічний імпорт (<code>import('some-file.js').then (module = &gt;...)</code>), вам необхідно включити <code>dynamic-import-node</code> плагін.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 

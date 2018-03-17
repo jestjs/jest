@@ -213,7 +213,7 @@ are using webpack 2, you most likely will want to configure Babel to transpile
 ES modules to CommonJS modules only in the <code>test</code> environment.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -230,7 +230,7 @@ and Jest is still not working, try running Jest with <code>--no-cache</code>.</p
 need to enable the <code>dynamic-import-node</code> plugin.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 

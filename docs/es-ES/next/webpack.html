@@ -174,7 +174,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/jes
 <p>webPack 2 ofrece soporte nativo para los módulos de ES. Sin embargo, Jest funciona en Node y por lo tanto requiere que los módulos ES sean transpilados a los módulos de CommonJS. Como tal, si usas webpack 2, probablemente querrás configurar que Babel transpile módulos de ES a módulos de CommonJS sólo en el entorno de <code>pruebas</code>.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -189,7 +189,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/jes
 <p>Si utilizas las importaciones dinámicas (<code>import('some-file.js').then (módulo = &gt;...)</code>), es necesario activar el plugin de <code>dynamic-import-node</code>.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 

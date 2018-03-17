@@ -173,7 +173,7 @@
 <p>webpack 2 oferă suport nativ pentru module ES. Cu toate acestea, Jest ruleaza în Node, şi necesită ca modulele ES să fie transpilate în module CommonJS. Astfel, dacă folosiți webpack 2, cel mai probabil veți dori să configuraţi Babel să transpileze modulele ES în module CommonJS numai în mediul de <code>test</code>.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -188,7 +188,7 @@
 <p>Dacă utilizaţi importuri dinamice (<code>import('some-file.js').then(module =&gt; ...)</code>), trebuie să activaţi plugin-ul <code>dynamic-import-node</code>.</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 

@@ -173,7 +173,7 @@
 <p>webpack2はESモジュールのネイティブサポートを提供しています。 しかし、JestはNode上で動作するので、ESモジュールはCommonJSモジュールにトランスパイルされている必要があります。 このようにwebpackを利用している場合は、Babelに<code>test</code>環境でのみESモジュールをCommonJSモジュールに変換させたいと考えるでしょう。</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -188,7 +188,7 @@
 <p>動的インポートを使用する場合 (<code>import('some-file.js').then (module = &gt;...)</code>など)、 <code>dynamic-import-node</code> プラグインを有効にする必要があります。</p>
 <pre><code class="hljs css json">// .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 
