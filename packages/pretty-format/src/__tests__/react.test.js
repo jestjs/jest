@@ -302,26 +302,28 @@ test('supports undefined element type', () => {
 });
 
 test('supports a fragment with no children', () => {
-  expect(formatElement(React.createElement(fragmentSymbol, null))).toEqual(
-    '<React.Fragment />',
-  );
+  expect(
+    formatElement({$$typeof: elementSymbol, props: {}, type: fragmentSymbol}),
+  ).toEqual('<React.Fragment />');
 });
 
 test('supports a fragment with string child', () => {
   expect(
-    formatElement(React.createElement(fragmentSymbol, null, 'test')),
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {children: 'test'},
+      type: fragmentSymbol,
+    }),
   ).toEqual('<React.Fragment>\n  test\n</React.Fragment>');
 });
 
 test('supports a fragment with element child', () => {
   expect(
-    formatElement(
-      React.createElement(
-        fragmentSymbol,
-        null,
-        React.createElement('div', null, 'test'),
-      ),
-    ),
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {children: React.createElement('div', null, 'test')},
+      type: fragmentSymbol,
+    }),
   ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
 });
 
