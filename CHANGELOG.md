@@ -51,6 +51,8 @@
   ([#5702](https://github.com/facebook/jest/pull/5702))
 * `[jest-mock]` Prevent `mockRejectedValue` from causing unhandled rejection
   ([#5720](https://github.com/facebook/jest/pull/5720))
+* `[pretty-format]` Handle React fragments better
+  ([#5816](https://github.com/facebook/jest/pull/5816))
 
 ### Chore & Maintenance
 
