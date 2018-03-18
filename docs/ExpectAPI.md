@@ -570,6 +570,7 @@ describe('drinkAll', () => {
 ```
 
 ### `.toHaveBeenCalledTimes(number)`
+
 Also under the alias: `.toBeCalledTimes(number)`
 
 Use `.toHaveBeenCalledTimes` to ensure that a mock function got called exact
@@ -628,10 +629,11 @@ test('applying to all flavors does mango last', () => {
 ```
 
 ### `.toHaveBeenNthCalledWith(nthCall, arg1, arg2, ....)`
+
 Also under the alias: `.nthCalledWith(arg1, arg2, ...)`
 
-If you have a mock function, you can use `.toHaveBeenNthCalledWith` to test what arguments
-it was nth called with. For example, let's say you have a
+If you have a mock function, you can use `.toHaveBeenNthCalledWith` to test what
+arguments it was nth called with. For example, let's say you have a
 `drinkEach(drink, Array<flavor>)` function that applies `f` to a bunch of
 flavors, and you want to ensure that when you call it, the first flavor it
 operates on is `'lemon'` and the second one is `'octopus'`. You can write:
