@@ -2,6 +2,9 @@
 
 ### Features
 
+* `[jest-cli]` Add support for using `--coverage` in combination with watch
+  mode, `--onlyChanged`, `--findRelatedTests` and more
+  ([#5601](https://github.com/facebook/jest/pull/5601))
 * `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test`
   for invalid arguments. `[jest-circus]` Adds error throwing and descriptive
   errors to `it`/ `test` for invalid arguments
