@@ -13,6 +13,7 @@ const React = require('react');
 const renderer = require('react-test-renderer');
 
 const elementSymbol = Symbol.for('react.element');
+const fragmentSymbol = Symbol.for('react.fragment');
 const testSymbol = Symbol.for('react.test.json');
 
 const prettyFormat = require('..');
@@ -298,6 +299,32 @@ test('supports undefined element type', () => {
   expect(formatElement({$$typeof: elementSymbol, props: {}})).toEqual(
     '<UNDEFINED />',
   );
+});
+
+test('supports a fragment with no children', () => {
+  expect(
+    formatElement({$$typeof: elementSymbol, props: {}, type: fragmentSymbol}),
+  ).toEqual('<React.Fragment />');
+});
+
+test('supports a fragment with string child', () => {
+  expect(
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {children: 'test'},
+      type: fragmentSymbol,
+    }),
+  ).toEqual('<React.Fragment>\n  test\n</React.Fragment>');
+});
+
+test('supports a fragment with element child', () => {
+  expect(
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {children: React.createElement('div', null, 'test')},
+      type: fragmentSymbol,
+    }),
+  ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
 });
 
 test('supports a single element with React elements with a child', () => {
