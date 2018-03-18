@@ -23,7 +23,6 @@
     "browserify": "^16.1.0",
     "chalk": "^2.0.1",
     "codecov": "^3.0.0",
-    "create-react-class": "^15.6.3",
     "cross-spawn": "^6.0.4",
     "debug": "^3.0.1",
     "enzyme": "^3.3.0",
