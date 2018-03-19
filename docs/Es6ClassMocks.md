@@ -214,7 +214,7 @@ class, but does not provide a way to spy on calls.
 For the contrived example, the mock might look like this:
 
 ```javascript
-// __mocks/sound-player.js
+// __mocks__/sound-player.js
 export default class SoundPlayer {
   constructor() {
     console.log('Mock SoundPlayer: constructor was called');
