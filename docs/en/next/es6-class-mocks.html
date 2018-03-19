@@ -187,7 +187,7 @@ you can create your own simple mocks to illustrate how mocking works.</p>
 of the real class. This allows you to inject a test implementation for the
 class, but does not provide a way to spy on calls.</p>
 <p>For the contrived example, the mock might look like this:</p>
-<pre><code class="hljs css javascript"><span class="hljs-comment">// __mocks/sound-player.js</span>
+<pre><code class="hljs css javascript"><span class="hljs-comment">// __mocks__/sound-player.js</span>
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoundPlayer</span> </span>{
   <span class="hljs-keyword">constructor</span>() {
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mock SoundPlayer: constructor was called'</span>);
