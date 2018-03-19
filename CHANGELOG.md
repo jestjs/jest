@@ -32,6 +32,9 @@
 
 ### Fixes
 
+* `[jest-cli]` Add descriptive error message when trying to use
+  `globalSetup`/`globalTeardown` file that doesn't export a function.
+  ([#5835](https://github.com/facebook/jest/pull/5835))
 * `[expect]` Do not rely on `instanceof RegExp`, since it will not work for
   RegExps created inside of a different VM
   ([#5729](https://github.com/facebook/jest/pull/5729))
