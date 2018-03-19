@@ -27,3 +27,13 @@ test('globalSetup is triggered once before all test suites', () => {
   const setup = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
   expect(setup).toBe('setup');
 });
+
+test('jest throws an error when globalSetup does not export a function', () => {
+  const setupPath = path.resolve(__dirname, '../global-setup/invalid_setup.js');
+  const {status, stderr} = runJest('global-setup', [
+    `--globalSetup=${setupPath}`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch('Error: globalSetup file must export a function');
+});
