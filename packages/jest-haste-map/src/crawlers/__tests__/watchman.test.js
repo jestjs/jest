@@ -92,9 +92,9 @@ describe('watchman watch', () => {
     };
 
     mockFiles = Object.assign(Object.create(null), {
-      [MELON]: ['', 33, 0, []],
-      [STRAWBERRY]: ['', 30, 0, []],
-      [TOMATO]: ['', 31, 0, []],
+      [MELON]: ['', 33, 0, [], null],
+      [STRAWBERRY]: ['', 30, 0, [], null],
+      [TOMATO]: ['', 31, 0, [], null],
     });
   });
 
@@ -192,9 +192,9 @@ describe('watchman watch', () => {
       });
 
       expect(data.files).toEqual({
-        [KIWI]: ['', 42, 0, []],
-        [MELON]: ['', 33, 0, []],
-        [STRAWBERRY]: ['', 30, 0, []],
+        [KIWI]: ['', 42, 0, [], null],
+        [MELON]: ['', 33, 0, [], null],
+        [STRAWBERRY]: ['', 30, 0, [], null],
       });
     });
   });
@@ -228,7 +228,7 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    const mockMetadata = ['Banana', 41, 1, ['Raspberry']];
+    const mockMetadata = ['Banana', 41, 1, ['Raspberry'], null];
     mockFiles[BANANA] = mockMetadata;
 
     const clocks = Object.assign(Object.create(null), {
@@ -254,7 +254,7 @@ describe('watchman watch', () => {
       // /fruits/strawberry.js was removed from the file list.
       expect(data.files).toEqual({
         [BANANA]: mockMetadata,
-        [KIWI]: ['', 42, 0, []],
+        [KIWI]: ['', 42, 0, [], null],
         [TOMATO]: mockFiles[TOMATO],
       });
 
@@ -324,8 +324,8 @@ describe('watchman watch', () => {
       });
 
       expect(data.files).toEqual({
-        [KIWI]: ['', 42, 0, []],
-        [MELON]: ['', 33, 0, []],
+        [KIWI]: ['', 42, 0, [], null],
+        [MELON]: ['', 33, 0, [], null],
       });
     });
   });

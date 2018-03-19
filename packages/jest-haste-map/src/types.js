@@ -14,13 +14,15 @@ export type IgnoreMatcher = (item: string) => boolean;
 export type WorkerMessage = {
   filePath: string,
   hasteImplModulePath?: string,
+  sha1: boolean,
 };
 
-export type WorkerMetadata = {
+export type WorkerMetadata = {|
   id: ?string,
   module: ?ModuleMetaData,
   dependencies: ?Array<string>,
-};
+  sha1: ?string,
+|};
 
 export type CrawlerOptions = {|
   data: InternalHasteMap,
@@ -28,6 +30,7 @@ export type CrawlerOptions = {|
   forceNodeFilesystemAPI: boolean,
   ignore: IgnoreMatcher,
   roots: Array<string>,
+  sha1: boolean,
 |};
 
 export type HasteImpl = {

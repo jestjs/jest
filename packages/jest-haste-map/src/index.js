@@ -59,6 +59,7 @@ type Options = {
   resetCache?: boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
+  sha1?: boolean,
   throwOnModuleCollision?: boolean,
   useWatchman?: boolean,
   watch?: boolean,
@@ -77,6 +78,7 @@ type InternalOptions = {
   resetCache: ?boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
+  sha1: boolean,
   throwOnModuleCollision: boolean,
   useWatchman: boolean,
   watch: boolean,
@@ -157,6 +159,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  *   mtime: number, // check for outdated files.
  *   visited: boolean, // whether the file has been parsed or not.
  *   dependencies: Array<string>, // all relative dependencies of this file.
+ *   sha1: ?string, // SHA-1 of the file, if requested via options.
  * };
  *
  * // Modules can be targeted to a specific platform based on the file name.
@@ -178,6 +181,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  *
  * The HasteMap is created as follows:
  *  1. read data from the cache or create an empty structure.
+ *
  *  2. crawl the file system.
  *     * empty cache: crawl the entire file system.
  *     * cache available:
@@ -185,12 +189,14 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  *       * if watchman is unavailable: crawl the entire file system.
  *     * build metadata objects for every file. This builds the `files` part of
  *       the `HasteMap`.
+ *
  *  3. parse and extract metadata from changed files.
  *     * this is done in parallel over worker processes to improve performance.
  *     * the worst case is to parse all files.
  *     * the best case is no file system access and retrieving all data from
  *       the cache.
- *    * the average case is a small number of changed files.
+ *     * the average case is a small number of changed files.
+ *
  *  4. serialize the new `HasteMap` in a cache file.
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
@@ -222,6 +228,7 @@ class HasteMap extends EventEmitter {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: Array.from(new Set(options.roots)),
+      sha1: options.sha1 || false,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
@@ -240,6 +247,7 @@ class HasteMap extends EventEmitter {
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
+      this._options.sha1.toString(),
       options.mocksPattern || '',
       options.ignorePattern.toString(),
     );
@@ -429,21 +437,28 @@ class HasteMap extends EventEmitter {
 
     const fileMetadata = hasteMap.files[filePath];
     const moduleMetadata = hasteMap.map[fileMetadata[H.ID]];
+    const sha1 = this._options.sha1 && !fileMetadata[H.SHA1];
+
     if (fileMetadata[H.VISITED]) {
       if (!fileMetadata[H.ID]) {
         return null;
       }
+
       if (moduleMetadata != null) {
         const platform =
           getPlatformExtension(filePath, this._options.platforms) ||
           H.GENERIC_PLATFORM;
+
         const module = moduleMetadata[platform];
+
         if (module == null) {
           return null;
         }
+
         const modulesByPlatform =
           map[fileMetadata[H.ID]] || (map[fileMetadata[H.ID]] = {});
         modulesByPlatform[platform] = module;
+
         return null;
       }
     }
@@ -452,18 +467,26 @@ class HasteMap extends EventEmitter {
       .worker({
         filePath,
         hasteImplModulePath: this._options.hasteImplModulePath,
+        sha1,
       })
       .then(
         metadata => {
           // `1` for truthy values instead of `true` to save cache space.
           fileMetadata[H.VISITED] = 1;
+
           const metadataId = metadata.id;
           const metadataModule = metadata.module;
+
           if (metadataId && metadataModule) {
             fileMetadata[H.ID] = metadataId;
             setModule(metadataId, metadataModule);
           }
+
           fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+
+          if (sha1) {
+            fileMetadata[H.SHA1] = metadata.sha1;
+          }
         },
         error => {
           if (typeof error !== 'object' || !error.message || !error.stack) {
@@ -498,6 +521,7 @@ class HasteMap extends EventEmitter {
     }
 
     for (const filePath in hasteMap.files) {
+      // SHA-1, if requested, should already be present thanks to the crawler.
       const promise = this._processFile(hasteMap, map, mocks, filePath);
       if (promise) {
         promises.push(promise);
@@ -577,6 +601,7 @@ class HasteMap extends EventEmitter {
           forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
           ignore,
           roots: options.roots,
+          sha1: options.sha1,
         }).catch(e => {
           throw new Error(
             `Crawler retry failed:\n` +
@@ -596,6 +621,7 @@ class HasteMap extends EventEmitter {
         forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
         ignore,
         roots: options.roots,
+        sha1: options.sha1,
       }).catch(retry);
     } catch (error) {
       return retry(error);
@@ -746,16 +772,14 @@ class HasteMap extends EventEmitter {
           // If the file was added or changed,
           // parse it and update the haste map.
           if (type === 'add' || type === 'change') {
-            const fileMetadata = ['', stat.mtime.getTime(), 0, []];
+            const fileMetadata = ['', stat.mtime.getTime(), 0, [], null];
             hasteMap.files[filePath] = fileMetadata;
             const promise = this._processFile(
               hasteMap,
               hasteMap.map,
               hasteMap.mocks,
               filePath,
-              {
-                forceInBand: true,
-              },
+              {forceInBand: true},
             );
             // Cleanup
             this._cleanup();
