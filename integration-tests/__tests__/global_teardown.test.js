@@ -36,14 +36,17 @@ test('globalTeardown is triggered once after all test suites', () => {
 });
 
 test('jest throws an error when globalTeardown does not export a function', () => {
-  const setupPath = path.resolve(
+  const teardownPath = path.resolve(
     __dirname,
     '../global-teardown/invalid_teardown.js',
   );
   const {status, stderr} = runJest('global-teardown', [
-    `--globalTeardown=${setupPath}`,
+    `--globalTeardown=${teardownPath}`,
   ]);
 
   expect(status).toBe(1);
-  expect(stderr).toMatch('Error: globalTeardown file must export a function');
+  expect(stderr).toMatch(
+    'TypeError: globalTeardown file must export a function at',
+  );
+  expect(stderr).toMatch(teardownPath);
 });
