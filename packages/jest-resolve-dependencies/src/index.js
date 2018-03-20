@@ -10,12 +10,13 @@
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
+import Snapshot from 'jest-snapshot';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
 
 const snapshotDirRegex = new RegExp(replacePathSepForRegex('/__snapshots__/'));
 const snapshotFileRegex = new RegExp(
-  replacePathSepForRegex('__snapshots__/(.*).snap'),
+  replacePathSepForRegex(`__snapshots__/(.*).${Snapshot.EXTENSION}`),
 );
 const isSnapshotPath = (path: string): boolean =>
   !!path.match(snapshotDirRegex);

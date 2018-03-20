@@ -19,6 +19,7 @@
     "jest-haste-map": "^22.4.2",
     "jest-regex-util": "^22.1.0",
     "jest-resolve": "^22.4.2",
+    "jest-snapshot": "^22.4.0",
     "jest-util": "^22.4.1",
     "jest-validate": "^22.4.2",
     "json-stable-stringify": "^1.0.1",
