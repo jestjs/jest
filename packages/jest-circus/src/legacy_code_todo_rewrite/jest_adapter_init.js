@@ -51,7 +51,12 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  const snapshotPath = config.snapshotPath || globalConfig.snapshotPath || '';
+  const snapshotState = new SnapshotState(testPath, {
+    expand,
+    snapshotPath,
+    updateSnapshot,
+  });
   setState({snapshotState, testPath});
 
   // Return it back to the outer scope (test runner outside the VM).

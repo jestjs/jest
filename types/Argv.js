@@ -73,6 +73,7 @@ export type Argv = {|
   setupTestFrameworkScriptFile: string,
   showConfig: boolean,
   silent: boolean,
+  snapshotPath: ?string,
   snapshotSerializers: Array<string>,
   testEnvironment: string,
   testFailureExitCode: ?string,

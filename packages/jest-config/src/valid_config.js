@@ -81,6 +81,7 @@ export default ({
   setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
   silent: true,
   skipNodeResolution: false,
+  snapshotPath: '<rootDir>/__snapshots__',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: {},

@@ -491,6 +491,11 @@ export const options = {
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
+  snapshotPath: {
+    description:
+      "An alternative path that is used as a base for Jest's snapshots.",
+    type: 'string',
+  },
   snapshotSerializers: {
     description:
       'A list of paths to snapshot serializer modules Jest should ' +

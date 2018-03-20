@@ -59,6 +59,7 @@ export default ({
   restoreMocks: false,
   runTestsByPath: false,
   runner: 'jest-runner',
+  snapshotPath: null,
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: {},
