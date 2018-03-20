@@ -46,7 +46,6 @@ test('jest throws an error when globalTeardown does not export a function', () =
 
   expect(status).toBe(1);
   expect(stderr).toMatch(
-    'TypeError: globalTeardown file must export a function at',
+    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
   );
-  expect(stderr).toMatch(teardownPath);
 });

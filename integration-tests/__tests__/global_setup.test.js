@@ -36,7 +36,6 @@ test('jest throws an error when globalSetup does not export a function', () => {
 
   expect(status).toBe(1);
   expect(stderr).toMatch(
-    'TypeError: globalSetup file must export a function at',
+    `TypeError: globalSetup file must export a function at ${setupPath}`,
   );
-  expect(stderr).toMatch(setupPath);
 });
