@@ -202,7 +202,16 @@ export default (async function runJest({
   setConfig(contexts, {cwd: process.cwd()});
   if (globalConfig.globalSetup) {
     // $FlowFixMe
-    await require(globalConfig.globalSetup)();
+    const globalSetup = require(globalConfig.globalSetup);
+    if (typeof globalSetup !== 'function') {
+      throw new TypeError(
+        `globalSetup file must export a function at ${
+          globalConfig.globalSetup
+        }`,
+      );
+    }
+
+    await globalSetup();
   }
   const results = await new TestScheduler(
     globalConfig,
@@ -216,7 +225,16 @@ export default (async function runJest({
 
   if (globalConfig.globalTeardown) {
     // $FlowFixMe
-    await require(globalConfig.globalTeardown)();
+    const globalTeardown = require(globalConfig.globalTeardown);
+    if (typeof globalTeardown !== 'function') {
+      throw new TypeError(
+        `globalTeardown file must export a function at ${
+          globalConfig.globalTeardown
+        }`,
+      );
+    }
+
+    await globalTeardown();
   }
   return processResults(results, {
     isJSON: globalConfig.json,
