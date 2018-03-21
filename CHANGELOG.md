@@ -56,6 +56,9 @@
   ([#5720](https://github.com/facebook/jest/pull/5720))
 * `[pretty-format]` Handle React fragments better
   ([#5816](https://github.com/facebook/jest/pull/5816))
+* `[website]` Fix website docs
+  ([#5853](https://github.com/facebook/jest/pull/5853))
+
 
 ### Chore & Maintenance
 
