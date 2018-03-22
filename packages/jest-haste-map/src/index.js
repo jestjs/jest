@@ -46,6 +46,7 @@ import typeof HType from './constants';
 
 type Options = {
   cacheDirectory?: string,
+  computeSha1?: boolean,
   console?: Console,
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
@@ -59,7 +60,6 @@ type Options = {
   resetCache?: boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
-  sha1?: boolean,
   throwOnModuleCollision?: boolean,
   useWatchman?: boolean,
   watch?: boolean,
@@ -67,6 +67,7 @@ type Options = {
 
 type InternalOptions = {
   cacheDirectory: string,
+  computeSha1: boolean,
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
@@ -78,7 +79,6 @@ type InternalOptions = {
   resetCache: ?boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
-  sha1: boolean,
   throwOnModuleCollision: boolean,
   useWatchman: boolean,
   watch: boolean,
@@ -215,6 +215,7 @@ class HasteMap extends EventEmitter {
     super();
     this._options = {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
+      computeSha1: options.computeSha1 || false,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
@@ -228,7 +229,6 @@ class HasteMap extends EventEmitter {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: Array.from(new Set(options.roots)),
-      sha1: options.sha1 || false,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
@@ -247,7 +247,7 @@ class HasteMap extends EventEmitter {
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
-      this._options.sha1.toString(),
+      this._options.computeSha1.toString(),
       options.mocksPattern || '',
       options.ignorePattern.toString(),
     );
@@ -437,7 +437,7 @@ class HasteMap extends EventEmitter {
 
     const fileMetadata = hasteMap.files[filePath];
     const moduleMetadata = hasteMap.map[fileMetadata[H.ID]];
-    const sha1 = this._options.sha1 && !fileMetadata[H.SHA1];
+    const computeSha1 = this._options.computeSha1 && !fileMetadata[H.SHA1];
 
     if (fileMetadata[H.VISITED]) {
       if (!fileMetadata[H.ID]) {
@@ -465,9 +465,9 @@ class HasteMap extends EventEmitter {
 
     return this._getWorker(workerOptions)
       .worker({
+        computeSha1,
         filePath,
         hasteImplModulePath: this._options.hasteImplModulePath,
-        sha1,
       })
       .then(
         metadata => {
@@ -484,7 +484,7 @@ class HasteMap extends EventEmitter {
 
           fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
 
-          if (sha1) {
+          if (computeSha1) {
             fileMetadata[H.SHA1] = metadata.sha1;
           }
         },
@@ -596,12 +596,12 @@ class HasteMap extends EventEmitter {
             error,
         );
         return nodeCrawl({
+          computeSha1: options.computeSha1,
           data: hasteMap,
           extensions: options.extensions,
           forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
           ignore,
           roots: options.roots,
-          sha1: options.sha1,
         }).catch(e => {
           throw new Error(
             `Crawler retry failed:\n` +
@@ -616,12 +616,12 @@ class HasteMap extends EventEmitter {
 
     try {
       return crawl({
+        computeSha1: options.computeSha1,
         data: hasteMap,
         extensions: options.extensions,
         forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
         ignore,
         roots: options.roots,
-        sha1: options.sha1,
       }).catch(retry);
     } catch (error) {
       return retry(error);

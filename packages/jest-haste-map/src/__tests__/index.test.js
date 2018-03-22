@@ -37,14 +37,15 @@ jest.mock('jest-worker', () => {
 jest.mock('../crawlers/node');
 jest.mock('../crawlers/watchman', () =>
   jest.fn(options => {
-    const {data, ignore, roots, sha1} = options;
+    const {data, ignore, roots, computeSha1} = options;
+    const list = mockChangedFiles || mockFs;
+
     data.clocks = mockClocks;
 
-    const list = mockChangedFiles || mockFs;
     for (const file in list) {
       if (new RegExp(roots.join('|')).test(file) && !ignore(file)) {
         if (list[file]) {
-          const hash = sha1 ? mockHashContents(list[file]) : null;
+          const hash = computeSha1 ? mockHashContents(list[file]) : null;
 
           data.files[file] = ['', 32, 0, [], hash];
         } else {
@@ -352,8 +353,8 @@ describe('HasteMap', () => {
 
         const hasteMap = new HasteMap(
           Object.assign({}, defaultConfig, {
+            computeSha1: true,
             maxWorkers: 1,
-            sha1: true,
             useWatchman,
           }),
         );
@@ -906,37 +907,37 @@ describe('HasteMap', () => {
         expect(mockWorker.mock.calls).toEqual([
           [
             {
+              computeSha1: false,
               filePath: '/fruits/__mocks__/Pear.js',
               hasteImplModulePath: undefined,
-              sha1: false,
             },
           ],
           [
             {
+              computeSha1: false,
               filePath: '/fruits/banana.js',
               hasteImplModulePath: undefined,
-              sha1: false,
             },
           ],
           [
             {
+              computeSha1: false,
               filePath: '/fruits/pear.js',
               hasteImplModulePath: undefined,
-              sha1: false,
             },
           ],
           [
             {
+              computeSha1: false,
               filePath: '/fruits/strawberry.js',
               hasteImplModulePath: undefined,
-              sha1: false,
             },
           ],
           [
             {
+              computeSha1: false,
               filePath: '/vegetables/melon.js',
               hasteImplModulePath: undefined,
-              sha1: false,
             },
           ],
         ]);

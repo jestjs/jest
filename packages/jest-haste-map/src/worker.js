@@ -71,7 +71,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   }
 
   // If a SHA-1 is requested on update, compute it.
-  if (data.sha1) {
+  if (data.computeSha1) {
     if (content == null) {
       content = fs.readFileSync(filePath);
     }
