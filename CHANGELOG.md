@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[expect]` Improve output format for mismatchedArgs in mock/spy calls.
+  ([#5846](https://github.com/facebook/jest/pull/5846))
 * `[jest-cli]` Add support for using `--coverage` in combination with watch
   mode, `--onlyChanged`, `--findRelatedTests` and more
   ([#5601](https://github.com/facebook/jest/pull/5601))
