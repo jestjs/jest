@@ -15,7 +15,8 @@ jest.mock('fb-watchman', () => {
   const Client = jest.fn();
   Client.prototype.command = jest.fn((args, callback) =>
     setImmediate(() => {
-      const response = mockResponse[args[0]][normalizePathSep(args[1])];
+      const path = args[1] ? normalizePathSep(args[1]) : undefined;
+      const response = mockResponse[args[0]][path];
       callback(null, response.next ? response.next().value : response);
     }),
   );
