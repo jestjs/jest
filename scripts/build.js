@@ -48,6 +48,7 @@ const transformOptions = JSON.parse(
 );
 transformOptions.babelrc = false;
 const prettierConfig = prettier.resolveConfig.sync(__filename);
+prettierConfig.trailingComma = 'none';
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
