@@ -59,6 +59,11 @@ describe('watchman watch', () => {
     watchman = require('fb-watchman');
 
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:1',
@@ -149,6 +154,11 @@ describe('watchman watch', () => {
 
   test('updates the file object when the clock is given', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:2',
@@ -201,6 +211,11 @@ describe('watchman watch', () => {
 
   test('resets the file object when watchman is restarted', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:3',
@@ -268,6 +283,11 @@ describe('watchman watch', () => {
 
   test('properly resets the file map when only one watcher is reset', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [FRUITS]: {
           clock: 'c:fake-clock:3',
@@ -332,6 +352,11 @@ describe('watchman watch', () => {
 
   test('does not add directory filters to query when watching a ROOT', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:1',
@@ -397,5 +422,83 @@ describe('watchman watch', () => {
 
       expect(client.end).toBeCalled();
     });
+  });
+
+  test('SHA-1 requested and available', async () => {
+    mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
+      query: {
+        [ROOT_MOCK]: {
+          clock: 'c:fake-clock:1',
+          files: [],
+          is_fresh_instance: false,
+          version: '4.5.0',
+        },
+      },
+      'watch-project': {
+        [ROOT_MOCK]: {
+          watch: forcePOSIXPaths(ROOT_MOCK),
+        },
+      },
+    };
+
+    await watchmanCrawl({
+      computeSha1: true,
+      data: {
+        clocks: Object.create(null),
+        files: Object.create(null),
+      },
+      extensions: ['js', 'json'],
+      roots: [ROOT_MOCK],
+    });
+
+    const client = watchman.Client.mock.instances[0];
+    const calls = client.command.mock.calls;
+
+    expect(calls[0][0]).toEqual(['list-capabilities']);
+    expect(calls[2][0][2].fields).toContain('content.sha1hex');
+  });
+
+  test('SHA-1 requested and NOT available', async () => {
+    mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: [],
+        },
+      },
+      query: {
+        [ROOT_MOCK]: {
+          clock: 'c:fake-clock:1',
+          files: [],
+          is_fresh_instance: false,
+          version: '4.5.0',
+        },
+      },
+      'watch-project': {
+        [ROOT_MOCK]: {
+          watch: forcePOSIXPaths(ROOT_MOCK),
+        },
+      },
+    };
+
+    await watchmanCrawl({
+      computeSha1: true,
+      data: {
+        clocks: Object.create(null),
+        files: Object.create(null),
+      },
+      extensions: ['js', 'json'],
+      roots: [ROOT_MOCK],
+    });
+
+    const client = watchman.Client.mock.instances[0];
+    const calls = client.command.mock.calls;
+
+    expect(calls[0][0]).toEqual(['list-capabilities']);
+    expect(calls[2][0][2].fields).not.toContain('content.sha1hex');
   });
 });

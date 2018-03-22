@@ -38,10 +38,6 @@ module.exports = async function watchmanCrawl(
   const clocks = data.clocks;
   const client = new watchman.Client();
 
-  if (options.sha1) {
-    fields.push('content.sha1hex');
-  }
-
   let clientError;
   client.on('error', error => (clientError = WatchmanError(error)));
 
@@ -53,6 +49,14 @@ module.exports = async function watchmanCrawl(
           error ? reject(WatchmanError(error)) : resolve(result),
       ),
     );
+
+  if (options.computeSha1) {
+    const {capabilities} = await cmd('list-capabilities');
+
+    if (capabilities.indexOf('field-content.sha1hex') !== -1) {
+      fields.push('content.sha1hex');
+    }
+  }
 
   async function getWatchmanRoots(roots) {
     const watchmanRoots = new Map();
