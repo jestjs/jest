@@ -64,8 +64,10 @@
 
 ### Chore & Maintenance
 
+* `[#5858]` Run Prettier on compiled output
+  ([#5858](https://github.com/facebook/jest/pull/3497))
 * `[#5708]` Add fileChange hook for plugins
-  ([#5648](https://github.com/facebook/jest/pull/5708))
+  ([#5708](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
 * `[docs]` Mention Jest Puppeteer Preset
