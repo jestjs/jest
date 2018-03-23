@@ -11,7 +11,6 @@ import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 
-import exit from 'exit';
 import path from 'path';
 import util from 'util';
 import notifier from 'node-notifier';
@@ -79,29 +78,11 @@ export default class NotifyReporter extends BaseReporter {
         result.numTotalTests,
       );
 
-      const restartAnswer = 'Run again';
-      const quitAnswer = 'Exit tests';
-      notifier.notify(
-        {
-          actions: [restartAnswer, quitAnswer],
-          closeLabel: 'Close',
-          icon,
-          message,
-          title,
-        },
-        (err, _, metadata) => {
-          if (err || !metadata) {
-            return;
-          }
-          if (metadata.activationValue === quitAnswer) {
-            exit(0);
-            return;
-          }
-          if (metadata.activationValue === restartAnswer) {
-            this._startRun(this._globalConfig);
-          }
-        },
-      );
+      notifier.notify({
+        icon,
+        message,
+        title,
+      });
     }
     this._context.previousSuccess = success;
     this._context.firstRun = false;
