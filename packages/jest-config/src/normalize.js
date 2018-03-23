@@ -8,7 +8,7 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {InitialOptions, ReporterConfig, ProjectConfig} from 'types/Config';
+import type {InitialOptions, ReporterConfig} from 'types/Config';
 
 import crypto from 'crypto';
 import glob from 'glob';
