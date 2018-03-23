@@ -39,6 +39,7 @@ import DEFAULT_CONFIG from './defaults';
 import DEPRECATED_CONFIG from './deprecated';
 import setFromArgv from './set_from_argv';
 import VALID_CONFIG from './valid_config';
+import {ProjectConfig} from '../../../types/Config';
 const ERROR = `${BULLET}Validation Error`;
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
@@ -236,6 +237,19 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
       .update(options.rootDir)
       .digest('hex');
   }
+
+  options.projects = (options.projects || []).map(
+    (project: string | ProjectConfig, index) => {
+      if (!typeof project !== 'string' && !project.hasOwnProperty('name')) {
+        project.name = crypto
+          .createHash('md5')
+          .update(project.rootDir || `${options.rootDir}/${index}`)
+          .digest('hex');
+      }
+
+      return project;
+    },
+  );
 
   if (!options.setupFiles) {
     options.setupFiles = [];
