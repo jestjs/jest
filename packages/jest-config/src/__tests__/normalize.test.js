@@ -68,11 +68,11 @@ it('picks a name for projects based on the main rootDir', () => {
   const rootDir = '/root/path/foo';
   const firstExpected = crypto
     .createHash('md5')
-    .update('/root/path/foo0')
+    .update('/root/path/foo/0')
     .digest('hex');
   const secondExpected = crypto
     .createHash('md5')
-    .update('/root/path/foo1')
+    .update('/root/path/foo/1')
     .digest('hex');
 
   const options = normalize(
@@ -83,8 +83,8 @@ it('picks a name for projects based on the main rootDir', () => {
     {},
   );
 
-  expect(options.projects[0].name).toBe(firstExpected);
-  expect(options.projects[1].name).toBe(secondExpected);
+  expect(options.options.projects[0].name).toBe(firstExpected);
+  expect(options.options.projects[1].name).toBe(secondExpected);
 });
 
 it('picks a name for projects based on the projects rootDir', () => {
@@ -102,12 +102,13 @@ it('picks a name for projects based on the projects rootDir', () => {
   const options = normalize(
     {
       projects: [{rootDir: firstRootDir}, {rootDir: secondRootDir}],
+      rootDir: '/root/path/baz',
     },
     {},
   );
 
-  expect(options.projects[0].name).toBe(firstExpected);
-  expect(options.projects[1].name).toBe(secondExpected);
+  expect(options.options.projects[0].name).toBe(firstExpected);
+  expect(options.options.projects[1].name).toBe(secondExpected);
 });
 
 it('keeps custom project name based on the projects rootDir', () => {
@@ -115,11 +116,12 @@ it('keeps custom project name based on the projects rootDir', () => {
   const options = normalize(
     {
       projects: [{name, rootDir: '/path/to/foo'}],
+      rootDir: '/root/path/baz',
     },
     {},
   );
 
-  expect(options.projects[0].name).toBe(name);
+  expect(options.options.projects[0].name).toBe(name);
 });
 
 it('keeps custom names based on the rootDir', () => {
