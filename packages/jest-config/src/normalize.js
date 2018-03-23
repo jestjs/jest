@@ -8,7 +8,7 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {InitialOptions, ReporterConfig} from 'types/Config';
+import type {InitialOptions, ReporterConfig, ProjectConfig} from 'types/Config';
 
 import crypto from 'crypto';
 import glob from 'glob';
@@ -39,7 +39,7 @@ import DEFAULT_CONFIG from './defaults';
 import DEPRECATED_CONFIG from './deprecated';
 import setFromArgv from './set_from_argv';
 import VALID_CONFIG from './valid_config';
-import {ProjectConfig} from '../../../types/Config';
+
 const ERROR = `${BULLET}Validation Error`;
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
@@ -238,9 +238,9 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
       .digest('hex');
   }
 
-  options.projects = (options.projects || []).map(
-    (project: string | ProjectConfig, index) => {
-      if (!typeof project !== 'string' && !project.hasOwnProperty('name')) {
+  if (Array.isArray(options.projects)) {
+    options.projects = options.projects.map((project, index) => {
+      if (typeof project !== 'string' && !project.hasOwnProperty('name')) {
         project.name = crypto
           .createHash('md5')
           .update(project.rootDir || `${options.rootDir}/${index}`)
@@ -248,8 +248,8 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
       }
 
       return project;
-    },
-  );
+    });
+  }
 
   if (!options.setupFiles) {
     options.setupFiles = [];
