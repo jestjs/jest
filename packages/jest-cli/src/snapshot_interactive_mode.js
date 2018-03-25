@@ -157,10 +157,10 @@ export default class SnapshotInteractiveMode {
     switch (key) {
       case KEYS.S:
         if (this._skippedNum === this._testAssertions.length) break;
-
         this._skippedNum += 1;
-        const testAssertion = this._testAssertions.shift();
-        this._testAssertions.push(testAssertion);
+
+        // move skipped test to the end
+        this._testAssertions.push(this._testAssertions.shift());
         if (this._testAssertions.length - this._skippedNum > 0) {
           this._run(false);
         } else {
