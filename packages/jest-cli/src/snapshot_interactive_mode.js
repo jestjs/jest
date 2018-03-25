@@ -40,7 +40,13 @@ export default class SnapshotInteractiveMode {
     return this._skippedNum;
   }
 
+  _clearTestSummary() {
+    this._pipe.write(ansiEscapes.cursorUp(6));
+    this._pipe.write(ansiEscapes.eraseDown);
+  }
+
   _drawUIProgress() {
+    this._clearTestSummary();
     const numPass = this._countPaths - this._testAssertions.length;
     const numRemaining = this._countPaths - numPass - this._skippedNum;
 
@@ -139,9 +145,6 @@ export default class SnapshotInteractiveMode {
   }
 
   _drawUIOverlay() {
-    this._pipe.write(ansiEscapes.cursorUp(6));
-    this._pipe.write(ansiEscapes.eraseDown);
-
     if (this._testAssertions.length === 0) {
       return this._drawUIDone();
     }
