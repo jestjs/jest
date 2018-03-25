@@ -8,13 +8,13 @@
  */
 import type {JestHookSubscriber} from '../jest_hooks';
 import type {GlobalConfig} from 'types/Config';
-import type {AggregatedResult} from 'types/TestResult';
+import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
 import BaseWatchPlugin from '../base_watch_plugin';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;
-  _failedSnapshotTestAssertions: Array<*>;
+  _failedSnapshotTestAssertions: Array<AssertionLocation>;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
@@ -25,7 +25,9 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
   }
 
-  getFailedSnapshotTestAssertions(testResults: AggregatedResult) {
+  getFailedSnapshotTestAssertions(
+    testResults: AggregatedResult,
+  ): Array<AssertionLocation> {
     const failedTestPaths = [];
     if (testResults.numFailedTests === 0 || !testResults.testResults) {
       return failedTestPaths;
@@ -69,7 +71,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
       return new Promise(res => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestAssertions,
-          (assertion, shouldUpdateSnapshot: boolean) => {
+          (assertion: ?AssertionLocation, shouldUpdateSnapshot: boolean) => {
             updateConfigAndRun({
               mode: 'watch',
               testNamePattern: assertion ? `^${assertion.title}$` : '',

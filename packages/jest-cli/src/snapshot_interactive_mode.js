@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {AggregatedResult} from 'types/TestResult';
+import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
 
 const chalk = require('chalk');
 const ansiEscapes = require('ansi-escapes');
@@ -19,10 +19,10 @@ export default class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;
   _isActive: boolean;
   _updateTestRunnerConfig: (
-    assertion: ?Object,
+    assertion: ?AssertionLocation,
     shouldUpdateSnapshot: boolean,
   ) => *;
-  _testAssertions: Array<Object>;
+  _testAssertions: Array<AssertionLocation>;
   _countPaths: number;
   _skippedNum: number;
 
@@ -228,8 +228,11 @@ export default class SnapshotInteractiveMode {
   }
 
   run(
-    failedSnapshotTestAssertions: Array<Object>,
-    onConfigChange: (assertion: ?Object, shouldUpdateSnapshot: boolean) => *,
+    failedSnapshotTestAssertions: Array<AssertionLocation>,
+    onConfigChange: (
+      assertion: ?AssertionLocation,
+      shouldUpdateSnapshot: boolean,
+    ) => *,
   ) {
     if (!failedSnapshotTestAssertions.length) {
       return;
