@@ -262,7 +262,7 @@ exports[`SnapshotInteractiveMode update 1 test, then finish and return 2`] = `
 [MOCK - eraseDown]
 [MOCK - eraseDown]
 
-<bold>Interactive Result</>
+<bold>Interactive Snapshot Result</>
  › <bold><dim>1 snapshot reviewed<bold></>, <bold><green>1 snapshot updated</></>
 
 <bold>Watch Usage</>
@@ -305,7 +305,7 @@ exports[`SnapshotInteractiveMode update 2 tests, then finish and return 3`] = `
 [MOCK - eraseDown]
 [MOCK - eraseDown]
 
-<bold>Interactive Result</>
+<bold>Interactive Snapshot Result</>
  › <bold><dim>2 snapshots reviewed<bold></>, <bold><green>2 snapshots updated</></>
 
 <bold>Watch Usage</>
