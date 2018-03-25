@@ -13,7 +13,7 @@ import type {AggregatedResult} from 'types/TestResult';
 const chalk = require('chalk');
 const ansiEscapes = require('ansi-escapes');
 const {pluralize} = require('./reporters/utils');
-const {KEYS} = require('./constants');
+const {KEYS, ARROW} = require('./constants');
 
 export default class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;
@@ -58,22 +58,22 @@ export default class SnapshotInteractiveMode {
     }
     const messages = [
       '\n' + chalk.bold('Interactive Snapshot Progress'),
-      ' \u203A ' + stats,
+      ARROW + stats,
       '\n' + chalk.bold('Watch Usage'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'u' +
         chalk.dim(' to update failing snapshots for this test.'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         's' +
         chalk.dim(' to skip the current test.'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'q' +
         chalk.dim(' to quit Interactive Snapshot Mode.'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'Enter' +
         chalk.dim(' to trigger a test run.'),
     ];
@@ -99,14 +99,14 @@ export default class SnapshotInteractiveMode {
     }
     const messages = [
       '\n' + chalk.bold('Interactive Snapshot Result'),
-      ' \u203A ' + stats,
+      ARROW + stats,
       '\n' + chalk.bold('Watch Usage'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'r' +
         chalk.dim(' to restart Interactive Snapshot Mode.'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'q' +
         chalk.dim(' to quit Interactive Snapshot Mode.'),
     ];
@@ -127,10 +127,10 @@ export default class SnapshotInteractiveMode {
     }
     const messages = [
       '\n' + chalk.bold('Interactive Snapshot Result'),
-      ' \u203A ' + stats,
+      ARROW + stats,
       '\n' + chalk.bold('Watch Usage'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'Enter' +
         chalk.dim(' to return to watch mode.'),
     ];
