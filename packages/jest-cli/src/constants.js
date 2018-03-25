@@ -29,6 +29,7 @@ export const KEYS = {
   P: '70',
   Q: '71',
   QUESTION_MARK: '3f',
+  R: '72',
   S: '73',
   T: '74',
   U: '75',
