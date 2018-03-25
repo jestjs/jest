@@ -1,5 +1,5 @@
 ---
-id: version-<=22.0-tutorial-react
+id: version-22.0-tutorial-react
 title: Testing React Apps
 original_id: tutorial-react
 ---

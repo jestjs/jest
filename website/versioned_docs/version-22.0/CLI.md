@@ -1,5 +1,5 @@
 ---
-id: version-<=22.0-cli
+id: version-22.0-cli
 title: Jest CLI Options
 original_id: cli
 ---

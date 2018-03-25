@@ -1,5 +1,5 @@
 ---
-id: version-<=22.0-jest-platform
+id: version-22.0-jest-platform
 title: Jest Platform
 original_id: jest-platform
 ---

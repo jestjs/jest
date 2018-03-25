@@ -1,5 +1,5 @@
 ---
-id: version-<=22.0-jest-object
+id: version-22.0-jest-object
 title: The Jest Object
 original_id: jest-object
 ---

@@ -1,5 +1,5 @@
 ---
-id: version-<=22.0-webpack
+id: version-22.0-webpack
 title: Using with webpack
 original_id: webpack
 ---

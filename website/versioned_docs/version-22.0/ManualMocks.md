@@ -1,5 +1,5 @@
 ---
-id: version-<=22.0-manual-mocks
+id: version-22.0-manual-mocks
 title: Manual Mocks
 original_id: manual-mocks
 ---

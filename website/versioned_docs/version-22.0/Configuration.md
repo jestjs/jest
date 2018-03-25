@@ -1,5 +1,5 @@
 ---
-id: version-<=22.0-configuration
+id: version-22.0-configuration
 title: Configuring Jest
 original_id: configuration
 ---
