@@ -78,12 +78,12 @@ following members:
 
 ##### `.mock`
 
-An object with three members, `calls`, `instances` and `invocationCallOrder`, which are
-all lists. The items in the `calls` list are the arguments with which the
-function was called. The "instances" list stores the value of 'this' for each
-call to the function. This is useful for retrieving instances from a
-constructor. The `invocationCallOrder` lists the order in relation to all mock function
-calls, starting at 1.
+An object with three members, `calls`, `instances` and `invocationCallOrder`,
+which are all lists. The items in the `calls` list are the arguments with which
+the function was called. The "instances" list stores the value of 'this' for
+each call to the function. This is useful for retrieving instances from a
+constructor. The `invocationCallOrder` lists the order in relation to all mock
+function calls, starting at 1.
 
 ##### `.mockReturnValueOnce(value)`
 
