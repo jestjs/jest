@@ -136,8 +136,8 @@ module.exports = function nodeCrawl(
         if (existingFile && existingFile[H.MTIME] === mtime) {
           files[name] = existingFile;
         } else {
-          // See ../constants.js
-          files[name] = ['', mtime, 0, []];
+          // See ../constants.js; SHA-1 will always be null and fulfilled later.
+          files[name] = ['', mtime, 0, [], null];
         }
       });
       data.files = files;

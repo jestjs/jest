@@ -23,7 +23,7 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
-  _replaceRootDirInPath,
+  replaceRootDirInPath,
   _replaceRootDirTags,
   escapeGlobCharacters,
   getTestEnvironment,
@@ -66,7 +66,7 @@ const setupPreset = (
   optionsPreset: string,
 ): InitialOptions => {
   let preset;
-  const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
+  const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
     presetPath.endsWith(JSON_EXTENSION)
       ? presetPath
@@ -146,7 +146,7 @@ const normalizeCollectCoverageOnlyFrom = (
   return collectCoverageOnlyFrom.reduce((map, filePath) => {
     filePath = path.resolve(
       options.rootDir,
-      _replaceRootDirInPath(options.rootDir, filePath),
+      replaceRootDirInPath(options.rootDir, filePath),
     );
     map[filePath] = true;
     return map;
@@ -271,7 +271,7 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
           [reporterConfig, {}]
         : reporterConfig;
 
-    const reporterPath = _replaceRootDirInPath(
+    const reporterPath = replaceRootDirInPath(
       options.rootDir,
       normalizedReporterConfig[0],
     );
@@ -391,7 +391,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           options[key].map(filePath =>
             path.resolve(
               options.rootDir,
-              _replaceRootDirInPath(options.rootDir, filePath),
+              replaceRootDirInPath(options.rootDir, filePath),
             ),
           );
         break;
@@ -404,7 +404,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           options[key] &&
           path.resolve(
             options.rootDir,
-            _replaceRootDirInPath(options.rootDir, options[key]),
+            replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
       case 'globalSetup':
@@ -449,7 +449,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           value.hasteImplModulePath = resolve(
             options.rootDir,
             'haste.hasteImplModulePath',
-            _replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
+            replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
           );
         }
         break;
@@ -597,6 +597,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
       reporter => reporter !== 'text',
     );
+  }
+
+  // If collectCoverage is enabled while using --findRelatedTests we need to
+  // avoid having false negatives in the generated coverage report.
+  // The following: `--findRelatedTests '/rootDir/file1.js' --coverage`
+  // Is transformed to: `--findRelatedTests '/rootDir/file1.js' --coverage --collectCoverageFrom 'file1.js'`
+  // where arguments to `--collectCoverageFrom` should be globs (or relative
+  // paths to the rootDir)
+  if (newOptions.collectCoverage && argv.findRelatedTests) {
+    newOptions.collectCoverageFrom = argv._.map(filename => {
+      filename = replaceRootDirInPath(options.rootDir, filename);
+      return path.isAbsolute(filename)
+        ? path.relative(options.rootDir, filename)
+        : filename;
+    });
   }
 
   return {

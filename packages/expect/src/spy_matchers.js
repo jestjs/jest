@@ -24,6 +24,7 @@ import {
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
 import {iterableEquality, partition} from './utils';
+import diff from 'jest-diff';
 
 const createToBeCalledMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
@@ -268,9 +269,12 @@ const formatMismatchedArgs = (expected, received) => {
   const printedArgs = [];
   for (let i = 0; i < length; i++) {
     if (!equals(expected[i], received[i], [iterableEquality])) {
+      const diffString = diff(expected[i], received[i]);
       printedArgs.push(
-        `  ${printExpected(expected[i])} as argument ${i + 1}, ` +
-          `but it was called with ${printReceived(received[i])}.`,
+        `  ${printExpected(expected[i])}\n` +
+          `as argument ${i + 1}, but it was called with\n` +
+          `  ${printReceived(received[i])}.` +
+          (diffString ? `\n\nDifference:\n\n${diffString}` : ''),
       );
     } else if (i >= expected.length) {
       printedArgs.push(
