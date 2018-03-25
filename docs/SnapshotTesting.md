@@ -138,7 +138,7 @@ From here you can choose to update that snapshot or skip to the next:
 Once you're finished, Jest will give you a summary before returning back to
 watch mode:
 
-![](/jest/img/content/interactiveSnapshotUpdate.gif)
+![](/jest/img/content/interactiveSnapshotDone.png)
 
 ### Tests Should Be Deterministic
 
