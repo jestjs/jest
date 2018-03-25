@@ -284,9 +284,9 @@ class ModuleMockerClass {
     return {
       calls: [],
       instances: [],
+      invocationCallOrder: [],
       returnValues: [],
       thrownErrors: [],
-      invocationCallOrder: [],
     };
   }
 
