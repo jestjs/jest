@@ -15,6 +15,7 @@ import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;
   _failedSnapshotTestPaths: Array<*>;
+  isInternal: true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
@@ -23,6 +24,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     super(options);
     this._failedSnapshotTestPaths = [];
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
+    this.isInternal = true;
   }
 
   apply(hooks: JestHookSubscriber) {
