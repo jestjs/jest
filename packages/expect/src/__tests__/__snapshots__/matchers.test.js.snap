@@ -290,7 +290,7 @@ Received: <red>[]</>
 
 Difference:
 
-<dim>Compared values have no visual difference.</> <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead.</>"
+<dim>Compared values have no visual difference.</> <dim>Looks like you wanted to test for object/array equality with the stricter \`toBe\` matcher. You probably need to use \`toEqual\` instead.</>"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
@@ -301,7 +301,7 @@ Received: <red>{\\"a\\": 1}</>
 
 Difference:
 
-<dim>Compared values have no visual difference.</> <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead.</>"
+<dim>Compared values have no visual difference.</> <dim>Looks like you wanted to test for object/array equality with the stricter \`toBe\` matcher. You probably need to use \`toEqual\` instead.</>"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
@@ -329,7 +329,7 @@ Received: <red>{}</>
 
 Difference:
 
-<dim>Compared values have no visual difference.</> <dim>Looks like you wanted to test for object/array equality with strict \`toBe\` matcher. You probably need to use \`toEqual\` instead.</>"
+<dim>Compared values have no visual difference.</> <dim>Looks like you wanted to test for object/array equality with the stricter \`toBe\` matcher. You probably need to use \`toEqual\` instead.</>"
 `;
 
 exports[`.toBe() fails for: -0 and 0 1`] = `

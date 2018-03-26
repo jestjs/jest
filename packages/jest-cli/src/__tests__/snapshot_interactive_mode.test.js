@@ -17,6 +17,7 @@ jest.mock('../lib/terminal_utils', () => ({
 }));
 
 jest.mock('ansi-escapes', () => ({
+  clearScreen: '[MOCK - eraseDown]',
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
   cursorScrollDown: '[MOCK - cursorScrollDown]',
@@ -34,10 +35,13 @@ jest.doMock('chalk', () =>
 describe('SnapshotInteractiveMode', () => {
   let pipe;
   let instance;
-
+  let mockCallback;
   beforeEach(() => {
     pipe = {write: jest.fn()};
     instance = new SnapshotInteractiveMode(pipe);
+    mockCallback = jest.fn(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
   });
 
   test('is inactive at construction', () => {
@@ -45,98 +49,293 @@ describe('SnapshotInteractiveMode', () => {
   });
 
   test('call to run process the first file', () => {
-    const mockCallback = jest.fn();
-    instance.run(['first.js', 'second.js'], mockCallback);
+    const assertions = [
+      {path: 'first.js', title: 'test one'},
+      {path: 'second.js', title: 'test two'},
+    ];
+    instance.run(assertions, mockCallback);
     expect(instance.isActive()).toBeTruthy();
-    expect(mockCallback).toBeCalledWith('first.js', false);
+    expect(mockCallback).toBeCalledWith(assertions[0], false);
   });
 
   test('call to abort', () => {
-    const mockCallback = jest.fn();
-    instance.run(['first.js', 'second.js'], mockCallback);
+    const assertions = [
+      {path: 'first.js', title: 'test one'},
+      {path: 'second.js', title: 'test two'},
+    ];
+    instance.run(assertions, mockCallback);
     expect(instance.isActive()).toBeTruthy();
     instance.abort();
     expect(instance.isActive()).toBeFalsy();
-    expect(mockCallback).toBeCalledWith('', false);
+    expect(instance.getSkippedNum()).toBe(0);
+    expect(mockCallback).toBeCalledWith(null, false);
   });
-  describe('key press handler', () => {
-    test('call to skip trigger a processing of next file', () => {
-      const mockCallback = jest.fn();
-      instance.run(['first.js', 'second.js'], mockCallback);
-      expect(mockCallback.mock.calls[0]).toEqual(['first.js', false]);
-      instance.put(KEYS.S);
-      expect(mockCallback.mock.calls[1]).toEqual(['second.js', false]);
-      instance.put(KEYS.S);
-      expect(mockCallback.mock.calls[2]).toEqual(['first.js', false]);
-    });
 
-    test('call to skip works with 1 file', () => {
-      const mockCallback = jest.fn();
-      instance.run(['first.js'], mockCallback);
-      expect(mockCallback.mock.calls[0]).toEqual(['first.js', false]);
-      instance.put(KEYS.S);
-      expect(mockCallback.mock.calls[1]).toEqual(['first.js', false]);
-    });
-
-    test('press U trigger a snapshot update call', () => {
-      const mockCallback = jest.fn();
-      instance.run(['first.js'], mockCallback);
-      expect(mockCallback.mock.calls[0]).toEqual(['first.js', false]);
-      instance.put(KEYS.U);
-      expect(mockCallback.mock.calls[1]).toEqual(['first.js', true]);
-    });
-
-    test('press Q or ESC triggers an abort', () => {
-      instance.abort = jest.fn();
-      instance.put(KEYS.Q);
-      instance.put(KEYS.ESCAPE);
-      expect(instance.abort).toHaveBeenCalledTimes(2);
-    });
-
-    test('press ENTER trigger a run', () => {
-      const mockCallback = jest.fn();
-      instance.run(['first.js'], mockCallback);
-      instance.put(KEYS.ENTER);
-      expect(mockCallback).toHaveBeenCalledTimes(2);
-      expect(mockCallback).toHaveBeenCalledWith('first.js', false);
-    });
+  test('call to reset', () => {
+    const assertions = [
+      {path: 'first.js', title: 'test one'},
+      {path: 'second.js', title: 'test two'},
+    ];
+    instance.run(assertions, mockCallback);
+    expect(instance.isActive()).toBeTruthy();
+    instance.restart();
+    expect(instance.isActive()).toBeTruthy();
+    expect(instance.getSkippedNum()).toBe(0);
+    expect(mockCallback).toBeCalledWith(assertions[0], false);
   });
-  describe('updateWithResults', () => {
-    test('with a test failure simply update UI', () => {
-      const mockCallback = jest.fn();
-      instance.run(['first.js'], mockCallback);
-      pipe.write('TEST RESULTS CONTENTS');
+
+  test('press Q or ESC triggers an abort', () => {
+    instance.abort = jest.fn();
+    instance.put(KEYS.Q);
+    instance.put(KEYS.ESCAPE);
+    expect(instance.abort).toHaveBeenCalledTimes(2);
+  });
+
+  test('press ENTER trigger a run', () => {
+    const assertions = [{path: 'first.js', title: 'test one'}];
+    instance.run(assertions, mockCallback);
+    instance.put(KEYS.ENTER);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+    expect(mockCallback).toHaveBeenCalledWith(assertions[0], false);
+  });
+
+  test('skip 1 test, then restart', () => {
+    const assertions = [{path: 'first.js', title: 'test one'}];
+
+    instance.run(assertions, mockCallback);
+    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.S);
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.R);
+    expect(instance.getSkippedNum()).toBe(0);
+    expect(mockCallback).nthCalledWith(2, assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+  });
+
+  test('skip 1 test, then quit', () => {
+    const assertions = [{path: 'first.js', title: 'test one'}];
+
+    instance.run(assertions, mockCallback);
+    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.S);
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.Q);
+    expect(instance.getSkippedNum()).toBe(0);
+    expect(mockCallback).nthCalledWith(2, null, false);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+  });
+
+  test('update 1 test, then finish and return', () => {
+    const mockCallback = jest.fn();
+    mockCallback.mockImplementationOnce(() => {
       instance.updateWithResults({snapshot: {failure: true}});
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-      expect(mockCallback).toHaveBeenCalledTimes(1);
     });
-
-    test('with a test success, call the next test', () => {
-      const mockCallback = jest.fn();
-      instance.run(['first.js', 'second.js'], mockCallback);
-      pipe.write('TEST RESULTS CONTENTS');
+    mockCallback.mockImplementationOnce(() => {
       instance.updateWithResults({snapshot: {failure: false}});
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-      expect(mockCallback.mock.calls[1]).toEqual(['second.js', false]);
     });
-
-    test('overlay handle progress UI', () => {
-      const mockCallback = jest.fn();
-      instance.run(['first.js', 'second.js', 'third.js'], mockCallback);
-      pipe.write('TEST RESULTS CONTENTS');
-      instance.updateWithResults({snapshot: {failure: false}});
+    mockCallback.mockImplementationOnce(() => {
       instance.updateWithResults({snapshot: {failure: true}});
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     });
 
-    test('last test success, trigger end of interactive mode', () => {
-      const mockCallback = jest.fn();
-      instance.abort = jest.fn();
-      instance.run(['first.js'], mockCallback);
-      pipe.write('TEST RESULTS CONTENTS');
-      instance.updateWithResults({snapshot: {failure: false}});
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-      expect(instance.abort).toHaveBeenCalled();
+    const assertions = [{path: 'first.js', title: 'test one'}];
+
+    instance.run(assertions, mockCallback);
+    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.U);
+    expect(mockCallback).nthCalledWith(2, assertions[0], true);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+
+    instance.put(KEYS.ENTER);
+    expect(instance.isActive()).toBe(false);
+    expect(mockCallback).nthCalledWith(3, null, false);
+  });
+
+  test('skip 2 tests, then finish and restart', () => {
+    const assertions = [
+      {path: 'first.js', title: 'test one'},
+      {path: 'first.js', title: 'test two'},
+    ];
+    instance.run(assertions, mockCallback);
+    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.S);
+    expect(mockCallback).nthCalledWith(2, assertions[1], false);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.S);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.R);
+    expect(instance.getSkippedNum()).toBe(0);
+    expect(mockCallback).nthCalledWith(3, assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledTimes(3);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+  });
+
+  test('update 2 tests, then finish and return', () => {
+    const mockCallback = jest.fn();
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
     });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: false}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: false}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+
+    const assertions = [
+      {path: 'first.js', title: 'test one'},
+      {path: 'first.js', title: 'test two'},
+    ];
+
+    instance.run(assertions, mockCallback);
+    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.U);
+    expect(mockCallback).nthCalledWith(2, assertions[0], true);
+    expect(mockCallback).nthCalledWith(3, assertions[1], false);
+    expect(mockCallback).toHaveBeenCalledTimes(3);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.U);
+    expect(mockCallback).nthCalledWith(4, assertions[1], true);
+    expect(mockCallback).toHaveBeenCalledTimes(4);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.ENTER);
+    expect(instance.isActive()).toBe(false);
+    expect(mockCallback).nthCalledWith(5, null, false);
+    expect(mockCallback).toHaveBeenCalledTimes(5);
+  });
+
+  test('update 1 test, skip 1 test, then finish and restart', () => {
+    const mockCallback = jest.fn();
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: false}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+
+    const assertions = [
+      {path: 'first.js', title: 'test one'},
+      {path: 'first.js', title: 'test two'},
+    ];
+
+    instance.run(assertions, mockCallback);
+    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.U);
+    expect(mockCallback).nthCalledWith(2, assertions[0], true);
+    expect(mockCallback).nthCalledWith(3, assertions[1], false);
+    expect(mockCallback).toHaveBeenCalledTimes(3);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.S);
+    expect(mockCallback).toHaveBeenCalledTimes(3);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.R);
+    expect(instance.getSkippedNum()).toBe(0);
+    expect(mockCallback).nthCalledWith(4, assertions[1], false);
+    expect(mockCallback).toHaveBeenCalledTimes(4);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+  });
+
+  test('skip 1 test, update 1 test, then finish and restart', () => {
+    const mockCallback = jest.fn();
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: false}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+    mockCallback.mockImplementationOnce(() => {
+      instance.updateWithResults({snapshot: {failure: true}});
+    });
+
+    const assertions = [
+      {path: 'first.js', title: 'test one'},
+      {path: 'first.js', title: 'test two'},
+    ];
+
+    instance.run(assertions, mockCallback);
+    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.S);
+    expect(mockCallback).nthCalledWith(2, assertions[1], false);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.U);
+    expect(mockCallback).nthCalledWith(3, assertions[1], true);
+    expect(mockCallback).toHaveBeenCalledTimes(3);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+    pipe.write.mockClear();
+
+    instance.put(KEYS.R);
+    expect(instance.getSkippedNum()).toBe(0);
+    expect(mockCallback).nthCalledWith(4, assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledTimes(4);
+    expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
 });
