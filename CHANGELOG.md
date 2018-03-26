@@ -36,8 +36,6 @@
   ([#5706](https://github.com/facebook/jest/pull/5706))
 * `[jest-cli]` Interactive Snapshot Mode improvements
   ([#5864](https://github.com/facebook/jest/pull/5864))
-* `[jest-config]` Add name to project if one does not exist to pick correct
-  resolver ([#5862](https://github.com/facebook/jest/pull/5862))
 
 ### Fixes
 
@@ -67,6 +65,8 @@
   ([#5720](https://github.com/facebook/jest/pull/5720))
 * `[pretty-format]` Handle React fragments better
   ([#5816](https://github.com/facebook/jest/pull/5816))
+* `[jest-config]` Add name to project if one does not exist to pick correct
+  resolver ([#5862](https://github.com/facebook/jest/pull/5862))
 
 ### Chore & Maintenance
 
