@@ -2,6 +2,11 @@
 
 ### Features
 
+* `[expect]` Improve output format for mismatchedArgs in mock/spy calls.
+  ([#5846](https://github.com/facebook/jest/pull/5846))
+* `[jest-cli]` Add support for using `--coverage` in combination with watch
+  mode, `--onlyChanged`, `--findRelatedTests` and more
+  ([#5601](https://github.com/facebook/jest/pull/5601))
 * `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test`
   for invalid arguments. `[jest-circus]` Adds error throwing and descriptive
   errors to `it`/ `test` for invalid arguments
@@ -31,9 +36,16 @@
   ([#5706](https://github.com/facebook/jest/pull/5706))
 * `[expect]` Add `.toBeCalledTimes` and `toHaveBeenNthCalledWith` aliases
   ([#5826](https://github.com/facebook/jest/pull/5826))
+* `[jest-cli]` Interactive Snapshot Mode improvements
+  ([#5864](https://github.com/facebook/jest/pull/5864))
 
 ### Fixes
 
+* `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
+  ([#5860](https://github.com/facebook/jest/pull/5860))
+* `[jest-cli]` Add descriptive error message when trying to use
+  `globalSetup`/`globalTeardown` file that doesn't export a function.
+  ([#5835](https://github.com/facebook/jest/pull/5835))
 * `[expect]` Do not rely on `instanceof RegExp`, since it will not work for
   RegExps created inside of a different VM
   ([#5729](https://github.com/facebook/jest/pull/5729))
@@ -53,11 +65,15 @@
   ([#5702](https://github.com/facebook/jest/pull/5702))
 * `[jest-mock]` Prevent `mockRejectedValue` from causing unhandled rejection
   ([#5720](https://github.com/facebook/jest/pull/5720))
+* `[pretty-format]` Handle React fragments better
+  ([#5816](https://github.com/facebook/jest/pull/5816))
 
 ### Chore & Maintenance
 
+* `[#5858]` Run Prettier on compiled output
+  ([#5858](https://github.com/facebook/jest/pull/3497))
 * `[#5708]` Add fileChange hook for plugins
-  ([#5648](https://github.com/facebook/jest/pull/5708))
+  ([#5708](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
 * `[docs]` Mention Jest Puppeteer Preset
@@ -136,7 +152,7 @@
 * `[docs]` Add a documentation note for project `displayName` configuration
   ([#5600](https://github.com/facebook/jest/pull/5600))
 
-# Chore & Maintenance
+### Chore & Maintenance
 
 * `[docs]` Update automatic mocks documentation
   ([#5630](https://github.com/facebook/jest/pull/5630))

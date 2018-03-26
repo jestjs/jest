@@ -116,7 +116,7 @@ exports[`works with async failures 1`] = `
     +   \\"foo\\": \\"bar\\",
       }
       
-      at packages/expect/build/index.js:104:76
+      at packages/expect/build/index.js:160:61
 
 "
 `;

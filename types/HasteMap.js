@@ -53,6 +53,7 @@ export type FileMetaData = [
   /* mtime */ number,
   /* visited */ 0 | 1,
   /* dependencies */ Array<string>,
+  /* sha1 */ ?string,
 ];
 
 type ModuleMapItem = {[platform: string]: ModuleMetaData};
