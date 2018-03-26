@@ -73,8 +73,9 @@ _Before_ submitting a pull request, please make sure the following is done…
 5.  If you've changed APIs, update the documentation.
 
 6.  Ensure the test suite passes via `yarn test`. To run the test suite you may
-    need to install Mercurial (`hg`). On macOS, this can be done using
-    [homebrew](http://brew.sh/): `brew install hg`.
+    need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On
+    macOS, this can be done using [homebrew](http://brew.sh/):
+    `brew install hg`.
 
     ```sh
     brew install hg # maybe
