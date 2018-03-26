@@ -29,7 +29,7 @@ export class Runner extends EventEmitter {
 }
 
 export class Settings extends EventEmitter {
-  constructor(workspace: ProjectWorkspace);
+  constructor(workspace: ProjectWorkspace, options?: Options);
   getConfig(completed: Function): void;
   jestVersionMajor: number | null;
   settings: {
