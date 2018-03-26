@@ -12,10 +12,10 @@ work smoothly with [MongoDB](https://www.mongodb.com/).
 
 The basic idea is to:
 
-1. Spin up in-memory mongodb server
-2. Export a global variable with mongo URI
-3. Write tests for queries / aggregations using a real database ✨
-4. Shut down mongodb server using Global Teardown
+1.  Spin up in-memory mongodb server
+2.  Export a global variable with mongo URI
+3.  Write tests for queries / aggregations using a real database ✨
+4.  Shut down mongodb server using Global Teardown
 
 Here's an example of the GlobalSetup script
 

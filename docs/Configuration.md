@@ -54,10 +54,40 @@ configuration power.
 
 Default: `false`
 
-This option is disabled by default. If you are introducing Jest to a large
-organization with an existing codebase but few tests, enabling this option can
-be helpful to introduce unit tests gradually. Modules can be explicitly
-auto-mocked using `jest.mock(moduleName)`.
+This option tells Jest that all imported modules in your tests should be mocked
+automatically. All modules used in your tests will have a replacement
+implementation, keeping the API surface.
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+```js
+//__tests__/automocking.test.js
+import utils from '../utils';
+
+test('if utils mocked automatically', () => {
+  // Public methods of `utils` are now mock functions
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized.mock).toBeTruthy();
+
+  // You can provide them with your own implementation
+  // or just pass the expected return value
+  utils.authorize.mockReturnValue('mocked_token');
+  utils.isAuthorized.mockReturnValue(true);
+
+  expect(utils.authorize()).toBe('mocked_token');
+  expect(utils.isAuthorized('not_wizard')).toBeTruthy();
+});
+```
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked
 explicitly, like `jest.mock('fs')`._
@@ -92,6 +122,14 @@ The directory where Jest should store its cached dependency information.
 Jest attempts to scan your dependency tree once (up-front) and cache it in order
 to ease some of the filesystem raking that needs to happen while running tests.
 This config option lets you customize where Jest stores that cache data on disk.
+
+### `clearMocks` [boolean]
+
+Default: `false`
+
+Automatically clear mock calls and instances between every test. Equivalent to
+calling `jest.clearAllMocks()` between each test. This does not remove any mock
+implementation that may have been provided.
 
 ### `collectCoverage` [boolean]
 
@@ -464,14 +502,6 @@ _Note: When using multi project runner, it's recommended to add a `displayName`
 for each project. This will show the `displayName` of a project next to its
 tests._
 
-### `clearMocks` [boolean]
-
-Default: `false`
-
-Automatically clear mock calls and instances between every test. Equivalent to
-calling `jest.clearAllMocks()` between each test. This does not remove any mock
-implementation that may have been provided.
-
 ### `reporters` [array<moduleName | [moduleName, options]>]
 
 Default: `undefined`
@@ -673,6 +703,10 @@ async runTests(
 ): Promise<void>
 ```
 
+If you need to restrict your test-runner to only run in serial rather then being
+executed in parallel your class should have the property `isSerial` to be set as
+`true`.
+
 ### `setupFiles` [array]
 
 Default: `[]`
@@ -859,7 +893,7 @@ given to [jsdom](https://github.com/tmpvar/jsdom) such as
 
 ##### available in Jest **19.0.0+**
 
-(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)' ]`)
+(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)' ]`)
 
 The glob patterns Jest uses to detect test files. By default it looks for `.js`
 and `.jsx` files inside of `__tests__` folders, as well as any files with a

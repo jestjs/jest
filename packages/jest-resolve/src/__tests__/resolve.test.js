@@ -129,6 +129,19 @@ describe('resolveModule', () => {
       require.resolve('../__mocks__/mockJsxDependency.native.jsx'),
     );
   });
+
+  it('is possible to resolve node modules by resolving their realpath', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    });
+    const src = require.resolve(
+      '../../src/__mocks__/bar/node_modules/foo/index.js',
+    );
+    const resolved = resolver.resolveModule(src, 'dep');
+    expect(resolved).toBe(
+      require.resolve('../../src/__mocks__/foo/node_modules/dep/index.js'),
+    );
+  });
 });
 
 describe('getMockModule', () => {
@@ -202,6 +215,16 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
       duplicates: [],
       map: [],
       mocks: [],
+    });
+
+    // Mocking realpath to function the old way, where it just looks at
+    // pathstrings instead of actually trying to access the physical directory.
+    // This test suite won't work otherwise, since we cannot make assumptions
+    // about the test environment when it comes to absolute paths.
+    jest.doMock('realpath-native', () => {
+      return {
+        sync: dirInput => dirInput,
+      };
     });
   });
 

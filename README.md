@@ -4,6 +4,7 @@
 [![Travis Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest)
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master)
 [![npm version](https://badge.fury.io/js/jest.svg)](http://badge.fury.io/js/jest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 🃏 Delightful JavaScript Testing
 
@@ -200,5 +201,5 @@ Send issues and pull requests with your ideas. For more information about
 contributing PRs and issues, see our
 [Contribution Guidelines](https://github.com/facebook/jest/blob/master/CONTRIBUTING.md).
 
-[Good First Issue](https://github.com/facebook/jest/labels/Good%20First%20Issue)
+[Good First Issue](https://github.com/facebook/jest/labels/Good%20First%20Issue%20%3Awave%3A)
 is a great starting point for PRs.

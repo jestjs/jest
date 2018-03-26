@@ -29,9 +29,13 @@ import {
   any,
   anything,
   arrayContaining,
+  arrayNotContaining,
   objectContaining,
+  objectNotContaining,
   stringContaining,
+  stringNotContaining,
   stringMatching,
+  stringNotMatching,
 } from './asymmetric_matchers';
 import {
   INTERNAL_MATCHER_FLAG,
@@ -109,7 +113,7 @@ const expect = (actual: any, ...rest): ExpectationObject => {
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
-      matcher,
+      promiseMatcher,
       true,
       actual,
     );
@@ -254,10 +258,18 @@ const makeThrowingMatcher = (
 };
 
 expect.extend = (matchers: MatchersObject): void =>
-  setMatchers(matchers, false);
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
+
+expect.not = {
+  arrayContaining: arrayNotContaining,
+  objectContaining: objectNotContaining,
+  stringContaining: stringNotContaining,
+  stringMatching: stringNotMatching,
+};
+
 expect.objectContaining = objectContaining;
 expect.arrayContaining = arrayContaining;
 expect.stringContaining = stringContaining;
@@ -282,15 +294,15 @@ const _validateResult = result => {
 };
 
 // add default jest matchers
-setMatchers(matchers, true);
-setMatchers(spyMatchers, true);
-setMatchers(toThrowMatchers, true);
+setMatchers(matchers, true, expect);
+setMatchers(spyMatchers, true, expect);
+setMatchers(toThrowMatchers, true, expect);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = (expected: number) => {
   getState().expectedAssertionsNumber = expected;
 };
-expect.hasAssertions = expected => {
+expect.hasAssertions = (expected: any) => {
   utils.ensureNoExpected(expected, '.hasAssertions');
   getState().isExpectingAssertions = true;
 };

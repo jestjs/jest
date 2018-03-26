@@ -86,3 +86,22 @@ test('does not inject the rawModuleMap in serial mode', () => {
       ]);
     });
 });
+
+test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', () => {
+  const globalConfig = {maxWorkers: 1, watch: false};
+  const config = {rootDir: '/path/'};
+  const context = {config};
+
+  return new TestRunner(globalConfig)
+    .runTests(
+      [{context, path: './file.test.js'}],
+      new TestWatcher({isWatchMode: globalConfig.watch}),
+      () => {},
+      () => {},
+      () => {},
+      {serial: true},
+    )
+    .then(() => {
+      expect(process.env.JEST_WORKER_ID).toBe('1');
+    });
+});

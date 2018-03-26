@@ -211,6 +211,31 @@ describe('collectCoverageFrom', () => {
   });
 });
 
+describe('findRelatedTests', () => {
+  it('it generates --coverageCoverageFrom patterns when needed', () => {
+    const sourceFile = 'file1.js';
+
+    const {options} = normalize(
+      {
+        collectCoverage: true,
+        rootDir: '/root/path/foo/',
+      },
+      {
+        _: [
+          `/root/path/${sourceFile}`,
+          sourceFile,
+          `<rootDir>/bar/${sourceFile}`,
+        ],
+        findRelatedTests: true,
+      },
+    );
+
+    const expected = [`../${sourceFile}`, `${sourceFile}`, `bar/${sourceFile}`];
+
+    expect(options.collectCoverageFrom).toEqual(expected);
+  });
+});
+
 function testPathArray(key) {
   it('normalizes all paths relative to rootDir', () => {
     const {options} = normalize(

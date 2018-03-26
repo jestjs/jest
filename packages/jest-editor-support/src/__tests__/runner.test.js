@@ -299,7 +299,7 @@ describe('events', () => {
     const data = jest.fn();
     runner.on('executableJSON', data);
 
-    runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+    runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
 
     // Emitting data through stdout should trigger sending JSON
     fakeProcess.stdout.emit('data', 'Test results written to file');
@@ -336,7 +336,7 @@ describe('events', () => {
     it('should emit an "executableJSON" event with the "noTestsFound" meta data property set', () => {
       const listener = jest.fn();
       runner.on('executableJSON', listener);
-      runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+      runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
       (runner: any).doResultsFollowNoTestsFoundMessage = jest
         .fn()
         .mockReturnValueOnce(true);
@@ -347,7 +347,7 @@ describe('events', () => {
     });
 
     it('should clear the message type history', () => {
-      runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+      runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
       runner.prevMessageTypes.push(messageTypes.noTests);
       fakeProcess.stdout.emit('data', 'Test results written to file');
 

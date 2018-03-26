@@ -45,7 +45,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"testLocationInResults\\": false,
       \\"testMatch\\": [
         \\"**/__tests__/**/*.js?(x)\\",
-        \\"**/?(*.)(spec|test).js?(x)\\"
+        \\"**/?(*.)+(spec|test).js?(x)\\"
       ],
       \\"testPathIgnorePatterns\\": [
         \\"/node_modules/\\"

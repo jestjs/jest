@@ -128,12 +128,17 @@ Failed snapshots can also be updated interactively in watch mode:
 ![](/jest/img/content/interactiveSnapshot.png)
 
 Once you enter Interactive Snapshot Mode, Jest will step you through the failed
-snapshots one test suite at a time and give you the opportunity to review the
-failed output.
+snapshots one test at a time and give you the opportunity to review the failed
+output.
 
 From here you can choose to update that snapshot or skip to the next:
 
 ![](/jest/img/content/interactiveSnapshotUpdate.gif)
+
+Once you're finished, Jest will give you a summary before returning back to
+watch mode:
+
+![](/jest/img/content/interactiveSnapshotDone.png)
 
 ### Tests Should Be Deterministic
 

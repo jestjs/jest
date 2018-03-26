@@ -8,60 +8,78 @@
  * @flow
  */
 
-import type {AggregatedResult} from 'types/TestResult';
+import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
 
 const chalk = require('chalk');
 const ansiEscapes = require('ansi-escapes');
 const {pluralize} = require('./reporters/utils');
-const {KEYS} = require('./constants');
+const {KEYS, ARROW} = require('./constants');
 
 export default class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;
   _isActive: boolean;
-  _updateTestRunnerConfig: (path: string, shouldUpdateSnapshot: boolean) => *;
-  _testFilePaths: Array<string>;
+  _updateTestRunnerConfig: (
+    assertion: ?AssertionLocation,
+    shouldUpdateSnapshot: boolean,
+  ) => *;
+  _testAssertions: Array<AssertionLocation>;
   _countPaths: number;
+  _skippedNum: number;
 
   constructor(pipe: stream$Writable | tty$WriteStream) {
     this._pipe = pipe;
     this._isActive = false;
+    this._skippedNum = 0;
   }
 
   isActive() {
     return this._isActive;
   }
 
-  _drawUIOverlay() {
+  getSkippedNum() {
+    return this._skippedNum;
+  }
+
+  _clearTestSummary() {
     this._pipe.write(ansiEscapes.cursorUp(6));
     this._pipe.write(ansiEscapes.eraseDown);
+  }
 
-    const numFailed = this._testFilePaths.length;
-    const numPass = this._countPaths - this._testFilePaths.length;
+  _drawUIProgress() {
+    this._clearTestSummary();
+    const numPass = this._countPaths - this._testAssertions.length;
+    const numRemaining = this._countPaths - numPass - this._skippedNum;
 
-    let stats = chalk.bold.red(pluralize('suite', numFailed) + ' failed');
+    let stats = chalk.bold.dim(
+      pluralize('snapshot', numRemaining) + ' remaining',
+    );
     if (numPass) {
-      stats += ', ' + chalk.bold.green(pluralize('suite', numPass) + ' passed');
+      stats +=
+        ', ' + chalk.bold.green(pluralize('snapshot', numPass) + ' updated');
+    }
+    if (this._skippedNum) {
+      stats +=
+        ', ' +
+        chalk.bold.yellow(pluralize('snapshot', this._skippedNum) + ' skipped');
     }
     const messages = [
       '\n' + chalk.bold('Interactive Snapshot Progress'),
-      ' \u203A ' + stats,
+      ARROW + stats,
       '\n' + chalk.bold('Watch Usage'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'u' +
         chalk.dim(' to update failing snapshots for this test.'),
 
-      this._testFilePaths.length > 1
-        ? chalk.dim(' \u203A Press ') +
-          's' +
-          chalk.dim(' to skip the current test suite.')
-        : '',
+      chalk.dim(ARROW + 'Press ') +
+        's' +
+        chalk.dim(' to skip the current test.'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'q' +
-        chalk.dim(' to quit Interactive Snapshot Update Mode.'),
+        chalk.dim(' to quit Interactive Snapshot Mode.'),
 
-      chalk.dim(' \u203A Press ') +
+      chalk.dim(ARROW + 'Press ') +
         'Enter' +
         chalk.dim(' to trigger a test run.'),
     ];
@@ -69,12 +87,89 @@ export default class SnapshotInteractiveMode {
     this._pipe.write(messages.filter(Boolean).join('\n') + '\n');
   }
 
+  _drawUIDoneWithSkipped() {
+    this._pipe.write(ansiEscapes.clearScreen);
+    const numPass = this._countPaths - this._testAssertions.length;
+
+    let stats = chalk.bold.dim(
+      pluralize('snapshot', this._countPaths) + ' reviewed',
+    );
+    if (numPass) {
+      stats +=
+        ', ' + chalk.bold.green(pluralize('snapshot', numPass) + ' updated');
+    }
+    if (this._skippedNum) {
+      stats +=
+        ', ' +
+        chalk.bold.yellow(pluralize('snapshot', this._skippedNum) + ' skipped');
+    }
+    const messages = [
+      '\n' + chalk.bold('Interactive Snapshot Result'),
+      ARROW + stats,
+      '\n' + chalk.bold('Watch Usage'),
+
+      chalk.dim(ARROW + 'Press ') +
+        'r' +
+        chalk.dim(' to restart Interactive Snapshot Mode.'),
+
+      chalk.dim(ARROW + 'Press ') +
+        'q' +
+        chalk.dim(' to quit Interactive Snapshot Mode.'),
+    ];
+
+    this._pipe.write(messages.filter(Boolean).join('\n') + '\n');
+  }
+
+  _drawUIDone() {
+    this._pipe.write(ansiEscapes.clearScreen);
+    const numPass = this._countPaths - this._testAssertions.length;
+
+    let stats = chalk.bold.dim(
+      pluralize('snapshot', this._countPaths) + ' reviewed',
+    );
+    if (numPass) {
+      stats +=
+        ', ' + chalk.bold.green(pluralize('snapshot', numPass) + ' updated');
+    }
+    const messages = [
+      '\n' + chalk.bold('Interactive Snapshot Result'),
+      ARROW + stats,
+      '\n' + chalk.bold('Watch Usage'),
+
+      chalk.dim(ARROW + 'Press ') +
+        'Enter' +
+        chalk.dim(' to return to watch mode.'),
+    ];
+
+    this._pipe.write(messages.filter(Boolean).join('\n') + '\n');
+  }
+
+  _drawUIOverlay() {
+    if (this._testAssertions.length === 0) {
+      return this._drawUIDone();
+    }
+
+    if (this._testAssertions.length - this._skippedNum === 0) {
+      return this._drawUIDoneWithSkipped();
+    }
+
+    return this._drawUIProgress();
+  }
+
   put(key: string) {
     switch (key) {
       case KEYS.S:
-        const testFilePath = this._testFilePaths.shift();
-        this._testFilePaths.push(testFilePath);
-        this._run(false);
+        if (this._skippedNum === this._testAssertions.length) break;
+        this._skippedNum += 1;
+
+        // move skipped test to the end
+        this._testAssertions.push(this._testAssertions.shift());
+        if (this._testAssertions.length - this._skippedNum > 0) {
+          this._run(false);
+        } else {
+          this._drawUIDoneWithSkipped();
+        }
+
         break;
       case KEYS.U:
         this._run(true);
@@ -83,8 +178,15 @@ export default class SnapshotInteractiveMode {
       case KEYS.ESCAPE:
         this.abort();
         break;
+      case KEYS.R:
+        this.restart();
+        break;
       case KEYS.ENTER:
-        this._run(false);
+        if (this._testAssertions.length === 0) {
+          this.abort();
+        } else {
+          this._run(false);
+        }
         break;
       default:
         break;
@@ -93,7 +195,14 @@ export default class SnapshotInteractiveMode {
 
   abort() {
     this._isActive = false;
-    this._updateTestRunnerConfig('', false);
+    this._skippedNum = 0;
+    this._updateTestRunnerConfig(null, false);
+  }
+
+  restart() {
+    this._skippedNum = 0;
+    this._countPaths = this._testAssertions.length;
+    this._run(false);
   }
 
   updateWithResults(results: AggregatedResult) {
@@ -103,29 +212,34 @@ export default class SnapshotInteractiveMode {
       return;
     }
 
-    this._testFilePaths.shift();
-    if (this._testFilePaths.length === 0) {
-      this.abort();
+    this._testAssertions.shift();
+    if (this._testAssertions.length - this._skippedNum === 0) {
+      this._drawUIOverlay();
       return;
     }
+
+    // Go to the next test
     this._run(false);
   }
 
   _run(shouldUpdateSnapshot: boolean) {
-    const testFilePath = this._testFilePaths[0];
-    this._updateTestRunnerConfig(testFilePath, shouldUpdateSnapshot);
+    const testAssertion = this._testAssertions[0];
+    this._updateTestRunnerConfig(testAssertion, shouldUpdateSnapshot);
   }
 
   run(
-    failedSnapshotTestPaths: Array<string>,
-    onConfigChange: (path: string, shouldUpdateSnapshot: boolean) => *,
+    failedSnapshotTestAssertions: Array<AssertionLocation>,
+    onConfigChange: (
+      assertion: ?AssertionLocation,
+      shouldUpdateSnapshot: boolean,
+    ) => *,
   ) {
-    if (!failedSnapshotTestPaths.length) {
+    if (!failedSnapshotTestAssertions.length) {
       return;
     }
 
-    this._testFilePaths = [].concat(failedSnapshotTestPaths);
-    this._countPaths = this._testFilePaths.length;
+    this._testAssertions = [].concat(failedSnapshotTestAssertions);
+    this._countPaths = this._testAssertions.length;
     this._updateTestRunnerConfig = onConfigChange;
     this._isActive = true;
     this._run(false);

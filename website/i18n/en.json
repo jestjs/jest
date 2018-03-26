@@ -10,6 +10,7 @@
     "expect": "Expect",
     "getting-started": "Getting Started",
     "api": "Globals",
+    "jest-community": "Jest Community",
     "jest-object": "The Jest Object",
     "jest-platform": "Jest Platform",
     "manual-mocks": "Manual Mocks",

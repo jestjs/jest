@@ -27,6 +27,12 @@ configured [`roots`](Configuration.md#roots-array-string) to point to a folder
 other than the project root) and will be **automatically** mocked. There's no
 need to explicitly call `jest.mock('module_name')`.
 
+Scoped modules can be mocked by creating a file in a directory structure that
+matches the name of the scoped module. For example, to mock a scoped module
+called `@scope/project-name`, create a file at
+`__mocks__/@scope/project-name.js`, creating the `@scope/` directory
+accordingly.
+
 > Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then
 > explicitly calling e.g. `jest.mock('path')` is **required**, because core Node
 > modules are not mocked by default.
@@ -47,8 +53,9 @@ need to explicitly call `jest.mock('module_name')`.
 ```
 
 When a manual mock exists for a given module, Jest's module system will use that
-module when explicitly calling `jest.mock('moduleName')`. However, manual mocks
-will take precedence over node modules even if `jest.mock('moduleName')` is not
+module when explicitly calling `jest.mock('moduleName')`. However, when
+`automock` is set to `true`, the manual mock implementation will be used instead
+of the automatically created mock, even if `jest.mock('moduleName')` is not
 called. To opt out of this behavior you will need to explicitly call
 `jest.unmock('moduleName')` in tests that should use the actual module
 implementation.
