@@ -28,12 +28,14 @@
 * `[jest-mock]` Add tracking of return values in the `mock` property
   ([#5752](https://github.com/facebook/jest/pull/5752))
 * `[jest-mock]` Add tracking of thrown errors in the `mock` property
-  ([5764](https://github.com/facebook/jest/pull/5764))
+  ([#5764](https://github.com/facebook/jest/pull/5764))
 * `[expect]`Add nthCalledWith spy matcher
   ([#5605](https://github.com/facebook/jest/pull/5605))
 * `[jest-cli]` Add `isSerial` property that runners can expose to specify that
   they can not run in parallel
   ([#5706](https://github.com/facebook/jest/pull/5706))
+* `[expect]` Add `.toBeCalledTimes` and `toHaveBeenNthCalledWith` aliases
+  ([#5826](https://github.com/facebook/jest/pull/5826))
 * `[jest-cli]` Interactive Snapshot Mode improvements
   ([#5864](https://github.com/facebook/jest/pull/5864))
 
