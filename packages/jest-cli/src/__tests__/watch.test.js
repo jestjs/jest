@@ -245,8 +245,26 @@ describe('Watch mode flows', () => {
     jest.unmock('jest-util');
     const util = require('jest-util');
     util.isInteractive = true;
-    util.getFailedSnapshotTests = jest.fn(() => ['test.js']);
-    results = {snapshot: {failure: true}};
+    results = {
+      numFailedTests: 1,
+      snapshot: {
+        failure: true,
+      },
+      testPath: 'test.js',
+      testResults: [
+        {
+          snapshot: {
+            unmatched: true,
+          },
+          testResults: [
+            {
+              status: 'failed',
+              title: 'test a',
+            },
+          ],
+        },
+      ],
+    };
 
     const ci_watch = require('../watch').default;
     ci_watch(

@@ -33,7 +33,9 @@
   ([#5605](https://github.com/facebook/jest/pull/5605))
 * `[jest-cli]` Add `isSerial` property that runners can expose to specify that
   they can not run in parallel
-  [#5706](https://github.com/facebook/jest/pull/5706)
+  ([#5706](https://github.com/facebook/jest/pull/5706))
+* `[jest-cli]` Interactive Snapshot Mode improvements
+  ([#5864](https://github.com/facebook/jest/pull/5864))
 
 ### Fixes
 
