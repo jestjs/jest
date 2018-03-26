@@ -68,11 +68,11 @@ it('picks a name for projects based on the main rootDir', () => {
   const rootDir = '/root/path/foo';
   const firstExpected = crypto
     .createHash('md5')
-    .update('/root/path/foo/0')
+    .update('/root/path/foo:0')
     .digest('hex');
   const secondExpected = crypto
     .createHash('md5')
-    .update('/root/path/foo/1')
+    .update('/root/path/foo:gst1')
     .digest('hex');
 
   const options = normalize(

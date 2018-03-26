@@ -240,10 +240,10 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
 
   if (Array.isArray(options.projects)) {
     options.projects = options.projects.map((project, index) => {
-      if (typeof project !== 'string' && !project.hasOwnProperty('name')) {
+      if (typeof project !== 'string' && !project.name) {
         project.name = crypto
           .createHash('md5')
-          .update(project.rootDir || `${options.rootDir}/${index}`)
+          .update(project.rootDir || `${options.rootDir}:${index}`)
           .digest('hex');
       }
 
