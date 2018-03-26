@@ -72,7 +72,7 @@ it('picks a name for projects based on the main rootDir', () => {
     .digest('hex');
   const secondExpected = crypto
     .createHash('md5')
-    .update('/root/path/foo:gst1')
+    .update('/root/path/foo:1')
     .digest('hex');
 
   const options = normalize(
