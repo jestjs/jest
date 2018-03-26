@@ -29,6 +29,10 @@ export default class HasteFS {
     return (this._files[file] && this._files[file][H.DEPENDENCIES]) || null;
   }
 
+  getSha1(file: Path): ?string {
+    return (this._files[file] && this._files[file][H.SHA1]) || null;
+  }
+
   exists(file: Path): boolean {
     return !!this._files[file];
   }
