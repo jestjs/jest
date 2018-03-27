@@ -118,10 +118,7 @@ const createToBeCalledWithMatcher = matcherName => (
   return {message, pass};
 };
 
-const createToReturnValuesMatcher = matcherName => (
-  received: any,
-  expected: any,
-) => {
+const createToReturnMatcher = matcherName => (received: any, expected: any) => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
@@ -238,8 +235,8 @@ const spyMatchers: MatchersObject = {
   toHaveBeenNthCalledWith: createNthCalledWithMatcher(
     '.toHaveBeenNthCalledWith',
   ),
-  toHaveReturned: createToReturnValuesMatcher('.toHaveReturned'),
-  toReturn: createToReturnValuesMatcher('.toReturn'),
+  toHaveReturned: createToReturnMatcher('.toHaveReturned'),
+  toReturn: createToReturnMatcher('.toReturn'),
 };
 
 const isSpy = spy => spy.calls && typeof spy.calls.count === 'function';
