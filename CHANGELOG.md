@@ -2,7 +2,8 @@
 
 ### Features
 
-* `[jest-haste-map]` Support extracting dynamic `import`s (TBD)
+* `[jest-haste-map]` Support extracting dynamic `import`s
+  ([#5883](https://github.com/facebook/jest/pull/5883))
 * `[expect]` Improve output format for mismatchedArgs in mock/spy calls.
   ([#5846](https://github.com/facebook/jest/pull/5846))
 * `[jest-cli]` Add support for using `--coverage` in combination with watch
