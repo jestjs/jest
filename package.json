@@ -94,7 +94,7 @@
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn typecheck && yarn lint && yarn lint-es5-build && yarn lint:md:ci && yarn jest-coverage -w=2 --reporters jest-silent-reporter && node scripts/mapCoverage.js && codecov",
-    "test-ci-partial": "yarn jest -i",
+    "test-ci-partial": "yarn jest -w=2 --reporters jest-silent-reporter",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test": "yarn typecheck && yarn lint && yarn jest",
     "typecheck": "flow check --include-warnings",
