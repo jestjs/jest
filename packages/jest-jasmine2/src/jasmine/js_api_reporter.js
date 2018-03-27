@@ -54,7 +54,14 @@ export default function JsApiReporter(options: Object) {
 
   let executionTime;
 
+  function validateAfterAllExceptions({failedExpectations}) {
+    if (failedExpectations && failedExpectations.length > 0) {
+      throw failedExpectations[0];
+    }
+  }
+
   this.jasmineDone = function(runDetails) {
+    validateAfterAllExceptions(runDetails);
     this.finished = true;
     this.runDetails = runDetails;
     executionTime = timer.elapsed();
