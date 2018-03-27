@@ -1059,3 +1059,75 @@ exports[`toHaveBeenNthCalledWith works with trailing undefined arguments 1`] = `
 Expected mock function first call to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
+
+exports[`toHaveReturned .not passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"Some Other Value\\"</>"
+`;
+
+exports[`toHaveReturned .not passes when called with no arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>"
+`;
+
+exports[`toHaveReturned passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>\\"Return Value\\"</>"
+`;
+
+exports[`toHaveReturned passes with no arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>undefined</>"
+`;
+
+exports[`toHaveReturned works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturned(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
+`;
+
+exports[`toReturn .not passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"Some Other Value\\"</>"
+`;
+
+exports[`toReturn .not passes when called with no arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>"
+`;
+
+exports[`toReturn passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>\\"Return Value\\"</>"
+`;
+
+exports[`toReturn passes with no arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>undefined</>"
+`;
+
+exports[`toReturn works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturn(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
+`;

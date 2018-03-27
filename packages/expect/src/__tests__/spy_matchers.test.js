@@ -342,3 +342,70 @@ const jestExpect = require('../');
     }
   });
 });
+
+['toReturn', 'toHaveReturned'].forEach(called => {
+  describe(`${called}`, () => {
+    test(`works only on spies or jest.fn`, () => {
+      const fn = function fn() {};
+
+      expect(() => jestExpect(fn)[called]()).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`passes with no arguments`, () => {
+      const fn = jest.fn();
+      fn();
+      jestExpect(fn)[called]();
+      expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`.not passes when called with no arguments`, () => {
+      const fn = jest.fn(() => 'Return Value');
+
+      fn();
+      jestExpect(fn).not[called]();
+      expect(() => jestExpect(fn)[called]()).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`passes when called`, () => {
+      const fn = jest.fn(() => 'Return Value');
+      fn();
+      jestExpect(fn)[called]('Return Value');
+      expect(() =>
+        jestExpect(fn).not[called]('Return Value'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`.not passes when called`, () => {
+      const fn = jest.fn(() => 'Return Value');
+      fn();
+      jestExpect(fn).not[called]('Some Other Value');
+      expect(() =>
+        jestExpect(fn)[called]('Some Other Value'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`passes with mutliple calls`, () => {
+      const fn = jest.fn(a => a * 2);
+
+      fn(1);
+      fn(2);
+      fn(3);
+
+      jestExpect(fn)[called](2);
+      jestExpect(fn)[called](4);
+      jestExpect(fn)[called](6);
+    });
+
+    test(`.not passes with multiple calls`, () => {
+      const fn = jest.fn(a => a * 2);
+
+      fn(1);
+      fn(2);
+      fn(3);
+
+      jestExpect(fn).not[called](1);
+      jestExpect(fn).not[called](3);
+      jestExpect(fn).not[called](5);
+    });
+  });
+});

@@ -118,6 +118,38 @@ const createToBeCalledWithMatcher = matcherName => (
   return {message, pass};
 };
 
+const createToReturnValuesMatcher = matcherName => (
+  received: any,
+  expected: any,
+) => {
+  ensureMock(received, matcherName);
+
+  const receivedIsSpy = isSpy(received);
+  const type = receivedIsSpy ? 'spy' : 'mock function';
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+
+  const calls = receivedIsSpy
+    ? received.returnValues.all().map(x => x.args)
+    : received.mock.returnValues;
+
+  const [match] = partition(calls, call => equals(expected, call));
+  const pass = match.length > 0;
+
+  const message = pass
+    ? () =>
+        matcherHint('.not' + matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${type} not to have returned:\n` +
+        `  ${printExpected(expected)}`
+    : () =>
+        matcherHint(matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${type} to have returned:\n` +
+        `  ${printExpected(expected)}`;
+
+  return {message, pass};
+};
+
 const createLastCalledWithMatcher = matcherName => (
   received: any,
   ...expected: any
@@ -206,6 +238,8 @@ const spyMatchers: MatchersObject = {
   toHaveBeenNthCalledWith: createNthCalledWithMatcher(
     '.toHaveBeenNthCalledWith',
   ),
+  toHaveReturned: createToReturnValuesMatcher('.toHaveReturned'),
+  toReturn: createToReturnValuesMatcher('.toReturn'),
 };
 
 const isSpy = spy => spy.calls && typeof spy.calls.count === 'function';

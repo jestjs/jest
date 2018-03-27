@@ -649,6 +649,22 @@ test('drinkEach drinks each drink', () => {
 });
 ```
 
+### `.toHaveReturned(value)`
+
+Also under the alias: `.toReturn(value)`
+
+If you have a mock function, you can use `.toHaveReturned` to test that the spy
+returned a value. For example, let's say you have mock `drink` that returns
+`true`. You can write:
+
+```js
+test('drinks returns true', () => {
+  const drink = jest.fn(() => true);
+  drink();
+  expect(drink).toHaveReturned(true);
+});
+```
+
 ### `.toBeCloseTo(number, numDigits)`
 
 Using exact equality with floating point numbers is a bad idea. Rounding means
