@@ -24,6 +24,7 @@ import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './deprecated';
+export {replaceRootDirInPath} from './utils';
 
 export function readConfig(
   argv: Argv,
@@ -68,7 +69,7 @@ export function readConfig(
     config.rootDir = config.rootDir || packageRootOrConfig;
     rawOptions = config;
     // A string passed to `--config`, which is either a direct path to the config
-    // or a path to directory containing `package.json` or `jest.conf.js`
+    // or a path to directory containing `package.json` or `jest.config.js`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
     configPath = resolveConfigPath(argv.config, process.cwd());
     rawOptions = readConfigFileAndSetRootDir(configPath);

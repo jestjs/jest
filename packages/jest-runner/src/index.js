@@ -61,6 +61,7 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
+    process.env.JEST_WORKER_ID = '1';
     const mutex = throat(1);
     return tests.reduce(
       (promise, test) =>

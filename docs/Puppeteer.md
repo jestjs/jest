@@ -9,20 +9,20 @@ work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
 
 ## Use Puppeteer Preset
 
-[Jest Puppeteer Preset](https://github.com/smooth-code/jest-puppeteer) provides
-all required configuration to run your tests using Puppeteer.
+[Jest Puppeteer](https://github.com/smooth-code/jest-puppeteer) provides all
+required configuration to run your tests using Puppeteer.
 
-1.  First install `jest-puppeteer-preset`
+1.  First install `jest-puppeteer`
 
 ```
-yarn add --dev jest-puppeteer-preset
+yarn add --dev jest-puppeteer
 ```
 
 2.  Specify preset in your Jest configuration:
 
 ```json
 {
-  "preset": "jest-puppeteer-preset"
+  "preset": "jest-puppeteer"
 }
 ```
 

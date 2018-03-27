@@ -21,5 +21,7 @@ repository on GitHub that we can `yarn install` and `yarn test`.**
 
 **What is the expected behavior?**
 
-**Please provide your exact Jest configuration and mention your Jest, node,
-yarn/npm version and operating system.**
+**Please provide your exact Jest configuration**
+
+**Run `npx envinfo --preset jest` in your project directory and paste the
+results here**

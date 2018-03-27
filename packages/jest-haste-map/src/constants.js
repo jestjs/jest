@@ -22,6 +22,7 @@ export default {
   MTIME: 1,
   VISITED: 2,
   DEPENDENCIES: 3,
+  SHA1: 4,
 
   /* module map attributes */
   PATH: 0,

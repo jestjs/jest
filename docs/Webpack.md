@@ -244,7 +244,7 @@ ES modules to CommonJS modules only in the `test` environment.
 ```json
 // .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -263,7 +263,7 @@ need to enable the `dynamic-import-node` plugin.
 ```json
 // .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 

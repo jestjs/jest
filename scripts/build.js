@@ -28,6 +28,7 @@ const mkdirp = require('mkdirp');
 const babel = require('babel-core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
+const prettier = require('prettier');
 const stringLength = require('string-length');
 const getPackages = require('./getPackages');
 const browserBuild = require('./browserBuild');
@@ -46,6 +47,8 @@ const transformOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
 transformOptions.babelrc = false;
+const prettierConfig = prettier.resolveConfig.sync(__filename);
+prettierConfig.trailingComma = 'none';
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
@@ -161,7 +164,8 @@ function buildFile(file, silent) {
     }
 
     const transformed = babel.transformFileSync(file, options).code;
-    fs.writeFileSync(destPath, transformed);
+    const prettyCode = prettier.format(transformed, prettierConfig);
+    fs.writeFileSync(destPath, prettyCode);
     silent ||
       process.stdout.write(
         chalk.green('  \u2022 ') +

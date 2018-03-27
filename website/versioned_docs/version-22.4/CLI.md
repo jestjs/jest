@@ -130,8 +130,6 @@ commit. Behaves similarly to `--onlyChanged`.
 
 ### `--changedSince`
 
-##### available in Jest **22.2.0+**
-
 Runs tests related the changes since the provided branch. If the current branch
 has diverged from the given branch, then only changes made locally will be
 tested. Behaves similarly to `--onlyChanged`.
@@ -144,8 +142,6 @@ Instead of the regular behavior of storing a new snapshot automatically, it will
 fail the test and require Jest to be run with `--updateSnapshot`.
 
 ### `--clearCache`
-
-##### available in Jest **22.0.0+**
 
 Deletes the Jest cache directory and then exits without running tests. Will
 delete `cacheDirectory` if the option is passed, or Jest's default cache

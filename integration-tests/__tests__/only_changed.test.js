@@ -73,6 +73,51 @@ test('run only changed files', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
 
+test('report test coverage for only changed files', () => {
+  writeFiles(DIR, {
+    '__tests__/a.test.js': `
+    require('../a');
+    require('../b');
+    test('a', () => expect(1).toBe(1));
+  `,
+    '__tests__/b.test.js': `
+    require('../b');
+    test('b', () => expect(1).toBe(1));
+  `,
+    'a.js': 'module.exports = {}',
+    'b.js': 'module.exports = {}',
+    'package.json': JSON.stringify({
+      jest: {
+        collectCoverage: true,
+        coverageReporters: ['text'],
+        testEnvironment: 'node',
+      },
+    }),
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit -m "first"`, DIR);
+
+  writeFiles(DIR, {
+    'a.js': 'module.exports = {modified: true}',
+  });
+
+  let stdout;
+
+  ({stdout} = runJest(DIR));
+
+  // both a.js and b.js should be in the coverage
+  expect(stdout).toMatch('a.js');
+  expect(stdout).toMatch('b.js');
+
+  ({stdout} = runJest(DIR, ['-o']));
+
+  // coverage should be collected only for a.js
+  expect(stdout).toMatch('a.js');
+  expect(stdout).not.toMatch('b.js');
+});
+
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',

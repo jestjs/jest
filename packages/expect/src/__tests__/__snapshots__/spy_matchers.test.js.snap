@@ -34,7 +34,21 @@ exports[`lastCalledWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</> as argument 1, but it was called with <red>Map {1 => 2, 2 => 1}</>."
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
 `;
 
 exports[`lastCalledWith works with Set 1`] = `
@@ -48,14 +62,30 @@ exports[`lastCalledWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>Set {3, 4}</> as argument 1, but it was called with <red>Set {1, 2}</>."
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
 `;
 
 exports[`lastCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
 `;
 
 exports[`lastCalledWith works with arguments that match 1`] = `
@@ -72,53 +102,13 @@ Expected mock function to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
-exports[`lastCalledWith works with many arguments 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to not have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
-exports[`lastCalledWith works with many arguments 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to not have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
-exports[`lastCalledWith works with many arguments 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to not have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
 exports[`lastCalledWith works with many arguments that don't match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
-`;
-
-exports[`lastCalledWith works with many arguments that don't match 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
-`;
-
-exports[`lastCalledWith works with many arguments that don't match 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
-`;
-
-exports[`lastCalledWith works with many arguments that don't match 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>."
 `;
 
 exports[`lastCalledWith works with trailing undefined arguments 1`] = `
@@ -128,49 +118,9 @@ Expected mock function to have been last called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
 
-exports[`nthCalledWith nthCalledWith 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have been called with:
-  <green>[\\"foo1\\", \\"bar\\"]</>"
-`;
-
-exports[`nthCalledWith nthCalledWith 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have been called with:
-  <green>[\\"foo1\\", \\"bar\\"]</>"
-`;
-
-exports[`nthCalledWith nthCalledWith 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have been called with:
-  <green>[\\"foo1\\", \\"bar\\"]</>"
-`;
-
-exports[`nthCalledWith nthCalledWith 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have been called with:
-  <green>[\\"foo1\\", \\"bar\\"]</>"
-`;
-
 exports[`nthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthCalledWith should reject non integer nth value 2`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
-
-exports[`nthCalledWith should reject non integer nth value 3`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
-
-exports[`nthCalledWith should reject non integer nth value 4`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
-
 exports[`nthCalledWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
-
-exports[`nthCalledWith should reject nth value smaller than 1 2`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
-
-exports[`nthCalledWith should reject nth value smaller than 1 3`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
-
-exports[`nthCalledWith should reject nth value smaller than 1 4`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
 exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
@@ -186,46 +136,12 @@ Expected mock function first call to not have been called with:
   <green>[\\"foo1\\", \\"bar\\"]</>"
 `;
 
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+exports[`nthCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthCalledWith(</><dim>)</>
 
-Expected mock function first call to have been called with:
-"
-`;
-
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have been called with:
-  <green>[\\"foo1\\", \\"bar\\"]</>"
-`;
-
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 5`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to have been called with:
-"
-`;
-
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 6`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have been called with:
-  <green>[\\"foo1\\", \\"bar\\"]</>"
-`;
-
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 7`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to have been called with:
-"
-`;
-
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 8`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have been called with:
-  <green>[\\"foo1\\", \\"bar\\"]</>"
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
 `;
 
 exports[`nthCalledWith works when not called 1`] = `
@@ -254,7 +170,21 @@ exports[`nthCalledWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have been called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</> as argument 1, but it was called with <red>Map {1 => 2, 2 => 1}</>."
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
 `;
 
 exports[`nthCalledWith works with Set 1`] = `
@@ -268,14 +198,30 @@ exports[`nthCalledWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have been called with:
-  <green>Set {3, 4}</> as argument 1, but it was called with <red>Set {1, 2}</>."
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
 `;
 
 exports[`nthCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have been called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
 `;
 
 exports[`nthCalledWith works with arguments that match 1`] = `
@@ -285,11 +231,47 @@ Expected mock function first call to not have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
+exports[`nthCalledWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo1\\", \\"bar\\"]</>"
+`;
+
 exports[`nthCalledWith works with trailing undefined arguments 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toBeCalled .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalled(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toBeCalled .not passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalled(</><dim>)</>
+
+Expected mock function to have been called."
+`;
+
+exports[`toBeCalled fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalled(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toBeCalled passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled(</><dim>)</>
+
+Expected mock function not to be called but it was called with:
+  <red>[]</>"
 `;
 
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
@@ -300,25 +282,126 @@ Received:
   function: <red>[Function fn]</>"
 `;
 
-exports[`toBeCalled works with jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalled(</><dim>)</>
+exports[`toBeCalledTimes .not only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-Expected mock function to have been called."
-`;
-
-exports[`toBeCalled works with jest.fn 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled(</><dim>)</>
-
-Expected mock function not to be called but it was called with:
-  <red>[]</>"
-`;
-
-exports[`toBeCalled works with jest.fn 3`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeCalled(</><dim>)</>
-
-Matcher does not accept any arguments.
+Expected value must be a number.
 Got:
-  number: <green>555</>"
+  object: <green>{}</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  array: <green>[]</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  boolean: <green>true</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  string: <green>\\"a\\"</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  map: <green>Map {}</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  function: <green>[Function anonymous]</>"
+`;
+
+exports[`toBeCalledTimes .not passes if function called less than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
+`;
+
+exports[`toBeCalledTimes .not passes if function called more than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  object: <green>{}</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  array: <green>[]</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  boolean: <green>true</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  string: <green>\\"a\\"</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  map: <green>Map {}</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  function: <green>[Function anonymous]</>"
+`;
+
+exports[`toBeCalledTimes passes if function called equal to expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function not to be called <green>two times</>, but it was called exactly <red>two times</>."
+`;
+
+exports[`toBeCalledTimes works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledTimes(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
@@ -329,6 +412,153 @@ Received:
   function: <red>[Function fn]</>"
 `;
 
+exports[`toBeCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`toBeCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`toBeCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toBeCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`toBeCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toBeCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`toBeCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toBeCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toBeCalledWith works with many arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toBeCalledWith works with many arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>.
+
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar2\\"</>.
+
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toBeCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveBeenCalled .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toHaveBeenCalled .not passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled(</><dim>)</>
+
+Expected mock function to have been called."
+`;
+
+exports[`toHaveBeenCalled fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toHaveBeenCalled passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled(</><dim>)</>
+
+Expected mock function not to be called but it was called with:
+  <red>[]</>"
+`;
+
 exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
 
@@ -337,28 +567,7 @@ Received:
   function: <red>[Function fn]</>"
 `;
 
-exports[`toHaveBeenCalled works with jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled(</><dim>)</>
-
-Expected mock function to have been called."
-`;
-
-exports[`toHaveBeenCalled works with jest.fn 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled(</><dim>)</>
-
-Expected mock function not to be called but it was called with:
-  <red>[]</>"
-`;
-
-exports[`toHaveBeenCalled works with jest.fn 3`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
-
-Matcher does not accept any arguments.
-Got:
-  number: <green>555</>"
-`;
-
-exports[`toHaveBeenCalledTimes accepts only numbers 1`] = `
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
@@ -366,7 +575,7 @@ Got:
   object: <green>{}</>"
 `;
 
-exports[`toHaveBeenCalledTimes accepts only numbers 2`] = `
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
@@ -374,7 +583,7 @@ Got:
   array: <green>[]</>"
 `;
 
-exports[`toHaveBeenCalledTimes accepts only numbers 3`] = `
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
@@ -382,7 +591,7 @@ Got:
   boolean: <green>true</>"
 `;
 
-exports[`toHaveBeenCalledTimes accepts only numbers 4`] = `
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
@@ -390,7 +599,7 @@ Got:
   string: <green>\\"a\\"</>"
 `;
 
-exports[`toHaveBeenCalledTimes accepts only numbers 5`] = `
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
@@ -398,7 +607,7 @@ Got:
   map: <green>Map {}</>"
 `;
 
-exports[`toHaveBeenCalledTimes accepts only numbers 6`] = `
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
 Expected value must be a number.
@@ -406,16 +615,64 @@ Got:
   function: <green>[Function anonymous]</>"
 `;
 
-exports[`toHaveBeenCalledTimes fails if function called less than expected times 1`] = `
+exports[`toHaveBeenCalledTimes .not passes if function called less than expected times 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
 
 Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
 `;
 
-exports[`toHaveBeenCalledTimes fails if function called more than expected times 1`] = `
+exports[`toHaveBeenCalledTimes .not passes if function called more than expected times 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
 
 Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  object: <green>{}</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  array: <green>[]</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  boolean: <green>true</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  string: <green>\\"a\\"</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  map: <green>Map {}</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+Expected value must be a number.
+Got:
+  function: <green>[Function anonymous]</>"
 `;
 
 exports[`toHaveBeenCalledTimes passes if function called equal to expected times 1`] = `
@@ -424,7 +681,7 @@ exports[`toHaveBeenCalledTimes passes if function called equal to expected times
 Expected mock function not to be called <green>two times</>, but it was called exactly <red>two times</>."
 `;
 
-exports[`toHaveBeenCalledTimes verifies that actual is a Spy 1`] = `
+exports[`toHaveBeenCalledTimes works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes(</><dim>)</>
 
 <red>jest.fn()</> value must be a mock function or spy.
@@ -466,7 +723,21 @@ exports[`toHaveBeenCalledWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</> as argument 1, but it was called with <red>Map {1 => 2, 2 => 1}</>."
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Set 1`] = `
@@ -480,14 +751,30 @@ exports[`toHaveBeenCalledWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
-  <green>Set {3, 4}</> as argument 1, but it was called with <red>Set {1, 2}</>."
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
 `;
 
 exports[`toHaveBeenCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
 `;
 
 exports[`toHaveBeenCalledWith works with arguments that match 1`] = `
@@ -504,69 +791,21 @@ Expected mock function not to have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
-exports[`toHaveBeenCalledWith works with many arguments 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function not to have been called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
-exports[`toHaveBeenCalledWith works with many arguments 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function not to have been called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
-exports[`toHaveBeenCalledWith works with many arguments 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function not to have been called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
 exports[`toHaveBeenCalledWith works with many arguments that don't match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>.
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>.
 
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar2\\"</>.
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar2\\"</>.
 
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
-`;
-
-exports[`toHaveBeenCalledWith works with many arguments that don't match 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>.
-
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar2\\"</>.
-
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
-`;
-
-exports[`toHaveBeenCalledWith works with many arguments that don't match 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>.
-
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar2\\"</>.
-
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
-`;
-
-exports[`toHaveBeenCalledWith works with many arguments that don't match 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>.
-
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar2\\"</>.
-
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
 `;
 
 exports[`toHaveBeenCalledWith works with trailing undefined arguments 1`] = `
@@ -610,7 +849,21 @@ exports[`toHaveBeenLastCalledWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</> as argument 1, but it was called with <red>Map {1 => 2, 2 => 1}</>."
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Set 1`] = `
@@ -624,14 +877,30 @@ exports[`toHaveBeenLastCalledWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>Set {3, 4}</> as argument 1, but it was called with <red>Set {1, 2}</>."
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that don't match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar1\\"</>."
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that match 1`] = `
@@ -648,58 +917,145 @@ Expected mock function to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
-exports[`toHaveBeenLastCalledWith works with many arguments 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to not have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
-exports[`toHaveBeenLastCalledWith works with many arguments 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to not have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
-exports[`toHaveBeenLastCalledWith works with many arguments 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to not have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>"
-`;
-
 exports[`toHaveBeenLastCalledWith works with many arguments that don't match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
-`;
-
-exports[`toHaveBeenLastCalledWith works with many arguments that don't match 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
-`;
-
-exports[`toHaveBeenLastCalledWith works with many arguments that don't match 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
-`;
-
-exports[`toHaveBeenLastCalledWith works with many arguments that don't match 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</> as argument 2, but it was called with <red>\\"bar3\\"</>."
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function to have been last called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveBeenNthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+
+exports[`toHaveBeenNthCalledWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+
+exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+"
+`;
+
+exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo1\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenNthCalledWith(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`toHaveBeenNthCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo1\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;

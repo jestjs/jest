@@ -18,8 +18,6 @@ implementation is given, the mock function will return `undefined` when invoked.
 
 ### `mockFn.getMockName()`
 
-##### available in Jest **22.0.0+**
-
 Returns the mock name string set by calling `mockFn.mockName(value)`.
 
 ### `mockFn.mock.calls`
@@ -39,14 +37,30 @@ a `mock.calls` array that looks like this:
 ### `mockFn.mock.returnValues`
 
 An array containing values that have been returned by all calls to this mock
-function.
+function. For any call to the mock that throws an error, a value of `undefined`
+will be stored in `mock.returnValues`.
 
-For example: A mock function `f` that has been called twice, returning
-`result1`, and then returning `result2`, would have a `mock.returnValues` array
-that looks like this:
+For example: A mock function `f` that has been called three times, returning
+`result1`, throwing an error, and then returning `result2`, would have a
+`mock.returnValues` array that looks like this:
 
 ```js
-['result1', 'result2'];
+['result1', undefined, 'result2'];
+```
+
+### `mockFn.mock.thrownErrors`
+
+An array containing errors that have been thrown by all calls to this mock
+function.
+
+For example: A mock function `f` that has been called twice, throwing an
+`Error`, and then executing successfully without an error, would have the
+following `mock.thrownErrors` array:
+
+```js
+f.mock.thrownErrors.length === 2; // true
+f.mock.thrownErrors[0] instanceof Error; // true
+f.mock.thrownErrors[1] === undefined; // true
 ```
 
 ### `mockFn.mock.instances`
@@ -195,8 +209,6 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockName(value)`
 
-##### available in Jest **22.0.0+**
-
 Accepts a string to use in test result output in place of "jest.fn()" to
 indicate which mock function is being referenced.
 
@@ -258,8 +270,6 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockResolvedValue(value)`
 
-##### available in Jest **22.2.0+**
-
 Simple sugar function for:
 
 ```js
@@ -277,8 +287,6 @@ test('async test', async () => {
 ```
 
 ### `mockFn.mockResolvedValueOnce(value)`
-
-##### available in Jest **22.2.0+**
 
 Simple sugar function for:
 
@@ -305,8 +313,6 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-##### available in Jest **22.2.0+**
-
 Simple sugar function for:
 
 ```js
@@ -324,8 +330,6 @@ test('async test', async () => {
 ```
 
 ### `mockFn.mockRejectedValueOnce(value)`
-
-##### available in Jest **22.2.0+**
 
 Simple sugar function for:
 

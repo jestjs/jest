@@ -167,7 +167,7 @@ test('should fetch users', () => {
   axios.get.mockResolvedValue(resp);
 
   // or you could use the follwing depending on your use case:
-  // axios.get.mockImpementation(() => Promise.resolve(resp))
+  // axios.get.mockImplementation(() => Promise.resolve(resp))
 
   return Users.all().then(users => expect(users).toEqual(resp.data));
 });
@@ -259,8 +259,6 @@ const otherObj = {
 ```
 
 ## Mock Names
-
-##### available in Jest **22.0.0+**
 
 You can optionally provide a name for your mock functions, which will be
 displayed instead of "jest.fn()" in test error output. Use this if you want to

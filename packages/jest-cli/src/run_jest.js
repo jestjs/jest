@@ -13,6 +13,7 @@ import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type TestWatcher from './test_watcher';
 
+import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
@@ -131,6 +132,8 @@ export default (async function runJest({
     }
   }
 
+  let collectCoverageFrom = [];
+
   const testRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(
@@ -141,9 +144,43 @@ export default (async function runJest({
         jestHooks,
       );
       allTests = allTests.concat(matches.tests);
+
+      if (matches.collectCoverageFrom) {
+        collectCoverageFrom = collectCoverageFrom.concat(
+          matches.collectCoverageFrom.filter(filename => {
+            if (
+              globalConfig.collectCoverageFrom &&
+              !micromatch(
+                [path.relative(globalConfig.rootDir, filename)],
+                globalConfig.collectCoverageFrom,
+              ).length
+            ) {
+              return false;
+            }
+
+            if (
+              globalConfig.coveragePathIgnorePatterns &&
+              globalConfig.coveragePathIgnorePatterns.some(pattern =>
+                filename.match(pattern),
+              )
+            ) {
+              return false;
+            }
+
+            return true;
+          }),
+        );
+      }
+
       return {context, matches};
     }),
   );
+
+  if (collectCoverageFrom.length) {
+    globalConfig = Object.freeze(
+      Object.assign({}, globalConfig, {collectCoverageFrom}),
+    );
+  }
 
   allTests = sequencer.sort(allTests);
 
@@ -202,7 +239,16 @@ export default (async function runJest({
   setConfig(contexts, {cwd: process.cwd()});
   if (globalConfig.globalSetup) {
     // $FlowFixMe
-    await require(globalConfig.globalSetup)();
+    const globalSetup = require(globalConfig.globalSetup);
+    if (typeof globalSetup !== 'function') {
+      throw new TypeError(
+        `globalSetup file must export a function at ${
+          globalConfig.globalSetup
+        }`,
+      );
+    }
+
+    await globalSetup();
   }
   const results = await new TestScheduler(
     globalConfig,
@@ -216,7 +262,16 @@ export default (async function runJest({
 
   if (globalConfig.globalTeardown) {
     // $FlowFixMe
-    await require(globalConfig.globalTeardown)();
+    const globalTeardown = require(globalConfig.globalTeardown);
+    if (typeof globalTeardown !== 'function') {
+      throw new TypeError(
+        `globalTeardown file must export a function at ${
+          globalConfig.globalTeardown
+        }`,
+      );
+    }
+
+    await globalTeardown();
   }
   return processResults(results, {
     isJSON: globalConfig.json,

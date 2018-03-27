@@ -166,7 +166,6 @@ const cleanupStackTrace = (output: string) => {
 
 module.exports = {
   cleanup,
-  cleanupStackTrace,
   copyDir,
   createEmptyPackage,
   extractSummary,
