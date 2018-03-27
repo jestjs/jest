@@ -2,10 +2,17 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
-import JestWorker from '../../build';
+const assert = require('assert');
+const JestWorker = require('../../build').default;
+
+// Typical tests: node --expose-gc test.js empty 100000
+//                node --expose-gc test.js loadTest 10000
+assert(process.argv[2], 'Pass a child method name');
+assert(process.argv[3], 'Pass the number of iteratitons');
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const calls = 10000;
+const method = process.argv[2];
+const calls = +process.argv[3];
 const threads = 6;
 
 function testWorkerFarm() {
@@ -35,7 +42,7 @@ function testWorkerFarm() {
         maxConcurrentWorkers: threads,
       },
       require.resolve('./workers/worker_farm'),
-      ['loadTest'],
+      [method],
     );
 
     // Let all workers come up.
@@ -45,7 +52,7 @@ function testWorkerFarm() {
 
     for (let i = 0; i < calls; i++) {
       const promisified = new Promise((resolve, reject) => {
-        api.loadTest((err, result) => {
+        api[method]((err, result) => {
           if (err) {
             reject(err);
           } else {
@@ -80,7 +87,7 @@ function testJestWorker() {
     }
 
     const farm = new JestWorker(require.resolve('./workers/jest_worker'), {
-      exposedMethods: ['loadTest'],
+      exposedMethods: [method],
       forkOptions: {execArgv: []},
       workers: threads,
     });
@@ -94,7 +101,7 @@ function testJestWorker() {
     const startProcess = Date.now();
 
     for (let i = 0; i < calls; i++) {
-      const promisified = farm.loadTest();
+      const promisified = farm[method]();
 
       promisified.then(countToFinish);
     }

@@ -32,7 +32,7 @@ _Note: If you are upgrading your react-native application and previously used
 the `jest-react-native` preset, remove the dependency from your `package.json`
 file and change the preset to `react-native` instead._
 
-Simply run `npm test` to run tests with Jest.
+Simply run `yarn test` to run tests with Jest.
 
 ## Snapshot Test
 
@@ -82,11 +82,9 @@ the component and capture the rendered output and create a snapshot file:
 
 ```javascript
 // __tests__/Intro-test.js
-import 'react-native';
 import React from 'react';
 import Intro from '../Intro';
 
-// Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
 test('renders correctly', () => {
@@ -95,7 +93,7 @@ test('renders correctly', () => {
 });
 ```
 
-When you run `npm test` or `jest`, this will produce an output file like this:
+When you run `yarn test` or `jest`, this will produce an output file like this:
 
 ```javascript
 // __tests__/__snapshots__/Intro-test.js.snap
@@ -249,17 +247,6 @@ real device and then modeling a manual mock after the real module.
 
 If you end up mocking the same modules over and over it is recommended to define
 these mocks in a separate file and add it to the list of `setupFiles`.
-
-### require react-native before the test renderer
-
-Currently it is required to require react-native before loading the test
-renderer:
-
-```js
-import 'react-native';
-// Require after react-native
-import renderer from 'react-test-renderer';
-```
 
 ### `@providesModule`
 

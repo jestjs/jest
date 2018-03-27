@@ -12,16 +12,17 @@ import type {Glob, GlobalConfig, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
-import fs from 'fs';
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './test_path_pattern_to_regexp';
-import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
+import {escapePathForRegex} from 'jest-regex-util';
+import {replaceRootDirInPath} from 'jest-config';
 
 type SearchResult = {|
   noSCM?: boolean,
   stats?: {[key: string]: number},
+  collectCoverageFrom?: Array<string>,
   tests: Array<Test>,
   total?: number,
 |};
@@ -35,8 +36,6 @@ export type TestSelectionConfig = {|
   testPathPattern?: string,
   watch?: boolean,
 |};
-
-const pathToRegex = p => replacePathSepForRegex(p);
 
 const globsToMatcher = (globs: ?Array<Glob>) => {
   if (globs == null || globs.length === 0) {
@@ -52,7 +51,7 @@ const regexToMatcher = (testRegex: string) => {
     return () => true;
   }
 
-  const regex = new RegExp(pathToRegex(testRegex));
+  const regex = new RegExp(testRegex);
   return path => regex.test(path);
 };
 
@@ -143,23 +142,38 @@ export default class SearchSource {
     return this._getAllTestPaths(testPathPattern);
   }
 
-  findRelatedTests(allPaths: Set<Path>): SearchResult {
+  findRelatedTests(
+    allPaths: Set<Path>,
+    collectCoverage: boolean,
+  ): SearchResult {
     const dependencyResolver = new DependencyResolver(
       this._context.resolver,
       this._context.hasteFS,
     );
-    return {
-      tests: toTests(
-        this._context,
-        dependencyResolver.resolveInverse(
-          allPaths,
-          this.isTestFilePath.bind(this),
-          {
-            skipNodeResolution: this._context.config.skipNodeResolution,
-          },
-        ),
+
+    const tests = toTests(
+      this._context,
+      dependencyResolver.resolveInverse(
+        allPaths,
+        this.isTestFilePath.bind(this),
+        {
+          skipNodeResolution: this._context.config.skipNodeResolution,
+        },
       ),
-    };
+    );
+    let collectCoverageFrom;
+
+    // If we are collecting coverage, also return collectCoverageFrom patterns
+    if (collectCoverage) {
+      collectCoverageFrom = Array.from(allPaths).map(filename => {
+        filename = replaceRootDirInPath(this._context.config.rootDir, filename);
+        return path.isAbsolute(filename)
+          ? path.relative(this._context.config.rootDir, filename)
+          : filename;
+      });
+    }
+
+    return {collectCoverageFrom, tests};
   }
 
   findTestsByPaths(paths: Array<Path>): SearchResult {
@@ -173,24 +187,27 @@ export default class SearchSource {
     };
   }
 
-  findRelatedTestsFromPattern(paths: Array<Path>): SearchResult {
+  findRelatedTestsFromPattern(
+    paths: Array<Path>,
+    collectCoverage: boolean,
+  ): SearchResult {
     if (Array.isArray(paths) && paths.length) {
       const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
-      return this.findRelatedTests(new Set(resolvedPaths));
+      return this.findRelatedTests(new Set(resolvedPaths), collectCoverage);
     }
     return {tests: []};
   }
 
   async findTestRelatedToChangedFiles(
     changedFilesPromise: ChangedFilesPromise,
+    collectCoverage: boolean,
   ) {
     const {repos, changedFiles} = await changedFilesPromise;
-
     // no SCM (git/hg/...) is found in any of the roots.
     const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
     return noSCM
       ? {noSCM: true, tests: []}
-      : this.findRelatedTests(changedFiles);
+      : this.findRelatedTests(changedFiles, collectCoverage);
   }
 
   async getTestPaths(
@@ -203,46 +220,22 @@ export default class SearchSource {
         throw new Error('This promise must be present when running with -o.');
       }
 
-      return this.findTestRelatedToChangedFiles(changedFilesPromise);
+      return this.findTestRelatedToChangedFiles(
+        changedFilesPromise,
+        globalConfig.collectCoverage,
+      );
     } else if (globalConfig.runTestsByPath && paths && paths.length) {
       return Promise.resolve(this.findTestsByPaths(paths));
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
-      return Promise.resolve(this.findRelatedTestsFromPattern(paths));
+      return Promise.resolve(
+        this.findRelatedTestsFromPattern(paths, globalConfig.collectCoverage),
+      );
+    } else if (globalConfig.testPathPattern != null) {
+      return Promise.resolve(
+        this.findMatchingTests(globalConfig.testPathPattern),
+      );
     } else {
-      const allFiles = new Set(this._context.hasteFS.getAllFiles());
-      const validTestPaths =
-        paths &&
-        paths.filter(name => {
-          const fullName = path.resolve(name);
-
-          try {
-            if (!fs.lstatSync(fullName).isFile()) {
-              // It exists, but it is not a file.
-              return false;
-            }
-          } catch (e) {
-            // It does not exist.
-            return false;
-          }
-
-          // The file exists, but it is explicitly blacklisted.
-          if (!this._testPathCases.testPathIgnorePatterns(fullName)) {
-            return false;
-          }
-
-          // It exists and it is a file; return true if it's in the project.
-          return allFiles.has(fullName);
-        });
-
-      if (validTestPaths && validTestPaths.length) {
-        return Promise.resolve({tests: toTests(this._context, validTestPaths)});
-      } else if (globalConfig.testPathPattern != null) {
-        return Promise.resolve(
-          this.findMatchingTests(globalConfig.testPathPattern),
-        );
-      } else {
-        return Promise.resolve({tests: []});
-      }
+      return Promise.resolve({tests: []});
     }
   }
 }

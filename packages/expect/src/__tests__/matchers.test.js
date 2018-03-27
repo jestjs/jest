@@ -9,6 +9,16 @@
 const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
 const Immutable = require('immutable');
+const chalk = require('chalk');
+const chalkEnabled = chalk.enabled;
+
+beforeAll(() => {
+  chalk.enabled = true;
+});
+
+afterAll(() => {
+  chalk.enabled = chalkEnabled;
+});
 
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
@@ -28,6 +38,9 @@ describe('.rejects', () => {
     await jestExpect(Promise.reject({a: 1, b: 2})).rejects.not.toMatchObject({
       c: 1,
     });
+    await jestExpect(
+      Promise.reject(new Error('rejectMessage')),
+    ).rejects.toMatchObject({message: 'rejectMessage'});
     await jestExpect(Promise.reject(new Error())).rejects.toThrow();
   });
 
@@ -940,6 +953,15 @@ describe('.toHaveProperty()', () => {
 });
 
 describe('toMatchObject()', () => {
+  class Foo {
+    get a() {
+      return undefined;
+    }
+    get b() {
+      return 'b';
+    }
+  }
+
   [
     [{a: 'b', c: 'd'}, {a: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
@@ -960,6 +982,8 @@ describe('toMatchObject()', () => {
     [{a: undefined}, {a: undefined}],
     [[], []],
     [new Error('foo'), new Error('foo')],
+    [new Error('bar'), {message: 'bar'}],
+    [new Foo(), {a: undefined, b: 'b'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,

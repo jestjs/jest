@@ -70,3 +70,21 @@ it('exposes an equality function to custom matchers', () => {
 
   expect(() => jestExpect().toBeOne()).not.toThrow();
 });
+
+it('defines asymmetric matchers', () => {
+  expect(() =>
+    jestExpect({value: 2}).toEqual({value: jestExpect.toBeDivisibleBy(2)}),
+  ).not.toThrow();
+  expect(() =>
+    jestExpect({value: 3}).toEqual({value: jestExpect.toBeDivisibleBy(2)}),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+it('defines asymmetric matchers that can be prefixed by not', () => {
+  expect(() =>
+    jestExpect({value: 2}).toEqual({value: jestExpect.not.toBeDivisibleBy(2)}),
+  ).toThrowErrorMatchingSnapshot();
+  expect(() =>
+    jestExpect({value: 3}).toEqual({value: jestExpect.not.toBeDivisibleBy(2)}),
+  ).not.toThrow();
+});

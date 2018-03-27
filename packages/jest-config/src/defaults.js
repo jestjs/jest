@@ -46,7 +46,6 @@ export default ({
   haste: {
     providesModuleNodeModules: [],
   },
-  mapCoverage: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleNameMapper: {},
@@ -65,7 +64,7 @@ export default ({
   testEnvironmentOptions: {},
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
+  testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '',
   testResultsProcessor: null,

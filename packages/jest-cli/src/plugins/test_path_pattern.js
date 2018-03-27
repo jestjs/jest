@@ -8,12 +8,12 @@
  */
 
 import type {GlobalConfig} from 'types/Config';
-import WatchPlugin from '../watch_plugin';
+import BaseWatchPlugin from '../base_watch_plugin';
 import TestPathPatternPrompt from '../test_path_pattern_prompt';
 import activeFilters from '../lib/active_filters_message';
 import Prompt from '../lib/Prompt';
 
-class TestPathPatternPlugin extends WatchPlugin {
+class TestPathPatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
 
   constructor(options: {
@@ -24,21 +24,18 @@ class TestPathPatternPlugin extends WatchPlugin {
     this._prompt = new Prompt();
   }
 
-  getUsageRow() {
+  getUsageInfo() {
     return {
       key: 'p'.codePointAt(0),
       prompt: 'filter by a filename regex pattern',
     };
   }
 
-  onData(key: string) {
+  onKey(key: string) {
     this._prompt.put(key);
   }
 
-  showPrompt(
-    globalConfig: GlobalConfig,
-    updateConfigAndRun: Function,
-  ): Promise<void> {
+  run(globalConfig: GlobalConfig, updateConfigAndRun: Function): Promise<void> {
     return new Promise((res, rej) => {
       const testPathPatternPrompt = new TestPathPatternPrompt(
         this._stdout,
@@ -47,7 +44,7 @@ class TestPathPatternPlugin extends WatchPlugin {
 
       testPathPatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({testPathPattern: value});
+          updateConfigAndRun({mode: 'watch', testPathPattern: value});
           res();
         },
         rej,

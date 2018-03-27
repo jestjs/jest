@@ -23,7 +23,7 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
-  _replaceRootDirInPath,
+  replaceRootDirInPath,
   _replaceRootDirTags,
   escapeGlobCharacters,
   getTestEnvironment,
@@ -46,12 +46,27 @@ const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
+const mergeOptionWithPreset = (
+  options: InitialOptions,
+  preset: InitialOptions,
+  optionName: string,
+) => {
+  if (options[optionName] && preset[optionName]) {
+    options[optionName] = Object.assign(
+      {},
+      options[optionName],
+      preset[optionName],
+      options[optionName],
+    );
+  }
+};
+
 const setupPreset = (
   options: InitialOptions,
   optionsPreset: string,
 ): InitialOptions => {
   let preset;
-  const presetPath = _replaceRootDirInPath(options.rootDir, optionsPreset);
+  const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
     presetPath.endsWith(JSON_EXTENSION)
       ? presetPath
@@ -81,14 +96,8 @@ const setupPreset = (
       options.modulePathIgnorePatterns,
     );
   }
-  if (options.moduleNameMapper && preset.moduleNameMapper) {
-    options.moduleNameMapper = Object.assign(
-      {},
-      options.moduleNameMapper,
-      preset.moduleNameMapper,
-      options.moduleNameMapper,
-    );
-  }
+  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
+  mergeOptionWithPreset(options, preset, 'transform');
 
   return Object.assign({}, preset, options);
 };
@@ -137,7 +146,7 @@ const normalizeCollectCoverageOnlyFrom = (
   return collectCoverageOnlyFrom.reduce((map, filePath) => {
     filePath = path.resolve(
       options.rootDir,
-      _replaceRootDirInPath(options.rootDir, filePath),
+      replaceRootDirInPath(options.rootDir, filePath),
     );
     map[filePath] = true;
     return map;
@@ -158,6 +167,12 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
     Array.isArray(value) || (value = [options[key]]);
   } else {
     value = options[key];
+  }
+
+  if (value) {
+    value = value.map(filePath => {
+      return filePath.replace(/^(!?)(<rootDir>\/)(.*)/, '$1$3');
+    });
   }
 
   return value;
@@ -256,7 +271,7 @@ const normalizeReporters = (options: InitialOptions, basedir) => {
           [reporterConfig, {}]
         : reporterConfig;
 
-    const reporterPath = _replaceRootDirInPath(
+    const reporterPath = replaceRootDirInPath(
       options.rootDir,
       normalizedReporterConfig[0],
     );
@@ -376,7 +391,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           options[key].map(filePath =>
             path.resolve(
               options.rootDir,
-              _replaceRootDirInPath(options.rootDir, filePath),
+              replaceRootDirInPath(options.rootDir, filePath),
             ),
           );
         break;
@@ -389,7 +404,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           options[key] &&
           path.resolve(
             options.rootDir,
-            _replaceRootDirInPath(options.rootDir, options[key]),
+            replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
       case 'globalSetup':
@@ -434,7 +449,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           value.hasteImplModulePath = resolve(
             options.rootDir,
             'haste.hasteImplModulePath',
-            _replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
+            replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
           );
         }
         break;
@@ -456,6 +471,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           escapeGlobCharacters(options.rootDir),
           options[key],
         );
+        break;
+      case 'testRegex':
+        value = options[key] && replacePathSepForRegex(options[key]);
         break;
       case 'automock':
       case 'bail':
@@ -500,7 +518,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testRegex':
       case 'testURL':
       case 'timers':
       case 'useStderr':
@@ -580,6 +597,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
       reporter => reporter !== 'text',
     );
+  }
+
+  // If collectCoverage is enabled while using --findRelatedTests we need to
+  // avoid having false negatives in the generated coverage report.
+  // The following: `--findRelatedTests '/rootDir/file1.js' --coverage`
+  // Is transformed to: `--findRelatedTests '/rootDir/file1.js' --coverage --collectCoverageFrom 'file1.js'`
+  // where arguments to `--collectCoverageFrom` should be globs (or relative
+  // paths to the rootDir)
+  if (newOptions.collectCoverage && argv.findRelatedTests) {
+    newOptions.collectCoverageFrom = argv._.map(filename => {
+      filename = replaceRootDirInPath(options.rootDir, filename);
+      return path.isAbsolute(filename)
+        ? path.relative(options.rootDir, filename)
+        : filename;
+    });
   }
 
   return {

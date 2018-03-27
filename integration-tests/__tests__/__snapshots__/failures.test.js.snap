@@ -38,8 +38,7 @@ exports[`not throwing Error objects 4`] = `
     ✕ throws when there are not assertions
   ● .assertions() › throws
     expect(received).toBeTruthy()
-    Expected value to be truthy, instead received
-      false
+    Received: false
       11 | const throws = () => {
       12 |   expect.assertions(2);
     > 13 |   expect(false).toBeTruthy();
@@ -52,8 +51,7 @@ exports[`not throwing Error objects 4`] = `
     Expected two assertions to be called but received one assertion call.
   ● .assertions() › throws on redeclare of assertion count
     expect(received).toBeTruthy()
-    Expected value to be truthy, instead received
-      false
+    Received: false
       15 | const redeclare = () => {
       16 |   expect.assertions(1);
     > 17 |   expect(false).toBeTruthy();
@@ -118,7 +116,7 @@ exports[`works with async failures 1`] = `
     +   \\"foo\\": \\"bar\\",
       }
       
-      at ../../packages/expect/build/index.js:145:57
+      at packages/expect/build/index.js:160:61
 
 "
 `;

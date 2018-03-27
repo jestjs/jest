@@ -438,6 +438,76 @@ describe('moduleMocker', () => {
       ]);
     });
 
+    describe('return values', () => {
+      it('tracks return values', () => {
+        const fn = moduleMocker.fn(x => x * 2);
+
+        expect(fn.mock.returnValues).toEqual([]);
+
+        fn(1);
+        fn(2);
+
+        expect(fn.mock.returnValues).toEqual([2, 4]);
+      });
+
+      it('tracks mocked return values', () => {
+        const fn = moduleMocker.fn(x => x * 2);
+        fn.mockReturnValueOnce('MOCKED!');
+
+        fn(1);
+        fn(2);
+
+        expect(fn.mock.returnValues).toEqual(['MOCKED!', 4]);
+      });
+
+      it('supports resetting return values', () => {
+        const fn = moduleMocker.fn(x => x * 2);
+
+        expect(fn.mock.returnValues).toEqual([]);
+
+        fn(1);
+        fn(2);
+
+        expect(fn.mock.returnValues).toEqual([2, 4]);
+
+        fn.mockReset();
+
+        expect(fn.mock.returnValues).toEqual([]);
+      });
+    });
+
+    it(`tracks thrown errors without interfering with other tracking`, () => {
+      const error = new Error('ODD!');
+      const fn = moduleMocker.fn((x, y) => {
+        // multiply params
+        const result = x * y;
+
+        if (result % 2 === 1) {
+          // throw error if result is odd
+          throw error;
+        } else {
+          return result;
+        }
+      });
+
+      expect(fn(2, 4)).toBe(8);
+
+      // Mock still throws the error even though it was internally
+      // caught and recorded
+      expect(() => {
+        fn(3, 5);
+      }).toThrow('ODD!');
+
+      expect(fn(6, 3)).toBe(18);
+
+      // All call args tracked
+      expect(fn.mock.calls).toEqual([[2, 4], [3, 5], [6, 3]]);
+      // tracked return value is undefined when an error is thrown
+      expect(fn.mock.returnValues).toEqual([8, undefined, 18]);
+      // tracked thrown error is undefined when an error is NOT thrown
+      expect(fn.mock.thrownErrors).toEqual([undefined, error, undefined]);
+    });
+
     describe('timestamps', () => {
       const RealDate = Date;
 
@@ -806,6 +876,113 @@ describe('moduleMocker', () => {
           };
         },
       };
+
+      const spy1 = moduleMocker.spyOn(obj, 'methodOne', 'get');
+      const spy2 = moduleMocker.spyOn(obj, 'methodTwo', 'get');
+
+      // First, we call with the spies: both spies and both original functions
+      // should be called.
+      obj.methodOne();
+      obj.methodTwo();
+      expect(methodOneCalls).toBe(1);
+      expect(methodTwoCalls).toBe(1);
+      expect(spy1.mock.calls.length).toBe(1);
+      expect(spy2.mock.calls.length).toBe(1);
+
+      moduleMocker.restoreAllMocks();
+
+      // Then, after resetting all mocks, we call methods again. Only the real
+      // methods should bump their count, not the spies.
+      obj.methodOne();
+      obj.methodTwo();
+      expect(methodOneCalls).toBe(2);
+      expect(methodTwoCalls).toBe(2);
+      expect(spy1.mock.calls.length).toBe(1);
+      expect(spy2.mock.calls.length).toBe(1);
+    });
+
+    it('should work with getters on the prototype chain', () => {
+      let isOriginalCalled = false;
+      let originalCallThis;
+      let originalCallArguments;
+      const prototype = {
+        get method() {
+          return function() {
+            isOriginalCalled = true;
+            originalCallThis = this;
+            originalCallArguments = arguments;
+          };
+        },
+      };
+      const obj = Object.create(prototype, {});
+
+      const spy = moduleMocker.spyOn(obj, 'method', 'get');
+
+      const thisArg = {this: true};
+      const firstArg = {first: true};
+      const secondArg = {second: true};
+      obj.method.call(thisArg, firstArg, secondArg);
+      expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
+      expect(spy).toHaveBeenCalled();
+
+      isOriginalCalled = false;
+      originalCallThis = null;
+      originalCallArguments = null;
+      spy.mockReset();
+      spy.mockRestore();
+      obj.method.call(thisArg, firstArg, secondArg);
+      expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    test('should work with setters on the prototype chain', () => {
+      const prototype = {
+        _property: false,
+        set property(value) {
+          this._property = value;
+        },
+        get property() {
+          return this._property;
+        },
+      };
+      const obj = Object.create(prototype, {});
+
+      const spy = moduleMocker.spyOn(obj, 'property', 'set');
+      obj.property = true;
+      expect(spy).toHaveBeenCalled();
+      expect(obj.property).toBe(true);
+      obj.property = false;
+      spy.mockReset();
+      spy.mockRestore();
+      obj.property = true;
+      expect(spy).not.toHaveBeenCalled();
+      expect(obj.property).toBe(true);
+    });
+
+    it('supports restoring all spies on the prototype chain', () => {
+      let methodOneCalls = 0;
+      let methodTwoCalls = 0;
+      const prototype = {
+        get methodOne() {
+          return function() {
+            methodOneCalls++;
+          };
+        },
+        get methodTwo() {
+          return function() {
+            methodTwoCalls++;
+          };
+        },
+      };
+      const obj = Object.create(prototype, {});
 
       const spy1 = moduleMocker.spyOn(obj, 'methodOne', 'get');
       const spy2 = moduleMocker.spyOn(obj, 'methodTwo', 'get');

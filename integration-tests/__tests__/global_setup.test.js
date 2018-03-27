@@ -11,7 +11,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const runJest = require('../runJest');
-const {cleanup} = require('../utils');
+const {cleanup} = require('../Utils');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 
@@ -26,4 +26,16 @@ test('globalSetup is triggered once before all test suites', () => {
   expect(files).toHaveLength(1);
   const setup = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
   expect(setup).toBe('setup');
+});
+
+test('jest throws an error when globalSetup does not export a function', () => {
+  const setupPath = path.resolve(__dirname, '../global-setup/invalid_setup.js');
+  const {status, stderr} = runJest('global-setup', [
+    `--globalSetup=${setupPath}`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch(
+    `TypeError: globalSetup file must export a function at ${setupPath}`,
+  );
 });

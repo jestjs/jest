@@ -9,6 +9,7 @@
 
 import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
 import type {Context} from 'types/Context';
+import type {WatchPlugin} from './types';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
@@ -27,7 +28,6 @@ import TestWatcher from './test_watcher';
 import FailedTestsCache from './failed_tests_cache';
 import {KEYS, CLEAR} from './constants';
 import JestHooks from './jest_hooks';
-import WatchPlugin from './watch_plugin';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
 import TestNamePatternPlugin from './plugins/test_name_pattern';
 import UpdateSnapshotsPlugin from './plugins/update_snapshots';
@@ -51,13 +51,13 @@ const getSortedUsageRows = (
 ) => {
   const internalPlugins = watchPlugins
     .slice(0, INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow(globalConfig))
-    .filter(usage => !usage.hide);
+    .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
+    .filter(Boolean);
 
   const thirdPartyPlugins = watchPlugins
     .slice(INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageRow(globalConfig))
-    .filter(usage => !usage.hide)
+    .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
+    .filter(Boolean)
     .sort((a, b) => a.key - b.key);
 
   return internalPlugins.concat(thirdPartyPlugins);
@@ -69,6 +69,7 @@ export default function watch(
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
+  hooks?: JestHooks = new JestHooks(),
 ): Promise<void> {
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
@@ -80,20 +81,20 @@ export default function watch(
     passWithNoTests: true,
   });
 
-  const hooks = new JestHooks();
-
   const updateConfigAndRun = ({
+    mode,
     testNamePattern,
     testPathPattern,
     updateSnapshot,
   }: {
+    mode?: 'watch' | 'watchAll',
     testNamePattern?: string,
     testPathPattern?: string,
     updateSnapshot?: SnapshotUpdateState,
   } = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
-      mode: 'watch',
+      mode,
       testNamePattern:
         testNamePattern !== undefined
           ? testNamePattern
@@ -121,14 +122,25 @@ export default function watch(
   );
 
   watchPlugins.forEach((plugin: WatchPlugin) => {
-    plugin.registerHooks(hooks.getSubscriber());
+    const hookSubscriber = hooks.getSubscriber();
+    if (plugin.apply) {
+      plugin.apply(hookSubscriber);
+    }
   });
 
   if (globalConfig.watchPlugins != null) {
     for (const pluginModulePath of globalConfig.watchPlugins) {
       // $FlowFixMe dynamic require
-      const ThirdPluginPath = require(pluginModulePath);
-      watchPlugins.push(new ThirdPluginPath({stdin, stdout: outputStream}));
+      const ThirdPartyPlugin = require(pluginModulePath);
+      const plugin: WatchPlugin = new ThirdPartyPlugin({
+        stdin,
+        stdout: outputStream,
+      });
+      const hookSubscriber = hooks.getSubscriber();
+      if (plugin.apply) {
+        plugin.apply(hookSubscriber);
+      }
+      watchPlugins.push(plugin);
     }
   }
 
@@ -141,6 +153,18 @@ export default function watch(
   let testWatcher;
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
+
+  const emitFileChange = () => {
+    if (hooks.isUsed('fileChange')) {
+      const projects = searchSources.map(({context, searchSource}) => ({
+        config: context.config,
+        testPaths: searchSource.findMatchingTests('').tests.map(t => t.path),
+      }));
+      hooks.getEmitter().fileChange({projects});
+    }
+  };
+
+  emitFileChange();
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
@@ -164,6 +188,7 @@ export default function watch(
           context,
           searchSource: new SearchSource(context),
         };
+        emitFileChange();
         startRun(globalConfig);
       }
     });
@@ -230,15 +255,18 @@ export default function watch(
 
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
+      if (typeof stdin.setRawMode === 'function') {
+        stdin.setRawMode(false);
+      }
       outputStream.write('\n');
       exit(0);
       return;
     }
 
-    if (activePlugin != null) {
+    if (activePlugin != null && activePlugin.onKey) {
       // if a plugin is activate, Jest should let it handle keystrokes, so ignore
       // them here
-      activePlugin.onData(key);
+      activePlugin.onKey(key);
       return;
     }
 
@@ -258,27 +286,31 @@ export default function watch(
     }
 
     const matchingWatchPlugin = watchPlugins.find(plugin => {
-      const usageRow = plugin.getUsageRow(globalConfig) || {};
-
-      return usageRow.key === parseInt(key, 16);
+      const usageData =
+        (plugin.getUsageInfo && plugin.getUsageInfo(globalConfig)) || {};
+      return usageData.key === parseInt(key, 16);
     });
 
     if (matchingWatchPlugin != null) {
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
-      activePlugin.showPrompt(globalConfig, updateConfigAndRun).then(
-        shouldRerun => {
-          activePlugin = null;
-          if (shouldRerun) {
-            updateConfigAndRun();
-          }
-        },
-        () => {
-          activePlugin = null;
-          onCancelPatternPrompt();
-        },
-      );
+      if (activePlugin.run) {
+        activePlugin.run(globalConfig, updateConfigAndRun).then(
+          shouldRerun => {
+            activePlugin = null;
+            if (shouldRerun) {
+              updateConfigAndRun();
+            }
+          },
+          () => {
+            activePlugin = null;
+            onCancelPatternPrompt();
+          },
+        );
+      } else {
+        activePlugin = null;
+      }
     }
 
     switch (key) {
@@ -295,6 +327,7 @@ export default function watch(
         break;
       case KEYS.C:
         updateConfigAndRun({
+          mode: 'watch',
           testNamePattern: '',
           testPathPattern: '',
         });

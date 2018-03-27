@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {Options} from './types';
+import type {Options, SpawnOptions} from './types';
 
 import {ChildProcess} from 'child_process';
 import EventEmitter from 'events';
@@ -40,19 +40,22 @@ export default class Settings extends EventEmitter {
   _createProcess: (
     workspace: ProjectWorkspace,
     args: Array<string>,
+    options: SpawnOptions,
   ) => ChildProcess;
   configs: ConfigRepresentations;
   settings: ConfigRepresentation;
   workspace: ProjectWorkspace;
+  spawnOptions: SpawnOptions;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this.workspace = workspace;
     this._createProcess = (options && options.createProcess) || createProcess;
+    this.spawnOptions = {shell: options && options.shell};
 
     // Defaults for a Jest project
     this.settings = {
-      testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
+      testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
 
@@ -60,9 +63,11 @@ export default class Settings extends EventEmitter {
   }
 
   getConfigs(completed: any) {
-    this.getConfigProcess = this._createProcess(this.workspace, [
-      '--showConfig',
-    ]);
+    this.getConfigProcess = this._createProcess(
+      this.workspace,
+      ['--showConfig'],
+      this.spawnOptions,
+    );
 
     this.getConfigProcess.stdout.on('data', (data: Buffer) => {
       const settings = JSON.parse(data.toString());

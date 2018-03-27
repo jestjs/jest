@@ -49,8 +49,41 @@ will be cleared and will never have the opportunity to execute in the future.
 
 Disables automatic mocking in the module loader.
 
+> See `automock` section of [configuration](Configuration.md#automock-boolean)
+> for more information
+
 After this method is called, all `require()`s will return the real versions of
 each module (rather than a mocked version).
+
+Jest configuration:
+
+```json
+"automock": true
+```
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+};
+```
+
+```js
+// __tests__/disableAutomocking.js
+import utils from '../utils';
+
+jest.disableAutomock();
+
+test('original implementation', () => {
+  // now we have the original implementation,
+  // even if we set the automocking in a jest configuration
+  expect(utils.authorize()).toBe('token');
+});
+```
 
 This is usually useful when you have a scenario where the number of dependencies
 you want to mock is far less than the number of dependencies that you don't. For
@@ -74,6 +107,34 @@ block. Use `autoMockOff` if you want to explicitly avoid this behavior._
 Enables automatic mocking in the module loader.
 
 Returns the `jest` object for chaining.
+
+> See `automock` section of [configuration](Configuration.md#automock-boolean)
+> for more information
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+```js
+// __tests__/disableAutomocking.js
+jest.enableAutomock();
+
+import utils from '../utils';
+
+test('original implementation', () => {
+  // now we have the mocked implementation,
+  expect(utils.authorize._isMockFunction).toBeTruthy();
+  expect(utils.isAuthorized._isMockFunction).toBeTruthy();
+});
+```
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`,
 calls to `enableAutomock` will automatically be hoisted to the top of the code
@@ -105,6 +166,29 @@ mocked version of the module for you.
 
 This is useful when you want to create a [manual mock](ManualMocks.md) that
 extends the automatic mock's behavior.
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+```js
+// __tests__/genMockFromModule.test.js
+const utils = jest.genMockFromModule('../utils').default;
+utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
+
+test('implementation created by jest.genMockFromModule', () => {
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized('not wizard')).toEqual(true);
+});
+```
 
 ### `jest.mock(moduleName, factory, options)`
 
@@ -158,7 +242,7 @@ as well as all the modules that it imports._
 
 Modules that are mocked with `jest.mock` are mocked only for the file that calls
 `jest.mock`. Another file that imports the module will get the original
-implementation even if run after the test file that mocks the module.
+implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
 

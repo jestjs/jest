@@ -11,12 +11,8 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
-import {
-  Console,
-  clearLine,
-  createDirectory,
-  validateCLIOptions,
-} from 'jest-util';
+import {Console, clearLine, createDirectory} from 'jest-util';
+import {validateCLIOptions} from 'jest-validate';
 import {readConfig} from 'jest-config';
 import {version as VERSION} from '../../package.json';
 import * as args from './args';
@@ -177,27 +173,30 @@ const printVersionAndExit = outputStream => {
   exit(0);
 };
 
-const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
-  const configPathSet = new Set();
+const ensureNoDuplicateConfigs = (parsedConfigs, projects, rootConfigPath) => {
+  const configPathMap = new Map();
 
-  for (const {configPath} of parsedConfigs) {
-    if (configPathSet.has(configPath)) {
-      let message =
-        'One or more specified projects share the same config file\n';
+  for (const config of parsedConfigs) {
+    const {configPath} = config;
+    if (configPathMap.has(configPath)) {
+      const message = `Whoops! Two projects resolved to the same config path: ${chalk.bold(
+        String(configPath),
+      )}:
 
-      parsedConfigs.forEach(({configPath}, index) => {
-        message =
-          message +
-          '\nProject: "' +
-          projects[index] +
-          '"\nConfig: "' +
-          String(configPath) +
-          '"';
-      });
+  Project 1: ${chalk.bold(projects[parsedConfigs.findIndex(x => x === config)])}
+  Project 2: ${chalk.bold(
+    projects[parsedConfigs.findIndex(x => x === configPathMap.get(configPath))],
+  )}
+
+This usually means that your ${chalk.bold(
+        '"projects"',
+      )} config includes a directory that doesn't have any configuration recognizable by Jest. Please fix it.
+`;
+
       throw new Error(message);
     }
     if (configPath !== null) {
-      configPathSet.add(configPath);
+      configPathMap.set(configPath, config);
     }
   }
 };
@@ -263,7 +262,7 @@ const getConfigs = (
       })
       .map(root => readConfig(argv, root, true, configPath));
 
-    ensureNoDuplicateConfigs(parsedConfigs, projects);
+    ensureNoDuplicateConfigs(parsedConfigs, projects, configPath);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(

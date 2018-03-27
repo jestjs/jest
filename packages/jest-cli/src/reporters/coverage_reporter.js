@@ -58,9 +58,11 @@ export default class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        let coverage: FileCoverage, inputSourceMap: ?Object;
+        let inputSourceMap: ?Object;
         try {
-          coverage = this._coverageMap.fileCoverageFor(sourcePath);
+          const coverage: FileCoverage = this._coverageMap.fileCoverageFor(
+            sourcePath,
+          );
           ({inputSourceMap} = coverage.toJSON());
         } finally {
           if (inputSourceMap) {
@@ -81,11 +83,9 @@ export default class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ) {
     await this._addUntestedFiles(this._globalConfig, contexts);
-    let map = this._coverageMap;
-    let sourceFinder: Object;
-    if (this._globalConfig.mapCoverage) {
-      ({map, sourceFinder} = this._sourceMapStore.transformCoverage(map));
-    }
+    const {map, sourceFinder} = this._sourceMapStore.transformCoverage(
+      this._coverageMap,
+    );
 
     const reporter = createReporter();
     try {

@@ -41,13 +41,17 @@ expect(mockCallback.mock.calls[0][0]).toBe(0);
 
 // The first argument of the second call to the function was 1
 expect(mockCallback.mock.calls[1][0]).toBe(1);
+
+// The return value of the first call to the function was 42
+expect(mockCallback.mock.returnValues[0]).toBe(42);
 ```
 
 ## `.mock` property
 
 All mock functions have this special `.mock` property, which is where data about
-how the function has been called is kept. The `.mock` property also tracks the
-value of `this` for each call, so it is possible to inspect this as well:
+how the function has been called and what the function returned is kept. The
+`.mock` property also tracks the value of `this` for each call, so it is
+possible to inspect this as well:
 
 ```javascript
 const myMock = jest.fn();
@@ -62,7 +66,7 @@ console.log(myMock.mock.instances);
 ```
 
 These mock members are very useful in tests to assert how these functions get
-called, or instantiated:
+called, instantiated, or what they returned:
 
 ```javascript
 // The function was called exactly once
@@ -73,6 +77,9 @@ expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
 
 // The second arg of the first call to the function was 'second arg'
 expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
+
+// The return value of the first call to the function was 'return value'
+expect(someMockFunction.mock.returnValues[0]).toBe('return value');
 
 // This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
@@ -126,6 +133,51 @@ Most real-world examples actually involve getting ahold of a mock function on a
 dependent component and configuring that, but the technique is the same. In
 these cases, try to avoid the temptation to implement logic inside of any
 function that's not directly being tested.
+
+## Mocking Modules
+
+Suppose we have a class that fetches users from our API. The class uses
+[axios](https://github.com/axios/axios) to call the API then returns the `data`
+attribute which contains all the users:
+
+```js
+// users.js
+import axios from 'axios';
+
+class Users {
+  static all() {
+    return axios.get('/users.json').then(resp => resp.data);
+  }
+}
+
+export default Users;
+```
+
+Now, in order to test this method without actually hitting the API (and thus
+creating slow and fragile tests), we can use the `jest.mock(...)` function to
+automatically mock the axios module.
+
+Once we mock the module we can provide a `mockReturnValue` for `.get` that
+returns the data we want our test to assert against. In effect, we are saying
+that we want axios.get('/users.json') to return a fake response.
+
+```js
+// users.test.js
+import axios from 'axios';
+import Users from './users';
+
+jest.mock('axios');
+
+test('should fetch users', () => {
+  const resp = {data: [{name: 'Bob'}]};
+  axios.get.mockResolvedValue(resp);
+
+  // or you could use the following depending on your use case:
+  // axios.get.mockImplementation(() => Promise.resolve(resp))
+
+  return Users.all().then(users => expect(users).toEqual(resp.data));
+});
+```
 
 ## Mock Implementations
 

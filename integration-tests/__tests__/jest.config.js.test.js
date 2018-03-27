@@ -10,18 +10,18 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('../../scripts/skip_on_windows');
-const {extractSummary, cleanup, writeFiles} = require('../utils');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const {extractSummary, cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../jest.config.js');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('works with jest.conf.js', () => {
+test('works with jest.config.js', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `test('banana', () => expect(1).toBe(1));`,
     'jest.config.js': `module.exports = {testRegex: '.*-banana.js'};`,

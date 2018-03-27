@@ -11,12 +11,12 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-const {cleanup, writeFiles} = require('../utils');
+const {cleanup, writeFiles} = require('../Utils');
 
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const DIR = path.resolve(os.tmpdir(), 'jest_path_pattern_reporter_message');
 
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

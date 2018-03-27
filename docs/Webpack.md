@@ -87,7 +87,7 @@ You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to
 mock [CSS Modules](https://github.com/css-modules/css-modules):
 
 ```bash
-npm install --save-dev identity-obj-proxy
+yarn add --dev identity-obj-proxy
 ```
 
 Then all your className lookups on the styles object will be returned as-is
@@ -244,7 +244,7 @@ ES modules to CommonJS modules only in the `test` environment.
 ```json
 // .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -263,7 +263,7 @@ need to enable the `dynamic-import-node` plugin.
 ```json
 // .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 

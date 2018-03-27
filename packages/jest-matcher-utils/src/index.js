@@ -49,7 +49,7 @@ const NUMBERS = [
 ];
 
 export const SUGGEST_TO_EQUAL = chalk.dim(
-  'Looks like you wanted to test for object/array equality with strict `toBe` matcher. You probably need to use `toEqual` instead.',
+  'Looks like you wanted to test for object/array equality with the stricter `toBe` matcher. You probably need to use `toEqual` instead.',
 );
 
 export const stringify = (object: any, maxDepth?: number = 10): string => {
@@ -153,14 +153,17 @@ export const matcherHint = (
   options: {
     comment?: string,
     isDirectExpectCall?: boolean,
+    isNot?: boolean,
     secondArgument?: ?string,
   } = {},
 ) => {
-  const {comment, isDirectExpectCall, secondArgument} = options;
+  const {comment, isDirectExpectCall, isNot, secondArgument} = options;
   return (
     chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
     RECEIVED_COLOR(received) +
-    chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(') +
+    (isNot
+      ? `${chalk.dim(').')}not${chalk.dim(matcherName + '(')}`
+      : chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(')) +
     EXPECTED_COLOR(expected) +
     (secondArgument
       ? `${chalk.dim(', ')}${EXPECTED_COLOR(secondArgument)}`

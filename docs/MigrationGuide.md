@@ -30,10 +30,10 @@ If you are using [AVA](https://github.com/avajs/ava),
 dirty migration work. It runs a code transformation on your codebase using
 [jscodeshift](https://github.com/facebook/jscodeshift).
 
-Install Jest Codemods with `npm` by running:
+Install Jest Codemods with `yarn` by running:
 
 ```bash
-npm install -g jest-codemods
+yarn global add jest-codemods
 ```
 
 To transform your existing tests, navigate to the project containing the tests

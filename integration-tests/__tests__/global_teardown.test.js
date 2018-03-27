@@ -12,7 +12,7 @@ const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
 const runJest = require('../runJest');
-const {cleanup} = require('../utils');
+const {cleanup} = require('../Utils');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
 
@@ -33,4 +33,19 @@ test('globalTeardown is triggered once after all test suites', () => {
   expect(files).toHaveLength(1);
   const teardown = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
   expect(teardown).toBe('teardown');
+});
+
+test('jest throws an error when globalTeardown does not export a function', () => {
+  const teardownPath = path.resolve(
+    __dirname,
+    '../global-teardown/invalid_teardown.js',
+  );
+  const {status, stderr} = runJest('global-teardown', [
+    `--globalTeardown=${teardownPath}`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch(
+    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  );
 });

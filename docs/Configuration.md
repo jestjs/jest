@@ -54,10 +54,40 @@ configuration power.
 
 Default: `false`
 
-This option is disabled by default. If you are introducing Jest to a large
-organization with an existing codebase but few tests, enabling this option can
-be helpful to introduce unit tests gradually. Modules can be explicitly
-auto-mocked using `jest.mock(moduleName)`.
+This option tells Jest that all imported modules in your tests should be mocked
+automatically. All modules used in your tests will have a replacement
+implementation, keeping the API surface.
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+```js
+//__tests__/automocking.test.js
+import utils from '../utils';
+
+test('if utils mocked automatically', () => {
+  // Public methods of `utils` are now mock functions
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized.mock).toBeTruthy();
+
+  // You can provide them with your own implementation
+  // or just pass the expected return value
+  utils.authorize.mockReturnValue('mocked_token');
+  utils.isAuthorized.mockReturnValue(true);
+
+  expect(utils.authorize()).toBe('mocked_token');
+  expect(utils.isAuthorized('not_wizard')).toBeTruthy();
+});
+```
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked
 explicitly, like `jest.mock('fs')`._
@@ -92,6 +122,14 @@ The directory where Jest should store its cached dependency information.
 Jest attempts to scan your dependency tree once (up-front) and cache it in order
 to ease some of the filesystem raking that needs to happen while running tests.
 This config option lets you customize where Jest stores that cache data on disk.
+
+### `clearMocks` [boolean]
+
+Default: `false`
+
+Automatically clear mock calls and instances between every test. Equivalent to
+calling `jest.clearAllMocks()` between each test. This does not remove any mock
+implementation that may have been provided.
 
 ### `collectCoverage` [boolean]
 
@@ -313,34 +351,6 @@ Default: `undefined`
 This option allows the use of a custom global teardown module which exports an
 async function that is triggered once after all test suites.
 
-### `mapCoverage` [boolean]
-
-##### available in Jest **20.0.0+**
-
-Default: `false`
-
-If you have [transformers](#transform-object-string-string) configured that emit
-source maps, Jest will use them to try and map code coverage against the
-original source code when writing [reports](#coveragereporters-array-string) and
-checking [thresholds](#coveragethreshold-object). This is done on a best-effort
-basis as some compile-to-JavaScript languages may provide more accurate source
-maps than others. This can also be resource-intensive. If Jest is taking a long
-time to calculate coverage at the end of a test run, try setting this option to
-`false`.
-
-Both inline source maps and source maps returned directly from a transformer are
-supported. Source map URLs are not supported because Jest may not be able to
-locate them. To return source maps from a transformer, the `process` function
-can return an object like the following. The `map` property may either be the
-source map object, or the source map object as a string.
-
-```js
-return {
-  code: 'the code',
-  map: 'the source map',
-};
-```
-
 ### `moduleFileExtensions` [array<string>]
 
 Default: `["js", "json", "jsx", "node"]`
@@ -438,7 +448,8 @@ Specifies notification mode. Requires `notify: true`.
 * `success`: send a notification when tests pass.
 * `change`: send a notification when the status changed.
 * `success-change`: send a notification when tests pass or once when it fails.
-* `failure-success`: send a notification when tests fails or once when it passes.
+* `failure-success`: send a notification when tests fails or once when it
+  passes.
 
 ### `preset` [string]
 
@@ -487,13 +498,9 @@ the same invocation of Jest:
 }
 ```
 
-### `clearMocks` [boolean]
-
-Default: `false`
-
-Automatically clear mock calls and instances between every test. Equivalent to
-calling `jest.clearAllMocks()` between each test. This does not remove any mock
-implementation that may have been provided.
+_Note: When using multi project runner, it's recommended to add a `displayName`
+for each project. This will show the `displayName` of a project next to its
+tests._
 
 ### `reporters` [array<moduleName | [moduleName, options]>]
 
@@ -696,6 +703,10 @@ async runTests(
 ): Promise<void>
 ```
 
+If you need to restrict your test-runner to only run in serial rather then being
+executed in parallel your class should have the property `isSerial` to be set as
+`true`.
+
 ### `setupFiles` [array]
 
 Default: `[]`
@@ -882,7 +893,7 @@ given to [jsdom](https://github.com/tmpvar/jsdom) such as
 
 ##### available in Jest **19.0.0+**
 
-(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)' ]`)
+(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)' ]`)
 
 The glob patterns Jest uses to detect test files. By default it looks for `.js`
 and `.jsx` files inside of `__tests__` folders, as well as any files with a

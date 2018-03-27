@@ -61,7 +61,10 @@ const WHITELISTED_IDENTIFIERS = {
   WeakSet: true,
   arguments: true,
   expect: true,
+  isNaN: true,
   jest: true,
+  parseFloat: true,
+  parseInt: true,
   require: true,
   undefined: true,
 };

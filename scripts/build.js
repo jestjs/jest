@@ -28,8 +28,9 @@ const mkdirp = require('mkdirp');
 const babel = require('babel-core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
+const prettier = require('prettier');
 const stringLength = require('string-length');
-const getPackages = require('./_getPackages');
+const getPackages = require('./getPackages');
 const browserBuild = require('./browserBuild');
 
 const OK = chalk.reset.inverse.bold.green(' DONE ');
@@ -37,7 +38,7 @@ const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
 const BUILD_ES5_DIR = 'build-es5';
 const JS_FILES_PATTERN = '**/*.js';
-const IGNORE_PATTERN = '**/__tests__/**';
+const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
@@ -46,6 +47,8 @@ const transformOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
 transformOptions.babelrc = false;
+const prettierConfig = prettier.resolveConfig.sync(__filename);
+prettierConfig.trailingComma = 'none';
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
@@ -161,7 +164,8 @@ function buildFile(file, silent) {
     }
 
     const transformed = babel.transformFileSync(file, options).code;
-    fs.writeFileSync(destPath, transformed);
+    const prettyCode = prettier.format(transformed, prettierConfig);
+    fs.writeFileSync(destPath, prettyCode);
     silent ||
       process.stdout.write(
         chalk.green('  \u2022 ') +

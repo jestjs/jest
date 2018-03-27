@@ -9,11 +9,11 @@
 'use strict';
 
 const runJest = require('../runJest');
-const {extractSummary} = require('../utils');
-const skipOnWindows = require('../../scripts/skip_on_windows');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const {extractSummary} = require('../Utils');
 
 // Works on windows, we just need to adjust snapshot test output
-skipOnWindows.suite();
+SkipOnWindows.suite();
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('module-name-mapper-wrong-config');
