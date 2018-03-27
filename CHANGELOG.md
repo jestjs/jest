@@ -41,6 +41,8 @@
 
 ### Fixes
 
+* `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
+  ([#5884](https://github.com/facebook/jest/pull/5884))
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
   ([#5860](https://github.com/facebook/jest/pull/5860))
 * `[jest-cli]` Add descriptive error message when trying to use
