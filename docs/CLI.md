@@ -285,6 +285,9 @@ For example, suppose you want to run only tests related to authorization which
 will have names like `"GET /api/posts with auth"`, then you can use
 `jest -t=auth`.
 
+_Note: The regex is matched against the full name, which is a combination of the
+test name and all its surrounding suites._
+
 ### `--testLocationInResults`
 
 Adds a `location` field to test results. Useful if you want to report the
