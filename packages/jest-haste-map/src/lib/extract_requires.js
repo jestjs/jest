@@ -11,7 +11,7 @@ const blockCommentRe = /\/\*[^]*?\*\//g;
 const lineCommentRe = /\/\/.*/g;
 
 const replacePatterns = {
-  DYNAMIC_IMPORT_RE: /(?:^|[^.]\s*)(\import\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
+  DYNAMIC_IMPORT_RE: /(?:^|[^.]\s*)(\bimport\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
   EXPORT_RE: /(\bexport\s+(?!type )(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g,
   IMPORT_RE: /(\bimport\s+(?!type )(?:[^'"]+\s+from\s+)??)(['"])([^'"]+)(\2)/g,
   REQUIRE_EXTENSIONS_PATTERN: /(?:^|[^.]\s*)(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?(?:requireActual|requireMock|genMockFromModule))\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g,
