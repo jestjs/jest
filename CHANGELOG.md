@@ -70,9 +70,12 @@
 
 ### Chore & Maintenance
 
-* `[#5858]` Run Prettier on compiled output
+* `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
+  resources for the top suite the same way as for all of the children suites
+  ([#5885](https://github.com/facebook/jest/pull/5885))
+* `*` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
-* `[#5708]` Add fileChange hook for plugins
+* `[jest-cli]` Add fileChange hook for plugins
   ([#5708](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
