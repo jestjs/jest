@@ -192,7 +192,7 @@ different root directories. Example:
 Default: `["json", "lcov", "text"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any
-[istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report)
+[istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib)
 can be used.
 
 _Note: Setting this option overwrites the default values. Add `"text"` or
