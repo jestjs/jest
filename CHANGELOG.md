@@ -153,6 +153,9 @@
 
 ### Chore & Maintenance
 
+* `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
+  resources for the top suite the same way as for all of the children suites
+  ([#5885](https://github.com/facebook/jest/pull/5885))
 * `[babel-jest]` [**BREAKING**] Always return object from transformer
   ([#5991](https://github.com/facebook/jest/pull/5991))
 * `[*]` Run Prettier on compiled output
