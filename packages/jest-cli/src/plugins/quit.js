@@ -9,6 +9,16 @@
 import BaseWatchPlugin from '../base_watch_plugin';
 
 class QuitPlugin extends BaseWatchPlugin {
+  isInternal: true;
+
+  constructor(options: {
+    stdin: stream$Readable | tty$ReadStream,
+    stdout: stream$Writable | tty$WriteStream,
+  }) {
+    super(options);
+    this.isInternal = true;
+  }
+
   async run() {
     if (typeof this._stdin.setRawMode === 'function') {
       this._stdin.setRawMode(false);
