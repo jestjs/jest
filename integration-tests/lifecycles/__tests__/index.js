@@ -6,7 +6,7 @@
  */
 
 afterAll(() => {
-  expect(1).toBe(2);
+  throw new Error('afterAll just failed!');
 });
 test('one', () => {});
 test('two', () => {});

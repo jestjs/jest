@@ -14,6 +14,5 @@ test('suite with invalid assertions in afterAll', () => {
   const {stderr, status} = runJest('lifecycles');
 
   expect(status).toBe(1);
-  expect(stderr).toMatch(/FAIL/);
-  expect(stderr).toMatch(/\.afterAll/);
+  expect(stderr).toMatch(/afterAll just failed!/);
 });
