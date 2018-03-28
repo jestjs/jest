@@ -15,6 +15,7 @@ import Prompt from '../lib/Prompt';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
+  isInternal: true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
@@ -22,6 +23,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
   }) {
     super(options);
     this._prompt = new Prompt();
+    this.isInternal = true;
   }
 
   getUsageInfo() {

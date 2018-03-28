@@ -4,6 +4,8 @@
 
 * `[jest-editor-support]` Add `coverage` option to runner
   ([#5836](https://github.com/facebook/jest/pull/5836))
+* `[jest-haste-map]` Support extracting dynamic `import`s
+  ([#5883](https://github.com/facebook/jest/pull/5883))
 * `[expect]` Improve output format for mismatchedArgs in mock/spy calls.
   ([#5846](https://github.com/facebook/jest/pull/5846))
 * `[jest-cli]` Add support for using `--coverage` in combination with watch
@@ -72,9 +74,12 @@
 
 ### Chore & Maintenance
 
-* `[#5858]` Run Prettier on compiled output
+* `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
+  resources for the top suite the same way as for all of the children suites
+  ([#5885](https://github.com/facebook/jest/pull/5885))
+* `*` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
-* `[#5708]` Add fileChange hook for plugins
+* `[jest-cli]` Add fileChange hook for plugins
   ([#5708](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
