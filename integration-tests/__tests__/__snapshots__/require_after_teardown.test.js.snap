@@ -10,6 +10,5 @@ exports[`prints useful error for requires after test is done 1`] = `
       13 |     expect(double(5)).toBe(10);
       14 |   }, 0);
       
-      at Runtime._execModule (../../packages/jest-runtime/build/index.js:585:9)
       at Timeout.setTimeout [as _onTimeout] (__tests__/late-require.test.js:11:20)"
 `;

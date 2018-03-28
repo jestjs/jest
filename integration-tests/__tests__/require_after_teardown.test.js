@@ -16,7 +16,7 @@ test('prints useful error for requires after test is done', () => {
 
   const interestingLines = stderr
     .split('\n')
-    .slice(9, 20)
+    .slice(9, 19)
     .join('\n');
 
   expect(interestingLines).toMatchSnapshot();

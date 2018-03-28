@@ -555,11 +555,15 @@ class Runtime {
     const runScript = this._environment.runScript(transformedFile.script);
 
     if (runScript === null) {
-      const {message, stack} = separateMessageFromStack(
-        new ReferenceError(
-          'You are trying to `import` a file after the Jest environment has been torn down.',
-        ).stack,
-      );
+      const originalStack = new ReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      ).stack
+        .split('\n')
+        // Remove this file from the stack (jest-message-utils will keep one line)
+        .filter(line => line.indexOf(__filename) === -1)
+        .join('\n');
+
+      const {message, stack} = separateMessageFromStack(originalStack);
 
       console.error(
         `\n${message}\n` +
