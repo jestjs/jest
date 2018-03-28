@@ -7,10 +7,11 @@
 
 'use strict';
 
+import EventEmitter from 'events';
+
 const mockError = new TypeError('Booo');
 const mockExtendedError = new ReferenceError('Booo extended');
 const processExit = process.exit;
-const processSend = process.send;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 import {
@@ -22,9 +23,12 @@ import {
 } from '../types';
 
 let mockCount;
+let channel;
 
 beforeEach(() => {
   mockCount = 0;
+
+  jest.mock('net').mock('../channel');
 
   jest.mock(
     '../my-fancy-worker',
@@ -90,26 +94,29 @@ beforeEach(() => {
     {virtual: true},
   );
 
+  require('../channel').default.mockImplementation(() => {
+    channel = Object.assign(new EventEmitter(), {
+      send: jest.fn(),
+    });
+
+    return channel;
+  });
+
   process.exit = jest.fn();
-  process.send = jest.fn();
 
   // Require the child!
   require('../child');
 });
 
 afterEach(() => {
-  jest.resetModules();
-
-  process.removeAllListeners('message');
-
   process.exit = processExit;
-  process.send = processSend;
+  jest.resetModules();
 });
 
 it('lazily requires the file', () => {
   expect(mockCount).toBe(0);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
     './my-fancy-worker',
@@ -117,7 +124,7 @@ it('lazily requires the file', () => {
 
   expect(mockCount).toBe(0);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooWorks',
@@ -128,31 +135,31 @@ it('lazily requires the file', () => {
 });
 
 it('returns results immediately when function is synchronous', () => {
-  process.send = jest.fn();
+  channel.send = jest.fn();
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
     './my-fancy-worker',
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooWorks',
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
+  expect(channel.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooThrows',
     [],
   ]);
 
-  expect(process.send.mock.calls[1][0]).toEqual([
+  expect(channel.send.mock.calls[1][0]).toEqual([
     PARENT_MESSAGE_ERROR,
     'TypeError',
     'Booo',
@@ -160,14 +167,14 @@ it('returns results immediately when function is synchronous', () => {
     {},
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooThrowsANumber',
     [],
   ]);
 
-  expect(process.send.mock.calls[2][0]).toEqual([
+  expect(channel.send.mock.calls[2][0]).toEqual([
     PARENT_MESSAGE_ERROR,
     'Number',
     void 0,
@@ -175,14 +182,14 @@ it('returns results immediately when function is synchronous', () => {
     412,
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooThrowsAnErrorWithExtraProperties',
     [],
   ]);
 
-  expect(process.send.mock.calls[3][0]).toEqual([
+  expect(channel.send.mock.calls[3][0]).toEqual([
     PARENT_MESSAGE_ERROR,
     'ReferenceError',
     'Booo extended',
@@ -190,32 +197,32 @@ it('returns results immediately when function is synchronous', () => {
     {baz: 123, qux: 456},
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooThrowsNull',
     [],
   ]);
 
-  expect(process.send.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_ERROR);
-  expect(process.send.mock.calls[4][0][1]).toBe('Error');
-  expect(process.send.mock.calls[4][0][2]).toEqual(
+  expect(channel.send.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_ERROR);
+  expect(channel.send.mock.calls[4][0][1]).toBe('Error');
+  expect(channel.send.mock.calls[4][0][2]).toEqual(
     '"null" or "undefined" thrown',
   );
 
-  expect(process.send).toHaveBeenCalledTimes(5);
+  expect(channel.send).toHaveBeenCalledTimes(5);
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
   jest.useRealTimers();
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
     './my-fancy-worker',
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooPromiseWorks',
@@ -224,9 +231,9 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   await sleep(10);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
+  expect(channel.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'fooPromiseThrows',
@@ -235,7 +242,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   await sleep(10);
 
-  expect(process.send.mock.calls[1][0]).toEqual([
+  expect(channel.send.mock.calls[1][0]).toEqual([
     PARENT_MESSAGE_ERROR,
     'TypeError',
     'Booo',
@@ -243,51 +250,51 @@ it('returns results when it gets resolved if function is asynchronous', async ()
     {},
   ]);
 
-  expect(process.send).toHaveBeenCalledTimes(2);
+  expect(channel.send).toHaveBeenCalledTimes(2);
 });
 
 it('calls the main module if the method call is "default"', () => {
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
     './my-fancy-standalone-worker',
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'default',
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
+  expect(channel.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
 });
 
 it('calls the main export if the method call is "default" and it is a Babel transpiled one', () => {
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
     './my-fancy-babel-worker',
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_CALL,
     true, // Not really used here, but for flow type purity.
     'default',
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
+  expect(channel.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
 });
 
 it('finishes the process with exit code 0 if requested', () => {
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
     './my-fancy-worker',
   ]);
 
-  process.emit('message', [
+  channel.emit('message', [
     CHILD_MESSAGE_END,
     true, // Not really used here, but for flow type purity.
   ]);
@@ -298,34 +305,6 @@ it('finishes the process with exit code 0 if requested', () => {
 it('throws if an invalid message is detected', () => {
   // Type 27 does not exist.
   expect(() => {
-    process.emit('message', [27]);
+    channel.emit('message', [27]);
   }).toThrow(TypeError);
-});
-
-it('throws if child is not forked', () => {
-  delete process.send;
-
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
-    './my-fancy-worker',
-  ]);
-
-  expect(() => {
-    process.emit('message', [
-      CHILD_MESSAGE_CALL,
-      true, // Not really used here, but for flow type purity.
-      'fooWorks',
-      [],
-    ]);
-  }).toThrow();
-
-  expect(() => {
-    process.emit('message', [
-      CHILD_MESSAGE_CALL,
-      true, // Not really used here, but for flow type purity.
-      'fooThrows',
-      [],
-    ]);
-  }).toThrow();
 });

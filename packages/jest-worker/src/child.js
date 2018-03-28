@@ -9,6 +9,9 @@
 
 'use strict';
 
+import Channel from './channel';
+import {Socket} from 'net';
+
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
@@ -32,7 +35,9 @@ let file = null;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-process.on('message', (request: any /* Should be ChildMessage */) => {
+const channel = new Channel(new Socket({fd: 4}));
+
+channel.on('message', (request: any /* Should be ChildMessage */) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       file = request[2];
@@ -54,23 +59,15 @@ process.on('message', (request: any /* Should be ChildMessage */) => {
 });
 
 function reportSuccess(result: any) {
-  if (!process || !process.send) {
-    throw new Error('Child can only be used on a forked process');
-  }
-
-  process.send([PARENT_MESSAGE_OK, result]);
+  channel.send([PARENT_MESSAGE_OK, result]);
 }
 
 function reportError(error: Error) {
-  if (!process || !process.send) {
-    throw new Error('Child can only be used on a forked process');
-  }
-
   if (error == null) {
     error = new Error('"null" or "undefined" thrown');
   }
 
-  process.send([
+  channel.send([
     PARENT_MESSAGE_ERROR,
     error.constructor && error.constructor.name,
     error.message,

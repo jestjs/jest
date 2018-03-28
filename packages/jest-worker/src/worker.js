@@ -10,6 +10,7 @@
 'use strict';
 
 import childProcess from 'child_process';
+import Channel from './channel';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -47,6 +48,7 @@ import type {
  */
 export default class {
   _busy: boolean;
+  _channel: Channel;
   _child: ChildProcess;
   _last: ?QueueChildMessage;
   _options: WorkerOptions;
@@ -82,30 +84,47 @@ export default class {
   }
 
   _initialize() {
+    const forkOptions = this._options.forkOptions || {};
+    const forkStdio = forkOptions.stdio || [];
+
+    const stdio =
+      typeof forkStdio === 'string'
+        ? [forkStdio, forkStdio, forkStdio]
+        : forkStdio.concat('pipe', 'pipe', 'pipe').slice(0, 3);
+
     const child = childProcess.fork(
       require.resolve('./child'),
       // $FlowFixMe: Flow does not work well with Object.assign.
       Object.assign(
         {
+          // Node JS implementation defaults cwd to "undefined".
           cwd: process.cwd(),
+
+          // Add custom id to the worker.
           env: Object.assign({}, process.env, {
             JEST_WORKER_ID: this._options.workerId,
           }),
-          // Suppress --debug / --inspect flags while preserving others (like --harmony).
+
+          // Suppress --debug / --inspect flags while preserving others.
           execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-          silent: true,
         },
-        this._options.forkOptions,
+        forkOptions,
+        {
+          // Node's IPC channel is unused, but forced by Node's API.
+          stdio: stdio.concat(['ipc', 'pipe']),
+        },
       ),
     );
 
-    child.on('message', this._receive.bind(this));
+    const channel = new Channel(child.stdio[4]);
+
+    channel.on('message', this._receive.bind(this));
     child.on('exit', this._exit.bind(this));
 
-    // $FlowFixMe: wrong "ChildProcess.send" signature.
-    child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
+    channel.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
 
     this._retries++;
+    this._channel = channel;
     this._child = child;
     this._busy = false;
 
@@ -148,8 +167,7 @@ export default class {
       this._retries = 0;
       this._busy = true;
 
-      // $FlowFixMe: wrong "ChildProcess.send" signature.
-      this._child.send(item.request);
+      this._channel.send(item.request);
     } else {
       this._last = item;
     }
