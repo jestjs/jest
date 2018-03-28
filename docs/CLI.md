@@ -280,13 +280,13 @@ Prevent tests from printing messages through the console.
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests and test suites with a name that matches the regex.
-For example, suppose you want to run only tests related to authorization which
-will have names like `"GET /api/posts with auth"`, then you can use
+Alias: `-t`. Run only tests and describe blocks with a name that matches the
+regex. For example, suppose you want to run only tests related to authorization
+which will have names like `"GET /api/posts with auth"`, then you can use
 `jest -t=auth`.
 
 _Note: The regex is matched against the full name, which is a combination of the
-test name and all its surrounding suites._
+test name and all its surrounding describe blocks._
 
 ### `--testLocationInResults`
 
