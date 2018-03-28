@@ -69,6 +69,8 @@
   mode. ([#5861](https://github.com/facebook/jest/pull/5861))
 * `[jest-mock]` Extend .toHaveBeenCalled return message with outcome
   ([#5951](https://github.com/facebook/jest/pull/5951))
+* `[jest-message-util]` Include column in stack frames
+  (TBD)
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
   ([#5860](https://github.com/facebook/jest/pull/5860))
 * `[jest-cli]` Add descriptive error message when trying to use
