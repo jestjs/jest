@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-editor-support]` Add `coverage` option to runner
+  ([#5836](https://github.com/facebook/jest/pull/5836))
 * `[jest-haste-map]` Support extracting dynamic `import`s
   ([#5883](https://github.com/facebook/jest/pull/5883))
 * `[expect]` Improve output format for mismatchedArgs in mock/spy calls.
