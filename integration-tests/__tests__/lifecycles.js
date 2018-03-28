@@ -15,4 +15,5 @@ test('suite with invalid assertions in afterAll', () => {
 
   expect(status).toBe(1);
   expect(stderr).toMatch(/FAIL/);
+  expect(stderr).toMatch(/\.afterAll/);
 });
