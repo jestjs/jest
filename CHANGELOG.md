@@ -61,6 +61,9 @@
 
 ### Fixes
 
+* `[jest-runtime]` Throw a more useful error when trying to require modules
+  after the test environment is torn down
+  ([#5888](https://github.com/facebook/jest/pull/5888))
 * `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch
   runtime errors ([#5945](https://github.com/facebook/jest/pull/5945))
 * `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
