@@ -15,7 +15,7 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ManualMocks.md" target="_blank">Edit</a><h1>Manual Mocks</h1></header><article><div><span><p>Mocks, ou simulações, manuais são usadas para esboçar funcionalidade com dados simulados. Por exemplo, em vez de acessar um recurso remoto como um site ou um banco de dados, convém criar uma simulação manual que permite a utilização de dados falsos. Isso garante que os seus testes serão rápidos e não fragmentados.</p>
-<p>Simulações manuais são definidas por escrever um módulo em um subdiretório <code>__mocks__/</code> imediatamente adjacente ao módulo. Por exemplo, para simular (mock, em inglês) um módulo chamado <code>user</code> no diretório <code>models</code>, crie um arquivo chamado <code>user.js</code> e coloque ele no diretório <code>models/__mocks__</code>. Observe que a pasta <code>__mocks__</code> é sensível a maiúsculas e minúsculas, então nomeando o diretório <code>__MOCKS__</code> vai quebrar em alguns sistemas. If the module you are mocking is a node module (eg: <code>fs</code>), the mock should be placed in the <code>__mocks__</code> directory adjacent to <code>node_modules</code> (unless you configured <a href="/jest/docs/pt-BR/22.2/configuration.html#roots-array-string"><code>roots</code></a> to point to a folder other than the project root). Por exemplo:</p>
+<p>Simulações manuais são definidas por escrever um módulo em um subdiretório <code>__mocks__/</code> imediatamente adjacente ao módulo. Por exemplo, para simular (mock, em inglês) um módulo chamado <code>user</code> no diretório <code>models</code>, crie um arquivo chamado <code>user.js</code> e coloque ele no diretório <code>models/__mocks__</code>. Observe que a pasta <code>__mocks__</code> é sensível a maiúsculas e minúsculas, então nomeando o diretório <code>__MOCKS__</code> vai quebrar em alguns sistemas. Se o módulo que você está simulando é um módulo Node (por exemplo: <code>fs</code>), a simulação deve ser colocada no diretório <code>__mocks__</code> adjacente ao <code>node_modules</code> (a menos que você configurou <a href="/jest/docs/pt-BR/22.2/configuration.html#roots-array-string"> <code>roots</code></a> para apontar para uma pasta diferente da raiz do projeto). Por exemplo:</p>
 <pre><code class="hljs css bash">.
 ├── config
 ├── __mocks__
@@ -27,8 +27,8 @@
 ├── node_modules
 └── views
 </code></pre>
-<p>Quando uma simulação manual existe para um determinado módulo, o sistema de módulo do Jest usará esse módulo ao chamar explicitamente <code>jest.mock('moduleName')</code>. However, manual mocks will take precedence over node modules even if <code>jest.mock('moduleName')</code> is not called. Para desativar esse comportamento, você precisará chamar explicitamente <code>jest.unmock('moduleName')</code> em testes que devem usar a implementação efetiva do módulo.</p>
-<p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory.</p>
+<p>Quando uma simulação manual existe para um determinado módulo, o sistema de módulo do Jest usará esse módulo ao chamar explicitamente <code>jest.mock('moduleName')</code>. No entanto, simulações manuais terão precedência sobre módulos Node mesmo se <code>jest.mock('moduleName')</code> não é chamado. Para desativar esse comportamento, você precisará chamar explicitamente <code>jest.unmock('moduleName')</code> em testes que devem usar a implementação efetiva do módulo.</p>
+<p>Aqui está um exemplo inventado, onde temos um módulo que fornece um resumo de todos os arquivos em um determinado diretório.</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;
 

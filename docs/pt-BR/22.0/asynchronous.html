@@ -89,7 +89,7 @@ test(<span class="hljs-string">'the fetch fails with an error'</span>, <span cla
   }
 });
 </code></pre>
-<p>Of course, you can combine <code>async</code> and <code>await</code> with <code>.resolves</code> or <code>.rejects</code> (available in Jest <strong>20.0.0+</strong>).</p>
+<p>É claro que você pode combinar <code>async</code> e <code>await</code> com <code>.resolves</code> ou <code>.rejects</code> (disponível em Jest <strong>20.0.0+</strong>).</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'the data is peanut butter'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">await</span> expect(fetchData()).resolves.toBe(<span class="hljs-string">'peanut butter'</span>);

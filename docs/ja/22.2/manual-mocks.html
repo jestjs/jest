@@ -15,7 +15,7 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ManualMocks.md" target="_blank">Edit</a><h1>Manual Mocks</h1></header><article><div><span><p>マニュアルモックはモックデータを返す機能をスタブするために使用します。 例えば、ウェブサイトやデータベースのような外部リソースにアクセスする代わりに、偽のデータが使えるマニュアルモックが欲しいと考えるでしょう。 これによりテストは高速で信頼性の高いものになります。</p>
-<p>マニュアルモックは モジュールのディレクトリ直下の <code>__mocks__/</code> サブディレクトリにモックモジュールを作成することで定義します。 例えば <code>models</code> ディレクトリに <code>user</code> と呼ばれるモジュールをモックを作成するには、 <code>models/__mocks__</code> ディレクトリに<code>user.js</code> というファイルを作成して配置します。 <code>__mocks__</code> のフォルダ名は小文字であることが必要で、ディレクトリ名を <code>__MOCKS__</code> にすると一部のシステムが壊れる場合があることに注意してください。 If the module you are mocking is a node module (eg: <code>fs</code>), the mock should be placed in the <code>__mocks__</code> directory adjacent to <code>node_modules</code> (unless you configured <a href="/jest/docs/ja/22.2/configuration.html#roots-array-string"><code>roots</code></a> to point to a folder other than the project root). 例:</p>
+<p>マニュアルモックは モジュールのディレクトリ直下の <code>__mocks__/</code> サブディレクトリにモックモジュールを作成することで定義します。 例えば <code>models</code> ディレクトリに <code>user</code> と呼ばれるモジュールをモックを作成するには、 <code>models/__mocks__</code> ディレクトリに<code>user.js</code> というファイルを作成して配置します。 <code>__mocks__</code> のフォルダ名は小文字であることが必要で、ディレクトリ名を <code>__MOCKS__</code> にすると一部のシステムが壊れる場合があることに注意してください。 モックしているモジュールが node モジュール（例： <code>fs</code>）なら、（<a href="/jest/docs/ja/22.2/configuration.html#roots-array-string"><code>roots</code></a> プロジェクトルート以外のフォルダを指すよう設定していない限り）モックは <code>node_modules</code> と同じ階層の <code>__mocks__</code> ディレクトリに格納されている必要があります。 例:</p>
 <pre><code class="hljs css bash">.
 ├── config
 ├── __mocks__
@@ -27,8 +27,8 @@
 ├── node_modules
 └── views
 </code></pre>
-<p>与えられたモジュールにマニュアルモックが存在する場合、Jest のモジュールシステムは <code>jest.mock('moduleName')</code> によってモックモジュールが明示的に呼び出された時に使用します。 However, manual mocks will take precedence over node modules even if <code>jest.mock('moduleName')</code> is not called. この振る舞いを止めさせるには、本物のモジュールを使用するべきテストの中で <code>jest.unmock('moduleName')</code> を明示的に呼び出す必要があります。</p>
-<p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory.</p>
+<p>与えられたモジュールにマニュアルモックが存在する場合、Jest のモジュールシステムは <code>jest.mock('moduleName')</code> によってモックモジュールが明示的に呼び出された時に使用します。 しかしマニュアルモックは <code>jest.mock('moduleName')</code>が呼ばれていない場合でも、nodeモジュールより優先されます。 この振る舞いを止めさせるには、本物のモジュールを使用するべきテストの中で <code>jest.unmock('moduleName')</code> を明示的に呼び出す必要があります。</p>
+<p>以下は指定されたディレクトリ内の全てのファイルの要約を提供するモジュールの分かりやすい例です。</p>
 <pre><code class="hljs css javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;
 
