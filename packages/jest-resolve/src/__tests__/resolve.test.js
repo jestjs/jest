@@ -204,6 +204,23 @@ describe('nodeModulesPaths', () => {
   });
 });
 
+describe('customResolver', () => {
+  it('allows to specify a custom resolution strategy', () => {
+    const moduleMap = new ModuleMap({
+      duplicates: [],
+      map: [],
+      mocks: [],
+    });
+
+    const resolver = new Resolver(moduleMap, {
+      customResolver: (request, issuer) => `/foo`,
+      extensions: ['.js'],
+    });
+
+    expect(resolver.resolveModule('foo', './foo')).toBe('/foo');
+  });
+});
+
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
   let moduleMap;

@@ -14,3 +14,5 @@ export type ResolveModuleConfig = {|
 |};
 
 export type Resolver = _Resolver;
+
+export type CustomResolver = (string, string) => string;
