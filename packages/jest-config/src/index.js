@@ -149,6 +149,7 @@ const getConfigs = (
       cacheDirectory: options.cacheDirectory,
       clearMocks: options.clearMocks,
       coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+      customResolver: options.customResolver,
       cwd: options.cwd,
       detectLeaks: options.detectLeaks,
       displayName: options.displayName,

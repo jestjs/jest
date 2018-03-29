@@ -37,6 +37,7 @@ export default ({
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  customResolver: null,
   detectLeaks: false,
   expand: false,
   forceCoverageMatch: [],

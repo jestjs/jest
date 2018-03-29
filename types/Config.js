@@ -7,6 +7,8 @@
  * @flow
  */
 
+import type {CustomResolver} from 'types/Resolve';
+
 export type Path = string;
 export type Glob = string;
 
@@ -31,6 +33,7 @@ export type DefaultOptions = {|
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
   coverageReporters: Array<string>,
+  customResolver: ?CustomResolver,
   expand: boolean,
   forceCoverageMatch: Array<Glob>,
   globals: ConfigGlobals,
@@ -86,6 +89,7 @@ export type InitialOptions = {
   coveragePathIgnorePatterns?: Array<string>,
   coverageReporters?: Array<string>,
   coverageThreshold?: {global: {[key: string]: number}},
+  customResolver?: ?CustomResolver,
   detectLeaks?: boolean,
   displayName?: string,
   expand?: boolean,
@@ -218,6 +222,7 @@ export type ProjectConfig = {|
   cacheDirectory: Path,
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
+  customResolver: ?CustomResolver,
   cwd: Path,
   detectLeaks: boolean,
   displayName: ?string,

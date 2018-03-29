@@ -36,6 +36,7 @@ export default ({
       branches: 50,
     },
   },
+  customResolver: (request, issuer) => require.resolve(request),
   displayName: 'project-name',
   expand: false,
   forceCoverageMatch: ['**/*.t.js'],

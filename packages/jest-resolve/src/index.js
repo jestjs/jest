@@ -9,7 +9,7 @@
 
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
-import type {ResolveModuleConfig} from 'types/Resolve';
+import type {CustomResolver, ResolveModuleConfig} from 'types/Resolve';
 
 import fs from 'fs';
 import path from 'path';
@@ -20,6 +20,7 @@ import chalk from 'chalk';
 
 type ResolverConfig = {|
   browser?: boolean,
+  customResolver?: ?CustomResolver,
   defaultPlatform: ?string,
   extensions: Array<string>,
   hasCoreModules: boolean,
@@ -70,6 +71,7 @@ class Resolver {
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
       browser: options.browser,
+      customResolver: options.customResolver,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
       hasCoreModules:
@@ -147,8 +149,12 @@ class Resolver {
     // node modules (ie. are not relative requires). This enables us to speed
     // up resolution when we build a dependency graph because we don't have
     // to look at modules that may not exist and aren't mocked.
-    const skipResolution =
+    let skipNodeResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
+
+    if (this._options.customResolver) {
+      skipNodeResolution = true;
+    }
 
     const resolveNodeModule = name => {
       return Resolver.findNodeModule(name, {
@@ -162,7 +168,7 @@ class Resolver {
       });
     };
 
-    if (!skipResolution) {
+    if (!skipNodeResolution) {
       module = resolveNodeModule(moduleName);
 
       if (module) {
@@ -187,7 +193,19 @@ class Resolver {
       } catch (ignoredError) {}
     }
 
-    // 4. Throw an error if the module could not be found. `resolve.sync`
+    // 4. Try to resolve packages using the custom resolver if applicable
+    if (this._options.customResolver) {
+      try {
+        return (this._moduleNameCache[key] = this._options.customResolver(
+          moduleName,
+          from,
+        ));
+      } catch (ignoredError) {
+        console.log(ignoredError);
+      }
+    }
+
+    // 5. Throw an error if the module could not be found. `resolve.sync`
     //    only produces an error based on the dirname but we have the actual
     //    current module name available.
     const relativePath = path.relative(dirname, from);

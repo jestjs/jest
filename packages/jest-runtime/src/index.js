@@ -247,6 +247,7 @@ class Runtime {
   static createResolver(config: ProjectConfig, moduleMap: ModuleMap): Resolver {
     return new Resolver(moduleMap, {
       browser: config.browser,
+      customResolver: config.customResolver,
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
       hasCoreModules: true,
