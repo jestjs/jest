@@ -253,51 +253,6 @@ and to transform `require` statements, there is
 [Facebook's `inline-requires` babel plugin](https://github.com/facebook/fbjs/blob/master/packages/babel-preset-fbjs/plugins/inline-requires.js),
 which is part of the `babel-preset-fbjs` package.
 
-### I'm using npm3 and my node_modules aren't properly loading.
-
-Upgrade `jest-cli` to `0.9.0` or above.
-
-### I'm using babel and my unmocked imports aren't working?
-
-Upgrade `jest-cli` to `0.9.0` or above.
-
-Explanation:
-
-```js
-jest.dontMock('foo');
-
-import foo from './foo';
-```
-
-In ES6, import statements get hoisted before all other
-
-```js
-const foo = require('foo');
-jest.dontMock('foo'); // Oops!
-```
-
-In Jest 0.9.0, a new API `jest.unmock` was introduced. Together with a plugin
-for babel, this will now work properly when using `babel-jest`:
-
-```js
-jest.unmock('./foo'); // Use unmock!
-
-import foo from './foo';
-
-// foo is not mocked!
-```
-
-See the [Getting Started]GettingStarted.md#using-babel) guide on how to enable
-babel support.
-
-### I upgraded to Jest 0.9.0 and my tests are now failing?
-
-Jest is now using Jasmine 2 by default. It should be easy to upgrade using the
-Jasmine [upgrade guide](http://jasmine.github.io/2.0/introduction.html).
-
-If you would like to continue using Jasmine 1, set the `testRunner` config
-option to `jasmine1` or pass `--testRunner=jasmine1` as a command line option.
-
 ### Compatibility issues
 
 Jest takes advantage of new features added to Node 6. We recommend that you
