@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {MatchersObject} from 'types/Matchers';
+import type {MatchersObject, ExpectationFixit} from 'types/Matchers';
 
 import diff from 'jest-diff';
 import getType from 'jest-get-type';
@@ -30,6 +30,7 @@ import {
   subsetEquality,
 } from './utils';
 import {equals} from './jasmine_utils';
+import {fixitForToEqual} from './fixits/to_equal';
 
 type ContainIterable =
   | Array<any>
@@ -376,10 +377,15 @@ const matchers: MatchersObject = {
           );
         };
 
+    let fixit: ?ExpectationFixit = null;
+    if (!pass) {
+      fixit = fixitForToEqual(received, expected);
+    }
+
     // Passing the the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return {actual: received, expected, message, name: 'toEqual', pass};
+    return {actual: received, expected, fixit, message, name: 'toEqual', pass};
   },
 
   toHaveLength(received: any, length: number) {

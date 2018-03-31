@@ -7,6 +7,8 @@
  * @flow
  */
 
+import type {ExpectationFixit} from 'types/Matchers';
+
 import type {ConsoleBuffer} from './Console';
 
 export type RawFileCoverage = {|
@@ -102,6 +104,7 @@ export type AssertionResult = {|
   numPassingAsserts: number,
   status: Status,
   title: string,
+  fixits?: Array<ExpectationFixit>,
 |};
 
 export type FormattedAssertionResult = {
@@ -110,6 +113,7 @@ export type FormattedAssertionResult = {
   location: ?Callsite,
   status: Status,
   title: string,
+  fixits?: Array<ExpectationFixit>,
 };
 
 export type AggregatedResultWithoutCoverage = {
@@ -144,6 +148,7 @@ export type TestResult = {|
   coverage?: RawCoverage,
   displayName: ?string,
   failureMessage: ?string,
+  fixits: Array<ExpectationFixit>,
   leaks: boolean,
   memoryUsage?: Bytes,
   numFailingTests: number,

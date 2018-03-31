@@ -104,12 +104,12 @@ export const runAndTransformResultsToJestFormat = async ({
       name => name !== ROOT_DESCRIBE_BLOCK_NAME,
     );
     const title = ancestorTitles.pop();
-
     // $FlowFixMe Types are slightly incompatible and need to be refactored
     return {
       ancestorTitles,
       duration: testResult.duration,
       failureMessages: testResult.errors,
+      fixits: testResult.fixits,
       fullName: ancestorTitles.concat(title).join(' '),
       numPassingAsserts: 0,
       status,

@@ -7,8 +7,10 @@
  * @flow
  */
 
+import type {ExpectationFixit} from 'types/Matchers';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Environment} from 'types/Environment';
+
 import type {
   AssertionResult,
   FailedAssertion,
@@ -32,6 +34,7 @@ type SpecResult = {
   description: string,
   duration?: Milliseconds,
   failedExpectations: Array<FailedAssertion>,
+  fixits: Array<ExpectationFixit>,
   fullName: string,
   id: string,
   status: Status,
@@ -166,6 +169,7 @@ export default class Jasmine2Reporter {
       ancestorTitles,
       duration,
       failureMessages: [],
+      fixits: specResult.fixits,
       fullName: specResult.fullName,
       location,
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
