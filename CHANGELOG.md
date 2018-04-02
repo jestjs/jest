@@ -42,6 +42,9 @@
   ([#5826](https://github.com/facebook/jest/pull/5826))
 * `[jest-cli]` Interactive Snapshot Mode improvements
   ([#5864](https://github.com/facebook/jest/pull/5864))
+  * `[jest-editor-support]` Add `no-color` option to runner
+  ([#5909](https://github.com/facebook/jest/pull/5909))
+
 
 ### Fixes
 

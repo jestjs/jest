@@ -251,6 +251,17 @@ describe('Runner', () => {
 
       expect((createProcess: any).mock.calls[0][2]).toEqual({shell: true});
     });
+
+    it('calls createProcess with the no color option when provided', () => {
+      const expected = '--no-color';
+
+      const workspace: any = {};
+      const options = {noColor: true};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][1]).toContain(expected);
+    });
   });
 
   describe('closeProcess', () => {

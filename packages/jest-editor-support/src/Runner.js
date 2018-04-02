@@ -72,6 +72,9 @@ export default class Runner extends EventEmitter {
     if (this.options.coverage === false) {
       args.push('--no-coverage');
     }
+    if (this.options.noColor === true) {
+      args.push('--no-color');
+    }
 
     const options = {
       shell: this.options.shell,
