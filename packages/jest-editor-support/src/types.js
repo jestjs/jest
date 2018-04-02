@@ -26,6 +26,7 @@ export type Options = {
     args: Array<string>,
     options?: SpawnOptions,
   ) => ChildProcess,
+  noColor?: boolean,
   testNamePattern?: string,
   testFileNamePattern?: string,
   shell?: boolean,

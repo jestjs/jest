@@ -19,6 +19,7 @@ export interface Options {
     args: string[],
     options?: SpawnOptions,
   ): ChildProcess;
+  noColor?: boolean;
   testNamePattern?: string;
   testFileNamePattern?: string;
   shell?: boolean;
@@ -171,7 +172,7 @@ export interface SnapshotMetadata {
   exists: boolean;
   name: string;
   node: {
-    loc: Node
+    loc: Node;
   };
   content?: string;
 }
