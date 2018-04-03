@@ -45,7 +45,6 @@
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
 
-
 ### Fixes
 
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
