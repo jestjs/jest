@@ -153,9 +153,9 @@ export const options = {
   },
   collectCoverageFrom: {
     description:
-      'An array of glob patterns relative to <rootDir> matching the files ' +
-      'that coverage info needs to be collected from.',
-    type: 'array',
+      'A glob pattern relative to <rootDir> matching the files that coverage ' +
+      'info needs to be collected from.',
+    type: 'string',
   },
   collectCoverageOnlyFrom: {
     description: 'Explicit list of paths coverage will be restricted to.',
