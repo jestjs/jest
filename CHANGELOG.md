@@ -73,13 +73,15 @@
   ([#5720](https://github.com/facebook/jest/pull/5720))
 * `[pretty-format]` Handle React fragments better
   ([#5816](https://github.com/facebook/jest/pull/5816))
+* `[jest-cli]` Switch collectCoverageFrom back to a string
+  ([#5914](https://github.com/facebook/jest/pull/5914))
 
 ### Chore & Maintenance
 
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
   ([#5885](https://github.com/facebook/jest/pull/5885))
-* `*` Run Prettier on compiled output
+* `[*]` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
 * `[jest-cli]` Add fileChange hook for plugins
   ([#5708](https://github.com/facebook/jest/pull/5708))
