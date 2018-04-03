@@ -75,12 +75,45 @@ test('even and odd numbers', () => {
 });
 ```
 
-Matchers should return an object with two keys. `pass` indicates whether there
-was a match or not, and `message` provides a function with no arguments that
-returns an error message in case of failure. Thus, when `pass` is false,
-`message` should return the error message for when `expect(x).yourMatcher()`
-fails. And when `pass` is true, `message` should return the error message for
-when `expect(x).not.yourMatcher()` fails.
+`expect.extends` also supports async matchers. Async matchers return a Promise
+so you will need to await the returned value. Let's use an example matcher to
+illustrate the usage of them. We are going to implement a very similar matcher
+than `toBeDivisibleBy`, only difference is that the divisible number is going to
+be pulled from an external source.
+
+```js
+expect.extend({
+  async toBeDivisibleByExternalValue(received) {
+    const externalValue = await getExternalValueFromRemoteSource();
+    const pass = received % externalValue == 0;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${received} not to be divisible by ${externalValue}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${received} to be divisible by ${externalValue}`,
+        pass: false,
+      };
+    }
+  },
+});
+
+test('is divisible by external value', async () => {
+  await expect(100).toBeDivisibleByExternalValue();
+  await expect(101).not.toBeDivisibleByExternalValue();
+});
+```
+
+Matchers should return an object (or a Promise of an object) with two keys.
+`pass` indicates whether there was a match or not, and `message` provides a
+function with no arguments that returns an error message in case of failure.
+Thus, when `pass` is false, `message` should return the error message for when
+`expect(x).yourMatcher()` fails. And when `pass` is true, `message` should
+return the error message for when `expect(x).not.yourMatcher()` fails.
 
 These helper functions can be found on `this` inside a custom matcher:
 

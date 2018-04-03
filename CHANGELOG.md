@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[expect]` Add support for async matchers
+  ([#5836](https://github.com/facebook/jest/pull/5919))
 * `[expect]` Suggest toContainEqual
   ([#5948](https://github.com/facebook/jest/pull/5953))
 * `[jest-config]` Export Jest's default options

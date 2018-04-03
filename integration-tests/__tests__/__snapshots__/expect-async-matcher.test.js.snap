@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`shows the correct errors in stderr when failing tests 1`] = `
+Object {
+  "rest": "FAIL __tests__/failure.test.js
+  ✕ fail with expected non promise values
+  ✕ fail with expected non promise values and not
+  ✕ fail with expected promise values
+  ✕ fail with expected promise values and not
+
+  ● fail with expected non promise values
+
+    Error
+      Error: Expected value to have length:
+        2
+      Received:
+        1
+      received.length:
+        1
+
+  ● fail with expected non promise values and not
+
+    Error
+      Error: Expected value to not have length:
+        2
+      Received:
+        1,2
+      received.length:
+        2
+
+  ● fail with expected promise values
+
+    Error
+      Error: Expected value to have length:
+        2
+      Received:
+        1
+      received.length:
+        1
+
+  ● fail with expected promise values and not
+
+    Error
+      Error: Expected value to not have length:
+        2
+      Received:
+        1,2
+      received.length:
+        2
+
+",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       4 failed, 4 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /failure.test.js/i.
+",
+}
+`;
