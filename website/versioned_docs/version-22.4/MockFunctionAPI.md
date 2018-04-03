@@ -245,7 +245,7 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 Simple sugar function for:
 
 ```js
-jest.fn().mockImplementation(() => Promise.resolve(value));
+jest.fn().mockReturnValue(Promise.resolve(value));
 ```
 
 Useful to mock async functions in async tests:
@@ -263,7 +263,7 @@ test('async test', async () => {
 Simple sugar function for:
 
 ```js
-jest.fn().mockImplementationOnce(() => Promise.resolve(value));
+jest.fn().mockReturnValueOnce(Promise.resolve(value));
 ```
 
 Useful to resolve different values over multiple async calls:
@@ -288,7 +288,7 @@ test('async test', async () => {
 Simple sugar function for:
 
 ```js
-jest.fn().mockImplementation(() => Promise.reject(value));
+jest.fn().mockReturnValue(Promise.reject(value));
 ```
 
 Useful to create async mock functions that will always reject:
@@ -306,7 +306,7 @@ test('async test', async () => {
 Simple sugar function for:
 
 ```js
-jest.fn().mockImplementationOnce(() => Promise.reject(value));
+jest.fn().mockReturnValueOnce(Promise.reject(value));
 ```
 
 Example usage:
