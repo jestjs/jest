@@ -13,7 +13,6 @@ export interface SpawnOptions {
 }
 
 export interface Options {
-  coverage?: boolean;
   createProcess?(
     workspace: ProjectWorkspace,
     args: string[],

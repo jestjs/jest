@@ -1,5 +1,8 @@
 ## master
 
+* `[jest-editor-support]` Move `Options.coverage` to `ProjectWorkspace.collectCoverage`
+  ([#](https://github.com/facebook/jest/pull/))
+
 ### Features
 
 * `[jest-editor-support]` Add `coverage` option to runner

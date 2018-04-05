@@ -47,7 +47,7 @@ export default class ProjectWorkspace {
   localJestMajorVersion: number;
 
   /**
-   * Whether test coverage should be automatically collected.
+   * Whether test coverage should be (automatically) collected.
    * 
    * @type {boolean}
    */
