@@ -29,11 +29,7 @@ import {
   getTestEnvironment,
   resolve,
 } from './utils';
-import {
-  NODE_MODULES,
-  DEFAULT_JS_PATTERN,
-  DEFAULT_REPORTER_LABEL,
-} from './constants';
+import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './reporter_validation_errors';
 import DEFAULT_CONFIG from './defaults';
 import DEPRECATED_CONFIG from './deprecated';
@@ -103,7 +99,6 @@ const setupPreset = (
 };
 
 const setupBabelJest = (options: InitialOptions) => {
-  const basedir = options.rootDir;
   const transform = options.transform;
   let babelJest;
   if (transform) {
@@ -113,11 +108,11 @@ const setupBabelJest = (options: InitialOptions) => {
     });
 
     if (customJSPattern) {
-      const customJSTransformer = options.transform[customJSPattern];
+      const customJSTransformer = transform[customJSPattern];
 
       if (customJSTransformer === 'babel-jest') {
         babelJest = require.resolve('babel-jest');
-        options.transform[customJSPattern] = babelJest;
+        transform[customJSPattern] = babelJest;
       } else if (customJSTransformer.includes('babel-jest')) {
         babelJest = customJSTransformer;
       }
@@ -125,7 +120,7 @@ const setupBabelJest = (options: InitialOptions) => {
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
-      [DEFAULT_JS_PATTERN]: babelJest
+      [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
 

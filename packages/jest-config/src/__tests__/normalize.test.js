@@ -684,9 +684,10 @@ describe('babel-jest', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(
-      name => {
-        return name.indexOf('babel-jest') === -1 ? path.sep + 'node_modules' + path.sep + name : name;
-      }
+      name =>
+        name.indexOf('babel-jest') === -1
+          ? path.sep + 'node_modules' + path.sep + name
+          : name,
     );
   });
 
@@ -699,9 +700,7 @@ describe('babel-jest', () => {
     );
 
     expect(options.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
-    expect(options.transform[0][1]).toEqual(
-      require.resolve('babel-jest'),
-    );
+    expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
     expect(options.setupFiles).toEqual([
       path.sep +
         'node_modules' +
