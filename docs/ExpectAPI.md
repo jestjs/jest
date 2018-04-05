@@ -318,7 +318,7 @@ describe('not.objectContaining', () => {
 
 ### `expect.not.stringContaining(string)`
 
-`expect.not.stringContaining(string)` matches any received string that does not
+`expect.not.stringContaining(string)` matches the received string that does not
 contain the exact expected string.
 
 It is the inverse of `expect.stringContaining`.
@@ -333,10 +333,10 @@ describe('not.stringContaining', () => {
 });
 ```
 
-### `expect.not.stringMatching(regexp)`
+### `expect.not.stringMatching(string | regexp)`
 
-`expect.not.stringMatching(regexp)` matches any received string that does not
-match the expected regexp.
+`expect.not.stringMatching(string | regexp)` matches the received string that does not
+match the expected string or regexp.
 
 It is the inverse of `expect.stringMatching`.
 
@@ -379,13 +379,13 @@ test('onPress gets called with the right thing', () => {
 
 ### `expect.stringContaining(string)`
 
-`expect.stringContaining(string)` matches any received string that contains the
+`expect.stringContaining(string)` matches the received string that contains the
 exact expected string.
 
-### `expect.stringMatching(regexp)`
+### `expect.stringMatching(string | regexp)`
 
-`expect.stringMatching(regexp)` matches any received string that matches the
-expected regexp.
+`expect.stringMatching(string | regexp)` matches the received string that matches the
+expected string or regexp.
 
 You can use it instead of a literal value:
 
