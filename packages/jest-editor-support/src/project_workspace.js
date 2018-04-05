@@ -48,7 +48,7 @@ export default class ProjectWorkspace {
 
   /**
    * Whether test coverage should be (automatically) collected.
-   * 
+   *
    * @type {boolean}
    */
   collectCoverage: ?boolean;

@@ -183,7 +183,7 @@ describe('Runner', () => {
     it('calls createProcess with the --coverage arg when provided', () => {
       const expected = '--coverage';
 
-      const workspace: any = { collectCoverage: true };
+      const workspace: any = {collectCoverage: true};
       const options = {};
       const sut = new Runner(workspace, options);
       sut.start(false);
@@ -196,7 +196,7 @@ describe('Runner', () => {
     it('calls createProcess with the ---no-coverage arg when provided and false', () => {
       const expected = '--no-coverage';
 
-      const workspace: any = { collectCoverage: false };
+      const workspace: any = {collectCoverage: false};
       const options = {};
       const sut = new Runner(workspace, options);
       sut.start(false);
