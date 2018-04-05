@@ -113,24 +113,20 @@ const setupBabelJest = (options: InitialOptions) => {
     });
 
     if (customJSPattern) {
-      const jsTransformer = Resolver.findNodeModule(
-        transform[customJSPattern],
-        {basedir},
-      );
-      if (
-        jsTransformer &&
-        jsTransformer.includes(NODE_MODULES + 'babel-jest')
-      ) {
-        babelJest = jsTransformer;
+      const customJSTransformer = options.transform[customJSPattern];
+
+      if (customJSTransformer === 'babel-jest') {
+        babelJest = require.resolve('babel-jest');
+        options.transform[customJSPattern] = babelJest;
+      } else if (customJSTransformer.includes('babel-jest')) {
+        babelJest = customJSTransformer;
       }
     }
   } else {
-    babelJest = Resolver.findNodeModule('babel-jest', {basedir});
-    if (babelJest) {
-      options.transform = {
-        [DEFAULT_JS_PATTERN]: 'babel-jest',
-      };
-    }
+    babelJest = require.resolve('babel-jest');
+    options.transform = {
+      [DEFAULT_JS_PATTERN]: babelJest
+    };
   }
 
   return babelJest;
