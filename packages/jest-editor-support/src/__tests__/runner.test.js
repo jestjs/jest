@@ -180,6 +180,45 @@ describe('Runner', () => {
       expect((createProcess: any).mock.calls[0][1]).toContain('--watch');
     });
 
+    it('calls createProcess with the --coverage arg when provided', () => {
+      const expected = '--coverage';
+
+      const workspace: any = {};
+      const options = {coverage: true};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf(expected);
+      expect(index).not.toBe(-1);
+    });
+
+    it('calls createProcess with the ---no-coverage arg when provided and false', () => {
+      const expected = '--no-coverage';
+
+      const workspace: any = {};
+      const options = {coverage: false};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf(expected);
+      expect(index).not.toBe(-1);
+    });
+
+    it('calls createProcess without the --coverage arg when undefined', () => {
+      const expected = '--coverage';
+
+      const workspace: any = {};
+      const options = {};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf(expected);
+      expect(index).toBe(-1);
+    });
+
     it('calls createProcess with the --testNamePattern arg when provided', () => {
       const expected = 'testNamePattern';
 
@@ -211,6 +250,17 @@ describe('Runner', () => {
       sut.start(false);
 
       expect((createProcess: any).mock.calls[0][2]).toEqual({shell: true});
+    });
+
+    it('calls createProcess with the no color option when provided', () => {
+      const expected = '--no-color';
+
+      const workspace: any = {};
+      const options = {noColor: true};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][1]).toContain(expected);
     });
   });
 

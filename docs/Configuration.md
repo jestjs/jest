@@ -192,7 +192,7 @@ different root directories. Example:
 Default: `["json", "lcov", "text"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any
-[istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report)
+[istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib)
 can be used.
 
 _Note: Setting this option overwrites the default values. Add `"text"` or
@@ -506,8 +506,6 @@ tests._
 
 Default: `undefined`
 
-##### available in Jest **20.0.0+**
-
 Use this configuration option to add custom reporters to Jest. A custom reporter
 is a class that implements `onRunStart`, `onTestStart`, `onTestResult`,
 `onRunComplete` methods that will be called when any of those events occurs.
@@ -606,8 +604,6 @@ programmatically using [`jest.resetModules()`](#jest-resetmodules).
 
 Default: `undefined`
 
-##### available in Jest **20.0.0+**
-
 This option allows the use of a custom resolver. This resolver must be a node
 module that exports a function expecting a string as the first argument for the
 path to resolve and an object with the following structure as the second
@@ -676,8 +672,6 @@ where you may want to have multiple roots within one project, for example
 `roots: ["<rootDir>/src/", "<rootDir>/tests/"]`._
 
 ### `runner` [string]
-
-##### available in Jest **21.0.0+**
 
 Default: `"jest-runner"`
 
@@ -816,8 +810,6 @@ you can use the `node` option to use a node-like environment instead.
 If some tests require another environment, you can add a `@jest-environment`
 docblock.
 
-##### available in Jest **20.0.0+**
-
 ```js
 /**
  * @jest-environment jsdom
@@ -834,8 +826,6 @@ environment. The module must export a class with `setup`, `teardown` and
 `runScript` methods. You can also pass variables from this module to your test
 suites by assigning them to `this.global` object &ndash; this will make them
 available in your test suites as global variables.
-
-##### available in Jest **22.0.0+**
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown
 in their own TestEnvironment._
@@ -880,8 +870,6 @@ beforeAll(() => {
 
 ### `testEnvironmentOptions` [Object]
 
-##### available in Jest **22.0.0+**
-
 Default: `{}`
 
 Test environment options that will be passed to the `testEnvironment`. The
@@ -890,8 +878,6 @@ given to [jsdom](https://github.com/tmpvar/jsdom) such as
 `{userAgent: "Agent/007"}`.
 
 ### `testMatch` [array<string>]
-
-##### available in Jest **19.0.0+**
 
 (default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)' ]`)
 
@@ -1109,8 +1095,6 @@ errors will also still be shown on the bottom after execution.
 ### `watchPathIgnorePatterns` [array<string>]
 
 Default: `[]`
-
-##### available in Jest **21.0.0+**
 
 An array of RegExp patterns that are matched against all source file paths
 before re-running tests in watch mode. If the file path matches any of the

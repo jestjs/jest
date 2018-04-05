@@ -455,8 +455,6 @@ test('the best flavor is not coconut', () => {
 
 ### `.resolves`
 
-##### available in Jest **20.0.0+**
-
 Use `resolves` to unwrap the value of a fulfilled promise so any other matcher
 can be chained. If the promise is rejected the assertion fails.
 
@@ -484,8 +482,6 @@ test('resolves to lemon', async () => {
 ```
 
 ### `.rejects`
-
-##### available in Jest **20.0.0+**
 
 Use `.rejects` to unwrap the reason of a rejected promise so any other matcher
 can be chained. If the promise is fulfilled the assertion fails.
@@ -571,6 +567,8 @@ describe('drinkAll', () => {
 
 ### `.toHaveBeenCalledTimes(number)`
 
+Also under the alias: `.toBeCalledTimes(number)`
+
 Use `.toHaveBeenCalledTimes` to ensure that a mock function got called exact
 number of times.
 
@@ -626,10 +624,12 @@ test('applying to all flavors does mango last', () => {
 });
 ```
 
-### `.nthCalledWith(nthCall, arg1, arg2, ....)`
+### `.toHaveBeenNthCalledWith(nthCall, arg1, arg2, ....)`
 
-If you have a mock function, you can use `.nthCalledWith` to test what arguments
-it was nth called with. For example, let's say you have a
+Also under the alias: `.nthCalledWith(arg1, arg2, ...)`
+
+If you have a mock function, you can use `.toHaveBeenNthCalledWith` to test what
+arguments it was nth called with. For example, let's say you have a
 `drinkEach(drink, Array<flavor>)` function that applies `f` to a bunch of
 flavors, and you want to ensure that when you call it, the first flavor it
 operates on is `'lemon'` and the second one is `'octopus'`. You can write:
@@ -640,8 +640,8 @@ Note that, nth argument must be positive integer starting from 1.
 test('drinkEach drinks each drink', () => {
   const drink = jest.fn();
   drinkEach(drink, ['lemon', 'octopus']);
-  expect(drink).nthCalledWith(1, 'lemon');
-  expect(drink).nthCalledWith(2, 'octopus');
+  expect(drink).toHaveBeenNthCalledWith(1, 'lemon');
+  expect(drink).toHaveBeenNthCalledWith(2, 'octopus');
 });
 ```
 

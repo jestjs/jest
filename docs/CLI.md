@@ -129,8 +129,6 @@ commit. Behaves similarly to `--onlyChanged`.
 
 ### `--changedSince`
 
-##### available in Jest **22.2.0+**
-
 Runs tests related the changes since the provided branch. If the current branch
 has diverged from the given branch, then only changes made locally will be
 tested. Behaves similarly to `--onlyChanged`.
@@ -143,8 +141,6 @@ Instead of the regular behavior of storing a new snapshot automatically, it will
 fail the test and require Jest to be run with `--updateSnapshot`.
 
 ### `--clearCache`
-
-##### available in Jest **22.0.0+**
 
 Deletes the Jest cache directory and then exits without running tests. Will
 delete `cacheDirectory` if the option is passed, or Jest's default cache
@@ -284,10 +280,12 @@ Prevent tests from printing messages through the console.
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests and test suites with a name that matches the regex.
-For example, suppose you want to run only tests related to authorization which
-will have names like `"GET /api/posts with auth"`, then you can use
-`jest -t=auth`.
+Alias: `-t`. Run only tests with a name that matches the regex. For example,
+suppose you want to run only tests related to authorization which will have
+names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
+
+_Note: The regex is matched against the full name, which is a combination of the
+test name and all its surrounding describe blocks._
 
 ### `--testLocationInResults`
 

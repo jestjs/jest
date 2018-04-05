@@ -20,11 +20,13 @@ import type {ChildProcess} from 'child_process';
 import type ProjectWorkspace from './project_workspace';
 
 export type Options = {
+  coverage?: boolean,
   createProcess?: (
     workspace: ProjectWorkspace,
     args: Array<string>,
     options?: SpawnOptions,
   ) => ChildProcess,
+  noColor?: boolean,
   testNamePattern?: string,
   testFileNamePattern?: string,
   shell?: boolean,

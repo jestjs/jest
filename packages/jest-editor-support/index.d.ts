@@ -13,11 +13,13 @@ export interface SpawnOptions {
 }
 
 export interface Options {
+  coverage?: boolean;
   createProcess?(
     workspace: ProjectWorkspace,
     args: string[],
     options?: SpawnOptions,
   ): ChildProcess;
+  noColor?: boolean;
   testNamePattern?: string;
   testFileNamePattern?: string;
   shell?: boolean;
@@ -33,7 +35,7 @@ export class Runner extends EventEmitter {
 }
 
 export class Settings extends EventEmitter {
-  constructor(workspace: ProjectWorkspace);
+  constructor(workspace: ProjectWorkspace, options?: Options);
   getConfig(completed: Function): void;
   jestVersionMajor: number | null;
   settings: {
@@ -172,7 +174,7 @@ export interface SnapshotMetadata {
   exists: boolean;
   name: string;
   node: {
-    loc: Node
+    loc: Node;
   };
   content?: string;
 }
