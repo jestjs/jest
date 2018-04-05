@@ -51,14 +51,14 @@ export default class ProjectWorkspace {
    * 
    * @type {boolean}
    */
-  collectCoverage: boolean;
+  collectCoverage: ?boolean;
 
   constructor(
     rootPath: string,
     pathToJest: string,
     pathToConfig: string,
     localJestMajorVersion: number,
-    collectCoverage: boolean,
+    collectCoverage: ?boolean,
   ) {
     this.rootPath = rootPath;
     this.pathToJest = pathToJest;

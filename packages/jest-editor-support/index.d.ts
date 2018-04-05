@@ -48,13 +48,13 @@ export class ProjectWorkspace {
     pathToJest: string,
     pathToConfig: string,
     localJestMajorVersin: number,
-    collectCoverage: boolean,
+    collectCoverage?: boolean,
   );
   pathToJest: string;
   pathToConfig: string;
   rootPath: string;
   localJestMajorVersion: number;
-  collectCoverage: boolean;
+  collectCoverage?: boolean;
 }
 
 export interface IParseResults {
