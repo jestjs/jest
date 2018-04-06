@@ -133,7 +133,7 @@ You can read more about `jest-validate` in the
 [readme file](https://github.com/facebook/jest/blob/master/packages/jest-validate/README.md).
 
 ## jest-worker
-
+5
 Module used for parallelization of tasks. Exports a class `Worker` that takes
 the path of Node.js module and lets you call the module's exported methods as if
 they where class methods, returning a promise that resolves when the specified
