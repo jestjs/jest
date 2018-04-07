@@ -23,7 +23,7 @@ export const escapeStrForRegex = (string: string) =>
 
 export const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
-    return string.replace(/(\/|\\(?!\.))/g, '\\\\');
+    return string.replace(/(\/|\\(?![[\]{}()*+?.^$|]))/g, '\\\\');
   }
   return string;
 };
