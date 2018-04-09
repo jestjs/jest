@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage`
+  ([#5929](https://github.com/facebook/jest/pull/5929))
 * `[jest-editor-support]` Add `coverage` option to runner
   ([#5836](https://github.com/facebook/jest/pull/5836))
 * `[jest-haste-map]` Support extracting dynamic `import`s
@@ -75,6 +77,8 @@
   ([#5816](https://github.com/facebook/jest/pull/5816))
 * `[jest-cli]` Switch collectCoverageFrom back to a string
   ([#5914](https://github.com/facebook/jest/pull/5914))
+* `[jest-regex-util]` Fix handling regex symbols in tests path on Windows
+  ([#5941](https://github.com/facebook/jest/pull/5941))
 
 ### Chore & Maintenance
 
