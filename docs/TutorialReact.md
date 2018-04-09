@@ -13,7 +13,10 @@ applications.
 If you are just getting started with React, we recommend using
 [Create React App](https://github.com/facebookincubator/create-react-app). It is
 ready to use and
-[ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)! You will only need to add `react-test-renderer` for rendering snapshots.
+[ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)!
+You will only need to add `react-test-renderer` for rendering snapshots.
+
+Run
 
 ```bash
 yarn add --dev react-test-renderer
