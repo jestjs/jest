@@ -49,7 +49,7 @@ const NUMBERS = [
 ];
 
 export const SUGGEST_TO_EQUAL = chalk.dim(
-  'Looks like you wanted to test for object/array equality with strict `toBe` matcher. You probably need to use `toEqual` instead.',
+  'Looks like you wanted to test for object/array equality with the stricter `toBe` matcher. You probably need to use `toEqual` instead.',
 );
 
 export const stringify = (object: any, maxDepth?: number = 10): string => {

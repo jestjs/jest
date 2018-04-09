@@ -86,8 +86,6 @@ test('the fetch fails with an error', () => {
 
 ### `.resolves` / `.rejects`
 
-##### available in Jest **20.0.0+**
-
 You can also use the `.resolves` matcher in your expect statement, and Jest will
 wait for that promise to resolve. If the promise is rejected, the test will
 automatically fail.
@@ -136,8 +134,7 @@ test('the fetch fails with an error', async () => {
 });
 ```
 
-Of course, you can combine `async` and `await` with `.resolves` or `.rejects`
-(available in Jest **20.0.0+**).
+Of course, you can combine `async` and `await` with `.resolves` or `.rejects`.
 
 ```js
 test('the data is peanut butter', async () => {

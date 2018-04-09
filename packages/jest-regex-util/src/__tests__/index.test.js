@@ -39,5 +39,9 @@ describe('replacePathSepForRegex()', () => {
         'a\\\\\\\\\\.dotfile',
       );
     });
+
+    it('should not escape an escaped regexp symbol', () => {
+      expect(replacePathSepForRegex('b\\(86')).toBe('b\\(86');
+    });
   });
 });

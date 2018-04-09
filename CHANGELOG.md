@@ -2,6 +2,14 @@
 
 ### Features
 
+* `[jest-config]` Export Jest's default options
+  ([#5948](https://github.com/facebook/jest/pull/5948))
+* `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage`
+  ([#5929](https://github.com/facebook/jest/pull/5929))
+* `[jest-editor-support]` Add `coverage` option to runner
+  ([#5836](https://github.com/facebook/jest/pull/5836))
+* `[jest-haste-map]` Support extracting dynamic `import`s
+  ([#5883](https://github.com/facebook/jest/pull/5883))
 * `[expect]` Improve output format for mismatchedArgs in mock/spy calls.
   ([#5846](https://github.com/facebook/jest/pull/5846))
 * `[jest-cli]` Add support for using `--coverage` in combination with watch
@@ -28,17 +36,25 @@
 * `[jest-mock]` Add tracking of return values in the `mock` property
   ([#5752](https://github.com/facebook/jest/pull/5752))
 * `[jest-mock]` Add tracking of thrown errors in the `mock` property
-  ([5764](https://github.com/facebook/jest/pull/5764))
+  ([#5764](https://github.com/facebook/jest/pull/5764))
 * `[expect]`Add nthCalledWith spy matcher
   ([#5605](https://github.com/facebook/jest/pull/5605))
 * `[jest-cli]` Add `isSerial` property that runners can expose to specify that
   they can not run in parallel
-  [#5706](https://github.com/facebook/jest/pull/5706)
+  ([#5706](https://github.com/facebook/jest/pull/5706))
+* `[expect]` Add `.toBeCalledTimes` and `toHaveBeenNthCalledWith` aliases
+  ([#5826](https://github.com/facebook/jest/pull/5826))
+* `[jest-cli]` Interactive Snapshot Mode improvements
+  ([#5864](https://github.com/facebook/jest/pull/5864))
+* `[jest-editor-support]` Add `no-color` option to runner
+  ([#5909](https://github.com/facebook/jest/pull/5909))
 
 ### Fixes
 
 * `[jest-cli]` Remove the notifier actions in case of failure when not in watch
   mode. ([#5861](https://github.com/facebook/jest/pull/5861))
+* `[jest-mock]` Extend .toHaveBeenCalled return message with outcome
+  ([#5951](https://github.com/facebook/jest/pull/5951))
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
   ([#5860](https://github.com/facebook/jest/pull/5860))
 * `[jest-cli]` Add descriptive error message when trying to use
@@ -65,12 +81,19 @@
   ([#5720](https://github.com/facebook/jest/pull/5720))
 * `[pretty-format]` Handle React fragments better
   ([#5816](https://github.com/facebook/jest/pull/5816))
+* `[jest-cli]` Switch collectCoverageFrom back to a string
+  ([#5914](https://github.com/facebook/jest/pull/5914))
+* `[jest-regex-util]` Fix handling regex symbols in tests path on Windows
+  ([#5941](https://github.com/facebook/jest/pull/5941))
 
 ### Chore & Maintenance
 
-* `[#5858]` Run Prettier on compiled output
+* `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
+  resources for the top suite the same way as for all of the children suites
+  ([#5885](https://github.com/facebook/jest/pull/5885))
+* `[*]` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
-* `[#5708]` Add fileChange hook for plugins
+* `[jest-cli]` Add fileChange hook for plugins
   ([#5708](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))
