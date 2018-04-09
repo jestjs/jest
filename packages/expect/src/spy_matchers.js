@@ -49,7 +49,7 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
     : () =>
         matcherHint(matcherName, receivedName, '') +
         '\n\n' +
-        `Expected ${type} to have been called.`;
+        `Expected ${type} to have been called, but it was not called.`;
 
   return {message, pass};
 };

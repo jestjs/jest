@@ -21,6 +21,20 @@ Watch Usage
 ]
 `;
 
+exports[`Watch mode flows allows WatchPlugins to override internal plugins 1`] = `
+Array [
+  "
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press t to filter by a test name regex pattern.
+ › Press q to quit watch mode.
+ › Press p to custom \\"P\\" plugin.
+ › Press Enter to trigger a test run.
+",
+]
+`;
+
 exports[`Watch mode flows shows prompts for WatchPlugins in alphabetical order 1`] = `
 Array [
   Array [

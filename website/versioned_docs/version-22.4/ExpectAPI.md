@@ -452,8 +452,6 @@ test('the best flavor is not coconut', () => {
 
 ### `.resolves`
 
-##### available in Jest **20.0.0+**
-
 Use `resolves` to unwrap the value of a fulfilled promise so any other matcher
 can be chained. If the promise is rejected the assertion fails.
 
@@ -481,8 +479,6 @@ test('resolves to lemon', async () => {
 ```
 
 ### `.rejects`
-
-##### available in Jest **20.0.0+**
 
 Use `.rejects` to unwrap the reason of a rejected promise so any other matcher
 can be chained. If the promise is fulfilled the assertion fails.
@@ -1058,9 +1054,9 @@ test('throws on octopus', () => {
 ```
 
 If you want to test that a specific error gets thrown, you can provide an
-argument to `toThrow`. The argument can be a string for the error message, a
-class for the error, or a regex that should match the error. For example, let's
-say that `drinkFlavor` is coded like this:
+argument to `toThrow`. The argument can be a string that should be contained in
+the error message, a class for the error, or a regex that should match the error
+message. For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1079,11 +1075,12 @@ test('throws on octopus', () => {
     drinkFlavor('octopus');
   }
 
-  // Test the exact error message
-  expect(drinkOctopus).toThrowError('yuck, octopus flavor');
-
-  // Test that the error message says "yuck" somewhere
+  // Test that the error message says "yuck" somewhere: these are equivalent
   expect(drinkOctopus).toThrowError(/yuck/);
+  expect(drinkOctopus).toThrowError('yuck');
+
+  // Test the exact error message
+  expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
 
   // Test that we get a DisgustingFlavorError
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
