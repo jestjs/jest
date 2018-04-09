@@ -66,10 +66,10 @@ export default class Runner extends EventEmitter {
     if (this.options.testFileNamePattern) {
       args.push(this.options.testFileNamePattern);
     }
-    if (this.options.coverage === true) {
+    if (this.workspace.collectCoverage === true) {
       args.push('--coverage');
     }
-    if (this.options.coverage === false) {
+    if (this.workspace.collectCoverage === false) {
       args.push('--no-coverage');
     }
     if (this.options.noColor === true) {
