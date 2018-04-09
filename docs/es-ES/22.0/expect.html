@@ -607,7 +607,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
   }).toThrow();
 });
 </code></pre>
-<p>If you want to test that a specific error gets thrown, you can provide an argument to <code>toThrow</code>. The argument can be a string for the error message, a class for the error, or a regex that should match the error. For example, let's say that <code>drinkFlavor</code> is coded like this:</p>
+<p>If you want to test that a specific error gets thrown, you can provide an argument to <code>toThrow</code>. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. Por ejemplo, digamos que el código de <code>beberSabor</code> es el siguiente:</p>
 <pre><code class="hljs css js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">beberSabor</span>(<span class="hljs-params">sabor</span>) </span>{
   <span class="hljs-keyword">if</span> (sabor == <span class="hljs-string">'pulpo'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ErrorSaborRepugnante(<span class="hljs-string">'guac! sabor a pulpo'</span>);
@@ -616,19 +616,20 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 }
 </code></pre>
 <p>Podríamos probar que este error lanza una excepción de varias formas:</p>
-<pre><code class="hljs css js">test(<span class="hljs-string">'arroja error en pulpo'</span>, () =&gt; {
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">beberPulpo</span>(<span class="hljs-params"></span>) </span>{
-    beberSabor(<span class="hljs-string">'pulpo'</span>);
+<pre><code class="hljs css js">test(<span class="hljs-string">'throws on octopus'</span>, () =&gt; {
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkOctopus</span>(<span class="hljs-params"></span>) </span>{
+    drinkFlavor(<span class="hljs-string">'octopus'</span>);
   }
 
-  <span class="hljs-comment">// Probar el mensaje de error</span>
-  expect(beberPulpo).toThrowError(<span class="hljs-string">'guac! sabor a pulpo'</span>);
+  <span class="hljs-comment">// Test that the error message says "yuck" somewhere: these are equivalent</span>
+  expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/yuck/</span>);
+  expect(drinkOctopus).toThrowError(<span class="hljs-string">'yuck'</span>);
 
-  <span class="hljs-comment">// Probar que el mensaje de error contiene "guac" en algún lugar del mensaje</span>
-  expect(beberPulpo).toThrowError(<span class="hljs-regexp">/guac/</span>);
+  <span class="hljs-comment">// Test the exact error message</span>
+  expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/^yuck, octopus flavor$/</span>);
 
-  <span class="hljs-comment">// Probar que arroja un error ErrorSaborRepugnante</span>
-  expect(beberPulpo).toThrowError(ErrorSaborRepugnante);
+  <span class="hljs-comment">// Test that we get a DisgustingFlavorError</span>
+  expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 </code></pre>
 <blockquote>

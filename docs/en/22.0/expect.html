@@ -801,9 +801,9 @@ too disgusting to drink, we could write:</p>
 });
 </code></pre>
 <p>If you want to test that a specific error gets thrown, you can provide an
-argument to <code>toThrow</code>. The argument can be a string for the error message, a
-class for the error, or a regex that should match the error. For example, let's
-say that <code>drinkFlavor</code> is coded like this:</p>
+argument to <code>toThrow</code>. The argument can be a string that should be contained in
+the error message, a class for the error, or a regex that should match the error
+message. For example, let's say that <code>drinkFlavor</code> is coded like this:</p>
 <pre><code class="hljs css js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkFlavor</span>(<span class="hljs-params">flavor</span>) </span>{
   <span class="hljs-keyword">if</span> (flavor == <span class="hljs-string">'octopus'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);
@@ -817,11 +817,12 @@ say that <code>drinkFlavor</code> is coded like this:</p>
     drinkFlavor(<span class="hljs-string">'octopus'</span>);
   }
 
-  <span class="hljs-comment">// Test the exact error message</span>
-  expect(drinkOctopus).toThrowError(<span class="hljs-string">'yuck, octopus flavor'</span>);
-
-  <span class="hljs-comment">// Test that the error message says "yuck" somewhere</span>
+  <span class="hljs-comment">// Test that the error message says "yuck" somewhere: these are equivalent</span>
   expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/yuck/</span>);
+  expect(drinkOctopus).toThrowError(<span class="hljs-string">'yuck'</span>);
+
+  <span class="hljs-comment">// Test the exact error message</span>
+  expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/^yuck, octopus flavor$/</span>);
 
   <span class="hljs-comment">// Test that we get a DisgustingFlavorError</span>
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
