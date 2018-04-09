@@ -2,6 +2,12 @@
 
 ### Features
 
+* `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage`
+  ([#5929](https://github.com/facebook/jest/pull/5929))
+* `[jest-editor-support]` Add `coverage` option to runner
+  ([#5836](https://github.com/facebook/jest/pull/5836))
+* `[jest-haste-map]` Support extracting dynamic `import`s
+  ([#5883](https://github.com/facebook/jest/pull/5883))
 * `[expect]` Improve output format for mismatchedArgs in mock/spy calls.
   ([#5846](https://github.com/facebook/jest/pull/5846))
 * `[jest-cli]` Add support for using `--coverage` in combination with watch
@@ -38,6 +44,8 @@
   ([#5826](https://github.com/facebook/jest/pull/5826))
 * `[jest-cli]` Interactive Snapshot Mode improvements
   ([#5864](https://github.com/facebook/jest/pull/5864))
+* `[jest-editor-support]` Add `no-color` option to runner
+  ([#5909](https://github.com/facebook/jest/pull/5909))
 
 ### Fixes
 
@@ -69,12 +77,17 @@
   ([#5816](https://github.com/facebook/jest/pull/5816))
 * `[jest-config]` Add name to project if one does not exist to pick correct
   resolver ([#5862](https://github.com/facebook/jest/pull/5862))
+* `[jest-regex-util]` Fix handling regex symbols in tests path on Windows
+  ([#5941](https://github.com/facebook/jest/pull/5941))
 
 ### Chore & Maintenance
 
-* `[#5858]` Run Prettier on compiled output
+* `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
+  resources for the top suite the same way as for all of the children suites
+  ([#5885](https://github.com/facebook/jest/pull/5885))
+* `*` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
-* `[#5708]` Add fileChange hook for plugins
+* `[jest-cli]` Add fileChange hook for plugins
   ([#5708](https://github.com/facebook/jest/pull/5708))
 * `[docs]` Add docs on using `jest.mock(...)`
   ([#5648](https://github.com/facebook/jest/pull/5648))

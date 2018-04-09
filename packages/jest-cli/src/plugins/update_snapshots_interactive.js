@@ -14,7 +14,9 @@ import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;
+  _failedSnapshotTestPaths: Array<*>;
   _failedSnapshotTestAssertions: Array<AssertionLocation>;
+  isInternal: true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
@@ -23,6 +25,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     super(options);
     this._failedSnapshotTestAssertions = [];
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);
+    this.isInternal = true;
   }
 
   getFailedSnapshotTestAssertions(

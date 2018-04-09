@@ -33,6 +33,10 @@ import TestNamePatternPlugin from './plugins/test_name_pattern';
 import UpdateSnapshotsPlugin from './plugins/update_snapshots';
 import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
 import QuitPlugin from './plugins/quit';
+import {
+  getSortedUsageRows,
+  filterInteractivePlugins,
+} from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
 
 let hasExitListener = false;
@@ -44,24 +48,6 @@ const INTERNAL_PLUGINS = [
   UpdateSnapshotsInteractivePlugin,
   QuitPlugin,
 ];
-
-const getSortedUsageRows = (
-  watchPlugins: Array<WatchPlugin>,
-  globalConfig: GlobalConfig,
-) => {
-  const internalPlugins = watchPlugins
-    .slice(0, INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
-    .filter(Boolean);
-
-  const thirdPartyPlugins = watchPlugins
-    .slice(INTERNAL_PLUGINS.length)
-    .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
-    .filter(Boolean)
-    .sort((a, b) => a.key - b.key);
-
-  return internalPlugins.concat(thirdPartyPlugins);
-};
 
 export default function watch(
   initialGlobalConfig: GlobalConfig,
@@ -285,7 +271,10 @@ export default function watch(
       return;
     }
 
-    const matchingWatchPlugin = watchPlugins.find(plugin => {
+    const matchingWatchPlugin = filterInteractivePlugins(
+      watchPlugins,
+      globalConfig,
+    ).find(plugin => {
       const usageData =
         (plugin.getUsageInfo && plugin.getUsageInfo(globalConfig)) || {};
       return usageData.key === parseInt(key, 16);

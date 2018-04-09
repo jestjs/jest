@@ -176,73 +176,38 @@ export default function(j$) {
         return j$.testPath;
       },
     });
-    defaultResourcesForRunnable(topSuite.id);
+
     currentDeclarationSuite = topSuite;
 
     this.topSuite = function() {
       return topSuite;
     };
 
-    this.execute = async function(runnablesToRun) {
-      if (!runnablesToRun) {
-        if (focusedRunnables.length) {
-          runnablesToRun = focusedRunnables;
-        } else {
-          runnablesToRun = [topSuite.id];
-        }
+    const uncaught = err => {
+      if (currentSpec) {
+        currentSpec.onException(err);
+        currentSpec.cancel();
+      } else {
+        console.error('Unhandled error');
+        console.error(err.stack);
       }
+    };
 
-      const uncaught = err => {
-        if (currentSpec) {
-          currentSpec.onException(err);
-          currentSpec.cancel();
-        } else {
-          console.error('Unhandled error');
-          console.error(err.stack);
-        }
-      };
-
+    let oldListenersException;
+    let oldListenersRejection;
+    const executionSetup = function() {
       // Need to ensure we are the only ones handling these exceptions.
-      const oldListenersException = process
-        .listeners('uncaughtException')
-        .slice();
-      const oldListenersRejection = process
-        .listeners('unhandledRejection')
-        .slice();
+      oldListenersException = process.listeners('uncaughtException').slice();
+      oldListenersRejection = process.listeners('unhandledRejection').slice();
 
       j$.process.removeAllListeners('uncaughtException');
       j$.process.removeAllListeners('unhandledRejection');
 
       j$.process.on('uncaughtException', uncaught);
       j$.process.on('unhandledRejection', uncaught);
+    };
 
-      reporter.jasmineStarted({totalSpecsDefined});
-
-      currentlyExecutingSuites.push(topSuite);
-
-      await treeProcessor({
-        nodeComplete(suite) {
-          if (!suite.disabled) {
-            clearResourcesForRunnable(suite.id);
-          }
-          currentlyExecutingSuites.pop();
-          reporter.suiteDone(suite.getResult());
-        },
-        nodeStart(suite) {
-          currentlyExecutingSuites.push(suite);
-          defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
-          reporter.suiteStarted(suite.result);
-        },
-        queueRunnerFactory,
-        runnableIds: runnablesToRun,
-        tree: topSuite,
-      });
-      clearResourcesForRunnable(topSuite.id);
-      currentlyExecutingSuites.pop();
-      reporter.jasmineDone({
-        failedExpectations: topSuite.result.failedExpectations,
-      });
-
+    const executionTeardown = function() {
       j$.process.removeListener('uncaughtException', uncaught);
       j$.process.removeListener('unhandledRejection', uncaught);
 
@@ -254,6 +219,60 @@ export default function(j$) {
       oldListenersRejection.forEach(listener => {
         j$.process.on('unhandledRejection', listener);
       });
+    };
+
+    this.execute = async function(runnablesToRun, suiteTree = topSuite) {
+      if (!runnablesToRun) {
+        if (focusedRunnables.length) {
+          runnablesToRun = focusedRunnables;
+        } else {
+          runnablesToRun = [suiteTree.id];
+        }
+      }
+
+      if (currentlyExecutingSuites.length === 0) {
+        executionSetup();
+      }
+
+      const lastDeclarationSuite = currentDeclarationSuite;
+
+      await treeProcessor({
+        nodeComplete(suite) {
+          if (!suite.disabled) {
+            clearResourcesForRunnable(suite.id);
+          }
+          currentlyExecutingSuites.pop();
+          if (suite === topSuite) {
+            reporter.jasmineDone({
+              failedExpectations: topSuite.result.failedExpectations,
+            });
+          } else {
+            reporter.suiteDone(suite.getResult());
+          }
+        },
+        nodeStart(suite) {
+          currentDeclarationSuite = suite;
+          currentlyExecutingSuites.push(suite);
+          defaultResourcesForRunnable(
+            suite.id,
+            suite.parentSuite && suite.parentSuite.id,
+          );
+          if (suite === topSuite) {
+            reporter.jasmineStarted({totalSpecsDefined});
+          } else {
+            reporter.suiteStarted(suite.result);
+          }
+        },
+        queueRunnerFactory,
+        runnableIds: runnablesToRun,
+        tree: suiteTree,
+      });
+
+      currentDeclarationSuite = lastDeclarationSuite;
+
+      if (currentlyExecutingSuites.length === 0) {
+        executionTeardown();
+      }
     };
 
     this.addReporter = function(reporterToAdd) {
