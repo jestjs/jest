@@ -51,6 +51,8 @@
 
 ### Fixes
 
+* `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
+  ([#5884](https://github.com/facebook/jest/pull/5884))
 * `[jest-cli]` Remove the notifier actions in case of failure when not in watch
   mode. ([#5861](https://github.com/facebook/jest/pull/5861))
 * `[jest-mock]` Extend .toHaveBeenCalled return message with outcome
