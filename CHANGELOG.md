@@ -51,6 +51,8 @@
 
 ### Fixes
 
+* `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch
+  runtime errors ([#5945](https://github.com/facebook/jest/pull/5945))
 * `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
   ([#5884](https://github.com/facebook/jest/pull/5884))
 * `[jest-cli]` Remove the notifier actions in case of failure when not in watch
