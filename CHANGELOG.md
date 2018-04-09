@@ -51,6 +51,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Remove the notifier actions in case of failure when not in watch
+  mode. ([#5861](https://github.com/facebook/jest/pull/5861))
 * `[jest-mock]` Extend .toHaveBeenCalled return message with outcome
   ([#5951](https://github.com/facebook/jest/pull/5951))
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode

@@ -79,30 +79,41 @@ export default class NotifyReporter extends BaseReporter {
         result.numTotalTests,
       );
 
+      const watchMode = this._globalConfig.watch || this._globalConfig.watchAll;
       const restartAnswer = 'Run again';
       const quitAnswer = 'Exit tests';
-      notifier.notify(
-        {
-          actions: [restartAnswer, quitAnswer],
-          closeLabel: 'Close',
+
+      if (!watchMode) {
+        notifier.notify({
           icon,
           message,
           title,
-        },
-        (err, _, metadata) => {
-          if (err || !metadata) {
-            return;
-          }
-          if (metadata.activationValue === quitAnswer) {
-            exit(0);
-            return;
-          }
-          if (metadata.activationValue === restartAnswer) {
-            this._startRun(this._globalConfig);
-          }
-        },
-      );
+        });
+      } else {
+        notifier.notify(
+          {
+            actions: [restartAnswer, quitAnswer],
+            closeLabel: 'Close',
+            icon,
+            message,
+            title,
+          },
+          (err, _, metadata) => {
+            if (err || !metadata) {
+              return;
+            }
+            if (metadata.activationValue === quitAnswer) {
+              exit(0);
+              return;
+            }
+            if (metadata.activationValue === restartAnswer) {
+              this._startRun(this._globalConfig);
+            }
+          },
+        );
+      }
     }
+
     this._context.previousSuccess = success;
     this._context.firstRun = false;
   }
