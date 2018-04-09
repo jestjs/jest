@@ -50,7 +50,7 @@ You can retrieve Jest's default options to expand them if needed:
 
 ```js
 // jest.config.js
-const defaults = require('jest-config').defaults;
+const {defaults} = require('jest-config');
 module.exports = {
   // ...
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx'],
