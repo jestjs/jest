@@ -49,8 +49,9 @@ test('collects coverage only from multiple specified files', () => {
   const {stdout} = runJest(DIR, [
     '--no-cache',
     '--coverage',
-    '--collectCoverageFrom', // overwrites the one in package.json
+    '--collectCoverageFrom',
     'setup.js',
+    '--collectCoverageFrom',
     'OtherFile.js',
   ]);
 

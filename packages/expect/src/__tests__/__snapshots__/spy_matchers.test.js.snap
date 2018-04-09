@@ -256,7 +256,7 @@ Got:
 exports[`toBeCalled .not passes when called 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toBeCalled(</><dim>)</>
 
-Expected mock function to have been called."
+Expected mock function to have been called, but it was not called."
 `;
 
 exports[`toBeCalled fails with any argument passed 1`] = `
@@ -541,7 +541,7 @@ Got:
 exports[`toHaveBeenCalled .not passes when called 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled(</><dim>)</>
 
-Expected mock function to have been called."
+Expected mock function to have been called, but it was not called."
 `;
 
 exports[`toHaveBeenCalled fails with any argument passed 1`] = `

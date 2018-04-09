@@ -22,6 +22,7 @@ import HasteMap from 'jest-haste-map';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
+import Snapshot from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './script_transformer';
@@ -64,7 +65,6 @@ type BooleanObject = {[key: string]: boolean, __proto__: null};
 type CacheFS = {[path: Path]: string, __proto__: null};
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: ProjectConfig) => {
   if (
@@ -228,7 +228,7 @@ class Runtime {
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
-      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,

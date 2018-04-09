@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-config]` Export Jest's default options
+  ([#5948](https://github.com/facebook/jest/pull/5948))
 * `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage`
   ([#5929](https://github.com/facebook/jest/pull/5929))
 * `[jest-editor-support]` Add `coverage` option to runner
@@ -49,6 +51,12 @@
 
 ### Fixes
 
+* `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
+  ([#5884](https://github.com/facebook/jest/pull/5884))
+* `[jest-cli]` Remove the notifier actions in case of failure when not in watch
+  mode. ([#5861](https://github.com/facebook/jest/pull/5861))
+* `[jest-mock]` Extend .toHaveBeenCalled return message with outcome
+  ([#5951](https://github.com/facebook/jest/pull/5951))
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
   ([#5860](https://github.com/facebook/jest/pull/5860))
 * `[jest-cli]` Add descriptive error message when trying to use
@@ -77,6 +85,8 @@
   ([#5816](https://github.com/facebook/jest/pull/5816))
 * `[jest-config]` Add name to project if one does not exist to pick correct
   resolver ([#5862](https://github.com/facebook/jest/pull/5862))
+* `[jest-cli]` Switch collectCoverageFrom back to a string
+  ([#5914](https://github.com/facebook/jest/pull/5914))
 * `[jest-regex-util]` Fix handling regex symbols in tests path on Windows
   ([#5941](https://github.com/facebook/jest/pull/5941))
 
@@ -85,7 +95,7 @@
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
   ([#5885](https://github.com/facebook/jest/pull/5885))
-* `*` Run Prettier on compiled output
+* `[*]` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
 * `[jest-cli]` Add fileChange hook for plugins
   ([#5708](https://github.com/facebook/jest/pull/5708))
