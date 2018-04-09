@@ -4,6 +4,8 @@
 
 * `[jest-config]` Export Jest's default options
   ([#5948](https://github.com/facebook/jest/pull/5948))
+* `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage`
+  ([#5929](https://github.com/facebook/jest/pull/5929))
 * `[jest-editor-support]` Add `coverage` option to runner
   ([#5836](https://github.com/facebook/jest/pull/5836))
 * `[jest-haste-map]` Support extracting dynamic `import`s
