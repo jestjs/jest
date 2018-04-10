@@ -15,7 +15,7 @@ import {
   JEST_CONFIG,
   JEST_CONFIG_RC,
   JEST_CONFIG_RC_EXT,
-  PACKAGE_JSON
+  PACKAGE_JSON,
 } from './constants';
 
 const isFile = filePath =>
@@ -72,9 +72,9 @@ const resolveConfigPathByTraversing = (
     return jestConfigRC;
   }
 
-  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON); 
-  if (isFile(packageJson)) { 
-    return packageJson; 
+  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON);
+  if (isFile(packageJson)) {
+    return packageJson;
   }
 
   // This is the system root.
@@ -92,7 +92,8 @@ const resolveConfigPathByTraversing = (
 };
 
 const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) => {
-  const configRCFiles = JEST_CONFIG_RC_EXT.map(ending => path.resolve(initialPath, `${JEST_CONFIG_RC}.${ending}`));
+  const configRCFiles = JEST_CONFIG_RC_EXT
+    .map(ext => path.resolve(initialPath, `${JEST_CONFIG_RC}.${ext}`));
 
   return (
     'Could not find a config file based on provided values:\n' +
