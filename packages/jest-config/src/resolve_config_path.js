@@ -64,9 +64,9 @@ const resolveConfigPathByTraversing = (
     return jestConfigJs;
   }
 
-  const jestConfigRC = JEST_CONFIG_RC_EXT
-    .map(ext => path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ext}`))
-    .find(jestrc => isFile(jestrc));
+  const jestConfigRC = JEST_CONFIG_RC_EXT.map(ext =>
+    path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ext}`),
+  ).find(jestrc => isFile(jestrc));
 
   if (jestConfigRC) {
     return jestConfigRC;
