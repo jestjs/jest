@@ -11,6 +11,8 @@ import type {InitialOptions, Path} from 'types/Config';
 
 import path from 'path';
 import fs from 'fs';
+import yaml from 'js-yaml';
+import Humps from 'humps';
 import jsonlint from './vendor/jsonlint';
 import {PACKAGE_JSON} from './constants';
 
@@ -19,11 +21,16 @@ import {PACKAGE_JSON} from './constants';
 // 2. For any other file, we just require it.
 export default (configPath: Path): InitialOptions => {
   const isJSON = configPath.endsWith('.json');
+  const isYAML = configPath.match(/(\.yaml)|(\.yml)/g);
   let configObject;
 
   try {
-    // $FlowFixMe dynamic require
-    configObject = require(configPath);
+    if(isYAML) {
+      configObject = Humps.camelizeKeys(yaml.safeLoad(fs.readFileSync(configPath, 'utf8')).safeDump());
+    } else{
+      // $FlowFixMe dynamic require
+      configObject = require(configPath);
+    }
   } catch (error) {
     if (isJSON) {
       throw new Error(
