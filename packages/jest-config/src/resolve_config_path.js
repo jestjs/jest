@@ -54,14 +54,22 @@ const resolveConfigPathByTraversing = (
   initialPath: Path,
   cwd: Path,
 ) => {
-  const jestConfig = path.resolve(pathToResolve, JEST_CONFIG);
-  if (isFile(jestConfig)) {
-    return jestConfig;
+  const jestConfigJs = path.resolve(pathToResolve, JEST_CONFIG);
+  if (isFile(jestConfigJs)) {
+    return jestConfigJs;
   }
 
-  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON);
-  if (isFile(packageJson)) {
-    return packageJson;
+  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON); 
+  if (isFile(packageJson)) { 
+    return packageJson; 
+  }
+
+  const jestConfigRC = JEST_CONFIG_RC_EXT
+    .map(ending => path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ending}`);
+    .find(jestrc => isFile(jestrc)
+
+  if (jestConfigRC) {
+    return jestConfigRC;
   }
 
   // This is the system root.
@@ -79,6 +87,8 @@ const resolveConfigPathByTraversing = (
 };
 
 const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) => {
+  const configRCFiles = JEST_CONFIG_RC_EXT.map(ending => path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ending}`));
+
   return (
     'Could not find a config file based on provided values:\n' +
     `path: "${initialPath}"\n` +
@@ -86,6 +96,6 @@ const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) => {
     'Config paths must be specified by either a direct path to a config\n' +
     'file, or a path to a directory. If directory is given, Jest will try to\n' +
     `traverse directory tree up, until it finds either "${JEST_CONFIG}" or\n` +
-    `"${PACKAGE_JSON}".`
+    `"${PACKAGE_JSON}" or ${configRCFiles.join(', or ')}.`
   );
 };
