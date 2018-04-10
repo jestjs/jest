@@ -26,7 +26,7 @@ export default (configPath: Path): InitialOptions => {
 
   try {
     if(isYAML) {
-      configObject = Humps.camelizeKeys(yaml.safeLoad(fs.readFileSync(configPath, 'utf8')).safeDump());
+      configObject = Humps.camelizeKeys(yaml.safeLoad(fs.readFileSync(configPath, 'utf8')));
     } else{
       // $FlowFixMe dynamic require
       configObject = require(configPath);

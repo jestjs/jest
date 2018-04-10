@@ -11,7 +11,7 @@ import type {Path} from 'types/Config';
 
 import path from 'path';
 import fs from 'fs';
-import {JEST_CONFIG, PACKAGE_JSON} from './constants';
+import {JEST_CONFIG, JEST_CONFIG_RC, JEST_CONFIG_RC_EXT, PACKAGE_JSON} from './constants';
 
 const isFile = filePath =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
@@ -59,17 +59,17 @@ const resolveConfigPathByTraversing = (
     return jestConfigJs;
   }
 
-  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON); 
-  if (isFile(packageJson)) { 
-    return packageJson; 
-  }
-
   const jestConfigRC = JEST_CONFIG_RC_EXT
-    .map(ending => path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ending}`);
-    .find(jestrc => isFile(jestrc)
+    .map(ending => path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ending}`))
+    .find(jestrc => isFile(jestrc));
 
   if (jestConfigRC) {
     return jestConfigRC;
+  }
+
+  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON); 
+  if (isFile(packageJson)) { 
+    return packageJson; 
   }
 
   // This is the system root.

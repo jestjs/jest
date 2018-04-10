@@ -12,6 +12,7 @@
     "babel-jest": "^22.4.1",
     "chalk": "^2.0.1",
     "glob": "^7.1.1",
+    "humps": "^2.0.1",
     "jest-environment-jsdom": "^22.4.1",
     "jest-environment-node": "^22.4.1",
     "jest-get-type": "^22.1.0",
