@@ -97,6 +97,8 @@ class JSDOMEnvironment {
       if (this.errorEventListener) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
+      // Dispose "document" to prevent "load" event from triggering.
+      Object.defineProperty(this.global, 'document', {value: null});
       this.global.close();
     }
     this.errorEventListener = null;
