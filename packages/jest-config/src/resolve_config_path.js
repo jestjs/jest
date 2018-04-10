@@ -11,7 +11,12 @@ import type {Path} from 'types/Config';
 
 import path from 'path';
 import fs from 'fs';
-import {JEST_CONFIG, JEST_CONFIG_RC, JEST_CONFIG_RC_EXT, PACKAGE_JSON} from './constants';
+import {
+  JEST_CONFIG,
+  JEST_CONFIG_RC,
+  JEST_CONFIG_RC_EXT,
+  PACKAGE_JSON
+} from './constants';
 
 const isFile = filePath =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
@@ -60,7 +65,7 @@ const resolveConfigPathByTraversing = (
   }
 
   const jestConfigRC = JEST_CONFIG_RC_EXT
-    .map(ending => path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ending}`))
+    .map(ext => path.resolve(pathToResolve, `${JEST_CONFIG_RC}.${ext}`))
     .find(jestrc => isFile(jestrc));
 
   if (jestConfigRC) {
