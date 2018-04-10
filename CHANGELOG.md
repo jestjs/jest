@@ -2,7 +2,7 @@
 
 ### Features
 
-* `[jest-config]` Suggest toContainEqual
+* `[expect]` Suggest toContainEqual
   ([#5948](https://github.com/facebook/jest/pull/5953))
 * `[jest-config]` Export Jest's default options
   ([#5948](https://github.com/facebook/jest/pull/5948))
