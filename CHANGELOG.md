@@ -1,7 +1,7 @@
 ## master
 
 ### Features
-
+* `[jest-config]` Added support for yaml and js/json configurations under the file name `.jestrc.[extension]`
 * `[jest-config]` Export Jest's default options
   ([#5948](https://github.com/facebook/jest/pull/5948))
 * `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage`
