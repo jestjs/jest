@@ -92,8 +92,9 @@ const resolveConfigPathByTraversing = (
 };
 
 const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) => {
-  const configRCFiles = JEST_CONFIG_RC_EXT
-    .map(ext => path.resolve(initialPath, `${JEST_CONFIG_RC}.${ext}`));
+  const configRCFiles = JEST_CONFIG_RC_EXT.map(ext =>
+    path.resolve(initialPath, `${JEST_CONFIG_RC}.${ext}`),
+  );
 
   return (
     'Could not find a config file based on provided values:\n' +
