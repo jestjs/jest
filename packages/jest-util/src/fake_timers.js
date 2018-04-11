@@ -486,9 +486,7 @@ export default class FakeTimers<TimerRef> {
       return null;
     }
 
-    if (delay == null || Number.isNaN(delay) || !Number.isFinite(delay)) {
-      delay = 0;
-    }
+    delay = Number(delay) | 0;
 
     const args = [];
     for (let ii = 2, ll = arguments.length; ii < ll; ii++) {
