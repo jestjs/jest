@@ -48,6 +48,8 @@
   ([#5864](https://github.com/facebook/jest/pull/5864))
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
+* `[jest-cli]` Added support to access configuration from `globalSetup` and
+  `globalTeardown` ([#5961](https://github.com/facebook/jest/pull/5961))
 
 ### Fixes
 
