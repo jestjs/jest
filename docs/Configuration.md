@@ -358,12 +358,18 @@ Default: `undefined`
 This option allows the use of a custom global setup module which exports an
 async function that is triggered once before all test suites.
 
+Jest's configuration object is passed as a parameter to the `globalSetup`
+function.
+
 ### `globalTeardown` [string]
 
 Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an
 async function that is triggered once after all test suites.
+
+Jest's configuration object is passed as a parameter to the `globalTeardown`
+function.
 
 ### `moduleFileExtensions` [array<string>]
 
