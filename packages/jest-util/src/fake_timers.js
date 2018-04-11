@@ -486,7 +486,7 @@ export default class FakeTimers<TimerRef> {
       return null;
     }
 
-    if (delay == null) {
+    if (delay == null || isNaN(delay)) {
       delay = 0;
     }
 

@@ -317,7 +317,7 @@ describe('FakeTimers', () => {
       const mock4 = jest.fn(() => runOrder.push('mock4'));
 
       global.setTimeout(mock1, 100);
-      global.setTimeout(mock2, 0);
+      global.setTimeout(mock2, NaN);
       global.setTimeout(mock3, 0);
       const intervalHandler = global.setInterval(() => {
         mock4();
