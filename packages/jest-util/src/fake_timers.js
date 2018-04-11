@@ -486,7 +486,7 @@ export default class FakeTimers<TimerRef> {
       return null;
     }
 
-    if (delay == null || Number.isNaN(delay)) {
+    if (delay == null || Number.isNaN(delay) || !Number.isFinite(delay)) {
       delay = 0;
     }
 
