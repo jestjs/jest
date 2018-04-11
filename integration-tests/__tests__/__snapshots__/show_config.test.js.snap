@@ -54,6 +54,12 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
       \\"testURL\\": \\"about:blank\\",
       \\"timers\\": \\"real\\",
+      \\"transform\\": [
+        [
+          \\"^.+\\\\\\\\.jsx?$\\",
+          \\"<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js\\"
+        ]
+      ],
       \\"transformIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
