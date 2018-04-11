@@ -29,10 +29,10 @@ validate different things.</p>
 <li><a href="#expectnotarraycontainingarray"><code>expect.not.arrayContaining(array)</code></a></li>
 <li><a href="#expectnotobjectcontainingobject"><code>expect.not.objectContaining(object)</code></a></li>
 <li><a href="#expectnotstringcontainingstring"><code>expect.not.stringContaining(string)</code></a></li>
-<li><a href="#expectnotstringmatchingregexp"><code>expect.not.stringMatching(regexp)</code></a></li>
+<li><a href="#expectnotstringmatchingstring-regexp"><code>expect.not.stringMatching(string | regexp)</code></a></li>
 <li><a href="#expectobjectcontainingobject"><code>expect.objectContaining(object)</code></a></li>
 <li><a href="#expectstringcontainingstring"><code>expect.stringContaining(string)</code></a></li>
-<li><a href="#expectstringmatchingregexp"><code>expect.stringMatching(regexp)</code></a></li>
+<li><a href="#expectstringmatchingstring-regexp"><code>expect.stringMatching(string | regexp)</code></a></li>
 <li><a href="#expectaddsnapshotserializerserializer"><code>expect.addSnapshotSerializer(serializer)</code></a></li>
 <li><a href="#not"><code>.not</code></a></li>
 <li><a href="#resolves"><code>.resolves</code></a></li>
@@ -307,7 +307,7 @@ contains properties that are <strong>not</strong> in the expected object.</p>
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectnotstringcontainingstring"></a><a href="#expectnotstringcontainingstring" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringContaining(string)</code></h3>
-<p><code>expect.not.stringContaining(string)</code> matches any received string that does not
+<p><code>expect.not.stringContaining(string)</code> matches the received string that does not
 contain the exact expected string.</p>
 <p>It is the inverse of <code>expect.stringContaining</code>.</p>
 <pre><code class="hljs css js">describe(<span class="hljs-string">'not.stringContaining'</span>, () =&gt; {
@@ -318,8 +318,8 @@ contain the exact expected string.</p>
   });
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" name="expectnotstringmatchingregexp"></a><a href="#expectnotstringmatchingregexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringMatching(regexp)</code></h3>
-<p><code>expect.not.stringMatching(regexp)</code> matches any received string that does not
+<h3><a class="anchor" aria-hidden="true" name="expectnotstringmatchingstring-regexp"></a><a href="#expectnotstringmatchingstring-regexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringMatching(string | regexp)</code></h3>
+<p><code>expect.not.stringMatching(string | regexp)</code> matches the received string that does not
 match the expected regexp.</p>
 <p>It is the inverse of <code>expect.stringMatching</code>.</p>
 <pre><code class="hljs css js">describe(<span class="hljs-string">'not.stringMatching'</span>, () =&gt; {
@@ -352,10 +352,10 @@ properties that are <strong>not</strong> in the expected object.</p>
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectstringcontainingstring"></a><a href="#expectstringcontainingstring" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringContaining(string)</code></h3>
-<p><code>expect.stringContaining(string)</code> matches any received string that contains the
+<p><code>expect.stringContaining(string)</code> matches the received string that contains the
 exact expected string.</p>
-<h3><a class="anchor" aria-hidden="true" name="expectstringmatchingregexp"></a><a href="#expectstringmatchingregexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(regexp)</code></h3>
-<p><code>expect.stringMatching(regexp)</code> matches any received string that matches the
+<h3><a class="anchor" aria-hidden="true" name="expectstringmatchingstring-regexp"></a><a href="#expectstringmatchingstring-regexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(string | regexp)</code></h3>
+<p><code>expect.stringMatching(string | regexp)</code> matches the received string that matches the
 expected regexp.</p>
 <p>You can use it instead of a literal value:</p>
 <ul>

@@ -211,7 +211,7 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectnotstringcontainingstring"></a><a href="#expectnotstringcontainingstring" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringContaining(string)</code></h3>
-<p><code>expect.not.stringContaining(string)</code>は、期待された文字列とぴったり一致する受け取った文字列を含まない場合に一致します。</p>
+<p><code>expect.not.stringContaining(string)</code> matches the received string that does not contain the exact expected string.</p>
 <p>これは <code>expect.stringContaining</code> の逆です。</p>
 <pre><code class="hljs css js">describe(<span class="hljs-string">'not.stringContaining'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-string">'Hello world!'</span>;
@@ -221,8 +221,8 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
   });
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" name="expectnotstringmatchingregexp"></a><a href="#expectnotstringmatchingregexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringMatching(regexp)</code></h3>
-<p><code>expect.not.stringMatching(regexp)</code> は、期待された正規表現にマッチしない文字列にマッチします。</p>
+<h3><a class="anchor" aria-hidden="true" name="expectnotstringmatchingstring-regexp"></a><a href="#expectnotstringmatchingstring-regexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringMatching(string | regexp)</code></h3>
+<p><code>expect.not.stringMatching(string | regexp)</code> matches the received string that does not match the expected regexp.</p>
 <p>これは <code>expect.stringMatching</code> の逆です。</p>
 <pre><code class="hljs css js">describe(<span class="hljs-string">'not.stringMatching'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-regexp">/Hello world!/</span>;
@@ -248,9 +248,9 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="expectstringcontainingstring"></a><a href="#expectstringcontainingstring" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringContaining(string)</code></h3>
-<p><code>expect.stringContaining(string)</code> は期待された文字列とぴったり一致する受け取った文字列と一致します。</p>
-<h3><a class="anchor" aria-hidden="true" name="expectstringmatchingregexp"></a><a href="#expectstringmatchingregexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(regexp)</code></h3>
-<p><code>expect.stringMatching(regexp)</code> は期待する正規表現に合致する受け取った文字列と一致します。</p>
+<p><code>expect.stringContaining(string)</code> matches the received string that contains the exact expected string.</p>
+<h3><a class="anchor" aria-hidden="true" name="expectstringmatchingstring-regexp"></a><a href="#expectstringmatchingstring-regexp" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(string | regexp)</code></h3>
+<p><code>expect.stringMatching(string | regexp)</code> matches the received string that matches the expected regexp.</p>
 <p>以下のケースでリテラル値の代わりに使用できます:</p>
 <ul>
 <li><code>toEqual</code> または <code>toBeCalledWith</code>の中</li>
