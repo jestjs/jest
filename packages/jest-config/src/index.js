@@ -18,9 +18,7 @@ import type {
 import path from 'path';
 import {isJSONString} from './utils';
 import normalize from './normalize';
-import resolveConfigPath from './resolve_config_path';
-import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
-
+import resolveConfig from './resolve_config';
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './deprecated';
@@ -42,13 +40,13 @@ export function readConfig(
   hasDeprecationWarnings: boolean,
   projectConfig: ProjectConfig,
 } {
-  let rawOptions;
-  let configPath = null;
+  let config;
+  let filepath;
 
   if (typeof packageRootOrConfig !== 'string') {
     if (parentConfigPath) {
-      rawOptions = packageRootOrConfig;
-      rawOptions.rootDir = path.dirname(parentConfigPath);
+      config = packageRootOrConfig;
+      config.rootDir = path.dirname(parentConfigPath);
     } else {
       throw new Error(
         'Jest: Cannot use configuration as an object without a file path.',
@@ -57,9 +55,10 @@ export function readConfig(
   } else if (isJSONString(argv.config)) {
     // A JSON string was passed to `--config` argument and we can parse it
     // and use as is.
-    let config;
+    let configArgs;
+
     try {
-      config = JSON.parse(argv.config);
+      configArgs = JSON.parse(argv.config);
     } catch (e) {
       throw new Error(
         'There was an error while parsing the `--config` argument as a JSON string.',
@@ -67,23 +66,23 @@ export function readConfig(
     }
 
     // NOTE: we might need to resolve this dir to an absolute path in the future
-    config.rootDir = config.rootDir || packageRootOrConfig;
-    rawOptions = config;
+    configArgs.rootDir = configArgs.rootDir || packageRootOrConfig;
+    config = configArgs;
+
     // A string passed to `--config`, which is either a direct path to the config
     // or a path to directory containing `package.json` or `jest.config.js`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
-    configPath = resolveConfigPath(argv.config, process.cwd());
-    rawOptions = readConfigFileAndSetRootDir(configPath);
+    ({config, filepath} = resolveConfig(argv.config, process.cwd()));
   } else {
     // Otherwise just try to find config in the current rootDir.
-    configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
-    rawOptions = readConfigFileAndSetRootDir(configPath);
+    ({config, filepath} = resolveConfig());
   }
 
-  const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
+  const {options, hasDeprecationWarnings} = normalize(config, argv);
   const {globalConfig, projectConfig} = getConfigs(options);
+
   return {
-    configPath,
+    filepath,
     globalConfig,
     hasDeprecationWarnings,
     projectConfig,

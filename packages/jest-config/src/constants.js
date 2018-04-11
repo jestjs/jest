@@ -14,3 +14,5 @@ export const DEFAULT_JS_PATTERN = '^.+\\.jsx?$';
 export const DEFAULT_REPORTER_LABEL = 'default';
 export const PACKAGE_JSON = 'package.json';
 export const JEST_CONFIG = 'jest.config.js';
+export const JEST_CONFIG_RC = '.jestrc';
+export const JEST_CONFIG_RC_EXT = ['yml', 'yaml', 'js', 'json'];
