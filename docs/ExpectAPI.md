@@ -335,8 +335,8 @@ describe('not.stringContaining', () => {
 
 ### `expect.not.stringMatching(string | regexp)`
 
-`expect.not.stringMatching(string | regexp)` matches the received string that does not
-match the expected regexp.
+`expect.not.stringMatching(string | regexp)` matches the received string that
+does not match the expected regexp.
 
 It is the inverse of `expect.stringMatching`.
 
@@ -384,8 +384,8 @@ exact expected string.
 
 ### `expect.stringMatching(string | regexp)`
 
-`expect.stringMatching(string | regexp)` matches the received string that matches the
-expected regexp.
+`expect.stringMatching(string | regexp)` matches the received string that
+matches the expected regexp.
 
 You can use it instead of a literal value:
 
