@@ -89,6 +89,8 @@
   ([#5941](https://github.com/facebook/jest/pull/5941))
 * `[jest-util]` Fix handling of NaN/Infinity in mock timer delay
   ([#5966](https://github.com/facebook/jest/pull/5966))
+* `[jest-resolve]` Generalise test for package main entries equivalent to ".".
+  ([#5968)](https://github.com/facebook/jest/pull/5968)
 
 ### Chore & Maintenance
 
