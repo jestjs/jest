@@ -8,6 +8,7 @@
 'use strict';
 
 jest.mock('mock-module');
+jest.mock('mock-module-alt');
 jest.mock('mock-jsx-module');
 
 it('should resolve entry as index.js when package main is "."', () => {
@@ -15,7 +16,12 @@ it('should resolve entry as index.js when package main is "."', () => {
   expect(mockModule).toEqual('test');
 });
 
-it('should resolve entry as index with other configured module file extention when package main is "."', () => {
+it('should resolve entry as index.js when package main is "./"', () => {
+  const mockModule = require('mock-module-alt');
+  expect(mockModule).toEqual('test');
+});
+
+it('should resolve entry as index with other configured module file extension when package main is "."', () => {
   const mockJsxModule = require('mock-jsx-module');
   expect(mockJsxModule).toEqual('test jsx');
 });

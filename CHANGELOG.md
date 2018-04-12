@@ -87,6 +87,8 @@
   ([#5914](https://github.com/facebook/jest/pull/5914))
 * `[jest-regex-util]` Fix handling regex symbols in tests path on Windows
   ([#5941](https://github.com/facebook/jest/pull/5941))
+* `[jest-resolve]` Generalise test for package main entries equivalent to ".".
+  ([#5968)](https://github.com/facebook/jest/pull/5968)
 
 ### Chore & Maintenance
 
