@@ -327,7 +327,9 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule, options, moduleRegistry, from);
+        // Only include the fromPath if a moduleName is given. Else treat as root.
+        const fromPath = moduleName ? from : null;
+        this._execModule(localModule, options, moduleRegistry, fromPath);
       }
 
       localModule.loaded = true;
@@ -392,7 +394,10 @@ class Runtime {
         id: modulePath,
         loaded: false,
       };
-      this._execModule(localModule, undefined, this._mockRegistry, from);
+
+      // Only include the fromPath if a moduleName is given. Else treat as root.
+      const fromPath = moduleName ? from : null;
+      this._execModule(localModule, undefined, this._mockRegistry, fromPath);
       this._mockRegistry[moduleID] = localModule.exports;
       localModule.loaded = true;
     } else {
@@ -493,7 +498,7 @@ class Runtime {
     localModule: Module,
     options: ?InternalModuleOptions,
     moduleRegistry: ModuleRegistry,
-    from: Path,
+    from: ?Path,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -517,7 +522,8 @@ class Runtime {
       ({
         enumerable: true,
         get() {
-          return moduleRegistry[from] || null;
+          const key = from || '';
+          return moduleRegistry[key] || null;
         },
       }: Object),
     );

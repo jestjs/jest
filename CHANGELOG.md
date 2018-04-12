@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-runtime]` Prevent modules from marking themselves as thier own parent
+  ([#5235](https://github.com/facebook/jest/issues/5235))
 * `[expect]` Add support for async matchers
   ([#5836](https://github.com/facebook/jest/pull/5919))
 * `[expect]` Suggest toContainEqual
