@@ -339,8 +339,10 @@ test(<span class="hljs-string">'plays video'</span>, () =&gt; {
   spy.mockRestore();
 });
 
+<span class="hljs-keyword">const</span> audio = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./audio'</span>);
+
 test(<span class="hljs-string">'plays audio'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> spy = jest.spyOn(video, <span class="hljs-string">'play'</span>, <span class="hljs-string">'set'</span>); <span class="hljs-comment">// we pass 'set'</span>
+  <span class="hljs-keyword">const</span> spy = jest.spyOn(audio, <span class="hljs-string">'volume'</span>, <span class="hljs-string">'set'</span>); <span class="hljs-comment">// we pass 'set'</span>
   video.volume = <span class="hljs-number">100</span>;
 
   expect(spy).toHaveBeenCalled();
