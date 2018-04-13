@@ -548,8 +548,10 @@ test('plays video', () => {
   spy.mockRestore();
 });
 
+const audio = require('./audio');
+
 test('plays audio', () => {
-  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
+  const spy = jest.spyOn(audio, 'volume', 'set'); // we pass 'set'
   video.volume = 100;
 
   expect(spy).toHaveBeenCalled();
