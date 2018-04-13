@@ -3,6 +3,7 @@
 ### Features
 
 * `[jest-mock]` Add support for auto-mocking generator functions
+  ([#5983](https://github.com/facebook/jest/pull/5983))
 * `[expect]` Add support for async matchers
   ([#5836](https://github.com/facebook/jest/pull/5919))
 * `[expect]` Suggest toContainEqual
