@@ -50,6 +50,8 @@
   ([#5864](https://github.com/facebook/jest/pull/5864))
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
+* Pretty-print non-Error object errors
+  ([#5980](https://github.com/facebook/jest/pull/5980))
 
 ### Fixes
 
