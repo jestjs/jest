@@ -4,6 +4,10 @@
 
 - `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
 
+### Chore & Maintenance
+
+- `[docs]` Add precommit hook to fix linting errors in markdown files ([#5978](https://github.com/facebook/jest/pull/5978))
+
 ## 23.3.0
 
 ### Features

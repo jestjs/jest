@@ -40,6 +40,7 @@
     "flow-bin": "^0.75.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
+    "husky": "^0.14.3",
     "istanbul-api": "^1.3.1",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
@@ -52,6 +53,7 @@
     "karma-mocha": "^1.3.0",
     "left-pad": "^1.1.1",
     "lerna": "2.11.0",
+    "lint-staged": "^7.2.0",
     "micromatch": "^3.1.10",
     "mkdirp": "^0.5.1",
     "mocha": "^5.0.1",
@@ -96,7 +98,8 @@
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn typecheck && yarn lint && yarn jest",
     "typecheck": "flow check --include-warnings",
-    "watch": "yarn build && node ./scripts/watch.js"
+    "watch": "yarn build && node ./scripts/watch.js",
+    "precommit": "lint-staged"
   },
   "workspaces": [
     "packages/*",
@@ -174,5 +177,11 @@
     "type": "opencollective",
     "url": "https://opencollective.com/jest",
     "logo": "https://opencollective.com/jest/logo.txt"
+  },
+  "lint-staged": {
+    "*.md": [
+      "prettylint --fix",
+      "git add"
+    ]
   }
 }
