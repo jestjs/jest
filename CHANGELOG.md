@@ -95,8 +95,8 @@
   ([#5966](https://github.com/facebook/jest/pull/5966))
 * `[jest-resolve]` Generalise test for package main entries equivalent to ".".
   ([#5968](https://github.com/facebook/jest/pull/5968))
-* `[jest-config]` Ensure that custom resolvers are used when resolving the configuration
-  ([#5976](https://github.com/facebook/jest/pull/5976))
+* `[jest-config]` Ensure that custom resolvers are used when resolving the
+  configuration ([#5976](https://github.com/facebook/jest/pull/5976))
 
 ### Chore & Maintenance
 
