@@ -118,6 +118,7 @@ exports[`not throwing Error objects 5`] = `
       26 | test('Error during test', () => {
       27 |   // eslint-disable-next-line no-undef
     > 28 |   doesNotExist.alsoThisNot;
+         |   ^
       29 | });
       30 | 
       31 | test('done(Error)', done => {
@@ -131,6 +132,7 @@ exports[`not throwing Error objects 5`] = `
       30 | 
       31 | test('done(Error)', done => {
     > 32 |   done(new Error('this is an error'));
+         |        ^
       33 | });
       34 | 
       35 | test('done(non-error)', done => {
@@ -151,6 +153,7 @@ exports[`not throwing Error objects 5`] = `
       34 | 
       35 | test('done(non-error)', done => {
     > 36 |   done(deepObject);
+         |   ^
       37 | });
       38 | 
       
