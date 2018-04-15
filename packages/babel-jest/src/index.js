@@ -135,16 +135,7 @@ const createTransformer = (options: any): Transformer => {
       // babel v7 might return null in the case when the file has been ignored.
       const transformResult = babelTransform(src, theseOptions);
 
-      if (!transformResult) {
-        return src;
-      }
-
-      const shouldReturnCodeOnly =
-        transformOptions == null ||
-        transformOptions.returnSourceString == null ||
-        transformOptions.returnSourceString === true;
-
-      return shouldReturnCodeOnly ? transformResult.code : transformResult;
+      return transformResult || src;
     },
   };
 };
