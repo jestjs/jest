@@ -363,7 +363,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   const newOptions = Object.assign({}, DEFAULT_CONFIG);
   // Cast back to exact type
   options = (options: InitialOptions);
+
+  if (options.resolver) {
+    newOptions.resolver = resolve(
+      null,
+      options.rootDir,
+      'resolver',
+      options.resolver,
+    );
+  }
+
   Object.keys(options).reduce((newOptions, key) => {
+    // The resolver has been resolved separately; skip it
+    if (key === 'resolver') {
+      return newOptions;
+    }
     let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
@@ -373,7 +387,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'snapshotSerializers':
         value =
           options[key] &&
-          options[key].map(resolve.bind(null, options.rootDir, key));
+          options[key].map(
+            resolve.bind(null, newOptions.resolver, options.rootDir, key),
+          );
         break;
       case 'modulePaths':
       case 'roots':
@@ -401,12 +417,13 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'globalSetup':
       case 'globalTeardown':
       case 'moduleLoader':
-      case 'resolver':
       case 'runner':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'testRunner':
-        value = options[key] && resolve(options.rootDir, key, options[key]);
+        value =
+          options[key] &&
+          resolve(newOptions.resolver, options.rootDir, key, options[key]);
         break;
       case 'moduleNameMapper':
         const moduleNameMapper = options[key];
@@ -423,7 +440,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           transform &&
           Object.keys(transform).map(regex => [
             regex,
-            resolve(options.rootDir, key, transform[regex]),
+            resolve(
+              newOptions.resolver,
+              options.rootDir,
+              key,
+              transform[regex],
+            ),
           ]);
         break;
       case 'coveragePathIgnorePatterns':
@@ -438,6 +460,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = Object.assign({}, options[key]);
         if (value.hasteImplModulePath != null) {
           value.hasteImplModulePath = resolve(
+            newOptions.resolver,
             options.rootDir,
             'haste.hasteImplModulePath',
             replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
@@ -520,7 +543,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'watchPlugins':
         value = (options[key] || []).map(watchPlugin =>
-          resolve(options.rootDir, key, watchPlugin),
+          resolve(newOptions.resolver, options.rootDir, key, watchPlugin),
         );
         break;
     }

@@ -28,11 +28,17 @@ const createValidationError = (message: string) => {
   );
 };
 
-export const resolve = (rootDir: string, key: string, filePath: Path) => {
+export const resolve = (
+  resolver: ?string,
+  rootDir: string,
+  key: string,
+  filePath: Path,
+) => {
   const module = Resolver.findNodeModule(
     replaceRootDirInPath(rootDir, filePath),
     {
       basedir: rootDir,
+      resolver,
     },
   );
 

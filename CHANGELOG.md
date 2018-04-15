@@ -2,8 +2,10 @@
 
 ### Features
 
-* `[jest-runtime]` Prevent modules from marking themselves as thier own parent
+* `[jest-runtime]` Prevent modules from marking themselves as their own parent
   ([#5235](https://github.com/facebook/jest/issues/5235))
+* `[jest-mock]` Add support for auto-mocking generator functions
+  ([#5983](https://github.com/facebook/jest/pull/5983))
 * `[expect]` Add support for async matchers
   ([#5836](https://github.com/facebook/jest/pull/5919))
 * `[expect]` Suggest toContainEqual
@@ -54,6 +56,8 @@
   ([#5864](https://github.com/facebook/jest/pull/5864))
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
+* Pretty-print non-Error object errors
+  ([#5980](https://github.com/facebook/jest/pull/5980))
 
 ### Fixes
 
@@ -96,7 +100,9 @@
 * `[jest-util]` Fix handling of NaN/Infinity in mock timer delay
   ([#5966](https://github.com/facebook/jest/pull/5966))
 * `[jest-resolve]` Generalise test for package main entries equivalent to ".".
-  ([#5968)](https://github.com/facebook/jest/pull/5968)
+  ([#5968](https://github.com/facebook/jest/pull/5968))
+* `[jest-config]` Ensure that custom resolvers are used when resolving the
+  configuration ([#5976](https://github.com/facebook/jest/pull/5976))
 
 ### Chore & Maintenance
 
