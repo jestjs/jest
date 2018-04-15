@@ -7,6 +7,7 @@
 
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import addInstanceOfAlias from './addInstanceOfAlias';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
@@ -61,6 +62,8 @@ export default function (
       return global[dtrace].apply(this, args);
     };
   });
+
+  addInstanceOfAlias(globalObject.Error, Error);
 
   return Object.assign(globalObject, deepCyclicCopy(globals));
 }
