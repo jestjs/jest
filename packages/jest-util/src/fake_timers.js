@@ -486,6 +486,7 @@ export default class FakeTimers<TimerRef> {
       return null;
     }
 
+    // eslint-disable-next-line no-bitwise
     delay = Number(delay) | 0;
 
     const args = [];

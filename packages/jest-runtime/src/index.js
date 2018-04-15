@@ -19,6 +19,7 @@ import type {SourceMapRegistry} from 'types/SourceMaps';
 
 import path from 'path';
 import HasteMap from 'jest-haste-map';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -551,9 +552,28 @@ class Runtime {
       }
     }
 
-    const wrapper = this._environment.runScript(transformedFile.script)[
-      ScriptTransformer.EVAL_RESULT_VARIABLE
-    ];
+    const runScript = this._environment.runScript(transformedFile.script);
+
+    if (runScript === null) {
+      const originalStack = new ReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      ).stack
+        .split('\n')
+        // Remove this file from the stack (jest-message-utils will keep one line)
+        .filter(line => line.indexOf(__filename) === -1)
+        .join('\n');
+
+      const {message, stack} = separateMessageFromStack(originalStack);
+
+      console.error(
+        `\n${message}\n` +
+          formatStackTrace(stack, this._config, {noStackTrace: false}),
+      );
+      process.exitCode = 1;
+      return;
+    }
+
+    const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
     wrapper.call(
       localModule.exports, // module context
       localModule, // module object

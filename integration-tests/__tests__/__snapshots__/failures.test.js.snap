@@ -42,6 +42,7 @@ exports[`not throwing Error objects 4`] = `
       11 | const throws = () => {
       12 |   expect.assertions(2);
     > 13 |   expect(false).toBeTruthy();
+         |                 ^
       14 | };
       15 | const redeclare = () => {
       16 |   expect.assertions(1);
@@ -55,6 +56,7 @@ exports[`not throwing Error objects 4`] = `
       15 | const redeclare = () => {
       16 |   expect.assertions(1);
     > 17 |   expect(false).toBeTruthy();
+         |                 ^
       18 |   expect.assertions(2);
       19 | };
       20 |
@@ -116,6 +118,7 @@ exports[`not throwing Error objects 5`] = `
       26 | test('Error during test', () => {
       27 |   // eslint-disable-next-line no-undef
     > 28 |   doesNotExist.alsoThisNot;
+         |   ^
       29 | });
       30 | 
       31 | test('done(Error)', done => {
@@ -129,6 +132,7 @@ exports[`not throwing Error objects 5`] = `
       30 | 
       31 | test('done(Error)', done => {
     > 32 |   done(new Error('this is an error'));
+         |        ^
       33 | });
       34 | 
       35 | test('done(non-error)', done => {
@@ -149,6 +153,7 @@ exports[`not throwing Error objects 5`] = `
       34 | 
       35 | test('done(non-error)', done => {
     > 36 |   done(deepObject);
+         |   ^
       37 | });
       38 | 
       
@@ -174,6 +179,7 @@ exports[`works with assertions in separate files 1`] = `
       10 | 
       11 | module.exports = (one: any, two: any) => {
     > 12 |   expect(one).toEqual(two);
+         |               ^
       13 | };
       14 | 
       
@@ -242,6 +248,7 @@ exports[`works with node assert 1`] = `
       13 | 
       14 | test('assert', () => {
     > 15 |   assert(false);
+         |   ^
       16 | });
       17 | 
       18 | test('assert with a message', () => {
@@ -263,6 +270,7 @@ exports[`works with node assert 1`] = `
       17 | 
       18 | test('assert with a message', () => {
     > 19 |   assert(false, 'this is a message');
+         |   ^
       20 | });
       21 | 
       22 | test('assert.ok', () => {
@@ -281,6 +289,7 @@ exports[`works with node assert 1`] = `
       21 | 
       22 | test('assert.ok', () => {
     > 23 |   assert.ok(false);
+         |          ^
       24 | });
       25 | 
       26 | test('assert.ok with a message', () => {
@@ -302,6 +311,7 @@ exports[`works with node assert 1`] = `
       25 | 
       26 | test('assert.ok with a message', () => {
     > 27 |   assert.ok(false, 'this is a message');
+         |          ^
       28 | });
       29 | 
       30 | test('assert.equal', () => {
@@ -320,6 +330,7 @@ exports[`works with node assert 1`] = `
       29 | 
       30 | test('assert.equal', () => {
     > 31 |   assert.equal(1, 2);
+         |          ^
       32 | });
       33 | 
       34 | test('assert.notEqual', () => {
@@ -342,6 +353,7 @@ exports[`works with node assert 1`] = `
       33 | 
       34 | test('assert.notEqual', () => {
     > 35 |   assert.notEqual(1, 1);
+         |          ^
       36 | });
       37 | 
       38 | test('assert.deepEqual', () => {
@@ -374,6 +386,7 @@ exports[`works with node assert 1`] = `
       37 | 
       38 | test('assert.deepEqual', () => {
     > 39 |   assert.deepEqual({a: {b: {c: 5}}}, {a: {b: {c: 6}}});
+         |          ^
       40 | });
       41 | 
       42 | test('assert.deepEqual with a message', () => {
@@ -409,6 +422,7 @@ exports[`works with node assert 1`] = `
       41 | 
       42 | test('assert.deepEqual with a message', () => {
     > 43 |   assert.deepEqual({a: {b: {c: 5}}}, {a: {b: {c: 7}}}, 'this is a message');
+         |          ^
       44 | });
       45 | 
       46 | test('assert.notDeepEqual', () => {
@@ -431,6 +445,7 @@ exports[`works with node assert 1`] = `
       45 | 
       46 | test('assert.notDeepEqual', () => {
     > 47 |   assert.notDeepEqual({a: 1}, {a: 1});
+         |          ^
       48 | });
       49 | 
       50 | test('assert.strictEqual', () => {
@@ -449,6 +464,7 @@ exports[`works with node assert 1`] = `
       49 | 
       50 | test('assert.strictEqual', () => {
     > 51 |   assert.strictEqual(1, NaN);
+         |          ^
       52 | });
       53 | 
       54 | test('assert.notStrictEqual', () => {
@@ -474,6 +490,7 @@ exports[`works with node assert 1`] = `
       53 | 
       54 | test('assert.notStrictEqual', () => {
     > 55 |   assert.notStrictEqual(1, 1, 'My custom error message');
+         |          ^
       56 | });
       57 | 
       58 | test('assert.deepStrictEqual', () => {
@@ -502,6 +519,7 @@ exports[`works with node assert 1`] = `
       57 | 
       58 | test('assert.deepStrictEqual', () => {
     > 59 |   assert.deepStrictEqual({a: 1}, {a: 2});
+         |          ^
       60 | });
       61 | 
       62 | test('assert.notDeepStrictEqual', () => {
@@ -524,6 +542,7 @@ exports[`works with node assert 1`] = `
       61 | 
       62 | test('assert.notDeepStrictEqual', () => {
     > 63 |   assert.notDeepStrictEqual({a: 1}, {a: 1});
+         |          ^
       64 | });
       65 | 
       66 | test('assert.ifError', () => {
@@ -550,6 +569,7 @@ exports[`works with node assert 1`] = `
       69 | 
       70 | test('assert.doesNotThrow', () => {
     > 71 |   assert.doesNotThrow(() => {
+         |          ^
       72 |     throw Error('err!');
       73 |   });
       74 | });
@@ -569,6 +589,7 @@ exports[`works with node assert 1`] = `
       75 | 
       76 | test('assert.throws', () => {
     > 77 |   assert.throws(() => {});
+         |          ^
       78 | });
       79 | 
       
@@ -593,6 +614,7 @@ exports[`works with snapshot failures 1`] = `
       10 | 
       11 | test('failing snapshot', () => {
     > 12 |   expect('foo').toMatchSnapshot();
+         |                 ^
       13 | });
       14 | 
       

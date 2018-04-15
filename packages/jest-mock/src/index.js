@@ -26,7 +26,7 @@ type MockFunctionState = {
   calls: Array<Array<any>>,
   returnValues: Array<any>,
   thrownErrors: Array<any>,
-  timestamps: Array<number>,
+  invocationCallOrder: Array<number>,
 };
 
 type MockFunctionConfig = {
@@ -241,6 +241,7 @@ class ModuleMockerClass {
   _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   _spyState: Set<() => void>;
   ModuleMocker: Class<ModuleMockerClass>;
+  _invocationCallCounter: number;
 
   /**
    * @see README.md
@@ -253,6 +254,7 @@ class ModuleMockerClass {
     this._mockConfigRegistry = new WeakMap();
     this._spyState = new Set();
     this.ModuleMocker = ModuleMockerClass;
+    this._invocationCallCounter = 1;
   }
 
   _ensureMockConfig(f: Mock): MockFunctionConfig {
@@ -288,9 +290,9 @@ class ModuleMockerClass {
     return {
       calls: [],
       instances: [],
+      invocationCallOrder: [],
       returnValues: [],
       thrownErrors: [],
-      timestamps: [],
     };
   }
 
@@ -325,7 +327,7 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
-        mockState.timestamps.push(Date.now());
+        mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
 
         // Will be set to the return value of the mock if an error is not thrown
         let finalReturnValue;
