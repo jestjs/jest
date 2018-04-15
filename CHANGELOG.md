@@ -61,6 +61,8 @@
 
 ### Fixes
 
+* `[jest-mock]` [**BREAKING**] Replace timestamps with `invocationCallOrder`
+  ([#5867](https://github.com/facebook/jest/pull/5867))
 * `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch
   runtime errors ([#5945](https://github.com/facebook/jest/pull/5945))
 * `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
