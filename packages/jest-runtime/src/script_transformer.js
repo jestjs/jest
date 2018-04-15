@@ -217,7 +217,6 @@ export default class ScriptTransformer {
     if (transform && shouldCallTransform) {
       const processed = transform.process(content, filename, this._config, {
         instrument,
-        returnSourceString: false,
       });
 
       if (typeof processed === 'string') {
