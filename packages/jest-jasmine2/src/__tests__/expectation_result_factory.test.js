@@ -28,7 +28,7 @@ describe('expectationResultFactory', () => {
       passed: false,
     };
     const result = expectationResultFactory(options);
-    expect(result.message).toEqual('');
+    expect(result.message).toEqual('thrown: undefined');
   });
 
   it('returns the result if failed (with `message`).', () => {
@@ -66,6 +66,6 @@ describe('expectationResultFactory', () => {
       passed: false,
     };
     const result = expectationResultFactory(options);
-    expect(result.message).toEqual('Expected `Pass`, received `Fail`. thrown');
+    expect(result.message).toEqual('Expected `Pass`, received `Fail`.');
   });
 });

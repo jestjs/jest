@@ -52,6 +52,8 @@ test('not throwing Error objects', () => {
   expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['assertion_count.test.js']).stderr;
   expect(extractSummary(cleanupStackTrace(stderr)).rest).toMatchSnapshot();
+  stderr = runJest(dir, ['during_tests.test.js']).stderr;
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
