@@ -316,14 +316,18 @@ const _validateResult = result => {
 
 function assertions(expected: number) {
   const error = new Error();
-  Error.captureStackTrace(error, assertions);
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(error, assertions);
+  }
 
   getState().expectedAssertionsNumber = expected;
   getState().expectedAssertionsNumberError = error;
 }
 function hasAssertions(expected: any) {
   const error = new Error();
-  Error.captureStackTrace(error, hasAssertions);
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(error, hasAssertions);
+  }
 
   utils.ensureNoExpected(expected, '.hasAssertions');
   getState().isExpectingAssertions = true;
