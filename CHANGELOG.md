@@ -61,6 +61,9 @@
 
 ### Fixes
 
+* `[jest-runtime]` Throw a more useful error when trying to require modules
+  after the test environment is torn down
+  ([#5888](https://github.com/facebook/jest/pull/5888))
 * `[jest-mock]` [**BREAKING**] Replace timestamps with `invocationCallOrder`
   ([#5867](https://github.com/facebook/jest/pull/5867))
 * `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch
@@ -71,8 +74,6 @@
   mode. ([#5861](https://github.com/facebook/jest/pull/5861))
 * `[jest-mock]` Extend .toHaveBeenCalled return message with outcome
   ([#5951](https://github.com/facebook/jest/pull/5951))
-* `[jest-message-util]` Include column in stack frames
-  ([#5889](https://github.com/facebook/jest/pull/5889))
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
   ([#5860](https://github.com/facebook/jest/pull/5860))
 * `[jest-cli]` Add descriptive error message when trying to use
