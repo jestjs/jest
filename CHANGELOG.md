@@ -58,6 +58,8 @@
   ([#5909](https://github.com/facebook/jest/pull/5909))
 * Pretty-print non-Error object errors
   ([#5980](https://github.com/facebook/jest/pull/5980))
+* `[jest-message-util]` Include column in stack frames
+  ([#5889](https://github.com/facebook/jest/pull/5889))
 
 ### Fixes
 
