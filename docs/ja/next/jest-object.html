@@ -322,7 +322,7 @@ test(<span class="hljs-string">'plays video'</span>, () =&gt; {
   },
 };
 
-<span class="hljs-built_in">module</span>.exports = video;
+<span class="hljs-built_in">module</span>.exports = audio;
 </code></pre>
 <p>テストの例:</p>
 <pre><code class="hljs css js"><span class="hljs-keyword">const</span> video = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./video'</span>);
@@ -342,10 +342,10 @@ test(<span class="hljs-string">'plays video'</span>, () =&gt; {
 
 test(<span class="hljs-string">'plays audio'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> spy = jest.spyOn(audio, <span class="hljs-string">'volume'</span>, <span class="hljs-string">'set'</span>); <span class="hljs-comment">// we pass 'set'</span>
-  video.volume = <span class="hljs-number">100</span>;
+  audio.volume = <span class="hljs-number">100</span>;
 
   expect(spy).toHaveBeenCalled();
-  expect(video.volume).toBe(<span class="hljs-number">100</span>);
+  expect(audio.volume).toBe(<span class="hljs-number">100</span>);
 
   spy.mockReset();
   spy.mockRestore();
