@@ -73,10 +73,14 @@ const trim = string => (string || '').trim();
 const trimPaths = string =>
   string.match(STACK_PATH_REGEXP) ? trim(string) : string;
 
-const getRenderedCallsite = (fileContent: string, line: number) => {
+const getRenderedCallsite = (
+  fileContent: string,
+  line: number,
+  column?: number,
+) => {
   let renderedCallsite = codeFrameColumns(
     fileContent,
-    {start: {line}},
+    {start: {column, line}},
     {highlightCode: true},
   );
 
@@ -258,7 +262,11 @@ export const formatStackTrace = (
         // TODO: check & read HasteFS instead of reading the filesystem:
         // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
         fileContent = fs.readFileSync(filename, 'utf8');
-        renderedCallsite = getRenderedCallsite(fileContent, topFrame.line);
+        renderedCallsite = getRenderedCallsite(
+          fileContent,
+          topFrame.line,
+          topFrame.column,
+        );
       } catch (e) {
         // the file does not exist or is inaccessible, we ignore
       }
