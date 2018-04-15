@@ -21,6 +21,7 @@ function messageFormatter({error, message, passed}) {
     return error;
   }
   if (isError(error)) {
+    // $FlowFixMe: as `isError` returned `true`, this is safe
     return `${error.name}: ${error.message}`;
   }
   return `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
