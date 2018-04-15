@@ -16,6 +16,7 @@ import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   SUGGEST_TO_EQUAL,
+  SUGGEST_TO_CONTAIN_EQUAL,
   ensureNoExpected,
   ensureNumbers,
   matcherHint,
@@ -297,13 +298,24 @@ const matchers: MatchersObject = {
           `  ${printReceived(collection)}\n` +
           `Not to contain value:\n` +
           `  ${printExpected(value)}\n`
-      : () =>
-          matcherHint('.toContain', collectionType, 'value') +
-          '\n\n' +
-          `Expected ${collectionType}:\n` +
-          `  ${printReceived(collection)}\n` +
-          `To contain value:\n` +
-          `  ${printExpected(value)}`;
+      : () => {
+          const suggestToContainEqual =
+            converted !== null &&
+            typeof converted !== 'string' &&
+            converted instanceof Array &&
+            converted.findIndex(item =>
+              equals(item, value, [iterableEquality]),
+            ) !== -1;
+          return (
+            matcherHint('.toContain', collectionType, 'value') +
+            '\n\n' +
+            `Expected ${collectionType}:\n` +
+            `  ${printReceived(collection)}\n` +
+            `To contain value:\n` +
+            `  ${printExpected(value)}` +
+            (suggestToContainEqual ? ` ${SUGGEST_TO_CONTAIN_EQUAL}` : '')
+          );
+        };
 
     return {message, pass};
   },

@@ -75,12 +75,45 @@ test('even and odd numbers', () => {
 });
 ```
 
-Matchers should return an object with two keys. `pass` indicates whether there
-was a match or not, and `message` provides a function with no arguments that
-returns an error message in case of failure. Thus, when `pass` is false,
-`message` should return the error message for when `expect(x).yourMatcher()`
-fails. And when `pass` is true, `message` should return the error message for
-when `expect(x).not.yourMatcher()` fails.
+`expect.extends` also supports async matchers. Async matchers return a Promise
+so you will need to await the returned value. Let's use an example matcher to
+illustrate the usage of them. We are going to implement a very similar matcher
+than `toBeDivisibleBy`, only difference is that the divisible number is going to
+be pulled from an external source.
+
+```js
+expect.extend({
+  async toBeDivisibleByExternalValue(received) {
+    const externalValue = await getExternalValueFromRemoteSource();
+    const pass = received % externalValue == 0;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${received} not to be divisible by ${externalValue}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${received} to be divisible by ${externalValue}`,
+        pass: false,
+      };
+    }
+  },
+});
+
+test('is divisible by external value', async () => {
+  await expect(100).toBeDivisibleByExternalValue();
+  await expect(101).not.toBeDivisibleByExternalValue();
+});
+```
+
+Matchers should return an object (or a Promise of an object) with two keys.
+`pass` indicates whether there was a match or not, and `message` provides a
+function with no arguments that returns an error message in case of failure.
+Thus, when `pass` is false, `message` should return the error message for when
+`expect(x).yourMatcher()` fails. And when `pass` is true, `message` should
+return the error message for when `expect(x).not.yourMatcher()` fails.
 
 These helper functions can be found on `this` inside a custom matcher:
 
@@ -318,7 +351,7 @@ describe('not.objectContaining', () => {
 
 ### `expect.not.stringContaining(string)`
 
-`expect.not.stringContaining(string)` matches any received string that does not
+`expect.not.stringContaining(string)` matches the received string that does not
 contain the exact expected string.
 
 It is the inverse of `expect.stringContaining`.
@@ -333,10 +366,10 @@ describe('not.stringContaining', () => {
 });
 ```
 
-### `expect.not.stringMatching(regexp)`
+### `expect.not.stringMatching(string | regexp)`
 
-`expect.not.stringMatching(regexp)` matches any received string that does not
-match the expected regexp.
+`expect.not.stringMatching(string | regexp)` matches the received string that
+does not match the expected regexp.
 
 It is the inverse of `expect.stringMatching`.
 
@@ -379,13 +412,13 @@ test('onPress gets called with the right thing', () => {
 
 ### `expect.stringContaining(string)`
 
-`expect.stringContaining(string)` matches any received string that contains the
+`expect.stringContaining(string)` matches the received string that contains the
 exact expected string.
 
-### `expect.stringMatching(regexp)`
+### `expect.stringMatching(string | regexp)`
 
-`expect.stringMatching(regexp)` matches any received string that matches the
-expected regexp.
+`expect.stringMatching(string | regexp)` matches the received string that
+matches the expected regexp.
 
 You can use it instead of a literal value:
 
@@ -455,8 +488,6 @@ test('the best flavor is not coconut', () => {
 
 ### `.resolves`
 
-##### available in Jest **20.0.0+**
-
 Use `resolves` to unwrap the value of a fulfilled promise so any other matcher
 can be chained. If the promise is rejected the assertion fails.
 
@@ -484,8 +515,6 @@ test('resolves to lemon', async () => {
 ```
 
 ### `.rejects`
-
-##### available in Jest **20.0.0+**
 
 Use `.rejects` to unwrap the reason of a rejected promise so any other matcher
 can be chained. If the promise is fulfilled the assertion fails.
@@ -571,6 +600,8 @@ describe('drinkAll', () => {
 
 ### `.toHaveBeenCalledTimes(number)`
 
+Also under the alias: `.toBeCalledTimes(number)`
+
 Use `.toHaveBeenCalledTimes` to ensure that a mock function got called exact
 number of times.
 
@@ -626,10 +657,12 @@ test('applying to all flavors does mango last', () => {
 });
 ```
 
-### `.nthCalledWith(nthCall, arg1, arg2, ....)`
+### `.toHaveBeenNthCalledWith(nthCall, arg1, arg2, ....)`
 
-If you have a mock function, you can use `.nthCalledWith` to test what arguments
-it was nth called with. For example, let's say you have a
+Also under the alias: `.nthCalledWith(arg1, arg2, ...)`
+
+If you have a mock function, you can use `.toHaveBeenNthCalledWith` to test what
+arguments it was nth called with. For example, let's say you have a
 `drinkEach(drink, Array<flavor>)` function that applies `f` to a bunch of
 flavors, and you want to ensure that when you call it, the first flavor it
 operates on is `'lemon'` and the second one is `'octopus'`. You can write:
@@ -640,8 +673,8 @@ Note that, nth argument must be positive integer starting from 1.
 test('drinkEach drinks each drink', () => {
   const drink = jest.fn();
   drinkEach(drink, ['lemon', 'octopus']);
-  expect(drink).nthCalledWith(1, 'lemon');
-  expect(drink).nthCalledWith(2, 'octopus');
+  expect(drink).toHaveBeenNthCalledWith(1, 'lemon');
+  expect(drink).toHaveBeenNthCalledWith(2, 'octopus');
 });
 ```
 
@@ -1080,9 +1113,9 @@ test('throws on octopus', () => {
 ```
 
 If you want to test that a specific error gets thrown, you can provide an
-argument to `toThrow`. The argument can be a string for the error message, a
-class for the error, or a regex that should match the error. For example, let's
-say that `drinkFlavor` is coded like this:
+argument to `toThrow`. The argument can be a string that should be contained in
+the error message, a class for the error, or a regex that should match the error
+message. For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1101,11 +1134,12 @@ test('throws on octopus', () => {
     drinkFlavor('octopus');
   }
 
-  // Test the exact error message
-  expect(drinkOctopus).toThrowError('yuck, octopus flavor');
-
-  // Test that the error message says "yuck" somewhere
+  // Test that the error message says "yuck" somewhere: these are equivalent
   expect(drinkOctopus).toThrowError(/yuck/);
+  expect(drinkOctopus).toThrowError('yuck');
+
+  // Test the exact error message
+  expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
 
   // Test that we get a DisgustingFlavorError
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);

@@ -14,7 +14,6 @@ import crypto from 'crypto';
 import EventEmitter from 'events';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
-// eslint-disable-next-line import/no-duplicates
 import H from './constants';
 import HasteFS from './haste_fs';
 import HasteModuleMap from './module_map';
@@ -41,8 +40,7 @@ import type {
   MockData,
 } from 'types/HasteMap';
 
-// eslint-disable-next-line import/no-duplicates
-import typeof HType from './constants';
+type HType = typeof H;
 
 type Options = {
   cacheDirectory?: string,

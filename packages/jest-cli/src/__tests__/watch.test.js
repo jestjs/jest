@@ -245,8 +245,26 @@ describe('Watch mode flows', () => {
     jest.unmock('jest-util');
     const util = require('jest-util');
     util.isInteractive = true;
-    util.getFailedSnapshotTests = jest.fn(() => ['test.js']);
-    results = {snapshot: {failure: true}};
+    results = {
+      numFailedTests: 1,
+      snapshot: {
+        failure: true,
+      },
+      testPath: 'test.js',
+      testResults: [
+        {
+          snapshot: {
+            unmatched: true,
+          },
+          testResults: [
+            {
+              status: 'failed',
+              title: 'test a',
+            },
+          ],
+        },
+      ],
+    };
 
     const ci_watch = require('../watch').default;
     ci_watch(
@@ -297,6 +315,47 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(apply).toHaveBeenCalled();
+  });
+
+  it('allows WatchPlugins to override internal plugins', async () => {
+    const run = jest.fn(() => Promise.resolve());
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_override`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          constructor() {
+            this.run = run;
+          }
+          getUsageInfo() {
+            return {
+              key: 'p'.codePointAt(0),
+              prompt: 'custom "P" plugin',
+            };
+          }
+        },
+      {virtual: true},
+    );
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [pluginPath],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    await nextTick();
+
+    expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
+
+    stdin.emit(toHex('p'));
+    await nextTick();
+
+    expect(run).toHaveBeenCalled();
   });
 
   it('allows WatchPlugins to hook into file system changes', async () => {

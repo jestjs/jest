@@ -7,6 +7,8 @@
  * @flow
  */
 
+import prettyFormat from 'pretty-format';
+
 function messageFormatter({error, message, passed}) {
   if (passed) {
     return 'Passed.';
@@ -14,19 +16,27 @@ function messageFormatter({error, message, passed}) {
   if (message) {
     return message;
   }
-  if (!error) {
-    return '';
+  if (typeof error === 'string') {
+    return error;
   }
-  return error.message && error.name
-    ? `${error.name}: ${error.message}`
-    : `${error.toString()} thrown`;
+  if (
+    // duck-type Error, see #2549
+    error &&
+    typeof error === 'object' &&
+    typeof error.message === 'string' &&
+    typeof error.name === 'string'
+  ) {
+    return `${error.name}: ${error.message}`;
+  }
+  return `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 }
 
 function stackFormatter(options, errorMessage) {
   if (options.passed) {
     return '';
   }
-  const {stack} = options.error || new Error(errorMessage);
+  const stack =
+    (options.error && options.error.stack) || new Error(errorMessage).stack;
   return stack;
 }
 

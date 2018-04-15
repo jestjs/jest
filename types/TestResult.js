@@ -78,6 +78,11 @@ export type FailedAssertion = {|
   stack?: string,
 |};
 
+export type AssertionLocation = {|
+  path: string,
+  title: string,
+|};
+
 export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
 
 export type Bytes = number;

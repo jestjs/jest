@@ -15,9 +15,10 @@ it('extracts both requires and imports from code', () => {
   const code = `
       import module1 from 'module1';
       const module2 = require('module2');
+      import('module3').then(module3 => {})';
     `;
 
-  expect(extractRequires(code)).toEqual(['module1', 'module2']);
+  expect(extractRequires(code)).toEqual(['module1', 'module2', 'module3']);
 });
 
 it('extracts requires in order', () => {

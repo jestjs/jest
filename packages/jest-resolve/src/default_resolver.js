@@ -129,7 +129,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
       pkgmain = JSON.parse(body).main;
     } catch (e) {}
 
-    if (pkgmain && pkgmain !== '.') {
+    if (pkgmain && !isCurrentDirectory(pkgmain)) {
       const resolveTarget = path.resolve(name, pkgmain);
       const result = tryResolve(resolveTarget);
       if (result) {
@@ -174,4 +174,8 @@ function isDirectory(dir: Path): boolean {
   }
 
   return result;
+}
+
+function isCurrentDirectory(testPath: Path): boolean {
+  return path.resolve('.') === path.resolve(testPath);
 }

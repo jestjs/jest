@@ -22,6 +22,7 @@ import HasteMap from 'jest-haste-map';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
+import Snapshot from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './script_transformer';
@@ -64,7 +65,6 @@ type BooleanObject = {[key: string]: boolean, __proto__: null};
 type CacheFS = {[path: Path]: string, __proto__: null};
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: ProjectConfig) => {
   if (
@@ -228,7 +228,7 @@ class Runtime {
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
-      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
@@ -327,7 +327,9 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule, options, moduleRegistry, from);
+        // Only include the fromPath if a moduleName is given. Else treat as root.
+        const fromPath = moduleName ? from : null;
+        this._execModule(localModule, options, moduleRegistry, fromPath);
       }
 
       localModule.loaded = true;
@@ -392,7 +394,10 @@ class Runtime {
         id: modulePath,
         loaded: false,
       };
-      this._execModule(localModule, undefined, this._mockRegistry, from);
+
+      // Only include the fromPath if a moduleName is given. Else treat as root.
+      const fromPath = moduleName ? from : null;
+      this._execModule(localModule, undefined, this._mockRegistry, fromPath);
       this._mockRegistry[moduleID] = localModule.exports;
       localModule.loaded = true;
     } else {
@@ -493,7 +498,7 @@ class Runtime {
     localModule: Module,
     options: ?InternalModuleOptions,
     moduleRegistry: ModuleRegistry,
-    from: Path,
+    from: ?Path,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -517,7 +522,8 @@ class Runtime {
       ({
         enumerable: true,
         get() {
-          return moduleRegistry[from] || null;
+          const key = from || '';
+          return moduleRegistry[key] || null;
         },
       }: Object),
     );

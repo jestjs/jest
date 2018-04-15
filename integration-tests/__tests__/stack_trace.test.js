@@ -22,6 +22,7 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/,
     );
+    expect(stderr).toMatch(/> 10 \| thisIsARuntimeError\(\);/);
     expect(stderr).toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/runtime_error.test\.js/,
     );
@@ -78,7 +79,7 @@ describe('Stack Trace', () => {
     expect(result.status).toBe(1);
 
     expect(stderr).toMatch(/this is unexpected\./);
-    expect(stderr).toMatch(/this is a string\. thrown/);
+    expect(stderr).toMatch(/this is a string\./);
 
     expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/test_error.test\.js/);
 

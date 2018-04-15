@@ -10,6 +10,8 @@
 import type {
   Expect,
   ExpectationObject,
+  AsyncExpectationResult,
+  SyncExpectationResult,
   ExpectationResult,
   MatcherState,
   MatchersObject,
@@ -196,7 +198,7 @@ const makeThrowingMatcher = (
   isNot: boolean,
   actual: any,
 ): ThrowingMatcherFn => {
-  return function throwingMatcher(...args) {
+  return function throwingMatcher(...args): any {
     let throws = true;
     const matcherContext: MatcherState = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
@@ -212,11 +214,35 @@ const makeThrowingMatcher = (
         utils,
       },
     );
-    let result: ExpectationResult;
 
-    try {
-      result = matcher.apply(matcherContext, [actual].concat(args));
-    } catch (error) {
+    const processResult = (result: SyncExpectationResult) => {
+      _validateResult(result);
+
+      getState().assertionCalls++;
+
+      if ((result.pass && isNot) || (!result.pass && !isNot)) {
+        // XOR
+        const message = getMessage(result.message);
+        const error = new JestAssertionError(message);
+        // Passing the result of the matcher with the error so that a custom
+        // reporter could access the actual and expected objects of the result
+        // for example in order to display a custom visual diff
+        error.matcherResult = result;
+        // Try to remove this function from the stack trace frame.
+        // Guard for some environments (browsers) that do not support this feature.
+        if (Error.captureStackTrace) {
+          Error.captureStackTrace(error, throwingMatcher);
+        }
+
+        if (throws) {
+          throw error;
+        } else {
+          getState().suppressedErrors.push(error);
+        }
+      }
+    };
+
+    const handlError = (error: Error) => {
       if (
         matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
@@ -228,31 +254,26 @@ const makeThrowingMatcher = (
         Error.captureStackTrace(error, throwingMatcher);
       }
       throw error;
-    }
+    };
 
-    _validateResult(result);
+    let potentialResult: ExpectationResult;
 
-    getState().assertionCalls++;
+    try {
+      potentialResult = matcher.apply(matcherContext, [actual].concat(args));
 
-    if ((result.pass && isNot) || (!result.pass && !isNot)) {
-      // XOR
-      const message = getMessage(result.message);
-      const error = new JestAssertionError(message);
-      // Passing the result of the matcher with the error so that a custom
-      // reporter could access the actual and expected objects of the result
-      // for example in order to display a custom visual diff
-      error.matcherResult = result;
-      // Try to remove this function from the stack trace frame.
-      // Guard for some environments (browsers) that do not support this feature.
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(error, throwingMatcher);
-      }
+      if (isPromise((potentialResult: any))) {
+        const asyncResult = ((potentialResult: any): AsyncExpectationResult);
 
-      if (throws) {
-        throw error;
+        return asyncResult
+          .then(aResult => processResult(aResult))
+          .catch(error => handlError(error));
       } else {
-        getState().suppressedErrors.push(error);
+        const syncResult = ((potentialResult: any): SyncExpectationResult);
+
+        return processResult(syncResult);
       }
+    } catch (error) {
+      return handlError(error);
     }
   };
 };
