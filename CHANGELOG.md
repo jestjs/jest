@@ -64,6 +64,8 @@
 * `[jest-runtime]` Throw a more useful error when trying to require modules
   after the test environment is torn down
   ([#5888](https://github.com/facebook/jest/pull/5888))
+* `[jest-mock]` [**BREAKING**] Replace timestamps with `invocationCallOrder`
+  ([#5867](https://github.com/facebook/jest/pull/5867))
 * `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch
   runtime errors ([#5945](https://github.com/facebook/jest/pull/5945))
 * `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
@@ -111,6 +113,8 @@
 
 ### Chore & Maintenance
 
+* `[babel-jest]` [**BREAKING**] Always return object from transformer
+  ([#5991](https://github.com/facebook/jest/pull/5991))
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
   ([#5885](https://github.com/facebook/jest/pull/5885))

@@ -78,6 +78,7 @@ test('works with node assert', () => {
       69 | 
       70 | test('assert.doesNotThrow', () => {
     > 71 |   assert.doesNotThrow(() => {
+         |          ^
       72 |     throw Error('err!');
       73 |   });
       74 | });
