@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-util]` Install fix for `instanceof` as part of other globals into test environments ([#5995](https://github.com/facebook/jest/pull/5995))
+
 ### Chore & Maintenance
 
 - `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
