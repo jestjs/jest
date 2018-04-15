@@ -16,11 +16,11 @@ test('prints useful error for requires after test is done', () => {
 
   const interestingLines = stderr
     .split('\n')
-    .slice(9, 17)
+    .slice(9, 18)
     .join('\n');
 
   expect(interestingLines).toMatchSnapshot();
-  expect(stderr.split('\n')[18]).toMatch(
+  expect(stderr.split('\n')[19]).toMatch(
     new RegExp('(__tests__/late-require.test.js:11:20)'),
   );
 });
