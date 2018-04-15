@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-runtime]` Prevent modules from marking themselves as their own parent
+  ([#5235](https://github.com/facebook/jest/issues/5235))
 * `[jest-mock]` Add support for auto-mocking generator functions
   ([#5983](https://github.com/facebook/jest/pull/5983))
 * `[expect]` Add support for async matchers
