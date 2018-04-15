@@ -108,7 +108,8 @@
 
 ### Chore & Maintenance
 
-* `[jest-util]` Extract error duck-typing to `jest-util` (TBD)
+* `[jest-util]` Extract error duck-typing to `jest-util`
+  ([#5994](https://github.com/facebook/jest/pull/5994))
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
   ([#5885](https://github.com/facebook/jest/pull/5885))
