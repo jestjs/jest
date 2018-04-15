@@ -323,13 +323,13 @@ function assertions(expected: number) {
   getState().expectedAssertionsNumber = expected;
   getState().expectedAssertionsNumberError = error;
 }
-function hasAssertions(expected: any) {
+function hasAssertions(...args) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
   }
 
-  utils.ensureNoExpected(expected, '.hasAssertions');
+  utils.ensureNoExpected(args[0], '.hasAssertions');
   getState().isExpectingAssertions = true;
   getState().isExpectingAssertionsError = error;
 }
