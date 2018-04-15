@@ -8,6 +8,7 @@
  */
 
 import prettyFormat from 'pretty-format';
+import {isError} from 'jest-util';
 
 function messageFormatter({error, message, passed}) {
   if (passed) {
@@ -19,13 +20,8 @@ function messageFormatter({error, message, passed}) {
   if (typeof error === 'string') {
     return error;
   }
-  if (
-    // duck-type Error, see #2549
-    error &&
-    typeof error === 'object' &&
-    typeof error.message === 'string' &&
-    typeof error.name === 'string'
-  ) {
+  if (isError(error)) {
+    // $FlowFixMe: as `isError` returned `true`, this is safe
     return `${error.name}: ${error.message}`;
   }
   return `thrown: ${prettyFormat(error, {maxDepth: 3})}`;

@@ -18,6 +18,7 @@ import getFailedSnapshotTests from './get_failed_snapshot_tests';
 import getConsoleOutput from './get_console_output';
 import installCommonGlobals from './install_common_globals';
 import NullConsole from './null_console';
+import isError from './is_error';
 import isInteractive from './is_interative';
 import getCallsite from './get_callsite';
 import setGlobal from './set_global';
@@ -46,6 +47,7 @@ module.exports = {
   getConsoleOutput,
   getFailedSnapshotTests,
   installCommonGlobals,
+  isError,
   isInteractive,
   setGlobal,
 };

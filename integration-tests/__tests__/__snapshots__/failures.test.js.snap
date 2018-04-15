@@ -84,19 +84,19 @@ exports[`not throwing Error objects 5`] = `
 
     thrown: Promise {}
       
-      at packages/jest-jasmine2/build/expectation_result_factory.js:54:47
+      at packages/jest-jasmine2/build/expectation_result_factory.js:53:47
 
   ● Boolean thrown during test
 
     thrown: false
       
-      at packages/jest-jasmine2/build/expectation_result_factory.js:54:47
+      at packages/jest-jasmine2/build/expectation_result_factory.js:53:47
 
   ● undefined thrown during test
 
     thrown: undefined
       
-      at packages/jest-jasmine2/build/expectation_result_factory.js:54:47
+      at packages/jest-jasmine2/build/expectation_result_factory.js:53:47
 
   ● Object thrown during test
 
@@ -109,7 +109,7 @@ exports[`not throwing Error objects 5`] = `
       ],
     }
       
-      at packages/jest-jasmine2/build/expectation_result_factory.js:54:47
+      at packages/jest-jasmine2/build/expectation_result_factory.js:53:47
 
   ● Error during test
 
@@ -157,7 +157,7 @@ exports[`not throwing Error objects 5`] = `
       37 | });
       38 | 
       
-      at packages/jest-jasmine2/build/expectation_result_factory.js:54:47
+      at packages/jest-jasmine2/build/expectation_result_factory.js:53:47
       at __tests__/during_tests.test.js:36:3
 
 "
@@ -553,7 +553,7 @@ exports[`works with node assert 1`] = `
 
     thrown: 1
       
-      at packages/jest-jasmine2/build/expectation_result_factory.js:54:47
+      at packages/jest-jasmine2/build/expectation_result_factory.js:53:47
 
   ● assert.doesNotThrow
 

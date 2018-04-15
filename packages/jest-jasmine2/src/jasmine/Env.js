@@ -33,6 +33,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import queueRunner from '../queue_runner';
 import treeProcessor from '../tree_processor';
 import prettyFormat from 'pretty-format';
+import {isError} from 'jest-util';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
@@ -548,11 +549,6 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      // duck-type Error, see #2549
-      const isError =
-        typeof error === 'object' &&
-        typeof error.message === 'string' &&
-        typeof error.name === 'string';
       const message = `Failed: ${prettyFormat(error, {maxDepth: 3})}`;
 
       currentRunnable().addExpectationResult(false, {
@@ -561,7 +557,7 @@ export default function(j$) {
         expected: '',
         actual: '',
         message,
-        error: isError ? error : null,
+        error: isError(error) ? error : null,
       });
     };
   }

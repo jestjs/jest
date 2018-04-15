@@ -115,6 +115,8 @@
 
 ### Chore & Maintenance
 
+* `[jest-util]` Extract error duck-typing to `jest-util`
+  ([#5994](https://github.com/facebook/jest/pull/5994))
 * `[babel-jest]` [**BREAKING**] Always return object from transformer
   ([#5991](https://github.com/facebook/jest/pull/5991))
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
