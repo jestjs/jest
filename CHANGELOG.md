@@ -2,6 +2,9 @@
 
 ### Features
 
+* `[jest-runtime]` Allow for transform plugins to skip the definition process method
+  if createTransformer method was defined.
+  ([#5999](https://github.com/facebook/jest/pull/5999))
 * `[jest-runtime]` Prevent modules from marking themselves as their own parent
   ([#5235](https://github.com/facebook/jest/issues/5235))
 * `[jest-mock]` Add support for auto-mocking generator functions
