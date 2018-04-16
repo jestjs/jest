@@ -85,6 +85,7 @@ jest.mock(
   {virtual: true},
 );
 
+// Bad preprocessor
 jest.mock(
   'skipped-required-props-preprocessor',
   () => {
@@ -93,12 +94,29 @@ jest.mock(
   {virtual: true},
 );
 
+// Bad preprocessor
 jest.mock(
   'skipped-required-create-transformer-props-preprocessor',
   () => {
     return {
       createTransformer() {
         return {};
+      },
+    };
+  },
+  {virtual: true},
+);
+
+jest.mock(
+  'skipped-process-method-preprocessor',
+  () => {
+    return {
+      createTransformer() {
+        const mockProcess = jest.fn();
+        mockProcess.mockReturnValue('code');
+        return {
+          process: mockProcess,
+        };
       },
     };
   },
@@ -302,6 +320,16 @@ describe('ScriptTransformer', () => {
     expect(() =>
       scriptTransformer.transformSource('sample.js', '', false),
     ).toThrow('Jest: a transform must export a `process` function.');
+  });
+
+  it("shouldn't throw error without process method. But with corrent createTransformer method", () => {
+    Object.assign(config, {
+      transform: [['^.+\\.js$', 'skipped-process-method-preprocessor']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+    expect(() =>
+      scriptTransformer.transformSource('sample.js', '', false),
+    ).not.toThrow();
   });
 
   it('uses the supplied preprocessor', () => {
