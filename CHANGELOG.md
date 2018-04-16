@@ -2,6 +2,7 @@
 
 ### Features
 
+* `[expect]` Add stack trace for async errors (TBD)
 * `[jest-runtime]` Prevent modules from marking themselves as their own parent
   ([#5235](https://github.com/facebook/jest/issues/5235))
 * `[jest-mock]` Add support for auto-mocking generator functions

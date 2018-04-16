@@ -191,9 +191,12 @@ exports[`works with assertions in separate files 1`] = `
 
 exports[`works with async failures 1`] = `
 "FAIL __tests__/async_failures.test.js
-  ✕ something async
+  ✕ resolve, but fail
+  ✕ reject, but fail
+  ✕ expect reject
+  ✕ expect resolve
 
-  ● something async
+  ● resolve, but fail
 
     expect(received).toEqual(expected)
     
@@ -211,8 +214,82 @@ exports[`works with async failures 1`] = `
     -   \\"baz\\": \\"bar\\",
     +   \\"foo\\": \\"bar\\",
       }
+
+      10 | 
+      11 | test('resolve, but fail', () => {
+    > 12 |   return expect(Promise.resolve({foo: 'bar'})).resolves.toEqual({baz: 'bar'});
+         |                                                         ^
+      13 | });
+      14 | 
+      15 | test('reject, but fail', () => {
       
-      at packages/expect/build/index.js:160:61
+      at packages/expect/build/index.js:165:22
+      at __tests__/async_failures.test.js:12:57
+
+  ● reject, but fail
+
+    expect(received).toEqual(expected)
+    
+    Expected value to equal:
+      {\\"baz\\": \\"bar\\"}
+    Received:
+      {\\"foo\\": \\"bar\\"}
+    
+    Difference:
+    
+    - Expected
+    + Received
+    
+      Object {
+    -   \\"baz\\": \\"bar\\",
+    +   \\"foo\\": \\"bar\\",
+      }
+
+      14 | 
+      15 | test('reject, but fail', () => {
+    > 16 |   return expect(Promise.reject({foo: 'bar'})).rejects.toEqual({baz: 'bar'});
+         |                                                       ^
+      17 | });
+      18 | 
+      19 | test('expect reject', () => {
+      
+      at packages/expect/build/index.js:202:22
+      at __tests__/async_failures.test.js:16:55
+
+  ● expect reject
+
+    expect(received).rejects.toEqual()
+    
+    Expected received Promise to reject, instead it resolved to value
+      {\\"foo\\": \\"bar\\"}
+
+      18 | 
+      19 | test('expect reject', () => {
+    > 20 |   return expect(Promise.resolve({foo: 'bar'})).rejects.toEqual({foo: 'bar'});
+         |          ^
+      21 | });
+      22 | 
+      23 | test('expect resolve', () => {
+      
+      at packages/expect/build/index.js:96:15
+      at __tests__/async_failures.test.js:20:10
+
+  ● expect resolve
+
+    expect(received).resolves.toEqual()
+    
+    Expected received Promise to resolve, instead it rejected to value
+      {\\"foo\\": \\"bar\\"}
+
+      22 | 
+      23 | test('expect resolve', () => {
+    > 24 |   return expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'});
+         |          ^
+      25 | });
+      26 | 
+      
+      at packages/expect/build/index.js:96:15
+      at __tests__/async_failures.test.js:24:10
 
 "
 `;
