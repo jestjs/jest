@@ -224,7 +224,6 @@ exports[`works with async failures 1`] = `
       14 | 
       15 | test('reject, but fail', () => {
       
-      at packages/expect/build/index.js:165:22
       at __tests__/async_failures.test.js:12:57
 
   ● reject, but fail
@@ -254,7 +253,6 @@ exports[`works with async failures 1`] = `
       18 | 
       19 | test('expect reject', () => {
       
-      at packages/expect/build/index.js:202:22
       at __tests__/async_failures.test.js:16:55
 
   ● expect reject
@@ -272,7 +270,6 @@ exports[`works with async failures 1`] = `
       22 | 
       23 | test('expect resolve', () => {
       
-      at packages/expect/build/index.js:96:15
       at __tests__/async_failures.test.js:20:10
 
   ● expect resolve
@@ -290,7 +287,6 @@ exports[`works with async failures 1`] = `
       26 | 
       27 | test('timeout', done => {
       
-      at packages/expect/build/index.js:96:15
       at __tests__/async_failures.test.js:24:10
 
   ● timeout
