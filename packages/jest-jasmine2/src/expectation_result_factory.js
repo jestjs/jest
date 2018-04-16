@@ -36,11 +36,15 @@ function stackFormatter(options, initError, errorMessage) {
     return '';
   }
 
-  if ((options.error && options.error.stack)) {
+  if (options.error && options.error.stack) {
     return options.error.stack;
   }
 
-  return errorMessage + '\n' + initError.stack;
+  if (initError) {
+    return errorMessage + '\n' + initError.stack;
+  }
+
+  return new Error(errorMessage).stack;
 }
 
 type Options = {
@@ -52,7 +56,10 @@ type Options = {
   message?: string,
 };
 
-export default function expectationResultFactory(options: Options, initError) {
+export default function expectationResultFactory(
+  options: Options,
+  initError?: Error,
+) {
   const message = messageFormatter(options);
   const stack = stackFormatter(options, initError, message);
 
