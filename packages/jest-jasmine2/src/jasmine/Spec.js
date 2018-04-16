@@ -59,6 +59,11 @@ export default function Spec(attrs: Object) {
   this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
   this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
+  this.initError = new Error();
+  this.initError.name = '';
+
+  this.queueableFn.initError = this.initError;
+
   this.result = {
     id: this.id,
     description: this.description,
@@ -71,7 +76,7 @@ export default function Spec(attrs: Object) {
 }
 
 Spec.prototype.addExpectationResult = function(passed, data, isError) {
-  const expectationResult = expectationResultFactory(data);
+  const expectationResult = expectationResultFactory(data, this.initError);
   if (passed) {
     this.result.passedExpectations.push(expectationResult);
   } else {

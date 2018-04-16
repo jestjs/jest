@@ -31,13 +31,16 @@ function messageFormatter({error, message, passed}) {
   return `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 }
 
-function stackFormatter(options, errorMessage) {
+function stackFormatter(options, initError, errorMessage) {
   if (options.passed) {
     return '';
   }
-  const stack =
-    (options.error && options.error.stack) || new Error(errorMessage).stack;
-  return stack;
+
+  if ((options.error && options.error.stack)) {
+    return options.error.stack;
+  }
+
+  return errorMessage + '\n' + initError.stack;
 }
 
 type Options = {
@@ -49,9 +52,9 @@ type Options = {
   message?: string,
 };
 
-export default function expectationResultFactory(options: Options) {
+export default function expectationResultFactory(options: Options, initError) {
   const message = messageFormatter(options);
-  const stack = stackFormatter(options, message);
+  const stack = stackFormatter(options, initError, message);
 
   if (options.passed) {
     return {

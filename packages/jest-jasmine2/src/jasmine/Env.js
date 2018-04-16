@@ -398,12 +398,6 @@ export default function(j$) {
     }
 
     const specFactory = function(description, fn, suite, timeout) {
-      const timeoutError = new Error();
-
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(timeoutError, specFactory);
-      }
-
       totalSpecsDefined++;
       const spec = new j$.Spec({
         id: getNextSpecId(),
@@ -426,7 +420,6 @@ export default function(j$) {
           timeout() {
             return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
           },
-          timeoutError,
         },
         throwOnExpectationFailure,
       });
