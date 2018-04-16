@@ -15,6 +15,7 @@ export type DeepCyclicCopyOptions = {|
 |};
 
 // Node 6 does not have gOPDs, so we define a simple polyfill for it.
+// $FlowFixMe: polyfill
 if (!Object.getOwnPropertyDescriptors) {
   // $FlowFixMe: polyfill
   Object.getOwnPropertyDescriptors = obj => {
