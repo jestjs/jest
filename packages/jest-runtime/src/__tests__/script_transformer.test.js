@@ -85,6 +85,26 @@ jest.mock(
   {virtual: true},
 );
 
+jest.mock(
+  'skipped-required-props-preprocessor',
+  () => {
+    return {};
+  },
+  {virtual: true},
+);
+
+jest.mock(
+  'skipped-required-create-transformer-props-preprocessor',
+  () => {
+    return {
+      createTransformer() {
+        return {};
+      },
+    };
+  },
+  {virtual: true},
+);
+
 const getCachePath = (fs, config) => {
   for (const path in mockFs) {
     if (path.startsWith(config.cacheDirectory)) {
@@ -261,6 +281,28 @@ describe('ScriptTransformer', () => {
       });
     },
   );
+
+  it("throws an error if `process` doesn't defined", () => {
+    Object.assign(config, {
+      transform: [['^.+\\.js$', 'skipped-required-props-preprocessor']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+    expect(() =>
+      scriptTransformer.transformSource('sample.js', '', false),
+    ).toThrow('Jest: a transform must export a `process` function.');
+  });
+
+  it('throws an error if createTransformer returns object without `process` method', () => {
+    Object.assign(config, {
+      transform: [
+        ['^.+\\.js$', 'skipped-required-create-transformer-props-preprocessor'],
+      ],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+    expect(() =>
+      scriptTransformer.transformSource('sample.js', '', false),
+    ).toThrow('Jest: a transform must export a `process` function.');
+  });
 
   it('uses the supplied preprocessor', () => {
     config = Object.assign(config, {
