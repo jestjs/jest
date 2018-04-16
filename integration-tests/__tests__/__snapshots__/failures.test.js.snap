@@ -195,6 +195,7 @@ exports[`works with async failures 1`] = `
   ✕ reject, but fail
   ✕ expect reject
   ✕ expect resolve
+  ✕ timeout
 
   ● resolve, but fail
 
@@ -287,9 +288,25 @@ exports[`works with async failures 1`] = `
          |          ^
       25 | });
       26 | 
+      27 | test('timeout', done => {
       
       at packages/expect/build/index.js:96:15
       at __tests__/async_failures.test.js:24:10
+
+  ● timeout
+
+    Timeout - Async callback was not invoked within the 5ms timeout specified by jest.setTimeout.
+
+      25 | });
+      26 | 
+    > 27 | test('timeout', done => {
+         | ^
+      28 |   jest.setTimeout(5);
+      29 | 
+      30 |   setTimeout(done, 10);
+      
+      at packages/jest-jasmine2/build/jasmine/Env.js:445:20
+      at __tests__/async_failures.test.js:27:1
 
 "
 `;

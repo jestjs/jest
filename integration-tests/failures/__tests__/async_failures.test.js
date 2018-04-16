@@ -23,3 +23,9 @@ test('expect reject', () => {
 test('expect resolve', () => {
   return expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'});
 });
+
+test('timeout', done => {
+  jest.setTimeout(5);
+
+  setTimeout(done, 10);
+});
