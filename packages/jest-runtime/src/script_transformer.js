@@ -136,9 +136,12 @@ export default class ScriptTransformer {
 
       // $FlowFixMe
       transform = (require(transformPath): Transformer);
-      if (typeof transform.process !== 'function') {
+      if (
+        typeof transform.process !== 'function' &&
+        typeof transform.createTransformer !== 'function'
+      ) {
         throw new TypeError(
-          'Jest: a transform must export a `process` function.',
+          'Jest: a transform must export a `process` or `createTransformer` function.',
         );
       }
       if (typeof transform.createTransformer === 'function') {
