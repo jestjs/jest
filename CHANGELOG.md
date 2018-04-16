@@ -2,8 +2,10 @@
 
 ### Features
 
-* `[expect]` Add stack trace for async errors (TBD)
-* `[jest-jasmine2]` Add stack trace for timeouts (TBD)
+* `[expect]` Add stack trace for async errors
+  ([#6008](https://github.com/facebook/jest/pull/6008))
+* `[jest-jasmine2]` Add stack trace for timeouts
+  ([#6008](https://github.com/facebook/jest/pull/6008))
 * `[jest-runtime]` Prevent modules from marking themselves as their own parent
   ([#5235](https://github.com/facebook/jest/issues/5235))
 * `[jest-mock]` Add support for auto-mocking generator functions
