@@ -248,7 +248,7 @@ const formatReceivedCalls = (calls, limit, options) => {
     const count = calls.length - limit;
     const printedCalls = getPrintedCalls(calls, limit, ', ', printReceived);
     return (
-      `${but} it was ${options && options.isLast ? 'last ' : ''}called ` +
+      `${but} it was called ` +
       `with:\n  ` +
       printedCalls +
       (count > 0

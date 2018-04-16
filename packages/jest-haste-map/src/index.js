@@ -542,6 +542,7 @@ class HasteMap extends EventEmitter {
   _cleanup() {
     const worker = this._worker;
 
+    // $FlowFixMe
     if (worker && typeof worker.end === 'function') {
       worker.end();
     }
@@ -724,7 +725,6 @@ class HasteMap extends EventEmitter {
 
           if (mustCopy) {
             mustCopy = false;
-            // $FlowFixMe
             hasteMap = {
               clocks: copy(hasteMap.clocks),
               duplicates: copy(hasteMap.duplicates),
@@ -753,7 +753,6 @@ class HasteMap extends EventEmitter {
             if (Object.keys(moduleMap).length === 0) {
               delete hasteMap.map[moduleName];
             } else {
-              // $FlowFixMe
               hasteMap.map[moduleName] = moduleMap;
             }
           }

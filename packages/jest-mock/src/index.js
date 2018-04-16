@@ -225,7 +225,7 @@ function getSlots(object?: Object): Array<string> {
       const prop = ownNames[i];
       if (!isReadonlyProp(object, prop)) {
         const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-        if (!propDesc.get || object.__esModule) {
+        if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
           slots[prop] = true;
         }
       }
@@ -801,7 +801,9 @@ class ModuleMockerClass {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
+        // $FlowFixMe
         descriptor[accessType] = original;
+        // $FlowFixMe
         Object.defineProperty(obj, propertyName, descriptor);
       });
 
