@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 import * as TestUtils from 'react-dom/test-utils';
 import ProcessedDataComponent from '../ProcessedDataComponent';
 
-// ProccessedDataComponent uses 'getDerivedStateFromProps'
+// ProcessedDataComponent uses 'getDerivedStateFromProps'
 
 class Wrapper extends React.Component {
   render() {

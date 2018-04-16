@@ -4,7 +4,7 @@ import React from 'react';
 
 function processData(data) {
   return data.map(x => x * 2);
-};
+}
 
 export default class ProcessedData extends React.Component {
   constructor(props) {
@@ -14,19 +14,15 @@ export default class ProcessedData extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
-      processedData: proccessData(nextProps.data),
+      processedData: processData(nextProps.data),
     };
   }
 
   render() {
     if (this.state.processedData === null) {
-      return (<p>Loading...</p>);
+      return <p>Loading...</p>;
     } else {
-      return (
-        <ul>
-          {this.state.processedData.map(n => <li>n></li>)}
-        </ul>
-      );
+      return <ul>{this.state.processedData.map(n => <li>n></li>)}</ul>;
     }
   }
 }
