@@ -587,7 +587,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(
       'regenerator-runtime/runtime',
-      {basedir: options.rootDir},
+      {basedir: options.rootDir, resolver: newOptions.resolver},
     );
 
     if (regeneratorRuntimePath) {
