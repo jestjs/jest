@@ -407,7 +407,7 @@ exports[`works with named snapshot failures 1`] = `
 
     expect(value).toMatchSnapshot()
     
-    Received value does not match stored snapshot snapname 1.
+    Received value does not match stored snapshot \\"snapname 1\\".
     
     - \\"bar\\"
     + \\"foo\\"
@@ -854,7 +854,7 @@ exports[`works with snapshot failures 1`] = `
 
     expect(value).toMatchSnapshot()
     
-    Received value does not match stored snapshot 1.
+    Received value does not match stored snapshot \\"1\\".
     
     - \\"bar\\"
     + \\"foo\\"
