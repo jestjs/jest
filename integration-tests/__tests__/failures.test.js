@@ -110,7 +110,12 @@ test('works with assertions in separate files', () => {
 test('works with async failures', () => {
   const {stderr} = runJest(dir, ['async_failures.test.js']);
 
-  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+  const rest = extractSummary(stderr)
+    .rest.split('\n')
+    .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
+    .join('\n');
+
+  expect(normalizeDots(rest)).toMatchSnapshot();
 });
 
 test('works with snapshot failures', () => {
