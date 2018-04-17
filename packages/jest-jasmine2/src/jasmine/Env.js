@@ -561,8 +561,7 @@ export default function(j$) {
         expected: '',
         actual: '',
         message,
-        fromFail: true,
-        error: isError ? error : null,
+        error: isError ? error : new Error(message),
       });
     };
   }
