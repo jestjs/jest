@@ -31,7 +31,7 @@ process.on('uncaughtException', err => {
   exit(1);
 });
 
-const formatError = (error: ErrorWithCode): SerializableError => {
+const formatError = (error: string | ErrorWithCode): SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {
