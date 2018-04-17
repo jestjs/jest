@@ -17,6 +17,7 @@ export type MockFunctionMetadata = {
   name?: string,
   refID?: string | number,
   type?: string,
+  subtype?: string,
   value?: any,
   length?: number,
 };
@@ -189,6 +190,17 @@ function getType(ref?: any): string | null {
   } else {
     return null;
   }
+}
+
+function getSubtype(ref?: any): string | null {
+  if (
+    getType(ref) === 'function' &&
+    getType(ref.getDerivedStateFromProps) === 'function'
+  ) {
+    return 'react.component';
+  }
+
+  return null;
 }
 
 function isReadonlyProp(object: any, prop: string): boolean {
@@ -600,6 +612,15 @@ class ModuleMockerClass {
       mock.prototype.constructor = mock;
     }
 
+    if (metadata.subtype === 'react.component') {
+      mock.mockImplementation(function() {
+        this.state = {};
+        return this;
+      });
+
+      mock.getDerivedStateFromProps.mockReturnValue(null);
+    }
+
     return mock;
   }
 
@@ -628,11 +649,13 @@ class ModuleMockerClass {
     }
 
     const type = getType(component);
+    const subtype = getSubtype(component);
+
     if (!type) {
       return null;
     }
 
-    const metadata: MockFunctionMetadata = {type};
+    const metadata: MockFunctionMetadata = {subtype, type};
     if (
       type === 'constant' ||
       type === 'collection' ||
