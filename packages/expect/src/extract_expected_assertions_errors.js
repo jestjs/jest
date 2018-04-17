@@ -25,13 +25,15 @@ const resetAssertionsLocalState = () => {
 };
 
 // Create and format all errors related to the mismatched number of `expect`
-// calls and reset the matchers state.
+// calls and reset the matcher's state.
 const extractExpectedAssertionsErrors = () => {
   const result = [];
   const {
     assertionCalls,
     expectedAssertionsNumber,
+    expectedAssertionsNumberError,
     isExpectingAssertions,
+    isExpectingAssertionsError,
   } = getState();
 
   resetAssertionsLocalState();
@@ -43,34 +45,36 @@ const extractExpectedAssertionsErrors = () => {
     const numOfAssertionsExpected = EXPECTED_COLOR(
       pluralize('assertion', expectedAssertionsNumber),
     );
-    const error = new Error(
+
+    expectedAssertionsNumberError.message =
       matcherHint('.assertions', '', String(expectedAssertionsNumber), {
         isDirectExpectCall: true,
       }) +
-        '\n\n' +
-        `Expected ${numOfAssertionsExpected} to be called but received ` +
-        RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
-        '.',
-    );
+      '\n\n' +
+      `Expected ${numOfAssertionsExpected} to be called but received ` +
+      RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
+      '.';
+
     result.push({
       actual: assertionCalls,
-      error,
+      error: expectedAssertionsNumberError,
       expected: expectedAssertionsNumber,
     });
   }
   if (isExpectingAssertions && assertionCalls === 0) {
     const expected = EXPECTED_COLOR('at least one assertion');
     const received = RECEIVED_COLOR('received none');
-    const error = new Error(
+
+    isExpectingAssertionsError.message =
       matcherHint('.hasAssertions', '', '', {
         isDirectExpectCall: true,
       }) +
-        '\n\n' +
-        `Expected ${expected} to be called but ${received}.`,
-    );
+      '\n\n' +
+      `Expected ${expected} to be called but ${received}.`;
+
     result.push({
       actual: 'none',
-      error,
+      error: isExpectingAssertionsError,
       expected: 'at least one',
     });
   }

@@ -72,6 +72,8 @@
 
 ### Fixes
 
+* `[expect]` Add stack trace when `expect.assertions` and `expect.hasAssertions`
+  causes test failures. ([#5997](https://github.com/facebook/jest/pull/5997))
 * `[jest-runtime]` Throw a more useful error when trying to require modules
   after the test environment is torn down
   ([#5888](https://github.com/facebook/jest/pull/5888))

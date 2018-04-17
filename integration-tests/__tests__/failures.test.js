@@ -18,30 +18,6 @@ const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
 
 SkipOnWindows.suite();
 
-const cleanupStackTrace = stderr => {
-  const STACK_REGEXP = /^.*at.*(setup-jest-globals|extractExpectedAssertionsErrors).*\n/gm;
-  if (!STACK_REGEXP.test(stderr)) {
-    throw new Error(
-      `
-      This function is used to remove inconsistent stack traces between
-      jest-jasmine2 and jest-circus. If you see this error, that means the
-      stack traces are no longer inconsistent and this function can be
-      safely removed.
-
-      output:
-      ${stderr}
-    `,
-    );
-  }
-
-  return (
-    stderr
-      .replace(STACK_REGEXP, '')
-      // Also remove trailing whitespace.
-      .replace(/\s+$/gm, '')
-  );
-};
-
 test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw_number.test.js']).stderr;
@@ -51,7 +27,7 @@ test('not throwing Error objects', () => {
   stderr = runJest(dir, ['throw_object.test.js']).stderr;
   expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['assertion_count.test.js']).stderr;
-  expect(extractSummary(cleanupStackTrace(stderr)).rest).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['during_tests.test.js']).stderr;
   expect(extractSummary(stderr).rest).toMatchSnapshot();
 });
