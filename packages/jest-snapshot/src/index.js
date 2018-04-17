@@ -92,7 +92,9 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 
     report = () =>
       `${RECEIVED_COLOR('Received value')} does not match ` +
-      `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
+      `${EXPECTED_COLOR(
+        `stored snapshot ${testName ? testName + ' ' : ''}${count}`,
+      )}.\n\n` +
       (diffMessage ||
         EXPECTED_COLOR('- ' + (expected || '')) +
           '\n' +

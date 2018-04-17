@@ -399,6 +399,32 @@ exports[`works with async failures 1`] = `
 "
 `;
 
+exports[`works with named snapshot failures 1`] = `
+"FAIL __tests__/snapshot_named.test.js
+  ✕ failing named snapshot
+
+  ● failing named snapshot
+
+    expect(value).toMatchSnapshot()
+    
+    Received value does not match stored snapshot snapname 1.
+    
+    - \\"bar\\"
+    + \\"foo\\"
+
+      10 | 
+      11 | test('failing named snapshot', () => {
+    > 12 |   expect('foo').toMatchSnapshot('snapname');
+         |                 ^
+      13 | });
+      14 | 
+      
+      at __tests__/snapshot_named.test.js:12:17
+
+ › 1 snapshot test failed.
+"
+`;
+
 exports[`works with node assert 1`] = `
 "FAIL __tests__/node_assertion_error.test.js
   ✕ assert
