@@ -8,8 +8,13 @@
  */
 
 import type {Path} from 'types/Config';
+import type {ErrorWithCode} from 'types/Errors';
 
 import browserResolve from 'browser-resolve';
+import fs from 'fs';
+import path from 'path';
+import isBuiltinModule from './is_builtin_module';
+import nodeModulesPaths from './node_modules_paths';
 
 type ResolverOptions = {|
   basedir: Path,
@@ -34,17 +39,6 @@ export default function defaultResolver(
     rootDir: options.rootDir,
   });
 }
-
-/*
- * Adapted from: https://github.com/substack/node-resolve
- */
-type ErrorWithCode = Error & {code?: string};
-
-import fs from 'fs';
-import path from 'path';
-import isBuiltinModule from './is_builtin_module';
-
-import nodeModulesPaths from './node_modules_paths';
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 

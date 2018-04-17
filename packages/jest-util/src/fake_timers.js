@@ -415,9 +415,6 @@ export default class FakeTimers<TimerRef> {
 
     const cancelledTicks = this._cancelledTicks;
     this._timerAPIs.nextTick(() => {
-      if (this._blocked) {
-        return;
-      }
       if (!cancelledTicks.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
