@@ -210,11 +210,12 @@ export default class SearchSource {
       : this.findRelatedTests(changedFiles, collectCoverage);
   }
 
-  async getTestPaths(
+  async _getTestPaths(
     globalConfig: GlobalConfig,
     changedFilesPromise: ?ChangedFilesPromise,
   ): Promise<SearchResult> {
     const paths = globalConfig.nonFlagArgs;
+
     if (globalConfig.onlyChanged) {
       if (!changedFilesPromise) {
         throw new Error('This promise must be present when running with -o.');
@@ -237,5 +238,31 @@ export default class SearchSource {
     } else {
       return Promise.resolve({tests: []});
     }
+  }
+
+  async getTestPaths(
+    globalConfig: GlobalConfig,
+    changedFilesPromise: ?ChangedFilesPromise,
+  ): Promise<SearchResult> {
+    const searchResult = await this._getTestPaths(
+      globalConfig,
+      changedFilesPromise,
+    );
+
+    if (globalConfig.filter) {
+      let tests = searchResult.tests;
+
+      // $FlowFixMe: dynamic require.
+      const filter = require(globalConfig.filter);
+      const filtered = await filter(tests.map(test => test.path));
+
+      if (Array.isArray(filtered)) {
+        tests = tests.filter(test => filtered.includes(test.path));
+      }
+
+      searchResult.tests = tests;
+    }
+
+    return searchResult;
   }
 }

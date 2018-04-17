@@ -489,6 +489,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testRegex':
         value = options[key] && replacePathSepForRegex(options[key]);
         break;
+      case 'filter':
+        value =
+          options[key] &&
+          resolve(newOptions.resolver, options.rootDir, key, options[key]);
+        break;
       case 'automock':
       case 'bail':
       case 'browser':

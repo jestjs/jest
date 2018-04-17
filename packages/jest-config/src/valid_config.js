@@ -38,6 +38,7 @@ export default ({
   },
   displayName: 'project-name',
   expand: false,
+  filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,
   globalSetup: 'setup.js',

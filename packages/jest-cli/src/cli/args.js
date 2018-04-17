@@ -238,6 +238,15 @@ export const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
+  filter: {
+    default: undefined,
+    description:
+      'Path to a module exporting a filtering function. This method receives ' +
+      'a list of tests which can be manipulated to exclude tests from ' +
+      'running. Especially useful when used in conjunction with a testing ' +
+      'infrastructure.',
+    type: 'string',
+  },
   findRelatedTests: {
     default: undefined,
     description:
