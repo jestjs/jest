@@ -578,7 +578,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   newOptions.updateSnapshot =
     argv.ci && !argv.updateSnapshot
       ? 'none'
-      : argv.updateSnapshot ? 'all' : 'new';
+      : argv.updateSnapshot
+        ? 'all'
+        : 'new';
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 

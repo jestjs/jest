@@ -646,7 +646,9 @@ class HasteMap extends EventEmitter {
     const Watcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
-        : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
+        : os.platform() === 'darwin'
+          ? sane.FSEventsWatcher
+          : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
