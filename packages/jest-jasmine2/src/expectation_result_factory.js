@@ -40,7 +40,7 @@ function stackFormatter(options, initError, errorMessage) {
     return options.error.stack;
   }
 
-  if (initError) {
+  if (!options.fromFail && initError) {
     return errorMessage + '\n' + initError.stack;
   }
 
@@ -50,6 +50,7 @@ function stackFormatter(options, initError, errorMessage) {
 type Options = {
   matcherName: string,
   passed: boolean,
+  fromFail?: boolean,
   actual?: any,
   error?: any,
   expected?: any,
