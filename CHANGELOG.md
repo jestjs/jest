@@ -2,6 +2,9 @@
 
 ### Features
 
+* `[jest-runtime]` Allow for transform plugins to skip the definition process
+  method if createTransformer method was defined.
+  ([#5999](https://github.com/facebook/jest/pull/5999))
 * `[expect]` Add stack trace for async errors
   ([#6008](https://github.com/facebook/jest/pull/6008))
 * `[jest-jasmine2]` Add stack trace for timeouts
