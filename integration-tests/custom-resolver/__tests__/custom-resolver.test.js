@@ -9,3 +9,7 @@
 test('should use the custom resolver', () => {
   require('foo');
 });
+
+test('should have regenerator injected', () => {
+  expect(global.fakeRegeneratorInjected).toEqual(true);
+});
