@@ -13,6 +13,7 @@ import type {
   TransformedSource,
   TransformResult,
 } from 'types/Transform';
+import type {ErrorWithCode} from 'types/Errors';
 
 import crypto from 'crypto';
 import path from 'path';
@@ -435,7 +436,7 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
  * If the target file exists we can be reasonably sure another process has
  * legitimately won a cache write race and ignore the error.
  */
-const cacheWriteErrorSafeToIgnore = (e: Error, cachePath: Path) => {
+const cacheWriteErrorSafeToIgnore = (e: ErrorWithCode, cachePath: Path) => {
   return (
     process.platform === 'win32' &&
     e.code === 'EPERM' &&

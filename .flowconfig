@@ -11,4 +11,4 @@ include_warnings=true
 emoji=true
 
 [version]
-^0.66.0
+^0.70.0

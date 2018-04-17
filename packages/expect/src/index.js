@@ -88,6 +88,8 @@ const expect = (actual: any, ...rest): ExpectationObject => {
     resolves: {not: {}},
   };
 
+  const err = new JestAssertionError();
+
   Object.keys(allMatchers).forEach(name => {
     const matcher = allMatchers[name];
     const promiseMatcher = getPromiseMatcher(name, matcher) || matcher;
@@ -99,12 +101,14 @@ const expect = (actual: any, ...rest): ExpectationObject => {
       promiseMatcher,
       false,
       actual,
+      err,
     );
     expectation.resolves.not[name] = makeResolveMatcher(
       name,
       promiseMatcher,
       true,
       actual,
+      err,
     );
 
     expectation.rejects[name] = makeRejectMatcher(
@@ -112,12 +116,14 @@ const expect = (actual: any, ...rest): ExpectationObject => {
       promiseMatcher,
       false,
       actual,
+      err,
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
       promiseMatcher,
       true,
       actual,
+      err,
     );
   });
 
@@ -136,6 +142,7 @@ const makeResolveMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
+  outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
@@ -147,17 +154,19 @@ const makeResolveMatcher = (
     );
   }
 
+  const innerErr = new JestAssertionError();
+
   return actual.then(
-    result => makeThrowingMatcher(matcher, isNot, result).apply(null, args),
+    result =>
+      makeThrowingMatcher(matcher, isNot, result, innerErr).apply(null, args),
     reason => {
-      const err = new JestAssertionError(
+      outerErr.message =
         utils.matcherHint(matcherStatement, 'received', '') +
-          '\n\n' +
-          `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
-          'instead it rejected to value\n' +
-          `  ${utils.printReceived(reason)}`,
-      );
-      return Promise.reject(err);
+        '\n\n' +
+        `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
+        'instead it rejected to value\n' +
+        `  ${utils.printReceived(reason)}`;
+      return Promise.reject(outerErr);
     },
   );
 };
@@ -167,6 +176,7 @@ const makeRejectMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
+  outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
@@ -178,18 +188,20 @@ const makeRejectMatcher = (
     );
   }
 
+  const innerErr = new JestAssertionError();
+
   return actual.then(
     result => {
-      const err = new JestAssertionError(
+      outerErr.message =
         utils.matcherHint(matcherStatement, 'received', '') +
-          '\n\n' +
-          `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
-          'instead it resolved to value\n' +
-          `  ${utils.printReceived(result)}`,
-      );
-      return Promise.reject(err);
+        '\n\n' +
+        `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
+        'instead it resolved to value\n' +
+        `  ${utils.printReceived(result)}`;
+      return Promise.reject(outerErr);
     },
-    reason => makeThrowingMatcher(matcher, isNot, reason).apply(null, args),
+    reason =>
+      makeThrowingMatcher(matcher, isNot, reason, innerErr).apply(null, args),
   );
 };
 
@@ -197,6 +209,7 @@ const makeThrowingMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: any,
+  err?: JestAssertionError,
 ): ThrowingMatcherFn => {
   return function throwingMatcher(...args): any {
     let throws = true;
@@ -223,16 +236,24 @@ const makeThrowingMatcher = (
       if ((result.pass && isNot) || (!result.pass && !isNot)) {
         // XOR
         const message = getMessage(result.message);
-        const error = new JestAssertionError(message);
+        let error;
+
+        if (err) {
+          error = err;
+          error.message = message;
+        } else {
+          error = new JestAssertionError(message);
+
+          // Try to remove this function from the stack trace frame.
+          // Guard for some environments (browsers) that do not support this feature.
+          if (Error.captureStackTrace) {
+            Error.captureStackTrace(error, throwingMatcher);
+          }
+        }
         // Passing the result of the matcher with the error so that a custom
         // reporter could access the actual and expected objects of the result
         // for example in order to display a custom visual diff
         error.matcherResult = result;
-        // Try to remove this function from the stack trace frame.
-        // Guard for some environments (browsers) that do not support this feature.
-        if (Error.captureStackTrace) {
-          Error.captureStackTrace(error, throwingMatcher);
-        }
 
         if (throws) {
           throw error;

@@ -10,6 +10,7 @@
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
 import type {ResolveModuleConfig} from 'types/Resolve';
+import type {ErrorWithCode} from 'types/Errors';
 
 import fs from 'fs';
 import path from 'path';
@@ -194,7 +195,7 @@ class Resolver {
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
-    (err: Error & {code?: string}).code = 'MODULE_NOT_FOUND';
+    (err: ErrorWithCode).code = 'MODULE_NOT_FOUND';
     throw err;
   }
 
@@ -308,7 +309,9 @@ class Resolver {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks[virtualMockPath]
       ? virtualMockPath
-      : moduleName ? this.resolveModule(from, moduleName) : from;
+      : moduleName
+        ? this.resolveModule(from, moduleName)
+        : from;
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {

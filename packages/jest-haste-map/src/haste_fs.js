@@ -37,7 +37,7 @@ export default class HasteFS {
     return !!this._files[file];
   }
 
-  getAllFiles() {
+  getAllFiles(): Array<string> {
     return Object.keys(this._files);
   }
 
