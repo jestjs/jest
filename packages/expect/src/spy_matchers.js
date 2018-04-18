@@ -54,6 +54,32 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   return {message, pass};
 };
 
+const createToReturnMatcher = matcherName => (received, expected) => {
+  ensureNoExpected(expected, matcherName);
+  ensureMock(received, matcherName);
+
+  const receivedIsSpy = isSpy(received);
+  const type = receivedIsSpy ? 'spy' : 'mock function';
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const count = receivedIsSpy
+    ? received.returnValues.count()
+    : received.mock.returnValues.length;
+
+  const pass = count > 0;
+  const message = pass
+    ? () =>
+        matcherHint('.not' + matcherName, receivedName, '') +
+        '\n\n' +
+        `Expected ${type} not to have returned, but it returned:\n` +
+        `  ${RECEIVED_COLOR(received.mock.returnValues.join(', '))}`
+    : () =>
+        matcherHint(matcherName, receivedName, '') +
+        '\n\n' +
+        `Expected ${type} to have returned.`;
+
+  return {message, pass};
+};
+
 const createToBeCalledTimesMatcher = (matcherName: string) => (
   received: any,
   expected: number,
@@ -81,6 +107,38 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
         `Expected ${type} to have been called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
         ` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;
+
+  return {message, pass};
+};
+
+const createToReturnTimesMatcher = (matcherName: string) => (
+  received: any,
+  expected: number,
+) => {
+  ensureExpectedIsNumber(expected, matcherName);
+  ensureMock(received, matcherName);
+
+  const receivedIsSpy = isSpy(received);
+  const type = receivedIsSpy ? 'spy' : 'mock function';
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const count = receivedIsSpy
+    ? received.returnValues.length()
+    : received.mock.returnValues.length;
+
+  const pass = count === expected;
+  const message = pass
+    ? () =>
+        matcherHint('.not' + matcherName, receivedName, String(expected)) +
+        `\n\n` +
+        `Expected ${type} not to have returned ` +
+        `${EXPECTED_COLOR(pluralize('time', expected))}, but it` +
+        ` returned exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
+    : () =>
+        matcherHint(matcherName, receivedName, String(expected)) +
+        '\n\n' +
+        `Expected ${type} to have returned ` +
+        `${EXPECTED_COLOR(pluralize('time', expected))},` +
+        ` but it returned ${RECEIVED_COLOR(pluralize('time', count))}.`;
 
   return {message, pass};
 };
@@ -118,18 +176,23 @@ const createToBeCalledWithMatcher = matcherName => (
   return {message, pass};
 };
 
-const createToReturnMatcher = matcherName => (received: any, expected: any) => {
+const createToReturnWithMatcher = matcherName => (
+  received: any,
+  expected: any,
+) => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
 
-  const calls = receivedIsSpy
+  const returnValues = receivedIsSpy
     ? received.returnValues.all().map(x => x.args)
     : received.mock.returnValues;
 
-  const [match] = partition(calls, call => equals(expected, call));
+  const [match] = partition(returnValues, value =>
+    equals(expected, value, [iterableEquality]),
+  );
   const pass = match.length > 0;
 
   const message = pass
@@ -172,6 +235,39 @@ const createLastCalledWithMatcher = matcherName => (
         '\n\n' +
         `Expected ${type} to have been last called with:\n` +
         formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
+
+  return {message, pass};
+};
+
+const createLastReturnedMatcher = matcherName => (
+  received: any,
+  expected: any,
+) => {
+  ensureMock(received, matcherName);
+
+  const receivedIsSpy = isSpy(received);
+  const type = receivedIsSpy ? 'spy' : 'mock function';
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const returnValues = receivedIsSpy
+    ? received.returnValues.all().map(x => x.args)
+    : received.mock.returnValues;
+
+  const lastReturnValue = returnValues[returnValues.length - 1];
+  const pass = equals(lastReturnValue, expected, [iterableEquality]);
+
+  const message = pass
+    ? () =>
+        matcherHint('.not' + matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${type} to not have last returned:\n` +
+        `  ${printExpected(expected)}`
+    : () =>
+        matcherHint(matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${type} to have last returned:\n` +
+        `  ${printExpected(expected)}\n` +
+        `But it last returned:\n` +
+        `  ${printReceived(lastReturnValue)}`;
 
   return {message, pass};
 };
@@ -220,9 +316,53 @@ const createNthCalledWithMatcher = (matcherName: string) => (
   return {message, pass};
 };
 
+const createNthReturnedWithMatcher = (matcherName: string) => (
+  received: any,
+  nth: number,
+  expected: any,
+) => {
+  ensureMock(received, matcherName);
+
+  const receivedIsSpy = isSpy(received);
+  const type = receivedIsSpy ? 'spy' : 'mock function';
+
+  if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
+    const message = () =>
+      `nth value ${printReceived(
+        nth,
+      )} must be a positive integer greater than ${printExpected(0)}`;
+    const pass = false;
+    return {message, pass};
+  }
+
+  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const returnValues = receivedIsSpy
+    ? received.returnValues.all().map(x => x.args)
+    : received.mock.returnValues;
+  const pass = equals(returnValues[nth - 1], expected, [iterableEquality]);
+
+  const message = pass
+    ? () =>
+        matcherHint('.not' + matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${type} ${nthToString(
+          nth,
+        )} call to not have returned with:\n` +
+        `  ${printExpected(expected)}`
+    : () =>
+        matcherHint(matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${type} ${nthToString(nth)} call to have returned with:\n` +
+        `  ${printExpected(expected)}`;
+
+  return {message, pass};
+};
+
 const spyMatchers: MatchersObject = {
   lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
+  lastReturnedWith: createLastReturnedMatcher('.lastReturnedWith'),
   nthCalledWith: createNthCalledWithMatcher('.nthCalledWith'),
+  nthReturnedWith: createNthReturnedWithMatcher('.nthReturnedWith'),
   toBeCalled: createToBeCalledMatcher('.toBeCalled'),
   toBeCalledTimes: createToBeCalledTimesMatcher('.toBeCalledTimes'),
   toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
@@ -235,8 +375,14 @@ const spyMatchers: MatchersObject = {
   toHaveBeenNthCalledWith: createNthCalledWithMatcher(
     '.toHaveBeenNthCalledWith',
   ),
+  toHaveLastReturnedWith: createLastReturnedMatcher('.toHaveLastReturnedWith'),
+  toHaveNthReturnedWith: createNthReturnedWithMatcher('.toHaveNthReturnedWith'),
   toHaveReturned: createToReturnMatcher('.toHaveReturned'),
+  toHaveReturnedTimes: createToReturnTimesMatcher('.toHaveReturnedTimes'),
+  toHaveReturnedWith: createToReturnWithMatcher('.toHaveReturnedWith'),
   toReturn: createToReturnMatcher('.toReturn'),
+  toReturnTimes: createToReturnTimesMatcher('.toReturnTimes'),
+  toReturnWith: createToReturnWithMatcher('.toReturnWith'),
 };
 
 const isSpy = spy => spy.calls && typeof spy.calls.count === 'function';
