@@ -165,6 +165,7 @@ export default class SnapshotState {
         actual: '',
         count,
         expected: '',
+        key,
         pass: true,
       };
     } else {
@@ -174,6 +175,7 @@ export default class SnapshotState {
           actual: unescape(receivedSerialized),
           count,
           expected: expected ? unescape(expected) : null,
+          key,
           pass: false,
         };
       } else {
@@ -182,6 +184,7 @@ export default class SnapshotState {
           actual: '',
           count,
           expected: '',
+          key,
           pass: true,
         };
       }

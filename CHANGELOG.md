@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-snapshot]` [**BREAKING**] Concatenate name of test, optional snapshot
+  name and count ([#6015](https://github.com/facebook/jest/pull/6015))
 * `[jest-runtime]` Allow for transform plugins to skip the definition process
   method if createTransformer method was defined.
   ([#5999](https://github.com/facebook/jest/pull/5999))

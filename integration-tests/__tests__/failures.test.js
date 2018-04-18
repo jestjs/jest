@@ -103,3 +103,13 @@ test('works with snapshot failures', () => {
     result.substring(0, result.indexOf('Snapshot Summary')),
   ).toMatchSnapshot();
 });
+
+test('works with named snapshot failures', () => {
+  const {stderr} = runJest(dir, ['snapshot_named.test.js']);
+
+  const result = normalizeDots(extractSummary(stderr).rest);
+
+  expect(
+    result.substring(0, result.indexOf('Snapshot Summary')),
+  ).toMatchSnapshot();
+});
