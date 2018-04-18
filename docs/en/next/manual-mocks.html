@@ -63,6 +63,10 @@ of the automatically created mock, even if <code>jest.mock('moduleName')</code> 
 called. To opt out of this behavior you will need to explicitly call
 <code>jest.unmock('moduleName')</code> in tests that should use the actual module
 implementation.</p>
+<blockquote>
+<p>Note: In order to mock properly, Jest needs <code>jest.mock('moduleName')</code> to be in
+the same scope as the <code>require/import</code> statement.</p>
+</blockquote>
 <p>Here's a contrived example where we have a module that provides a summary of all
 the files in a given directory. In this case we use the core (built in) <code>fs</code>
 module.</p>
