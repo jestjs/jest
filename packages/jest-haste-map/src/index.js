@@ -418,7 +418,7 @@ class HasteMap extends EventEmitter {
       this._options.mocksPattern.test(filePath)
     ) {
       const mockPath = getMockName(filePath);
-      if (mocks[mockPath]) {
+      if (mocks[filePath]) {
         this._console.warn(
           `jest-haste-map: duplicate manual mock found:\n` +
             `  Module name: ${mockPath}\n` +
@@ -430,7 +430,7 @@ class HasteMap extends EventEmitter {
             `${mocks[mockPath]}\n${filePath}\n\n`,
         );
       }
-      mocks[mockPath] = filePath;
+      mocks[filePath] = filePath;
     }
 
     const fileMetadata = hasteMap.files[filePath];
