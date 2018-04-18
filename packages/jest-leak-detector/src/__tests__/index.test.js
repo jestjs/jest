@@ -11,6 +11,9 @@ afterEach(() => {
 });
 
 it('complains if the value is a primitive', () => {
+  expect(() => new LeakDetector(Symbol())).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(Symbol('foo'))).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(NaN)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(undefined)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(null)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(false)).toThrowErrorMatchingSnapshot();
@@ -57,6 +60,7 @@ it('tests different objects', () => {
     [],
     /foo/g,
     new Date(1234),
+    {},
   ];
 
   const detectors = refs.map(ref => new LeakDetector(ref));
