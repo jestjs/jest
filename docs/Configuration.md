@@ -893,7 +893,7 @@ given to [jsdom](https://github.com/tmpvar/jsdom) such as
 
 ### `testMatch` [array<string>]
 
-(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)' ]`)
+(default: `[ "**/__tests__/**/*.js?(x)", "**/?(*.)+(spec|test).js?(x)" ]`)
 
 The glob patterns Jest uses to detect test files. By default it looks for `.js`
 and `.jsx` files inside of `__tests__` folders, as well as any files with a
