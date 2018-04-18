@@ -60,9 +60,6 @@ called. To opt out of this behavior you will need to explicitly call
 `jest.unmock('moduleName')` in tests that should use the actual module
 implementation.
 
-> Warning: To make mock works properly we have to put the call `jest.mock('moduleName')`
-> in the same scope as `required/import` statement.
-
 Here's a contrived example where we have a module that provides a summary of all
 the files in a given directory. In this case we use the core (built in) `fs`
 module.
