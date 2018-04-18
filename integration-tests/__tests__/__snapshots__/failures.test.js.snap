@@ -240,17 +240,15 @@ exports[`not throwing Error objects 5`] = `
       ],
     }
 
-      33 | });
       34 | 
-    > 35 | test('done(non-error)', done => {
-         | ^
-      36 |   done(deepObject);
+      35 | test('done(non-error)', done => {
+    > 36 |   done(deepObject);
+         |   ^
       37 | });
       38 | 
       
-      
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
-      at __tests__/during_tests.test.js:35:1
+      at packages/jest-jasmine2/build/jasmine/Env.js:542:34
+      at __tests__/during_tests.test.js:36:3
 
 "
 `;
