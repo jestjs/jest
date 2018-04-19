@@ -354,7 +354,7 @@ export const options = {
     type: 'array',
   },
   noDuplicateMockWarn: {
-    default: false,
+    default: undefined,
     description: 'Disables duplicate mock warnings in output',
     type: 'boolean',
   },
