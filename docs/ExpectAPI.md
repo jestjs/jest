@@ -1098,9 +1098,8 @@ serializable value can be used as a snapshot._
 
 ### `.toStrictEqual(value)`
 
-Much like `.toEqual` but fixes some strictness issues which for legacy reasons
-cannot be applied to `.toEqual`. Use `.toStrictEqual` when you came about object
-being semantically the same by having the same types as well as structure.
+Use `.toStrictEqual` to test that objects have the same types as well as
+structure.
 
 Differences from `.toEqual`:
 
