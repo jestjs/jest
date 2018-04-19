@@ -71,6 +71,8 @@
   ([#5980](https://github.com/facebook/jest/pull/5980))
 * `[jest-message-util]` Include column in stack frames
   ([#5889](https://github.com/facebook/jest/pull/5889))
+* `[expect]` Introduce toStrictEqual
+  ([#6032](https://github.com/facebook/jest/pull/6032))
 
 ### Fixes
 

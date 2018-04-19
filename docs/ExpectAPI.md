@@ -1096,6 +1096,33 @@ from the test.
 _Note: While snapshot testing is most commonly used with React components, any
 serializable value can be used as a snapshot._
 
+### `.toStrictEqual(value)`
+
+Use `.toStrictEqual` to test that objects have the same types as well as
+structure.
+
+Differences from `.toEqual`:
+
+* Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does
+  not match `{b: 2}` when using `.toStrictEqual`.
+* Object types are checked to be equal. e.g. A class instance with fields `a`
+  and `b` will not equal a literal object with fields `a` and `b`.
+
+```js
+class LaCroix {
+  constructor(flavor) {
+    this.flavor = flavor;
+  }
+}
+
+describe('the La Croix cans on my desk', () => {
+  test('are not semantically the same', () => {
+    expect(new LaCroix('lemon')).toEqual({flavor: 'lemon'});
+    expect(new LaCroix('lemon')).not.toStrictEqual({flavor: 'lemon'});
+  });
+});
+```
+
 ### `.toThrow(error)`
 
 Also under the alias: `.toThrowError(error)`

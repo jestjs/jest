@@ -29,6 +29,7 @@ import {
   getPath,
   iterableEquality,
   subsetEquality,
+  typeEquality,
 } from './utils';
 import {equals} from './jasmine_utils';
 
@@ -614,6 +615,43 @@ const matchers: MatchersObject = {
         };
 
     return {message, pass};
+  },
+
+  toStrictEqual(received: any, expected: any) {
+    const pass = equals(
+      received,
+      expected,
+      [iterableEquality, typeEquality],
+      true,
+    );
+
+    const message = pass
+      ? () =>
+          matcherHint('.not.toStrictEqual') +
+          '\n\n' +
+          `Expected value to not equal:\n` +
+          `  ${printExpected(expected)}\n` +
+          `Received:\n` +
+          `  ${printReceived(received)}`
+      : () => {
+          const diffString = diff(expected, received, {
+            expand: this.expand,
+          });
+          return (
+            matcherHint('.toStrictEqual') +
+            '\n\n' +
+            `Expected value to equal:\n` +
+            `  ${printExpected(expected)}\n` +
+            `Received:\n` +
+            `  ${printReceived(received)}` +
+            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+          );
+        };
+
+    // Passing the the actual and expected objects so that a custom reporter
+    // could access them, for example in order to display a custom visual diff,
+    // or create a different error message
+    return {actual: received, expected, message, name: 'toStrictEqual', pass};
   },
 };
 
