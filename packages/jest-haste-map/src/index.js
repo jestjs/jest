@@ -53,6 +53,7 @@ type Options = {
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
+  noDuplicateMockWarn?: boolean,
   platforms: Array<string>,
   providesModuleNodeModules?: Array<string>,
   resetCache?: boolean,
@@ -73,6 +74,7 @@ type InternalOptions = {
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
+  noDuplicateMockWarn: ?boolean,
   platforms: Array<string>,
   resetCache: ?boolean,
   retainAllFiles: boolean,
@@ -223,6 +225,7 @@ class HasteMap extends EventEmitter {
         ? new RegExp(options.mocksPattern)
         : null,
       name: options.name,
+      noDuplicateMockWarn: options.noDuplicateMockWarn,
       platforms: options.platforms,
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
@@ -418,7 +421,7 @@ class HasteMap extends EventEmitter {
       this._options.mocksPattern.test(filePath)
     ) {
       const mockPath = getMockName(filePath);
-      if (mocks[mockPath]) {
+      if (mocks[mockPath] && !this._options.noDuplicateMockWarn) {
         this._console.warn(
           `jest-haste-map: duplicate manual mock found:\n` +
             `  Module name: ${mockPath}\n` +

@@ -234,6 +234,10 @@ for running tests. This defaults to the number of the cores available on your
 machine. It may be useful to adjust this in resource limited environments like
 CIs but the default should be adequate for most use-cases.
 
+### `--noDuplicateMockWarn`
+
+Disables duplicate mock warnings in output
+
 ### `--noStackTrace`
 
 Disables stack trace in test results output.

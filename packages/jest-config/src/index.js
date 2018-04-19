@@ -163,6 +163,7 @@ const getConfigs = (
       modulePathIgnorePatterns: options.modulePathIgnorePatterns,
       modulePaths: options.modulePaths,
       name: options.name,
+      noDuplicateMockWarn: options.noDuplicateMockWarn,
       resetMocks: options.resetMocks,
       resetModules: options.resetModules,
       resolver: options.resolver,

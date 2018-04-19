@@ -480,6 +480,31 @@ describe('HasteMap', () => {
       });
   });
 
+  it('does not warn on duplicate mock files if noDuplicateMockWarn is true', () => {
+    // Duplicate mock files for blueberry
+    mockFs['/fruits1/__mocks__/subdir/blueberry.js'] = [
+      '/**',
+      ' * @providesModule Blueberry1',
+      ' */',
+    ].join('\n');
+    mockFs['/fruits2/__mocks__/subdir/blueberry.js'] = [
+      '/**',
+      ' * @providesModule Blueberry2',
+      ' */',
+    ].join('\n');
+
+    return new HasteMap(
+      Object.assign(
+        {mocksPattern: '__mocks__', noDuplicateMockWarn: true},
+        defaultConfig,
+      ),
+    )
+      .build()
+      .then(({__hasteMapForTest: data}) => {
+        expect(console.warn).not.toHaveBeenCalled();
+      });
+  });
+
   it('warns on duplicate module ids', () => {
     // Raspberry thinks it is a Strawberry
     mockFs['/fruits/raspberry.js'] = [

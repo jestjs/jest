@@ -50,6 +50,7 @@ export default ({
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
+  noDuplicateMockWarn: false,
   noStackTrace: false,
   notify: false,
   notifyMode: 'always',

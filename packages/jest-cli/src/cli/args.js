@@ -353,6 +353,11 @@ export const options = {
       'search when resolving modules.',
     type: 'array',
   },
+  noDuplicateMockWarn: {
+    default: false,
+    description: 'Disables duplicate mock warnings in output',
+    type: 'boolean',
+  },
   noStackTrace: {
     default: undefined,
     description: 'Disables stack trace in test results output',
