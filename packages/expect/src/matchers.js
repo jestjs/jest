@@ -618,7 +618,12 @@ const matchers: MatchersObject = {
   },
 
   toStrictEqual(received: any, expected: any) {
-    const pass = equals(received, expected, [iterableEquality, typeEquality]);
+    const pass = equals(
+      received,
+      expected,
+      [iterableEquality, typeEquality],
+      true,
+    );
 
     const message = pass
       ? () =>

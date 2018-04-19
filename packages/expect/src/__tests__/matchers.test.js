@@ -212,22 +212,24 @@ describe('.toStrictEqual()', () => {
     }
   }
 
-  expect({
-    test: new TestClass(1, 2),
-  }).toStrictEqual({test: new TestClass(1, 2)});
-});
+  it('does not ignore keys with undefined values', () => {
+    expect({
+      a: undefined,
+      b: 2,
+    }).not.toStrictEqual({b: 2});
+  });
 
-describe('.not.toStrictEqual()', () => {
-  class TestClass {
-    constructor(a, b) {
-      this.a = a;
-      this.b = b;
-    }
-  }
+  it('passes when comparing same type', () => {
+    expect({
+      test: new TestClass(1, 2),
+    }).toStrictEqual({test: new TestClass(1, 2)});
+  });
 
-  expect({
-    test: new TestClass(1, 2),
-  }).not.toStrictEqual({test: {a: 1, b: 2}});
+  it('does not pass for different types', () => {
+    expect({
+      test: new TestClass(1, 2),
+    }).not.toStrictEqual({test: {a: 1, b: 2}});
+  });
 });
 
 describe('.toEqual()', () => {
