@@ -204,6 +204,32 @@ describe('.toBe()', () => {
   });
 });
 
+describe('.toStrictEqual()', () => {
+  class TestClass {
+    constructor(a, b) {
+      this.a = a;
+      this.b = b;
+    }
+  }
+
+  expect({
+    test: new TestClass(1, 2),
+  }).toStrictEqual({test: new TestClass(1, 2)});
+});
+
+describe('.not.toStrictEqual()', () => {
+  class TestClass {
+    constructor(a, b) {
+      this.a = a;
+      this.b = b;
+    }
+  }
+
+  expect({
+    test: new TestClass(1, 2),
+  }).not.toStrictEqual({test: {a: 1, b: 2}});
+});
+
 describe('.toEqual()', () => {
   [
     [true, false],
