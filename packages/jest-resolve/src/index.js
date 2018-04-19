@@ -374,22 +374,6 @@ Please check:
         }
       }
     }
-    if (resolver) {
-      // if moduleNameMapper didn't match anything, fallback to just the
-      // regular resolver
-      const module =
-        this.getModule(moduleName) ||
-        Resolver.findNodeModule(moduleName, {
-          basedir: dirname,
-          browser: this._options.browser,
-          extensions,
-          moduleDirectory,
-          paths,
-          resolver,
-          rootDir: this._options.rootDir,
-        });
-      return module;
-    }
     return null;
   }
 
