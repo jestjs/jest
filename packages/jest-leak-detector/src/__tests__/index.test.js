@@ -11,14 +11,14 @@ afterEach(() => {
 });
 
 it('complains if the value is a primitive', () => {
-  expect(() => new LeakDetector(Symbol())).toThrowErrorMatchingSnapshot();
-  expect(() => new LeakDetector(Symbol('foo'))).toThrowErrorMatchingSnapshot();
-  expect(() => new LeakDetector(NaN)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(undefined)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(null)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(false)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(42)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector('foo')).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(Symbol())).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(Symbol('foo'))).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(NaN)).toThrowErrorMatchingSnapshot();
 });
 
 it('does not show the GC if hidden', () => {
