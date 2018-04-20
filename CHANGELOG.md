@@ -3,11 +3,9 @@
 ### Features
 
 * `[jest-cli]` Added `--noDuplicateMockWarn` to disable HasteMap warning of
-  duplicate mocks.
-  ([#6037](https://github.com/facebook/jest/pull/6037))
+  duplicate mocks. ([#6037](https://github.com/facebook/jest/pull/6037))
 * `[jest-haste-map]` Added `noDuplicateMockWarn` option to disable warning of
-  duplicate mocks.
-  ([#6037](https://github.com/facebook/jest/pull/6037))
+  duplicate mocks. ([#6037](https://github.com/facebook/jest/pull/6037))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test, optional snapshot
   name and count ([#6015](https://github.com/facebook/jest/pull/6015))
 * `[jest-runtime]` Allow for transform plugins to skip the definition process
