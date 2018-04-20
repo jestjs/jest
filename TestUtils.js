@@ -24,6 +24,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   detectLeaks: false,
   enabledTestsMap: null,
   expand: false,
+  filter: null,
   findRelatedTests: false,
   forceExit: false,
   globalSetup: null,
@@ -71,6 +72,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   cwd: '/test_root_dir/',
   detectLeaks: false,
   displayName: undefined,
+  filter: null,
   forceCoverageMatch: [],
   globals: {},
   haste: {
