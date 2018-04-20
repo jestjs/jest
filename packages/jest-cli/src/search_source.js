@@ -264,9 +264,11 @@ export default class SearchSource {
         );
       }
 
+      const filteredSet = new Set(filtered);
+
       // $FlowFixMe: Object.assign with empty object causes troubles to Flow.
       return Object.assign({}, searchResult, {
-        tests: tests.filter(test => filtered.includes(test.path)),
+        tests: tests.filter(test => filteredSet.has(test.path)),
       });
     }
 
