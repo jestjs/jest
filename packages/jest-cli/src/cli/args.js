@@ -244,7 +244,7 @@ export const options = {
       'Path to a module exporting a filtering function. This method receives ' +
       'a list of tests which can be manipulated to exclude tests from ' +
       'running. Especially useful when used in conjunction with a testing ' +
-      'infrastructure.',
+      'infrastructure to filter known broken tests.',
     type: 'string',
   },
   findRelatedTests: {

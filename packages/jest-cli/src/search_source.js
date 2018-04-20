@@ -210,7 +210,7 @@ export default class SearchSource {
       : this.findRelatedTests(changedFiles, collectCoverage);
   }
 
-  async _getTestPaths(
+  _getTestPaths(
     globalConfig: GlobalConfig,
     changedFilesPromise: ?ChangedFilesPromise,
   ): Promise<SearchResult> {
@@ -249,18 +249,25 @@ export default class SearchSource {
       changedFilesPromise,
     );
 
-    if (globalConfig.filter) {
-      let tests = searchResult.tests;
+    const filterPath = globalConfig.filter;
+
+    if (filterPath) {
+      const tests = searchResult.tests;
 
       // $FlowFixMe: dynamic require.
-      const filter = require(globalConfig.filter);
+      const filter = require(filterPath);
       const filtered = await filter(tests.map(test => test.path));
 
-      if (Array.isArray(filtered)) {
-        tests = tests.filter(test => filtered.includes(test.path));
+      if (!Array.isArray(filtered)) {
+        throw new Error(
+          `Filter ${filterPath} did not return a valid test list`,
+        );
       }
 
-      searchResult.tests = tests;
+      // $FlowFixMe: Object.assign with empty object causes troubles to Flow.
+      return Object.assign({}, searchResult, {
+        tests: tests.filter(test => filtered.includes(test.path)),
+      });
     }
 
     return searchResult;
