@@ -13,3 +13,18 @@ test('should use the custom resolver', () => {
 test('should have regenerator injected', () => {
   expect(global.fakeRegeneratorInjected).toEqual(true);
 });
+
+test('should work with automock', () => {
+  jest.mock('foo');
+
+  const foo = require('foo');
+  foo();
+
+  expect(foo).toHaveBeenCalled();
+});
+
+test('should allow manual mocks to make require calls through the resolver', () => {
+  jest.mock('../manual-mock');
+
+  expect(require('../manual-mock')).toEqual('bar');
+});
