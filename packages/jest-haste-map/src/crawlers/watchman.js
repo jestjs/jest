@@ -162,8 +162,14 @@ module.exports = async function watchmanCrawl(
         if (isOld) {
           files[name] = existingFileData;
         } else {
+          let sha1hex = fileData['content.sha1hex'];
+
+          if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
+            sha1hex = null;
+          }
+
           // See ../constants.js
-          files[name] = ['', mtime, 0, [], fileData['content.sha1hex'] || null];
+          files[name] = ['', mtime, 0, [], sha1hex];
         }
       }
     }
