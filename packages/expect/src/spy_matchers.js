@@ -58,24 +58,19 @@ const createToReturnMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
-  const receivedIsSpy = isSpy(received);
-  const type = receivedIsSpy ? 'spy' : 'mock function';
-  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const count = receivedIsSpy
-    ? received.returnValues.count()
-    : received.mock.returnValues.length;
-
+  const count = received.mock.returnValues.length;
   const pass = count > 0;
+
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, receivedName, '') +
+        matcherHint('.not' + matcherName, received.getMockName(), '') +
         '\n\n' +
-        `Expected ${type} not to have returned, but it returned:\n` +
+        `Expected mock function not to have returned, but it returned:\n` +
         `  ${RECEIVED_COLOR(received.mock.returnValues.join(', '))}`
     : () =>
-        matcherHint(matcherName, receivedName, '') +
+        matcherHint(matcherName, received.getMockName(), '') +
         '\n\n' +
-        `Expected ${type} to have returned.`;
+        `Expected mock function to have returned.`;
 
   return {message, pass};
 };
@@ -118,25 +113,24 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
-  const receivedIsSpy = isSpy(received);
-  const type = receivedIsSpy ? 'spy' : 'mock function';
-  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const count = receivedIsSpy
-    ? received.returnValues.length()
-    : received.mock.returnValues.length;
-
+  const count = received.mock.returnValues.length;
   const pass = count === expected;
+
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, receivedName, String(expected)) +
+        matcherHint(
+          '.not' + matcherName,
+          received.getMockName(),
+          String(expected),
+        ) +
         `\n\n` +
-        `Expected ${type} not to have returned ` +
+        `Expected mock function not to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it` +
         ` returned exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
     : () =>
-        matcherHint(matcherName, receivedName, String(expected)) +
+        matcherHint(matcherName, received.getMockName(), String(expected)) +
         '\n\n' +
-        `Expected ${type} to have returned ` +
+        `Expected mock function to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
         ` but it returned ${RECEIVED_COLOR(pluralize('time', count))}.`;
 
@@ -182,14 +176,7 @@ const createToReturnWithMatcher = matcherName => (
 ) => {
   ensureMock(received, matcherName);
 
-  const receivedIsSpy = isSpy(received);
-  const type = receivedIsSpy ? 'spy' : 'mock function';
-  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-
-  const returnValues = receivedIsSpy
-    ? received.returnValues.all().map(x => x.args)
-    : received.mock.returnValues;
-
+  const returnValues = received.mock.returnValues;
   const [match] = partition(returnValues, value =>
     equals(expected, value, [iterableEquality]),
   );
@@ -197,14 +184,14 @@ const createToReturnWithMatcher = matcherName => (
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, receivedName) +
+        matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected ${type} not to have returned:\n` +
+        `Expected mock function not to have returned:\n` +
         `  ${printExpected(expected)}`
     : () =>
-        matcherHint(matcherName, receivedName) +
+        matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected ${type} to have returned:\n` +
+        `Expected mock function to have returned:\n` +
         `  ${printExpected(expected)}`;
 
   return {message, pass};
@@ -245,28 +232,22 @@ const createLastReturnedMatcher = matcherName => (
 ) => {
   ensureMock(received, matcherName);
 
-  const receivedIsSpy = isSpy(received);
-  const type = receivedIsSpy ? 'spy' : 'mock function';
-  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const returnValues = receivedIsSpy
-    ? received.returnValues.all().map(x => x.args)
-    : received.mock.returnValues;
-
+  const returnValues = received.mock.returnValues;
   const lastReturnValue = returnValues[returnValues.length - 1];
   const pass = equals(lastReturnValue, expected, [iterableEquality]);
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, receivedName) +
+        matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected ${type} to not have last returned:\n` +
+        'Expected mock function to not have last returned:\n' +
         `  ${printExpected(expected)}`
     : () =>
-        matcherHint(matcherName, receivedName) +
+        matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected ${type} to have last returned:\n` +
+        'Expected mock function to have last returned:\n' +
         `  ${printExpected(expected)}\n` +
-        `But it last returned:\n` +
+        'But it last returned:\n' +
         `  ${printReceived(lastReturnValue)}`;
 
   return {message, pass};
@@ -323,9 +304,6 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
 ) => {
   ensureMock(received, matcherName);
 
-  const receivedIsSpy = isSpy(received);
-  const type = receivedIsSpy ? 'spy' : 'mock function';
-
   if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
     const message = () =>
       `nth value ${printReceived(
@@ -335,24 +313,19 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
     return {message, pass};
   }
 
-  const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const returnValues = receivedIsSpy
-    ? received.returnValues.all().map(x => x.args)
-    : received.mock.returnValues;
+  const returnValues = received.mock.returnValues;
   const pass = equals(returnValues[nth - 1], expected, [iterableEquality]);
-
+  const nthString = nthToString(nth);
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, receivedName) +
+        matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected ${type} ${nthToString(
-          nth,
-        )} call to not have returned with:\n` +
+        `Expected mock function ${nthString} call to not have returned with:\n` +
         `  ${printExpected(expected)}`
     : () =>
-        matcherHint(matcherName, receivedName) +
+        matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected ${type} ${nthToString(nth)} call to have returned with:\n` +
+        `Expected mock function ${nthString} call to have returned with:\n` +
         `  ${printExpected(expected)}`;
 
   return {message, pass};
