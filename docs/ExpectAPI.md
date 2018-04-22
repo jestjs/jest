@@ -638,8 +638,6 @@ arguments it was nth called with. For example, let's say you have a
 flavors, and you want to ensure that when you call it, the first flavor it
 operates on is `'lemon'` and the second one is `'octopus'`. You can write:
 
-Note that, nth argument must be positive integer starting from 1.
-
 ```js
 test('drinkEach drinks each drink', () => {
   const drink = jest.fn();
