@@ -60,7 +60,6 @@
     "prettier": "^1.12.1",
     "prettylint": "^1.0.0",
     "progress": "^2.0.0",
-    "puppeteer": "^1.3.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-test-renderer": "^16.2.0",

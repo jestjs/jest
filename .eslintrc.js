@@ -127,7 +127,6 @@ module.exports = {
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
           'eslintImportResolver.js',
-          'karma.conf.js',
           'testSetupFile.js',
         ],
       },
