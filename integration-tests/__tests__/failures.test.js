@@ -33,12 +33,13 @@ test('not throwing Error objects', () => {
 });
 
 test('works with node assert', () => {
+  const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
   const {stderr} = runJest(dir, ['node_assertion_error.test.js']);
   let summary = normalizeDots(extractSummary(stderr).rest);
 
   // Node 9 started to include the error for `doesNotThrow`
   // https://github.com/nodejs/node/pull/12167
-  if (Number(process.versions.node.split('.')[0]) >= 9) {
+  if (nodeMajorVersion >= 9) {
     expect(summary).toContain(`
     assert.doesNotThrow(function)
     
@@ -48,9 +49,9 @@ test('works with node assert', () => {
     
     Message:
       Got unwanted exception.
-    err!
-    err!
+`);
 
+    expect(summary).toContain(`
       69 | 
       70 | test('assert.doesNotThrow', () => {
     > 71 |   assert.doesNotThrow(() => {
@@ -62,16 +63,29 @@ test('works with node assert', () => {
       at __tests__/node_assertion_error.test.js:71:10
 `);
 
-    summary = summary.replace(
-      `Message:
+    const commonErrorMessage = `Message:
+      Got unwanted exception.
+`;
+
+    if (nodeMajorVersion === 9) {
+      const specificErrorMessage = `Message:
       Got unwanted exception.
     err!
     err!
-`,
-      `Message:
+`;
+
+      expect(summary).toContain(specificErrorMessage);
+      summary = summary.replace(specificErrorMessage, commonErrorMessage);
+    } else {
+      const specificErrorMessage = `Message:
       Got unwanted exception.
-`,
-    );
+    Actual message: "err!"
+    Actual message: "err!"
+`;
+
+      expect(summary).toContain(specificErrorMessage);
+      summary = summary.replace(specificErrorMessage, commonErrorMessage);
+    }
   }
 
   expect(summary).toMatchSnapshot();
