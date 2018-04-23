@@ -16,11 +16,6 @@ aliases:
       sudo npm i -g yarn@^1.2.1
       yarn --no-progress
 
-  - &yarn-install-no-sudo
-    run: |
-      npm i -g yarn@^1.2.1
-      yarn --no-progress
-
   - &deploy
     command: |
       # Deploy Jest website using Docusaurus bot
@@ -44,15 +39,13 @@ aliases:
 version: 2
 jobs:
   test-browser:
-    working_directory: /home/circleci/jest
+    working_directory: ~/jest
     docker:
-      - image: markhobson/node-chrome
+      - image: circleci/node:8
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: |
-          apt-get update && apt-get install make g++ -y
-      - *yarn-install-no-sudo
+      - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
