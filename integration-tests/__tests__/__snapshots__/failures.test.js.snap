@@ -783,20 +783,6 @@ exports[`works with node assert 1`] = `
 
   ● assert.ifError
 
-    thrown: 1
-
-      64 | });
-      65 | 
-    > 66 | test('assert.ifError', () => {
-         | ^
-      67 |   assert.ifError(1);
-      68 | });
-      69 | 
-      
-      
-      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
-      at __tests__/node_assertion_error.test.js:66:1
-
   ● assert.doesNotThrow
 
     assert.doesNotThrow(function)

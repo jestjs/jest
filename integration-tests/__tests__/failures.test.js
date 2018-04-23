@@ -86,6 +86,58 @@ test('works with node assert', () => {
     }
   }
 
+  if (nodeMajorVersion >= 10) {
+    const ifErrorMessage = `
+    assert.ifError(received, expected)
+    
+    Expected value ifError to:
+      null
+    Received:
+      1
+    
+    Message:
+      ifError got unwanted exception: 1
+    
+    Difference:
+    
+      Comparing two different types of values. Expected null but received number.
+
+      65 | 
+      66 | test('assert.ifError', () => {
+    > 67 |   assert.ifError(1);
+         |          ^
+      68 | });
+      69 | 
+      70 | test('assert.doesNotThrow', () => {
+      
+      at __tests__/node_assertion_error.test.js:67:10
+      
+      at __tests__/node_assertion_error.test.js:66:1
+`;
+
+    expect(summary).toContain(ifErrorMessage);
+    summary = summary.replace(ifErrorMessage, '');
+  } else {
+    const ifErrorMessage = `
+    thrown: 1
+
+      64 | });
+      65 | 
+    > 66 | test('assert.ifError', () => {
+         | ^
+      67 |   assert.ifError(1);
+      68 | });
+      69 | 
+      
+      
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
+      at __tests__/node_assertion_error.test.js:66:1
+`;
+
+    expect(summary).toContain(ifErrorMessage);
+    summary = summary.replace(ifErrorMessage, '');
+  }
+
   expect(summary).toMatchSnapshot();
 });
 
