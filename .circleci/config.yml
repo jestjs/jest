@@ -11,16 +11,6 @@ aliases:
       - website/node_modules
     key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
-  - &yarn-install
-    run: |
-      sudo npm i -g yarn@^1.2.1
-      yarn --no-progress
-
-  - &yarn-install-no-sudo
-    run: |
-      npm i -g yarn@^1.2.1
-      yarn --no-progress
-
   - &deploy
     command: |
       # Deploy Jest website using Docusaurus bot
@@ -83,7 +73,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - *yarn-install
+      - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn run test-ci-partial
 
