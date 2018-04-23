@@ -31,9 +31,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
+import {AssertionError} from 'assert';
+
 import ExpectationFailed from '../expectation_failed';
 
 import expectationResultFactory from '../expectation_result_factory';
+
+import assertionErrorMessage from '../assert_support';
 
 export default function Spec(attrs: Object) {
   this.resultCallback = attrs.resultCallback || function() {};
@@ -137,8 +141,7 @@ Spec.prototype.onException = function onException(error) {
     return;
   }
 
-  if (error instanceof require('assert').AssertionError) {
-    const assertionErrorMessage = require('../assert_support').default;
+  if (error instanceof AssertionError) {
     error = assertionErrorMessage(error, {expand: this.expand});
   }
 
