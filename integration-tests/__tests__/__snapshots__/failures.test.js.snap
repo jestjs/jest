@@ -143,7 +143,7 @@ exports[`not throwing Error objects 5`] = `
       10 | 
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:7:1
 
   ● Boolean thrown during test
@@ -159,7 +159,7 @@ exports[`not throwing Error objects 5`] = `
       14 | });
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:11:1
 
   ● undefined thrown during test
@@ -175,7 +175,7 @@ exports[`not throwing Error objects 5`] = `
       19 | });
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:16:1
 
   ● Object thrown during test
@@ -198,7 +198,7 @@ exports[`not throwing Error objects 5`] = `
       24 | });
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:21:1
 
   ● Error during test
@@ -391,7 +391,7 @@ exports[`works with async failures 1`] = `
       29 | 
       30 |   setTimeout(done, 10);
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/async_failures.test.js:27:1
 
 "
@@ -794,7 +794,7 @@ exports[`works with node assert 1`] = `
       69 | 
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/node_assertion_error.test.js:66:1
 
   ● assert.doesNotThrow

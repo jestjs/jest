@@ -71,7 +71,6 @@ test('works with node assert', () => {
       const specificErrorMessage = `Message:
       Got unwanted exception.
     err!
-    err!
 `;
 
       expect(summary).toContain(specificErrorMessage);
@@ -79,7 +78,6 @@ test('works with node assert', () => {
     } else {
       const specificErrorMessage = `Message:
       Got unwanted exception.
-    Actual message: "err!"
     Actual message: "err!"
 `;
 
