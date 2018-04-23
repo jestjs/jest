@@ -33,8 +33,12 @@ const assertOperatorsMap = {
 const humanReadableOperators = {
   deepEqual: 'to deeply equal',
   deepStrictEqual: 'to deeply and strictly equal',
+  equal: 'to be equal',
   notDeepEqual: 'not to deeply equal',
   notDeepStrictEqual: 'not to deeply and strictly equal',
+  notEqual: 'to not be equal',
+  notStrictEqual: 'not be strictly equal',
+  strictEqual: 'to strictly be equal',
 };
 
 const getOperatorName = (operator: ?string, stack: string) => {
@@ -50,12 +54,12 @@ const getOperatorName = (operator: ?string, stack: string) => {
   return '';
 };
 
-const operatorMessage = (operator: ?string, negator: boolean) =>
-  typeof operator === 'string'
-    ? operator.startsWith('!') || operator.startsWith('=')
-      ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
-      : `${humanReadableOperators[operator] || operator} to:\n`
+const operatorMessage = (operator: ?string) => {
+  const niceOperatorName = getOperatorName(operator);
+  return typeof operator === 'string'
+    ? `${humanReadableOperators[niceOperatorName] || niceOperatorName} to:\n`
     : '';
+};
 
 const assertThrowingMatcherHint = (operatorName: string) => {
   return (
@@ -90,9 +94,6 @@ const assertMatcherHint = (operator: ?string, operatorName: string) => {
 function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
-  const negator =
-    typeof operator === 'string' &&
-    (operator.startsWith('!') || operator.startsWith('not'));
   const hasCustomMessage = !generatedMessage;
   const operatorName = getOperatorName(operator, stack);
   const trimmedStack = stack
@@ -125,7 +126,7 @@ function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
   return (
     assertMatcherHint(operator, operatorName) +
     '\n\n' +
-    chalk.reset(`Expected value ${operatorMessage(operator, negator)}`) +
+    chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
     chalk.reset(`Received:\n`) +
     `  ${printReceived(actual)}` +
