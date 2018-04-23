@@ -44,15 +44,13 @@ aliases:
 version: 2
 jobs:
   test-browser:
-    working_directory: /home/circleci/jest
+    working_directory: ~/jest
     docker:
-      - image: markhobson/node-chrome
+      - image: circleci/node:8-browsers
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: |
-          apt-get update && apt-get install make g++ -y
-      - *yarn-install-no-sudo
+      - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
