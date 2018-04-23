@@ -55,9 +55,12 @@ const getOperatorName = (operator: ?string, stack: string) => {
 };
 
 const operatorMessage = (operator: ?string) => {
-  const niceOperatorName = getOperatorName(operator);
+  const niceOperatorName = getOperatorName(operator, '');
+  // $FlowFixMe: we default to the operator itseld, so holes in the map doesn't matter
+  const humanReadableOperator = humanReadableOperators[niceOperatorName];
+
   return typeof operator === 'string'
-    ? `${humanReadableOperators[niceOperatorName] || niceOperatorName} to:\n`
+    ? `${humanReadableOperator || niceOperatorName} to:\n`
     : '';
 };
 
