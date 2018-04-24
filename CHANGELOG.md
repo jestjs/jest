@@ -1,5 +1,12 @@
 ## master
 
+## 22.4.3
+
+### Fixes
+
+* `[jest-jasmine2]` Always remove node core message from assert stack traces
+  ([#6061](https://github.com/facebook/jest/pull/6061))
+
 ## 22.4.2
 
 ### Fixes
