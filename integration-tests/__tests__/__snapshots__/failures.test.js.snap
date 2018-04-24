@@ -146,7 +146,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -164,7 +164,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -185,7 +185,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -203,7 +203,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -224,7 +224,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       2
     Received:
       1
@@ -242,7 +242,7 @@ exports[`works with node assert 1`] = `
 
     assert.notEqual(received, expected)
     
-    Expected value not to be (operator: !=):
+    Expected value to not be equal to:
       1
     Received:
       1
@@ -353,7 +353,7 @@ exports[`works with node assert 1`] = `
 
     assert.strictEqual(received, expected)
     
-    Expected value to be (operator: ===):
+    Expected value to strictly be equal to:
       NaN
     Received:
       1
@@ -371,7 +371,7 @@ exports[`works with node assert 1`] = `
 
     assert.notStrictEqual(received, expected)
     
-    Expected value not to be (operator: !==):
+    Expected value not be strictly equal to:
       1
     Received:
       1
@@ -443,9 +443,6 @@ exports[`works with node assert 1`] = `
       at __tests__/node_assertion_error.test.js:63:10
 
   ● assert.ifError
-
-    Error
-      1 thrown
 
   ● assert.doesNotThrow
 
