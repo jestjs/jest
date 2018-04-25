@@ -14,6 +14,7 @@
 /packages/*/build-es5/
 /packages/*/coverage/
 /packages/*/node_modules/
+/packages/*/package-lock.json
 
 /website/build
 /website/node_modules
@@ -27,4 +28,3 @@ lerna-debug.log
 npm-debug.log
 npm-debug.log*
 yarn-error.log*
-package-lock.json
