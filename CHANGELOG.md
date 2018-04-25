@@ -2,6 +2,12 @@
 
 ### Features
 
+* `[jest-config]` According to #5828, moves `deprecationEntries` from `jest-config` to `jest-validate`.
+  ([#6067](https://github.com/facebook/jest/pull/6067))
+* `[jest-validate]` According to #5828, moves `deprecationEntries` from `jest-config` to `jest-validate`.
+  ([#6067](https://github.com/facebook/jest/pull/6067))
+* `[jest-runtime]` Fix typo.
+  ([#6067](https://github.com/facebook/jest/pull/6067))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test, optional snapshot
   name and count ([#6015](https://github.com/facebook/jest/pull/6015))
 * `[jest-runtime]` Allow for transform plugins to skip the definition process
