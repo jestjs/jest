@@ -1,0 +1,285 @@
+<html lang="es-ES"><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/jest/index.html"/><meta property="og:description" content="En tus archivos de prueba, Jets coloca cada uno de estos métodos y objetos en el ambiente global. No necesitas solicitar o importar nada para usarlos."/><meta property="og:image" content="https://facebook.github.io/jest/img/opengraph.png"/><link rel="shortcut icon" href="/jest/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/jest/css/main.css"/></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jest/"><img class="logo" src="/jest/img/jest.svg"/><h2 class="headerTitle">Jest</h2></a><a href="/jest/es-ES/versions.html"><h3>22.3</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/es-ES/22.3/getting-started.html" target="_self">Documentación</a></li><li><a href="/jest/docs/es-ES/22.3/api.html" target="_self">API</a></li><li><a href="/jest/es-ES/help.html" target="_self">Ayuda</a></li><li><a href="/jest/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/jest/img/language.svg"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/jest/en">English</a></li><li><a href="/jest/ja">日本語</a></li><li><a href="/jest/es-ES">Español</a></li><li><a href="/jest/pt-BR">Português (Brasil)</a></li><li><a href="/jest/ro">Română</a></li><li><a href="/jest/ru">Русский</a></li><li><a href="/jest/uk">Українська</a></li><li><a href="/jest/zh-Hans">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(){
+          if(languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search"/></li><li><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API Reference</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Introduction</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/getting-started.html">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/using-matchers.html">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/asynchronous.html">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/setup-teardown.html">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/mock-functions.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/jest-platform.html">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/more-resources.html">More Resources</a></li></ul></div><div class="navGroup navGroupActive"><h3>Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/snapshot-testing.html">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/tutorial-async.html">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/timer-mocks.html">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/manual-mocks.html">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/es6-class-mocks.html">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/webpack.html">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/puppeteer.html">
+Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/mongodb.html">Utilizando con MongoDB</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/migration-guide.html">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="navGroup navGroupActive"><h3>Framework Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/tutorial-react.html">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/tutorial-react-native.html">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/testing-frameworks.html">Testing Web Frameworks</a></li></ul></div><div class="navGroup navGroupActive"><h3>API Reference</h3><ul><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/jest/docs/es-ES/22.3/api.html">Globals</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/expect.html">Expect</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/mock-function-api.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/jest-object.html">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/configuration.html">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/es-ES/22.3/cli.html">Jest CLI Options</a></li></ul></div></div></section></div><script>
+          var toggler = document.getElementById('navToggler');
+          var nav = document.getElementById('docsNav');
+          toggler.onclick = function() {
+            nav.classList.toggle('docsSliderActive');
+          };
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GlobalAPI.md" target="_blank">Edit</a><h1>Globals</h1></header><article><div><span><p>En tus archivos de prueba, Jets coloca cada uno de estos métodos y objetos en el ambiente global. No necesitas solicitar o importar nada para usarlos.</p>
+<h2><a class="anchor" aria-hidden="true" name="metodos"></a><a href="#metodos" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Métodos</h2>
+<p>&lt;autogenerated_table_of_contents&gt;</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" name="referencia"></a><a href="#referencia" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Referencia</h2>
+<h3><a class="anchor" aria-hidden="true" name="despues-de-todo-fn-tiempo"></a><a href="#despues-de-todo-fn-tiempo" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>después de todo (fn, tiempo)</code></h3>
+<p>Corre una función luego de que todas las pruebas en ese archivo se hayan completado. Si la función devuelve una promesa o es un generador, Jets espera a que se resuelva esa promesa antes de continuar.</p>
+<p>Si deseas, puedes proporcionar un <code>tiempo de espera</code> (en milisegundos) para especificar cuánto tiempo esperar antes de abortar. <em>Nota: el tiempo de espera predeterminado es 5 segundos.</em></p>
+<p>Esto es comúnmente utilizado si deseas reestablecer alguna configuración global de estado que es compartida a través de pruebas.</p>
+<p>Por ejemplo:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cleanUpDatabase</span>(<span class="hljs-params">db</span>) </span>{
+  db.cleanUp();
+}
+
+afterAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  cleanUpDatabase(globalDatabase);
+});
+
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+
+test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.insert(<span class="hljs-string">'thing'</span>, makeThing(), response =&gt; {
+    expect(response.success).toBeTruthy();
+  });
+});
+</code></pre>
+<p>Aquí el <code>afterAll</code> garantiza que <code>cleanUpDatabase</code> sea llamado luego de finalizada la ejecución de pruebas.</p>
+<p>Si <code>afterAll</code> se encuentra dentro de un bloque <code>describe</code>, se ejecutará al final del bloque describe.</p>
+<p>Si quisieras hacer alguna limpieza o restablecimiento después de cada prueba en lugar de al final de todas ellas, utiliza <code>afterEach</code>.</p>
+<h3><a class="anchor" aria-hidden="true" name="aftereachfn-tiempo"></a><a href="#aftereachfn-tiempo" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterEach(fn, tiempo)</code></h3>
+<p>Ejecuta una función luego de que cada una de las pruebas en este archivo sea completada. Si la función devuelve una promesa o es un generador, Jets espera a que se resuelva la promesa antes de continuar.</p>
+<p>Si deseas, puedes proporcionar un <code>tiempo de espera</code> (en milisegundos) para especificar cuánto tiempo esperar antes de abortar. <em>Nota: el tiempo de espera predeterminado es 5 segundos.</em></p>
+<p>Esto es comúnmente utilizado si se desea limpiar algún estado temporal que sea creado por cada prueba.</p>
+<p>Por ejemplo:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cleanUpDatabase</span>(<span class="hljs-params">db</span>) </span>{
+  db.cleanUp();
+}
+
+afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  cleanUpDatabase(globalDatabase);
+});
+
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+
+test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.insert(<span class="hljs-string">'thing'</span>, makeThing(), response =&gt; {
+    expect(response.success).toBeTruthy();
+  });
+});
+</code></pre>
+<p>Aquí el <code>afterEach</code> garantiza que <code>cleanUpDatabase</code> sea llamado luego de que se ejecute cada prueba.</p>
+<p>Si <code>afterEach</code> se encuentra dentro de un bloque <code>describe</code>, se ejecutará únicamente luego de las pruebas que se encuentran dentro de este bloque describe.</p>
+<p>Si deseas ejecutar alguna limpieza o restablecimiento sólo una vez, luego de que se ejecuten todas las pruebas utiliza <code>afterAll</code>.</p>
+<h3><a class="anchor" aria-hidden="true" name="beforeallfn-tiempo"></a><a href="#beforeallfn-tiempo" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeAll(fn, tiempo)</code></h3>
+<p>Ejecuta una función antes de que alguna prueba de este archivo se ejecute. Si la función devuelve una promesa o es un generador, Jets espera a que ésta se resuelva antes de correr pruebas.</p>
+<p>Si deseas, puedes proporcionar un <code>tiempo de espera</code> (en milisegundos) para especificar cuánto tiempo esperar antes de abortar. <em>Nota: el tiempo de espera predeterminado es 5 segundos.</em></p>
+<p>Esto es comúnmente utilizado si se desea configurar algún estado global que será utilizado para varias pruebas.</p>
+<p>Por ejemplo:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clears the database and adds some testing data.</span>
+  <span class="hljs-comment">// Jest will wait for this promise to resolve before running tests.</span>
+  <span class="hljs-keyword">return</span> globalDatabase.clear().then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> globalDatabase.insert({<span class="hljs-attr">testData</span>: <span class="hljs-string">'foo'</span>});
+  });
+});
+
+<span class="hljs-comment">// Since we only set up the database once in this example, it's important</span>
+<span class="hljs-comment">// that our tests don't modify it.</span>
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+</code></pre>
+<p>Aquí el bloque <code>beforeAll</code> garantiza que la base de datos sea configurada antes de que se ejecuten las pruebas. Si la configuración fue simultánea, podrías hacer esto sin <code>beforeAll</code>. La clave está en que Jest esperará a que se resuelva una promesa para poder tener una configuración no simultánea también.</p>
+<p>Si <code>beforeAll</code> se encuentra dentro de un bloque <code>describe</code>, se ejecuta al comienzo del bloque describe.</p>
+<p>Si deseas ejecutar algo antes de cada prueba en vez de antes de todas las pruebas, utiliza <code>beforeEach</code>.</p>
+<h3><a class="anchor" aria-hidden="true" name="beforeeachfn-tiempo"></a><a href="#beforeeachfn-tiempo" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeEach(fn, tiempo)</code></h3>
+<p>Ejecuta una función antes de que alguna prueba de este archivo se ejecute. Si la función arroja una promesa o es un generador, Kets espera a que se resuelva esta promesa antes de ejecutar las pruebas.</p>
+<p>Si deseas, puedes proporcionar un <code>tiempo de espera</code> (en milisegundos) para especificar cuánto tiempo esperar antes de abortar. <em>Nota: el tiempo de espera predeterminado es 5 segundos.</em></p>
+<p>Esto es comúnmente utilizado si se desea restaurar algún estado global que será utilizado por varias pruebas.</p>
+<p>Por ejemplo:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clears the database and adds some testing data.</span>
+  <span class="hljs-comment">// Jest will wait for this promise to resolve before running tests.</span>
+  <span class="hljs-keyword">return</span> globalDatabase.clear().then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> globalDatabase.insert({<span class="hljs-attr">testData</span>: <span class="hljs-string">'foo'</span>});
+  });
+});
+
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+
+test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.insert(<span class="hljs-string">'thing'</span>, makeThing(), response =&gt; {
+    expect(response.success).toBeTruthy();
+  });
+});
+</code></pre>
+<p>Aquí el bloque <code>beforeAll</code> garantiza que la base de datos se restablezca antes de cada prueba.</p>
+<p>Si <code>beforeEach</code> se encuentra dentro de un bloque <code>describe</code>, se ejecuta para cada prueba en el bloque describe.</p>
+<p>Si únicamente necesitas correr alguna configuración una vez antes de que se corra cualquier prueba, utiliza <code>beforeAll</code>.</p>
+<h3><a class="anchor" aria-hidden="true" name="describename-fn"></a><a href="#describename-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe(name, fn)</code></h3>
+<p><code>describe(nombre, fn)</code> crea un bloque que agrupa varias pruebas relacionadas en un &quot;test suite&quot;. Por ejemplo, si tienes un objeto <code>myBeverage</code> que se supone que es delicioso pero no ácido, podrías probarlo con:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> myBeverage = {
+  <span class="hljs-attr">delicious</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">sour</span>: <span class="hljs-literal">false</span>,
+};
+
+describe(<span class="hljs-string">'my beverage'</span>, () =&gt; {
+  test(<span class="hljs-string">'is delicious'</span>, () =&gt; {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  test(<span class="hljs-string">'is not sour'</span>, () =&gt; {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+});
+</code></pre>
+<p>Esto no es necesario - simplemente puedes escribir el bloque <code>test</code> directamente en el comienzo. Pero esto puede ser práctico si prefieres tus pruebas organizadas en grupos.</p>
+<p>También se pueden anidar bloques <code>describe</code> si se tiene una jerarquía de pruebas:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> cadenaBinariaANumero = <span class="hljs-function"><span class="hljs-params">cadenaBinaria</span> =&gt;</span> {
+  <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^[01]+$/</span>.test(cadenaBinaria)) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> CustomError(<span class="hljs-string">'No es un número binario.'</span>);
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseInt</span>(cadenaBinaria, <span class="hljs-number">2</span>);
+};
+
+describe(<span class="hljs-string">'cadenaBinariaANumero'</span>, () =&gt; {
+  describe(<span class="hljs-string">'dada una cadena binaria invalida'</span>, () =&gt; {
+    test(<span class="hljs-string">'compuesta de no-números arroja un CustomError'</span>, () =&gt; {
+      expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> cadenaBinariaANumero(<span class="hljs-string">'abc'</span>)).toThrowError(CustomError);
+    });
+
+    test(<span class="hljs-string">'con espacios en blanco extra arroja un CustomError'</span>, () =&gt; {
+      expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> cadenaBinariaANumero(<span class="hljs-string">'  100'</span>)).toThrowError(CustomError);
+    });
+  });
+
+  describe(<span class="hljs-string">'dada una cadena binaria valida'</span>, () =&gt; {
+    test(<span class="hljs-string">'regresa el número correcto'</span>, () =&gt; {
+      expect(cadenaBinariaANumero(<span class="hljs-string">'100'</span>)).toBe(<span class="hljs-number">4</span>);
+    });
+  });
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="describeonlyname-fn"></a><a href="#describeonlyname-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only(name, fn)</code></h3>
+<p>Se puede encontrar también debajo del alias: <code>fdescribe(name, fn)</code></p>
+<p>Se puede utilizar <code>describe.only</code> si se desea ejecutar solo ún bloque describe:</p>
+<pre><code class="hljs css js">describe.only(<span class="hljs-string">'mi bebida'</span>, () =&gt; {
+  test(<span class="hljs-string">'es deliciosa'</span>, () =&gt; {
+    expect(miBebida.deliciosa).toBeTruthy();
+  });
+
+  test(<span class="hljs-string">'no es amarga'</span>, () =&gt; {
+    expect(miBebida.amarga).toBeFalsy();
+  });
+});
+
+describe(<span class="hljs-string">'mi otra bebida'</span>, () =&gt; {
+  <span class="hljs-comment">// ... will be skipped</span>
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="describeskipname-fn"></a><a href="#describeskipname-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip(name, fn)</code></h3>
+<p>Se puede encontrar también debajo del alias: <code>xdescribe(name, fn)</code></p>
+<p>Puedes utilizar <code>describe.skip</code> si no deseas ejecutar un bloque describe particular:</p>
+<pre><code class="hljs css js">describe(<span class="hljs-string">'mi bebida'</span>, () =&gt; {
+  test(<span class="hljs-string">'es deliciosa'</span>, () =&gt; {
+    expect(miBebida.deliciosa).toBeTruthy();
+  });
+
+  test(<span class="hljs-string">'no es amarga'</span>, () =&gt; {
+    expect(miBebida.amarga).toBeFalsy();
+  });
+});
+
+describe.skip(<span class="hljs-string">'mi otra bebida'</span>, () =&gt; {
+  <span class="hljs-comment">// ... will be skipped</span>
+});
+</code></pre>
+<p>Utilizar <code>describe.skip</code> es normalmente una alternativa más simple para hacer comentarios temporales en trozos de pruebas.</p>
+<h3><a class="anchor" aria-hidden="true" name="requirerequireactualmodulename"></a><a href="#requirerequireactualmodulename" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>require.requireActual(moduleName)</code></h3>
+<p>Regresa el modulo actual en lugar de una simulación mock, omitiendo cualquier otra indicación de si simular el modulo o no.</p>
+<h3><a class="anchor" aria-hidden="true" name="requirerequiremocknombremodulo"></a><a href="#requirerequiremocknombremodulo" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>require.requireMock(nombreModulo)</code></h3>
+<p>Regresa una modulo simulado mock en lugar del modulo real, omitiendo cualquier otra indicación de si el modulo debe ser requerido o no.</p>
+<h3><a class="anchor" aria-hidden="true" name="pruebanombre-fn-tiempo"></a><a href="#pruebanombre-fn-tiempo" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>prueba(nombre, fn, tiempo)</code></h3>
+<p>También con el alias: <code>it(name, fn, tiempo)</code></p>
+<p>Todo lo que necesitas en un archivo de prueba es el método <code>test</code> el cual ejecuta una prueba. Por ejemplo, digamos que existe una función <code>inchesOfRain()</code> que debería ser cero. La prueba completa podría ser:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'did not rain'</span>, () =&gt; {
+  expect(inchesOfRain()).toBe(<span class="hljs-number">0</span>);
+});
+</code></pre>
+<p>El primer argumento es el nombre de la prueba; el segundo argumento es una función que contiene las expectativas a probar. El tercer argumento (opcional) es <code>timeout</code> (en milisegundos) para especificar cuánto tiempo esperar antes de abortar. <em>Note: El tiempo de espera predeterminado es de 5 segundos.</em></p>
+<blockquote>
+<p>Nota: Si <strong>promise is returned</strong> de <code>test</code>, Jest esperará hasta que ésta se resuelva antes de completar la prueba. Jest también esperará si <strong>proporcionas un argumento a la función de prueba</strong>, llamado usualmente <code>hecho</code>. Esto podría ser práctico si deseas probar devoluciones de llamadas. Ve cómo probar un código asíncrono <a href="/jest/docs/es-ES/22.3/asynchronous.html#callbacks">aquí</a>.</p>
+</blockquote>
+<p>Por ejemplo, digamos que <code>fetchBeverageList()</code> devuelve una promesa que debería resolverse a una lista que contiene <code>limón</code> en ella. Puedes probar esto con:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'has lemon in it'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> fetchBeverageList().then(<span class="hljs-function"><span class="hljs-params">list</span> =&gt;</span> {
+    expect(list).toContain(<span class="hljs-string">'lemon'</span>);
+  });
+});
+</code></pre>
+<p>Aunque la llamada <code>test</code> devolverá inmediatamente, la prueba no se completa hasta que la promesa se resuelva también.</p>
+<h3><a class="anchor" aria-hidden="true" name="pruebasoloname-fn-tiempo"></a><a href="#pruebasoloname-fn-tiempo" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>prueba.solo(name, fn, tiempo)</code></h3>
+<p>Además con los alias: <code>it.only(nombre, fn, tiempo)</code> o <code>fit(nombre, fn, tiempo)</code></p>
+<p>Cuando estás trabajndo con un archivo de prueba grande, comúnmente sólo querrás correr un subconjunto de pruebas. Puedes utilizar <code>.only</code> para especificar cuáles pruebas son las que quieres ejecutar en ese archivo.</p>
+<p>Si deseas, puedes proporcionar un <code>tiempo de espera</code> (en milisegundos) para especificar cuánto tiempo esperar antes de abortar. <em>Nota: el tiempo de espera predeterminado es 5 segundos.</em></p>
+<p>Por ejemplo, digamos que se tuviera estas pruebas:</p>
+<pre><code class="hljs css js">test.only(<span class="hljs-string">'it is raining'</span>, () =&gt; {
+  expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
+});
+
+test(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
+  expect(inchesOfSnow()).toBe(<span class="hljs-number">0</span>);
+});
+</code></pre>
+<p>Únicamente la prueba &quot;it is raining&quot; se ejecutará en ese archivo de prueba, desde que se corre con el código <code>test.only</code>.</p>
+<p>Normalmente no chequearías el código usando <code>test.only</code>en la fuente de control - lo usarías sólo para depuración y removerlo una vez que hayas arreglado las pruebas dañadas.</p>
+<h3><a class="anchor" aria-hidden="true" name="testskipname-fn"></a><a href="#testskipname-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip(name, fn)</code></h3>
+<p>También con los alias: <code>it.skip(nombre, fn)</code> o <code>xit(nombre, fn)</code> o <code>xtest(nombre, fn)</code></p>
+<p>Cuando estás manteniendo un código de base grande, podrías encontrar algunas veces una prueba que está temporalmente dañada por alguna razón. Si deseas saltarte la ejecución de esta prueba, pero no quieres eliminar el código, puedes utilizar <code>test.skip</code> para especificar algunas pruebas para saltar.</p>
+<p>Por ejemplo, digamos que se tuviera estas pruebas:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'it is raining'</span>, () =&gt; {
+  expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
+});
+
+test.skip(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
+  expect(inchesOfSnow()).toBe(<span class="hljs-number">0</span>);
+});
+</code></pre>
+<p>Se correrá únicamente la prueba &quot;it is raining&quot;, ya que la otra prueba se corre con <code>test.skip</code>.</p>
+<p>Puede simplemente comentar la prueba, pero normalmente es un poco más ameno usar <code>test.skip</code> porque mantiene la identificación y el resaltado de la sintaxis.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="testing-frameworks.html">← Testing Web Frameworks</a><a class="docs-next button" href="expect.html">Expect →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/es-ES/getting-started.html">Getting Started</a><a href="/jest/docs/es-ES/snapshot-testing.html">Guides</a><a href="/jest/docs/es-ES/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/es-ES/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script>
+              var search = docsearch({
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react'
+              });
+            </script></body></html>

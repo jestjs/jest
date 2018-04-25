@@ -1,0 +1,148 @@
+<html lang="pt-BR"><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Using Matchers · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Using Matchers · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/jest/index.html"/><meta property="og:description" content="Jest uses &quot;matchers&quot; to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the [`expect` API doc](/jest/docs/pt-BR/expect.html)."/><meta property="og:image" content="https://facebook.github.io/jest/img/opengraph.png"/><link rel="shortcut icon" href="/jest/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/jest/css/main.css"/></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jest/"><img class="logo" src="/jest/img/jest.svg"/><h2 class="headerTitle">Jest</h2></a><a href="/jest/pt-BR/versions.html"><h3>22.4</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/pt-BR/getting-started.html" target="_self">Documentação</a></li><li><a href="/jest/docs/pt-BR/api.html" target="_self">API</a></li><li><a href="/jest/pt-BR/help.html" target="_self">Ajuda</a></li><li><a href="/jest/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/jest/img/language.svg"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/jest/en">English</a></li><li><a href="/jest/ja">日本語</a></li><li><a href="/jest/es-ES">Español</a></li><li><a href="/jest/pt-BR">Português (Brasil)</a></li><li><a href="/jest/ro">Română</a></li><li><a href="/jest/ru">Русский</a></li><li><a href="/jest/uk">Українська</a></li><li><a href="/jest/zh-Hans">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(){
+          if(languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search"/></li><li><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Introduction</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Introduction</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/getting-started.html">Getting Started</a></li><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/jest/docs/pt-BR/using-matchers.html">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/asynchronous.html">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/setup-teardown.html">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/mock-functions.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/jest-platform.html">Plataforma Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/jest-community.html">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/more-resources.html">More Resources</a></li></ul></div><div class="navGroup navGroupActive"><h3>Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/snapshot-testing.html">Teste de Snapshot</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/tutorial-async.html">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/timer-mocks.html">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/manual-mocks.html">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/es6-class-mocks.html">Simulação de Classes ES6</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/webpack.html">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/puppeteer.html">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/mongodb.html">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/migration-guide.html">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="navGroup navGroupActive"><h3>Guias para Framework</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/tutorial-react.html">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/tutorial-react-native.html">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/testing-frameworks.html">Testing Web Frameworks</a></li></ul></div><div class="navGroup navGroupActive"><h3>API Reference</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/api.html">Globals</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/expect.html">Expect</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/mock-function-api.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/jest-object.html">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/configuration.html">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/pt-BR/cli.html">Jest CLI Options</a></li></ul></div></div></section></div><script>
+          var toggler = document.getElementById('navToggler');
+          var nav = document.getElementById('docsNav');
+          toggler.onclick = function() {
+            nav.classList.toggle('docsSliderActive');
+          };
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/UsingMatchers.md" target="_blank">Edit</a><h1>Using Matchers</h1></header><article><div><span><p>Jest uses &quot;matchers&quot; to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the <a href="/jest/docs/pt-BR/expect.html"><code>expect</code> API doc</a>.</p>
+<h3><a class="anchor" aria-hidden="true" name="matchers-comuns"></a><a href="#matchers-comuns" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Matchers Comuns</h3>
+<p>A maneira mais simples para testar um valor é com igualdade exata.</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'dois mais dois é quatro'</span>, () =&gt; {
+  expect(<span class="hljs-number">2</span> + <span class="hljs-number">2</span>).toBe(<span class="hljs-number">4</span>);
+});
+</code></pre>
+<p>Nesse código, <code>expect(2 + 2)</code> retorna um objeto de &quot;expectativa&quot;. Você normalmente não vai fazer muito com esses objetos de expectativa exceto chamar &quot;matchers&quot; neles. Nesse código, o <code>.toBe(4)</code> é o &quot;matcher&quot;. Quando Jest é executado, ele rastreia todos os &quot;matchers&quot; que falharam para que possa imprimir as mensagens de erro para você de uma forma agradável.</p>
+<p><code>toBe</code> usa <code>Object.is</code> para testar igualdade exata. Se você deseja verificar o valor de um objeto, use <code>toEqual</code> ao invés:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'atribuição de objeto'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> data = {<span class="hljs-attr">one</span>: <span class="hljs-number">1</span>};
+  data[<span class="hljs-string">'two'</span>] = <span class="hljs-number">2</span>;
+  expect(data).toEqual({<span class="hljs-attr">one</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">2</span>});
+});
+</code></pre>
+<p><code>toEqual</code> recursivamente verifica cada campo de um objeto ou array.</p>
+<p>Você também pode testar o oposto de um &quot;matcher&quot;:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'adicionando números positivos não é zero'</span>, () =&gt; {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> a = <span class="hljs-number">1</span>; a &lt; <span class="hljs-number">10</span>; a++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> b = <span class="hljs-number">1</span>; b &lt; <span class="hljs-number">10</span>; b++) {
+      expect(a + b).not.toBe(<span class="hljs-number">0</span>);
+    }
+  }
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="verdade"></a><a href="#verdade" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Verdade</h3>
+<p>Em testes às vezes você precisa distinguir entre <code>undefined</code>, <code>null</code> e <code>false</code>, mas às vezes você não quer tratar estes de maneira diferente. Jest contém auxiliares que permitem você ser explícito sobre o que quer.</p>
+<ul>
+<li><code>toBeNull</code> corresponde a apenas <code>null</code></li>
+<li><code>toBeUndefined</code> corresponde a apenas <code>undefined</code></li>
+<li><code>toBeDefined</code> é o oposto de <code>toBeUndefined</code></li>
+<li><code>toBeTruthy</code> combina com qualquer coisa que uma instrução <code>if</code> trata como verdadeiro</li>
+<li><code>toBeFalsy</code> combina com qualquer coisa que uma instrução <code>if</code> trata como falso</li>
+</ul>
+<p>Por exemplo:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'nulo'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> n = <span class="hljs-literal">null</span>;
+  expect(n).toBeNull();
+  expect(n).toBeDefined();
+  expect(n).not.toBeUndefined();
+  expect(n).not.toBeTruthy();
+  expect(n).toBeFalsy();
+});
+
+test(<span class="hljs-string">'zero'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> z = <span class="hljs-number">0</span>;
+  expect(z).not.toBeNull();
+  expect(z).toBeDefined();
+  expect(z).not.toBeUndefined();
+  expect(z).not.toBeTruthy();
+  expect(z).toBeFalsy();
+});
+</code></pre>
+<p>Você deve usar o &quot;matcher&quot; que corresponde mais precisamente para o que você deseja que seu código faça.</p>
+<h3><a class="anchor" aria-hidden="true" name="numeros"></a><a href="#numeros" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Números</h3>
+<p>A maioria das formas de comparar números têm &quot;matcher&quot; equivalentes.</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'dois mais dois'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> value = <span class="hljs-number">2</span> + <span class="hljs-number">2</span>;
+  expect(value).toBeGreaterThan(<span class="hljs-number">3</span>);
+  expect(value).toBeGreaterThanOrEqual(<span class="hljs-number">3.5</span>);
+  expect(value).toBeLessThan(<span class="hljs-number">5</span>);
+  expect(value).toBeLessThanOrEqual(<span class="hljs-number">4.5</span>);
+
+  <span class="hljs-comment">// toBe e toEqual são equivalentes para números</span>
+  expect(value).toBe(<span class="hljs-number">4</span>);
+  expect(value).toEqual(<span class="hljs-number">4</span>);
+});
+</code></pre>
+<p>Para igualdade de ponto flutuante, use <code>toBeCloseTo</code> em vez de <code>toEqual</code>, porque você não quer que um teste dependa de um pequeno erro de arredondamento.</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'adicionando números de ponto flutuante'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> value = <span class="hljs-number">0.1</span> + <span class="hljs-number">0.2</span>;
+  <span class="hljs-comment">//expect(value).toBe(0.3);     Isso não vai funcionar por causa de um erro de arredondamento</span>
+  expect(value).toBeCloseTo(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Isso funciona.</span>
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="strings"></a><a href="#strings" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Strings</h3>
+<p>Você pode verificar strings contra expressões regulares com <code>toMatch</code>:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'não existe I em team'</span>, () =&gt; {
+  expect(<span class="hljs-string">'team'</span>).not.toMatch(<span class="hljs-regexp">/I/</span>);
+});
+
+test(<span class="hljs-string">'mas existe "stop" em Christoph'</span>, () =&gt; {
+  expect(<span class="hljs-string">'Christoph'</span>).toMatch(<span class="hljs-regexp">/stop/</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="arrays"></a><a href="#arrays" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Arrays</h3>
+<p>Você pode verificar se um array contém um item específico usando <code>toContain</code>:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> shoppingList = [
+  <span class="hljs-string">'diapers'</span>,
+  <span class="hljs-string">'kleenex'</span>,
+  <span class="hljs-string">'trash bags'</span>,
+  <span class="hljs-string">'paper towels'</span>,
+  <span class="hljs-string">'beer'</span>,
+];
+
+test(<span class="hljs-string">'a lista de compras tem beer nela'</span>, () =&gt; {
+  expect(shoppingList).toContain(<span class="hljs-string">'beer'</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="excec-es"></a><a href="#excec-es" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Exceções</h3>
+<p>Se você quiser testar que uma determinada função lance um erro quando é chamada, use <code>toThrow</code>.</p>
+<pre><code class="hljs css js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">compileAndroidCode</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ConfigError(<span class="hljs-string">'você está usando o JDK errado'</span>);
+}
+
+test(<span class="hljs-string">'compilando android segue conforme esperado'</span>, () =&gt; {
+  expect(compileAndroidCode).toThrow();
+  expect(compileAndroidCode).toThrow(ConfigError);
+
+  <span class="hljs-comment">// Você pode também usar a exata mensagem de erro ou um regexp</span>
+  expect(compileAndroidCode).toThrow(<span class="hljs-string">'você está usando o JDK errado'</span>);
+  expect(compileAndroidCode).toThrow(<span class="hljs-regexp">/JDK/</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" name="e-muito-mais"></a><a href="#e-muito-mais" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>E muito mais</h3>
+<p>Isto é só uma amostra. Para obter uma lista completa de &quot;matchers&quot;, confira a <a href="/jest/docs/pt-BR/expect.html">documentação de referência</a>.</p>
+<p>Uma vez que você aprendeu sobre os &quot;matchers&quot; que estão disponíveis, um próximo passo é conferir como Jest permite que você <a href="/jest/docs/pt-BR/asynchronous.html">teste código assíncrono</a>.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="getting-started.html">← Getting Started</a><a class="docs-next button" href="asynchronous.html">Testing Asynchronous Code →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/pt-BR/getting-started.html">Getting Started</a><a href="/jest/docs/pt-BR/snapshot-testing.html">Guides</a><a href="/jest/docs/pt-BR/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/pt-BR/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script>
+              var search = docsearch({
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react'
+              });
+            </script></body></html>
