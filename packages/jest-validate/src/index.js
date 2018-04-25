@@ -15,10 +15,12 @@ import {
 } from './utils';
 import validate from './validate';
 import validateCLIOptions from './validate_cli_options';
+import deprecationEntries from './deprecationEntries';
 
 module.exports = {
   ValidationError,
   createDidYouMeanMessage,
+  deprecationEntries,
   format,
   logValidationWarning,
   validate,

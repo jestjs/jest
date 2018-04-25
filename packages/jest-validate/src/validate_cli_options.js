@@ -10,9 +10,9 @@
 import type {Argv} from 'types/Argv';
 
 import chalk from 'chalk';
-import {deprecationEntries} from 'jest-config';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
+import CLIDeprecationEntries from './deprecationEntries';
 import defaultConfig from './default_config';
 
 const BULLET: string = chalk.bold('\u25cf');
@@ -80,12 +80,12 @@ export default function validateCLIOptions(argv: Argv, options: Object) {
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
   }
 
-  const CLIDeprecations = Object.keys(deprecationEntries).reduce(
+  const CLIDeprecations = Object.keys(CLIDeprecationEntries).reduce(
     (acc, entry) => {
       if (options[entry]) {
-        acc[entry] = deprecationEntries[entry];
+        acc[entry] = CLIDeprecationEntries[entry];
         if (options[entry].alias) {
-          acc[options[entry].alias] = deprecationEntries[entry];
+          acc[options[entry].alias] = CLIDeprecationEntries[entry];
         }
       }
       return acc;
