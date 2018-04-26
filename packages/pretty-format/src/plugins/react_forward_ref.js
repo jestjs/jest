@@ -13,19 +13,6 @@ import {printElementAsLeaf} from './lib/markup';
 
 const forwardRefSymbol = Symbol.for('react.forward_ref');
 
-// Given element.props.children, or subtree during recursive traversal,
-// return flattened array of children.
-const getChildren = (arg, children = []) => {
-  if (Array.isArray(arg)) {
-    arg.forEach(item => {
-      getChildren(item, children);
-    });
-  } else if (arg != null && arg !== false) {
-    children.push(arg);
-  }
-  return children;
-};
-
 const getType = element => {
   if (element.$$typeof === forwardRefSymbol) {
     const functionName =
