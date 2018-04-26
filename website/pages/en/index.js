@@ -133,13 +133,13 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Complete and easy to set-up JavaScript testing solution.
+                      Complete and ready to set-up JavaScript testing solution.
                       Works out of the box for any React project.
                     </translate>
                   ),
                   image: '/jest/img/content/female-technologist.png',
                   imageAlign: 'top',
-                  title: <translate>Easy Setup</translate>,
+                  title: <translate>Developer Ready</translate>,
                 },
                 {
                   content: (

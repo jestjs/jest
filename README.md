@@ -8,8 +8,8 @@
 
 🃏 Delightful JavaScript Testing
 
-* **👩🏻‍💻 Easy Setup**: Complete and easy to set-up JavaScript testing solution.
-  Works out of the box for any React project.
+* **👩🏻‍💻 Developer Ready**: Complete and ready to set-up JavaScript testing
+  solution. Works out of the box for any React project.
 
 * **🏃🏽 Instant Feedback**: Fast interactive watch mode runs only test files
   related to changed files and is optimized to give signal quickly.

@@ -71,9 +71,15 @@
   ([#5980](https://github.com/facebook/jest/pull/5980))
 * `[jest-message-util]` Include column in stack frames
   ([#5889](https://github.com/facebook/jest/pull/5889))
+* `[expect]` Introduce toStrictEqual
+  ([#6032](https://github.com/facebook/jest/pull/6032))
 
 ### Fixes
 
+* `[babel-plugin-jest-hoist]` Allow using `console` global variable
+  ([#6074](https://github.com/facebook/jest/pull/6074))
+* `[jest-jasmine2]` Always remove node core message from assert stack traces
+  ([#6055](https://github.com/facebook/jest/pull/6055))
 * `[expect]` Add stack trace when `expect.assertions` and `expect.hasAssertions`
   causes test failures. ([#5997](https://github.com/facebook/jest/pull/5997))
 * `[jest-runtime]` Throw a more useful error when trying to require modules

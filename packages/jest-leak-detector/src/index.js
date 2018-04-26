@@ -13,14 +13,6 @@ import prettyFormat from 'pretty-format';
 import v8 from 'v8';
 import vm from 'vm';
 
-const PRIMITIVE_TYPES = new Set([
-  'undefined',
-  'boolean',
-  'number',
-  'string',
-  'symbol',
-]);
-
 export default class {
   _isReferenceBeingHeld: boolean;
 
@@ -77,6 +69,6 @@ export default class {
   }
 
   _isPrimitive(value: any): boolean {
-    return value === null || PRIMITIVE_TYPES.has(typeof value);
+    return value !== Object(value);
   }
 }

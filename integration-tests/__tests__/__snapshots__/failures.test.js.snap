@@ -143,7 +143,7 @@ exports[`not throwing Error objects 5`] = `
       10 | 
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:7:1
 
   ● Boolean thrown during test
@@ -159,7 +159,7 @@ exports[`not throwing Error objects 5`] = `
       14 | });
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:11:1
 
   ● undefined thrown during test
@@ -175,7 +175,7 @@ exports[`not throwing Error objects 5`] = `
       19 | });
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:16:1
 
   ● Object thrown during test
@@ -198,7 +198,7 @@ exports[`not throwing Error objects 5`] = `
       24 | });
       
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:21:1
 
   ● Error during test
@@ -391,7 +391,7 @@ exports[`works with async failures 1`] = `
       29 | 
       30 |   setTimeout(done, 10);
       
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/async_failures.test.js:27:1
 
 "
@@ -446,7 +446,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -467,7 +467,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -491,7 +491,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -512,7 +512,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       true
     Received:
       false
@@ -536,7 +536,7 @@ exports[`works with node assert 1`] = `
 
     assert.equal(received, expected) or assert(received) 
     
-    Expected value to be (operator: ==):
+    Expected value to be equal to:
       2
     Received:
       1
@@ -557,7 +557,7 @@ exports[`works with node assert 1`] = `
 
     assert.notEqual(received, expected)
     
-    Expected value not to be (operator: !=):
+    Expected value to not be equal to:
       1
     Received:
       1
@@ -680,7 +680,7 @@ exports[`works with node assert 1`] = `
 
     assert.strictEqual(received, expected)
     
-    Expected value to be (operator: ===):
+    Expected value to strictly be equal to:
       NaN
     Received:
       1
@@ -701,7 +701,7 @@ exports[`works with node assert 1`] = `
 
     assert.notStrictEqual(received, expected)
     
-    Expected value not to be (operator: !==):
+    Expected value not be strictly equal to:
       1
     Received:
       1
@@ -782,20 +782,6 @@ exports[`works with node assert 1`] = `
       at __tests__/node_assertion_error.test.js:62:1
 
   ● assert.ifError
-
-    thrown: 1
-
-      64 | });
-      65 | 
-    > 66 | test('assert.ifError', () => {
-         | ^
-      67 |   assert.ifError(1);
-      68 | });
-      69 | 
-      
-      
-      at packages/jest-jasmine2/build/jasmine/Spec.js:79:20
-      at __tests__/node_assertion_error.test.js:66:1
 
   ● assert.doesNotThrow
 

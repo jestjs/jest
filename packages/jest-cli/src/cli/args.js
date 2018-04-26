@@ -238,6 +238,15 @@ export const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
+  filter: {
+    default: undefined,
+    description:
+      'Path to a module exporting a filtering function. This method receives ' +
+      'a list of tests which can be manipulated to exclude tests from ' +
+      'running. Especially useful when used in conjunction with a testing ' +
+      'infrastructure to filter known broken tests.',
+    type: 'string',
+  },
   findRelatedTests: {
     default: undefined,
     description:
@@ -489,6 +498,13 @@ export const options = {
   silent: {
     default: undefined,
     description: 'Prevent tests from printing messages through the console.',
+    type: 'boolean',
+  },
+  skipFilter: {
+    default: undefined,
+    description:
+      'Disables the filter provided by --filter. Useful for CI jobs, or ' +
+      'local enforcement when fixing tests.',
     type: 'boolean',
   },
   snapshotSerializers: {

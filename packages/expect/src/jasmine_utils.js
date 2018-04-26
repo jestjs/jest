@@ -28,9 +28,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 type Tester = (a: any, b: any) => boolean | typeof undefined;
 
 // Extracted out of jasmine 2.5.2
-export function equals(a: any, b: any, customTesters?: Array<Tester>): boolean {
+export function equals(a: any, b: any, customTesters?: Array<Tester>, strictCheck?: boolean): boolean {
   customTesters = customTesters || [];
-  return eq(a, b, [], [], customTesters);
+  return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
 
 function isAsymmetric(obj) {
@@ -56,7 +56,7 @@ function asymmetricMatch(a, b) {
 
 // Equality function lovingly adapted from isEqual in
 //   [Underscore](http://underscorejs.org)
-function eq(a, b, aStack, bStack, customTesters): boolean {
+function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
   var result = true;
 
   var asymmetricResult = asymmetricMatch(a, b);
@@ -160,7 +160,7 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
     }
 
     while (size--) {
-      result = eq(a[size], b[size], aStack, bStack, customTesters);
+      result = eq(a[size], b[size], aStack, bStack, customTesters, hasKey);
       if (!result) {
         return false;
       }
@@ -168,12 +168,12 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
   }
 
   // Deep compare objects.
-  var aKeys = keys(a, className == '[object Array]'),
+  var aKeys = keys(a, className == '[object Array]', hasKey),
     key;
   size = aKeys.length;
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
-  if (keys(b, className == '[object Array]').length !== size) {
+  if (keys(b, className == '[object Array]', hasKey).length !== size) {
     return false;
   }
 
@@ -181,7 +181,7 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
     key = aKeys[size];
 
     // Deep compare each member
-    result = has(b, key) && eq(a[key], b[key], aStack, bStack, customTesters);
+    result = hasKey(b, key) && eq(a[key], b[key], aStack, bStack, customTesters, hasKey);
 
     if (!result) {
       return false;
@@ -194,11 +194,11 @@ function eq(a, b, aStack, bStack, customTesters): boolean {
   return result;
 }
 
-function keys(obj, isArray) {
+function keys(obj, isArray, hasKey) {
   var allKeys = (function(o) {
     var keys = [];
     for (var key in o) {
-      if (has(o, key)) {
+      if (hasKey(o, key)) {
         keys.push(key);
       }
     }
@@ -223,9 +223,15 @@ function keys(obj, isArray) {
   return extraKeys;
 }
 
-function has(obj, key) {
+function hasDefinedKey(obj, key) {
   return (
-    Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined
+    hasKey(obj, key) && obj[key] !== undefined
+  );
+}
+
+function hasKey(obj, key) {
+  return (
+    Object.prototype.hasOwnProperty.call(obj, key)
   );
 }
 
