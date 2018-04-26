@@ -251,7 +251,7 @@ export default class SearchSource {
 
     const filterPath = globalConfig.filter;
 
-    if (filterPath) {
+    if (filterPath && !globalConfig.skipFilter) {
       const tests = searchResult.tests;
 
       // $FlowFixMe: dynamic require.
