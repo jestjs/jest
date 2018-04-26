@@ -180,7 +180,7 @@ describe(<span class="hljs-string">'When SoundPlayer throws an error'</span>, ()
 });
 </code></pre>
 <p><strong><em>Nota: las funciones de flecha no funcionaran</em></strong></p>
-<p>Note that the mock can't be an arrow function because calling <code>new</code> on an arrow function is not allowed in Javascript. So this won't work:</p>
+<p>Note that the mock can't be an arrow function because calling <code>new</code> on an arrow function is not allowed in JavaScript. So this won't work:</p>
 <pre><code class="hljs css javascript">jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
     <span class="hljs-comment">// Does not work; arrow functions can't be called with new</span>
