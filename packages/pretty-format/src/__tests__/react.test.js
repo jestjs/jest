@@ -327,6 +327,16 @@ test('supports a fragment with element child', () => {
   ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
 });
 
+test('supports forwardRef with name', () => {
+  function Cat(props) {
+    return React.createElement('div', props);
+  }
+
+  expect(formatElement({$$typeof: forwardRefSymbol, render: Cat})).toEqual(
+    '<ForwardRef(Cat) … />',
+  );
+});
+
 test('supports a single element with React elements with a child', () => {
   assertPrintedJSX(
     React.createElement('Mouse', {
