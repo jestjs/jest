@@ -25,34 +25,36 @@ const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
 const cleanup = (
   hasteFS: HasteFS,
   update: SnapshotUpdateState,
-  snapshotTag: string,
+  snapshotTag: ?string,
 ) => {
   const pattern = '\\.' + utils.SNAPSHOT_EXTENSION + '$';
-  const filesToRemove = hasteFS.matchFiles(pattern).filter(snapshotFile => {
-    if (snapshotTag) {
-      const baseNameParts = path.basename(snapshotFile).split('.');
-      baseNameParts.splice(snapshotTag.split().length * -1 - 1);
-      const doesFileExists = path.resolve(
-        path.dirname(snapshotFile),
-        '..',
-        path.basename(baseNameParts.join('.')),
+  const files = hasteFS.matchFiles(pattern);
+  const filesRemoved = files
+    .filter(snapshotFile => {
+      if (snapshotTag) {
+        const baseNameParts = path.basename(snapshotFile).split('.');
+        baseNameParts.splice(snapshotTag.split().length * -1 - 1);
+        const doesFileExists = path.resolve(
+          path.dirname(snapshotFile),
+          '..',
+          path.basename(baseNameParts.join('.')),
+        );
+        if (doesFileExists) return false;
+      }
+      return !fileExists(
+        path.resolve(
+          path.dirname(snapshotFile),
+          '..',
+          path.basename(snapshotFile, '.' + utils.SNAPSHOT_EXTENSION),
+        ),
+        hasteFS,
       );
-      if (doesFileExists) return false;
-    }
-    return !fileExists(
-      path.resolve(
-        path.dirname(snapshotFile),
-        '..',
-        path.basename(snapshotFile, utils.SNAPSHOT_EXTENSION),
-      ),
-      hasteFS,
-    );
-  });
-  const filesRemoved = filesToRemove.map(snapshotFile => {
-    if (update === 'all') {
-      fs.unlinkSync(snapshotFile);
-    }
-  }).length;
+    })
+    .map(snapshotFile => {
+      if (update === 'all') {
+        fs.unlinkSync(snapshotFile);
+      }
+    }).length;
 
   return {
     filesRemoved,

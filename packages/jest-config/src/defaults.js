@@ -60,7 +60,6 @@ export default ({
   runTestsByPath: false,
   runner: 'jest-runner',
   snapshotSerializers: [],
-  snapshotTag: '',
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: {},
   testFailureExitCode: 1,

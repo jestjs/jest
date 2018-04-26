@@ -82,7 +82,6 @@ export default ({
   silent: true,
   skipNodeResolution: false,
   snapshotSerializers: ['my-serializer-module'],
-  snapshotTag: '',
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: {},
   testFailureExitCode: 1,

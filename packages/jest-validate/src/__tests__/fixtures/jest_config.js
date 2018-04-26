@@ -46,7 +46,6 @@ const defaultConfig = {
   restoreMocks: false,
   roots: ['<rootDir>'],
   snapshotSerializers: [],
-  snapshotTag: '',
   testEnvironment: 'jest-environment-jsdom',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',

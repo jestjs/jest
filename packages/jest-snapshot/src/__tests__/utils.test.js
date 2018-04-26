@@ -66,8 +66,8 @@ test('getSnapshotPath()', () => {
 });
 
 test('getSnapshotExtension()', () => {
-  expect(getSnapshotExtension('')).toBe('.snap');
-  expect(getSnapshotExtension('')).toBe(SNAPSHOT_EXTENSION);
+  expect(getSnapshotExtension()).toBe('.snap');
+  expect(getSnapshotExtension('')).toBe(`.${SNAPSHOT_EXTENSION}`);
   expect(getSnapshotExtension('someSnapshotTag')).toBe('.someSnapshotTag.snap');
 });
 

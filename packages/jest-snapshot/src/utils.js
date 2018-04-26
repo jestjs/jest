@@ -89,12 +89,10 @@ export const keyToTestName = (key: string) => {
   return key.replace(/ \d+$/, '');
 };
 
-export const getSnapshotExtension = (snapshotTag: string) =>
-  (snapshotTag ? `.${snapshotTag.toLowerCase()}` : '') +
-  '.' +
-  SNAPSHOT_EXTENSION;
+export const getSnapshotExtension = (snapshotTag?: ?string) =>
+  (snapshotTag ? `.${snapshotTag}` : '') + '.' + SNAPSHOT_EXTENSION;
 
-export const getSnapshotPath = (testPath: Path, snapshotTag: string) =>
+export const getSnapshotPath = (testPath: Path, snapshotTag?: ?string) =>
   path.join(
     path.join(path.dirname(testPath), SNAPSHOT_FOLDER),
     path.basename(testPath) + getSnapshotExtension(snapshotTag),
