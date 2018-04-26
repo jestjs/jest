@@ -2,10 +2,10 @@
 
 ### Features
 
-* `[jest-config]` According to #5828, moves `deprecationEntries` from
+* `[jest-config]` According to ([#5828](https://github.com/facebook/jest/issues/5828)), moves `deprecationEntries` from
   `jest-config` to `jest-validate`.
   ([#6067](https://github.com/facebook/jest/pull/6067))
-* `[jest-validate]` According to #5828, moves `deprecationEntries` from
+* `[jest-validate]` According to ([#5828](https://github.com/facebook/jest/issues/5828)), moves `deprecationEntries` from
   `jest-config` to `jest-validate`.
   ([#6067](https://github.com/facebook/jest/pull/6067))
 * `[jest-runtime]` Fix typo.
