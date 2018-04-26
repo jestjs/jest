@@ -35,6 +35,7 @@ import DOMElement from './plugins/dom_element';
 import Immutable from './plugins/immutable';
 import ReactElement from './plugins/react_element';
 import ReactTestComponent from './plugins/react_test_component';
+import ReactForwardRef from './plugins/react_forward_ref';
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
@@ -490,6 +491,7 @@ prettyFormat.plugins = {
   DOMElement,
   Immutable,
   ReactElement,
+  ReactForwardRef,
   ReactTestComponent,
 };
 
