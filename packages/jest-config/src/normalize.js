@@ -13,11 +13,7 @@ import type {InitialOptions, ReporterConfig} from 'types/Config';
 import crypto from 'crypto';
 import glob from 'glob';
 import path from 'path';
-import {
-  ValidationError,
-  validate,
-  deprecationEntries as DEPRECATED_CONFIG,
-} from 'jest-validate';
+import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validate_pattern';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
@@ -36,6 +32,7 @@ import {
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './reporter_validation_errors';
 import DEFAULT_CONFIG from './defaults';
+import DEPRECATED_CONFIG from './deprecated';
 import setFromArgv from './set_from_argv';
 import VALID_CONFIG from './valid_config';
 const ERROR = `${BULLET}Validation Error`;

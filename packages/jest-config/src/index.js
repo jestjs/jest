@@ -23,6 +23,7 @@ import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
 
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
+export {default as deprecationEntries} from './deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './defaults';
 

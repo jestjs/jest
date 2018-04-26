@@ -12,7 +12,6 @@ import type {Argv} from 'types/Argv';
 import chalk from 'chalk';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
-import CLIDeprecationEntries from './deprecationEntries';
 import defaultConfig from './default_config';
 
 const BULLET: string = chalk.bold('\u25cf');
@@ -68,6 +67,7 @@ const logDeprecatedOptions = (
 
 export default function validateCLIOptions(argv: Argv, options: Object) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
+  const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),
     new Set(yargsSpecialOptions),
@@ -80,12 +80,12 @@ export default function validateCLIOptions(argv: Argv, options: Object) {
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
   }
 
-  const CLIDeprecations = Object.keys(CLIDeprecationEntries).reduce(
+  const CLIDeprecations = Object.keys(deprecationEntries).reduce(
     (acc, entry) => {
       if (options[entry]) {
-        acc[entry] = CLIDeprecationEntries[entry];
+        acc[entry] = deprecationEntries[entry];
         if (options[entry].alias) {
-          acc[options[entry].alias] = CLIDeprecationEntries[entry];
+          acc[options[entry].alias] = deprecationEntries[entry];
         }
       }
       return acc;
