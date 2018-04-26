@@ -51,10 +51,10 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotPath = config.snapshotPath || globalConfig.snapshotPath || '';
+  const snapshotTag = config.snapshotTag || globalConfig.snapshotTag || '';
   const snapshotState = new SnapshotState(testPath, {
     expand,
-    snapshotPath,
+    snapshotTag,
     updateSnapshot,
   });
   setState({snapshotState, testPath});
