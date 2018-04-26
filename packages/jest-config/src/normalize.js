@@ -531,6 +531,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'rootDir':
       case 'runTestsByPath':
       case 'silent':
+      case 'skipFilter':
       case 'skipNodeResolution':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
