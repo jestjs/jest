@@ -31,22 +31,22 @@ const cleanup = (
   const files = hasteFS.matchFiles(pattern);
   const filesRemoved = files
     .filter(snapshotFile => {
+      const snapshotFilename = path.basename(
+        snapshotFile,
+        '.' + utils.SNAPSHOT_EXTENSION,
+      );
       if (snapshotTag) {
-        const baseNameParts = path.basename(snapshotFile).split('.');
-        baseNameParts.splice(snapshotTag.split().length * -1 - 1);
         const doesFileExists = path.resolve(
           path.dirname(snapshotFile),
           '..',
-          path.basename(baseNameParts.join('.')),
+          snapshotFilename
+            .split('.', snapshotFilename.split('.').length - 1)
+            .join('.'),
         );
         if (doesFileExists) return false;
       }
       return !fileExists(
-        path.resolve(
-          path.dirname(snapshotFile),
-          '..',
-          path.basename(snapshotFile, '.' + utils.SNAPSHOT_EXTENSION),
-        ),
+        path.resolve(path.dirname(snapshotFile), '..', snapshotFilename),
         hasteFS,
       );
     })

@@ -514,7 +514,8 @@ export const options = {
     type: 'array',
   },
   snapshotTag: {
-    description: "A tag to be appended to Jest's snapshots file name.",
+    description:
+      "A tag to be appended to Jest's snapshots file name. It may not contain '.' in it.",
     type: 'string',
   },
   testEnvironment: {
