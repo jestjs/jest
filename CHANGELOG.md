@@ -4,6 +4,8 @@
 
 ### Fixes
 
+* `[babel-plugin-jest-hoist]` Allow using `console` global variable
+  ([#6074](https://github.com/facebook/jest/pull/6074))
 * `[jest-jasmine2]` Always remove node core message from assert stack traces
   ([#6061](https://github.com/facebook/jest/pull/6061))
 
