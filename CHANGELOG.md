@@ -1,7 +1,8 @@
 ## master
 
 ### Features
-
+* `[jest-haste-map]` Mocks are stored by their full path, not only filename
+  ([#6024](https://github.com/facebook/jest/pull/6024))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test, optional snapshot
   name and count ([#6015](https://github.com/facebook/jest/pull/6015))
 * `[jest-runtime]` Allow for transform plugins to skip the definition process
