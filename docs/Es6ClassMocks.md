@@ -56,7 +56,7 @@ the ES6 class with a mock constructor, and replaces all of its methods with
 [mock functions](MockFunctions.md) that always return `undefined`. Method calls
 are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
 
-Please note that if you use arrow functions in your classes, they will *not* be
+Please note that if you use arrow functions in your classes, they will _not_ be
 part of the mock. The reason for that is that arrow functions are not present on
 the object's protoype, they are merely properties holding a reference to a
 function.
