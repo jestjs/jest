@@ -235,6 +235,7 @@ class Runtime {
       maxWorkers: (options && options.maxWorkers) || 1,
       mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
       name: config.name,
+      noDuplicateMockWarn: config.noDuplicateMockWarn,
       platforms: config.haste.platforms || ['ios', 'android'],
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,

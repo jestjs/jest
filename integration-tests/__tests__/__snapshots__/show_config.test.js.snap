@@ -31,6 +31,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"moduleNameMapper\\": {},
       \\"modulePathIgnorePatterns\\": [],
       \\"name\\": \\"[md5 hash]\\",
+      \\"noDuplicateMockWarn\\": false,
       \\"resetMocks\\": false,
       \\"resetModules\\": false,
       \\"restoreMocks\\": false,
