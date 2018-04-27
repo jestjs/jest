@@ -2,13 +2,9 @@
 
 ### Features
 
-* `[jest-config]` According to ([#5828](https://github.com/facebook/jest/issues/5828)), moves `deprecationEntries` from
-  `jest-config` to `jest-validate`.
+* `[jest-validate]` Get rid of `jest-config` dependency
   ([#6067](https://github.com/facebook/jest/pull/6067))
-* `[jest-validate]` According to ([#5828](https://github.com/facebook/jest/issues/5828)), moves `deprecationEntries` from
-  `jest-config` to `jest-validate`.
-  ([#6067](https://github.com/facebook/jest/pull/6067))
-* `[jest-runtime]` Fix typo.
+* `[jest-validate]` Adds option to inject `deprecationEntries`
   ([#6067](https://github.com/facebook/jest/pull/6067))
 * `[jest-snapshot]` [**BREAKING**] Concatenate name of test, optional snapshot
   name and count ([#6015](https://github.com/facebook/jest/pull/6015))
