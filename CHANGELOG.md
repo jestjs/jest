@@ -133,6 +133,8 @@
   ([#5968](https://github.com/facebook/jest/pull/5968))
 * `[jest-config]` Ensure that custom resolvers are used when resolving the
   configuration ([#5976](https://github.com/facebook/jest/pull/5976))
+* `[website]` Fix website docs
+  ([#5853](https://github.com/facebook/jest/pull/5853))
 
 ### Chore & Maintenance
 
