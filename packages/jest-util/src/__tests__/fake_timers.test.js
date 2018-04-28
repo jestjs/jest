@@ -315,17 +315,28 @@ describe('FakeTimers', () => {
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
       const mock4 = jest.fn(() => runOrder.push('mock4'));
+      const mock5 = jest.fn(() => runOrder.push('mock5'));
+      const mock6 = jest.fn(() => runOrder.push('mock6'));
 
       global.setTimeout(mock1, 100);
-      global.setTimeout(mock2, 0);
+      global.setTimeout(mock2, NaN);
       global.setTimeout(mock3, 0);
       const intervalHandler = global.setInterval(() => {
         mock4();
         global.clearInterval(intervalHandler);
       }, 200);
+      global.setTimeout(mock5, Infinity);
+      global.setTimeout(mock6, -Infinity);
 
       timers.runAllTimers();
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4']);
+      expect(runOrder).toEqual([
+        'mock2',
+        'mock3',
+        'mock5',
+        'mock6',
+        'mock1',
+        'mock4',
+      ]);
     });
 
     it('warns when trying to advance timers while real timers are used', () => {

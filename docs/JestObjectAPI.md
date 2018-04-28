@@ -529,7 +529,7 @@ const audio = {
   },
 };
 
-module.exports = video;
+module.exports = audio;
 ```
 
 Example test:
@@ -548,12 +548,14 @@ test('plays video', () => {
   spy.mockRestore();
 });
 
+const audio = require('./audio');
+
 test('plays audio', () => {
-  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
-  video.volume = 100;
+  const spy = jest.spyOn(audio, 'volume', 'set'); // we pass 'set'
+  audio.volume = 100;
 
   expect(spy).toHaveBeenCalled();
-  expect(video.volume).toBe(100);
+  expect(audio.volume).toBe(100);
 
   spy.mockReset();
   spy.mockRestore();

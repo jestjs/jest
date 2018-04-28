@@ -31,39 +31,6 @@ const mockConfig = {
 
 test(`Returns source string with inline maps when no transformOptions is passed`, () => {
   const result = babelJest.process(sourceString, 'dummy_path.js', mockConfig);
-  expect(typeof result).toBe('string');
-  expect(result).toMatch('//# sourceMappingURL');
-  expect(result).toMatch('customMultiply');
-});
-
-test(`Returns source string with inline maps when transformOptions
- is passed but doesn't have returnSourceString passed`, () => {
-  const result = babelJest.process(
-    sourceString,
-    'dummy_path.js',
-    mockConfig,
-    {},
-  );
-  expect(typeof result).toBe('string');
-  expect(result).toMatch('//# sourceMappingURL');
-  expect(result).toMatch('customMultiply');
-});
-
-test(`Returns source string with inline maps when transformOptions
- is passed and returnSourceString is true`, () => {
-  const result = babelJest.process(sourceString, 'dummy_path.js', mockConfig, {
-    returnSourceString: true,
-  });
-  expect(typeof result).toBe('string');
-  expect(result).toMatch('//# sourceMappingURL');
-  expect(result).toMatch('customMultiply');
-});
-
-test(`Returns source string with inline maps when transformOptions
- is passed and returnSourceString is false`, () => {
-  const result = babelJest.process(sourceString, 'dummy_path.js', mockConfig, {
-    returnSourceString: false,
-  });
   expect(typeof result).toBe('object');
   expect(result.code).toBeDefined();
   expect(result.map).toBeDefined();

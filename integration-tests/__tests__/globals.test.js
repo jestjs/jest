@@ -122,8 +122,7 @@ test('cannot test with no implementation', () => {
   const {stderr, status} = runJest(DIR);
   expect(status).toBe(1);
 
-  const {summary, rest} = extractSummary(stderr);
-
+  const {summary, rest} = extractSummary(stderr, {stripLocation: true});
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
@@ -201,7 +200,7 @@ test('cannot test with no implementation with expand arg', () => {
   const {stderr, status} = runJest(DIR, ['--expand']);
   expect(status).toBe(1);
 
-  const {summary, rest} = extractSummary(stderr);
+  const {summary, rest} = extractSummary(stderr, {stripLocation: true});
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });

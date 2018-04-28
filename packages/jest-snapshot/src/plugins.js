@@ -20,7 +20,7 @@ const {
   ReactTestComponent,
 } = prettyFormat.plugins;
 
-let PLUGINS = [
+let PLUGINS: Array<Plugin> = [
   ReactTestComponent,
   ReactElement,
   DOMElement,

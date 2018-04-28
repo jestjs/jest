@@ -25,6 +25,7 @@ export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './deprecated';
 export {replaceRootDirInPath} from './utils';
+export {default as defaults} from './defaults';
 
 export function readConfig(
   argv: Argv,
@@ -106,6 +107,7 @@ const getConfigs = (
       detectLeaks: options.detectLeaks,
       enabledTestsMap: options.enabledTestsMap,
       expand: options.expand,
+      filter: options.filter,
       findRelatedTests: options.findRelatedTests,
       forceExit: options.forceExit,
       globalSetup: options.globalSetup,
@@ -130,6 +132,7 @@ const getConfigs = (
       rootDir: options.rootDir,
       runTestsByPath: options.runTestsByPath,
       silent: options.silent,
+      skipFilter: options.skipFilter,
       testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,
       testPathPattern: options.testPathPattern,
@@ -152,6 +155,7 @@ const getConfigs = (
       cwd: options.cwd,
       detectLeaks: options.detectLeaks,
       displayName: options.displayName,
+      filter: options.filter,
       forceCoverageMatch: options.forceCoverageMatch,
       globals: options.globals,
       haste: options.haste,
@@ -171,6 +175,7 @@ const getConfigs = (
       runner: options.runner,
       setupFiles: options.setupFiles,
       setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
+      skipFilter: options.skipFilter,
       skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,
       testEnvironment: options.testEnvironment,

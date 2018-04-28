@@ -123,7 +123,7 @@ export const getSnapshotData = (
     dirty = true;
   }
 
-  return {data, dirty};
+  return ({data, dirty}: {data: any, dirty: boolean});
 };
 
 // Extra line breaks at the beginning and at the end of the snapshot are useful

@@ -10,10 +10,14 @@
 import type {Path} from 'types/Config';
 import type {SnapshotState} from 'jest-snapshot';
 
-export type ExpectationResult = {
+export type SyncExpectationResult = {
   pass: boolean,
   message: () => string,
 };
+
+export type AsyncExpectationResult = Promise<SyncExpectationResult>;
+
+export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn = (
   expected: any,

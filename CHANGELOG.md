@@ -2,6 +2,29 @@
 
 ### Features
 
+* `[jest-snapshot]` [**BREAKING**] Concatenate name of test, optional snapshot
+  name and count ([#6015](https://github.com/facebook/jest/pull/6015))
+* `[jest-runtime]` Allow for transform plugins to skip the definition process
+  method if createTransformer method was defined.
+  ([#5999](https://github.com/facebook/jest/pull/5999))
+* `[expect]` Add stack trace for async errors
+  ([#6008](https://github.com/facebook/jest/pull/6008))
+* `[jest-jasmine2]` Add stack trace for timeouts
+  ([#6008](https://github.com/facebook/jest/pull/6008))
+* `[jest-jasmine2]` Add stack trace for thrown non-`Error`s
+  ([#6008](https://github.com/facebook/jest/pull/6008))
+* `[jest-runtime]` Prevent modules from marking themselves as their own parent
+  ([#5235](https://github.com/facebook/jest/issues/5235))
+* `[jest-mock]` Add support for auto-mocking generator functions
+  ([#5983](https://github.com/facebook/jest/pull/5983))
+* `[expect]` Add support for async matchers
+  ([#5836](https://github.com/facebook/jest/pull/5919))
+* `[expect]` Suggest toContainEqual
+  ([#5948](https://github.com/facebook/jest/pull/5953))
+* `[jest-config]` Export Jest's default options
+  ([#5948](https://github.com/facebook/jest/pull/5948))
+* `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage`
+  ([#5929](https://github.com/facebook/jest/pull/5929))
 * `[jest-editor-support]` Add `coverage` option to runner
   ([#5836](https://github.com/facebook/jest/pull/5836))
 * `[jest-haste-map]` Support extracting dynamic `import`s
@@ -44,10 +67,36 @@
   ([#5864](https://github.com/facebook/jest/pull/5864))
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
-
+* Pretty-print non-Error object errors
+  ([#5980](https://github.com/facebook/jest/pull/5980))
+* `[jest-message-util]` Include column in stack frames
+  ([#5889](https://github.com/facebook/jest/pull/5889))
+* `[expect]` Introduce toStrictEqual
+  ([#6032](https://github.com/facebook/jest/pull/6032))
 
 ### Fixes
 
+* `[jest-worker]` Stick calls to workers before processing them
+  ([#6073](https://github.com/facebook/jest/pull/6073))
+* `[babel-plugin-jest-hoist]` Allow using `console` global variable
+  ([#6074](https://github.com/facebook/jest/pull/6074))
+* `[jest-jasmine2]` Always remove node core message from assert stack traces
+  ([#6055](https://github.com/facebook/jest/pull/6055))
+* `[expect]` Add stack trace when `expect.assertions` and `expect.hasAssertions`
+  causes test failures. ([#5997](https://github.com/facebook/jest/pull/5997))
+* `[jest-runtime]` Throw a more useful error when trying to require modules
+  after the test environment is torn down
+  ([#5888](https://github.com/facebook/jest/pull/5888))
+* `[jest-mock]` [**BREAKING**] Replace timestamps with `invocationCallOrder`
+  ([#5867](https://github.com/facebook/jest/pull/5867))
+* `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch
+  runtime errors ([#5945](https://github.com/facebook/jest/pull/5945))
+* `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
+  ([#5884](https://github.com/facebook/jest/pull/5884))
+* `[jest-cli]` Remove the notifier actions in case of failure when not in watch
+  mode. ([#5861](https://github.com/facebook/jest/pull/5861))
+* `[jest-mock]` Extend .toHaveBeenCalled return message with outcome
+  ([#5951](https://github.com/facebook/jest/pull/5951))
 * `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode
   ([#5860](https://github.com/facebook/jest/pull/5860))
 * `[jest-cli]` Add descriptive error message when trying to use
@@ -74,13 +123,25 @@
   ([#5720](https://github.com/facebook/jest/pull/5720))
 * `[pretty-format]` Handle React fragments better
   ([#5816](https://github.com/facebook/jest/pull/5816))
+* `[jest-cli]` Switch collectCoverageFrom back to a string
+  ([#5914](https://github.com/facebook/jest/pull/5914))
+* `[jest-regex-util]` Fix handling regex symbols in tests path on Windows
+  ([#5941](https://github.com/facebook/jest/pull/5941))
+* `[jest-util]` Fix handling of NaN/Infinity in mock timer delay
+  ([#5966](https://github.com/facebook/jest/pull/5966))
+* `[jest-resolve]` Generalise test for package main entries equivalent to ".".
+  ([#5968](https://github.com/facebook/jest/pull/5968))
+* `[jest-config]` Ensure that custom resolvers are used when resolving the
+  configuration ([#5976](https://github.com/facebook/jest/pull/5976))
 
 ### Chore & Maintenance
 
+* `[babel-jest]` [**BREAKING**] Always return object from transformer
+  ([#5991](https://github.com/facebook/jest/pull/5991))
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
   ([#5885](https://github.com/facebook/jest/pull/5885))
-* `*` Run Prettier on compiled output
+* `[*]` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
 * `[jest-cli]` Add fileChange hook for plugins
   ([#5708](https://github.com/facebook/jest/pull/5708))

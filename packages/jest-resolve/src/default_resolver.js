@@ -8,8 +8,13 @@
  */
 
 import type {Path} from 'types/Config';
+import type {ErrorWithCode} from 'types/Errors';
 
 import browserResolve from 'browser-resolve';
+import fs from 'fs';
+import path from 'path';
+import isBuiltinModule from './is_builtin_module';
+import nodeModulesPaths from './node_modules_paths';
 
 type ResolverOptions = {|
   basedir: Path,
@@ -34,17 +39,6 @@ export default function defaultResolver(
     rootDir: options.rootDir,
   });
 }
-
-/*
- * Adapted from: https://github.com/substack/node-resolve
- */
-type ErrorWithCode = Error & {code?: string};
-
-import fs from 'fs';
-import path from 'path';
-import isBuiltinModule from './is_builtin_module';
-
-import nodeModulesPaths from './node_modules_paths';
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
@@ -129,7 +123,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
       pkgmain = JSON.parse(body).main;
     } catch (e) {}
 
-    if (pkgmain && pkgmain !== '.') {
+    if (pkgmain && !isCurrentDirectory(pkgmain)) {
       const resolveTarget = path.resolve(name, pkgmain);
       const result = tryResolve(resolveTarget);
       if (result) {
@@ -174,4 +168,8 @@ function isDirectory(dir: Path): boolean {
   }
 
   return result;
+}
+
+function isCurrentDirectory(testPath: Path): boolean {
+  return path.resolve('.') === path.resolve(testPath);
 }

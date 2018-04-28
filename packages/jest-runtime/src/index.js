@@ -19,9 +19,11 @@ import type {SourceMapRegistry} from 'types/SourceMaps';
 
 import path from 'path';
 import HasteMap from 'jest-haste-map';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
+import Snapshot from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './script_transformer';
@@ -64,7 +66,6 @@ type BooleanObject = {[key: string]: boolean, __proto__: null};
 type CacheFS = {[path: Path]: string, __proto__: null};
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: ProjectConfig) => {
   if (
@@ -228,7 +229,7 @@ class Runtime {
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
-      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
@@ -327,7 +328,9 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule, options, moduleRegistry, from);
+        // Only include the fromPath if a moduleName is given. Else treat as root.
+        const fromPath = moduleName ? from : null;
+        this._execModule(localModule, options, moduleRegistry, fromPath);
       }
 
       localModule.loaded = true;
@@ -392,7 +395,10 @@ class Runtime {
         id: modulePath,
         loaded: false,
       };
-      this._execModule(localModule, undefined, this._mockRegistry, from);
+
+      // Only include the fromPath if a moduleName is given. Else treat as root.
+      const fromPath = moduleName ? from : null;
+      this._execModule(localModule, undefined, this._mockRegistry, fromPath);
       this._mockRegistry[moduleID] = localModule.exports;
       localModule.loaded = true;
     } else {
@@ -493,7 +499,7 @@ class Runtime {
     localModule: Module,
     options: ?InternalModuleOptions,
     moduleRegistry: ModuleRegistry,
-    from: Path,
+    from: ?Path,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -517,7 +523,8 @@ class Runtime {
       ({
         enumerable: true,
         get() {
-          return moduleRegistry[from] || null;
+          const key = from || '';
+          return moduleRegistry[key] || null;
         },
       }: Object),
     );
@@ -545,9 +552,28 @@ class Runtime {
       }
     }
 
-    const wrapper = this._environment.runScript(transformedFile.script)[
-      ScriptTransformer.EVAL_RESULT_VARIABLE
-    ];
+    const runScript = this._environment.runScript(transformedFile.script);
+
+    if (runScript === null) {
+      const originalStack = new ReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      ).stack
+        .split('\n')
+        // Remove this file from the stack (jest-message-utils will keep one line)
+        .filter(line => line.indexOf(__filename) === -1)
+        .join('\n');
+
+      const {message, stack} = separateMessageFromStack(originalStack);
+
+      console.error(
+        `\n${message}\n` +
+          formatStackTrace(stack, this._config, {noStackTrace: false}),
+      );
+      process.exitCode = 1;
+      return;
+    }
+
+    const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
     wrapper.call(
       localModule.exports, // module context
       localModule, // module object

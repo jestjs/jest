@@ -14,6 +14,7 @@ exports[`works with custom matchers 1`] = `
       43 |     const bar = () => baz();
       44 |     const baz = () => {
     > 45 |       throw Error('qux');
+         |             ^
       46 |     };
       47 | 
       48 |     // This expecation fails due to an error we throw (intentionally)

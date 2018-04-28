@@ -185,6 +185,14 @@ export const subsetEquality = (object: Object, subset: Object) => {
   );
 };
 
+export const typeEquality = (a: any, b: any) => {
+  if (a == null || b == null || a.constructor.name === b.constructor.name) {
+    return undefined;
+  }
+
+  return false;
+};
+
 export const partition = <T>(
   items: Array<T>,
   predicate: T => boolean,

@@ -7,6 +7,8 @@
  * @flow
  */
 
+import prettyFormat from 'pretty-format';
+
 function messageFormatter({error, message, passed}) {
   if (passed) {
     return 'Passed.';
@@ -14,20 +16,35 @@ function messageFormatter({error, message, passed}) {
   if (message) {
     return message;
   }
-  if (!error) {
-    return '';
+  if (typeof error === 'string') {
+    return error;
   }
-  return error.message && error.name
-    ? `${error.name}: ${error.message}`
-    : `${error.toString()} thrown`;
+  if (
+    // duck-type Error, see #2549
+    error &&
+    typeof error === 'object' &&
+    typeof error.message === 'string' &&
+    typeof error.name === 'string'
+  ) {
+    return `${error.name}: ${error.message}`;
+  }
+  return `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 }
 
-function stackFormatter(options, errorMessage) {
+function stackFormatter(options, initError, errorMessage) {
   if (options.passed) {
     return '';
   }
-  const {stack} = options.error || new Error(errorMessage);
-  return stack;
+
+  if (options.error && options.error.stack) {
+    return options.error.stack;
+  }
+
+  if (initError) {
+    return errorMessage + '\n' + initError.stack;
+  }
+
+  return new Error(errorMessage).stack;
 }
 
 type Options = {
@@ -39,9 +56,12 @@ type Options = {
   message?: string,
 };
 
-export default function expectationResultFactory(options: Options) {
+export default function expectationResultFactory(
+  options: Options,
+  initError?: Error,
+) {
   const message = messageFormatter(options);
-  const stack = stackFormatter(options, message);
+  const stack = stackFormatter(options, initError, message);
 
   if (options.passed) {
     return {

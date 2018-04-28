@@ -57,11 +57,16 @@ export default function treeProcessor(options: Options) {
   }
 
   function getNodeWithChildrenHandler(node: TreeNode, enabled: boolean) {
+    // NOTE: We create the array of queueableFns preemptively,
+    // in order to keep a legacy, undocumented ordering of beforeEach execution.
+    // Specifically, this applies to beforeEach that were added inside of tests.
+    // Facebook depends on this behavior internally (see #5964 for discussion)
+    const queueableFns = wrapChildren(node, enabled);
     return async function fn(done: (error?: any) => void = () => {}) {
       nodeStart(node);
       await queueRunnerFactory({
         onException: error => node.onException(error),
-        queueableFns: wrapChildren(node, enabled),
+        queueableFns,
         userContext: node.sharedUserContext(),
       });
       nodeComplete(node);
