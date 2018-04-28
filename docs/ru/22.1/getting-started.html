@@ -45,33 +45,33 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 ✓ adds 1 + 2 to equal 3 (5ms)
 </code></pre>
 <p><strong>Вы только что успешно написали первый тест с использованием Jest!</strong></p>
-<p>This test used <code>expect</code> and <code>toBe</code> to test that two values were exactly identical. To learn about the other things that Jest can test, see <a href="/jest/docs/ru/22.1/using-matchers.html">Using Matchers</a>.</p>
+<p>Данный тест использует <code>expect</code> и <code>toBe</code> для проверки полной идентичности этих двух значений. Чтобы узнать об остальных вещах, которые можно протестировать с помощью Jest, смотрите <a href="/jest/docs/ru/22.1/using-matchers.html">Использование сравнений</a>.</p>
 <h2><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Запуск из командной строки</h2>
 <p>You can run Jest directly from the CLI (if it's globally available in your <code>PATH</code>, e.g. by <code>npm install -g jest</code>) with variety of useful options.</p>
-<p>Here's how to run Jest on files matching <code>my-test</code>, using <code>config.json</code> as a configuration file and display a native OS notification after the run:</p>
+<p>Вот так можно запустить Jest для проверки файлов совпадающих с <code>my-test</code>, используя <code>config.json</code> в качестве файла конфигурации, и для отображения нативного уведомления ОС после завершения:</p>
 <pre><code class="hljs css bash">jest my-test --notify --config=config.json
 </code></pre>
-<p>If you'd like to learn more about running <code>jest</code> through the command line, take a look at the <a href="/jest/docs/ru/22.1/cli.html">Jest CLI Options</a> page.</p>
+<p>Если вы хотите узнать больше о запуске <code>jest</code> с помощью командной строки, обратите внимание на страницу <a href="/jest/docs/ru/22.1/cli.html"> Параметры командной строки Jest</a>.</p>
 <h2><a class="anchor" aria-hidden="true" name=""></a><a href="#" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Дополнительная конфигурация</h2>
 <h3><a class="anchor" aria-hidden="true" name="babel"></a><a href="#babel" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>С использованием Babel</h3>
-<p>To use <a href="http://babeljs.io/">Babel</a>, install the <code>babel-jest</code> and <code>regenerator-runtime</code> packages:</p>
+<p>Для использования <a href="http://babeljs.io/">Babel</a>, установите пакеты <code>babel-jest</code> и <code>regenerator-runtime</code>:</p>
 <pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>Note: If you are using a babel version 7 then you need to install <code>babel-jest</code> with the following command:</p>
+<p>Примечание: Если вы используете babel 7 версии, то вам нужно установить <code>babel-jest</code> с помощью следующей команды:</p>
 <pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
 </code></pre>
 </blockquote>
-<p><em>Note: Explicitly installing <code>regenerator-runtime</code> is not needed if you use <code>npm</code> 3 or 4 or Yarn</em></p>
-<p>Don't forget to add a <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> file in your project's root folder. For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
+<p><em>Примечание: явная установка <code>regenerator-runtime</code> не требуется, если вы используете <code>npm</code> версии 3 или 4, либо Yarn</em></p>
+<p>Не забудьте добавить файл <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> в корневую папку вашего проекта. Например, если вы используете ES6 и <a href="https://facebook.github.io/react/">React.js</a> с пресетами <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-es</code></a> и <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a>:</p>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
 }
 </code></pre>
 <p>Теперь вы можете использовать все возможности ES6 и React синтаксис.</p>
 <blockquote>
-<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. It will not use <code>development</code> section like Babel does by default when no <code>NODE_ENV</code> is set.</p>
-<p>Note: If you've turned off transpilation of ES6 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
+<p>Примечание: Если у вас более сложная конфигурация Babel с использованием <code>env</code>, то имейте в виду, что Jest автоматически определит <code>NODE_ENV</code> как <code>test</code>. Jest не будет использовать значение <code>development</code> как Babel делает по умолчанию, если параметр <code>NODE_ENV</code> не задан явно.</p>
+<p>Примечание: Если вы отключили транспиляцию ES6 модулей с опцией <code>{ &quot;modules&quot;: false }</code>, то вы должны убедиться, что она включена в тестовой среде.</p>
 </blockquote>
 <pre><code class="hljs css json">{
   <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
@@ -83,7 +83,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 }
 </code></pre>
 <blockquote>
-<p>Note: <code>babel-jest</code> is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the <code>transform</code> configuration option:</p>
+<p>Примечание: <code>babel-jest</code> автоматически устанавливается при установке Jest и автоматически преобразует файлы, если в вашем проекте есть конфигурация babel. Для обхода данного поведения, вы можете явно сбросить опцию <code>transform</code> в конфигурации:</p>
 </blockquote>
 <pre><code class="hljs css json">// package.json
 {
@@ -93,9 +93,9 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 }
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" name="webpack"></a><a href="#webpack" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>С использованием Webpack</h3>
-<p>Jest can be used in projects that use <a href="https://webpack.github.io/">webpack</a> to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the <a href="/jest/docs/ru/22.1/webpack.html">webpack guide</a> to get started.</p>
+<p>Jest может использоваться в проектах c <a href="https://webpack.github.io/">webpack</a> для управления ресурсами, стилями и компиляцией. webpack действительно вносит некоторые уникальные сложности по сравнению с другими инструментами. Обратитесь к <a href="/jest/docs/ru/22.1/webpack.html">руководству по Webpack</a> чтобы начать работу.</p>
 <h3><a class="anchor" aria-hidden="true" name="typescript"></a><a href="#typescript" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>С использованием TypeScript</h3>
-<p>To use TypeScript in your tests you can use <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a>.</p>
+<p>Чтобы использовать TypeScript в ваших тестах, вы можете подключить <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a>.</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="using-matchers.html">Using Matchers →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/ru/getting-started.html">Getting Started</a><a href="/jest/docs/ru/snapshot-testing.html">Guides</a><a href="/jest/docs/ru/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/ru/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

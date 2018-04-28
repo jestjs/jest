@@ -56,6 +56,10 @@ use to spy on calls to the class constructor and all of its methods. It replaces
 the ES6 class with a mock constructor, and replaces all of its methods with
 <a href="/jest/docs/en/next/mock-functions.html">mock functions</a> that always return <code>undefined</code>. Method calls
 are saved in <code>theAutomaticMock.mock.instances[index].methodName.mock.calls</code>.</p>
+<p>Please note that if you use arrow functions in your classes, they will <em>not</em> be
+part of the mock. The reason for that is that arrow functions are not present on
+the object's protoype, they are merely properties holding a reference to a
+function.</p>
 <p>If you don't need to replace the implementation of the class, this is the
 easiest option to set up. For example:</p>
 <pre><code class="hljs css javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
