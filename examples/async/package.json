@@ -1,4 +1,6 @@
 {
+  "version": "0.0.0",
+  "name": "example-async",
   "devDependencies": {
     "babel-jest": "*",
     "babel-plugin-transform-runtime": "*",

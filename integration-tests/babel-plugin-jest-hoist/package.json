@@ -2,7 +2,7 @@
   "dependencies": {
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-es2015": "^6.9.0",
-    "react": "^15.2.1"
+    "react": "*"
   },
   "jest": {
     "automock": true,
