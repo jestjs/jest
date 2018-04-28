@@ -365,7 +365,7 @@ Please check:
 "moduleNameMapper": {
   "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
 },
-"resolver": ${chalk.bold(resolver)}`),
+"resolver": ${chalk.bold(String(resolver))}`),
             );
             error.stack = '';
             throw error;

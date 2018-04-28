@@ -172,7 +172,7 @@ const matchers: MatchersObject = {
           }) +
           '\n\n' +
           `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || constructor,
+            constructor.name || String(constructor),
           )}\n` +
           `Received value: ${printReceived(received)}`
       : () =>
@@ -181,7 +181,7 @@ const matchers: MatchersObject = {
           }) +
           '\n\n' +
           `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || constructor,
+            constructor.name || String(constructor),
           )}\n` +
           `Received constructor: ${RECEIVED_COLOR(
             received.constructor && received.constructor.name,
