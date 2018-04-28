@@ -14,17 +14,22 @@ const renderer = require('react-test-renderer');
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
+const forwardRefSymbol = Symbol.for('react.forward_ref');
 const testSymbol = Symbol.for('react.test.json');
 
 const prettyFormat = require('..');
-const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
+const {
+  ReactElement,
+  ReactTestComponent,
+  ReactForwardRef,
+} = prettyFormat.plugins;
 
 const formatElement = (element: any, options?: OptionsReceived) =>
   prettyFormat(
     element,
     Object.assign(
       ({
-        plugins: [ReactElement],
+        plugins: [ReactElement, ReactForwardRef],
       }: OptionsReceived),
       options,
     ),
@@ -325,6 +330,16 @@ test('supports a fragment with element child', () => {
       type: fragmentSymbol,
     }),
   ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
+});
+
+test('supports forwardRef with name', () => {
+  function Cat(props) {
+    return React.createElement('div', props);
+  }
+
+  expect(formatElement({$$typeof: forwardRefSymbol, render: Cat})).toEqual(
+    '<ForwardRef(Cat) … />',
+  );
 });
 
 test('supports a single element with React elements with a child', () => {
