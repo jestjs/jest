@@ -147,7 +147,7 @@ export default class {
     // We do not cache the request object here. If so, it would only be only
     // processed by one of the workers, and we want them all to close.
     for (let i = 0; i < workers.length; i++) {
-      workers[i].send([CHILD_MESSAGE_END, false], emptyMethod);
+      workers[i].send([CHILD_MESSAGE_END, false], emptyMethod, emptyMethod);
     }
 
     this._ending = true;
@@ -176,27 +176,33 @@ export default class {
 
       // Do not use a fat arrow since we need the "this" value, which points to
       // the worker that executed the call.
-      function callback(error, result) {
+      const onProcessStart = worker => {
         if (hash != null) {
-          cacheKeys[hash] = this;
+          cacheKeys[hash] = worker;
         }
+      };
 
+      const onProcessEnd = (error, result) => {
         if (error) {
           reject(error);
         } else {
           resolve(result);
         }
-      }
+      };
 
       // If a worker is pre-selected, use it...
       if (worker) {
-        worker.send(request, callback);
+        worker.send(request, onProcessStart, onProcessEnd);
         return;
       }
 
       // ... otherwise use all workers, so the first one available will pick it.
       for (let i = 0; i < length; i++) {
-        workers[(i + this._offset) % length].send(request, callback);
+        workers[(i + this._offset) % length].send(
+          request,
+          onProcessStart,
+          onProcessEnd,
+        );
       }
 
       this._offset++;

@@ -76,6 +76,10 @@
 
 ### Fixes
 
+* `[jest-worker]` Stick calls to workers before processing them
+  ([#6073](https://github.com/facebook/jest/pull/6073))
+* `[babel-plugin-jest-hoist]` Allow using `console` global variable
+  ([#6074](https://github.com/facebook/jest/pull/6074))
 * `[jest-jasmine2]` Always remove node core message from assert stack traces
   ([#6055](https://github.com/facebook/jest/pull/6055))
 * `[expect]` Add stack trace when `expect.assertions` and `expect.hasAssertions`
@@ -130,6 +134,8 @@
 * `[jest-config]` Ensure that custom resolvers are used when resolving the
   configuration ([#5976](https://github.com/facebook/jest/pull/5976))
 * `[pretty-format]` Handle React.forwardRef
+* `[website]` Fix website docs
+  ([#5853](https://github.com/facebook/jest/pull/5853))
 
 ### Chore & Maintenance
 

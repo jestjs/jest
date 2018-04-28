@@ -500,6 +500,13 @@ export const options = {
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
+  skipFilter: {
+    default: undefined,
+    description:
+      'Disables the filter provided by --filter. Useful for CI jobs, or ' +
+      'local enforcement when fixing tests.',
+    type: 'boolean',
+  },
   snapshotSerializers: {
     description:
       'A list of paths to snapshot serializer modules Jest should ' +
