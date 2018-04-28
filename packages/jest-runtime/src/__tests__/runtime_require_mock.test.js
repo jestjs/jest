@@ -173,10 +173,10 @@ describe('Runtime', () => {
         expect(exports.isManualMockModule).toBe(true);
       });
     });
+
     it('provides `require.main` in mock', () =>
       createRuntime(__filename).then(runtime => {
-        runtime._moduleRegistry[__filename] = module;
-        runtime.setMock(__filename, 'export_main', () => require.main, {
+        runtime.setMock(__filename, 'export_main', () => module, {
           virtual: true,
         });
         const mainModule = runtime.requireMock(__filename, 'export_main');

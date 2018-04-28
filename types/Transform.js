@@ -23,7 +23,6 @@ export type TransformResult = {|
 
 export type TransformOptions = {|
   instrument: boolean,
-  returnSourceString?: boolean,
 |};
 
 export type CacheKeyOptions = {|

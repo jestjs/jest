@@ -13,6 +13,7 @@ import type {
   TransformedSource,
   TransformResult,
 } from 'types/Transform';
+import type {ErrorWithCode} from 'types/Errors';
 
 import crypto from 'crypto';
 import path from 'path';
@@ -136,13 +137,13 @@ export default class ScriptTransformer {
 
       // $FlowFixMe
       transform = (require(transformPath): Transformer);
+      if (typeof transform.createTransformer === 'function') {
+        transform = transform.createTransformer();
+      }
       if (typeof transform.process !== 'function') {
         throw new TypeError(
           'Jest: a transform must export a `process` function.',
         );
-      }
-      if (typeof transform.createTransformer === 'function') {
-        transform = transform.createTransformer();
       }
       this._transformCache.set(transformPath, transform);
     }
@@ -217,7 +218,6 @@ export default class ScriptTransformer {
     if (transform && shouldCallTransform) {
       const processed = transform.process(content, filename, this._config, {
         instrument,
-        returnSourceString: false,
       });
 
       if (typeof processed === 'string') {
@@ -436,7 +436,7 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
  * If the target file exists we can be reasonably sure another process has
  * legitimately won a cache write race and ignore the error.
  */
-const cacheWriteErrorSafeToIgnore = (e: Error, cachePath: Path) => {
+const cacheWriteErrorSafeToIgnore = (e: ErrorWithCode, cachePath: Path) => {
   return (
     process.platform === 'win32' &&
     e.code === 'EPERM' &&

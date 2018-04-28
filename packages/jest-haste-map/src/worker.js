@@ -9,6 +9,7 @@
 
 import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
+import crypto from 'crypto';
 import path from 'path';
 import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
@@ -35,23 +36,25 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   }
 
   const filePath = data.filePath;
-  let module;
-  let id: ?string;
+  let content;
   let dependencies;
+  let id;
+  let module;
+  let sha1;
 
+  // Process a package.json that is returned as a PACKAGE type with its name.
   if (filePath.endsWith(PACKAGE_JSON)) {
-    const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    content = fs.readFileSync(filePath, 'utf8');
+    const fileData = JSON.parse(content);
 
     if (fileData.name) {
       id = fileData.name;
       module = [filePath, H.PACKAGE];
     }
 
-    return {dependencies, id, module};
-  }
-
-  if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
-    const content = fs.readFileSync(filePath, 'utf8');
+    // Process a randome file that is returned as a MODULE.
+  } else if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
+    content = fs.readFileSync(filePath, 'utf8');
 
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);
@@ -67,5 +70,17 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     }
   }
 
-  return {dependencies, id, module};
+  // If a SHA-1 is requested on update, compute it.
+  if (data.computeSha1) {
+    if (content == null) {
+      content = fs.readFileSync(filePath);
+    }
+
+    sha1 = crypto
+      .createHash('sha1')
+      .update(content)
+      .digest('hex');
+  }
+
+  return {dependencies, id, module, sha1};
 }

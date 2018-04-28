@@ -415,9 +415,6 @@ export default class FakeTimers<TimerRef> {
 
     const cancelledTicks = this._cancelledTicks;
     this._timerAPIs.nextTick(() => {
-      if (this._blocked) {
-        return;
-      }
       if (!cancelledTicks.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
@@ -486,9 +483,8 @@ export default class FakeTimers<TimerRef> {
       return null;
     }
 
-    if (delay == null) {
-      delay = 0;
-    }
+    // eslint-disable-next-line no-bitwise
+    delay = Number(delay) | 0;
 
     const args = [];
     for (let ii = 2, ll = arguments.length; ii < ll; ii++) {

@@ -125,9 +125,9 @@ describe('node crawler', () => {
       expect(data.files).not.toBe(null);
 
       expect(data.files).toEqual({
-        '/fruits/strawberry.js': ['', 32, 0, []],
-        '/fruits/tomato.js': ['', 33, 0, []],
-        '/vegetables/melon.json': ['', 34, 0, []],
+        '/fruits/strawberry.js': ['', 32, 0, [], null],
+        '/fruits/tomato.js': ['', 33, 0, [], null],
+        '/vegetables/melon.json': ['', 34, 0, [], null],
       });
     });
 
@@ -142,8 +142,8 @@ describe('node crawler', () => {
     const files = Object.create(null);
 
     // In this test sample, strawberry is changed and tomato is unchanged
-    const tomato = ['', 33, 1, []];
-    files['/fruits/strawberry.js'] = ['', 30, 1, []];
+    const tomato = ['', 33, 1, [], null];
+    files['/fruits/strawberry.js'] = ['', 30, 1, [], null];
     files['/fruits/tomato.js'] = tomato;
 
     return nodeCrawl({
@@ -153,7 +153,7 @@ describe('node crawler', () => {
       roots: ['/fruits'],
     }).then(data => {
       expect(data.files).toEqual({
-        '/fruits/strawberry.js': ['', 32, 0, []],
+        '/fruits/strawberry.js': ['', 32, 0, [], null],
         '/fruits/tomato.js': tomato,
       });
 
@@ -175,8 +175,8 @@ describe('node crawler', () => {
       roots: ['/fruits'],
     }).then(data => {
       expect(data.files).toEqual({
-        '/fruits/directory/strawberry.js': ['', 33, 0, []],
-        '/fruits/tomato.js': ['', 32, 0, []],
+        '/fruits/directory/strawberry.js': ['', 33, 0, [], null],
+        '/fruits/tomato.js': ['', 32, 0, [], null],
       });
     });
   });
@@ -195,8 +195,8 @@ describe('node crawler', () => {
       roots: ['/fruits'],
     }).then(data => {
       expect(data.files).toEqual({
-        '/fruits/directory/strawberry.js': ['', 33, 0, []],
-        '/fruits/tomato.js': ['', 32, 0, []],
+        '/fruits/directory/strawberry.js': ['', 33, 0, [], null],
+        '/fruits/tomato.js': ['', 32, 0, [], null],
       });
     });
   });

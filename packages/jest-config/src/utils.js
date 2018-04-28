@@ -28,11 +28,17 @@ const createValidationError = (message: string) => {
   );
 };
 
-export const resolve = (rootDir: string, key: string, filePath: Path) => {
+export const resolve = (
+  resolver: ?string,
+  rootDir: string,
+  key: string,
+  filePath: Path,
+) => {
   const module = Resolver.findNodeModule(
-    _replaceRootDirInPath(rootDir, filePath),
+    replaceRootDirInPath(rootDir, filePath),
     {
       basedir: rootDir,
+      resolver,
     },
   );
 
@@ -52,7 +58,7 @@ export const escapeGlobCharacters = (path: Path): Glob => {
   return path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
 };
 
-export const _replaceRootDirInPath = (
+export const replaceRootDirInPath = (
   rootDir: string,
   filePath: Path,
 ): string => {
@@ -91,7 +97,7 @@ export const _replaceRootDirTags = (rootDir: string, config: any) => {
       }
       return _replaceRootDirInObject(rootDir, config);
     case 'string':
-      return _replaceRootDirInPath(rootDir, config);
+      return replaceRootDirInPath(rootDir, config);
   }
   return config;
 };
@@ -105,7 +111,7 @@ export const _replaceRootDirTags = (rootDir: string, config: any) => {
  * 1. looks for <name> relative to Jest.
  */
 export const getTestEnvironment = (config: Object) => {
-  const env = _replaceRootDirInPath(config.rootDir, config.testEnvironment);
+  const env = replaceRootDirInPath(config.rootDir, config.testEnvironment);
   let module = Resolver.findNodeModule(`jest-environment-${env}`, {
     basedir: config.rootDir,
   });

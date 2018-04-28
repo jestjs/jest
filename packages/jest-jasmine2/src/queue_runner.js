@@ -34,7 +34,7 @@ export default function queueRunner(options: Options) {
     onCancel(resolve);
   });
 
-  const mapper = ({fn, timeout}) => {
+  const mapper = ({fn, timeout, initError = new Error()}) => {
     let promise = new Promise(resolve => {
       const next = function(err) {
         if (err) {
@@ -69,12 +69,11 @@ export default function queueRunner(options: Options) {
       options.clearTimeout,
       options.setTimeout,
       () => {
-        const error = new Error(
+        initError.message =
           'Timeout - Async callback was not invoked within the ' +
-            timeoutMs +
-            'ms timeout specified by jest.setTimeout.',
-        );
-        options.onException(error);
+          timeoutMs +
+          'ms timeout specified by jest.setTimeout.';
+        options.onException(initError);
       },
     );
   };
