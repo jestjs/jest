@@ -13,7 +13,7 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import {readConfig} from 'jest-config';
+import {readConfig, deprecationEntries} from 'jest-config';
 import {version as VERSION} from '../../package.json';
 import * as args from './args';
 import chalk from 'chalk';
@@ -126,7 +126,10 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
     .check(args.check)
     .version(false).argv;
 
-  validateCLIOptions(argv, args.options);
+  validateCLIOptions(
+    argv,
+    Object.assign({}, args.options, {deprecationEntries}),
+  );
 
   return argv;
 };

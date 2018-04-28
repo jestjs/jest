@@ -16,7 +16,7 @@ import path from 'path';
 import yargs from 'yargs';
 import {Console, setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import {readConfig} from 'jest-config';
+import {readConfig, deprecationEntries} from 'jest-config';
 // eslint-disable-next-line import/default
 import Runtime from '../';
 import * as args from './args';
@@ -38,7 +38,10 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
       .version(false)
       .options(args.options).argv;
 
-    validateCLIOptions(argv, args.options);
+    validateCLIOptions(
+      argv,
+      Object.assign({}, args.options, {deprecationEntries}),
+    );
   }
 
   if (argv.help) {

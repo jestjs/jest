@@ -10,7 +10,6 @@
 import type {Argv} from 'types/Argv';
 
 import chalk from 'chalk';
-import {deprecationEntries} from 'jest-config';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './default_config';
@@ -68,6 +67,7 @@ const logDeprecatedOptions = (
 
 export default function validateCLIOptions(argv: Argv, options: Object) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
+  const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),
     new Set(yargsSpecialOptions),
