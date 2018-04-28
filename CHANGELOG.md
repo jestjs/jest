@@ -136,7 +136,6 @@
 * `[website]` Fix website docs
   ([#5853](https://github.com/facebook/jest/pull/5853))
 
-
 ### Chore & Maintenance
 
 * `[babel-jest]` [**BREAKING**] Always return object from transformer
