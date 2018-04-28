@@ -51,8 +51,8 @@ export default (configPath: Path): InitialOptions => {
       );
     }
   } else {
-    // If rootDir is not there, we'll set it to this file's __dirname
-    configObject.rootDir = path.dirname(configPath);
+    // If rootDir is not there, we'll set it to cwd
+    configObject.rootDir = process.cwd();
   }
 
   return configObject;
