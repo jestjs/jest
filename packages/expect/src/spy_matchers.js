@@ -10,6 +10,7 @@
 import type {MatchersObject} from 'types/Matchers';
 
 const CALL_PRINT_LIMIT = 3;
+const RETURN_PRINT_LIMIT = 5;
 const LAST_CALL_PRINT_LIMIT = 1;
 import {
   ensureExpectedIsNumber,
@@ -58,7 +59,8 @@ const createToReturnMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
-  const count = received.mock.returnValues.length;
+  const returnValues = received.mock.returnValues;
+  const count = returnValues.length;
   const pass = count > 0;
 
   const message = pass
@@ -66,7 +68,7 @@ const createToReturnMatcher = matcherName => (received, expected) => {
         matcherHint('.not' + matcherName, received.getMockName(), '') +
         '\n\n' +
         `Expected mock function not to have returned, but it returned:\n` +
-        `  ${RECEIVED_COLOR(received.mock.returnValues.join(', '))}`
+        `  ${getPrintedReturnValues(returnValues, RETURN_PRINT_LIMIT)}`
     : () =>
         matcherHint(matcherName, received.getMockName(), '') +
         '\n\n' +
@@ -187,12 +189,18 @@ const createToReturnWithMatcher = matcherName => (
         matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
         `Expected mock function not to have returned:\n` +
-        `  ${printExpected(expected)}`
+        `  ${printExpected(expected)}\n` +
+        `But it returned exactly:\n` +
+        `  ${printReceived(expected)}`
     : () =>
         matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
         `Expected mock function to have returned:\n` +
-        `  ${printExpected(expected)}`;
+        formatMismatchedReturnValues(
+          returnValues,
+          expected,
+          RETURN_PRINT_LIMIT,
+        );
 
   return {message, pass};
 };
@@ -241,14 +249,17 @@ const createLastReturnedMatcher = matcherName => (
         matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
         'Expected mock function to not have last returned:\n' +
-        `  ${printExpected(expected)}`
+        `  ${printExpected(expected)}\n` +
+        `But it last returned exactly:\n` +
+        `  ${printReceived(lastReturnValue)}`
     : () =>
         matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
         'Expected mock function to have last returned:\n' +
         `  ${printExpected(expected)}\n` +
-        'But it last returned:\n' +
-        `  ${printReceived(lastReturnValue)}`;
+        (returnValues.length > 0
+          ? `But it last returned:\n  ${printReceived(lastReturnValue)}`
+          : `But it did ${printReceived('not return')}`);
 
   return {message, pass};
 };
@@ -314,19 +325,27 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
   }
 
   const returnValues = received.mock.returnValues;
-  const pass = equals(returnValues[nth - 1], expected, [iterableEquality]);
+  const nthValue = returnValues[nth - 1];
+  const pass = equals(nthValue, expected, [iterableEquality]);
   const nthString = nthToString(nth);
   const message = pass
     ? () =>
         matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
         `Expected mock function ${nthString} call to not have returned with:\n` +
-        `  ${printExpected(expected)}`
+        `  ${printExpected(expected)}\n` +
+        `But the ${nthString} call returned exactly:\n` +
+        `  ${printReceived(nthValue)}`
     : () =>
         matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
         `Expected mock function ${nthString} call to have returned with:\n` +
-        `  ${printExpected(expected)}`;
+        `  ${printExpected(expected)}\n` +
+        (returnValues.length > 0
+          ? `But the ${nthString} call returned with:\n  ${printReceived(
+              nthValue,
+            )}`
+          : `But it did ${RECEIVED_COLOR('not return')}`);
 
   return {message, pass};
 };
@@ -392,6 +411,20 @@ const getPrintedCalls = (
   return result.join(sep);
 };
 
+const getPrintedReturnValues = (calls: any[], limit: number): string => {
+  const result = [];
+
+  for (let i = 0; i < calls.length && i < limit; i += 1) {
+    result.push(printReceived(calls[i]));
+  }
+
+  if (calls.length > limit) {
+    result.push(`...and ${printReceived(calls.length - limit)} more`);
+  }
+
+  return result.join('\n\n  ');
+};
+
 const formatReceivedCalls = (calls, limit, options) => {
   if (calls.length) {
     const but = options && options.sameSentence ? 'but' : 'But';
@@ -422,6 +455,21 @@ const formatMismatchedCalls = (calls, expected, limit) => {
     return (
       `  ${printExpected(expected)}\n` +
       `But it was ${RECEIVED_COLOR('not called')}.`
+    );
+  }
+};
+
+const formatMismatchedReturnValues = (returnValues, expected, limit) => {
+  if (returnValues.length) {
+    return (
+      `  ${printExpected(expected)}\n` +
+      `But it returned:\n` +
+      `  ${getPrintedReturnValues(returnValues, limit)}`
+    );
+  } else {
+    return (
+      `  ${printExpected(expected)}\n` +
+      `But it did ${RECEIVED_COLOR('not return')}.`
     );
   }
 };

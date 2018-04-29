@@ -586,6 +586,32 @@ const jestExpect = require('../');
       ).toThrowErrorMatchingSnapshot();
     });
 
+    const basicReturnedWith = ['toHaveReturnedWith', 'toReturnWith'];
+    if (basicReturnedWith.indexOf(returnedWith) >= 0) {
+      test(`works with more calls than the limit`, () => {
+        const fn = jest.fn();
+        fn.mockReturnValueOnce('foo1');
+        fn.mockReturnValueOnce('foo2');
+        fn.mockReturnValueOnce('foo3');
+        fn.mockReturnValueOnce('foo4');
+        fn.mockReturnValueOnce('foo5');
+        fn.mockReturnValueOnce('foo6');
+
+        fn();
+        fn();
+        fn();
+        fn();
+        fn();
+        fn();
+
+        jestExpect(fn).not[returnedWith]('bar');
+
+        expect(() => {
+          jestExpect(fn)[returnedWith]('bar');
+        }).toThrowErrorMatchingSnapshot();
+      });
+    }
+
     const nthCalled = ['toHaveNthReturnedWith', 'nthReturnedWith'];
     if (nthCalled.indexOf(returnedWith) >= 0) {
       test(`works with three calls`, () => {
