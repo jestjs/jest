@@ -284,6 +284,11 @@ const users = [
     image: '/jest/img/logos/xing.png',
     infoLink: 'https://www.xing.com/',
   },
+  {
+    caption: 'Atlassian',
+    image: '/jest/img/logos/atlassian.svg',
+    infoLink: 'https://www.atlassian.com/',
+  },
 ];
 
 const repoUrl = 'https://github.com/facebook/jest';
