@@ -906,6 +906,7 @@
 * Fix lint warning in master
 
   ([#4132](https://github.com/facebook/jest/pull/4132))
+
 * Fix linting ([#3946](https://github.com/facebook/jest/pull/3946))
 * fix merge conflict ([#4144](https://github.com/facebook/jest/pull/4144))
 * Fix minor typo ([#3729](https://github.com/facebook/jest/pull/3729))
