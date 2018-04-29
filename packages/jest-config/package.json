@@ -8,6 +8,8 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "babel-core": "^6.0.0",
+    "babel-jest": "^22.4.1",
     "chalk": "^2.0.1",
     "glob": "^7.1.1",
     "jest-environment-jsdom": "^22.4.1",

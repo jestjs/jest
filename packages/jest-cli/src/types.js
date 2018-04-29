@@ -19,6 +19,7 @@ export type JestHooks = {
 };
 
 export interface WatchPlugin {
+  +isInternal?: boolean;
   +apply?: (hooks: JestHookSubscriber) => void;
   +getUsageInfo?: (globalConfig: GlobalConfig) => ?UsageData;
   +onKey?: (value: string) => void;

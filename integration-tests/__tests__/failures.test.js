@@ -18,30 +18,6 @@ const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
 
 SkipOnWindows.suite();
 
-const cleanupStackTrace = stderr => {
-  const STACK_REGEXP = /^.*at.*(setup-jest-globals|extractExpectedAssertionsErrors).*\n/gm;
-  if (!STACK_REGEXP.test(stderr)) {
-    throw new Error(
-      `
-      This function is used to remove inconsistent stack traces between
-      jest-jasmine2 and jest-circus. If you see this error, that means the
-      stack traces are no longer inconsistent and this function can be
-      safely removed.
-
-      output:
-      ${stderr}
-    `,
-    );
-  }
-
-  return (
-    stderr
-      .replace(STACK_REGEXP, '')
-      // Also remove trailing whitespace.
-      .replace(/\s+$/gm, '')
-  );
-};
-
 test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw_number.test.js']).stderr;
@@ -51,16 +27,19 @@ test('not throwing Error objects', () => {
   stderr = runJest(dir, ['throw_object.test.js']).stderr;
   expect(extractSummary(stderr).rest).toMatchSnapshot();
   stderr = runJest(dir, ['assertion_count.test.js']).stderr;
-  expect(extractSummary(cleanupStackTrace(stderr)).rest).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  stderr = runJest(dir, ['during_tests.test.js']).stderr;
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
+  const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
   const {stderr} = runJest(dir, ['node_assertion_error.test.js']);
   let summary = normalizeDots(extractSummary(stderr).rest);
 
   // Node 9 started to include the error for `doesNotThrow`
   // https://github.com/nodejs/node/pull/12167
-  if (Number(process.versions.node.split('.')[0]) >= 9) {
+  if (nodeMajorVersion >= 9) {
     expect(summary).toContain(`
     assert.doesNotThrow(function)
     
@@ -70,12 +49,13 @@ test('works with node assert', () => {
     
     Message:
       Got unwanted exception.
-    err!
-    err!
+`);
 
+    expect(summary).toContain(`
       69 | 
       70 | test('assert.doesNotThrow', () => {
     > 71 |   assert.doesNotThrow(() => {
+         |          ^
       72 |     throw Error('err!');
       73 |   });
       74 | });
@@ -83,16 +63,79 @@ test('works with node assert', () => {
       at __tests__/node_assertion_error.test.js:71:10
 `);
 
-    summary = summary.replace(
-      `Message:
+    const commonErrorMessage = `Message:
+      Got unwanted exception.
+`;
+
+    if (nodeMajorVersion === 9) {
+      const specificErrorMessage = `Message:
       Got unwanted exception.
     err!
-    err!
-`,
-      `Message:
+`;
+
+      expect(summary).toContain(specificErrorMessage);
+      summary = summary.replace(specificErrorMessage, commonErrorMessage);
+    } else {
+      const specificErrorMessage = `Message:
       Got unwanted exception.
-`,
-    );
+    Actual message: "err!"
+`;
+
+      expect(summary).toContain(specificErrorMessage);
+      summary = summary.replace(specificErrorMessage, commonErrorMessage);
+    }
+  }
+
+  if (nodeMajorVersion >= 10) {
+    const ifErrorMessage = `
+    assert.ifError(received, expected)
+    
+    Expected value ifError to:
+      null
+    Received:
+      1
+    
+    Message:
+      ifError got unwanted exception: 1
+    
+    Difference:
+    
+      Comparing two different types of values. Expected null but received number.
+
+      65 | 
+      66 | test('assert.ifError', () => {
+    > 67 |   assert.ifError(1);
+         |          ^
+      68 | });
+      69 | 
+      70 | test('assert.doesNotThrow', () => {
+      
+      at __tests__/node_assertion_error.test.js:67:10
+      
+      at __tests__/node_assertion_error.test.js:66:1
+`;
+
+    expect(summary).toContain(ifErrorMessage);
+    summary = summary.replace(ifErrorMessage, '');
+  } else {
+    const ifErrorMessage = `
+    thrown: 1
+
+      64 | });
+      65 | 
+    > 66 | test('assert.ifError', () => {
+         | ^
+      67 |   assert.ifError(1);
+      68 | });
+      69 | 
+      
+      
+      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
+      at __tests__/node_assertion_error.test.js:66:1
+`;
+
+    expect(summary).toContain(ifErrorMessage);
+    summary = summary.replace(ifErrorMessage, '');
   }
 
   expect(summary).toMatchSnapshot();
@@ -107,11 +150,26 @@ test('works with assertions in separate files', () => {
 test('works with async failures', () => {
   const {stderr} = runJest(dir, ['async_failures.test.js']);
 
-  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+  const rest = extractSummary(stderr)
+    .rest.split('\n')
+    .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
+    .join('\n');
+
+  expect(normalizeDots(rest)).toMatchSnapshot();
 });
 
 test('works with snapshot failures', () => {
   const {stderr} = runJest(dir, ['snapshot.test.js']);
+
+  const result = normalizeDots(extractSummary(stderr).rest);
+
+  expect(
+    result.substring(0, result.indexOf('Snapshot Summary')),
+  ).toMatchSnapshot();
+});
+
+test('works with named snapshot failures', () => {
+  const {stderr} = runJest(dir, ['snapshot_named.test.js']);
 
   const result = normalizeDots(extractSummary(stderr).rest);
 

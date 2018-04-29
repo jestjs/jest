@@ -52,6 +52,10 @@ export const SUGGEST_TO_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toBe` matcher. You probably need to use `toEqual` instead.',
 );
 
+export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
+  'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',
+);
+
 export const stringify = (object: any, maxDepth?: number = 10): string => {
   const MAX_LENGTH = 10000;
   let result;

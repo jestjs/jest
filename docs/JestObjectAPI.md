@@ -314,8 +314,6 @@ Returns the `jest` object for chaining.
 
 ### `jest.restoreAllMocks()`
 
-##### available in Jest **21.1.0+**
-
 Restores all mocks back to their original value. Equivalent to calling
 `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()`
 only works when mock was created with `jest.spyOn`; other mocks will require you
@@ -464,8 +462,6 @@ Returns the `jest` object for chaining.
 
 ### `jest.spyOn(object, methodName)`
 
-##### available in Jest **19.0.0+**
-
 Creates a mock function similar to `jest.fn` but also tracks calls to
 `object[methodName]`. Returns a Jest mock function.
 
@@ -506,8 +502,6 @@ test('plays video', () => {
 
 ### `jest.spyOn(object, methodName, accessType?)`
 
-##### available in Jest **22.1.0+**
-
 Since Jest 22.1.0+, the `jest.spyOn` method takes an optional third argument of
 `accessType` that can be either `'get'` or `'set'`, which proves to be useful
 when you want to spy on a getter or a setter, respectively.
@@ -535,7 +529,7 @@ const audio = {
   },
 };
 
-module.exports = video;
+module.exports = audio;
 ```
 
 Example test:
@@ -554,12 +548,14 @@ test('plays video', () => {
   spy.mockRestore();
 });
 
+const audio = require('./audio');
+
 test('plays audio', () => {
-  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
-  video.volume = 100;
+  const spy = jest.spyOn(audio, 'volume', 'set'); // we pass 'set'
+  audio.volume = 100;
 
   expect(spy).toHaveBeenCalled();
-  expect(video.volume).toBe(100);
+  expect(audio.volume).toBe(100);
 
   spy.mockReset();
   spy.mockRestore();

@@ -317,6 +317,47 @@ describe('Watch mode flows', () => {
     expect(apply).toHaveBeenCalled();
   });
 
+  it('allows WatchPlugins to override internal plugins', async () => {
+    const run = jest.fn(() => Promise.resolve());
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_override`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          constructor() {
+            this.run = run;
+          }
+          getUsageInfo() {
+            return {
+              key: 'p'.codePointAt(0),
+              prompt: 'custom "P" plugin',
+            };
+          }
+        },
+      {virtual: true},
+    );
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [pluginPath],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    await nextTick();
+
+    expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
+
+    stdin.emit(toHex('p'));
+    await nextTick();
+
+    expect(run).toHaveBeenCalled();
+  });
+
   it('allows WatchPlugins to hook into file system changes', async () => {
     const fileChange = jest.fn();
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_fs_change`;

@@ -132,12 +132,14 @@ function jsonParse(content) {
 // In memory functions.
 
 export function deserialize(buffer: Buffer): any {
+  // $FlowFixMe - Node 8+ only
   return v8.deserialize
     ? v8.deserialize(buffer)
     : jsonParse(buffer.toString('utf8'));
 }
 
 export function serialize(content: any): Buffer {
+  // $FlowFixMe - Node 8+ only
   return v8.serialize
     ? v8.serialize(content)
     : Buffer.from(jsonStringify(content));
@@ -146,12 +148,14 @@ export function serialize(content: any): Buffer {
 // Synchronous filesystem functions.
 
 export function readFileSync(filePath: Path): any {
+  // $FlowFixMe - Node 8+ only
   return v8.deserialize
     ? v8.deserialize(fs.readFileSync(filePath))
     : jsonParse(fs.readFileSync(filePath, 'utf8'));
 }
 
 export function writeFileSync(filePath: Path, content: any) {
+  // $FlowFixMe - Node 8+ only
   return v8.serialize
     ? fs.writeFileSync(filePath, v8.serialize(content))
     : fs.writeFileSync(filePath, jsonStringify(content), 'utf8');

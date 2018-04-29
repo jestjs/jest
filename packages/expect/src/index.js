@@ -10,6 +10,8 @@
 import type {
   Expect,
   ExpectationObject,
+  AsyncExpectationResult,
+  SyncExpectationResult,
   ExpectationResult,
   MatcherState,
   MatchersObject,
@@ -86,6 +88,8 @@ const expect = (actual: any, ...rest): ExpectationObject => {
     resolves: {not: {}},
   };
 
+  const err = new JestAssertionError();
+
   Object.keys(allMatchers).forEach(name => {
     const matcher = allMatchers[name];
     const promiseMatcher = getPromiseMatcher(name, matcher) || matcher;
@@ -97,12 +101,14 @@ const expect = (actual: any, ...rest): ExpectationObject => {
       promiseMatcher,
       false,
       actual,
+      err,
     );
     expectation.resolves.not[name] = makeResolveMatcher(
       name,
       promiseMatcher,
       true,
       actual,
+      err,
     );
 
     expectation.rejects[name] = makeRejectMatcher(
@@ -110,12 +116,14 @@ const expect = (actual: any, ...rest): ExpectationObject => {
       promiseMatcher,
       false,
       actual,
+      err,
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
       promiseMatcher,
       true,
       actual,
+      err,
     );
   });
 
@@ -134,6 +142,7 @@ const makeResolveMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
+  outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
@@ -145,17 +154,19 @@ const makeResolveMatcher = (
     );
   }
 
+  const innerErr = new JestAssertionError();
+
   return actual.then(
-    result => makeThrowingMatcher(matcher, isNot, result).apply(null, args),
+    result =>
+      makeThrowingMatcher(matcher, isNot, result, innerErr).apply(null, args),
     reason => {
-      const err = new JestAssertionError(
+      outerErr.message =
         utils.matcherHint(matcherStatement, 'received', '') +
-          '\n\n' +
-          `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
-          'instead it rejected to value\n' +
-          `  ${utils.printReceived(reason)}`,
-      );
-      return Promise.reject(err);
+        '\n\n' +
+        `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
+        'instead it rejected to value\n' +
+        `  ${utils.printReceived(reason)}`;
+      return Promise.reject(outerErr);
     },
   );
 };
@@ -165,6 +176,7 @@ const makeRejectMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
+  outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
@@ -176,18 +188,20 @@ const makeRejectMatcher = (
     );
   }
 
+  const innerErr = new JestAssertionError();
+
   return actual.then(
     result => {
-      const err = new JestAssertionError(
+      outerErr.message =
         utils.matcherHint(matcherStatement, 'received', '') +
-          '\n\n' +
-          `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
-          'instead it resolved to value\n' +
-          `  ${utils.printReceived(result)}`,
-      );
-      return Promise.reject(err);
+        '\n\n' +
+        `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
+        'instead it resolved to value\n' +
+        `  ${utils.printReceived(result)}`;
+      return Promise.reject(outerErr);
     },
-    reason => makeThrowingMatcher(matcher, isNot, reason).apply(null, args),
+    reason =>
+      makeThrowingMatcher(matcher, isNot, reason, innerErr).apply(null, args),
   );
 };
 
@@ -195,8 +209,9 @@ const makeThrowingMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: any,
+  err?: JestAssertionError,
 ): ThrowingMatcherFn => {
-  return function throwingMatcher(...args) {
+  return function throwingMatcher(...args): any {
     let throws = true;
     const matcherContext: MatcherState = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
@@ -212,11 +227,43 @@ const makeThrowingMatcher = (
         utils,
       },
     );
-    let result: ExpectationResult;
 
-    try {
-      result = matcher.apply(matcherContext, [actual].concat(args));
-    } catch (error) {
+    const processResult = (result: SyncExpectationResult) => {
+      _validateResult(result);
+
+      getState().assertionCalls++;
+
+      if ((result.pass && isNot) || (!result.pass && !isNot)) {
+        // XOR
+        const message = getMessage(result.message);
+        let error;
+
+        if (err) {
+          error = err;
+          error.message = message;
+        } else {
+          error = new JestAssertionError(message);
+
+          // Try to remove this function from the stack trace frame.
+          // Guard for some environments (browsers) that do not support this feature.
+          if (Error.captureStackTrace) {
+            Error.captureStackTrace(error, throwingMatcher);
+          }
+        }
+        // Passing the result of the matcher with the error so that a custom
+        // reporter could access the actual and expected objects of the result
+        // for example in order to display a custom visual diff
+        error.matcherResult = result;
+
+        if (throws) {
+          throw error;
+        } else {
+          getState().suppressedErrors.push(error);
+        }
+      }
+    };
+
+    const handlError = (error: Error) => {
       if (
         matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
@@ -228,31 +275,26 @@ const makeThrowingMatcher = (
         Error.captureStackTrace(error, throwingMatcher);
       }
       throw error;
-    }
+    };
 
-    _validateResult(result);
+    let potentialResult: ExpectationResult;
 
-    getState().assertionCalls++;
+    try {
+      potentialResult = matcher.apply(matcherContext, [actual].concat(args));
 
-    if ((result.pass && isNot) || (!result.pass && !isNot)) {
-      // XOR
-      const message = getMessage(result.message);
-      const error = new JestAssertionError(message);
-      // Passing the result of the matcher with the error so that a custom
-      // reporter could access the actual and expected objects of the result
-      // for example in order to display a custom visual diff
-      error.matcherResult = result;
-      // Try to remove this function from the stack trace frame.
-      // Guard for some environments (browsers) that do not support this feature.
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(error, throwingMatcher);
-      }
+      if (isPromise((potentialResult: any))) {
+        const asyncResult = ((potentialResult: any): AsyncExpectationResult);
 
-      if (throws) {
-        throw error;
+        return asyncResult
+          .then(aResult => processResult(aResult))
+          .catch(error => handlError(error));
       } else {
-        getState().suppressedErrors.push(error);
+        const syncResult = ((potentialResult: any): SyncExpectationResult);
+
+        return processResult(syncResult);
       }
+    } catch (error) {
+      return handlError(error);
     }
   };
 };
@@ -293,19 +335,34 @@ const _validateResult = result => {
   }
 };
 
+function assertions(expected: number) {
+  const error = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(error, assertions);
+  }
+
+  getState().expectedAssertionsNumber = expected;
+  getState().expectedAssertionsNumberError = error;
+}
+function hasAssertions(...args) {
+  const error = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(error, hasAssertions);
+  }
+
+  utils.ensureNoExpected(args[0], '.hasAssertions');
+  getState().isExpectingAssertions = true;
+  getState().isExpectingAssertionsError = error;
+}
+
 // add default jest matchers
 setMatchers(matchers, true, expect);
 setMatchers(spyMatchers, true, expect);
 setMatchers(toThrowMatchers, true, expect);
 
 expect.addSnapshotSerializer = () => void 0;
-expect.assertions = (expected: number) => {
-  getState().expectedAssertionsNumber = expected;
-};
-expect.hasAssertions = (expected: any) => {
-  utils.ensureNoExpected(expected, '.hasAssertions');
-  getState().isExpectingAssertions = true;
-};
+expect.assertions = assertions;
+expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;

@@ -60,6 +60,7 @@ const WHITELISTED_IDENTIFIERS = {
   WeakMap: true,
   WeakSet: true,
   arguments: true,
+  console: true,
   expect: true,
   isNaN: true,
   jest: true,

@@ -56,6 +56,11 @@ the ES6 class with a mock constructor, and replaces all of its methods with
 [mock functions](MockFunctions.md) that always return `undefined`. Method calls
 are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
 
+Please note that if you use arrow functions in your classes, they will _not_ be
+part of the mock. The reason for that is that arrow functions are not present on
+the object's protoype, they are merely properties holding a reference to a
+function.
+
 If you don't need to replace the implementation of the class, this is the
 easiest option to set up. For example:
 
@@ -250,7 +255,7 @@ jest.mock('./sound-player', () => {
 **_Note: Arrow functions won't work_**
 
 Note that the mock can't be an arrow function because calling `new` on an arrow
-function is not allowed in Javascript. So this won't work:
+function is not allowed in JavaScript. So this won't work:
 
 ```javascript
 jest.mock('./sound-player', () => {

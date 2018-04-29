@@ -12,6 +12,16 @@ import type {JestHookSubscriber} from '../jest_hooks';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
+  isInternal: true;
+
+  constructor(options: {
+    stdin: stream$Readable | tty$ReadStream,
+    stdout: stream$Writable | tty$WriteStream,
+  }) {
+    super(options);
+    this.isInternal = true;
+  }
+
   run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,

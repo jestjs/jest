@@ -153,9 +153,9 @@ export const options = {
   },
   collectCoverageFrom: {
     description:
-      'An array of glob patterns relative to <rootDir> matching the files ' +
-      'that coverage info needs to be collected from.',
-    type: 'array',
+      'A glob pattern relative to <rootDir> matching the files that coverage ' +
+      'info needs to be collected from.',
+    type: 'string',
   },
   collectCoverageOnlyFrom: {
     description: 'Explicit list of paths coverage will be restricted to.',
@@ -237,6 +237,15 @@ export const options = {
     default: undefined,
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
+  },
+  filter: {
+    default: undefined,
+    description:
+      'Path to a module exporting a filtering function. This method receives ' +
+      'a list of tests which can be manipulated to exclude tests from ' +
+      'running. Especially useful when used in conjunction with a testing ' +
+      'infrastructure to filter known broken tests.',
+    type: 'string',
   },
   findRelatedTests: {
     default: undefined,
@@ -464,6 +473,11 @@ export const options = {
       'every single file.',
     type: 'boolean',
   },
+  runner: {
+    description:
+      "Allows to use a custom runner instead of Jest's default test runner.",
+    type: 'string',
+  },
   setupFiles: {
     description:
       'The paths to modules that run some code to configure or ' +
@@ -486,6 +500,13 @@ export const options = {
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
+  skipFilter: {
+    default: undefined,
+    description:
+      'Disables the filter provided by --filter. Useful for CI jobs, or ' +
+      'local enforcement when fixing tests.',
+    type: 'boolean',
+  },
   snapshotSerializers: {
     description:
       'A list of paths to snapshot serializer modules Jest should ' +
@@ -495,6 +516,12 @@ export const options = {
   testEnvironment: {
     description: 'Alias for --env',
     type: 'string',
+  },
+  testEnvironmentOptions: {
+    description:
+      'Test environment options that will be passed to the testEnvironment. ' +
+      'The relevant options depend on the environment.',
+    type: 'string', // Object
   },
   testFailureExitCode: {
     description: 'Exit code of `jest` command if the test run failed',
