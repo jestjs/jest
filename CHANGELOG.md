@@ -903,7 +903,7 @@
 * Fix issue mocking bound method
   ([#3805](https://github.com/facebook/jest/pull/3805))
 * Fix jest-circus ([#4290](https://github.com/facebook/jest/pull/4290))
-* Fix lint warning in 
+* Fix lint warning in master
 
   ([#4132](https://github.com/facebook/jest/pull/4132))
 * Fix linting ([#3946](https://github.com/facebook/jest/pull/3946))
