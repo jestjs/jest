@@ -38,6 +38,8 @@
   ([#5826](https://github.com/facebook/jest/pull/5826))
 * `[jest-cli]` Interactive Snapshot Mode improvements
   ([#5864](https://github.com/facebook/jest/pull/5864))
+* `[expect]` Add return matchers
+  ([#5879](https://github.com/facebook/jest/pull/5879))
 
 ### Fixes
 
