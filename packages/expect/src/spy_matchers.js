@@ -259,7 +259,7 @@ const createLastReturnedMatcher = matcherName => (
         `  ${printExpected(expected)}\n` +
         (returnValues.length > 0
           ? `But it last returned:\n  ${printReceived(lastReturnValue)}`
-          : `But it did ${printReceived('not return')}`);
+          : `But it did ${RECEIVED_COLOR('not return')}`);
 
   return {message, pass};
 };

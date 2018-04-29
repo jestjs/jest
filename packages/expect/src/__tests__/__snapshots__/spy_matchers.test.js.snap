@@ -131,7 +131,7 @@ exports[`lastReturnedWith works when not called 1`] = `
 
 Expected mock function to have last returned:
   <green>\\"foo\\"</>
-But it did <red>\\"not return\\"</>"
+But it did <red>not return</>"
 `;
 
 exports[`lastReturnedWith works with Immutable.js objects directly created 1`] = `
@@ -1280,7 +1280,7 @@ exports[`toHaveLastReturnedWith works when not called 1`] = `
 
 Expected mock function to have last returned:
   <green>\\"foo\\"</>
-But it did <red>\\"not return\\"</>"
+But it did <red>not return</>"
 `;
 
 exports[`toHaveLastReturnedWith works with Immutable.js objects directly created 1`] = `
