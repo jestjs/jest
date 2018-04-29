@@ -2,9 +2,9 @@
 
 ### Features
 
+- `[jest-cli]` Add package name to `NotifyReporter` notification ([#5898](https://github.com/facebook/jest/pull/5898))
 - `[jest-runner]` print stack trace when `process.exit` is called from user code ([#6714](https://github.com/facebook/jest/pull/6714))
 - `[jest-each]` introduces `%#` option to add index of the test to its title ([#6414](https://github.com/facebook/jest/pull/6414))
-- `[pretty-format]` Support serializing `DocumentFragment` ([#6705](https://github.com/facebook/jest/pull/6705))
 
 ### Fixes
 
