@@ -43,7 +43,8 @@ const getType = element => {
   if (element.type === fragmentSymbol) {
     return 'React.Fragment';
   }
-  if (element.type === forwardRefSymbol) {
+  if (typeof element.type === 'object' && element.type !== null
+    && element.type.$$typeof === forwardRefSymbol) {
     const functionName =
       element.type.render.displayName || element.type.render.name || '';
 
