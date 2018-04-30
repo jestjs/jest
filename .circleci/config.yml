@@ -44,10 +44,10 @@ jobs:
       - save-cache: *save-cache
       - run: yarn run test-ci-es5-build-in-browser
 
-  test-node-9:
+  test-node-10:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -58,7 +58,7 @@ jobs:
   test-node-9:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:9
     steps:
       - checkout
       - restore-cache: *restore-cache
