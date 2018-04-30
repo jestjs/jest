@@ -512,6 +512,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'forceCoverageMatch':
       case 'forceExit':
       case 'lastCommit':
+      case 'legacyExecutionOrder':
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':

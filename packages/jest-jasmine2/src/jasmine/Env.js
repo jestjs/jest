@@ -252,7 +252,13 @@ export default function(j$) {
           }
         },
         nodeStart(suite) {
-          currentDeclarationSuite = suite;
+          if (!j$.legacyExecutionOrder) {
+            // We do not set the currentDeclarationSuite upon node start
+            // in order to keep a legacy, undocumented ordering of beforeEach execution.
+            // Specifically, this applies to beforeEach that were added inside of tests.
+            // Facebook depends on this behavior internally (see #5964 for discussion)
+            currentDeclarationSuite = suite;
+          }
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(
             suite.id,

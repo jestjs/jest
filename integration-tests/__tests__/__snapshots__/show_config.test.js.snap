@@ -19,6 +19,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"haste\\": {
         \\"providesModuleNodeModules\\": []
       },
+      \\"legacyExecutionOrder\\": false,
       \\"moduleDirectories\\": [
         \\"node_modules\\"
       ],

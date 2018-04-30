@@ -11,8 +11,13 @@
 const runJest = require('../runJest');
 
 describe('Correct beforeEach order', () => {
-  it('ensures the correct order for beforeEach', () => {
-    const result = runJest('before-each-queue');
+  it('ensures the correct order for beforeEach with legacyExecutionOrder flag', () => {
+    const result = runJest('before-each-queue/with-legacy-execution-order');
+    expect(result.stdout).toMatchSnapshot();
+  });
+
+  it('ensures the correct order for beforeEach without legacyExecutionOrder flag', () => {
+    const result = runJest('before-each-queue/without-legacy-execution-order');
     expect(result.stdout).toMatchSnapshot();
   });
 });
