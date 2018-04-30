@@ -138,18 +138,34 @@ From here you can choose to update that snapshot or skip to the next:
 
 ## Best Practices
 
-Snapshots are a fantastic tool for identifying unexpected interface changes within your application – whether that interface is a UI, logs, or error messages; however, they're not a cure-all, and, as with any testing strategy, there are some best-practices you should be aware of, and guidelines you should follow, in order to use them effectively.
+Snapshots are a fantastic tool for identifying unexpected interface changes
+within your application – whether that interface is a UI, logs, or error
+messages; however, they're not a cure-all, and, as with any testing strategy,
+there are some best-practices you should be aware of, and guidelines you should
+follow, in order to use them effectively.
 
 ### 1. Treat Snapshots As First-Class Citizens
 
-Commit snapshots and review them as part of your regular code review process. This implies treating snapshots as you would any other type of test, or code for that matter, in your project. 
+Commit snapshots and review them as part of your regular code review process.
+This implies treating snapshots as you would any other type of test, or code for
+that matter, in your project.
 
-Ensure that your snapshots are _very_ readable by keeping them focused, short, and using tools that enforce these stylistic conventions. 
+Ensure that your snapshots are _very_ readable by keeping them focused, short,
+and using tools that enforce these stylistic conventions.
 
 As mentioned previously, Jest uses
-[pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable, but you may find it useful to introduce additional tools, like [`eslint-plugin-jest`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md) with its `'no-large-snapshots'` option, and [`snapshot-diff`](https://github.com/jest-community/snapshot-diff) with its component snapshot comparison feature, to promote committing short, focused assertions.
+[pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format)
+to make snapshots human-readable, but you may find it useful to introduce
+additional tools, like
+[`eslint-plugin-jest`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md)
+with its `'no-large-snapshots'` option, and
+[`snapshot-diff`](https://github.com/jest-community/snapshot-diff) with its
+component snapshot comparison feature, to promote committing short, focused
+assertions.
 
-The aim here is to avoid the dangerous habits of glossing over snapshots in pull requests, and simply regenerating snapshots when test suites fail instead of examining the root causes of their failure.
+The aim here is to avoid the dangerous habits of glossing over snapshots in pull
+requests, and simply regenerating snapshots when test suites fail instead of
+examining the root causes of their failure.
 
 ### 2. Tests Should Be Deterministic
 
@@ -177,7 +193,12 @@ generated for this component regardless of when the test is run.
 
 ### Are snapshots written automatically on Continuous Integration (CI) systems?
 
-No, as of Jest 20, snapshots in Jest are not automatically written when Jest is run in a CI system without explicitly passing `--updateSnapshot`. It is expected that all snapshots are part of the code that is run on CI and since new snapshots automatically pass, they should not pass a test run on a CI system. It is recommended to always commit all snapshots and to keep them in version control.
+No, as of Jest 20, snapshots in Jest are not automatically written when Jest is
+run in a CI system without explicitly passing `--updateSnapshot`. It is expected
+that all snapshots are part of the code that is run on CI and since new
+snapshots automatically pass, they should not pass a test run on a CI system. It
+is recommended to always commit all snapshots and to keep them in version
+control.
 
 ### Should snapshot files be committed?
 
