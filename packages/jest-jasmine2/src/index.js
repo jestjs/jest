@@ -16,6 +16,7 @@ import type Runtime from 'jest-runtime';
 
 import path from 'path';
 import fs from 'graceful-fs';
+import each from 'jest-each';
 import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
@@ -68,6 +69,40 @@ async function jasmine2(
   environment.global.xtest = environment.global.xit;
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
+
+  const bindEach = key => {
+    environment.global[key].each = (...args) => (title, test) =>
+      each
+        .withGlobal(environment.global)(...args)
+        [key](title, test);
+  };
+
+  const bindEachToNested = (parent, child) => {
+    environment.global[parent][child].each = (...args) => (title, test) =>
+      each
+        .withGlobal(environment.global)(...args)
+        [parent][child](title, test);
+  };
+
+  [
+    'test',
+    'xtest',
+    'it',
+    'describe',
+    'fit',
+    'xdescribe',
+    'fdescribe',
+    'xit',
+  ].forEach(key => bindEach(key));
+
+  [
+    ['test', 'only'],
+    ['test', 'skip'],
+    ['it', 'only'],
+    ['it', 'skip'],
+    ['describe', 'only'],
+    ['describe', 'skip'],
+  ].forEach(entry => bindEachToNested(...entry));
 
   if (config.timers === 'fake') {
     environment.fakeTimers.useFakeTimers();
