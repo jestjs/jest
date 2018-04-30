@@ -49,6 +49,7 @@ export default ({
   },
   json: false,
   lastCommit: false,
+  legacyExecutionOrder: false,
   logHeapUsage: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],

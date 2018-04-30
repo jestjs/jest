@@ -42,7 +42,13 @@ import SpyRegistry from './spy_registry';
 import Suite from './Suite';
 import Timer from './Timer';
 
-exports.create = function(createOptions: Object) {
+type CreateOptions = {|
+  legacyExecutionOrder: boolean,
+  process: typeof process,
+  testPath: string,
+|};
+
+exports.create = function(createOptions: CreateOptions) {
   const j$ = Object.assign({}, createOptions);
 
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;

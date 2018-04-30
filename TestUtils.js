@@ -79,6 +79,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   haste: {
     providesModuleNodeModules: [],
   },
+  legacyExecutionOrder: false,
   moduleDirectories: [],
   moduleFileExtensions: ['js'],
   moduleLoader: '/test_module_loader_path',
