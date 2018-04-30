@@ -1,4 +1,7 @@
 {
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-timer",
   "devDependencies": {
     "jest": "*",
     "babel-preset-env": "*"
