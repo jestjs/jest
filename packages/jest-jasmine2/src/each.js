@@ -40,7 +40,7 @@ const bindEach = (cb: Function) => (...args: any) => (
   const table = buildTable(data, keys.length, keys);
 
   if (data.length % keys.length !== 0) {
-    cb(title, () => {
+    return cb(title, () => {
       throw new Error(
         `Tagged Template Literal test error:\nNot enough arguments supplied for given headings: ${keys.join(
           ' | ',
@@ -49,7 +49,7 @@ const bindEach = (cb: Function) => (...args: any) => (
     });
   }
 
-  table.forEach(row =>
+  return table.forEach(row =>
     cb(interpolate(title, row), applyObjectParams(row, test)),
   );
 };
