@@ -538,7 +538,7 @@ test('will not be ran', () => {
 });
 ```
 
-#### `` test.each`table`(name, fn) ``
+#### `` test.only.each`table`(name, fn) ``
 
 ```js
 test.only.each`
@@ -582,3 +582,47 @@ Only the "it is raining" test will run, since the other test is run with
 
 You could simply comment the test out, but it's often a bit nicer to use
 `test.skip` because it will maintain indentation and syntax highlighting.
+
+### `test.skip.each(table)(name, fn)`
+
+Also under the aliases: `it.skip.each(table)(name, fn)`,
+`xit.each(table)(name, fn)`, `xtest.each(table)(name, fn)`,
+`` it.skip.each`table`(name, fn) ``, `` xit.each`table`(name, fn) `` and
+`` xtest.each`table`(name, fn) ``
+
+Use `test.skip.each` if you want to stop running a collection of data driven
+tests.
+
+`test.skip.each` is available with two APIs:
+
+#### `test.skip.each(table)(name, fn)`
+
+```js
+test.skip.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected); // will not be ran
+  },
+);
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` test.skip.each`table`(name, fn) ``
+
+```js
+test.skip.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected); // will not be ran
+});
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
