@@ -127,6 +127,8 @@
   ([#5720](https://github.com/facebook/jest/pull/5720))
 * `[pretty-format]` Handle React fragments better
   ([#5816](https://github.com/facebook/jest/pull/5816))
+* `[pretty-format]` Handle formatting of `React.forwardRef` and `Context`
+  components ([#6093](https://github.com/facebook/jest/pull/6093))
 * `[jest-cli]` Switch collectCoverageFrom back to a string
   ([#5914](https://github.com/facebook/jest/pull/5914))
 * `[jest-regex-util]` Fix handling regex symbols in tests path on Windows
