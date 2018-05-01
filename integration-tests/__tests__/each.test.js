@@ -24,51 +24,28 @@ test('works with passing tests', () => {
 
 test('shows error message when not enough arguments are supplied to tests', () => {
   const result = runJest(dir, ['each-exception.test.js']);
-  const rest = extractSummary(result.stderr)
-    .rest.split('\n')
-    .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
-    .join('\n');
-
   expect(result.status).toBe(1);
+  const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
 
 test('shows the correct errors in stderr when failing tests', () => {
   const result = runJest(dir, ['failure.test.js']);
-
   expect(result.status).toBe(1);
-
-  const rest = extractSummary(result.stderr)
-    .rest.split('\n')
-    .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
-    .map(line => line.trim())
-    .join('\n');
-
+  const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
 
 test('shows only the tests with .only as being ran', () => {
   const result = runJest(dir, ['each-only.test.js']);
-
   expect(result.status).toBe(0);
-
-  const rest = extractSummary(result.stderr)
-    .rest.split('\n')
-    .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
-    .join('\n');
-
+  const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
 
 test('shows only the tests without .skip as being ran', () => {
   const result = runJest(dir, ['each-skip.test.js']);
-
   expect(result.status).toBe(0);
-
-  const rest = extractSummary(result.stderr)
-    .rest.split('\n')
-    .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
-    .join('\n');
-
+  const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
