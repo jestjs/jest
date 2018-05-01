@@ -11,7 +11,7 @@ import type {Environment} from 'types/Environment';
 
 import util from 'util';
 
-type Table = Array<Array<Any>>;
+type Table = Array<Array<any>>;
 
 export default (environment: Environment): void => {
   environment.global.it.each = bindEach(environment.global.it);
@@ -67,7 +67,7 @@ const buildTable = (
   data: Array<any>,
   rowSize: number,
   keys: Array<string>,
-): Table =>
+): Array<any> =>
   Array.from({length: data.length / rowSize})
     .map((_, index) => data.slice(index * rowSize, index * rowSize + rowSize))
     .map(row =>
