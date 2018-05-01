@@ -1,0 +1,212 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`shows error message when not enough arguments are supplied to tests 1`] = `
+"FAIL __tests__/each-exception.test.js
+  ✕ throws exception when not enough arguments are supplied $left == $right
+  ✓ throws exception when not enough arguments are supplied true == true
+
+  ● throws exception when not enough arguments are supplied $left == $right
+
+    Tagged Template Literal test error:
+    Not enough arguments supplied for given headings: left | right
+    Received: true,true,true
+      
+      at packages/jest-jasmine2/build/each.js:75:17
+
+"
+`;
+
+exports[`shows only the tests with .only as being ran 1`] = `
+"PASS __tests__/each-only.test.js
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ○ skipped 4 tests
+
+"
+`;
+
+exports[`shows only the tests without .skip as being ran 1`] = `
+"PASS __tests__/each-skip.test.js
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ○ skipped 4 tests
+
+"
+`;
+
+exports[`shows the correct errors in stderr when failing tests 1`] = `
+"FAIL __tests__/failure.test.js
+✓ fails one row expected true == true
+✕ fails one row expected true == false
+✕ fails all rows expected true == false
+✕ fails all rows expected true == false
+✕ fails one row expected true == false
+✓ fails one row expected true == true
+✕ fails all rows expected true == false
+✓ fails all rows expected true == true
+fails all rows expected false == true
+✕ fails
+✕ fails
+fails all rows expected true == false
+✕ fails
+✕ fails
+
+● fails one row expected true == false
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+
+9 |   'fails one row expected %s == %s',
+10 |   (left, right) => {
+> 11 |     expect(left).toBe(right);
+|                  ^
+12 |   }
+13 | );
+14 |
+
+at __tests__/failure.test.js:11:18
+
+● fails all rows expected true == false
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+
+16 |   'fails all rows expected %s == %s',
+17 |   (left, right) => {
+> 18 |     expect(left).toBe(right);
+|                  ^
+19 |   }
+20 | );
+21 |
+
+at __tests__/failure.test.js:18:18
+
+● fails all rows expected true == false
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+
+16 |   'fails all rows expected %s == %s',
+17 |   (left, right) => {
+> 18 |     expect(left).toBe(right);
+|                  ^
+19 |   }
+20 | );
+21 |
+
+at __tests__/failure.test.js:18:18
+
+● fails all rows expected false == true › fails
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+
+24 |   (left, right) => {
+25 |     it('fails', () => {
+> 26 |       expect(left).toBe(right);
+|                    ^
+27 |     });
+28 |   }
+29 | );
+
+at __tests__/failure.test.js:26:20
+
+● fails all rows expected true == false › fails
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+
+24 |   (left, right) => {
+25 |     it('fails', () => {
+> 26 |       expect(left).toBe(right);
+|                    ^
+27 |     });
+28 |   }
+29 | );
+
+at __tests__/failure.test.js:26:20
+
+● fails one row expected true == false
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+
+34 |   \${true} | \${true}
+35 | \`('fails one row expected $left == $right', ({left, right}) => {
+> 36 |   expect(left).toBe(right);
+|                ^
+37 | });
+38 |
+39 | it.each\`
+
+at __tests__/failure.test.js:36:16
+
+● fails all rows expected true == false
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+
+42 |   \${true} | \${true}
+43 | \`('fails all rows expected $left == $right', ({left, right}) => {
+> 44 |   expect(left).toBe(right);
+|                ^
+45 | });
+46 |
+47 | describe.each\`
+
+at __tests__/failure.test.js:44:16
+
+● fails all rows expected true == false › fails
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+
+51 | \`('fails all rows expected $left == $right', ({left, right}) => {
+52 |   it('fails ', () => {
+> 53 |     expect(left).toBe(right);
+|                  ^
+54 |   });
+55 | });
+56 |
+
+at __tests__/failure.test.js:53:18
+
+● fails all rows expected false == true › fails
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+
+51 | \`('fails all rows expected $left == $right', ({left, right}) => {
+52 |   it('fails ', () => {
+> 53 |     expect(left).toBe(right);
+|                  ^
+54 |   });
+55 | });
+56 |
+
+at __tests__/failure.test.js:53:18
+
+"
+`;
