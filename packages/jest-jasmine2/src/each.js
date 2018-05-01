@@ -1,3 +1,6 @@
+/**
+ * @flow
+ */
 import type {Environment} from 'types/Environment';
 
 import {vsprintf} from 'sprintf-js';
