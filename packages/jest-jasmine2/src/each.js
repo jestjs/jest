@@ -3,7 +3,7 @@
  */
 import type {Environment} from 'types/Environment';
 
-import {vsprintf} from 'sprintf-js';
+import util from 'util';
 
 type Table = Array<Array<Any>>;
 
@@ -23,7 +23,7 @@ const bindEach = (cb: Function) => (...args: any) => (
   if (args.length === 1) {
     const table: Table = args[0];
     return table.forEach(row =>
-      cb(vsprintf(title, row), applyRestParams(row, test)),
+      cb(util.format(title, ...row), applyRestParams(row, test)),
     );
   }
 
