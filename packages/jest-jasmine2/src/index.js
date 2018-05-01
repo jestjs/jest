@@ -17,7 +17,6 @@ import type Runtime from 'jest-runtime';
 import path from 'path';
 import fs from 'graceful-fs';
 import {getCallsite} from 'jest-util';
-import sourcemapSupport from 'source-map-support';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
 
@@ -117,35 +116,29 @@ async function jasmine2(
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
 
-  const sourcemapOptions = {
-    environment: 'node',
-    handleUncaughtExceptions: false,
-    retrieveSourceMap: source => {
-      const sourceMaps = runtime.getSourceMaps();
-      const sourceMapSource = sourceMaps && sourceMaps[source];
-
-      if (sourceMapSource) {
-        try {
-          return {
-            map: JSON.parse(fs.readFileSync(sourceMapSource)),
-            url: source,
-          };
-        } catch (e) {}
-      }
-      return null;
-    },
-  };
-
-  // For tests
   runtime
     .requireInternalModule(
       require.resolve('source-map-support'),
       'source-map-support',
     )
-    .install(sourcemapOptions);
+    .install({
+      environment: 'node',
+      handleUncaughtExceptions: false,
+      retrieveSourceMap: source => {
+        const sourceMaps = runtime.getSourceMaps();
+        const sourceMapSource = sourceMaps && sourceMaps[source];
 
-  // For runtime errors
-  sourcemapSupport.install(sourcemapOptions);
+        if (sourceMapSource) {
+          try {
+            return {
+              map: JSON.parse(fs.readFileSync(sourceMapSource)),
+              url: source,
+            };
+          } catch (e) {}
+        }
+        return null;
+      },
+    });
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = spec => {
