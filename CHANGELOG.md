@@ -144,9 +144,6 @@
 
 * `[babel-jest]` [**BREAKING**] Always return object from transformer
   ([#5991](https://github.com/facebook/jest/pull/5991))
-* `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
-  resources for the top suite the same way as for all of the children suites
-  ([#5885](https://github.com/facebook/jest/pull/5885))
 * `[*]` Run Prettier on compiled output
   ([#5858](https://github.com/facebook/jest/pull/3497))
 * `[jest-cli]` Add fileChange hook for plugins
