@@ -10,8 +10,13 @@
 import type {Environment} from 'types/Environment';
 
 import util from 'util';
+import chalk from 'chalk';
+import pretty from 'pretty-format';
 
 type Table = Array<Array<any>>;
+
+const EXPECTED_COLOR = chalk.green;
+const RECEIVED_COLOR = chalk.red;
 
 export default (environment: Environment): void => {
   environment.global.it.each = bindEach(environment.global.it);
@@ -42,9 +47,13 @@ const bindEach = (cb: Function) => (...args: any) => (
   if (data.length % keys.length !== 0) {
     return cb(title, () => {
       throw new Error(
-        `Tagged Template Literal test error:\nNot enough arguments supplied for given headings: ${keys.join(
-          ' | ',
-        )}\nReceived: ${data}`,
+        'Not enough arguments supplied for given headings:\n' +
+          EXPECTED_COLOR(keys.join(' | ')) +
+          '\n\n' +
+          'Received:\n' +
+          RECEIVED_COLOR(pretty(data)) +
+          '\n\n' +
+          `Missing ${RECEIVED_COLOR(`${data.length % keys.length}`)} arguments`,
       );
     });
   }

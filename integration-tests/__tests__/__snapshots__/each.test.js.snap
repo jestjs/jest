@@ -3,15 +3,22 @@
 exports[`shows error message when not enough arguments are supplied to tests 1`] = `
 "FAIL __tests__/each-exception.test.js
   ✕ throws exception when not enough arguments are supplied $left == $right
-  ✓ throws exception when not enough arguments are supplied true == true
 
   ● throws exception when not enough arguments are supplied $left == $right
 
-    Tagged Template Literal test error:
-    Not enough arguments supplied for given headings: left | right
-    Received: true,true,true
+    Not enough arguments supplied for given headings:
+    left | right
+    
+    Received:
+    Array [
+      true,
+      true,
+      true,
+    ]
+    
+    Missing 1 arguments
       
-      at packages/jest-jasmine2/build/each.js:75:17
+      at packages/jest-jasmine2/build/each.js:84:17
 
 "
 `;
@@ -50,7 +57,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
   ✓ fails all rows expected true == true
   fails all rows expected false == true
     ✕ fails
-    ✕ fails 
+    ✕ fails
   fails all rows expected true == false
     ✕ fails
     ✕ fails
