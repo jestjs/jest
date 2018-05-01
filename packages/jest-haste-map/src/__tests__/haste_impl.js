@@ -8,6 +8,17 @@
 
 module.exports = {
   getHasteName(path) {
-    return path.substr(path.lastIndexOf('/') + 1).replace(/\.js$/, '');
+    if (
+      path.includes('__mocks__') ||
+      path.includes('NoHaste') ||
+      path.includes('/module_dir/') ||
+      path.includes('/sourcemaps/')
+    ) {
+      return undefined;
+    }
+
+    return path
+      .substr(path.lastIndexOf('/') + 1)
+      .replace(/(\.(android|ios|native))?\.js$/, '');
   },
 };
