@@ -63,46 +63,42 @@ async function jasmine2(
 
   jasmineAsyncInstall(environment.global);
 
+  environment.global.it.each = (...args) => (title, test) =>
+    each
+      .withGlobal(environment.global)(...args)
+      .it(title, test);
+
+  environment.global.fit.each = (...args) => (title, test) =>
+    each
+      .withGlobal(environment.global)(...args)
+      .fit(title, test);
+
+  environment.global.xit.each = (...args) => (title, test) =>
+    each
+      .withGlobal(environment.global)(...args)
+      .xit(title, test);
+
+  environment.global.describe.each = (...args) => (title, test) =>
+    each
+      .withGlobal(environment.global)(...args)
+      .describe(title, test);
+
+  environment.global.xdescribe.each = (...args) => (title, test) =>
+    each
+      .withGlobal(environment.global)(...args)
+      .xdescribe(title, test);
+
+  environment.global.fdescribe.each = (...args) => (title, test) =>
+    each
+      .withGlobal(environment.global)(...args)
+      .fdescribe(title, test);
+
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
   environment.global.it.skip = environment.global.xit;
   environment.global.xtest = environment.global.xit;
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
-
-  const bindEach = key => {
-    environment.global[key].each = (...args) => (title, test) =>
-      each
-        .withGlobal(environment.global)(...args)
-        [key](title, test);
-  };
-
-  const bindEachToNested = (parent, child) => {
-    environment.global[parent][child].each = (...args) => (title, test) =>
-      each
-        .withGlobal(environment.global)(...args)
-        [parent][child](title, test);
-  };
-
-  [
-    'test',
-    'xtest',
-    'it',
-    'describe',
-    'fit',
-    'xdescribe',
-    'fdescribe',
-    'xit',
-  ].forEach(key => bindEach(key));
-
-  [
-    ['test', 'only'],
-    ['test', 'skip'],
-    ['it', 'only'],
-    ['it', 'skip'],
-    ['describe', 'only'],
-    ['describe', 'skip'],
-  ].forEach(entry => bindEachToNested(...entry));
 
   if (config.timers === 'fake') {
     environment.fakeTimers.useFakeTimers();
