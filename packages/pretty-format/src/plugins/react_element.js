@@ -36,17 +36,16 @@ const getChildren = (arg, children = []) => {
 };
 
 const getType = element => {
-  if (typeof element.type === 'string') {
-    return element.type;
+  const type = element.type;
+  if (typeof type === 'string') {
+    return type;
   }
-  if (typeof element.type === 'function') {
-    return element.type.displayName || element.type.name || 'Unknown';
+  if (typeof type === 'function') {
+    return type.displayName || type.name || 'Unknown';
   }
-  if (element.type === fragmentSymbol) {
+  if (type === fragmentSymbol) {
     return 'React.Fragment';
   }
-
-  const type = element.type;
   if (typeof type === 'object' && type !== null) {
     if (type.$$typeof === providerSymbol) {
       return 'Context.Provider';
