@@ -10,12 +10,9 @@
 'use strict';
 
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 const {extractSummary} = require('../Utils');
 const dir = path.resolve(__dirname, '../each');
-
-SkipOnWindows.suite();
 
 test('works with passing tests', () => {
   const result = runJest(dir, ['success.test.js']);
