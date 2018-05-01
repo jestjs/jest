@@ -512,6 +512,49 @@ Usually you wouldn't check code using `test.only` into source control - you
 would use it just for debugging, and remove it once you have fixed the broken
 tests.
 
+### `test.only.each(table)(name, fn)`
+
+Also under the aliases: `it.only.each(table)(name, fn)`,
+`fit.each(table)(name, fn)`, `` it.only.each`table`(name, fn) `` and
+`` fit.each`table`(name, fn) ``
+
+Use `test.only.each` if you want to only run specific tests with different test
+data.
+
+`test.only.each` is available with two APIs:
+
+#### `test.only.each(table)(name, fn)`
+
+```js
+test.only.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` test.each`table`(name, fn) ``
+
+```js
+test.only.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected);
+});
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
 ### `test.skip(name, fn)`
 
 Also under the aliases: `it.skip(name, fn)` or `xit(name, fn)` or
