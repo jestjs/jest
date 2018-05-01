@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-jasmine2]` Add data driven testing with `jest-each`
+  ([#6102](https://github.com/facebook/jest/pull/6102))
 * `[jest-message-util]` Don't ignore messages with `vendor` anymore
   ([#6117](https://github.com/facebook/jest/pull/6117))
 * `[jest-validate]` Get rid of `jest-config` dependency
