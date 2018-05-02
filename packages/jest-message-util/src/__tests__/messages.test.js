@@ -44,6 +44,20 @@ const assertionStack =
       at internal/process/next_tick.js:188:7
 `;
 
+const vendorStack =
+  '  ' +
+  `
+    Expected value to be of type:
+      "number"
+    Received:
+      ""
+    type:
+      "string"
+
+      at Object.it (__tests__/vendor/cool_test.js:6:666)
+      at Object.asyncFn (__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js:1:5)
+`;
+
 it('should exclude jasmine from stack trace for Unix paths.', () => {
   const messages = formatResultsErrors(
     [
@@ -91,6 +105,26 @@ it('formatStackTrace should strip node internals', () => {
         ancestorTitles: [],
         failureMessages: [assertionStack],
         title: 'Unix test',
+      },
+    ],
+    {
+      rootDir: '',
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+
+  expect(messages).toMatchSnapshot();
+});
+
+it('should not exclude vendor from stack trace', () => {
+  const messages = formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        failureMessages: [vendorStack],
+        title: 'Vendor test',
       },
     ],
     {

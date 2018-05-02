@@ -48,7 +48,7 @@ const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const JASMINE_IGNORE = /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
 const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
