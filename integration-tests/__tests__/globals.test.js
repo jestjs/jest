@@ -28,6 +28,12 @@ beforeEach(() => {
 
 afterAll(() => cleanup(DIR));
 
+// This function is needed due to differences between Node 6 and 8-9-10 when
+// returning the result of the error.
+function clean(text) {
+  return text.replace(/([\r\n])\s+(?=[\r\n])/g, '$1').replace(/\s+\^/g, ' ^');
+}
+
 test('basic test constructs', () => {
   const filename = 'basic.test-constructs.test.js';
   const content = `
@@ -123,8 +129,8 @@ test('cannot test with no implementation', () => {
   expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr, {stripLocation: true});
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(clean(rest)).toMatchSnapshot();
+  expect(clean(summary)).toMatchSnapshot();
 });
 
 test('skips with expand arg', () => {
@@ -201,8 +207,8 @@ test('cannot test with no implementation with expand arg', () => {
   expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr, {stripLocation: true});
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(clean(rest)).toMatchSnapshot();
+  expect(clean(summary)).toMatchSnapshot();
 });
 
 test('function as descriptor', () => {
