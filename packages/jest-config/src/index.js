@@ -16,7 +16,7 @@ import type {
 } from 'types/Config';
 
 import path from 'path';
-import {isJSONString} from './utils';
+import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolve_config_path';
 import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
@@ -47,8 +47,11 @@ export function readConfig(
 
   if (typeof packageRootOrConfig !== 'string') {
     if (parentConfigPath) {
+      const parentConfigDirname = path.dirname(parentConfigPath);
       rawOptions = packageRootOrConfig;
-      rawOptions.rootDir = path.dirname(parentConfigPath);
+      rawOptions.rootDir = rawOptions.rootDir
+        ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
+        : parentConfigDirname;
     } else {
       throw new Error(
         'Jest: Cannot use configuration as an object without a file path.',
