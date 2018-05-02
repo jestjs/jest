@@ -3,7 +3,7 @@
 ### Features
 
 * `[jest-message-util]` Don't ignore messages with `vendor` anymore
-  ([#XXXX](https://github.com/facebook/jest/pull/XXXX))
+  ([#6117](https://github.com/facebook/jest/pull/6117))
 * `[jest-validate]` Get rid of `jest-config` dependency
   ([#6067](https://github.com/facebook/jest/pull/6067))
 * `[jest-validate]` Adds option to inject `deprecationEntries`
