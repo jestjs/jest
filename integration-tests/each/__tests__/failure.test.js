@@ -6,21 +6,21 @@
  */
 
 it.each([[true, true], [true, false]])(
-  'fails one row expected %s == %s',
+  'array table fails on one row: expected %s == %s',
   (left, right) => {
     expect(left).toBe(right);
   }
 );
 
-it.each([[true, false], [true, false]])(
-  'fails all rows expected %s == %s',
+it.each([[1, 2], [3, 4]])(
+  'array table fails on all rows expected %s == %s',
   (left, right) => {
     expect(left).toBe(right);
   }
 );
 
-describe.each([[false, true], [true, false]])(
-  'fails all rows expected %s == %s',
+describe.each([['a', 'b'], ['c', 'd']])(
+  'array table describe fails on all rows expected %s == %s',
   (left, right) => {
     it('fails', () => {
       expect(left).toBe(right);
@@ -29,27 +29,36 @@ describe.each([[false, true], [true, false]])(
 );
 
 it.each`
-  left    | right
-  ${true} | ${false}
-  ${true} | ${true}
-`('fails one row expected $left == $right', ({left, right}) => {
-  expect(left).toBe(right);
-});
+    left    | right
+    ${true} | ${false}
+    ${true} | ${true}
+  `(
+  'template table fails on one row expected: $left == $right',
+  ({left, right}) => {
+    expect(left).toBe(right);
+  }
+);
 
 it.each`
-  left    | right
-  ${true} | ${false}
-  ${true} | ${true}
-`('fails all rows expected $left == $right', ({left, right}) => {
-  expect(left).toBe(right);
-});
+    left    | right
+    ${1} | ${2}
+    ${3} | ${4}
+  `(
+  'template table fails on all rows expected: $left == $right',
+  ({left, right}) => {
+    expect(left).toBe(right);
+  }
+);
 
 describe.each`
-  left    | right
-  ${true} | ${false}
-  ${false} | ${true}
-`('fails all rows expected $left == $right', ({left, right}) => {
-  it('fails ', () => {
-    expect(left).toBe(right);
-  });
-});
+    left    | right
+    ${'a'} | ${'b'}
+    ${'c'} | ${'d'}
+  `(
+  'template table describe fails on all rows expected $left == $right',
+  ({left, right}) => {
+    it('fails ', () => {
+      expect(left).toBe(right);
+    });
+  }
+);

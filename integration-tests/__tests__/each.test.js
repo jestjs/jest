@@ -32,8 +32,11 @@ test('shows error message when not enough arguments are supplied to tests', () =
 test('shows the correct errors in stderr when failing tests', () => {
   const result = runJest(dir, ['failure.test.js']);
   expect(result.status).toBe(1);
-  const {rest} = extractSummary(result.stderr);
-  expect(rest).toMatchSnapshot();
+  const output = extractSummary(result.stderr)
+    .rest.split('\n')
+    .map(line => line.trimRight())
+    .join('\n');
+  expect(output).toMatchSnapshot();
 });
 
 test('shows only the tests with .only as being ran', () => {
