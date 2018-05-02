@@ -469,7 +469,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'projects':
         value = (options[key] || [])
-          .map(project => _replaceRootDirTags(options.rootDir, project))
+          .map(
+            project =>
+              typeof project === 'string'
+                ? _replaceRootDirTags(options.rootDir, project)
+                : project,
+          )
           .reduce((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
