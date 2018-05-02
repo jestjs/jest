@@ -57,10 +57,10 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
   ✓ fails all rows expected true == true
   fails all rows expected false == true
     ✕ fails
-    ✕ fails
+    ✕ fails 
   fails all rows expected true == false
     ✕ fails
-    ✕ fails
+    ✕ fails 
 
   ● fails one row expected true == false
 
