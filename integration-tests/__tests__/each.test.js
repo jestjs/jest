@@ -13,6 +13,9 @@ const path = require('path');
 const runJest = require('../runJest');
 const {extractSummary} = require('../Utils');
 const dir = path.resolve(__dirname, '../each');
+const SkipOnWindows = require('../../scripts/SkipOnWindows');
+
+SkipOnWindows.suite();
 
 test('works with passing tests', () => {
   const result = runJest(dir, ['success.test.js']);
