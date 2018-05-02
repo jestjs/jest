@@ -717,3 +717,38 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
     }),
   ).toMatchSnapshot();
 });
+
+test('supports forwardRef with a child', () => {
+  function Cat(props) {
+    return React.createElement('div', props, props.children);
+  }
+
+  expect(
+    // $FlowFixMe - https://github.com/facebook/flow/issues/6103
+    formatElement(React.createElement(React.forwardRef(Cat), null, 'mouse')),
+  ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
+});
+
+test('supports context Provider with a child', () => {
+  const {Provider} = React.createContext('test');
+
+  expect(
+    formatElement(
+      React.createElement(Provider, {value: 'test-value'}, 'child'),
+    ),
+  ).toEqual(
+    '<Context.Provider\n  value="test-value"\n>\n  child\n</Context.Provider>',
+  );
+});
+
+test('supports context Consumer with a child', () => {
+  const {Consumer} = React.createContext('test');
+
+  expect(
+    formatElement(
+      React.createElement(Consumer, null, () =>
+        React.createElement('div', null, 'child'),
+      ),
+    ),
+  ).toEqual('<Context.Consumer>\n  [Function anonymous]\n</Context.Consumer>');
+});
