@@ -13,6 +13,6 @@ const runJest = require('../runJest');
 describe('Correct beforeEach order', () => {
   it('ensures the correct order for beforeEach', () => {
     const result = runJest('before-each-queue');
-    expect(result.stdout).toMatchSnapshot();
+    expect(result.stdout.replace(/\\/g, '/')).toMatchSnapshot();
   });
 });
