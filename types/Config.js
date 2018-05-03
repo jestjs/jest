@@ -204,6 +204,7 @@ export type GlobalConfig = {|
   rootDir: Path,
   silent: boolean,
   skipFilter: boolean,
+  skipUnchecked: ?boolean,
   testFailureExitCode: number,
   testNamePattern: string,
   testPathPattern: string,
@@ -215,7 +216,6 @@ export type GlobalConfig = {|
   watchAll: boolean,
   watchman: boolean,
   watchPlugins: ?Array<string>,
-  skipUnchecked: ?boolean
 |};
 
 export type ProjectConfig = {|

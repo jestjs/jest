@@ -50,6 +50,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   runTestsByPath: false,
   silent: false,
   skipFilter: false,
+  skipUnchecked: false,
   testFailureExitCode: 1,
   testNamePattern: '',
   testPathPattern: '',
