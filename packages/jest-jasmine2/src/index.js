@@ -156,10 +156,10 @@ async function jasmine2(
   await env.execute();
   return reporter
     .getResults()
-    .then(results => addSnapshotData(results, snapshotState));
+    .then(results => addSnapshotData(results, snapshotState, globalConfig));
 }
 
-const addSnapshotData = (results, snapshotState) => {
+const addSnapshotData = (results, snapshotState, globalConfig) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
