@@ -282,14 +282,12 @@ describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
       expect(a + b).toBe(expected);
     });
 
-    test('does not mutate first arg', () => {
-      a + b;
-      expect(a).toBe(a);
+    test(`returned value not be greater than ${expected}`, () => {
+      expect(a + b).not.toBeGreaterThan(expected);
     });
 
-    test('does not mutate second arg', () => {
-      a + b;
-      expect(b).toBe(b);
+    test(`returned value not be less than ${expected}`, () => {
+      expect(a + b).not.toBeLessThan(expected);
     });
   },
 );
@@ -319,14 +317,12 @@ describe.each`
     expect(a + b).toBe(expected);
   });
 
-  test('does not mutate first arg', () => {
-    a + b;
-    expect(a).toBe(a);
+  test(`returned value not be greater than ${expected}`, () => {
+    expect(a + b).not.toBeGreaterThan(expected);
   });
 
-  test('does not mutate second arg', () => {
-    a + b;
-    expect(b).toBe(b);
+  test(`returned value not be less than ${expected}`, () => {
+    expect(a + b).not.toBeLessThan(expected);
   });
 });
 ```
