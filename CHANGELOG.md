@@ -2,7 +2,7 @@
 
 ### Features
 
-* `[jest-matcher-utils] Change "suggest to equal" message to be more advisory`
+* `[jest-matcher-utils]` Change "suggest to equal" message to be more advisory
   ([#6103](https://github.com/facebook/jest/issues/6103))
 * `[jest-message-util]` Don't ignore messages with `vendor` anymore
   ([#6117](https://github.com/facebook/jest/pull/6117))
