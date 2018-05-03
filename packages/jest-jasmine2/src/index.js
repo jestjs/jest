@@ -168,7 +168,7 @@ const addSnapshotData = (results, snapshotState) => {
     }
   });
 
-  const uncheckedCount = snapshotState.getUncheckedCount();
+  const uncheckedCount = globalConfig.skipUnchecked ? 0 : snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();
 
   if (uncheckedCount) {
