@@ -215,6 +215,7 @@ export type GlobalConfig = {|
   watchAll: boolean,
   watchman: boolean,
   watchPlugins: ?Array<string>,
+  skipUnchecked: ?boolean
 |};
 
 export type ProjectConfig = {|
