@@ -21,6 +21,7 @@ import createContext from '../lib/create_context';
 import exit from 'exit';
 import getChangedFilesPromise from '../get_changed_files_promise';
 import fs from 'fs';
+import path from 'path';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
 import {print as preRunMessagePrint} from '../pre_run_message';
@@ -32,6 +33,8 @@ import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
 import Table from 'easy-table';
+import slash from 'slash';
+import highlight from '@babel/highlight';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
@@ -109,11 +112,20 @@ export const runCLI = async (
       .map(({title, entries}) => {
         const table = new Table();
 
-        entries.forEach(({file, line}) => {
-          table.cell('File', file);
-          table.cell('Line', line);
-          table.newRow();
-        });
+        entries
+          .map(({file, line}) => {
+            const relativeTestPath = slash(
+              path.relative(globalConfig.rootDir, file),
+            );
+            const highlightedLine = highlight(line);
+
+            return {file: relativeTestPath, line: highlightedLine};
+          })
+          .forEach(({file, line}) => {
+            table.cell('File', file);
+            table.cell('Line', line);
+            table.newRow();
+          });
 
         return title + '\n' + table.toString();
       })

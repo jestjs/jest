@@ -4,6 +4,7 @@
   "version": "22.4.2",
   "main": "build/jest.js",
   "dependencies": {
+    "@babel/highlight": "^7.0.0-beta.46",
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
     "easy-table": "^1.1.1",
