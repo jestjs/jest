@@ -137,7 +137,7 @@ export default class TestScheduler {
       }
       const testResult = buildFailureTestResult(test.path, error);
       testResult.failureMessage = formatExecError(
-        testResult,
+        testResult.testExecError,
         test.context.config,
         this._globalConfig,
         test.path,

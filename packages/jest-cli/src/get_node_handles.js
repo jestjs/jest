@@ -9,7 +9,7 @@
 
 import type {ProjectConfig} from 'types/Config';
 
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import {formatExecError} from 'jest-message-util';
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
@@ -67,11 +67,7 @@ export function formatHandleErrors(
   errors: Array<Error>,
   config: ProjectConfig,
 ): Array<string> {
-  return errors.map(err => {
-    const {message, stack} = separateMessageFromStack(err.stack);
-
-    return (
-      message + '\n\n' + formatStackTrace(stack, config, {noStackTrace: false})
-    );
-  });
+  return errors.map(err =>
+    formatExecError(err, config, {noStackTrace: false}, undefined, true),
+  );
 }

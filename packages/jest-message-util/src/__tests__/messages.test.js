@@ -81,10 +81,7 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
 it('.formatExecError()', () => {
   const message = formatExecError(
     {
-      testExecError: {
-        message: 'Whoops!',
-      },
-      testFilePath: '/test/error/file/path',
+      message: 'Whoops!',
     },
     {
       rootDir: '',

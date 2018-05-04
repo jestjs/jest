@@ -8,7 +8,7 @@
  */
 
 import type {Glob, Path} from 'types/Config';
-import type {AssertionResult, TestResult} from 'types/TestResult';
+import type {AssertionResult, SerializableError} from 'types/TestResult';
 
 import fs from 'fs';
 import path from 'path';
@@ -97,23 +97,26 @@ const getRenderedCallsite = (
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  testResult: TestResult,
+  error?: Error | SerializableError | string,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath: Path,
+  testPath: ?Path,
+  reuseMessage: ?boolean,
 ) => {
-  let error = testResult.testExecError;
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
     error.stack = '';
   }
 
-  let {message, stack} = error;
+  let message, stack;
 
   if (typeof error === 'string' || !error) {
     error || (error = 'EMPTY ERROR');
     message = '';
     stack = error;
+  } else {
+    message = error.message;
+    stack = error.stack;
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -138,15 +141,15 @@ export const formatExecError = (
     message = MESSAGE_INDENT + 'Error: No message was provided';
   }
 
-  return (
-    TITLE_INDENT +
-    TITLE_BULLET +
-    EXEC_ERROR_MESSAGE +
-    '\n\n' +
-    message +
-    stack +
-    '\n'
-  );
+  let messageToUse;
+
+  if (reuseMessage) {
+    messageToUse = ` ${message.trim()}`;
+  } else {
+    messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
+  }
+
+  return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
 };
 
 const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
