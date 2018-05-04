@@ -342,3 +342,337 @@ const jestExpect = require('../');
     }
   });
 });
+
+['toReturn', 'toHaveReturned'].forEach(returned => {
+  describe(`${returned}`, () => {
+    test(`works only on spies or jest.fn`, () => {
+      const fn = function fn() {};
+
+      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`passes when returned`, () => {
+      const fn = jest.fn(() => 42);
+      fn();
+      jestExpect(fn)[returned]();
+      expect(() =>
+        jestExpect(fn).not[returned](),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`.not passes when not returned`, () => {
+      const fn = jest.fn();
+
+      jestExpect(fn).not[returned]();
+      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`fails with any argument passed`, () => {
+      const fn = jest.fn();
+
+      fn();
+      expect(() =>
+        jestExpect(fn)[returned](555),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`.not fails with any argument passed`, () => {
+      const fn = jest.fn();
+
+      expect(() =>
+        jestExpect(fn).not[returned](555),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+});
+
+['toReturnTimes', 'toHaveReturnedTimes'].forEach(returnedTimes => {
+  describe(`${returnedTimes}`, () => {
+    test('works only on spies or jest.fn', () => {
+      const fn = function fn() {};
+
+      expect(() =>
+        jestExpect(fn)[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('only accepts a number argument', () => {
+      const fn = jest.fn(() => 42);
+      fn();
+      jestExpect(fn)[returnedTimes](1);
+
+      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
+        expect(() =>
+          jestExpect(fn)[returnedTimes](value),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    });
+
+    test('.not only accepts a number argument', () => {
+      const fn = jest.fn(() => 42);
+      jestExpect(fn).not[returnedTimes](2);
+
+      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
+        expect(() =>
+          jestExpect(fn).not[returnedTimes](value),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    });
+
+    test('passes if function returned equal to expected times', () => {
+      const fn = jest.fn(() => 42);
+      fn();
+      fn();
+
+      jestExpect(fn)[returnedTimes](2);
+
+      expect(() =>
+        jestExpect(fn).not[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('.not passes if function returned more than expected times', () => {
+      const fn = jest.fn(() => 42);
+      fn();
+      fn();
+      fn();
+
+      jestExpect(fn)[returnedTimes](3);
+      jestExpect(fn).not[returnedTimes](2);
+
+      expect(() =>
+        jestExpect(fn)[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('.not passes if function called less than expected times', () => {
+      const fn = jest.fn(() => 42);
+      fn();
+
+      jestExpect(fn)[returnedTimes](1);
+      jestExpect(fn).not[returnedTimes](2);
+
+      expect(() =>
+        jestExpect(fn)[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+});
+
+[
+  'lastReturnedWith',
+  'toHaveLastReturnedWith',
+  'nthReturnedWith',
+  'toHaveNthReturnedWith',
+  'toReturnWith',
+  'toHaveReturnedWith',
+].forEach(returnedWith => {
+  const caller = function(callee, ...args) {
+    if (
+      returnedWith === 'nthReturnedWith' ||
+      returnedWith === 'toHaveNthReturnedWith'
+    ) {
+      callee(1, ...args);
+    } else {
+      callee(...args);
+    }
+  };
+
+  describe(`${returnedWith}`, () => {
+    test(`works only on spies or jest.fn`, () => {
+      const fn = function fn() {};
+
+      expect(() =>
+        jestExpect(fn)[returnedWith](),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`works when not called`, () => {
+      const fn = jest.fn();
+      caller(jestExpect(fn).not[returnedWith], 'foo');
+
+      expect(() =>
+        caller(jestExpect(fn)[returnedWith], 'foo'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`works with no arguments`, () => {
+      const fn = jest.fn();
+      fn();
+      caller(jestExpect(fn)[returnedWith]);
+    });
+
+    test('works with argument that does not match', () => {
+      const fn = jest.fn(() => 'foo');
+      fn();
+
+      caller(jestExpect(fn).not[returnedWith], 'bar');
+
+      expect(() =>
+        caller(jestExpect(fn)[returnedWith], 'bar'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`works with argument that does match`, () => {
+      const fn = jest.fn(() => 'foo');
+      fn();
+
+      caller(jestExpect(fn)[returnedWith], 'foo');
+
+      expect(() =>
+        caller(jestExpect(fn).not[returnedWith], 'foo'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`works with Map`, () => {
+      const m1 = new Map([[1, 2], [2, 1]]);
+      const m2 = new Map([[1, 2], [2, 1]]);
+      const m3 = new Map([['a', 'b'], ['b', 'a']]);
+
+      const fn = jest.fn(() => m1);
+      fn();
+
+      caller(jestExpect(fn)[returnedWith], m2);
+      caller(jestExpect(fn).not[returnedWith], m3);
+
+      expect(() =>
+        caller(jestExpect(fn).not[returnedWith], m2),
+      ).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        caller(jestExpect(fn)[returnedWith], m3),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`works with Set`, () => {
+      const s1 = new Set([1, 2]);
+      const s2 = new Set([1, 2]);
+      const s3 = new Set([3, 4]);
+
+      const fn = jest.fn(() => s1);
+      fn();
+
+      caller(jestExpect(fn)[returnedWith], s2);
+      caller(jestExpect(fn).not[returnedWith], s3);
+
+      expect(() =>
+        caller(jestExpect(fn).not[returnedWith], s2),
+      ).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        caller(jestExpect(fn)[returnedWith], s3),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`works with Immutable.js objects directly created`, () => {
+      const directlyCreated = new Immutable.Map([['a', {b: 'c'}]]);
+      const fn = jest.fn(() => directlyCreated);
+      fn();
+
+      caller(jestExpect(fn)[returnedWith], directlyCreated);
+
+      expect(() =>
+        caller(jestExpect(fn).not[returnedWith], directlyCreated),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`works with Immutable.js objects indirectly created`, () => {
+      const indirectlyCreated = new Immutable.Map().set('a', {b: 'c'});
+      const fn = jest.fn(() => indirectlyCreated);
+      fn();
+
+      caller(jestExpect(fn)[returnedWith], indirectlyCreated);
+
+      expect(() =>
+        caller(jestExpect(fn).not[returnedWith], indirectlyCreated),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    const basicReturnedWith = ['toHaveReturnedWith', 'toReturnWith'];
+    if (basicReturnedWith.indexOf(returnedWith) >= 0) {
+      test(`works with more calls than the limit`, () => {
+        const fn = jest.fn();
+        fn.mockReturnValueOnce('foo1');
+        fn.mockReturnValueOnce('foo2');
+        fn.mockReturnValueOnce('foo3');
+        fn.mockReturnValueOnce('foo4');
+        fn.mockReturnValueOnce('foo5');
+        fn.mockReturnValueOnce('foo6');
+
+        fn();
+        fn();
+        fn();
+        fn();
+        fn();
+        fn();
+
+        jestExpect(fn).not[returnedWith]('bar');
+
+        expect(() => {
+          jestExpect(fn)[returnedWith]('bar');
+        }).toThrowErrorMatchingSnapshot();
+      });
+    }
+
+    const nthCalled = ['toHaveNthReturnedWith', 'nthReturnedWith'];
+    if (nthCalled.indexOf(returnedWith) >= 0) {
+      test(`works with three calls`, () => {
+        const fn = jest.fn();
+        fn.mockReturnValueOnce('foo1');
+        fn.mockReturnValueOnce('foo2');
+        fn.mockReturnValueOnce('foo3');
+        fn();
+        fn();
+        fn();
+
+        jestExpect(fn)[returnedWith](1, 'foo1');
+        jestExpect(fn)[returnedWith](2, 'foo2');
+        jestExpect(fn)[returnedWith](3, 'foo3');
+
+        expect(() => {
+          jestExpect(fn).not[returnedWith](1, 'foo1');
+          jestExpect(fn).not[returnedWith](2, 'foo2');
+          jestExpect(fn).not[returnedWith](3, 'foo3');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('should replace 1st, 2nd, 3rd with first, second, third', async () => {
+        const fn = jest.fn();
+        fn.mockReturnValueOnce('foo1');
+        fn.mockReturnValueOnce('foo2');
+        fn.mockReturnValueOnce('foo3');
+        fn();
+        fn();
+        fn();
+
+        expect(() => {
+          jestExpect(fn)[returnedWith](1, 'bar1');
+          jestExpect(fn)[returnedWith](2, 'bar2');
+          jestExpect(fn)[returnedWith](3, 'bar3');
+        }).toThrowErrorMatchingSnapshot();
+
+        expect(() => {
+          jestExpect(fn).not[returnedWith](1, 'foo1');
+          jestExpect(fn).not[returnedWith](2, 'foo2');
+          jestExpect(fn).not[returnedWith](3, 'foo3');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('should reject nth value smaller than 1', async () => {
+        const fn = jest.fn(() => 'foo');
+        fn();
+
+        expect(() => {
+          jestExpect(fn)[returnedWith](0, 'foo');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('should reject non integer nth value', async () => {
+        const fn = jest.fn(() => 'foo');
+        fn('foo');
+
+        expect(() => {
+          jestExpect(fn)[returnedWith](0.1, 'foo');
+        }).toThrowErrorMatchingSnapshot();
+      });
+    }
+  });
+});

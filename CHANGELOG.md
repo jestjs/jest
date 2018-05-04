@@ -83,6 +83,8 @@
   ([#5889](https://github.com/facebook/jest/pull/5889))
 * `[expect]` Introduce toStrictEqual
   ([#6032](https://github.com/facebook/jest/pull/6032))
+* `[expect]` Add return matchers
+  ([#5879](https://github.com/facebook/jest/pull/5879))
 
 ### Fixes
 
@@ -905,7 +907,9 @@
   ([#3805](https://github.com/facebook/jest/pull/3805))
 * Fix jest-circus ([#4290](https://github.com/facebook/jest/pull/4290))
 * Fix lint warning in master
+
   ([#4132](https://github.com/facebook/jest/pull/4132))
+
 * Fix linting ([#3946](https://github.com/facebook/jest/pull/3946))
 * fix merge conflict ([#4144](https://github.com/facebook/jest/pull/4144))
 * Fix minor typo ([#3729](https://github.com/facebook/jest/pull/3729))

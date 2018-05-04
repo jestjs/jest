@@ -667,8 +667,6 @@ arguments it was nth called with. For example, let's say you have a
 flavors, and you want to ensure that when you call it, the first flavor it
 operates on is `'lemon'` and the second one is `'octopus'`. You can write:
 
-Note that, nth argument must be positive integer starting from 1.
-
 ```js
 test('drinkEach drinks each drink', () => {
   const drink = jest.fn();
@@ -677,6 +675,115 @@ test('drinkEach drinks each drink', () => {
   expect(drink).toHaveBeenNthCalledWith(2, 'octopus');
 });
 ```
+
+Note: the nth argument must be positive integer starting from 1.
+
+### `.toHaveReturned()`
+
+Also under the alias: `.toReturn()`
+
+If you have a mock function, you can use `.toHaveReturned` to test that the mock
+function returned a value. For example, let's say you have a mock `drink` that
+returns `true`. You can write:
+
+```js
+test('drinks returns', () => {
+  const drink = jest.fn(() => true);
+
+  drink();
+
+  expect(drink).toHaveReturned();
+});
+```
+
+### `.toHaveReturnedTimes(number)`
+
+Also under the alias: `.toReturnTimes(number)`
+
+Use `.toHaveReturnedTimes` to ensure that a mock function returned an exact
+number of times. For example, let's say you have a mock `drink` that returns
+`true`. You can write:
+
+```js
+test('drink returns twice', () => {
+  const drink = jest.fn(() => true);
+
+  drink();
+  drink();
+
+  expect(drink).toHaveReturnedTimes(2);
+});
+```
+
+### `.toHaveReturnedWith(value)`
+
+Also under the alias: `.toReturnWith(value)`
+
+Use `.toHaveReturnedWith` to ensure that a mock function returned a specific
+value.
+
+For example, let's say you have a mock `drink` that returns the name of the
+beverage that was consumed. You can write:
+
+```js
+test('drink returns La Croix', () => {
+  const beverage = {name: 'La Croix'};
+  const drink = jest.fn(beverage => beverage.name);
+
+  drink(beverage);
+
+  expect(drink).toHaveReturnedWith('La Croix');
+});
+```
+
+### `.toHaveLastReturnedWith(value)`
+
+Also under the alias: `.lastReturnedWith(value)`
+
+Use `.toHaveLastReturnedWith` to test the specific value that a mock function
+last returned.
+
+For example, let's say you have a mock `drink` that returns the name of the
+beverage that was consumed. You can write:
+
+```js
+test('drink returns La Croix (Orange) last', () => {
+  const beverage1 = {name: 'La Croix (Lemon)'};
+  const beverage2 = {name: 'La Croix (Orange)'};
+  const drink = jest.fn(beverage => beverage.name);
+
+  drink(beverage1);
+  drink(beverage2);
+
+  expect(drink).toHaveLastReturnedWith('La Croix (Orange)');
+});
+```
+
+### `.toHaveNthReturnedWith(nthCall, value)`
+
+Also under the alias: `.nthReturnedWith(nthCall, value)`
+
+Use `.toHaveNthReturnedWith` to test the specific value that a mock function
+returned for the nth call.
+
+For example, let's say you have a mock `drink` that returns the name of the
+beverage that was consumed. You can write:
+
+```js
+test('drink returns expected nth calls', () => {
+  const beverage1 = {name: 'La Croix (Lemon)'};
+  const beverage2 = {name: 'La Croix (Orange)'};
+  const drink = jest.fn(beverage => beverage.name);
+
+  drink(beverage1);
+  drink(beverage2);
+
+  expect(drink).toHaveNthReturnedWith(1, 'La Croix (Lemon)');
+  expect(drink).toHaveNthReturnedWith(2, 'La Croix (Orange)');
+});
+```
+
+Note: the nth argument must be positive integer starting from 1.
 
 ### `.toBeCloseTo(number, numDigits)`
 
