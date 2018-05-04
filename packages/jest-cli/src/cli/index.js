@@ -11,7 +11,6 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
-import util from 'util';
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
@@ -38,9 +37,8 @@ export async function run(maybeArgv?: Argv, project?: Path) {
     const argv: Argv = buildArgv(maybeArgv, project);
     const projects = getProjectListFromCLIArgs(argv, project);
 
-    const whyRunning = require('why-is-node-running');
     const {results, globalConfig} = await runCLI(argv, projects);
-    readResultsAndExit(results, globalConfig, whyRunning);
+    readResultsAndExit(results, globalConfig);
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
@@ -109,36 +107,9 @@ export const runCLI = async (
 const readResultsAndExit = (
   result: ?AggregatedResult,
   globalConfig: GlobalConfig,
-  whyRunning: () => void,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
 
-  const whyRunningArray = [];
-  const fakeLogger = {
-    error(...args) {
-      whyRunningArray.push(util.format(...args));
-    },
-  };
-
-  whyRunning(fakeLogger);
-
-  if (whyRunningArray.length) {
-    const runningResult = whyRunningArray
-      .join('\n')
-      .split('\n\n')
-      .filter(entry => {
-        if (entry.startsWith('There are') || !entry) {
-          return true;
-        }
-
-        return entry
-          .split('\n')
-          .slice(1)
-          .some(l => l.includes('this._execModule('));
-      })
-      .join('\n');
-    console.error(runningResult);
-  }
   process.on('exit', () => (process.exitCode = code));
 
   if (globalConfig.forceExit) {

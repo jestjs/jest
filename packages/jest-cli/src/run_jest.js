@@ -16,6 +16,7 @@ import type TestWatcher from './test_watcher';
 import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
+import util from 'util';
 import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
@@ -86,6 +87,36 @@ const processResults = (runResults, options) => {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
     }
   }
+
+  if (options.whyRunning) {
+    const whyRunningArray = [];
+    const fakeLogger = {
+      error(...args) {
+        whyRunningArray.push(util.format(...args));
+      },
+    };
+
+    options.whyRunning(fakeLogger);
+
+    if (whyRunningArray.length) {
+      const runningResult = whyRunningArray
+        .join('\n')
+        .split('\n\n')
+        .filter(entry => {
+          if (entry.startsWith('There are') || !entry) {
+            return false;
+          }
+
+          return entry
+            .split('\n')
+            .slice(1)
+            .some(l => l.includes('this._execModule('));
+        })
+        .join('\n');
+      console.error(runningResult);
+    }
+  }
+
   return options.onComplete && options.onComplete(runResults);
 };
 
@@ -237,6 +268,24 @@ export default (async function runJest({
   // original value of rootDir. Instead, use the {cwd: Path} property to resolve
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
+
+  let whyRunning;
+
+  if (globalConfig.detectOpenHandles) {
+    try {
+      whyRunning = require('why-is-node-running');
+    } catch (e) {
+      const nodeMajor = Number(process.versions.node.split('.')[0]);
+      if (e.code === 'MODULE_NOT_FOUND' && nodeMajor < 8) {
+        throw new Error(
+          'You can only use --detectOpenHandles on Node 8 and newer.',
+        );
+      } else {
+        throw e;
+      }
+    }
+  }
+
   if (globalConfig.globalSetup) {
     // $FlowFixMe
     const globalSetup = require(globalConfig.globalSetup);
@@ -279,5 +328,6 @@ export default (async function runJest({
     outputFile: globalConfig.outputFile,
     outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
+    whyRunning,
   });
 });

@@ -37,8 +37,10 @@
     "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
     "which": "^1.2.12",
-    "why-is-node-running": "^2.0.2",
     "yargs": "^11.0.0"
+  },
+  "optionalDependencies": {
+    "why-is-node-running": "^2.0.2"
   },
   "bin": {
     "jest": "./bin/jest.js"

@@ -510,6 +510,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'detectLeaks':
+      case 'detectOpenHandles':
       case 'displayName':
       case 'expand':
       case 'globals':
