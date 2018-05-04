@@ -16,6 +16,7 @@ import type Runtime from 'jest-runtime';
 
 import path from 'path';
 import fs from 'graceful-fs';
+import installEach from './each';
 import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
@@ -61,6 +62,8 @@ async function jasmine2(
   }
 
   jasmineAsyncInstall(environment.global);
+
+  installEach(environment);
 
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;

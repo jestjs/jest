@@ -256,6 +256,77 @@ describe('binaryStringToNumber', () => {
 });
 ```
 
+### `describe.each(table)(name, fn)`
+
+Use `describe.each` if you keep duplicating the same test suites with different
+data. `describe.each` allows you to write the test suite once and pass data in.
+
+`describe.each` is available with two APIs:
+
+#### 1. `describe.each(table)(name, fn)`
+
+* `table`: `Array` of Arrays with the arguments that are passed into the `fn`
+  for each row.
+* `name`: `String` the title of the test suite, use `%s` to positionally inject
+  test data into the suite title.
+* `fn`: `Function` the suite of tests to be ran, this is the function that will
+  receive the parameters in each row as function arguments.
+
+Example:
+
+```js
+describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    test(`returns ${expected}`, () => {
+      expect(a + b).toBe(expected);
+    });
+
+    test(`returned value not be greater than ${expected}`, () => {
+      expect(a + b).not.toBeGreaterThan(expected);
+    });
+
+    test(`returned value not be less than ${expected}`, () => {
+      expect(a + b).not.toBeLessThan(expected);
+    });
+  },
+);
+```
+
+#### 2. `` describe.each`table`(name, fn) ``
+
+* `table`: `Tagged Template Literal`
+  * First row of variable name column headings separated with `|`
+  * One or more subsequent rows of data supplied as template literal expressions
+    using `${value}` syntax.
+* `name`: `String` the title of the test suite, use `$variable` to inject test
+  data into the suite title from the tagged template expressions.
+* `fn`: `Function` the suite of tests to be ran, this is the function that will
+  receive the test data object.
+
+Example:
+
+```js
+describe.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('$a + $b', ({a, b, expected}) => {
+  test(`returns ${expected}`, () => {
+    expect(a + b).toBe(expected);
+  });
+
+  test(`returned value not be greater than ${expected}`, () => {
+    expect(a + b).not.toBeGreaterThan(expected);
+  });
+
+  test(`returned value not be less than ${expected}`, () => {
+    expect(a + b).not.toBeLessThan(expected);
+  });
+});
+```
+
 ### `describe.only(name, fn)`
 
 Also under the alias: `fdescribe(name, fn)`
@@ -275,6 +346,52 @@ describe.only('my beverage', () => {
 
 describe('my other beverage', () => {
   // ... will be skipped
+});
+```
+
+### `describe.only.each(table)(name, fn)`
+
+Also under the aliases: `fdescribe.each(table)(name, fn)` and
+`` fdescribe.each`table`(name, fn) ``
+
+Use `describe.only.each` if you want to only run specific tests suites of data
+driven tests.
+
+`describe.only.each` is available with two APIs:
+
+#### `describe.only.each(table)(name, fn)`
+
+```js
+describe.only.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    test(`returns ${expected}`, () => {
+      expect(a + b).toBe(expected);
+    });
+  },
+);
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` describe.only.each`table`(name, fn) ``
+
+```js
+describe.only.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  test('passes', () => {
+    expect(a + b).toBe(expected);
+  });
+});
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
 });
 ```
 
@@ -303,6 +420,52 @@ describe.skip('my other beverage', () => {
 
 Using `describe.skip` is often just an easier alternative to temporarily
 commenting out a chunk of tests.
+
+### `describe.skip.each(table)(name, fn)`
+
+Also under the aliases: `xdescribe.each(table)(name, fn)` and
+`` xdescribe.each`table`(name, fn) ``
+
+Use `describe.skip.each` if you want to stop running a suite of data driven
+tests.
+
+`describe.skip.each` is available with two APIs:
+
+#### `describe.skip.each(table)(name, fn)`
+
+```js
+describe.skip.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    test(`returns ${expected}`, () => {
+      expect(a + b).toBe(expected); // will not be ran
+    });
+  },
+);
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` describe.skip.each`table`(name, fn) ``
+
+```js
+describe.skip.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  test('will not be ran', () => {
+    expect(a + b).toBe(expected); // will not be ran
+  });
+});
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
 
 ### `require.requireActual(moduleName)`
 
@@ -353,6 +516,60 @@ test('has lemon in it', () => {
 Even though the call to `test` will return right away, the test doesn't complete
 until the promise resolves as well.
 
+### `test.each(table)(name, fn)`
+
+Also under the alias: `it.each(table)(name, fn)` and
+`` it.each`table`(name, fn) ``
+
+Use `test.each` if you keep duplicating the same test with different data.
+`test.each` allows you to write the test once and pass data in.
+
+`test.each` is available with two APIs:
+
+#### 1. `test.each(table)(name, fn)`
+
+* `table`: `Array` of Arrays with the arguments that are passed into the test
+  `fn` for each row.
+* `name`: `String` the title of the test block, use `%s` to positionally inject
+  parameter values into the test title.
+* `fn`: `Function` the test to be ran, this is the function that will receive
+  the parameters in each row as function arguments.
+
+Example:
+
+```js
+test.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
+```
+
+#### 2. `` test.each`table`(name, fn) ``
+
+* `table`: `Tagged Template Literal`
+  * First row of variable name column headings separated with `|`
+  * One or more subsequent rows of data supplied as template literal expressions
+    using `${value}` syntax.
+* `name`: `String` the title of the test, use `$variable` to inject test data
+  into the test title from the tagged template expressions.
+* `fn`: `Function` the test to be ran, this is the function that will receive
+  the test data object.
+
+Example:
+
+```js
+test.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected);
+});
+```
+
 ### `test.only(name, fn, timeout)`
 
 Also under the aliases: `it.only(name, fn, timeout)` or `fit(name, fn, timeout)`
@@ -383,6 +600,49 @@ Usually you wouldn't check code using `test.only` into source control - you
 would use it just for debugging, and remove it once you have fixed the broken
 tests.
 
+### `test.only.each(table)(name, fn)`
+
+Also under the aliases: `it.only.each(table)(name, fn)`,
+`fit.each(table)(name, fn)`, `` it.only.each`table`(name, fn) `` and
+`` fit.each`table`(name, fn) ``
+
+Use `test.only.each` if you want to only run specific tests with different test
+data.
+
+`test.only.each` is available with two APIs:
+
+#### `test.only.each(table)(name, fn)`
+
+```js
+test.only.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` test.only.each`table`(name, fn) ``
+
+```js
+test.only.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected);
+});
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
 ### `test.skip(name, fn)`
 
 Also under the aliases: `it.skip(name, fn)` or `xit(name, fn)` or
@@ -410,3 +670,47 @@ Only the "it is raining" test will run, since the other test is run with
 
 You could simply comment the test out, but it's often a bit nicer to use
 `test.skip` because it will maintain indentation and syntax highlighting.
+
+### `test.skip.each(table)(name, fn)`
+
+Also under the aliases: `it.skip.each(table)(name, fn)`,
+`xit.each(table)(name, fn)`, `xtest.each(table)(name, fn)`,
+`` it.skip.each`table`(name, fn) ``, `` xit.each`table`(name, fn) `` and
+`` xtest.each`table`(name, fn) ``
+
+Use `test.skip.each` if you want to stop running a collection of data driven
+tests.
+
+`test.skip.each` is available with two APIs:
+
+#### `test.skip.each(table)(name, fn)`
+
+```js
+test.skip.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
+  '.add(%s, %s)',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected); // will not be ran
+  },
+);
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` test.skip.each`table`(name, fn) ``
+
+```js
+test.skip.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected); // will not be ran
+});
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
