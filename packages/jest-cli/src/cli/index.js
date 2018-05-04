@@ -29,6 +29,7 @@ import runJest from '../run_jest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
 import watch from '../watch';
+import pluralize from '../pluralize';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
@@ -131,10 +132,12 @@ export const runCLI = async (
       })
       .join('\n\n');
 
+    const openHandlesString = pluralize('open handle', openHandles.length, 's');
+
     const message =
       chalk.red(
         '\nJest has detected the following ' +
-          `${openHandles.length} open handles potentially keeping Jest from ` +
+          `${openHandlesString} potentially keeping Jest from ` +
           'exiting:\n\n',
       ) + handles;
 
