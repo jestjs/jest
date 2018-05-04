@@ -16,7 +16,6 @@ import type TestWatcher from './test_watcher';
 import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
-import util from 'util';
 import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
@@ -27,6 +26,7 @@ import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 import FailedTestsCache from './failed_tests_cache';
 import JestHooks, {type JestHookEmitter} from './jest_hooks';
+import formatWhyRunning from './format_why_node_running';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -67,40 +67,6 @@ const getTestPaths = async (
     tests: filteredTests,
   });
 };
-
-function formatWhyRunning(whyRunning) {
-  const whyRunningArray = [];
-  const fakeLogger = {
-    error(...args) {
-      whyRunningArray.push(util.format(...args));
-    },
-  };
-
-  whyRunning(fakeLogger);
-
-  return whyRunningArray
-    .join('\n')
-    .split('\n\n')
-    .filter(entry => {
-      if (entry.startsWith('There are') || !entry) {
-        return false;
-      }
-
-      return entry.split('\n').some(l => l.includes('this._execModule('));
-    })
-    .map(entry => {
-      const [title, ...lines] = entry.split('\n');
-
-      const entries = lines
-        .map(line => line.split(/\s+-\s+/))
-        .map(([file, line]) => ({file, line}));
-
-      return {
-        entries,
-        title: title.replace('# ', ''),
-      };
-    });
-}
 
 const processResults = (runResults, options) => {
   const {
