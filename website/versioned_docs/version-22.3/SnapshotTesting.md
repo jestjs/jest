@@ -139,12 +139,12 @@ From here you can choose to update that snapshot or skip to the next:
 ## Best Practices
 
 Snapshots are a fantastic tool for identifying unexpected interface changes
-within your application – whether that interface is a UI, logs, or error
-messages; however, they're not a cure-all, and, as with any testing strategy,
-there are some best-practices you should be aware of, and guidelines you should
-follow, in order to use them effectively.
+within your application – whether that interface is an API response, UI, logs,
+or error messages. As with any testing strategy, there are some best-practices
+you should be aware of, and guidelines you should follow, in order to use them
+effectively.
 
-### 1. Treat Snapshots As First-Class Citizens
+### 1. Treat snapshots as first-Class citizens
 
 Commit snapshots and review them as part of your regular code review process.
 This implies treating snapshots as you would any other type of test, or code for
@@ -154,20 +154,21 @@ Ensure that your snapshots are _very_ readable by keeping them focused, short,
 and using tools that enforce these stylistic conventions.
 
 As mentioned previously, Jest uses
-[pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format)
-to make snapshots human-readable, but you may find it useful to introduce
-additional tools, like
-[`eslint-plugin-jest`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md)
-with its `'no-large-snapshots'` option, and
-[`snapshot-diff`](https://github.com/jest-community/snapshot-diff) with its
-component snapshot comparison feature, to promote committing short, focused
+[`pretty-format`](https://yarnpkg.com/en/package/pretty-format) to make
+snapshots human-readable, but you may find it useful to introduce additional
+tools, like
+[`eslint-plugin-jest`](https://yarnpkg.com/en/package/eslint-plugin-jest) with
+its
+[`no-large-snapshots`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md)
+option, or [`snapshot-diff`](https://yarnpkg.com/en/package/snapshot-diff) with
+its component snapshot comparison feature, to promote committing short, focused
 assertions.
 
 The aim here is to avoid the dangerous habits of glossing over snapshots in pull
 requests, and simply regenerating snapshots when test suites fail instead of
 examining the root causes of their failure.
 
-### 2. Tests Should Be Deterministic
+### 2. Tests should be deterministic
 
 Your tests should be deterministic. That is, running the same tests multiple
 times on a component that has not changed should produce the same results every
@@ -188,6 +189,50 @@ Date.now = jest.fn(() => 1482363367071);
 Now, every time the snapshot test case runs, `Date.now()` will return
 `1482363367071` consistently. This will result in the same snapshot being
 generated for this component regardless of when the test is run.
+
+### 3. Use descriptive snapshot names
+
+Always strive to use descriptive test and/or snapshot names for snapshots. The
+best names describe the expected snapshot content. This makes it easier for
+reviewers to verify the snapshots during review, and for anyone to know whether
+or not an outdated snapshot is the correct behavior before updating.
+
+For example, compare:
+
+```js
+exports[`<UserName /> should handle some test case`] = `null`;
+
+exports[`<UserName /> should handle some other test case`] = `
+<div>
+  Alan Turing
+</div>
+`;
+```
+
+To:
+
+```js
+exports[`<UserName /> should render null`] = `null`;
+
+exports[`<UserName /> should render Alan Turing`] = `
+<div>
+  Alan Turing
+</div>
+`;
+```
+
+Since the later describes exactly what's expected in the output, it's easy to
+see when it's wrong:
+
+```js
+exports[`<UserName /> should render null`] = `
+<div>
+  Alan Turing
+</div>
+`;
+
+exports[`<UserName /> should render Alan Turing`] = `null`;
+```
 
 ## Frequently Asked Questions
 
