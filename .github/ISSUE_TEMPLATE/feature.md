@@ -1,7 +1,7 @@
 ---
 
-name: 🚀 Feature Proposal  
-about: Create a report to help us improve
+name: 🚀 Feature Proposal
+about: Submit a proposal for a new feature
 ---
 
 ## 🚀 Feature Proposal
