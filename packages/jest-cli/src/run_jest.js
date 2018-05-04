@@ -114,6 +114,8 @@ const processResults = (runResults, options) => {
 
   if (whyRunning) {
     runResults.openHandles = formatWhyRunning(whyRunning);
+  } else {
+    runResults.openHandles = [];
   }
 
   if (testResultsProcessor) {
