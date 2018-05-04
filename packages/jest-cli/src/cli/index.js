@@ -128,7 +128,26 @@ const readResultsAndExit = (
   process.on('exit', () => (process.exitCode = code));
 
   if (globalConfig.forceExit) {
+    if (!globalConfig.detectOpenHandles) {
+      console.error(
+        chalk.red(
+          'Force exiting Jest - have you considered using `--detectOpenHandles`?',
+        ),
+      );
+    }
+
     exit(code);
+  } else if (!globalConfig.detectOpenHandles) {
+    setTimeout(() => {
+      const lines = [
+        chalk.red.bold(
+          'Jest has not exited 1000ms after the test run finished',
+        ),
+        chalk.red('Have you considered using `--detectOpenHandles`?'),
+      ];
+      console.error(lines.join('\n\n'));
+      // $FlowFixMe: `unref` exists in Node
+    }, 1000).unref();
   }
 };
 
