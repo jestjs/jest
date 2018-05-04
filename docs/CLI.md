@@ -177,8 +177,8 @@ Print debugging info about your Jest config.
 Attempt to collect and print open handles preventing Jest from exiting cleanly.
 Use this in cases where you need to use `--forceExit` in order for Jest to exit
 to potentially track down the reason. Implemented using
-[`why-is-node-running`](https://github.com/mafintosh/why-is-node-running), so it
-only works in Node 8 and newer.
+[`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in
+Node 8 and newer.
 
 ### `--env=<environment>`
 

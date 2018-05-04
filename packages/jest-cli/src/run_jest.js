@@ -26,7 +26,7 @@ import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 import FailedTestsCache from './failed_tests_cache';
 import JestHooks, {type JestHookEmitter} from './jest_hooks';
-import formatWhyRunning from './format_why_node_running';
+import collectNodeHandles from './get_node_handles';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -75,11 +75,11 @@ const processResults = (runResults, options) => {
     onComplete,
     outputStream,
     testResultsProcessor,
-    whyRunning,
+    collectHandles,
   } = options;
 
-  if (whyRunning) {
-    runResults.openHandles = formatWhyRunning(whyRunning);
+  if (collectHandles) {
+    runResults.openHandles = collectHandles();
   } else {
     runResults.openHandles = [];
   }
@@ -254,21 +254,10 @@ export default (async function runJest({
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
 
-  let whyRunning;
+  let collectHandles;
 
   if (globalConfig.detectOpenHandles) {
-    try {
-      whyRunning = require('why-is-node-running');
-    } catch (e) {
-      const nodeMajor = Number(process.versions.node.split('.')[0]);
-      if (e.code === 'MODULE_NOT_FOUND' && nodeMajor < 8) {
-        throw new Error(
-          'You can only use --detectOpenHandles on Node 8 and newer.',
-        );
-      } else {
-        throw e;
-      }
-    }
+    collectHandles = collectNodeHandles();
   }
 
   if (globalConfig.globalSetup) {
@@ -308,11 +297,11 @@ export default (async function runJest({
     await globalTeardown();
   }
   return processResults(results, {
+    collectHandles,
     isJSON: globalConfig.json,
     onComplete,
     outputFile: globalConfig.outputFile,
     outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
-    whyRunning,
   });
 });

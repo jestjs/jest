@@ -14,13 +14,13 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
-import {formatStackTrace} from 'jest-message-util';
 import {version as VERSION} from '../../package.json';
 import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import exit from 'exit';
 import getChangedFilesPromise from '../get_changed_files_promise';
+import {formatHandleErrors} from '../get_node_handles';
 import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
@@ -106,27 +106,12 @@ export const runCLI = async (
   const {openHandles} = results;
 
   if (openHandles && openHandles.length) {
-    const handles = openHandles
-      .map(({title, entries}) => ({
-        // Fake column to make it a valid stack trace
-        stack: entries.map(({file}) => `at ${file}:0`).join('\n'),
-        title,
-      }))
-      .map(
-        ({title, stack}) =>
-          title +
-          '\n' +
-          // First config should be fine
-          formatStackTrace(stack, configs[0], {noStackTrace: false}),
-      )
-      .join('\n\n');
-
     const openHandlesString = pluralize('open handle', openHandles.length, 's');
 
     const message =
       chalk.red(
         `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
-      ) + handles;
+      ) + formatHandleErrors(openHandles, configs[0]).join('\n\n');
 
     console.error(message);
   }

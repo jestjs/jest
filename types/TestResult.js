@@ -122,7 +122,7 @@ export type AggregatedResultWithoutCoverage = {
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
   numTotalTestSuites: number,
-  openHandles: Array<OpenHandle>,
+  openHandles: Array<Error>,
   snapshot: SnapshotSummary,
   startTime: number,
   success: boolean,
@@ -140,11 +140,6 @@ export type Suite = {|
   tests: Array<AssertionResult>,
 |};
 
-export type OpenHandle = {|
-  title: string,
-  entries: Array<{file: string, line: string}>,
-|};
-
 export type TestResult = {|
   console: ?ConsoleBuffer,
   coverage?: RawCoverage,
@@ -155,7 +150,7 @@ export type TestResult = {|
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
-  openHandles: Array<OpenHandle>,
+  openHandles: Array<Error>,
   perfStats: {|
     end: Milliseconds,
     start: Milliseconds,

@@ -39,9 +39,6 @@
     "which": "^1.2.12",
     "yargs": "^11.0.0"
   },
-  "optionalDependencies": {
-    "why-is-node-running": "^2.0.2"
-  },
   "bin": {
     "jest": "./bin/jest.js"
   },
