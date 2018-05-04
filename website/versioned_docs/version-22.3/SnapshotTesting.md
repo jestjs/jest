@@ -144,14 +144,14 @@ or error messages. As with any testing strategy, there are some best-practices
 you should be aware of, and guidelines you should follow, in order to use them
 effectively.
 
-### 1. Treat snapshots as first-Class citizens
+### 1. Treat snapshots as code
 
 Commit snapshots and review them as part of your regular code review process.
-This implies treating snapshots as you would any other type of test, or code for
-that matter, in your project.
+This means treating snapshots as you would any other type of test or code in
+your project.
 
-Ensure that your snapshots are _very_ readable by keeping them focused, short,
-and using tools that enforce these stylistic conventions.
+Ensure that your snapshots are readable by keeping them focused, short, and by
+using tools that enforce these stylistic conventions.
 
 As mentioned previously, Jest uses
 [`pretty-format`](https://yarnpkg.com/en/package/pretty-format) to make
@@ -164,15 +164,15 @@ option, or [`snapshot-diff`](https://yarnpkg.com/en/package/snapshot-diff) with
 its component snapshot comparison feature, to promote committing short, focused
 assertions.
 
-The aim here is to avoid the dangerous habits of glossing over snapshots in pull
-requests, and simply regenerating snapshots when test suites fail instead of
-examining the root causes of their failure.
+The goal is to make it easy to review snapshots in pull requests, and fight
+against the habit of simply regenerating snapshots when test suites fail instead
+of examining the root causes of their failure.
 
 ### 2. Tests should be deterministic
 
-Your tests should be deterministic. That is, running the same tests multiple
-times on a component that has not changed should produce the same results every
-time. You're responsible for making sure your generated snapshots do not include
+Your tests should be deterministic. Running the same tests multiple times on a
+component that has not changed should produce the same results every time.
+You're responsible for making sure your generated snapshots do not include
 platform specific or other non-deterministic data.
 
 For example, if you have a
