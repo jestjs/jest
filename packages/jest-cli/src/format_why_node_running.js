@@ -7,9 +7,15 @@
  * @flow
  */
 
+import type {OpenHandle} from 'types/TestResult';
+
 import util from 'util';
 
-export default function formatWhyRunning(whyRunning) {
+type WhyIsNodeRunningCb = ({error: (...args: Array<string>) => void}) => void;
+
+export default function formatWhyRunning(
+  whyRunning: WhyIsNodeRunningCb,
+): Array<OpenHandle> {
   const whyRunningArray = [];
   const fakeLogger = {
     error(...args) {
