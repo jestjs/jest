@@ -136,6 +136,7 @@ const getConfigs = (
       runTestsByPath: options.runTestsByPath,
       silent: options.silent,
       skipFilter: options.skipFilter,
+      skipUnchecked: options.skipUnchecked,
       testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,
       testPathPattern: options.testPathPattern,

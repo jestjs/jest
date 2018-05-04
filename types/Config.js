@@ -204,6 +204,7 @@ export type GlobalConfig = {|
   rootDir: Path,
   silent: boolean,
   skipFilter: boolean,
+  skipUnchecked: ?boolean,
   testFailureExitCode: number,
   testNamePattern: string,
   testPathPattern: string,
