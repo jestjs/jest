@@ -49,7 +49,7 @@ const NUMBERS = [
 ];
 
 export const SUGGEST_TO_EQUAL = chalk.dim(
-  'Looks like you wanted to test for object/array equality with the stricter `toBe` matcher. You probably need to use `toEqual` instead.',
+  'Note that you are testing for equality with the stricter `toBe` matcher using `Object.is`. For deep equality only, use `toEqual` instead.',
 );
 
 export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
