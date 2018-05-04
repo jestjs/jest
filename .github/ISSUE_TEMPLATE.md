@@ -1,4 +1,4 @@
-## 👉 [PLEASE CHOOSE AN ISSUE TEMPLATE HERE](https://github.com/facebook/jest/issues/new/choose) 👈
+## 👉 [Please follow one of these issue templates](https://github.com/facebook/jest/issues/new/choose) 👈
 
-This ticket will be immediately closed for not following one of the above issue
-templates.
+Note: to keep the backlog clean and actionable, issues may be immediately closed
+if they do not follow one of the above issue templates.
