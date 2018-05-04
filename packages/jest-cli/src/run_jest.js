@@ -68,18 +68,65 @@ const getTestPaths = async (
   });
 };
 
+function formatWhyRunning(whyRunning) {
+  const whyRunningArray = [];
+  const fakeLogger = {
+    error(...args) {
+      whyRunningArray.push(util.format(...args));
+    },
+  };
+
+  whyRunning(fakeLogger);
+
+  return whyRunningArray
+    .join('\n')
+    .split('\n\n')
+    .filter(entry => {
+      if (entry.startsWith('There are') || !entry) {
+        return false;
+      }
+
+      return entry.split('\n').some(l => l.includes('this._execModule('));
+    })
+    .map(entry => {
+      const [title, ...lines] = entry.split('\n');
+
+      const entries = lines
+        .map(line => line.split(/\s+-\s+/))
+        .map(([file, line]) => ({file, line}));
+
+      return {
+        entries,
+        title: title.replace('# ', ''),
+      };
+    });
+}
+
 const processResults = (runResults, options) => {
-  const {outputFile} = options;
-  if (options.testResultsProcessor) {
-    /* $FlowFixMe */
-    runResults = require(options.testResultsProcessor)(runResults);
+  const {
+    outputFile,
+    isJSON,
+    onComplete,
+    outputStream,
+    testResultsProcessor,
+    whyRunning,
+  } = options;
+
+  if (whyRunning) {
+    const runningResult = formatWhyRunning(whyRunning);
+    console.error(runningResult);
   }
-  if (options.isJSON) {
+
+  if (testResultsProcessor) {
+    /* $FlowFixMe */
+    runResults = require(testResultsProcessor)(runResults);
+  }
+  if (isJSON) {
     if (outputFile) {
       const filePath = path.resolve(process.cwd(), outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
-      options.outputStream.write(
+      outputStream.write(
         `Test results written to: ` +
           `${path.relative(process.cwd(), filePath)}\n`,
       );
@@ -88,36 +135,7 @@ const processResults = (runResults, options) => {
     }
   }
 
-  if (options.whyRunning) {
-    const whyRunningArray = [];
-    const fakeLogger = {
-      error(...args) {
-        whyRunningArray.push(util.format(...args));
-      },
-    };
-
-    options.whyRunning(fakeLogger);
-
-    if (whyRunningArray.length) {
-      const runningResult = whyRunningArray
-        .join('\n')
-        .split('\n\n')
-        .filter(entry => {
-          if (entry.startsWith('There are') || !entry) {
-            return false;
-          }
-
-          return entry
-            .split('\n')
-            .slice(1)
-            .some(l => l.includes('this._execModule('));
-        })
-        .join('\n');
-      console.error(runningResult);
-    }
-  }
-
-  return options.onComplete && options.onComplete(runResults);
+  return onComplete && onComplete(runResults);
 };
 
 const testSchedulerContext = {
