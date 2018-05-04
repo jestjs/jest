@@ -109,14 +109,10 @@ const processResults = (runResults, options) => {
     onComplete,
     outputStream,
     testResultsProcessor,
-    whyRunning,
+    whyRunning = () => {},
   } = options;
 
-  if (whyRunning) {
-    runResults.openHandles = formatWhyRunning(whyRunning);
-  } else {
-    runResults.openHandles = [];
-  }
+  runResults.openHandles = formatWhyRunning(whyRunning);
 
   if (testResultsProcessor) {
     /* $FlowFixMe */
