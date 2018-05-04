@@ -31,6 +31,7 @@ import watch from '../watch';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
+import Table from 'easy-table';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
@@ -99,6 +100,33 @@ export const runCLI = async (
     throw new Error(
       'AggregatedResult must be present after test run is complete',
     );
+  }
+
+  const {openHandles} = results;
+
+  if (openHandles && openHandles.length) {
+    const handles = openHandles
+      .map(({title, entries}) => {
+        const table = new Table();
+
+        entries.forEach(({file, line}) => {
+          table.cell('File', file);
+          table.cell('Line', line);
+          table.newRow();
+        });
+
+        return title + '\n' + table.toString();
+      })
+      .join('\n\n');
+
+    const message =
+      chalk.red(
+        '\nJest has detected the following ' +
+          `${openHandles.length} open handles potentially keeping Jest from ` +
+          'exiting:\n\n',
+      ) + handles;
+
+    console.error(message);
   }
 
   return Promise.resolve({globalConfig, results});

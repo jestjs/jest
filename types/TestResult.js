@@ -139,6 +139,11 @@ export type Suite = {|
   tests: Array<AssertionResult>,
 |};
 
+export type OpenHandle = {|
+  title: string,
+  entries: Array<{file: string, line: string}>,
+|};
+
 export type TestResult = {|
   console: ?ConsoleBuffer,
   coverage?: RawCoverage,
@@ -149,6 +154,7 @@ export type TestResult = {|
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
+  openHandles: Array<OpenHandle>,
   perfStats: {|
     end: Milliseconds,
     start: Milliseconds,

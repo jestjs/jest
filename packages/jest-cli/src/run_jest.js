@@ -113,8 +113,7 @@ const processResults = (runResults, options) => {
   } = options;
 
   if (whyRunning) {
-    const runningResult = formatWhyRunning(whyRunning);
-    console.error(runningResult);
+    runResults.openHandles = formatWhyRunning(whyRunning);
   }
 
   if (testResultsProcessor) {

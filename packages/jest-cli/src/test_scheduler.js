@@ -109,7 +109,7 @@ export default class TestScheduler {
         });
       }
 
-      // Throws when the context is leaked after executinga test.
+      // Throws when the context is leaked after executing a test.
       if (testResult.leaks) {
         const message =
           chalk.red.bold('EXPERIMENTAL FEATURE!\n') +
