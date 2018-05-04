@@ -2,6 +2,9 @@
 
 ### Features
 
+* `[jest-cli]` Add `--detectOpenHandles` flag which enables Jest to potentially
+  track down handles keeping it open after tests are complete.
+  ([#6130](https://github.com/facebook/jest/pull/6130))
 * `[jest-jasmine2]` Add data driven testing based on `jest-each`
   ([#6102](https://github.com/facebook/jest/pull/6102))
 * `[jest-matcher-utils]` Change "suggest to equal" message to be more advisory
