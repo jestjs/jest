@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prints message about flag on forceExit 1`] = `"Force exiting Jest - have you considered using \`--detectOpenHandles\`?"`;
+
+exports[`prints message about flag on slow tests 1`] = `
+"Jest has not exited 1000ms after the test run finished
+
+Have you considered using \`--detectOpenHandles\`?"
+`;
+
+exports[`prints out info about open handlers 1`] = `
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  GETADDRINFOREQWRAP
+
+      5 | const app = new http.Server();
+      6 | 
+    > 7 | app.listen({host: 'localhost', port: 0});
+        |     ^
+      8 | 
+      
+      at Object.<anonymous> (server.js:7:5)
+      at Object.<anonymous> (__tests__/test.js:3:1)"
+`;

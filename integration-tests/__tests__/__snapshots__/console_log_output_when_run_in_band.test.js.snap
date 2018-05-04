@@ -4,7 +4,8 @@ exports[`prints console.logs when run with forceExit 1`] = `
 "PASS __tests__/a-banana.js
   ✓ banana
 
-"
+
+Force exiting Jest - have you considered using \`--detectOpenHandles\`?"
 `;
 
 exports[`prints console.logs when run with forceExit 2`] = `

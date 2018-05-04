@@ -57,6 +57,7 @@
     "prettier": "^1.12.1",
     "prettylint": "^1.0.0",
     "progress": "^2.0.0",
+    "readable-stream": "^2.3.6",
     "regenerator-runtime": "^0.11.0",
     "resolve": "^1.4.0",
     "rimraf": "^2.6.2",

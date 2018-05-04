@@ -156,7 +156,7 @@ const extractSummary = (
 
   let rest = cleanupStackTrace(
     // remove all timestamps
-    stdout.slice(0, -match[0].length).replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
+    stdout.replace(match[0], '').replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
   );
 
   if (stripLocation) {
