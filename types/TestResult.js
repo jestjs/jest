@@ -122,6 +122,7 @@ export type AggregatedResultWithoutCoverage = {
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
   numTotalTestSuites: number,
+  openHandles: Array<OpenHandle>,
   snapshot: SnapshotSummary,
   startTime: number,
   success: boolean,
