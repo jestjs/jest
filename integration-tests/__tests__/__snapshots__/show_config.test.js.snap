@@ -103,6 +103,5 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"watchman\\": true
   },
   \\"version\\": \\"[version]\\"
-}
-"
+}"
 `;

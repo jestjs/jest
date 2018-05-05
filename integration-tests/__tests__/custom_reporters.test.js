@@ -94,7 +94,7 @@ describe('Custom Reporters Integration', () => {
     const parsedJSON = JSON.parse(stdout);
 
     expect(status).toBe(0);
-    expect(stderr.trim()).toBe('');
+    expect(stderr).toBe('');
     expect(parsedJSON).toMatchSnapshot();
   });
 
@@ -106,7 +106,7 @@ describe('Custom Reporters Integration', () => {
     const parsedJSON = JSON.parse(stdout);
 
     expect(status).toBe(1);
-    expect(stderr.trim()).toBe('');
+    expect(stderr).toBe('');
     expect(parsedJSON).toMatchSnapshot();
   });
 
@@ -121,7 +121,7 @@ describe('Custom Reporters Integration', () => {
     ]);
 
     expect(status).toBe(0);
-    expect(stderr.trim()).toBe('');
+    expect(stderr).toBe('');
 
     expect(stdout).toMatchSnapshot();
   });

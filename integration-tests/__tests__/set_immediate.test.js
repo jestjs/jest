@@ -12,8 +12,7 @@ const runJest = require('../runJest');
 
 test('setImmediate', () => {
   const result = runJest('set-immediate', ['--verbose']);
-  const stderr = result.stderr.toString();
 
-  expect(stderr).toMatch('setImmediate test');
+  expect(result.stderr).toMatch('setImmediate test');
   expect(result.status).toBe(0);
 });

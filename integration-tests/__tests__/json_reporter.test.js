@@ -66,15 +66,13 @@ describe('JSON Reporter', () => {
 
   it('outputs coverage report', () => {
     const result = runJest('json-reporter', ['--json']);
-    const stdout = result.stdout.toString();
-    const stderr = result.stderr.toString();
     let jsonResult;
 
-    expect(stderr).toMatch(/1 failed, 2 passed/);
+    expect(result.stderr).toMatch(/1 failed, 2 passed/);
     expect(result.status).toBe(1);
 
     try {
-      jsonResult = JSON.parse(stdout);
+      jsonResult = JSON.parse(result.stdout);
     } catch (err) {
       throw new Error(
         "Can't parse the JSON result from stdout" + err.toString(),

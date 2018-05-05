@@ -9,7 +9,7 @@
 'use strict';
 
 const path = require('path');
-const {sync: spawnSync} = require('cross-spawn');
+const {sync: spawnSync} = require('execa');
 const {fileExists} = require('./Utils');
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -54,10 +54,11 @@ function runJest(
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
     env,
+    reject: false,
   });
 
-  result.stdout = result.stdout && result.stdout.toString();
-  result.stderr = result.stderr && result.stderr.toString();
+  // For compat with cross-spawn
+  result.status = result.code;
 
   return result;
 }
