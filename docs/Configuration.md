@@ -963,6 +963,7 @@ structure as the first argument and return it:
   "numPassedTests": number,
   "numFailedTests": number,
   "numPendingTests": number,
+  "openHandles": Array<Error>,
   "testResults": [{
     "numFailingTests": number,
     "numPassingTests": number,

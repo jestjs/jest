@@ -20,6 +20,7 @@ import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import exit from 'exit';
 import getChangedFilesPromise from '../get_changed_files_promise';
+import {formatHandleErrors} from '../get_node_handles';
 import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
@@ -28,6 +29,7 @@ import runJest from '../run_jest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../test_watcher';
 import watch from '../watch';
+import pluralize from '../pluralize';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
@@ -101,6 +103,19 @@ export const runCLI = async (
     );
   }
 
+  const {openHandles} = results;
+
+  if (openHandles && openHandles.length) {
+    const openHandlesString = pluralize('open handle', openHandles.length, 's');
+
+    const message =
+      chalk.red(
+        `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
+      ) + formatHandleErrors(openHandles, configs[0]).join('\n\n');
+
+    console.error(message);
+  }
+
   return Promise.resolve({globalConfig, results});
 };
 
@@ -113,7 +128,31 @@ const readResultsAndExit = (
   process.on('exit', () => (process.exitCode = code));
 
   if (globalConfig.forceExit) {
+    if (!globalConfig.detectOpenHandles) {
+      console.error(
+        chalk.red.bold('Force exiting Jest\n\n') +
+          chalk.red(
+            'Have you considered using `--detectOpenHandles` to detect ' +
+              'async operations that kept running after all tests finished?',
+          ),
+      );
+    }
+
     exit(code);
+  } else if (!globalConfig.detectOpenHandles) {
+    setTimeout(() => {
+      console.error(
+        chalk.red.bold(
+          'Jest did not exit one second after the test run has completed.\n\n',
+        ) +
+          chalk.red(
+            'This usually means that there are asynchronous operations that ' +
+              "weren't stopped in your tests. Consider running Jest with " +
+              '`--detectOpenHandles` to troubleshoot this issue.',
+          ),
+      );
+      // $FlowFixMe: `unref` exists in Node
+    }, 1000).unref();
   }
 };
 

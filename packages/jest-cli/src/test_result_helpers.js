@@ -24,6 +24,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => {
     numRuntimeErrorTestSuites: 0,
     numTotalTestSuites: 0,
     numTotalTests: 0,
+    openHandles: [],
     snapshot: {
       added: 0,
       didUpdate: false, // is set only after the full run
@@ -59,6 +60,7 @@ export const buildFailureTestResult = (
     numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,
+    openHandles: [],
     perfStats: {
       end: 0,
       start: 0,

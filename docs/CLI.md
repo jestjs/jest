@@ -172,6 +172,14 @@ output.
 
 Print debugging info about your Jest config.
 
+### `--detectOpenHandles`
+
+Attempt to collect and print open handles preventing Jest from exiting cleanly.
+Use this in cases where you need to use `--forceExit` in order for Jest to exit
+to potentially track down the reason. Implemented using
+[`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in
+Node 8 and newer.
+
 ### `--env=<environment>`
 
 The test environment used for all tests. This can point to any file or node
@@ -196,7 +204,8 @@ resources set up by test code cannot be adequately cleaned up. _Note: This
 feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it
 means external resources are still being held on to or timers are still pending
 in your code. It is advised to tear down external resources after each test to
-make sure Jest can shut down cleanly._
+make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help
+track it down._
 
 ### `--help`
 

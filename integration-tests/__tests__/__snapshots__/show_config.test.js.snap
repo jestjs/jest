@@ -13,6 +13,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"/node_modules/\\"
       ],
       \\"detectLeaks\\": false,
+      \\"detectOpenHandles\\": false,
       \\"filter\\": null,
       \\"forceCoverageMatch\\": [],
       \\"globals\\": {},
@@ -79,6 +80,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"clover\\"
     ],
     \\"detectLeaks\\": false,
+    \\"detectOpenHandles\\": false,
     \\"expand\\": false,
     \\"filter\\": null,
     \\"globalSetup\\": null,

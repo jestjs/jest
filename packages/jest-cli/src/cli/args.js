@@ -225,6 +225,13 @@ export const options = {
       'if it was leaked',
     type: 'boolean',
   },
+  detectOpenHandles: {
+    default: false,
+    description:
+      'Print out remaining open handles preventing Jest from exiting at the ' +
+      'end of a test run.',
+    type: 'boolean',
+  },
   env: {
     description:
       'The test environment used for all tests. This can point to ' +
