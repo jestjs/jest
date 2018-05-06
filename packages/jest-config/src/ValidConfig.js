@@ -91,6 +91,7 @@ export default ({
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
+  snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: {userAgent: 'Agent/007'},

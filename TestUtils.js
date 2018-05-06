@@ -102,6 +102,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   setupTestFrameworkScriptFile: null,
   skipFilter: false,
   skipNodeResolution: false,
+  snapshotResolver: null,
   snapshotSerializers: [],
   testEnvironment: 'node',
   testEnvironmentOptions: {},

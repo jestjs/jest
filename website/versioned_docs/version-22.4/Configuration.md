@@ -579,6 +579,30 @@ The path to a module that runs some code to configure or set up the testing fram
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
+### `snapshotResolver` [string]
+
+Default: `undefined`
+
+The path to a module that can resolve test<->snapshot path. This config option
+lets you customize where Jest stores that snapshot files on disk.
+
+Example snapshot resolver module:
+
+```js
+// my-snapshot-resolver-module
+module.exports = {
+  // resolves from test to snapshot path
+  resolveSnapshotPath: (testPath, snapshotExtension) =>
+    testPath.replace('__tests__', '__snapshots__') + snapshotExtension,
+
+  // resolves from snapshot to test path
+  resolveTestPath: (snapshotFilePath, snapshotExtension) =>
+    snapshotFilePath
+      .replace('__snapshots__', '__tests__')
+      .slice(0, -snapshotExtension.length),
+};
+```
+
 ### `snapshotSerializers` [array<string>]
 
 Default: `[]`

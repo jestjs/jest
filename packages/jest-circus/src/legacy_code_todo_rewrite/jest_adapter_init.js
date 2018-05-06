@@ -13,7 +13,11 @@ import type {Event, TestEntry} from 'types/Circus';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
-import {SnapshotState, addSerializer} from 'jest-snapshot';
+import {
+  SnapshotState,
+  addSerializer,
+  buildSnapshotResolver,
+} from 'jest-snapshot';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID, getOriginalPromise} from '../utils';
 import run from '../run';
@@ -96,7 +100,9 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {
+  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
+  const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     getBabelTraverse,
     getPrettier,
