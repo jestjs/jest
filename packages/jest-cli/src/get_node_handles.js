@@ -56,9 +56,7 @@ export default function collectHandles(): () => Array<Error> {
     hook.disable();
 
     const result = Array.from(activeHandles.values());
-
     activeHandles.clear();
-
     return result;
   };
 }

@@ -130,9 +130,11 @@ const readResultsAndExit = (
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
       console.error(
-        chalk.red(
-          'Force exiting Jest - have you considered using `--detectOpenHandles`?',
-        ),
+        chalk.red.bold('Force exiting Jest\n\n') +
+          chalk.red(
+            'Have you considered using `--detectOpenHandles`?\n\n to detect ' +
+              'async operations that kept running after all tests finished?',
+          ),
       );
     }
 
@@ -141,9 +143,13 @@ const readResultsAndExit = (
     setTimeout(() => {
       const lines = [
         chalk.red.bold(
-          'Jest has not exited 1000ms after the test run finished',
+          'Jest did not exit one second after the test run has completed.',
         ),
-        chalk.red('Have you considered using `--detectOpenHandles`?'),
+        chalk.red(
+          'This usually means that there are asynchronous operations that ' +
+            "weren't stopped in your tests. Consider running Jest with " +
+            '`--detectOpenHandles` to troubleshoot this issue.',
+        ),
       ];
       console.error(lines.join('\n\n'));
       // $FlowFixMe: `unref` exists in Node

@@ -5,7 +5,11 @@ exports[`prints console.logs when run with forceExit 1`] = `
   ✓ banana
 
 
-Force exiting Jest - have you considered using \`--detectOpenHandles\`?"
+Force exiting Jest
+
+Have you considered using \`--detectOpenHandles\`?
+
+ to detect async operations that kept running after all tests finished?"
 `;
 
 exports[`prints console.logs when run with forceExit 2`] = `
