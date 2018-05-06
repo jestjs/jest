@@ -4,8 +4,7 @@ exports[`Custom Reporters Integration IncompleteReporter for flexibility 1`] = `
 "onRunComplete is called
 Passed Tests: 1
 Failed Tests: 0
-Total Tests: 1
-"
+Total Tests: 1"
 `;
 
 exports[`Custom Reporters Integration TestReporter with all tests failing 1`] = `
@@ -77,8 +76,7 @@ exports[`Custom Reporters Integration default reporters enabled 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /add.test.js/i.
-"
+Ran all test suites matching /add.test.js/i."
 `;
 
 exports[`Custom Reporters Integration default reporters enabled 3`] = `

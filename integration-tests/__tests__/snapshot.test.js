@@ -116,11 +116,10 @@ describe('Snapshot', () => {
     const content = require(snapshotFile);
     expect(
       content['snapshot is not influenced by previous counter 1'],
-    ).not.toBe(undefined);
+    ).not.toBeUndefined();
 
-    const info = result.stderr.toString();
-    expect(info).toMatch('5 snapshots written in 2 test suites');
-    expect(extractSummary(info).summary).toMatchSnapshot();
+    expect(result.stderr).toMatch('5 snapshots written in 2 test suites');
+    expect(extractSummary(result.stderr).summary).toMatchSnapshot();
   });
 
   it('works with escaped characters', () => {
@@ -130,7 +129,7 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot.test.js',
     ]);
-    let stderr = result.stderr.toString();
+    let stderr = result.stderr;
 
     expect(stderr).toMatch('1 snapshot written');
     expect(result.status).toBe(0);
@@ -149,7 +148,7 @@ describe('Snapshot', () => {
       '--updateSnapshot',
       'snapshot.test.js',
     ]);
-    stderr = result.stderr.toString();
+    stderr = result.stderr;
 
     expect(stderr).toMatch('1 snapshot written');
     expect(extractSummary(stderr).summary).toMatchSnapshot();
@@ -162,7 +161,7 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot.test.js',
     ]);
-    stderr = result.stderr.toString();
+    stderr = result.stderr;
 
     expect(stderr).not.toMatch('Snapshot Summary');
     expect(extractSummary(stderr).summary).toMatchSnapshot();
@@ -176,7 +175,7 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot_escape_regex.js',
     ]);
-    let stderr = result.stderr.toString();
+    let stderr = result.stderr;
 
     expect(stderr).toMatch('2 snapshots written in 1 test suite.');
     expect(result.status).toBe(0);
@@ -187,7 +186,7 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot_escape_regex.js',
     ]);
-    stderr = result.stderr.toString();
+    stderr = result.stderr;
 
     // Make sure we aren't writing a snapshot this time which would
     // indicate that the snapshot couldn't be loaded properly.
@@ -203,7 +202,7 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot_escape_substitution.test.js',
     ]);
-    let stderr = result.stderr.toString();
+    let stderr = result.stderr;
 
     expect(stderr).toMatch('1 snapshot written');
     expect(result.status).toBe(0);
@@ -214,7 +213,7 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot_escape_substitution.test.js',
     ]);
-    stderr = result.stderr.toString();
+    stderr = result.stderr;
 
     // Make sure we aren't writing a snapshot this time which would
     // indicate that the snapshot couldn't be loaded properly.
@@ -235,7 +234,7 @@ describe('Snapshot', () => {
       expect(result.json.numTotalTests).toBe(9);
       expect(result.json.snapshot.added).toBe(0);
       expect(result.json.snapshot.total).toBe(9);
-      const {rest, summary} = extractSummary(result.stderr.toString());
+      const {rest, summary} = extractSummary(result.stderr);
 
       expect(rest).toMatch('New snapshot was not written');
       expect(summary).toMatchSnapshot();
@@ -253,12 +252,10 @@ describe('Snapshot', () => {
       expect(secondRun.json.numTotalTests).toBe(9);
       expect(secondRun.json.success).toBe(true);
 
-      const infoFR = firstRun.stderr.toString();
-      const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
-      expect(infoSR).toMatch('9 passed, 9 total');
-      expect(extractSummary(infoFR).summary).toMatchSnapshot();
-      expect(extractSummary(infoSR).summary).toMatchSnapshot();
+      expect(firstRun.stderr).toMatch('9 snapshots written in 3 test suites');
+      expect(secondRun.stderr).toMatch('9 passed, 9 total');
+      expect(extractSummary(firstRun.stderr).summary).toMatchSnapshot();
+      expect(extractSummary(secondRun.stderr).summary).toMatchSnapshot();
     });
 
     it('deletes the snapshot if the test suite has been removed', () => {
@@ -274,12 +271,10 @@ describe('Snapshot', () => {
       expect(secondRun.json.numTotalTests).toBe(5);
       expect(fileExists(snapshotOfCopy)).toBe(false);
 
-      const infoFR = firstRun.stderr.toString();
-      const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
-      expect(infoSR).toMatch('1 obsolete snapshot file removed');
-      expect(extractSummary(infoFR).summary).toMatchSnapshot();
-      expect(extractSummary(infoSR).summary).toMatchSnapshot();
+      expect(firstRun.stderr).toMatch('9 snapshots written in 3 test suites');
+      expect(secondRun.stderr).toMatch('1 obsolete snapshot file removed');
+      expect(extractSummary(firstRun.stderr).summary).toMatchSnapshot();
+      expect(extractSummary(secondRun.stderr).summary).toMatchSnapshot();
     });
 
     it('deletes a snapshot when a test does removes all the snapshots', () => {
@@ -293,12 +288,10 @@ describe('Snapshot', () => {
       expect(secondRun.json.numTotalTests).toBe(6);
 
       expect(fileExists(snapshotOfCopy)).toBe(false);
-      const infoFR = firstRun.stderr.toString();
-      const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
-      expect(infoSR).toMatch('1 obsolete snapshot file removed');
-      expect(extractSummary(infoFR).summary).toMatchSnapshot();
-      expect(extractSummary(infoSR).summary).toMatchSnapshot();
+      expect(firstRun.stderr).toMatch('9 snapshots written in 3 test suites');
+      expect(secondRun.stderr).toMatch('1 obsolete snapshot file removed');
+      expect(extractSummary(firstRun.stderr).summary).toMatchSnapshot();
+      expect(extractSummary(secondRun.stderr).summary).toMatchSnapshot();
     });
 
     it('updates the snapshot when a test removes some snapshots', () => {
@@ -330,13 +323,11 @@ describe('Snapshot', () => {
       expect(beforeRemovingSnapshot[keyToCheck]).not.toBe(undefined);
       expect(afterRemovingSnapshot[keyToCheck]).toBe(undefined);
 
-      const infoFR = firstRun.stderr.toString();
-      const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
-      expect(extractSummary(infoFR).summary).toMatchSnapshot();
-      expect(infoSR).toMatch('1 snapshot updated in 1 test suite');
-      expect(infoSR).toMatch('1 obsolete snapshot removed');
-      expect(extractSummary(infoSR).summary).toMatchSnapshot();
+      expect(firstRun.stderr).toMatch('9 snapshots written in 3 test suites');
+      expect(extractSummary(firstRun.stderr).summary).toMatchSnapshot();
+      expect(secondRun.stderr).toMatch('1 snapshot updated in 1 test suite');
+      expect(secondRun.stderr).toMatch('1 obsolete snapshot removed');
+      expect(extractSummary(secondRun.stderr).summary).toMatchSnapshot();
     });
   });
 });

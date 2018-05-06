@@ -12,13 +12,11 @@ exports[`prints console.logs when run with forceExit 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;
 
 exports[`prints console.logs when run with forceExit 3`] = `
 "  console.log __tests__/a-banana.js:2
     Hey
-
 "
 `;

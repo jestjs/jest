@@ -15,6 +15,5 @@ exports[`Correct beforeEach order ensures the correct order for beforeEach 1`] =
 
   console.log __tests__/before-each-queue.test.js:15
     It Bar
-
 "
 `;

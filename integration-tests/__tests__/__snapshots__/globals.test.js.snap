@@ -16,8 +16,7 @@ exports[`basic test constructs 2`] = `
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;
 
 exports[`cannot test with no implementation 1`] = `
@@ -89,8 +88,7 @@ exports[`function as descriptor 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;
 
 exports[`only 1`] = `
@@ -115,8 +113,7 @@ exports[`only 2`] = `
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;
 
 exports[`only with expand arg 1`] = `
@@ -141,8 +138,7 @@ exports[`only with expand arg 2`] = `
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;
 
 exports[`skips 1`] = `
@@ -164,8 +160,7 @@ exports[`skips 2`] = `
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;
 
 exports[`skips with expand arg 1`] = `
@@ -191,6 +186,5 @@ exports[`skips with expand arg 2`] = `
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;

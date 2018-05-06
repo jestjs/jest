@@ -12,8 +12,7 @@ exports[`CLI accepts exact file names if matchers matched 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /.\\\\/foo\\\\/bar.spec.js/i.
-"
+Ran all test suites matching /.\\\\/foo\\\\/bar.spec.js/i."
 `;
 
 exports[`CLI accepts exact file names if matchers matched 3`] = `""`;

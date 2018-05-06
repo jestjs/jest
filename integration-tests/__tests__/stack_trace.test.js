@@ -13,12 +13,11 @@ const {extractSummary} = require('../Utils');
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {
-    const result = runJest('stack-trace', ['runtime_error.test.js']);
-    const stderr = result.stderr.toString();
+    const {status, stderr} = runJest('stack-trace', ['runtime_error.test.js']);
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
 
-    expect(result.status).toBe(1);
+    expect(status).toBe(1);
     expect(stderr).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/,
     );
@@ -28,14 +27,13 @@ describe('Stack Trace', () => {
   });
 
   it('does not print a stack trace for runtime errors when --noStackTrace is given', () => {
-    const result = runJest('stack-trace', [
+    const {status, stderr} = runJest('stack-trace', [
       'runtime_error.test.js',
       '--noStackTrace',
     ]);
-    const stderr = result.stderr.toString();
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
-    expect(result.status).toBe(1);
+    expect(status).toBe(1);
 
     expect(stderr).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/,
@@ -46,24 +44,22 @@ describe('Stack Trace', () => {
   });
 
   it('prints a stack trace for matching errors', () => {
-    const result = runJest('stack-trace', ['stack_trace.test.js']);
-    const stderr = result.stderr.toString();
+    const {status, stderr} = runJest('stack-trace', ['stack_trace.test.js']);
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
-    expect(result.status).toBe(1);
+    expect(status).toBe(1);
 
     expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/stack_trace.test\.js/);
   });
 
   it('does not print a stack trace for matching errors when --noStackTrace is given', () => {
-    const result = runJest('stack-trace', [
+    const {status, stderr} = runJest('stack-trace', [
       'stack_trace.test.js',
       '--noStackTrace',
     ]);
-    const stderr = result.stderr.toString();
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
-    expect(result.status).toBe(1);
+    expect(status).toBe(1);
 
     expect(stderr).not.toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/stack_trace.test\.js/,
@@ -71,11 +67,10 @@ describe('Stack Trace', () => {
   });
 
   it('prints a stack trace for errors', () => {
-    const result = runJest('stack-trace', ['test_error.test.js']);
-    const stderr = result.stderr.toString();
+    const {status, stderr} = runJest('stack-trace', ['test_error.test.js']);
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
-    expect(result.status).toBe(1);
+    expect(status).toBe(1);
 
     expect(stderr).toMatch(/this is unexpected\./);
     expect(stderr).toMatch(/this is a string\./);
@@ -93,13 +88,12 @@ describe('Stack Trace', () => {
   });
 
   it('prints a stack trace for errors without message in stack trace', () => {
-    const result = runJest('stack-trace', [
+    const {status, stderr} = runJest('stack-trace', [
       'stack_trace_without_message.test.js',
     ]);
-    const stderr = result.stderr.toString();
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
-    expect(result.status).toBe(1);
+    expect(status).toBe(1);
 
     expect(stderr).toMatch(/important message/);
     expect(stderr).toMatch(
@@ -108,14 +102,13 @@ describe('Stack Trace', () => {
   });
 
   it('does not print a stack trace for errors when --noStackTrace is given', () => {
-    const result = runJest('stack-trace', [
+    const {status, stderr} = runJest('stack-trace', [
       'test_error.test.js',
       '--noStackTrace',
     ]);
-    const stderr = result.stderr.toString();
 
     expect(extractSummary(stderr).summary).toMatchSnapshot();
-    expect(result.status).toBe(1);
+    expect(status).toBe(1);
 
     expect(stderr).not.toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/test_error.test\.js/,

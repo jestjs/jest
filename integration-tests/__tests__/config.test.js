@@ -18,10 +18,9 @@ test('config as JSON', () => {
         testMatch: ['banana strawberry kiwi'],
       }),
   ]);
-  const stdout = result.stdout.toString();
 
   expect(result.status).toBe(1);
-  expect(stdout).toMatch('No tests found');
+  expect(result.stdout).toMatch('No tests found');
 });
 
 test('works with sane config JSON', () => {
@@ -31,10 +30,9 @@ test('works with sane config JSON', () => {
         testEnvironment: 'node',
       }),
   ]);
-  const stderr = result.stderr.toString();
 
   expect(result.status).toBe(1);
-  expect(stderr).toMatch('works just fine');
+  expect(result.stderr).toMatch('works just fine');
 });
 
 test('watchman config option is respected over default argv', () => {
@@ -69,8 +67,7 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
         },
       }),
   ]);
-  const stderr = result.stderr.toString();
 
   expect(result.status).toBe(0);
-  expect(stderr).toMatch('found userAgent Agent/007');
+  expect(result.stderr).toMatch('found userAgent Agent/007');
 });

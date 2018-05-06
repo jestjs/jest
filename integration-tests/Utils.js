@@ -11,7 +11,7 @@
 
 import type {Path} from 'types/Config';
 
-const {sync: spawnSync} = require('cross-spawn');
+const {sync: spawnSync} = require('execa');
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
@@ -19,22 +19,22 @@ const rimraf = require('rimraf');
 
 const run = (cmd: string, cwd?: Path) => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd};
+  const spawnOptions = {cwd, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
+
+  // For compat with cross-spawn
+  result.status = result.code;
 
   if (result.status !== 0) {
     const message = `
       ORIGINAL CMD: ${cmd}
-      STDOUT: ${result.stdout && result.stdout.toString()}
-      STDERR: ${result.stderr && result.stderr.toString()}
+      STDOUT: ${result.stdout}
+      STDERR: ${result.stderr}
       STATUS: ${result.status}
-      ERROR: ${result.error && result.error.toString()}
+      ERROR: ${result.error}
     `;
     throw new Error(message);
   }
-
-  result.stdout = result.stdout && result.stdout.toString();
-  result.stderr = result.stderr && result.stderr.toString();
 
   return result;
 };
