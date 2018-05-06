@@ -140,11 +140,43 @@ watch mode:
 
 ![](/jest/img/content/interactiveSnapshotDone.png)
 
-### Tests Should Be Deterministic
+## Best Practices
 
-Your tests should be deterministic. That is, running the same tests multiple
-times on a component that has not changed should produce the same results every
-time. You're responsible for making sure your generated snapshots do not include
+Snapshots are a fantastic tool for identifying unexpected interface changes
+within your application – whether that interface is an API response, UI, logs,
+or error messages. As with any testing strategy, there are some best-practices
+you should be aware of, and guidelines you should follow, in order to use them
+effectively.
+
+### 1. Treat snapshots as code
+
+Commit snapshots and review them as part of your regular code review process.
+This means treating snapshots as you would any other type of test or code in
+your project.
+
+Ensure that your snapshots are readable by keeping them focused, short, and by
+using tools that enforce these stylistic conventions.
+
+As mentioned previously, Jest uses
+[`pretty-format`](https://yarnpkg.com/en/package/pretty-format) to make
+snapshots human-readable, but you may find it useful to introduce additional
+tools, like
+[`eslint-plugin-jest`](https://yarnpkg.com/en/package/eslint-plugin-jest) with
+its
+[`no-large-snapshots`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md)
+option, or [`snapshot-diff`](https://yarnpkg.com/en/package/snapshot-diff) with
+its component snapshot comparison feature, to promote committing short, focused
+assertions.
+
+The goal is to make it easy to review snapshots in pull requests, and fight
+against the habit of simply regenerating snapshots when test suites fail instead
+of examining the root causes of their failure.
+
+### 2. Tests should be deterministic
+
+Your tests should be deterministic. Running the same tests multiple times on a
+component that has not changed should produce the same results every time.
+You're responsible for making sure your generated snapshots do not include
 platform specific or other non-deterministic data.
 
 For example, if you have a
@@ -162,16 +194,60 @@ Now, every time the snapshot test case runs, `Date.now()` will return
 `1482363367071` consistently. This will result in the same snapshot being
 generated for this component regardless of when the test is run.
 
-### Snapshots are not written automatically on Continuous Integration systems (CI)
+### 3. Use descriptive snapshot names
 
-As of Jest 20, snapshots in Jest are not automatically written when Jest is run
-in a CI system without explicitly passing `--updateSnapshot`. It is expected
+Always strive to use descriptive test and/or snapshot names for snapshots. The
+best names describe the expected snapshot content. This makes it easier for
+reviewers to verify the snapshots during review, and for anyone to know whether
+or not an outdated snapshot is the correct behavior before updating.
+
+For example, compare:
+
+```js
+exports[`<UserName /> should handle some test case`] = `null`;
+
+exports[`<UserName /> should handle some other test case`] = `
+<div>
+  Alan Turing
+</div>
+`;
+```
+
+To:
+
+```js
+exports[`<UserName /> should render null`] = `null`;
+
+exports[`<UserName /> should render Alan Turing`] = `
+<div>
+  Alan Turing
+</div>
+`;
+```
+
+Since the later describes exactly what's expected in the output, it's easy to
+see when it's wrong:
+
+```js
+exports[`<UserName /> should render null`] = `
+<div>
+  Alan Turing
+</div>
+`;
+
+exports[`<UserName /> should render Alan Turing`] = `null`;
+```
+
+## Frequently Asked Questions
+
+### Are snapshots written automatically on Continuous Integration (CI) systems?
+
+No, as of Jest 20, snapshots in Jest are not automatically written when Jest is
+run in a CI system without explicitly passing `--updateSnapshot`. It is expected
 that all snapshots are part of the code that is run on CI and since new
 snapshots automatically pass, they should not pass a test run on a CI system. It
 is recommended to always commit all snapshots and to keep them in version
 control.
-
-## Frequently Asked Questions
 
 ### Should snapshot files be committed?
 
