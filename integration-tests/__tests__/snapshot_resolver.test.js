@@ -36,7 +36,7 @@ describe('Custom snapshot resolver', () => {
   afterAll(cleanup);
 
   it('Resolves snapshot files using custom resolver', () => {
-    const result = runJest('snapshot-resolver');
+    const result = runJest('snapshot-resolver', ['-w=1', '--ci=false']);
 
     const info = result.stderr.toString();
     expect(info).toMatch('1 snapshot written in 1 test suite');
