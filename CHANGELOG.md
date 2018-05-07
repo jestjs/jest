@@ -221,6 +221,8 @@
   ([#5560](https://github.com/facebook/jest/pull/5560))
 * `[jest-config]` Make it possible to merge `transform` option with preset
   ([#5505](https://github.com/facebook/jest/pull/5505))
+* `[jest-util]` Fix `console.assert` behavior in custom & buffered consoles
+  ([#5576](https://github.com/facebook/jest/pull/5576))
 * `[jest-runner]` Add test environment dependencies to package.json
   ([#6145](https://github.com/facebook/jest/pull/6145))
 * `[jest-config]` Remove test environment dependencies from package.json
