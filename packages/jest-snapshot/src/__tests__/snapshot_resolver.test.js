@@ -62,3 +62,35 @@ describe('custom resolver in project config', () => {
     ).toBe(path.join('/abc', 'cde', '__tests__', 'a.test.js'));
   });
 });
+
+describe('malformed custom resolver in project config', () => {
+  const newProjectConfig = (filename: string) => {
+    const customSnapshotResolverFile = path.join(
+      __dirname,
+      'fixtures',
+      filename,
+    );
+    return {
+      rootDir: 'missing-resolveSnapshotPath',
+      snapshotResolver: customSnapshotResolverFile,
+    };
+  };
+
+  it('missing resolveSnapshotPath throws ', () => {
+    const projectConfig = newProjectConfig(
+      'customSnapshotResolver-missing-resolveSnapshotPath.js',
+    );
+    expect(() => {
+      buildSnapshotResolver(projectConfig);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  it('missing resolveTestPath throws ', () => {
+    const projectConfig = newProjectConfig(
+      'customSnapshotResolver-missing-resolveTestPath.js',
+    );
+    expect(() => {
+      buildSnapshotResolver(projectConfig);
+    }).toThrowErrorMatchingSnapshot();
+  });
+});
