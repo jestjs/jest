@@ -128,8 +128,18 @@ export const iterableEquality = (a: any, b: any) => {
       let allFound = true;
       for (const aValue of a) {
         if (!b.has(aValue)) {
-          allFound = false;
-          break;
+          let has = false;
+          for (const bValue of b) {
+            const isEqual = equals(aValue, bValue, [iterableEquality]);
+            if (isEqual === true) {
+              has = true;
+            }
+          }
+
+          if (has === false) {
+            allFound = false;
+            break;
+          }
         }
       }
       if (allFound) {
@@ -142,8 +152,24 @@ export const iterableEquality = (a: any, b: any) => {
           !b.has(aEntry[0]) ||
           !equals(aEntry[1], b.get(aEntry[0]), [iterableEquality])
         ) {
-          allFound = false;
-          break;
+          let has = false;
+          for (const bEntry of b) {
+            const matchedKey = equals(aEntry[0], bEntry[0], [iterableEquality]);
+
+            let matchedValue = false;
+            if (matchedKey === true) {
+              matchedValue = equals(aEntry[1], bEntry[1], [iterableEquality]);
+            }
+
+            if (matchedValue === true) {
+              has = true;
+            }
+          }
+
+          if (has === false) {
+            allFound = false;
+            break;
+          }
         }
       }
       if (allFound) {

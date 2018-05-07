@@ -150,6 +150,8 @@
   configuration ([#5976](https://github.com/facebook/jest/pull/5976))
 * `[website]` Fix website docs
   ([#5853](https://github.com/facebook/jest/pull/5853))
+* `[expect]` Fix isEqual Set and Map to compare object values and keys
+  regardless of order ([#6150](https://github.com/facebook/jest/pull/6150))
 
 ### Chore & Maintenance
 
