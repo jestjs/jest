@@ -55,12 +55,8 @@ function createCustomSnapshotResolver(
   }
 
   return {
-    resolveSnapshotPath: testPath => {
-      const snapshotPath = custom.resolveSnapshotPath(testPath, DOT_EXTENSION);
-      return snapshotPath.endsWith(DOT_EXTENSION)
-        ? snapshotPath
-        : snapshotPath + DOT_EXTENSION;
-    },
+    resolveSnapshotPath: testPath =>
+      custom.resolveSnapshotPath(testPath, DOT_EXTENSION),
     resolveTestPath: snapshotPath =>
       custom.resolveTestPath(snapshotPath, DOT_EXTENSION),
   };
