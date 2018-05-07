@@ -44,14 +44,10 @@ function createCustomSnapshotResolver(
   const custom = (require(snapshotResolverPath): SnapshotResolver);
 
   if (typeof custom.resolveSnapshotPath !== 'function') {
-    throw new TypeError(
-      'snapshotResolver does not have a resolveSnapshotPath function',
-    );
+    throw new TypeError(mustImplement('resolveSnapshotPath'));
   }
   if (typeof custom.resolveTestPath !== 'function') {
-    throw new TypeError(
-      'snapshotResolver does not have a resolveTestPath function',
-    );
+    throw new TypeError(mustImplement('resolveTestPath'));
   }
 
   return {
@@ -60,4 +56,11 @@ function createCustomSnapshotResolver(
     resolveTestPath: snapshotPath =>
       custom.resolveTestPath(snapshotPath, DOT_EXTENSION),
   };
+}
+
+function mustImplement(functionName: string) {
+  return (
+    `Custom snapshot resolver must implement a \`${functionName}\` function.\n\n` +
+    'Documentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver'
+  );
 }
