@@ -24,6 +24,16 @@ import {
 
 const testSymbol = Symbol.for('react.test.json');
 
+const getPropKeys = object => {
+  const {props} = object;
+
+  return props
+    ? Object.keys(props)
+        .filter(key => props[key] !== undefined)
+        .sort()
+    : [];
+};
+
 export const serialize = (
   object: ReactTestObject,
   config: Config,
@@ -38,7 +48,7 @@ export const serialize = (
         object.type,
         object.props
           ? printProps(
-              Object.keys(object.props).sort(),
+              getPropKeys(object),
               // Despite ternary expression, Flow 0.51.0 found incorrect error:
               // undefined is incompatible with the expected param type of Object
               // $FlowFixMe
