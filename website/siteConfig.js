@@ -289,6 +289,11 @@ const users = [
     image: '/jest/img/logos/atlassian.svg',
     infoLink: 'https://www.atlassian.com/',
   },
+  {
+    caption: 'Coupa',
+    image: '/jest/img/logos/coupa.svg',
+    infoLink: 'https://www.coupa.com/',
+  },
 ];
 
 const repoUrl = 'https://github.com/facebook/jest';
