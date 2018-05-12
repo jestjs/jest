@@ -516,11 +516,11 @@ describe('moduleMocker', () => {
         throw undefined;
       });
 
-      // Mock still throws the error even though it was internally
-      // caught and recorded
-      expect(() => {
+      try {
         fn(2, 4);
-      }).toThrow(undefined);
+      } catch (error) {
+        // ignore error
+      }
 
       // All call args tracked
       expect(fn.mock.calls).toEqual([[2, 4]]);
