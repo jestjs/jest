@@ -355,7 +355,7 @@ class ModuleMockerClass {
         let thrownError;
         // Will be set to true if the mock throws an error. The presence of a
         // value in `thrownError` is not a 100% reliable indicator because a
-        // function could throw a value undefined.
+        // function could throw a value of undefined.
         let callDidThrowError = false;
 
         try {
