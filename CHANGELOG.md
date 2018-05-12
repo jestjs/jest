@@ -88,6 +88,8 @@
   ([#6032](https://github.com/facebook/jest/pull/6032))
 * `[expect]` Add return matchers
   ([#5879](https://github.com/facebook/jest/pull/5879))
+* `[expect]` Improve return matchers
+  ([#6172](https://github.com/facebook/jest/pull/6172))
 
 ### Fixes
 
