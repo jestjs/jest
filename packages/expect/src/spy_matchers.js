@@ -60,7 +60,14 @@ const createToReturnMatcher = matcherName => (received, expected) => {
   ensureMock(received, matcherName);
 
   const returnValues = received.mock.returnValues;
-  const count = returnValues.length;
+
+  // List of return values that correspond only to calls that did not throw
+  // an error
+  const actualReturnValues = returnValues.filter((value, index) => {
+    return !received.mock.callsDidThrow[index];
+  });
+
+  const count = actualReturnValues.length;
   const pass = count > 0;
 
   const message = pass
@@ -68,7 +75,7 @@ const createToReturnMatcher = matcherName => (received, expected) => {
         matcherHint('.not' + matcherName, received.getMockName(), '') +
         '\n\n' +
         `Expected mock function not to have returned, but it returned:\n` +
-        `  ${getPrintedReturnValues(returnValues, RETURN_PRINT_LIMIT)}`
+        `  ${getPrintedReturnValues(actualReturnValues, RETURN_PRINT_LIMIT)}`
     : () =>
         matcherHint(matcherName, received.getMockName(), '') +
         '\n\n' +
@@ -115,7 +122,15 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
-  const count = received.mock.returnValues.length;
+  const returnValues = received.mock.returnValues;
+
+  // List of return values that correspond only to calls that did not throw
+  // an error
+  const actualReturnValues = returnValues.filter((value, index) => {
+    return !received.mock.callsDidThrow[index];
+  });
+
+  const count = actualReturnValues.length;
   const pass = count === expected;
 
   const message = pass
@@ -179,7 +194,14 @@ const createToReturnWithMatcher = matcherName => (
   ensureMock(received, matcherName);
 
   const returnValues = received.mock.returnValues;
-  const [match] = partition(returnValues, value =>
+
+  // List of return values that correspond only to calls that did not throw
+  // an error
+  const actualReturnValues = returnValues.filter((value, index) => {
+    return !received.mock.callsDidThrow[index];
+  });
+
+  const [match] = partition(actualReturnValues, value =>
     equals(expected, value, [iterableEquality]),
   );
   const pass = match.length > 0;
@@ -197,7 +219,7 @@ const createToReturnWithMatcher = matcherName => (
         '\n\n' +
         `Expected mock function to have returned:\n` +
         formatMismatchedReturnValues(
-          returnValues,
+          actualReturnValues,
           expected,
           RETURN_PRINT_LIMIT,
         );
@@ -241,8 +263,11 @@ const createLastReturnedMatcher = matcherName => (
   ensureMock(received, matcherName);
 
   const returnValues = received.mock.returnValues;
-  const lastReturnValue = returnValues[returnValues.length - 1];
-  const pass = equals(lastReturnValue, expected, [iterableEquality]);
+  const lastIndex = returnValues.length - 1;
+  const lastReturnValue = returnValues[lastIndex];
+  const lastCallReturned = !received.mock.callsDidThrow[lastIndex];
+  const pass =
+    lastCallReturned && equals(lastReturnValue, expected, [iterableEquality]);
 
   const message = pass
     ? () =>
@@ -257,9 +282,11 @@ const createLastReturnedMatcher = matcherName => (
         '\n\n' +
         'Expected mock function to have last returned:\n' +
         `  ${printExpected(expected)}\n` +
-        (returnValues.length > 0
-          ? `But it last returned:\n  ${printReceived(lastReturnValue)}`
-          : `But it did ${RECEIVED_COLOR('not return')}`);
+        (returnValues.length === 0
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : lastCallReturned
+            ? `But the last call returned:\n  ${printReceived(lastReturnValue)}`
+            : `But the last call ${RECEIVED_COLOR('threw an error')}`);
 
   return {message, pass};
 };
@@ -326,7 +353,11 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
 
   const returnValues = received.mock.returnValues;
   const nthValue = returnValues[nth - 1];
-  const pass = equals(nthValue, expected, [iterableEquality]);
+  const nthCallReturned = !received.mock.callsDidThrow[nth - 1];
+  const pass =
+    nth <= returnValues.length &&
+    nthCallReturned &&
+    equals(nthValue, expected, [iterableEquality]);
   const nthString = nthToString(nth);
   const message = pass
     ? () =>
@@ -341,11 +372,19 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
         '\n\n' +
         `Expected mock function ${nthString} call to have returned with:\n` +
         `  ${printExpected(expected)}\n` +
-        (returnValues.length > 0
-          ? `But the ${nthString} call returned with:\n  ${printReceived(
-              nthValue,
-            )}`
-          : `But it did ${RECEIVED_COLOR('not return')}`);
+        (returnValues.length === 0
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : nth > returnValues.length
+            ? `But it was only called ${printReceived(
+                returnValues.length,
+              )} times`
+            : nthCallReturned
+              ? `But the ${nthString} call returned with:\n  ${printReceived(
+                  nthValue,
+                )}`
+              : `But the ${nthString} call ${RECEIVED_COLOR(
+                  'threw an error',
+                )}`);
 
   return {message, pass};
 };

@@ -24,8 +24,27 @@ export type MockFunctionMetadata = {
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
+  /**
+   * List of return values returned by all calls to the mock function.
+   * A value of undefined will be recorded for any call that throws an error.
+   * Because it is valid for a function to successfully return a value of
+   * undefined, use {@link #callsDidThrow} to reliably determine whether the
+   * call successfully returned or threw an error.
+   */
   returnValues: Array<any>,
+  /**
+   * A list of errors thrown by all calls to the mock function.
+   * A value of undefined will be recorded for any call does not throw an error.
+   * Because it is valid for a function to throw a value of
+   * undefined, use {@link #callsDidThrow} to reliably determine whether the
+   * call successfully returned or threw an error.
+   */
   thrownErrors: Array<any>,
+  /**
+   * A list of booleans indicating whether each call to the mock function threw
+   * an error.
+   */
+  callsDidThrow: Array<boolean>,
   invocationCallOrder: Array<number>,
 };
 
@@ -289,6 +308,7 @@ class ModuleMockerClass {
   _defaultMockState(): MockFunctionState {
     return {
       calls: [],
+      callsDidThrow: [],
       instances: [],
       invocationCallOrder: [],
       returnValues: [],
@@ -333,6 +353,10 @@ class ModuleMockerClass {
         let finalReturnValue;
         // Will be set to the error that is thrown by the mock (if it throws)
         let thrownError;
+        // Will be set to true if the mock throws an error. The presence of a
+        // value in `thrownError` is not a 100% reliable indicator because a
+        // function could throw a value undefined.
+        let callDidThrowError = false;
 
         try {
           // The bulk of the implementation is wrapped in an immediately
@@ -398,14 +422,17 @@ class ModuleMockerClass {
         } catch (error) {
           // Store the thrown error so we can record it, then re-throw it.
           thrownError = error;
+          callDidThrowError = true;
           throw error;
         } finally {
           // Record the return value of the mock function.
           // If the mock threw an error, then the value will be undefined.
           mockState.returnValues.push(finalReturnValue);
           // Record the error thrown by the mock function.
-          // If no error was thrown, then the value will be udnefiend.
+          // If no error was thrown, then the value will be undefined.
           mockState.thrownErrors.push(thrownError);
+          // Record whether the mock function threw an error.
+          mockState.callsDidThrow.push(callDidThrowError);
         }
 
         return finalReturnValue;

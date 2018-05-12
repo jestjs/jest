@@ -506,6 +506,30 @@ describe('moduleMocker', () => {
       expect(fn.mock.returnValues).toEqual([8, undefined, 18]);
       // tracked thrown error is undefined when an error is NOT thrown
       expect(fn.mock.thrownErrors).toEqual([undefined, error, undefined]);
+      // keeps track of whether each call threw an error
+      expect(fn.mock.callsDidThrow).toEqual([false, true, false]);
+    });
+
+    it(`a call that throws undefined is tracked properly`, () => {
+      const fn = moduleMocker.fn(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw undefined;
+      });
+
+      // Mock still throws the error even though it was internally
+      // caught and recorded
+      expect(() => {
+        fn(2, 4);
+      }).toThrow(undefined);
+
+      // All call args tracked
+      expect(fn.mock.calls).toEqual([[2, 4]]);
+      // tracked return value is undefined when an error is thrown
+      expect(fn.mock.returnValues).toEqual([undefined]);
+      // tracked thrown error is undefined because that's what was thrown
+      expect(fn.mock.thrownErrors).toEqual([undefined]);
+      // keeps track of whether each call threw an error
+      expect(fn.mock.callsDidThrow).toEqual([true]);
     });
 
     describe('invocationCallOrder', () => {
