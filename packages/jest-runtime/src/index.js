@@ -844,7 +844,6 @@ class Runtime {
       dontMock: unmock,
       enableAutomock,
       fn,
-      genMockFn: fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
       genMockFunction: fn,

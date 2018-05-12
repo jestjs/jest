@@ -24,7 +24,6 @@ export type Jest = {|
   dontMock(moduleName: string): Jest,
   enableAutomock(): Jest,
   fn: GenMockFn,
-  genMockFn: GenMockFn,
   genMockFromModule(moduleName: string): any,
   genMockFunction: GenMockFn,
   isMockFunction(fn: Function): boolean,

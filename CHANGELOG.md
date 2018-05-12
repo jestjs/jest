@@ -169,6 +169,7 @@
   ([##5733](https://github.com/facebook/jest/pull/#5733))
 * `[docs]` Improve Snapshot Testing Guide
   ([#5812](https://github.com/facebook/jest/issues/5812))
+* `[jest-runtime]` [**BREAKING**] Remove `jest.genMockFn`
 
 ## 22.4.2
 
