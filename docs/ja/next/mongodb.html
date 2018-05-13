@@ -44,6 +44,8 @@
 </code></pre>
 <p>そして、Mongo 用のカスタムテスト環境も作ります。</p>
 <pre><code class="hljs css js"><span class="hljs-comment">// mongo-environment.js</span>
+<span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
+
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MongoEnvironment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NodeEnvironment</span> </span>{
   <span class="hljs-keyword">constructor</span>(config) {
     <span class="hljs-keyword">super</span>(config);
