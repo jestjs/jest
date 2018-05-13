@@ -162,10 +162,10 @@ async function jasmine2(
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
 
-  runtime.requireModule(testPath);
-  await env.execute();
-
   try {
+    runtime.requireModule(testPath);
+    await env.execute();
+
     const results = await reporter.getResults();
 
     return addSnapshotData(results, snapshotState);
