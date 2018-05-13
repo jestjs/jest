@@ -252,7 +252,6 @@ export default function(j$) {
           }
         },
         nodeStart(suite) {
-          currentDeclarationSuite = suite;
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(
             suite.id,

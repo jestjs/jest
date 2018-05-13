@@ -247,7 +247,7 @@ exports[`not throwing Error objects 5`] = `
       37 | });
       38 | 
       
-      at packages/jest-jasmine2/build/jasmine/Env.js:518:34
+      at packages/jest-jasmine2/build/jasmine/Env.js:541:34
       at __tests__/during_tests.test.js:36:3
 
 "
