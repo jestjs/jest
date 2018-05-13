@@ -71,7 +71,7 @@ export const buildFailureTestResult = (
       fileDeleted: false,
       matched: 0,
       unchecked: 0,
-      uncheckedKeysByFile: [],
+      uncheckedKeys: [],
       unmatched: 0,
       updated: 0,
     },

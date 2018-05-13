@@ -2,8 +2,7 @@
 
 exports[`creates a snapshot summary 1`] = `
 Array [
-  "<bold></>
-<bold>Snapshot Summary</>",
+  "<bold>Snapshot Summary</>",
   "<bold><green> › 1 snapshot written </></>from 1 test suite.",
   "<bold><red> › 1 snapshot failed</></> from 1 test suite. <dim>Inspect your code changes or press --u to update them.</>",
   "<bold><green> › 1 snapshot updated </></>from 1 test suite.",
@@ -16,8 +15,7 @@ Array [
 
 exports[`creates a snapshot summary after an update 1`] = `
 Array [
-  "<bold></>
-<bold>Snapshot Summary</>",
+  "<bold>Snapshot Summary</>",
   "<bold><green> › 1 snapshot written </></>from 1 test suite.",
   "<bold><red> › 1 snapshot failed</></> from 1 test suite. <dim>Inspect your code changes or press --u to update them.</>",
   "<bold><green> › 1 snapshot updated </></>from 1 test suite.",
@@ -30,8 +28,7 @@ Array [
 
 exports[`creates a snapshot summary with multiple snapshot being written/updated 1`] = `
 Array [
-  "<bold></>
-<bold>Snapshot Summary</>",
+  "<bold>Snapshot Summary</>",
   "<bold><green> › 2 snapshots written </></>from 2 test suites.",
   "<bold><red> › 2 snapshots failed</></> from 2 test suites. <dim>Inspect your code changes or press --u to update them.</>",
   "<bold><green> › 2 snapshots updated </></>from 2 test suites.",
@@ -46,7 +43,6 @@ Array [
 
 exports[`returns nothing if there are no updates 1`] = `
 Array [
-  "<bold></>
-<bold>Snapshot Summary</>",
+  "<bold>Snapshot Summary</>",
 ]
 `;
