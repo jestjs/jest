@@ -149,7 +149,11 @@ export default class SummaryReporter extends BaseReporter {
         updateCommand = 're-run jest with `-u`';
       }
 
-      const snapshotSummary = getSnapshotSummary(snapshots, updateCommand);
+      const snapshotSummary = getSnapshotSummary(
+        snapshots,
+        globalConfig,
+        updateCommand,
+      );
       snapshotSummary.forEach(this.log);
 
       this.log(''); // print empty line
