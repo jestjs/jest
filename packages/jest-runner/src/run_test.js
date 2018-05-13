@@ -26,6 +26,7 @@ import jasmine2 from 'jest-jasmine2';
 import LeakDetector from 'jest-leak-detector';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
+import sourcemapSupport from 'source-map-support';
 
 type RunTestInternalResult = {
   leakDetector: ?LeakDetector,
@@ -116,8 +117,40 @@ async function runTestInternal(
   });
 
   const start = Date.now();
-  await environment.setup();
+
+  const sourcemapOptions = {
+    environment: 'node',
+    handleUncaughtExceptions: false,
+    retrieveSourceMap: source => {
+      const sourceMaps = runtime.getSourceMaps();
+      const sourceMapSource = sourceMaps && sourceMaps[source];
+
+      if (sourceMapSource) {
+        try {
+          return {
+            map: JSON.parse(fs.readFileSync(sourceMapSource)),
+            url: source,
+          };
+        } catch (e) {}
+      }
+      return null;
+    },
+  };
+
+  // For tests
+  runtime
+    .requireInternalModule(
+      require.resolve('source-map-support'),
+      'source-map-support',
+    )
+    .install(sourcemapOptions);
+
+  // For runtime errors
+  sourcemapSupport.install(sourcemapOptions);
+
   try {
+    await environment.setup();
+
     const result: TestResult = await testFramework(
       globalConfig,
       config,
@@ -151,6 +184,8 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
+
+    sourcemapSupport.resetRetrieveHandlers();
   }
 }
 
