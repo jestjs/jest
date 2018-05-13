@@ -164,9 +164,14 @@ async function jasmine2(
 
   runtime.requireModule(testPath);
   await env.execute();
-  return reporter
-    .getResults()
-    .then(results => addSnapshotData(results, snapshotState));
+
+  try {
+    const results = await reporter.getResults();
+
+    return addSnapshotData(results, snapshotState);
+  } finally {
+    sourcemapSupport.resetRetrieveHandlers();
+  }
 }
 
 const addSnapshotData = (results, snapshotState) => {
