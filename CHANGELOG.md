@@ -150,6 +150,8 @@
   configuration ([#5976](https://github.com/facebook/jest/pull/5976))
 * `[website]` Fix website docs
   ([#5853](https://github.com/facebook/jest/pull/5853))
+* `[pretty-format]` [**BREAKING**] Remove undefined props from React elements
+  ([#6162](https://github.com/facebook/jest/pull/6162))
 
 ### Chore & Maintenance
 
