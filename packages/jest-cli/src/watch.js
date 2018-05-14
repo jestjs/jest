@@ -385,7 +385,9 @@ const usage = (
       : null,
 
     globalConfig.onlyFailures
-      ? chalk.dim(' \u203A Press ') + 'f' + chalk.dim(' to run all tests.')
+      ? chalk.dim(' \u203A Press ') +
+        'f' +
+        chalk.dim(' to quit "only failed tests" mode.')
       : chalk.dim(' \u203A Press ') +
         'f' +
         chalk.dim(' to run only failed tests.'),
