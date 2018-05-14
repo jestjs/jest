@@ -650,12 +650,12 @@ describe('Watch mode flows', () => {
     jest.unmock('jest-util');
     const util = require('jest-util');
     util.isInteractive = true;
-
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.F);
     stdin.emit(KEYS.W);
+
     const lastWatchDisplay = pipe.write.mock.calls.reverse()[0][0];
     expect(lastWatchDisplay).toMatch('Press a to run all tests.');
     expect(lastWatchDisplay).toMatch(
