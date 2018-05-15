@@ -91,6 +91,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Fix misleading action description for F key when in "only failed
+  tests" mode. ([#6167](https://github.com/facebook/jest/issues/6167))
 * `[jest-worker]` Stick calls to workers before processing them
   ([#6073](https://github.com/facebook/jest/pull/6073))
 * `[babel-plugin-jest-hoist]` Allow using `console` global variable
