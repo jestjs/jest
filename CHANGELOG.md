@@ -152,6 +152,8 @@
   ([#5853](https://github.com/facebook/jest/pull/5853))
 * `[pretty-format]` [**BREAKING**] Remove undefined props from React elements
   ([#6162](https://github.com/facebook/jest/pull/6162))
+* `[docs]` Document another option to avoid warnings with React 16
+  ([#5258](https://github.com/facebook/jest/issues/5258))
 
 ### Chore & Maintenance
 
