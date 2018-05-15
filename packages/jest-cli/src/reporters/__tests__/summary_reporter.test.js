@@ -110,7 +110,7 @@ test('snapshots all have results (no update)', () => {
 
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
-  expect(results.join('')).toMatchSnapshot();
+  expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
 });
 
 test('snapshots all have results (after update)', () => {
@@ -145,7 +145,7 @@ test('snapshots all have results (after update)', () => {
 
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
-  expect(results.join('')).toMatchSnapshot();
+  expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
 });
 
 // TODO: add obsolete snapshots and files

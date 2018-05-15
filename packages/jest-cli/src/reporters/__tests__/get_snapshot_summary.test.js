@@ -37,7 +37,9 @@ test('creates a snapshot summary', () => {
   };
 
   expect(
-    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND),
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
+      .join('\n')
+      .replace(/\\/g, '/'),
   ).toMatchSnapshot();
 });
 
@@ -61,7 +63,9 @@ test('creates a snapshot summary after an update', () => {
   };
 
   expect(
-    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND),
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
+      .join('\n')
+      .replace(/\\/g, '/'),
   ).toMatchSnapshot();
 });
 
@@ -89,7 +93,9 @@ it('creates a snapshot summary with multiple snapshot being written/updated', ()
   };
 
   expect(
-    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND),
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
+      .join('\n')
+      .replace(/\\/g, '/'),
   ).toMatchSnapshot();
 });
 
@@ -107,6 +113,6 @@ it('returns nothing if there are no updates', () => {
     updated: 0,
   };
   expect(
-    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND),
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND).join('\n'),
   ).toMatchSnapshot();
 });
