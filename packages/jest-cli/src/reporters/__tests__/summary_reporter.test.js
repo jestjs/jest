@@ -147,6 +147,3 @@ test('snapshots all have results (after update)', () => {
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
 });
-
-// TODO: add obsolete snapshots and files
-// TODO: add more tests to get_snapshot_summary
