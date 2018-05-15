@@ -35,8 +35,4 @@ exports[`creates a snapshot summary with multiple snapshot being written/updated
        • unchecked snapshot 2"
 `;
 
-exports[`returns nothing if there are no updates 1`] = `
-Array [
-  "<bold>Snapshot Summary</>",
-]
-`;
+exports[`returns nothing if there are no updates 1`] = `"<bold>Snapshot Summary</>"`;
