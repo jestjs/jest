@@ -225,6 +225,10 @@ mocked module fails these checks. Your options are:
     types and will happily accept e.g. `SomeComponent`. You could check
     snapshots using the test renderer, and check component behavior separately
     using Enzyme.
+4.  Disable warnings all together (should be done in your jest setup file):
+    ```js
+    jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
+    ```
 
 ### DOM Testing
 
