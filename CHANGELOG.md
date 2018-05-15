@@ -80,7 +80,7 @@
   ([#5864](https://github.com/facebook/jest/pull/5864))
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
-* Pretty-print non-Error object errors
+* `[jest-jasmine2]` Pretty-print non-Error object errors
   ([#5980](https://github.com/facebook/jest/pull/5980))
 * `[jest-message-util]` Include column in stack frames
   ([#5889](https://github.com/facebook/jest/pull/5889))
@@ -88,6 +88,8 @@
   ([#6032](https://github.com/facebook/jest/pull/6032))
 * `[expect]` Add return matchers
   ([#5879](https://github.com/facebook/jest/pull/5879))
+* `[jest-cli]` Improve snapshot summaries
+  ([#6181](https://github.com/facebook/jest/pull/6181))
 
 ### Fixes
 
