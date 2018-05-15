@@ -268,6 +268,16 @@ class Runtime {
     return cliOptions;
   }
 
+  // Core modules are the either native or builtin modules that should not
+  // be transformed/cached.
+  isCoreModule(moduleName: string) {
+    return (
+      (this._environment.isCoreModule &&
+        this._environment.isCoreModule(moduleName)) ||
+      this._resolver.isCoreModule(moduleName)
+    );
+  }
+
   requireModule(
     from: Path,
     moduleName?: string,
@@ -300,7 +310,7 @@ class Runtime {
       modulePath = manualMock;
     }
 
-    if (moduleName && this._resolver.isCoreModule(moduleName)) {
+    if (moduleName && this.isCoreModule(moduleName)) {
       return this._requireCoreModule(moduleName);
     }
 
@@ -661,7 +671,7 @@ class Runtime {
 
     if (
       !this._shouldAutoMock ||
-      this._resolver.isCoreModule(moduleName) ||
+      this.isCoreModule(moduleName) ||
       this._shouldUnmockTransitiveDependenciesCache[key]
     ) {
       return false;
