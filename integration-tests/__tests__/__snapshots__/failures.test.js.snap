@@ -419,7 +419,7 @@ exports[`works with named snapshot failures 1`] = `
       
       at __tests__/snapshot_named.test.js:12:17
 
- › 1 snapshot test failed.
+ › 1 snapshot failed.
 "
 `;
 
@@ -852,6 +852,6 @@ exports[`works with snapshot failures 1`] = `
       
       at __tests__/snapshot.test.js:12:17
 
- › 1 snapshot test failed.
+ › 1 snapshot failed.
 "
 `;

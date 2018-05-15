@@ -29,7 +29,7 @@ test('works fine when function throws error', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(status).toBe(0);
   }
 });
@@ -60,7 +60,7 @@ test('accepts custom snapshot name', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(status).toBe(0);
   }
 });
@@ -98,7 +98,7 @@ test('should support rejecting promises', () => {
       'utf8',
     );
 
-    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(snapshot).toMatchSnapshot();
     expect(status).toBe(0);
   }

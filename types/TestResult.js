@@ -207,6 +207,11 @@ export type CodeCoverageFormatter = (
   reporter?: CodeCoverageReporter,
 ) => ?Object;
 
+export type UncheckedSnapshot = {|
+  filePath: string,
+  keys: Array<string>,
+|};
+
 export type SnapshotSummary = {|
   added: number,
   didUpdate: boolean,
@@ -218,7 +223,7 @@ export type SnapshotSummary = {|
   matched: number,
   total: number,
   unchecked: number,
-  uncheckedKeys: Array<string>,
+  uncheckedKeysByFile: Array<UncheckedSnapshot>,
   unmatched: number,
   updated: number,
 |};
