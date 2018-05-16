@@ -22,9 +22,9 @@ Returns the mock name string set by calling `mockFn.mockName(value)`.
 
 ### `mockFn.mock.calls`
 
-An array that represents all calls that have been made into this mock function.
-Each call is represented by an array of arguments that were passed during the
-call.
+An array containing the call arguments of all calls that have been made to this
+mock function. Each item in the array is an array of arguments that were passed
+during the call.
 
 For example: A mock function `f` that has been called twice, with the arguments
 `f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')`, would have
@@ -34,33 +34,35 @@ a `mock.calls` array that looks like this:
 [['arg1', 'arg2'], ['arg3', 'arg4']];
 ```
 
-### `mockFn.mock.returnValues`
+### `mockFn.mock.results`
 
-An array containing values that have been returned by all calls to this mock
-function. For any call to the mock that throws an error, a value of `undefined`
-will be stored in `mock.returnValues`.
+An array containing the results of all calls that have been made to this mock
+function. Each entry in this array is an object containing a boolean `isThrow`
+property, and a `value` property. `isThrow` is true if the call terminated due
+to a `throw`, or false if the the call returned normally. The `value` property
+contains the value that was thrown or returned.
 
 For example: A mock function `f` that has been called three times, returning
 `result1`, throwing an error, and then returning `result2`, would have a
-`mock.returnValues` array that looks like this:
+`mock.results` array that looks like this:
 
 ```js
-['result1', undefined, 'result2'];
-```
-
-### `mockFn.mock.thrownErrors`
-
-An array containing errors that have been thrown by all calls to this mock
-function.
-
-For example: A mock function `f` that has been called twice, throwing an
-`Error`, and then executing successfully without an error, would have the
-following `mock.thrownErrors` array:
-
-```js
-f.mock.thrownErrors.length === 2; // true
-f.mock.thrownErrors[0] instanceof Error; // true
-f.mock.thrownErrors[1] === undefined; // true
+[
+  {
+    isThrow: false,
+    value: 'result1',
+  },
+  {
+    isThrow: true,
+    value: {
+      /* Error instance */
+    },
+  },
+  {
+    isThrow: false,
+    value: 'result2',
+  },
+];
 ```
 
 ### `mockFn.mock.instances`
