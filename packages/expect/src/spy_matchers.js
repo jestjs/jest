@@ -122,6 +122,11 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
+  const receivedName = received.getMockName();
+  const identifier = receivedName === 'jest.fn()'
+    ? 'mock function'
+    : `mock function "${receivedName}"`;
+
   const count = received.mock.returnValues.length;
   const pass = count === expected;
 
@@ -133,13 +138,13 @@ const createToReturnTimesMatcher = (matcherName: string) => (
           String(expected),
         ) +
         `\n\n` +
-        `Expected mock function not to have returned ` +
+        `Expected ${identifier} not to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it` +
         ` returned exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
     : () =>
         matcherHint(matcherName, received.getMockName(), String(expected)) +
         '\n\n' +
-        `Expected mock function to have returned ` +
+        `Expected ${identifier} to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
         ` but it returned ${RECEIVED_COLOR(pluralize('time', count))}.`;
 

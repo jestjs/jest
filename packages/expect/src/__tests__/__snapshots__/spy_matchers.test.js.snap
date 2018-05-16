@@ -1639,7 +1639,7 @@ Expected mock function to have returned <green>two times</>, but it returned <re
 exports[`toHaveReturnedTimes includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toHaveReturnedTimes(</><green>1</><dim>)</>
 
-Expected mock function to have returned <green>one time</>, but it returned <red>two times</>."
+Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
 `;
 
 exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
@@ -1926,7 +1926,7 @@ Expected mock function to have returned <green>two times</>, but it returned <re
 exports[`toReturnTimes includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toReturnTimes(</><green>1</><dim>)</>
 
-Expected mock function to have returned <green>one time</>, but it returned <red>two times</>."
+Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
 `;
 
 exports[`toReturnTimes only accepts a number argument 1`] = `
