@@ -575,7 +575,7 @@ Expected mock function to have been called <green>two times</>, but it was calle
 exports[`toBeCalledTimes includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
 
-Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
+Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
 `;
 
 exports[`toBeCalledTimes only accepts a number argument 1`] = `
@@ -873,7 +873,7 @@ Expected mock function to have been called <green>two times</>, but it was calle
 exports[`toHaveBeenCalledTimes includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
 
-Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
+Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
 `;
 
 exports[`toHaveBeenCalledTimes only accepts a number argument 1`] = `
@@ -1557,7 +1557,7 @@ Got:
 exports[`toHaveReturned includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.toHaveReturned(</><dim>)</>
 
-Expected mock function not to have returned, but it returned:
+Expected mock function \\"named-mock\\" not to have returned, but it returned:
   <red>42</>"
 `;
 
@@ -1844,7 +1844,7 @@ Got:
 exports[`toReturn includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.toReturn(</><dim>)</>
 
-Expected mock function not to have returned, but it returned:
+Expected mock function \\"named-mock\\" not to have returned, but it returned:
   <red>42</>"
 `;
 

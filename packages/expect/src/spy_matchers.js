@@ -93,6 +93,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -101,13 +102,13 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
     ? () =>
         matcherHint('.not' + matcherName, receivedName, String(expected)) +
         `\n\n` +
-        `Expected ${type} not to be called ` +
+        `Expected ${identifier} not to be called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
         ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
     : () =>
         matcherHint(matcherName, receivedName, String(expected)) +
         '\n\n' +
-        `Expected ${type} to have been called ` +
+        `Expected ${identifier} to have been called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
         ` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;
 
