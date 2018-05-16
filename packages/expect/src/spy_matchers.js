@@ -192,6 +192,11 @@ const createToReturnWithMatcher = matcherName => (
 ) => {
   ensureMock(received, matcherName);
 
+  const receivedName = received.getMockName();
+  const identifier = receivedName === 'jest.fn()'
+    ? 'mock function'
+    : `mock function "${receivedName}"`;
+
   const returnValues = received.mock.returnValues;
   const [match] = partition(returnValues, value =>
     equals(expected, value, [iterableEquality]),
@@ -202,14 +207,14 @@ const createToReturnWithMatcher = matcherName => (
     ? () =>
         matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected mock function not to have returned:\n` +
+        `Expected ${identifier} not to have returned:\n` +
         `  ${printExpected(expected)}\n` +
         `But it returned exactly:\n` +
         `  ${printReceived(expected)}`
     : () =>
         matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected mock function to have returned:\n` +
+        `Expected ${identifier} to have returned:\n` +
         formatMismatchedReturnValues(
           returnValues,
           expected,

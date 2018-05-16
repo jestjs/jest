@@ -1749,7 +1749,7 @@ Received:
 exports[`toHaveReturnedWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
 
-Expected mock function to have returned:
+Expected mock function \\"named-mock\\" to have returned:
   <green>\\"foo\\"</>
 But it did <red>not return</>."
 `;
@@ -2036,7 +2036,7 @@ Received:
 exports[`toReturnWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toReturnWith(</><green>expected</><dim>)</>
 
-Expected mock function to have returned:
+Expected mock function \\"named-mock\\" to have returned:
   <green>\\"foo\\"</>
 But it did <red>not return</>."
 `;
