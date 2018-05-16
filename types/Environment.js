@@ -31,6 +31,7 @@ declare class $JestEnvironment {
     useFakeTimers(): void,
     useRealTimers(): void,
   };
+  isCoreModule(moduleName: string): boolean;
   testFilePath: string;
   moduleMocker: ModuleMocker;
   setup(): Promise<void>;
