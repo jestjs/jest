@@ -408,12 +408,11 @@ const jestExpect = require('../');
     });
 
     test(`includes the custom mock name in the error message`, () => {
-      const fn = jest.fn().mockName('named-mock');
-
+      const fn = jest.fn(() => 42).mockName('named-mock');
       fn();
       jestExpect(fn)[returned]();
       expect(() =>
-        jestExpect(fn)[returned](555),
+        jestExpect(fn).not[returned](),
       ).toThrowErrorMatchingSnapshot();
     });
   });

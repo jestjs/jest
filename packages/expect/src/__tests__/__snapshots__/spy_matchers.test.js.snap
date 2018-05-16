@@ -1555,11 +1555,10 @@ Got:
 `;
 
 exports[`toHaveReturned includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveReturned(</><dim>)</>
 
-Matcher does not accept any arguments.
-Got:
-  number: <green>555</>"
+Expected mock function not to have returned, but it returned:
+  <red>42</>"
 `;
 
 exports[`toHaveReturned passes when returned 1`] = `
@@ -1843,11 +1842,10 @@ Got:
 `;
 
 exports[`toReturn includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toReturn(</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).not.toReturn(</><dim>)</>
 
-Matcher does not accept any arguments.
-Got:
-  number: <green>555</>"
+Expected mock function not to have returned, but it returned:
+  <red>42</>"
 `;
 
 exports[`toReturn passes when returned 1`] = `

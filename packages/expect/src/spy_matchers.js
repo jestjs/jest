@@ -60,6 +60,11 @@ const createToReturnMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
+  const receivedName = received.getMockName();
+  const identifier = receivedName === 'jest.fn()'
+    ? 'mock function'
+    : `mock function "${receivedName}"`;
+
   const returnValues = received.mock.returnValues;
   const count = returnValues.length;
   const pass = count > 0;
@@ -68,12 +73,12 @@ const createToReturnMatcher = matcherName => (received, expected) => {
     ? () =>
         matcherHint('.not' + matcherName, received.getMockName(), '') +
         '\n\n' +
-        `Expected mock function not to have returned, but it returned:\n` +
+        `Expected ${identifier} not to have returned, but it returned:\n` +
         `  ${getPrintedReturnValues(returnValues, RETURN_PRINT_LIMIT)}`
     : () =>
         matcherHint(matcherName, received.getMockName(), '') +
         '\n\n' +
-        `Expected mock function to have returned.`;
+        `Expected ${identifier} to have returned.`;
 
   return {message, pass};
 };
