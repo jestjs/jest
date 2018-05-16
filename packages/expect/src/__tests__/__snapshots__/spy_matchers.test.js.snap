@@ -224,7 +224,7 @@ But it last returned:
 exports[`nthCalledWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
 
-Expected mock function first call to not have been called with:
+Expected mock function \\"named-mock\\" first call to not have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
@@ -1220,7 +1220,7 @@ Expected mock function to have been last called with:
 exports[`toHaveBeenNthCalledWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
 
-Expected mock function first call to not have been called with:
+Expected mock function \\"named-mock\\" first call to not have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
