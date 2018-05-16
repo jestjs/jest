@@ -358,7 +358,7 @@ Expected mock function first call to have been called with:
 exports[`nthReturnedWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
 
-Expected mock function first call to have returned with:
+Expected mock function \\"named-mock\\" first call to have returned with:
   <green>\\"foo\\"</>
 But it did <red>not return</>"
 `;
@@ -1450,7 +1450,7 @@ But it last returned:
 exports[`toHaveNthReturnedWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
-Expected mock function first call to have returned with:
+Expected mock function \\"named-mock\\" first call to have returned with:
   <green>\\"foo\\"</>
 But it did <red>not return</>"
 `;

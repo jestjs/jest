@@ -350,6 +350,11 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
     return {message, pass};
   }
 
+  const receivedName = received.getMockName();
+  const identifier = receivedName === 'jest.fn()'
+    ? 'mock function'
+    : `mock function "${receivedName}"`;
+
   const returnValues = received.mock.returnValues;
   const nthValue = returnValues[nth - 1];
   const pass = equals(nthValue, expected, [iterableEquality]);
@@ -358,14 +363,14 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
     ? () =>
         matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected mock function ${nthString} call to not have returned with:\n` +
+        `Expected ${identifier} ${nthString} call to not have returned with:\n` +
         `  ${printExpected(expected)}\n` +
         `But the ${nthString} call returned exactly:\n` +
         `  ${printReceived(nthValue)}`
     : () =>
         matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
-        `Expected mock function ${nthString} call to have returned with:\n` +
+        `Expected ${identifier} ${nthString} call to have returned with:\n` +
         `  ${printExpected(expected)}\n` +
         (returnValues.length > 0
           ? `But the ${nthString} call returned with:\n  ${printReceived(
