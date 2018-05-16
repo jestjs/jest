@@ -260,6 +260,11 @@ const createLastReturnedMatcher = matcherName => (
 ) => {
   ensureMock(received, matcherName);
 
+  const receivedName = received.getMockName();
+  const identifier = receivedName === 'jest.fn()'
+    ? 'mock function'
+    : `mock function "${receivedName}"`;
+
   const returnValues = received.mock.returnValues;
   const lastReturnValue = returnValues[returnValues.length - 1];
   const pass = equals(lastReturnValue, expected, [iterableEquality]);
@@ -268,14 +273,14 @@ const createLastReturnedMatcher = matcherName => (
     ? () =>
         matcherHint('.not' + matcherName, received.getMockName()) +
         '\n\n' +
-        'Expected mock function to not have last returned:\n' +
+        `Expected ${identifier} to not have last returned:\n` +
         `  ${printExpected(expected)}\n` +
         `But it last returned exactly:\n` +
         `  ${printReceived(lastReturnValue)}`
     : () =>
         matcherHint(matcherName, received.getMockName()) +
         '\n\n' +
-        'Expected mock function to have last returned:\n' +
+        `Expected ${identifier} to have last returned:\n` +
         `  ${printExpected(expected)}\n` +
         (returnValues.length > 0
           ? `But it last returned:\n  ${printReceived(lastReturnValue)}`

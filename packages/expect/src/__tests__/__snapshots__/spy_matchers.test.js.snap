@@ -128,7 +128,7 @@ Expected mock function to have been last called with:
 exports[`lastReturnedWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
 
-Expected mock function to have last returned:
+Expected mock function \\"named-mock\\" to have last returned:
   <green>\\"foo\\"</>
 But it did <red>not return</>"
 `;
@@ -1354,7 +1354,7 @@ Expected mock function first call to have been called with:
 exports[`toHaveLastReturnedWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
 
-Expected mock function to have last returned:
+Expected mock function \\"named-mock\\" to have last returned:
   <green>\\"foo\\"</>
 But it did <red>not return</>"
 `;
