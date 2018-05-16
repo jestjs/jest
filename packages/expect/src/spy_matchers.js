@@ -34,7 +34,10 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -61,9 +64,10 @@ const createToReturnMatcher = matcherName => (received, expected) => {
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
-  const identifier = receivedName === 'jest.fn()'
-    ? 'mock function'
-    : `mock function "${receivedName}"`;
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
 
   const returnValues = received.mock.returnValues;
   const count = returnValues.length;
@@ -93,7 +97,10 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -123,9 +130,10 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
-  const identifier = receivedName === 'jest.fn()'
-    ? 'mock function'
-    : `mock function "${receivedName}"`;
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
 
   const count = received.mock.returnValues.length;
   const pass = count === expected;
@@ -160,7 +168,10 @@ const createToBeCalledWithMatcher = matcherName => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
 
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
@@ -193,9 +204,10 @@ const createToReturnWithMatcher = matcherName => (
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
-  const identifier = receivedName === 'jest.fn()'
-    ? 'mock function'
-    : `mock function "${receivedName}"`;
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
 
   const returnValues = received.mock.returnValues;
   const [match] = partition(returnValues, value =>
@@ -233,7 +245,10 @@ const createLastCalledWithMatcher = matcherName => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -261,9 +276,10 @@ const createLastReturnedMatcher = matcherName => (
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
-  const identifier = receivedName === 'jest.fn()'
-    ? 'mock function'
-    : `mock function "${receivedName}"`;
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
 
   const returnValues = received.mock.returnValues;
   const lastReturnValue = returnValues[returnValues.length - 1];
@@ -309,7 +325,10 @@ const createNthCalledWithMatcher = (matcherName: string) => (
   }
 
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -351,9 +370,10 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
   }
 
   const receivedName = received.getMockName();
-  const identifier = receivedName === 'jest.fn()'
-    ? 'mock function'
-    : `mock function "${receivedName}"`;
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
 
   const returnValues = received.mock.returnValues;
   const nthValue = returnValues[nth - 1];
