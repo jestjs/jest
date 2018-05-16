@@ -233,6 +233,7 @@ const createLastCalledWithMatcher = matcherName => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -242,12 +243,12 @@ const createLastCalledWithMatcher = matcherName => (
     ? () =>
         matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} to not have been last called with:\n` +
+        `Expected ${identifier} to not have been last called with:\n` +
         `  ${printExpected(expected)}`
     : () =>
         matcherHint(matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} to have been last called with:\n` +
+        `Expected ${identifier} to have been last called with:\n` +
         formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
 
   return {message, pass};

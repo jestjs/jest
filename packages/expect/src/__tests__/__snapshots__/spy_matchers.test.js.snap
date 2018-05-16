@@ -3,7 +3,7 @@
 exports[`lastCalledWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
 
-Expected mock function to not have been last called with:
+Expected mock function \\"named-mock\\" to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
@@ -1095,7 +1095,7 @@ Expected mock function to have been called with:
 exports[`toHaveBeenLastCalledWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
 
-Expected mock function to not have been last called with:
+Expected mock function \\"named-mock\\" to not have been last called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
