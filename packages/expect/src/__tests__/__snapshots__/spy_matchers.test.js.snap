@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`lastCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
 exports[`lastCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].lastCalledWith(</><dim>)</>
 
@@ -212,6 +219,13 @@ Expected mock function to have last returned:
   <green>\\"bar\\"</>
 But it last returned:
   <red>\\"foo\\"</>"
+`;
+
+exports[`nthCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`nthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
@@ -640,6 +654,13 @@ Received:
   function: <red>[Function fn]</>"
 `;
 
+exports[`toBeCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
 exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledWith(</><dim>)</>
 
@@ -938,6 +959,13 @@ Received:
   function: <red>[Function fn]</>"
 `;
 
+exports[`toHaveBeenCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
 exports[`toHaveBeenCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith(</><dim>)</>
 
@@ -1064,6 +1092,13 @@ Expected mock function to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
 
+exports[`toHaveBeenLastCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
 exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(</><dim>)</>
 
@@ -1180,6 +1215,13 @@ exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = 
 
 Expected mock function to have been last called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveBeenNthCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenNthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;

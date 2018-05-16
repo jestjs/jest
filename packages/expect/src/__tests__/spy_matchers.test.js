@@ -360,8 +360,13 @@ const jestExpect = require('../');
 
     test(`includes the custom mock name in the error message`, () => {
       const fn = jest.fn().mockName('named-mock');
-      fn();
-      caller(jestExpect(fn)[calledWith]);
+      fn('foo', 'bar');
+
+      caller(jestExpect(fn)[calledWith], 'foo', 'bar');
+
+      expect(() =>
+        caller(jestExpect(fn).not[calledWith], 'foo', 'bar'),
+      ).toThrowErrorMatchingSnapshot();
     });
   });
 });
