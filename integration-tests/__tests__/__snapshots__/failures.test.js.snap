@@ -247,7 +247,7 @@ exports[`not throwing Error objects 5`] = `
       37 | });
       38 | 
       
-      at packages/jest-jasmine2/build/jasmine/Env.js:518:34
+      at packages/jest-jasmine2/build/jasmine/Env.js:541:34
       at __tests__/during_tests.test.js:36:3
 
 "
@@ -419,7 +419,7 @@ exports[`works with named snapshot failures 1`] = `
       
       at __tests__/snapshot_named.test.js:12:17
 
- › 1 snapshot test failed.
+ › 1 snapshot failed.
 "
 `;
 
@@ -852,6 +852,6 @@ exports[`works with snapshot failures 1`] = `
       
       at __tests__/snapshot.test.js:12:17
 
- › 1 snapshot test failed.
+ › 1 snapshot failed.
 "
 `;

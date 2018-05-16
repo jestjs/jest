@@ -11,6 +11,10 @@ import getSnapshotSummary from '../get_snapshot_summary';
 
 const UPDATE_COMMAND = 'press --u';
 
+const globalConfig = {
+  rootDir: 'root',
+};
+
 test('creates a snapshot summary', () => {
   const snapshots = {
     added: 1,
@@ -22,11 +26,21 @@ test('creates a snapshot summary', () => {
     matched: 2,
     total: 2,
     unchecked: 1,
+    uncheckedKeysByFile: [
+      {
+        filePath: 'path/to/suite_one',
+        keys: ['unchecked snapshot 1'],
+      },
+    ],
     unmatched: 1,
     updated: 1,
   };
 
-  expect(getSnapshotSummary(snapshots, UPDATE_COMMAND)).toMatchSnapshot();
+  expect(
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
+      .join('\n')
+      .replace(/\\/g, '/'),
+  ).toMatchSnapshot();
 });
 
 test('creates a snapshot summary after an update', () => {
@@ -38,11 +52,21 @@ test('creates a snapshot summary after an update', () => {
     filesUnmatched: 1,
     filesUpdated: 1,
     unchecked: 1,
+    uncheckedKeysByFile: [
+      {
+        filePath: 'path/to/suite_one',
+        keys: ['unchecked snapshot 1'],
+      },
+    ],
     unmatched: 1,
     updated: 1,
   };
 
-  expect(getSnapshotSummary(snapshots, UPDATE_COMMAND)).toMatchSnapshot();
+  expect(
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
+      .join('\n')
+      .replace(/\\/g, '/'),
+  ).toMatchSnapshot();
 });
 
 it('creates a snapshot summary with multiple snapshot being written/updated', () => {
@@ -54,11 +78,25 @@ it('creates a snapshot summary with multiple snapshot being written/updated', ()
     filesUnmatched: 2,
     filesUpdated: 2,
     unchecked: 2,
+    uncheckedKeysByFile: [
+      {
+        filePath: 'path/to/suite_one',
+        keys: ['unchecked snapshot 1'],
+      },
+      {
+        filePath: 'path/to/suite_two',
+        keys: ['unchecked snapshot 2'],
+      },
+    ],
     unmatched: 2,
     updated: 2,
   };
 
-  expect(getSnapshotSummary(snapshots, UPDATE_COMMAND)).toMatchSnapshot();
+  expect(
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
+      .join('\n')
+      .replace(/\\/g, '/'),
+  ).toMatchSnapshot();
 });
 
 it('returns nothing if there are no updates', () => {
@@ -70,8 +108,11 @@ it('returns nothing if there are no updates', () => {
     filesUnmatched: 0,
     filesUpdated: 0,
     unchecked: 0,
+    uncheckedKeysByFile: [],
     unmatched: 0,
     updated: 0,
   };
-  expect(getSnapshotSummary(snapshots, UPDATE_COMMAND)).toMatchSnapshot();
+  expect(
+    getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND).join('\n'),
+  ).toMatchSnapshot();
 });
