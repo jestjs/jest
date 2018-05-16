@@ -493,7 +493,7 @@ Got:
 exports[`toBeCalled includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.toBeCalled(</><dim>)</>
 
-Expected mock function not to be called but it was called with:
+Expected mock function \\"named-mock\\" not to be called but it was called with:
   <red>[]</>"
 `;
 
@@ -791,7 +791,7 @@ Got:
 exports[`toHaveBeenCalled includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalled(</><dim>)</>
 
-Expected mock function not to be called but it was called with:
+Expected mock function \\"named-mock\\" not to be called but it was called with:
   <red>[]</>"
 `;
 

@@ -34,6 +34,7 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier = receivedIsSpy || receivedName === 'jest.fn()' ? type : `${type} "${receivedName}"`;
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -45,12 +46,12 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
     ? () =>
         matcherHint('.not' + matcherName, receivedName, '') +
         '\n\n' +
-        `Expected ${type} not to be called ` +
+        `Expected ${identifier} not to be called ` +
         formatReceivedCalls(calls, CALL_PRINT_LIMIT, {sameSentence: true})
     : () =>
         matcherHint(matcherName, receivedName, '') +
         '\n\n' +
-        `Expected ${type} to have been called, but it was not called.`;
+        `Expected ${identifier} to have been called, but it was not called.`;
 
   return {message, pass};
 };
