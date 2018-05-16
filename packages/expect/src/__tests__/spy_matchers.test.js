@@ -45,6 +45,14 @@ const jestExpect = require('../');
         jestExpect(fn).not[called](555),
       ).toThrowErrorMatchingSnapshot();
     });
+
+    test(`includes the custom mock name in the error message`, () => {
+      const fn = jest.fn().mockName('named-mock');
+
+      fn();
+      jestExpect(fn)[called]();
+      expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
+    });
   });
 });
 
@@ -113,6 +121,15 @@ const jestExpect = require('../');
 
       jestExpect(fn)[calledTimes](1);
       jestExpect(fn).not[calledTimes](2);
+
+      expect(() =>
+        jestExpect(fn)[calledTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('includes the custom mock name in the error message', () => {
+      const fn = jest.fn().mockName('named-mock');
+      fn();
 
       expect(() =>
         jestExpect(fn)[calledTimes](2),
@@ -340,6 +357,12 @@ const jestExpect = require('../');
         }).toThrowErrorMatchingSnapshot();
       });
     }
+
+    test(`includes the custom mock name in the error message`, () => {
+      const fn = jest.fn().mockName('named-mock');
+      fn();
+      caller(jestExpect(fn)[calledWith]);
+    });
   });
 });
 
@@ -381,6 +404,16 @@ const jestExpect = require('../');
 
       expect(() =>
         jestExpect(fn).not[returned](555),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`includes the custom mock name in the error message`, () => {
+      const fn = jest.fn().mockName('named-mock');
+
+      fn();
+      jestExpect(fn)[returned]();
+      expect(() =>
+        jestExpect(fn)[returned](555),
       ).toThrowErrorMatchingSnapshot();
     });
   });
@@ -454,6 +487,18 @@ const jestExpect = require('../');
 
       expect(() =>
         jestExpect(fn)[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('includes the custom mock name in the error message', () => {
+      const fn = jest.fn(() => 42).mockName('named-mock');
+      fn();
+      fn();
+
+      jestExpect(fn)[returnedTimes](2);
+
+      expect(() =>
+        jestExpect(fn)[returnedTimes](1),
       ).toThrowErrorMatchingSnapshot();
     });
   });
@@ -674,5 +719,14 @@ const jestExpect = require('../');
         }).toThrowErrorMatchingSnapshot();
       });
     }
+
+    test(`includes the custom mock name in the error message`, () => {
+      const fn = jest.fn().mockName('named-mock');
+      caller(jestExpect(fn).not[returnedWith], 'foo');
+
+      expect(() =>
+        caller(jestExpect(fn)[returnedWith], 'foo'),
+      ).toThrowErrorMatchingSnapshot();
+    });
   });
 });
