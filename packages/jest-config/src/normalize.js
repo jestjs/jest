@@ -76,6 +76,13 @@ const setupPreset = (
   try {
     // $FlowFixMe
     preset = (require(presetModule): InitialOptions);
+
+    // Force re-evaluation to support multiple projects
+    try {
+      if (presetModule) {
+        delete require.cache[require.resolve(presetModule)];
+      }
+    } catch (e) {}
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw createConfigError(
