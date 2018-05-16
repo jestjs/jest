@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-config]` Support jest-preset.js files within Node modules
+  ([#6185](https://github.com/facebook/jest/pull/6185))
 * `[jest-cli]` Add `--detectOpenHandles` flag which enables Jest to potentially
   track down handles keeping it open after tests are complete.
   ([#6130](https://github.com/facebook/jest/pull/6130))
