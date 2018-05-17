@@ -90,6 +90,8 @@
   ([#5879](https://github.com/facebook/jest/pull/5879))
 * `[jest-cli]` Improve snapshot summaries
   ([#6181](https://github.com/facebook/jest/pull/6181))
+* `[expect]` Include custom mock names in error messages
+  ([#6199](https://github.com/facebook/jest/pull/6199))
 
 ### Fixes
 
