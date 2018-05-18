@@ -169,6 +169,8 @@
 
 ### Chore & Maintenance
 
+* `[jest-runner]` Move sourcemap installation from `jest-jasmine2` to
+  `jest-runner` ([#6176](https://github.com/facebook/jest/pull/6176))
 * `[jest-cli]` Use yargs's built-in `version` instead of rolling our own
   ([#6215](https://github.com/facebook/jest/pull/6215))
 * `[docs]` Add explanation on how to mock methods not implemented in JSDOM
