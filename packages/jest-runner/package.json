@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "exit": "^0.1.2",
+    "graceful-fs": "^4.1.11",
     "jest-config": "^22.4.2",
     "jest-docblock": "^22.4.0",
     "jest-haste-map": "^22.4.2",

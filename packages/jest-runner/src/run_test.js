@@ -14,7 +14,7 @@ import type {TestFramework} from 'types/TestRunner';
 import type {TestResult} from 'types/TestResult';
 import type RuntimeClass from 'jest-runtime';
 
-import fs from 'fs';
+import fs from 'graceful-fs';
 import {
   BufferedConsole,
   Console,

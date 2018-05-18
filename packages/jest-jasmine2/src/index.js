@@ -15,7 +15,6 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
-import fs from 'graceful-fs';
 import installEach from './each';
 import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
