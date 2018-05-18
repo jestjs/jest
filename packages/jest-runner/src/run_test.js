@@ -122,7 +122,7 @@ async function runTestInternal(
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
-      const sourceMaps = runtime.getSourceMaps();
+      const sourceMaps = runtime && runtime.getSourceMaps();
       const sourceMapSource = sourceMaps && sourceMaps[source];
 
       if (sourceMapSource) {
