@@ -184,8 +184,6 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
-
-    sourcemapSupport.resetRetrieveHandlers();
   }
 }
 

@@ -13,6 +13,7 @@ import type {RawModuleMap} from 'types/HasteMap';
 import type {ErrorWithCode} from 'types/Errors';
 
 import exit from 'exit';
+import sourcemapSupport from 'source-map-support';
 import HasteMap from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
@@ -84,5 +85,7 @@ export async function worker({
     );
   } catch (error) {
     throw formatError(error);
+  } finally {
+    sourcemapSupport.resetRetrieveHandlers();
   }
 }
