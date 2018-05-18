@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "22.4.2",
+  "version": "22.4.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,18 +9,18 @@
   "main": "build/index.js",
   "dependencies": {
     "babel-core": "^6.0.0",
-    "babel-jest": "^22.4.1",
+    "babel-jest": "^22.4.4",
     "babel-plugin-istanbul": "^4.1.5",
     "chalk": "^2.0.1",
     "convert-source-map": "^1.4.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.1.11",
-    "jest-config": "^22.4.2",
+    "jest-config": "^22.4.4",
     "jest-haste-map": "^22.4.2",
     "jest-regex-util": "^22.1.0",
     "jest-resolve": "^22.4.2",
     "jest-util": "^22.4.1",
-    "jest-validate": "^22.4.2",
+    "jest-validate": "^22.4.4",
     "json-stable-stringify": "^1.0.1",
     "micromatch": "^2.3.11",
     "realpath-native": "^1.0.0",
