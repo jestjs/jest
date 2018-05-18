@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`lastCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
 exports[`lastCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].lastCalledWith(</><dim>)</>
 
@@ -118,6 +125,14 @@ Expected mock function to have been last called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
 
+exports[`lastReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have last returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>"
+`;
+
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].lastReturnedWith(</><dim>)</>
 
@@ -204,6 +219,13 @@ Expected mock function to have last returned:
   <green>\\"bar\\"</>
 But it last returned:
   <red>\\"foo\\"</>"
+`;
+
+exports[`nthCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`nthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
@@ -331,6 +353,14 @@ exports[`nthCalledWith works with trailing undefined arguments 1`] = `
 
 Expected mock function first call to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`nthReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to have returned with:
+  <green>\\"foo\\"</>
+But it did <red>not return</>"
 `;
 
 exports[`nthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
@@ -474,6 +504,13 @@ Got:
   number: <green>555</>"
 `;
 
+exports[`toBeCalled includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toBeCalled(</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to be called but it was called with:
+  <red>[]</>"
+`;
+
 exports[`toBeCalled passes when called 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled(</><dim>)</>
 
@@ -549,6 +586,12 @@ exports[`toBeCalledTimes .not passes if function called more than expected times
 Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
 `;
 
+exports[`toBeCalledTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
+`;
+
 exports[`toBeCalledTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
@@ -609,6 +652,13 @@ exports[`toBeCalledTimes works only on spies or jest.fn 1`] = `
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
   function: <red>[Function fn]</>"
+`;
+
+exports[`toBeCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
@@ -759,6 +809,13 @@ Got:
   number: <green>555</>"
 `;
 
+exports[`toHaveBeenCalled includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalled(</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to be called but it was called with:
+  <red>[]</>"
+`;
+
 exports[`toHaveBeenCalled passes when called 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled(</><dim>)</>
 
@@ -834,6 +891,12 @@ exports[`toHaveBeenCalledTimes .not passes if function called more than expected
 Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
 `;
 
+exports[`toHaveBeenCalledTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
+`;
+
 exports[`toHaveBeenCalledTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
@@ -894,6 +957,13 @@ exports[`toHaveBeenCalledTimes works only on spies or jest.fn 1`] = `
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
   function: <red>[Function fn]</>"
+`;
+
+exports[`toHaveBeenCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works only on spies or jest.fn 1`] = `
@@ -1022,6 +1092,13 @@ Expected mock function to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
 
+exports[`toHaveBeenLastCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
 exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(</><dim>)</>
 
@@ -1138,6 +1215,13 @@ exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = 
 
 Expected mock function to have been last called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveBeenNthCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenNthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
@@ -1267,6 +1351,14 @@ Expected mock function first call to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
 
+exports[`toHaveLastReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have last returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>"
+`;
+
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveLastReturnedWith(</><dim>)</>
 
@@ -1353,6 +1445,14 @@ Expected mock function to have last returned:
   <green>\\"bar\\"</>
 But it last returned:
   <red>\\"foo\\"</>"
+`;
+
+exports[`toHaveNthReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to have returned with:
+  <green>\\"foo\\"</>
+But it did <red>not return</>"
 `;
 
 exports[`toHaveNthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
@@ -1496,6 +1596,13 @@ Got:
   number: <green>555</>"
 `;
 
+exports[`toHaveReturned includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveReturned(</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have returned, but it returned:
+  <red>42</>"
+`;
+
 exports[`toHaveReturned passes when returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned(</><dim>)</>
 
@@ -1571,6 +1678,12 @@ exports[`toHaveReturnedTimes .not passes if function returned more than expected
 Expected mock function to have returned <green>two times</>, but it returned <red>three times</>."
 `;
 
+exports[`toHaveReturnedTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveReturnedTimes(</><green>1</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
+`;
+
 exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
@@ -1631,6 +1744,14 @@ exports[`toHaveReturnedTimes works only on spies or jest.fn 1`] = `
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
   function: <red>[Function fn]</>"
+`;
+
+exports[`toHaveReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>."
 `;
 
 exports[`toHaveReturnedWith works only on spies or jest.fn 1`] = `
@@ -1762,6 +1883,13 @@ Got:
   number: <green>555</>"
 `;
 
+exports[`toReturn includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toReturn(</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have returned, but it returned:
+  <red>42</>"
+`;
+
 exports[`toReturn passes when returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toReturn(</><dim>)</>
 
@@ -1837,6 +1965,12 @@ exports[`toReturnTimes .not passes if function returned more than expected times
 Expected mock function to have returned <green>two times</>, but it returned <red>three times</>."
 `;
 
+exports[`toReturnTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toReturnTimes(</><green>1</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
+`;
+
 exports[`toReturnTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
@@ -1897,6 +2031,14 @@ exports[`toReturnTimes works only on spies or jest.fn 1`] = `
 <red>jest.fn()</> value must be a mock function or spy.
 Received:
   function: <red>[Function fn]</>"
+`;
+
+exports[`toReturnWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>."
 `;
 
 exports[`toReturnWith works only on spies or jest.fn 1`] = `
