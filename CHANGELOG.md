@@ -2,6 +2,10 @@
 
 ### Features
 
+* `[expect]` Expose `getObjectSubset`, `iterableEquality`, and `subsetEquality`
+  ([#6210](https://github.com/facebook/jest/pull/6210))
+* `[jest-snapshot]` Add snapshot property matchers
+  ([#6210](https://github.com/facebook/jest/pull/6210))
 * `[jest-cli]` Add `--detectOpenHandles` flag which enables Jest to potentially
   track down handles keeping it open after tests are complete.
   ([#6130](https://github.com/facebook/jest/pull/6130))
