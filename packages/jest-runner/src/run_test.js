@@ -151,13 +151,23 @@ async function runTestInternal(
   try {
     await environment.setup();
 
-    const result: TestResult = await testFramework(
-      globalConfig,
-      config,
-      environment,
-      runtime,
-      path,
-    );
+    let result: TestResult;
+
+    try {
+      result = await testFramework(
+        globalConfig,
+        config,
+        environment,
+        runtime,
+        path,
+      );
+    } catch (err) {
+      // Access stack before uninstalling sourcemaps
+      err.stack;
+
+      throw err;
+    }
+
     const testCount =
       result.numPassingTests + result.numFailingTests + result.numPendingTests;
 
@@ -184,6 +194,8 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
+
+    sourcemapSupport.resetRetrieveHandlers();
   }
 }
 

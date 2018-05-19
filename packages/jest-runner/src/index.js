@@ -23,7 +23,6 @@ import exit from 'exit';
 import runTest from './run_test';
 import throat from 'throat';
 import Worker from 'jest-worker';
-import sourcemapSupport from 'source-map-support';
 
 const TEST_WORKER_PATH = require.resolve('./test_worker');
 
@@ -82,12 +81,7 @@ class TestRunner {
               );
             })
             .then(result => onResult(test, result))
-            .catch(err => onFailure(test, err))
-            .then(res => {
-              sourcemapSupport.resetRetrieveHandlers();
-
-              return res;
-            }),
+            .catch(err => onFailure(test, err)),
         ),
       Promise.resolve(),
     );
