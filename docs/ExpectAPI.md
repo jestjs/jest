@@ -1192,13 +1192,16 @@ test('this house has my desired features', () => {
 });
 ```
 
-### `.toMatchSnapshot(optionalString)`
+### `.toMatchSnapshot(propertyMatchers, snapshotName)`
 
 This ensures that a value matches the most recent snapshot. Check out
 [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-You can also specify an optional snapshot name. Otherwise, the name is inferred
-from the test.
+The optional propertyMatchers argument allows you to specify asymmetric matchers
+which are verified instead of the exact values.
+
+The last argument allows you option to specify a snapshot name. Otherwise, the
+name is inferred from the test.
 
 _Note: While snapshot testing is most commonly used with React components, any
 serializable value can be used as a snapshot._

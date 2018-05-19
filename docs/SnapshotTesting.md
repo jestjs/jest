@@ -140,6 +140,61 @@ watch mode:
 
 ![](/jest/img/content/interactiveSnapshotDone.png)
 
+### Property Matchers
+
+Often there are fields in the object you want to snapshot which are generated
+(like IDs and Dates). If you try to snapshot these objects, they will force the
+snapshot to fail on every run:
+
+```javascript
+it('will fail every time', () => {
+  const user = {
+    createdAt: new Date(),
+    id: Math.floor(Math.random() * 20),
+    name: 'LeBron James',
+  };
+
+  expect(user).toMatchSnapshot();
+});
+
+// Snapshot
+exports[`will fail every time 1`] = `
+Object {
+  "createdAt": 2018-05-19T23:36:09.816Z,
+  "id": 3,
+  "name": "LeBron James",
+}
+`;
+```
+
+For these cases, Jest allows providing an asymmetric matcher for any property.
+These matchers are checked before the snapshot is written or tested, and then
+saved to the snapshot file instead of the received value:
+
+```javascript
+it('will check the matchers and pass', () => {
+  const user = {
+    createdAt: new Date(),
+    id: Math.floor(Math.random() * 20),
+    name: 'LeBron James',
+  };
+
+  expect(user).toMatchSnapshot({
+    createdAt: expect.any(Date),
+    id: expect.any(Number),
+  });
+});
+
+// Snapshot
+exports[`will check the matchers and pass 1`] = `
+Object {
+  "createdAt": Any<Date>,
+  "id": Any<Number>,
+  "name": "LeBron James",
+}
+`;
+```
+
 ## Best Practices
 
 Snapshots are a fantastic tool for identifying unexpected interface changes

@@ -21,6 +21,7 @@ import type {
 } from 'types/Matchers';
 
 import * as utils from 'jest-matcher-utils';
+import {iterableEquality, subsetEquality, getObjectSubset} from './utils';
 import matchers from './matchers';
 import spyMatchers from './spy_matchers';
 import toThrowMatchers, {
@@ -223,7 +224,10 @@ const makeThrowingMatcher = (
       getState(),
       {
         equals,
+        getObjectSubset,
         isNot,
+        iterableEquality,
+        subsetEquality,
         utils,
       },
     );
