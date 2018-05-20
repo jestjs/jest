@@ -40,7 +40,7 @@ exports[`not throwing Error objects 4`] = `
   ● .assertions() › throws
 
     expect(received).toBeTruthy()
-    
+
     Received: false
 
       11 | const throws = () => {
@@ -56,7 +56,7 @@ exports[`not throwing Error objects 4`] = `
   ● .assertions() › throws
 
     expect.assertions(2)
-    
+
     Expected two assertions to be called but received one assertion call.
 
       10 | 
@@ -72,7 +72,7 @@ exports[`not throwing Error objects 4`] = `
   ● .assertions() › throws on redeclare of assertion count
 
     expect(received).toBeTruthy()
-    
+
     Received: false
 
       15 | const redeclare = () => {
@@ -88,7 +88,7 @@ exports[`not throwing Error objects 4`] = `
   ● .assertions() › throws on assertion
 
     expect.assertions(0)
-    
+
     Expected zero assertions to be called but received one assertion call.
 
       20 | 
@@ -104,7 +104,7 @@ exports[`not throwing Error objects 4`] = `
   ● .hasAssertions() › throws when there are not assertions
 
     expect.hasAssertions()
-    
+
     Expected at least one assertion to be called but received none.
 
       25 | 
@@ -260,7 +260,7 @@ exports[`works with assertions in separate files 1`] = `
   ● use some imported macro to make assertion
 
     expect(received).toEqual(expected)
-    
+
     Expected value to equal:
       2
     Received:
@@ -290,17 +290,17 @@ exports[`works with async failures 1`] = `
   ● resolve, but fail
 
     expect(received).toEqual(expected)
-    
+
     Expected value to equal:
       {\\"baz\\": \\"bar\\"}
     Received:
       {\\"foo\\": \\"bar\\"}
-    
+
     Difference:
-    
+
     - Expected
     + Received
-    
+
       Object {
     -   \\"baz\\": \\"bar\\",
     +   \\"foo\\": \\"bar\\",
@@ -319,17 +319,17 @@ exports[`works with async failures 1`] = `
   ● reject, but fail
 
     expect(received).toEqual(expected)
-    
+
     Expected value to equal:
       {\\"baz\\": \\"bar\\"}
     Received:
       {\\"foo\\": \\"bar\\"}
-    
+
     Difference:
-    
+
     - Expected
     + Received
-    
+
       Object {
     -   \\"baz\\": \\"bar\\",
     +   \\"foo\\": \\"bar\\",
@@ -348,7 +348,7 @@ exports[`works with async failures 1`] = `
   ● expect reject
 
     expect(received).rejects.toEqual()
-    
+
     Expected received Promise to reject, instead it resolved to value
       {\\"foo\\": \\"bar\\"}
 
@@ -365,7 +365,7 @@ exports[`works with async failures 1`] = `
   ● expect resolve
 
     expect(received).resolves.toEqual()
-    
+
     Expected received Promise to resolve, instead it rejected to value
       {\\"foo\\": \\"bar\\"}
 
@@ -404,12 +404,12 @@ exports[`works with named snapshot failures 1`] = `
   ● failing named snapshot
 
     expect(value).toMatchSnapshot()
-    
+
     Received value does not match stored snapshot \\"failing named snapshot: snapname 1\\".
-    
+
     - Snapshot
     + Received
-    
+
     - \\"bar\\"
     + \\"foo\\"
 
@@ -448,7 +448,7 @@ exports[`works with node assert 1`] = `
   ● assert
 
     assert.equal(received, expected) or assert(received) 
-    
+
     Expected value to be equal to:
       true
     Received:
@@ -469,12 +469,12 @@ exports[`works with node assert 1`] = `
   ● assert with a message
 
     assert.equal(received, expected) or assert(received) 
-    
+
     Expected value to be equal to:
       true
     Received:
       false
-    
+
     Message:
       this is a message
 
@@ -493,7 +493,7 @@ exports[`works with node assert 1`] = `
   ● assert.ok
 
     assert.equal(received, expected) or assert(received) 
-    
+
     Expected value to be equal to:
       true
     Received:
@@ -514,12 +514,12 @@ exports[`works with node assert 1`] = `
   ● assert.ok with a message
 
     assert.equal(received, expected) or assert(received) 
-    
+
     Expected value to be equal to:
       true
     Received:
       false
-    
+
     Message:
       this is a message
 
@@ -538,7 +538,7 @@ exports[`works with node assert 1`] = `
   ● assert.equal
 
     assert.equal(received, expected) or assert(received) 
-    
+
     Expected value to be equal to:
       2
     Received:
@@ -559,14 +559,14 @@ exports[`works with node assert 1`] = `
   ● assert.notEqual
 
     assert.notEqual(received, expected)
-    
+
     Expected value to not be equal to:
       1
     Received:
       1
-    
+
     Difference:
-    
+
     Compared values have no visual difference.
 
       33 | 
@@ -584,17 +584,17 @@ exports[`works with node assert 1`] = `
   ● assert.deepEqual
 
     assert.deepEqual(received, expected)
-    
+
     Expected value to deeply equal to:
       {\\"a\\": {\\"b\\": {\\"c\\": 6}}}
     Received:
       {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
-    
+
     Difference:
-    
+
     - Expected
     + Received
-    
+
       Object {
         \\"a\\": Object {
           \\"b\\": Object {
@@ -619,20 +619,20 @@ exports[`works with node assert 1`] = `
   ● assert.deepEqual with a message
 
     assert.deepEqual(received, expected)
-    
+
     Expected value to deeply equal to:
       {\\"a\\": {\\"b\\": {\\"c\\": 7}}}
     Received:
       {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
-    
+
     Message:
       this is a message
-    
+
     Difference:
-    
+
     - Expected
     + Received
-    
+
       Object {
         \\"a\\": Object {
           \\"b\\": Object {
@@ -657,14 +657,14 @@ exports[`works with node assert 1`] = `
   ● assert.notDeepEqual
 
     assert.notDeepEqual(received, expected)
-    
+
     Expected value not to deeply equal to:
       {\\"a\\": 1}
     Received:
       {\\"a\\": 1}
-    
+
     Difference:
-    
+
     Compared values have no visual difference.
 
       45 | 
@@ -682,7 +682,7 @@ exports[`works with node assert 1`] = `
   ● assert.strictEqual
 
     assert.strictEqual(received, expected)
-    
+
     Expected value to strictly be equal to:
       NaN
     Received:
@@ -703,17 +703,17 @@ exports[`works with node assert 1`] = `
   ● assert.notStrictEqual
 
     assert.notStrictEqual(received, expected)
-    
+
     Expected value not be strictly equal to:
       1
     Received:
       1
-    
+
     Message:
       My custom error message
-    
+
     Difference:
-    
+
     Compared values have no visual difference.
 
       53 | 
@@ -731,17 +731,17 @@ exports[`works with node assert 1`] = `
   ● assert.deepStrictEqual
 
     assert.deepStrictEqual(received, expected)
-    
+
     Expected value to deeply and strictly equal to:
       {\\"a\\": 2}
     Received:
       {\\"a\\": 1}
-    
+
     Difference:
-    
+
     - Expected
     + Received
-    
+
       Object {
     -   \\"a\\": 2,
     +   \\"a\\": 1,
@@ -762,14 +762,14 @@ exports[`works with node assert 1`] = `
   ● assert.notDeepStrictEqual
 
     assert.notDeepStrictEqual(received, expected)
-    
+
     Expected value not to deeply and strictly equal to:
       {\\"a\\": 1}
     Received:
       {\\"a\\": 1}
-    
+
     Difference:
-    
+
     Compared values have no visual difference.
 
       61 | 
@@ -789,11 +789,11 @@ exports[`works with node assert 1`] = `
   ● assert.doesNotThrow
 
     assert.doesNotThrow(function)
-    
+
     Expected the function not to throw an error.
     Instead, it threw:
       [Error: err!]
-    
+
     Message:
       Got unwanted exception.
 
@@ -812,10 +812,10 @@ exports[`works with node assert 1`] = `
   ● assert.throws
 
     assert.throws(function)
-    
+
     Expected the function to throw an error.
     But it didn't throw anything.
-    
+
     Message:
       Missing expected exception.
 
@@ -840,12 +840,12 @@ exports[`works with snapshot failures 1`] = `
   ● failing snapshot
 
     expect(value).toMatchSnapshot()
-    
+
     Received value does not match stored snapshot \\"failing snapshot 1\\".
-    
+
     - Snapshot
     + Received
-    
+
     - \\"bar\\"
     + \\"foo\\"
 

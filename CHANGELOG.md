@@ -191,6 +191,8 @@
   ([#5812](https://github.com/facebook/jest/issues/5812))
 * `[jest-runtime]` [**BREAKING**] Remove `jest.genMockFn` and
   `jest.genMockFunction` ([#6173](https://github.com/facebook/jest/pull/6173))
+* `[jest-message-util]` Avoid adding unnecessary indent to blank lines in stack
+  traces (TBD)
 
 ## 22.4.2
 

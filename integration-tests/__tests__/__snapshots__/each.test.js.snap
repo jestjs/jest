@@ -8,14 +8,14 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
 
     Not enough arguments supplied for given headings:
     left | right
-    
+
     Received:
     Array [
       true,
       true,
       true,
     ]
-    
+
     Missing 1 arguments
       
       at packages/jest-jasmine2/build/each.js:84:17
