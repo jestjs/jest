@@ -111,8 +111,6 @@ test('works with node assert', () => {
       70 | test('assert.doesNotThrow', () => {
       
       at __tests__/node_assertion_error.test.js:67:10
-      
-      at __tests__/node_assertion_error.test.js:66:1
 `;
 
     expect(summary).toContain(ifErrorMessage);

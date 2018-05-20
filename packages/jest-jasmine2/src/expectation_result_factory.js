@@ -36,8 +36,14 @@ function stackFormatter(options, initError, errorMessage) {
     return '';
   }
 
-  if (options.error && options.error.stack) {
-    return options.error.stack;
+  if (options.error) {
+    if (options.error.stack) {
+      return options.error.stack;
+    }
+
+    if (options.error === errorMessage) {
+      return errorMessage;
+    }
   }
 
   if (initError) {
