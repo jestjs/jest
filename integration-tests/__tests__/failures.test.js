@@ -42,11 +42,11 @@ test('works with node assert', () => {
   if (nodeMajorVersion >= 9) {
     expect(summary).toContain(`
     assert.doesNotThrow(function)
-    
+
     Expected the function not to throw an error.
     Instead, it threw:
       [Error: err!]
-    
+
     Message:
       Got unwanted exception.
 `);
@@ -89,17 +89,17 @@ test('works with node assert', () => {
   if (nodeMajorVersion >= 10) {
     const ifErrorMessage = `
     assert.ifError(received, expected)
-    
+
     Expected value ifError to:
       null
     Received:
       1
-    
+
     Message:
       ifError got unwanted exception: 1
-    
+
     Difference:
-    
+
       Comparing two different types of values. Expected null but received number.
 
       65 | 
