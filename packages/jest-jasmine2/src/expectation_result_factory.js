@@ -47,7 +47,7 @@ function stackFormatter(options, initError, errorMessage) {
   }
 
   if (initError) {
-    return errorMessage + '\n' + initError.stack;
+    return errorMessage.trimRight() + '\n\n' + initError.stack;
   }
 
   return new Error(errorMessage).stack;

@@ -14,6 +14,7 @@ exports[`not throwing Error objects 2`] = `
   ● Test suite failed to run
 
     Error
+
       banana
 
 "
@@ -142,7 +143,6 @@ exports[`not throwing Error objects 5`] = `
        9 | });
       10 | 
 
-
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:7:1
 
@@ -158,7 +158,6 @@ exports[`not throwing Error objects 5`] = `
       13 |   throw false;
       14 | });
 
-
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:11:1
 
@@ -173,7 +172,6 @@ exports[`not throwing Error objects 5`] = `
       17 |   // eslint-disable-next-line no-throw-literal
       18 |   throw undefined;
       19 | });
-
 
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:16:1
@@ -196,7 +194,6 @@ exports[`not throwing Error objects 5`] = `
       22 |   // eslint-disable-next-line no-throw-literal
       23 |   throw deepObject;
       24 | });
-
 
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:21:1
