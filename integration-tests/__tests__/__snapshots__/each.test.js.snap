@@ -17,7 +17,7 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
     ]
 
     Missing 1 arguments
-      
+
       at packages/jest-jasmine2/build/each.js:84:17
 
 "
