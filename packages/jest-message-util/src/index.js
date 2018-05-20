@@ -278,6 +278,7 @@ export const formatStackTrace = (
   }
 
   const stacktrace = lines
+    .filter(Boolean)
     .map(
       line =>
         STACK_INDENT +
@@ -285,7 +286,7 @@ export const formatStackTrace = (
     )
     .join('\n');
 
-  return renderedCallsite + stacktrace;
+  return `${renderedCallsite}\n${stacktrace}`;
 };
 
 export const formatResultsErrors = (

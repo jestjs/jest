@@ -50,7 +50,7 @@ exports[`not throwing Error objects 4`] = `
       14 | };
       15 | const redeclare = () => {
       16 |   expect.assertions(1);
-      
+
       at __tests__/assertion_count.test.js:13:17
 
   ● .assertions() › throws
@@ -66,7 +66,7 @@ exports[`not throwing Error objects 4`] = `
       13 |   expect(false).toBeTruthy();
       14 | };
       15 | const redeclare = () => {
-      
+
       at __tests__/assertion_count.test.js:12:10
 
   ● .assertions() › throws on redeclare of assertion count
@@ -82,7 +82,7 @@ exports[`not throwing Error objects 4`] = `
       18 |   expect.assertions(2);
       19 | };
       20 | 
-      
+
       at __tests__/assertion_count.test.js:17:17
 
   ● .assertions() › throws on assertion
@@ -98,7 +98,7 @@ exports[`not throwing Error objects 4`] = `
       23 |   expect(true).toBeTruthy();
       24 | };
       25 | 
-      
+
       at __tests__/assertion_count.test.js:22:10
 
   ● .hasAssertions() › throws when there are not assertions
@@ -114,7 +114,7 @@ exports[`not throwing Error objects 4`] = `
       28 | };
       29 | 
       30 | describe('.assertions()', () => {
-      
+
       at __tests__/assertion_count.test.js:27:10
 
 "
@@ -141,8 +141,8 @@ exports[`not throwing Error objects 5`] = `
        8 |   throw Promise.resolve(5);
        9 | });
       10 | 
-      
-      
+
+
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:7:1
 
@@ -157,8 +157,8 @@ exports[`not throwing Error objects 5`] = `
       12 |   // eslint-disable-next-line no-throw-literal
       13 |   throw false;
       14 | });
-      
-      
+
+
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:11:1
 
@@ -173,8 +173,8 @@ exports[`not throwing Error objects 5`] = `
       17 |   // eslint-disable-next-line no-throw-literal
       18 |   throw undefined;
       19 | });
-      
-      
+
+
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:16:1
 
@@ -196,8 +196,8 @@ exports[`not throwing Error objects 5`] = `
       22 |   // eslint-disable-next-line no-throw-literal
       23 |   throw deepObject;
       24 | });
-      
-      
+
+
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:21:1
 
@@ -212,7 +212,7 @@ exports[`not throwing Error objects 5`] = `
       29 | });
       30 | 
       31 | test('done(Error)', done => {
-      
+
       at __tests__/during_tests.test.js:28:3
 
   ● done(Error)
@@ -226,7 +226,7 @@ exports[`not throwing Error objects 5`] = `
       33 | });
       34 | 
       35 | test('done(non-error)', done => {
-      
+
       at __tests__/during_tests.test.js:32:8
 
   ● done(non-error)
@@ -246,7 +246,7 @@ exports[`not throwing Error objects 5`] = `
          |   ^
       37 | });
       38 | 
-      
+
       at packages/jest-jasmine2/build/jasmine/Env.js:541:34
       at __tests__/during_tests.test.js:36:3
 
@@ -272,7 +272,7 @@ exports[`works with assertions in separate files 1`] = `
          |               ^
       13 | };
       14 | 
-      
+
       at macros.js:12:15
       at __tests__/test_macro.test.js:14:3
 
@@ -313,7 +313,7 @@ exports[`works with async failures 1`] = `
       13 | });
       14 | 
       15 | test('reject, but fail', () => {
-      
+
       at __tests__/async_failures.test.js:12:57
 
   ● reject, but fail
@@ -342,7 +342,7 @@ exports[`works with async failures 1`] = `
       17 | });
       18 | 
       19 | test('expect reject', () => {
-      
+
       at __tests__/async_failures.test.js:16:55
 
   ● expect reject
@@ -359,7 +359,7 @@ exports[`works with async failures 1`] = `
       21 | });
       22 | 
       23 | test('expect resolve', () => {
-      
+
       at __tests__/async_failures.test.js:20:10
 
   ● expect resolve
@@ -376,7 +376,7 @@ exports[`works with async failures 1`] = `
       25 | });
       26 | 
       27 | test('timeout', done => {
-      
+
       at __tests__/async_failures.test.js:24:10
 
   ● timeout
@@ -390,7 +390,7 @@ exports[`works with async failures 1`] = `
       28 |   jest.setTimeout(5);
       29 | 
       30 |   setTimeout(done, 10);
-      
+
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/async_failures.test.js:27:1
 
@@ -419,7 +419,7 @@ exports[`works with named snapshot failures 1`] = `
          |                 ^
       13 | });
       14 | 
-      
+
       at __tests__/snapshot_named.test.js:12:17
 
  › 1 snapshot failed.
@@ -461,7 +461,7 @@ exports[`works with node assert 1`] = `
       16 | });
       17 | 
       18 | test('assert with a message', () => {
-      
+
       at __tests__/node_assertion_error.test.js:15:3
 
   ● assert with a message
@@ -483,7 +483,7 @@ exports[`works with node assert 1`] = `
       20 | });
       21 | 
       22 | test('assert.ok', () => {
-      
+
       at __tests__/node_assertion_error.test.js:19:3
 
   ● assert.ok
@@ -502,7 +502,7 @@ exports[`works with node assert 1`] = `
       24 | });
       25 | 
       26 | test('assert.ok with a message', () => {
-      
+
       at __tests__/node_assertion_error.test.js:23:10
 
   ● assert.ok with a message
@@ -524,7 +524,7 @@ exports[`works with node assert 1`] = `
       28 | });
       29 | 
       30 | test('assert.equal', () => {
-      
+
       at __tests__/node_assertion_error.test.js:27:10
 
   ● assert.equal
@@ -543,7 +543,7 @@ exports[`works with node assert 1`] = `
       32 | });
       33 | 
       34 | test('assert.notEqual', () => {
-      
+
       at __tests__/node_assertion_error.test.js:31:10
 
   ● assert.notEqual
@@ -566,7 +566,7 @@ exports[`works with node assert 1`] = `
       36 | });
       37 | 
       38 | test('assert.deepEqual', () => {
-      
+
       at __tests__/node_assertion_error.test.js:35:10
 
   ● assert.deepEqual
@@ -599,7 +599,7 @@ exports[`works with node assert 1`] = `
       40 | });
       41 | 
       42 | test('assert.deepEqual with a message', () => {
-      
+
       at __tests__/node_assertion_error.test.js:39:10
 
   ● assert.deepEqual with a message
@@ -635,7 +635,7 @@ exports[`works with node assert 1`] = `
       44 | });
       45 | 
       46 | test('assert.notDeepEqual', () => {
-      
+
       at __tests__/node_assertion_error.test.js:43:10
 
   ● assert.notDeepEqual
@@ -658,7 +658,7 @@ exports[`works with node assert 1`] = `
       48 | });
       49 | 
       50 | test('assert.strictEqual', () => {
-      
+
       at __tests__/node_assertion_error.test.js:47:10
 
   ● assert.strictEqual
@@ -677,7 +677,7 @@ exports[`works with node assert 1`] = `
       52 | });
       53 | 
       54 | test('assert.notStrictEqual', () => {
-      
+
       at __tests__/node_assertion_error.test.js:51:10
 
   ● assert.notStrictEqual
@@ -703,7 +703,7 @@ exports[`works with node assert 1`] = `
       56 | });
       57 | 
       58 | test('assert.deepStrictEqual', () => {
-      
+
       at __tests__/node_assertion_error.test.js:55:10
 
   ● assert.deepStrictEqual
@@ -732,7 +732,7 @@ exports[`works with node assert 1`] = `
       60 | });
       61 | 
       62 | test('assert.notDeepStrictEqual', () => {
-      
+
       at __tests__/node_assertion_error.test.js:59:10
 
   ● assert.notDeepStrictEqual
@@ -755,7 +755,7 @@ exports[`works with node assert 1`] = `
       64 | });
       65 | 
       66 | test('assert.ifError', () => {
-      
+
       at __tests__/node_assertion_error.test.js:63:10
 
   ● assert.ifError
@@ -778,7 +778,7 @@ exports[`works with node assert 1`] = `
       72 |     throw Error('err!');
       73 |   });
       74 | });
-      
+
       at __tests__/node_assertion_error.test.js:71:10
 
   ● assert.throws
@@ -797,7 +797,7 @@ exports[`works with node assert 1`] = `
          |          ^
       78 | });
       79 | 
-      
+
       at __tests__/node_assertion_error.test.js:77:10
 
 "
@@ -825,7 +825,7 @@ exports[`works with snapshot failures 1`] = `
          |                 ^
       13 | });
       14 | 
-      
+
       at __tests__/snapshot.test.js:12:17
 
  › 1 snapshot failed.

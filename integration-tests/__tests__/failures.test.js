@@ -59,7 +59,7 @@ test('works with node assert', () => {
       72 |     throw Error('err!');
       73 |   });
       74 | });
-      
+
       at __tests__/node_assertion_error.test.js:71:10
 `);
 
@@ -109,7 +109,7 @@ test('works with node assert', () => {
       68 | });
       69 | 
       70 | test('assert.doesNotThrow', () => {
-      
+
       at __tests__/node_assertion_error.test.js:67:10
 `;
 
@@ -126,8 +126,7 @@ test('works with node assert', () => {
       67 |   assert.ifError(1);
       68 | });
       69 | 
-      
-      
+
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/node_assertion_error.test.js:66:1
 `;
