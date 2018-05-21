@@ -229,6 +229,7 @@ mocked module fails these checks. Your options are:
     ```js
     jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
     ```
+    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzling console.warn and supress specific warnings.
 
 ### DOM Testing
 
