@@ -39,6 +39,11 @@ When using the `--config` option, the JSON file must not contain a "jest" key:
 }
 ```
 
+Additionally, jest configuration can be overridden via environment variables.
+To do that, you can use the all caps, underscore separated version of the option
+name, prefixed with `JEST_`. For example, the option `cacheDirectory` would
+be specified using the environment variable `JEST_CACHE_DIRECTORY`
+
 ## Options
 
 These options let you control Jest's behavior in your `package.json` file. The

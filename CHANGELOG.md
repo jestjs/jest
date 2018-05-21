@@ -2,6 +2,8 @@
 
 ### Features
 
+* `[jest-cli]` Add support for specifying configuration via environment variables
+  ([#6217](https://github.com/facebook/jest/pull/6217))
 * `[jest-cli]` Add `--detectOpenHandles` flag which enables Jest to potentially
   track down handles keeping it open after tests are complete.
   ([#6130](https://github.com/facebook/jest/pull/6130))
