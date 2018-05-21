@@ -14,7 +14,6 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
-import {version as VERSION} from '../../package.json';
 import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
@@ -160,8 +159,7 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
-    .check(args.check)
-    .version(`v${VERSION}`).argv;
+    .check(args.check).argv;
 
   validateCLIOptions(
     argv,
