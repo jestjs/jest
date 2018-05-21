@@ -163,6 +163,7 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
     .options(args.options)
     .epilogue(args.docs)
     .check(args.check)
+    .env('JEST')
     .version(false).argv;
 
   validateCLIOptions(
