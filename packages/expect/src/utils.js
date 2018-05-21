@@ -221,3 +221,10 @@ export const isError = (value: any) => {
 export function emptyObject(obj: any) {
   return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
 }
+
+const MULTILINE_REGEXP = /[\r\n]/;
+
+export const isOneline = (expected: any, received: any) =>
+  typeof expected === 'string' &&
+  typeof received === 'string' &&
+  (!MULTILINE_REGEXP.test(expected) || !MULTILINE_REGEXP.test(received));
