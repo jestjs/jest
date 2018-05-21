@@ -71,6 +71,12 @@ you can use:
 yarn test -u -t="ColorPicker"
 ```
 
+OR
+
+```bash
+yarn test -- --color
+```
+
 ## Using with npm scripts
 
 If you run Jest via `npm test`, you can still use the command line arguments by
