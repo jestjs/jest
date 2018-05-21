@@ -65,8 +65,6 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  argv.version && printVersionAndExit(outputStream);
-
   const {globalConfig, configs, hasDeprecationWarnings} = getConfigs(
     projects,
     argv,
@@ -163,7 +161,7 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
     .options(args.options)
     .epilogue(args.docs)
     .check(args.check)
-    .version(false).argv;
+    .version(`v${VERSION}`).argv;
 
   validateCLIOptions(
     argv,
@@ -208,11 +206,6 @@ const printDebugInfoAndExitIfNeeded = (
   if (argv.showConfig) {
     exit(0);
   }
-};
-
-const printVersionAndExit = outputStream => {
-  outputStream.write(`v${VERSION}\n`);
-  exit(0);
 };
 
 const ensureNoDuplicateConfigs = (parsedConfigs, projects, rootConfigPath) => {

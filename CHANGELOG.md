@@ -161,6 +161,7 @@
 
 ### Chore & Maintenance
 
+* `[jest-cli]` Use yargs's built-in `version` instead of rolling our own (TBD)
 * `[docs]` Add explanation on how to mock methods not implemented in JSDOM
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
