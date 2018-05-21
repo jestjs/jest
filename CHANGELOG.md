@@ -92,6 +92,8 @@
   ([#6181](https://github.com/facebook/jest/pull/6181))
 * `[expect]` Include custom mock names in error messages
   ([#6199](https://github.com/facebook/jest/pull/6199))
+* `[jest-diff]` Support returning diff from oneline strings
+  ([#6221](https://github.com/facebook/jest/pull/6221))
 
 ### Fixes
 
