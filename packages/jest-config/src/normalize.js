@@ -64,7 +64,7 @@ const setupPreset = (
   let preset;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
-    presetPath.charAt(0) === '.'
+    presetPath.startsWith('.')
       ? presetPath
       : path.join(presetPath, PRESET_NAME),
     {
