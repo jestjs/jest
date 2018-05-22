@@ -69,18 +69,23 @@ const createToReturnMatcher = matcherName => (received, expected) => {
       ? 'mock function'
       : `mock function "${receivedName}"`;
 
-  const returnValues = received.mock.returnValues;
+  // List of return values that correspond only to calls that did not throw
+  // an error
+  const returnValues = received.mock.results
+    .filter(result => !result.isThrow)
+    .map(result => result.value);
+
   const count = returnValues.length;
   const pass = count > 0;
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName(), '') +
+        matcherHint('.not' + matcherName, receivedName, '') +
         '\n\n' +
         `Expected ${identifier} not to have returned, but it returned:\n` +
         `  ${getPrintedReturnValues(returnValues, RETURN_PRINT_LIMIT)}`
     : () =>
-        matcherHint(matcherName, received.getMockName(), '') +
+        matcherHint(matcherName, receivedName, '') +
         '\n\n' +
         `Expected ${identifier} to have returned.`;
 
@@ -135,22 +140,22 @@ const createToReturnTimesMatcher = (matcherName: string) => (
       ? 'mock function'
       : `mock function "${receivedName}"`;
 
-  const count = received.mock.returnValues.length;
+  // List of return results that correspond only to calls that did not throw
+  // an error
+  const returnResults = received.mock.results.filter(result => !result.isThrow);
+
+  const count = returnResults.length;
   const pass = count === expected;
 
   const message = pass
     ? () =>
-        matcherHint(
-          '.not' + matcherName,
-          received.getMockName(),
-          String(expected),
-        ) +
+        matcherHint('.not' + matcherName, receivedName, String(expected)) +
         `\n\n` +
         `Expected ${identifier} not to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it` +
         ` returned exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
     : () =>
-        matcherHint(matcherName, received.getMockName(), String(expected)) +
+        matcherHint(matcherName, receivedName, String(expected)) +
         '\n\n' +
         `Expected ${identifier} to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
@@ -209,7 +214,12 @@ const createToReturnWithMatcher = matcherName => (
       ? 'mock function'
       : `mock function "${receivedName}"`;
 
-  const returnValues = received.mock.returnValues;
+  // List of return values that correspond only to calls that did not throw
+  // an error
+  const returnValues = received.mock.results
+    .filter(result => !result.isThrow)
+    .map(result => result.value);
+
   const [match] = partition(returnValues, value =>
     equals(expected, value, [iterableEquality]),
   );
@@ -217,14 +227,14 @@ const createToReturnWithMatcher = matcherName => (
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName()) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
         `Expected ${identifier} not to have returned:\n` +
         `  ${printExpected(expected)}\n` +
         `But it returned exactly:\n` +
         `  ${printReceived(expected)}`
     : () =>
-        matcherHint(matcherName, received.getMockName()) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
         `Expected ${identifier} to have returned:\n` +
         formatMismatchedReturnValues(
@@ -281,26 +291,33 @@ const createLastReturnedMatcher = matcherName => (
       ? 'mock function'
       : `mock function "${receivedName}"`;
 
-  const returnValues = received.mock.returnValues;
-  const lastReturnValue = returnValues[returnValues.length - 1];
-  const pass = equals(lastReturnValue, expected, [iterableEquality]);
+  const results = received.mock.results;
+  const lastResult = results[results.length - 1];
+  const pass =
+    !!lastResult &&
+    !lastResult.isThrow &&
+    equals(lastResult.value, expected, [iterableEquality]);
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName()) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
         `Expected ${identifier} to not have last returned:\n` +
         `  ${printExpected(expected)}\n` +
         `But it last returned exactly:\n` +
-        `  ${printReceived(lastReturnValue)}`
+        `  ${printReceived(lastResult.value)}`
     : () =>
-        matcherHint(matcherName, received.getMockName()) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
         `Expected ${identifier} to have last returned:\n` +
         `  ${printExpected(expected)}\n` +
-        (returnValues.length > 0
-          ? `But it last returned:\n  ${printReceived(lastReturnValue)}`
-          : `But it did ${RECEIVED_COLOR('not return')}`);
+        (!lastResult
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : lastResult.isThrow
+            ? `But the last call ${RECEIVED_COLOR('threw an error')}`
+            : `But the last call returned:\n  ${printReceived(
+                lastResult.value,
+              )}`);
 
   return {message, pass};
 };
@@ -375,28 +392,35 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
       ? 'mock function'
       : `mock function "${receivedName}"`;
 
-  const returnValues = received.mock.returnValues;
-  const nthValue = returnValues[nth - 1];
-  const pass = equals(nthValue, expected, [iterableEquality]);
+  const results = received.mock.results;
+  const nthResult = results[nth - 1];
+  const pass =
+    !!nthResult &&
+    !nthResult.isThrow &&
+    equals(nthResult.value, expected, [iterableEquality]);
   const nthString = nthToString(nth);
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName()) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
         `Expected ${identifier} ${nthString} call to not have returned with:\n` +
         `  ${printExpected(expected)}\n` +
         `But the ${nthString} call returned exactly:\n` +
-        `  ${printReceived(nthValue)}`
+        `  ${printReceived(nthResult.value)}`
     : () =>
-        matcherHint(matcherName, received.getMockName()) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
         `Expected ${identifier} ${nthString} call to have returned with:\n` +
         `  ${printExpected(expected)}\n` +
-        (returnValues.length > 0
-          ? `But the ${nthString} call returned with:\n  ${printReceived(
-              nthValue,
-            )}`
-          : `But it did ${RECEIVED_COLOR('not return')}`);
+        (results.length === 0
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : nth > results.length
+            ? `But it was only called ${printReceived(results.length)} times`
+            : nthResult.isThrow
+              ? `But the ${nthString} call ${RECEIVED_COLOR('threw an error')}`
+              : `But the ${nthString} call returned with:\n  ${printReceived(
+                  nthResult.value,
+                )}`);
 
   return {message, pass};
 };

@@ -94,6 +94,8 @@
   ([#6199](https://github.com/facebook/jest/pull/6199))
 * `[jest-diff]` Support returning diff from oneline strings
   ([#6221](https://github.com/facebook/jest/pull/6221))
+* `[expect]` Improve return matchers
+  ([#6172](https://github.com/facebook/jest/pull/6172))
 
 ### Fixes
 
@@ -163,6 +165,8 @@
 
 ### Chore & Maintenance
 
+* `[jest-cli]` Use yargs's built-in `version` instead of rolling our own
+  ([#6215](https://github.com/facebook/jest/pull/6215))
 * `[docs]` Add explanation on how to mock methods not implemented in JSDOM
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites

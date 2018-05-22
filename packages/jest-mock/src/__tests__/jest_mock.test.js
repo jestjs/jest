@@ -442,12 +442,21 @@ describe('moduleMocker', () => {
       it('tracks return values', () => {
         const fn = moduleMocker.fn(x => x * 2);
 
-        expect(fn.mock.returnValues).toEqual([]);
+        expect(fn.mock.results).toEqual([]);
 
         fn(1);
         fn(2);
 
-        expect(fn.mock.returnValues).toEqual([2, 4]);
+        expect(fn.mock.results).toEqual([
+          {
+            isThrow: false,
+            value: 2,
+          },
+          {
+            isThrow: false,
+            value: 4,
+          },
+        ]);
       });
 
       it('tracks mocked return values', () => {
@@ -457,22 +466,40 @@ describe('moduleMocker', () => {
         fn(1);
         fn(2);
 
-        expect(fn.mock.returnValues).toEqual(['MOCKED!', 4]);
+        expect(fn.mock.results).toEqual([
+          {
+            isThrow: false,
+            value: 'MOCKED!',
+          },
+          {
+            isThrow: false,
+            value: 4,
+          },
+        ]);
       });
 
       it('supports resetting return values', () => {
         const fn = moduleMocker.fn(x => x * 2);
 
-        expect(fn.mock.returnValues).toEqual([]);
+        expect(fn.mock.results).toEqual([]);
 
         fn(1);
         fn(2);
 
-        expect(fn.mock.returnValues).toEqual([2, 4]);
+        expect(fn.mock.results).toEqual([
+          {
+            isThrow: false,
+            value: 2,
+          },
+          {
+            isThrow: false,
+            value: 4,
+          },
+        ]);
 
         fn.mockReset();
 
-        expect(fn.mock.returnValues).toEqual([]);
+        expect(fn.mock.results).toEqual([]);
       });
     });
 
@@ -502,10 +529,44 @@ describe('moduleMocker', () => {
 
       // All call args tracked
       expect(fn.mock.calls).toEqual([[2, 4], [3, 5], [6, 3]]);
-      // tracked return value is undefined when an error is thrown
-      expect(fn.mock.returnValues).toEqual([8, undefined, 18]);
-      // tracked thrown error is undefined when an error is NOT thrown
-      expect(fn.mock.thrownErrors).toEqual([undefined, error, undefined]);
+      // Results are tracked
+      expect(fn.mock.results).toEqual([
+        {
+          isThrow: false,
+          value: 8,
+        },
+        {
+          isThrow: true,
+          value: error,
+        },
+        {
+          isThrow: false,
+          value: 18,
+        },
+      ]);
+    });
+
+    it(`a call that throws undefined is tracked properly`, () => {
+      const fn = moduleMocker.fn(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw undefined;
+      });
+
+      try {
+        fn(2, 4);
+      } catch (error) {
+        // ignore error
+      }
+
+      // All call args tracked
+      expect(fn.mock.calls).toEqual([[2, 4]]);
+      // Results are tracked
+      expect(fn.mock.results).toEqual([
+        {
+          isThrow: true,
+          value: undefined,
+        },
+      ]);
     });
 
     describe('invocationCallOrder', () => {
