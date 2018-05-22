@@ -470,7 +470,16 @@ Specifies notification mode. Requires `notify: true`.
 Default: `undefined`
 
 A preset that is used as a base for Jest's configuration. A preset should point
-to an npm module that exports a `jest-preset.json` module on its top level.
+to an npm module that exports a `jest-preset.json` or `jest-preset.js` module at
+its top level.
+
+Presets may also be relative filesystem paths.
+
+```json
+{
+  "preset": "./node_modules/foo-bar/jest-preset.js"
+}
+```
 
 ### `projects` [array<string | ProjectConfig>]
 
