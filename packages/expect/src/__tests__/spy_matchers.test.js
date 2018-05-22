@@ -388,8 +388,79 @@ const jestExpect = require('../');
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test(`passes when undefined is returned`, () => {
+      const fn = jest.fn(() => undefined);
+      fn();
+      jestExpect(fn)[returned]();
+      expect(() =>
+        jestExpect(fn).not[returned](),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`passes when at least one call does not throw`, () => {
+      const fn = jest.fn(causeError => {
+        if (causeError) {
+          throw new Error('Error!');
+        }
+
+        return 42;
+      });
+
+      fn(false);
+
+      try {
+        fn(true);
+      } catch (error) {
+        // ignore error
+      }
+
+      fn(false);
+
+      jestExpect(fn)[returned]();
+      expect(() =>
+        jestExpect(fn).not[returned](),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test(`.not passes when not returned`, () => {
       const fn = jest.fn();
+
+      jestExpect(fn).not[returned]();
+      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`.not passes when all calls throw`, () => {
+      const fn = jest.fn(() => {
+        throw new Error('Error!');
+      });
+
+      try {
+        fn();
+      } catch (error) {
+        // ignore error
+      }
+
+      try {
+        fn();
+      } catch (error) {
+        // ignore error
+      }
+
+      jestExpect(fn).not[returned]();
+      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`.not passes when a call throws undefined`, () => {
+      const fn = jest.fn(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw undefined;
+      });
+
+      try {
+        fn();
+      } catch (error) {
+        // ignore error
+      }
 
       jestExpect(fn).not[returned]();
       expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
@@ -468,6 +539,18 @@ const jestExpect = require('../');
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test('calls that return undefined are counted as returns', () => {
+      const fn = jest.fn(() => undefined);
+      fn();
+      fn();
+
+      jestExpect(fn)[returnedTimes](2);
+
+      expect(() =>
+        jestExpect(fn).not[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test('.not passes if function returned more than expected times', () => {
       const fn = jest.fn(() => 42);
       fn();
@@ -491,6 +574,59 @@ const jestExpect = require('../');
 
       expect(() =>
         jestExpect(fn)[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('calls that throw are not counted', () => {
+      const fn = jest.fn(causeError => {
+        if (causeError) {
+          throw new Error('Error!');
+        }
+
+        return 42;
+      });
+
+      fn(false);
+
+      try {
+        fn(true);
+      } catch (error) {
+        // ignore error
+      }
+
+      fn(false);
+
+      jestExpect(fn)[returnedTimes](2);
+
+      expect(() =>
+        jestExpect(fn).not[returnedTimes](2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('calls that throw undefined are not counted', () => {
+      const fn = jest.fn(causeError => {
+        if (causeError) {
+          // eslint-disable-next-line no-throw-literal
+          throw undefined;
+        }
+
+        return 42;
+      });
+
+      fn(false);
+
+      try {
+        fn(true);
+      } catch (error) {
+        // ignore error
+      }
+
+      fn(false);
+
+      jestExpect(fn)[returnedTimes](2);
+
+      expect(() =>
+        jestExpect(fn).not[returnedTimes](2),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -573,6 +709,17 @@ const jestExpect = require('../');
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test(`works with undefined`, () => {
+      const fn = jest.fn(() => undefined);
+      fn();
+
+      caller(jestExpect(fn)[returnedWith], undefined);
+
+      expect(() =>
+        caller(jestExpect(fn).not[returnedWith], undefined),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test(`works with Map`, () => {
       const m1 = new Map([[1, 2], [2, 1]]);
       const m2 = new Map([[1, 2], [2, 1]]);
@@ -632,6 +779,49 @@ const jestExpect = require('../');
 
       expect(() =>
         caller(jestExpect(fn).not[returnedWith], indirectlyCreated),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`a call that throws is not considered to have returned`, () => {
+      const fn = jest.fn(() => {
+        throw new Error('Error!');
+      });
+
+      try {
+        fn();
+      } catch (error) {
+        // ignore error
+      }
+
+      // It doesn't matter what return value is tested if the call threw
+      caller(jestExpect(fn).not[returnedWith], 'foo');
+      caller(jestExpect(fn).not[returnedWith], null);
+      caller(jestExpect(fn).not[returnedWith], undefined);
+
+      expect(() =>
+        caller(jestExpect(fn)[returnedWith], undefined),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`a call that throws undefined is not considered to have returned`, () => {
+      const fn = jest.fn(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw undefined;
+      });
+
+      try {
+        fn();
+      } catch (error) {
+        // ignore error
+      }
+
+      // It doesn't matter what return value is tested if the call threw
+      caller(jestExpect(fn).not[returnedWith], 'foo');
+      caller(jestExpect(fn).not[returnedWith], null);
+      caller(jestExpect(fn).not[returnedWith], undefined);
+
+      expect(() =>
+        caller(jestExpect(fn)[returnedWith], undefined),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -711,6 +901,17 @@ const jestExpect = require('../');
 
         expect(() => {
           jestExpect(fn)[returnedWith](0, 'foo');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('should reject nth value greater than number of calls', async () => {
+        const fn = jest.fn(() => 'foo');
+        fn();
+        fn();
+        fn();
+
+        expect(() => {
+          jestExpect(fn)[returnedWith](4, 'foo');
         }).toThrowErrorMatchingSnapshot();
       });
 
