@@ -265,19 +265,19 @@ Returns the `jest` object for chaining.
 
 ### `jest.clearAllMocks()`
 
-Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
+Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
 
 Returns the `jest` object for chaining.
 
 ### `jest.resetAllMocks()`
 
-Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
+Resets the state of all mocks. Equivalent to calling [`.mockReset()`](MockFunctionAPI.md#mockfnmockreset) on every mocked function.
 
 Returns the `jest` object for chaining.
 
 ### `jest.restoreAllMocks()`
 
-Restores all mocks back to their original value. Equivalent to calling `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
 ### `jest.resetModules()`
 
@@ -412,7 +412,6 @@ test('plays video', () => {
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
 
-  spy.mockReset();
   spy.mockRestore();
 });
 ```
@@ -459,7 +458,6 @@ test('plays video', () => {
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
 
-  spy.mockReset();
   spy.mockRestore();
 });
 
@@ -472,7 +470,6 @@ test('plays audio', () => {
   expect(spy).toHaveBeenCalled();
   expect(audio.volume).toBe(100);
 
-  spy.mockReset();
   spy.mockRestore();
 });
 ```

@@ -11,6 +11,7 @@
 
 ### Chore & Maintenance
 
+* `[docs]` Improve documentation of `mockClear`, `mockReset`, and `mockRestore` ([#6227](https://github.com/facebook/jest/pull/6227/files))
 * `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/#6309))
 * `[filenames]` Rename "integration-tests" to "e2e" ([#6315](https://github.com/facebook/jest/pull/6315))
 * `[docs]` Mention the use of commit hash with `--changedSince` flag ([#6330](https://github.com/facebook/jest/pull/6330))
