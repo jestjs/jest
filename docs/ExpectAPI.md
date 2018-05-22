@@ -684,8 +684,8 @@ Also under the alias: `.toReturn()`
 
 If you have a mock function, you can use `.toHaveReturned` to test that the mock
 function successfully returned (i.e., did not throw an error) at least one time.
-For example, let's say you have a mock `drink` that returns `true`.
-You can write:
+For example, let's say you have a mock `drink` that returns `true`. You can
+write:
 
 ```js
 test('drinks returns', () => {
@@ -706,8 +706,8 @@ Use `.toHaveReturnedTimes` to ensure that a mock function returned successfully
 function that throw an error are not counted toward the number of times the
 function returned.
 
-For example, let's say you have a mock `drink` that returns
-`true`. You can write:
+For example, let's say you have a mock `drink` that returns `true`. You can
+write:
 
 ```js
 test('drink returns twice', () => {

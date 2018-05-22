@@ -90,6 +90,8 @@
   ([#5879](https://github.com/facebook/jest/pull/5879))
 * `[jest-cli]` Improve snapshot summaries
   ([#6181](https://github.com/facebook/jest/pull/6181))
+* `[expect]` Include custom mock names in error messages
+  ([#6199](https://github.com/facebook/jest/pull/6199))
 * `[expect]` Improve return matchers
   ([#6172](https://github.com/facebook/jest/pull/6172))
 
@@ -161,6 +163,7 @@
 
 ### Chore & Maintenance
 
+* `[docs]` Add explanation on how to mock methods not implemented in JSDOM
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
   ([#5885](https://github.com/facebook/jest/pull/5885))
@@ -180,6 +183,8 @@
   ([##5733](https://github.com/facebook/jest/pull/#5733))
 * `[docs]` Improve Snapshot Testing Guide
   ([#5812](https://github.com/facebook/jest/issues/5812))
+* `[jest-runtime]` [**BREAKING**] Remove `jest.genMockFn` and
+  `jest.genMockFunction` ([#6173](https://github.com/facebook/jest/pull/6173))
 
 ## 22.4.2
 
