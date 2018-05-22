@@ -112,6 +112,21 @@ test('only', () => {
   expect(summary).toMatchSnapshot();
 });
 
+test('cannot have describe with no implementation', () => {
+  const filename = 'only-constructs.test.js';
+  const content = `
+    describe('describe, no implementation');
+  `;
+
+  writeFiles(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR);
+  expect(status).toBe(1);
+
+  const {summary, rest} = extractSummary(stderr, {stripLocation: true});
+  expect(clean(rest)).toMatchSnapshot();
+  expect(clean(summary)).toMatchSnapshot();
+});
+
 test('cannot test with no implementation', () => {
   const filename = 'only-constructs.test.js';
   const content = `
