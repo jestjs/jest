@@ -80,7 +80,7 @@
   ([#5864](https://github.com/facebook/jest/pull/5864))
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
-* Pretty-print non-Error object errors
+* `[jest-jasmine2]` Pretty-print non-Error object errors
   ([#5980](https://github.com/facebook/jest/pull/5980))
 * `[jest-message-util]` Include column in stack frames
   ([#5889](https://github.com/facebook/jest/pull/5889))
@@ -88,9 +88,19 @@
   ([#6032](https://github.com/facebook/jest/pull/6032))
 * `[expect]` Add return matchers
   ([#5879](https://github.com/facebook/jest/pull/5879))
+* `[jest-cli]` Improve snapshot summaries
+  ([#6181](https://github.com/facebook/jest/pull/6181))
+* `[expect]` Include custom mock names in error messages
+  ([#6199](https://github.com/facebook/jest/pull/6199))
+* `[jest-diff]` Support returning diff from oneline strings
+  ([#6221](https://github.com/facebook/jest/pull/6221))
+* `[expect]` Improve return matchers
+  ([#6172](https://github.com/facebook/jest/pull/6172))
 
 ### Fixes
 
+* `[jest-cli]` Fix misleading action description for F key when in "only failed
+  tests" mode. ([#6167](https://github.com/facebook/jest/issues/6167))
 * `[jest-worker]` Stick calls to workers before processing them
   ([#6073](https://github.com/facebook/jest/pull/6073))
 * `[babel-plugin-jest-hoist]` Allow using `console` global variable
@@ -152,9 +162,17 @@
   ([#5853](https://github.com/facebook/jest/pull/5853))
 * `[expect]` Fix isEqual Set and Map to compare object values and keys
   regardless of order ([#6150](https://github.com/facebook/jest/pull/6150))
+* `[pretty-format]` [**BREAKING**] Remove undefined props from React elements
+  ([#6162](https://github.com/facebook/jest/pull/6162))
 
 ### Chore & Maintenance
 
+* `[jest-cli]` Use yargs's built-in `version` instead of rolling our own
+  ([#6215](https://github.com/facebook/jest/pull/6215))
+* `[docs]` Add explanation on how to mock methods not implemented in JSDOM
+* `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
+  resources for the top suite the same way as for all of the children suites
+  ([#5885](https://github.com/facebook/jest/pull/5885))
 * `[babel-jest]` [**BREAKING**] Always return object from transformer
   ([#5991](https://github.com/facebook/jest/pull/5991))
 * `[*]` Run Prettier on compiled output
@@ -171,6 +189,8 @@
   ([##5733](https://github.com/facebook/jest/pull/#5733))
 * `[docs]` Improve Snapshot Testing Guide
   ([#5812](https://github.com/facebook/jest/issues/5812))
+* `[jest-runtime]` [**BREAKING**] Remove `jest.genMockFn` and
+  `jest.genMockFunction` ([#6173](https://github.com/facebook/jest/pull/6173))
 
 ## 22.4.2
 

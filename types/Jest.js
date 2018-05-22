@@ -7,7 +7,6 @@
  * @flow
  */
 
-type GenMockFn = (implementation?: Function) => JestMockFn;
 type JestMockFn = Function;
 
 export type LocalModuleRequire = (moduleName: string) => any;
@@ -23,10 +22,8 @@ export type Jest = {|
   doMock(moduleName: string, moduleFactory?: any): Jest,
   dontMock(moduleName: string): Jest,
   enableAutomock(): Jest,
-  fn: GenMockFn,
-  genMockFn: GenMockFn,
+  fn: (implementation?: Function) => JestMockFn,
   genMockFromModule(moduleName: string): any,
-  genMockFunction: GenMockFn,
   isMockFunction(fn: Function): boolean,
   mock(moduleName: string, moduleFactory?: any, options?: Object): Jest,
   requireActual: LocalModuleRequire,

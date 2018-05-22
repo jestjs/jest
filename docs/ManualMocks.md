@@ -181,3 +181,40 @@ the test file. But often you need to instruct Jest to use a mock before modules
 use it. For this reason, Jest will automatically hoist `jest.mock` calls to the
 top of the module (before any imports). To learn more about this and see it in
 action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
+
+### Mocking methods which are not implemented in JSDOM
+
+If some code uses a method which JSDOM (the DOM implementation used by Jest)
+hasn't implemented yet, testing it is not easily possible. This is e.g. the case
+with `window.matchMedia()`. Jest returns
+`TypeError: window.matchMedia is not a function` and doesn't properly execute
+the test.
+
+In this case, mocking `matchMedia` in the test file should solve the issue:
+
+```js
+window.matchMedia = jest.fn().mockImplementation(query => {
+  return {
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  };
+});
+```
+
+This works if `window.matchMedia()` is used in a function (or method) which is
+invoked in the test. If `window.matchMedia()` is executed directly in the tested
+file, Jest reports the same error. In this case, the solution is to move the
+manual mock into a separate file and include this one in the test **before** the
+tested file:
+
+```js
+import './matchMedia.mock'; // Must be imported before the tested file
+import {myMethod} from './file-to-test';
+
+describe('myMethod()', () => {
+  // Test the method here...
+});
+```

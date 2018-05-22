@@ -66,6 +66,14 @@ const getType = element => {
   return 'UNDEFINED';
 };
 
+const getPropKeys = element => {
+  const {props} = element;
+
+  return Object.keys(props)
+    .filter(key => key !== 'children' && props[key] !== undefined)
+    .sort();
+};
+
 export const serialize = (
   element: React$Element<any>,
   config: Config,
@@ -79,9 +87,7 @@ export const serialize = (
     : printElement(
         getType(element),
         printProps(
-          Object.keys(element.props)
-            .filter(key => key !== 'children')
-            .sort(),
+          getPropKeys(element),
           element.props,
           config,
           indentation + config.indent,

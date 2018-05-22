@@ -42,6 +42,8 @@ Then we need a custom Test Environment for Mongo
 
 ```js
 // mongo-environment.js
+const NodeEnvironment = require('jest-environment-node');
+
 class MongoEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);

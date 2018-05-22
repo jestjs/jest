@@ -12,9 +12,7 @@ exports[`generates a snapshot with correctly transformed dependencies 1`] = `
       className="App-logo"
       src="logo.svg"
     />
-    <h2
-      className={undefined}
-    >
+    <h2>
       Welcome to React
     </h2>
   </div>

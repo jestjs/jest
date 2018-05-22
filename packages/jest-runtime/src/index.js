@@ -844,10 +844,8 @@ class Runtime {
       dontMock: unmock,
       enableAutomock,
       fn,
-      genMockFn: fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
-      genMockFunction: fn,
       isMockFunction: this._moduleMocker.isMockFunction,
       mock,
       requireActual: localRequire.requireActual,

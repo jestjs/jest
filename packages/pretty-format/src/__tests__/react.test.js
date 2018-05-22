@@ -752,3 +752,28 @@ test('supports context Consumer with a child', () => {
     ),
   ).toEqual('<Context.Consumer>\n  [Function anonymous]\n</Context.Consumer>');
 });
+
+test('ReactElement removes undefined props', () => {
+  assertPrintedJSX(
+    React.createElement('Mouse', {
+      abc: undefined,
+      xyz: true,
+    }),
+    '<Mouse\n  xyz={true}\n/>',
+  );
+});
+
+test('ReactTestComponent removes undefined props', () => {
+  const jsx = React.createElement('Mouse', {
+    abc: undefined,
+    xyz: true,
+  });
+  expect(
+    formatElement(jsx, {
+      highlight: true,
+      theme: {
+        value: 'red',
+      },
+    }),
+  ).toMatchSnapshot();
+});

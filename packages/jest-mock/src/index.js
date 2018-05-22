@@ -21,11 +21,28 @@ export type MockFunctionMetadata = {
   length?: number,
 };
 
+/**
+ * Represents the result of a single call to a mock function.
+ */
+type MockFunctionResult = {
+  /**
+   * True if the function threw.
+   * False if the function returned.
+   */
+  isThrow: boolean,
+  /**
+   * The value that was either thrown or returned by the function.
+   */
+  value: any,
+};
+
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
-  returnValues: Array<any>,
-  thrownErrors: Array<any>,
+  /**
+   * List of results of calls to the mock function.
+   */
+  results: Array<MockFunctionResult>,
   invocationCallOrder: Array<number>,
 };
 
@@ -291,8 +308,7 @@ class ModuleMockerClass {
       calls: [],
       instances: [],
       invocationCallOrder: [],
-      returnValues: [],
-      thrownErrors: [],
+      results: [],
     };
   }
 
@@ -333,6 +349,10 @@ class ModuleMockerClass {
         let finalReturnValue;
         // Will be set to the error that is thrown by the mock (if it throws)
         let thrownError;
+        // Will be set to true if the mock throws an error. The presence of a
+        // value in `thrownError` is not a 100% reliable indicator because a
+        // function could throw a value of undefined.
+        let callDidThrowError = false;
 
         try {
           // The bulk of the implementation is wrapped in an immediately
@@ -398,14 +418,14 @@ class ModuleMockerClass {
         } catch (error) {
           // Store the thrown error so we can record it, then re-throw it.
           thrownError = error;
+          callDidThrowError = true;
           throw error;
         } finally {
-          // Record the return value of the mock function.
-          // If the mock threw an error, then the value will be undefined.
-          mockState.returnValues.push(finalReturnValue);
-          // Record the error thrown by the mock function.
-          // If no error was thrown, then the value will be udnefiend.
-          mockState.thrownErrors.push(thrownError);
+          // Record the result of the function
+          mockState.results.push({
+            isThrow: callDidThrowError,
+            value: callDidThrowError ? thrownError : finalReturnValue,
+          });
         }
 
         return finalReturnValue;
