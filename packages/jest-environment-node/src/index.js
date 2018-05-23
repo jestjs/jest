@@ -40,10 +40,11 @@ class NodeEnvironment {
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
     // URL and URLSearchParams are global in Node >= 10
-    if(typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
+    if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
+      /* global URL, URLSearchParams */
       global.URL = URL;
       global.URLSearchParams = URLSearchParams;
-    };
+    }
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new mock.ModuleMocker(global);
 
