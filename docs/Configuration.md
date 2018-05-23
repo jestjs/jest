@@ -832,6 +832,7 @@ you can use the `node` option to use a node-like environment instead.
 
 By adding a `@jest-environment` docblock at the top of the file, you can specify
 another environment to be used for all tests in that file:
+
 ```js
 /**
  * @jest-environment jsdom
