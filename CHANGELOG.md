@@ -168,8 +168,8 @@
   regardless of order ([#6150](https://github.com/facebook/jest/pull/6150))
 * `[pretty-format]` [**BREAKING**] Remove undefined props from React elements
   ([#6162](https://github.com/facebook/jest/pull/6162))
-* `[jest-haste-map]` Properly resolve mocked node modules without package.json defined
-  ([#6232](https://github.com/facebook/jest/pull/6232))
+* `[jest-haste-map]` Properly resolve mocked node modules without package.json
+  defined ([#6232](https://github.com/facebook/jest/pull/6232))
 
 ### Chore & Maintenance
 
