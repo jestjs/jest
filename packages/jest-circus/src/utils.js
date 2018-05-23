@@ -89,19 +89,33 @@ export const makeTest = (
   };
 };
 
+const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
+  const {hasFocusedTests, testNamePattern} = getState();
+  return describeBlock.tests.some(
+    test =>
+      !(
+        test.mode === 'skip' ||
+        (hasFocusedTests && test.mode !== 'only') ||
+        (testNamePattern && !testNamePattern.test(getTestID(test)))
+      ),
+  );
+};
+
 export const getAllHooksForDescribe = (
   describe: DescribeBlock,
 ): {[key: 'beforeAll' | 'afterAll']: Array<Hook>} => {
   const result = {afterAll: [], beforeAll: []};
 
-  for (const hook of describe.hooks) {
-    switch (hook.type) {
-      case 'beforeAll':
-        result.beforeAll.push(hook);
-        break;
-      case 'afterAll':
-        result.afterAll.push(hook);
-        break;
+  if (hasEnabledTest(describe)) {
+    for (const hook of describe.hooks) {
+      switch (hook.type) {
+        case 'beforeAll':
+          result.beforeAll.push(hook);
+          break;
+        case 'afterAll':
+          result.afterAll.push(hook);
+          break;
+      }
     }
   }
 
