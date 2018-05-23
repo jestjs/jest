@@ -666,8 +666,8 @@ to add a module for an individual test file instead of adding its path to
 Jest is a browser-like environment through
 <a href="https://github.com/tmpvar/jsdom">jsdom</a>. If you are building a node service,
 you can use the <code>node</code> option to use a node-like environment instead.</p>
-<p>If some tests require another environment, you can add a <code>@jest-environment</code>
-docblock.</p>
+<p>By adding a <code>@jest-environment</code> docblock at the top of the file, you can specify
+another environment to be used for all tests in that file:</p>
 <pre><code class="hljs css js"><span class="hljs-comment">/**
  * @jest-environment jsdom
  */</span>
