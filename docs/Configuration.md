@@ -830,9 +830,8 @@ Jest is a browser-like environment through
 [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service,
 you can use the `node` option to use a node-like environment instead.
 
-If some tests require another environment, you can add a `@jest-environment`
-docblock.
-
+By adding a '@jest-environment` docblock at the top of the file, you can specify
+another environment to be used for all tests in that file:
 ```js
 /**
  * @jest-environment jsdom
