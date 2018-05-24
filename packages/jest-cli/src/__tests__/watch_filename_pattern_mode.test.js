@@ -87,8 +87,6 @@ const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
 
-const toHex = char => Number(char.charCodeAt(0)).toString(16);
-
 const globalConfig = {watch: true};
 
 afterEach(runJestMock.mockReset);
@@ -122,11 +120,11 @@ describe('Watch mode flows', () => {
     };
 
     // Write a pattern
-    ['p', '.', '*', '1', '0'].map(toHex).forEach(assertPattern);
+    ['p', '.', '*', '1', '0'].forEach(assertPattern);
 
     [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
 
-    ['3'].map(toHex).forEach(assertPattern);
+    ['3'].forEach(assertPattern);
 
     // Runs Jest again
     runJestMock.mockReset();
@@ -152,17 +150,14 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     ['p', '.', '*', '1', '0']
-      .map(toHex)
+
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
     stdin.emit(KEYS.T);
     await nextTick();
 
-    ['t', 'e', 's', 't']
-      .map(toHex)
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
+    ['t', 'e', 's', 't'].concat(KEYS.ENTER).forEach(key => stdin.emit(key));
 
     await nextTick();
 

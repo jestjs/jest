@@ -29,7 +29,7 @@ class QuitPlugin extends BaseWatchPlugin {
 
   getUsageInfo() {
     return {
-      key: 'q'.codePointAt(0),
+      key: 'q',
       prompt: 'quit watch mode',
     };
   }

@@ -10,7 +10,7 @@ import type {GlobalConfig} from 'types/Config';
 import type {JestHookSubscriber} from './jest_hooks';
 
 export type UsageData = {
-  key: number,
+  key: string,
   prompt: string,
 };
 

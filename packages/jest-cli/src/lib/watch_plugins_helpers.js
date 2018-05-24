@@ -41,7 +41,7 @@ export const getSortedUsageRows = (
       const usageInfoB = b.getUsageInfo && b.getUsageInfo(globalConfig);
 
       if (usageInfoA && usageInfoB) {
-        return usageInfoA.key - usageInfoB.key;
+        return usageInfoA.key.localeCompare(usageInfoB.key);
       }
 
       return 0;

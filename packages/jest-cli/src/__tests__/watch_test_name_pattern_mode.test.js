@@ -99,8 +99,6 @@ jest.doMock('../lib/terminal_utils', () => ({
 
 const watch = require('../watch').default;
 
-const toHex = char => Number(char.charCodeAt(0)).toString(16);
-
 const globalConfig = {
   watch: true,
 };
@@ -136,11 +134,11 @@ describe('Watch mode flows', () => {
     };
 
     // Write a pattern
-    ['c', 'o', 'n', ' ', '1', '2'].map(toHex).forEach(assertPattern);
+    ['c', 'o', 'n', ' ', '1', '2'].forEach(assertPattern);
 
     [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
 
-    ['*'].map(toHex).forEach(assertPattern);
+    ['*'].forEach(assertPattern);
 
     // Runs Jest again
     runJestMock.mockReset();

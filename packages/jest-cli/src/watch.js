@@ -277,7 +277,7 @@ export default function watch(
     ).find(plugin => {
       const usageData =
         (plugin.getUsageInfo && plugin.getUsageInfo(globalConfig)) || {};
-      return usageData.key === parseInt(key, 16);
+      return usageData.key === key;
     });
 
     if (matchingWatchPlugin != null) {
@@ -359,7 +359,7 @@ export default function watch(
   if (typeof stdin.setRawMode === 'function') {
     stdin.setRawMode(true);
     stdin.resume();
-    stdin.setEncoding('hex');
+    stdin.setEncoding('utf8');
     stdin.on('data', onKeypress);
   }
 
@@ -405,7 +405,7 @@ const usage = (
       plugin =>
         chalk.dim(' \u203A Press') +
         ' ' +
-        String.fromCodePoint(plugin.key) +
+        plugin.key +
         ' ' +
         chalk.dim(`to ${plugin.prompt}.`),
     ),

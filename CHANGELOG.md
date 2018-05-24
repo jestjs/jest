@@ -109,6 +109,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Fix stdin encoding to utf8 for watch plugins.
+  ([#6253](https://github.com/facebook/jest/issues/6253))
 * `[expect]` Better detection of DOM Nodes for equality
   ([#6246](https://github.com/facebook/jest/pull/6246))
 * `[jest-cli]` Fix misleading action description for F key when in "only failed

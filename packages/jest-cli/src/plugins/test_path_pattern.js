@@ -28,7 +28,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
 
   getUsageInfo() {
     return {
-      key: 'p'.codePointAt(0),
+      key: 'p',
       prompt: 'filter by a filename regex pattern',
     };
   }
