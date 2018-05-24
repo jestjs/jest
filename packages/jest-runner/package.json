@@ -12,6 +12,8 @@
     "graceful-fs": "^4.1.11",
     "jest-config": "^22.4.2",
     "jest-docblock": "^22.4.0",
+    "jest-environment-jsdom": "^22.4.1",
+    "jest-environment-node": "^22.4.1",
     "jest-haste-map": "^22.4.2",
     "jest-jasmine2": "^22.4.2",
     "jest-leak-detector": "^22.4.0",
