@@ -4,9 +4,13 @@ title: Watch Plugins
 original_id: watch-plugins
 ---
 
-The Jest watch plugin system provides a way to hook into specific parts of Jest and to define watch mode menu prompts that execute code on key press. Combined, these features allow you to develop interactive experiences custom for your workflow.
+The Jest watch plugin system provides a way to hook into specific parts of Jest
+and to define watch mode menu prompts that execute code on key press. Combined,
+these features allow you to develop interactive experiences custom for your
+workflow.
 
 ## Watch Plugin Interface
+
 ```javascript
 class MyWatchPlugin {
   // Add hooks to Jest lifecycle events
@@ -19,12 +23,17 @@ class MyWatchPlugin {
   run(globalConfig, updateConfigAndRun) {}
 }
 ```
+
 ## Hooking into Jest
-Custom watch plugins can add hooks to Jest events. These hooks can be added either with or without having an interactive key in the watch mode menu.
+
+Custom watch plugins can add hooks to Jest events. These hooks can be added
+either with or without having an interactive key in the watch mode menu.
 
 ### `apply(jestHooks)`
-Jest hooks can be attached by implementing the `apply` method. This method receives a `jestHooks` argument that allows the plugin to hook into
-specific parts of the lifecycle of a test run.
+
+Jest hooks can be attached by implementing the `apply` method. This method
+receives a `jestHooks` argument that allows the plugin to hook into specific
+parts of the lifecycle of a test run.
 
 ```javascript
 class MyWatchPlugin {
@@ -33,6 +42,7 @@ class MyWatchPlugin {
 ```
 
 Below are the hooks available in Jest.
+
 #### `jestHooks.shouldRunTestSuite(testPath)`
 
 Returns a boolean to specify if a test should be run or not. It can return a
@@ -93,10 +103,14 @@ class MyWatchPlugin {
 
 ## Watch Menu Integration
 
-Custom watch plugins can also add or override functionality to the watch menu by specifying a key/prompt pair in `getUsageInfo` method and a `run` method for the execution of the key.
+Custom watch plugins can also add or override functionality to the watch menu by
+specifying a key/prompt pair in `getUsageInfo` method and a `run` method for the
+execution of the key.
 
 ### `getUsageInfo(globalConfig)`
-To add a key to the watch menu, implement the `getUsageInfo` method, returning a key and the prompt:
+
+To add a key to the watch menu, implement the `getUsageInfo` method, returning a
+key and the prompt:
 
 ```javascript
 class MyWatchPlugin {
@@ -109,8 +123,7 @@ class MyWatchPlugin {
 }
 ```
 
-This will add a line in the watch mode menu
-_(`› Press s to do something.`)_
+This will add a line in the watch mode menu _(`› Press s to do something.`)_
 
 ```text
 Watch Usage
@@ -120,13 +133,20 @@ Watch Usage
  › Press s to do something. // <-- This is our plugin
  › Press Enter to trigger a test run.
 ```
-**Note**: If the key for your plugin already exists as a default key, your plugin will override that key.
+
+**Note**: If the key for your plugin already exists as a default key, your
+plugin will override that key.
 
 ### `run(globalConfig, updateConfigAndRun)`
 
-To handle key press events from the key returned by `getUsageInfo`, you can implement the `run` method. This method returns a `Promise<boolean>` that can be resolved when the plugin wants to return control to Jest. The `boolean` specifies if Jest should rerun the tests after it gets the control back.
-  - `globalConfig`: A representation of Jest's current global configuration
-  - `updateConfigAndRun`: Allows you to trigger a test run while the interactive plugin is running.
+To handle key press events from the key returned by `getUsageInfo`, you can
+implement the `run` method. This method returns a `Promise<boolean>` that can be
+resolved when the plugin wants to return control to Jest. The `boolean`
+specifies if Jest should rerun the tests after it gets the control back.
+
+* `globalConfig`: A representation of Jest's current global configuration
+* `updateConfigAndRun`: Allows you to trigger a test run while the interactive
+  plugin is running.
 
 ```javascript
 class MyWatchPlugin {
