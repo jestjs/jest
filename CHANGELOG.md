@@ -1,5 +1,7 @@
 ## master
 
+## 23.0.0 
+
 ### Features
 
 * `[expect]` Expose `getObjectSubset`, `iterableEquality`, and `subsetEquality`
