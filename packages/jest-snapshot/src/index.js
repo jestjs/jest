@@ -73,8 +73,8 @@ const toMatchSnapshot = function(
 
   if (typeof propertyMatchers === 'object') {
     const propertyPass = this.equals(received, propertyMatchers, [
-      this.iterableEquality,
-      this.subsetEquality,
+      this.utils.iterableEquality,
+      this.utils.subsetEquality,
     ]);
 
     if (!propertyPass) {
