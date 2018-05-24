@@ -101,6 +101,8 @@
 
 ### Fixes
 
+* `[jest-cli]` Fix stdin encoding to utf8 for watch plugins.
+  ([#6253](https://github.com/facebook/jest/issues/6253))
 * `[jest-cli]` Fix misleading action description for F key when in "only failed
   tests" mode. ([#6167](https://github.com/facebook/jest/issues/6167))
 * `[jest-worker]` Stick calls to workers before processing them
