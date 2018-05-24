@@ -101,6 +101,8 @@
 
 ### Fixes
 
+* `[expect]` Better detection of DOM Nodes for equality
+  ([#6246](https://github.com/facebook/jest/pull/6246))
 * `[jest-cli]` Fix misleading action description for F key when in "only failed
   tests" mode. ([#6167](https://github.com/facebook/jest/issues/6167))
 * `[jest-worker]` Stick calls to workers before processing them
