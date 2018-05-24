@@ -39,7 +39,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   getUsageInfo(globalConfig: GlobalConfig) {
     if (this._hasSnapshotFailure) {
       return {
-        key: 'u'.codePointAt(0),
+        key: 'u',
         prompt: 'update failing snapshots',
       };
     }

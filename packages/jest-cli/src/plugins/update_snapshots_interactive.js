@@ -99,7 +99,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
       this._failedSnapshotTestAssertions.length > 0
     ) {
       return {
-        key: 'i'.codePointAt(0),
+        key: 'i',
         prompt: 'update failing snapshots interactively',
       };
     }

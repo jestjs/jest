@@ -27,7 +27,7 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
 
   getUsageInfo() {
     return {
-      key: 't'.codePointAt(0),
+      key: 't',
       prompt: 'filter by a test name regex pattern',
     };
   }
