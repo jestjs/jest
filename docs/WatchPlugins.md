@@ -45,8 +45,8 @@ Below are the hooks available in Jest.
 
 #### `jestHooks.shouldRunTestSuite(testPath)`
 
-Returns a boolean to specify if a test should be run or not. It can return a
-`Promise<boolean>` for handling asynchronous operations.
+Returns a boolean (or `Promise<boolean>` for handling asynchronous operations)
+to specify if a test should be run or not.
 
 For example:
 
@@ -82,7 +82,7 @@ class MyWatchPlugin {
 }
 ```
 
-#### `jestHooks.fsChange({ projects })`
+#### `jestHooks.fileChange({projects})`
 
 Gets called whenever there is a change in the file system
 
@@ -94,7 +94,7 @@ For example:
 ```javascript
 class MyWatchPlugin {
   apply(jestHooks) {
-    jestHooks.fsChange(({projects}) => {
+    jestHooks.fileChange(({projects}) => {
       this._projects = projects;
     });
   }
