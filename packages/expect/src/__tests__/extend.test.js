@@ -35,11 +35,13 @@ it('is available globally', () => {
 it('exposes matcherUtils in context', () => {
   jestExpect.extend({
     _shouldNotError(actual, expected) {
-      const pass = this.equals(this.utils, {
-        ...matcherUtils,
-        iterableEquality,
-        subsetEquality,
-      });
+      const pass = this.equals(
+        this.utils,
+        Object.assign(matcherUtils, {
+          iterableEquality,
+          subsetEquality,
+        }),
+      );
       const message = pass
         ? () => `expected this.utils to be defined in an extend call`
         : () => `expected this.utils not to be defined in an extend call`;
