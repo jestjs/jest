@@ -256,15 +256,15 @@ export default class SearchSource {
 
       // $FlowFixMe: dynamic require.
       const filter = require(filterPath);
-      const filtered = await filter(tests.map(test => test.path));
+      const filterResult = await filter(tests.map(test => test.path));
 
-      if (!Array.isArray(filtered)) {
+      if (!Array.isArray(filterResult.tests)) {
         throw new Error(
           `Filter ${filterPath} did not return a valid test list`,
         );
       }
 
-      const filteredSet = new Set(filtered);
+      const filteredSet = new Set(filterResult.tests);
 
       // $FlowFixMe: Object.assign with empty object causes troubles to Flow.
       return Object.assign({}, searchResult, {

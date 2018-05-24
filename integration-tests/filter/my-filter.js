@@ -1,9 +1,13 @@
 'use strict';
 
-module.exports = function(tests) {
-  return new Promise(resolve => {
+module.exports = async function(tests) {
+  const filteredTests = await new Promise(resolve => {
     setTimeout(() => {
       resolve(tests.filter(t => t.indexOf('foo') !== -1));
-    }, 500);
+    }, 100);
   });
+
+  return {
+    tests: filteredTests,
+  };
 };
