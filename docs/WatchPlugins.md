@@ -65,7 +65,7 @@ class MyWatchPlugin {
 }
 ```
 
-#### `jestHooks.testRunComplete(results)`
+#### `jestHooks.onTestRunComplete(results)`
 
 Gets called at the end of every test run. It has the test results as an
 argument.
@@ -75,14 +75,14 @@ For example:
 ```javascript
 class MyWatchPlugin {
   apply(jestHooks) {
-    jestHooks.testRunComplete(results => {
+    jestHooks.onTestRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
     });
   }
 }
 ```
 
-#### `jestHooks.fileChange({projects})`
+#### `jestHooks.onFileChange({projects})`
 
 Gets called whenever there is a change in the file system
 
@@ -94,7 +94,7 @@ For example:
 ```javascript
 class MyWatchPlugin {
   apply(jestHooks) {
-    jestHooks.fileChange(({projects}) => {
+    jestHooks.onFileChange(({projects}) => {
       this._projects = projects;
     });
   }
