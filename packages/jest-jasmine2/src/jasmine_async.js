@@ -16,6 +16,7 @@ import type {Global} from 'types/Global';
 
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
+import checkIsError from './is_error';
 
 function isPromise(obj) {
   return obj && typeof obj.then === 'function';
@@ -34,6 +35,8 @@ function promisifyLifeCycleFunction(originalFn, env) {
       return originalFn.call(env, fn, timeout);
     }
 
+    const extraError = new Error();
+
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
     const asyncFn = function(done) {
@@ -41,7 +44,14 @@ function promisifyLifeCycleFunction(originalFn, env) {
       const returnValue = wrappedFn.call({});
 
       if (isPromise(returnValue)) {
-        returnValue.then(done.bind(null, null), done.fail);
+        returnValue.then(done.bind(null, null), error => {
+          const {isError, message} = checkIsError(error);
+
+          if (message) {
+            extraError.message = message;
+          }
+          done.fail(isError ? error : extraError);
+        });
       } else {
         done();
       }
@@ -67,12 +77,21 @@ function promisifyIt(originalFn, env) {
       return originalFn.call(env, specName, fn, timeout);
     }
 
+    const extraError = new Error();
+
     const asyncFn = function(done) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
       if (isPromise(returnValue)) {
-        returnValue.then(done.bind(null, null), done.fail);
+        returnValue.then(done.bind(null, null), error => {
+          const {isError, message} = checkIsError(error);
+
+          if (message) {
+            extraError.message = message;
+          }
+          done.fail(isError ? error : extraError);
+        });
       } else if (returnValue === undefined) {
         done();
       } else {

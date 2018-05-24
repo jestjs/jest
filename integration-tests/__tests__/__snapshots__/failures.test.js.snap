@@ -130,6 +130,7 @@ exports[`not throwing Error objects 5`] = `
   ✕ Error during test
   ✕ done(Error)
   ✕ done(non-error)
+  ✕ returned promise rejection
 
   ● Promise thrown during test
 
@@ -243,9 +244,32 @@ exports[`not throwing Error objects 5`] = `
          |   ^
       37 | });
       38 | 
+      39 | test('returned promise rejection', () => {
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:541:34
+      at packages/jest-jasmine2/build/jasmine/Env.js:537:34
       at __tests__/during_tests.test.js:36:3
+
+  ● returned promise rejection
+
+    Failed: Object {
+      \\"notAnError\\": Array [
+        Object {
+          \\"hello\\": true,
+          \\"tooDeep\\": [Object],
+        },
+      ],
+    }
+
+      37 | });
+      38 | 
+    > 39 | test('returned promise rejection', () => {
+         | ^
+      40 |   return Promise.reject(deepObject);
+      41 | });
+      42 | 
+
+      at packages/jest-jasmine2/build/jasmine_async.js:102:24
+      at __tests__/during_tests.test.js:39:1
 
 "
 `;
