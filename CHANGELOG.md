@@ -1,7 +1,15 @@
 ## master
 
+## 23.0.0
+
 ### Features
 
+* `[expect]` Expose `getObjectSubset`, `iterableEquality`, and `subsetEquality`
+  ([#6210](https://github.com/facebook/jest/pull/6210))
+* `[jest-snapshot]` Add snapshot property matchers
+  ([#6210](https://github.com/facebook/jest/pull/6210))
+* `[jest-config]` Support jest-preset.js files within Node modules
+  ([#6185](https://github.com/facebook/jest/pull/6185))
 * `[jest-cli]` Add `--detectOpenHandles` flag which enables Jest to potentially
   track down handles keeping it open after tests are complete.
   ([#6130](https://github.com/facebook/jest/pull/6130))
@@ -31,7 +39,7 @@
 * `[jest-mock]` Add support for auto-mocking generator functions
   ([#5983](https://github.com/facebook/jest/pull/5983))
 * `[expect]` Add support for async matchers
-  ([#5836](https://github.com/facebook/jest/pull/5919))
+   ([#5919](https://github.com/facebook/jest/pull/5919))
 * `[expect]` Suggest toContainEqual
   ([#5948](https://github.com/facebook/jest/pull/5953))
 * `[jest-config]` Export Jest's default options
@@ -80,7 +88,7 @@
   ([#5864](https://github.com/facebook/jest/pull/5864))
 * `[jest-editor-support]` Add `no-color` option to runner
   ([#5909](https://github.com/facebook/jest/pull/5909))
-* Pretty-print non-Error object errors
+* `[jest-jasmine2]` Pretty-print non-Error object errors
   ([#5980](https://github.com/facebook/jest/pull/5980))
 * `[jest-message-util]` Include column in stack frames
   ([#5889](https://github.com/facebook/jest/pull/5889))
@@ -88,9 +96,27 @@
   ([#6032](https://github.com/facebook/jest/pull/6032))
 * `[expect]` Add return matchers
   ([#5879](https://github.com/facebook/jest/pull/5879))
+* `[jest-cli]` Improve snapshot summaries
+  ([#6181](https://github.com/facebook/jest/pull/6181))
+* `[expect]` Include custom mock names in error messages
+  ([#6199](https://github.com/facebook/jest/pull/6199))
+* `[jest-diff]` Support returning diff from oneline strings
+  ([#6221](https://github.com/facebook/jest/pull/6221))
+* `[expect]` Improve return matchers
+  ([#6172](https://github.com/facebook/jest/pull/6172))
+* `[jest-cli]` Overhaul watch plugin hooks names
+  ([#6249](https://github.com/facebook/jest/pull/6249))
+* `[jest-mock]` Include tracked call results in serialized mock
+  ([#6244](https://github.com/facebook/jest/pull/6244))
 
 ### Fixes
 
+* `[jest-cli]` Fix stdin encoding to utf8 for watch plugins.
+  ([#6253](https://github.com/facebook/jest/issues/6253))
+* `[expect]` Better detection of DOM Nodes for equality
+  ([#6246](https://github.com/facebook/jest/pull/6246))
+* `[jest-cli]` Fix misleading action description for F key when in "only failed
+  tests" mode. ([#6167](https://github.com/facebook/jest/issues/6167))
 * `[jest-worker]` Stick calls to workers before processing them
   ([#6073](https://github.com/facebook/jest/pull/6073))
 * `[babel-plugin-jest-hoist]` Allow using `console` global variable
@@ -104,6 +130,8 @@
   ([#5888](https://github.com/facebook/jest/pull/5888))
 * `[jest-mock]` [**BREAKING**] Replace timestamps with `invocationCallOrder`
   ([#5867](https://github.com/facebook/jest/pull/5867))
+* `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch
+  runtime errors ([#5945](https://github.com/facebook/jest/pull/5945))
 * `[jest-jasmine2]` Added assertion error handling inside `afterAll hook`
   ([#5884](https://github.com/facebook/jest/pull/5884))
 * `[jest-cli]` Remove the notifier actions in case of failure when not in watch
@@ -150,13 +178,22 @@
   configuration ([#5976](https://github.com/facebook/jest/pull/5976))
 * `[website]` Fix website docs
   ([#5853](https://github.com/facebook/jest/pull/5853))
+* `[expect]` Fix isEqual Set and Map to compare object values and keys
+  regardless of order ([#6150](https://github.com/facebook/jest/pull/6150))
 * `[pretty-format]` [**BREAKING**] Remove undefined props from React elements
   ([#6162](https://github.com/facebook/jest/pull/6162))
+* `[jest-haste-map]` Properly resolve mocked node modules without package.json
+  defined ([#6232](https://github.com/facebook/jest/pull/6232))
 * `[docs]` Document another option to avoid warnings with React 16
   ([#5258](https://github.com/facebook/jest/issues/5258))
-
+  
 ### Chore & Maintenance
 
+* `[jest-runner]` Move sourcemap installation from `jest-jasmine2` to
+  `jest-runner` ([#6176](https://github.com/facebook/jest/pull/6176))
+* `[jest-cli]` Use yargs's built-in `version` instead of rolling our own
+  ([#6215](https://github.com/facebook/jest/pull/6215))
+* `[docs]` Add explanation on how to mock methods not implemented in JSDOM
 * `[jest-jasmine2]` Simplify `Env.execute` and TreeProcessor to setup and clean
   resources for the top suite the same way as for all of the children suites
   ([#5885](https://github.com/facebook/jest/pull/5885))
@@ -176,6 +213,10 @@
   ([##5733](https://github.com/facebook/jest/pull/#5733))
 * `[docs]` Improve Snapshot Testing Guide
   ([#5812](https://github.com/facebook/jest/issues/5812))
+* `[jest-runtime]` [**BREAKING**] Remove `jest.genMockFn` and
+  `jest.genMockFunction` ([#6173](https://github.com/facebook/jest/pull/6173))
+* `[jest-message-util]` Avoid adding unnecessary indent to blank lines in stack
+  traces ([#6211](https://github.com/facebook/jest/pull/6211))
 
 ## 22.4.2
 

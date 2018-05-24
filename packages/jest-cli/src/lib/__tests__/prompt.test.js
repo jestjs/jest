@@ -12,8 +12,8 @@ import Prompt from '../Prompt';
 import {KEYS} from '../../constants';
 
 const EXTRA_KEYS = Object.assign({}, KEYS, {
-  E: '65',
-  S: '73',
+  E: 'e',
+  S: 's',
 });
 
 it('calls handler on change value', () => {

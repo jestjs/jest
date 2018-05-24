@@ -84,12 +84,8 @@ export default class Prompt {
       case KEYS.ARROW_RIGHT:
         break;
       default:
-        const char = new Buffer(key, 'hex').toString();
-
         this._value =
-          key === KEYS.BACKSPACE
-            ? this._value.slice(0, -1)
-            : this._value + char;
+          key === KEYS.BACKSPACE ? this._value.slice(0, -1) : this._value + key;
         this._offset = -1;
         this._selection = null;
         this._onChange();

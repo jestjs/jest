@@ -28,7 +28,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 type Tester = (a: any, b: any) => boolean | typeof undefined;
 
 // Extracted out of jasmine 2.5.2
-export function equals(a: any, b: any, customTesters?: Array<Tester>, strictCheck?: boolean): boolean {
+export function equals(
+  a: any,
+  b: any,
+  customTesters?: Array<Tester>,
+  strictCheck?: boolean,
+): boolean {
   customTesters = customTesters || [];
   return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
@@ -181,7 +186,9 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
     key = aKeys[size];
 
     // Deep compare each member
-    result = hasKey(b, key) && eq(a[key], b[key], aStack, bStack, customTesters, hasKey);
+    result =
+      hasKey(b, key) &&
+      eq(a[key], b[key], aStack, bStack, customTesters, hasKey);
 
     if (!result) {
       return false;
@@ -224,15 +231,11 @@ function keys(obj, isArray, hasKey) {
 }
 
 function hasDefinedKey(obj, key) {
-  return (
-    hasKey(obj, key) && obj[key] !== undefined
-  );
+  return hasKey(obj, key) && obj[key] !== undefined;
 }
 
 function hasKey(obj, key) {
-  return (
-    Object.prototype.hasOwnProperty.call(obj, key)
-  );
+  return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
 export function isA(typeName: string, value: any) {
@@ -240,7 +243,12 @@ export function isA(typeName: string, value: any) {
 }
 
 function isDomNode(obj) {
-  return obj.nodeType > 0;
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    typeof obj.nodeType === 'number' &&
+    typeof obj.nodeName === 'string'
+  );
 }
 
 export function fnNameFor(func: Function) {

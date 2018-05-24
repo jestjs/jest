@@ -28,7 +28,7 @@ export default (
       // $FlowFixMe
       stdin.setRawMode(true);
       stdin.resume();
-      stdin.setEncoding('hex');
+      stdin.setEncoding('utf8');
       stdin.on('data', (key: string) => {
         if (key === KEYS.ENTER) {
           resolve();

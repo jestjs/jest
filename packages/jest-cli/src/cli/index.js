@@ -14,7 +14,6 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
-import {version as VERSION} from '../../package.json';
 import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
@@ -64,8 +63,6 @@ export const runCLI = async (
   // it'll break the JSON structure and it won't be valid.
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
-
-  argv.version && printVersionAndExit(outputStream);
 
   const {globalConfig, configs, hasDeprecationWarnings} = getConfigs(
     projects,
@@ -162,8 +159,7 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
-    .check(args.check)
-    .version(false).argv;
+    .check(args.check).argv;
 
   validateCLIOptions(
     argv,
@@ -208,11 +204,6 @@ const printDebugInfoAndExitIfNeeded = (
   if (argv.showConfig) {
     exit(0);
   }
-};
-
-const printVersionAndExit = outputStream => {
-  outputStream.write(`v${VERSION}\n`);
-  exit(0);
 };
 
 const ensureNoDuplicateConfigs = (parsedConfigs, projects, rootConfigPath) => {

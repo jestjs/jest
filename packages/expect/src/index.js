@@ -20,7 +20,8 @@ import type {
   PromiseMatcherFn,
 } from 'types/Matchers';
 
-import * as utils from 'jest-matcher-utils';
+import * as matcherUtils from 'jest-matcher-utils';
+import {iterableEquality, subsetEquality} from './utils';
 import matchers from './matchers';
 import spyMatchers from './spy_matchers';
 import toThrowMatchers, {
@@ -133,7 +134,7 @@ const expect = (actual: any, ...rest): ExpectationObject => {
 const getMessage = message => {
   return (
     (message && message()) ||
-    utils.RECEIVED_COLOR('No message was specified for this matcher.')
+    matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.')
   );
 };
 
@@ -147,10 +148,16 @@ const makeResolveMatcher = (
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') +
+      matcherUtils.matcherHint(matcherStatement, 'received', '') +
         '\n\n' +
-        `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
-        utils.printWithType('Received', actual, utils.printReceived),
+        `${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} value must be a Promise.\n` +
+        matcherUtils.printWithType(
+          'Received',
+          actual,
+          matcherUtils.printReceived,
+        ),
     );
   }
 
@@ -161,11 +168,13 @@ const makeResolveMatcher = (
       makeThrowingMatcher(matcher, isNot, result, innerErr).apply(null, args),
     reason => {
       outerErr.message =
-        utils.matcherHint(matcherStatement, 'received', '') +
+        matcherUtils.matcherHint(matcherStatement, 'received', '') +
         '\n\n' +
-        `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
+        `Expected ${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} Promise to resolve, ` +
         'instead it rejected to value\n' +
-        `  ${utils.printReceived(reason)}`;
+        `  ${matcherUtils.printReceived(reason)}`;
       return Promise.reject(outerErr);
     },
   );
@@ -181,10 +190,16 @@ const makeRejectMatcher = (
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') +
+      matcherUtils.matcherHint(matcherStatement, 'received', '') +
         '\n\n' +
-        `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
-        utils.printWithType('Received', actual, utils.printReceived),
+        `${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} value must be a Promise.\n` +
+        matcherUtils.printWithType(
+          'Received',
+          actual,
+          matcherUtils.printReceived,
+        ),
     );
   }
 
@@ -193,11 +208,13 @@ const makeRejectMatcher = (
   return actual.then(
     result => {
       outerErr.message =
-        utils.matcherHint(matcherStatement, 'received', '') +
+        matcherUtils.matcherHint(matcherStatement, 'received', '') +
         '\n\n' +
-        `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
+        `Expected ${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} Promise to reject, ` +
         'instead it resolved to value\n' +
-        `  ${utils.printReceived(result)}`;
+        `  ${matcherUtils.printReceived(result)}`;
       return Promise.reject(outerErr);
     },
     reason =>
@@ -213,6 +230,11 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn => {
   return function throwingMatcher(...args): any {
     let throws = true;
+    const utils = Object.assign({}, matcherUtils, {
+      iterableEquality,
+      subsetEquality,
+    });
+
     const matcherContext: MatcherState = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
@@ -330,7 +352,7 @@ const _validateResult = result => {
         'Matcher functions should ' +
         'return an object in the following format:\n' +
         '  {message?: string | function, pass: boolean}\n' +
-        `'${utils.stringify(result)}' was returned`,
+        `'${matcherUtils.stringify(result)}' was returned`,
     );
   }
 };
@@ -350,7 +372,7 @@ function hasAssertions(...args) {
     Error.captureStackTrace(error, hasAssertions);
   }
 
-  utils.ensureNoExpected(args[0], '.hasAssertions');
+  matcherUtils.ensureNoExpected(args[0], '.hasAssertions');
   getState().isExpectingAssertions = true;
   getState().isExpectingAssertionsError = error;
 }

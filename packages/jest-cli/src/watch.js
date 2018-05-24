@@ -141,12 +141,12 @@ export default function watch(
   let isWatchUsageDisplayed = false;
 
   const emitFileChange = () => {
-    if (hooks.isUsed('fileChange')) {
+    if (hooks.isUsed('onFileChange')) {
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
         testPaths: searchSource.findMatchingTests('').tests.map(t => t.path),
       }));
-      hooks.getEmitter().fileChange({projects});
+      hooks.getEmitter().onFileChange({projects});
     }
   };
 
@@ -209,7 +209,7 @@ export default function watch(
       jestHooks: hooks.getEmitter(),
       onComplete: results => {
         isRunning = false;
-        hooks.getEmitter().testRunComplete(results);
+        hooks.getEmitter().onTestRunComplete(results);
 
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted
@@ -277,7 +277,7 @@ export default function watch(
     ).find(plugin => {
       const usageData =
         (plugin.getUsageInfo && plugin.getUsageInfo(globalConfig)) || {};
-      return usageData.key === parseInt(key, 16);
+      return usageData.key === key;
     });
 
     if (matchingWatchPlugin != null) {
@@ -359,7 +359,7 @@ export default function watch(
   if (typeof stdin.setRawMode === 'function') {
     stdin.setRawMode(true);
     stdin.resume();
-    stdin.setEncoding('hex');
+    stdin.setEncoding('utf8');
     stdin.on('data', onKeypress);
   }
 
@@ -385,7 +385,9 @@ const usage = (
       : null,
 
     globalConfig.onlyFailures
-      ? chalk.dim(' \u203A Press ') + 'f' + chalk.dim(' to run all tests.')
+      ? chalk.dim(' \u203A Press ') +
+        'f' +
+        chalk.dim(' to quit "only failed tests" mode.')
       : chalk.dim(' \u203A Press ') +
         'f' +
         chalk.dim(' to run only failed tests.'),
@@ -403,7 +405,7 @@ const usage = (
       plugin =>
         chalk.dim(' \u203A Press') +
         ' ' +
-        String.fromCodePoint(plugin.key) +
+        plugin.key +
         ' ' +
         chalk.dim(`to ${plugin.prompt}.`),
     ),

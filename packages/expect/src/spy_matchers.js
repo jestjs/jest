@@ -24,7 +24,7 @@ import {
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
-import {iterableEquality, partition} from './utils';
+import {iterableEquality, partition, isOneline} from './utils';
 import diff from 'jest-diff';
 
 const createToBeCalledMatcher = matcherName => (received, expected) => {
@@ -34,6 +34,10 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -45,12 +49,12 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
     ? () =>
         matcherHint('.not' + matcherName, receivedName, '') +
         '\n\n' +
-        `Expected ${type} not to be called ` +
+        `Expected ${identifier} not to be called ` +
         formatReceivedCalls(calls, CALL_PRINT_LIMIT, {sameSentence: true})
     : () =>
         matcherHint(matcherName, receivedName, '') +
         '\n\n' +
-        `Expected ${type} to have been called, but it was not called.`;
+        `Expected ${identifier} to have been called, but it was not called.`;
 
   return {message, pass};
 };
@@ -59,20 +63,31 @@ const createToReturnMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
-  const returnValues = received.mock.returnValues;
+  const receivedName = received.getMockName();
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
+
+  // List of return values that correspond only to calls that did not throw
+  // an error
+  const returnValues = received.mock.results
+    .filter(result => !result.isThrow)
+    .map(result => result.value);
+
   const count = returnValues.length;
   const pass = count > 0;
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName(), '') +
+        matcherHint('.not' + matcherName, receivedName, '') +
         '\n\n' +
-        `Expected mock function not to have returned, but it returned:\n` +
+        `Expected ${identifier} not to have returned, but it returned:\n` +
         `  ${getPrintedReturnValues(returnValues, RETURN_PRINT_LIMIT)}`
     : () =>
-        matcherHint(matcherName, received.getMockName(), '') +
+        matcherHint(matcherName, receivedName, '') +
         '\n\n' +
-        `Expected mock function to have returned.`;
+        `Expected ${identifier} to have returned.`;
 
   return {message, pass};
 };
@@ -87,6 +102,10 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
@@ -95,13 +114,13 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
     ? () =>
         matcherHint('.not' + matcherName, receivedName, String(expected)) +
         `\n\n` +
-        `Expected ${type} not to be called ` +
+        `Expected ${identifier} not to be called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
         ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
     : () =>
         matcherHint(matcherName, receivedName, String(expected)) +
         '\n\n' +
-        `Expected ${type} to have been called ` +
+        `Expected ${identifier} to have been called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
         ` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;
 
@@ -115,24 +134,30 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
-  const count = received.mock.returnValues.length;
+  const receivedName = received.getMockName();
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
+
+  // List of return results that correspond only to calls that did not throw
+  // an error
+  const returnResults = received.mock.results.filter(result => !result.isThrow);
+
+  const count = returnResults.length;
   const pass = count === expected;
 
   const message = pass
     ? () =>
-        matcherHint(
-          '.not' + matcherName,
-          received.getMockName(),
-          String(expected),
-        ) +
+        matcherHint('.not' + matcherName, receivedName, String(expected)) +
         `\n\n` +
-        `Expected mock function not to have returned ` +
+        `Expected ${identifier} not to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it` +
         ` returned exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
     : () =>
-        matcherHint(matcherName, received.getMockName(), String(expected)) +
+        matcherHint(matcherName, receivedName, String(expected)) +
         '\n\n' +
-        `Expected mock function to have returned ` +
+        `Expected ${identifier} to have returned ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
         ` but it returned ${RECEIVED_COLOR(pluralize('time', count))}.`;
 
@@ -148,6 +173,11 @@ const createToBeCalledWithMatcher = matcherName => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
+
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -161,12 +191,12 @@ const createToBeCalledWithMatcher = matcherName => (
     ? () =>
         matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} not to have been called with:\n` +
+        `Expected ${identifier} not to have been called with:\n` +
         `  ${printExpected(expected)}`
     : () =>
         matcherHint(matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} to have been called with:\n` +
+        `Expected ${identifier} to have been called with:\n` +
         formatMismatchedCalls(fail, expected, CALL_PRINT_LIMIT);
 
   return {message, pass};
@@ -178,7 +208,18 @@ const createToReturnWithMatcher = matcherName => (
 ) => {
   ensureMock(received, matcherName);
 
-  const returnValues = received.mock.returnValues;
+  const receivedName = received.getMockName();
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
+
+  // List of return values that correspond only to calls that did not throw
+  // an error
+  const returnValues = received.mock.results
+    .filter(result => !result.isThrow)
+    .map(result => result.value);
+
   const [match] = partition(returnValues, value =>
     equals(expected, value, [iterableEquality]),
   );
@@ -186,16 +227,16 @@ const createToReturnWithMatcher = matcherName => (
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName()) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
-        `Expected mock function not to have returned:\n` +
+        `Expected ${identifier} not to have returned:\n` +
         `  ${printExpected(expected)}\n` +
         `But it returned exactly:\n` +
         `  ${printReceived(expected)}`
     : () =>
-        matcherHint(matcherName, received.getMockName()) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
-        `Expected mock function to have returned:\n` +
+        `Expected ${identifier} to have returned:\n` +
         formatMismatchedReturnValues(
           returnValues,
           expected,
@@ -214,6 +255,10 @@ const createLastCalledWithMatcher = matcherName => (
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -223,12 +268,12 @@ const createLastCalledWithMatcher = matcherName => (
     ? () =>
         matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} to not have been last called with:\n` +
+        `Expected ${identifier} to not have been last called with:\n` +
         `  ${printExpected(expected)}`
     : () =>
         matcherHint(matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} to have been last called with:\n` +
+        `Expected ${identifier} to have been last called with:\n` +
         formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
 
   return {message, pass};
@@ -240,26 +285,39 @@ const createLastReturnedMatcher = matcherName => (
 ) => {
   ensureMock(received, matcherName);
 
-  const returnValues = received.mock.returnValues;
-  const lastReturnValue = returnValues[returnValues.length - 1];
-  const pass = equals(lastReturnValue, expected, [iterableEquality]);
+  const receivedName = received.getMockName();
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
+
+  const results = received.mock.results;
+  const lastResult = results[results.length - 1];
+  const pass =
+    !!lastResult &&
+    !lastResult.isThrow &&
+    equals(lastResult.value, expected, [iterableEquality]);
 
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName()) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
-        'Expected mock function to not have last returned:\n' +
+        `Expected ${identifier} to not have last returned:\n` +
         `  ${printExpected(expected)}\n` +
         `But it last returned exactly:\n` +
-        `  ${printReceived(lastReturnValue)}`
+        `  ${printReceived(lastResult.value)}`
     : () =>
-        matcherHint(matcherName, received.getMockName()) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
-        'Expected mock function to have last returned:\n' +
+        `Expected ${identifier} to have last returned:\n` +
         `  ${printExpected(expected)}\n` +
-        (returnValues.length > 0
-          ? `But it last returned:\n  ${printReceived(lastReturnValue)}`
-          : `But it did ${RECEIVED_COLOR('not return')}`);
+        (!lastResult
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : lastResult.isThrow
+            ? `But the last call ${RECEIVED_COLOR('threw an error')}`
+            : `But the last call returned:\n  ${printReceived(
+                lastResult.value,
+              )}`);
 
   return {message, pass};
 };
@@ -284,6 +342,10 @@ const createNthCalledWithMatcher = (matcherName: string) => (
   }
 
   const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+  const identifier =
+    receivedIsSpy || receivedName === 'jest.fn()'
+      ? type
+      : `${type} "${receivedName}"`;
   const calls = receivedIsSpy
     ? received.calls.all().map(x => x.args)
     : received.mock.calls;
@@ -293,14 +355,14 @@ const createNthCalledWithMatcher = (matcherName: string) => (
     ? () =>
         matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} ${nthToString(
+        `Expected ${identifier} ${nthToString(
           nth,
         )} call to not have been called with:\n` +
         `  ${printExpected(expected)}`
     : () =>
         matcherHint(matcherName, receivedName) +
         '\n\n' +
-        `Expected ${type} ${nthToString(
+        `Expected ${identifier} ${nthToString(
           nth,
         )} call to have been called with:\n` +
         formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
@@ -324,28 +386,41 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
     return {message, pass};
   }
 
-  const returnValues = received.mock.returnValues;
-  const nthValue = returnValues[nth - 1];
-  const pass = equals(nthValue, expected, [iterableEquality]);
+  const receivedName = received.getMockName();
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
+
+  const results = received.mock.results;
+  const nthResult = results[nth - 1];
+  const pass =
+    !!nthResult &&
+    !nthResult.isThrow &&
+    equals(nthResult.value, expected, [iterableEquality]);
   const nthString = nthToString(nth);
   const message = pass
     ? () =>
-        matcherHint('.not' + matcherName, received.getMockName()) +
+        matcherHint('.not' + matcherName, receivedName) +
         '\n\n' +
-        `Expected mock function ${nthString} call to not have returned with:\n` +
+        `Expected ${identifier} ${nthString} call to not have returned with:\n` +
         `  ${printExpected(expected)}\n` +
         `But the ${nthString} call returned exactly:\n` +
-        `  ${printReceived(nthValue)}`
+        `  ${printReceived(nthResult.value)}`
     : () =>
-        matcherHint(matcherName, received.getMockName()) +
+        matcherHint(matcherName, receivedName) +
         '\n\n' +
-        `Expected mock function ${nthString} call to have returned with:\n` +
+        `Expected ${identifier} ${nthString} call to have returned with:\n` +
         `  ${printExpected(expected)}\n` +
-        (returnValues.length > 0
-          ? `But the ${nthString} call returned with:\n  ${printReceived(
-              nthValue,
-            )}`
-          : `But it did ${RECEIVED_COLOR('not return')}`);
+        (results.length === 0
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : nth > results.length
+            ? `But it was only called ${printReceived(results.length)} times`
+            : nthResult.isThrow
+              ? `But the ${nthString} call ${RECEIVED_COLOR('threw an error')}`
+              : `But the ${nthString} call returned with:\n  ${printReceived(
+                  nthResult.value,
+                )}`);
 
   return {message, pass};
 };
@@ -480,12 +555,13 @@ const formatMismatchedArgs = (expected, received) => {
   const printedArgs = [];
   for (let i = 0; i < length; i++) {
     if (!equals(expected[i], received[i], [iterableEquality])) {
+      const oneline = isOneline(expected[i], received[i]);
       const diffString = diff(expected[i], received[i]);
       printedArgs.push(
         `  ${printExpected(expected[i])}\n` +
           `as argument ${i + 1}, but it was called with\n` +
           `  ${printReceived(received[i])}.` +
-          (diffString ? `\n\nDifference:\n\n${diffString}` : ''),
+          (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : ''),
       );
     } else if (i >= expected.length) {
       printedArgs.push(

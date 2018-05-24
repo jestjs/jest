@@ -65,7 +65,7 @@ jest.doMock(
     class WatchPlugin1 {
       getUsageInfo() {
         return {
-          key: 's'.codePointAt(0),
+          key: 's',
           prompt: 'do nothing',
         };
       }
@@ -79,7 +79,7 @@ jest.doMock(
     class WatchPlugin2 {
       getUsageInfo() {
         return {
-          key: 'u'.codePointAt(0),
+          key: 'u',
           prompt: 'do something else',
         };
       }
@@ -90,7 +90,6 @@ jest.doMock(
 const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
-const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
 afterEach(runJestMock.mockReset);
 
@@ -329,7 +328,7 @@ describe('Watch mode flows', () => {
           }
           getUsageInfo() {
             return {
-              key: 'p'.codePointAt(0),
+              key: 'p',
               prompt: 'custom "P" plugin',
             };
           }
@@ -352,21 +351,21 @@ describe('Watch mode flows', () => {
 
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
 
-    stdin.emit(toHex('p'));
+    stdin.emit('p');
     await nextTick();
 
     expect(run).toHaveBeenCalled();
   });
 
   it('allows WatchPlugins to hook into file system changes', async () => {
-    const fileChange = jest.fn();
+    const onFileChange = jest.fn();
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_fs_change`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin {
           apply(jestHooks) {
-            jestHooks.fileChange(fileChange);
+            jestHooks.onFileChange(onFileChange);
           }
         },
       {virtual: true},
@@ -383,7 +382,7 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    expect(fileChange).toHaveBeenCalledWith({
+    expect(onFileChange).toHaveBeenCalledWith({
       projects: [
         {
           config: contexts[0].config,
@@ -405,7 +404,7 @@ describe('Watch mode flows', () => {
           }
           getUsageInfo() {
             return {
-              key: 's'.codePointAt(0),
+              key: 's',
               prompt: 'do nothing',
             };
           }
@@ -424,7 +423,7 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    stdin.emit(Number('s'.charCodeAt(0)).toString(16));
+    stdin.emit('s');
 
     await nextTick();
 
@@ -445,7 +444,7 @@ describe('Watch mode flows', () => {
           onKey() {}
           getUsageInfo() {
             return {
-              key: 's'.codePointAt(0),
+              key: 's',
               prompt: 'do nothing',
             };
           }
@@ -465,7 +464,7 @@ describe('Watch mode flows', () => {
           onKey() {}
           getUsageInfo() {
             return {
-              key: 'z'.codePointAt(0),
+              key: 'z',
               prompt: 'also do nothing',
             };
           }
@@ -484,14 +483,14 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    stdin.emit(Number('s'.charCodeAt(0)).toString(16));
+    stdin.emit('s');
     await nextTick();
     expect(run).toHaveBeenCalled();
-    stdin.emit(Number('z'.charCodeAt(0)).toString(16));
+    stdin.emit('z');
     await nextTick();
     expect(showPrompt2).not.toHaveBeenCalled();
     await resolveShowPrompt();
-    stdin.emit(Number('z'.charCodeAt(0)).toString(16));
+    stdin.emit('z');
     expect(showPrompt2).toHaveBeenCalled();
   });
 
@@ -537,7 +536,7 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit(KEYS.T);
-    ['t', 'e', 's', 't'].map(toHex).forEach(key => stdin.emit(key));
+    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -556,7 +555,7 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit(KEYS.P);
-    ['f', 'i', 'l', 'e'].map(toHex).forEach(key => stdin.emit(key));
+    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -575,12 +574,12 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit(KEYS.P);
-    ['f', 'i', 'l', 'e'].map(toHex).forEach(key => stdin.emit(key));
+    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
     stdin.emit(KEYS.T);
-    ['t', 'e', 's', 't'].map(toHex).forEach(key => stdin.emit(key));
+    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -600,7 +599,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    hooks.getEmitter().testRunComplete({snapshot: {failure: true}});
+    hooks.getEmitter().onTestRunComplete({snapshot: {failure: true}});
 
     stdin.emit(KEYS.U);
     await nextTick();
@@ -644,6 +643,23 @@ describe('Watch mode flows', () => {
     expect(runJestMock.mock.calls[0][0]).toMatchObject({
       globalConfig,
     });
+  });
+
+  it('shows the correct usage for the f key in "only failed tests" mode', () => {
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
+    const ci_watch = require('../watch').default;
+    ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+
+    stdin.emit(KEYS.F);
+    stdin.emit(KEYS.W);
+
+    const lastWatchDisplay = pipe.write.mock.calls.reverse()[0][0];
+    expect(lastWatchDisplay).toMatch('Press a to run all tests.');
+    expect(lastWatchDisplay).toMatch(
+      'Press f to quit "only failed tests" mode',
+    );
   });
 });
 
