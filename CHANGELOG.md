@@ -2,6 +2,10 @@
 
 ### Features
 
+* `[expect]` Expose `getObjectSubset`, `iterableEquality`, and `subsetEquality`
+  ([#6210](https://github.com/facebook/jest/pull/6210))
+* `[jest-snapshot]` Add snapshot property matchers
+  ([#6210](https://github.com/facebook/jest/pull/6210))
 * `[jest-config]` Support jest-preset.js files within Node modules
   ([#6185](https://github.com/facebook/jest/pull/6185))
 * `[jest-cli]` Add `--detectOpenHandles` flag which enables Jest to potentially

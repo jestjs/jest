@@ -190,4 +190,17 @@ export default class SnapshotState {
       }
     }
   }
+
+  fail(testName: string, received: any, key?: string) {
+    this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
+    const count = Number(this._counters.get(testName));
+
+    if (!key) {
+      key = testNameToKey(testName, count);
+    }
+
+    this._uncheckedKeys.delete(key);
+    this.unmatched++;
+    return key;
+  }
 }

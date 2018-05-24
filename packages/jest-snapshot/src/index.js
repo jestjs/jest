@@ -48,8 +48,13 @@ const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
   };
 };
 
-const toMatchSnapshot = function(received: any, testName?: string) {
+const toMatchSnapshot = function(
+  received: any,
+  propertyMatchers?: any,
+  testName?: string,
+) {
   this.dontThrow && this.dontThrow();
+  testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
 
   const {currentTestName, isNot, snapshotState}: MatcherState = this;
 
@@ -61,12 +66,43 @@ const toMatchSnapshot = function(received: any, testName?: string) {
     throw new Error('Jest: snapshot state must be initialized.');
   }
 
-  const result = snapshotState.match(
+  const fullTestName =
     testName && currentTestName
       ? `${currentTestName}: ${testName}`
-      : currentTestName || '',
-    received,
-  );
+      : currentTestName || '';
+
+  if (typeof propertyMatchers === 'object') {
+    const propertyPass = this.equals(received, propertyMatchers, [
+      this.utils.iterableEquality,
+      this.utils.subsetEquality,
+    ]);
+
+    if (!propertyPass) {
+      const key = snapshotState.fail(fullTestName, received);
+
+      const report = () =>
+        `${RECEIVED_COLOR('Received value')} does not match ` +
+        `${EXPECTED_COLOR(`snapshot properties for "${key}"`)}.\n\n` +
+        `Expected snapshot to match properties:\n` +
+        `  ${this.utils.printExpected(propertyMatchers)}` +
+        `\nReceived:\n` +
+        `  ${this.utils.printReceived(received)}`;
+
+      return {
+        message: () =>
+          matcherHint('.toMatchSnapshot', 'value', 'properties') +
+          '\n\n' +
+          report(),
+        name: 'toMatchSnapshot',
+        pass: false,
+        report,
+      };
+    } else {
+      Object.assign(received, propertyMatchers);
+    }
+  }
+
+  const result = snapshotState.match(fullTestName, received);
   const {pass} = result;
   let {actual, expected} = result;
 
