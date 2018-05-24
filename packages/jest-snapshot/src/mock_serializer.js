@@ -30,6 +30,11 @@ export const serialize = (
       indentationNext +
       '"calls": ' +
       printer(val.mock.calls, config, indentationNext, depth, refs) +
+      (config.min ? ', ' : ',') +
+      config.spacingOuter +
+      indentationNext +
+      '"results": ' +
+      printer(val.mock.results, config, indentationNext, depth, refs) +
       (config.min ? '' : ',') +
       config.spacingOuter +
       indentation +

@@ -100,9 +100,13 @@
   ([#6172](https://github.com/facebook/jest/pull/6172))
 * `[jest-cli]` Overhaul watch plugin hooks names
   ([#6249](https://github.com/facebook/jest/pull/6249))
+* `[jest-mock]` Include tracked call results in serialized mock
+  ([#6244](https://github.com/facebook/jest/pull/6244))
 
 ### Fixes
 
+* `[expect]` Better detection of DOM Nodes for equality
+  ([#6246](https://github.com/facebook/jest/pull/6246))
 * `[jest-cli]` Fix misleading action description for F key when in "only failed
   tests" mode. ([#6167](https://github.com/facebook/jest/issues/6167))
 * `[jest-worker]` Stick calls to workers before processing them

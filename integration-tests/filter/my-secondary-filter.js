@@ -1,5 +1,7 @@
 'use strict';
 
 module.exports = function(tests) {
-  return tests.filter(t => t.indexOf('foo') !== -1);
+  return {
+    filtered: tests.filter(t => t.indexOf('foo') !== -1).map(test => ({test})),
+  };
 };
