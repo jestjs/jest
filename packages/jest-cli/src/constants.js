@@ -17,7 +17,9 @@ export const KEYS = {
   ARROW_LEFT: '\u001b[D',
   ARROW_RIGHT: '\u001b[C',
   ARROW_UP: '\u001b[A',
-  BACKSPACE: Buffer.from('7f', 'hex').toString(),
+  BACKSPACE: isWindows
+    ? Buffer.from('08', 'hex').toString()
+    : Buffer.from('7f', 'hex').toString(),
   C: 'c',
   CONTROL_C: '\u0003',
   CONTROL_D: '\u0004',
