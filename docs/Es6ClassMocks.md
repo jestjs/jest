@@ -58,7 +58,7 @@ are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
 
 Please note that if you use arrow functions in your classes, they will _not_ be
 part of the mock. The reason for that is that arrow functions are not present on
-the object's protoype, they are merely properties holding a reference to a
+the object's prototype, they are merely properties holding a reference to a
 function.
 
 If you don't need to replace the implementation of the class, this is the
