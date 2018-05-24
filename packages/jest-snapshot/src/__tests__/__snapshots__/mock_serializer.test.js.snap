@@ -22,6 +22,12 @@ Object {
         },
       ],
     ],
+    "results": Array [
+      Object {
+        "isThrow": false,
+        "value": undefined,
+      },
+    ],
   },
 }
 `;
@@ -34,6 +40,12 @@ exports[`mock with 1 calls in React element 1`] = `
         Array [
           "Mocking you!",
         ],
+      ],
+      "results": Array [
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
       ],
     }
   }
@@ -52,6 +64,39 @@ exports[`mock with 2 calls 1`] = `
       },
       42,
     ],
+  ],
+  "results": Array [
+    Object {
+      "isThrow": false,
+      "value": undefined,
+    },
+    Object {
+      "isThrow": false,
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`mock with 2 calls, 1 return, 1 throw 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      2,
+    ],
+    Array [
+      3,
+    ],
+  ],
+  "results": Array [
+    Object {
+      "isThrow": false,
+      "value": 4,
+    },
+    Object {
+      "isThrow": true,
+      "value": [Error: Error Message!],
+    },
   ],
 }
 `;

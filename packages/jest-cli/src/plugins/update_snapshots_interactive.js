@@ -53,7 +53,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   }
 
   apply(hooks: JestHookSubscriber) {
-    hooks.testRunComplete(results => {
+    hooks.onTestRunComplete(results => {
       this._failedSnapshotTestAssertions = this.getFailedSnapshotTestAssertions(
         results,
       );

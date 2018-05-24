@@ -37,6 +37,11 @@ export type TestSelectionConfig = {|
   watch?: boolean,
 |};
 
+type FilterResult = {
+  test: string,
+  message: string,
+};
+
 const globsToMatcher = (globs: ?Array<Glob>) => {
   if (globs == null || globs.length === 0) {
     return () => true;
@@ -255,16 +260,18 @@ export default class SearchSource {
       const tests = searchResult.tests;
 
       // $FlowFixMe: dynamic require.
-      const filter = require(filterPath);
-      const filtered = await filter(tests.map(test => test.path));
+      const filter: Array<FilterResult> = require(filterPath);
+      const filterResult = await filter(tests.map(test => test.path));
 
-      if (!Array.isArray(filtered)) {
+      if (!Array.isArray(filterResult.filtered)) {
         throw new Error(
           `Filter ${filterPath} did not return a valid test list`,
         );
       }
 
-      const filteredSet = new Set(filtered);
+      const filteredSet = new Set(
+        filterResult.filtered.map(result => result.test),
+      );
 
       // $FlowFixMe: Object.assign with empty object causes troubles to Flow.
       return Object.assign({}, searchResult, {

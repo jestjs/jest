@@ -98,11 +98,17 @@
   ([#6221](https://github.com/facebook/jest/pull/6221))
 * `[expect]` Improve return matchers
   ([#6172](https://github.com/facebook/jest/pull/6172))
+* `[jest-cli]` Overhaul watch plugin hooks names
+  ([#6249](https://github.com/facebook/jest/pull/6249))
+* `[jest-mock]` Include tracked call results in serialized mock
+  ([#6244](https://github.com/facebook/jest/pull/6244))
 
 ### Fixes
 
 * `[jest-cli]` Fix stdin encoding to utf8 for watch plugins.
   ([#6253](https://github.com/facebook/jest/issues/6253))
+* `[expect]` Better detection of DOM Nodes for equality
+  ([#6246](https://github.com/facebook/jest/pull/6246))
 * `[jest-cli]` Fix misleading action description for F key when in "only failed
   tests" mode. ([#6167](https://github.com/facebook/jest/issues/6167))
 * `[jest-worker]` Stick calls to workers before processing them
@@ -170,6 +176,8 @@
   regardless of order ([#6150](https://github.com/facebook/jest/pull/6150))
 * `[pretty-format]` [**BREAKING**] Remove undefined props from React elements
   ([#6162](https://github.com/facebook/jest/pull/6162))
+* `[jest-haste-map]` Properly resolve mocked node modules without package.json
+  defined ([#6232](https://github.com/facebook/jest/pull/6232))
 
 ### Chore & Maintenance
 

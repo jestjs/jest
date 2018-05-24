@@ -141,12 +141,12 @@ export default function watch(
   let isWatchUsageDisplayed = false;
 
   const emitFileChange = () => {
-    if (hooks.isUsed('fileChange')) {
+    if (hooks.isUsed('onFileChange')) {
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
         testPaths: searchSource.findMatchingTests('').tests.map(t => t.path),
       }));
-      hooks.getEmitter().fileChange({projects});
+      hooks.getEmitter().onFileChange({projects});
     }
   };
 
@@ -209,7 +209,7 @@ export default function watch(
       jestHooks: hooks.getEmitter(),
       onComplete: results => {
         isRunning = false;
-        hooks.getEmitter().testRunComplete(results);
+        hooks.getEmitter().onTestRunComplete(results);
 
         // Create a new testWatcher instance so that re-runs won't be blocked.
         // The old instance that was passed to Jest will still be interrupted

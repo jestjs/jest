@@ -14,10 +14,6 @@ export type UsageData = {
   prompt: string,
 };
 
-export type JestHooks = {
-  testRunComplete: any,
-};
-
 export interface WatchPlugin {
   +isInternal?: boolean;
   +apply?: (hooks: JestHookSubscriber) => void;
