@@ -294,6 +294,20 @@ describe('.toEqual()', () => {
         },
       },
     ],
+    [
+      {
+        target: {
+          nodeType: 1,
+          value: 'a',
+        },
+      },
+      {
+        target: {
+          nodeType: 1,
+          value: 'b',
+        },
+      },
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
