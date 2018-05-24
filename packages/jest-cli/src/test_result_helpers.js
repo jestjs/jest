@@ -24,6 +24,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => {
     numRuntimeErrorTestSuites: 0,
     numTotalTestSuites: 0,
     numTotalTests: 0,
+    openHandles: [],
     snapshot: {
       added: 0,
       didUpdate: false, // is set only after the full run
@@ -36,7 +37,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => {
       matched: 0,
       total: 0,
       unchecked: 0,
-      uncheckedKeys: [],
+      uncheckedKeysByFile: [],
       unmatched: 0,
       updated: 0,
     },
@@ -59,6 +60,7 @@ export const buildFailureTestResult = (
     numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,
+    openHandles: [],
     perfStats: {
       end: 0,
       start: 0,
@@ -123,7 +125,16 @@ export const addResult = (
   aggregatedResults.snapshot.added += testResult.snapshot.added;
   aggregatedResults.snapshot.matched += testResult.snapshot.matched;
   aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
-  aggregatedResults.snapshot.uncheckedKeys = testResult.snapshot.uncheckedKeys;
+  if (
+    testResult.snapshot.uncheckedKeys &&
+    testResult.snapshot.uncheckedKeys.length > 0
+  ) {
+    aggregatedResults.snapshot.uncheckedKeysByFile.push({
+      filePath: testResult.testFilePath,
+      keys: testResult.snapshot.uncheckedKeys,
+    });
+  }
+
   aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
   aggregatedResults.snapshot.updated += testResult.snapshot.updated;
   aggregatedResults.snapshot.total +=

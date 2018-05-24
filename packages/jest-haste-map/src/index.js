@@ -14,7 +14,6 @@ import crypto from 'crypto';
 import EventEmitter from 'events';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
-// eslint-disable-next-line import/no-duplicates
 import H from './constants';
 import HasteFS from './haste_fs';
 import HasteModuleMap from './module_map';
@@ -41,8 +40,7 @@ import type {
   MockData,
 } from 'types/HasteMap';
 
-// eslint-disable-next-line import/no-duplicates
-import typeof HType from './constants';
+type HType = typeof H;
 
 type Options = {
   cacheDirectory?: string,
@@ -544,6 +542,7 @@ class HasteMap extends EventEmitter {
   _cleanup() {
     const worker = this._worker;
 
+    // $FlowFixMe
     if (worker && typeof worker.end === 'function') {
       worker.end();
     }
@@ -648,7 +647,9 @@ class HasteMap extends EventEmitter {
     const Watcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
-        : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
+        : os.platform() === 'darwin'
+          ? sane.FSEventsWatcher
+          : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
@@ -726,7 +727,6 @@ class HasteMap extends EventEmitter {
 
           if (mustCopy) {
             mustCopy = false;
-            // $FlowFixMe
             hasteMap = {
               clocks: copy(hasteMap.clocks),
               duplicates: copy(hasteMap.duplicates),
@@ -755,7 +755,6 @@ class HasteMap extends EventEmitter {
             if (Object.keys(moduleMap).length === 0) {
               delete hasteMap.map[moduleName];
             } else {
-              // $FlowFixMe
               hasteMap.map[moduleName] = moduleMap;
             }
           }

@@ -13,6 +13,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"/node_modules/\\"
       ],
       \\"detectLeaks\\": false,
+      \\"detectOpenHandles\\": false,
+      \\"filter\\": null,
       \\"forceCoverageMatch\\": [],
       \\"globals\\": {},
       \\"haste\\": {
@@ -39,6 +41,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
+      \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
       \\"testEnvironmentOptions\\": {},
@@ -54,6 +57,12 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
       \\"testURL\\": \\"about:blank\\",
       \\"timers\\": \\"real\\",
+      \\"transform\\": [
+        [
+          \\"^.+\\\\\\\\.jsx?$\\",
+          \\"<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js\\"
+        ]
+      ],
       \\"transformIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
@@ -71,7 +80,9 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"clover\\"
     ],
     \\"detectLeaks\\": false,
+    \\"detectOpenHandles\\": false,
     \\"expand\\": false,
+    \\"filter\\": null,
     \\"globalSetup\\": null,
     \\"globalTeardown\\": null,
     \\"listTests\\": false,
@@ -83,6 +94,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"passWithNoTests\\": false,
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
     \\"runTestsByPath\\": false,
+    \\"skipFilter\\": false,
     \\"testFailureExitCode\\": 1,
     \\"testPathPattern\\": \\"\\",
     \\"testResultsProcessor\\": null,
@@ -93,6 +105,5 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"watchman\\": true
   },
   \\"version\\": \\"[version]\\"
-}
-"
+}"
 `;

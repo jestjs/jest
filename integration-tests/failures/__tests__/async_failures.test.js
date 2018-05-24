@@ -8,6 +8,24 @@
  */
 'use strict';
 
-test('something async', () => {
+test('resolve, but fail', () => {
   return expect(Promise.resolve({foo: 'bar'})).resolves.toEqual({baz: 'bar'});
+});
+
+test('reject, but fail', () => {
+  return expect(Promise.reject({foo: 'bar'})).rejects.toEqual({baz: 'bar'});
+});
+
+test('expect reject', () => {
+  return expect(Promise.resolve({foo: 'bar'})).rejects.toEqual({foo: 'bar'});
+});
+
+test('expect resolve', () => {
+  return expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'});
+});
+
+test('timeout', done => {
+  jest.setTimeout(5);
+
+  setTimeout(done, 10);
 });

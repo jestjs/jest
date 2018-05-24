@@ -1,14 +1,16 @@
 {
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-react",
   "dependencies": {
-    "react": "15.4.2",
-    "react-dom": "15.4.2"
+    "react": "*",
+    "react-dom": "*"
   },
   "devDependencies": {
     "babel-jest": "*",
     "babel-preset-env": "*",
     "babel-preset-react": "*",
-    "jest": "*",
-    "react-addons-test-utils": "15.4.2"
+    "jest": "*"
   },
   "scripts": {
     "test": "jest"

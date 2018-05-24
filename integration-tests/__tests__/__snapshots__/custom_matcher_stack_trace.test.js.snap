@@ -14,10 +14,11 @@ exports[`works with custom matchers 1`] = `
       43 |     const bar = () => baz();
       44 |     const baz = () => {
     > 45 |       throw Error('qux');
+         |             ^
       46 |     };
       47 | 
       48 |     // This expecation fails due to an error we throw (intentionally)
-      
+
       at __tests__/custom_matcher.test.js:45:13
       at __tests__/custom_matcher.test.js:43:23
       at __tests__/custom_matcher.test.js:42:23

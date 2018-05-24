@@ -10,26 +10,16 @@
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
+import Snapshot from 'jest-snapshot';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
 
 const snapshotDirRegex = new RegExp(replacePathSepForRegex('/__snapshots__/'));
 const snapshotFileRegex = new RegExp(
-  replacePathSepForRegex('__snapshots__/(.*).snap'),
+  replacePathSepForRegex(`__snapshots__/(.*).${Snapshot.EXTENSION}`),
 );
 const isSnapshotPath = (path: string): boolean =>
   !!path.match(snapshotDirRegex);
-
-function compact(array: Array<?Path>): Array<Path> {
-  const result = [];
-  for (let i = 0; i < array.length; ++i) {
-    const element = array[i];
-    if (element != null) {
-      result.push(element);
-    }
-  }
-  return result;
-}
 
 /**
  * DependencyResolver is used to resolve the direct dependencies of a module or
@@ -49,17 +39,18 @@ class DependencyResolver {
     if (!dependencies) {
       return [];
     }
-    return compact(
-      dependencies.map(dependency => {
+
+    return dependencies
+      .map(dependency => {
         if (this._resolver.isCoreModule(dependency)) {
           return null;
         }
         try {
           return this._resolver.resolveModule(file, dependency, options);
         } catch (e) {}
-        return this._resolver.getMockModule(file, dependency) || null;
-      }),
-    );
+        return this._resolver.getMockModule(file, dependency);
+      })
+      .filter(Boolean);
   }
 
   resolveInverse(
@@ -67,6 +58,10 @@ class DependencyResolver {
     filter: (file: Path) => boolean,
     options?: ResolveModuleConfig,
   ): Array<Path> {
+    if (!paths.size) {
+      return [];
+    }
+
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();
       while (changed.size) {
@@ -89,10 +84,6 @@ class DependencyResolver {
       }
       return relatedPaths;
     };
-
-    if (!paths.size) {
-      return [];
-    }
 
     const relatedPaths = new Set();
     const changed = new Set();

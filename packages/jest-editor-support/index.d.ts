@@ -18,6 +18,7 @@ export interface Options {
     args: string[],
     options?: SpawnOptions,
   ): ChildProcess;
+  noColor?: boolean;
   testNamePattern?: string;
   testFileNamePattern?: string;
   shell?: boolean;
@@ -33,7 +34,7 @@ export class Runner extends EventEmitter {
 }
 
 export class Settings extends EventEmitter {
-  constructor(workspace: ProjectWorkspace);
+  constructor(workspace: ProjectWorkspace, options?: Options);
   getConfig(completed: Function): void;
   jestVersionMajor: number | null;
   settings: {
@@ -47,11 +48,13 @@ export class ProjectWorkspace {
     pathToJest: string,
     pathToConfig: string,
     localJestMajorVersin: number,
+    collectCoverage?: boolean,
   );
   pathToJest: string;
   pathToConfig: string;
   rootPath: string;
   localJestMajorVersion: number;
+  collectCoverage?: boolean;
 }
 
 export interface IParseResults {
@@ -170,12 +173,12 @@ export interface SnapshotMetadata {
   exists: boolean;
   name: string;
   node: {
-    loc: Node
+    loc: Node;
   };
   content?: string;
 }
 
 export class Snapshot {
-  constructor(parser: any, customMatchers?: string[]);
+  constructor(parser?: any, customMatchers?: string[]);
   getMetadata(filepath: string): SnapshotMetadata[];
 }

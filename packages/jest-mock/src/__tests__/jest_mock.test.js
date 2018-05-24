@@ -442,12 +442,21 @@ describe('moduleMocker', () => {
       it('tracks return values', () => {
         const fn = moduleMocker.fn(x => x * 2);
 
-        expect(fn.mock.returnValues).toEqual([]);
+        expect(fn.mock.results).toEqual([]);
 
         fn(1);
         fn(2);
 
-        expect(fn.mock.returnValues).toEqual([2, 4]);
+        expect(fn.mock.results).toEqual([
+          {
+            isThrow: false,
+            value: 2,
+          },
+          {
+            isThrow: false,
+            value: 4,
+          },
+        ]);
       });
 
       it('tracks mocked return values', () => {
@@ -457,22 +466,40 @@ describe('moduleMocker', () => {
         fn(1);
         fn(2);
 
-        expect(fn.mock.returnValues).toEqual(['MOCKED!', 4]);
+        expect(fn.mock.results).toEqual([
+          {
+            isThrow: false,
+            value: 'MOCKED!',
+          },
+          {
+            isThrow: false,
+            value: 4,
+          },
+        ]);
       });
 
       it('supports resetting return values', () => {
         const fn = moduleMocker.fn(x => x * 2);
 
-        expect(fn.mock.returnValues).toEqual([]);
+        expect(fn.mock.results).toEqual([]);
 
         fn(1);
         fn(2);
 
-        expect(fn.mock.returnValues).toEqual([2, 4]);
+        expect(fn.mock.results).toEqual([
+          {
+            isThrow: false,
+            value: 2,
+          },
+          {
+            isThrow: false,
+            value: 4,
+          },
+        ]);
 
         fn.mockReset();
 
-        expect(fn.mock.returnValues).toEqual([]);
+        expect(fn.mock.results).toEqual([]);
       });
     });
 
@@ -502,73 +529,104 @@ describe('moduleMocker', () => {
 
       // All call args tracked
       expect(fn.mock.calls).toEqual([[2, 4], [3, 5], [6, 3]]);
-      // tracked return value is undefined when an error is thrown
-      expect(fn.mock.returnValues).toEqual([8, undefined, 18]);
-      // tracked thrown error is undefined when an error is NOT thrown
-      expect(fn.mock.thrownErrors).toEqual([undefined, error, undefined]);
+      // Results are tracked
+      expect(fn.mock.results).toEqual([
+        {
+          isThrow: false,
+          value: 8,
+        },
+        {
+          isThrow: true,
+          value: error,
+        },
+        {
+          isThrow: false,
+          value: 18,
+        },
+      ]);
     });
 
-    describe('timestamps', () => {
-      const RealDate = Date;
-
-      beforeEach(() => {
-        global.Date = {
-          now: jest
-            .fn()
-            .mockImplementationOnce(() => 978391040765)
-            .mockImplementationOnce(() => 1262388620765),
-        };
+    it(`a call that throws undefined is tracked properly`, () => {
+      const fn = moduleMocker.fn(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw undefined;
       });
 
-      afterEach(() => {
-        global.Date = RealDate;
+      try {
+        fn(2, 4);
+      } catch (error) {
+        // ignore error
+      }
+
+      // All call args tracked
+      expect(fn.mock.calls).toEqual([[2, 4]]);
+      // Results are tracked
+      expect(fn.mock.results).toEqual([
+        {
+          isThrow: true,
+          value: undefined,
+        },
+      ]);
+    });
+
+    describe('invocationCallOrder', () => {
+      it('tracks invocationCallOrder made by mocks', () => {
+        const fn1 = moduleMocker.fn();
+        expect(fn1.mock.invocationCallOrder).toEqual([]);
+
+        fn1(1, 2, 3);
+        expect(fn1.mock.invocationCallOrder[0]).toBe(1);
+
+        fn1('a', 'b', 'c');
+        expect(fn1.mock.invocationCallOrder[1]).toBe(2);
+
+        fn1(1, 2, 3);
+        expect(fn1.mock.invocationCallOrder[2]).toBe(3);
+
+        const fn2 = moduleMocker.fn();
+        expect(fn2.mock.invocationCallOrder).toEqual([]);
+
+        fn2('d', 'e', 'f');
+        expect(fn2.mock.invocationCallOrder[0]).toBe(4);
+
+        fn2(4, 5, 6);
+        expect(fn2.mock.invocationCallOrder[1]).toBe(5);
       });
 
-      it('tracks timestamps made by mocks', () => {
+      it('supports clearing mock invocationCallOrder', () => {
         const fn = moduleMocker.fn();
-        expect(fn.mock.timestamps).toEqual([]);
+        expect(fn.mock.invocationCallOrder).toEqual([]);
 
         fn(1, 2, 3);
-        expect(fn.mock.timestamps[0]).toBe(978391040765);
-
-        fn('a', 'b', 'c');
-        expect(fn.mock.timestamps[1]).toBe(1262388620765);
-      });
-
-      it('supports clearing mock timestamps', () => {
-        const fn = moduleMocker.fn();
-        expect(fn.mock.timestamps).toEqual([]);
-
-        fn(1, 2, 3);
-        expect(fn.mock.timestamps).toEqual([978391040765]);
+        expect(fn.mock.invocationCallOrder).toEqual([1]);
 
         fn.mockReturnValue('abcd');
 
         fn.mockClear();
-        expect(fn.mock.timestamps).toEqual([]);
+        expect(fn.mock.invocationCallOrder).toEqual([]);
 
         fn('a', 'b', 'c');
-        expect(fn.mock.timestamps).toEqual([1262388620765]);
+        expect(fn.mock.invocationCallOrder).toEqual([2]);
 
         expect(fn()).toEqual('abcd');
       });
 
-      it('supports clearing all mocks timestamps', () => {
+      it('supports clearing all mocks invocationCallOrder', () => {
         const fn1 = moduleMocker.fn();
         fn1.mockImplementation(() => 'abcd');
 
         fn1(1, 2, 3);
-        expect(fn1.mock.timestamps).toEqual([978391040765]);
+        expect(fn1.mock.invocationCallOrder).toEqual([1]);
 
         const fn2 = moduleMocker.fn();
 
         fn2.mockReturnValue('abcde');
         fn2('a', 'b', 'c', 'd');
-        expect(fn2.mock.timestamps).toEqual([1262388620765]);
+        expect(fn2.mock.invocationCallOrder).toEqual([2]);
 
         moduleMocker.clearAllMocks();
-        expect(fn1.mock.timestamps).toEqual([]);
-        expect(fn2.mock.timestamps).toEqual([]);
+        expect(fn1.mock.invocationCallOrder).toEqual([]);
+        expect(fn2.mock.invocationCallOrder).toEqual([]);
         expect(fn1()).toEqual('abcd');
         expect(fn2()).toEqual('abcde');
       });

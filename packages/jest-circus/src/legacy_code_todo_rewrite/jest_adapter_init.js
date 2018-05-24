@@ -132,6 +132,7 @@ export const runAndTransformResultsToJestFormat = async ({
     numFailingTests,
     numPassingTests,
     numPendingTests,
+    openHandles: [],
     perfStats: {
       // populated outside
       end: 0,

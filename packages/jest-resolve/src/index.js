@@ -10,6 +10,7 @@
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
 import type {ResolveModuleConfig} from 'types/Resolve';
+import type {ErrorWithCode} from 'types/Errors';
 
 import fs from 'fs';
 import path from 'path';
@@ -194,7 +195,7 @@ class Resolver {
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
-    (err: Error & {code?: string}).code = 'MODULE_NOT_FOUND';
+    (err: ErrorWithCode).code = 'MODULE_NOT_FOUND';
     throw err;
   }
 
@@ -308,7 +309,9 @@ class Resolver {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks[virtualMockPath]
       ? virtualMockPath
-      : moduleName ? this.resolveModule(from, moduleName) : from;
+      : moduleName
+        ? this.resolveModule(from, moduleName)
+        : from;
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
@@ -362,7 +365,7 @@ Please check:
 "moduleNameMapper": {
   "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
 },
-"resolver": ${chalk.bold(resolver)}`),
+"resolver": ${chalk.bold(String(resolver))}`),
             );
             error.stack = '';
             throw error;
@@ -370,22 +373,6 @@ Please check:
           return module;
         }
       }
-    }
-    if (resolver) {
-      // if moduleNameMapper didn't match anything, fallback to just the
-      // regular resolver
-      const module =
-        this.getModule(moduleName) ||
-        Resolver.findNodeModule(moduleName, {
-          basedir: dirname,
-          browser: this._options.browser,
-          extensions,
-          moduleDirectory,
-          paths,
-          resolver,
-          rootDir: this._options.rootDir,
-        });
-      return module;
     }
     return null;
   }

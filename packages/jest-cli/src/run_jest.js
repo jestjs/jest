@@ -26,6 +26,7 @@ import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 import FailedTestsCache from './failed_tests_cache';
 import JestHooks, {type JestHookEmitter} from './jest_hooks';
+import collectNodeHandles from './get_node_handles';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -68,17 +69,31 @@ const getTestPaths = async (
 };
 
 const processResults = (runResults, options) => {
-  const {outputFile} = options;
-  if (options.testResultsProcessor) {
-    /* $FlowFixMe */
-    runResults = require(options.testResultsProcessor)(runResults);
+  const {
+    outputFile,
+    isJSON,
+    onComplete,
+    outputStream,
+    testResultsProcessor,
+    collectHandles,
+  } = options;
+
+  if (collectHandles) {
+    runResults.openHandles = collectHandles();
+  } else {
+    runResults.openHandles = [];
   }
-  if (options.isJSON) {
+
+  if (testResultsProcessor) {
+    /* $FlowFixMe */
+    runResults = require(testResultsProcessor)(runResults);
+  }
+  if (isJSON) {
     if (outputFile) {
       const filePath = path.resolve(process.cwd(), outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
-      options.outputStream.write(
+      outputStream.write(
         `Test results written to: ` +
           `${path.relative(process.cwd(), filePath)}\n`,
       );
@@ -86,7 +101,8 @@ const processResults = (runResults, options) => {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
     }
   }
-  return options.onComplete && options.onComplete(runResults);
+
+  return onComplete && onComplete(runResults);
 };
 
 const testSchedulerContext = {
@@ -237,6 +253,13 @@ export default (async function runJest({
   // original value of rootDir. Instead, use the {cwd: Path} property to resolve
   // paths when printing.
   setConfig(contexts, {cwd: process.cwd()});
+
+  let collectHandles;
+
+  if (globalConfig.detectOpenHandles) {
+    collectHandles = collectNodeHandles();
+  }
+
   if (globalConfig.globalSetup) {
     // $FlowFixMe
     const globalSetup = require(globalConfig.globalSetup);
@@ -274,6 +297,7 @@ export default (async function runJest({
     await globalTeardown();
   }
   return processResults(results, {
+    collectHandles,
     isJSON: globalConfig.json,
     onComplete,
     outputFile: globalConfig.outputFile,

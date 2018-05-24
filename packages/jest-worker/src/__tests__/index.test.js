@@ -11,12 +11,17 @@ let Farm;
 let Worker;
 let mockWorkers;
 
+function workerReplyStart(i) {
+  mockWorkers[i].send.mock.calls[0][1](mockWorkers[i]);
+}
+
+function workerReplyEnd(i, error, result) {
+  mockWorkers[i].send.mock.calls[0][2](error, result);
+}
+
 function workerReply(i, error, result) {
-  return mockWorkers[i].send.mock.calls[0][1].call(
-    mockWorkers[i],
-    error,
-    result,
-  );
+  workerReplyStart(i);
+  workerReplyEnd(i, error, result);
 }
 
 beforeEach(() => {
@@ -322,15 +327,38 @@ it('checks that once a sticked task finishes, next time is sent to that worker',
   });
 
   // Worker 1 successfully replies with "17" as a result.
-  const promise = farm.foo('car', 'plane');
+  farm.foo('car', 'plane');
   workerReply(1, null, 17);
-  await promise;
 
   // Note that the stickiness is not created by the method name or the arguments
   // it is solely controlled by the provided "computeWorkerKey" method, which in
   // the test example always returns the same key, so all calls should be
   // redirected to worker 1 (which is the one that resolved the first call).
   farm.bar();
+
+  // The first time, a call with a "1234567890abcdef" hash had never been done
+  // earlier ("foo" call), so it got queued to all workers. Later, since the one
+  // that resolved the call was the one in position 1, all subsequent calls are
+  // only redirected to that worker.
+  expect(mockWorkers[0].send).toHaveBeenCalledTimes(1); // Only "foo".
+  expect(mockWorkers[1].send).toHaveBeenCalledTimes(2); // "foo" + "bar".
+  expect(mockWorkers[2].send).toHaveBeenCalledTimes(1); // Only "foo".
+});
+
+it('checks that even before a sticked task finishes, next time is sent to that worker', async () => {
+  const farm = new Farm('/tmp/baz.js', {
+    computeWorkerKey: () => '1234567890abcdef',
+    exposedMethods: ['foo', 'bar'],
+    numWorkers: 3,
+  });
+
+  // Call "foo". Not that the worker is sending a start response synchronously.
+  farm.foo('car', 'plane');
+  workerReplyStart(1);
+
+  // Call "bar". Not that the worker is sending a start response synchronously.
+  farm.bar();
+  workerReplyStart(1);
 
   // The first time, a call with a "1234567890abcdef" hash had never been done
   // earlier ("foo" call), so it got queued to all workers. Later, since the one

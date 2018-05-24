@@ -25,7 +25,7 @@ let expectedPathAbs;
 let expectedPathAbsAnother;
 
 const findNodeModule = jest.fn(name => {
-  if (name.indexOf('jest-jasmine2') !== -1) {
+  if (name.match(/jest-jasmine2|babel-jest/)) {
     return name;
   }
   return null;
@@ -300,7 +300,7 @@ describe('transform', () => {
 
     expect(options.transform).toEqual([
       [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
-      [DEFAULT_JS_PATTERN, 'babel-jest'],
+      [DEFAULT_JS_PATTERN, require.resolve('babel-jest')],
       ['abs-path', '/qux/quux'],
     ]);
   });
@@ -684,7 +684,10 @@ describe('babel-jest', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(
-      name => path.sep + 'node_modules' + path.sep + name,
+      name =>
+        name.indexOf('babel-jest') === -1
+          ? path.sep + 'node_modules' + path.sep + name
+          : name,
     );
   });
 
@@ -697,9 +700,7 @@ describe('babel-jest', () => {
     );
 
     expect(options.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
-    expect(options.transform[0][1]).toEqual(
-      path.sep + 'node_modules' + path.sep + 'babel-jest',
-    );
+    expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
     expect(options.setupFiles).toEqual([
       path.sep +
         'node_modules' +
@@ -723,7 +724,7 @@ describe('babel-jest', () => {
     );
 
     expect(options.transform[0][0]).toBe(customJSPattern);
-    expect(options.transform[0][1]).toEqual('/node_modules/babel-jest');
+    expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
     expect(options.setupFiles).toEqual([
       path.sep +
         'node_modules' +
@@ -732,20 +733,6 @@ describe('babel-jest', () => {
         path.sep +
         'runtime',
     ]);
-  });
-
-  it(`doesn't use babel-jest if its not available`, () => {
-    Resolver.findNodeModule = findNodeModule;
-
-    const {options} = normalize(
-      {
-        rootDir: '/root',
-      },
-      {},
-    );
-
-    expect(options.transform).toEqual(undefined);
-    expect(options.setupFiles).toEqual([]);
   });
 
   it('uses regenerator if babel-jest is explicitly specified', () => {
@@ -895,7 +882,7 @@ describe('preset', () => {
   beforeEach(() => {
     const Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
-      if (name === 'react-native/jest-preset.json') {
+      if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
       }
       return '/node_modules/' + name;
@@ -907,6 +894,24 @@ describe('preset', () => {
         modulePathIgnorePatterns: ['b'],
         setupFiles: ['b'],
         transform: {b: 'b'},
+      }),
+      {virtual: true},
+    );
+    jest.mock(
+      '/node_modules/with-json-ext/jest-preset.json',
+      () => ({
+        moduleNameMapper: {
+          json: true,
+        },
+      }),
+      {virtual: true},
+    );
+    jest.mock(
+      '/node_modules/with-js-ext/jest-preset.js',
+      () => ({
+        moduleNameMapper: {
+          js: true,
+        },
       }),
       {virtual: true},
     );
@@ -954,6 +959,21 @@ describe('preset', () => {
         {},
       );
     }).not.toThrow();
+  });
+
+  test('searches for .json and .js preset files', () => {
+    const Resolver = require('jest-resolve');
+
+    normalize(
+      {
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    const options = Resolver.findNodeModule.mock.calls[0][1];
+    expect(options.extensions).toEqual(['.json', '.js']);
   });
 
   test('merges with options', () => {
@@ -1045,7 +1065,7 @@ describe('preset without setupFiles', () => {
 
   beforeAll(() => {
     jest.doMock(
-      '/node_modules/react-foo/jest-preset.json',
+      '/node_modules/react-foo/jest-preset',
       () => {
         return {
           moduleNameMapper: {b: 'b'},
@@ -1057,7 +1077,7 @@ describe('preset without setupFiles', () => {
   });
 
   afterAll(() => {
-    jest.dontMock('/node_modules/react-foo/jest-preset.json');
+    jest.dontMock('/node_modules/react-foo/jest-preset');
   });
 
   it('should normalize setupFiles correctly', () => {

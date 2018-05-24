@@ -1,4 +1,4 @@
-# Contributing to Jest
+# How to Contribute
 
 Jest is one of Facebook's open source projects that is both under very active
 development and is also being used to ship code to everybody on
@@ -7,11 +7,17 @@ make contributing to this project as easy and transparent as possible, but we're
 not quite there yet. Hopefully this document makes the process for contributing
 clear and answers some questions that you may have.
 
-## [Code of Conduct](/CODE_OF_CONDUCT.md)
+## [Code of Conduct](https://code.facebook.com/codeofconduct)
 
-## Our Development Process
+Facebook has adopted a Code of Conduct that we expect project participants to
+adhere to. Please read [the full text](https://code.facebook.com/codeofconduct)
+so that you can understand what actions will and will not be tolerated.
 
-The core team works directly on GitHub and all work is public.
+## Open Development
+
+All work on Jest happens directly on [GitHub](/). Both core team members and
+external contributors send pull requests which go through the same review
+process.
 
 ### `master` is unsafe
 

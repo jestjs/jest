@@ -1,13 +1,15 @@
 {
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-typescript",
   "dependencies": {
-    "react": "15.4.2",
-    "react-dom": "15.4.2",
+    "react": "*",
+    "react-dom": "*",
     "typescript": "*"
   },
   "devDependencies": {
     "@types/jest": "^19.2.4",
-    "jest": "*",
-    "react-addons-test-utils": "15.4.2"
+    "jest": "*"
   },
   "scripts": {
     "test": "jest"

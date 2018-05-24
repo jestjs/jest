@@ -31,8 +31,8 @@ describe('jest --clearCache', () => {
     ]);
 
     expect(fs.existsSync(CACHE)).toBe(false);
-    expect(stdout).toBe(`Cleared ${CACHE}\n`);
-    expect(stderr.trim()).toBe('');
+    expect(stdout).toBe(`Cleared ${CACHE}`);
+    expect(stderr).toBe('');
     expect(status).toBe(0);
   });
 });

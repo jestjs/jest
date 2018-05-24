@@ -12,8 +12,7 @@ const runJest = require('../runJest');
 
 describe('Coverage Report', () => {
   it('outputs coverage report', () => {
-    const result = runJest('coverage-report', ['not-a-valid-test']);
-    const stdout = result.stdout.toString();
+    const {stdout} = runJest('coverage-report', ['not-a-valid-test']);
 
     expect(stdout).toMatch('No tests found');
 

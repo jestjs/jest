@@ -51,7 +51,7 @@ test('--listTests doesnt duplicate the test files', () => {
   });
 
   const {stdout} = runJest(DIR, ['--listTests']);
-  expect(stdout.trim().split('\n')).toHaveLength(1);
+  expect(stdout.split('\n')).toHaveLength(1);
   expect(stdout).toMatch('in_both_projects-test.js');
 });
 

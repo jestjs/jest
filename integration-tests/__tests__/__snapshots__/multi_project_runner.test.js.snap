@@ -14,8 +14,7 @@ exports[`can pass projects or global config 2`] = `
 Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites in 3 projects.
-"
+Ran all test suites in 3 projects."
 `;
 
 exports[`can pass projects or global config 3`] = `
@@ -29,8 +28,7 @@ exports[`can pass projects or global config 4`] = `
 Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites in 3 projects.
-"
+Ran all test suites in 3 projects."
 `;
 
 exports[`can pass projects or global config 5`] = `

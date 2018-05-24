@@ -4,7 +4,10 @@ exports[`prints console.logs when run with forceExit 1`] = `
 "PASS __tests__/a-banana.js
   ✓ banana
 
-"
+
+Force exiting Jest
+
+Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?"
 `;
 
 exports[`prints console.logs when run with forceExit 2`] = `
@@ -12,13 +15,11 @@ exports[`prints console.logs when run with forceExit 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
-"
+Ran all test suites."
 `;
 
 exports[`prints console.logs when run with forceExit 3`] = `
 "  console.log __tests__/a-banana.js:2
     Hey
-
 "
 `;

@@ -312,7 +312,8 @@ module.exports = {
       return babel.transform(src, {
         filename,
         presets: [jestPreset],
-      });
+        retainLines: true,
+      }).code;
     }
     return src;
   },

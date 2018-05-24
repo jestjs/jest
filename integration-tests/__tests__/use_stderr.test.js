@@ -32,7 +32,7 @@ test('no tests found message is redirected to stderr', () => {
   let stdout;
 
   ({stdout, stderr} = runJest(DIR, ['--useStderr']));
-  expect(stdout.trim()).toBe('');
+  expect(stdout).toBe('');
   expect(stderr).toMatch('No tests found');
 
   writeFiles(DIR, {
@@ -40,6 +40,6 @@ test('no tests found message is redirected to stderr', () => {
   });
 
   ({stdout, stderr} = runJest(DIR, ['--useStderr']));
-  expect(stdout.trim()).toBe('');
+  expect(stdout).toBe('');
   expect(stderr).toMatch(/PASS.*test\.test\.js/);
 });

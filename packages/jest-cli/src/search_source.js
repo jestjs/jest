@@ -210,11 +210,12 @@ export default class SearchSource {
       : this.findRelatedTests(changedFiles, collectCoverage);
   }
 
-  async getTestPaths(
+  _getTestPaths(
     globalConfig: GlobalConfig,
     changedFilesPromise: ?ChangedFilesPromise,
   ): Promise<SearchResult> {
     const paths = globalConfig.nonFlagArgs;
+
     if (globalConfig.onlyChanged) {
       if (!changedFilesPromise) {
         throw new Error('This promise must be present when running with -o.');
@@ -237,5 +238,40 @@ export default class SearchSource {
     } else {
       return Promise.resolve({tests: []});
     }
+  }
+
+  async getTestPaths(
+    globalConfig: GlobalConfig,
+    changedFilesPromise: ?ChangedFilesPromise,
+  ): Promise<SearchResult> {
+    const searchResult = await this._getTestPaths(
+      globalConfig,
+      changedFilesPromise,
+    );
+
+    const filterPath = globalConfig.filter;
+
+    if (filterPath && !globalConfig.skipFilter) {
+      const tests = searchResult.tests;
+
+      // $FlowFixMe: dynamic require.
+      const filter = require(filterPath);
+      const filtered = await filter(tests.map(test => test.path));
+
+      if (!Array.isArray(filtered)) {
+        throw new Error(
+          `Filter ${filterPath} did not return a valid test list`,
+        );
+      }
+
+      const filteredSet = new Set(filtered);
+
+      // $FlowFixMe: Object.assign with empty object causes troubles to Flow.
+      return Object.assign({}, searchResult, {
+        tests: tests.filter(test => filteredSet.has(test.path)),
+      });
+    }
+
+    return searchResult;
   }
 }

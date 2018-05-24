@@ -21,12 +21,29 @@ export type MockFunctionMetadata = {
   length?: number,
 };
 
+/**
+ * Represents the result of a single call to a mock function.
+ */
+type MockFunctionResult = {
+  /**
+   * True if the function threw.
+   * False if the function returned.
+   */
+  isThrow: boolean,
+  /**
+   * The value that was either thrown or returned by the function.
+   */
+  value: any,
+};
+
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
-  returnValues: Array<any>,
-  thrownErrors: Array<any>,
-  timestamps: Array<number>,
+  /**
+   * List of results of calls to the mock function.
+   */
+  results: Array<MockFunctionResult>,
+  invocationCallOrder: Array<number>,
 };
 
 type MockFunctionConfig = {
@@ -161,7 +178,11 @@ function isA(typeName: string, value: any): boolean {
 }
 
 function getType(ref?: any): string | null {
-  if (isA('Function', ref) || isA('AsyncFunction', ref)) {
+  if (
+    isA('Function', ref) ||
+    isA('AsyncFunction', ref) ||
+    isA('GeneratorFunction', ref)
+  ) {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
@@ -194,7 +215,9 @@ function isReadonlyProp(object: any, prop: string): boolean {
       prop === 'callee' ||
       prop === 'name' ||
       prop === 'length') &&
-      (isA('Function', object) || isA('AsyncFunction', object))) ||
+      (isA('Function', object) ||
+        isA('AsyncFunction', object) ||
+        isA('GeneratorFunction', object))) ||
     ((prop === 'source' ||
       prop === 'global' ||
       prop === 'ignoreCase' ||
@@ -219,7 +242,7 @@ function getSlots(object?: Object): Array<string> {
       const prop = ownNames[i];
       if (!isReadonlyProp(object, prop)) {
         const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-        if (!propDesc.get || object.__esModule) {
+        if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
           slots[prop] = true;
         }
       }
@@ -235,6 +258,7 @@ class ModuleMockerClass {
   _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   _spyState: Set<() => void>;
   ModuleMocker: Class<ModuleMockerClass>;
+  _invocationCallCounter: number;
 
   /**
    * @see README.md
@@ -247,6 +271,7 @@ class ModuleMockerClass {
     this._mockConfigRegistry = new WeakMap();
     this._spyState = new Set();
     this.ModuleMocker = ModuleMockerClass;
+    this._invocationCallCounter = 1;
   }
 
   _ensureMockConfig(f: Mock): MockFunctionConfig {
@@ -282,9 +307,8 @@ class ModuleMockerClass {
     return {
       calls: [],
       instances: [],
-      returnValues: [],
-      thrownErrors: [],
-      timestamps: [],
+      invocationCallOrder: [],
+      results: [],
     };
   }
 
@@ -319,12 +343,16 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
-        mockState.timestamps.push(Date.now());
+        mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
 
         // Will be set to the return value of the mock if an error is not thrown
         let finalReturnValue;
         // Will be set to the error that is thrown by the mock (if it throws)
         let thrownError;
+        // Will be set to true if the mock throws an error. The presence of a
+        // value in `thrownError` is not a 100% reliable indicator because a
+        // function could throw a value of undefined.
+        let callDidThrowError = false;
 
         try {
           // The bulk of the implementation is wrapped in an immediately
@@ -390,14 +418,14 @@ class ModuleMockerClass {
         } catch (error) {
           // Store the thrown error so we can record it, then re-throw it.
           thrownError = error;
+          callDidThrowError = true;
           throw error;
         } finally {
-          // Record the return value of the mock function.
-          // If the mock threw an error, then the value will be undefined.
-          mockState.returnValues.push(finalReturnValue);
-          // Record the error thrown by the mock function.
-          // If no error was thrown, then the value will be udnefiend.
-          mockState.thrownErrors.push(thrownError);
+          // Record the result of the function
+          mockState.results.push({
+            isThrow: callDidThrowError,
+            value: callDidThrowError ? thrownError : finalReturnValue,
+          });
         }
 
         return finalReturnValue;
@@ -793,7 +821,9 @@ class ModuleMockerClass {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
+        // $FlowFixMe
         descriptor[accessType] = original;
+        // $FlowFixMe
         Object.defineProperty(obj, propertyName, descriptor);
       });
 

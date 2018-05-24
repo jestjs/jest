@@ -149,8 +149,8 @@ directory. The default cache directory can be found by calling
 
 ### `--collectCoverageFrom=<glob>`
 
-An array of glob patterns relative to <rootDir> matching the files that coverage
-info needs to be collected from.
+A glob pattern relative to <rootDir> matching the files that coverage info needs
+to be collected from.
 
 ### `--colors`
 
@@ -171,6 +171,14 @@ output.
 ### `--debug`
 
 Print debugging info about your Jest config.
+
+### `--detectOpenHandles`
+
+Attempt to collect and print open handles preventing Jest from exiting cleanly.
+Use this in cases where you need to use `--forceExit` in order for Jest to exit
+to potentially track down the reason. Implemented using
+[`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in
+Node 8 and newer.
 
 ### `--env=<environment>`
 
@@ -196,7 +204,8 @@ resources set up by test code cannot be adequately cleaned up. _Note: This
 feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it
 means external resources are still being held on to or timers are still pending
 in your code. It is advised to tear down external resources after each test to
-make sure Jest can shut down cleanly._
+make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help
+track it down._
 
 ### `--help`
 
@@ -280,10 +289,12 @@ Prevent tests from printing messages through the console.
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests and test suites with a name that matches the regex.
-For example, suppose you want to run only tests related to authorization which
-will have names like `"GET /api/posts with auth"`, then you can use
-`jest -t=auth`.
+Alias: `-t`. Run only tests with a name that matches the regex. For example,
+suppose you want to run only tests related to authorization which will have
+names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
+
+_Note: The regex is matched against the full name, which is a combination of the
+test name and all its surrounding describe blocks._
 
 ### `--testLocationInResults`
 

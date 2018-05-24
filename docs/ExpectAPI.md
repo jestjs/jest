@@ -75,12 +75,45 @@ test('even and odd numbers', () => {
 });
 ```
 
-Matchers should return an object with two keys. `pass` indicates whether there
-was a match or not, and `message` provides a function with no arguments that
-returns an error message in case of failure. Thus, when `pass` is false,
-`message` should return the error message for when `expect(x).yourMatcher()`
-fails. And when `pass` is true, `message` should return the error message for
-when `expect(x).not.yourMatcher()` fails.
+`expect.extends` also supports async matchers. Async matchers return a Promise
+so you will need to await the returned value. Let's use an example matcher to
+illustrate the usage of them. We are going to implement a very similar matcher
+than `toBeDivisibleBy`, only difference is that the divisible number is going to
+be pulled from an external source.
+
+```js
+expect.extend({
+  async toBeDivisibleByExternalValue(received) {
+    const externalValue = await getExternalValueFromRemoteSource();
+    const pass = received % externalValue == 0;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${received} not to be divisible by ${externalValue}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${received} to be divisible by ${externalValue}`,
+        pass: false,
+      };
+    }
+  },
+});
+
+test('is divisible by external value', async () => {
+  await expect(100).toBeDivisibleByExternalValue();
+  await expect(101).not.toBeDivisibleByExternalValue();
+});
+```
+
+Matchers should return an object (or a Promise of an object) with two keys.
+`pass` indicates whether there was a match or not, and `message` provides a
+function with no arguments that returns an error message in case of failure.
+Thus, when `pass` is false, `message` should return the error message for when
+`expect(x).yourMatcher()` fails. And when `pass` is true, `message` should
+return the error message for when `expect(x).not.yourMatcher()` fails.
 
 These helper functions can be found on `this` inside a custom matcher:
 
@@ -318,7 +351,7 @@ describe('not.objectContaining', () => {
 
 ### `expect.not.stringContaining(string)`
 
-`expect.not.stringContaining(string)` matches any received string that does not
+`expect.not.stringContaining(string)` matches the received string that does not
 contain the exact expected string.
 
 It is the inverse of `expect.stringContaining`.
@@ -333,10 +366,10 @@ describe('not.stringContaining', () => {
 });
 ```
 
-### `expect.not.stringMatching(regexp)`
+### `expect.not.stringMatching(string | regexp)`
 
-`expect.not.stringMatching(regexp)` matches any received string that does not
-match the expected regexp.
+`expect.not.stringMatching(string | regexp)` matches the received string that
+does not match the expected regexp.
 
 It is the inverse of `expect.stringMatching`.
 
@@ -379,13 +412,13 @@ test('onPress gets called with the right thing', () => {
 
 ### `expect.stringContaining(string)`
 
-`expect.stringContaining(string)` matches any received string that contains the
+`expect.stringContaining(string)` matches the received string that contains the
 exact expected string.
 
-### `expect.stringMatching(regexp)`
+### `expect.stringMatching(string | regexp)`
 
-`expect.stringMatching(regexp)` matches any received string that matches the
-expected regexp.
+`expect.stringMatching(string | regexp)` matches the received string that
+matches the expected regexp.
 
 You can use it instead of a literal value:
 
@@ -634,8 +667,6 @@ arguments it was nth called with. For example, let's say you have a
 flavors, and you want to ensure that when you call it, the first flavor it
 operates on is `'lemon'` and the second one is `'octopus'`. You can write:
 
-Note that, nth argument must be positive integer starting from 1.
-
 ```js
 test('drinkEach drinks each drink', () => {
   const drink = jest.fn();
@@ -644,6 +675,124 @@ test('drinkEach drinks each drink', () => {
   expect(drink).toHaveBeenNthCalledWith(2, 'octopus');
 });
 ```
+
+Note: the nth argument must be positive integer starting from 1.
+
+### `.toHaveReturned()`
+
+Also under the alias: `.toReturn()`
+
+If you have a mock function, you can use `.toHaveReturned` to test that the mock
+function successfully returned (i.e., did not throw an error) at least one time.
+For example, let's say you have a mock `drink` that returns `true`. You can
+write:
+
+```js
+test('drinks returns', () => {
+  const drink = jest.fn(() => true);
+
+  drink();
+
+  expect(drink).toHaveReturned();
+});
+```
+
+### `.toHaveReturnedTimes(number)`
+
+Also under the alias: `.toReturnTimes(number)`
+
+Use `.toHaveReturnedTimes` to ensure that a mock function returned successfully
+(i.e., did not throw an error) an exact number of times. Any calls to the mock
+function that throw an error are not counted toward the number of times the
+function returned.
+
+For example, let's say you have a mock `drink` that returns `true`. You can
+write:
+
+```js
+test('drink returns twice', () => {
+  const drink = jest.fn(() => true);
+
+  drink();
+  drink();
+
+  expect(drink).toHaveReturnedTimes(2);
+});
+```
+
+### `.toHaveReturnedWith(value)`
+
+Also under the alias: `.toReturnWith(value)`
+
+Use `.toHaveReturnedWith` to ensure that a mock function returned a specific
+value.
+
+For example, let's say you have a mock `drink` that returns the name of the
+beverage that was consumed. You can write:
+
+```js
+test('drink returns La Croix', () => {
+  const beverage = {name: 'La Croix'};
+  const drink = jest.fn(beverage => beverage.name);
+
+  drink(beverage);
+
+  expect(drink).toHaveReturnedWith('La Croix');
+});
+```
+
+### `.toHaveLastReturnedWith(value)`
+
+Also under the alias: `.lastReturnedWith(value)`
+
+Use `.toHaveLastReturnedWith` to test the specific value that a mock function
+last returned. If the last call to the mock function threw an error, then this
+matcher will fail no matter what value you provided as the expected return
+value.
+
+For example, let's say you have a mock `drink` that returns the name of the
+beverage that was consumed. You can write:
+
+```js
+test('drink returns La Croix (Orange) last', () => {
+  const beverage1 = {name: 'La Croix (Lemon)'};
+  const beverage2 = {name: 'La Croix (Orange)'};
+  const drink = jest.fn(beverage => beverage.name);
+
+  drink(beverage1);
+  drink(beverage2);
+
+  expect(drink).toHaveLastReturnedWith('La Croix (Orange)');
+});
+```
+
+### `.toHaveNthReturnedWith(nthCall, value)`
+
+Also under the alias: `.nthReturnedWith(nthCall, value)`
+
+Use `.toHaveNthReturnedWith` to test the specific value that a mock function
+returned for the nth call. If the nth call to the mock function threw an error,
+then this matcher will fail no matter what value you provided as the expected
+return value.
+
+For example, let's say you have a mock `drink` that returns the name of the
+beverage that was consumed. You can write:
+
+```js
+test('drink returns expected nth calls', () => {
+  const beverage1 = {name: 'La Croix (Lemon)'};
+  const beverage2 = {name: 'La Croix (Orange)'};
+  const drink = jest.fn(beverage => beverage.name);
+
+  drink(beverage1);
+  drink(beverage2);
+
+  expect(drink).toHaveNthReturnedWith(1, 'La Croix (Lemon)');
+  expect(drink).toHaveNthReturnedWith(2, 'La Croix (Orange)');
+});
+```
+
+Note: the nth argument must be positive integer starting from 1.
 
 ### `.toBeCloseTo(number, numDigits)`
 
@@ -1063,6 +1212,33 @@ from the test.
 _Note: While snapshot testing is most commonly used with React components, any
 serializable value can be used as a snapshot._
 
+### `.toStrictEqual(value)`
+
+Use `.toStrictEqual` to test that objects have the same types as well as
+structure.
+
+Differences from `.toEqual`:
+
+* Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does
+  not match `{b: 2}` when using `.toStrictEqual`.
+* Object types are checked to be equal. e.g. A class instance with fields `a`
+  and `b` will not equal a literal object with fields `a` and `b`.
+
+```js
+class LaCroix {
+  constructor(flavor) {
+    this.flavor = flavor;
+  }
+}
+
+describe('the La Croix cans on my desk', () => {
+  test('are not semantically the same', () => {
+    expect(new LaCroix('lemon')).toEqual({flavor: 'lemon'});
+    expect(new LaCroix('lemon')).not.toStrictEqual({flavor: 'lemon'});
+  });
+});
+```
+
 ### `.toThrow(error)`
 
 Also under the alias: `.toThrowError(error)`
@@ -1080,9 +1256,9 @@ test('throws on octopus', () => {
 ```
 
 If you want to test that a specific error gets thrown, you can provide an
-argument to `toThrow`. The argument can be a string for the error message, a
-class for the error, or a regex that should match the error. For example, let's
-say that `drinkFlavor` is coded like this:
+argument to `toThrow`. The argument can be a string that should be contained in
+the error message, a class for the error, or a regex that should match the error
+message. For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1101,11 +1277,12 @@ test('throws on octopus', () => {
     drinkFlavor('octopus');
   }
 
-  // Test the exact error message
-  expect(drinkOctopus).toThrowError('yuck, octopus flavor');
-
-  // Test that the error message says "yuck" somewhere
+  // Test that the error message says "yuck" somewhere: these are equivalent
   expect(drinkOctopus).toThrowError(/yuck/);
+  expect(drinkOctopus).toThrowError('yuck');
+
+  // Test the exact error message
+  expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
 
   // Test that we get a DisgustingFlavorError
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);

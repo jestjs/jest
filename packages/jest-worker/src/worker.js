@@ -22,8 +22,9 @@ import type {Readable} from 'stream';
 
 import type {
   ChildMessage,
-  QueueCallback,
   QueueChildMessage,
+  OnProcessEnd,
+  OnProcessStart,
   WorkerOptions,
 } from './types';
 
@@ -68,8 +69,12 @@ export default class {
     return this._child.stderr;
   }
 
-  send(request: ChildMessage, callback: QueueCallback) {
-    const item = {callback, next: null, request};
+  send(
+    request: ChildMessage,
+    onProcessStart: OnProcessStart,
+    onProcessEnd: OnProcessEnd,
+  ) {
+    const item = {next: null, onProcessEnd, onProcessStart, request};
 
     if (this._last) {
       this._last.next = item;
@@ -145,6 +150,9 @@ export default class {
       // have to process it as well.
       item.request[1] = true;
 
+      // Tell the parent that this item is starting to be processed.
+      item.onProcessStart(this);
+
       this._retries = 0;
       this._busy = true;
 
@@ -162,14 +170,14 @@ export default class {
       throw new TypeError('Unexpected response with an empty queue');
     }
 
-    const callback = item.callback;
+    const onProcessEnd = item.onProcessEnd;
 
     this._busy = false;
     this._process();
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        callback.call(this, null, response[1]);
+        onProcessEnd(null, response[1]);
         break;
 
       case PARENT_MESSAGE_ERROR:
@@ -191,7 +199,7 @@ export default class {
           }
         }
 
-        callback.call(this, error, null);
+        onProcessEnd(error, null);
         break;
 
       default:

@@ -5,6 +5,8 @@
 /examples/*/node_modules/
 
 /integration-tests/*/node_modules
+!/integration-tests/presets/json/node_modules
+!/integration-tests/presets/js/node_modules
 /integration-tests/transform/*/coverage
 /integration-tests/transform/*/node_modules
 
@@ -14,6 +16,7 @@
 /packages/*/build-es5/
 /packages/*/coverage/
 /packages/*/node_modules/
+/packages/*/package-lock.json
 
 /website/build
 /website/node_modules

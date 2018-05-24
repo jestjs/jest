@@ -13,6 +13,7 @@ import path from 'path';
 import Runtime from 'jest-runtime';
 import yargs from 'yargs';
 import {validateCLIOptions} from 'jest-validate';
+import {deprecationEntries} from 'jest-config';
 import {version as VERSION} from '../../package.json';
 import * as args from './args';
 
@@ -21,7 +22,10 @@ const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 module.exports = function() {
   const argv = yargs.usage(args.usage).options(args.options).argv;
 
-  validateCLIOptions(argv, args.options);
+  validateCLIOptions(
+    argv,
+    Object.assign({}, args.options, {deprecationEntries}),
+  );
 
   argv._ = [REPL_SCRIPT];
 

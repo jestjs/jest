@@ -31,9 +31,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
+import {AssertionError} from 'assert';
+
 import ExpectationFailed from '../expectation_failed';
 
 import expectationResultFactory from '../expectation_result_factory';
+
+import assertionErrorMessage from '../assert_support';
 
 export default function Spec(attrs: Object) {
   this.resultCallback = attrs.resultCallback || function() {};
@@ -59,6 +63,11 @@ export default function Spec(attrs: Object) {
   this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
   this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
+  this.initError = new Error();
+  this.initError.name = '';
+
+  this.queueableFn.initError = this.initError;
+
   this.result = {
     id: this.id,
     description: this.description,
@@ -71,7 +80,7 @@ export default function Spec(attrs: Object) {
 }
 
 Spec.prototype.addExpectationResult = function(passed, data, isError) {
-  const expectationResult = expectationResultFactory(data);
+  const expectationResult = expectationResultFactory(data, this.initError);
   if (passed) {
     this.result.passedExpectations.push(expectationResult);
   } else {
@@ -132,8 +141,7 @@ Spec.prototype.onException = function onException(error) {
     return;
   }
 
-  if (error instanceof require('assert').AssertionError) {
-    const assertionErrorMessage = require('../assert_support').default;
+  if (error instanceof AssertionError) {
     error = assertionErrorMessage(error, {expand: this.expand});
   }
 

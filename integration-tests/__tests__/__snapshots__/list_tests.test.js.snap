@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`--listTests flag causes tests to be printed in different lines 1`] = `
-"
-/MOCK_ABOLUTE_PATH/integration-tests/list-tests/__tests__/dummy.test.js
+"/MOCK_ABOLUTE_PATH/integration-tests/list-tests/__tests__/dummy.test.js
 /MOCK_ABOLUTE_PATH/integration-tests/list-tests/__tests__/other.test.js"
 `;
 

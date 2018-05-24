@@ -12,11 +12,11 @@ exports[`moduleNameMapper wrong configuration 1`] = `
   ● Test suite failed to run
 
     Configuration error:
-    
+
     Could not locate module ./style.css (mapped as no-such-module)
-    
+
     Please check:
-    
+
     \\"moduleNameMapper\\": {
       \\"/\\\\.(css|less)$/\\": \\"no-such-module\\"
     },

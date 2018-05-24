@@ -16,7 +16,7 @@ import type {
 } from 'types/Config';
 
 import path from 'path';
-import {isJSONString} from './utils';
+import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolve_config_path';
 import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
@@ -25,6 +25,7 @@ export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './deprecated';
 export {replaceRootDirInPath} from './utils';
+export {default as defaults} from './defaults';
 
 export function readConfig(
   argv: Argv,
@@ -46,8 +47,11 @@ export function readConfig(
 
   if (typeof packageRootOrConfig !== 'string') {
     if (parentConfigPath) {
+      const parentConfigDirname = path.dirname(parentConfigPath);
       rawOptions = packageRootOrConfig;
-      rawOptions.rootDir = path.dirname(parentConfigPath);
+      rawOptions.rootDir = rawOptions.rootDir
+        ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
+        : parentConfigDirname;
     } else {
       throw new Error(
         'Jest: Cannot use configuration as an object without a file path.',
@@ -104,8 +108,10 @@ const getConfigs = (
       coverageReporters: options.coverageReporters,
       coverageThreshold: options.coverageThreshold,
       detectLeaks: options.detectLeaks,
+      detectOpenHandles: options.detectOpenHandles,
       enabledTestsMap: options.enabledTestsMap,
       expand: options.expand,
+      filter: options.filter,
       findRelatedTests: options.findRelatedTests,
       forceExit: options.forceExit,
       globalSetup: options.globalSetup,
@@ -130,6 +136,7 @@ const getConfigs = (
       rootDir: options.rootDir,
       runTestsByPath: options.runTestsByPath,
       silent: options.silent,
+      skipFilter: options.skipFilter,
       testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,
       testPathPattern: options.testPathPattern,
@@ -151,7 +158,9 @@ const getConfigs = (
       coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
       cwd: options.cwd,
       detectLeaks: options.detectLeaks,
+      detectOpenHandles: options.detectOpenHandles,
       displayName: options.displayName,
+      filter: options.filter,
       forceCoverageMatch: options.forceCoverageMatch,
       globals: options.globals,
       haste: options.haste,
@@ -171,6 +180,7 @@ const getConfigs = (
       runner: options.runner,
       setupFiles: options.setupFiles,
       setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
+      skipFilter: options.skipFilter,
       skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,
       testEnvironment: options.testEnvironment,

@@ -9,7 +9,7 @@
 'use strict';
 
 const path = require('path');
-const {sync: spawnSync} = require('cross-spawn');
+const {sync: spawnSync} = require('execa');
 const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
 
 SkipOnWindows.suite();
@@ -19,8 +19,8 @@ const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 const run = args =>
   spawnSync(JEST_RUNTIME, args, {
     cwd: process.cwd(),
-    encoding: 'utf8',
     env: process.env,
+    reject: false,
   });
 
 describe('Runtime', () => {
@@ -33,7 +33,7 @@ describe('Runtime', () => {
 
     it('displays script output', () => {
       const scriptPath = path.resolve(__dirname, './test_root/logging.js');
-      expect(run([scriptPath, '--no-cache']).stdout).toMatch('Hello, world!\n');
+      expect(run([scriptPath, '--no-cache']).stdout).toMatch('Hello, world!');
     });
 
     it('always disables automocking', () => {
@@ -46,14 +46,12 @@ describe('Runtime', () => {
             automock: true,
           }),
       ]);
-      expect(output.stdout).toMatch('Hello, world!\n');
+      expect(output.stdout).toMatch('Hello, world!');
     });
 
     it('throws script errors', () => {
       const scriptPath = path.resolve(__dirname, './test_root/throwing.js');
-      expect(run([scriptPath, '--no-cache']).stderr).toMatch(
-        'Error: throwing\n',
-      );
+      expect(run([scriptPath, '--no-cache']).stderr).toMatch('Error: throwing');
     });
   });
 });

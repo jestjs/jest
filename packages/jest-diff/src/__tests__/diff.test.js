@@ -82,12 +82,10 @@ describe('no visual difference', () => {
 });
 
 test('oneline strings', () => {
-  // oneline strings don't produce a diff currently.
-  expect(diff('ab', 'aa')).toBe(null);
-  expect(diff('123456789', '234567890')).toBe(null);
-  // if either string is oneline
-  expect(diff('oneline', 'multi\nline')).toBe(null);
-  expect(diff('multi\nline', 'oneline')).toBe(null);
+  expect(diff('ab', 'aa')).toMatchSnapshot();
+  expect(diff('123456789', '234567890')).toMatchSnapshot();
+  expect(diff('oneline', 'multi\nline')).toMatchSnapshot();
+  expect(diff('multi\nline', 'oneline')).toMatchSnapshot();
 });
 
 describe('falls back to not call toJSON', () => {
