@@ -30,6 +30,7 @@ import {
   iterableEquality,
   subsetEquality,
   typeEquality,
+  isOneline,
 } from './utils';
 import {equals} from './jasmine_utils';
 
@@ -59,10 +60,8 @@ const matchers: MatchersObject = {
             getType(received) === getType(expected) &&
             (getType(received) === 'object' || getType(expected) === 'array') &&
             equals(received, expected, [iterableEquality]);
-
-          const diffString = diff(expected, received, {
-            expand: this.expand,
-          });
+          const oneline = isOneline(expected, received);
+          const diffString = diff(expected, received, {expand: this.expand});
 
           return (
             matcherHint('.toBe', undefined, undefined, {
@@ -72,7 +71,7 @@ const matchers: MatchersObject = {
             '\n\n' +
             `Expected: ${printExpected(expected)}\n` +
             `Received: ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
+            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '') +
             (suggestToEqual ? ` ${SUGGEST_TO_EQUAL}` : '')
           );
         };
@@ -375,9 +374,9 @@ const matchers: MatchersObject = {
           `Received:\n` +
           `  ${printReceived(received)}`
       : () => {
-          const diffString = diff(expected, received, {
-            expand: this.expand,
-          });
+          const oneline = isOneline(expected, received);
+          const diffString = diff(expected, received, {expand: this.expand});
+
           return (
             matcherHint('.toEqual') +
             '\n\n' +
@@ -385,7 +384,7 @@ const matchers: MatchersObject = {
             `  ${printExpected(expected)}\n` +
             `Received:\n` +
             `  ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '')
           );
         };
 

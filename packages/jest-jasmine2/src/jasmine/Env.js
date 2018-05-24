@@ -32,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import queueRunner from '../queue_runner';
 import treeProcessor from '../tree_processor';
-import prettyFormat from 'pretty-format';
+import checkIsError from '../is_error';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
@@ -547,12 +547,7 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      // duck-type Error, see #2549
-      const isError =
-        typeof error === 'object' &&
-        typeof error.message === 'string' &&
-        typeof error.name === 'string';
-      const message = `Failed: ${prettyFormat(error, {maxDepth: 3})}`;
+      const {isError, message} = checkIsError(error);
 
       currentRunnable().addExpectationResult(false, {
         matcherName: '',

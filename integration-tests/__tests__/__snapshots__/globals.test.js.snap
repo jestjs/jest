@@ -28,7 +28,7 @@ exports[`cannot test with no implementation 1`] = `
       1 | 
       2 |     it('it', () => {});
     > 3 |     it('it, no implementation');
-        | ^
+        |     ^
       4 |     test('test, no implementation');
       5 |   
 
@@ -56,7 +56,7 @@ exports[`cannot test with no implementation with expand arg 1`] = `
       1 | 
       2 |     it('it', () => {});
     > 3 |     it('it, no implementation');
-        | ^
+        |     ^
       4 |     test('test, no implementation');
       5 |   
 

@@ -16,6 +16,26 @@ test('mock with 0 calls and default name', () => {
   expect(fn).toMatchSnapshot();
 });
 
+test('mock with 2 calls, 1 return, 1 throw', () => {
+  const fn = jest.fn(value => {
+    if (value % 2 === 0) {
+      return value * 2;
+    } else {
+      throw new Error('Error Message!');
+    }
+  });
+
+  fn(2);
+
+  try {
+    fn(3);
+  } catch (error) {
+    // ignore error
+  }
+
+  expect(fn).toMatchSnapshot();
+});
+
 test('mock with 0 calls and default name in React element', () => {
   const fn = jest.fn();
   const val = {
@@ -68,7 +88,7 @@ test('mock with 2 calls', () => {
 });
 
 test('indent option', () => {
-  const fn = jest.fn();
+  const fn = jest.fn(val => val);
   fn({key: 'value'});
   const expected = [
     '[MockFunction] {',
@@ -79,15 +99,24 @@ test('indent option', () => {
     '},',
     '],',
     '],',
+    '"results": Array [',
+    'Object {',
+    '"isThrow": false,',
+    '"value": Object {',
+    '"key": "value",',
+    '},',
+    '},',
+    '],',
     '}',
   ].join('\n');
   expect(prettyFormat(fn, {indent: 0, plugins: [plugin]})).toBe(expected);
 });
 
 test('min option', () => {
-  const fn = jest.fn();
+  const fn = jest.fn(val => val);
   fn({key: 'value'});
-  const expected = '[MockFunction] {"calls": [[{"key": "value"}]]}';
+  const expected =
+    '[MockFunction] {"calls": [[{"key": "value"}]], "results": [{"isThrow": false, "value": {"key": "value"}}]}';
   expect(prettyFormat(fn, {min: true, plugins: [plugin]})).toBe(expected);
 });
 
@@ -119,16 +148,26 @@ test('maxDepth option', () => {
     '        [Object],', // ++depth === 4
     '      ],',
     '    ],',
+    '    "results": Array [', // ++depth === 2
+    '      Object {', // ++depth === 3
+    '        "isThrow": false,',
+    '        "value": undefined,',
+    '      },',
+    '    ],',
     '  },',
     '  "greaterThan1": Object {', // ++depth === 2
     '    "fn2": [MockFunction atDepth2] {',
     '      "calls": Array [', // ++depth === 3
     '        [Array],', // ++depth === 4
     '      ],',
+    '      "results": Array [', // ++depth === 3
+    '        [Object],', // ++depth === 4
+    '      ],',
     '    },',
     '    "greaterThan2": Object {', // ++depth === 3
     '      "fn3": [MockFunction atDepth3] {',
     '        "calls": [Array],', // ++depth === 4
+    '        "results": [Array],', // ++depth === 4
     '      },',
     '    },',
     '  },',

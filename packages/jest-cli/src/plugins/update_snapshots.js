@@ -31,7 +31,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   }
 
   apply(hooks: JestHookSubscriber) {
-    hooks.testRunComplete(results => {
+    hooks.onTestRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
     });
   }

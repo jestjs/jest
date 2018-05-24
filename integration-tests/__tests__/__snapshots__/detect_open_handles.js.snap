@@ -22,7 +22,7 @@ exports[`prints out info about open handlers 1`] = `
     > 7 | app.listen({host: 'localhost', port: 0});
         |     ^
       8 | 
-      
+
       at Object.<anonymous> (server.js:7:5)
-      at Object.<anonymous> (__tests__/test.js:3:1)"
+      at Object.<anonymous> (__tests__/test.js:1:1)"
 `;

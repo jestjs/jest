@@ -683,8 +683,9 @@ Note: the nth argument must be positive integer starting from 1.
 Also under the alias: `.toReturn()`
 
 If you have a mock function, you can use `.toHaveReturned` to test that the mock
-function returned a value. For example, let's say you have a mock `drink` that
-returns `true`. You can write:
+function successfully returned (i.e., did not throw an error) at least one time.
+For example, let's say you have a mock `drink` that returns `true`. You can
+write:
 
 ```js
 test('drinks returns', () => {
@@ -700,9 +701,13 @@ test('drinks returns', () => {
 
 Also under the alias: `.toReturnTimes(number)`
 
-Use `.toHaveReturnedTimes` to ensure that a mock function returned an exact
-number of times. For example, let's say you have a mock `drink` that returns
-`true`. You can write:
+Use `.toHaveReturnedTimes` to ensure that a mock function returned successfully
+(i.e., did not throw an error) an exact number of times. Any calls to the mock
+function that throw an error are not counted toward the number of times the
+function returned.
+
+For example, let's say you have a mock `drink` that returns `true`. You can
+write:
 
 ```js
 test('drink returns twice', () => {
@@ -741,7 +746,9 @@ test('drink returns La Croix', () => {
 Also under the alias: `.lastReturnedWith(value)`
 
 Use `.toHaveLastReturnedWith` to test the specific value that a mock function
-last returned.
+last returned. If the last call to the mock function threw an error, then this
+matcher will fail no matter what value you provided as the expected return
+value.
 
 For example, let's say you have a mock `drink` that returns the name of the
 beverage that was consumed. You can write:
@@ -764,7 +771,9 @@ test('drink returns La Croix (Orange) last', () => {
 Also under the alias: `.nthReturnedWith(nthCall, value)`
 
 Use `.toHaveNthReturnedWith` to test the specific value that a mock function
-returned for the nth call.
+returned for the nth call. If the nth call to the mock function threw an error,
+then this matcher will fail no matter what value you provided as the expected
+return value.
 
 For example, let's say you have a mock `drink` that returns the name of the
 beverage that was consumed. You can write:

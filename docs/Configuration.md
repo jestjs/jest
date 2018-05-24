@@ -470,7 +470,16 @@ Specifies notification mode. Requires `notify: true`.
 Default: `undefined`
 
 A preset that is used as a base for Jest's configuration. A preset should point
-to an npm module that exports a `jest-preset.json` module on its top level.
+to an npm module that exports a `jest-preset.json` or `jest-preset.js` module at
+its top level.
+
+Presets may also be relative filesystem paths.
+
+```json
+{
+  "preset": "./node_modules/foo-bar/jest-preset.js"
+}
+```
 
 ### `projects` [array<string | ProjectConfig>]
 
@@ -821,8 +830,8 @@ Jest is a browser-like environment through
 [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service,
 you can use the `node` option to use a node-like environment instead.
 
-If some tests require another environment, you can add a `@jest-environment`
-docblock.
+By adding a `@jest-environment` docblock at the top of the file, you can specify
+another environment to be used for all tests in that file:
 
 ```js
 /**

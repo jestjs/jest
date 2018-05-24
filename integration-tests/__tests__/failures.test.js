@@ -42,11 +42,11 @@ test('works with node assert', () => {
   if (nodeMajorVersion >= 9) {
     expect(summary).toContain(`
     assert.doesNotThrow(function)
-    
+
     Expected the function not to throw an error.
     Instead, it threw:
       [Error: err!]
-    
+
     Message:
       Got unwanted exception.
 `);
@@ -59,7 +59,7 @@ test('works with node assert', () => {
       72 |     throw Error('err!');
       73 |   });
       74 | });
-      
+
       at __tests__/node_assertion_error.test.js:71:10
 `);
 
@@ -89,17 +89,17 @@ test('works with node assert', () => {
   if (nodeMajorVersion >= 10) {
     const ifErrorMessage = `
     assert.ifError(received, expected)
-    
+
     Expected value ifError to:
       null
     Received:
       1
-    
+
     Message:
       ifError got unwanted exception: 1
-    
+
     Difference:
-    
+
       Comparing two different types of values. Expected null but received number.
 
       65 | 
@@ -109,10 +109,8 @@ test('works with node assert', () => {
       68 | });
       69 | 
       70 | test('assert.doesNotThrow', () => {
-      
+
       at __tests__/node_assertion_error.test.js:67:10
-      
-      at __tests__/node_assertion_error.test.js:66:1
 `;
 
     expect(summary).toContain(ifErrorMessage);
@@ -128,8 +126,7 @@ test('works with node assert', () => {
       67 |   assert.ifError(1);
       68 | });
       69 | 
-      
-      
+
       at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/node_assertion_error.test.js:66:1
 `;

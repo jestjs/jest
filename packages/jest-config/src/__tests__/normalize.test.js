@@ -882,7 +882,7 @@ describe('preset', () => {
   beforeEach(() => {
     const Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
-      if (name === 'react-native/jest-preset.json') {
+      if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
       }
       return '/node_modules/' + name;
@@ -894,6 +894,24 @@ describe('preset', () => {
         modulePathIgnorePatterns: ['b'],
         setupFiles: ['b'],
         transform: {b: 'b'},
+      }),
+      {virtual: true},
+    );
+    jest.mock(
+      '/node_modules/with-json-ext/jest-preset.json',
+      () => ({
+        moduleNameMapper: {
+          json: true,
+        },
+      }),
+      {virtual: true},
+    );
+    jest.mock(
+      '/node_modules/with-js-ext/jest-preset.js',
+      () => ({
+        moduleNameMapper: {
+          js: true,
+        },
       }),
       {virtual: true},
     );
@@ -941,6 +959,21 @@ describe('preset', () => {
         {},
       );
     }).not.toThrow();
+  });
+
+  test('searches for .json and .js preset files', () => {
+    const Resolver = require('jest-resolve');
+
+    normalize(
+      {
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    const options = Resolver.findNodeModule.mock.calls[0][1];
+    expect(options.extensions).toEqual(['.json', '.js']);
   });
 
   test('merges with options', () => {
@@ -1032,7 +1065,7 @@ describe('preset without setupFiles', () => {
 
   beforeAll(() => {
     jest.doMock(
-      '/node_modules/react-foo/jest-preset.json',
+      '/node_modules/react-foo/jest-preset',
       () => {
         return {
           moduleNameMapper: {b: 'b'},
@@ -1044,7 +1077,7 @@ describe('preset without setupFiles', () => {
   });
 
   afterAll(() => {
-    jest.dontMock('/node_modules/react-foo/jest-preset.json');
+    jest.dontMock('/node_modules/react-foo/jest-preset');
   });
 
   it('should normalize setupFiles correctly', () => {
