@@ -58,7 +58,7 @@ the ES6 class with a mock constructor, and replaces all of its methods with
 are saved in <code>theAutomaticMock.mock.instances[index].methodName.mock.calls</code>.</p>
 <p>Please note that if you use arrow functions in your classes, they will <em>not</em> be
 part of the mock. The reason for that is that arrow functions are not present on
-the object's protoype, they are merely properties holding a reference to a
+the object's prototype, they are merely properties holding a reference to a
 function.</p>
 <p>If you don't need to replace the implementation of the class, this is the
 easiest option to set up. For example:</p>
