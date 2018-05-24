@@ -98,6 +98,8 @@
   ([#6221](https://github.com/facebook/jest/pull/6221))
 * `[expect]` Improve return matchers
   ([#6172](https://github.com/facebook/jest/pull/6172))
+* `[jest-mock]` Include tracked call results in serialized mock
+  ([#6244](https://github.com/facebook/jest/pull/6244))
 
 ### Fixes
 
