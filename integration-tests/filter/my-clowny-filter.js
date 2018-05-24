@@ -2,6 +2,6 @@
 
 module.exports = function(tests) {
   return {
-    tests: 'potato',
+    filtered: 'potato',
   };
 };

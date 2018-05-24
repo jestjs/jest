@@ -2,6 +2,6 @@
 
 module.exports = function(tests) {
   return {
-    tests: tests.filter(t => t.indexOf('foo') !== -1),
+    filtered: tests.filter(t => t.indexOf('foo') !== -1).map(test => ({test})),
   };
 };
