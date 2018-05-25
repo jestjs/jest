@@ -26,7 +26,11 @@ export default function collectHandles(): () => Array<Error> {
       Error.captureStackTrace(error, initHook);
     }
 
-    if (error.stack.includes('Runtime.requireModule')) {
+    if (
+      error.stack.includes('Runtime.requireModule') ||
+      error.stack.includes('asyncJestTest') ||
+      error.stack.includes('asyncJestLifecycle')
+    ) {
       activeHandles.set(asyncId, error);
     }
   }
