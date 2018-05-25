@@ -55,9 +55,9 @@
 * `[jest-cli]` Add support for using `--coverage` in combination with watch
   mode, `--onlyChanged`, `--findRelatedTests` and more
   ([#5601](https://github.com/facebook/jest/pull/5601))
-* `[jest-jasmine2]` Adds error throwing and descriptive errors to `it`/ `test`
-  for invalid arguments. `[jest-circus]` Adds error throwing and descriptive
-  errors to `it`/ `test` for invalid arguments
+* `[jest-jasmine2]` [**BREAKING**] Adds error throwing and descriptive errors to
+  `it`/ `test` for invalid arguments. `[jest-circus]` Adds error throwing and
+  descriptive errors to `it`/ `test` for invalid arguments
   ([#5558](https://github.com/facebook/jest/pull/5558))
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
