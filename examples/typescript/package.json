@@ -9,16 +9,23 @@
   },
   "devDependencies": {
     "@types/jest": "^19.2.4",
-    "jest": "*"
+    "jest": "*",
+    "ts-jest": "*"
   },
   "scripts": {
     "test": "jest"
   },
   "jest": {
-    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
     "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
+      "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "testMatch": ["**/__tests__/*.+(ts|tsx|js)"]
+    "testMatch": [
+      "**/__tests__/*.+(ts|tsx|js)"
+    ]
   }
 }
