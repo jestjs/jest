@@ -65,6 +65,17 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn run test-ci-partial
+      
+  test-jest-circus:
+    working_directory: ~/jest
+    docker:
+      - image: circleci/node:9
+    steps:
+      - checkout
+      - restore-cache: *restore-cache
+      - run: yarn --no-progress
+      - save-cache: *save-cache
+      - run: JEST_CIRCUS=1 yarn run test-ci-partial
 
   test-node-8:
     working_directory: ~/jest
@@ -108,5 +119,6 @@ workflows:
       - test-node-6
       - test-node-10
       - test-node-9
+      - test-jest-circus
       - test-browser
       - test-and-deploy-website
