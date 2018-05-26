@@ -84,6 +84,11 @@ test(`stringContaining(string)`, () => {
   expect(result).toEqual(`StringContaining "jest"`);
 });
 
+test(`not.stringContaining(string)`, () => {
+  const result = prettyFormat(expect.not.stringContaining('jest'), options);
+  expect(result).toEqual(`StringNotContaining "jest"`);
+});
+
 test(`stringMatching(string)`, () => {
   const result = prettyFormat(expect.stringMatching('jest'), options);
   expect(result).toEqual('StringMatching /jest/');
@@ -103,6 +108,11 @@ test(`stringMatching(regexp) {escapeRegex: true}`, () => {
   options.escapeRegex = true;
   const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
   expect(result).toEqual('StringMatching /regexp\\\\d/gi');
+});
+
+test(`stringNotMatching(string)`, () => {
+  const result = prettyFormat(expect.not.stringMatching('jest'), options);
+  expect(result).toEqual('StringNotMatching /jest/');
 });
 
 test(`supports multiple nested asymmetric matchers`, () => {

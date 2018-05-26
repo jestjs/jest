@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+* `[pretty-format]` Serialize inverse asymmetric matchers correctly
+
 ## 23.0.0
 
 ### Features

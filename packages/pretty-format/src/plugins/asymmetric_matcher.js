@@ -57,7 +57,10 @@ export const serialize = (
     );
   }
 
-  if (stringedValue === 'StringMatching') {
+  if (
+    stringedValue === 'StringMatching' ||
+    stringedValue === 'StringNotMatching'
+  ) {
     return (
       stringedValue +
       SPACE +
@@ -65,7 +68,10 @@ export const serialize = (
     );
   }
 
-  if (stringedValue === 'StringContaining') {
+  if (
+    stringedValue === 'StringContaining' ||
+    stringedValue === 'StringNotContaining'
+  ) {
     return (
       stringedValue +
       SPACE +
