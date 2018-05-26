@@ -17,14 +17,6 @@ const SkipOnJestCircus = {
       });
     }
   },
-
-  test() {
-    if (process.env.JEST_CIRCUS === '1') {
-      console.warn('[SKIP] Does not work on jest-circus');
-      return true;
-    }
-    return false;
-  },
 };
 
 module.exports = SkipOnJestCircus;
