@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jest-each .describe throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .describe throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
+
+exports[`jest-each .describe.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .describe.only throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
+
+exports[`jest-each .fdescribe throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .fdescribe throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
+
+exports[`jest-each .fit throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .fit throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
+
+exports[`jest-each .it throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .it throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
+
+exports[`jest-each .it.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .it.only throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
+
+exports[`jest-each .test throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .test throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
+
+exports[`jest-each .test.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1,1,1,1"
+`;
+
+exports[`jest-each .test.only throws error when there are fewer arguments than headings when given one row 1`] = `
+"Tagged Template Literal test error:
+Not enough arguments supplied for given headings: a | b | expected
+Received: 0,1"
+`;
