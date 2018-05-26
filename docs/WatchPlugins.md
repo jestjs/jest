@@ -116,7 +116,7 @@ key and the prompt:
 class MyWatchPlugin {
   getUsageInfo(globalConfig) {
     return {
-      key: 's'.codePointAt(0),
+      key: 's',
       prompt: 'do something',
     };
   }
