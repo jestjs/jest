@@ -21,17 +21,18 @@ import run from '../run';
 import globals from '../index';
 
 const Promise = getOriginalPromise();
-
 export const initialize = ({
   config,
   globalConfig,
   localRequire,
+  parentProcess,
   testPath,
 }: {
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   localRequire: Path => any,
   testPath: Path,
+  parentProcess: Process,
 }) => {
   Object.assign(global, globals);
 
@@ -69,12 +70,11 @@ export const initialize = ({
 
   addEventHandler(eventHandler);
 
-  if (globalConfig.testNamePattern) {
-    dispatch({
-      name: 'set_test_name_pattern',
-      pattern: globalConfig.testNamePattern,
-    });
-  }
+  dispatch({
+    name: 'setup',
+    parentProcess,
+    testNamePattern: globalConfig.testNamePattern,
+  });
 
   if (config.testLocationInResults) {
     dispatch({
@@ -163,6 +163,7 @@ export const runAndTransformResultsToJestFormat = async ({
       formatExecError(testExecError, config, globalConfig);
   }
 
+  dispatch({name: 'teardown'});
   return {
     console: null,
     displayName: config.displayName,

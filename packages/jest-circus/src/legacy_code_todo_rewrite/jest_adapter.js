@@ -38,6 +38,7 @@ const jestAdapter = async (
     config,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
+    parentProcess: process,
     testPath,
   });
 
