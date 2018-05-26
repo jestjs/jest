@@ -52,7 +52,7 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
   expect(stdout).toBe('');
   expect(stderr).toMatch(/Jest encountered an unexpected token/);
   expect(stderr).toMatch(/import {module}/);
-  expect(stderr).toMatch(/Unexpected token import/);
+  expect(stderr).toMatch(/Unexpected token/);
 });
 
 test('does not trigger unexpected token error message for regular syntax errors', () => {
