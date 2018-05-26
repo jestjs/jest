@@ -405,7 +405,7 @@ exports[`works with async failures 1`] = `
          | ^
       28 |   'timeout',
       29 |   done => {
-      30 |     setTimeout(done, 10);
+      30 |     setTimeout(done, 50);
 
       at __tests__/async_failures.test.js:27:1
 

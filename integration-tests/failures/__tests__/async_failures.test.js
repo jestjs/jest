@@ -27,7 +27,7 @@ test('expect resolve', () => {
 test(
   'timeout',
   done => {
-    setTimeout(done, 10);
+    setTimeout(done, 50);
   },
   5
 );
