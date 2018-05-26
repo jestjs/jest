@@ -1,7 +1,6 @@
-import { vsprintf } from 'sprintf-js';
+import util from 'util';
 
 export default defaultGlobal => parameterRows => {
-
   const tests = parameterisedTests(parameterRows);
 
   const globalTest = defaultGlobal.test;
@@ -25,16 +24,17 @@ export default defaultGlobal => parameterRows => {
   const fdescribe = tests(defaultGlobal.fdescribe);
   const xdescribe = tests(defaultGlobal.xdescribe);
 
-  return { test, xtest, it, xit, fit, describe, fdescribe, xdescribe };
+  return {test, xtest, it, xit, fit, describe, fdescribe, xdescribe};
 };
 
 const parameterisedTests = parameterRows => globalCb => (title, test) => {
-  parameterRows.forEach(params => globalCb(vsprintf(title, params), applyTestParams(params, test)));
+  parameterRows.forEach(params =>
+    globalCb(util.format(title, ...params), applyTestParams(params, test)),
+  );
 };
 
 const applyTestParams = (params, test) => {
-  if (params.length < test.length)
-    return (done) => test(...params, done);
+  if (params.length < test.length) return done => test(...params, done);
 
   return () => test(...params);
 };

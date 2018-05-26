@@ -14,8 +14,5 @@
     "each"
   ],
   "author": "Matt Phillips (mattphillips)",
-  "license": "MIT",
-  "dependencies": {
-    "sprintf-js": "^1.0.3"
-  }
+  "license": "MIT"
 }
