@@ -24,7 +24,7 @@ import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
-import stableStringify from 'json-stable-stringify';
+import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
 import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
