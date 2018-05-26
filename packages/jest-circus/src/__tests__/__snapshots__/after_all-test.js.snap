@@ -1,5 +1,62 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`describe block _can_ have hooks if a child describe block has tests 1`] = `
+"start_describe_definition: describe
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterAll
+add_hook: beforeAll
+start_describe_definition: child describe
+add_test: my test
+finish_describe_definition: child describe
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+hook_start: beforeAll
+hook_success: beforeAll
+run_describe_start: child describe
+test_start: my test
+hook_start: beforeEach
+hook_success: beforeEach
+test_fn_start: my test
+test_fn_failure: my test
+hook_start: afterEach
+hook_success: afterEach
+test_done: my test
+run_describe_finish: child describe
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0
+"
+`;
+
+exports[`describe block cannot have hooks and no tests 1`] = `
+"start_describe_definition: describe
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterAll
+add_hook: beforeAll
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+hook_start: beforeAll
+hook_success: beforeAll
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 4
+"
+`;
+
 exports[`tests are not marked done until their parent afterAll runs 1`] = `
 "start_describe_definition: describe
 add_hook: afterAll

@@ -15,6 +15,7 @@ import {
   getTestDuration,
   invariant,
   makeTest,
+  describeBlockHasTests,
 } from './utils';
 import {
   injectGlobalErrorHandlers,
@@ -44,6 +45,16 @@ const handler: EventHandler = (event, state): void => {
     case 'finish_describe_definition': {
       const {currentDescribeBlock} = state;
       invariant(currentDescribeBlock, `currentDescribeBlock must be there`);
+
+      if (!describeBlockHasTests(currentDescribeBlock)) {
+        currentDescribeBlock.hooks.forEach(hook => {
+          state.unhandledErrors.push([
+            `Invalid: ${hook.type}() in a describe block with no tests.`,
+            hook.asyncError,
+          ]);
+        });
+      }
+
       if (currentDescribeBlock.parent) {
         state.currentDescribeBlock = currentDescribeBlock.parent;
       }

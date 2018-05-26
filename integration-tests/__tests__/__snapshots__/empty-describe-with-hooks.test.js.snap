@@ -1,0 +1,142 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`hook in empty describe 1`] = `
+Object {
+  "rest": "FAIL __tests__/hook-in-empty-describe.test.js
+
+
+  ● Test suite failed to run
+
+    thrown: \\"Invalid: beforeEach() in a describe block with no tests.\\"
+
+       7 | 
+       8 | describe('a block', () => {
+    >  9 |   beforeEach(() => {});
+         |   ^
+      10 | });
+      11 | 
+      12 | describe('another block with tests', () => {
+
+      at packages/jest-circus/build/index.js:33:17
+      at __tests__/hook-in-empty-describe.test.js:9:3
+      at __tests__/hook-in-empty-describe.test.js:8:1
+
+",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /hook-in-empty-describe.test.js/i.
+",
+}
+`;
+
+exports[`hook in empty nested describe 1`] = `
+Object {
+  "rest": "FAIL __tests__/hook-in-empty-nested-describe.test.js
+
+
+  ● Test suite failed to run
+
+    thrown: \\"Invalid: beforeEach() in a describe block with no tests.\\"
+
+       7 | 
+       8 | describe('a block', () => {
+    >  9 |   beforeEach(() => {});
+         |   ^
+      10 |   describe('another block', () => {});
+      11 | });
+      12 | 
+
+      at packages/jest-circus/build/index.js:33:17
+      at __tests__/hook-in-empty-nested-describe.test.js:9:3
+      at __tests__/hook-in-empty-nested-describe.test.js:8:1
+
+",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /hook-in-empty-nested-describe.test.js/i.
+",
+}
+`;
+
+exports[`multiple hooks in empty describe 1`] = `
+Object {
+  "rest": "FAIL __tests__/multiple-hooks-in-empty-describe.test.js
+
+
+  ● Test suite failed to run
+
+    thrown: \\"Invalid: beforeEach() in a describe block with no tests.\\"
+
+       7 | 
+       8 | describe('a block', () => {
+    >  9 |   beforeEach(() => {});
+         |   ^
+      10 |   afterEach(() => {});
+      11 |   afterAll(() => {});
+      12 |   beforeAll(() => {});
+
+      at packages/jest-circus/build/index.js:33:17
+      at __tests__/multiple-hooks-in-empty-describe.test.js:9:3
+      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+
+  ● Test suite failed to run
+
+    thrown: \\"Invalid: afterEach() in a describe block with no tests.\\"
+
+       8 | describe('a block', () => {
+       9 |   beforeEach(() => {});
+    > 10 |   afterEach(() => {});
+         |   ^
+      11 |   afterAll(() => {});
+      12 |   beforeAll(() => {});
+      13 | });
+
+      at packages/jest-circus/build/index.js:33:17
+      at __tests__/multiple-hooks-in-empty-describe.test.js:10:3
+      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+
+  ● Test suite failed to run
+
+    thrown: \\"Invalid: afterAll() in a describe block with no tests.\\"
+
+       9 |   beforeEach(() => {});
+      10 |   afterEach(() => {});
+    > 11 |   afterAll(() => {});
+         |   ^
+      12 |   beforeAll(() => {});
+      13 | });
+      14 | 
+
+      at packages/jest-circus/build/index.js:33:17
+      at __tests__/multiple-hooks-in-empty-describe.test.js:11:3
+      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+
+  ● Test suite failed to run
+
+    thrown: \\"Invalid: beforeAll() in a describe block with no tests.\\"
+
+      10 |   afterEach(() => {});
+      11 |   afterAll(() => {});
+    > 12 |   beforeAll(() => {});
+         |   ^
+      13 | });
+      14 | 
+      15 | describe('another block with tests', () => {
+
+      at packages/jest-circus/build/index.js:33:17
+      at __tests__/multiple-hooks-in-empty-describe.test.js:12:3
+      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+
+",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /multiple-hooks-in-empty-describe.test.js/i.
+",
+}
+`;

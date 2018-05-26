@@ -131,6 +131,10 @@ export const getEachHooksForTest = (
   return result;
 };
 
+export const describeBlockHasTests = (describe: DescribeBlock) => {
+  return describe.tests.length || describe.children.some(describeBlockHasTests);
+}
+
 const _makeTimeoutMessage = (timeout, isHook) =>
   `Exceeded timeout of ${timeout}ms for a ${
     isHook ? 'hook' : 'test'

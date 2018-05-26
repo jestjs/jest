@@ -160,7 +160,9 @@ export const runAndTransformResultsToJestFormat = async ({
     failureMessage =
       (failureMessage || '') +
       '\n\n' +
-      formatExecError(testExecError, config, globalConfig);
+      runResult.unhandledErrors
+        .map(err => formatExecError(err, config, globalConfig))
+        .join('\n');
   }
 
   dispatch({name: 'teardown'});
