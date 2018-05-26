@@ -69,7 +69,7 @@ jobs:
   test-jest-circus:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     steps:
       - checkout
       - restore-cache: *restore-cache
