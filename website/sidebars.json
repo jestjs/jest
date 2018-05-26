@@ -19,6 +19,7 @@
       "webpack",
       "puppeteer",
       "mongodb",
+      "watch-plugins",
       "migration-guide",
       "troubleshooting"
     ],
