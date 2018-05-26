@@ -7,7 +7,6 @@
  * @flow strict-local
  */
 
-import type {ProjectConfig} from 'types/Config';
 import type {
   AsyncFn,
   BlockMode,
@@ -28,6 +27,8 @@ import {convertDescriptorToString} from 'jest-util';
 import StackUtils from 'stack-utils';
 
 import prettyFormat from 'pretty-format';
+
+import {getState} from './state';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
@@ -227,15 +228,15 @@ export const getTestDuration = (test: TestEntry): ?number => {
 export const makeRunResult = (
   describeBlock: DescribeBlock,
   unhandledErrors: Array<Error>,
-  config: ProjectConfig,
 ): RunResult => {
   return {
-    testResults: makeTestResults(describeBlock, config),
+    testResults: makeTestResults(describeBlock),
     unhandledErrors: unhandledErrors.map(_formatError),
   };
 };
 
 const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
+  const {includeTestLocationInResult} = getState();
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
@@ -251,7 +252,7 @@ const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
     }
 
     let location = null;
-    if (config.testLocationInResults) {
+    if (includeTestLocationInResult) {
       const stackLine = test.asyncError.stack.split('\n')[1];
       const {line, column} = stackUtils.parseLine(stackLine);
       location = {column, line};

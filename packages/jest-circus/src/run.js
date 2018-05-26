@@ -7,8 +7,6 @@
  * @flow strict-local
  */
 
-import type {ProjectConfig} from 'types/Config';
-
 import type {
   RunResult,
   TestEntry,
@@ -30,7 +28,7 @@ import {
 
 const Promise = getOriginalPromise();
 
-const run = async (config: ProjectConfig): Promise<RunResult> => {
+const run = async (): Promise<RunResult> => {
   const {rootDescribeBlock} = getState();
   dispatch({name: 'run_start'});
   await _runTestsForDescribeBlock(rootDescribeBlock);
@@ -38,7 +36,6 @@ const run = async (config: ProjectConfig): Promise<RunResult> => {
   return makeRunResult(
     getState().rootDescribeBlock,
     getState().unhandledErrors,
-    config,
   );
 };
 
