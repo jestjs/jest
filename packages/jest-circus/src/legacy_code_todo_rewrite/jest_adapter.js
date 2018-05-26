@@ -41,6 +41,10 @@ const jestAdapter = async (
     testPath,
   });
 
+  if (config.timers === 'fake') {
+    environment.fakeTimers.useFakeTimers();
+  }
+
   globals.beforeEach(() => {
     if (config.resetModules) {
       runtime.resetModules();
@@ -52,14 +56,14 @@ const jestAdapter = async (
 
     if (config.resetMocks) {
       runtime.resetAllMocks();
+
+      if (config.timers === 'fake') {
+        environment.fakeTimers.useFakeTimers();
+      }
     }
 
     if (config.restoreMocks) {
       runtime.restoreAllMocks();
-    }
-
-    if (config.timers === 'fake') {
-      environment.fakeTimers.useFakeTimers();
     }
   });
 
