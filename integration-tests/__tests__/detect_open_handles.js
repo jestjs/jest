@@ -58,5 +58,17 @@ it('prints out info about open handlers', async () => {
   );
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toMatchSnapshot();
+  expect(textAfterTest).toContain('Jest has detected the following');
+  expect(textAfterTest).toContain(`
+  ●  GETADDRINFOREQWRAP
+
+      5 | const app = new http.Server();
+      6 | 
+    > 7 | app.listen({host: 'localhost', port: 0});
+        |     ^
+      8 | 
+
+      at Object.<anonymous> (server.js:7:5)
+      at Object.<anonymous> (__tests__/test.js:1:1)
+`);
 });
