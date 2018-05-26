@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  */
 
 import type {
@@ -27,15 +27,16 @@ export const makeDescribe = (
   parent: ?DescribeBlock,
   mode?: BlockMode,
 ): DescribeBlock => {
+  let _mode;
   if (parent && !mode) {
     // If not set explicitly, inherit from the parent describe.
-    mode = parent.mode;
+    _mode = parent.mode;
   }
 
   return {
     children: [],
     hooks: [],
-    mode,
+    mode: _mode,
     name,
     parent,
     tests: [],
@@ -49,18 +50,19 @@ export const makeTest = (
   parent: DescribeBlock,
   timeout: ?number,
 ): TestEntry => {
+  let _mode;
   if (!fn) {
-    mode = 'skip'; // skip test if no fn passed
+    _mode = 'skip'; // skip test if no fn passed
   } else if (!mode) {
     // if not set explicitly, inherit from its parent describe
-    mode = parent.mode;
+    _mode = parent.mode;
   }
 
   return {
     duration: null,
     errors: [],
     fn,
-    mode,
+    mode: _mode,
     name,
     parent,
     startedAt: null,
@@ -130,7 +132,7 @@ export const callAsyncFn = (
     test,
     timeout,
   }: {isHook?: ?boolean, test?: TestEntry, timeout: number},
-): Promise<any> => {
+): Promise<mixed> => {
   let timeoutID;
 
   return new Promise((resolve, reject) => {
