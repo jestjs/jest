@@ -14,6 +14,7 @@ import type {
   DescribeBlock,
   Exception,
   Hook,
+  RunResult,
   TestEntry,
   TestContext,
   TestFn,
@@ -21,6 +22,7 @@ import type {
   TestName,
   TestResults,
 } from 'types/Circus';
+import {convertDescriptorToString} from 'jest-util';
 
 import prettyFormat from 'pretty-format';
 
@@ -29,7 +31,7 @@ export const makeDescribe = (
   parent: ?DescribeBlock,
   mode?: BlockMode,
 ): DescribeBlock => {
-  let _mode;
+  let _mode = mode;
   if (parent && !mode) {
     // If not set explicitly, inherit from the parent describe.
     _mode = parent.mode;
@@ -39,7 +41,7 @@ export const makeDescribe = (
     children: [],
     hooks: [],
     mode: _mode,
-    name,
+    name: convertDescriptorToString(name),
     parent,
     tests: [],
   };
@@ -53,10 +55,8 @@ export const makeTest = (
   timeout: ?number,
   asyncError: Exception,
 ): TestEntry => {
-  let _mode;
-  if (!fn) {
-    _mode = 'skip'; // skip test if no fn passed
-  } else if (!mode) {
+  let _mode = mode;
+  if (!mode) {
     // if not set explicitly, inherit from its parent describe
     _mode = parent.mode;
   }
@@ -67,7 +67,7 @@ export const makeTest = (
     errors: [],
     fn,
     mode: _mode,
-    name,
+    name: convertDescriptorToString(name),
     parent,
     startedAt: null,
     status: null,
@@ -213,7 +213,17 @@ export const getTestDuration = (test: TestEntry): ?number => {
   return startedAt ? Date.now() - startedAt : null;
 };
 
-export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+export const makeRunResult = (
+  describeBlock: DescribeBlock,
+  unhandledErrors: Array<Error>,
+): RunResult => {
+  return {
+    testResults: makeTestResults(describeBlock),
+    unhandledErrors: unhandledErrors.map(_formatError),
+  };
+};
+
+const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];

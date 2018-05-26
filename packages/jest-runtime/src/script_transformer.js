@@ -30,6 +30,7 @@ import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
+import {enhanceUnexpectedTokenMessage} from './helpers';
 
 export type Options = {|
   collectCoverage: boolean,
@@ -313,6 +314,14 @@ export default class ScriptTransformer {
     } catch (e) {
       if (e.codeFrame) {
         e.stack = e.codeFrame;
+      }
+
+      if (
+        e instanceof SyntaxError &&
+        e.message.includes('Unexpected token') &&
+        !e.message.includes(' expected')
+      ) {
+        throw enhanceUnexpectedTokenMessage(e);
       }
 
       throw e;

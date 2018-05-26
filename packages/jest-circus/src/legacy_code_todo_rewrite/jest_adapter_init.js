@@ -12,7 +12,7 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Event, TestEntry} from 'types/Circus';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
-import {formatResultsErrors} from 'jest-message-util';
+import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
@@ -100,13 +100,13 @@ export const runAndTransformResultsToJestFormat = async ({
   globalConfig: GlobalConfig,
   testPath: string,
 }): Promise<TestResult> => {
-  const result = await run();
+  const runResult = await run();
 
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;
 
-  const assertionResults = result.map(testResult => {
+  const assertionResults = runResult.testResults.map(testResult => {
     let status: Status;
     if (testResult.status === 'skip') {
       status = 'pending';
@@ -124,7 +124,6 @@ export const runAndTransformResultsToJestFormat = async ({
     );
     const title = ancestorTitles.pop();
 
-    // $FlowFixMe Types are slightly incompatible and need to be refactored
     return {
       ancestorTitles,
       duration: testResult.duration,
@@ -136,12 +135,25 @@ export const runAndTransformResultsToJestFormat = async ({
     };
   });
 
-  const failureMessage = formatResultsErrors(
+  let failureMessage = formatResultsErrors(
+    // $FlowFixMe Types are slightly incompatible and need to be refactored
     assertionResults,
     config,
     globalConfig,
     testPath,
   );
+  let testExecError;
+
+  if (runResult.unhandledErrors.length) {
+    testExecError = {
+      message: '',
+      stack: runResult.unhandledErrors.join('\n'),
+    };
+    failureMessage =
+      (failureMessage || '') +
+      '\n\n' +
+      formatExecError(testExecError, config, globalConfig);
+  }
 
   return {
     console: null,
@@ -168,6 +180,7 @@ export const runAndTransformResultsToJestFormat = async ({
       updated: 0,
     },
     sourceMaps: {},
+    testExecError,
     testFilePath: testPath,
     testResults: assertionResults,
   };

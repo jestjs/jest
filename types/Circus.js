@@ -137,8 +137,13 @@ export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
   status: TestStatus,
-  testPath: Array<TestName>,
+  testPath: Array<TestName | BlockName>,
 |};
+
+export type RunResult = {
+  unhandledErrors: Array<FormattedError>,
+  testResults: TestResults,
+};
 
 export type TestResults = Array<TestResult>;
 

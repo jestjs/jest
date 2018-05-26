@@ -35,7 +35,7 @@ const handler: EventHandler = (event, state): void => {
     }
     case 'finish_describe_definition': {
       const {currentDescribeBlock} = state;
-      invariant(currentDescribeBlock, `currentDescribeBlock mest to be there`);
+      invariant(currentDescribeBlock, `currentDescribeBlock must be there`);
       if (currentDescribeBlock.parent) {
         state.currentDescribeBlock = currentDescribeBlock.parent;
       }
