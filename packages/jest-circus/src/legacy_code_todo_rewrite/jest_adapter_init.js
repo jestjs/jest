@@ -21,17 +21,18 @@ import run from '../run';
 import globals from '../index';
 
 const Promise = getOriginalPromise();
-
 export const initialize = ({
   config,
   globalConfig,
   localRequire,
+  parentProcess,
   testPath,
 }: {
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   localRequire: Path => any,
   testPath: Path,
+  parentProcess: Process,
 }) => {
   Object.assign(global, globals);
 
@@ -69,12 +70,11 @@ export const initialize = ({
 
   addEventHandler(eventHandler);
 
-  if (globalConfig.testNamePattern) {
-    dispatch({
-      name: 'set_test_name_pattern',
-      pattern: globalConfig.testNamePattern,
-    });
-  }
+  dispatch({
+    name: 'setup',
+    parentProcess,
+    testNamePattern: globalConfig.testNamePattern,
+  });
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
@@ -138,7 +138,6 @@ export const runAndTransformResultsToJestFormat = async ({
   });
 
   let failureMessage = formatResultsErrors(
-    // $FlowFixMe Types are slightly incompatible and need to be refactored
     assertionResults,
     config,
     globalConfig,
@@ -157,6 +156,7 @@ export const runAndTransformResultsToJestFormat = async ({
       formatExecError(testExecError, config, globalConfig);
   }
 
+  dispatch({name: 'teardown'});
   return {
     console: null,
     displayName: config.displayName,

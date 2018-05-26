@@ -123,13 +123,19 @@ export type Event =
   | {|
       // Any unhandled error that happened outside of test/hooks (unless it is
       // an `afterAll` hook)
-      asyncError: Exception,
       name: 'error',
       error: Exception,
     |}
   | {|
-      name: 'set_test_name_pattern',
-      pattern: string,
+      // first action to dispatch. Good time to initialize all settings
+      name: 'setup',
+      testNamePattern?: string,
+      parentProcess: Process,
+    |}
+  | {|
+      // Action dispatched after everything is finished and we're about to wrap
+      // things up and return test results to the parent process (caller).
+      name: 'teardown',
     |};
 
 export type TestStatus = 'skip' | 'done';
@@ -147,13 +153,24 @@ export type RunResult = {
 
 export type TestResults = Array<TestResult>;
 
+export type GlobalErrorHandlers = {
+  uncaughtException: Array<(Exception) => void>,
+  unhandledRejection: Array<(Exception) => void>,
+};
+
 export type State = {|
   currentDescribeBlock: DescribeBlock,
-  hasFocusedTests: boolean, // that are defined using test.only
-  rootDescribeBlock: DescribeBlock,
-  testTimeout: number,
-  testNamePattern: ?RegExp,
+  currentlyRunningTest: ?TestEntry, // including when hooks are being executed
   expand?: boolean, // expand error messages
+  hasFocusedTests: boolean, // that are defined using test.only
+  // Store process error handlers. During the run we inject our own
+  // handlers (so we could fail tests on unhandled errors) and later restore
+  // the original ones.
+  originalGlobalErrorHandlers?: GlobalErrorHandlers,
+  parentProcess: ?Process, // process object from the outer scope
+  rootDescribeBlock: DescribeBlock,
+  testNamePattern: ?RegExp,
+  testTimeout: number,
   unhandledErrors: Array<Exception>,
 |};
 
