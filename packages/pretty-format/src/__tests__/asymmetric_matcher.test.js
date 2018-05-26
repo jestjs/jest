@@ -72,9 +72,27 @@ test(`arrayContaining()`, () => {
 ]`);
 });
 
+test(`arrayNotContaining()`, () => {
+  const result = prettyFormat(expect.not.arrayContaining([1, 2]), options);
+  expect(result).toEqual(`ArrayNotContaining [
+  1,
+  2,
+]`);
+});
+
 test(`objectContaining()`, () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
   expect(result).toEqual(`ObjectContaining {
+  "a": "test",
+}`);
+});
+
+test(`objectNotContaining()`, () => {
+  const result = prettyFormat(
+    expect.not.objectContaining({a: 'test'}),
+    options,
+  );
+  expect(result).toEqual(`ObjectNotContaining {
   "a": "test",
 }`);
 });
