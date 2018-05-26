@@ -23,6 +23,8 @@ import type {
   TestResults,
 } from 'types/Circus';
 import {convertDescriptorToString} from 'jest-util';
+import isGeneratorFn from 'is-generator-fn';
+import co from 'co';
 
 import prettyFormat from 'pretty-format';
 
@@ -170,10 +172,14 @@ export const callAsyncFn = (
     }
 
     let returnedValue;
-    try {
-      returnedValue = fn.call(testContext);
-    } catch (error) {
-      return reject(error);
+    if (isGeneratorFn(fn)) {
+      returnedValue = co.wrap(fn).call({});
+    } else {
+      try {
+        returnedValue = fn.call(testContext);
+      } catch (error) {
+        return reject(error);
+      }
     }
 
     // If it's a Promise, return it. Test for an object with a `then` function

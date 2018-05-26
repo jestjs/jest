@@ -9,7 +9,9 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
+    "co": "^4.6.0",
     "expect": "^23.0.0",
+    "is-generator-fn": "^1.0.0",
     "jest-diff": "^23.0.0",
     "jest-matcher-utils": "^23.0.0",
     "jest-message-util": "^23.0.0",
