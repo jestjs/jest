@@ -40,14 +40,18 @@ const humanReadableOperators = {
 
 export default (event: Event, state: State) => {
   switch (event.name) {
-    case 'test_failure':
-    case 'test_success': {
+    case 'test_done': {
       let assert;
       try {
         // Use indirect require so that Metro Bundler does not attempt to
         // bundle `assert`, which does not exist in React Native.
         // eslint-disable-next-line no-useless-call
         assert = require.call(null, 'assert');
+        event.test.errors = event.test.errors.map(error => {
+          return error instanceof assert.AssertionError
+            ? assertionErrorMessage(error, {expand: state.expand})
+            : error;
+        });
       } catch (error) {
         // We are running somewhere where `assert` isn't available, like a
         // browser or React Native. Since assert isn't available, presumably
@@ -55,13 +59,6 @@ export default (event: Event, state: State) => {
         // `AssertionError`s, so we don't need to do anything.
         break;
       }
-
-      event.test.errors = event.test.errors.map(error => {
-        return error instanceof assert.AssertionError
-          ? assertionErrorMessage(error, {expand: state.expand})
-          : error;
-      });
-      break;
     }
   }
 };
