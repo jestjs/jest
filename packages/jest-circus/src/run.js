@@ -8,8 +8,8 @@
  */
 
 import type {
+  RunResult,
   TestEntry,
-  TestResults,
   TestContext,
   Hook,
   DescribeBlock,
@@ -22,15 +22,18 @@ import {
   getEachHooksForTest,
   getTestID,
   invariant,
-  makeTestResults,
+  makeRunResult,
 } from './utils';
 
-const run = async (): Promise<TestResults> => {
+const run = async (): Promise<RunResult> => {
   const {rootDescribeBlock} = getState();
   dispatch({name: 'run_start'});
   await _runTestsForDescribeBlock(rootDescribeBlock);
   dispatch({name: 'run_finish'});
-  return makeTestResults(getState().rootDescribeBlock);
+  return makeRunResult(
+    getState().rootDescribeBlock,
+    getState().unhandledErrors,
+  );
 };
 
 const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {

@@ -14,6 +14,7 @@ import type {
   DescribeBlock,
   Exception,
   Hook,
+  RunResult,
   TestEntry,
   TestContext,
   TestFn,
@@ -200,7 +201,17 @@ export const getTestDuration = (test: TestEntry): ?number => {
   return startedAt ? Date.now() - startedAt : null;
 };
 
-export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+export const makeRunResult = (
+  describeBlock: DescribeBlock,
+  unhandledErrors: Array<Error>,
+): RunResult => {
+  return {
+    testResults: makeTestResults(describeBlock),
+    unhandledErrors: unhandledErrors.map(_formatError),
+  };
+};
+
+const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
