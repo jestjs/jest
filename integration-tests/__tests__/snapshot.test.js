@@ -327,11 +327,12 @@ describe('Snapshot', () => {
       expect(beforeRemovingSnapshot[keyToCheck]).not.toBe(undefined);
       expect(afterRemovingSnapshot[keyToCheck]).toBe(undefined);
 
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
       expect(extractSummary(firstRun.stderr).summary).toMatchSnapshot();
+      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
+
+      expect(extractSummary(secondRun.stderr).summary).toMatchSnapshot();
       expect(secondRun.stderr).toMatch('1 snapshot updated from 1 test suite');
       expect(secondRun.stderr).toMatch('1 snapshot removed from 1 test suite');
-      expect(extractSummary(secondRun.stderr).summary).toMatchSnapshot();
     });
   });
 });
