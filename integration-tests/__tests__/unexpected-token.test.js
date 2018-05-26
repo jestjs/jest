@@ -54,3 +54,21 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
   expect(stderr).toMatch(/import {module}/);
   expect(stderr).toMatch(/Unexpected token import/);
 });
+
+test('does not trigger unexpected token error message for regular syntax errors', () => {
+  writeFiles(DIR, {
+    'faulty.js': 'import {module from "some-module"',
+    'faulty2.js': 'const name = {first: "Name" second: "Second"}',
+    'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+  });
+
+  writeFiles(DIR, {
+    '__tests__/faulty.test.js': `require('../faulty'); test('faulty', () => {});`,
+    '__tests__/faulty2.test.js': `require('../faulty2'); test('faulty2', () => {});`,
+  });
+
+  const {stdout, stderr} = runJest(DIR, ['']);
+
+  expect(stdout).toBe('');
+  expect(stderr).not.toMatch(/Jest encountered an unexpected token/);
+});

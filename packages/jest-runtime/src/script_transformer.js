@@ -316,7 +316,11 @@ export default class ScriptTransformer {
         e.stack = e.codeFrame;
       }
 
-      if (e instanceof SyntaxError && e.message.includes('Unexpected token')) {
+      if (
+        e instanceof SyntaxError &&
+        e.message.includes('Unexpected token') &&
+        !e.message.includes(' expected')
+      ) {
         e.stack =
           `${chalk.bold.red('Jest encountered an unexpected token')}
 
