@@ -16,6 +16,10 @@ import {
   invariant,
   makeTest,
 } from './utils';
+import {
+  injectGlobalErrorHandlers,
+  restoreGlobalErrorHandlers,
+} from './error_handlers';
 
 // To pass this value from Runtime object to state we need to use global[sym]
 const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
@@ -89,9 +93,11 @@ const handler: EventHandler = (event, state): void => {
     case 'test_done': {
       event.test.duration = getTestDuration(event.test);
       event.test.status = 'done';
+      state.currentlyRunningTest = null;
       break;
     }
     case 'test_start': {
+      state.currentlyRunningTest = event.test;
       event.test.startedAt = Date.now();
       break;
     }
@@ -108,13 +114,46 @@ const handler: EventHandler = (event, state): void => {
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
       break;
     }
-    case 'error': {
-      state.unhandledErrors.push(event.error);
+    case 'run_finish': {
       break;
     }
-    case 'set_test_name_pattern': {
-      const regexp = new RegExp(event.pattern, 'i');
-      state.testNamePattern = regexp;
+    case 'setup': {
+      // Uncaught exception handlers should be defined on the parent process
+      // object. If defined on the VM's process object they just no op and let
+      // the parent process crash. It might make sense to return a `dispatch`
+      // function to the parent process and register handlers there instead, but
+      // i'm not sure if this is works. For now i just replicated whatever
+      // jasmine was doing -- dabramov
+      state.parentProcess = event.parentProcess;
+      invariant(state.parentProcess);
+      state.originalGlobalErrorHandlers = injectGlobalErrorHandlers(
+        state.parentProcess,
+      );
+      if (event.testNamePattern) {
+        state.testNamePattern = new RegExp(event.testNamePattern, 'i');
+      }
+      break;
+    }
+    case 'teardown': {
+      invariant(state.originalGlobalErrorHandlers);
+      invariant(state.parentProcess);
+      restoreGlobalErrorHandlers(
+        state.parentProcess,
+        state.originalGlobalErrorHandlers,
+      );
+      break;
+    }
+    case 'error': {
+      // It's very likely for long-running async tests to throw errors. In this
+      // case we want to catch them and fail the current test. At the same time
+      // there's a possibility that one test sets a long timeout, that will
+      // eventually throw after this test finishes but during some other test
+      // execution, which will result in one test's error failing another test.
+      // In any way, it should be possible to track where the error was thrown
+      // from.
+      state.currentlyRunningTest
+        ? state.currentlyRunningTest.errors.push(event.error)
+        : state.unhandledErrors.push(event.error);
       break;
     }
   }
