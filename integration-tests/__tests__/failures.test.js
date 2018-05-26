@@ -7,6 +7,9 @@
  * @flow
  */
 
+import skipOnJestCircus from '../../scripts/SkipOnJestCircus';
+skipOnJestCircus.suite();
+
 const path = require('path');
 const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {extractSummary} = require('../Utils');

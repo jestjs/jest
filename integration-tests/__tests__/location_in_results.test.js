@@ -8,7 +8,10 @@
  */
 'use strict';
 
+import skipOnJestCicrus from '../../scripts/SkipOnJestCircus';
 const runJest = require('../runJest');
+
+skipOnJestCicrus.suite();
 
 it('defaults to null for location', () => {
   const result = runJest.json('location-in-results').json;
