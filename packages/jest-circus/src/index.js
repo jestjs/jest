@@ -59,7 +59,7 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
       `Invalid second argument, ${fn}. It must be a callback function.`,
     );
   }
-  
+
   const asyncError = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(asyncError, test);
