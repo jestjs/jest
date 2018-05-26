@@ -35,6 +35,8 @@ import prettyFormat from 'pretty-format';
 const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
 export const getOriginalPromise = () => Promise;
 
+const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
+
 export const makeDescribe = (
   name: BlockName,
   parent: ?DescribeBlock,
@@ -234,7 +236,6 @@ export const makeRunResult = (
 };
 
 const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
-  const stackUtils = new StackUtils();
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
