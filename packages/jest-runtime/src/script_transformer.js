@@ -341,7 +341,7 @@ If you need to read non-JS files (e.g. binary assets), stubbing them out with ${
 You'll find more details and examples of these config options in the docs:
 ${chalk.cyan('https://facebook.github.io/jest/docs/en/configuration.html')}
 
-
+${chalk.bold.red('Details:')}
 
 ` + e.stack;
       }
