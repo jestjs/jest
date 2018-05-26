@@ -4,9 +4,7 @@ title: Using with puppeteer
 original_id: puppeteer
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and
-[Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can
-work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
+With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
 
 ## A jest-puppeteer example
 
@@ -99,5 +97,4 @@ describe(
 );
 ```
 
-Here's the code of
-[full working example](https://github.com/xfumihiro/jest-puppeteer-example).
+Here's the code of [full working example](https://github.com/xfumihiro/jest-puppeteer-example).
