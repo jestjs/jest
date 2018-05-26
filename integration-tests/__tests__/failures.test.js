@@ -20,7 +20,9 @@ SkipOnWindows.suite();
 
 function cleanStderr(stderr) {
   const {rest} = extractSummary(stderr);
-  return rest.replace(/.*(jest-jasmine2|jest-circus).*\n/g, '');
+  return rest
+    .replace(/.*(jest-jasmine2|jest-circus).*\n/g, '')
+    .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
 }
 
 test('not throwing Error objects', () => {

@@ -225,7 +225,7 @@ exports[`not throwing Error objects 5`] = `
 
   ● done(non-error)
 
-    Failed: Object {
+    thrown: Object {
       \\"notAnError\\": Array [
         Object {
           \\"hello\\": true,
