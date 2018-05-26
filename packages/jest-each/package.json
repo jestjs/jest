@@ -2,21 +2,10 @@
   "name": "jest-each",
   "version": "0.5.0",
   "description": "Parameterised tests for Jest",
-  "main": "dist/index.js",
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "babel src -d dist --ignore *.test.js",
-    "prepublish": "npm run build",
-    "test": "jest --testPathPattern=src",
-    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls",
-    "test:coverage": "jest --coverage"
-  },
+  "main": "build/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mattphillips/jest-each.git"
+    "url": "https://github.com/facebook/jest.git"
   },
   "keywords": [
     "jest",
@@ -26,33 +15,6 @@
   ],
   "author": "Matt Phillips (mattphillips)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mattphillips/jest-each/issues"
-  },
-  "homepage": "https://github.com/mattphillips/jest-each#readme",
-  "devDependencies": {
-    "babel-cli": "^6.24.0",
-    "babel-core": "^6.24.0",
-    "babel-jest": "^19.0.0",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-gwt": "^1.0.0",
-    "babel-plugin-transform-es2015-modules-umd": "^6.24.0",
-    "babel-preset-es2015": "^6.24.0",
-    "babel-preset-stage-0": "^6.22.0",
-    "coveralls": "^2.12.0",
-    "jest": "^19.0.2"
-  },
-  "babel": {
-    "presets": [
-      "stage-0",
-      "es2015"
-    ],
-    "plugins": [
-      "add-module-exports",
-      "transform-es2015-modules-umd",
-      "gwt"
-    ]
-  },
   "dependencies": {
     "sprintf-js": "^1.0.3"
   }
