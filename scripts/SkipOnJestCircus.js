@@ -9,7 +9,7 @@
 
 /* eslint-disable jest/no-focused-tests */
 
-const SkipOnWindows = {
+const SkipOnJestCircus = {
   suite() {
     if (process.env.JEST_CIRCUS === '1') {
       fit('does not work on jest-circus', () => {
@@ -27,4 +27,4 @@ const SkipOnWindows = {
   },
 };
 
-module.exports = SkipOnWindows;
+module.exports = SkipOnJestCircus;
