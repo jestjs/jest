@@ -59,7 +59,8 @@ it('prints out info about open handlers', async () => {
   const textAfterTest = getTextAfterTest(stderr);
 
   expect(textAfterTest).toContain('Jest has detected the following');
-  expect(textAfterTest).toContain(`
+  expect(textAfterTest).toContain(
+    `
   ●  GETADDRINFOREQWRAP
 
       5 | const app = new http.Server();
@@ -70,5 +71,6 @@ it('prints out info about open handlers', async () => {
 
       at Object.<anonymous> (server.js:7:5)
       at Object.<anonymous> (__tests__/test.js:1:1)
-`);
+`.trim(),
+  );
 });
