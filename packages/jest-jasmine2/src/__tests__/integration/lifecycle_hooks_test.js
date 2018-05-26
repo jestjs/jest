@@ -8,6 +8,9 @@
 
 'use strict';
 
+import skipOnCircus from '../../../../../scripts/SkipOnJestCircus';
+skipOnCircus.suite();
+
 describe('test lifecycle hooks', () => {
   const actions = [];
   function pushMessage(message) {
