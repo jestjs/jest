@@ -27,7 +27,7 @@ export const makeDescribe = (
   parent: ?DescribeBlock,
   mode?: BlockMode,
 ): DescribeBlock => {
-  let _mode;
+  let _mode = mode;
   if (parent && !mode) {
     // If not set explicitly, inherit from the parent describe.
     _mode = parent.mode;
@@ -37,7 +37,7 @@ export const makeDescribe = (
     children: [],
     hooks: [],
     mode: _mode,
-    name,
+    name: convertDescriptorToString(name),
     parent,
     tests: [],
   };
@@ -50,10 +50,8 @@ export const makeTest = (
   parent: DescribeBlock,
   timeout: ?number,
 ): TestEntry => {
-  let _mode;
-  if (!fn) {
-    _mode = 'skip'; // skip test if no fn passed
-  } else if (!mode) {
+  let _mode = mode;
+  if (!mode) {
     // if not set explicitly, inherit from its parent describe
     _mode = parent.mode;
   }
@@ -63,7 +61,7 @@ export const makeTest = (
     errors: [],
     fn,
     mode: _mode,
-    name,
+    name: convertDescriptorToString(name),
     parent,
     startedAt: null,
     status: null,
@@ -272,3 +270,31 @@ export const invariant = (condition: *, message: string) => {
     throw new Error(message);
   }
 };
+
+// See: https://github.com/facebook/jest/pull/5154
+function convertDescriptorToString(descriptor) {
+  if (
+    typeof descriptor === 'string' ||
+    typeof descriptor === 'number' ||
+    descriptor === undefined
+  ) {
+    return descriptor;
+  }
+
+  if (typeof descriptor !== 'function') {
+    throw new Error('describe expects a class, function, number, or string.');
+  }
+
+  if (descriptor.name !== undefined) {
+    return descriptor.name;
+  }
+
+  const stringified = descriptor.toString();
+  const typeDescriptorMatch = stringified.match(/class|function/);
+  const indexOfNameSpace =
+    typeDescriptorMatch.index + typeDescriptorMatch[0].length;
+  const indexOfNameAfterSpace = stringified.search(/\(|\{/, indexOfNameSpace);
+  const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);
+
+  return name.trim();
+}
