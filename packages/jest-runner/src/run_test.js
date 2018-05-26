@@ -66,12 +66,14 @@ async function runTestInternal(
     );
   }
 
+  /* $FlowFixMe */
   const TestEnvironment = (require(testEnvironment): EnvironmentClass);
   const testFramework = ((process.env.JEST_CIRCUS === '1'
     ? /* $FlowFixMe */
       require('jest-circus/build/legacy_code_todo_rewrite/jest_adapter.js') // eslint-disable-line import/no-extraneous-dependencies
         .default
-    : require(config.testRunner)): TestFramework);
+    : /* $FlowFixMe */
+      require(config.testRunner)): TestFramework);
   /* $FlowFixMe */
   const Runtime = (require(config.moduleLoader || 'jest-runtime'): Class<
     RuntimeClass,
