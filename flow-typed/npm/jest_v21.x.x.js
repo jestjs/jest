@@ -538,7 +538,6 @@ declare var xit: typeof it;
 declare var xtest: typeof it;
 
 type AsymmetricMatchers = {
-  anything(): void,
   arrayContaining(value: Array<mixed>): void,
   objectContaining(value: Object): void,
   /** Matches any received string that contains the exact expected string. */
@@ -557,6 +556,7 @@ declare var expect: {
   assertions(expectedAssertions: number): void,
   hasAssertions(): void,
   any(value: mixed): JestAsymmetricEqualityType,
+  anything(): void,
   not: AsymmetricMatchers,
 } & AsymmetricMatchers;
 
