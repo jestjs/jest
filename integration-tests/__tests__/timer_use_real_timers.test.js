@@ -8,9 +8,6 @@
  */
 'use strict';
 
-import skipOnJestCircus from '../../scripts/SkipOnJestCircus';
-
-skipOnJestCircus.suite();
 const runJest = require('../runJest');
 
 test('useRealTimers cancels "timers": "fake" for whole test file', () => {
