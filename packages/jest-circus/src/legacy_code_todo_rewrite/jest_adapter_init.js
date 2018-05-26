@@ -102,7 +102,7 @@ export const runAndTransformResultsToJestFormat = async ({
   globalConfig: GlobalConfig,
   testPath: string,
 }): Promise<TestResult> => {
-  const runResult = await run();
+  const runResult = await run(config);
 
   let numFailingTests = 0;
   let numPassingTests = 0;
@@ -131,6 +131,7 @@ export const runAndTransformResultsToJestFormat = async ({
       duration: testResult.duration,
       failureMessages: testResult.errors,
       fullName: ancestorTitles.concat(title).join(' '),
+      location: testResult.location,
       numPassingAsserts: 0,
       status,
       title: testResult.testPath[testResult.testPath.length - 1],
@@ -138,7 +139,6 @@ export const runAndTransformResultsToJestFormat = async ({
   });
 
   let failureMessage = formatResultsErrors(
-    // $FlowFixMe Types are slightly incompatible and need to be refactored
     assertionResults,
     config,
     globalConfig,

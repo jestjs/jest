@@ -10,6 +10,10 @@
 /* eslint-disable jest/no-focused-tests */
 
 const SkipOnJestCircus = {
+  isJestCircusRun() {
+    return process.env.JEST_CIRCUS === '1';
+  },
+
   suite() {
     if (process.env.JEST_CIRCUS === '1') {
       fit('does not work on jest-circus', () => {

@@ -137,6 +137,7 @@ export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
   status: TestStatus,
+  location: ?{|column: number, line: number|},
   testPath: Array<TestName | BlockName>,
 |};
 
