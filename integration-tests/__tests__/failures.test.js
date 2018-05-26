@@ -18,24 +18,31 @@ const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
 
 SkipOnWindows.suite();
 
+function cleanStderr(stderr) {
+  const {rest} = extractSummary(stderr);
+  return rest
+    .replace(/.*(jest-jasmine2|jest-circus).*\n/g, '')
+    .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
+}
+
 test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw_number.test.js']).stderr;
-  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['throw_string.test.js']).stderr;
-  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['throw_object.test.js']).stderr;
-  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['assertion_count.test.js']).stderr;
-  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['during_tests.test.js']).stderr;
-  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
   const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
   const {stderr} = runJest(dir, ['node_assertion_error.test.js']);
-  let summary = normalizeDots(extractSummary(stderr).rest);
+  let summary = normalizeDots(cleanStderr(stderr));
 
   // Node 9 started to include the error for `doesNotThrow`
   // https://github.com/nodejs/node/pull/12167
@@ -127,7 +134,6 @@ test('works with node assert', () => {
       68 | });
       69 | 
 
-      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/node_assertion_error.test.js:66:1
 `;
 
@@ -141,7 +147,7 @@ test('works with node assert', () => {
 test('works with assertions in separate files', () => {
   const {stderr} = runJest(dir, ['test_macro.test.js']);
 
-  expect(normalizeDots(extractSummary(stderr).rest)).toMatchSnapshot();
+  expect(normalizeDots(cleanStderr(stderr))).toMatchSnapshot();
 });
 
 test('works with async failures', () => {
@@ -158,7 +164,7 @@ test('works with async failures', () => {
 test('works with snapshot failures', () => {
   const {stderr} = runJest(dir, ['snapshot.test.js']);
 
-  const result = normalizeDots(extractSummary(stderr).rest);
+  const result = normalizeDots(cleanStderr(stderr));
 
   expect(
     result.substring(0, result.indexOf('Snapshot Summary')),
@@ -168,7 +174,7 @@ test('works with snapshot failures', () => {
 test('works with named snapshot failures', () => {
   const {stderr} = runJest(dir, ['snapshot_named.test.js']);
 
-  const result = normalizeDots(extractSummary(stderr).rest);
+  const result = normalizeDots(cleanStderr(stderr));
 
   expect(
     result.substring(0, result.indexOf('Snapshot Summary')),

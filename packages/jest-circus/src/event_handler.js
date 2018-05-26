@@ -43,33 +43,42 @@ const handler: EventHandler = (event, state): void => {
     }
     case 'add_hook': {
       const {currentDescribeBlock} = state;
-      const {fn, hookType: type, timeout} = event;
+      const {asyncError, fn, hookType: type, timeout} = event;
       const parent = currentDescribeBlock;
-      currentDescribeBlock.hooks.push({fn, parent, timeout, type});
+      currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
       break;
     }
     case 'add_test': {
       const {currentDescribeBlock} = state;
-      const {fn, mode, testName: name, timeout} = event;
-      const test = makeTest(fn, mode, name, currentDescribeBlock, timeout);
-      test.mode === 'only' && (state.hasFocusedTests = true);
+      const {asyncError, fn, mode, testName: name, timeout} = event;
+      const test = makeTest(
+        fn,
+        mode,
+        name,
+        currentDescribeBlock,
+        timeout,
+        asyncError,
+      );
+      if (test.mode === 'only') {
+        state.hasFocusedTests = true;
+      }
       currentDescribeBlock.tests.push(test);
       break;
     }
     case 'hook_failure': {
       const {test, describeBlock, error, hook} = event;
-      const {type} = hook;
+      const {asyncError, type} = hook;
 
       if (type === 'beforeAll') {
         invariant(describeBlock, 'always present for `*All` hooks');
-        addErrorToEachTestUnderDescribe(describeBlock, error);
+        addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
       } else if (type === 'afterAll') {
         // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
-        state.unhandledErrors.push(error);
+        state.unhandledErrors.push([error, asyncError]);
       } else {
         invariant(test, 'always present for `*Each` hooks');
-        test.errors.push(error);
+        test.errors.push([error, asyncError]);
       }
       break;
     }
@@ -87,7 +96,11 @@ const handler: EventHandler = (event, state): void => {
       break;
     }
     case 'test_fn_failure': {
-      event.test.errors.push(event.error);
+      const {
+        error,
+        test: {asyncError},
+      } = event;
+      event.test.errors.push([error, asyncError]);
       break;
     }
     case 'run_start': {
