@@ -15,10 +15,12 @@ import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
-import {getTestID} from '../utils';
+import {getTestID, getOriginalPromise} from '../utils';
 import run from '../run';
 // eslint-disable-next-line import/default
 import globals from '../index';
+
+const Promise = getOriginalPromise();
 
 export const initialize = ({
   config,
