@@ -27,7 +27,10 @@ export default defaultGlobal => ([headings], ...data) => {
       data.slice(index * keysLength, index * keysLength + keysLength),
     )
     .map(row =>
-      row.reduce((acc, value, index) => ({...acc, [keys[index]]: value}), {}),
+      row.reduce(
+        (acc, value, index) => Object.assign({}, acc, {[keys[index]]: value}),
+        {},
+      ),
     );
 
   const tests = parameterisedTests(parameterRows);
