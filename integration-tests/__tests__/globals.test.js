@@ -21,6 +21,11 @@ const TEST_DIR = path.resolve(DIR, '__tests__');
 
 SkipOnWindows.suite();
 
+function cleanStderr(stderr) {
+  const {rest} = extractSummary(stderr);
+  return rest.replace(/.*(jest-jasmine2|jest-circus).*\n/g, '');
+}
+
 beforeEach(() => {
   cleanup(DIR);
   createEmptyPackage(DIR);
@@ -122,8 +127,8 @@ test('cannot test with no implementation', () => {
   const {stderr, status} = runJest(DIR);
   expect(status).toBe(1);
 
-  const {summary, rest} = extractSummary(stderr, {stripLocation: true});
-  expect(rest).toMatchSnapshot();
+  const {summary} = extractSummary(stderr);
+  expect(cleanStderr(stderr)).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
 
@@ -200,8 +205,8 @@ test('cannot test with no implementation with expand arg', () => {
   const {stderr, status} = runJest(DIR, ['--expand']);
   expect(status).toBe(1);
 
-  const {summary, rest} = extractSummary(stderr, {stripLocation: true});
-  expect(rest).toMatchSnapshot();
+  const {summary} = extractSummary(stderr);
+  expect(cleanStderr(stderr)).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
 
