@@ -24,7 +24,7 @@ export default defaultGlobal => parameterRows => {
   const fdescribe = tests(defaultGlobal.fdescribe);
   const xdescribe = tests(defaultGlobal.xdescribe);
 
-  return {test, xtest, it, xit, fit, describe, fdescribe, xdescribe};
+  return {describe, fdescribe, fit, it, test, xdescribe, xit, xtest};
 };
 
 const parameterisedTests = parameterRows => globalCb => (title, test) => {

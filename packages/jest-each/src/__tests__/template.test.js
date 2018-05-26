@@ -20,11 +20,11 @@ describe('jest-each', () => {
     describe(`.${keyPath.join('.')}`, () => {
       const getGlobalTestMocks = () => {
         const globals = {
-          test: jest.fn(),
-          it: jest.fn(),
-          fit: jest.fn(),
           describe: jest.fn(),
           fdescribe: jest.fn(),
+          fit: jest.fn(),
+          it: jest.fn(),
+          test: jest.fn(),
         };
         globals.test.only = jest.fn();
         globals.it.only = jest.fn();
@@ -181,18 +181,18 @@ describe('jest-each', () => {
     describe(`.${keyPath.join('.')}`, () => {
       const getGlobalTestMocks = () => {
         const globals = {
-          test: {
-            skip: jest.fn(),
-          },
-          xtest: jest.fn(),
-          it: {
-            skip: jest.fn(),
-          },
-          xit: jest.fn(),
           describe: {
             skip: jest.fn(),
           },
+          it: {
+            skip: jest.fn(),
+          },
+          test: {
+            skip: jest.fn(),
+          },
           xdescribe: jest.fn(),
+          xit: jest.fn(),
+          xtest: jest.fn(),
         };
         return globals;
       };

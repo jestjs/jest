@@ -19,12 +19,16 @@ export default defaultGlobal => ([headings], ...data) => {
 
     const fdescribe = errorFunction(defaultGlobal.fdescribe);
 
-    return { test, it, fit, describe, fdescribe };
+    return {describe, fdescribe, fit, it, test};
   }
 
-  const parameterRows = Array.from({ length: data.length / keysLength })
-    .map((_, index) => data.slice(index * keysLength, index * keysLength + keysLength))
-    .map(row => row.reduce((acc, value, index) => ({ ...acc, [keys[index]]: value }), {}));
+  const parameterRows = Array.from({length: data.length / keysLength})
+    .map((_, index) =>
+      data.slice(index * keysLength, index * keysLength + keysLength),
+    )
+    .map(row =>
+      row.reduce((acc, value, index) => ({...acc, [keys[index]]: value}), {}),
+    );
 
   const tests = parameterisedTests(parameterRows);
 
@@ -49,22 +53,24 @@ export default defaultGlobal => ([headings], ...data) => {
   const fdescribe = tests(defaultGlobal.fdescribe);
   const xdescribe = tests(defaultGlobal.xdescribe);
 
-  return { test, xtest, it, xit, fit, describe, fdescribe, xdescribe };
+  return {describe, fdescribe, fit, it, test, xdescribe, xit, xtest};
 };
 
 const notEnoughDataError = (keys, data) => cb => title =>
   cb(title, () => {
     throw new Error(
       `Tagged Template Literal test error:\nNot enough arguments supplied for given headings: ${keys.join(
-        ' | '
-      )}\nReceived: ${data}`
+        ' | ',
+      )}\nReceived: ${data}`,
     );
   });
 
 const getHeadingKeys = headings => headings.replace(/\s/g, '').split('|');
 
 const parameterisedTests = parameterRows => globalCb => (title, test) => {
-  parameterRows.forEach(params => globalCb(interpolate(title, params), applyTestParams(params, test)));
+  parameterRows.forEach(params =>
+    globalCb(interpolate(title, params), applyTestParams(params, test)),
+  );
 };
 
 const interpolate = (title, data) => {
