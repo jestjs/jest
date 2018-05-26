@@ -22,6 +22,7 @@ export type TestContext = Object;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
+  asyncError: Exception,
   fn: HookFn,
   type: HookType,
   parent: DescribeBlock,
@@ -32,6 +33,7 @@ export type EventHandler = (event: Event, state: State) => void;
 
 export type Event =
   | {|
+      asyncError: Exception,
       mode: BlockMode,
       name: 'start_describe_definition',
       blockName: BlockName,
@@ -42,12 +44,14 @@ export type Event =
       blockName: BlockName,
     |}
   | {|
+      asyncError: Exception,
       name: 'add_hook',
       hookType: HookType,
       fn: HookFn,
       timeout: ?number,
     |}
   | {|
+      asyncError: Exception,
       name: 'add_test',
       testName: TestName,
       fn?: TestFn,
@@ -119,6 +123,7 @@ export type Event =
   | {|
       // Any unhandled error that happened outside of test/hooks (unless it is
       // an `afterAll` hook)
+      asyncError: Exception,
       name: 'error',
       error: Exception,
     |}
@@ -156,8 +161,11 @@ export type DescribeBlock = {|
   tests: Array<TestEntry>,
 |};
 
+type TestError = Exception | Array<[Exception, ?Exception]>; // the error from the test, as well as a backup error for async
+
 export type TestEntry = {|
-  errors: Array<Exception>,
+  asyncError: Exception, // Used if the test failure contains no usable stack trace
+  errors: TestError,
   fn: ?TestFn,
   mode: TestMode,
   name: TestName,

@@ -144,7 +144,6 @@ exports[`not throwing Error objects 5`] = `
        9 | });
       10 | 
 
-      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:7:1
 
   ● Boolean thrown during test
@@ -159,7 +158,6 @@ exports[`not throwing Error objects 5`] = `
       13 |   throw false;
       14 | });
 
-      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:11:1
 
   ● undefined thrown during test
@@ -174,7 +172,6 @@ exports[`not throwing Error objects 5`] = `
       18 |   throw undefined;
       19 | });
 
-      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:16:1
 
   ● Object thrown during test
@@ -196,7 +193,6 @@ exports[`not throwing Error objects 5`] = `
       23 |   throw deepObject;
       24 | });
 
-      at packages/jest-jasmine2/build/jasmine/Spec.js:85:20
       at __tests__/during_tests.test.js:21:1
 
   ● Error during test
@@ -246,12 +242,11 @@ exports[`not throwing Error objects 5`] = `
       38 | 
       39 | test('returned promise rejection', () => {
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:537:34
       at __tests__/during_tests.test.js:36:3
 
   ● returned promise rejection
 
-    Failed: Object {
+    thrown: Object {
       \\"notAnError\\": Array [
         Object {
           \\"hello\\": true,
@@ -268,7 +263,6 @@ exports[`not throwing Error objects 5`] = `
       41 | });
       42 | 
 
-      at packages/jest-jasmine2/build/jasmine_async.js:102:24
       at __tests__/during_tests.test.js:39:1
 
 "

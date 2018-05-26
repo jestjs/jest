@@ -22,6 +22,8 @@ import type {
   TestResults,
 } from 'types/Circus';
 
+import prettyFormat from 'pretty-format';
+
 export const makeDescribe = (
   name: BlockName,
   parent: ?DescribeBlock,
@@ -49,6 +51,7 @@ export const makeTest = (
   name: TestName,
   parent: DescribeBlock,
   timeout: ?number,
+  asyncError: Exception,
 ): TestEntry => {
   let _mode;
   if (!fn) {
@@ -59,6 +62,7 @@ export const makeTest = (
   }
 
   return {
+    asyncError,
     duration: null,
     errors: [],
     fn,
@@ -141,11 +145,20 @@ export const callAsyncFn = (
       timeout,
     );
 
-    // If this fn accepts `done` callback we return a promise that fullfills as
+    // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
     if (fn.length) {
-      const done = (reason?: Error | string): void =>
-        reason ? reject(reason) : resolve();
+      const done = (reason?: Error | string): void => {
+        // $FlowFixMe: It doesn't approve of .stack
+        const isError = reason && reason.message && reason.stack;
+        return reason
+          ? reject(
+              isError
+                ? reason
+                : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`),
+            )
+          : resolve();
+      };
 
       return fn.call(testContext, done);
     }
@@ -242,28 +255,43 @@ export const getTestID = (test: TestEntry) => {
   return titles.join(' ');
 };
 
-const _formatError = (error: ?Exception): string => {
-  if (!error) {
-    return 'NO ERROR MESSAGE OR STACK TRACE SPECIFIED';
-  } else if (error.stack) {
-    return error.stack;
-  } else if (error.message) {
-    return error.message;
+const _formatError = (errors: ?Exception | [?Exception, Exception]): string => {
+  let error;
+  let asyncError;
+
+  if (Array.isArray(errors)) {
+    error = errors[0];
+    asyncError = errors[1];
   } else {
-    return `${String(error)} thrown`;
+    error = errors;
+    asyncError = new Error();
   }
+
+  if (error) {
+    if (error.stack) {
+      return error.stack;
+    }
+    if (error.message) {
+      return error.message;
+    }
+  }
+
+  asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+
+  return asyncError.stack;
 };
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: DescribeBlock,
   error: Exception,
+  asyncError: Exception,
 ) => {
   for (const test of describeBlock.tests) {
-    test.errors.push(error);
+    test.errors.push([error, asyncError]);
   }
 
   for (const child of describeBlock.children) {
-    addErrorToEachTestUnderDescribe(child, error);
+    addErrorToEachTestUnderDescribe(child, error, asyncError);
   }
 };
 
