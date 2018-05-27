@@ -36,7 +36,7 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "~0.0.19",
     "execa": "^0.10.0",
-    "flow-bin": "^0.71.0",
+    "flow-bin": "^0.73.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
     "istanbul-api": "^1.3.1",
@@ -160,7 +160,7 @@
   },
   "prettier": {
     "bracketSpacing": false,
-    "proseWrap": "always",
+    "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all"
   }

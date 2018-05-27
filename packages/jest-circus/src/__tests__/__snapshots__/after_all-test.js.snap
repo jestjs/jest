@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests are not marked done until their parent afterAll runs 1`] = `
+"start_describe_definition: describe
+add_hook: afterAll
+add_test: one
+add_test: two
+start_describe_definition: 2nd level describe
+add_hook: afterAll
+add_test: 2nd level test
+start_describe_definition: 3rd level describe
+add_test: 3rd level test
+add_test: 3rd level test#2
+finish_describe_definition: 3rd level describe
+finish_describe_definition: 2nd level describe
+finish_describe_definition: describe
+start_describe_definition: 2nd describe
+add_hook: afterAll
+add_test: 2nd describe test
+finish_describe_definition: 2nd describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+test_fn_start: one
+test_fn_success: one
+test_done: one
+test_start: two
+test_fn_start: two
+test_fn_success: two
+test_done: two
+run_describe_start: 2nd level describe
+test_start: 2nd level test
+test_fn_start: 2nd level test
+test_fn_success: 2nd level test
+test_done: 2nd level test
+run_describe_start: 3rd level describe
+test_start: 3rd level test
+test_fn_start: 3rd level test
+test_fn_success: 3rd level test
+test_done: 3rd level test
+test_start: 3rd level test#2
+test_fn_start: 3rd level test#2
+test_fn_success: 3rd level test#2
+test_done: 3rd level test#2
+run_describe_finish: 3rd level describe
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: 2nd level describe
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_start: 2nd describe
+test_start: 2nd describe test
+test_fn_start: 2nd describe test
+test_fn_success: 2nd describe test
+test_done: 2nd describe test
+hook_start: afterAll
+hook_failure: afterAll
+run_describe_finish: 2nd describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 1
+"
+`;

@@ -46,7 +46,7 @@ test('exceeds the timeout', () => {
 test('does not exceed the timeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
-      jest.setTimeout(100);
+      jest.setTimeout(1000);
 
       test('banana', () => {
         return new Promise(resolve => {

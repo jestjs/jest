@@ -24,8 +24,8 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(0);
 
     const {message} = json.testResults[0];
-    expect(message).toMatch('with failing timeout');
-    expect(message).toMatch('Async callback was not invoked within');
+    expect(message).toMatch('with failing async');
+    expect(message).toMatch('timeout');
     expect(message).toMatch('done - with error thrown');
     expect(message).toMatch('done - with error called back');
   });

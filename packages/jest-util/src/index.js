@@ -22,6 +22,7 @@ import isInteractive from './is_interative';
 import getCallsite from './get_callsite';
 import setGlobal from './set_global';
 import deepCyclicCopy from './deep_cyclic_copy';
+import convertDescriptorToString from './convert_descriptor_to_string';
 
 const createDirectory = (path: string) => {
   try {
@@ -39,6 +40,7 @@ module.exports = {
   FakeTimers,
   NullConsole,
   clearLine,
+  convertDescriptorToString,
   createDirectory,
   deepCyclicCopy,
   formatTestResults,

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * @flow strict-local
  */
 
 'use strict';
@@ -14,12 +14,15 @@ import {spawnSync} from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import skipOnWindows from '../../../../scripts/SkipOnWindows';
 
 const CIRCUS_PATH = require.resolve('../../build/index');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
 const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./test_event_handler');
 const BABEL_REGISTER_PATH = require.resolve('babel-register');
+
+skipOnWindows.suite();
 
 export const runTest = (source: string) => {
   const tmpFilename = path.join(os.tmpdir(), 'circus-test-file.js');

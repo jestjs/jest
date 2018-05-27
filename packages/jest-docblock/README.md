@@ -1,7 +1,6 @@
 # jest-docblock
 
-`jest-docblock` is a package that can extract and parse a specially-formatted
-comment called a "docblock" at the top of a file.
+`jest-docblock` is a package that can extract and parse a specially-formatted comment called a "docblock" at the top of a file.
 
 A docblock looks like this:
 
@@ -90,26 +89,20 @@ console.log(print({pragmas, comments: 'hi!'})); // /**\n * hi!\n *\n * @everythi
 
 ### `extract(contents: string): string`
 
-Extracts a docblock from some file contents. Returns the docblock contained in
-`contents`. If `contents` did not contain a docblock, it will return the empty
-string (`""`).
+Extracts a docblock from some file contents. Returns the docblock contained in `contents`. If `contents` did not contain a docblock, it will return the empty string (`""`).
 
 ### `strip(contents: string): string`
 
-Strips the top docblock from a file and return the result. If a file does not
-have a docblock at the top, then return the file unchanged.
+Strips the top docblock from a file and return the result. If a file does not have a docblock at the top, then return the file unchanged.
 
 ### `parse(docblock: string): {[key: string]: string | string[] }`
 
-Parses the pragmas in a docblock string into an object whose keys are the pragma
-tags and whose values are the arguments to those pragmas.
+Parses the pragmas in a docblock string into an object whose keys are the pragma tags and whose values are the arguments to those pragmas.
 
 ### `parseWithComments(docblock: string): { comments: string, pragmas: {[key: string]: string | string[]} }`
 
-Similar to `parse` except this method also returns the comments from the
-docblock. Useful when used with `print()`.
+Similar to `parse` except this method also returns the comments from the docblock. Useful when used with `print()`.
 
 ### `print({ comments?: string, pragmas?: {[key: string]: string | string[]} }): string`
 
-Prints an object of key-value pairs back into a docblock. If `comments` are
-provided, they will be positioned on the top of the docblock.
+Prints an object of key-value pairs back into a docblock. If `comments` are provided, they will be positioned on the top of the docblock.
