@@ -1,8 +1,17 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
+
 import bind from './bind';
 import arrayEach from './array';
 import templateEach from './template';
 
-const each = (...args) => {
+const each = (...args: any) => {
   if (args.length > 1) {
     return templateEach(global)(...args);
   }
@@ -10,7 +19,7 @@ const each = (...args) => {
   return arrayEach(global)(...args);
 };
 
-each.withGlobal = g => (...args) => {
+each.withGlobal = g => (...args: any) => {
   if (args.length > 1) {
     return templateEach(g)(...args);
   }
