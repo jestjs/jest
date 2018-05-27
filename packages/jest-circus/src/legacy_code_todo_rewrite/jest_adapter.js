@@ -108,4 +108,4 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   return results;
 };
 
-export default jestAdapter;
+module.exports = jestAdapter;
