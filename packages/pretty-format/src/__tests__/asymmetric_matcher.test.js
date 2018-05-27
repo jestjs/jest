@@ -72,6 +72,14 @@ test(`arrayContaining()`, () => {
 ]`);
 });
 
+test(`arrayNotContaining()`, () => {
+  const result = prettyFormat(expect.not.arrayContaining([1, 2]), options);
+  expect(result).toEqual(`ArrayNotContaining [
+  1,
+  2,
+]`);
+});
+
 test(`objectContaining()`, () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
   expect(result).toEqual(`ObjectContaining {
@@ -79,9 +87,24 @@ test(`objectContaining()`, () => {
 }`);
 });
 
+test(`objectNotContaining()`, () => {
+  const result = prettyFormat(
+    expect.not.objectContaining({a: 'test'}),
+    options,
+  );
+  expect(result).toEqual(`ObjectNotContaining {
+  "a": "test",
+}`);
+});
+
 test(`stringContaining(string)`, () => {
   const result = prettyFormat(expect.stringContaining('jest'), options);
   expect(result).toEqual(`StringContaining "jest"`);
+});
+
+test(`not.stringContaining(string)`, () => {
+  const result = prettyFormat(expect.not.stringContaining('jest'), options);
+  expect(result).toEqual(`StringNotContaining "jest"`);
 });
 
 test(`stringMatching(string)`, () => {
@@ -103,6 +126,11 @@ test(`stringMatching(regexp) {escapeRegex: true}`, () => {
   options.escapeRegex = true;
   const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
   expect(result).toEqual('StringMatching /regexp\\\\d/gi');
+});
+
+test(`stringNotMatching(string)`, () => {
+  const result = prettyFormat(expect.not.stringMatching('jest'), options);
+  expect(result).toEqual('StringNotMatching /jest/');
 });
 
 test(`supports multiple nested asymmetric matchers`, () => {

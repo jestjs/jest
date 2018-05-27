@@ -1,5 +1,10 @@
 ## master
 
+### Fixes
+
+* `[pretty-format]` Serialize inverse asymmetric matchers correctly
+  ([#6272](https://github.com/facebook/jest/pull/6272))
+
 ## 23.0.0
 
 ### Features
