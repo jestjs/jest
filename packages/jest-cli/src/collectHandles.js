@@ -11,6 +11,28 @@ import type {ProjectConfig} from 'types/Config';
 
 import {formatExecError} from 'jest-message-util';
 
+function stackIsFromUser(stack) {
+  // Either the test file, or something required by it
+  if (stack.includes('Runtime.requireModule')) {
+    return true;
+  }
+
+  // jest-jasmine it or describe call
+  if (stack.includes('asyncJestTest') || stack.includes('asyncJestLifecycle')) {
+    return true;
+  }
+
+  // An async function call from within circus
+  if (stack.includes('callAsyncCircusFn')) {
+    // jest-circus it or describe call
+    return (
+      stack.includes('_callCircusTest') || stack.includes('_callCircusHook')
+    );
+  }
+
+  return false;
+}
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
 export default function collectHandles(): () => Array<Error> {
@@ -26,11 +48,7 @@ export default function collectHandles(): () => Array<Error> {
       Error.captureStackTrace(error, initHook);
     }
 
-    if (
-      error.stack.includes('Runtime.requireModule') ||
-      error.stack.includes('asyncJestTest') ||
-      error.stack.includes('asyncJestLifecycle')
-    ) {
+    if (stackIsFromUser(error.stack)) {
       activeHandles.set(asyncId, error);
     }
   }
