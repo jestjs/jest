@@ -15,10 +15,7 @@ import path from 'path';
 import stripAnsi from 'strip-ansi';
 
 const {cleanup, extractSummary, writeFiles} = require('../Utils');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const DIR = path.resolve(os.tmpdir(), 'multi_project_runner_test');
-
-SkipOnWindows.suite();
 
 const fileContentWithProvidesModule = name => `/*
  * @providesModule ${name}

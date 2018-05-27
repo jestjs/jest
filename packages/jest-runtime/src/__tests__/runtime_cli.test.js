@@ -10,9 +10,9 @@
 
 const path = require('path');
 const {sync: spawnSync} = require('execa');
-const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
+const ConditionalTest = require('../../../../scripts/ConditionalTest');
 
-SkipOnWindows.suite();
+ConditionalTest.skipSuiteOnWindows();
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 

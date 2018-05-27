@@ -15,10 +15,10 @@ import {
   findRepos,
   getChangedFilesForRoots,
 } from '../../packages/jest-changed-files/src';
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const ConditionalTest = require('../../scripts/ConditionalTest');
 const {cleanup, run, writeFiles} = require('../Utils');
 
-SkipOnWindows.suite();
+ConditionalTest.skipSuiteOnWindows();
 
 const DIR = path.resolve(os.tmpdir(), 'jest_changed_files_test_dir');
 

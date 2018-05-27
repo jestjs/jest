@@ -14,7 +14,7 @@ import {spawnSync} from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import skipOnWindows from '../../../../scripts/SkipOnWindows';
+import ConditionalTest from '../../../../scripts/ConditionalTest';
 
 const CIRCUS_PATH = require.resolve('../../build/index');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
@@ -22,7 +22,7 @@ const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./test_event_handler');
 const BABEL_REGISTER_PATH = require.resolve('babel-register');
 
-skipOnWindows.suite();
+ConditionalTest.skipSuiteOnWindows();
 
 export const runTest = (source: string) => {
   const tmpFilename = path.join(os.tmpdir(), 'circus-test-file.js');
