@@ -1,5 +1,7 @@
 ## master
 
+## 23.0.1
+
 ### Chore & Maintenance
 
 * `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/#6309))

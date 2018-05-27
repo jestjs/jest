@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "23.0.0",
+  "version": "23.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -17,6 +17,6 @@
     "source-map": "^0.6.0"
   },
   "devDependencies": {
-    "jest-mock": "^23.0.0"
+    "jest-mock": "^23.0.1"
   }
 }
