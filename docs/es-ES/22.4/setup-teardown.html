@@ -35,7 +35,7 @@ test(<span class="hljs-string">'city database has San Juan'</span>, () =&gt; {
   expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
 });
 </code></pre>
-<p><code>beforeEach</code> and <code>afterEach</code> can handle asynchronous code in the same ways that <a href="/jest/docs/es-ES/22.4/asynchronous.html">tests can handle asynchronous code</a> - they can either take a <code>done</code> parameter or return a promise. Por ejemplo, si <code>initializeCityDatabase()</code> devuelve una promesa que es resuelta cuando la base de datos es inicializada, nos gustaría que devuelva esa promesa:</p>
+<p><code>beforeEach</code> y <code>afterEach</code> pueden manejar código asíncrono en el mismo modo que <a href="/jest/docs/es-ES/22.4/asynchronous.html">las pruebas manejan código asíncrono</a> - ambos pueden tomar <code>done</code> como parámetro o devolver una promesa. Por ejemplo, si <code>initializeCityDatabase()</code> devuelve una promesa que es resuelta cuando la base de datos es inicializada, nos gustaría que devuelva esa promesa:</p>
 <pre><code class="hljs css js">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-keyword">return</span> initializeCityDatabase();
 });
