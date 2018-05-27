@@ -26,13 +26,19 @@ import {convertDescriptorToString} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 
+import StackUtils from 'stack-utils';
+
 import prettyFormat from 'pretty-format';
+
+import {getState} from './state';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
 // eslint-disable-next-line no-unused-vars
 const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
 export const getOriginalPromise = () => Promise;
+
+const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 export const makeDescribe = (
   name: BlockName,
@@ -235,7 +241,8 @@ export const makeRunResult = (
   };
 };
 
-const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
+  const {includeTestLocationInResult} = getState();
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
@@ -249,16 +256,25 @@ const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
     if (!status) {
       throw new Error('Status should be present after tests are run.');
     }
+
+    let location = null;
+    if (includeTestLocationInResult) {
+      const stackLine = test.asyncError.stack.split('\n')[1];
+      const {line, column} = stackUtils.parseLine(stackLine);
+      location = {column, line};
+    }
+
     testResults.push({
       duration: test.duration,
       errors: test.errors.map(_formatError),
+      location,
       status,
       testPath,
     });
   }
 
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child));
+    testResults = testResults.concat(makeTestResults(child, config));
   }
 
   return testResults;

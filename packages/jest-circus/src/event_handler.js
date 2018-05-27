@@ -26,6 +26,10 @@ const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
 
 const handler: EventHandler = (event, state): void => {
   switch (event.name) {
+    case 'include_test_location_in_result': {
+      state.includeTestLocationInResult = true;
+      break;
+    }
     case 'hook_start': {
       break;
     }

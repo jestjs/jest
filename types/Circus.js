@@ -33,6 +33,9 @@ export type EventHandler = (event: Event, state: State) => void;
 
 export type Event =
   | {|
+      name: 'include_test_location_in_result',
+    |}
+  | {|
       asyncError: Exception,
       mode: BlockMode,
       name: 'start_describe_definition',
@@ -143,6 +146,7 @@ export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
   status: TestStatus,
+  location: ?{|column: number, line: number|},
   testPath: Array<TestName | BlockName>,
 |};
 
@@ -172,6 +176,7 @@ export type State = {|
   testNamePattern: ?RegExp,
   testTimeout: number,
   unhandledErrors: Array<Exception>,
+  includeTestLocationInResult: boolean,
 |};
 
 export type DescribeBlock = {|

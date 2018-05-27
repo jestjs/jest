@@ -76,6 +76,12 @@ export const initialize = ({
     testNamePattern: globalConfig.testNamePattern,
   });
 
+  if (config.testLocationInResults) {
+    dispatch({
+      name: 'include_test_location_in_result',
+    });
+  }
+
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers
@@ -131,6 +137,7 @@ export const runAndTransformResultsToJestFormat = async ({
       duration: testResult.duration,
       failureMessages: testResult.errors,
       fullName: ancestorTitles.concat(title).join(' '),
+      location: testResult.location,
       numPassingAsserts: 0,
       status,
       title: testResult.testPath[testResult.testPath.length - 1],

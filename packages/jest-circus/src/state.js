@@ -27,6 +27,7 @@ const INITIAL_STATE: State = {
   currentlyRunningTest: null,
   expand: undefined,
   hasFocusedTests: false, // whether .only has been used on any test/describe
+  includeTestLocationInResult: false,
   parentProcess: null,
   rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
   testNamePattern: null,
