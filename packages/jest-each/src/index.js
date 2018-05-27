@@ -11,7 +11,7 @@ import bind from './bind';
 import arrayEach from './array';
 import templateEach from './template';
 
-const each = (...args: any) => {
+const each = (...args: Array<mixed>) => {
   if (args.length > 1) {
     return templateEach(global)(...args);
   }
@@ -19,7 +19,7 @@ const each = (...args: any) => {
   return arrayEach(global)(...args);
 };
 
-each.withGlobal = g => (...args: any) => {
+each.withGlobal = g => (...args: Array<mixed>) => {
   if (args.length > 1) {
     return templateEach(g)(...args);
   }
