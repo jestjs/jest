@@ -7,12 +7,9 @@
  */
 
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const runJest = require('../runJest');
 
 describe('jest --debug', () => {
-  SkipOnWindows.suite();
-
   const dir = path.resolve(__dirname, '..', 'verbose-reporter');
 
   it('outputs debugging info before running the test', () => {

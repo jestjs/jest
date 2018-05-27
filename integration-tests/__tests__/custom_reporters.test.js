@@ -8,7 +8,6 @@
  */
 'use strict';
 
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, extractSummary, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 const os = require('os');
@@ -20,8 +19,6 @@ beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
 describe('Custom Reporters Integration', () => {
-  SkipOnWindows.suite();
-
   test('valid string format for adding reporters', () => {
     const reporterConfig = {
       reporters: ['<rootDir>/reporters/TestReporter.js'],

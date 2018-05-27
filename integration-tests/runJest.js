@@ -9,9 +9,10 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const execa = require('execa');
 const {Writable} = require('readable-stream');
-const {fileExists} = require('./Utils');
+const {normalizeIcons} = require('./Utils');
 
 const {sync: spawnSync} = execa;
 
@@ -37,7 +38,7 @@ function runJest(
   }
 
   const localPackageJson = path.resolve(dir, 'package.json');
-  if (!options.skipPkgJsonCheck && !fileExists(localPackageJson)) {
+  if (!options.skipPkgJsonCheck && !fs.existsSync(localPackageJson)) {
     throw new Error(
       `
       Make sure you have a local package.json file at
@@ -62,6 +63,9 @@ function runJest(
 
   // For compat with cross-spawn
   result.status = result.code;
+
+  result.stdout = normalizeIcons(result.stdout);
+  result.stderr = normalizeIcons(result.stderr);
 
   return result;
 }
@@ -102,7 +106,7 @@ runJest.until = async function(
   }
 
   const localPackageJson = path.resolve(dir, 'package.json');
-  if (!options.skipPkgJsonCheck && !fileExists(localPackageJson)) {
+  if (!options.skipPkgJsonCheck && !fs.existsSync(localPackageJson)) {
     throw new Error(
       `
       Make sure you have a local package.json file at
@@ -144,6 +148,9 @@ runJest.until = async function(
 
   // For compat with cross-spawn
   result.status = result.code;
+
+  result.stdout = normalizeIcons(result.stdout);
+  result.stderr = normalizeIcons(result.stderr);
 
   return result;
 };

@@ -11,13 +11,10 @@
 
 const path = require('path');
 const os = require('os');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(os.tmpdir(), 'test_failure_exit_code_test');
-
-SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

@@ -11,13 +11,14 @@ import type {ConsoleBuffer} from 'types/Console';
 
 import path from 'path';
 import chalk from 'chalk';
+import slash from 'slash';
 
 export default (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
   return buffer.reduce((output, {type, message, origin}) => {
-    origin = path.relative(root, origin);
+    origin = slash(path.relative(root, origin));
     message = message
       .split(/\n/)
       .map(line => CONSOLE_INDENT + line)

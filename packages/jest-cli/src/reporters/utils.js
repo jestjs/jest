@@ -76,7 +76,7 @@ export const formatTestPath = (
   testPath: Path,
 ) => {
   const {dirname, basename} = relativePath(config, testPath);
-  return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+  return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
 };
 
 export const relativePath = (
