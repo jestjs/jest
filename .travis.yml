@@ -6,8 +6,8 @@ node_js:
 sudo: false
 
 branches:
-   only:
-   - master
+  except:
+    - master
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -20,4 +20,4 @@ cache:
     - "node_modules"
 
 script:
-  - yarn run test-ci-partial
+  - yarn run test-ci-partial -w=4
