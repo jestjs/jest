@@ -1,5 +1,7 @@
 ## master
 
+## 23.0.1
+
 ### Chore & Maintenance
 
 * `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/#6308))
