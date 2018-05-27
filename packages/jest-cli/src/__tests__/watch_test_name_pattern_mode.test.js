@@ -13,8 +13,6 @@ import {KEYS} from 'jest-watch';
 
 const runJestMock = jest.fn();
 
-let terminalWidth;
-
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
   cursorDown: (count = 1) => `[MOCK - cursorDown(${count})]`,
@@ -108,7 +106,6 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
-    terminalWidth = 80;
     pipe = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config: {}}];
