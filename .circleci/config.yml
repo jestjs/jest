@@ -18,7 +18,7 @@ aliases:
       git config --global user.name "Website Deployment Script"
       echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
       # install Docusaurus and generate file of English strings
-      yarn && cd website && yarn run write-translations
+      yarn && cd website && yarn write-translations
       # crowdin install
       sudo apt-get update
       sudo apt-get install default-jre rsync
@@ -26,13 +26,24 @@ aliases:
       sudo dpkg -i crowdin.deb
       sleep 5
       # translations upload/download
-      yarn run crowdin-upload
-      yarn run crowdin-download
+      yarn crowdin-upload
+      yarn crowdin-download
       # build and publish website
-      GIT_USER=docusaurus-bot USE_SSH=false yarn run publish-gh-pages
+      GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
 
 version: 2
 jobs:
+  lint-and-typecheck:
+    working_directory: ~/jest
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore-cache: *restore-cache
+      - run: yarn --no-progress
+      - save-cache: *save-cache
+      - run: yarn lint && yarn typecheck && yarn lint-es5-build && yarn lint:md:ci
+
   test-browser:
     working_directory: ~/jest
     docker:
@@ -42,7 +53,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci-es5-build-in-browser
+      - run: yarn test-ci-es5-build-in-browser
 
   test-node-10:
     working_directory: ~/jest
@@ -53,7 +64,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci-partial
+      - run: yarn test-ci-partial
 
   test-node-9:
     working_directory: ~/jest
@@ -64,8 +75,8 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci-partial
-      
+      - run: yarn test-ci-partial
+
   test-jest-circus:
     working_directory: ~/jest
     docker:
@@ -75,7 +86,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: JEST_CIRCUS=1 yarn run test-ci-partial
+      - run: JEST_CIRCUS=1 yarn test-ci-partial
 
   test-node-8:
     working_directory: ~/jest
@@ -86,7 +97,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci
+      - run: yarn test-ci
 
   test-node-6:
     working_directory: ~/jest
@@ -97,7 +108,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci-partial
+      - run: yarn test-ci-partial
 
   test-and-deploy-website:
     working_directory: ~/jest
@@ -115,6 +126,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
+      - lint-and-typecheck
       - test-node-8
       - test-node-6
       - test-node-10
