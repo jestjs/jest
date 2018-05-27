@@ -12,8 +12,8 @@
 
 import {runTest} from '../__mocks__/test_utils';
 
-const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
-SkipOnWindows.suite();
+const ConditionalTest = require('../../../../scripts/ConditionalTest');
+ConditionalTest.skipSuiteOnWindows();
 
 test('beforeEach is executed before each test in current/child describe blocks', () => {
   const {stdout} = runTest(`

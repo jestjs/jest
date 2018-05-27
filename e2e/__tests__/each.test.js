@@ -13,9 +13,9 @@ const path = require('path');
 const runJest = require('../runJest');
 const {extractSummary} = require('../Utils');
 const dir = path.resolve(__dirname, '../each');
-const SkipOnJestCircus = require('../../scripts/SkipOnJestCircus');
+const ConditionalTest = require('../../scripts/ConditionalTest');
 
-SkipOnJestCircus.suite();
+ConditionalTest.skipSuiteOnJestCircus();
 
 test('works with passing tests', () => {
   const result = runJest(dir, ['success.test.js']);
