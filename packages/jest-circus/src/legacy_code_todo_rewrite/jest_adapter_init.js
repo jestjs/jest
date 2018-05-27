@@ -15,21 +15,24 @@ import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {SnapshotState, addSerializer} from 'jest-snapshot';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
-import {getTestID} from '../utils';
+import {getTestID, getOriginalPromise} from '../utils';
 import run from '../run';
 // eslint-disable-next-line import/default
 import globals from '../index';
 
+const Promise = getOriginalPromise();
 export const initialize = ({
   config,
   globalConfig,
   localRequire,
+  parentProcess,
   testPath,
 }: {
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   localRequire: Path => any,
   testPath: Path,
+  parentProcess: Process,
 }) => {
   Object.assign(global, globals);
 
@@ -67,10 +70,15 @@ export const initialize = ({
 
   addEventHandler(eventHandler);
 
-  if (globalConfig.testNamePattern) {
+  dispatch({
+    name: 'setup',
+    parentProcess,
+    testNamePattern: globalConfig.testNamePattern,
+  });
+
+  if (config.testLocationInResults) {
     dispatch({
-      name: 'set_test_name_pattern',
-      pattern: globalConfig.testNamePattern,
+      name: 'include_test_location_in_result',
     });
   }
 
@@ -129,6 +137,7 @@ export const runAndTransformResultsToJestFormat = async ({
       duration: testResult.duration,
       failureMessages: testResult.errors,
       fullName: ancestorTitles.concat(title).join(' '),
+      location: testResult.location,
       numPassingAsserts: 0,
       status,
       title: testResult.testPath[testResult.testPath.length - 1],
@@ -136,7 +145,6 @@ export const runAndTransformResultsToJestFormat = async ({
   });
 
   let failureMessage = formatResultsErrors(
-    // $FlowFixMe Types are slightly incompatible and need to be refactored
     assertionResults,
     config,
     globalConfig,
@@ -155,6 +163,7 @@ export const runAndTransformResultsToJestFormat = async ({
       formatExecError(testExecError, config, globalConfig);
   }
 
+  dispatch({name: 'teardown'});
   return {
     console: null,
     displayName: config.displayName,

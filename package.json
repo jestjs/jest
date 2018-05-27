@@ -88,7 +88,7 @@
     "postinstall": "yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
-    "test-ci": "yarn typecheck && yarn lint && yarn lint-es5-build && yarn lint:md:ci && yarn jest-coverage -i --reporters jest-silent-reporter && yarn test-leak && node scripts/mapCoverage.js && codecov",
+    "test-ci": "yarn jest-coverage -i --reporters jest-silent-reporter && yarn test-leak && node scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn jest -i --reporters jest-silent-reporter",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
@@ -160,7 +160,7 @@
   },
   "prettier": {
     "bracketSpacing": false,
-    "proseWrap": "always",
+    "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all"
   }

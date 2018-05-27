@@ -23,6 +23,22 @@ import type {
   TestResults,
 } from 'types/Circus';
 import {convertDescriptorToString} from 'jest-util';
+import isGeneratorFn from 'is-generator-fn';
+import co from 'co';
+
+import StackUtils from 'stack-utils';
+
+import prettyFormat from 'pretty-format';
+
+import {getState} from './state';
+
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test. Async functions return it implicitly.
+// eslint-disable-next-line no-unused-vars
+const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+export const getOriginalPromise = () => Promise;
+
+const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 export const makeDescribe = (
   name: BlockName,
@@ -51,6 +67,7 @@ export const makeTest = (
   name: TestName,
   parent: DescribeBlock,
   timeout: ?number,
+  asyncError: Exception,
 ): TestEntry => {
   let _mode = mode;
   if (!mode) {
@@ -59,6 +76,7 @@ export const makeTest = (
   }
 
   return {
+    asyncError,
     duration: null,
     errors: [],
     fn,
@@ -114,11 +132,9 @@ export const getEachHooksForTest = (
 };
 
 const _makeTimeoutMessage = (timeout, isHook) =>
-  new Error(
-    `Exceeded timeout of ${timeout}ms for a ${
-      isHook ? 'hook' : 'test'
-    }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`,
-  );
+  `Exceeded timeout of ${timeout}ms for a ${
+    isHook ? 'hook' : 'test'
+  }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
@@ -141,20 +157,33 @@ export const callAsyncFn = (
       timeout,
     );
 
-    // If this fn accepts `done` callback we return a promise that fullfills as
+    // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
     if (fn.length) {
-      const done = (reason?: Error | string): void =>
-        reason ? reject(reason) : resolve();
+      const done = (reason?: Error | string): void => {
+        // $FlowFixMe: It doesn't approve of .stack
+        const isError = reason && reason.message && reason.stack;
+        return reason
+          ? reject(
+              isError
+                ? reason
+                : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`),
+            )
+          : resolve();
+      };
 
       return fn.call(testContext, done);
     }
 
     let returnedValue;
-    try {
-      returnedValue = fn.call(testContext);
-    } catch (error) {
-      return reject(error);
+    if (isGeneratorFn(fn)) {
+      returnedValue = co.wrap(fn).call({});
+    } else {
+      try {
+        returnedValue = fn.call(testContext);
+      } catch (error) {
+        return reject(error);
+      }
     }
 
     // If it's a Promise, return it. Test for an object with a `then` function
@@ -210,7 +239,8 @@ export const makeRunResult = (
   };
 };
 
-const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
+  const {includeTestLocationInResult} = getState();
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
@@ -224,16 +254,25 @@ const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
     if (!status) {
       throw new Error('Status should be present after tests are run.');
     }
+
+    let location = null;
+    if (includeTestLocationInResult) {
+      const stackLine = test.asyncError.stack.split('\n')[1];
+      const {line, column} = stackUtils.parseLine(stackLine);
+      location = {column, line};
+    }
+
     testResults.push({
       duration: test.duration,
       errors: test.errors.map(_formatError),
+      location,
       status,
       testPath,
     });
   }
 
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child));
+    testResults = testResults.concat(makeTestResults(child, config));
   }
 
   return testResults;
@@ -252,28 +291,43 @@ export const getTestID = (test: TestEntry) => {
   return titles.join(' ');
 };
 
-const _formatError = (error: ?Exception): string => {
-  if (!error) {
-    return 'NO ERROR MESSAGE OR STACK TRACE SPECIFIED';
-  } else if (error.stack) {
-    return error.stack;
-  } else if (error.message) {
-    return error.message;
+const _formatError = (errors: ?Exception | [?Exception, Exception]): string => {
+  let error;
+  let asyncError;
+
+  if (Array.isArray(errors)) {
+    error = errors[0];
+    asyncError = errors[1];
   } else {
-    return `${String(error)} thrown`;
+    error = errors;
+    asyncError = new Error();
   }
+
+  if (error) {
+    if (error.stack) {
+      return error.stack;
+    }
+    if (error.message) {
+      return error.message;
+    }
+  }
+
+  asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+
+  return asyncError.stack;
 };
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: DescribeBlock,
   error: Exception,
+  asyncError: Exception,
 ) => {
   for (const test of describeBlock.tests) {
-    test.errors.push(error);
+    test.errors.push([error, asyncError]);
   }
 
   for (const child of describeBlock.children) {
-    addErrorToEachTestUnderDescribe(child, error);
+    addErrorToEachTestUnderDescribe(child, error, asyncError);
   }
 };
 

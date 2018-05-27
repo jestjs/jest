@@ -22,6 +22,7 @@ export type TestContext = Object;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
+  asyncError: Exception,
   fn: HookFn,
   type: HookType,
   parent: DescribeBlock,
@@ -32,6 +33,10 @@ export type EventHandler = (event: Event, state: State) => void;
 
 export type Event =
   | {|
+      name: 'include_test_location_in_result',
+    |}
+  | {|
+      asyncError: Exception,
       mode: BlockMode,
       name: 'start_describe_definition',
       blockName: BlockName,
@@ -42,12 +47,14 @@ export type Event =
       blockName: BlockName,
     |}
   | {|
+      asyncError: Exception,
       name: 'add_hook',
       hookType: HookType,
       fn: HookFn,
       timeout: ?number,
     |}
   | {|
+      asyncError: Exception,
       name: 'add_test',
       testName: TestName,
       fn?: TestFn,
@@ -123,8 +130,15 @@ export type Event =
       error: Exception,
     |}
   | {|
-      name: 'set_test_name_pattern',
-      pattern: string,
+      // first action to dispatch. Good time to initialize all settings
+      name: 'setup',
+      testNamePattern?: string,
+      parentProcess: Process,
+    |}
+  | {|
+      // Action dispatched after everything is finished and we're about to wrap
+      // things up and return test results to the parent process (caller).
+      name: 'teardown',
     |};
 
 export type TestStatus = 'skip' | 'done';
@@ -132,6 +146,7 @@ export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
   status: TestStatus,
+  location: ?{|column: number, line: number|},
   testPath: Array<TestName | BlockName>,
 |};
 
@@ -142,14 +157,26 @@ export type RunResult = {
 
 export type TestResults = Array<TestResult>;
 
+export type GlobalErrorHandlers = {
+  uncaughtException: Array<(Exception) => void>,
+  unhandledRejection: Array<(Exception) => void>,
+};
+
 export type State = {|
   currentDescribeBlock: DescribeBlock,
-  hasFocusedTests: boolean, // that are defined using test.only
-  rootDescribeBlock: DescribeBlock,
-  testTimeout: number,
-  testNamePattern: ?RegExp,
+  currentlyRunningTest: ?TestEntry, // including when hooks are being executed
   expand?: boolean, // expand error messages
+  hasFocusedTests: boolean, // that are defined using test.only
+  // Store process error handlers. During the run we inject our own
+  // handlers (so we could fail tests on unhandled errors) and later restore
+  // the original ones.
+  originalGlobalErrorHandlers?: GlobalErrorHandlers,
+  parentProcess: ?Process, // process object from the outer scope
+  rootDescribeBlock: DescribeBlock,
+  testNamePattern: ?RegExp,
+  testTimeout: number,
   unhandledErrors: Array<Exception>,
+  includeTestLocationInResult: boolean,
 |};
 
 export type DescribeBlock = {|
@@ -161,8 +188,11 @@ export type DescribeBlock = {|
   tests: Array<TestEntry>,
 |};
 
+type TestError = Exception | Array<[?Exception, Exception]>; // the error from the test, as well as a backup error for async
+
 export type TestEntry = {|
-  errors: Array<Exception>,
+  asyncError: Exception, // Used if the test failure contains no usable stack trace
+  errors: TestError,
   fn: ?TestFn,
   mode: TestMode,
   name: TestName,
