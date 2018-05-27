@@ -13,6 +13,7 @@
     "expect": "^23.0.0",
     "is-generator-fn": "^1.0.0",
     "jest-diff": "^23.0.0",
+    "jest-each": "^23.0.0",
     "jest-matcher-utils": "^23.0.0",
     "jest-message-util": "^23.0.0",
     "jest-snapshot": "^23.0.0",
