@@ -396,8 +396,7 @@ exports[`works with async failures 1`] = `
 
   ● timeout
 
-    thrown: \\"Exceeded timeout of 5ms for a test.
-    Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.\\"
+<REPLACED>
 
       25 | });
       26 | 

@@ -153,12 +153,18 @@ test('works with assertions in separate files', () => {
 test('works with async failures', () => {
   const {stderr} = runJest(dir, ['async_failures.test.js']);
 
-  const rest = extractSummary(stderr)
-    .rest.split('\n')
+  const rest = cleanStderr(stderr)
+    .split('\n')
     .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
     .join('\n');
 
-  expect(normalizeDots(rest)).toMatchSnapshot();
+  // Remove replacements when jasmine is gone
+  const result = normalizeDots(rest)
+    .replace(/.*thrown:.*\n/, '')
+    .replace(/.*Use jest\.setTimeout\(newTimeout\).*/, '<REPLACED>')
+    .replace(/.*Timeout - Async callback was not.*/, '<REPLACED>');
+
+  expect(result).toMatchSnapshot();
 });
 
 test('works with snapshot failures', () => {
