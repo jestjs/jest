@@ -10,13 +10,13 @@
 'use strict';
 
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
+const ConditionalTest = require('../../scripts/ConditionalTest');
 const {extractSummary, cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../cli_accepts_exact_filenames');
 
-SkipOnWindows.suite();
+ConditionalTest.skipSuiteOnWindows();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

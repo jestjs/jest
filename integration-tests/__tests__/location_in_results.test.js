@@ -8,11 +8,10 @@
  */
 'use strict';
 
-import skipOnJestCicrus from '../../scripts/SkipOnJestCircus';
 const runJest = require('../runJest');
-const SkipOnJestCircus = require('../../scripts/SkipOnJestCircus');
+const ConditionalTest = require('../../scripts/ConditionalTest');
 
-skipOnJestCicrus.suite();
+ConditionalTest.skipSuiteOnJestCircus();
 
 it('defaults to null for location', () => {
   const result = runJest.json('location-in-results').json;
@@ -37,7 +36,7 @@ it('adds correct location info when provided with flag', () => {
   // Technically the column should be 3, but callsites is not correct.
   // jest-circus uses stack-utils + asyncErrors which resolves this.
   expect(assertions[1].location).toEqual({
-    column: SkipOnJestCircus.isJestCircusRun() ? 3 : 2,
+    column: ConditionalTest.isJestCircusRun() ? 3 : 2,
     line: 15,
   });
 });

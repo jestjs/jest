@@ -12,7 +12,7 @@ import path from 'path';
 
 jest.setTimeout(15000);
 
-const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
+const ConditionalTest = require('../../../../scripts/ConditionalTest');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
@@ -25,7 +25,7 @@ let findMatchingTests;
 let normalize;
 
 describe('SearchSource', () => {
-  SkipOnWindows.suite();
+  ConditionalTest.skipSuiteOnWindows();
 
   const name = 'SearchSource';
   let Runtime;
