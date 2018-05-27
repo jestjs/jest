@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`runs only the describe.only.each tests 1`] = `
+"PASS __tests__/describe-only.test.js
+  passes all rows expected true == true
+    ✓ passes
+    ✓ passes
+  fails all rows expected false == true
+    ○ skipped 1 test
+
+"
+`;
+
 exports[`shows error message when not enough arguments are supplied to tests 1`] = `
 "FAIL __tests__/each-exception.test.js
   ✕ throws exception when not enough arguments are supplied $left == $right
@@ -41,6 +52,8 @@ exports[`shows only the tests without .skip as being ran 1`] = `
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ○ skipped 4 tests
+  passes all rows expected true == true
+    ○ skipped 2 tests
 
 "
 `;
@@ -115,6 +128,40 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
 
       at __tests__/failure.test.js:18:18
 
+  ● array table describe fails on all rows expected a == b › fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: \\"b\\"
+    Received: \\"a\\"
+
+      24 |   (left, right) => {
+      25 |     it('fails', () => {
+    > 26 |       expect(left).toBe(right);
+         |                    ^
+      27 |     });
+      28 |   }
+      29 | );
+
+      at __tests__/failure.test.js:26:20
+
+  ● array table describe fails on all rows expected c == d › fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: \\"d\\"
+    Received: \\"c\\"
+
+      24 |   (left, right) => {
+      25 |     it('fails', () => {
+    > 26 |       expect(left).toBe(right);
+         |                    ^
+      27 |     });
+      28 |   }
+      29 | );
+
+      at __tests__/failure.test.js:26:20
+
   ● template table fails on one row expected: true == false
 
     expect(received).toBe(expected) // Object.is equality
@@ -165,40 +212,6 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       52 |
 
       at __tests__/failure.test.js:49:18
-
-  ● array table describe fails on all rows expected a == b › fails
-
-    expect(received).toBe(expected) // Object.is equality
-
-    Expected: \\"b\\"
-    Received: \\"a\\"
-
-      24 |   (left, right) => {
-      25 |     it('fails', () => {
-    > 26 |       expect(left).toBe(right);
-         |                    ^
-      27 |     });
-      28 |   }
-      29 | );
-
-      at __tests__/failure.test.js:26:20
-
-  ● array table describe fails on all rows expected c == d › fails
-
-    expect(received).toBe(expected) // Object.is equality
-
-    Expected: \\"d\\"
-    Received: \\"c\\"
-
-      24 |   (left, right) => {
-      25 |     it('fails', () => {
-    > 26 |       expect(left).toBe(right);
-         |                    ^
-      27 |     });
-      28 |   }
-      29 | );
-
-      at __tests__/failure.test.js:26:20
 
   ● template table describe fails on all rows expected a == b › fails
 
