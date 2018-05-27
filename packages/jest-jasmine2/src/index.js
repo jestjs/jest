@@ -29,11 +29,7 @@ async function jasmine2(
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult> {
-  const reporter = new JasmineReporter(
-    globalConfig,
-    config,
-    testPath,
-  );
+  const reporter = new JasmineReporter(globalConfig, config, testPath);
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create({
     process,
