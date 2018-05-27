@@ -48,10 +48,10 @@ const handler: EventHandler = (event, state): void => {
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
         currentDescribeBlock.hooks.forEach(hook => {
-          state.unhandledErrors.push([
-            `Invalid: ${hook.type}() in a describe block with no tests.`,
-            hook.asyncError,
-          ]);
+          hook.asyncError.message = `Invalid: ${
+            hook.type
+          }() may not be used in a describe block containing no tests.`;
+          state.unhandledErrors.push(hook.asyncError);
         });
       }
 

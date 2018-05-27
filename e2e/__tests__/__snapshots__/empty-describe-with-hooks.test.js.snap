@@ -7,7 +7,7 @@ Object {
 
   ● Test suite failed to run
 
-    thrown: \\"Invalid: beforeEach() in a describe block with no tests.\\"
+    Invalid: beforeEach() may not be used in a describe block containing no tests.
 
        7 | 
        8 | describe('a block', () => {
@@ -37,7 +37,7 @@ Object {
 
   ● Test suite failed to run
 
-    thrown: \\"Invalid: beforeEach() in a describe block with no tests.\\"
+    Invalid: beforeEach() may not be used in a describe block containing no tests.
 
        7 | 
        8 | describe('a block', () => {
@@ -67,7 +67,7 @@ Object {
 
   ● Test suite failed to run
 
-    thrown: \\"Invalid: beforeEach() in a describe block with no tests.\\"
+    Invalid: beforeEach() may not be used in a describe block containing no tests.
 
        7 | 
        8 | describe('a block', () => {
@@ -82,7 +82,7 @@ Object {
 
   ● Test suite failed to run
 
-    thrown: \\"Invalid: afterEach() in a describe block with no tests.\\"
+    Invalid: afterEach() may not be used in a describe block containing no tests.
 
        8 | describe('a block', () => {
        9 |   beforeEach(() => {});
@@ -97,7 +97,7 @@ Object {
 
   ● Test suite failed to run
 
-    thrown: \\"Invalid: afterAll() in a describe block with no tests.\\"
+    Invalid: afterAll() may not be used in a describe block containing no tests.
 
        9 |   beforeEach(() => {});
       10 |   afterEach(() => {});
@@ -112,7 +112,7 @@ Object {
 
   ● Test suite failed to run
 
-    thrown: \\"Invalid: beforeAll() in a describe block with no tests.\\"
+    Invalid: beforeAll() may not be used in a describe block containing no tests.
 
       10 |   afterEach(() => {});
       11 |   afterAll(() => {});
