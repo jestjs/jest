@@ -188,7 +188,7 @@
   ([#6162](https://github.com/facebook/jest/pull/6162))
 * `[jest-haste-map]` Properly resolve mocked node modules without package.json
   defined ([#6232](https://github.com/facebook/jest/pull/6232))
-  
+
 ### Chore & Maintenance
 
 * `[jest-runner]` Move sourcemap installation from `jest-jasmine2` to
