@@ -7,7 +7,7 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import type {JestHookSubscriber} from './jest_hooks';
+import type {JestHookSubscriber} from 'types/JestHooks';
 import type {WatchPlugin, UsageData} from './types';
 
 class BaseWatchPlugin implements WatchPlugin {

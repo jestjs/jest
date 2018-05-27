@@ -10,8 +10,7 @@
 
 import chalk from 'chalk';
 import TestWatcher from '../test_watcher';
-import JestHooks from '../jest_hooks';
-import {KEYS} from '../constants';
+import {JestHook, KEYS} from 'jest-watch';
 
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
@@ -286,7 +285,7 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
-  it('allows WatchPlugins to hook into JestHooks', async () => {
+  it('allows WatchPlugins to hook into JestHook', async () => {
     const apply = jest.fn();
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_register`;
     jest.doMock(
@@ -530,7 +529,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "t" reruns the tests in "test name pattern" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
@@ -549,7 +548,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "p" reruns the tests in "filename pattern" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
@@ -568,7 +567,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Can combine "p" and "t" filters', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
@@ -592,7 +591,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     globalConfig.updateSnapshot = 'new';
 

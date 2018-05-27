@@ -10,10 +10,12 @@
 
 import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
 
-const chalk = require('chalk');
-const ansiEscapes = require('ansi-escapes');
-const {pluralize} = require('./reporters/utils');
-const {KEYS, ARROW} = require('./constants');
+import chalk from 'chalk';
+import ansiEscapes from 'ansi-escapes';
+import {KEYS} from 'jest-watch';
+
+import {pluralize} from './reporters/utils';
+import {ARROW} from './constants';
 
 export default class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;

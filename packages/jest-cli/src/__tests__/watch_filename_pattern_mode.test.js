@@ -9,7 +9,7 @@
 'use strict';
 
 import chalk from 'chalk';
-import {KEYS} from '../constants';
+import {KEYS} from 'jest-watch';
 
 const runJestMock = jest.fn();
 
@@ -78,10 +78,6 @@ jest.doMock(
       return Promise.resolve();
     },
 );
-
-jest.doMock('../lib/terminal_utils', () => ({
-  getTerminalWidth: () => terminalWidth,
-}));
 
 const watch = require('../watch').default;
 

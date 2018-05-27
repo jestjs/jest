@@ -6,15 +6,8 @@
  */
 
 import chalk from 'chalk';
-import {KEYS} from '../constants';
+import {KEYS} from 'jest-watch';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
-
-jest.mock('../lib/terminal_utils', () => ({
-  getTerminalWidth: () => 80,
-  rightPad: () => {
-    '';
-  },
-}));
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - eraseDown]',

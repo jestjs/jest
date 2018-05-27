@@ -26,8 +26,8 @@ import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './search_source';
 import TestWatcher from './test_watcher';
 import FailedTestsCache from './failed_tests_cache';
-import {KEYS, CLEAR} from './constants';
-import JestHooks from './jest_hooks';
+import {CLEAR} from './constants';
+import {KEYS, JestHook} from 'jest-watch';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
 import TestNamePatternPlugin from './plugins/test_name_pattern';
 import UpdateSnapshotsPlugin from './plugins/update_snapshots';
@@ -55,7 +55,7 @@ export default function watch(
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
-  hooks?: JestHooks = new JestHooks(),
+  hooks?: JestHook = new JestHook(),
 ): Promise<void> {
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.

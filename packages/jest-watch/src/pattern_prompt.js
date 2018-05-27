@@ -9,7 +9,7 @@
 
 'use strict';
 
-import type {ScrollOptions} from './lib/scroll_list';
+import type {ScrollOptions} from 'types/Watch';
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
