@@ -5,15 +5,11 @@
 
 <hr />
 
-[![version](https://img.shields.io/npm/v/jest-each.svg?style=flat-square)](https://www.npmjs.com/package/jest-each)
-[![downloads](https://img.shields.io/npm/dm/jest-each.svg?style=flat-square)](http://npm-stat.com/charts.html?package=jest-each&from=2017-03-21)
-[![MIT License](https://img.shields.io/npm/l/jest-each.svg?style=flat-square)](https://github.com/facebook/jest/blob/master/LICENSE)
+[![version](https://img.shields.io/npm/v/jest-each.svg?style=flat-square)](https://www.npmjs.com/package/jest-each) [![downloads](https://img.shields.io/npm/dm/jest-each.svg?style=flat-square)](http://npm-stat.com/charts.html?package=jest-each&from=2017-03-21) [![MIT License](https://img.shields.io/npm/l/jest-each.svg?style=flat-square)](https://github.com/facebook/jest/blob/master/LICENSE)
 
-A parameterised testing library for [Jest](https://facebook.github.io/jest/)
-inspired by [mocha-each](https://github.com/ryym/mocha-each).
+A parameterised testing library for [Jest](https://facebook.github.io/jest/) inspired by [mocha-each](https://github.com/ryym/mocha-each).
 
-jest-each allows you to provide multiple arguments to your `test`/`describe`
-which results in the test/suite being run once per row of parameters.
+jest-each allows you to provide multiple arguments to your `test`/`describe` which results in the test/suite being run once per row of parameters.
 
 ## Features
 
@@ -30,8 +26,7 @@ which results in the test/suite being run once per row of parameters.
   * Also under the aliases: `.xdescribe`
 * Asynchronous tests with `done`
 * Unique test titles with: [sprintf](https://github.com/alexei/sprintf.js)
-* 🖖 Spock like data tables with
-  [Tagged Template Literals](#tagged-template-literal-of-rows)
+* 🖖 Spock like data tables with [Tagged Template Literals](#tagged-template-literal-of-rows)
 
 ---
 
@@ -90,29 +85,23 @@ const each = require('jest-each');
 
 ##### `each`:
 
-* parameters: `Array` of Arrays with the arguments that are passed into the
-  `testFn` for each row
+* parameters: `Array` of Arrays with the arguments that are passed into the `testFn` for each row
 
 ##### `.test`:
 
-* name: `String` the title of the `test`, use `%s` in the name string to
-  positionally inject parameter values into the test title
-* testFn: `Function` the test logic, this is the function that will receive the
-  parameters of each row as function arguments
+* name: `String` the title of the `test`, use `%s` in the name string to positionally inject parameter values into the test title
+* testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each([parameters]).describe(name, suiteFn)`
 
 ##### `each`:
 
-* parameters: `Array` of Arrays with the arguments that are passed into the
-  `suiteFn` for each row
+* parameters: `Array` of Arrays with the arguments that are passed into the `suiteFn` for each row
 
 ##### `.describe`:
 
-* name: `String` the title of the `describe`, use `%s` in the name string to
-  positionally inject parameter values into the suite title
-* suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function
-  that will receive the parameters in each row as function arguments
+* name: `String` the title of the `describe`, use `%s` in the name string to positionally inject parameter values into the suite title
+* suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 
 ### Usage
 
@@ -247,15 +236,12 @@ each`
 ##### `each` takes a tagged template string with:
 
 * First row of variable name column headings seperated with `|`
-* One or more subsequent rows of data supplied as template literal expressions
-  using `${value}` syntax.
+* One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 
 ##### `.test`:
 
-* name: `String` the title of the `test`, use `$variable` in the name string to
-  inject test values into the test title from the tagged template expressions
-* testFn: `Function` the test logic, this is the function that will receive the
-  parameters of each row as function arguments
+* name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
+* testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each[tagged template].describe(name, suiteFn)`
 
@@ -285,15 +271,12 @@ each`
 ##### `each` takes a tagged template string with:
 
 * First row of variable name column headings seperated with `|`
-* One or more subsequent rows of data supplied as template literal expressions
-  using `${value}` syntax.
+* One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 
 ##### `.describe`:
 
-* name: `String` the title of the `test`, use `$variable` in the name string to
-  inject test values into the test title from the tagged template expressions
-* suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function
-  that will receive the parameters in each row as function arguments
+* name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
+* suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 
 ### Usage
 
