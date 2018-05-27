@@ -1,3 +1,4 @@
+import bind from './bind';
 import arrayEach from './array';
 import templateEach from './template';
 
@@ -16,5 +17,7 @@ each.withGlobal = g => (...args) => {
 
   return arrayEach(g)(...args);
 };
+
+export {bind};
 
 export default each;
