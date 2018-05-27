@@ -15,10 +15,7 @@ import path from 'path';
 
 const {cleanup, writeFiles, extractSummary} = require('../Utils');
 
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const DIR = path.resolve(os.tmpdir(), 'find_related_tests_test');
-
-SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

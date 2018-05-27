@@ -10,13 +10,10 @@
 'use strict';
 
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {extractSummary, cleanup, writeFiles} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../jest.config.js');
-
-SkipOnWindows.suite();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -38,8 +35,9 @@ test('works with jest.config.js', () => {
 test('traverses directory tree up until it finds jest.config', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
+    const slash = require('slash');
     test('banana', () => expect(1).toBe(1));
-    test('abc', () => console.log(process.cwd()));
+    test('abc', () => console.log(slash(process.cwd())));
     `,
     'jest.config.js': `module.exports = {testRegex: '.*-banana.js'};`,
     'package.json': '{}',

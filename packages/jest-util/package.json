@@ -14,6 +14,7 @@
     "is-ci": "^1.0.10",
     "jest-message-util": "^23.0.0",
     "mkdirp": "^0.5.1",
+    "slash": "^1.0.0",
     "source-map": "^0.6.0"
   },
   "devDependencies": {

@@ -48,15 +48,6 @@ const linkJestPackage = (packageName: string, cwd: Path) => {
   fs.symlinkSync(packagePath, destination, 'dir');
 };
 
-const fileExists = (filePath: Path) => {
-  try {
-    fs.accessSync(filePath, fs.F_OK);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
 const makeTemplate = (str: string): ((values?: Array<any>) => string) => {
   return (values: ?Array<any>) => {
     return str.replace(/\$(\d+)/g, (match, number) => {
@@ -175,14 +166,25 @@ const cleanupStackTrace = (output: string) => {
     .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 };
 
+const normalizeIcons = (str: string) => {
+  if (!str) {
+    return str;
+  }
+
+  // Make sure to keep in sync with `jest-cli/src/constants`
+  return str
+    .replace(new RegExp('\u00D7', 'g'), '\u2715')
+    .replace(new RegExp('\u221A', 'g'), '\u2713');
+};
+
 module.exports = {
   cleanup,
   copyDir,
   createEmptyPackage,
   extractSummary,
-  fileExists,
   linkJestPackage,
   makeTemplate,
+  normalizeIcons,
   run,
   writeFiles,
 };

@@ -10,13 +10,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage-report');
-
-SkipOnWindows.suite();
 
 test('outputs coverage report', () => {
   const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage']);

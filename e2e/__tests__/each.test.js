@@ -13,10 +13,8 @@ const path = require('path');
 const runJest = require('../runJest');
 const {extractSummary} = require('../Utils');
 const dir = path.resolve(__dirname, '../each');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const SkipOnJestCircus = require('../../scripts/SkipOnJestCircus');
 
-SkipOnWindows.suite();
 SkipOnJestCircus.suite();
 
 test('works with passing tests', () => {
