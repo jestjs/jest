@@ -1,5 +1,9 @@
 ## master
 
+### Chore & Maintenance
+
+* `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
+
 ### Fixes
 
 * `[pretty-format]` Serialize inverse asymmetric matchers correctly ([#6272](https://github.com/facebook/jest/pull/6272))

@@ -1,0 +1,18 @@
+{
+  "name": "jest-each",
+  "version": "23.0.0",
+  "description": "Parameterised tests for Jest",
+  "main": "build/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "keywords": [
+    "jest",
+    "parameterised",
+    "test",
+    "each"
+  ],
+  "author": "Matt Phillips (mattphillips)",
+  "license": "MIT"
+}
