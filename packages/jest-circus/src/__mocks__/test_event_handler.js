@@ -5,16 +5,17 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * @flow scrict-local
  */
 
 'use strict';
 
 import type {EventHandler} from 'types/Circus';
 
-const testHandler: EventHandler = (event, state) => {
+const testEventHandler: EventHandler = (event, state) => {
   switch (event.name) {
-    case 'start_describe_definition': {
+    case 'start_describe_definition':
+    case 'finish_describe_definition': {
       console.log(event.name + ':', event.blockName);
       break;
     }
@@ -53,10 +54,13 @@ const testHandler: EventHandler = (event, state) => {
       break;
     }
 
-    default: {
+    default:
       console.log(event.name);
-    }
+  }
+
+  if (event.name === 'run_finish') {
+    console.log('');
+    console.log(`unhandledErrors: ${String(state.unhandledErrors.length)}`);
   }
 };
-
-export default testHandler;
+export default testEventHandler;

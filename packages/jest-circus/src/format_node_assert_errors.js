@@ -4,15 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  */
 
-import type {DiffOptions} from 'jest-diff/src/diff_strings.js';
+import type {DiffOptions} from 'jest-diff/src/diff_strings';
 import type {Event, State} from 'types/Circus';
 
 import {printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
 import diff from 'jest-diff';
+import prettyFormat from 'pretty-format';
 
 type AssertionError = {|
   actual: ?string,
@@ -34,34 +35,40 @@ const assertOperatorsMap = {
 const humanReadableOperators = {
   deepEqual: 'to deeply equal',
   deepStrictEqual: 'to deeply and strictly equal',
+  equal: 'to be equal',
   notDeepEqual: 'not to deeply equal',
   notDeepStrictEqual: 'not to deeply and strictly equal',
+  notEqual: 'to not be equal',
+  notStrictEqual: 'not be strictly equal',
+  strictEqual: 'to strictly be equal',
 };
 
 export default (event: Event, state: State) => {
   switch (event.name) {
-    case 'test_failure':
-    case 'test_success': {
-      let assert;
-      try {
-        // Use indirect require so that Metro Bundler does not attempt to
-        // bundle `assert`, which does not exist in React Native.
-        // eslint-disable-next-line no-useless-call
-        assert = require.call(null, 'assert');
-      } catch (error) {
-        // We are running somewhere where `assert` isn't available, like a
-        // browser or React Native. Since assert isn't available, presumably
-        // none of the errors we get through this event listener will be
-        // `AssertionError`s, so we don't need to do anything.
-        break;
-      }
+    case 'test_done': {
+      event.test.errors = event.test.errors.map(errors => {
+        let error;
+        if (Array.isArray(errors)) {
+          const [originalError, asyncError] = errors;
 
-      event.test.errors = event.test.errors.map(error => {
-        return error instanceof assert.AssertionError
-          ? assertionErrorMessage(error, {expand: state.expand})
-          : error;
+          if (originalError == null) {
+            error = asyncError;
+          } else if (!originalError.stack) {
+            error = asyncError;
+
+            error.message = originalError.message
+              ? originalError.message
+              : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
+          } else {
+            error = originalError;
+          }
+        } else {
+          error = errors;
+        }
+        return error.code === 'ERR_ASSERTION'
+          ? {message: assertionErrorMessage(error, {expand: state.expand})}
+          : errors;
       });
-      break;
     }
   }
 };
@@ -79,12 +86,15 @@ const getOperatorName = (operator: ?string, stack: string) => {
   return '';
 };
 
-const operatorMessage = (operator: ?string, negator: boolean) =>
-  typeof operator === 'string'
-    ? operator.startsWith('!') || operator.startsWith('=')
-      ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
-      : `${humanReadableOperators[operator] || operator} to:\n`
+const operatorMessage = (operator: ?string) => {
+  const niceOperatorName = getOperatorName(operator, '');
+  // $FlowFixMe: we default to the operator itself, so holes in the map doesn't matter
+  const humanReadableOperator = humanReadableOperators[niceOperatorName];
+
+  return typeof operator === 'string'
+    ? `${humanReadableOperator || niceOperatorName} to:\n`
     : '';
+};
 
 const assertThrowingMatcherHint = (operatorName: string) => {
   return (
@@ -117,13 +127,13 @@ const assertMatcherHint = (operator: ?string, operatorName: string) => {
 };
 
 function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
-  const {expected, actual, message, operator, stack} = error;
+  const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
-  const negator =
-    typeof operator === 'string' &&
-    (operator.startsWith('!') || operator.startsWith('not'));
-  const hasCustomMessage = !error.generatedMessage;
+  const hasCustomMessage = !generatedMessage;
   const operatorName = getOperatorName(operator, stack);
+  const trimmedStack = stack
+    .replace(message, '')
+    .replace(/AssertionError(.*)/g, '');
 
   if (operatorName === 'doesNotThrow') {
     return (
@@ -133,7 +143,7 @@ function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
       chalk.reset(`Instead, it threw:\n`) +
       `  ${printReceived(actual)}` +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
-      stack.replace(/AssertionError(.*)/g, '')
+      trimmedStack
     );
   }
 
@@ -144,19 +154,19 @@ function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
       chalk.reset(`Expected the function to throw an error.\n`) +
       chalk.reset(`But it didn't throw anything.`) +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
-      stack.replace(/AssertionError(.*)/g, '')
+      trimmedStack
     );
   }
 
   return (
     assertMatcherHint(operator, operatorName) +
     '\n\n' +
-    chalk.reset(`Expected value ${operatorMessage(operator, negator)}`) +
+    chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
     chalk.reset(`Received:\n`) +
     `  ${printReceived(actual)}` +
     chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
-    stack.replace(/AssertionError(.*)/g, '')
+    trimmedStack
   );
 }

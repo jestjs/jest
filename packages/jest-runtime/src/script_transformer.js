@@ -24,12 +24,13 @@ import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
-import stableStringify from 'json-stable-stringify';
+import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
 import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
+import {enhanceUnexpectedTokenMessage} from './helpers';
 
 export type Options = {|
   collectCoverage: boolean,
@@ -313,6 +314,14 @@ export default class ScriptTransformer {
     } catch (e) {
       if (e.codeFrame) {
         e.stack = e.codeFrame;
+      }
+
+      if (
+        e instanceof SyntaxError &&
+        e.message.includes('Unexpected token') &&
+        !e.message.includes(' expected')
+      ) {
+        throw enhanceUnexpectedTokenMessage(e);
       }
 
       throw e;

@@ -36,13 +36,13 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "~0.0.19",
     "execa": "^0.10.0",
-    "flow-bin": "^0.71.0",
+    "flow-bin": "^0.73.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
     "istanbul-api": "^1.3.1",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
-    "jest-silent-reporter": "^0.0.4",
+    "jest-silent-reporter": "^0.0.5",
     "jquery": "^3.2.1",
     "karma": "^2.0.0",
     "karma-browserify": "^5.1.1",
@@ -160,7 +160,7 @@
   },
   "prettier": {
     "bracketSpacing": false,
-    "proseWrap": "always",
+    "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all"
   }

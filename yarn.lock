@@ -3813,9 +3813,9 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@^0.71.0:
-  version "0.71.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.71.0.tgz#fd1b27a6458c3ebaa5cb811853182ed631918b70"
+flow-bin@^0.73.0:
+  version "0.73.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.73.0.tgz#da1b90a02b0ef9c439f068c2fc14968db83be425"
 
 flow-remove-types@^1.1.0:
   version "1.2.3"
@@ -5175,12 +5175,12 @@ jest-haste-map@^21:
     sane "^2.0.0"
     worker-farm "^1.3.1"
 
-jest-silent-reporter@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/jest-silent-reporter/-/jest-silent-reporter-0.0.4.tgz#906f41790ee758cd1682d33263538df20d43074e"
+jest-silent-reporter@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/jest-silent-reporter/-/jest-silent-reporter-0.0.5.tgz#14139b7a991b7bcca880dd8a69c33a91723a8f1f"
   dependencies:
     chalk "^2.3.1"
-    jest-util "^22.3.0"
+    jest-util "^23.0.0"
 
 jquery@*, jquery@^3.2.1:
   version "3.3.1"

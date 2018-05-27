@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  */
 
 import type {Environment} from 'types/Environment';
@@ -38,8 +38,13 @@ const jestAdapter = async (
     config,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
+    parentProcess: process,
     testPath,
   });
+
+  if (config.timers === 'fake') {
+    environment.fakeTimers.useFakeTimers();
+  }
 
   globals.beforeEach(() => {
     if (config.resetModules) {
@@ -52,14 +57,14 @@ const jestAdapter = async (
 
     if (config.resetMocks) {
       runtime.resetAllMocks();
+
+      if (config.timers === 'fake') {
+        environment.fakeTimers.useFakeTimers();
+      }
     }
 
     if (config.restoreMocks) {
       runtime.restoreAllMocks();
-    }
-
-    if (config.timers === 'fake') {
-      environment.fakeTimers.useFakeTimers();
     }
   });
 
@@ -86,6 +91,7 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
+  const uncheckedKeys = snapshotState.getUncheckedKeys();
   if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
@@ -97,6 +103,8 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  // Copy the array to prevent memory leaks
+  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
   return results;
 };
 

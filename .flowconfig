@@ -10,5 +10,12 @@ module.name_mapper='\(jest-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
 include_warnings=true
 emoji=true
 
+[strict]
+nonstrict-import
+unclear-type
+unsafe-getters-setters
+untyped-import
+untyped-type-import
+
 [version]
-^0.71.0
+^0.73.0
