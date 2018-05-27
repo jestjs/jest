@@ -7,7 +7,7 @@ sudo: false
 
 branches:
   except:
-    - master
+  - master
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
