@@ -120,7 +120,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {

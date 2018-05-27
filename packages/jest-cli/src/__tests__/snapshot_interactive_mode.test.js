@@ -79,7 +79,7 @@ describe('SnapshotInteractiveMode', () => {
 
   test('press Q or ESC triggers an abort', () => {
     instance.abort = jest.fn();
-    instance.put(KEYS.Q);
+    instance.put('q');
     instance.put(KEYS.ESCAPE);
     expect(instance.abort).toHaveBeenCalledTimes(2);
   });
@@ -100,12 +100,12 @@ describe('SnapshotInteractiveMode', () => {
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.S);
+    instance.put('s');
     expect(mockCallback).toHaveBeenCalledTimes(1);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.R);
+    instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
     expect(mockCallback).nthCalledWith(2, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
@@ -120,12 +120,12 @@ describe('SnapshotInteractiveMode', () => {
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.S);
+    instance.put('s');
     expect(mockCallback).toHaveBeenCalledTimes(1);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.Q);
+    instance.put('q');
     expect(instance.getSkippedNum()).toBe(0);
     expect(mockCallback).nthCalledWith(2, null, false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
@@ -150,7 +150,7 @@ describe('SnapshotInteractiveMode', () => {
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.U);
+    instance.put('u');
     expect(mockCallback).nthCalledWith(2, assertions[0], true);
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
@@ -170,18 +170,18 @@ describe('SnapshotInteractiveMode', () => {
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.S);
+    instance.put('s');
     expect(mockCallback).nthCalledWith(2, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.S);
+    instance.put('s');
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.R);
+    instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
     expect(mockCallback).nthCalledWith(3, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(3);
@@ -217,14 +217,14 @@ describe('SnapshotInteractiveMode', () => {
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.U);
+    instance.put('u');
     expect(mockCallback).nthCalledWith(2, assertions[0], true);
     expect(mockCallback).nthCalledWith(3, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.U);
+    instance.put('u');
     expect(mockCallback).nthCalledWith(4, assertions[1], true);
     expect(mockCallback).toHaveBeenCalledTimes(4);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
@@ -265,19 +265,19 @@ describe('SnapshotInteractiveMode', () => {
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.U);
+    instance.put('u');
     expect(mockCallback).nthCalledWith(2, assertions[0], true);
     expect(mockCallback).nthCalledWith(3, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.S);
+    instance.put('s');
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.R);
+    instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
     expect(mockCallback).nthCalledWith(4, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(4);
@@ -313,19 +313,19 @@ describe('SnapshotInteractiveMode', () => {
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.S);
+    instance.put('s');
     expect(mockCallback).nthCalledWith(2, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.U);
+    instance.put('u');
     expect(mockCallback).nthCalledWith(3, assertions[1], true);
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
-    instance.put(KEYS.R);
+    instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
     expect(mockCallback).nthCalledWith(4, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(4);

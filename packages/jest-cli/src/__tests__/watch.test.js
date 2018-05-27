@@ -497,7 +497,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.O);
+    stdin.emit('o');
 
     expect(runJestMock).toBeCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -511,7 +511,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
 
     expect(runJestMock).toBeCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -534,7 +534,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
@@ -553,7 +553,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
@@ -572,12 +572,12 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
@@ -600,7 +600,7 @@ describe('Watch mode flows', () => {
 
     hooks.getEmitter().onTestRunComplete({snapshot: {failure: true}});
 
-    stdin.emit(KEYS.U);
+    stdin.emit('u');
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -609,7 +609,7 @@ describe('Watch mode flows', () => {
       watchAll: false,
     });
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
 
     await nextTick();
     // updateSnapshot is not sticky after a run.
@@ -621,11 +621,11 @@ describe('Watch mode flows', () => {
 
     results = {snapshot: {failure: true}};
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
     await nextTick();
 
     runJestMock.mockReset();
-    stdin.emit(KEYS.U);
+    stdin.emit('u');
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -651,8 +651,8 @@ describe('Watch mode flows', () => {
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
-    stdin.emit(KEYS.F);
-    stdin.emit(KEYS.W);
+    stdin.emit('f');
+    stdin.emit('w');
 
     const lastWatchDisplay = pipe.write.mock.calls.reverse()[0][0];
     expect(lastWatchDisplay).toMatch('Press a to run all tests.');

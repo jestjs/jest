@@ -106,7 +106,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
@@ -142,7 +142,7 @@ describe('Watch mode flows', () => {
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     await nextTick();
 
     ['p', '.', '*', '1', '0']
@@ -150,18 +150,18 @@ describe('Watch mode flows', () => {
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     await nextTick();
 
     ['t', 'e', 's', 't'].concat(KEYS.ENTER).forEach(key => stdin.emit(key));
 
     await nextTick();
 
-    stdin.emit(KEYS.C);
+    stdin.emit('c');
     await nextTick();
 
     pipe.write.mockReset();
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     await nextTick();
 
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();

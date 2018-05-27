@@ -263,7 +263,7 @@ export default function watch(
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.F]
+      ['q', KEYS.ENTER, 'a', 'o', 'f']
         .concat(pluginKeys)
         .indexOf(key) !== -1
     ) {
@@ -306,7 +306,7 @@ export default function watch(
       case KEYS.ENTER:
         startRun(globalConfig);
         break;
-      case KEYS.A:
+      case 'a':
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watchAll',
           testNamePattern: '',
@@ -314,20 +314,20 @@ export default function watch(
         });
         startRun(globalConfig);
         break;
-      case KEYS.C:
+      case 'c':
         updateConfigAndRun({
           mode: 'watch',
           testNamePattern: '',
           testPathPattern: '',
         });
         break;
-      case KEYS.F:
+      case 'f':
         globalConfig = updateGlobalConfig(globalConfig, {
           onlyFailures: !globalConfig.onlyFailures,
         });
         startRun(globalConfig);
         break;
-      case KEYS.O:
+      case 'o':
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watch',
           testNamePattern: '',
@@ -335,9 +335,9 @@ export default function watch(
         });
         startRun(globalConfig);
         break;
-      case KEYS.QUESTION_MARK:
+      case '?':
         break;
-      case KEYS.W:
+      case 'w':
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
