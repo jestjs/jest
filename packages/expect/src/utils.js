@@ -206,8 +206,7 @@ export const subsetEquality = (object: Object, subset: Object) => {
 
   return Object.keys(subset).every(
     key =>
-      object !== null &&
-      object !== undefined &&
+      object != null &&
       hasOwnProperty(object, key) &&
       equals(object[key], subset[key], [iterableEquality, subsetEquality]),
   );
