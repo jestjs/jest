@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`hook in describe with skipped test 1`] = `
+Object {
+  "rest": "",
+  "summary": "Test Suites: 1 skipped, 0 of 1 total
+Tests:       1 skipped, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /hook-in-describe-with-skipped-test.test.js/i.",
+}
+`;
+
 exports[`hook in empty describe 1`] = `
 Object {
   "rest": "FAIL __tests__/hook-in-empty-describe.test.js

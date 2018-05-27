@@ -23,6 +23,12 @@ test('hook in empty describe', () => {
   expect(extractSummary(result.stderr)).toMatchSnapshot();
 });
 
+test('hook in describe with skipped test', () => {
+  const result = runJest(dir, ['hook-in-describe-with-skipped-test.test.js']);
+  expect(result.status).toBe(0);
+  expect(extractSummary(result.stderr)).toMatchSnapshot();
+});
+
 test('hook in empty nested describe', () => {
   const result = runJest(dir, ['hook-in-empty-nested-describe.test.js']);
   expect(result.status).toBe(1);
