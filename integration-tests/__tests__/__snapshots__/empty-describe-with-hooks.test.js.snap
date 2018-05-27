@@ -17,7 +17,6 @@ Object {
       11 | 
       12 | describe('another block with tests', () => {
 
-      at packages/jest-circus/build/index.js:33:17
       at __tests__/hook-in-empty-describe.test.js:9:3
       at __tests__/hook-in-empty-describe.test.js:8:1
 
@@ -48,7 +47,6 @@ Object {
       11 | });
       12 | 
 
-      at packages/jest-circus/build/index.js:33:17
       at __tests__/hook-in-empty-nested-describe.test.js:9:3
       at __tests__/hook-in-empty-nested-describe.test.js:8:1
 
@@ -79,7 +77,6 @@ Object {
       11 |   afterAll(() => {});
       12 |   beforeAll(() => {});
 
-      at packages/jest-circus/build/index.js:33:17
       at __tests__/multiple-hooks-in-empty-describe.test.js:9:3
       at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
 
@@ -95,7 +92,6 @@ Object {
       12 |   beforeAll(() => {});
       13 | });
 
-      at packages/jest-circus/build/index.js:33:17
       at __tests__/multiple-hooks-in-empty-describe.test.js:10:3
       at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
 
@@ -111,7 +107,6 @@ Object {
       13 | });
       14 | 
 
-      at packages/jest-circus/build/index.js:33:17
       at __tests__/multiple-hooks-in-empty-describe.test.js:11:3
       at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
 
@@ -127,7 +122,6 @@ Object {
       14 | 
       15 | describe('another block with tests', () => {
 
-      at packages/jest-circus/build/index.js:33:17
       at __tests__/multiple-hooks-in-empty-describe.test.js:12:3
       at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
 
