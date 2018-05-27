@@ -32,7 +32,6 @@ async function jasmine2(
   const reporter = new JasmineReporter(
     globalConfig,
     config,
-    environment,
     testPath,
   );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
