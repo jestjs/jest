@@ -65,6 +65,8 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn test-ci-partial
+        environment:
+          JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
   test-node-9:
     working_directory: ~/jest
@@ -76,6 +78,8 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn test-ci-partial
+        environment:
+          JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
   test-jest-circus:
     working_directory: ~/jest
@@ -87,6 +91,8 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run: JEST_CIRCUS=1 yarn test-ci-partial
+        environment:
+          JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
   test-node-8:
     working_directory: ~/jest
@@ -98,6 +104,8 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn test-ci
+        environment:
+          JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
   test-node-6:
     working_directory: ~/jest
@@ -109,6 +117,8 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run: yarn test-ci-partial
+        environment:
+          JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
   test-and-deploy-website:
     working_directory: ~/jest
