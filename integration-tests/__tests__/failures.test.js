@@ -8,15 +8,12 @@
  */
 
 const path = require('path');
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../failures');
 
 const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
-
-SkipOnWindows.suite();
 
 function cleanStderr(stderr) {
   const {rest} = extractSummary(stderr);

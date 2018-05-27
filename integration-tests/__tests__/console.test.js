@@ -9,11 +9,8 @@
 
 'use strict';
 
-const SkipOnWindows = require('../../scripts/SkipOnWindows');
 const {extractSummary} = require('../Utils');
 const runJest = require('../runJest');
-
-SkipOnWindows.suite();
 
 test('console printing', () => {
   const {stderr, status} = runJest('console');
