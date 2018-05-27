@@ -72,7 +72,9 @@ jest-each is a default export so it can be imported with whatever name you like.
 ```js
 // es6
 import each from 'jest-each';
+```
 
+```js
 // es5
 const each = require('jest-each');
 ```
