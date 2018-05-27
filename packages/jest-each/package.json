@@ -14,5 +14,9 @@
     "each"
   ],
   "author": "Matt Phillips (mattphillips)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "pretty-format": "^23.0.0"
+  }
 }
