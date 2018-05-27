@@ -160,7 +160,7 @@
   },
   "prettier": {
     "bracketSpacing": false,
-    "proseWrap": "always",
+    "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all"
   }
