@@ -137,7 +137,7 @@ export default class Status {
 
     // $FlowFixMe
     const width: number = process.stdout.columns;
-    let content = '\n';
+    let content = '';
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
