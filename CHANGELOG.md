@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+* `[jest-cli]` Normalize slashes in paths in CLI output on Windows ((#6310)[https://github.com/facebook/jest/pull/6310])
+
 ## 23.0.1
 
 ### Chore & Maintenance
