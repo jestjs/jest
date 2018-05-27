@@ -5,6 +5,10 @@
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
 * `[jest-cli]` Normalize slashes in paths in CLI output on Windows ((#6310)[https://github.com/facebook/jest/pull/6310])
 
+### Chore & Maintenance
+
+* `[filenames]` Rename "integration-tests" to "e2e" ([#6315](https://github.com/facebook/jest/pull/6315))
+
 ## 23.0.1
 
 ### Chore & Maintenance
@@ -194,7 +198,7 @@
 ### Chore & Maintenance
 
 * `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom` ([#5524](https://github.com/facebook/jest/pull/5524))
-* `[filenames]` Standardize files names in "e2e" folder ([#5513](https://github.com/facebook/jest/pull/5513))
+* `[filenames]` Standardize files names in "integration-tests" folder ([#5513](https://github.com/facebook/jest/pull/5513))
 
 ## jest 22.2.2
 
@@ -300,7 +304,7 @@
 
 ### Chore & Maintenance
 
-* `[filenames]` Standardize folder names under `e2e/` ([#5298](https://github.com/facebook/jest/pull/5298))
+* `[filenames]` Standardize folder names under `integration-tests/` ([#5298](https://github.com/facebook/jest/pull/5298))
 
 ## jest 22.0.6
 
