@@ -3,6 +3,7 @@
 ### Chore & Maintenance
 
 * `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
+* `[examples]` Update typescript example to using ts-jest ([#6260](https://github.com/facebook/jest/pull/6260))
 
 ### Fixes
 
