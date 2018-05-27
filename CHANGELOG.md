@@ -7,8 +7,18 @@
 
 ### Fixes
 
-* `[pretty-format]` Serialize inverse asymmetric matchers correctly
-  ([#6272](https://github.com/facebook/jest/pull/6272))
+* `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
+
+## 23.0.1
+
+### Chore & Maintenance
+
+* `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/#6308))
+* `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
+
+### Fixes
+
+* `[pretty-format]` Serialize inverse asymmetric matchers correctly ([#6272](https://github.com/facebook/jest/pull/6272))
 
 ## 23.0.0
 
