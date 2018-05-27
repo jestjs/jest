@@ -89,7 +89,7 @@
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn jest-coverage -i --reporters jest-silent-reporter && yarn test-leak && node scripts/mapCoverage.js && codecov",
-    "test-ci-partial": "yarn jest -w=4 --reporters jest-silent-reporter",
+    "test-ci-partial": "yarn jest -i --reporters jest-silent-reporter",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn typecheck && yarn lint && yarn jest",
