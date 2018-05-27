@@ -1,5 +1,9 @@
 ## master
 
+### Chore & Maintenance
+* `[docs]` Document another option to avoid warnings with React 16
+  ([#5258](https://github.com/facebook/jest/issues/5258))
+
 ## 23.0.0
 
 ### Features
@@ -184,8 +188,6 @@
   ([#6162](https://github.com/facebook/jest/pull/6162))
 * `[jest-haste-map]` Properly resolve mocked node modules without package.json
   defined ([#6232](https://github.com/facebook/jest/pull/6232))
-* `[docs]` Document another option to avoid warnings with React 16
-  ([#5258](https://github.com/facebook/jest/issues/5258))
   
 ### Chore & Maintenance
 
