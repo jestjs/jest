@@ -4,11 +4,11 @@
 *~
 /examples/*/node_modules/
 
-/integration-tests/*/node_modules
-!/integration-tests/presets/json/node_modules
-!/integration-tests/presets/js/node_modules
-/integration-tests/transform/*/coverage
-/integration-tests/transform/*/node_modules
+/e2e/*/node_modules
+!/e2e/presets/json/node_modules
+!/e2e/presets/js/node_modules
+/e2e/transform/*/coverage
+/e2e/transform/*/node_modules
 
 /node_modules
 

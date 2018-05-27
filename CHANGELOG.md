@@ -189,7 +189,7 @@
 ### Chore & Maintenance
 
 * `[jest-config]` Allow `<rootDir>` to be used with `collectCoverageFrom` ([#5524](https://github.com/facebook/jest/pull/5524))
-* `[filenames]` Standardize files names in "integration-tests" folder ([#5513](https://github.com/facebook/jest/pull/5513))
+* `[filenames]` Standardize files names in "e2e" folder ([#5513](https://github.com/facebook/jest/pull/5513))
 
 ## jest 22.2.2
 
@@ -295,7 +295,7 @@
 
 ### Chore & Maintenance
 
-* `[filenames]` Standardize folder names under `integration-tests/` ([#5298](https://github.com/facebook/jest/pull/5298))
+* `[filenames]` Standardize folder names under `e2e/` ([#5298](https://github.com/facebook/jest/pull/5298))
 
 ## jest 22.0.6
 
