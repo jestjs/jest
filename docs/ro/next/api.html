@@ -1,0 +1,508 @@
+<!DOCTYPE html><html lang="ro"><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/jest/index.html"/><meta property="og:description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them."/><meta property="og:image" content="https://facebook.github.io/jest/img/opengraph.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/jest/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/jest/css/main.css"/></head><body class="sideNavVisible doc"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jest/ro"><img class="logo" src="/jest/img/jest.svg" alt="Jest"/><h2 class="headerTitle">Jest</h2></a><a href="/jest/ro/versions.html"><h3>next</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/jest/docs/ro/next/getting-started.html" target="_self">Documentație</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/jest/docs/ro/next/api.html" target="_self">API</a></li><li class=""><a href="/jest/ro/help.html" target="_self">Ajutor</a></li><li class=""><a href="/jest/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/jest/img/language.svg"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/jest/en">English</a></li><li><a href="/jest/ja">日本語</a></li><li><a href="/jest/es-ES">Español</a></li><li><a href="/jest/pt-BR">Português (Brasil)</a></li><li><a href="/jest/ru">Русский</a></li><li><a href="/jest/uk">Українська</a></li><li><a href="/jest/zh-Hans">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(){
+          if(languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API Reference</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Introduction</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/getting-started.html">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/using-matchers.html">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/asynchronous.html">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/setup-teardown.html">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/mock-functions.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/jest-platform.html">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/jest-community.html">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/more-resources.html">More Resources</a></li></ul></div><div class="navGroup navGroupActive"><h3>Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/snapshot-testing.html">Testarea de imagine</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/tutorial-async.html">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/timer-mocks.html">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/manual-mocks.html">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/es6-class-mocks.html">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/webpack.html">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/puppeteer.html">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/mongodb.html">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/watch-plugins.html">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/migration-guide.html">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="navGroup navGroupActive"><h3>Framework Guides</h3><ul><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/tutorial-react.html">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/tutorial-react-native.html">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/testing-frameworks.html">Testing Web Frameworks</a></li></ul></div><div class="navGroup navGroupActive"><h3>API Reference</h3><ul><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/jest/docs/ro/next/api.html">Globals</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/expect.html">Expect</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/mock-function-api.html">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/jest-object.html">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/configuration.html">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/jest/docs/ro/next/cli.html">Jest CLI Options</a></li></ul></div></div></section></div><script>
+          var toggler = document.getElementById('navToggler');
+          var nav = document.getElementById('docsNav');
+          toggler.onclick = function() {
+            nav.classList.toggle('docsSliderActive');
+          };
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GlobalAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1>Globals</h1></header><article><div><span><p>In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.</p>
+<h2><a class="anchor" aria-hidden="true" id="metode"></a><a href="#metode" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Metode</h2>
+<p>&lt;autogenerated_table_of_contents&gt;</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="referințe"></a><a href="#referințe" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Referințe</h2>
+<h3><a class="anchor" aria-hidden="true" id="afterallfn-timeout"></a><a href="#afterallfn-timeout" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterAll(fn, timeout)</code></h3>
+<p>Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.</p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>This is often useful if you want to clean up some global setup state that is shared across tests.</p>
+<p>De exemplu:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cleanUpDatabase</span>(<span class="hljs-params">db</span>) </span>{
+  db.cleanUp();
+}
+
+afterAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  cleanUpDatabase(globalDatabase);
+});
+
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+
+test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.insert(<span class="hljs-string">'thing'</span>, makeThing(), response =&gt; {
+    expect(response.success).toBeTruthy();
+  });
+});
+</code></pre>
+<p>Here the <code>afterAll</code> ensures that <code>cleanUpDatabase</code> is called after all tests run.</p>
+<p>If <code>afterAll</code> is inside a <code>describe</code> block, it runs at the end of the describe block.</p>
+<p>If you want to run some cleanup after every test instead of after all tests, use <code>afterEach</code> instead.</p>
+<h3><a class="anchor" aria-hidden="true" id="aftereachfn-timeout"></a><a href="#aftereachfn-timeout" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterEach(fn, timeout)</code></h3>
+<p>Runs a function after each one of the tests in this file completes. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.</p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>This is often useful if you want to clean up some temporary state that is created by each test.</p>
+<p>De exemplu:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cleanUpDatabase</span>(<span class="hljs-params">db</span>) </span>{
+  db.cleanUp();
+}
+
+afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  cleanUpDatabase(globalDatabase);
+});
+
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+
+test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.insert(<span class="hljs-string">'thing'</span>, makeThing(), response =&gt; {
+    expect(response.success).toBeTruthy();
+  });
+});
+</code></pre>
+<p>Here the <code>afterEach</code> ensures that <code>cleanUpDatabase</code> is called after each test runs.</p>
+<p>If <code>afterEach</code> is inside a <code>describe</code> block, it only runs after the tests that are inside this describe block.</p>
+<p>If you want to run some cleanup just once, after all of the tests run, use <code>afterAll</code> instead.</p>
+<h3><a class="anchor" aria-hidden="true" id="beforeallfn-timeout"></a><a href="#beforeallfn-timeout" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeAll(fn, timeout)</code></h3>
+<p>Runs a function before any of the tests in this file run. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running tests.</p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>This is often useful if you want to set up some global state that will be used by many tests.</p>
+<p>De exemplu:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clears the database and adds some testing data.</span>
+  <span class="hljs-comment">// Jest will wait for this promise to resolve before running tests.</span>
+  <span class="hljs-keyword">return</span> globalDatabase.clear().then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> globalDatabase.insert({<span class="hljs-attr">testData</span>: <span class="hljs-string">'foo'</span>});
+  });
+});
+
+<span class="hljs-comment">// Since we only set up the database once in this example, it's important</span>
+<span class="hljs-comment">// that our tests don't modify it.</span>
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+</code></pre>
+<p>Aici <code>beforeAll</code> asigură că baza de date este setată înainte de a rula testele. If setup was synchronous, you could just do this without <code>beforeAll</code>. The key is that Jest will wait for a promise to resolve, so you can have asynchronous setup as well.</p>
+<p>If <code>beforeAll</code> is inside a <code>describe</code> block, it runs at the beginning of the describe block.</p>
+<p>If you want to run something before every test instead of before any test runs, use <code>beforeEach</code> instead.</p>
+<h3><a class="anchor" aria-hidden="true" id="beforeeachfn-timeout"></a><a href="#beforeeachfn-timeout" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeEach(fn, timeout)</code></h3>
+<p>Runs a function before each of the tests in this file runs. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running the test.</p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>This is often useful if you want to reset some global state that will be used by many tests.</p>
+<p>De exemplu:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clears the database and adds some testing data.</span>
+  <span class="hljs-comment">// Jest will wait for this promise to resolve before running tests.</span>
+  <span class="hljs-keyword">return</span> globalDatabase.clear().then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> globalDatabase.insert({<span class="hljs-attr">testData</span>: <span class="hljs-string">'foo'</span>});
+  });
+});
+
+test(<span class="hljs-string">'can find things'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.find(<span class="hljs-string">'thing'</span>, {}, results =&gt; {
+    expect(results.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+  });
+});
+
+test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> globalDatabase.insert(<span class="hljs-string">'thing'</span>, makeThing(), response =&gt; {
+    expect(response.success).toBeTruthy();
+  });
+});
+</code></pre>
+<p>Aici <code>beforeEach</code> asigură că baza de date este resetată înainte de fiecare test.</p>
+<p>If <code>beforeEach</code> is inside a <code>describe</code> block, it runs for each test in the describe block.</p>
+<p>If you only need to run some setup code once, before any tests run, use <code>beforeAll</code> instead.</p>
+<h3><a class="anchor" aria-hidden="true" id="describename-fn"></a><a href="#describename-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe(name, fn)</code></h3>
+<p><code>describe(name, fn)</code> creates a block that groups together several related tests in one &quot;test suite&quot;. For example, if you have a <code>myBeverage</code> object that is supposed to be delicious but not sour, you could test it with:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> myBeverage = {
+  <span class="hljs-attr">delicious</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">sour</span>: <span class="hljs-literal">false</span>,
+};
+
+describe(<span class="hljs-string">'my beverage'</span>, () =&gt; {
+  test(<span class="hljs-string">'is delicious'</span>, () =&gt; {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  test(<span class="hljs-string">'is not sour'</span>, () =&gt; {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+});
+</code></pre>
+<p>This isn't required - you can just write the <code>test</code> blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.</p>
+<p>Puteţi, de asemenea, imbrica blocuri <code>describe</code> în cazul în care aveţi o ierarhie de teste:</p>
+<pre><code class="hljs css js"><span class="hljs-keyword">const</span> binaryStringToNumber = <span class="hljs-function"><span class="hljs-params">binString</span> =&gt;</span> {
+  <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^[01]+$/</span>.test(binString)) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> CustomError(<span class="hljs-string">'Not a binary number.'</span>);
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseInt</span>(binString, <span class="hljs-number">2</span>);
+};
+
+describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt; {
+  describe(<span class="hljs-string">'given an invalid binary string'</span>, () =&gt; {
+    test(<span class="hljs-string">'composed of non-numbers throws CustomError'</span>, () =&gt; {
+      expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> binaryStringToNumber(<span class="hljs-string">'abc'</span>)).toThrowError(CustomError);
+    });
+
+    test(<span class="hljs-string">'with extra whitespace throws CustomError'</span>, () =&gt; {
+      expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> binaryStringToNumber(<span class="hljs-string">'  100'</span>)).toThrowError(CustomError);
+    });
+  });
+
+  describe(<span class="hljs-string">'given a valid binary string'</span>, () =&gt; {
+    test(<span class="hljs-string">'returns the correct number'</span>, () =&gt; {
+      expect(binaryStringToNumber(<span class="hljs-string">'100'</span>)).toBe(<span class="hljs-number">4</span>);
+    });
+  });
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="describeeachtable-name-fn"></a><a href="#describeeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.each(table)(name, fn)</code></h3>
+<p>Use <code>describe.each</code> if you keep duplicating the same test suites with different data. <code>describe.each</code> allows you to write the test suite once and pass data in.</p>
+<p><code>describe.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="1-describeeachtable-name-fn"></a><a href="#1-describeeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. <code>describe.each(table)(name, fn)</code></h4>
+<ul>
+<li><code>table</code>: <code>Array</code> of Arrays with the arguments that are passed into the <code>fn</code> for each row.</li>
+<li><code>name</code>: <code>String</code> the title of the test suite, use <code>%s</code> to positionally inject test data into the suite title.</li>
+<li><code>fn</code>: <code>Function</code> the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.</li>
+</ul>
+<p>Exemplu:</p>
+<pre><code class="hljs css js">describe.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
+  <span class="hljs-string">'.add(%s, %s)'</span>,
+  (a, b, expected) =&gt; {
+    test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+      expect(a + b).toBe(expected);
+    });
+
+    test(<span class="hljs-string">`returned value not be greater than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+      expect(a + b).not.toBeGreaterThan(expected);
+    });
+
+    test(<span class="hljs-string">`returned value not be less than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+      expect(a + b).not.toBeLessThan(expected);
+    });
+  },
+);
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="2-describeeach-table-name-fn"></a><a href="#2-describeeach-table-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. <code>describe.each`table`(name, fn)</code></h4>
+<ul>
+<li><code>table</code>: <code>Tagged Template Literal</code>
+<ul>
+<li>First row of variable name column headings separated with <code>|</code></li>
+<li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
+</ul></li>
+<li><code>name</code>: <code>String</code> the title of the test suite, use <code>$variable</code> to inject test data into the suite title from the tagged template expressions.</li>
+<li><code>fn</code>: <code>Function</code> the suite of tests to be ran, this is the function that will receive the test data object.</li>
+</ul>
+<p>Exemplu:</p>
+<pre><code class="hljs css js">describe.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'$a + $b'</span>, ({a, b, expected}) =&gt; {
+  test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).toBe(expected);
+  });
+
+  test(<span class="hljs-string">`returned value not be greater than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).not.toBeGreaterThan(expected);
+  });
+
+  test(<span class="hljs-string">`returned value not be less than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).not.toBeLessThan(expected);
+  });
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="describeonlyname-fn"></a><a href="#describeonlyname-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only(name, fn)</code></h3>
+<p>Există și cu aliasul: <code>fdescribe(name, fn)</code></p>
+<p>Aveţi posibilitatea să utilizaţi <code>describe.only</code> dacă doriţi să se execute un singur bloc describe:</p>
+<pre><code class="hljs css js">describe.only(<span class="hljs-string">'my beverage'</span>, () =&gt; {
+  test(<span class="hljs-string">'is delicious'</span>, () =&gt; {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  test(<span class="hljs-string">'is not sour'</span>, () =&gt; {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+});
+
+describe(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
+  <span class="hljs-comment">// ... will be skipped</span>
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="describeonlyeachtable-name-fn"></a><a href="#describeonlyeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only.each(table)(name, fn)</code></h3>
+<p>Also under the aliases: <code>fdescribe.each(table)(name, fn)</code> and <code>fdescribe.each`table`(name, fn)</code></p>
+<p>Use <code>describe.only.each</code> if you want to only run specific tests suites of data driven tests.</p>
+<p><code>describe.only.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="describeonlyeachtable-name-fn"></a><a href="#describeonlyeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only.each(table)(name, fn)</code></h4>
+<pre><code class="hljs css js">describe.only.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
+  <span class="hljs-string">'.add(%s, %s)'</span>,
+  (a, b, expected) =&gt; {
+    test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+      expect(a + b).toBe(expected);
+    });
+  },
+);
+
+test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="describeonlyeach-table-name-fn"></a><a href="#describeonlyeach-table-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only.each`table`(name, fn)</code></h4>
+<pre><code class="hljs css js">describe.only.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, ({a, b, expected}) =&gt; {
+  test(<span class="hljs-string">'passes'</span>, () =&gt; {
+    expect(a + b).toBe(expected);
+  });
+});
+
+test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="describeskipname-fn"></a><a href="#describeskipname-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip(name, fn)</code></h3>
+<p>Există și cu aliasul: <code>xdescribe(name, fn)</code></p>
+<p>You can use <code>describe.skip</code> if you do not want to run a particular describe block:</p>
+<pre><code class="hljs css js">describe(<span class="hljs-string">'my beverage'</span>, () =&gt; {
+  test(<span class="hljs-string">'is delicious'</span>, () =&gt; {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  test(<span class="hljs-string">'is not sour'</span>, () =&gt; {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+});
+
+describe.skip(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
+  <span class="hljs-comment">// ... will be skipped</span>
+});
+</code></pre>
+<p>Using <code>describe.skip</code> is often just an easier alternative to temporarily commenting out a chunk of tests.</p>
+<h3><a class="anchor" aria-hidden="true" id="describeskipeachtable-name-fn"></a><a href="#describeskipeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip.each(table)(name, fn)</code></h3>
+<p>Also under the aliases: <code>xdescribe.each(table)(name, fn)</code> and <code>xdescribe.each`table`(name, fn)</code></p>
+<p>Use <code>describe.skip.each</code> if you want to stop running a suite of data driven tests.</p>
+<p><code>describe.skip.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="describeskipeachtable-name-fn"></a><a href="#describeskipeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip.each(table)(name, fn)</code></h4>
+<pre><code class="hljs css js">describe.skip.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
+  <span class="hljs-string">'.add(%s, %s)'</span>,
+  (a, b, expected) =&gt; {
+    test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+      expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+    });
+  },
+);
+
+test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="describeskipeach-table-name-fn"></a><a href="#describeskipeach-table-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip.each`table`(name, fn)</code></h4>
+<pre><code class="hljs css js">describe.skip.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, ({a, b, expected}) =&gt; {
+  test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
+    expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+  });
+});
+
+test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="requirerequireactualmodulename"></a><a href="#requirerequireactualmodulename" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>require.requireActual(moduleName)</code></h3>
+<p>Returnează modulul efectiv în locul unei dubluri, ocolind toate verificările dacă modulul respectiv ar trebui să fie mock-uit sau nu.</p>
+<h3><a class="anchor" aria-hidden="true" id="requirerequiremockmodulename"></a><a href="#requirerequiremockmodulename" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>require.requireMock(moduleName)</code></h3>
+<p>Returnează o dublură în locul modulului real, ocolind toate verificările dacă modulul respectiv ar trebui să fie mock-uit sau nu.</p>
+<h3><a class="anchor" aria-hidden="true" id="testname-fn-timeout"></a><a href="#testname-fn-timeout" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test(name, fn, timeout)</code></h3>
+<p>Also under the alias: <code>it(name, fn, timeout)</code></p>
+<p>All you need in a test file is the <code>test</code> method which runs a test. For example, let's say there's a function <code>inchesOfRain()</code> that should be zero. Your whole test could be:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'did not rain'</span>, () =&gt; {
+  expect(inchesOfRain()).toBe(<span class="hljs-number">0</span>);
+});
+</code></pre>
+<p>The first argument is the test name; the second argument is a function that contains the expectations to test. The third argument (optional) is <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<blockquote>
+<p>Note: If a <strong>promise is returned</strong> from <code>test</code>, Jest will wait for the promise to resolve before letting the test complete. Jest will also wait if you <strong>provide an argument to the test function</strong>, usually called <code>done</code>. This could be handy when you want to test callbacks. See how to test async code <a href="/jest/docs/ro/next/asynchronous.html#callbacks">here</a>.</p>
+</blockquote>
+<p>For example, let's say <code>fetchBeverageList()</code> returns a promise that is supposed to resolve to a list that has <code>lemon</code> in it. You can test this with:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'has lemon in it'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> fetchBeverageList().then(<span class="hljs-function"><span class="hljs-params">list</span> =&gt;</span> {
+    expect(list).toContain(<span class="hljs-string">'lemon'</span>);
+  });
+});
+</code></pre>
+<p>Even though the call to <code>test</code> will return right away, the test doesn't complete until the promise resolves as well.</p>
+<h3><a class="anchor" aria-hidden="true" id="testeachtable-name-fn"></a><a href="#testeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.each(table)(name, fn)</code></h3>
+<p>Also under the alias: <code>it.each(table)(name, fn)</code> and <code>it.each`table`(name, fn)</code></p>
+<p>Use <code>test.each</code> if you keep duplicating the same test with different data. <code>test.each</code> allows you to write the test once and pass data in.</p>
+<p><code>test.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="1-testeachtable-name-fn"></a><a href="#1-testeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. <code>test.each(table)(name, fn)</code></h4>
+<ul>
+<li><code>table</code>: <code>Array</code> of Arrays with the arguments that are passed into the test <code>fn</code> for each row.</li>
+<li><code>name</code>: <code>String</code> the title of the test block, use <code>%s</code> to positionally inject parameter values into the test title.</li>
+<li><code>fn</code>: <code>Function</code> the test to be ran, this is the function that will receive the parameters in each row as function arguments.</li>
+</ul>
+<p>Exemplu:</p>
+<pre><code class="hljs css js">test.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
+  <span class="hljs-string">'.add(%s, %s)'</span>,
+  (a, b, expected) =&gt; {
+    expect(a + b).toBe(expected);
+  },
+);
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="2-testeach-table-name-fn"></a><a href="#2-testeach-table-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. <code>test.each`table`(name, fn)</code></h4>
+<ul>
+<li><code>table</code>: <code>Tagged Template Literal</code>
+<ul>
+<li>First row of variable name column headings separated with <code>|</code></li>
+<li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
+</ul></li>
+<li><code>name</code>: <code>String</code> the title of the test, use <code>$variable</code> to inject test data into the test title from the tagged template expressions.</li>
+<li><code>fn</code>: <code>Function</code> the test to be ran, this is the function that will receive the test data object.</li>
+</ul>
+<p>Exemplu:</p>
+<pre><code class="hljs css js">test.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, ({a, b, expected}) =&gt; {
+  expect(a + b).toBe(expected);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="testonlyname-fn-timeout"></a><a href="#testonlyname-fn-timeout" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only(name, fn, timeout)</code></h3>
+<p>Also under the aliases: <code>it.only(name, fn, timeout)</code> or <code>fit(name, fn, timeout)</code></p>
+<p>When you are debugging a large test file, you will often only want to run a subset of tests. You can use <code>.only</code> to specify which tests are the only ones you want to run in that test file.</p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>De exemplu, să presupunem că aveți aceste teste:</p>
+<pre><code class="hljs css js">test.only(<span class="hljs-string">'it is raining'</span>, () =&gt; {
+  expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
+});
+
+test(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
+  expect(inchesOfSnow()).toBe(<span class="hljs-number">0</span>);
+});
+</code></pre>
+<p>Only the &quot;it is raining&quot; test will run in that test file, since it is run with <code>test.only</code>.</p>
+<p>Usually you wouldn't check code using <code>test.only</code> into source control - you would use it just for debugging, and remove it once you have fixed the broken tests.</p>
+<h3><a class="anchor" aria-hidden="true" id="testonlyeachtable-name-fn"></a><a href="#testonlyeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each(table)(name, fn)</code></h3>
+<p>Also under the aliases: <code>it.only.each(table)(name, fn)</code>, <code>fit.each(table)(name, fn)</code>, <code>it.only.each`table`(name, fn)</code> and <code>fit.each`table`(name, fn)</code></p>
+<p>Use <code>test.only.each</code> if you want to only run specific tests with different test data.</p>
+<p><code>test.only.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="testonlyeachtable-name-fn"></a><a href="#testonlyeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each(table)(name, fn)</code></h4>
+<pre><code class="hljs css js">test.only.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
+  <span class="hljs-string">'.add(%s, %s)'</span>,
+  (a, b, expected) =&gt; {
+    expect(a + b).toBe(expected);
+  },
+);
+
+test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="testonlyeach-table-name-fn"></a><a href="#testonlyeach-table-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each`table`(name, fn)</code></h4>
+<pre><code class="hljs css js">test.only.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, ({a, b, expected}) =&gt; {
+  expect(a + b).toBe(expected);
+});
+
+test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="testskipname-fn"></a><a href="#testskipname-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip(name, fn)</code></h3>
+<p>Also under the aliases: <code>it.skip(name, fn)</code> or <code>xit(name, fn)</code> or <code>xtest(name, fn)</code></p>
+<p>When you are maintaining a large codebase, you may sometimes find a test that is temporarily broken for some reason. If you want to skip running this test, but you don't want to just delete this code, you can use <code>test.skip</code> to specify some tests to skip.</p>
+<p>De exemplu, să presupunem că aveți aceste teste:</p>
+<pre><code class="hljs css js">test(<span class="hljs-string">'it is raining'</span>, () =&gt; {
+  expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
+});
+
+test.skip(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
+  expect(inchesOfSnow()).toBe(<span class="hljs-number">0</span>);
+});
+</code></pre>
+<p>Only the &quot;it is raining&quot; test will run, since the other test is run with <code>test.skip</code>.</p>
+<p>You could simply comment the test out, but it's often a bit nicer to use <code>test.skip</code> because it will maintain indentation and syntax highlighting.</p>
+<h3><a class="anchor" aria-hidden="true" id="testskipeachtable-name-fn"></a><a href="#testskipeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip.each(table)(name, fn)</code></h3>
+<p>Also under the aliases: <code>it.skip.each(table)(name, fn)</code>, <code>xit.each(table)(name, fn)</code>, <code>xtest.each(table)(name, fn)</code>, <code>it.skip.each`table`(name, fn)</code>, <code>xit.each`table`(name, fn)</code> and <code>xtest.each`table`(name, fn)</code></p>
+<p>Use <code>test.skip.each</code> if you want to stop running a collection of data driven tests.</p>
+<p><code>test.skip.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="testskipeachtable-name-fn"></a><a href="#testskipeachtable-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip.each(table)(name, fn)</code></h4>
+<pre><code class="hljs css js">test.skip.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
+  <span class="hljs-string">'.add(%s, %s)'</span>,
+  (a, b, expected) =&gt; {
+    expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+  },
+);
+
+test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="testskipeach-table-name-fn"></a><a href="#testskipeach-table-name-fn" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip.each`table`(name, fn)</code></h4>
+<pre><code class="hljs css js">test.skip.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, ({a, b, expected}) =&gt; {
+  expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+});
+
+test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="testing-frameworks.html">← Testing Web Frameworks</a><a class="docs-next button" href="expect.html">Expect →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jest/" class="nav-home"><img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jest/docs/ro/getting-started.html">Getting Started</a><a href="/jest/docs/ro/snapshot-testing.html">Guides</a><a href="/jest/docs/ro/api.html">API Reference</a></div><div><h5>Community</h5><a href="/jest/ro/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/jest/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react'
+              });
+            </script></body></html>
