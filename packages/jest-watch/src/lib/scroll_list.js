@@ -9,10 +9,7 @@
 
 'use strict';
 
-export type ScrollOptions = {
-  offset: number,
-  max: number,
-};
+import type {ScrollOptions} from 'types/Watch';
 
 export default function scroll(size: number, {offset, max}: ScrollOptions) {
   let start = 0;

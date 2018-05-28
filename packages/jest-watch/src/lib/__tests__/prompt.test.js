@@ -11,11 +11,6 @@
 import Prompt from '../Prompt';
 import {KEYS} from '../../constants';
 
-const EXTRA_KEYS = Object.assign({}, KEYS, {
-  E: 'e',
-  S: 's',
-});
-
 it('calls handler on change value', () => {
   const options = {max: 10, offset: -1};
   const prompt = new Prompt();
@@ -25,16 +20,16 @@ it('calls handler on change value', () => {
 
   expect(onChange).toHaveBeenLastCalledWith('', options);
 
-  prompt.put(EXTRA_KEYS.T);
+  prompt.put('t');
   expect(onChange).toHaveBeenLastCalledWith('t', options);
 
-  prompt.put(EXTRA_KEYS.E);
+  prompt.put('e');
   expect(onChange).toHaveBeenLastCalledWith('te', options);
 
-  prompt.put(EXTRA_KEYS.S);
+  prompt.put('s');
   expect(onChange).toHaveBeenLastCalledWith('tes', options);
 
-  prompt.put(EXTRA_KEYS.T);
+  prompt.put('t');
   expect(onChange).toHaveBeenLastCalledWith('test', options);
 
   expect(onChange).toHaveBeenCalledTimes(5);
@@ -46,11 +41,11 @@ it('calls handler on success prompt', () => {
 
   prompt.enter(jest.fn(), onSuccess, jest.fn());
 
-  prompt.put(EXTRA_KEYS.T);
-  prompt.put(EXTRA_KEYS.E);
-  prompt.put(EXTRA_KEYS.S);
-  prompt.put(EXTRA_KEYS.T);
-  prompt.put(EXTRA_KEYS.ENTER);
+  prompt.put('t');
+  prompt.put('e');
+  prompt.put('s');
+  prompt.put('t');
+  prompt.put(KEYS.ENTER);
 
   expect(onSuccess).toHaveBeenCalledWith('test');
 });
@@ -61,11 +56,11 @@ it('calls handler on cancel prompt', () => {
 
   prompt.enter(jest.fn(), jest.fn(), onCancel);
 
-  prompt.put(EXTRA_KEYS.T);
-  prompt.put(EXTRA_KEYS.E);
-  prompt.put(EXTRA_KEYS.S);
-  prompt.put(EXTRA_KEYS.T);
-  prompt.put(EXTRA_KEYS.ESCAPE);
+  prompt.put('t');
+  prompt.put('e');
+  prompt.put('s');
+  prompt.put('t');
+  prompt.put(KEYS.ESCAPE);
 
   expect(onCancel).toHaveBeenCalled();
 });

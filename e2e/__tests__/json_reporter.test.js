@@ -16,7 +16,7 @@ describe('JSON Reporter', () => {
   const outputFileName = 'sum.result.json';
   const outputFilePath = path.join(
     process.cwd(),
-    'integration-tests/json-reporter/',
+    'e2e/json-reporter/',
     outputFileName,
   );
 

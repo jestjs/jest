@@ -44,7 +44,7 @@ module.exports = {
       },
     },
     {
-      files: ['scripts/**/*', 'integration-tests/**/*'],
+      files: ['scripts/**/*', 'e2e/**/*'],
       rules: {
         'babel/func-params-comma-dangle': 0,
       },
@@ -56,14 +56,11 @@ module.exports = {
       },
     },
     {
-      excludedFiles: [
-        'integration-tests/__tests__/**/*',
-        'website/versioned_docs/**/*.md',
-      ],
+      excludedFiles: ['e2e/__tests__/**/*', 'website/versioned_docs/**/*.md'],
       files: [
         'examples/**/*',
         'scripts/**/*',
-        'integration-tests/*/**/*',
+        'e2e/*/**/*',
         'website/*/**/*',
         'eslintImportResolver.js',
       ],
@@ -81,7 +78,7 @@ module.exports = {
     },
     {
       files: [
-        'integration-tests/__tests__/**/*',
+        'e2e/__tests__/**/*',
         'packages/babel-jest/**/*.test.js',
         'packages/babel-plugin-jest-hoist/**/*.test.js',
         'packages/babel-preset-jest/**/*.test.js',
@@ -103,7 +100,7 @@ module.exports = {
       files: [
         'website/**',
         '**/__tests__/**',
-        'integration-tests/**',
+        'e2e/**',
         '**/pretty-format/perf/**',
       ],
       rules: {

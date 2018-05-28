@@ -7,8 +7,8 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import BaseWatchPlugin from '../base_watch_plugin';
-import type {JestHookSubscriber} from '../jest_hooks';
+import type {JestHookSubscriber} from 'types/JestHooks';
+import {BaseWatchPlugin} from 'jest-watch';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;

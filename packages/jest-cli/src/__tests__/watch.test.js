@@ -10,8 +10,7 @@
 
 import chalk from 'chalk';
 import TestWatcher from '../test_watcher';
-import JestHooks from '../jest_hooks';
-import {KEYS} from '../constants';
+import {JestHook, KEYS} from 'jest-watch';
 
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
@@ -286,7 +285,7 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
-  it('allows WatchPlugins to hook into JestHooks', async () => {
+  it('allows WatchPlugins to hook into JestHook', async () => {
     const apply = jest.fn();
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_register`;
     jest.doMock(
@@ -498,7 +497,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.O);
+    stdin.emit('o');
 
     expect(runJestMock).toBeCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -512,7 +511,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
 
     expect(runJestMock).toBeCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -530,12 +529,12 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "t" reruns the tests in "test name pattern" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
@@ -549,12 +548,12 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "p" reruns the tests in "filename pattern" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
@@ -568,17 +567,17 @@ describe('Watch mode flows', () => {
   });
 
   it('Can combine "p" and "t" filters', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
@@ -592,7 +591,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     globalConfig.updateSnapshot = 'new';
 
@@ -601,7 +600,7 @@ describe('Watch mode flows', () => {
 
     hooks.getEmitter().onTestRunComplete({snapshot: {failure: true}});
 
-    stdin.emit(KEYS.U);
+    stdin.emit('u');
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -610,7 +609,7 @@ describe('Watch mode flows', () => {
       watchAll: false,
     });
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
 
     await nextTick();
     // updateSnapshot is not sticky after a run.
@@ -622,11 +621,11 @@ describe('Watch mode flows', () => {
 
     results = {snapshot: {failure: true}};
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
     await nextTick();
 
     runJestMock.mockReset();
-    stdin.emit(KEYS.U);
+    stdin.emit('u');
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -652,8 +651,8 @@ describe('Watch mode flows', () => {
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
-    stdin.emit(KEYS.F);
-    stdin.emit(KEYS.W);
+    stdin.emit('f');
+    stdin.emit('w');
 
     const lastWatchDisplay = pipe.write.mock.calls.reverse()[0][0];
     expect(lastWatchDisplay).toMatch('Press a to run all tests.');

@@ -7,32 +7,18 @@
  * @flow
  */
 
-import type {AggregatedResult} from 'types/TestResult';
-import type {ProjectConfig, Path} from 'types/Config';
+import type {
+  JestHookSubscriber,
+  JestHookEmitter,
+  FileChange,
+  ShouldRunTestSuite,
+  TestRunComplete,
+} from 'types/JestHooks';
 
-type JestHookExposedFS = {
-  projects: Array<{config: ProjectConfig, testPaths: Array<Path>}>,
-};
-
-type FileChange = (fs: JestHookExposedFS) => void;
-type ShouldRunTestSuite = (testPath: string) => Promise<boolean>;
-type TestRunComplete = (results: AggregatedResult) => void;
 type AvailableHooks =
   | 'onFileChange'
   | 'onTestRunComplete'
   | 'shouldRunTestSuite';
-
-export type JestHookSubscriber = {
-  onFileChange: (fn: FileChange) => void,
-  onTestRunComplete: (fn: TestRunComplete) => void,
-  shouldRunTestSuite: (fn: ShouldRunTestSuite) => void,
-};
-
-export type JestHookEmitter = {
-  onFileChange: (fs: JestHookExposedFS) => void,
-  onTestRunComplete: (results: AggregatedResult) => void,
-  shouldRunTestSuite: (testPath: string) => Promise<boolean>,
-};
 
 class JestHooks {
   _listeners: {

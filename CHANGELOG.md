@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+* `[jest-watch]` create new package `jest-watch` to ease custom watch plugin development ([#6318](https://github.com/facebook/jest/pull/6318))
+
 ### Fixes
 
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
@@ -8,6 +12,7 @@
 ### Chore & Maintenance
 
 * `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/#6309))
+* `[filenames]` Rename "integration-tests" to "e2e" ([#6315](https://github.com/facebook/jest/pull/6315))
 
 ## 23.0.1
 
@@ -15,6 +20,7 @@
 
 * `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/#6308))
 * `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
+* `[examples]` Update typescript example to using ts-jest ([#6260](https://github.com/facebook/jest/pull/6260))
 
 ### Fixes
 

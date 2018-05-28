@@ -78,7 +78,7 @@
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
-    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration-tests/*/*/node_modules && yarn build-clean",
+    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./e2e/*/*/node_modules && yarn build-clean",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,md",
@@ -108,7 +108,7 @@
       "packages/.*/build-es5",
       "packages/jest-runtime/src/__tests__/test_root.*",
       "website/.*",
-      "integration-tests/runtime-internal-module-registry/__mocks__"
+      "e2e/runtime-internal-module-registry/__mocks__"
     ],
     "collectCoverageFrom": [
       "**/packages/jest-*/**/*.js",
@@ -119,7 +119,7 @@
       "!**/perf/**",
       "!**/__mocks__/**",
       "!**/__tests__/**",
-      "!integration-tests/**"
+      "!e2e/**"
     ],
     "coverageReporters": [
       "json"
@@ -139,7 +139,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/examples/",
-      "/integration-tests/.*/__tests__",
+      "/e2e/.*/__tests__",
       "\\.snap$",
       "/packages/.*/build",
       "/packages/.*/build-es5",
@@ -155,7 +155,7 @@
       "/packages/jest-validate/src/__tests__/fixtures/",
       "/packages/jest-worker/src/__performance_tests__",
       "/packages/pretty-format/perf/test.js",
-      "/integration-tests/__tests__/iterator-to-null-test.js"
+      "/e2e/__tests__/iterator-to-null-test.js"
     ]
   },
   "prettier": {

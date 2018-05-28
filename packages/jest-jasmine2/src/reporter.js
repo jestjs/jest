@@ -8,7 +8,6 @@
  */
 
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Environment} from 'types/Environment';
 import type {
   AssertionResult,
   FailedAssertion,
@@ -52,7 +51,6 @@ export default class Jasmine2Reporter {
   constructor(
     globalConfig: GlobalConfig,
     config: ProjectConfig,
-    environment: Environment,
     testPath: Path,
   ) {
     this._globalConfig = globalConfig;
