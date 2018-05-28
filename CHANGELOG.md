@@ -5,11 +5,14 @@
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
 * `[jest-cli]` Normalize slashes in paths in CLI output on Windows ((#6310)[https://github.com/facebook/jest/pull/6310])
 
+### Chore & Maintenance
+
+* `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/#6309))
+
 ## 23.0.1
 
 ### Chore & Maintenance
 
-* `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/#6309))
 * `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/#6308))
 * `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
 
