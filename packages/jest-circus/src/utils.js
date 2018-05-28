@@ -143,11 +143,7 @@ const {setTimeout, clearTimeout} = global;
 export const callAsyncFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
-  {
-    isHook,
-    test,
-    timeout,
-  }: {isHook?: ?boolean, test?: TestEntry, timeout: number},
+  {isHook, timeout}: {isHook?: ?boolean, timeout: number},
 ): Promise<mixed> => {
   let timeoutID;
 
