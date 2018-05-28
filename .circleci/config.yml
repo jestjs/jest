@@ -42,7 +42,9 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn lint && yarn typecheck && yarn lint-es5-build && yarn lint:md:ci
+      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn typecheck && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci
+      - store_test_results:
+          path: reports/junit
 
   test-browser:
     working_directory: ~/jest
@@ -68,6 +70,8 @@ jobs:
           command: yarn test-ci-partial
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+                path: reports/junit
 
   test-node-9:
     working_directory: ~/jest
@@ -83,6 +87,7 @@ jobs:
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
+
   test-jest-circus:
     working_directory: ~/jest
     docker:
@@ -96,6 +101,8 @@ jobs:
           command: JEST_CIRCUS=1 yarn test-ci-partial
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+                path: reports/junit
 
   test-node-8:
     working_directory: ~/jest
@@ -110,6 +117,8 @@ jobs:
           command: yarn test-ci
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+                path: reports/junit
 
   test-node-6:
     working_directory: ~/jest
@@ -124,6 +133,8 @@ jobs:
           command: yarn test-ci-partial
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+                path: reports/junit
 
   test-and-deploy-website:
     working_directory: ~/jest
