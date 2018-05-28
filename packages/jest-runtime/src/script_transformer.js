@@ -339,7 +339,7 @@ export default class ScriptTransformer {
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
-      scriptCacheKey = getScriptCacheKey(filename, this._config, instrument);
+      scriptCacheKey = getScriptCacheKey(filename, instrument);
       result = cache.get(scriptCacheKey);
     }
 
@@ -479,7 +479,7 @@ const readCacheFile = (cachePath: Path): ?string => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename, config, instrument: boolean) => {
+const getScriptCacheKey = (filename, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
