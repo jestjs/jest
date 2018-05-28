@@ -13,9 +13,6 @@ const path = require('path');
 const runJest = require('../runJest');
 const {extractSummary} = require('../Utils');
 const dir = path.resolve(__dirname, '../each');
-const ConditionalTest = require('../../scripts/ConditionalTest');
-
-ConditionalTest.skipSuiteOnJestCircus();
 
 test('works with passing tests', () => {
   const result = runJest(dir, ['success.test.js']);
@@ -48,7 +45,14 @@ test('shows only the tests with .only as being ran', () => {
 
 test('shows only the tests without .skip as being ran', () => {
   const result = runJest(dir, ['each-skip.test.js']);
-  expect(result.status).toBe(0);
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
+  expect(result.status).toBe(0);
+});
+
+test('runs only the describe.only.each tests', () => {
+  const result = runJest(dir, ['describe-only.test.js']);
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
+  expect(result.status).toBe(0);
 });
