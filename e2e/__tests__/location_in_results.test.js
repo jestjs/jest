@@ -11,8 +11,6 @@
 const runJest = require('../runJest');
 const ConditionalTest = require('../../scripts/ConditionalTest');
 
-ConditionalTest.skipSuiteOnJestCircus();
-
 it('defaults to null for location', () => {
   const result = runJest.json('location-in-results').json;
 
