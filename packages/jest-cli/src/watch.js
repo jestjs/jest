@@ -26,8 +26,8 @@ import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './search_source';
 import TestWatcher from './test_watcher';
 import FailedTestsCache from './failed_tests_cache';
-import {KEYS, CLEAR} from './constants';
-import JestHooks from './jest_hooks';
+import {CLEAR} from './constants';
+import {KEYS, JestHook} from 'jest-watch';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
 import TestNamePatternPlugin from './plugins/test_name_pattern';
 import UpdateSnapshotsPlugin from './plugins/update_snapshots';
@@ -55,7 +55,7 @@ export default function watch(
   outputStream: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
-  hooks?: JestHooks = new JestHooks(),
+  hooks?: JestHook = new JestHook(),
 ): Promise<void> {
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
@@ -263,9 +263,7 @@ export default function watch(
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.F]
-        .concat(pluginKeys)
-        .indexOf(key) !== -1
+      !['q', KEYS.ENTER, 'a', 'o', 'f'].concat(pluginKeys).includes(key)
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -306,7 +304,7 @@ export default function watch(
       case KEYS.ENTER:
         startRun(globalConfig);
         break;
-      case KEYS.A:
+      case 'a':
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watchAll',
           testNamePattern: '',
@@ -314,20 +312,20 @@ export default function watch(
         });
         startRun(globalConfig);
         break;
-      case KEYS.C:
+      case 'c':
         updateConfigAndRun({
           mode: 'watch',
           testNamePattern: '',
           testPathPattern: '',
         });
         break;
-      case KEYS.F:
+      case 'f':
         globalConfig = updateGlobalConfig(globalConfig, {
           onlyFailures: !globalConfig.onlyFailures,
         });
         startRun(globalConfig);
         break;
-      case KEYS.O:
+      case 'o':
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watch',
           testNamePattern: '',
@@ -335,9 +333,9 @@ export default function watch(
         });
         startRun(globalConfig);
         break;
-      case KEYS.QUESTION_MARK:
+      case '?':
         break;
-      case KEYS.W:
+      case 'w':
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);

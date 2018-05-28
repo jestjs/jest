@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+* `[jest-watch]` create new package `jest-watch` to ease custom watch plugin development ([#6318](https://github.com/facebook/jest/pull/6318))
+
 ### Fixes
 
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))

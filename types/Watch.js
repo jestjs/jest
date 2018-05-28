@@ -7,5 +7,7 @@
  * @flow
  */
 
-/* $FlowFixMe */
-export const getTerminalWidth = (): nubmer => process.stdout.columns;
+export type ScrollOptions = {
+  offset: number,
+  max: number,
+};

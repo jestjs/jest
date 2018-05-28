@@ -9,11 +9,9 @@
 'use strict';
 
 import chalk from 'chalk';
-import {KEYS} from '../constants';
+import {KEYS} from 'jest-watch';
 
 const runJestMock = jest.fn();
-
-let terminalWidth;
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
@@ -79,10 +77,6 @@ jest.doMock(
     },
 );
 
-jest.doMock('../lib/terminal_utils', () => ({
-  getTerminalWidth: () => terminalWidth,
-}));
-
 const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
@@ -98,7 +92,6 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
-    terminalWidth = 80;
     pipe = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config: {}}];
@@ -110,7 +103,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
@@ -146,7 +139,7 @@ describe('Watch mode flows', () => {
     contexts[0].config = {rootDir: ''};
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     await nextTick();
 
     ['p', '.', '*', '1', '0']
@@ -154,18 +147,18 @@ describe('Watch mode flows', () => {
       .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     await nextTick();
 
     ['t', 'e', 's', 't'].concat(KEYS.ENTER).forEach(key => stdin.emit(key));
 
     await nextTick();
 
-    stdin.emit(KEYS.C);
+    stdin.emit('c');
     await nextTick();
 
     pipe.write.mockReset();
-    stdin.emit(KEYS.P);
+    stdin.emit('p');
     await nextTick();
 
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
