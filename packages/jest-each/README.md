@@ -25,7 +25,7 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
 * `.describe.skip` to skip the parameterised suite of tests
   * Also under the aliases: `.xdescribe`
 * Asynchronous tests with `done`
-* Unique test titles with: [sprintf](https://github.com/alexei/sprintf.js)
+* Unique test titles with: [Node util.format](https://nodejs.org/api/util.html#util_util_format_format_args)
 * 🖖 Spock like data tables with [Tagged Template Literals](#tagged-template-literal-of-rows)
 
 ---
