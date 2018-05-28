@@ -239,6 +239,11 @@ export const options = {
       '`path/to/my-environment.js`',
     type: 'string',
   },
+  errorOnDeprecated: {
+    default: false,
+    description: 'Make calling deprecated APIs throw helpful error messages.',
+    type: 'boolean',
+  },
   expand: {
     alias: 'e',
     default: undefined,
