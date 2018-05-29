@@ -7,9 +7,11 @@ authorFBID: 160800566
 
 Today we are excited to announce Jest 23, our largest major release to date! Together with over 100 contributors, we've shipped a ton of features and bug fixes. Thank you to everyone in the community for helping make JavaScript Testing Delightful.
 
-We would also like to welcome Webpack to the Jest community! After converting from Mocha to Jest 23 Beta, their total test suite time was reduced 6x from over 13 minutes to 2 minutes 20 seconds. #blazingmeansgood
+We would also like to welcome both [Babel](https://babeljs.io/) and [Webpack](https://webpack.js.org/) to the Jest community! After converting from Mocha to Jest 23 Beta, Webpack saw their total test suite time reduced 6x from over 13 minutes to 2 minutes 20 seconds. [#blazingmeansgood](https://twitter.com/search?q=%23blazingmeansgood)
 
-Here's are some of the Jest 23 highlights and breaking changes. For a full list see the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
+Here's are some of the Jest 23 highlights and breaking changes.
+
+For a full list see the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
 
 ## Interactive Snapshot Mode
 
@@ -47,7 +49,7 @@ Asymmetric matchers are a great tool to use when you only care about asymmetric 
 
 ![jest-each in action](/jest/img/blog/23-jest-each.png)
 
-Huge shout out to Prettier for [fixing](https://github.com/prettier/prettier/pull/4423) the template string formatting so quickly ([see 1.13 Prettier post](https://prettier.io/blog/2018/05/23/1.13.0.html#format-new-describeeach-table-in-jest-23-4423-by-ikatyang))!
+Huge shout out to Prettier for [fixing](https://github.com/prettier/prettier/pull/4423) the table formatting so quickly ([see Prettier 1.13](https://prettier.io/blog/2018/05/23/1.13.0.html#format-new-describeeach-table-in-jest-23-4423-by-ikatyang))!
 
 ## New Matchers
 
@@ -105,7 +107,7 @@ As with every major release, we are making a few breaking changes to make larger
 * **Version documentation:** We added docs for each minor release back to Jest 22, and have removed all of the “Requires Jest X.X+” from the docs.
 * **Better snapshot summaries: **We overhauled the Snapshot Summary output to make obsolete snapshots more informative.
 * **Better stack traces**: We added stack traces to asynchronous errors, timeout errors, expect.assertions, and thrown non-errors. We're also indicating the column in the code frame!
-* **Better React 16 support**: Adds snapshot support for `React.Fragment`, `React.forwardRef`\*\* \*\*and `React.createContext`.
+* **Better React 16 support**: Adds snapshot support for `React.Fragment`, `React.forwardRef`, and `React.createContext`.
 
 ## Jest Summit
 
