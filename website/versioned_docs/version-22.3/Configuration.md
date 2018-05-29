@@ -184,10 +184,10 @@ For example, with the following configuration:
 
 Jest will fail if:
 
-* The `./src/components` directory has less than 40% branch or statement coverage.
-* One of the files matching the `./src/reducers/**/*.js` glob has less than 90% statement coverage.
-* The `./src/api/very-important-module.js` file has less than 100% coverage.
-* Every remaining file combined has less than 50% coverage (`global`).
+- The `./src/components` directory has less than 40% branch or statement coverage.
+- One of the files matching the `./src/reducers/**/*.js` glob has less than 90% statement coverage.
+- The `./src/api/very-important-module.js` file has less than 100% coverage.
+- Every remaining file combined has less than 50% coverage (`global`).
 
 ### `forceCoverageMatch` [array<string>]
 
@@ -325,12 +325,12 @@ Specifies notification mode. Requires `notify: true`.
 
 #### Modes
 
-* `always`: always send a notification.
-* `failure`: send a notification when tests fail.
-* `success`: send a notification when tests pass.
-* `change`: send a notification when the status changed.
-* `success-change`: send a notification when tests pass or once when it fails.
-* `failure-success`: send a notification when tests fails or once when it passes.
+- `always`: always send a notification.
+- `failure`: send a notification when tests fail.
+- `success`: send a notification when tests pass.
+- `change`: send a notification when the status changed.
+- `success-change`: send a notification when tests pass or once when it fails.
+- `failure-success`: send a notification when tests fails or once when it passes.
 
 ### `preset` [string]
 
@@ -512,10 +512,10 @@ Default: `"jest-runner"`
 
 This option allows you to use a custom runner instead of Jest's default test runner. Examples of runners include:
 
-* [`jest-runner-eslint`](https://github.com/jest-community/jest-runner-eslint)
-* [`jest-runner-mocha`](https://github.com/rogeliog/jest-runner-mocha)
-* [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc)
-* [`jest-runner-prettier`](https://github.com/keplersj/jest-runner-prettier)
+- [`jest-runner-eslint`](https://github.com/jest-community/jest-runner-eslint)
+- [`jest-runner-mocha`](https://github.com/rogeliog/jest-runner-mocha)
+- [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc)
+- [`jest-runner-prettier`](https://github.com/keplersj/jest-runner-prettier)
 
 To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
 

@@ -10,5 +10,5 @@ module.exports = function() {
     }
   }
 
-  return 4 * inside / points;
+  return (4 * inside) / points;
 };

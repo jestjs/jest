@@ -8,7 +8,7 @@
 it.each`
   left    | right
   ${true} | ${true}
-  ${true} |
+  ${true}
 `(
   'throws exception when not enough arguments are supplied $left == $right',
   ({left, right}) => {

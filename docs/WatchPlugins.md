@@ -78,7 +78,7 @@ class MyWatchPlugin {
 
 Gets called whenever there is a change in the file system
 
-* `projects: Array<config: ProjectConfig, testPaths: Array<string>`: Includes all the test paths that Jest is watching.
+- `projects: Array<config: ProjectConfig, testPaths: Array<string>`: Includes all the test paths that Jest is watching.
 
 For example:
 
@@ -128,8 +128,8 @@ Watch Usage
 
 To handle key press events from the key returned by `getUsageInfo`, you can implement the `run` method. This method returns a `Promise<boolean>` that can be resolved when the plugin wants to return control to Jest. The `boolean` specifies if Jest should rerun the tests after it gets the control back.
 
-* `globalConfig`: A representation of Jest's current global configuration
-* `updateConfigAndRun`: Allows you to trigger a test run while the interactive plugin is running.
+- `globalConfig`: A representation of Jest's current global configuration
+- `updateConfigAndRun`: Allows you to trigger a test run while the interactive plugin is running.
 
 ```javascript
 class MyWatchPlugin {

@@ -22,6 +22,6 @@ Why does this feature belong in the [Jest core platform](https://www.youtube.com
 
 Common feature proposals that do not typically make it to core:
 
-* New matchers (see [jest-extended](https://github.com/jest-community/jest-extended))
-* Changes to the default reporter (use custom reporters instead)
-* Changes to node/jsdom test environments (use custom environments instead)
+- New matchers (see [jest-extended](https://github.com/jest-community/jest-extended))
+- Changes to the default reporter (use custom reporters instead)
+- Changes to node/jsdom test environments (use custom environments instead)
