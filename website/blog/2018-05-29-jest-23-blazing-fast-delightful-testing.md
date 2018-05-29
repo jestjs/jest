@@ -85,11 +85,11 @@ See the updated CLI docs [here](https://facebook.github.io/jest/docs/en/cli.html
 
 We have completely rewritten the watch mode system to allow adding custom plugins to watch mode. Watch Mode Plugins now make it possible to hook into Jest events and provide custom menu options in the Watch Mode Menu. All of the default Watch Mode prompts are implemented as plugins in this system, and the docs to create your own are available [here](https://facebook.github.io/jest/docs/en/watch-plugins.html).
 
-With this change, we're also now able to bring back typeahead support as a Watch Mode Plugin via [](https://github.com/rogeliog/jest-plugin-filename)[jest-plugin-filename](https://github.com/jest-community/jest-plugin-filename)!
+With this change, we're also now able to bring back typeahead support as a Watch Mode Plugin via [jest-watch-typeahead](https://yarnpkg.com/en/package/jest-watch-typeahead)!
 
 ![Typeahead plugin in action](/jest/img/blog/23-typeahead.gif)
 
-See [jest-plugin-filename](https://github.com/jest-community/jest-plugin-filename) for documentation and install instructions. Huge thank you to [@rogeliog](https://twitter.com/rogeliog) for the new watch mode plugin system and the jest-plugin-filename plugin!
+See [jest-watch-typeahead](https://github.com/jest-community/jest-watch-typeahead) for documentation and install instructions. Huge thank you to [@rogeliog](https://twitter.com/rogeliog) for the new watch mode plugin system and the jest-watch-typeahead plugin!
 
 ## Breaking Changes
 
