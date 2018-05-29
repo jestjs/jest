@@ -34,16 +34,18 @@ export default (cb: Function) => (...args: any) => (
   const table = buildTable(data, keys.length, keys);
 
   if (data.length % keys.length !== 0) {
+    const error = new Error(
+      'Not enough arguments supplied for given headings:\n' +
+        EXPECTED_COLOR(keys.join(' | ')) +
+        '\n\n' +
+        'Received:\n' +
+        RECEIVED_COLOR(pretty(data)) +
+        '\n\n' +
+        `Missing ${RECEIVED_COLOR(`${data.length % keys.length}`)} arguments`,
+    );
+
     return cb(title, () => {
-      throw new Error(
-        'Not enough arguments supplied for given headings:\n' +
-          EXPECTED_COLOR(keys.join(' | ')) +
-          '\n\n' +
-          'Received:\n' +
-          RECEIVED_COLOR(pretty(data)) +
-          '\n\n' +
-          `Missing ${RECEIVED_COLOR(`${data.length % keys.length}`)} arguments`,
-      );
+      throw error;
     });
   }
 
