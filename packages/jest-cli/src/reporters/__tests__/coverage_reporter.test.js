@@ -99,10 +99,8 @@ describe('onRunComplete', () => {
       ].reduce((c, f) => {
         const file = path.resolve(f[0]);
         const override = f[1];
-        c[file] = new CoverageSummary({
-          ...covSummary,
-          ...override,
-        });
+        const obj = Object.assign({}, covSummary, override);
+        c[file] = new CoverageSummary(obj);
         return c;
       }, {});
 
