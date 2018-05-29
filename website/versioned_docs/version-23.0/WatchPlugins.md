@@ -104,7 +104,7 @@ To add a key to the watch menu, implement the `getUsageInfo` method, returning a
 class MyWatchPlugin {
   getUsageInfo(globalConfig) {
     return {
-      key: 's'.codePointAt(0),
+      key: 's',
       prompt: 'do something',
     };
   }
