@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "<rootDir>/Preprocessor.js"
+    },
+    "testEnvironment": "node"
+  }
+}

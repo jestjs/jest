@@ -1,0 +1,15 @@
+{
+  "name": "jest-environment-jsdom",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "jest-mock": "^23.0.1",
+    "jest-util": "^23.0.1",
+    "jsdom": "^11.5.1"
+  }
+}

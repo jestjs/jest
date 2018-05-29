@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot serializers renders snapshot 1`] = `
+Object {
+  "snapshot serializers works with default serializers 1": "
+<div
+  id=\\"foo\\"
+/>
+",
+  "snapshot serializers works with first plugin 1": "foo - 1",
+  "snapshot serializers works with nested serializable objects 1": "foo - bar - 2",
+  "snapshot serializers works with prepended plugins and default serializers 1": "
+<div
+  aProp={
+    Object {
+      \\"a\\": 6,
+    }
+  }
+  bProp={foo - 8}
+/>
+",
+  "snapshot serializers works with prepended plugins from expect method called once 1": "
+<div
+  aProp={
+    Object {
+      \\"a\\": 6,
+    }
+  }
+  bProp={Foo: 8}
+/>
+",
+  "snapshot serializers works with prepended plugins from expect method called twice 1": "
+<div
+  aProp={
+    Object {
+      \\"a\\": 6,
+    }
+  }
+  bProp={FOO: 8}
+/>
+",
+  "snapshot serializers works with second plugin 1": "bar - 2",
+}
+`;

@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mock with 0 calls and default name 1`] = `[MockFunction]`;
+
+exports[`mock with 0 calls and default name in React element 1`] = `
+<button
+  onClick={[MockFunction]}
+>
+  Mock me!
+</button>
+`;
+
+exports[`mock with 0 calls and non-default name 1`] = `[MockFunction MyConstructor]`;
+
+exports[`mock with 1 calls and non-default name via new in object 1`] = `
+Object {
+  "fn": [MockFunction MyConstructor] {
+    "calls": Array [
+      Array [
+        Object {
+          "name": "some fine name",
+        },
+      ],
+    ],
+    "results": Array [
+      Object {
+        "isThrow": false,
+        "value": undefined,
+      },
+    ],
+  },
+}
+`;
+
+exports[`mock with 1 calls in React element 1`] = `
+<button
+  onClick={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          "Mocking you!",
+        ],
+      ],
+      "results": Array [
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+      ],
+    }
+  }
+>
+  Mock me!
+</button>
+`;
+
+exports[`mock with 2 calls 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [],
+    Array [
+      Object {
+        "foo": "bar",
+      },
+      42,
+    ],
+  ],
+  "results": Array [
+    Object {
+      "isThrow": false,
+      "value": undefined,
+    },
+    Object {
+      "isThrow": false,
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`mock with 2 calls, 1 return, 1 throw 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      2,
+    ],
+    Array [
+      3,
+    ],
+  ],
+  "results": Array [
+    Object {
+      "isThrow": false,
+      "value": 4,
+    },
+    Object {
+      "isThrow": true,
+      "value": [Error: Error Message!],
+    },
+  ],
+}
+`;

@@ -1,0 +1,9 @@
+{
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "dependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.22.0",
+    "babel-preset-es2015": "^6.24.0"
+  }
+}

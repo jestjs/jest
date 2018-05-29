@@ -1,0 +1,11 @@
+{
+  "name": "jest-get-type",
+  "description": "A utility function to get the type of a value",
+  "version": "22.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js"
+}

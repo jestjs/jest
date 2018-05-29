@@ -1,0 +1,25 @@
+{
+  "name": "jest-runner",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "exit": "^0.1.2",
+    "graceful-fs": "^4.1.11",
+    "jest-config": "^23.0.1",
+    "jest-docblock": "^23.0.1",
+    "jest-haste-map": "^23.0.1",
+    "jest-jasmine2": "^23.0.1",
+    "jest-leak-detector": "^23.0.1",
+    "jest-message-util": "^23.0.0",
+    "jest-runtime": "^23.0.1",
+    "jest-util": "^23.0.1",
+    "jest-worker": "^23.0.1",
+    "source-map-support": "^0.5.6",
+    "throat": "^4.0.0"
+  }
+}

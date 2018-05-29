@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`trimAndFormatPath() does not trim anything 1`] = `"<dim>1234567890/1234567890/</><bold>1234.js</>"`;
+
+exports[`trimAndFormatPath() split at the path.sep index 1`] = `"<dim>.../</><bold>1234.js</>"`;
+
+exports[`trimAndFormatPath() trims dirname (longer line width) 1`] = `"<dim>...890/1234567890/</><bold>1234.js</>"`;
+
+exports[`trimAndFormatPath() trims dirname 1`] = `"<dim>...234567890/</><bold>1234.js</>"`;
+
+exports[`trimAndFormatPath() trims dirname and basename 1`] = `"<bold>...1234.js</>"`;
+
+exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 1`] = `"This string shouldn't cause you any trouble"`;
+
+exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 2`] = `"This string shouldn't cause you any trouble"`;
+
+exports[`wrapAnsiString() wraps a long string containing ansi chars 1`] = `
+"abcde <red><bold>red-
+bold</></> 12344
+56<dim>bcd</> 123t
+tttttththt
+hththththt
+hththththt
+hththththt
+hthththtet
+etetetette
+tetetetete
+tetete<bold>stnh
+snthsnth</>ss
+ot"
+`;
+
+exports[`wrapAnsiString() wraps a long string containing ansi chars 2`] = `
+"abcde red-
+bold 12344
+56bcd 123t
+tttttththt
+hththththt
+hththththt
+hththththt
+hthththtet
+etetetette
+tetetetete
+tetetestnh
+snthsnthss
+ot"
+`;

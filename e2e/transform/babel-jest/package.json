@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "babel-plugin-transform-flow-strip-types": "6.8.0"
+  },
+  "jest": {
+    "collectCoverageOnlyFrom": {
+      "<rootDir>/this-directory-is-covered/Covered.js": true,
+      "<rootDir>/this-directory-is-covered/ExcludedFromCoverage.js": true
+    },
+    "coveragePathIgnorePatterns": ["ExcludedFromCoverage"],
+    "testEnvironment": "node"
+  }
+}

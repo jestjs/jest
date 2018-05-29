@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "jsx": "react"
+  }
+}

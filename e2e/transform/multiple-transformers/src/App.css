@@ -1,0 +1,26 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+root {
+  text-align: center;
+}
+
+header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+intro {
+  font-size: large;
+}

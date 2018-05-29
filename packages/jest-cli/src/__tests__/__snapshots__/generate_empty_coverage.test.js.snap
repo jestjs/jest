@@ -1,0 +1,150 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generates an empty coverage object for a file without running it 1`] = `
+Object {
+  "b": Object {
+    "0": Array [
+      0,
+      0,
+    ],
+  },
+  "branchMap": Object {
+    "0": Object {
+      "line": 5,
+      "loc": Object {
+        "end": Object {
+          "column": 3,
+          "line": 9,
+        },
+        "start": Object {
+          "column": 2,
+          "line": 5,
+        },
+      },
+      "locations": Array [
+        Object {
+          "end": Object {
+            "column": 3,
+            "line": 9,
+          },
+          "start": Object {
+            "column": 2,
+            "line": 5,
+          },
+        },
+        Object {
+          "end": Object {
+            "column": 3,
+            "line": 9,
+          },
+          "start": Object {
+            "column": 2,
+            "line": 5,
+          },
+        },
+      ],
+      "type": "if",
+    },
+  },
+  "f": Object {
+    "0": 0,
+  },
+  "fnMap": Object {
+    "0": Object {
+      "decl": Object {
+        "end": Object {
+          "column": 11,
+          "line": 4,
+        },
+        "start": Object {
+          "column": 10,
+          "line": 4,
+        },
+      },
+      "line": 4,
+      "loc": Object {
+        "end": Object {
+          "column": 1,
+          "line": 10,
+        },
+        "start": Object {
+          "column": 20,
+          "line": 4,
+        },
+      },
+      "name": "(anonymous_0)",
+    },
+  },
+  "path": "/sum.js",
+  "s": Object {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+  },
+  "statementMap": Object {
+    "0": Object {
+      "end": Object {
+        "column": 45,
+        "line": 2,
+      },
+      "start": Object {
+        "column": 0,
+        "line": 2,
+      },
+    },
+    "1": Object {
+      "end": Object {
+        "column": 1,
+        "line": 10,
+      },
+      "start": Object {
+        "column": 10,
+        "line": 4,
+      },
+    },
+    "2": Object {
+      "end": Object {
+        "column": 3,
+        "line": 9,
+      },
+      "start": Object {
+        "column": 2,
+        "line": 5,
+      },
+    },
+    "3": Object {
+      "end": Object {
+        "column": 13,
+        "line": 6,
+      },
+      "start": Object {
+        "column": 4,
+        "line": 6,
+      },
+    },
+    "4": Object {
+      "end": Object {
+        "column": 13,
+        "line": 8,
+      },
+      "start": Object {
+        "column": 4,
+        "line": 8,
+      },
+    },
+    "5": Object {
+      "end": Object {
+        "column": 2,
+        "line": 14,
+      },
+      "start": Object {
+        "column": 0,
+        "line": 12,
+      },
+    },
+  },
+}
+`;

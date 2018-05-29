@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-jquery",
+  "devDependencies": {
+    "babel-preset-env": "*",
+    "jest": "*"
+  },
+  "dependencies": {
+    "jquery": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

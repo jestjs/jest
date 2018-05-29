@@ -1,0 +1,25 @@
+{
+  "name": "jest-config",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "babel-core": "^6.0.0",
+    "babel-jest": "^23.0.1",
+    "chalk": "^2.0.1",
+    "glob": "^7.1.1",
+    "jest-environment-jsdom": "^23.0.1",
+    "jest-environment-node": "^23.0.1",
+    "jest-get-type": "^22.1.0",
+    "jest-jasmine2": "^23.0.1",
+    "jest-regex-util": "^23.0.0",
+    "jest-resolve": "^23.0.1",
+    "jest-util": "^23.0.1",
+    "jest-validate": "^23.0.1",
+    "pretty-format": "^23.0.1"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "jest-snapshot",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "jest-diff": "^23.0.1",
+    "jest-matcher-utils": "^23.0.1",
+    "mkdirp": "^0.5.1",
+    "natural-compare": "^1.4.0",
+    "pretty-format": "^23.0.1"
+  }
+}

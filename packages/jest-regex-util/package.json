@@ -1,0 +1,10 @@
+{
+  "name": "jest-regex-util",
+  "version": "23.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js"
+}

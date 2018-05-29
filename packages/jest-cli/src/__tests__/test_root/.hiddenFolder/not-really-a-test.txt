@@ -1,0 +1,3 @@
+// not-really-a-test.txt
+
+require('../module.txt');

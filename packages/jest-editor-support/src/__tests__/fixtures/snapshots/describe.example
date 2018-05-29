@@ -1,0 +1,194 @@
+describe('DESCRIBE', () => {
+  fit('fit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it('it', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.only('it.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.skip('it.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test('test', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.only('test.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.skip('test.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xit('xit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xtest('xtest', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+})
+
+describe.only('DESCRIBE.ONLY', () => {
+  fit('fit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it('it', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.only('it.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.skip('it.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test('test', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.only('test.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.skip('test.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xit('xit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xtest('xtest', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+})
+
+describe.skip('DESCRIBE.SKIP', () => {
+  fit('fit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it('it', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.only('it.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.skip('it.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test('test', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.only('test.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.skip('test.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xit('xit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xtest('xtest', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+})
+
+fdescribe('FDESCRIBE', () => {
+  fit('fit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it('it', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.only('it.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.skip('it.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test('test', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.only('test.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.skip('test.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xit('xit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xtest('xtest', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+})
+
+xdescribe('XDESCRIBE', () => {
+  fit('fit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it('it', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.only('it.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  it.skip('it.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test('test', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.only('test.only', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  test.skip('test.skip', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xit('xit', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+  xtest('xtest', () => {
+    expect(fake).toMatchSnapshot();
+    expect(fake).toMatchSnapshot();
+  })
+})

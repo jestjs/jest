@@ -1,0 +1,22 @@
+{
+  "name": "eslint-config-fb-strict",
+  "version": "22.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "eslint-config-fbjs": "^2.0.1"
+  },
+  "peerDependencies": {
+    "babel-eslint": "^7.2.3 || ^8.0.0",
+    "eslint": "^4.2.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-flowtype": "^2.35.0",
+    "eslint-plugin-jest": "^21.0.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.1.0",
+    "eslint-plugin-relay": "~0.0.8"
+  }
+}

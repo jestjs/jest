@@ -1,0 +1,26 @@
+{
+  "name": "jest-jasmine2",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "co": "^4.6.0",
+    "expect": "^23.0.1",
+    "is-generator-fn": "^1.0.0",
+    "jest-diff": "^23.0.1",
+    "jest-each": "^23.0.1",
+    "jest-matcher-utils": "^23.0.1",
+    "jest-message-util": "^23.0.0",
+    "jest-snapshot": "^23.0.1",
+    "jest-util": "^23.0.1",
+    "pretty-format": "^23.0.1"
+  },
+  "devDependencies": {
+    "jest-runtime": "^23.0.1"
+  }
+}

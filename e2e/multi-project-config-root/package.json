@@ -1,0 +1,18 @@
+{
+  "jest": {
+    "projects": [
+        {
+            "rootDir": "<rootDir>/foo",
+            "testPathIgnorePatterns": [
+                "<rootDir>/__tests__/boggus-foo.test.js"
+            ]
+        },
+        {
+            "rootDir": "<rootDir>/bar",
+            "testPathIgnorePatterns": [
+                "<rootDir>/__tests__/boggus-bar.test.js"
+            ]
+        }
+    ]
+  }
+}

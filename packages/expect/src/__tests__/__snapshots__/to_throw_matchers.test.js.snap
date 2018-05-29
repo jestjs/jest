@@ -1,0 +1,251 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`.toThrow() error class did not throw at all 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>type</><dim>)</>
+
+Expected the function to throw an error of type:
+  <green>\\"Err\\"</>
+But it didn't throw anything."
+`;
+
+exports[`.toThrow() error class threw, but class did not match 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>type</><dim>)</>
+
+Expected the function to throw an error of type:
+  <green>\\"Err2\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrow() error class threw, but should not have 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrow(</><green>type</><dim>)</>
+
+Expected the function not to throw an error of type:
+  <green>\\"Err\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrow() invalid actual 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>undefined</><dim>)</>
+
+Received value must be a function, but instead \\"string\\" was found"
+`;
+
+exports[`.toThrow() invalid arguments 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrow(</><green>number</><dim>)</>
+
+Unexpected argument passed.
+Expected: <green>\\"string\\"</>, <green>\\"Error (type)\\"</> or <green>\\"regexp\\"</>.
+Got:
+  string: <green>\\"111\\"</>"
+`;
+
+exports[`.toThrow() promise/async throws if Error-like object is returned did not throw at all 1`] = `
+[Error: [2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mundefined[39m[2m)[22m
+
+Expected the function to throw an error.
+But it didn't throw anything.]
+`;
+
+exports[`.toThrow() promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
+[Error: [2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
+
+Expected the function to throw an error of type:
+  [32m"Err2"[39m
+Instead, it threw:
+[31m  Error[39m
+[31m      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m]
+`;
+
+exports[`.toThrow() promise/async throws if Error-like object is returned threw, but should not have 1`] = `
+[Error: [2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[2m)[22m
+
+Expected the function not to throw an error.
+Instead, it threw:
+[31m  Error[39m
+[31m      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m]
+`;
+
+exports[`.toThrow() regexp did not throw at all 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>regexp</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>/apple/</>
+But it didn't throw anything."
+`;
+
+exports[`.toThrow() regexp threw, but message did not match 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>regexp</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>/banana/</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrow() regexp threw, but should not have 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrow(</><green>regexp</><dim>)</>
+
+Expected the function not to throw an error matching:
+  <green>/apple/</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrow() strings did not throw at all 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"apple\\"</>
+But it didn't throw anything."
+`;
+
+exports[`.toThrow() strings threw, but message did not match 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"banana\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrow() strings threw, but should not have 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrow(</><green>string</><dim>)</>
+
+Expected the function not to throw an error matching:
+  <green>\\"apple\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrowError() error class did not throw at all 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>type</><dim>)</>
+
+Expected the function to throw an error of type:
+  <green>\\"Err\\"</>
+But it didn't throw anything."
+`;
+
+exports[`.toThrowError() error class threw, but class did not match 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>type</><dim>)</>
+
+Expected the function to throw an error of type:
+  <green>\\"Err2\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrowError() error class threw, but should not have 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrowError(</><green>type</><dim>)</>
+
+Expected the function not to throw an error of type:
+  <green>\\"Err\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrowError() invalid actual 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>undefined</><dim>)</>
+
+Received value must be a function, but instead \\"string\\" was found"
+`;
+
+exports[`.toThrowError() invalid arguments 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrowError(</><green>number</><dim>)</>
+
+Unexpected argument passed.
+Expected: <green>\\"string\\"</>, <green>\\"Error (type)\\"</> or <green>\\"regexp\\"</>.
+Got:
+  string: <green>\\"111\\"</>"
+`;
+
+exports[`.toThrowError() promise/async throws if Error-like object is returned did not throw at all 1`] = `
+[Error: [2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mundefined[39m[2m)[22m
+
+Expected the function to throw an error.
+But it didn't throw anything.]
+`;
+
+exports[`.toThrowError() promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
+[Error: [2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
+
+Expected the function to throw an error of type:
+  [32m"Err2"[39m
+Instead, it threw:
+[31m  Error[39m
+[31m      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m]
+`;
+
+exports[`.toThrowError() promise/async throws if Error-like object is returned threw, but should not have 1`] = `
+[Error: [2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[2m)[22m
+
+Expected the function not to throw an error.
+Instead, it threw:
+[31m  Error[39m
+[31m      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m]
+`;
+
+exports[`.toThrowError() regexp did not throw at all 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>regexp</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>/apple/</>
+But it didn't throw anything."
+`;
+
+exports[`.toThrowError() regexp threw, but message did not match 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>regexp</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>/banana/</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrowError() regexp threw, but should not have 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrowError(</><green>regexp</><dim>)</>
+
+Expected the function not to throw an error matching:
+  <green>/apple/</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrowError() strings did not throw at all 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"apple\\"</>
+But it didn't throw anything."
+`;
+
+exports[`.toThrowError() strings threw, but message did not match 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrowError(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"banana\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrowError() strings threw, but should not have 1`] = `
+"<dim>expect(</><red>function</><dim>).not.toThrowError(</><green>string</><dim>)</>
+
+Expected the function not to throw an error matching:
+  <green>\\"apple\\"</>
+Instead, it threw:
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;

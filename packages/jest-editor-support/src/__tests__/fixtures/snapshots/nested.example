@@ -1,0 +1,10 @@
+describe('outer describe', () => {
+  it('outer it', () => {
+    describe('inner describe', () => {
+      it('inner it', () => {
+        expect(fake).toMatchSnapshot();
+        expect(fake).toMatchSnapshot();
+      })
+    })
+  })
+})

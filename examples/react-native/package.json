@@ -1,0 +1,23 @@
+{
+  "name": "example-react-native",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "16.0.0",
+    "react-native": "^0.51.0"
+  },
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-preset-env": "*",
+    "babel-preset-react-native": "*",
+    "jest": "*",
+    "react-test-renderer": "*"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

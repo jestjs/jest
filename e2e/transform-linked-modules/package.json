@@ -1,0 +1,13 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/__tests__",
+      "<rootDir>/ignored/"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/Preprocessor.js"
+    }
+  }
+}

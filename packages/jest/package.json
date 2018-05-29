@@ -1,0 +1,48 @@
+{
+  "name": "jest",
+  "description": "Delightful JavaScript Testing.",
+  "version": "23.0.1",
+  "main": "build/jest.js",
+  "dependencies": {
+    "import-local": "^1.0.0",
+    "jest-cli": "^23.0.1"
+  },
+  "bin": {
+    "jest": "./bin/jest.js"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest"
+  },
+  "homepage": "http://facebook.github.io/jest/",
+  "license": "MIT",
+  "keywords": [
+    "ava",
+    "babel",
+    "coverage",
+    "easy",
+    "expect",
+    "facebook",
+    "immersive",
+    "instant",
+    "jasmine",
+    "jest",
+    "jsdom",
+    "mocha",
+    "mocking",
+    "painless",
+    "qunit",
+    "runner",
+    "sandboxed",
+    "snapshot",
+    "tap",
+    "tape",
+    "test",
+    "testing",
+    "typescript",
+    "watch"
+  ]
+}

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the most recent duplicate is fixed 1`] = `
+"The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or blacklist files until there remains only one of these:
+
+  * \`/fruits/blueberry.js\` (module)
+  * \`/fruits/pear.js\` (module)
+"
+`;
+
+exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the oldest version of the duplicates is fixed 1`] = `
+"The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or blacklist files until there remains only one of these:
+
+  * \`/fruits/blueberry.js\` (module)
+  * \`/fruits/pear.js\` (module)
+"
+`;
+
+exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `
+[Error: jest-haste-map: @providesModule naming collision:
+  Duplicate module name: Strawberry
+  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js
+
+This error is caused by a @providesModule declaration with the same name across two different files.]
+`;
+
+exports[`HasteMap tries to crawl using node as a fallback 1`] = `
+"jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
+  Usually this happens when watchman isn't running. Create an empty \`.watchmanconfig\` file in your project's root folder or initialize a git or hg repository in your project.
+  Error: watchman error"
+`;
+
+exports[`HasteMap warns on duplicate mock files 1`] = `
+"jest-haste-map: duplicate manual mock found:
+  Module name: subdir/blueberry
+  Duplicate Mock path: /fruits2/__mocks__/subdir/blueberry.js
+This warning is caused by two manual mock files with the same file name.
+Jest will use the mock file found in: 
+/fruits2/__mocks__/subdir/blueberry.js
+ Please delete one of the following two files: 
+ /fruits1/__mocks__/subdir/blueberry.js
+/fruits2/__mocks__/subdir/blueberry.js
+
+"
+`;
+
+exports[`HasteMap warns on duplicate module ids 1`] = `
+"jest-haste-map: @providesModule naming collision:
+  Duplicate module name: Strawberry
+  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js
+
+This warning is caused by a @providesModule declaration with the same name across two different files."
+`;

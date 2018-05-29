@@ -1,0 +1,59 @@
+.fixedHeaderContainer header img.logo {
+	height: 60px;
+	margin-top: -20px;
+	margin-bottom: -20px;
+	margin-right: -20px;
+}
+
+div.jest-repl {
+  margin: 0 5%;
+  position: relative;
+  width: 600px;
+}
+div.jest-repl iframe {
+  display: block;
+  margin: 0 auto 10px;
+  min-height: 420px;
+  width: 100%;
+}
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+  div.jest-repl {
+    display: none;
+  }
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  div.jest-repl {
+    display: none;
+  }
+}
+@media only screen and (max-width: 1023px) {
+  div.jest-repl {
+    display: none;
+  }
+}
+
+div.video {
+  margin: 0 5%;
+  position: relative;
+  width: 100%;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+div.video iframe {
+  display: block;
+  margin: 0 auto 10px;
+  min-height: 340px;
+  width: 100%;
+}
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+  div.video {
+    display: none;
+  }
+}
+@media only screen and (max-width: 1023px) {
+  div.video {
+    display: none;
+  }
+}

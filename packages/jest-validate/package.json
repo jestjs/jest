@@ -1,0 +1,16 @@
+{
+  "name": "jest-validate",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "jest-get-type": "^22.1.0",
+    "leven": "^2.1.0",
+    "pretty-format": "^23.0.1"
+  }
+}

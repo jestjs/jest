@@ -1,0 +1,16 @@
+{
+  "name": "jest-editor-support",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "babel-traverse": "^6.14.1",
+    "babylon": "^6.14.1",
+    "jest-snapshot": "^23.0.1"
+  },
+  "typings": "index.d.ts"
+}

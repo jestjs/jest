@@ -1,0 +1,175 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`installEach .describe Table Tagged Template Literal throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .describe Table Tagged Template Literal throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .fdescribe Table Tagged Template Literal throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .fdescribe Table Tagged Template Literal throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .fit Table Tagged Template Literal throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .fit Table Tagged Template Literal throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .it Table Tagged Template Literal throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .it Table Tagged Template Literal throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .xdescribe Table Tagged Template Literal throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .xdescribe Table Tagged Template Literal throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .xit Table Tagged Template Literal throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`installEach .xit Table Tagged Template Literal throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;

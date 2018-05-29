@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-snapshot",
+  "dependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-preset-env": "*",
+    "babel-preset-react": "*",
+    "jest": "*",
+    "react-test-renderer": "*",
+    "regenerator-runtime": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

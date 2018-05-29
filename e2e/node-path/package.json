@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.jsx?$": "../../packages/babel-jest"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defines asymmetric matchers 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>{\\"value\\": toBeDivisibleBy<2>}</>
+Received:
+  <red>{\\"value\\": 3}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"value\\": toBeDivisibleBy<2>,</>
+<red>+   \\"value\\": 3,</>
+<dim>  }</>"
+`;
+
+exports[`defines asymmetric matchers that can be prefixed by not 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected value to equal:
+  <green>{\\"value\\": not.toBeDivisibleBy<2>}</>
+Received:
+  <red>{\\"value\\": 2}</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"value\\": not.toBeDivisibleBy<2>,</>
+<red>+   \\"value\\": 2,</>
+<dim>  }</>"
+`;
+
+exports[`is available globally 1`] = `"expected 15 to be divisible by 2"`;
+
+exports[`is ok if there is no message specified 1`] = `"<red>No message was specified for this matcher.</>"`;

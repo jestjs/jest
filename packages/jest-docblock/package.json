@@ -1,0 +1,13 @@
+{
+  "name": "jest-docblock",
+  "version": "23.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "detect-newline": "^2.1.0"
+  }
+}

@@ -1,0 +1,12 @@
+**/coverage/**
+**/node_modules/**
+bin/
+flow-typed/**
+packages/*/build/**
+packages/*/build-es5/**
+website/blog
+website/build
+website/node_modules
+website/i18n/*.js
+website/translated_docs
+!.eslintrc.js

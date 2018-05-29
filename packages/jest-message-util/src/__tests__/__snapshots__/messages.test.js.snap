@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`.formatExecError() 1`] = `
+"  <bold>● </>Test suite failed to run
+
+    Whoops!
+"
+`;
+
+exports[`formatStackTrace should strip node internals 1`] = `
+"<bold><red>  <bold>● <bold>Unix test</></>
+
+      
+        Expected value to be of type:
+          \\"number\\"
+        Received:
+          \\"\\"
+        type:
+          \\"string\\"
+<dim></>
+<dim>      <dim>at Object.it (<dim>__tests__/test.js<dim>:8:14)<dim></>
+"
+`;
+
+exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
+"<bold><red>  <bold>● <bold>Unix test</></>
+
+      at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
+<dim></>
+<dim>      <dim>at Object.addResult (<dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)<dim></>
+<dim>      <dim>at Object.it (<dim>build/__tests__/messages-test.js<dim>:45:41)<dim></>
+"
+`;
+
+exports[`should not exclude vendor from stack trace 1`] = `
+"<bold><red>  <bold>● <bold>Vendor test</></>
+
+      
+        Expected value to be of type:
+          \\"number\\"
+        Received:
+          \\"\\"
+        type:
+          \\"string\\"
+<dim></>
+<dim>      <dim>at Object.it (<dim>__tests__/vendor/cool_test.js<dim>:6:666)<dim></>
+<dim>      <dim>at Object.asyncFn (<dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)<dim></>
+"
+`;

@@ -1,0 +1,24 @@
+{
+  "name": "jest-website",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "docusaurus-start",
+    "build": "docusaurus-build",
+    "gh-pages": "docusaurus-publish",
+    "examples": "docusaurus-examples",
+    "crowdin-upload":
+      "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
+    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
+    "publish-gh-pages": "docusaurus-publish",
+    "write-translations": "docusaurus-write-translations",
+    "version": "docusaurus-version",
+    "rename-version": "docusaurus-rename-version"
+  },
+  "dependencies": {
+    "docusaurus": "^1.0.6"
+  },
+  "devDependencies": {
+    "crowdin-cli": "^0.3.0"
+  }
+}
