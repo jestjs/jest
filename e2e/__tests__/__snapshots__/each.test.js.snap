@@ -29,7 +29,7 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
 
     Missing 1 arguments
 
-      at packages/jest-each/build/bind.js:81:17
+      at packages/jest-each/build/bind.js:82:17
 
 "
 `;
