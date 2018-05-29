@@ -6,6 +6,7 @@
 
 ### Fixes
 
+* `[jest-each]` Stop test title concatenating extra args ([##6346](https://github.com/facebook/jest/pull/#6346))
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
 * `[jest-cli]` Normalize slashes in paths in CLI output on Windows ([#6310](https://github.com/facebook/jest/pull/6310))
 
