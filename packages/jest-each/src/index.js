@@ -8,24 +8,47 @@
  */
 
 import bind from './bind';
-import arrayEach from './array';
-import templateEach from './template';
 
-const each = (...args: Array<mixed>) => {
-  if (args.length > 1) {
-    return templateEach(global)(...args);
-  }
-
-  return arrayEach(global)(...args);
+type GlobalCallbacks = {
+  test(title: string, test: Function): void,
+  xtest(title: string, test: Function): void,
+  it(title: string, test: Function): void,
+  fit(title: string, test: Function): void,
+  xit(title: string, test: Function): void,
+  describe(title: string, test: Function): void,
+  fdescribe(title: string, test: Function): void,
+  xdescribe(title: string, test: Function): void,
 };
 
-each.withGlobal = g => (...args: Array<mixed>) => {
-  if (args.length > 1) {
-    return templateEach(g)(...args);
-  }
+const install = (g: GlobalCallbacks, ...args: Array<mixed>) => {
+  const test = (title: string, test: Function) =>
+    bind(g.test)(...args)(title, test);
+  test.skip = bind(g.test.skip)(...args);
+  test.only = bind(g.test.only)(...args);
 
-  return arrayEach(g)(...args);
+  const it = (title: string, test: Function) =>
+    bind(g.it)(...args)(title, test);
+  it.skip = bind(g.it.skip)(...args);
+  it.only = bind(g.it.only)(...args);
+
+  const xit = bind(g.xit)(...args);
+  const fit = bind(g.fit)(...args);
+  const xtest = bind(g.xtest)(...args);
+
+  const describe = (title: string, suite: Function) =>
+    bind(g.describe)(...args)(title, suite);
+  describe.skip = bind(g.describe.skip)(...args);
+  describe.only = bind(g.describe.only)(...args);
+  const fdescribe = bind(g.fdescribe)(...args);
+  const xdescribe = bind(g.xdescribe)(...args);
+
+  return {describe, fdescribe, fit, it, test, xdescribe, xit, xtest};
 };
+
+const each = (...args: Array<mixed>) => install(global, ...args);
+
+each.withGlobal = (g: GlobalCallbacks) => (...args: Array<mixed>) =>
+  install(g, ...args);
 
 export {bind};
 
