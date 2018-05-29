@@ -10,6 +10,9 @@
 
 const runJest = require('../runJest');
 const {extractSummary} = require('../Utils');
+const ConditionalTest = require('../../scripts/ConditionalTest');
+
+ConditionalTest.skipSuiteOnJestCircus();
 
 const testFiles = [
   'fail.test.js',
