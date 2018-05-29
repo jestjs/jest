@@ -520,6 +520,11 @@ export const options = {
       'use for snapshot testing.',
     type: 'array',
   },
+  snapshotTag: {
+    description:
+      "A tag to be appended to Jest's snapshots file name. It may not contain '.' in it.",
+    type: 'string',
+  },
   testEnvironment: {
     description: 'Alias for --env',
     type: 'string',

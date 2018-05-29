@@ -100,7 +100,13 @@ export default ({
     });
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  const snapshotTag = config.snapshotTag || globalConfig.snapshotTag || '';
+
+  const snapshotState = new SnapshotState(testPath, {
+    expand,
+    snapshotTag,
+    updateSnapshot,
+  });
   setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

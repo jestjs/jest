@@ -13,11 +13,14 @@ const chalk = require('chalk');
 
 const {
   getSnapshotData,
+  getSnapshotExtension,
   getSnapshotPath,
   keyToTestName,
   saveSnapshotFile,
   serialize,
   testNameToKey,
+  SNAPSHOT_FOLDER,
+  SNAPSHOT_EXTENSION,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
@@ -54,6 +57,18 @@ test('getSnapshotPath()', () => {
   expect(getSnapshotPath('/abc/cde/a.test.js')).toBe(
     path.join('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
   );
+  expect(getSnapshotPath('/abc/cde/a.test.js')).toBe(
+    path.join('/abc', 'cde', SNAPSHOT_FOLDER, 'a.test.js.snap'),
+  );
+  expect(getSnapshotPath('/abc/cde/a.test.js', 'someSnapshotTag')).toBe(
+    path.join('/abc', 'cde', '__snapshots__', 'a.test.js.someSnapshotTag.snap'),
+  );
+});
+
+test('getSnapshotExtension()', () => {
+  expect(getSnapshotExtension()).toBe('.snap');
+  expect(getSnapshotExtension('')).toBe(`.${SNAPSHOT_EXTENSION}`);
+  expect(getSnapshotExtension('someSnapshotTag')).toBe('.someSnapshotTag.snap');
 });
 
 test('saveSnapshotFile() works with \r\n', () => {

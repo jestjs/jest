@@ -108,6 +108,7 @@ const validConfig = {
   setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
+  snapshotTag: 'valid',
   testEnvironment: 'jest-environment-jsdom',
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],

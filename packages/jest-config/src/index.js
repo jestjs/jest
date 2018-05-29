@@ -82,8 +82,8 @@ export function readConfig(
     configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
     rawOptions = readConfigFileAndSetRootDir(configPath);
   }
-
   const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
+
   const {globalConfig, projectConfig} = getConfigs(options);
   return {
     configPath,
@@ -137,6 +137,7 @@ const getConfigs = (
       runTestsByPath: options.runTestsByPath,
       silent: options.silent,
       skipFilter: options.skipFilter,
+      snapshotTag: options.snapshotTag,
       testFailureExitCode: options.testFailureExitCode,
       testNamePattern: options.testNamePattern,
       testPathPattern: options.testPathPattern,
@@ -183,6 +184,7 @@ const getConfigs = (
       skipFilter: options.skipFilter,
       skipNodeResolution: options.skipNodeResolution,
       snapshotSerializers: options.snapshotSerializers,
+      snapshotTag: options.snapshotTag,
       testEnvironment: options.testEnvironment,
       testEnvironmentOptions: options.testEnvironmentOptions,
       testLocationInResults: options.testLocationInResults,

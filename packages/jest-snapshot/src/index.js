@@ -22,21 +22,34 @@ import * as utils from './utils';
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
-const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
+const cleanup = (
+  hasteFS: HasteFS,
+  update: SnapshotUpdateState,
+  snapshotTag: ?string,
+) => {
   const pattern = '\\.' + utils.SNAPSHOT_EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
   const filesRemoved = files
-    .filter(
-      snapshotFile =>
-        !fileExists(
-          path.resolve(
-            path.dirname(snapshotFile),
-            '..',
-            path.basename(snapshotFile, '.' + utils.SNAPSHOT_EXTENSION),
-          ),
-          hasteFS,
-        ),
-    )
+    .filter(snapshotFile => {
+      const snapshotFilename = path.basename(
+        snapshotFile,
+        '.' + utils.SNAPSHOT_EXTENSION,
+      );
+      if (snapshotTag) {
+        const doesFileExists = path.resolve(
+          path.dirname(snapshotFile),
+          '..',
+          snapshotFilename
+            .split('.', snapshotFilename.split('.').length - 1)
+            .join('.'),
+        );
+        if (doesFileExists) return false;
+      }
+      return !fileExists(
+        path.resolve(path.dirname(snapshotFile), '..', snapshotFilename),
+        hasteFS,
+      );
+    })
     .map(snapshotFile => {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);

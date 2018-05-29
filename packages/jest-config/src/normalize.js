@@ -547,6 +547,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
+      case 'snapshotTag':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
