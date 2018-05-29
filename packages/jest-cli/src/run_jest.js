@@ -58,7 +58,9 @@ const getTestPaths = async (
   }
 
   const shouldTestArray = await Promise.all(
-    data.tests.map(test => jestHooks.shouldRunTestSuite(test.path)),
+    data.tests.map(test =>
+      jestHooks.shouldRunTestSuite(test.path, test.context.config),
+    ),
   );
 
   const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);

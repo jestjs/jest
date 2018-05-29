@@ -61,11 +61,11 @@ class JestHooks {
         this._listeners.onTestRunComplete.forEach(listener =>
           listener(results),
         ),
-      shouldRunTestSuite: async testPath =>
+      shouldRunTestSuite: async (testPath, config) =>
         Promise.all(
-          this._listeners.shouldRunTestSuite.map(listener =>
-            listener(testPath),
-          ),
+          this._listeners.shouldRunTestSuite.map(listener => {
+            return listener(testPath, config);
+          }),
         ).then(result =>
           result.every(shouldRunTestSuite => shouldRunTestSuite),
         ),
