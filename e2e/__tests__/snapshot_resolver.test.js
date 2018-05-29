@@ -9,25 +9,16 @@ const runJest = require('../runJest');
 
 const snapshotDir = path.resolve(
   __dirname,
-  path.join('..', 'snapshot-resolver', '__snapshots__'),
+  '../snapshot-resolver/__snapshots__',
 );
 const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
 
-const fileExists = filePath => {
-  try {
-    return fs.statSync(filePath).isFile();
-  } catch (e) {}
-  return false;
-};
-
 describe('Custom snapshot resolver', () => {
   const cleanup = () => {
-    [snapshotFile].forEach(file => {
-      if (fileExists(file)) {
-        fs.unlinkSync(file);
-      }
-    });
-    if (fileExists(snapshotDir)) {
+    if (fs.existsSync(snapshotFile)) {
+      fs.unlinkSync(snapshotFile);
+    }
+    if (fs.existsSync(snapshotDir)) {
       fs.rmdirSync(snapshotDir);
     }
   };
@@ -39,12 +30,10 @@ describe('Custom snapshot resolver', () => {
     const result = runJest('snapshot-resolver', ['-w=1', '--ci=false']);
 
     const info = result.stderr.toString();
-    expect(info).toMatch('1 snapshot written in 1 test suite');
+    expect(info).toMatch('1 snapshot written from 1 test suite');
 
     // $FlowFixMe dynamic require
     const content = require(snapshotFile);
-    expect(content['snapshots are written to custom location 1']).not.toBe(
-      undefined,
-    );
+    expect(content['snapshots are written to custom location 1']).toBeDefined();
   });
 });

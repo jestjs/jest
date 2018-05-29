@@ -1,5 +1,6 @@
 import type {ProjectConfig, Path} from 'types/Config';
 import type {SnapshotResolver} from 'types/SnapshotResolver';
+import chalk from 'chalk';
 import path from 'path';
 
 export const EXTENSION = 'snap';
@@ -60,7 +61,9 @@ function createCustomSnapshotResolver(
 
 function mustImplement(functionName: string) {
   return (
-    `Custom snapshot resolver must implement a \`${functionName}\` function.\n\n` +
-    'Documentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver'
+    chalk.bold(
+      `Custom snapshot resolver must implement a \`${functionName}\` function.`,
+    ) +
+    '\nDocumentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver'
   );
 }

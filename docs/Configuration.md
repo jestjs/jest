@@ -646,8 +646,7 @@ For example, Jest ships with several plug-ins to `jasmine` that work by monkey-p
 
 Default: `undefined`
 
-The path to a module that can resolve test<->snapshot path. This config option
-lets you customize where Jest stores that snapshot files on disk.
+The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores that snapshot files on disk.
 
 Example snapshot resolver module:
 

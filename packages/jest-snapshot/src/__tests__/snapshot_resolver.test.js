@@ -1,4 +1,3 @@
-'use strict';
 const path = require('path');
 const {buildSnapshotResolver} = require('../snapshot_resolver');
 
@@ -26,7 +25,7 @@ describe('defaults', () => {
   it('resolveTestPath()', () => {
     expect(
       snapshotResolver.resolveTestPath('/abc/cde/__snapshots__/a.test.js.snap'),
-    ).toBe(path.resolve('/abc', 'cde', 'a.test.js'));
+    ).toBe(path.resolve('/abc/cde/a.test.js'));
   });
 });
 
@@ -53,9 +52,9 @@ describe('custom resolver in project config', () => {
   it('resolveSnapshotPath()', () => {
     expect(
       snapshotResolver.resolveSnapshotPath(
-        path.resolve('/abc', 'cde', '__tests__', 'a.test.js'),
+        path.resolve('/abc/cde/__tests__/a.test.js'),
       ),
-    ).toBe(path.resolve('/abc', 'cde', '__snapshots__', 'a.test.js.snap'));
+    ).toBe(path.resolve('/abc/cde/__snapshots__/a.test.js.snap'));
   });
 
   it('resolveTestPath()', () => {
@@ -63,7 +62,7 @@ describe('custom resolver in project config', () => {
       snapshotResolver.resolveTestPath(
         path.resolve('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
       ),
-    ).toBe(path.resolve('/abc', 'cde', '__tests__', 'a.test.js'));
+    ).toBe(path.resolve('/abc/cde/__tests__/a.test.js'));
   });
 });
 
