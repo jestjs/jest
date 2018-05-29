@@ -37,7 +37,6 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
       10 |   \${true} | \${true}
       11 |   \${true} |
 
-      at packages/jest-each/build/bind.js:80:23
       at __tests__/each-exception.test.js:8:1
 
 "

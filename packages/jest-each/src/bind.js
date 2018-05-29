@@ -16,43 +16,45 @@ type Table = Array<Array<any>>;
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 
-export default (cb: Function) => (...args: any) => (
-  title: string,
-  test: Function,
-): void => {
-  if (args.length === 1) {
-    const table: Table = args[0];
+export default (cb: Function) => (...args: any) =>
+  function eachBind(title: string, test: Function): void {
+    if (args.length === 1) {
+      const table: Table = args[0];
+      return table.forEach(row =>
+        cb(util.format(title, ...row), applyRestParams(row, test)),
+      );
+    }
+
+    const templateStrings = args[0];
+    const data = args.slice(1);
+
+    const keys = getHeadingKeys(templateStrings[0]);
+    const table = buildTable(data, keys.length, keys);
+
+    if (data.length % keys.length !== 0) {
+      const error = new Error(
+        'Not enough arguments supplied for given headings:\n' +
+          EXPECTED_COLOR(keys.join(' | ')) +
+          '\n\n' +
+          'Received:\n' +
+          RECEIVED_COLOR(pretty(data)) +
+          '\n\n' +
+          `Missing ${RECEIVED_COLOR(`${data.length % keys.length}`)} arguments`,
+      );
+
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, eachBind);
+      }
+
+      return cb(title, () => {
+        throw error;
+      });
+    }
+
     return table.forEach(row =>
-      cb(util.format(title, ...row), applyRestParams(row, test)),
+      cb(interpolate(title, row), applyObjectParams(row, test)),
     );
-  }
-
-  const templateStrings = args[0];
-  const data = args.slice(1);
-
-  const keys = getHeadingKeys(templateStrings[0]);
-  const table = buildTable(data, keys.length, keys);
-
-  if (data.length % keys.length !== 0) {
-    const error = new Error(
-      'Not enough arguments supplied for given headings:\n' +
-        EXPECTED_COLOR(keys.join(' | ')) +
-        '\n\n' +
-        'Received:\n' +
-        RECEIVED_COLOR(pretty(data)) +
-        '\n\n' +
-        `Missing ${RECEIVED_COLOR(`${data.length % keys.length}`)} arguments`,
-    );
-
-    return cb(title, () => {
-      throw error;
-    });
-  }
-
-  return table.forEach(row =>
-    cb(interpolate(title, row), applyObjectParams(row, test)),
-  );
-};
+  };
 
 const applyRestParams = (params: Array<any>, test: Function) => {
   if (params.length < test.length) return done => test(...params, done);
