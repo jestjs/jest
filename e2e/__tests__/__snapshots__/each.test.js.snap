@@ -29,7 +29,7 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
 
     Missing 1 arguments
 
-      at packages/jest-each/build/bind.js:81:17
+      at packages/jest-each/build/bind.js:84:17
 
 "
 `;
@@ -68,6 +68,9 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
   ✓ template table fails on one row expected: true == true
   ✕ template table fails on all rows expected: 1 == 2
   ✕ template table fails on all rows expected: 3 == 4
+  ✕ The word red contains the letter 'z'
+  ✕ The word green contains the letter 'z'
+  ✕ The word bean contains the letter 'z'
   template table describe fails on all rows expected a == b
     ✕ fails
   template table describe fails on all rows expected c == d
@@ -246,6 +249,57 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       64 | );
 
       at __tests__/failure.test.js:61:20
+
+  ● The word red contains the letter 'z'
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      67 |   \\"The word %s contains the letter 'z'\\",
+      68 |   word => {
+    > 69 |     expect(/z/.test(word)).toBe(true);
+         |                            ^
+      70 |   }
+      71 | );
+      72 |
+
+      at __tests__/failure.test.js:69:28
+
+  ● The word green contains the letter 'z'
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      67 |   \\"The word %s contains the letter 'z'\\",
+      68 |   word => {
+    > 69 |     expect(/z/.test(word)).toBe(true);
+         |                            ^
+      70 |   }
+      71 | );
+      72 |
+
+      at __tests__/failure.test.js:69:28
+
+  ● The word bean contains the letter 'z'
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      67 |   \\"The word %s contains the letter 'z'\\",
+      68 |   word => {
+    > 69 |     expect(/z/.test(word)).toBe(true);
+         |                            ^
+      70 |   }
+      71 | );
+      72 |
+
+      at __tests__/failure.test.js:69:28
 
 "
 `;
