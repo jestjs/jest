@@ -1,5 +1,5 @@
 ---
-title: Jest 23: 🚀 Blazing Fast Delightful Testing
+title: Jest 23: 🔥 Blazing Fast Delightful Testing
 author: Rick Hanlon II
 authorURL: https://twitter.com/rickhanlonii
 authorFBID: 160800566
@@ -23,7 +23,7 @@ See the Interactive Snapshot Mode docs [here](https://facebook.github.io/jest/do
 
 ## Snapshot Property Matchers
 
-Often times, objects you're snapshotting contain generated values like Dates and IDs. Jest now allows you to pass properties to the snapshot matcher which specify the structure of the data instead of the specific values. These property matchers are then verified before serializing the matcher type (instead of the value), giving you consistent snapshot results across test runs.
+Often, objects you're snapshotting contain generated values like Dates and IDs. Jest now allows you to pass properties to the snapshot matcher which specify the structure of the data instead of the specific values. These property matchers are then verified before serializing the matcher type (instead of the value), giving you consistent snapshot results across test runs.
 
 ![Snapshot Property Matchers](/jest/img/blog/23-snapshot-matchers.png)
 
@@ -45,7 +45,7 @@ Asymmetric matchers are a great tool to use when you only care about asymmetric 
 
 ## Jest Each
 
-[@mattphillipsio](https://twitter.com/mattphillipsio) has donated the `jest-each` package to Jest Core (thanks Matt!). jest-each is a library inspired by [mocha-each](https://yarnpkg.com/en/package/mocha-each) and [Spock Data Tables](http://spockframework.org/spock/docs/1.1/data_driven_testing.html#data-tables) which allows you to define a table of test cases, and then run a test for each row with the specified column values. We support both array types and template literals for all flavors of `describe` and `test`. Docs are available [here](https://facebook.github.io/jest/docs/en/api.html#testeachtable-name-fn), and for those not on Jest 23 yet, we're still publishing [jest-each](https://yarnpkg.com/en/package/jest-each) separately!
+[@mattphillipsio](https://twitter.com/mattphillipsio) has donated the `jest-each` package to Jest Core (thanks Matt!). `jest-each` is a library inspired by [`mocha-each`](https://yarnpkg.com/en/package/mocha-each) and [Spock Data Tables](http://spockframework.org/spock/docs/1.1/data_driven_testing.html#data-tables) which allows you to define a table of test cases, and then run a test for each row with the specified column values. We support both array types and template literals for all flavors of `describe` and `test`. Docs are available [here](https://facebook.github.io/jest/docs/en/api.html#testeachtable-name-fn), and for those not on Jest 23 yet, we're still publishing [`jest-each`](https://yarnpkg.com/en/package/jest-each) separately!
 
 ![jest-each in action](/jest/img/blog/23-jest-each.png)
 
@@ -69,7 +69,7 @@ See the updated expect docs [here](https://facebook.github.io/jest/docs/en/expec
 
 ## Debug Hanging Tests
 
-A common issue we see on the issue tracker relates to “Jest” hanging after a test run. This is usually due to app code leaving handles open, preventing Jest from exiting. In the past, users have resorted to `—forceExit` to fix (not recommended).
+A common issue we see on the issue tracker relates to “Jest” hanging after a test run. This is usually due to app code leaving handles open, preventing Jest from exiting. In the past, users have resorted to `--forceExit` to fix (not recommended).
 
 To help debug these issues, we're now detecting when Jest does not exit:
 
@@ -95,19 +95,22 @@ See [jest-watch-typeahead](https://github.com/jest-community/jest-watch-typeahea
 
 As with every major release, we are making a few breaking changes to make larger changes in the future possible and to push the testing experience to a new level. Here's a list of the biggest changes you may see:
 
-* **Require test descriptions**: We're now failing tests that do not include a description.
-* **Remove undefined props from React snapshots:** Smaller snapshots and proper React behavior.
-* **Remove deprecations**: We've removed mapCoverage since it's no longer needed. Additionally, we removed `jest.genMockFunction` and `jest.genMockFn` since these are the same `jest.fn`.
-* **Add snapshot names to failures: **We added the snapshot name (if provided) to the snapshot failure message so it's easier to find the snapshot that's failing.
+* **Require test descriptions and functions**: We're now failing tests that do not include both a function and a description.
+* **Remove undefined props from React snapshots**: Smaller snapshots and proper React behavior.
+* **Remove deprecations**: We removed mapCoverage since it's no longer needed. Additionally, we removed `jest.genMockFunction` and `jest.genMockFn` since these are the same as `jest.fn`.
+* **Add snapshot names to failures**: We added the snapshot name (if provided) to the snapshot failure message so it's easier to find the snapshot that's failing.
 * **Replace mock timestamps**: We replaced mock timestamps with invocationCallOrder since two or mocks may often have the same timestamp, making it impossible to test the call order.
+* **Add results to mock snapshots**: We added mock function call results to snapshots so that both the calls and the results of the invocation are tracked.
 
 ## Other Improvements
 
-* **Watch mode coverage**: Coverage is now limited to only the files tested in watch mode or when using `—onlyChanged` and `—findRelatedTests`.
-* **Version documentation:** We added docs for each minor release back to Jest 22, and have removed all of the “Requires Jest X.X+” from the docs.
-* **Better snapshot summaries: **We overhauled the Snapshot Summary output to make obsolete snapshots more informative.
+* **Watch mode coverage**: Coverage is now limited to only the files tested in watch mode or when using `--onlyChanged` and `--findRelatedTests`.
+* **Version documentation**: We added docs for each minor release back to Jest 22, and have removed all of the “Requires Jest X.X+” from the docs.
+* **Better snapshot summaries**: We overhauled the Snapshot Summary output to make obsolete snapshots more informative.
 * **Better stack traces**: We added stack traces to asynchronous errors, timeout errors, expect.assertions, and thrown non-errors. We're also indicating the column in the code frame!
 * **Better React 16 support**: Adds snapshot support for `React.Fragment`, `React.forwardRef`, and `React.createContext`.
+* **Track mock return and throw values**: Adds `mock.results` that contains the return value or thrown value for each mock call.
+* **Blazing 🔥**: We've added a blazing badge to the README to indicate that Jest is blazing good.
 
 ## Jest Summit
 
@@ -117,7 +120,7 @@ Last week, the Jest Core Team met for the Jest Summit at Facebook London where w
 * **Aaaron Abramov** – Writing Meaningful Tests
 * **Rick Hanlon II** – Blazing Fast Snapshot Testing in Jest 23
 * **Simen Bekkhus** – Jest's Delightful Error Messages
-* **Matt Philips** – Level up your Jest experience with community packages
+* **Matt Phillips** – Level up your Jest experience with community packages
 * **Michele Bertoli** – snapguidist / jest-styled-components
 * **Jordan Eldredge** – Webamp: Learn by imitating
 
