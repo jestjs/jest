@@ -6,17 +6,13 @@
  */
 'use strict';
 
-jest
-  .mock('istanbul-lib-coverage')
-  .mock('istanbul-lib-source-maps')
-  .mock('istanbul-api');
+jest.mock('istanbul-lib-source-maps').mock('istanbul-api');
 
 let libCoverage;
 let libSourceMaps;
 let CoverageReporter;
 let istanbulApi;
 
-import {CoverageSummary} from 'istanbul-lib-coverage/lib/file';
 import path from 'path';
 import mock from 'mock-fs';
 
@@ -100,7 +96,7 @@ describe('onRunComplete', () => {
         const file = path.resolve(f[0]);
         const override = f[1];
         const obj = Object.assign({}, covSummary, override);
-        c[file] = new CoverageSummary(obj);
+        c[file] = libCoverage.createCoverageSummary(obj);
         return c;
       }, {});
 
