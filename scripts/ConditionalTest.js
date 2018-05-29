@@ -14,6 +14,14 @@ const ConditionalTest = {
     return process.env.JEST_CIRCUS === '1';
   },
 
+  skipSuiteOnJasmine() {
+    if (!this.isJestCircusRun()) {
+      fit('does not work on Jasmine', () => {
+        console.warn('[SKIP] Does not work on Jasmine');
+      });
+    }
+  },
+
   skipSuiteOnWindows() {
     if (process.platform === 'win32') {
       fit('does not work on Windows', () => {
