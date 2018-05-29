@@ -10,14 +10,19 @@
 import type {AggregatedResult} from './TestResult';
 import type {Path, ProjectConfig} from './Config';
 
+type TestSuiteInfo = {
+  config: ProjectConfig,
+  duration: ?number,
+  testPath: string,
+};
+
 export type JestHookExposedFS = {
   projects: Array<{config: ProjectConfig, testPaths: Array<Path>}>,
 };
 
 export type FileChange = (fs: JestHookExposedFS) => void;
 export type ShouldRunTestSuite = (
-  testPath: string,
-  config: ProjectConfig,
+  testSuiteInfo: TestSuiteInfo,
 ) => Promise<boolean>;
 export type TestRunComplete = (results: AggregatedResult) => void;
 
@@ -30,8 +35,5 @@ export type JestHookSubscriber = {
 export type JestHookEmitter = {
   onFileChange: (fs: JestHookExposedFS) => void,
   onTestRunComplete: (results: AggregatedResult) => void,
-  shouldRunTestSuite: (
-    testPath: string,
-    config: ProjectConfig,
-  ) => Promise<boolean>,
+  shouldRunTestSuite: (testSuiteInfo: TestSuiteInfo) => Promise<boolean>,
 };

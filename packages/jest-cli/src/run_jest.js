@@ -59,7 +59,11 @@ const getTestPaths = async (
 
   const shouldTestArray = await Promise.all(
     data.tests.map(test =>
-      jestHooks.shouldRunTestSuite(test.path, test.context.config),
+      jestHooks.shouldRunTestSuite({
+        config: test.context.config,
+        duration: test.duration,
+        testPath: test.path,
+      }),
     ),
   );
 
