@@ -7,7 +7,7 @@
 ### Fixes
 
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
-* `[jest-cli]` Normalize slashes in paths in CLI output on Windows ((#6310)[https://github.com/facebook/jest/pull/6310])
+* `[jest-cli]` Normalize slashes in paths in CLI output on Windows ([#6310](https://github.com/facebook/jest/pull/6310))
 
 ### Chore & Maintenance
 
@@ -20,7 +20,7 @@
 
 ### Chore & Maintenance
 
-* `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/#6308))
+* `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/6308))
 * `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
 * `[examples]` Update typescript example to using ts-jest ([#6260](https://github.com/facebook/jest/pull/6260))
 
@@ -132,7 +132,7 @@
 * `[docs]` Add docs on using `jest.mock(...)` ([#5648](https://github.com/facebook/jest/pull/5648))
 * `[docs]` Mention Jest Puppeteer Preset ([#5722](https://github.com/facebook/jest/pull/5722))
 * `[docs]` Add jest-community section to website ([#5675](https://github.com/facebook/jest/pull/5675))
-* `[docs]` Add versioned docs for v22.4 ([##5733](https://github.com/facebook/jest/pull/#5733))
+* `[docs]` Add versioned docs for v22.4 ([#5733](https://github.com/facebook/jest/pull/5733))
 * `[docs]` Improve Snapshot Testing Guide ([#5812](https://github.com/facebook/jest/issues/5812))
 * `[jest-runtime]` [**BREAKING**] Remove `jest.genMockFn` and `jest.genMockFunction` ([#6173](https://github.com/facebook/jest/pull/6173))
 * `[jest-message-util]` Avoid adding unnecessary indent to blank lines in stack traces ([#6211](https://github.com/facebook/jest/pull/6211))
