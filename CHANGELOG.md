@@ -6,6 +6,7 @@
 
 ### Fixes
 
+* `[expect]` toHaveBeenNthCalledWith/nthCalledWith gives wrong call messages if not matched ([#6338](https://github.com/facebook/jest/pull/6338))
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
 * `[jest-cli]` Normalize slashes in paths in CLI output on Windows ((#6310)[https://github.com/facebook/jest/pull/6310])
 
