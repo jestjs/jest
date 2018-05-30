@@ -1,5 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`formats args with pretty format when given %p 1`] = `
+"PASS __tests__/pretty.test.js
+  ✓ \\"hello\\" == \\"hello\\"
+  ✓ 1 == 1
+  ✓ null == null
+  ✓ undefined == undefined
+  ✓ 1.2 == 1.2
+  ✓ {\\"foo\\": \\"bar\\"} == {\\"foo\\": \\"bar\\"}
+  ✓ {\\"foo\\": [Object]} == {\\"foo\\": [Object]}
+  ✓ [Function noop] == [Function noop]
+  ✓ [] == []
+  ✓ [[Object]] == [[Object]]
+  ✓ Infinity == Infinity
+  ✓ -Infinity == -Infinity
+  ✓ NaN == NaN
+
+"
+`;
+
 exports[`runs only the describe.only.each tests 1`] = `
 "PASS __tests__/describe-only.test.js
   passes all rows expected true == true
