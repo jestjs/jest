@@ -365,7 +365,11 @@ const createNthCalledWithMatcher = (matcherName: string) => (
         `Expected ${identifier} ${nthToString(
           nth,
         )} call to have been called with:\n` +
-        formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
+        formatMismatchedCalls(
+          calls[nth - 1] ? [calls[nth - 1]] : [],
+          expected,
+          LAST_CALL_PRINT_LIMIT,
+        );
 
   return {message, pass};
 };

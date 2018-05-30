@@ -261,7 +261,9 @@ exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have been called with:
-"
+  <green>\\"foo\\"</>
+as argument 1, but it was called with
+  <red>\\"foo1\\"</>."
 `;
 
 exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
@@ -1290,7 +1292,9 @@ exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have been called with:
-"
+  <green>\\"foo\\"</>
+as argument 1, but it was called with
+  <red>\\"foo1\\"</>."
 `;
 
 exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
