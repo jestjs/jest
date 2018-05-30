@@ -12,7 +12,7 @@ import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
-import {KEYS} from 'jest-watch';
+import {KEYS} from 'jest-watcher';
 
 import {pluralize} from './reporters/utils';
 import {ARROW} from './constants';

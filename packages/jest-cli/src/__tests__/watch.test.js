@@ -10,7 +10,7 @@
 
 import chalk from 'chalk';
 import TestWatcher from '../test_watcher';
-import {JestHook, KEYS} from 'jest-watch';
+import {JestHook, KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;

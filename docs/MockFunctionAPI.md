@@ -80,15 +80,15 @@ The [`clearMocks`](configuration.html#clearmocks-boolean) configuration option i
 
 ### `mockFn.mockReset()`
 
-Resets all information stored in the mock, including any initial implementation and mock name given.
+Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
-This is useful when you want to completely restore a mock back to its initial state.
+This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
 
 Beware that `mockReset` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
 ### `mockFn.mockRestore()`
 
-Removes the mock and restores the initial implementation.
+Does everything that [`mockFn.mockReset()`](#mockfnmockreset) does, and also restores the original (non-mocked) implementation.
 
 This is useful when you want to mock functions in certain test cases and restore the original implementation in others.
 

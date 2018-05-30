@@ -8,8 +8,8 @@ To maximize flexibility and minimize memory, you write **callback** functions as
 
 **Input** function `isCommon(aIndex, bIndex)` compares items at indexes in the sequences and returns a truthy/falsey value. This package might call your function more than once for some pairs of indexes.
 
-* Because your function encapsulates **comparison**, this package can compare items according to `===` operator, `Object.is` method, or other criterion.
-* Because your function encapsulates **sequences**, this package can find differences in arrays, strings, or other data.
+- Because your function encapsulates **comparison**, this package can compare items according to `===` operator, `Object.is` method, or other criterion.
+- Because your function encapsulates **sequences**, this package can find differences in arrays, strings, or other data.
 
 **Output** function `foundSubsequence(nCommon, aCommon, bCommon)` receives the number of adjacent items and starting indexes of each common subsequence. If sequences do not have common items, then this package does not call your function.
 
@@ -23,13 +23,13 @@ This package implements the **linear space** variation with optimizations so it 
 
 To add this package as a dependency of a project, do either of the following:
 
-* `npm install diff-sequences`
-* `yarn add diff-sequences`
+- `npm install diff-sequences`
+- `yarn add diff-sequences`
 
 To use `diff` as the name of the default export from this package, do either of the following:
 
-* `var diff = require('diff-sequences'); // CommonJS modules`
-* `import diff from 'diff-sequences'; // ECMAScript modules`
+- `var diff = require('diff-sequences'); // CommonJS modules`
+- `import diff from 'diff-sequences'; // ECMAScript modules`
 
 Call `diff` with the **lengths** of sequences and your **callback** functions:
 
@@ -103,15 +103,15 @@ var commonLength = countCommonItems(
 
 If the length difference `b.length - a.length` is:
 
-* negative: its absolute value is the minimum number of items to **delete** from `a`
-* positive: it is the minimum number of items to **insert** from `b`
-* zero: there is an **equal** number of items to delete from `a` and insert from `b`
-* non-zero: there is an equal number of **additional** items to delete from `a` and insert from `b`
+- negative: its absolute value is the minimum number of items to **delete** from `a`
+- positive: it is the minimum number of items to **insert** from `b`
+- zero: there is an **equal** number of items to delete from `a` and insert from `b`
+- non-zero: there is an equal number of **additional** items to delete from `a` and insert from `b`
 
 In this example, `6 - 7` is:
 
-* negative: `1` is the minimum number of items to **delete** from `a`
-* non-zero: `2` is the number of **additional** items to delete from `a` and insert from `b`
+- negative: `1` is the minimum number of items to **delete** from `a`
+- non-zero: `2` is the number of **additional** items to delete from `a` and insert from `b`
 
 ## Example of callback functions to find common items
 
@@ -172,9 +172,9 @@ const diffIndexIntervals = (a, aStart, aEnd, b, bStart, bEnd) => {
 
 Linux or Unix has a `diff` command to compare files line by line. Its output is a **shortest edit script**:
 
-* **c**hange adjacent lines from the first file to lines from the second file
-* **d**elete lines from the first file
-* **a**ppend or insert lines from the second file
+- **c**hange adjacent lines from the first file to lines from the second file
+- **d**elete lines from the first file
+- **a**ppend or insert lines from the second file
 
 ```js
 // Given zero-based half-open range [start, end) of array indexes,

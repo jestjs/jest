@@ -20,10 +20,10 @@ it.each([[1, 2], [3, 4]])(
 );
 
 it.each`
-    left    | right
-    ${true} | ${false}
-    ${true} | ${true}
-  `(
+  left    | right
+  ${true} | ${false}
+  ${true} | ${true}
+`(
   'template table fails on one row expected: $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
@@ -31,21 +31,28 @@ it.each`
 );
 
 it.each`
-    left    | right
-    ${1} | ${2}
-    ${3} | ${4}
-  `(
+  left | right
+  ${1} | ${2}
+  ${3} | ${4}
+`(
   'template table fails on all rows expected: $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
   }
 );
 
+test.each(['red', 'green', 'bean'])(
+  "The word %s contains the letter 'z'",
+  word => {
+    expect(/z/.test(word)).toBe(true);
+  }
+);
+
 describe.each`
-    left    | right
-    ${'a'} | ${'b'}
-    ${'c'} | ${'d'}
-  `(
+  left   | right
+  ${'a'} | ${'b'}
+  ${'c'} | ${'d'}
+`(
   'template table describe fails on all rows expected $left == $right',
   ({left, right}) => {
     it('fails ', () => {

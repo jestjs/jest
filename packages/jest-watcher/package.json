@@ -1,7 +1,7 @@
 {
-  "name": "jest-watch",
+  "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "23.0.1",
+  "version": "23.1.0",
   "main": "build/index.js",
   "dependencies": {
     "ansi-escapes": "^3.0.0",

@@ -17,7 +17,7 @@ import {
   Prompt,
   printPatternCaret,
   printRestoredPatternCaret,
-} from 'jest-watch';
+} from 'jest-watcher';
 
 type SearchSources = Array<{|
   context: Context,

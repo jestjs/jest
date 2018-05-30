@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import {KEYS} from 'jest-watch';
+import {KEYS} from 'jest-watcher';
 import SnapshotInteractiveMode from '../snapshot_interactive_mode';
 
 jest.mock('ansi-escapes', () => ({

@@ -190,8 +190,8 @@ test('randocall calls its callback with a number', () => {
 
 You can use it instead of a literal value:
 
-* in `toEqual` or `toBeCalledWith`
-* to match a property in `objectContaining` or `toMatchObject`
+- in `toEqual` or `toBeCalledWith`
+- to match a property in `objectContaining` or `toMatchObject`
 
 ```js
 describe('arrayContaining', () => {
@@ -358,9 +358,9 @@ test('onPress gets called with the right thing', () => {
 
 You can use it instead of a literal value:
 
-* in `toEqual` or `toBeCalledWith`
-* to match an element in `arrayContaining`
-* to match a property in `objectContaining` or `toMatchObject`
+- in `toEqual` or `toBeCalledWith`
+- to match an element in `arrayContaining`
+- to match a property in `objectContaining` or `toMatchObject`
 
 This example also shows how you can nest multiple asymmetric matchers, with `expect.stringMatching` inside the `expect.arrayContaining`.
 
@@ -398,8 +398,8 @@ expect.addSnapshotSerializer(serializer);
 
 If you add a snapshot serializer in individual test files instead of to adding it to `snapshotSerializers` configuration:
 
-* You make the dependency explicit instead of implicit.
-* You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
+- You make the dependency explicit instead of implicit.
+- You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
 
 See [configuring Jest](Configuration.md#snapshotserializers-array-string) for more information.
 
@@ -561,7 +561,7 @@ test('applying to all flavors does mango last', () => {
 
 ### `.toHaveBeenNthCalledWith(nthCall, arg1, arg2, ....)`
 
-Also under the alias: `.nthCalledWith(arg1, arg2, ...)`
+Also under the alias: `.nthCalledWith(nthCall, arg1, arg2, ...)`
 
 If you have a mock function, you can use `.toHaveBeenNthCalledWith` to test what arguments it was nth called with. For example, let's say you have a `drinkEach(drink, Array<flavor>)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the first flavor it operates on is `'lemon'` and the second one is `'octopus'`. You can write:
 
@@ -1037,8 +1037,8 @@ Use `.toStrictEqual` to test that objects have the same types as well as structu
 
 Differences from `.toEqual`:
 
-* Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
-* Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
+- Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
+- Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
 
 ```js
 class LaCroix {

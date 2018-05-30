@@ -72,28 +72,93 @@ describe('jest-each', () => {
         );
       });
 
-      test('calls global with title containing param values when using sprintf format', () => {
+      test('calls global with title containing param values when using printf format', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)([
-          ['hello', 1],
-          ['world', 2],
+          [
+            'hello',
+            1,
+            null,
+            undefined,
+            1.2,
+            {foo: 'bar'},
+            () => {},
+            [],
+            Infinity,
+            NaN,
+          ],
+          [
+            'world',
+            1,
+            null,
+            undefined,
+            1.2,
+            {baz: 'qux'},
+            () => {},
+            [],
+            Infinity,
+            NaN,
+          ],
         ]);
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string: %s %s', noop);
+        testFunction('expected string: %s %d %s %s %d %j %s %j %d %d', noop);
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
         expect(globalMock).toHaveBeenCalledWith(
-          'expected string: hello 1',
+          `expected string: hello 1 null undefined 1.2 ${JSON.stringify({
+            foo: 'bar',
+          })} () => {} [] Infinity NaN`,
           expectFunction,
         );
         expect(globalMock).toHaveBeenCalledWith(
-          'expected string: world 2',
+          `expected string: world 1 null undefined 1.2 ${JSON.stringify({
+            baz: 'qux',
+          })} () => {} [] Infinity NaN`,
           expectFunction,
         );
       });
 
-      test('calls global with cb function containing all parameters of each test case', () => {
+      test('does not call global test with title containing more param values than sprintf placeholders', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          ['hello', 1, 2, 3, 4, 5],
+          ['world', 1, 2, 3, 4, 5],
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %s', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: hello',
+          expectFunction,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: world',
+          expectFunction,
+        );
+      });
+
+      test('calls global with cb function containing all parameters of each test case when given 1d array', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const testCallBack = jest.fn();
+        const eachObject = each.withGlobal(globalTestMocks)(['hello', 'world']);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        globalMock.mock.calls[0][1]();
+        expect(testCallBack).toHaveBeenCalledTimes(1);
+        expect(testCallBack).toHaveBeenCalledWith('hello');
+
+        globalMock.mock.calls[1][1]();
+        expect(testCallBack).toHaveBeenCalledTimes(2);
+        expect(testCallBack).toHaveBeenCalledWith('world');
+      });
+
+      test('calls global with cb function containing all parameters of each test case 2d array', () => {
         const globalTestMocks = getGlobalTestMocks();
         const testCallBack = jest.fn();
         const eachObject = each.withGlobal(globalTestMocks)([

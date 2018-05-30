@@ -32,9 +32,9 @@ Pragmas can also take arguments:
 
 `jest-docblock` can:
 
-* extract the docblock from some code as a string
-* parse a docblock string's pragmas into an object
-* print an object and some comments back to a string
+- extract the docblock from some code as a string
+- parse a docblock string's pragmas into an object
+- print an object and some comments back to a string
 
 ## Installation
 

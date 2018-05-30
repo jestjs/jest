@@ -26,7 +26,7 @@ import TestScheduler from './test_scheduler';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 import FailedTestsCache from './failed_tests_cache';
-import {JestHook} from 'jest-watch';
+import {JestHook} from 'jest-watcher';
 import collectNodeHandles from './get_node_handles';
 
 const setConfig = (contexts, newConfig) =>
@@ -58,7 +58,13 @@ const getTestPaths = async (
   }
 
   const shouldTestArray = await Promise.all(
-    data.tests.map(test => jestHooks.shouldRunTestSuite(test.path)),
+    data.tests.map(test =>
+      jestHooks.shouldRunTestSuite({
+        config: test.context.config,
+        duration: test.duration,
+        testPath: test.path,
+      }),
+    ),
   );
 
   const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);
