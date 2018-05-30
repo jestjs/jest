@@ -37,7 +37,7 @@ class MyWatchPlugin {
 
 Below are the hooks available in Jest.
 
-#### `jestHooks.shouldRunTestSuite(testPath)`
+#### `jestHooks.shouldRunTestSuite({ config, duration, testPath })`
 
 Returns a boolean (or `Promise<boolean>`) for handling asynchronous operations) to specify if a test should be run or not.
 
@@ -46,12 +46,12 @@ For example:
 ```javascript
 class MyWatchPlugin {
   apply(jestHooks) {
-    jestHooks.shouldRunTestSuite(testPath => {
+    jestHooks.shouldRunTestSuite(({testPath}) => {
       return testPath.includes('my-keyword');
     });
 
     // or a promise
-    jestHooks.shouldRunTestSuite(testPath => {
+    jestHooks.shouldRunTestSuite(({testPath}) => {
       return Promise.resolve(testPath.includes('my-keyword'));
     });
   }

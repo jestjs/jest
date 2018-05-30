@@ -41,6 +41,13 @@ it.each`
   }
 );
 
+test.each(['red', 'green', 'bean'])(
+  "The word %s contains the letter 'z'",
+  word => {
+    expect(/z/.test(word)).toBe(true);
+  }
+);
+
 describe.each`
     left    | right
     ${'a'} | ${'b'}
