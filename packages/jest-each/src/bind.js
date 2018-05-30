@@ -15,6 +15,7 @@ type Table = Array<Array<any>>;
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
+const SUPPORTED_PLACEHOLDERS = /%[sdifjoO%]/g;
 
 export default (cb: Function) => (...args: any) =>
   function eachBind(title: string, test: Function): void {
@@ -23,7 +24,7 @@ export default (cb: Function) => (...args: any) =>
         ? args[0]
         : args[0].map(entry => [entry]);
       return table.forEach(row =>
-        cb(util.format(title, ...row), applyRestParams(row, test)),
+        cb(arrayFormat(title, ...row), applyRestParams(row, test)),
       );
     }
 
@@ -57,6 +58,11 @@ export default (cb: Function) => (...args: any) =>
       cb(interpolate(title, row), applyObjectParams(row, test)),
     );
   };
+
+const arrayFormat = (str, ...args) => {
+  const matches = (str.match(SUPPORTED_PLACEHOLDERS) || []).length;
+  return util.format(str, ...args.slice(0, matches));
+};
 
 const applyRestParams = (params: Array<any>, test: Function) => {
   if (params.length < test.length) return done => test(...params, done);
