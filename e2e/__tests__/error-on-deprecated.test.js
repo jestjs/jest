@@ -35,7 +35,7 @@ const SHOULD_NOT_PASS_IN_JEST = new Set([
 ]);
 
 testFiles.forEach(testFile => {
-  test(`${testFile} errors in erroOnDeprecated mode`, () => {
+  test(`${testFile} errors in errorOnDeprecated mode`, () => {
     const result = runJest('error-on-deprecated', [
       testFile,
       '--errorOnDeprecated',
@@ -50,7 +50,7 @@ testFiles.forEach(testFile => {
   const shouldPass = SHOULD_NOT_PASS_IN_JEST.has(testFile);
 
   const expectation = `${testFile} ${shouldPass ? 'errors' : 'passes'}`;
-  const testName = `${expectation} when not in erroOnDeprecated mode`;
+  const testName = `${expectation} when not in errorOnDeprecated mode`;
 
   test(testName, () => {
     const result = runJest('error-on-deprecated', [testFile]);

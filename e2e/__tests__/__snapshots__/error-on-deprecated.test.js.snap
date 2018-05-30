@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DEFAULT_TIMEOUT_INTERVAL.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`DEFAULT_TIMEOUT_INTERVAL.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/DEFAULT_TIMEOUT_INTERVAL.test.js
   ✕ DEFAULT_TIMEOUT_INTERVAL
 
@@ -21,7 +21,7 @@ exports[`DEFAULT_TIMEOUT_INTERVAL.test.js errors in erroOnDeprecated mode 1`] = 
 "
 `;
 
-exports[`fail.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`fail.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/fail.test.js
   ✕ fail
 
@@ -42,7 +42,7 @@ exports[`fail.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`jasmine.addMatchers.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`jasmine.addMatchers.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/jasmine.addMatchers.test.js
   ● Test suite failed to run
 
@@ -61,7 +61,7 @@ exports[`jasmine.addMatchers.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`jasmine.any.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`jasmine.any.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/jasmine.any.test.js
   ✕ jasmine.any
 
@@ -81,7 +81,7 @@ exports[`jasmine.any.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`jasmine.anything.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`jasmine.anything.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/jasmine.anything.test.js
   ✕ jasmine.anything
 
@@ -101,7 +101,7 @@ exports[`jasmine.anything.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`jasmine.arrayContaining.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`jasmine.arrayContaining.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/jasmine.arrayContaining.test.js
   ✕ jasmine.arrayContaining
 
@@ -121,7 +121,7 @@ exports[`jasmine.arrayContaining.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`jasmine.createSpy.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`jasmine.createSpy.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/jasmine.createSpy.test.js
   ✕ jasmine.createSpy
 
@@ -142,7 +142,7 @@ exports[`jasmine.createSpy.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`jasmine.objectContaining.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`jasmine.objectContaining.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/jasmine.objectContaining.test.js
   ✕ jasmine.objectContaining
 
@@ -163,7 +163,7 @@ exports[`jasmine.objectContaining.test.js errors in erroOnDeprecated mode 1`] = 
 "
 `;
 
-exports[`jasmine.stringMatching.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`jasmine.stringMatching.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/jasmine.stringMatching.test.js
   ✕ jasmine.stringMatching
 
@@ -183,7 +183,7 @@ exports[`jasmine.stringMatching.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`pending.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`pending.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/pending.test.js
   ✕ pending
 
@@ -204,7 +204,7 @@ exports[`pending.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`spyOn.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`spyOn.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/spyOn.test.js
   ✕ spyOn
 
@@ -225,7 +225,7 @@ exports[`spyOn.test.js errors in erroOnDeprecated mode 1`] = `
 "
 `;
 
-exports[`spyOnProperty.test.js errors in erroOnDeprecated mode 1`] = `
+exports[`spyOnProperty.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/spyOnProperty.test.js
   ✕ spyOnProperty
 
