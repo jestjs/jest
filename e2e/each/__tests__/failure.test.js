@@ -19,15 +19,6 @@ it.each([[1, 2], [3, 4]])(
   }
 );
 
-describe.each([['a', 'b'], ['c', 'd']])(
-  'array table describe fails on all rows expected %s == %s',
-  (left, right) => {
-    it('fails', () => {
-      expect(left).toBe(right);
-    });
-  }
-);
-
 it.each`
     left    | right
     ${true} | ${false}
@@ -50,6 +41,13 @@ it.each`
   }
 );
 
+test.each(['red', 'green', 'bean'])(
+  "The word %s contains the letter 'z'",
+  word => {
+    expect(/z/.test(word)).toBe(true);
+  }
+);
+
 describe.each`
     left    | right
     ${'a'} | ${'b'}
@@ -58,6 +56,15 @@ describe.each`
   'template table describe fails on all rows expected $left == $right',
   ({left, right}) => {
     it('fails ', () => {
+      expect(left).toBe(right);
+    });
+  }
+);
+
+describe.each([['a', 'b'], ['c', 'd']])(
+  'array table describe fails on all rows expected %s == %s',
+  (left, right) => {
+    it('fails', () => {
       expect(left).toBe(right);
     });
   }

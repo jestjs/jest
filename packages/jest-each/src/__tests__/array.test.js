@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import each from '../';
 
 const noop = () => {};
@@ -85,7 +93,25 @@ describe('jest-each', () => {
         );
       });
 
-      test('calls global with cb function containing all parameters of each test case', () => {
+      test('calls global with cb function containing all parameters of each test case when given 1d array', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const testCallBack = jest.fn();
+        const eachObject = each.withGlobal(globalTestMocks)(['hello', 'world']);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        globalMock.mock.calls[0][1]();
+        expect(testCallBack).toHaveBeenCalledTimes(1);
+        expect(testCallBack).toHaveBeenCalledWith('hello');
+
+        globalMock.mock.calls[1][1]();
+        expect(testCallBack).toHaveBeenCalledTimes(2);
+        expect(testCallBack).toHaveBeenCalledWith('world');
+      });
+
+      test('calls global with cb function containing all parameters of each test case 2d array', () => {
         const globalTestMocks = getGlobalTestMocks();
         const testCallBack = jest.fn();
         const eachObject = each.withGlobal(globalTestMocks)([

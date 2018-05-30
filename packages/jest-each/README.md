@@ -25,7 +25,14 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
 * `.describe.skip` to skip the parameterised suite of tests
   * Also under the aliases: `.xdescribe`
 * Asynchronous tests with `done`
-* Unique test titles with: [sprintf](https://github.com/alexei/sprintf.js)
+* Unique test titles with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+  * `%s`- String.
+  * `%d`- Number.
+  * `%i` - Integer.
+  * `%f` - Floating point value.
+  * `%j` - JSON.
+  * `%o` - Object.
+  * `%%` - single percent sign ('%'). This does not consume an argument.
 * 🖖 Spock like data tables with [Tagged Template Literals](#tagged-template-literal-of-rows)
 
 ---
@@ -72,7 +79,9 @@ jest-each is a default export so it can be imported with whatever name you like.
 ```js
 // es6
 import each from 'jest-each';
+```
 
+```js
 // es5
 const each = require('jest-each');
 ```
@@ -89,7 +98,15 @@ const each = require('jest-each');
 
 ##### `.test`:
 
-* name: `String` the title of the `test`, use `%s` in the name string to positionally inject parameter values into the test title
+* name: `String` the title of the `test`.
+  * Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    * `%s`- String.
+    * `%d`- Number.
+    * `%i` - Integer.
+    * `%f` - Floating point value.
+    * `%j` - JSON.
+    * `%o` - Object.
+    * `%%` - single percent sign ('%'). This does not consume an argument.
 * testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each([parameters]).describe(name, suiteFn)`
@@ -100,7 +117,15 @@ const each = require('jest-each');
 
 ##### `.describe`:
 
-* name: `String` the title of the `describe`, use `%s` in the name string to positionally inject parameter values into the suite title
+* name: `String` the title of the `describe`
+  * Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    * `%s`- String.
+    * `%d`- Number.
+    * `%i` - Integer.
+    * `%f` - Floating point value.
+    * `%j` - JSON.
+    * `%o` - Object.
+    * `%%` - single percent sign ('%'). This does not consume an argument.
 * suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 
 ### Usage
@@ -111,7 +136,7 @@ Alias: `.it(name, fn)`
 
 ```js
 each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test(
-  'returns the result of adding %s to %s',
+  'returns the result of adding %d to %d',
   (a, b, expected) => {
     expect(a + b).toBe(expected);
   },
@@ -124,7 +149,7 @@ Aliases: `.it.only(name, fn)` or `.fit(name, fn)`
 
 ```js
 each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test.only(
-  'returns the result of adding %s to %s',
+  'returns the result of adding %d to %d',
   (a, b, expected) => {
     expect(a + b).toBe(expected);
   },
@@ -137,7 +162,7 @@ Aliases: `.it.skip(name, fn)` or `.xit(name, fn)` or `.xtest(name, fn)`
 
 ```js
 each([[1, 1, 2][(1, 2, 3)], [2, 1, 3]]).test.skip(
-  'returns the result of adding %s to %s',
+  'returns the result of adding %d to %d',
   (a, b, expected) => {
     expect(a + b).toBe(expected);
   },
@@ -150,7 +175,7 @@ Alias: `.it(name, fn(done))`
 
 ```js
 each([['hello'], ['mr'], ['spy']]).test(
-  'gives 007 secret message ',
+  'gives 007 secret message: %s',
   (str, done) => {
     const asynchronousSpy = message => {
       expect(message).toBe(str);
@@ -165,7 +190,7 @@ each([['hello'], ['mr'], ['spy']]).test(
 
 ```js
 each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe(
-  '.add(%s, %s)',
+  '.add(%d, %d)',
   (a, b, expected) => {
     test(`returns ${expected}`, () => {
       expect(a + b).toBe(expected);
@@ -190,7 +215,7 @@ Aliases: `.fdescribe(name, fn)`
 
 ```js
 each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe.only(
-  '.add(%s, %s)',
+  '.add(%d, %d)',
   (a, b, expected) => {
     test(`returns ${expected}`, () => {
       expect(a + b).toBe(expected);
@@ -205,7 +230,7 @@ Aliases: `.xdescribe(name, fn)`
 
 ```js
 each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe.skip(
-  '.add(%s, %s)',
+  '.add(%d, %d)',
   (a, b, expected) => {
     test(`returns ${expected}`, () => {
       expect(a + b).toBe(expected);

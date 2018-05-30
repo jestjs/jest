@@ -16,6 +16,7 @@ import type {
   BlockName,
   TestName,
 } from 'types/Circus';
+import {bind as bindEach} from 'jest-each';
 import {dispatch} from './state';
 
 type THook = (fn: HookFn, timeout?: number) => void;
@@ -115,6 +116,14 @@ test.only = (testName: TestName, fn: TestFn, timeout?: number) => {
     timeout,
   });
 };
+
+test.each = bindEach(test);
+test.only.each = bindEach(test.only);
+test.skip.each = bindEach(test.skip);
+
+describe.each = bindEach(describe);
+describe.only.each = bindEach(describe.only);
+describe.skip.each = bindEach(describe.skip);
 
 module.exports = {
   afterAll,
