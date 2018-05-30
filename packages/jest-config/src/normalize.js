@@ -520,6 +520,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'detectLeaks':
       case 'detectOpenHandles':
       case 'displayName':
+      case 'errorOnDeprecated':
       case 'expand':
       case 'globals':
       case 'findRelatedTests':
