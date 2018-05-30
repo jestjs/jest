@@ -15,14 +15,8 @@ const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage-threshold');
 
-beforeEach(() => {
-  cleanup(DIR);
-  Date.now = jest.fn(() => 1482363367071);
-});
-afterAll(() => {
-  cleanup(DIR);
-  Date.now.mockRestore();
-});
+beforeEach(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 const replaceTime = str => {
   return str.replace(/\d*\.?\d+m?s/g, '<<REPLACED>>');
