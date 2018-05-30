@@ -1,5 +1,7 @@
 ## master
 
+## 23.1.0
+
 ### Features
 
 * `[jest-cli]` shouldRunTestSuite watch hook now receives an object with `config`, `testPath` and `duration` ([#6350](https://github.com/facebook/jest/pull/6350))
