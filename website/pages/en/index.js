@@ -322,8 +322,9 @@ class Index extends React.Component {
                 <iframe
                   width="560"
                   height="315"
-                  src="https://www.youtube.com/embed/PvabBs_utr8?rel=0"
+                  src="https://www.youtube.com/embed/cAKYQpTC7MA"
                   frameBorder="0"
+                  allow="autoplay; encrypted-media"
                   allowFullScreen
                 />
               </div>
@@ -335,10 +336,11 @@ class Index extends React.Component {
                   <MarkdownBlock>
                     <translate>
                       The Jest core team and contributors regularly speak about
-                      Jest and Delightful JavaScript Testing. Check out our
-                      talks about [Building High-Quality JavaScript
+                      [Jest and Delightful JavaScript
+                      Testing](https://www.youtube.com/watch?v=cAKYQpTC7MA).
+                      Check out our talk about [Building High-Quality JavaScript
                       Tools](https://www.youtube.com/watch?v=PvabBs_utr8) at
-                      JSConf.eu 2017 or our talk about [Jest as a
+                      jsconf.eu 2017 and our talk about [Jest as a
                       Platform](https://www.youtube.com/watch?v=NtjyeojAOBs) at
                       ReactiveConf 2017.
                     </translate>
