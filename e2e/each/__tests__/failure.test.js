@@ -41,6 +41,13 @@ it.each`
   }
 );
 
+test.each(['red', 'green', 'bean'])(
+  "The word %s contains the letter 'z'",
+  word => {
+    expect(/z/.test(word)).toBe(true);
+  }
+);
+
 describe.each`
     left    | right
     ${'a'} | ${'b'}
@@ -60,12 +67,5 @@ describe.each([['a', 'b'], ['c', 'd']])(
     it('fails', () => {
       expect(left).toBe(right);
     });
-  }
-);
-
-test.each(['red', 'green', 'bean'])(
-  "The word %s contains the letter 'z'",
-  word => {
-    expect(/z/.test(word)).toBe(true);
   }
 );
