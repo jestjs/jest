@@ -13,6 +13,7 @@
 * `[jest-each]` Make sure invalid arguments to `each` points back to the user's code ([#6347](https://github.com/facebook/jest/pull/6347))
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
 * `[jest-cli]` Normalize slashes in paths in CLI output on Windows ([#6310](https://github.com/facebook/jest/pull/6310))
+* `[jest-cli]` Fix run beforeAll in excluded suites tests" mode. ([#6234](https://github.com/facebook/jest/pull/6234))
 * `[jest-haste-map`] Compute SHA-1s for non-tracked files when using Node crawler ([#6264](https://github.com/facebook/jest/pull/6264))
 
 ### Chore & Maintenance
