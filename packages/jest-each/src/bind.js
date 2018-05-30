@@ -126,7 +126,8 @@ const buildTable = (
 
 const interpolate = (title: string, data: any) =>
   Object.keys(data).reduce(
-    (acc, key) => acc.replace('$' + key, data[key]),
+    (acc, key) =>
+      acc.replace('$' + key, pretty(data[key], {maxDepth: 1, min: true})),
     title,
   );
 

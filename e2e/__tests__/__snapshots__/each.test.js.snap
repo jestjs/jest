@@ -2,19 +2,34 @@
 
 exports[`formats args with pretty format when given %p 1`] = `
 "PASS __tests__/pretty.test.js
-  ✓ \\"hello\\" == \\"hello\\"
-  ✓ 1 == 1
-  ✓ null == null
-  ✓ undefined == undefined
-  ✓ 1.2 == 1.2
-  ✓ {\\"foo\\": \\"bar\\"} == {\\"foo\\": \\"bar\\"}
-  ✓ {\\"foo\\": [Object]} == {\\"foo\\": [Object]}
-  ✓ [Function noop] == [Function noop]
-  ✓ [] == []
-  ✓ [[Object]] == [[Object]]
-  ✓ Infinity == Infinity
-  ✓ -Infinity == -Infinity
-  ✓ NaN == NaN
+  array
+    ✓ \\"hello\\" == \\"hello\\"
+    ✓ 1 == 1
+    ✓ null == null
+    ✓ undefined == undefined
+    ✓ 1.2 == 1.2
+    ✓ {\\"foo\\": \\"bar\\"} == {\\"foo\\": \\"bar\\"}
+    ✓ {\\"foo\\": [Object]} == {\\"foo\\": [Object]}
+    ✓ [Function noop] == [Function noop]
+    ✓ [] == []
+    ✓ [[Object]] == [[Object]]
+    ✓ Infinity == Infinity
+    ✓ -Infinity == -Infinity
+    ✓ NaN == NaN
+  template
+    ✓ \\"hello\\" == \\"hello\\"
+    ✓ 1 == 1
+    ✓ null == null
+    ✓ undefined == undefined
+    ✓ 1.2 == 1.2
+    ✓ {\\"foo\\": \\"bar\\"} == {\\"foo\\": \\"bar\\"}
+    ✓ {\\"foo\\": [Object]} == {\\"foo\\": [Object]}
+    ✓ [Function noop] == [Function noop]
+    ✓ [] == []
+    ✓ [[Object]] == [[Object]]
+    ✓ Infinity == Infinity
+    ✓ -Infinity == -Infinity
+    ✓ NaN == NaN
 
 "
 `;
@@ -98,9 +113,9 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
   ✕ The word red contains the letter 'z'
   ✕ The word green contains the letter 'z'
   ✕ The word bean contains the letter 'z'
-  template table describe fails on all rows expected a == b
+  template table describe fails on all rows expected \\"a\\" == \\"b\\"
     ✕ fails
-  template table describe fails on all rows expected c == d
+  template table describe fails on all rows expected \\"c\\" == \\"d\\"
     ✕ fails
   array table describe fails on all rows expected a == b
     ✕ fails
@@ -260,7 +275,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
 
       at __tests__/failure.test.js:47:28
 
-  ● template table describe fails on all rows expected a == b › fails
+  ● template table describe fails on all rows expected \\"a\\" == \\"b\\" › fails
 
     expect(received).toBe(expected) // Object.is equality
 
@@ -277,7 +292,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
 
       at __tests__/failure.test.js:59:20
 
-  ● template table describe fails on all rows expected c == d › fails
+  ● template table describe fails on all rows expected \\"c\\" == \\"d\\" › fails
 
     expect(received).toBe(expected) // Object.is equality
 
