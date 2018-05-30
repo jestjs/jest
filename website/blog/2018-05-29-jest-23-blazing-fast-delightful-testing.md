@@ -116,13 +116,15 @@ As with every major release, we are making a few breaking changes to make larger
 
 Last week, the Jest Core Team met for the Jest Summit at Facebook London where worked on and released Jest 23, announced the Jest Open Collective, and gave a number of talks:
 
-* **Christoph Nakazawa** – Intro
-* **Aaaron Abramov** – Writing Meaningful Tests
-* **Rick Hanlon II** – Blazing Fast Snapshot Testing in Jest 23
-* **Simen Bekkhus** – Jest's Delightful Error Messages
-* **Matt Phillips** – Level up your Jest experience with community packages
-* **Michele Bertoli** – snapguidist / jest-styled-components
-* **Jordan Eldredge** – Webamp: Learn by imitating
+* **Christoph Nakazawa** – [Intro](https://www.youtube.com/watch?v=cAKYQpTC7MA)
+* **Aaaron Abramov** – [Writing Meaningful Tests](https://youtu.be/cAKYQpTC7MA?t=440)
+* **Rick Hanlon II** – [Blazing Fast Snapshot Testing in Jest 23](https://youtu.be/cAKYQpTC7MA?t=1881)
+* **Simen Bekkhus** – [Jest's Delightful Error Messages](https://youtu.be/cAKYQpTC7MA?t=2990)
+* **Matt Phillips** – [Level up your Jest experience with community packages](https://youtu.be/cAKYQpTC7MA?t=3852)
+* **Michele Bertoli** – [Snapshot all the things](https://youtu.be/cAKYQpTC7MA?t=4582)
+* **Jordan Eldredge** – [Webamp: Learn by imitating](https://youtu.be/cAKYQpTC7MA?t=5185)
+
+Full talk is available [here](https://www.youtube.com/watch?v=cAKYQpTC7MA).
 
 The turnout was amazing, and we were able to meet a lot of the London-based community in person. Thank you to everyone who joined us and for your continued support! Stay tuned for our next post which will outline the Jest Open Collective and the plans we have for the future.
 
