@@ -16,7 +16,6 @@ exports[`DEFAULT_TIMEOUT_INTERVAL.test.js errors in erroOnDeprecated mode 1`] = 
       12 | });
       13 | 
 
-      at packages/jest-jasmine2/build/error_on_private.js:69:11
       at __tests__/DEFAULT_TIMEOUT_INTERVAL.test.js:10:3
 
 "

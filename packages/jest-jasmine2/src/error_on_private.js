@@ -42,18 +42,20 @@ export function installErrorOnPrivate(global: Global): void {
     };
   });
 
-  const original = jasmine.DEFAULE_TIMEOUT_INTERVAL;
+  function set() {
+    throwAtFunction(
+      'Illegal usage of `jasmine.DEFAULT_TIMEOUT_INTERVAL`, prefer `jest.setTimeout`.',
+      set,
+    );
+  }
+
+  const original = jasmine.DEFAULT_TIMEOUT_INTERVAL;
   // $FlowFixMe Flow seems to be confused about accessors and tries to enfoce having a `value` property.
   Object.defineProperty(jasmine, 'DEFAULT_TIMEOUT_INTERVAL', {
     configurable: true,
     enumerable: true,
     get: () => original,
-    set: () => {
-      throwAtFunction(
-        'Illegal usage of `jasmine.DEFAULT_TIMEOUT_INTERVAL`, prefer `jest.setTimeout`.',
-        jasmine.set,
-      );
-    },
+    set,
   });
 }
 
