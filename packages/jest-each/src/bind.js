@@ -19,7 +19,9 @@ const RECEIVED_COLOR = chalk.red;
 export default (cb: Function) => (...args: any) =>
   function eachBind(title: string, test: Function): void {
     if (args.length === 1) {
-      const table: Table = args[0];
+      const table: Table = args[0].every(Array.isArray)
+        ? args[0]
+        : args[0].map(entry => [entry]);
       return table.forEach(row =>
         cb(util.format(title, ...row), applyRestParams(row, test)),
       );
