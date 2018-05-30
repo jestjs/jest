@@ -2,6 +2,7 @@
 
 ### Features
 
+* `[jest-each]` Add pretty-format serialising to each titles ([#6357](https://github.com/facebook/jest/pull/6357))
 * `[jest-cli]` shouldRunTestSuite watch hook now receives an object with `config`, `testPath` and `duration` ([#6350](https://github.com/facebook/jest/pull/6350))
 * `[jest-each]` Support one dimensional array of data ([#6351](https://github.com/facebook/jest/pull/6351))
 * `[jest-watch]` create new package `jest-watch` to ease custom watch plugin development ([#6318](https://github.com/facebook/jest/pull/6318))
