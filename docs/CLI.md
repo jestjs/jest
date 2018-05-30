@@ -149,6 +149,10 @@ Attempt to collect and print open handles preventing Jest from exiting cleanly. 
 
 The test environment used for all tests. This can point to any file or node module. Examples: `jsdom`, `node` or `path/to/my-environment.js`.
 
+### `--errorOnDeprecated`
+
+Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
+
 ### `--expand`
 
 Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.

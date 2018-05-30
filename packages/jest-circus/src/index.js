@@ -39,12 +39,23 @@ const _dispatchDescribe = (blockFn, blockName, mode?: BlockMode) => {
   dispatch({blockName, mode, name: 'finish_describe_definition'});
 };
 
-const _addHook = (fn: HookFn, hookType: HookType, timeout: ?number) =>
-  dispatch({asyncError: new Error(), fn, hookType, name: 'add_hook', timeout});
-const beforeEach: THook = (fn, timeout) => _addHook(fn, 'beforeEach', timeout);
-const beforeAll: THook = (fn, timeout) => _addHook(fn, 'beforeAll', timeout);
-const afterEach: THook = (fn, timeout) => _addHook(fn, 'afterEach', timeout);
-const afterAll: THook = (fn, timeout) => _addHook(fn, 'afterAll', timeout);
+const _addHook = (fn: HookFn, hookType: HookType, hookFn, timeout: ?number) => {
+  const asyncError = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(asyncError, hookFn);
+  }
+  dispatch({asyncError, fn, hookType, name: 'add_hook', timeout});
+};
+
+// Hooks have to pass themselves to the HOF in order for us to trim stack traces.
+const beforeEach: THook = (fn, timeout) =>
+  _addHook(fn, 'beforeEach', beforeEach, timeout);
+const beforeAll: THook = (fn, timeout) =>
+  _addHook(fn, 'beforeAll', beforeAll, timeout);
+const afterEach: THook = (fn, timeout) =>
+  _addHook(fn, 'afterEach', afterEach, timeout);
+const afterAll: THook = (fn, timeout) =>
+  _addHook(fn, 'afterAll', afterAll, timeout);
 
 const test = (testName: TestName, fn: TestFn, timeout?: number) => {
   if (typeof testName !== 'string') {

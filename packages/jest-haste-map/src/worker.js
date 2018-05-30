@@ -22,6 +22,13 @@ const PACKAGE_JSON = path.sep + 'package.json';
 let hasteImpl: ?HasteImpl = null;
 let hasteImplModulePath: ?string = null;
 
+function computeSha1(content) {
+  return crypto
+    .createHash('sha1')
+    .update(content)
+    .digest('hex');
+}
+
 export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   if (
     data.hasteImplModulePath &&
@@ -76,11 +83,21 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       content = fs.readFileSync(filePath);
     }
 
-    sha1 = crypto
-      .createHash('sha1')
-      .update(content)
-      .digest('hex');
+    sha1 = computeSha1(content);
   }
 
   return {dependencies, id, module, sha1};
+}
+
+export async function getSha1(data: WorkerMessage): Promise<WorkerMetadata> {
+  const sha1 = data.computeSha1
+    ? computeSha1(fs.readFileSync(data.filePath))
+    : null;
+
+  return {
+    dependencies: undefined,
+    id: undefined,
+    module: undefined,
+    sha1,
+  };
 }

@@ -18,6 +18,7 @@ type Options = {
 type TreeNode = {
   afterAllFns: Array<any>,
   beforeAllFns: Array<any>,
+  disabled?: boolean,
   execute: (onComplete: () => void, enabled: boolean) => void,
   id: string,
   onException: (error: Error) => void,
@@ -69,6 +70,17 @@ export default function treeProcessor(options: Options) {
     };
   }
 
+  function hasEnabledTest(node: TreeNode) {
+    if (node.children) {
+      if (node.children.some(hasEnabledTest)) {
+        return true;
+      }
+    } else {
+      return !node.disabled;
+    }
+    return false;
+  }
+
   function wrapChildren(node: TreeNode, enabled: boolean) {
     if (!node.children) {
       throw new Error('`node.children` is not defined.');
@@ -76,6 +88,9 @@ export default function treeProcessor(options: Options) {
     const children = node.children.map(child => ({
       fn: getNodeHandler(child, enabled),
     }));
+    if (!hasEnabledTest(node)) {
+      return [];
+    }
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);
   }
 
