@@ -7,12 +7,16 @@
 ### Fixes
 
 * `[expect]` toHaveBeenNthCalledWith/nthCalledWith gives wrong call messages if not matched ([#6340](https://github.com/facebook/jest/pull/6340))
+* `[jest-each]` Make sure invalid arguments to `each` points back to the user's code ([#6347](https://github.com/facebook/jest/pull/6347))
 * `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
-* `[jest-cli]` Normalize slashes in paths in CLI output on Windows ((#6310)[https://github.com/facebook/jest/pull/6310])
+* `[jest-cli]` Normalize slashes in paths in CLI output on Windows ([#6310](https://github.com/facebook/jest/pull/6310))
+* `[jest-haste-map`] Compute SHA-1s for non-tracked files when using Node crawler ([#6264](https://github.com/facebook/jest/pull/6264))
 
 ### Chore & Maintenance
 
-* `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/#6309))
+* `[jest-each]` Refactor each to use shared implementation with core ([#6345](https://github.com/facebook/jest/pull/6345))
+* `[jest-each]` Update jest-each docs for serialising values into titles ([#6337](https://github.com/facebook/jest/pull/6337))
+* `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/6309))
 * `[filenames]` Rename "integration-tests" to "e2e" ([#6315](https://github.com/facebook/jest/pull/6315))
 * `[docs]` Mention the use of commit hash with `--changedSince` flag ([#6330](https://github.com/facebook/jest/pull/6330))
 
@@ -20,7 +24,7 @@
 
 ### Chore & Maintenance
 
-* `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/#6308))
+* `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/6308))
 * `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
 * `[examples]` Update typescript example to using ts-jest ([#6260](https://github.com/facebook/jest/pull/6260))
 
@@ -132,7 +136,7 @@
 * `[docs]` Add docs on using `jest.mock(...)` ([#5648](https://github.com/facebook/jest/pull/5648))
 * `[docs]` Mention Jest Puppeteer Preset ([#5722](https://github.com/facebook/jest/pull/5722))
 * `[docs]` Add jest-community section to website ([#5675](https://github.com/facebook/jest/pull/5675))
-* `[docs]` Add versioned docs for v22.4 ([##5733](https://github.com/facebook/jest/pull/#5733))
+* `[docs]` Add versioned docs for v22.4 ([#5733](https://github.com/facebook/jest/pull/5733))
 * `[docs]` Improve Snapshot Testing Guide ([#5812](https://github.com/facebook/jest/issues/5812))
 * `[jest-runtime]` [**BREAKING**] Remove `jest.genMockFn` and `jest.genMockFunction` ([#6173](https://github.com/facebook/jest/pull/6173))
 * `[jest-message-util]` Avoid adding unnecessary indent to blank lines in stack traces ([#6211](https://github.com/facebook/jest/pull/6211))
