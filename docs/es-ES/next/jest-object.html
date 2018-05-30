@@ -208,13 +208,13 @@ test(<span class="hljs-string">'moduleName 2'</span>, () =&gt; {
 <p>When using <code>babel-jest</code>, calls to <code>unmock</code> will automatically be hoisted to the top of the code block. Use this method if you want to explicitly avoid this behavior.</p>
 <p>Regresa el objeto <code>jest</code> para poder ser usado llamadas consecutivas.</p>
 <h3><a class="anchor" aria-hidden="true" id="jestclearallmocks"></a><a href="#jestclearallmocks" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.clearAllMocks()</code></h3>
-<p>Borra las propiedades <code>mock.calls</code> y <code>mock.instances</code> de todos los mocks. Es el equivalente a llamar a <code>.mockClear()</code> en cada función simulada.</p>
+<p>Clears the <code>mock.calls</code> and <code>mock.instances</code> properties of all mocks. Equivalent to calling <a href="/jest/docs/es-ES/next/mock-function-api.html#mockfnmockclear"><code>.mockClear()</code></a> on every mocked function.</p>
 <p>Regresa el objeto <code>jest</code> para poder ser usado llamadas consecutivas.</p>
 <h3><a class="anchor" aria-hidden="true" id="jestresetallmocks"></a><a href="#jestresetallmocks" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.resetAllMocks()</code></h3>
-<p>Restablece el estado de todos los mock. Es el equivalente a llamar a <code>.mockReset()</code> en cada función simulada.</p>
+<p>Resets the state of all mocks. Equivalent to calling <a href="/jest/docs/es-ES/next/mock-function-api.html#mockfnmockreset"><code>.mockReset()</code></a> on every mocked function.</p>
 <p>Regresa el objeto <code>jest</code> para poder ser usado llamadas consecutivas.</p>
 <h3><a class="anchor" aria-hidden="true" id="jestrestoreallmocks"></a><a href="#jestrestoreallmocks" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.restoreAllMocks()</code></h3>
-<p>Restaura todos los objetos duplicados a su valor original. Equivalente a invocar <code>.mockRestore</code> en cada funcion simulada. Beware that <code>jest.restoreAllMocks()</code> only works when mock was created with <code>jest.spyOn</code>; other mocks will require you to manually restore them.</p>
+<p>Restaura todos los objetos duplicados a su valor original. Equivalent to calling <a href="/jest/docs/es-ES/next/mock-function-api.html#mockfnmockrestore"><code>.mockRestore()</code></a> on every mocked function. Beware that <code>jest.restoreAllMocks()</code> only works when mock was created with <code>jest.spyOn</code>; other mocks will require you to manually restore them.</p>
 <h3><a class="anchor" aria-hidden="true" id="jestresetmodules"></a><a href="#jestresetmodules" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.resetModules()</code></h3>
 <p>Restablece el registro de módulos - el caché de todos los módulos importados. Esto es útil para aislar módulos donde estado local podría entrar en conflicto entre pruebas.</p>
 <p>Ejemplo:</p>
@@ -296,7 +296,6 @@ test(<span class="hljs-string">'plays video'</span>, () =&gt; {
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(<span class="hljs-literal">true</span>);
 
-  spy.mockReset();
   spy.mockRestore();
 });
 </code></pre>
@@ -335,7 +334,6 @@ test(<span class="hljs-string">'plays video'</span>, () =&gt; {
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(<span class="hljs-literal">true</span>);
 
-  spy.mockReset();
   spy.mockRestore();
 });
 
@@ -348,7 +346,6 @@ test(<span class="hljs-string">'plays audio'</span>, () =&gt; {
   expect(spy).toHaveBeenCalled();
   expect(audio.volume).toBe(<span class="hljs-number">100</span>);
 
-  spy.mockReset();
   spy.mockRestore();
 });
 </code></pre>
