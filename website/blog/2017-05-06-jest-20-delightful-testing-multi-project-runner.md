@@ -36,11 +36,11 @@ Finally, we are now properly mapping code coverage when using TypeScript and we 
 
 We made a number of additions and improvements to the testing APIs which will help write more effective tests. We'd like to point out that all of these improvements were made entirely by community members!
 
-* **Better async testing:** Added new async/Promise support through resolves/rejects modifiers on expect: `expect(Promise(…)).resolves.toEqual(…)`. [See documentation](https://facebook.github.io/jest/docs/en/expect.html#resolves).
-* **Expect <n> assertions:** Along with the existing `expect.assertions(n)`, the new `expect.hasAssertions()` can be used to ensure a test has at least one assertion.
-* **Lint Plugin:** A `valid-expect` rule was added to `eslint-plugin-jest` to ensure that an assertion is called after invoking `expect`. This will prevent mistakes like a stray `expect(banana);` with a missing assertion call.
-* **Pretty-Format Plugins:** A number of new pretty-format plugins were added to Jest. We now pretty-print [Immutable.js](https://github.com/facebook/immutable-js/) data structures and HtmlElements in assertion failures and snapshots.
-* **Custom Environment:** It is now possible to add a `@jest-environment node|jsdom` annotation to the doc-block comment of a test file to use a test environment different from the default for individual tests.
+- **Better async testing:** Added new async/Promise support through resolves/rejects modifiers on expect: `expect(Promise(…)).resolves.toEqual(…)`. [See documentation](https://facebook.github.io/jest/docs/en/expect.html#resolves).
+- **Expect <n> assertions:** Along with the existing `expect.assertions(n)`, the new `expect.hasAssertions()` can be used to ensure a test has at least one assertion.
+- **Lint Plugin:** A `valid-expect` rule was added to `eslint-plugin-jest` to ensure that an assertion is called after invoking `expect`. This will prevent mistakes like a stray `expect(banana);` with a missing assertion call.
+- **Pretty-Format Plugins:** A number of new pretty-format plugins were added to Jest. We now pretty-print [Immutable.js](https://github.com/facebook/immutable-js/) data structures and HtmlElements in assertion failures and snapshots.
+- **Custom Environment:** It is now possible to add a `@jest-environment node|jsdom` annotation to the doc-block comment of a test file to use a test environment different from the default for individual tests.
 
 Here is an example of all how all the new APIs together will make testing more delightful:
 
@@ -68,23 +68,23 @@ This example will print a test failure similar to this:
 
 As with every major release, we are making a number of breaking changes to make larger changes in the future possible and to push the testing experience to a new level. This time, we tried our best to only break APIs that we don't expect to affect the majority of Jest's users:
 
-* **Fork of Jasmine 2.5:** We finally decided to fork Jasmine itself and take ownership over Jest's own test runner. This will allow us to improve all aspects of the unit testing experience in the future but for now we are focused on incremental rewrites and reducing the API surface. If you see a test breaking as a result of a Jasmine API that is now missing, there should be an equivalent feature on the `jest` or `expect` objects. As such, we have removed many Jasmine features that aren't generally used in most codebases.
-* **New Snapshots on CI:** Snapshots must always be committed along with the test and the modules they are testing. We changed Jest to not save new snapshots automatically in Continuous Integration (CI) environments or when the `--ci` flag is specified. To overwrite this behavior, which is generally not recommended, the `--updateSnapshot` flag can be used.
-* **Babel-Polyfill:** Jest used to load `babel-polyfill` automatically when using babel-jest which resulted in memory leaks inside of Jest. In most versions of node, it is not necessary to load `babel-polyfill` so we removed this auto-inclusion and instead changed Jest to only include `regenerator-runtime` by default, which is commonly used to support async/await in older versions of Node.js. If you need `babel-polyfill`, you can manually require it in your setup files.
+- **Fork of Jasmine 2.5:** We finally decided to fork Jasmine itself and take ownership over Jest's own test runner. This will allow us to improve all aspects of the unit testing experience in the future but for now we are focused on incremental rewrites and reducing the API surface. If you see a test breaking as a result of a Jasmine API that is now missing, there should be an equivalent feature on the `jest` or `expect` objects. As such, we have removed many Jasmine features that aren't generally used in most codebases.
+- **New Snapshots on CI:** Snapshots must always be committed along with the test and the modules they are testing. We changed Jest to not save new snapshots automatically in Continuous Integration (CI) environments or when the `--ci` flag is specified. To overwrite this behavior, which is generally not recommended, the `--updateSnapshot` flag can be used.
+- **Babel-Polyfill:** Jest used to load `babel-polyfill` automatically when using babel-jest which resulted in memory leaks inside of Jest. In most versions of node, it is not necessary to load `babel-polyfill` so we removed this auto-inclusion and instead changed Jest to only include `regenerator-runtime` by default, which is commonly used to support async/await in older versions of Node.js. If you need `babel-polyfill`, you can manually require it in your setup files.
 
 ## Other Improvements
 
-* **Documentation:** Documentation is critical to share best practices and teach everyone how to write effective tests which will lead to better software. Over the last few weeks we have also expanded Jest's documentation to include a Snapshot Testing FAQ, a guide with information about how to use Jest with common JavaScript libraries as well as we documented the new features mentioned above.
-* **Translations:** We are now asking for your help to [translate the Jest documentation](https://crowdin.com/project/jest) to make it easier for people to learn how to use Jest.
-* **Custom Reporters:** Jest now supports custom test reporters through the `reporters` configuration option. You can finally customize the output of Jest as well as integrate it with other tools by generating reports in formats such as XML. [See documentation](https://facebook.github.io/jest/docs/en/configuration.html#reporters-array-modulename-modulename-options).
-* **Codebase Health:** It was only possible iterate so quickly in Jest because we spent a significant amount of time on the health of the codebase. We were one of the early adopters of [prettier](https://github.com/prettier/prettier), we notably increased flow coverage, forked Jasmine to improve our test runner library and we rewrote and refactored significant portions of Jest itself to set up Jest for success in the future.
-* **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full changelog can be found in the [Jest repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
+- **Documentation:** Documentation is critical to share best practices and teach everyone how to write effective tests which will lead to better software. Over the last few weeks we have also expanded Jest's documentation to include a Snapshot Testing FAQ, a guide with information about how to use Jest with common JavaScript libraries as well as we documented the new features mentioned above.
+- **Translations:** We are now asking for your help to [translate the Jest documentation](https://crowdin.com/project/jest) to make it easier for people to learn how to use Jest.
+- **Custom Reporters:** Jest now supports custom test reporters through the `reporters` configuration option. You can finally customize the output of Jest as well as integrate it with other tools by generating reports in formats such as XML. [See documentation](https://facebook.github.io/jest/docs/en/configuration.html#reporters-array-modulename-modulename-options).
+- **Codebase Health:** It was only possible iterate so quickly in Jest because we spent a significant amount of time on the health of the codebase. We were one of the early adopters of [prettier](https://github.com/prettier/prettier), we notably increased flow coverage, forked Jasmine to improve our test runner library and we rewrote and refactored significant portions of Jest itself to set up Jest for success in the future.
+- **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full changelog can be found in the [Jest repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
 
 ## Talks about Jest
 
 Recently the Jest core team and other contributors started to talk more about Jest and the experience of working on Jest at conferences:
 
-* Rogelio Guzman did a talk about [Jest Snapshots and Beyond](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf.
-* I spoke about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at Facebook's F8 conference.
+- Rogelio Guzman did a talk about [Jest Snapshots and Beyond](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf.
+- I spoke about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at Facebook's F8 conference.
 
 _As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on [GitHub](https://github.com/facebook/jest) or on [Discord](https://discord.gg/MWRhKCj)._

@@ -55,13 +55,13 @@ Huge shout out to Prettier for [fixing](https://github.com/prettier/prettier/pul
 
 We only add matchers to core if we believe they will be useful to a large amount of people in the Jest community, and leave the majority of matchers to the community (see [jest-extended](https://yarnpkg.com/en/package/jest-extended)). Some matchers make the cut into core, and Jest 23 adds:
 
-* nthCalledWith
-* toReturn
-* toReturnTimes
-* toReturnWith
-* lastReturnedWith
-* nthReturnedWith
-* toStrictEqual
+- nthCalledWith
+- toReturn
+- toReturnTimes
+- toReturnWith
+- lastReturnedWith
+- nthReturnedWith
+- toStrictEqual
 
 ![New matchers in action](/jest/img/blog/23-new-matchers.png)
 
@@ -95,34 +95,34 @@ See [jest-watch-typeahead](https://github.com/jest-community/jest-watch-typeahea
 
 As with every major release, we are making a few breaking changes to make larger changes in the future possible and to push the testing experience to a new level. Here's a list of the biggest changes you may see:
 
-* **Require test descriptions and functions**: We're now failing tests that do not include both a function and a description.
-* **Remove undefined props from React snapshots**: Smaller snapshots and proper React behavior.
-* **Remove deprecations**: We removed mapCoverage since it's no longer needed. Additionally, we removed `jest.genMockFunction` and `jest.genMockFn` since these are the same as `jest.fn`.
-* **Add snapshot names to failures**: We added the snapshot name (if provided) to the snapshot failure message so it's easier to find the snapshot that's failing.
-* **Replace mock timestamps**: We replaced mock timestamps with invocationCallOrder since two or mocks may often have the same timestamp, making it impossible to test the call order.
-* **Add results to mock snapshots**: We added mock function call results to snapshots so that both the calls and the results of the invocation are tracked.
+- **Require test descriptions and functions**: We're now failing tests that do not include both a function and a description.
+- **Remove undefined props from React snapshots**: Smaller snapshots and proper React behavior.
+- **Remove deprecations**: We removed mapCoverage since it's no longer needed. Additionally, we removed `jest.genMockFunction` and `jest.genMockFn` since these are the same as `jest.fn`.
+- **Add snapshot names to failures**: We added the snapshot name (if provided) to the snapshot failure message so it's easier to find the snapshot that's failing.
+- **Replace mock timestamps**: We replaced mock timestamps with invocationCallOrder since two or mocks may often have the same timestamp, making it impossible to test the call order.
+- **Add results to mock snapshots**: We added mock function call results to snapshots so that both the calls and the results of the invocation are tracked.
 
 ## Other Improvements
 
-* **Watch mode coverage**: Coverage is now limited to only the files tested in watch mode or when using `--onlyChanged` and `--findRelatedTests`.
-* **Version documentation**: We added docs for each minor release back to Jest 22, and have removed all of the “Requires Jest X.X+” from the docs.
-* **Better snapshot summaries**: We overhauled the Snapshot Summary output to make obsolete snapshots more informative.
-* **Better stack traces**: We added stack traces to asynchronous errors, timeout errors, expect.assertions, and thrown non-errors. We're also indicating the column in the code frame!
-* **Better React 16 support**: Adds snapshot support for `React.Fragment`, `React.forwardRef`, and `React.createContext`.
-* **Track mock return and throw values**: Adds `mock.results` that contains the return value or thrown value for each mock call.
-* **Blazing 🔥**: We've added a blazing badge to the README to indicate that Jest is blazing good.
+- **Watch mode coverage**: Coverage is now limited to only the files tested in watch mode or when using `--onlyChanged` and `--findRelatedTests`.
+- **Version documentation**: We added docs for each minor release back to Jest 22, and have removed all of the “Requires Jest X.X+” from the docs.
+- **Better snapshot summaries**: We overhauled the Snapshot Summary output to make obsolete snapshots more informative.
+- **Better stack traces**: We added stack traces to asynchronous errors, timeout errors, expect.assertions, and thrown non-errors. We're also indicating the column in the code frame!
+- **Better React 16 support**: Adds snapshot support for `React.Fragment`, `React.forwardRef`, and `React.createContext`.
+- **Track mock return and throw values**: Adds `mock.results` that contains the return value or thrown value for each mock call.
+- **Blazing 🔥**: We've added a blazing badge to the README to indicate that Jest is blazing good.
 
 ## Jest Summit
 
 Last week, the Jest Core Team met for the Jest Summit at Facebook London where worked on and released Jest 23, announced the Jest Open Collective, and gave a number of talks:
 
-* **Christoph Nakazawa** – [Intro](https://www.youtube.com/watch?v=cAKYQpTC7MA)
-* **Aaaron Abramov** – [Writing Meaningful Tests](https://youtu.be/cAKYQpTC7MA?t=440)
-* **Rick Hanlon II** – [Blazing Fast Snapshot Testing in Jest 23](https://youtu.be/cAKYQpTC7MA?t=1881)
-* **Simen Bekkhus** – [Jest's Delightful Error Messages](https://youtu.be/cAKYQpTC7MA?t=2990)
-* **Matt Phillips** – [Level up your Jest experience with community packages](https://youtu.be/cAKYQpTC7MA?t=3852)
-* **Michele Bertoli** – [Snapshot all the things](https://youtu.be/cAKYQpTC7MA?t=4582)
-* **Jordan Eldredge** – [Webamp: Learn by imitating](https://youtu.be/cAKYQpTC7MA?t=5185)
+- **Christoph Nakazawa** – [Intro](https://www.youtube.com/watch?v=cAKYQpTC7MA)
+- **Aaaron Abramov** – [Writing Meaningful Tests](https://youtu.be/cAKYQpTC7MA?t=440)
+- **Rick Hanlon II** – [Blazing Fast Snapshot Testing in Jest 23](https://youtu.be/cAKYQpTC7MA?t=1881)
+- **Simen Bekkhus** – [Jest's Delightful Error Messages](https://youtu.be/cAKYQpTC7MA?t=2990)
+- **Matt Phillips** – [Level up your Jest experience with community packages](https://youtu.be/cAKYQpTC7MA?t=3852)
+- **Michele Bertoli** – [Snapshot all the things](https://youtu.be/cAKYQpTC7MA?t=4582)
+- **Jordan Eldredge** – [Webamp: Learn by imitating](https://youtu.be/cAKYQpTC7MA?t=5185)
 
 Full talk is available [here](https://www.youtube.com/watch?v=cAKYQpTC7MA).
 
