@@ -1,5 +1,7 @@
 ## master
 
+## 23.1.0
+
 ### Features
 
 * `[jest-each]` Add pretty-format serialising to each titles ([#6357](https://github.com/facebook/jest/pull/6357))

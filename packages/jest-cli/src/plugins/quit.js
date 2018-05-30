@@ -6,7 +6,7 @@
  *
  * @flow
  */
-import {BaseWatchPlugin} from 'jest-watch';
+import {BaseWatchPlugin} from 'jest-watcher';
 
 class QuitPlugin extends BaseWatchPlugin {
   isInternal: true;

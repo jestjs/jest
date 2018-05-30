@@ -8,7 +8,7 @@
  */
 import type {GlobalConfig} from 'types/Config';
 import type {JestHookSubscriber} from 'types/JestHooks';
-import {BaseWatchPlugin} from 'jest-watch';
+import {BaseWatchPlugin} from 'jest-watcher';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
