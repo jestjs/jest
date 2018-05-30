@@ -22,6 +22,14 @@ const ConditionalTest = {
     }
   },
 
+  skipSuiteOnJestCircus() {
+    if (this.isJestCircusRun()) {
+      fit('does not work on jest-circus', () => {
+        console.warn('[SKIP] Does not work on jest-circus');
+      });
+    }
+  },
+
   skipSuiteOnWindows() {
     if (process.platform === 'win32') {
       fit('does not work on Windows', () => {
