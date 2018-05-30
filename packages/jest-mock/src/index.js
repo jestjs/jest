@@ -456,9 +456,14 @@ class ModuleMockerClass {
       };
 
       f.mockReset = () => {
-        this._mockState.delete(f);
+        f.mockClear();
         this._mockConfigRegistry.delete(f);
         return f;
+      };
+
+      f.mockRestore = () => {
+        f.mockReset();
+        return restore ? restore() : undefined;
       };
 
       f.mockReturnValueOnce = value => {
@@ -527,8 +532,6 @@ class ModuleMockerClass {
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
       }
-
-      f.mockRestore = restore ? restore : () => {};
 
       return f;
     } else {

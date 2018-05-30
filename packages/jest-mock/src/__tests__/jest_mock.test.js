@@ -737,12 +737,13 @@ describe('moduleMocker', () => {
     expect(fn.getMockName()).toBe('jest.fn()');
   });
 
-  test('mockName is not reset by mockRestore', () => {
-    const fn = jest.fn(() => false);
+  test('mockName gets reset by mockRestore', () => {
+    const fn = jest.fn();
+    expect(fn.getMockName()).toBe('jest.fn()');
     fn.mockName('myMockFn');
     expect(fn.getMockName()).toBe('myMockFn');
     fn.mockRestore();
-    expect(fn.getMockName()).toBe('myMockFn');
+    expect(fn.getMockName()).toBe('jest.fn()');
   });
 
   test('mockName is not reset by mockClear', () => {
@@ -782,7 +783,6 @@ describe('moduleMocker', () => {
       isOriginalCalled = false;
       originalCallThis = null;
       originalCallArguments = null;
-      spy.mockReset();
       spy.mockRestore();
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
@@ -873,7 +873,6 @@ describe('moduleMocker', () => {
       isOriginalCalled = false;
       originalCallThis = null;
       originalCallArguments = null;
-      spy.mockReset();
       spy.mockRestore();
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
@@ -900,7 +899,6 @@ describe('moduleMocker', () => {
       expect(spy).toHaveBeenCalled();
       expect(obj.property).toBe(true);
       obj.property = false;
-      spy.mockReset();
       spy.mockRestore();
       obj.property = true;
       expect(spy).not.toHaveBeenCalled();
@@ -990,7 +988,6 @@ describe('moduleMocker', () => {
       isOriginalCalled = false;
       originalCallThis = null;
       originalCallArguments = null;
-      spy.mockReset();
       spy.mockRestore();
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
@@ -1018,7 +1015,6 @@ describe('moduleMocker', () => {
       expect(spy).toHaveBeenCalled();
       expect(obj.property).toBe(true);
       obj.property = false;
-      spy.mockReset();
       spy.mockRestore();
       obj.property = true;
       expect(spy).not.toHaveBeenCalled();
