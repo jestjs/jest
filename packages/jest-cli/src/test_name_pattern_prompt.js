@@ -15,7 +15,7 @@ import {
   Prompt,
   printPatternCaret,
   printRestoredPatternCaret,
-} from 'jest-watch';
+} from 'jest-watcher';
 
 export default class TestNamePatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult>;

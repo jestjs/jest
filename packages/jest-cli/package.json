@@ -28,7 +28,7 @@
     "jest-snapshot": "^23.0.1",
     "jest-util": "^23.0.1",
     "jest-validate": "^23.0.1",
-    "jest-watch": "^23.0.1",
+    "jest-watcher": "^23.0.1",
     "jest-worker": "^23.0.1",
     "micromatch": "^2.3.11",
     "node-notifier": "^5.2.1",

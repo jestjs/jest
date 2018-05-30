@@ -8,7 +8,7 @@
  */
 
 import chalk from 'chalk';
-import {KEYS} from 'jest-watch';
+import {KEYS} from 'jest-watcher';
 
 export default (
   pipe: stream$Writable | tty$WriteStream,

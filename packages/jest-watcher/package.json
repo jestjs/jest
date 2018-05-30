@@ -1,5 +1,5 @@
 {
-  "name": "jest-watch",
+  "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
   "version": "23.0.1",
   "main": "build/index.js",
