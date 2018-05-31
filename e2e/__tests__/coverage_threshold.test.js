@@ -199,5 +199,7 @@ test('file is matched by all path and glob threshold groups', () => {
 
   expect(status).toBe(1);
   expect(stdout).toMatchSnapshot('stdout');
-  expect(replaceTime(stderr)).toMatchSnapshot('stderr');
+  expect(
+    replaceTime(stderr).replace(process.cwd(), '<<REPLACED>>'),
+  ).toMatchSnapshot('stderr');
 });

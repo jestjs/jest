@@ -84,7 +84,7 @@ exports[`file is matched by all path and glob threshold groups: stderr 1`] = `
   ✓ banana (<<REPLACED>>)
 
 Jest: \\"./\\" coverage threshold for lines (100%) not met: 50%
-Jest: \\"/Users/rhyswilliams/facebook/jest/e2e/coverage-threshold/banana.js\\" coverage threshold for lines (100%) not met: 50%
+Jest: \\"<<REPLACED>>/e2e/coverage-threshold/banana.js\\" coverage threshold for lines (100%) not met: 50%
 Jest: \\"banana.js\\" coverage threshold for lines (100%) not met: 50%
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
