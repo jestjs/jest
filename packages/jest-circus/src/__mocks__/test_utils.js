@@ -28,6 +28,7 @@ export const runTest = (source: string) => {
     .update(source)
     .digest('hex');
   const tmpFilename = path.join(os.tmpdir(), filename);
+  console.log(BABEL_REGISTER_PATH);
 
   const content = `
     require('${BABEL_REGISTER_PATH}');
