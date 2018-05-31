@@ -138,7 +138,6 @@
     ],
     "testEnvironment": "./packages/jest-environment-node",
     "testPathIgnorePatterns": [
-      "/e2e/",
       "/node_modules/",
       "/examples/",
       "/e2e/.*/__tests__",
