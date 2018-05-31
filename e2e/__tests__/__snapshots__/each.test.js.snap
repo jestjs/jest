@@ -13,9 +13,10 @@ exports[`runs only the describe.only.each tests 1`] = `
 
 exports[`shows error message when not enough arguments are supplied to tests 1`] = `
 "FAIL __tests__/each-exception.test.js
+  ✕ throws exception when one argument too few are supplied $left == $right
   ✕ throws exception when not enough arguments are supplied $left == $right
 
-  ● throws exception when not enough arguments are supplied $left == $right
+  ● throws exception when one argument too few are supplied $left == $right
 
     Not enough arguments supplied for given headings:
     left | right
@@ -27,7 +28,7 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
       true,
     ]
 
-    Missing 1 arguments
+    Missing 1 argument
 
        6 |  */
        7 | 
@@ -38,6 +39,29 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
       11 |   \${true}
 
       at __tests__/each-exception.test.js:8:1
+
+  ● throws exception when not enough arguments are supplied $left == $right
+
+    Not enough arguments supplied for given headings:
+    left | right | up | down
+
+    Received:
+    Array [
+      true,
+      true,
+    ]
+
+    Missing 2 arguments
+
+      17 | );
+      18 | 
+    > 19 | it.each\`
+         | ^
+      20 |   left    | right   | up | down
+      21 |   \${true} | \${true}
+      22 | \`(
+
+      at __tests__/each-exception.test.js:19:1
 
 "
 `;
