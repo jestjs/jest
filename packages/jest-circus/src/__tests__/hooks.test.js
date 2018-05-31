@@ -12,13 +12,8 @@
 
 import {runTest} from '../__mocks__/test_utils';
 
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
-ConditionalTest.skipSuiteOnWindows();
-
 test('beforeEach is executed before each test in current/child describe blocks', () => {
-  const {stdout} = runTest(
-    'hooks_test',
-    `
+  const {stdout} = runTest(`
     describe('describe', () => {
       beforeEach(() => {});
       test('one', () => {});
@@ -38,8 +33,7 @@ test('beforeEach is executed before each test in current/child describe blocks',
       beforeEach(() => { throw new Error('alabama'); });
       test('2nd describe test', () => {});
     })
-  `,
-  );
+  `);
 
   expect(stdout).toMatchSnapshot();
 });

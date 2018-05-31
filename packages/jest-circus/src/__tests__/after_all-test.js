@@ -13,9 +13,7 @@
 import {runTest} from '../__mocks__/test_utils';
 
 test('tests are not marked done until their parent afterAll runs', () => {
-  const {stdout} = runTest(
-    'after_all_test',
-    `
+  const {stdout} = runTest(`
     describe('describe', () => {
       afterAll(() => {});
       test('one', () => {});
@@ -35,32 +33,26 @@ test('tests are not marked done until their parent afterAll runs', () => {
       afterAll(() => { throw new Error('alabama'); });
       test('2nd describe test', () => {});
     })
-  `,
-  );
+  `);
 
   expect(stdout).toMatchSnapshot();
 });
 
 test('describe block cannot have hooks and no tests', () => {
-  const result = runTest(
-    'after_all_test',
-    `
+  const result = runTest(`
     describe('describe', () => {
       afterEach(() => {});
       beforeEach(() => {});
       afterAll(() => {});
       beforeAll(() => {});
     })
-  `,
-  );
+  `);
 
   expect(result.stdout).toMatchSnapshot();
 });
 
 test('describe block _can_ have hooks if a child describe block has tests', () => {
-  const result = runTest(
-    'after_all_test',
-    `
+  const result = runTest(`
     describe('describe', () => {
       afterEach(() => {});
       beforeEach(() => {});
@@ -72,7 +64,6 @@ test('describe block _can_ have hooks if a child describe block has tests', () =
         })
       })
     })
-  `,
-  );
+  `);
   expect(result.stdout).toMatchSnapshot();
 });
