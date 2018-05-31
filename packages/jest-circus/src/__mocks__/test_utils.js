@@ -15,6 +15,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
+import ConditionalTest from '../../../../scripts/ConditionalTest';
 
 const CIRCUS_PATH = require.resolve('../../build/index');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
@@ -22,13 +23,14 @@ const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./test_event_handler');
 const BABEL_REGISTER_PATH = require.resolve('babel-register');
 
+ConditionalTest.skipSuiteOnWindows();
+
 export const runTest = (source: string) => {
   const filename = crypto
     .createHash('md5')
     .update(source)
     .digest('hex');
   const tmpFilename = path.join(os.tmpdir(), filename);
-  console.log(BABEL_REGISTER_PATH);
 
   const content = `
     require('${BABEL_REGISTER_PATH}');
