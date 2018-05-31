@@ -72,6 +72,5 @@ run_describe_finish: 2nd describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
-"
+unhandledErrors: 0"
 `;

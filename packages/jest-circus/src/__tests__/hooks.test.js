@@ -16,7 +16,9 @@ const ConditionalTest = require('../../../../scripts/ConditionalTest');
 ConditionalTest.skipSuiteOnWindows();
 
 test('beforeEach is executed before each test in current/child describe blocks', () => {
-  const {stdout} = runTest(`
+  const {stdout} = runTest(
+    'hooks_test',
+    `
     describe('describe', () => {
       beforeEach(() => {});
       test('one', () => {});
@@ -36,7 +38,8 @@ test('beforeEach is executed before each test in current/child describe blocks',
       beforeEach(() => { throw new Error('alabama'); });
       test('2nd describe test', () => {});
     })
-  `);
+  `,
+  );
 
   expect(stdout).toMatchSnapshot();
 });

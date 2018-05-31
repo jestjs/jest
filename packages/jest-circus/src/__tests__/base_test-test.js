@@ -13,27 +13,33 @@
 import {runTest} from '../__mocks__/test_utils';
 
 test('simple test', () => {
-  const {stdout} = runTest(`
+  const {stdout} = runTest(
+    'base_test',
+    `
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => {});
       test('one', () => {});
       test('two', () => {});
     })
-  `);
+  `,
+  );
 
   expect(stdout).toMatchSnapshot();
 });
 
 test('failures', () => {
-  const {stdout} = runTest(`
+  const {stdout} = runTest(
+    'base_test',
+    `
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => { throw new Error('banana')});
       test('one', () => { throw new Error('kentucky')});
       test('two', () => {});
     })
-  `);
+  `,
+  );
 
   expect(stdout).toMatchSnapshot();
 });
