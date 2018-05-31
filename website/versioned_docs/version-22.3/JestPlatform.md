@@ -10,8 +10,8 @@ You can cherry pick specific features of Jest and use them as standalone package
 
 Tool for identifying modified files in a git/hg repository. Exports two functions:
 
-* `getChangedFilesForRoots` returns a promise that resolves to an object with the changed files and repos.
-* `findRepos` returns a promise that resolves to a set of repositories contained in the specified path.
+- `getChangedFilesForRoots` returns a promise that resolves to an object with the changed files and repos.
+- `findRepos` returns a promise that resolves to a set of repositories contained in the specified path.
 
 ### Example
 
@@ -96,8 +96,8 @@ console.log(getType(undefinedValue));
 
 Tool for validating configurations submitted by users. Exports a function that takes two arguments: the user's configuration and an object containing an example configuration and other options. The return value is an object with two attributes:
 
-* `hasDeprecationWarnings`, a boolean indicating whether the submitted configuration has deprecation warnings,
-* `isValid`, a boolean indicating whether the configuration is correct or not.
+- `hasDeprecationWarnings`, a boolean indicating whether the submitted configuration has deprecation warnings,
+- `isValid`, a boolean indicating whether the configuration is correct or not.
 
 ### Example
 

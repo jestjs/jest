@@ -20,8 +20,8 @@ roots: Array of string paths gathered from [jest roots](https://facebook.github.
 
 options: Object literal with keys
 
-* lastCommit: boolean
-* withAncestor: boolean
+- lastCommit: boolean
+- withAncestor: boolean
 
 ### findRepos(roots: <Array<string>>): Promise<?object>
 

@@ -1,1 +1,1 @@
-module.exports = 'package/index';
+../package/index.js
