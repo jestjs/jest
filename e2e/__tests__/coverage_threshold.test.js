@@ -10,17 +10,13 @@
 'use strict';
 
 const path = require('path');
-const {cleanup, writeFiles} = require('../Utils');
+const {cleanup, writeFiles, extractSummary} = require('../Utils');
 const runJest = require('../runJest');
 
 const DIR = path.resolve(__dirname, '../coverage-threshold');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
-
-const replaceTime = str => {
-  return str.replace(/\d*\.?\d+m?s/g, '<<REPLACED>>');
-};
 
 test('exits with 1 if coverage threshold is not met', () => {
   const pkgJson = {
@@ -49,9 +45,12 @@ test('exits with 1 if coverage threshold is not met', () => {
   });
 
   const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
+
   expect(status).toBe(1);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(stdout).toMatchSnapshot('stdout');
-  expect(replaceTime(stderr)).toMatchSnapshot('stderr');
 });
 
 test('exits with 1 if path threshold group is not found in coverage data', () => {
@@ -81,10 +80,12 @@ test('exits with 1 if path threshold group is not found in coverage data', () =>
   });
 
   const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(stdout).toMatchSnapshot('stdout');
-  expect(replaceTime(stderr)).toMatchSnapshot('stderr');
 });
 
 test('exits with 0 if global threshold group is not found in coverage data', () => {
@@ -157,10 +158,12 @@ test('excludes tests matched by path threshold groups from global group', () => 
   });
 
   const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(stdout).toMatchSnapshot('stdout');
-  expect(replaceTime(stderr)).toMatchSnapshot('stderr');
 });
 
 test('file is matched by all path and glob threshold groups', () => {
@@ -172,10 +175,10 @@ test('file is matched by all path and glob threshold groups', () => {
         './': {
           lines: 100,
         },
-        'ban*.js': {
+        './ban*.js': {
           lines: 100,
         },
-        'banana.js': {
+        './banana.js': {
           lines: 100,
         },
       },
@@ -196,10 +199,17 @@ test('file is matched by all path and glob threshold groups', () => {
   });
 
   const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {rest, summary} = extractSummary(
+    /* This test also runs on windows and when the glob fails it outputs
+    the system specific absolute path to the test file. */
+    stderr.replace(
+      path.resolve(DIR, './banana.js'),
+      '<<FULL_PATH_TO_BANANA_JS>>',
+    ),
+  );
 
   expect(status).toBe(1);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(stdout).toMatchSnapshot('stdout');
-  expect(
-    replaceTime(stderr).replace(process.cwd(), '<<REPLACED>>'),
-  ).toMatchSnapshot('stderr');
 });

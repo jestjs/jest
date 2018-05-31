@@ -1,11 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`excludes tests matched by path threshold groups from global group: stderr 1`] = `
+exports[`excludes tests matched by path threshold groups from global group 1`] = `
 "PASS __tests__/banana.test.js
-  ✓ banana (<<REPLACED>>)
+  ✓ banana
 
 Jest: \\"global\\" coverage threshold for lines (100%) not met: 0%
-Test Suites: 1 passed, 1 total
+"
+`;
+
+exports[`excludes tests matched by path threshold groups from global group 2`] = `
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -33,12 +37,16 @@ All files  |      100 |      100 |      100 |      100 |                   |
 -----------|----------|----------|----------|----------|-------------------|"
 `;
 
-exports[`exits with 1 if coverage threshold is not met: stderr 1`] = `
+exports[`exits with 1 if coverage threshold is not met 1`] = `
 "PASS __tests__/a-banana.js
-  ✓ banana (<<REPLACED>>)
+  ✓ banana
 
 Jest: \\"global\\" coverage threshold for lines (90%) not met: 50%
-Test Suites: 1 passed, 1 total
+"
+`;
+
+exports[`exits with 1 if coverage threshold is not met 2`] = `
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -56,12 +64,16 @@ All files       |       50 |      100 |        0 |       50 |                   
 "
 `;
 
-exports[`exits with 1 if path threshold group is not found in coverage data: stderr 1`] = `
+exports[`exits with 1 if path threshold group is not found in coverage data 1`] = `
 "PASS __tests__/banana.test.js
-  ✓ banana (<<REPLACED>>)
+  ✓ banana
 
 Jest: Coverage data for apple.js was not found.
-Test Suites: 1 passed, 1 total
+"
+`;
+
+exports[`exits with 1 if path threshold group is not found in coverage data 2`] = `
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -79,14 +91,18 @@ All files  |      100 |      100 |      100 |      100 |                   |
 "
 `;
 
-exports[`file is matched by all path and glob threshold groups: stderr 1`] = `
+exports[`file is matched by all path and glob threshold groups 1`] = `
 "PASS __tests__/banana.test.js
-  ✓ banana (<<REPLACED>>)
+  ✓ banana
 
 Jest: \\"./\\" coverage threshold for lines (100%) not met: 50%
-Jest: \\"<<REPLACED>>/e2e/coverage-threshold/banana.js\\" coverage threshold for lines (100%) not met: 50%
-Jest: \\"banana.js\\" coverage threshold for lines (100%) not met: 50%
-Test Suites: 1 passed, 1 total
+Jest: \\"<<FULL_PATH_TO_BANANA_JS>>\\" coverage threshold for lines (100%) not met: 50%
+Jest: \\"./banana.js\\" coverage threshold for lines (100%) not met: 50%
+"
+`;
+
+exports[`file is matched by all path and glob threshold groups 2`] = `
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
