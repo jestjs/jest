@@ -610,7 +610,7 @@ test('drinks returns', () => {
 
 ### `.toHaveNthReturned(nthCall)`
 
-Also under the alias: `.nthReturned()`
+Also under the alias: `.nthReturned(nthCall)`
 
 If you have a mock function, you can use `.toHaveNthReturned` to test that the nth call to the mock function successfully returned (i.e., did not throw an error). For example, let's say you have a mock `drink` that returns `true`. You can write:
 
