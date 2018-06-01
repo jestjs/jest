@@ -67,7 +67,7 @@ expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
 expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
 
 // The return value of the first call to the function was 'return value'
-expect(someMockFunction.mock.results[0]).toBe('return value');
+expect(someMockFunction.mock.results[0].value).toBe('return value');
 
 // This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
