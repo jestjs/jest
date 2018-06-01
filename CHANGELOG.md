@@ -8,11 +8,11 @@
 - `[jest-each]` Support one dimensional array of data ([#6351](https://github.com/facebook/jest/pull/6351))
 - `[jest-watch]` create new package `jest-watch` to ease custom watch plugin development ([#6318](https://github.com/facebook/jest/pull/6318))
 - `[jest-circus]` Make hooks in empty describe blocks error ([#6320](https://github.com/facebook/jest/pull/6320))
-- Add a config/CLI option `errorOnDeprecated` which makes calling deprecated APIs throw hepful error messages.
+- Add a config/CLI option `errorOnDeprecated` which makes calling deprecated APIs throw hepful error messages ([#6339](https://github.com/facebook/jest/pull/6339))
 
 ### Fixes
 
-- `[jest-each]` Stop test title concatenating extra args ([##6346](https://github.com/facebook/jest/pull/#6346))
+- `[jest-each]` Stop test title concatenating extra args ([#6346](https://github.com/facebook/jest/pull/6346))
 - `[expect]` toHaveBeenNthCalledWith/nthCalledWith gives wrong call messages if not matched ([#6340](https://github.com/facebook/jest/pull/6340))
 - `[jest-each]` Make sure invalid arguments to `each` points back to the user's code ([#6347](https://github.com/facebook/jest/pull/6347))
 - `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))
