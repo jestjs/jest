@@ -592,6 +592,40 @@ test('drinks returns', () => {
 });
 ```
 
+### `.toHaveLastReturned()`
+
+Also under the alias: `.lastReturned()`
+
+If you have a mock function, you can use `.toHaveLastReturned` to test that the last call to the mock function successfully returned (i.e., did not throw an error). For example, let's say you have a mock `drink` that returns `true`. You can write:
+
+```js
+test('drinks returns', () => {
+  const drink = jest.fn(() => true);
+
+  drink();
+
+  expect(drink).toHaveLastReturned();
+});
+```
+
+### `.toHaveNthReturned(nthCall)`
+
+Also under the alias: `.nthReturned()`
+
+If you have a mock function, you can use `.toHaveNthReturned` to test that the nth call to the mock function successfully returned (i.e., did not throw an error). For example, let's say you have a mock `drink` that returns `true`. You can write:
+
+```js
+test('drinks returns', () => {
+  const drink = jest.fn(() => true);
+
+  drink();
+  drink();
+  drink();
+
+  expect(drink).toHaveNthReturned(2);
+});
+```
+
 ### `.toHaveReturnedTimes(number)`
 
 Also under the alias: `.toReturnTimes(number)`

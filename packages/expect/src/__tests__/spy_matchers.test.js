@@ -371,29 +371,46 @@ const jestExpect = require('../');
   });
 });
 
-['toReturn', 'toHaveReturned'].forEach(returned => {
+[
+  'toReturn',
+  'toHaveReturned',
+  'lastReturned',
+  'toHaveLastReturned',
+  'nthReturned',
+  'toHaveNthReturned',
+].forEach(returned => {
+  const caller = function(callee, ...args) {
+    if (returned === 'nthReturned' || returned === 'toHaveNthReturned') {
+      callee(1, ...args);
+    } else {
+      callee(...args);
+    }
+  };
+
   describe(`${returned}`, () => {
     test(`works only on spies or jest.fn`, () => {
       const fn = function fn() {};
 
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        caller(jestExpect(fn)[returned]),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     test(`passes when returned`, () => {
       const fn = jest.fn(() => 42);
       fn();
-      jestExpect(fn)[returned]();
+      caller(jestExpect(fn)[returned]);
       expect(() =>
-        jestExpect(fn).not[returned](),
+        caller(jestExpect(fn).not[returned]),
       ).toThrowErrorMatchingSnapshot();
     });
 
     test(`passes when undefined is returned`, () => {
       const fn = jest.fn(() => undefined);
       fn();
-      jestExpect(fn)[returned]();
+      caller(jestExpect(fn)[returned]);
       expect(() =>
-        jestExpect(fn).not[returned](),
+        caller(jestExpect(fn).not[returned]),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -416,17 +433,19 @@ const jestExpect = require('../');
 
       fn(false);
 
-      jestExpect(fn)[returned]();
+      caller(jestExpect(fn)[returned]);
       expect(() =>
-        jestExpect(fn).not[returned](),
+        caller(jestExpect(fn).not[returned]),
       ).toThrowErrorMatchingSnapshot();
     });
 
     test(`.not passes when not returned`, () => {
       const fn = jest.fn();
 
-      jestExpect(fn).not[returned]();
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+      caller(jestExpect(fn).not[returned]);
+      expect(() =>
+        caller(jestExpect(fn)[returned]),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     test(`.not passes when all calls throw`, () => {
@@ -446,8 +465,10 @@ const jestExpect = require('../');
         // ignore error
       }
 
-      jestExpect(fn).not[returned]();
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+      caller(jestExpect(fn).not[returned]);
+      expect(() =>
+        caller(jestExpect(fn)[returned]),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     test(`.not passes when a call throws undefined`, () => {
@@ -462,8 +483,10 @@ const jestExpect = require('../');
         // ignore error
       }
 
-      jestExpect(fn).not[returned]();
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+      caller(jestExpect(fn).not[returned]);
+      expect(() =>
+        caller(jestExpect(fn)[returned]),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     test(`fails with any argument passed`, () => {
@@ -471,7 +494,7 @@ const jestExpect = require('../');
 
       fn();
       expect(() =>
-        jestExpect(fn)[returned](555),
+        caller(jestExpect(fn)[returned], 555),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -479,16 +502,16 @@ const jestExpect = require('../');
       const fn = jest.fn();
 
       expect(() =>
-        jestExpect(fn).not[returned](555),
+        caller(jestExpect(fn).not[returned], 555),
       ).toThrowErrorMatchingSnapshot();
     });
 
     test(`includes the custom mock name in the error message`, () => {
       const fn = jest.fn(() => 42).mockName('named-mock');
       fn();
-      jestExpect(fn)[returned]();
+      caller(jestExpect(fn)[returned]);
       expect(() =>
-        jestExpect(fn).not[returned](),
+        caller(jestExpect(fn).not[returned]),
       ).toThrowErrorMatchingSnapshot();
     });
   });
@@ -668,7 +691,7 @@ const jestExpect = require('../');
       const fn = function fn() {};
 
       expect(() =>
-        jestExpect(fn)[returnedWith](),
+        caller(jestExpect(fn)[returnedWith], 'foo'),
       ).toThrowErrorMatchingSnapshot();
     });
 

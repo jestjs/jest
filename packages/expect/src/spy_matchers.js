@@ -283,6 +283,41 @@ const createLastReturnedMatcher = matcherName => (
   received: any,
   expected: any,
 ) => {
+  ensureNoExpected(expected, matcherName);
+  ensureMock(received, matcherName);
+
+  const receivedName = received.getMockName();
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
+
+  const results = received.mock.results;
+  const lastResult = results[results.length - 1];
+  const pass = !!lastResult && !lastResult.isThrow;
+
+  const message = pass
+    ? () =>
+        matcherHint('.not' + matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${identifier} to not have last returned\n` +
+        `But it last returned:\n` +
+        `  ${printReceived(lastResult.value)}`
+    : () =>
+        matcherHint(matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${identifier} to have last returned\n` +
+        (!lastResult
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : `But the last call ${RECEIVED_COLOR('threw an error')}`);
+
+  return {message, pass};
+};
+
+const createLastReturnedWithMatcher = matcherName => (
+  received: any,
+  expected: any,
+) => {
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
@@ -374,6 +409,53 @@ const createNthCalledWithMatcher = (matcherName: string) => (
   return {message, pass};
 };
 
+const createNthReturnedMatcher = (matcherName: string) => (
+  received: any,
+  nth: number,
+  expected: any,
+) => {
+  ensureNoExpected(expected, matcherName);
+  ensureMock(received, matcherName);
+
+  if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
+    const message = () =>
+      `nth value ${printReceived(
+        nth,
+      )} must be a positive integer greater than ${printExpected(0)}`;
+    const pass = false;
+    return {message, pass};
+  }
+
+  const receivedName = received.getMockName();
+  const identifier =
+    receivedName === 'jest.fn()'
+      ? 'mock function'
+      : `mock function "${receivedName}"`;
+
+  const results = received.mock.results;
+  const nthResult = results[nth - 1];
+  const pass = !!nthResult && !nthResult.isThrow;
+  const nthString = nthToString(nth);
+  const message = pass
+    ? () =>
+        matcherHint('.not' + matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${identifier} ${nthString} call to not have returned\n` +
+        `But the ${nthString} call returned:\n` +
+        `  ${printReceived(nthResult.value)}`
+    : () =>
+        matcherHint(matcherName, receivedName) +
+        '\n\n' +
+        `Expected ${identifier} ${nthString} call to have returned\n` +
+        (results.length === 0
+          ? `But it was ${RECEIVED_COLOR('not called')}`
+          : nth > results.length
+            ? `But it was only called ${printReceived(results.length)} times`
+            : `But the ${nthString} call ${RECEIVED_COLOR('threw an error')}`);
+
+  return {message, pass};
+};
+
 const createNthReturnedWithMatcher = (matcherName: string) => (
   received: any,
   nth: number,
@@ -431,8 +513,10 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
 
 const spyMatchers: MatchersObject = {
   lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
-  lastReturnedWith: createLastReturnedMatcher('.lastReturnedWith'),
+  lastReturned: createLastReturnedMatcher('.lastReturned'),
+  lastReturnedWith: createLastReturnedWithMatcher('.lastReturnedWith'),
   nthCalledWith: createNthCalledWithMatcher('.nthCalledWith'),
+  nthReturned: createNthReturnedMatcher('.nthReturned'),
   nthReturnedWith: createNthReturnedWithMatcher('.nthReturnedWith'),
   toBeCalled: createToBeCalledMatcher('.toBeCalled'),
   toBeCalledTimes: createToBeCalledTimesMatcher('.toBeCalledTimes'),
@@ -446,7 +530,11 @@ const spyMatchers: MatchersObject = {
   toHaveBeenNthCalledWith: createNthCalledWithMatcher(
     '.toHaveBeenNthCalledWith',
   ),
-  toHaveLastReturnedWith: createLastReturnedMatcher('.toHaveLastReturnedWith'),
+  toHaveLastReturned: createLastReturnedMatcher('.toHaveLastReturned'),
+  toHaveLastReturnedWith: createLastReturnedWithMatcher(
+    '.toHaveLastReturnedWith',
+  ),
+  toHaveNthReturned: createNthReturnedMatcher('.toHaveNthReturned'),
   toHaveNthReturnedWith: createNthReturnedWithMatcher('.toHaveNthReturnedWith'),
   toHaveReturned: createToReturnMatcher('.toHaveReturned'),
   toHaveReturnedTimes: createToReturnTimesMatcher('.toHaveReturnedTimes'),

@@ -125,6 +125,83 @@ Expected mock function to have been last called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
 
+exports[`lastReturned .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].lastReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`lastReturned .not passes when a call throws undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned
+But the last call <red>threw an error</>"
+`;
+
+exports[`lastReturned .not passes when all calls throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned
+But the last call <red>threw an error</>"
+`;
+
+exports[`lastReturned .not passes when not returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned
+But it was <red>not called</>"
+`;
+
+exports[`lastReturned fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].lastReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`lastReturned includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.lastReturned(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to not have last returned
+But it last returned:
+  <red>42</>"
+`;
+
+exports[`lastReturned passes when at least one call does not throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned
+But it last returned:
+  <red>42</>"
+`;
+
+exports[`lastReturned passes when returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned
+But it last returned:
+  <red>42</>"
+`;
+
+exports[`lastReturned passes when undefined is returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned
+But it last returned:
+  <red>undefined</>"
+`;
+
+exports[`lastReturned works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastReturned(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
+`;
+
 exports[`lastReturnedWith a call that throws is not considered to have returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
 
@@ -380,6 +457,83 @@ exports[`nthCalledWith works with trailing undefined arguments 1`] = `
 
 Expected mock function first call to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`nthReturned .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].nthReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`nthReturned .not passes when a call throws undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned
+But the first call <red>threw an error</>"
+`;
+
+exports[`nthReturned .not passes when all calls throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned
+But the first call <red>threw an error</>"
+`;
+
+exports[`nthReturned .not passes when not returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned
+But it was <red>not called</>"
+`;
+
+exports[`nthReturned fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].nthReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`nthReturned includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.nthReturned(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to not have returned
+But the first call returned:
+  <red>42</>"
+`;
+
+exports[`nthReturned passes when at least one call does not throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned
+But the first call returned:
+  <red>42</>"
+`;
+
+exports[`nthReturned passes when returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned
+But the first call returned:
+  <red>42</>"
+`;
+
+exports[`nthReturned passes when undefined is returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned
+But the first call returned:
+  <red>undefined</>"
+`;
+
+exports[`nthReturned works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthReturned(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
 `;
 
 exports[`nthReturnedWith a call that throws is not considered to have returned 1`] = `
@@ -1413,6 +1567,83 @@ Expected mock function first call to have been called with:
   Did not expect argument 2 but it was called with <red>undefined</>."
 `;
 
+exports[`toHaveLastReturned .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveLastReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toHaveLastReturned .not passes when a call throws undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned
+But the last call <red>threw an error</>"
+`;
+
+exports[`toHaveLastReturned .not passes when all calls throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned
+But the last call <red>threw an error</>"
+`;
+
+exports[`toHaveLastReturned .not passes when not returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned
+But it was <red>not called</>"
+`;
+
+exports[`toHaveLastReturned fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveLastReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toHaveLastReturned includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveLastReturned(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to not have last returned
+But it last returned:
+  <red>42</>"
+`;
+
+exports[`toHaveLastReturned passes when at least one call does not throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned
+But it last returned:
+  <red>42</>"
+`;
+
+exports[`toHaveLastReturned passes when returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned
+But it last returned:
+  <red>42</>"
+`;
+
+exports[`toHaveLastReturned passes when undefined is returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturned(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned
+But it last returned:
+  <red>undefined</>"
+`;
+
+exports[`toHaveLastReturned works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveLastReturned(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
+`;
+
 exports[`toHaveLastReturnedWith a call that throws is not considered to have returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
 
@@ -1532,6 +1763,83 @@ Expected mock function to not have last returned:
   <green>undefined</>
 But it last returned exactly:
   <red>undefined</>"
+`;
+
+exports[`toHaveNthReturned .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveNthReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toHaveNthReturned .not passes when a call throws undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned
+But the first call <red>threw an error</>"
+`;
+
+exports[`toHaveNthReturned .not passes when all calls throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned
+But the first call <red>threw an error</>"
+`;
+
+exports[`toHaveNthReturned .not passes when not returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned
+But it was <red>not called</>"
+`;
+
+exports[`toHaveNthReturned fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveNthReturned(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  number: <green>555</>"
+`;
+
+exports[`toHaveNthReturned includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveNthReturned(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to not have returned
+But the first call returned:
+  <red>42</>"
+`;
+
+exports[`toHaveNthReturned passes when at least one call does not throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned
+But the first call returned:
+  <red>42</>"
+`;
+
+exports[`toHaveNthReturned passes when returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned
+But the first call returned:
+  <red>42</>"
+`;
+
+exports[`toHaveNthReturned passes when undefined is returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturned(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned
+But the first call returned:
+  <red>undefined</>"
+`;
+
+exports[`toHaveNthReturned works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveNthReturned(</><dim>)</>
+
+<red>jest.fn()</> value must be a mock function or spy.
+Received:
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toHaveNthReturnedWith a call that throws is not considered to have returned 1`] = `
