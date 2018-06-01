@@ -178,7 +178,7 @@ export type InitialOptions = {
   watch?: boolean,
   watchAll?: boolean,
   watchman?: boolean,
-  watchPlugins?: Array<string>,
+  watchPlugins?: Array<string | [string, Object]>,
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -235,7 +235,7 @@ export type GlobalConfig = {|
   watch: boolean,
   watchAll: boolean,
   watchman: boolean,
-  watchPlugins: ?Array<string>,
+  watchPlugins: ?Array<string | [string, Object]>,
 |};
 
 export type ProjectConfig = {|

@@ -579,13 +579,27 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = options[key];
         break;
       case 'watchPlugins':
-        value = (options[key] || []).map(watchPlugin =>
-          resolve(newOptions.resolver, {
-            filePath: watchPlugin,
-            key,
-            rootDir: options.rootDir,
-          }),
-        );
+        value = (options[key] || []).map(watchPlugin => {
+          if (typeof watchPlugin === 'string') {
+            return {
+              config: {},
+              path: resolve(newOptions.resolver, {
+                filePath: watchPlugin,
+                key,
+                rootDir: options.rootDir,
+              }),
+            };
+          } else {
+            return {
+              config: watchPlugin[1] || {},
+              path: resolve(newOptions.resolver, {
+                filePath: watchPlugin[0],
+                key,
+                rootDir: options.rootDir,
+              }),
+            };
+          }
+        });
         break;
     }
     newOptions[key] = value;
