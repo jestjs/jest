@@ -37,7 +37,7 @@ type MockFunctionResult = {
    *       be undefined until the call completes.
    *       However, this would be a massive breaking change.
    */
-  isThrow: boolean,
+  isThrow: boolean | void,
   /**
    * The value that was either thrown or returned by the function.
    */
