@@ -19,6 +19,7 @@
 - `[jest-cli]` Normalize slashes in paths in CLI output on Windows ([#6310](https://github.com/facebook/jest/pull/6310))
 - `[jest-cli]` Fix run beforeAll in excluded suites tests" mode. ([#6234](https://github.com/facebook/jest/pull/6234))
 - `[jest-haste-map`] Compute SHA-1s for non-tracked files when using Node crawler ([#6264](https://github.com/facebook/jest/pull/6264))
+- `[jest-mock]` Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
 
 ### Chore & Maintenance
 
