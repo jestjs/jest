@@ -30,7 +30,7 @@ export type PromiseMatcherFn = (actual: any) => Promise<void>;
 export type MatcherState = {
   assertionCalls: number,
   currentTestName?: string,
-  equals: (any, any) => boolean,
+  equals: (any, any, ?(any[])) => boolean,
   expand?: boolean,
   expectedAssertionsNumber: ?number,
   isExpectingAssertions: ?boolean,

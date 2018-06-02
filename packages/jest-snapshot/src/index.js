@@ -53,7 +53,12 @@ const toMatchSnapshot = function(
   propertyMatchers?: any,
   testName?: string,
 ) {
-  return _toMatchSnapshot(received, propertyMatchers, testName);
+  return _toMatchSnapshot({
+    context: this,
+    propertyMatchers,
+    received,
+    testName,
+  });
 };
 
 const toMatchInlineSnapshot = function(
@@ -75,19 +80,19 @@ const toMatchInlineSnapshot = function(
   });
 };
 
-const _toMatchSnapshot = function({
+const _toMatchSnapshot = ({
   context,
   received,
   propertyMatchers,
   testName,
   inlineSnapshot,
 }: {
-  context: MatcherState,
+  context: MatcherState & {dontThrow?: () => any},
   received: any,
   propertyMatchers?: any,
   testName?: string,
   inlineSnapshot?: string,
-}) {
+}) => {
   context.dontThrow && context.dontThrow();
   testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
 
@@ -107,10 +112,9 @@ const _toMatchSnapshot = function({
       : currentTestName || '';
 
   if (typeof propertyMatchers === 'object') {
-    const propertyMatchers = propertyMatchers;
-    const propertyPass = this.equals(received, propertyMatchers, [
-      this.utils.iterableEquality,
-      this.utils.subsetEquality,
+    const propertyPass = context.equals(received, propertyMatchers, [
+      context.utils.iterableEquality,
+      context.utils.subsetEquality,
     ]);
 
     if (!propertyPass) {
@@ -120,9 +124,9 @@ const _toMatchSnapshot = function({
         `${RECEIVED_COLOR('Received value')} does not match ` +
         `${EXPECTED_COLOR(`snapshot properties for "${key}"`)}.\n\n` +
         `Expected snapshot to match properties:\n` +
-        `  ${this.utils.printExpected(propertyMatchers)}` +
+        `  ${context.utils.printExpected(propertyMatchers)}` +
         `\nReceived:\n` +
-        `  ${this.utils.printReceived(received)}`;
+        `  ${context.utils.printReceived(received)}`;
 
       return {
         message: () =>
@@ -219,19 +223,19 @@ const toThrowErrorMatchingInlineSnapshot = function(
   });
 };
 
-const _toThrowErrorMatchingSnapshot = function({
+const _toThrowErrorMatchingSnapshot = ({
   context,
   received,
   testName,
   fromPromise,
   inlineSnapshot,
 }: {
-  context: MatcherState,
+  context: MatcherState & {dontThrow?: () => any},
   received: any,
   testName?: string,
-  fromPromise: boolean,
+  fromPromise?: boolean,
   inlineSnapshot?: string,
-}) {
+}) => {
   context.dontThrow && context.dontThrow();
 
   const {isNot} = context;

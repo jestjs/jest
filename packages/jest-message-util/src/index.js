@@ -223,7 +223,7 @@ const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
 
 export const getTopFrame = (
   lines: string[],
-  options: StackTraceOptions = {},
+  options: StackTraceOptions = {noStackTrace: false},
 ) => {
   lines = removeInternalStackEntries(lines, options);
 

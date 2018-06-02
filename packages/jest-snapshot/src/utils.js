@@ -189,11 +189,10 @@ export const saveSnapshotFile = (
 };
 
 export const saveInlineSnapshots = (
-  snapshotData: {[key: string]: InlineSnapshot},
+  snapshots: InlineSnapshot[],
   sourceFilePath: Path,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
-  const snapshots = Object.values(snapshotData);
 
   const config = prettier.resolveConfig.sync(sourceFilePath);
   const newSourceFile = prettier.format(

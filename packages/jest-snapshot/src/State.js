@@ -36,7 +36,7 @@ export default class SnapshotState {
   _updateSnapshot: SnapshotUpdateState;
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
-  _inlineSnapshotData: {[key: string]: InlineSnapshot};
+  _inlineSnapshots: InlineSnapshot[];
   _testPath: Path;
   _uncheckedKeys: Set<string>;
   added: number;
@@ -54,7 +54,7 @@ export default class SnapshotState {
     );
     this._snapshotData = data;
     this._dirty = dirty;
-    this._inlineSnapshotData = Object.create(null);
+    this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -82,10 +82,10 @@ export default class SnapshotState {
       if (!frame) {
         throw new Error("Jest: Couln't infer stack frame for inline snapshot.");
       }
-      this._inlineSnapshotData[key] = {
+      this._inlineSnapshots.push({
         frame,
         snapshot: receivedSerialized,
-      };
+      });
     } else {
       this._snapshotData[key] = receivedSerialized;
     }
@@ -93,7 +93,7 @@ export default class SnapshotState {
 
   save() {
     const hasExternalSnapshots = Object.keys(this._snapshotData).length;
-    const hasInlineSnapshots = Object.keys(this._inlineSnapshotData).length;
+    const hasInlineSnapshots = this._inlineSnapshots.length;
     const isEmpty = !hasExternalSnapshots && !hasInlineSnapshots;
 
     const status = {
@@ -106,7 +106,7 @@ export default class SnapshotState {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        saveInlineSnapshots(this._inlineSnapshotData, this._testPath);
+        saveInlineSnapshots(this._inlineSnapshots, this._testPath);
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
