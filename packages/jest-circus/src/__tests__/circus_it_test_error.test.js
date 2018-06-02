@@ -12,8 +12,8 @@
 let circusIt;
 let circusTest;
 
-//using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
-//the two with this aliaser.
+// using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
+// the two with this alias.
 
 const aliasCircusIt = () => {
   const {it, test} = require('../index.js');
@@ -23,9 +23,9 @@ const aliasCircusIt = () => {
 
 aliasCircusIt();
 
-//A few of these tests require incorrect types to throw errors and thus pass
-//the test. The typechecks on jest-circus would prevent that, so
-//this file has been listed in the .flowconfig ignore section.
+// A few of these tests require incorrect types to throw errors and thus pass
+// the test. The typechecks on jest-circus would prevent that, so
+// this file has been listed in the .flowconfig ignore section.
 
 describe('test/it error throwing', () => {
   it(`it doesn't throw an error with valid arguments`, () => {

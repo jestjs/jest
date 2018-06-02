@@ -30,8 +30,7 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
-"
+unhandledErrors: 0"
 `;
 
 exports[`simple test 1`] = `
@@ -64,6 +63,5 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
-"
+unhandledErrors: 0"
 `;

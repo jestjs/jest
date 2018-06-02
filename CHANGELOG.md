@@ -4,11 +4,12 @@
 
 ### Features
 
+- `[jest-each]` Add pretty-format serialising to each titles ([#6357](https://github.com/facebook/jest/pull/6357))
 - `[jest-cli]` shouldRunTestSuite watch hook now receives an object with `config`, `testPath` and `duration` ([#6350](https://github.com/facebook/jest/pull/6350))
 - `[jest-each]` Support one dimensional array of data ([#6351](https://github.com/facebook/jest/pull/6351))
 - `[jest-watch]` create new package `jest-watch` to ease custom watch plugin development ([#6318](https://github.com/facebook/jest/pull/6318))
 - `[jest-circus]` Make hooks in empty describe blocks error ([#6320](https://github.com/facebook/jest/pull/6320))
-- Add a config/CLI option `errorOnDeprecated` which makes calling deprecated APIs throw hepful error messages.
+- Add a config/CLI option `errorOnDeprecated` which makes calling deprecated APIs throw hepful error messages ([#6339](https://github.com/facebook/jest/pull/6339))
 
 ### Fixes
 

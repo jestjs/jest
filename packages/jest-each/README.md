@@ -26,6 +26,7 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
   - Also under the aliases: `.xdescribe`
 - Asynchronous tests with `done`
 - Unique test titles with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+  - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
   - `%s`- String.
   - `%d`- Number.
   - `%i` - Integer.
@@ -100,6 +101,7 @@ const each = require('jest-each');
 
 - name: `String` the title of the `test`.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
     - `%s`- String.
     - `%d`- Number.
     - `%i` - Integer.
@@ -119,6 +121,7 @@ const each = require('jest-each');
 
 - name: `String` the title of the `describe`
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
     - `%s`- String.
     - `%d`- Number.
     - `%i` - Integer.

@@ -12,10 +12,15 @@ import chalk from 'chalk';
 import pretty from 'pretty-format';
 
 type Table = Array<Array<any>>;
+type PrettyArgs = {
+  args: Array<mixed>,
+  title: string,
+};
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
-const SUPPORTED_PLACEHOLDERS = /%[sdifjoO%]/g;
+const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
+const PRETTY_PLACEHOLDER = '%p';
 
 export default (cb: Function) => (...args: any) =>
   function eachBind(title: string, test: Function): void {
@@ -64,9 +69,41 @@ export default (cb: Function) => (...args: any) =>
     );
   };
 
-const arrayFormat = (str, ...args) => {
-  const matches = (str.match(SUPPORTED_PLACEHOLDERS) || []).length;
-  return util.format(str, ...args.slice(0, matches));
+const getPrettyIndexes = placeholders =>
+  placeholders.reduce(
+    (indexes, placeholder, index) =>
+      placeholder === PRETTY_PLACEHOLDER ? indexes.concat(index) : indexes,
+    [],
+  );
+
+const arrayFormat = (title, ...args) => {
+  const placeholders = title.match(SUPPORTED_PLACEHOLDERS) || [];
+  const prettyIndexes = getPrettyIndexes(placeholders);
+
+  const {title: prettyTitle, args: remainingArgs} = args.reduce(
+    (acc: PrettyArgs, arg, index) => {
+      if (prettyIndexes.indexOf(index) !== -1) {
+        return {
+          args: acc.args,
+          title: acc.title.replace(
+            PRETTY_PLACEHOLDER,
+            pretty(arg, {maxDepth: 1, min: true}),
+          ),
+        };
+      }
+
+      return {
+        args: acc.args.concat([arg]),
+        title: acc.title,
+      };
+    },
+    {args: [], title},
+  );
+
+  return util.format(
+    prettyTitle,
+    ...remainingArgs.slice(0, placeholders.length - prettyIndexes.length),
+  );
 };
 
 const applyRestParams = (params: Array<any>, test: Function) => {
@@ -94,7 +131,8 @@ const buildTable = (
 
 const interpolate = (title: string, data: any) =>
   Object.keys(data).reduce(
-    (acc, key) => acc.replace('$' + key, data[key]),
+    (acc, key) =>
+      acc.replace('$' + key, pretty(data[key], {maxDepth: 1, min: true})),
     title,
   );
 
