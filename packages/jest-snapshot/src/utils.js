@@ -224,16 +224,17 @@ const createParser = snapshots => (text, parsers) => {
           matcher.loc.start.line === frame.line &&
           matcher.loc.start.column === frame.column - 1
         ) {
-          if (
-            node.arguments[0] &&
-            node.arguments[0].type === 'TemplateLiteral'
-          ) {
-            node.arguments[0].quasis[0].value.raw = snapshot;
+          const templateIndex = node.arguments.findIndex(
+            arg => arg.type === 'TemplateLiteral',
+          );
+          const element = templateElement({raw: snapshot});
+
+          if (templateIndex > -1) {
+            const template = node.arguments[templateIndex];
+            template.quasis = [element];
+            template.expressions = [];
           } else {
-            node.arguments[0] = templateLiteral(
-              [templateElement({raw: snapshot})],
-              [],
-            );
+            node.arguments.push(templateLiteral([element], []));
           }
         }
       }
