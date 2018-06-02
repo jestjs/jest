@@ -33,11 +33,11 @@ type MockFunctionResult = {
    *       call, it would make more sense to combine MockFunctionResult with
    *       MockFunctionState.calls into a single MockCall structure containing
    *       a list of call args (for a single call), and a "result" field  of
-   *       type "MockFunctionResult | undefined", where the result field would
+   *       type MockFunctionResult, where the result field would
    *       be undefined until the call completes.
    *       However, this would be a massive breaking change.
    */
-  isThrow: boolean | undefined,
+  isThrow: boolean,
   /**
    * The value that was either thrown or returned by the function.
    */
