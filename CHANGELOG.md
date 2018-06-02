@@ -13,6 +13,7 @@
 
 ### Fixes
 
+- `[jest-each]` Fix pluralising missing arguments error ([#6369](https://github.com/facebook/jest/pull/6369))
 - `[jest-each]` Stop test title concatenating extra args ([#6346](https://github.com/facebook/jest/pull/6346))
 - `[expect]` toHaveBeenNthCalledWith/nthCalledWith gives wrong call messages if not matched ([#6340](https://github.com/facebook/jest/pull/6340))
 - `[jest-each]` Make sure invalid arguments to `each` points back to the user's code ([#6347](https://github.com/facebook/jest/pull/6347))

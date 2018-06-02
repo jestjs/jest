@@ -39,7 +39,9 @@ export default (cb: Function) => (...args: any) =>
     const keys = getHeadingKeys(templateStrings[0]);
     const table = buildTable(data, keys.length, keys);
 
-    if (data.length % keys.length !== 0) {
+    const missingData = data.length % keys.length;
+
+    if (missingData > 0) {
       const error = new Error(
         'Not enough arguments supplied for given headings:\n' +
           EXPECTED_COLOR(keys.join(' | ')) +
@@ -47,7 +49,10 @@ export default (cb: Function) => (...args: any) =>
           'Received:\n' +
           RECEIVED_COLOR(pretty(data)) +
           '\n\n' +
-          `Missing ${RECEIVED_COLOR(`${data.length % keys.length}`)} arguments`,
+          `Missing ${RECEIVED_COLOR(missingData.toString())} ${pluralize(
+            'argument',
+            missingData,
+          )}`,
       );
 
       if (Error.captureStackTrace) {
@@ -136,3 +141,6 @@ const applyObjectParams = (obj: any, test: Function) => {
 
   return () => test(obj);
 };
+
+const pluralize = (word: string, count: number) =>
+  word + (count === 1 ? '' : 's');
