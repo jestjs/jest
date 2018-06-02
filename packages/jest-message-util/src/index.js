@@ -231,10 +231,7 @@ export const getStackTraceLines = (
   return removeInternalStackEntries(stack.split(/\n/), options);
 };
 
-export const getTopFrame = (
-  lines: string[],
-  options: StackTraceOptions = {noStackTrace: false},
-) => {
+export const getTopFrame = (lines: string[]) => {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -257,7 +254,7 @@ export const formatStackTrace = (
   testPath: ?Path,
 ) => {
   const lines = getStackTraceLines(stack, options);
-  const topFrame = getTopFrame(lines, options);
+  const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
