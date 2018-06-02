@@ -822,7 +822,7 @@ class Runtime {
 
     const setTimeout = (timeout: number) => {
       this._environment.global.jasmine
-        ? (this._environment.global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout)
+        ? (this._environment.global.jasmine._DEFAULT_TIMEOUT_INTERVAL = timeout)
         : (this._environment.global[
             Symbol.for('TEST_TIMEOUT_SYMBOL')
           ] = timeout);
