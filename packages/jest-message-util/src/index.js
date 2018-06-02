@@ -153,7 +153,10 @@ export const formatExecError = (
   return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
 };
 
-const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
+const removeInternalStackEntries = (
+  lines: string[],
+  options: StackTraceOptions,
+): string[] => {
   let pathCounter = 0;
 
   return lines.filter(line => {
@@ -221,12 +224,17 @@ const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
+export const getStackTraceLines = (
+  stack: string,
+  options: StackTraceOptions = {noStackTrace: false},
+) => {
+  return removeInternalStackEntries(stack.split(/\n/), options);
+};
+
 export const getTopFrame = (
   lines: string[],
   options: StackTraceOptions = {noStackTrace: false},
 ) => {
-  lines = removeInternalStackEntries(lines, options);
-
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -248,7 +256,7 @@ export const formatStackTrace = (
   options: StackTraceOptions,
   testPath: ?Path,
 ) => {
-  const lines = stack.split(/\n/);
+  const lines = getStackTraceLines(stack, options);
   const topFrame = getTopFrame(lines, options);
   let renderedCallsite = '';
   const relativeTestPath = testPath

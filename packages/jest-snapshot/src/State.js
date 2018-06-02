@@ -10,7 +10,7 @@
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
 import fs from 'fs';
-import {getTopFrame} from 'jest-message-util';
+import {getTopFrame, getStackTraceLines} from 'jest-message-util';
 import {
   saveSnapshotFile,
   saveInlineSnapshots,
@@ -77,8 +77,8 @@ export default class SnapshotState {
   _addSnapshot(key: string, receivedSerialized: string, isInline: boolean) {
     this._dirty = true;
     if (isInline) {
-      const stack = new Error().stack.split(/\n/);
-      const frame = getTopFrame(stack);
+      const lines = getStackTraceLines(new Error().stack);
+      const frame = getTopFrame(lines);
       if (!frame) {
         throw new Error("Jest: Couln't infer stack frame for inline snapshot.");
       }
