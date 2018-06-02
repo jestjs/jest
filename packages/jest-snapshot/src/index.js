@@ -142,12 +142,11 @@ const _toMatchSnapshot = ({
     }
   }
 
-  const result = snapshotState.match(
-    fullTestName,
-    received,
-    /* key */ undefined,
+  const result = snapshotState.match({
     inlineSnapshot,
-  );
+    received,
+    testName: fullTestName,
+  });
   const {pass} = result;
   let {actual, expected} = result;
 

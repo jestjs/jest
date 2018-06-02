@@ -135,12 +135,17 @@ export default class SnapshotState {
     }
   }
 
-  match(
+  match({
+    testName,
+    received,
+    key,
+    inlineSnapshot,
+  }: {
     testName: string,
     received: any,
     key?: string,
     inlineSnapshot?: string,
-  ) {
+  }) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
     const isInline = typeof inlineSnapshot === 'string';
