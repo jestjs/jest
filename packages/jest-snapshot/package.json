@@ -8,11 +8,15 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "babel-traverse": "^6.0.0",
+    "babel-types": "^6.0.0",
     "chalk": "^2.0.1",
     "jest-diff": "^23.0.1",
     "jest-matcher-utils": "^23.0.1",
+    "jest-message-util": "^23.0.1",
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
-    "pretty-format": "^23.0.1"
+    "pretty-format": "^23.0.1",
+    "prettier": "~1.13.4"
   }
 }

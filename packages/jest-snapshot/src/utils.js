@@ -16,6 +16,14 @@ import mkdirp from 'mkdirp';
 import naturalCompare from 'natural-compare';
 import path from 'path';
 import prettyFormat from 'pretty-format';
+import prettier from 'prettier';
+import traverse from 'babel-traverse';
+import {templateElement, templateLiteral} from 'babel-types';
+
+export type InlineSnapshot = {|
+  snapshot: string,
+  frame: {line: number, column: number},
+|};
 
 export const SNAPSHOT_EXTENSION = 'snap';
 export const SNAPSHOT_VERSION = '1';
@@ -178,4 +186,60 @@ export const saveSnapshotFile = (
     snapshotPath,
     writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
+};
+
+export const saveInlineSnapshots = (
+  snapshotData: {[key: string]: InlineSnapshot},
+  sourceFilePath: Path,
+) => {
+  const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
+  const snapshots = Object.values(snapshotData);
+
+  const config = prettier.resolveConfig.sync(sourceFilePath);
+  const newSourceFile = prettier.format(
+    sourceFile,
+    Object.assign({}, config, {
+      filepath: sourceFilePath,
+      parser: createParser(snapshots),
+    }),
+  );
+
+  if (newSourceFile !== sourceFile) {
+    fs.writeFileSync(sourceFilePath, newSourceFile);
+  }
+};
+
+const createParser = snapshots => (text, parsers) => {
+  const ast = parsers.babylon(text);
+  traverse(ast, {
+    CallExpression({node}) {
+      if (
+        node.callee.type !== 'MemberExpression' ||
+        node.callee.property.type !== 'Identifier'
+      ) {
+        return;
+      }
+      const matcher = node.callee.property;
+      for (const {snapshot, frame} of snapshots) {
+        if (
+          matcher.loc.start.line === frame.line &&
+          matcher.loc.start.column === frame.column - 1
+        ) {
+          if (
+            node.arguments[0] &&
+            node.arguments[0].type === 'TemplateLiteral'
+          ) {
+            node.arguments[0].quasis[0].value.raw = snapshot;
+          } else {
+            node.arguments[0] = templateLiteral(
+              [templateElement({raw: snapshot})],
+              [],
+            );
+          }
+        }
+      }
+    },
+  });
+
+  return ast;
 };

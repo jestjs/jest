@@ -221,7 +221,12 @@ const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-const getTopFrame = (lines: string[]) => {
+export const getTopFrame = (
+  lines: string[],
+  options: StackTraceOptions = {},
+) => {
+  lines = removeInternalStackEntries(lines, options);
+
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -243,14 +248,12 @@ export const formatStackTrace = (
   options: StackTraceOptions,
   testPath: ?Path,
 ) => {
-  let lines = stack.split(/\n/);
+  const lines = stack.split(/\n/);
+  const topFrame = getTopFrame(lines, options);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
-  lines = removeInternalStackEntries(lines, options);
-
-  const topFrame = getTopFrame(lines);
 
   if (topFrame) {
     const filename = topFrame.file;

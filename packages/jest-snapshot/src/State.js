@@ -10,14 +10,17 @@
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
 import fs from 'fs';
+import {getTopFrame} from 'jest-message-util';
 import {
   saveSnapshotFile,
+  saveInlineSnapshots,
   getSnapshotData,
   getSnapshotPath,
   keyToTestName,
   serialize,
   testNameToKey,
   unescape,
+  type InlineSnapshot,
 } from './utils';
 
 export type SnapshotStateOptions = {|
@@ -33,6 +36,8 @@ export default class SnapshotState {
   _updateSnapshot: SnapshotUpdateState;
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
+  _inlineSnapshotData: {[key: string]: InlineSnapshot};
+  _testPath: Path;
   _uncheckedKeys: Set<string>;
   added: number;
   expand: boolean;
@@ -42,12 +47,14 @@ export default class SnapshotState {
 
   constructor(testPath: Path, options: SnapshotStateOptions) {
     this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
+    this._testPath = testPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
       options.updateSnapshot,
     );
     this._snapshotData = data;
     this._dirty = dirty;
+    this._inlineSnapshotData = Object.create(null);
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -67,22 +74,42 @@ export default class SnapshotState {
     });
   }
 
-  _addSnapshot(key: string, receivedSerialized: string) {
+  _addSnapshot(key: string, receivedSerialized: string, isInline: boolean) {
     this._dirty = true;
-    this._snapshotData[key] = receivedSerialized;
+    if (isInline) {
+      const stack = new Error().stack.split(/\n/);
+      const frame = getTopFrame(stack);
+      if (!frame) {
+        throw new Error("Jest: Couln't infer stack frame for inline snapshot.");
+      }
+      this._inlineSnapshotData[key] = {
+        frame,
+        snapshot: receivedSerialized,
+      };
+    } else {
+      this._snapshotData[key] = receivedSerialized;
+    }
   }
 
   save() {
-    const isEmpty = Object.keys(this._snapshotData).length === 0;
+    const hasExternalSnapshots = Object.keys(this._snapshotData).length;
+    const hasInlineSnapshots = Object.keys(this._inlineSnapshotData).length;
+    const isEmpty = !hasExternalSnapshots && !hasInlineSnapshots;
+
     const status = {
       deleted: false,
       saved: false,
     };
 
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
-      saveSnapshotFile(this._snapshotData, this._snapshotPath);
+      if (hasExternalSnapshots) {
+        saveSnapshotFile(this._snapshotData, this._snapshotPath);
+      }
+      if (hasInlineSnapshots) {
+        saveInlineSnapshots(this._inlineSnapshotData, this._testPath);
+      }
       status.saved = true;
-    } else if (isEmpty && fs.existsSync(this._snapshotPath)) {
+    } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
       if (this._updateSnapshot === 'all') {
         fs.unlinkSync(this._snapshotPath);
       }
@@ -108,9 +135,15 @@ export default class SnapshotState {
     }
   }
 
-  match(testName: string, received: any, key?: string) {
+  match(
+    testName: string,
+    received: any,
+    key?: string,
+    inlineSnapshot?: string,
+  ) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
+    const isInline = typeof inlineSnapshot === 'string';
 
     if (!key) {
       key = testNameToKey(testName, count);
@@ -119,11 +152,13 @@ export default class SnapshotState {
     this._uncheckedKeys.delete(key);
 
     const receivedSerialized = serialize(received);
-    const expected = this._snapshotData[key];
+    const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
-    const hasSnapshot = this._snapshotData[key] !== undefined;
+    const hasSnapshot = isInline
+      ? inlineSnapshot !== ''
+      : this._snapshotData[key] !== undefined;
 
-    if (pass) {
+    if (pass && !isInline) {
       // Executing a snapshot file as JavaScript and writing the strings back
       // when other snapshots have changed loses the proper escaping for some
       // characters. Since we check every snapshot in every test, use the newly
@@ -142,7 +177,7 @@ export default class SnapshotState {
     //  * There's no snapshot file or a file without this snapshot on a CI environment.
     if (
       (hasSnapshot && this._updateSnapshot === 'all') ||
-      ((!hasSnapshot || !fs.existsSync(this._snapshotPath)) &&
+      ((!hasSnapshot || (!isInline && !fs.existsSync(this._snapshotPath))) &&
         (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
       if (this._updateSnapshot === 'all') {
@@ -152,12 +187,12 @@ export default class SnapshotState {
           } else {
             this.added++;
           }
-          this._addSnapshot(key, receivedSerialized);
+          this._addSnapshot(key, receivedSerialized, isInline);
         } else {
           this.matched++;
         }
       } else {
-        this._addSnapshot(key, receivedSerialized);
+        this._addSnapshot(key, receivedSerialized, isInline);
         this.added++;
       }
 

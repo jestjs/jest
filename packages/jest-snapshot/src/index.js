@@ -53,10 +53,45 @@ const toMatchSnapshot = function(
   propertyMatchers?: any,
   testName?: string,
 ) {
-  this.dontThrow && this.dontThrow();
+  return _toMatchSnapshot(received, propertyMatchers, testName);
+};
+
+const toMatchInlineSnapshot = function(
+  received: any,
+  propertyMatchersOrInlineSnapshot?: any,
+  inlineSnapshot?: string,
+) {
+  const propertyMatchers = inlineSnapshot
+    ? propertyMatchersOrInlineSnapshot
+    : undefined;
+  if (!inlineSnapshot) {
+    inlineSnapshot = propertyMatchersOrInlineSnapshot || '';
+  }
+  return _toMatchSnapshot({
+    context: this,
+    inlineSnapshot,
+    propertyMatchers,
+    received,
+  });
+};
+
+const _toMatchSnapshot = function({
+  context,
+  received,
+  propertyMatchers,
+  testName,
+  inlineSnapshot,
+}: {
+  context: MatcherState,
+  received: any,
+  propertyMatchers?: any,
+  testName?: string,
+  inlineSnapshot?: string,
+}) {
+  context.dontThrow && context.dontThrow();
   testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
 
-  const {currentTestName, isNot, snapshotState}: MatcherState = this;
+  const {currentTestName, isNot, snapshotState} = context;
 
   if (isNot) {
     throw new Error('Jest: `.not` cannot be used with `.toMatchSnapshot()`.');
@@ -72,6 +107,7 @@ const toMatchSnapshot = function(
       : currentTestName || '';
 
   if (typeof propertyMatchers === 'object') {
+    const propertyMatchers = propertyMatchers;
     const propertyPass = this.equals(received, propertyMatchers, [
       this.utils.iterableEquality,
       this.utils.subsetEquality,
@@ -102,7 +138,12 @@ const toMatchSnapshot = function(
     }
   }
 
-  const result = snapshotState.match(fullTestName, received);
+  const result = snapshotState.match(
+    fullTestName,
+    received,
+    /* key */ undefined,
+    inlineSnapshot,
+  );
   const {pass} = result;
   let {actual, expected} = result;
 
@@ -153,9 +194,47 @@ const toThrowErrorMatchingSnapshot = function(
   testName?: string,
   fromPromise: boolean,
 ) {
-  this.dontThrow && this.dontThrow();
+  return _toThrowErrorMatchingSnapshot({
+    context: this,
+    fromPromise,
+    received,
+    testName,
+  });
+};
 
-  const {isNot} = this;
+const toThrowErrorMatchingInlineSnapshot = function(
+  received: any,
+  fromPromiseOrInlineSnapshot: any,
+  inlineSnapshot?: string,
+) {
+  const fromPromise = inlineSnapshot ? fromPromiseOrInlineSnapshot : undefined;
+  if (!inlineSnapshot) {
+    inlineSnapshot = fromPromiseOrInlineSnapshot;
+  }
+  return _toThrowErrorMatchingSnapshot({
+    context: this,
+    fromPromise,
+    inlineSnapshot,
+    received,
+  });
+};
+
+const _toThrowErrorMatchingSnapshot = function({
+  context,
+  received,
+  testName,
+  fromPromise,
+  inlineSnapshot,
+}: {
+  context: MatcherState,
+  received: any,
+  testName?: string,
+  fromPromise: boolean,
+  inlineSnapshot?: string,
+}) {
+  context.dontThrow && context.dontThrow();
+
+  const {isNot} = context;
 
   if (isNot) {
     throw new Error(
@@ -184,7 +263,12 @@ const toThrowErrorMatchingSnapshot = function(
     );
   }
 
-  return toMatchSnapshot.call(this, error.message, testName);
+  return _toMatchSnapshot({
+    context,
+    inlineSnapshot,
+    received: error.message,
+    testName,
+  });
 };
 
 module.exports = {
@@ -193,7 +277,9 @@ module.exports = {
   addSerializer,
   cleanup,
   getSerializers,
+  toMatchInlineSnapshot,
   toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
   utils,
 };
