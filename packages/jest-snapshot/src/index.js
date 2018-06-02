@@ -212,7 +212,7 @@ const toThrowErrorMatchingInlineSnapshot = function(
 ) {
   const fromPromise = inlineSnapshot ? fromPromiseOrInlineSnapshot : undefined;
   if (!inlineSnapshot) {
-    inlineSnapshot = fromPromiseOrInlineSnapshot;
+    inlineSnapshot = fromPromiseOrInlineSnapshot || '';
   }
   return _toThrowErrorMatchingSnapshot({
     context: this,
