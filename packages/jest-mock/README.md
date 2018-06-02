@@ -84,5 +84,5 @@ Syntactic sugar for .mockImplementation(function() {return this;})
 
 In case both `mockImplementationOnce()/mockImplementation()` and `mockReturnValueOnce()/mockReturnValue()` are called. The priority of which to use is based on what is the last call:
 
-* if the last call is mockReturnValueOnce() or mockReturnValue(), use the specific return value or default return value. If specific return values are used up or no default return value is set, fall back to try mockImplementation();
-* if the last call is mockImplementationOnce() or mockImplementation(), run the specific implementation and return the result or run default implementation and return the result.
+- if the last call is mockReturnValueOnce() or mockReturnValue(), use the specific return value or default return value. If specific return values are used up or no default return value is set, fall back to try mockImplementation();
+- if the last call is mockImplementationOnce() or mockImplementation(), run the specific implementation and return the result or run default implementation and return the result.

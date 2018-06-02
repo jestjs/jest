@@ -103,7 +103,7 @@ jest.mock('graceful-fs', () => ({
 }));
 jest.mock('fs', () => require('graceful-fs'));
 
-const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
+const ConditionalTest = require('../../../../scripts/ConditionalTest');
 
 const cacheFilePath = '/cache-file';
 let consoleWarn;
@@ -119,7 +119,7 @@ let mockWorker;
 let getCacheFilePath;
 
 describe('HasteMap', () => {
-  SkipOnWindows.suite();
+  ConditionalTest.skipSuiteOnWindows();
 
   beforeEach(() => {
     jest.resetModules();

@@ -4,11 +4,11 @@
 
 🃏 Delightful JavaScript Testing
 
-* **👩🏻‍💻 Developer Ready**: Complete and ready to set-up JavaScript testing solution. Works out of the box for any React project.
+- **👩🏻‍💻 Developer Ready**: Complete and ready to set-up JavaScript testing solution. Works out of the box for any React project.
 
-* **🏃🏽 Instant Feedback**: Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.
+- **🏃🏽 Instant Feedback**: Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.
 
-* **📸 Snapshot Testing**: Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.
+- **📸 Snapshot Testing**: Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.
 
 ## Getting Started
 
@@ -142,10 +142,10 @@ To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshek
 
 Learn more about using [Jest on the official site!](http://facebook.github.io/jest)
 
-* [Getting Started](http://facebook.github.io/jest/docs/en/getting-started.html)
-* [Guides](http://facebook.github.io/jest/docs/en/snapshot-testing.html)
-* [API Reference](http://facebook.github.io/jest/docs/en/api.html)
-* [Configuring Jest](http://facebook.github.io/jest/docs/en/configuration.html)
+- [Getting Started](http://facebook.github.io/jest/docs/en/getting-started.html)
+- [Guides](http://facebook.github.io/jest/docs/en/snapshot-testing.html)
+- [API Reference](http://facebook.github.io/jest/docs/en/api.html)
+- [Configuring Jest](http://facebook.github.io/jest/docs/en/configuration.html)
 
 ## Badge
 

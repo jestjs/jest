@@ -39,6 +39,7 @@ export default ({
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   detectLeaks: false,
   detectOpenHandles: false,
+  errorOnDeprecated: false,
   expand: false,
   filter: null,
   forceCoverageMatch: [],

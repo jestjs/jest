@@ -11,7 +11,7 @@ import os from 'os';
 import path from 'path';
 import resolveConfigPath from '../resolve_config_path';
 
-const {cleanup, writeFiles} = require('../../../../integration-tests/Utils');
+const {cleanup, writeFiles} = require('../../../../e2e/Utils');
 
 const DIR = path.resolve(os.tmpdir(), 'resolve_config_path_test');
 const ERROR_PATTERN = /Could not find a config file based on provided values/;

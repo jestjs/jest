@@ -16,6 +16,7 @@ import type Runtime from 'jest-runtime';
 
 import path from 'path';
 import installEach from './each';
+import {installErrorOnPrivate} from './error_on_private';
 import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import {install as jasmineAsyncInstall} from './jasmine_async';
@@ -29,12 +30,7 @@ async function jasmine2(
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult> {
-  const reporter = new JasmineReporter(
-    globalConfig,
-    config,
-    environment,
-    testPath,
-  );
+  const reporter = new JasmineReporter(globalConfig, config, testPath);
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create({
     process,
@@ -104,6 +100,10 @@ async function jasmine2(
     .default({
       expand: globalConfig.expand,
     });
+
+  if (globalConfig.errorOnDeprecated) {
+    installErrorOnPrivate(environment.global);
+  }
 
   const snapshotState: SnapshotState = runtime
     .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))

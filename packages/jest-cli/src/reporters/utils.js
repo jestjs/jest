@@ -76,7 +76,7 @@ export const formatTestPath = (
   testPath: Path,
 ) => {
   const {dirname, basename} = relativePath(config, testPath);
-  return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+  return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
 };
 
 export const relativePath = (
@@ -196,7 +196,7 @@ const renderTime = (runTime, estimatedTime, width) => {
   if (estimatedTime > 2 && runTime < estimatedTime && width) {
     const availableWidth = Math.min(PROGRESS_BAR_WIDTH, width);
     const length = Math.min(
-      Math.floor(runTime / estimatedTime * availableWidth),
+      Math.floor((runTime / estimatedTime) * availableWidth),
       availableWidth,
     );
     if (availableWidth >= 2) {

@@ -1,0 +1,20 @@
+{
+  "name": "jest-watcher",
+  "description": "Delightful JavaScript Testing.",
+  "version": "23.1.0",
+  "main": "build/index.js",
+  "dependencies": {
+    "ansi-escapes": "^3.0.0",
+    "chalk": "^2.0.1",
+    "string-length": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest"
+  },
+  "bugs": {
+    "url": "https://github.com/facebook/jest/issues"
+  },
+  "homepage": "http://facebook.github.io/jest/",
+  "license": "MIT"
+}

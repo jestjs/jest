@@ -11,6 +11,7 @@ import type {Context} from 'types/Context';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
+import type {JestHookEmitter} from 'types/JestHooks';
 import type TestWatcher from './test_watcher';
 
 import micromatch from 'micromatch';
@@ -25,7 +26,7 @@ import TestScheduler from './test_scheduler';
 import TestSequencer from './test_sequencer';
 import {makeEmptyAggregatedTestResult} from './test_result_helpers';
 import FailedTestsCache from './failed_tests_cache';
-import JestHooks, {type JestHookEmitter} from './jest_hooks';
+import {JestHook} from 'jest-watcher';
 import collectNodeHandles from './get_node_handles';
 
 const setConfig = (contexts, newConfig) =>
@@ -57,7 +58,13 @@ const getTestPaths = async (
   }
 
   const shouldTestArray = await Promise.all(
-    data.tests.map(test => jestHooks.shouldRunTestSuite(test.path)),
+    data.tests.map(test =>
+      jestHooks.shouldRunTestSuite({
+        config: test.context.config,
+        duration: test.duration,
+        testPath: test.path,
+      }),
+    ),
   );
 
   const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);
@@ -115,7 +122,7 @@ export default (async function runJest({
   globalConfig,
   outputStream,
   testWatcher,
-  jestHooks = new JestHooks().getEmitter(),
+  jestHooks = new JestHook().getEmitter(),
   startRun,
   changedFilesPromise,
   onComplete,

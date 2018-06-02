@@ -89,19 +89,33 @@ export const makeTest = (
   };
 };
 
+const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
+  const {hasFocusedTests, testNamePattern} = getState();
+  return describeBlock.tests.some(
+    test =>
+      !(
+        test.mode === 'skip' ||
+        (hasFocusedTests && test.mode !== 'only') ||
+        (testNamePattern && !testNamePattern.test(getTestID(test)))
+      ),
+  );
+};
+
 export const getAllHooksForDescribe = (
   describe: DescribeBlock,
 ): {[key: 'beforeAll' | 'afterAll']: Array<Hook>} => {
   const result = {afterAll: [], beforeAll: []};
 
-  for (const hook of describe.hooks) {
-    switch (hook.type) {
-      case 'beforeAll':
-        result.beforeAll.push(hook);
-        break;
-      case 'afterAll':
-        result.afterAll.push(hook);
-        break;
+  if (hasEnabledTest(describe)) {
+    for (const hook of describe.hooks) {
+      switch (hook.type) {
+        case 'beforeAll':
+          result.beforeAll.push(hook);
+          break;
+        case 'afterAll':
+          result.afterAll.push(hook);
+          break;
+      }
     }
   }
 
@@ -131,6 +145,10 @@ export const getEachHooksForTest = (
   return result;
 };
 
+export const describeBlockHasTests = (describe: DescribeBlock) => {
+  return describe.tests.length || describe.children.some(describeBlockHasTests);
+};
+
 const _makeTimeoutMessage = (timeout, isHook) =>
   `Exceeded timeout of ${timeout}ms for a ${
     isHook ? 'hook' : 'test'
@@ -143,11 +161,7 @@ const {setTimeout, clearTimeout} = global;
 export const callAsyncFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
-  {
-    isHook,
-    test,
-    timeout,
-  }: {isHook?: ?boolean, test?: TestEntry, timeout: number},
+  {isHook, timeout}: {isHook?: ?boolean, timeout: number},
 ): Promise<mixed> => {
   let timeoutID;
 

@@ -15,27 +15,27 @@ type Table = Array<Array<any>>;
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
+const SUPPORTED_PLACEHOLDERS = /%[sdifjoO%]/g;
 
-export default (cb: Function) => (...args: any) => (
-  title: string,
-  test: Function,
-): void => {
-  if (args.length === 1) {
-    const table: Table = args[0];
-    return table.forEach(row =>
-      cb(util.format(title, ...row), applyRestParams(row, test)),
-    );
-  }
+export default (cb: Function) => (...args: any) =>
+  function eachBind(title: string, test: Function): void {
+    if (args.length === 1) {
+      const table: Table = args[0].every(Array.isArray)
+        ? args[0]
+        : args[0].map(entry => [entry]);
+      return table.forEach(row =>
+        cb(arrayFormat(title, ...row), applyRestParams(row, test)),
+      );
+    }
 
-  const templateStrings = args[0];
-  const data = args.slice(1);
+    const templateStrings = args[0];
+    const data = args.slice(1);
 
-  const keys = getHeadingKeys(templateStrings[0]);
-  const table = buildTable(data, keys.length, keys);
+    const keys = getHeadingKeys(templateStrings[0]);
+    const table = buildTable(data, keys.length, keys);
 
-  if (data.length % keys.length !== 0) {
-    return cb(title, () => {
-      throw new Error(
+    if (data.length % keys.length !== 0) {
+      const error = new Error(
         'Not enough arguments supplied for given headings:\n' +
           EXPECTED_COLOR(keys.join(' | ')) +
           '\n\n' +
@@ -44,12 +44,24 @@ export default (cb: Function) => (...args: any) => (
           '\n\n' +
           `Missing ${RECEIVED_COLOR(`${data.length % keys.length}`)} arguments`,
       );
-    });
-  }
 
-  return table.forEach(row =>
-    cb(interpolate(title, row), applyObjectParams(row, test)),
-  );
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, eachBind);
+      }
+
+      return cb(title, () => {
+        throw error;
+      });
+    }
+
+    return table.forEach(row =>
+      cb(interpolate(title, row), applyObjectParams(row, test)),
+    );
+  };
+
+const arrayFormat = (str, ...args) => {
+  const matches = (str.match(SUPPORTED_PLACEHOLDERS) || []).length;
+  return util.format(str, ...args.slice(0, matches));
 };
 
 const applyRestParams = (params: Array<any>, test: Function) => {

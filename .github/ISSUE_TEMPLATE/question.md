@@ -10,6 +10,6 @@ about: If you have questions, please check our Discord or StackOverflow
 
 For questions or help please see:
 
-* [The Jest help page](https://facebook.github.io/jest/en/help.html)
-* [Our discord channel in Reactiflux](https://discord.gg/MWRhKCj)
-* The [jestjs](https://stackoverflow.com/questions/tagged/jestjs) tag on [StackOverflow](https://stackoverflow.com/questions/ask)
+- [The Jest help page](https://facebook.github.io/jest/en/help.html)
+- [Our discord channel in Reactiflux](https://discord.gg/MWRhKCj)
+- The [jestjs](https://stackoverflow.com/questions/tagged/jestjs) tag on [StackOverflow](https://stackoverflow.com/questions/ask)

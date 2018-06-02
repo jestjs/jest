@@ -42,6 +42,7 @@
     "istanbul-api": "^1.3.1",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
+    "jest-junit": "^4.0.0",
     "jest-silent-reporter": "^0.0.5",
     "jquery": "^3.2.1",
     "karma": "^2.0.0",
@@ -54,7 +55,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^5.0.1",
     "mock-fs": "^4.4.1",
-    "prettier": "^1.12.1",
+    "prettier": "^1.13.3",
     "prettylint": "^1.0.0",
     "progress": "^2.0.0",
     "readable-stream": "^2.3.6",
@@ -78,7 +79,7 @@
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",
-    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration-tests/*/*/node_modules && yarn build-clean",
+    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./e2e/*/*/node_modules && yarn build-clean",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,md",
@@ -88,8 +89,8 @@
     "postinstall": "yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
-    "test-ci": "yarn jest-coverage -i --reporters jest-silent-reporter && yarn test-leak && node scripts/mapCoverage.js && codecov",
-    "test-ci-partial": "yarn jest -i --reporters jest-silent-reporter",
+    "test-ci": "yarn jest-coverage -i --reporters jest-silent-reporter --testResultsProcessor=jest-junit && yarn test-leak && node scripts/mapCoverage.js && codecov",
+    "test-ci-partial": "yarn jest -i --reporters jest-silent-reporter --testResultsProcessor=jest-junit",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn typecheck && yarn lint && yarn jest",
@@ -108,7 +109,7 @@
       "packages/.*/build-es5",
       "packages/jest-runtime/src/__tests__/test_root.*",
       "website/.*",
-      "integration-tests/runtime-internal-module-registry/__mocks__"
+      "e2e/runtime-internal-module-registry/__mocks__"
     ],
     "collectCoverageFrom": [
       "**/packages/jest-*/**/*.js",
@@ -119,7 +120,7 @@
       "!**/perf/**",
       "!**/__mocks__/**",
       "!**/__tests__/**",
-      "!integration-tests/**"
+      "!e2e/**"
     ],
     "coverageReporters": [
       "json"
@@ -139,7 +140,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/examples/",
-      "/integration-tests/.*/__tests__",
+      "/e2e/.*/__tests__",
       "\\.snap$",
       "/packages/.*/build",
       "/packages/.*/build-es5",
@@ -155,7 +156,7 @@
       "/packages/jest-validate/src/__tests__/fixtures/",
       "/packages/jest-worker/src/__performance_tests__",
       "/packages/pretty-format/perf/test.js",
-      "/integration-tests/__tests__/iterator-to-null-test.js"
+      "/e2e/__tests__/iterator-to-null-test.js"
     ]
   },
   "prettier": {

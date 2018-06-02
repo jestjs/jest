@@ -231,15 +231,23 @@ Use `describe.each` if you keep duplicating the same test suites with different 
 
 #### 1. `describe.each(table)(name, fn)`
 
-* `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
-* `name`: `String` the title of the test suite, use `%s` to positionally inject test data into the suite title.
-* `fn`: `Function` the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.
+- `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
+- `name`: `String` the title of the test suite.
+  - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%s`- String.
+    - `%d`- Number.
+    - `%i` - Integer.
+    - `%f` - Floating point value.
+    - `%j` - JSON.
+    - `%o` - Object.
+    - `%%` - single percent sign ('%'). This does not consume an argument.
+- `fn`: `Function` the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.
 
 Example:
 
 ```js
 describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
-  '.add(%s, %s)',
+  '.add(%i, %i)',
   (a, b, expected) => {
     test(`returns ${expected}`, () => {
       expect(a + b).toBe(expected);
@@ -258,11 +266,11 @@ describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 
 #### 2. `` describe.each`table`(name, fn) ``
 
-* `table`: `Tagged Template Literal`
-  * First row of variable name column headings separated with `|`
-  * One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
-* `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions.
-* `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
+- `table`: `Tagged Template Literal`
+  - First row of variable name column headings separated with `|`
+  - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
+- `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions.
+- `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
 
 Example:
 
@@ -321,7 +329,7 @@ Use `describe.only.each` if you want to only run specific tests suites of data d
 
 ```js
 describe.only.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
-  '.add(%s, %s)',
+  '.add(%i, %i)',
   (a, b, expected) => {
     test(`returns ${expected}`, () => {
       expect(a + b).toBe(expected);
@@ -389,7 +397,7 @@ Use `describe.skip.each` if you want to stop running a suite of data driven test
 
 ```js
 describe.skip.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
-  '.add(%s, %s)',
+  '.add(%i, %i)',
   (a, b, expected) => {
     test(`returns ${expected}`, () => {
       expect(a + b).toBe(expected); // will not be ran
@@ -467,15 +475,23 @@ Use `test.each` if you keep duplicating the same test with different data. `test
 
 #### 1. `test.each(table)(name, fn)`
 
-* `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-* `name`: `String` the title of the test block, use `%s` to positionally inject parameter values into the test title.
-* `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
+- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
+- `name`: `String` the title of the test block.
+  - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%s`- String.
+    - `%d`- Number.
+    - `%i` - Integer.
+    - `%f` - Floating point value.
+    - `%j` - JSON.
+    - `%o` - Object.
+    - `%%` - single percent sign ('%'). This does not consume an argument.
+- `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
 
 Example:
 
 ```js
 test.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
-  '.add(%s, %s)',
+  '.add(%i, %i)',
   (a, b, expected) => {
     expect(a + b).toBe(expected);
   },
@@ -484,11 +500,11 @@ test.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 
 #### 2. `` test.each`table`(name, fn) ``
 
-* `table`: `Tagged Template Literal`
-  * First row of variable name column headings separated with `|`
-  * One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
-* `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
-* `fn`: `Function` the test to be ran, this is the function that will receive the test data object.
+- `table`: `Tagged Template Literal`
+  - First row of variable name column headings separated with `|`
+  - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
+- `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
+- `fn`: `Function` the test to be ran, this is the function that will receive the test data object.
 
 Example:
 
@@ -539,7 +555,7 @@ Use `test.only.each` if you want to only run specific tests with different test 
 
 ```js
 test.only.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
-  '.add(%s, %s)',
+  '.add(%i, %i)',
   (a, b, expected) => {
     expect(a + b).toBe(expected);
   },
@@ -601,7 +617,7 @@ Use `test.skip.each` if you want to stop running a collection of data driven tes
 
 ```js
 test.skip.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
-  '.add(%s, %s)',
+  '.add(%i, %i)',
   (a, b, expected) => {
     expect(a + b).toBe(expected); // will not be ran
   },

@@ -10,17 +10,17 @@
 
 import path from 'path';
 import fs from 'graceful-fs';
-import SkipOnWindows from '../../../../scripts/SkipOnWindows';
+import ConditionalTest from '../../../../scripts/ConditionalTest';
 
 import H from '../constants';
 
-const {worker} = require('../worker');
+const {worker, getSha1} = require('../worker');
 
 let mockFs;
 let readFileSync;
 
 describe('worker', () => {
-  SkipOnWindows.suite();
+  ConditionalTest.skipSuiteOnWindows();
 
   beforeEach(() => {
     mockFs = {
@@ -47,10 +47,8 @@ describe('worker', () => {
 
     readFileSync = fs.readFileSync;
     fs.readFileSync = jest.fn((path, options) => {
-      expect(options).toBe('utf8');
-
       if (mockFs[path]) {
-        return mockFs[path];
+        return options === 'utf8' ? mockFs[path] : Buffer.from(mockFs[path]);
       }
 
       throw new Error(`Cannot read path '${path}'.`);
@@ -108,5 +106,23 @@ describe('worker', () => {
     }
 
     expect(error.message).toEqual(`Cannot read path '/kiwi.js'.`);
+  });
+
+  it('simply computes SHA-1s when requested', async () => {
+    expect(
+      await getSha1({computeSha1: false, filePath: '/fruits/banana.js'}),
+    ).toEqual({sha1: null});
+
+    expect(
+      await getSha1({computeSha1: true, filePath: '/fruits/banana.js'}),
+    ).toEqual({sha1: 'f24c6984cce6f032f6d55d771d04ab8dbbe63c8c'});
+
+    expect(
+      await getSha1({computeSha1: true, filePath: '/fruits/pear.js'}),
+    ).toEqual({sha1: '1bf6fc618461c19553e27f8b8021c62b13ff614a'});
+
+    await expect(
+      getSha1({computeSha1: true, filePath: '/i/dont/exist.js'}),
+    ).rejects.toThrow();
   });
 });

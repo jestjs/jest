@@ -9,15 +9,15 @@
 
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {ScrollOptions} from './lib/scroll_list';
+import type {ScrollOptions} from 'types/Watch';
 import type SearchSource from './search_source';
 
-import Prompt from './lib/Prompt';
 import {
+  PatternPrompt,
+  Prompt,
   printPatternCaret,
   printRestoredPatternCaret,
-} from './lib/pattern_mode_helpers';
-import PatternPrompt from './pattern_prompt';
+} from 'jest-watcher';
 
 type SearchSources = Array<{|
   context: Context,

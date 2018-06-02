@@ -112,7 +112,7 @@ cd /path/to/another/project
 jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
-* To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
+- To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
 
 To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a development build:
 
@@ -136,18 +136,18 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## How to Get in Touch
 
-* Discord - [#jest](https://discord.gg/MWRhKCj) on [Reactiflux](http://www.reactiflux.com/)
+- Discord - [#jest](https://discord.gg/MWRhKCj) on [Reactiflux](http://www.reactiflux.com/)
 
 ## Code Conventions
 
-* 2 spaces for indentation (no tabs).
-* 80 character line length strongly preferred.
-* Prefer `'` over `"`.
-* ES6 syntax when possible.
-* Use [Flow types](http://flowtype.org/).
-* Use semicolons;
-* Trailing commas,
-* Avd abbr wrds.
+- 2 spaces for indentation (no tabs).
+- 80 character line length strongly preferred.
+- Prefer `'` over `"`.
+- ES6 syntax when possible.
+- Use [Flow types](http://flowtype.org/).
+- Use semicolons;
+- Trailing commas,
+- Avd abbr wrds.
 
 ## License
 

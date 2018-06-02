@@ -37,6 +37,7 @@ export default ({
     },
   },
   displayName: 'project-name',
+  errorOnDeprecated: false,
   expand: false,
   filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],

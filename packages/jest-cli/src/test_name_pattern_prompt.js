@@ -8,14 +8,14 @@
  */
 
 import type {TestResult} from 'types/TestResult';
-import type {ScrollOptions} from './lib/scroll_list';
+import type {ScrollOptions} from 'types/Watch';
 
-import Prompt from './lib/Prompt';
 import {
+  PatternPrompt,
+  Prompt,
   printPatternCaret,
   printRestoredPatternCaret,
-} from './lib/pattern_mode_helpers';
-import PatternPrompt from './pattern_prompt';
+} from 'jest-watcher';
 
 export default class TestNamePatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult>;
