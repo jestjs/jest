@@ -438,7 +438,10 @@ class ModuleMockerClass {
           callDidThrowError = true;
           throw error;
         } finally {
-          // Record the result of the function
+          // Record the result of the function.
+          // NOTE: Intentionally NOT pushing/indexing into the array of mock
+          //       results here to avoid corrupting results data if mockClear()
+          //       is called during the execution of the mock.
           mockResult.isThrow = callDidThrowError;
           mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
         }
