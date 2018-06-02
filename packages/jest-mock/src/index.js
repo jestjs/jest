@@ -28,8 +28,16 @@ type MockFunctionResult = {
   /**
    * True if the function threw.
    * False if the function returned.
+   * Undefined if the call has not completed yet.
+   * TODO: Rather than allowing isThrow to be undefined to indicate an incomplete
+   *       call, it would make more sense to combine MockFunctionResult with
+   *       MockFunctionState.calls into a single MockCall structure containing
+   *       a list of call args (for a single call), and a "result" field  of
+   *       type "MockFunctionResult | undefined", where the result field would
+   *       be undefined until the call completes.
+   *       However, this would be a massive breaking change.
    */
-  isThrow: boolean,
+  isThrow: boolean | undefined,
   /**
    * The value that was either thrown or returned by the function.
    */
@@ -343,6 +351,15 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
+        // Create and record an "incomplete" mock result immediately upon
+        // calling rather than waiting for the mock to return. This avoids
+        // issues caused by recursion where results can be recorded in the
+        // wrong order.
+        const mockResult = {
+          isThrow: undefined,
+          value: undefined,
+        };
+        mockState.results.push(mockResult);
         mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
 
         // Will be set to the return value of the mock if an error is not thrown
@@ -422,10 +439,8 @@ class ModuleMockerClass {
           throw error;
         } finally {
           // Record the result of the function
-          mockState.results.push({
-            isThrow: callDidThrowError,
-            value: callDidThrowError ? thrownError : finalReturnValue,
-          });
+          mockResult.isThrow = callDidThrowError;
+          mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
         }
 
         return finalReturnValue;

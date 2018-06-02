@@ -149,6 +149,23 @@ Expected mock function \\"named-mock\\" to have last returned:
 But it was <red>not called</>"
 `;
 
+exports[`lastReturnedWith lastReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>0</>
+But the last call <red>has not returned yet</>"
+`;
+
+exports[`lastReturnedWith lastReturnedWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>\\"foo3\\"</>
+But it last returned exactly:
+  <red>\\"foo3\\"</>"
+`;
+
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].lastReturnedWith(</><dim>)</>
 
@@ -406,9 +423,43 @@ Expected mock function \\"named-mock\\" first call to have returned with:
 But it was <red>not called</>"
 `;
 
-exports[`nthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+exports[`nthReturnedWith nthReturned incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
 
-exports[`nthReturnedWith should reject nth value greater than number of calls 1`] = `
+Expected mock function first call to have returned with:
+  <green>6</>
+But the first call <red>has not returned yet</>"
+`;
+
+exports[`nthReturnedWith nthReturned incomplete recursive calls are handled properly 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function second call to have returned with:
+  <green>3</>
+But the second call <red>has not returned yet</>"
+`;
+
+exports[`nthReturnedWith nthReturned incomplete recursive calls are handled properly 3`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function third call to not have returned with:
+  <green>1</>
+But the third call returned exactly:
+  <red>1</>"
+`;
+
+exports[`nthReturnedWith nthReturned incomplete recursive calls are handled properly 4`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function 4th call to not have returned with:
+  <green>0</>
+But the 4th call returned exactly:
+  <red>0</>"
+`;
+
+exports[`nthReturnedWith nthReturned should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+
+exports[`nthReturnedWith nthReturned should reject nth value greater than number of calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function 4th call to have returned with:
@@ -416,9 +467,9 @@ Expected mock function 4th call to have returned with:
 But it was only called <red>3</> times"
 `;
 
-exports[`nthReturnedWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+exports[`nthReturnedWith nthReturned should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
-exports[`nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+exports[`nthReturnedWith nthReturned should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have returned with:
@@ -427,7 +478,16 @@ But the first call returned with:
   <red>\\"foo1\\"</>"
 `;
 
-exports[`nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+exports[`nthReturnedWith nthReturned should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo1\\"</>
+But the first call returned exactly:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`nthReturnedWith nthReturned works with three calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to not have returned with:
@@ -522,15 +582,6 @@ Expected mock function first call to have returned with:
   <green>\\"bar\\"</>
 But the first call returned with:
   <red>\\"foo\\"</>"
-`;
-
-exports[`nthReturnedWith works with three calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have returned with:
-  <green>\\"foo1\\"</>
-But the first call returned exactly:
-  <red>\\"foo1\\"</>"
 `;
 
 exports[`nthReturnedWith works with undefined 1`] = `
@@ -1437,6 +1488,23 @@ Expected mock function \\"named-mock\\" to have last returned:
 But it was <red>not called</>"
 `;
 
+exports[`toHaveLastReturnedWith lastReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>0</>
+But the last call <red>has not returned yet</>"
+`;
+
+exports[`toHaveLastReturnedWith lastReturnedWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>\\"foo3\\"</>
+But it last returned exactly:
+  <red>\\"foo3\\"</>"
+`;
+
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveLastReturnedWith(</><dim>)</>
 
@@ -1558,9 +1626,43 @@ Expected mock function \\"named-mock\\" first call to have returned with:
 But it was <red>not called</>"
 `;
 
-exports[`toHaveNthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+exports[`toHaveNthReturnedWith nthReturned incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
-exports[`toHaveNthReturnedWith should reject nth value greater than number of calls 1`] = `
+Expected mock function first call to have returned with:
+  <green>6</>
+But the first call <red>has not returned yet</>"
+`;
+
+exports[`toHaveNthReturnedWith nthReturned incomplete recursive calls are handled properly 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function second call to have returned with:
+  <green>3</>
+But the second call <red>has not returned yet</>"
+`;
+
+exports[`toHaveNthReturnedWith nthReturned incomplete recursive calls are handled properly 3`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function third call to not have returned with:
+  <green>1</>
+But the third call returned exactly:
+  <red>1</>"
+`;
+
+exports[`toHaveNthReturnedWith nthReturned incomplete recursive calls are handled properly 4`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function 4th call to not have returned with:
+  <green>0</>
+But the 4th call returned exactly:
+  <red>0</>"
+`;
+
+exports[`toHaveNthReturnedWith nthReturned should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+
+exports[`toHaveNthReturnedWith nthReturned should reject nth value greater than number of calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function 4th call to have returned with:
@@ -1568,9 +1670,9 @@ Expected mock function 4th call to have returned with:
 But it was only called <red>3</> times"
 `;
 
-exports[`toHaveNthReturnedWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+exports[`toHaveNthReturnedWith nthReturned should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
-exports[`toHaveNthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+exports[`toHaveNthReturnedWith nthReturned should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have returned with:
@@ -1579,7 +1681,16 @@ But the first call returned with:
   <red>\\"foo1\\"</>"
 `;
 
-exports[`toHaveNthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+exports[`toHaveNthReturnedWith nthReturned should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo1\\"</>
+But the first call returned exactly:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`toHaveNthReturnedWith nthReturned works with three calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to not have returned with:
@@ -1676,15 +1787,6 @@ But the first call returned with:
   <red>\\"foo\\"</>"
 `;
 
-exports[`toHaveNthReturnedWith works with three calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to not have returned with:
-  <green>\\"foo1\\"</>
-But the first call returned exactly:
-  <red>\\"foo1\\"</>"
-`;
-
 exports[`toHaveNthReturnedWith works with undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
@@ -1733,6 +1835,12 @@ exports[`toHaveReturned includes the custom mock name in the error message 1`] =
 
 Expected mock function \\"named-mock\\" not to have returned, but it returned:
   <red>42</>"
+`;
+
+exports[`toHaveReturned incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned(</><dim>)</>
+
+Expected mock function to have returned."
 `;
 
 exports[`toHaveReturned passes when at least one call does not throw 1`] = `
@@ -1850,6 +1958,12 @@ exports[`toHaveReturnedTimes includes the custom mock name in the error message 
 Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
 `;
 
+exports[`toHaveReturnedTimes incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
 exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
@@ -1933,6 +2047,14 @@ exports[`toHaveReturnedWith includes the custom mock name in the error message 1
 
 Expected mock function \\"named-mock\\" to have returned:
   <green>\\"foo\\"</>
+But it did <red>not return</>."
+`;
+
+exports[`toHaveReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
 But it did <red>not return</>."
 `;
 
@@ -2093,6 +2215,12 @@ Expected mock function \\"named-mock\\" not to have returned, but it returned:
   <red>42</>"
 `;
 
+exports[`toReturn incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn(</><dim>)</>
+
+Expected mock function to have returned."
+`;
+
 exports[`toReturn passes when at least one call does not throw 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toReturn(</><dim>)</>
 
@@ -2208,6 +2336,12 @@ exports[`toReturnTimes includes the custom mock name in the error message 1`] = 
 Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
 `;
 
+exports[`toReturnTimes incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
 exports[`toReturnTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
@@ -2291,6 +2425,14 @@ exports[`toReturnWith includes the custom mock name in the error message 1`] = `
 
 Expected mock function \\"named-mock\\" to have returned:
   <green>\\"foo\\"</>
+But it did <red>not return</>."
+`;
+
+exports[`toReturnWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
 But it did <red>not return</>."
 `;
 

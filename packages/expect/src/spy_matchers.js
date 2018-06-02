@@ -72,7 +72,7 @@ const createToReturnMatcher = matcherName => (received, expected) => {
   // List of return values that correspond only to calls that did not throw
   // an error
   const returnValues = received.mock.results
-    .filter(result => !result.isThrow)
+    .filter(result => result.isThrow === false)
     .map(result => result.value);
 
   const count = returnValues.length;
@@ -142,7 +142,9 @@ const createToReturnTimesMatcher = (matcherName: string) => (
 
   // List of return results that correspond only to calls that did not throw
   // an error
-  const returnResults = received.mock.results.filter(result => !result.isThrow);
+  const returnResults = received.mock.results.filter(
+    result => result.isThrow === false,
+  );
 
   const count = returnResults.length;
   const pass = count === expected;
@@ -217,7 +219,7 @@ const createToReturnWithMatcher = matcherName => (
   // List of return values that correspond only to calls that did not throw
   // an error
   const returnValues = received.mock.results
-    .filter(result => !result.isThrow)
+    .filter(result => result.isThrow === false)
     .map(result => result.value);
 
   const [match] = partition(returnValues, value =>
@@ -295,7 +297,7 @@ const createLastReturnedMatcher = matcherName => (
   const lastResult = results[results.length - 1];
   const pass =
     !!lastResult &&
-    !lastResult.isThrow &&
+    lastResult.isThrow === false &&
     equals(lastResult.value, expected, [iterableEquality]);
 
   const message = pass
@@ -313,11 +315,13 @@ const createLastReturnedMatcher = matcherName => (
         `  ${printExpected(expected)}\n` +
         (!lastResult
           ? `But it was ${RECEIVED_COLOR('not called')}`
-          : lastResult.isThrow
-            ? `But the last call ${RECEIVED_COLOR('threw an error')}`
-            : `But the last call returned:\n  ${printReceived(
-                lastResult.value,
-              )}`);
+          : lastResult.isThrow === undefined
+            ? `But the last call ${RECEIVED_COLOR('has not returned yet')}`
+            : lastResult.isThrow === true
+              ? `But the last call ${RECEIVED_COLOR('threw an error')}`
+              : `But the last call returned:\n  ${printReceived(
+                  lastResult.value,
+                )}`);
 
   return {message, pass};
 };
@@ -400,7 +404,7 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
   const nthResult = results[nth - 1];
   const pass =
     !!nthResult &&
-    !nthResult.isThrow &&
+    nthResult.isThrow === false &&
     equals(nthResult.value, expected, [iterableEquality]);
   const nthString = nthToString(nth);
   const message = pass
@@ -420,11 +424,17 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
           ? `But it was ${RECEIVED_COLOR('not called')}`
           : nth > results.length
             ? `But it was only called ${printReceived(results.length)} times`
-            : nthResult.isThrow
-              ? `But the ${nthString} call ${RECEIVED_COLOR('threw an error')}`
-              : `But the ${nthString} call returned with:\n  ${printReceived(
-                  nthResult.value,
-                )}`);
+            : nthResult.isThrow === undefined
+              ? `But the ${nthString} call ${RECEIVED_COLOR(
+                  'has not returned yet',
+                )}`
+              : nthResult.isThrow === true
+                ? `But the ${nthString} call ${RECEIVED_COLOR(
+                    'threw an error',
+                  )}`
+                : `But the ${nthString} call returned with:\n  ${printReceived(
+                    nthResult.value,
+                  )}`);
 
   return {message, pass};
 };
