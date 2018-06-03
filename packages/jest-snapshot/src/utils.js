@@ -265,7 +265,7 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
       }
       if (snapshotsForFrame.length > 1) {
         throw new Error(
-          'Jest: Multiple inline snapshots for the same call are not supported.',
+          'Jest. Multiple inline snapshots for the same call are not supported.',
         );
       }
       const snapshotIndex = args.findIndex(
