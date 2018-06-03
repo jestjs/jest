@@ -106,7 +106,7 @@ export default class SnapshotState {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        saveInlineSnapshots(this._inlineSnapshots, this._testPath);
+        saveInlineSnapshots(this._inlineSnapshots);
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {

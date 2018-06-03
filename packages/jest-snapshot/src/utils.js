@@ -188,14 +188,22 @@ export const saveSnapshotFile = (
   );
 };
 
-export const saveInlineSnapshots = (
+export const saveInlineSnapshots = (snapshots: InlineSnapshot[]) => {
+  const snapshotsByFile = groupSnapshotsByFile(snapshots);
+
+  for (const sourceFilePath of Object.keys(snapshotsByFile)) {
+    saveSnapshotsForFile(snapshotsByFile[sourceFilePath], sourceFilePath);
+  }
+};
+
+const saveSnapshotsForFile = (
   snapshots: InlineSnapshot[],
   sourceFilePath: Path,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
-
   const config = prettier.resolveConfig.sync(sourceFilePath);
   const {inferredParser} = prettier.getFileInfo.sync(sourceFilePath);
+
   const newSourceFile = prettier.format(
     sourceFile,
     Object.assign({}, config, {
@@ -209,14 +217,20 @@ export const saveInlineSnapshots = (
   }
 };
 
-const groupSnapshotsByFrame = (snapshots: InlineSnapshot[]) => {
-  return snapshots.reduce((object, {snapshot, frame}) => {
-    const key = `${frame.line}:${frame.column}`;
+const groupSnapshotsBy = (createKey: InlineSnapshot => string) => (
+  snapshots: InlineSnapshot[],
+) =>
+  snapshots.reduce((object, inlineSnapshot) => {
+    const key = createKey(inlineSnapshot);
     return Object.assign(object, {
-      [key]: (object[key] || []).concat(snapshot),
+      [key]: (object[key] || []).concat(inlineSnapshot),
     });
   }, {});
-};
+
+const groupSnapshotsByFrame = groupSnapshotsBy(
+  ({frame: {line, column}}) => `${line}:${column - 1}`,
+);
+const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
   text: string,
@@ -227,6 +241,7 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
   options.parser = inferredParser;
 
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
+  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
   let ast = parsers[inferredParser](text);
 
   // flow uses a 'Program' parent node, babel expects a 'File'.
@@ -244,7 +259,7 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
         return;
       }
       const {line, column} = callee.property.loc.start;
-      const snapshotsForFrame = groupedSnapshots[`${line}:${column + 1}`];
+      const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
       if (!snapshotsForFrame) {
         return;
       }
@@ -256,9 +271,11 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
       const snapshotIndex = args.findIndex(
         ({type}) => type === 'TemplateLiteral',
       );
-      const values = snapshotsForFrame.map(snapshot =>
-        templateLiteral([templateElement({raw: snapshot})], []),
-      );
+      const values = snapshotsForFrame.map(({snapshot}) => {
+        remainingSnapshots.delete(snapshot);
+
+        return templateLiteral([templateElement({raw: snapshot})], []);
+      });
       const replacementNode = values[0];
 
       if (snapshotIndex > -1) {
@@ -268,6 +285,10 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
       }
     },
   });
+
+  if (remainingSnapshots.size) {
+    throw new Error(`Jest. Couldn't locate all inline snapshots.`);
+  }
 
   return ast;
 };
