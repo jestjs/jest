@@ -18,7 +18,7 @@ import path from 'path';
 import prettyFormat from 'pretty-format';
 import prettier from 'prettier';
 import traverse from 'babel-traverse';
-import {templateElement, templateLiteral} from 'babel-types';
+import {templateElement, templateLiteral, file} from 'babel-types';
 
 export type InlineSnapshot = {|
   snapshot: string,
@@ -195,11 +195,12 @@ export const saveInlineSnapshots = (
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
   const config = prettier.resolveConfig.sync(sourceFilePath);
+  const {inferredParser} = prettier.getFileInfo.sync(sourceFilePath);
   const newSourceFile = prettier.format(
     sourceFile,
     Object.assign({}, config, {
       filepath: sourceFilePath,
-      parser: createParser(snapshots),
+      parser: createParser(snapshots, inferredParser),
     }),
   );
 
@@ -217,9 +218,17 @@ const groupSnapshotsByFrame = (snapshots: InlineSnapshot[]) => {
   }, {});
 };
 
-const createParser = (snapshots: InlineSnapshot[]) => (text, parsers) => {
+const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
+  text: string,
+  parsers: {[key: string]: (string) => any},
+) => {
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
-  const ast = parsers.babylon(text);
+  let ast = parsers[inferredParser](text);
+  // flow uses a 'Program' parent node, babel expects a 'File'.
+  if (ast.type !== 'File') {
+    ast = file(ast, ast.comments, ast.tokens);
+    delete ast.program.comments;
+  }
 
   traverse(ast, {
     CallExpression({node: {arguments: args, callee}}) {
