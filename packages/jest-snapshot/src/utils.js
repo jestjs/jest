@@ -208,35 +208,49 @@ export const saveInlineSnapshots = (
   }
 };
 
-const createParser = snapshots => (text, parsers) => {
+const groupSnapshotsByFrame = (snapshots: InlineSnapshot[]) => {
+  return snapshots.reduce((object, {snapshot, frame}) => {
+    const key = `${frame.line}:${frame.column}`;
+    return Object.assign(object, {
+      [key]: (object[key] || []).concat(snapshot),
+    });
+  }, {});
+};
+
+const createParser = (snapshots: InlineSnapshot[]) => (text, parsers) => {
+  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const ast = parsers.babylon(text);
+
   traverse(ast, {
-    CallExpression({node}) {
+    CallExpression({node: {arguments: args, callee}}) {
       if (
-        node.callee.type !== 'MemberExpression' ||
-        node.callee.property.type !== 'Identifier'
+        callee.type !== 'MemberExpression' ||
+        callee.property.type !== 'Identifier'
       ) {
         return;
       }
-      const matcher = node.callee.property;
-      for (const {snapshot, frame} of snapshots) {
-        if (
-          matcher.loc.start.line === frame.line &&
-          matcher.loc.start.column === frame.column - 1
-        ) {
-          const templateIndex = node.arguments.findIndex(
-            arg => arg.type === 'TemplateLiteral',
-          );
-          const element = templateElement({raw: snapshot});
+      const {line, column} = callee.property.loc.start;
+      const snapshotsForFrame = groupedSnapshots[`${line}:${column + 1}`];
+      if (!snapshotsForFrame) {
+        return;
+      }
+      if (snapshotsForFrame.length > 1) {
+        throw new Error(
+          'Jest: Multiple inline snapshots for the same call are not supported.',
+        );
+      }
+      const snapshotIndex = args.findIndex(
+        ({type}) => type === 'TemplateLiteral',
+      );
+      const values = snapshotsForFrame.map(snapshot =>
+        templateLiteral([templateElement({raw: snapshot})], []),
+      );
+      const replacementNode = values[0];
 
-          if (templateIndex > -1) {
-            const template = node.arguments[templateIndex];
-            template.quasis = [element];
-            template.expressions = [];
-          } else {
-            node.arguments.push(templateLiteral([element], []));
-          }
-        }
+      if (snapshotIndex > -1) {
+        args[snapshotIndex] = replacementNode;
+      } else {
+        args.push(replacementNode);
       }
     },
   });

@@ -148,7 +148,7 @@ export default class SnapshotState {
   }) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
-    const isInline = typeof inlineSnapshot === 'string';
+    const isInline = inlineSnapshot !== undefined;
 
     if (!key) {
       key = testNameToKey(testName, count);
