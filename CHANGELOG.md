@@ -1,6 +1,7 @@
 ## master
 
 ### Fixes
+
 - `[jest-mock]` Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
 
 ## 23.1.0
