@@ -221,9 +221,14 @@ const groupSnapshotsByFrame = (snapshots: InlineSnapshot[]) => {
 const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
   text: string,
   parsers: {[key: string]: (string) => any},
+  options: any,
 ) => {
+  // Workaround for https://github.com/prettier/prettier/issues/3150
+  options.parser = inferredParser;
+
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   let ast = parsers[inferredParser](text);
+
   // flow uses a 'Program' parent node, babel expects a 'File'.
   if (ast.type !== 'File') {
     ast = file(ast, ast.comments, ast.tokens);
