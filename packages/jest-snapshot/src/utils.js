@@ -22,7 +22,7 @@ import {templateElement, templateLiteral, file} from 'babel-types';
 
 export type InlineSnapshot = {|
   snapshot: string,
-  frame: {line: number, column: number},
+  frame: {line: number, column: number, file: string},
 |};
 
 export const SNAPSHOT_EXTENSION = 'snap';
