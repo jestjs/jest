@@ -444,7 +444,7 @@ describe('.toEqual()', () => {
   });
 
   test('symbol based keys in arrays are processed correctly', () => {
-    const mySymbol = Symbol("test");
+    const mySymbol = Symbol('test');
     const actual1 = [];
     actual1[mySymbol] = 3;
     const actual2 = [];
@@ -454,7 +454,7 @@ describe('.toEqual()', () => {
 
     expect(actual1).toEqual(expected);
     expect(actual2).not.toEqual(expected);
-  })
+  });
 });
 
 describe('.toBeInstanceOf()', () => {
