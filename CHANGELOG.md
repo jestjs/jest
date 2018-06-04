@@ -1,6 +1,10 @@
 ## master
 
+### Fixes
+
 ## 23.1.0
+
+- `[expect]` Using symbolic property names in arrays no longer causes the `toEqual` matcher to fail ([#6391](https://github.com/facebook/jest/pull/6391))
 
 ### Features
 
