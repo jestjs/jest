@@ -227,7 +227,8 @@ function keys(obj, isArray, hasKey) {
   }
 
   for (var x = 0; x < allKeys.length; x++) {
-    if (!allKeys[x].match(/^[0-9]+$/)) {
+    //$FlowFixMe
+    if (typeof allKeys[x] === 'symbol' || !allKeys[x].match(/^[0-9]+$/)) {
       extraKeys.push(allKeys[x]);
     }
   }
