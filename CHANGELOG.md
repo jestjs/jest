@@ -2,7 +2,7 @@
 
 ### Fixes
 
-- `[jest-mock]` Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
+- `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
 
 ## 23.1.0
 
@@ -100,7 +100,7 @@
 - `[jest-diff]` Support returning diff from oneline strings ([#6221](https://github.com/facebook/jest/pull/6221))
 - `[expect]` Improve return matchers ([#6172](https://github.com/facebook/jest/pull/6172))
 - `[jest-cli]` Overhaul watch plugin hooks names ([#6249](https://github.com/facebook/jest/pull/6249))
-- `[jest-mock]` Include tracked call results in serialized mock ([#6244](https://github.com/facebook/jest/pull/6244))
+- `[jest-mock]` [**BREAKING**] Include tracked call results in serialized mock ([#6244](https://github.com/facebook/jest/pull/6244))
 
 ### Fixes
 
