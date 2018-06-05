@@ -56,3 +56,10 @@ test('runs only the describe.only.each tests', () => {
   expect(rest).toMatchSnapshot();
   expect(result.status).toBe(0);
 });
+
+test('formats args with pretty format when given %p', () => {
+  const result = runJest(dir, ['pretty.test.js']);
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
+  expect(result.status).toBe(0);
+});

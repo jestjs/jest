@@ -103,6 +103,18 @@ async function jasmine2(
 
   if (globalConfig.errorOnDeprecated) {
     installErrorOnPrivate(environment.global);
+  } else {
+    // $FlowFixMe Flow seems to be confused about accessors and tries to enfoce having a `value` property.
+    Object.defineProperty(jasmine, 'DEFAULT_TIMEOUT_INTERVAL', {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return this._DEFAULT_TIMEOUT_INTERVAL;
+      },
+      set(value) {
+        this._DEFAULT_TIMEOUT_INTERVAL = value;
+      },
+    });
   }
 
   const snapshotState: SnapshotState = runtime

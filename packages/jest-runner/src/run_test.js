@@ -22,7 +22,6 @@ import {
   getConsoleOutput,
   setGlobal,
 } from 'jest-util';
-import jasmine2 from 'jest-jasmine2';
 import LeakDetector from 'jest-leak-detector';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
@@ -32,10 +31,6 @@ type RunTestInternalResult = {
   leakDetector: ?LeakDetector,
   result: TestResult,
 };
-
-// The default jest-runner is required because it is the default test runner
-// and required implicitly through the `testRunner` ProjectConfig option.
-jasmine2;
 
 // Keeping the core of "runTest" as a separate function (as "runTestInternal")
 // is key to be able to detect memory leaks. Since all variables are local to

@@ -9,11 +9,12 @@
  */
 
 'use strict';
-
-import {spawnSync} from 'child_process';
+// $FlowFixMe - execa is untyped
+import {sync as spawnSync} from 'execa';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import crypto from 'crypto';
 import ConditionalTest from '../../../../scripts/ConditionalTest';
 
 const CIRCUS_PATH = require.resolve('../../build/index');
@@ -25,7 +26,11 @@ const BABEL_REGISTER_PATH = require.resolve('babel-register');
 ConditionalTest.skipSuiteOnWindows();
 
 export const runTest = (source: string) => {
-  const tmpFilename = path.join(os.tmpdir(), 'circus-test-file.js');
+  const filename = crypto
+    .createHash('md5')
+    .update(source)
+    .digest('hex');
+  const tmpFilename = path.join(os.tmpdir(), filename);
 
   const content = `
     require('${BABEL_REGISTER_PATH}');
@@ -51,6 +56,9 @@ export const runTest = (source: string) => {
   fs.writeFileSync(tmpFilename, content);
   const result = spawnSync('node', [tmpFilename], {cwd: process.cwd()});
 
+  // For compat with cross-spawn
+  result.status = result.code;
+
   if (result.status !== 0) {
     const message = `
       STDOUT: ${result.stdout && result.stdout.toString()}
@@ -63,6 +71,8 @@ export const runTest = (source: string) => {
 
   result.stdout = String(result.stdout);
   result.stderr = String(result.stderr);
+
+  fs.unlinkSync(tmpFilename);
 
   if (result.stderr) {
     throw new Error(

@@ -35,7 +35,7 @@ expect(mockCallback.mock.calls[0][0]).toBe(0);
 expect(mockCallback.mock.calls[1][0]).toBe(1);
 
 // The return value of the first call to the function was 42
-expect(mockCallback.mock.returnValues[0]).toBe(42);
+expect(mockCallback.mock.results[0].value).toBe(42);
 ```
 
 ## `.mock` property
@@ -67,7 +67,7 @@ expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
 expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
 
 // The return value of the first call to the function was 'return value'
-expect(someMockFunction.mock.returnValues[0]).toBe('return value');
+expect(someMockFunction.mock.results[0].value).toBe('return value');
 
 // This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
@@ -133,7 +133,7 @@ export default Users;
 
 Now, in order to test this method without actually hitting the API (and thus creating slow and fragile tests), we can use the `jest.mock(...)` function to automatically mock the axios module.
 
-Once we mock the module we can provide a `mockReturnValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want axios.get('/users.json') to return a fake response.
+Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want axios.get('/users.json') to return a fake response.
 
 ```js
 // users.test.js

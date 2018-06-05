@@ -22,6 +22,7 @@
     "stack-utils": "^1.0.1"
   },
   "devDependencies": {
+    "execa": "^0.10.0",
     "jest-runtime": "^23.1.0"
   }
 }

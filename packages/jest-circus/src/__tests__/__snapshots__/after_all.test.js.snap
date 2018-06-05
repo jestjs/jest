@@ -27,8 +27,7 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
-"
+unhandledErrors: 0"
 `;
 
 exports[`describe block cannot have hooks and no tests 1`] = `
@@ -45,8 +44,7 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 4
-"
+unhandledErrors: 4"
 `;
 
 exports[`tests are not marked done until their parent afterAll runs 1`] = `
@@ -110,6 +108,5 @@ run_describe_finish: 2nd describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 1
-"
+unhandledErrors: 1"
 `;
