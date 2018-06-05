@@ -445,25 +445,25 @@ describe('.toEqual()', () => {
 
   test('non-enumerable members should be skipped during equal', () => {
     const actual = {
-      x: 3
+      x: 3,
     };
-    Object.defineProperty(actual, "test", {
-          enumerable: false,
-          value: 5
+    Object.defineProperty(actual, 'test', {
+      enumerable: false,
+      value: 5,
     });
-    expect(actual).toEqual({ x: 3 });
+    expect(actual).toEqual({x: 3});
   });
 
   test('non-enumerable symbolic members should be skipped during equal', () => {
     const actual = {
-      x: 3
+      x: 3,
     };
-    const mySymbol = Symbol("test");
+    const mySymbol = Symbol('test');
     Object.defineProperty(actual, mySymbol, {
-          enumerable: false,
-          value: 5
+      enumerable: false,
+      value: 5,
     });
-    expect(actual).toEqual({ x: 3 });
+    expect(actual).toEqual({x: 3});
   });
 });
 
