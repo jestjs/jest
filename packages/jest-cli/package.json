@@ -35,7 +35,7 @@
     "prompts": "^0.1.9",
     "realpath-native": "^1.0.0",
     "rimraf": "^2.5.4",
-    "slash": "^1.0.0",
+    "slash": "^2.0.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
     "which": "^1.2.12",
