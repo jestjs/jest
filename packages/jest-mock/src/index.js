@@ -26,20 +26,15 @@ export type MockFunctionMetadata = {
  */
 type MockFunctionResult = {
   /**
-   * True if the function threw.
-   * False if the function returned.
-   * Undefined if the call has not completed yet.
-   * TODO: Rather than allowing isThrow to be undefined to indicate an incomplete
-   *       call, it would make more sense to combine MockFunctionResult with
-   *       MockFunctionState.calls into a single MockCall structure containing
-   *       a list of call args (for a single call), and a "result" field  of
-   *       type MockFunctionResult, where the result field would
-   *       be undefined until the call completes.
-   *       However, this would be a massive breaking change.
+   * Indicates the type of call result.
+   * A value of 'incomplete' indicates that the call has not completed yet.
+   * This is possible if you read the mock function result from within
+   * the mock function itself (or a function called by the mock function).
    */
-  isThrow: boolean | void,
+  type: 'return' | 'throw' | 'incomplete',
   /**
    * The value that was either thrown or returned by the function.
+   * Undefined when type === 'incomplete'.
    */
   value: any,
 };
@@ -356,7 +351,7 @@ class ModuleMockerClass {
         // issues caused by recursion where results can be recorded in the
         // wrong order.
         const mockResult = {
-          isThrow: undefined,
+          type: 'incomplete',
           value: undefined,
         };
         mockState.results.push(mockResult);
@@ -442,7 +437,7 @@ class ModuleMockerClass {
           // NOTE: Intentionally NOT pushing/indexing into the array of mock
           //       results here to avoid corrupting results data if mockClear()
           //       is called during the execution of the mock.
-          mockResult.isThrow = callDidThrowError;
+          mockResult.type = callDidThrowError ? 'throw' : 'return';
           mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
         }
 
