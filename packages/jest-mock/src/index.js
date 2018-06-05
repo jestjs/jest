@@ -22,16 +22,23 @@ export type MockFunctionMetadata = {
 };
 
 /**
+ * Possible types of a MockFunctionResult.
+ * 'return': The call completed by returning normally.
+ * 'throw': The call completed by throwing a value.
+ * 'incomplete': The call has not completed yet. This is possible if you read
+ *               the  mock function result from within the mock function itself
+ *               (or a function called by the mock function).
+ */
+type MockFunctionResultType = 'return' | 'throw' | 'incomplete';
+
+/**
  * Represents the result of a single call to a mock function.
  */
 type MockFunctionResult = {
   /**
-   * Indicates the type of call result.
-   * A value of 'incomplete' indicates that the call has not completed yet.
-   * This is possible if you read the mock function result from within
-   * the mock function itself (or a function called by the mock function).
+   * Indicates how the call completed.
    */
-  type: 'return' | 'throw' | 'incomplete',
+  type: MockFunctionResultType,
   /**
    * The value that was either thrown or returned by the function.
    * Undefined when type === 'incomplete'.
