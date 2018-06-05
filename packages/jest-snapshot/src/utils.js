@@ -154,8 +154,10 @@ export const serialize = (data: any): string => {
 // unescape double quotes
 export const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
 
+const escapeBacktickString = (str: string) => str.replace(/`|\\|\${/g, '\\$&');
+
 const printBacktickString = (str: string) => {
-  return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
+  return '`' + escapeBacktickString(str) + '`';
 };
 
 export const ensureDirectoryExists = (filePath: Path) => {
@@ -274,7 +276,10 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
       const values = snapshotsForFrame.map(({snapshot}) => {
         remainingSnapshots.delete(snapshot);
 
-        return templateLiteral([templateElement({raw: snapshot})], []);
+        return templateLiteral(
+          [templateElement({raw: escapeBacktickString(snapshot)})],
+          [],
+        );
       });
       const replacementNode = values[0];
 
