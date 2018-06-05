@@ -209,7 +209,11 @@ function keys(obj, isArray, hasKey) {
         keys.push(key);
       }
     }
-    return keys.concat((Object.getOwnPropertySymbols(o): Array<any>));
+    return keys.concat(
+      (Object.getOwnPropertySymbols(o): Array<any>).filter(
+        symbol => Object.getOwnPropertyDescriptor(o, symbol).enumerable,
+      ),
+    );
   })(obj);
 
   if (!isArray) {

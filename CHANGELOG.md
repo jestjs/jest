@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+- `[expect]` `toEqual` no longer tries to compare non-enumerable symbolic properties, to be consistent with non-symbolic properties. ([]())
+
 ## 23.1.0
 
 ### Features
