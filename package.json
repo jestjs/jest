@@ -70,7 +70,7 @@
     "rollup-plugin-node-builtins": "^2.1.1",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "slash": "^2.0.0",
+    "slash": "^1.0.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
     "typescript": "^2.2.2",
