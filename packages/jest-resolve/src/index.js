@@ -379,11 +379,10 @@ const createNoMappedModuleFoundError = (
   regex,
   resolver,
 ) => {
-  const error = new Error(
-    chalk.red(`${chalk.bold('Configuration error')}:
+  const error = new Error(`
 
 Could not locate module ${chalk.bold(moduleName)} mapped as:
-${chalk.bold(updatedName)}).
+${chalk.bold(updatedName)}.
 
 Please check your configuration for these entries:
 {
@@ -391,10 +390,9 @@ Please check your configuration for these entries:
     "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
   },
   "resolver": ${chalk.bold(String(resolver))}
-}`),
-  );
+}`);
 
-  error.name = '';
+  error.name = chalk.red(`${chalk.bold('Configuration error')}`);
 
   return error;
 };
