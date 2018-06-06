@@ -167,12 +167,24 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
   fs.readFileSync = jest.fn(() => 'expect(1).toMatchInlineSnapshot();\n');
 
   const frame = {column: 11, file: filename, line: 1};
-
   const save = () =>
     saveInlineSnapshots([{frame, snapshot: `1`}, {frame, snapshot: `2`}]);
 
   expect(save).toThrowError(
     /Multiple inline snapshots for the same call are not supported./,
+  );
+});
+
+test('saveInlineSnapshots() uses escaped backticks', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  fs.readFileSync = jest.fn(() => 'expect("`").toMatchInlineSnapshot();\n');
+
+  const frame = {column: 13, file: filename, line: 1};
+  saveInlineSnapshots([{frame, snapshot: '`'}]);
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    'expect("`").toMatchInlineSnapshot(`\\``);\n',
   );
 });
 
