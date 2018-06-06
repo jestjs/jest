@@ -379,7 +379,7 @@ const createNoMappedModuleFoundError = (
   regex,
   resolver,
 ) => {
-  return new Error(
+  const error = new Error(
     chalk.red(`${chalk.bold('Configuration error')}:
 
 Could not locate module ${chalk.bold(moduleName)} mapped as:
@@ -393,6 +393,10 @@ Please check your configuration for these entries:
   "resolver": ${chalk.bold(String(resolver))}
 }`),
   );
+
+  error.name = '';
+
+  return error;
 };
 
 module.exports = Resolver;
