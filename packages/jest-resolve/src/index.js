@@ -383,7 +383,7 @@ const createNoMappedModuleFoundError = (
     chalk.red(`${chalk.bold('Configuration error')}:
 
 Could not locate module ${chalk.bold(moduleName)} mapped as:
-${chalk.bold(updatedName)}).
+${chalk.bold(updatedName)}.
 
 Please check your configuration for these entries:
 {
