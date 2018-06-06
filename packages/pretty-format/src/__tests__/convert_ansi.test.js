@@ -11,11 +11,10 @@ const ansiStyle = require('ansi-styles');
 const prettyFormat = require('../');
 const {ConvertAnsi} = prettyFormat.plugins;
 
-const prettyFormatResult = (val: string) => {
-  return prettyFormat(val, {
+const prettyFormatResult = (val: string) =>
+  prettyFormat(val, {
     plugins: [ConvertAnsi],
   });
-};
 
 describe('ConvertAnsi plugin', () => {
   it('supports style.red', () => {
