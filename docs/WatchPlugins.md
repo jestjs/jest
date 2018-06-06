@@ -23,6 +23,16 @@ class MyWatchPlugin {
 
 ## Hooking into Jest
 
+To connect your watch plugin to Jest, add its path under `watchPlugins` in your Jest configuration:
+
+```javascript
+// jest.config.js
+module.exports = {
+  // ...
+  watchPlugins: ['path/to/yourWatchPlugin']
+};
+```
+
 Custom watch plugins can add hooks to Jest events. These hooks can be added either with or without having an interactive key in the watch mode menu.
 
 ### `apply(jestHooks)`
