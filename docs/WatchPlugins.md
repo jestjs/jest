@@ -29,7 +29,7 @@ To connect your watch plugin to Jest, add its path under `watchPlugins` in your 
 // jest.config.js
 module.exports = {
   // ...
-  watchPlugins: ['path/to/yourWatchPlugin']
+  watchPlugins: ['path/to/yourWatchPlugin'],
 };
 ```
 
