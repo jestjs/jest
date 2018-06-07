@@ -28,7 +28,7 @@ const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
 const mongoServer = new MongodbMemoryServer.MongoMemoryServer();
 
-module.exports = function() {
+module.exports = async function() {
   const mongoConfig = {
     mongoDBName: 'jest',
     mongoUri: await mongoServer.getConnectionString()
