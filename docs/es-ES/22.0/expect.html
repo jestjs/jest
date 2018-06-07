@@ -374,13 +374,13 @@ describe(<span class="hljs-string">'la lata'</span>, () =&gt; {
   beberMasLaCroix();
 }
 </code></pre>
-<p>Puede que no te importe el valor que <code>conseguirErrores</code> regrese, específicamente - podría regresar <code>false</code>, <code>null</code>, o ``, y el código funcionaría correctamente. Si quieres probar que no hay errores después de tomar algo de La Croix, podrías escribir:</p>
+<p>Puede que no te importe el valor que <code>conseguirErrores</code> regrese, específicamente - podría regresar <code>false</code>, <code>null</code>, o <code>0</code>, y el código funcionaría correctamente. Si quieres probar que no hay errores después de tomar algo de La Croix, podrías escribir:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'beber LaCroix no provoca errores'</span>, () =&gt; {
   beberPocoLaCroix();
   expect(conseguirErrores()).toBeFalsy();
 });
 </code></pre>
-<p>En JavaScript, hay seis valores falsos en contexto booleano, o &quot;falsy&quot;: <code>false</code>, ``, <code>''</code>, <code>null</code>, <code>undefined</code>, y <code>NaN</code>. Cualquier otro valor es verdadero en contexto booleano, o &quot;truthy&quot;.</p>
+<p>En JavaScript, hay seis valores falsos en contexto booleano, o &quot;falsy&quot;: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, y <code>NaN</code>. Cualquier otro valor es verdadero en contexto booleano, o &quot;truthy&quot;.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthannumero"></a><a href="#tobegreaterthannumero" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThan(número)</code></h3>
 <p>Para comparar números de punto flotante, puedes usar <code>toBeGreaterThan</code>. Por ejemplo, si deseas probar que <code>onzasPorLata()</code> regresa un valor de más de 10 onzas, puedes escribir:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'onzas por lata es mayor a 10'</span>, () =&gt; {
@@ -436,7 +436,7 @@ test(<span class="hljs-string">'bloop regresa null'</span>, () =&gt; {
   expect(infoSed()).toBeTruthy();
 });
 </code></pre>
-<p>En JavaScript, hay seis valores falsos en contexto booleano, o &quot;falsy&quot;: <code>false</code>, ``, <code>''</code>, <code>null</code>, <code>undefined</code>, y <code>NaN</code>. Cualquier otro valor es verdadero en contexto booleano, o &quot;truthy&quot;.</p>
+<p>En JavaScript, hay seis valores falsos en contexto booleano, o &quot;falsy&quot;: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, y <code>NaN</code>. Cualquier otro valor es verdadero en contexto booleano, o &quot;truthy&quot;.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobeundefined"></a><a href="#tobeundefined" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeUndefined()</code></h3>
 <p>Usa <code>.toBeDefined</code> para verificar que una variable es undefined. Por ejemplo, si quieres verificar que la función <code>mejorBebidaPorSabor(sabor)</code> regresa <code>undefined</code> para el sabor <code>'pulpo'</code>, porque no existe ninguna bebida con sabor a pulpo que sepa bien:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'la mejor bebida con sabor a pulpo es undefined'</span>, () =&gt; {

@@ -527,13 +527,13 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
   drinkMoreLaCroix();
 }
 </code></pre>
-<p>Você pode não se importar com o que <code>getErrors</code> retorna, especificamente - ele pode retornar <code>false</code>, <code>null</code> ou ``, e seu código ainda funcionaria. Então se você quiser testar que não existem erros depois de beber algumas La Croix, você poderia escrever:</p>
+<p>Você pode não se importar com o que <code>getErrors</code> retorna, especificamente - ele pode retornar <code>false</code>, <code>null</code> ou <code>0</code>, e seu código ainda funcionaria. Então se você quiser testar que não existem erros depois de beber algumas La Croix, você poderia escrever:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'drinking La Croix does not lead to errors'</span>, () =&gt; {
   drinkSomeLaCroix();
   expect(getErrors()).toBeFalsy();
 });
 </code></pre>
-<p>Em JavaScript, existem seis valores &quot;falsy&quot; (que se traduzem em falso quando avaliados em um contexto booleano): <code>false</code>, ``, <code>''</code>, <code>null</code>, <code>undefined</code> e <code>NaN</code>. Todo o resto é &quot;truthy&quot; (se traduzem em verdadeiro quando avaliados em um contexto booleano).</p>
+<p>Em JavaScript, existem seis valores &quot;falsy&quot; (que se traduzem em falso quando avaliados em um contexto booleano): <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code> e <code>NaN</code>. Todo o resto é &quot;truthy&quot; (se traduzem em verdadeiro quando avaliados em um contexto booleano).</p>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthannumber"></a><a href="#tobegreaterthannumber" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThan(number)</code></h3>
 <p>Para comparar números com ponto flutuante, você pode usar <code>toBeGreaterThan</code>. Por exemplo, se você quiser testar que <code>ouncesPerCan()</code> retorna um valor maior que 10 onças, escreva:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'ounces per can is more than 10'</span>, () =&gt; {
@@ -589,7 +589,7 @@ test(<span class="hljs-string">'bloop returns null'</span>, () =&gt; {
   expect(thirstInfo()).toBeTruthy();
 });
 </code></pre>
-<p>Em JavaScript, existem seis valores &quot;falsy&quot; (que se traduzem em falso quando avaliados em um contexto booleano): <code>false</code>, ``, <code>''</code>, <code>null</code>, <code>undefined</code> e <code>NaN</code>. Todo o resto é &quot;truthy&quot; (se traduzem em verdadeiro quando avaliados em um contexto booleano).</p>
+<p>Em JavaScript, existem seis valores &quot;falsy&quot; (que se traduzem em falso quando avaliados em um contexto booleano): <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code> e <code>NaN</code>. Todo o resto é &quot;truthy&quot; (se traduzem em verdadeiro quando avaliados em um contexto booleano).</p>
 <h3><a class="anchor" aria-hidden="true" id="tobeundefined"></a><a href="#tobeundefined" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeUndefined()</code></h3>
 <p>Use <code>.toBeUndefined</code> para verificar se uma variável é &quot;undefined&quot;. Por exemplo, se você quiser verificar que uma função <code>bestDrinkForFlavor(flavor)</code> retornará <code>undefined</code> para o sabor <code>'octopus'</code>, porque não há nenhuma boa bebida com sabor &quot;octopus&quot;, ou polvo:</p>
 <pre><code class="hljs css js">test(<span class="hljs-string">'the best drink for octopus flavor is undefined'</span>, () =&gt; {
