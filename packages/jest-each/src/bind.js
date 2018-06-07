@@ -21,6 +21,7 @@ const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
+const INDEX_PLACEHOLDER = '%_';
 
 export default (cb: Function) => (...args: any) =>
   function eachBind(title: string, test: Function): void {
@@ -85,16 +86,15 @@ const arrayFormat = (title, ...args) => {
       if (prettyIndexes.indexOf(index) !== -1) {
         return {
           args: acc.args,
-          title: acc.title.replace(
-            PRETTY_PLACEHOLDER,
-            pretty(arg, {maxDepth: 1, min: true}),
-          ),
+          title: acc.title
+            .replace(PRETTY_PLACEHOLDER, pretty(arg, {maxDepth: 1, min: true}))
+            .replace(INDEX_PLACEHOLDER, `${index}`),
         };
       }
 
       return {
         args: acc.args.concat([arg]),
-        title: acc.title,
+        title: acc.title.replace(INDEX_PLACEHOLDER, `${index}`),
       };
     },
     {args: [], title},
