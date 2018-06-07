@@ -31,9 +31,9 @@ const mongoServer = new MongodbMemoryServer.MongoMemoryServer();
 module.exports = async function() {
   const mongoConfig = {
     mongoDBName: 'jest',
-    mongoUri: await mongoServer.getConnectionString()
+    mongoUri: await mongoServer.getConnectionString(),
   };
-  
+
   // Write global config to disk because all tests run in different contexts.
   fs.writeFileSync(mongoFileConfigPath, JSON.stringify(mongoConfig));
 
@@ -61,9 +61,9 @@ class MongoEnvironment extends NodeEnvironment {
 
   async setup() {
     console.log('Setup MongoDB Test Environment');
-    
+
     const globalConfig = JSON.parse(fs.readFileSync(globalConfigPath, 'utf-8'));
-    
+
     this.global.__MONGO_URI__ = globalConfig.mongoUri;
     this.global.__MONGO_DB_NAME__ = globalConfig.mongoDBName;
 
