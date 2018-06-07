@@ -227,9 +227,7 @@ const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
 export const getStackTraceLines = (
   stack: string,
   options: StackTraceOptions = {noStackTrace: false},
-) => {
-  return removeInternalStackEntries(stack.split(/\n/), options);
-};
+) => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: string[]) => {
   for (const line of lines) {

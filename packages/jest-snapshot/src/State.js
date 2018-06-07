@@ -29,6 +29,13 @@ export type SnapshotStateOptions = {|
   expand?: boolean,
 |};
 
+export type SnapshotMatchOptions = {|
+  testName: string,
+  received: any,
+  key?: string,
+  inlineSnapshot?: string,
+|};
+
 export default class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
@@ -36,7 +43,7 @@ export default class SnapshotState {
   _updateSnapshot: SnapshotUpdateState;
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
-  _inlineSnapshots: InlineSnapshot[];
+  _inlineSnapshots: Array<InlineSnapshot>;
   _testPath: Path;
   _uncheckedKeys: Set<string>;
   added: number;
@@ -74,9 +81,13 @@ export default class SnapshotState {
     });
   }
 
-  _addSnapshot(key: string, receivedSerialized: string, isInline: boolean) {
+  _addSnapshot(
+    key: string,
+    receivedSerialized: string,
+    options: {isInline: boolean},
+  ) {
     this._dirty = true;
-    if (isInline) {
+    if (options.isInline) {
       const lines = getStackTraceLines(new Error().stack);
       const frame = getTopFrame(lines);
       if (!frame) {
@@ -135,17 +146,7 @@ export default class SnapshotState {
     }
   }
 
-  match({
-    testName,
-    received,
-    key,
-    inlineSnapshot,
-  }: {
-    testName: string,
-    received: any,
-    key?: string,
-    inlineSnapshot?: string,
-  }) {
+  match({testName, received, key, inlineSnapshot}: SnapshotMatchOptions) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
     const isInline = inlineSnapshot !== undefined;
@@ -162,6 +163,7 @@ export default class SnapshotState {
     const hasSnapshot = isInline
       ? inlineSnapshot !== ''
       : this._snapshotData[key] !== undefined;
+    const snapshotIsPersisted = isInline || fs.existsSync(this._snapshotPath);
 
     if (pass && !isInline) {
       // Executing a snapshot file as JavaScript and writing the strings back
@@ -182,7 +184,7 @@ export default class SnapshotState {
     //  * There's no snapshot file or a file without this snapshot on a CI environment.
     if (
       (hasSnapshot && this._updateSnapshot === 'all') ||
-      ((!hasSnapshot || (!isInline && !fs.existsSync(this._snapshotPath))) &&
+      ((!hasSnapshot || !snapshotIsPersisted) &&
         (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
       if (this._updateSnapshot === 'all') {
@@ -192,12 +194,12 @@ export default class SnapshotState {
           } else {
             this.added++;
           }
-          this._addSnapshot(key, receivedSerialized, isInline);
+          this._addSnapshot(key, receivedSerialized, {isInline});
         } else {
           this.matched++;
         }
       } else {
-        this._addSnapshot(key, receivedSerialized, isInline);
+        this._addSnapshot(key, receivedSerialized, {isInline});
         this.added++;
       }
 

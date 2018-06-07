@@ -199,7 +199,7 @@ export const saveInlineSnapshots = (snapshots: InlineSnapshot[]) => {
 };
 
 const saveSnapshotsForFile = (
-  snapshots: InlineSnapshot[],
+  snapshots: Array<InlineSnapshot>,
   sourceFilePath: Path,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
@@ -220,7 +220,7 @@ const saveSnapshotsForFile = (
 };
 
 const groupSnapshotsBy = (createKey: InlineSnapshot => string) => (
-  snapshots: InlineSnapshot[],
+  snapshots: Array<InlineSnapshot>,
 ) =>
   snapshots.reduce((object, inlineSnapshot) => {
     const key = createKey(inlineSnapshot);
@@ -246,7 +246,7 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
   let ast = parsers[inferredParser](text);
 
-  // flow uses a 'Program' parent node, babel expects a 'File'.
+  // Flow uses a 'Program' parent node, babel expects a 'File'.
   if (ast.type !== 'File') {
     ast = file(ast, ast.comments, ast.tokens);
     delete ast.program.comments;
@@ -267,7 +267,7 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
       }
       if (snapshotsForFrame.length > 1) {
         throw new Error(
-          'Jest. Multiple inline snapshots for the same call are not supported.',
+          'Jest: Multiple inline snapshots for the same call are not supported.',
         );
       }
       const snapshotIndex = args.findIndex(
@@ -292,7 +292,7 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
   });
 
   if (remainingSnapshots.size) {
-    throw new Error(`Jest. Couldn't locate all inline snapshots.`);
+    throw new Error(`Jest: Couldn't locate all inline snapshots.`);
   }
 
   return ast;

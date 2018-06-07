@@ -211,6 +211,6 @@ export default async function runTest(
 
   // Resolve leak detector, outside the "runTestInternal" closure.
   result.leaks = leakDetector ? leakDetector.isLeaking() : false;
-
+debugger;
   return result;
 }
