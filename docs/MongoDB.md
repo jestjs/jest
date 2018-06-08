@@ -18,21 +18,27 @@ Here's an example of the GlobalSetup script
 
 ```js
 // setup.js
+const path = require('path');
+
+const fs = require('fs');
+
 const MongodbMemoryServer = require('mongodb-memory-server');
 
-const MONGO_DB_NAME = 'jest';
-const mongod = new MongodbMemoryServer.default({
-  instance: {
-    dbName: MONGO_DB_NAME,
-  },
-  binary: {
-    version: '3.2.19',
-  },
-});
+const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
-module.exports = function() {
+const mongoServer = new MongodbMemoryServer.MongoMemoryServer();
+
+module.exports = async function() {
+  const mongoConfig = {
+    mongoDBName: 'jest',
+    mongoUri: await mongoServer.getConnectionString(),
+  };
+
+  // Write global config to disk because all tests run in different contexts.
+  fs.writeFileSync(mongoFileConfigPath, JSON.stringify(mongoConfig));
+
+  // Set reference to mongod in order to close the server during teardown.
   global.__MONGOD__ = mongod;
-  global.__MONGO_DB_NAME__ = MONGO_DB_NAME;
 };
 ```
 
@@ -42,6 +48,12 @@ Then we need a custom Test Environment for Mongo
 // mongo-environment.js
 const NodeEnvironment = require('jest-environment-node');
 
+const path = require('path');
+
+const fs = require('fs');
+
+const globalConfigPath = path.join(__dirname, 'globalConfig.json');
+
 class MongoEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
@@ -50,8 +62,10 @@ class MongoEnvironment extends NodeEnvironment {
   async setup() {
     console.log('Setup MongoDB Test Environment');
 
-    this.global.__MONGO_URI__ = await global.__MONGOD__.getConnectionString();
-    this.global.__MONGO_DB_NAME__ = global.__MONGO_DB_NAME__;
+    const globalConfig = JSON.parse(fs.readFileSync(globalConfigPath, 'utf-8'));
+
+    this.global.__MONGO_URI__ = globalConfig.mongoUri;
+    this.global.__MONGO_DB_NAME__ = globalConfig.mongoDBName;
 
     await super.setup();
   }

@@ -24,7 +24,7 @@ class MyWatchPlugin {
 ## Hooking into Jest
 
 To connect your watch plugin to Jest, add its path under `watchPlugins` in your Jest configuration:
- 
+
 ```javascript
 // jest.config.js
 module.exports = {
