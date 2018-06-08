@@ -446,7 +446,8 @@ For example, this code tests that the promise rejects with reason `'octopus'`:
 ```js
 test('rejects to octopus', () => {
   // make sure to add a return statement
-  return expect(Promise.reject(new Error('octopus'))).rejects.toThrow(
+  return expect(Promise.reject(new Error('octopus'))).rejects.toHaveProperty(
+    'message',
     'octopus',
   );
 });
@@ -458,7 +459,10 @@ Alternatively, you can use `async/await` in combination with `.rejects`.
 
 ```js
 test('rejects to octopus', async () => {
-  await expect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus');
+  await expect(Promise.reject(new Error('octopus'))).rejects.toHaveProperty(
+    'message',
+    'octopus',
+  );
 });
 ```
 
