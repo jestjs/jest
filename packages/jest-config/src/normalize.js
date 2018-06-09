@@ -445,12 +445,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         // We only want this to throw if "prettier" is explicitly passed from
         // config or CLI, and the requested path isn't found. Otherwise we set
         // it to null and throw an error lazily when it is used.
-        value = resolve(newOptions.resolver, {
-          filePath: options[key],
-          key: 'prettier',
-          optional: options[key] === DEFAULT_CONFIG[key],
-          rootDir: options.rootDir,
-        });
+        value =
+          options[key] &&
+          resolve(newOptions.resolver, {
+            filePath: options[key],
+            key,
+            optional: options[key] === DEFAULT_CONFIG[key],
+            rootDir: options.rootDir,
+          });
         break;
       case 'moduleNameMapper':
         const moduleNameMapper = options[key];
