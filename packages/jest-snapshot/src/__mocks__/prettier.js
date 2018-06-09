@@ -15,4 +15,5 @@ module.exports = {
     ),
   getFileInfo: {sync: () => ({inferredParser: 'babylon'})},
   resolveConfig: {sync: () => null},
+  version: prettier.version,
 };

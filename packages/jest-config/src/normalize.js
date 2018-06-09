@@ -373,12 +373,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   options = (options: InitialOptions);
 
   if (options.resolver) {
-    newOptions.resolver = resolve(
-      null,
-      options.rootDir,
-      'resolver',
-      options.resolver,
-    );
+    newOptions.resolver = resolve(null, {
+      filePath: options.resolver,
+      key: 'resolver',
+      rootDir: options.rootDir,
+    });
   }
 
   Object.keys(options).reduce((newOptions, key) => {
@@ -395,8 +394,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'snapshotSerializers':
         value =
           options[key] &&
-          options[key].map(
-            resolve.bind(null, newOptions.resolver, options.rootDir, key),
+          options[key].map(filePath =>
+            resolve(newOptions.resolver, {
+              filePath,
+              key,
+              rootDir: options.rootDir,
+            }),
           );
         break;
       case 'modulePaths':
@@ -429,9 +432,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'testRunner':
+      case 'filter':
+      case 'prettier':
         value =
           options[key] &&
-          resolve(newOptions.resolver, options.rootDir, key, options[key]);
+          resolve(newOptions.resolver, {
+            filePath: options[key],
+            key,
+            optional: key === 'prettier',
+            rootDir: options.rootDir,
+          });
         break;
       case 'moduleNameMapper':
         const moduleNameMapper = options[key];
@@ -448,12 +458,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           transform &&
           Object.keys(transform).map(regex => [
             regex,
-            resolve(
-              newOptions.resolver,
-              options.rootDir,
+            resolve(newOptions.resolver, {
+              filePath: transform[regex],
               key,
-              transform[regex],
-            ),
+              rootDir: options.rootDir,
+            }),
           ]);
         break;
       case 'coveragePathIgnorePatterns':
@@ -467,12 +476,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'haste':
         value = Object.assign({}, options[key]);
         if (value.hasteImplModulePath != null) {
-          value.hasteImplModulePath = resolve(
-            newOptions.resolver,
-            options.rootDir,
-            'haste.hasteImplModulePath',
-            replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
-          );
+          value.hasteImplModulePath = resolve(newOptions.resolver, {
+            filePath: replaceRootDirInPath(
+              options.rootDir,
+              value.hasteImplModulePath,
+            ),
+            key: 'haste.hasteImplModulePath',
+            rootDir: options.rootDir,
+          });
         }
         break;
       case 'projects':
@@ -501,11 +512,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'testRegex':
         value = options[key] && replacePathSepForRegex(options[key]);
-        break;
-      case 'filter':
-        value =
-          options[key] &&
-          resolve(newOptions.resolver, options.rootDir, key, options[key]);
         break;
       case 'automock':
       case 'bail':
@@ -564,7 +570,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'watchPlugins':
         value = (options[key] || []).map(watchPlugin =>
-          resolve(newOptions.resolver, options.rootDir, key, watchPlugin),
+          resolve(newOptions.resolver, {
+            filePath: watchPlugin,
+            key,
+            rootDir: options.rootDir,
+          }),
         );
         break;
     }

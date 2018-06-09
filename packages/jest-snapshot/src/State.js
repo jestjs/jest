@@ -13,18 +13,18 @@ import fs from 'fs';
 import {getTopFrame, getStackTraceLines} from 'jest-message-util';
 import {
   saveSnapshotFile,
-  saveInlineSnapshots,
   getSnapshotData,
   getSnapshotPath,
   keyToTestName,
   serialize,
   testNameToKey,
   unescape,
-  type InlineSnapshot,
 } from './utils';
+import {saveInlineSnapshots, type InlineSnapshot} from './inline_snapshots';
 
 export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,
+  getPrettier: () => null | any,
   snapshotPath?: string,
   expand?: boolean,
 |};
@@ -46,6 +46,7 @@ export default class SnapshotState {
   _inlineSnapshots: Array<InlineSnapshot>;
   _testPath: Path;
   _uncheckedKeys: Set<string>;
+  _getPrettier: () => null | any;
   added: number;
   expand: boolean;
   matched: number;
@@ -61,6 +62,7 @@ export default class SnapshotState {
     );
     this._snapshotData = data;
     this._dirty = dirty;
+    this._getPrettier = options.getPrettier;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
@@ -117,7 +119,8 @@ export default class SnapshotState {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        saveInlineSnapshots(this._inlineSnapshots);
+        const prettier = this._getPrettier(); // Load lazily
+        saveInlineSnapshots(this._inlineSnapshots, prettier);
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {

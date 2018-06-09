@@ -16,14 +16,6 @@ import mkdirp from 'mkdirp';
 import naturalCompare from 'natural-compare';
 import path from 'path';
 import prettyFormat from 'pretty-format';
-import prettier from 'prettier';
-import traverse from 'babel-traverse';
-import {templateElement, templateLiteral, file} from 'babel-types';
-
-export type InlineSnapshot = {|
-  snapshot: string,
-  frame: {line: number, column: number, file: string},
-|};
 
 export const SNAPSHOT_EXTENSION = 'snap';
 export const SNAPSHOT_VERSION = '1';
@@ -154,11 +146,11 @@ export const serialize = (data: any): string => {
 // unescape double quotes
 export const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
 
-const escapeBacktickString = (str: string) => str.replace(/`|\\|\${/g, '\\$&');
+export const escapeBacktickString = (str: string) =>
+  str.replace(/`|\\|\${/g, '\\$&');
 
-const printBacktickString = (str: string) => {
-  return '`' + escapeBacktickString(str) + '`';
-};
+const printBacktickString = (str: string) =>
+  '`' + escapeBacktickString(str) + '`';
 
 export const ensureDirectoryExists = (filePath: Path) => {
   try {
@@ -188,112 +180,4 @@ export const saveSnapshotFile = (
     snapshotPath,
     writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
-};
-
-export const saveInlineSnapshots = (snapshots: InlineSnapshot[]) => {
-  const snapshotsByFile = groupSnapshotsByFile(snapshots);
-
-  for (const sourceFilePath of Object.keys(snapshotsByFile)) {
-    saveSnapshotsForFile(snapshotsByFile[sourceFilePath], sourceFilePath);
-  }
-};
-
-const saveSnapshotsForFile = (
-  snapshots: Array<InlineSnapshot>,
-  sourceFilePath: Path,
-) => {
-  const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
-  const config = prettier.resolveConfig.sync(sourceFilePath);
-  const {inferredParser} = prettier.getFileInfo.sync(sourceFilePath);
-
-  const newSourceFile = prettier.format(
-    sourceFile,
-    Object.assign({}, config, {
-      filepath: sourceFilePath,
-      parser: createParser(snapshots, inferredParser),
-    }),
-  );
-
-  if (newSourceFile !== sourceFile) {
-    fs.writeFileSync(sourceFilePath, newSourceFile);
-  }
-};
-
-const groupSnapshotsBy = (createKey: InlineSnapshot => string) => (
-  snapshots: Array<InlineSnapshot>,
-) =>
-  snapshots.reduce((object, inlineSnapshot) => {
-    const key = createKey(inlineSnapshot);
-    return Object.assign(object, {
-      [key]: (object[key] || []).concat(inlineSnapshot),
-    });
-  }, {});
-
-const groupSnapshotsByFrame = groupSnapshotsBy(
-  ({frame: {line, column}}) => `${line}:${column - 1}`,
-);
-const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
-
-const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
-  text: string,
-  parsers: {[key: string]: (string) => any},
-  options: any,
-) => {
-  // Workaround for https://github.com/prettier/prettier/issues/3150
-  options.parser = inferredParser;
-
-  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
-  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
-  let ast = parsers[inferredParser](text);
-
-  // Flow uses a 'Program' parent node, babel expects a 'File'.
-  if (ast.type !== 'File') {
-    ast = file(ast, ast.comments, ast.tokens);
-    delete ast.program.comments;
-  }
-
-  traverse(ast, {
-    CallExpression({node: {arguments: args, callee}}) {
-      if (
-        callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier'
-      ) {
-        return;
-      }
-      const {line, column} = callee.property.loc.start;
-      const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
-      if (!snapshotsForFrame) {
-        return;
-      }
-      if (snapshotsForFrame.length > 1) {
-        throw new Error(
-          'Jest: Multiple inline snapshots for the same call are not supported.',
-        );
-      }
-      const snapshotIndex = args.findIndex(
-        ({type}) => type === 'TemplateLiteral',
-      );
-      const values = snapshotsForFrame.map(({snapshot}) => {
-        remainingSnapshots.delete(snapshot);
-
-        return templateLiteral(
-          [templateElement({raw: escapeBacktickString(snapshot)})],
-          [],
-        );
-      });
-      const replacementNode = values[0];
-
-      if (snapshotIndex > -1) {
-        args[snapshotIndex] = replacementNode;
-      } else {
-        args.push(replacementNode);
-      }
-    },
-  });
-
-  if (remainingSnapshots.size) {
-    throw new Error(`Jest: Couldn't locate all inline snapshots.`);
-  }
-
-  return ast;
 };
