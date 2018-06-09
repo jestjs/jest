@@ -99,17 +99,17 @@ _Note: Core modules, like `fs`, are not mocked by default. They can be mocked ex
 
 _Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
 
-### `browser` [boolean]
-
-Default: `false`
-
-Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
-
 ### `bail` [boolean]
 
 Default: `false`
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
+
+### `browser` [boolean]
+
+Default: `false`
+
+Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
 ### `cacheDirectory` [string]
 
@@ -239,6 +239,12 @@ Jest will fail if:
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
 
+### `errorOnDeprecated` [boolean]
+
+Default: `false`
+
+Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
+
 ### `forceCoverageMatch` [array<string>]
 
 Default: `['']`
@@ -305,6 +311,12 @@ Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.
 
+### `moduleDirectories` [array<string>]
+
+Default: `["node_modules"]`
+
+An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
+
 ### `moduleFileExtensions` [array<string>]
 
 Default: `["js", "json", "jsx", "node"]`
@@ -312,12 +324,6 @@ Default: `["js", "json", "jsx", "node"]`
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 
 If you are using TypeScript this should be `["js", "jsx", "json", "ts", "tsx"]`, check [ts-jest's documentation](https://github.com/kulshekhar/ts-jest).
-
-### `moduleDirectories` [array<string>]
-
-Default: `["node_modules"]`
-
-An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
 
 ### `moduleNameMapper` [object<string, string>]
 
@@ -663,12 +669,6 @@ Pretty foo: Object {
 ```
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
-
-### `errorOnDeprecated` [boolean]
-
-Default: `false`
-
-Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
 ### `testEnvironment` [string]
 
