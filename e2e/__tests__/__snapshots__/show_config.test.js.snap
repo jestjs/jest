@@ -35,6 +35,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"name\\": \\"[md5 hash]\\",
       \\"resetMocks\\": false,
       \\"resetModules\\": false,
+      \\"resolver\\": null,
       \\"restoreMocks\\": false,
       \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
       \\"roots\\": [
@@ -42,6 +43,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
+      \\"setupTestFrameworkScriptFile\\": null,
       \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
@@ -73,6 +75,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
   \\"globalConfig\\": {
     \\"bail\\": false,
     \\"changedFilesWithAncestor\\": false,
+    \\"collectCoverage\\": false,
+    \\"collectCoverageFrom\\": null,
     \\"coverageDirectory\\": \\"<<REPLACED_ROOT_DIR>>/coverage\\",
     \\"coverageReporters\\": [
       \\"json\\",
@@ -80,6 +84,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"lcov\\",
       \\"clover\\"
     ],
+    \\"coverageThreshold\\": null,
     \\"detectLeaks\\": false,
     \\"detectOpenHandles\\": false,
     \\"errorOnDeprecated\\": false,
@@ -94,6 +99,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"notify\\": false,
     \\"notifyMode\\": \\"always\\",
     \\"passWithNoTests\\": false,
+    \\"projects\\": null,
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",
     \\"runTestsByPath\\": false,
     \\"skipFilter\\": false,
