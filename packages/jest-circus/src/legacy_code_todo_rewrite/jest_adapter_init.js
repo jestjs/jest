@@ -94,7 +94,7 @@ export const initialize = ({
   const {expand, updateSnapshot} = globalConfig;
   const snapshotState = new SnapshotState(testPath, {
     expand,
-    getPrettier: () => localRequire(config.prettier),
+    getPrettier: () => (config.prettier ? localRequire(config.prettier) : null),
     updateSnapshot,
   });
   setState({snapshotState, testPath});

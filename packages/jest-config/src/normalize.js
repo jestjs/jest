@@ -433,15 +433,24 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testResultsProcessor':
       case 'testRunner':
       case 'filter':
-      case 'prettier':
         value =
           options[key] &&
           resolve(newOptions.resolver, {
             filePath: options[key],
             key,
-            optional: key === 'prettier',
             rootDir: options.rootDir,
           });
+        break;
+      case 'prettier':
+        // We only want this to throw if "prettier" is explicitly passed from
+        // config or CLI, and the requested path isn't found. Otherwise we set
+        // it to null and throw an error lazily when it is used.
+        value = resolve(newOptions.resolver, {
+          filePath: options[key] || 'prettier',
+          key,
+          optional: !options[key],
+          rootDir: options.rootDir,
+        });
         break;
       case 'moduleNameMapper':
         const moduleNameMapper = options[key];

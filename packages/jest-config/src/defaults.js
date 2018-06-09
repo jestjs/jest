@@ -61,7 +61,7 @@ export default ({
   notify: false,
   notifyMode: 'always',
   preset: null,
-  prettier: 'prettier',
+  prettier: null,
   projects: null,
   resetMocks: false,
   resetModules: false,
