@@ -211,7 +211,7 @@ const toThrowErrorMatchingInlineSnapshot = function(
   inlineSnapshot?: string,
 ) {
   let fromPromise;
-  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
+  if (typeof fromPromiseOrInlineSnapshot === 'string') {
     inlineSnapshot = fromPromiseOrInlineSnapshot;
   } else {
     fromPromise = fromPromiseOrInlineSnapshot;
