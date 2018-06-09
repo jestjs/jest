@@ -53,7 +53,7 @@ export type DefaultOptions = {|
   notify: boolean,
   notifyMode: string,
   preset: ?string,
-  prettier: string,
+  prettier: ?string,
   projects: ?Array<string | ProjectConfig>,
   resetMocks: boolean,
   resetModules: boolean,
