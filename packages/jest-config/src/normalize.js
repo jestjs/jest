@@ -446,9 +446,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         // config or CLI, and the requested path isn't found. Otherwise we set
         // it to null and throw an error lazily when it is used.
         value = resolve(newOptions.resolver, {
-          filePath: options[key] || 'prettier',
-          key,
-          optional: !options[key],
+          filePath: options[key],
+          key: 'prettier',
+          optional: options[key] === DEFAULT_CONFIG[key],
           rootDir: options.rootDir,
         });
         break;
