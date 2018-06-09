@@ -66,15 +66,15 @@ const toMatchInlineSnapshot = function(
   propertyMatchersOrInlineSnapshot?: any,
   inlineSnapshot?: string,
 ) {
-  const propertyMatchers = inlineSnapshot
-    ? propertyMatchersOrInlineSnapshot
-    : undefined;
-  if (!inlineSnapshot) {
-    inlineSnapshot = propertyMatchersOrInlineSnapshot || '';
+  let propertyMatchers;
+  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
+    inlineSnapshot = propertyMatchersOrInlineSnapshot;
+  } else {
+    propertyMatchers = propertyMatchersOrInlineSnapshot;
   }
   return _toMatchSnapshot({
     context: this,
-    inlineSnapshot,
+    inlineSnapshot: inlineSnapshot || '',
     propertyMatchers,
     received,
   });
@@ -210,14 +210,16 @@ const toThrowErrorMatchingInlineSnapshot = function(
   fromPromiseOrInlineSnapshot: any,
   inlineSnapshot?: string,
 ) {
-  const fromPromise = inlineSnapshot ? fromPromiseOrInlineSnapshot : undefined;
-  if (!inlineSnapshot) {
-    inlineSnapshot = fromPromiseOrInlineSnapshot || '';
+  let fromPromise;
+  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
+    inlineSnapshot = fromPromiseOrInlineSnapshot;
+  } else {
+    fromPromise = fromPromiseOrInlineSnapshot;
   }
   return _toThrowErrorMatchingSnapshot({
     context: this,
     fromPromise,
-    inlineSnapshot,
+    inlineSnapshot: inlineSnapshot || '',
     received,
   });
 };
