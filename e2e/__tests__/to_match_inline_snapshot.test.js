@@ -129,3 +129,39 @@ test('handles property matchers', () => {
     expect(fileAfter).toMatchSnapshot('snapshot updated');
   }
 });
+
+// TODO: Fails because of async stack trace
+test.skip('supports async matchers', () => {
+  const filename = 'async-matchers.test.js';
+  const test = `
+    test('inline snapshots', async () => {
+      expect(Promise.resolve('success')).resolves.toMatchInlineSnapshot();
+      expect(Promise.reject('fail')).rejects.toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(status).toBe(0);
+  expect(fileAfter).toMatchSnapshot();
+});
+
+// TODO: Fails because of async stack trace
+test('supports async tests', () => {
+  const filename = 'async.test.js';
+  const test = `
+    test('inline snapshots', async () => {
+      await 'next tick';
+      expect(42).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(status).toBe(0);
+  expect(fileAfter).toMatchSnapshot();
+});

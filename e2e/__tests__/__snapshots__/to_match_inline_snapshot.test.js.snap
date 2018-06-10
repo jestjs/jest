@@ -95,3 +95,11 @@ Object {
 });
 "
 `;
+
+exports[`supports async tests 1`] = `
+"test('inline snapshots', async () => {
+  await 'next tick';
+  expect(42).toMatchInlineSnapshot(\`42\`);
+});
+"
+`;

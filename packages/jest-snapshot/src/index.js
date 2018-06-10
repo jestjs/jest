@@ -244,7 +244,7 @@ const _toThrowErrorMatchingSnapshot = ({
   inlineSnapshot?: string,
 }) => {
   context.dontThrow && context.dontThrow();
-
+  fs.writeFileSync('thing.txt', JSON.stringify(context));
   const {isNot} = context;
 
   if (isNot) {

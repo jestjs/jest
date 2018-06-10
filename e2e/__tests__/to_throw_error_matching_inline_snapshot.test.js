@@ -87,7 +87,7 @@ test('cannot be used with .not', () => {
 });
 
 // TODO: Fails because of async stack trace
-test.skip('should support rejecting promises', () => {
+test('should support rejecting promises', () => {
   const filename = 'should-support-rejecting-promises.test.js';
   const template = makeTemplate(`
     test('should support rejecting promises', async () => {
@@ -96,12 +96,10 @@ test.skip('should support rejecting promises', () => {
     });
   `);
 
-  {
-    writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(fileAfter).toMatchSnapshot();
-    expect(status).toBe(0);
-  }
+  writeFiles(TESTS_DIR, {[filename]: template()});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(fileAfter).toMatchSnapshot();
+  expect(status).toBe(0);
 });
