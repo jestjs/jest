@@ -99,7 +99,13 @@ const _toMatchSnapshot = ({
   const {currentTestName, isNot, snapshotState} = context;
 
   if (isNot) {
-    throw new Error('Jest: `.not` cannot be used with `.toMatchSnapshot()`.');
+    const matcherName =
+      typeof inlineSnapshot === 'string'
+        ? 'toMatchInlineSnapshot'
+        : 'toMatchSnapshot';
+    throw new Error(
+      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
+    );
   }
 
   if (!snapshotState) {
@@ -242,8 +248,12 @@ const _toThrowErrorMatchingSnapshot = ({
   const {isNot} = context;
 
   if (isNot) {
+    const matcherName =
+      typeof inlineSnapshot === 'string'
+        ? 'toThrowErrorMatchingInlineSnapshot'
+        : 'toThrowErrorMatchingSnapshot';
     throw new Error(
-      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
+      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
     );
   }
 

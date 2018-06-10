@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`updates existing snapshot: updated snapshot 1`] = `
+"test('updates existing snapshot', () => {
+  expect(() => {
+    throw new Error('apple');
+  }).toThrowErrorMatchingInlineSnapshot(\`\\"apple\\"\`);
+});
+"
+`;
+
+exports[`works fine when function throws error: initial write 1`] = `
+"test('works fine when function throws error', () => {
+  expect(() => {
+    throw new Error('apple');
+  }).toThrowErrorMatchingInlineSnapshot(\`\\"apple\\"\`);
+});
+"
+`;
