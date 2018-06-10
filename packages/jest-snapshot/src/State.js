@@ -44,7 +44,6 @@ export default class SnapshotState {
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
   _inlineSnapshots: Array<InlineSnapshot>;
-  _testPath: Path;
   _uncheckedKeys: Set<string>;
   _getPrettier: () => null | any;
   added: number;
@@ -55,7 +54,6 @@ export default class SnapshotState {
 
   constructor(testPath: Path, options: SnapshotStateOptions) {
     this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
-    this._testPath = testPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
       options.updateSnapshot,
