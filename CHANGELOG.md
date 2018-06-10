@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-snapshot]` Introduce `toMatchInlineSnapshot` and `toThrowErrorMatchingInlineSnapshot` matchers ([#6380](https://github.com/facebook/jest/pull/6380))
+
 ### Fixes
 
 - `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
