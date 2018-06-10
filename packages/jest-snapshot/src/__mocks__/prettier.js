@@ -14,6 +14,6 @@ module.exports = {
       ),
     ),
   getFileInfo: {sync: () => ({inferredParser: 'babylon'})},
-  resolveConfig: {sync: () => null},
+  resolveConfig: {sync: jest.fn()},
   version: prettier.version,
 };

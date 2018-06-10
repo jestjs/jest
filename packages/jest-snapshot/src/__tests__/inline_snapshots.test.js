@@ -27,6 +27,8 @@ beforeEach(() => {
     isDirectory: () => !filePath.endsWith('.js'),
   }));
   fs.readdirSync = jest.fn(() => []);
+
+  prettier.resolveConfig.sync.mockReset();
 });
 afterEach(() => {
   fs.writeFileSync = writeFileSync;
@@ -56,25 +58,32 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
   );
 });
 
-test('saveInlineSnapshots() replaces existing template literal', () => {
-  const filename = path.join(__dirname, 'my.test.js');
-  fs.readFileSync = jest.fn(() => 'expect(1).toMatchInlineSnapshot(`2`);\n');
+test.each([['babylon'], ['flow'], ['typescript']])(
+  'saveInlineSnapshots() replaces existing template literal - %s parser',
+  parser => {
+    const filename = path.join(__dirname, 'my.test.js');
+    fs.readFileSync = jest.fn(() => 'expect(1).toMatchInlineSnapshot(`2`);\n');
 
-  saveInlineSnapshots(
-    [
-      {
-        frame: {column: 11, file: filename, line: 1},
-        snapshot: `1`,
-      },
-    ],
-    prettier,
-  );
+    prettier.resolveConfig.sync.mockReturnValue({parser});
 
-  expect(fs.writeFileSync).toHaveBeenCalledWith(
-    filename,
-    'expect(1).toMatchInlineSnapshot(`1`);\n',
-  );
-});
+    saveInlineSnapshots(
+      [
+        {
+          frame: {column: 11, file: filename, line: 1},
+          snapshot: `1`,
+        },
+      ],
+      prettier,
+    );
+
+    expect(prettier.resolveConfig.sync.mock.results[0].value).toEqual({parser});
+
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      filename,
+      'expect(1).toMatchInlineSnapshot(`1`);\n',
+    );
+  },
+);
 
 test('saveInlineSnapshots() replaces existing template literal with property matchers', () => {
   const filename = path.join(__dirname, 'my.test.js');
