@@ -99,7 +99,7 @@ Inline snapshots behave identically to external snapshots (`.snap` files), excep
 
 > Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
 >
-> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettier"`](./configuration.md#prettier) configuration property.
+> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettier"`](./Configuration.md#prettier-string) configuration property.
 
 **Example:**
 
