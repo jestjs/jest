@@ -198,10 +198,13 @@ const printDebugInfoAndExitIfNeeded = (
   configs,
   outputStream,
 ) => {
-  if (argv.debug || argv.showConfig) {
+  if (argv.debug) {
     logDebugMessages(globalConfig, configs, outputStream);
+    return;
   }
+
   if (argv.showConfig) {
+    logDebugMessages(globalConfig, configs, process.stdout);
     exit(0);
   }
 };
