@@ -24,15 +24,18 @@ const resolveFromFixture = relativePath =>
   path.resolve(__dirname, 'fixtures', relativePath);
 
 const writeFileSync = fs.writeFileSync;
+const sep = path.sep;
 
 describe('init', () => {
   beforeEach(() => {
     fs.writeFileSync = jest.fn();
+    path.sep = '/';
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     fs.writeFileSync = writeFileSync;
+    path.sep = sep;
   });
 
   describe('project with package.json and no jest config', () => {
