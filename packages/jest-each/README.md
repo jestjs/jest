@@ -96,6 +96,7 @@ const each = require('jest-each');
 ##### `each`:
 
 - parameters: `Array` of Arrays with the arguments that are passed into the `testFn` for each row
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 
 ##### `.test`:
 
@@ -116,6 +117,7 @@ const each = require('jest-each');
 ##### `each`:
 
 - parameters: `Array` of Arrays with the arguments that are passed into the `suiteFn` for each row
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 
 ##### `.describe`:
 
