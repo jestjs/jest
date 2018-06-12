@@ -62,15 +62,18 @@ const isPromise = obj => {
 };
 
 const createToThrowErrorMatchingSnapshotMatcher = function(matcher) {
-  return function(received: any, testName?: string) {
-    return matcher.apply(this, [received, testName, true]);
+  return function(received: any, testNameOrInlineSnapshot?: string) {
+    return matcher.apply(this, [received, testNameOrInlineSnapshot, true]);
   };
 };
 
 const getPromiseMatcher = (name, matcher) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher('.' + name, true);
-  } else if (name === 'toThrowErrorMatchingSnapshot') {
+  } else if (
+    name === 'toThrowErrorMatchingSnapshot' ||
+    name === 'toThrowErrorMatchingInlineSnapshot'
+  ) {
     return createToThrowErrorMatchingSnapshotMatcher(matcher);
   }
 
@@ -245,6 +248,7 @@ const makeThrowingMatcher = (
       getState(),
       {
         equals,
+        error: err,
         isNot,
         utils,
       },

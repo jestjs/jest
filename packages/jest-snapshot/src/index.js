@@ -149,6 +149,7 @@ const _toMatchSnapshot = ({
   }
 
   const result = snapshotState.match({
+    error: context.error,
     inlineSnapshot,
     received,
     testName: fullTestName,
@@ -213,15 +214,9 @@ const toThrowErrorMatchingSnapshot = function(
 
 const toThrowErrorMatchingInlineSnapshot = function(
   received: any,
-  fromPromiseOrInlineSnapshot: any,
   inlineSnapshot?: string,
+  fromPromise?: boolean,
 ) {
-  let fromPromise;
-  if (typeof fromPromiseOrInlineSnapshot === 'string') {
-    inlineSnapshot = fromPromiseOrInlineSnapshot;
-  } else {
-    fromPromise = fromPromiseOrInlineSnapshot;
-  }
   return _toThrowErrorMatchingSnapshot({
     context: this,
     fromPromise,
@@ -244,14 +239,13 @@ const _toThrowErrorMatchingSnapshot = ({
   inlineSnapshot?: string,
 }) => {
   context.dontThrow && context.dontThrow();
-  fs.writeFileSync('thing.txt', JSON.stringify(context));
   const {isNot} = context;
+  const matcherName =
+    typeof inlineSnapshot === 'string'
+      ? 'toThrowErrorMatchingInlineSnapshot'
+      : 'toThrowErrorMatchingSnapshot';
 
   if (isNot) {
-    const matcherName =
-      typeof inlineSnapshot === 'string'
-        ? 'toThrowErrorMatchingInlineSnapshot'
-        : 'toThrowErrorMatchingSnapshot';
     throw new Error(
       `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
     );
@@ -271,7 +265,7 @@ const _toThrowErrorMatchingSnapshot = ({
 
   if (error === undefined) {
     throw new Error(
-      matcherHint('.toThrowErrorMatchingSnapshot', '() => {}', '') +
+      matcherHint(`.${matcherName}`, '() => {}', '') +
         '\n\n' +
         `Expected the function to throw an error.\n` +
         `But it didn't throw anything.`,

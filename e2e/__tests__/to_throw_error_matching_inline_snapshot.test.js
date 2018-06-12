@@ -86,8 +86,7 @@ test('cannot be used with .not', () => {
   }
 });
 
-// TODO: Fails because of async stack trace
-test.skip('should support rejecting promises', () => {
+test('should support rejecting promises', () => {
   const filename = 'should-support-rejecting-promises.test.js';
   const template = makeTemplate(`
     test('should support rejecting promises', async () => {

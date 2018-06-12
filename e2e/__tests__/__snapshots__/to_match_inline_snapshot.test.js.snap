@@ -96,6 +96,16 @@ Object {
 "
 `;
 
+exports[`supports async matchers 1`] = `
+"test('inline snapshots', async () => {
+  expect(Promise.resolve('success')).resolves.toMatchInlineSnapshot(
+    \`\\"success\\"\`,
+  );
+  expect(Promise.reject('fail')).rejects.toMatchInlineSnapshot(\`\\"fail\\"\`);
+});
+"
+`;
+
 exports[`supports async tests 1`] = `
 "test('inline snapshots', async () => {
   await 'next tick';

@@ -130,8 +130,7 @@ test('handles property matchers', () => {
   }
 });
 
-// TODO: Fails because of async stack trace
-test.skip('supports async matchers', () => {
+test('supports async matchers', () => {
   const filename = 'async-matchers.test.js';
   const test = `
     test('inline snapshots', async () => {
@@ -143,12 +142,11 @@ test.skip('supports async matchers', () => {
   writeFiles(TESTS_DIR, {[filename]: test});
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   const fileAfter = readFile(filename);
-  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(stderr).toMatch('2 snapshots written from 1 test suite.');
   expect(status).toBe(0);
   expect(fileAfter).toMatchSnapshot();
 });
 
-// TODO: Fails because of async stack trace
 test('supports async tests', () => {
   const filename = 'async.test.js';
   const test = `

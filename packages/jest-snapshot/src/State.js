@@ -34,6 +34,7 @@ export type SnapshotMatchOptions = {|
   received: any,
   key?: string,
   inlineSnapshot?: string,
+  error?: Error,
 |};
 
 export default class SnapshotState {
@@ -84,11 +85,12 @@ export default class SnapshotState {
   _addSnapshot(
     key: string,
     receivedSerialized: string,
-    options: {isInline: boolean},
+    options: {isInline: boolean, error?: Error},
   ) {
     this._dirty = true;
     if (options.isInline) {
-      const lines = getStackTraceLines(new Error().stack);
+      const error = options.error || new Error();
+      const lines = getStackTraceLines(error.stack);
       const frame = getTopFrame(lines);
       if (!frame) {
         throw new Error("Jest: Couln't infer stack frame for inline snapshot.");
@@ -147,7 +149,13 @@ export default class SnapshotState {
     }
   }
 
-  match({testName, received, key, inlineSnapshot}: SnapshotMatchOptions) {
+  match({
+    testName,
+    received,
+    key,
+    inlineSnapshot,
+    error,
+  }: SnapshotMatchOptions) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
     const isInline = inlineSnapshot !== undefined;
@@ -195,12 +203,12 @@ export default class SnapshotState {
           } else {
             this.added++;
           }
-          this._addSnapshot(key, receivedSerialized, {isInline});
+          this._addSnapshot(key, receivedSerialized, {error, isInline});
         } else {
           this.matched++;
         }
       } else {
-        this._addSnapshot(key, receivedSerialized, {isInline});
+        this._addSnapshot(key, receivedSerialized, {error, isInline});
         this.added++;
       }
 
