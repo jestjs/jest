@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-each]` Add support for keyPaths in test titles ([#6457](https://github.com/facebook/jest/pull/6457/files))
+
 ### Fixes
 
 - `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
