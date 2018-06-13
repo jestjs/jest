@@ -26,13 +26,13 @@ import {
 } from 'jest-matcher-utils';
 import {
   getObjectSubset,
-  getPath,
   iterableEquality,
   subsetEquality,
   typeEquality,
   isOneline,
 } from './utils';
 import {equals} from './jasmine_utils';
+import {getPath} from 'jest-util';
 
 type ContainIterable =
   | Array<any>
