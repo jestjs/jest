@@ -86,7 +86,7 @@
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
     "lint:md": "yarn --silent lint:md:ci --fix",
     "lint:md:ci": "prettylint '**/*.md' --ignore-path .gitignore",
-    "postinstall": "yarn build",
+    "postinstall": "yarn build && opencollective postinstall",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn jest-coverage -i --reporters jest-silent-reporter --testResultsProcessor=jest-junit && yarn test-leak && node scripts/mapCoverage.js && codecov",
@@ -164,5 +164,13 @@
     "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all"
+  },
+  "dependencies": {
+    "opencollective": "^1.0.3"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/jest",
+    "logo": "https://opencollective.com/jest/logo.txt"
   }
 }
