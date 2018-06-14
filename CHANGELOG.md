@@ -1,5 +1,10 @@
 ## master
 
+### Features
+
+- `[jest-runtime]` Support `require.resolve.paths` ([#6471](https://github.com/facebook/jest/pull/6471))
+- `[jest-runtime]` Support `paths` option for `require.resolve` ([#6471](https://github.com/facebook/jest/pull/6471))
+
 ### Fixes
 
 - `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
