@@ -134,8 +134,7 @@ const getMatchingKeyPaths = title => (matches, key) =>
 
 const replaceKeyPathWithValue = data => (title, match) => {
   const keyPath = match.replace('$', '').split('.');
-  const result = getPath(data, keyPath);
-  const value = result.hasEndProp ? result.value : result.lastTraversedObject;
+  const value = getPath(data, keyPath);
   return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
 };
 
@@ -153,52 +152,7 @@ const applyObjectParams = (obj: any, test: Function) => {
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
 
-const hasOwnProperty = (object: Object, value: string) =>
-  Object.prototype.hasOwnProperty.call(object, value) ||
-  Object.prototype.hasOwnProperty.call(object.constructor.prototype, value);
-
-const getPath = (object: Object, propertyPath: string | Array<string>) => {
-  if (!Array.isArray(propertyPath)) {
-    propertyPath = propertyPath.split('.');
-  }
-
-  if (propertyPath.length) {
-    const lastProp = propertyPath.length === 1;
-    const prop = propertyPath[0];
-    const newObject = object[prop];
-
-    if (!lastProp && (newObject === null || newObject === undefined)) {
-      // This is not the last prop in the chain. If we keep recursing it will
-      // hit a `can't access property X of undefined | null`. At this point we
-      // know that the chain has broken and we can return right away.
-      return {
-        hasEndProp: false,
-        lastTraversedObject: object,
-        traversedPath: [],
-      };
-    }
-
-    const result = getPath(newObject, propertyPath.slice(1));
-
-    if (result.lastTraversedObject === null) {
-      result.lastTraversedObject = object;
-    }
-
-    result.traversedPath.unshift(prop);
-
-    if (lastProp) {
-      result.hasEndProp = hasOwnProperty(object, prop);
-      if (!result.hasEndProp) {
-        result.traversedPath.shift();
-      }
-    }
-
-    return result;
-  }
-
-  return {
-    lastTraversedObject: null,
-    traversedPath: [],
-    value: object,
-  };
+const getPath = (o: Object, [head, ...tail]: Array<string>) => {
+  if (!head || !o.hasOwnProperty || !o.hasOwnProperty(head)) return o;
+  return getPath(o[head], tail);
 };
