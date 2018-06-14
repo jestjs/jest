@@ -14,7 +14,6 @@
     "jest-get-type": "^22.1.0",
     "jest-matcher-utils": "^23.0.1",
     "jest-message-util": "^23.1.0",
-    "jest-regex-util": "^23.0.0",
-    "jest-util": "^23.1.0"
+    "jest-regex-util": "^23.0.0"
   }
 }

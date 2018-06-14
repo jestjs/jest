@@ -23,7 +23,6 @@ import getCallsite from './get_callsite';
 import setGlobal from './set_global';
 import deepCyclicCopy from './deep_cyclic_copy';
 import convertDescriptorToString from './convert_descriptor_to_string';
-import getPath from './get_path';
 
 const createDirectory = (path: string) => {
   try {
@@ -48,7 +47,6 @@ module.exports = {
   getCallsite,
   getConsoleOutput,
   getFailedSnapshotTests,
-  getPath,
   installCommonGlobals,
   isInteractive,
   setGlobal,

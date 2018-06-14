@@ -17,7 +17,6 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.0.1",
-    "jest-util": "^23.1.0",
     "pretty-format": "^23.0.1"
   }
 }
