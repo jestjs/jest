@@ -108,12 +108,11 @@ class Resolver {
     return null;
   }
 
-  resolveModule(
-    from: Path,
+  resolveModuleFromDirIfExists(
+    dirname: Path,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Path {
-    const dirname = path.dirname(from);
+  ): ?Path {
     const paths = this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
@@ -187,9 +186,25 @@ class Resolver {
       } catch (ignoredError) {}
     }
 
-    // 4. Throw an error if the module could not be found. `resolve.sync`
-    //    only produces an error based on the dirname but we have the actual
-    //    current module name available.
+    return null;
+  }
+
+  resolveModule(
+    from: Path,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): Path {
+    const dirname = path.dirname(from);
+    const module = this.resolveModuleFromDirIfExists(
+      dirname,
+      moduleName,
+      options,
+    );
+    if (module) return module;
+
+    // (4.) Throw an error if the module could not be found. `resolve.sync`
+    //      only produces an error based on the dirname but we have the actual
+    //      current module name available.
     const relativePath = path.relative(dirname, from);
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
