@@ -113,7 +113,7 @@ class Resolver {
     moduleName: string,
     options?: ResolveModuleConfig,
   ): ?Path {
-    const paths = this._options.modulePaths;
+    const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
