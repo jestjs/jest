@@ -4,6 +4,7 @@
 
 - `[jest-each]` Add support for keyPaths in test titles ([#6457](https://github.com/facebook/jest/pull/6457))
 - `[jest-cli]` Add `jest --init` option that generates a basic configuration file with a short description for each option ([#6442](https://github.com/facebook/jest/pull/6442))
+- `[jest-cli]` Watch plugins now have access to a broader range of global configuration options in their `updateConfigAndRun` callbacks, so they can provide a wider set of extra features ([#6473](https://github.com/facebook/jest/pull/6473))
 
 ### Fixes
 
