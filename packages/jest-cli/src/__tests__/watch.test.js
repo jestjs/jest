@@ -86,6 +86,11 @@ jest.doMock(
   {virtual: true},
 );
 
+const regularUpdateGlobalConfig = require('../lib/update_global_config')
+  .default;
+const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
+jest.doMock('../lib/update_global_config', () => updateGlobalConfig);
+
 const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
@@ -389,6 +394,119 @@ describe('Watch mode flows', () => {
         },
       ],
     });
+  });
+
+  it('allows WatchPlugins to modify only white-listed global config keys', async () => {
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_config_updater`;
+    const config = Object.assign({}, globalConfig, {
+      rootDir: __dirname,
+      watchPlugins: [pluginPath],
+    });
+
+    let currentOption;
+
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          getUsageInfo() {
+            return {key: 'x', prompt: 'test option white-listing'};
+          }
+
+          run(globalConfig, updateConfigAndRun) {
+            updateConfigAndRun({[currentOption]: '__JUST_TRYING__'});
+            return Promise.resolve();
+          }
+        },
+      {virtual: true},
+    );
+
+    // updateGlobalConfig.mockReset();
+    const whiteListedOptions = [
+      'bail',
+      'collectCoverage',
+      'collectCoverageFrom',
+      'collectCoverageOnlyFrom',
+      'coverageDirectory',
+      'coverageReporters',
+      'notify',
+      'notifyMode',
+      'onlyFailures',
+      'reporters',
+      'testNamePattern',
+      'testPathPattern',
+      'updateSnapshot',
+      'verbose',
+    ];
+
+    for (const whiteListedOption of whiteListedOptions) {
+      currentOption = whiteListedOption;
+
+      watch(config, contexts, pipe, hasteMapInstances, stdin);
+      await nextTick();
+
+      stdin.emit('x');
+      await nextTick();
+
+      const lastCall = updateGlobalConfig.mock.calls.slice(-1)[0];
+      expect(lastCall[0]).toMatchObject({
+        [whiteListedOption]: '__JUST_TRYING__',
+      });
+    }
+
+    const exampleForbiddenOptions = [
+      'changedSince',
+      'changedFilesWithAncestor',
+      'coverageThreshold',
+      'detectLeaks',
+      'detectOpenHandles',
+      'enabledTestsMap',
+      'expand',
+      'filter',
+      'findRelatedTests',
+      'forceExit',
+      'json',
+      'globalSetup',
+      'globalTeardown',
+      'lastCommit',
+      'logHeapUsage',
+      'listTests',
+      'maxWorkers',
+      'noStackTrace',
+      'nonFlagArgs',
+      'noSCM',
+      'outputFile',
+      'onlyChanged',
+      'passWithNoTests',
+      'projects',
+      'replname',
+      'runTestsByPath',
+      'rootDir',
+      'silent',
+      'skipFilter',
+      'errorOnDeprecated',
+      'testFailureExitCode',
+      'testResultsProcessor',
+      'useStderr',
+      'watch',
+      'watchAll',
+      'watchman',
+      'watchPlugins',
+    ];
+    for (const forbiddenOption of exampleForbiddenOptions) {
+      currentOption = forbiddenOption;
+
+      watch(config, contexts, pipe, hasteMapInstances, stdin);
+      await nextTick();
+
+      stdin.emit('x');
+      await nextTick();
+
+      const lastCall = updateGlobalConfig.mock.calls.slice(-1)[0];
+      expect(lastCall[0]).not.toMatchObject({
+        [forbiddenOption]: '__JUST_TRYING__',
+      });
+    }
   });
 
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
