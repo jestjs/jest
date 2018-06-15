@@ -7,7 +7,11 @@
  * @flow
  */
 
-import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
+import type {
+  GlobalConfig,
+  ReporterConfig,
+  SnapshotUpdateState,
+} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {WatchPlugin} from './types';
 
@@ -68,19 +72,71 @@ export default function watch(
   });
 
   const updateConfigAndRun = ({
+    bail,
+    collectCoverage,
+    collectCoverageFrom,
+    collectCoverageOnlyFrom,
+    coverageDirectory,
+    coverageReporters,
     mode,
+    notify,
+    notifyMode,
+    onlyFailures,
+    reporters,
     testNamePattern,
     testPathPattern,
     updateSnapshot,
+    verbose,
   }: {
+    bail?: boolean,
+    collectCoverage?: boolean,
+    collectCoverageFrom?: Array<string>,
+    collectCoverageOnlyFrom?: {[key: string]: boolean},
+    coverageDirectory?: string,
+    coverageReporters?: Array<string>,
     mode?: 'watch' | 'watchAll',
+    notify?: boolean,
+    notifyMode?: string,
+    onlyFailures?: boolean,
+    reporters?: Array<ReporterConfig>,
     testNamePattern?: string,
     testPathPattern?: string,
     updateSnapshot?: SnapshotUpdateState,
+    verbose?: boolean,
   } = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
+    // It is unfortunate that Flow isn't smart enough yet to let us
+    // implement a generic assign loop over a list of white-listed
+    // option names here :-(
     globalConfig = updateGlobalConfig(globalConfig, {
+      bail: bail !== undefined ? bail : globalConfig.bail,
+      collectCoverage:
+        collectCoverage !== undefined
+          ? collectCoverage
+          : globalConfig.collectCoverage,
+      collectCoverageFrom:
+        collectCoverageFrom !== undefined
+          ? collectCoverageFrom
+          : globalConfig.collectCoverageFrom,
+      collectCoverageOnlyFrom:
+        collectCoverageOnlyFrom !== undefined
+          ? collectCoverageOnlyFrom
+          : globalConfig.collectCoverageOnlyFrom,
+      coverageDirectory:
+        coverageDirectory !== undefined
+          ? coverageDirectory
+          : globalConfig.coverageDirectory,
+      coverageReporters:
+        coverageReporters !== undefined
+          ? coverageReporters
+          : globalConfig.coverageReporters,
       mode,
+      notify: notify !== undefined ? notify : globalConfig.notify,
+      notifyMode:
+        notifyMode !== undefined ? notifyMode : globalConfig.notifyMode,
+      onlyFailures:
+        onlyFailures !== undefined ? onlyFailures : globalConfig.onlyFailures,
+      reporters: reporters !== undefined ? reporters : globalConfig.reporters,
       testNamePattern:
         testNamePattern !== undefined
           ? testNamePattern
@@ -93,6 +149,7 @@ export default function watch(
         updateSnapshot !== undefined
           ? updateSnapshot
           : globalConfig.updateSnapshot,
+      verbose: verbose !== undefined ? verbose : globalConfig.verbose,
     });
 
     startRun(globalConfig);

@@ -125,14 +125,7 @@ describe('Watch mode flows', () => {
     expect(runJestMock).toBeCalled();
 
     // globalConfig is updated with the current pattern
-    expect(runJestMock.mock.calls[0][0].globalConfig).toEqual({
-      onlyChanged: false,
-      passWithNoTests: true,
-      testNamePattern: '',
-      testPathPattern: 'p.*3',
-      watch: true,
-      watchAll: false,
-    });
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchSnapshot();
   });
 
   it('Pressing "c" clears the filters', async () => {

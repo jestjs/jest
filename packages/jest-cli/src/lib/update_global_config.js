@@ -7,16 +7,30 @@
  * @flow
  */
 
-import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
+import type {
+  GlobalConfig,
+  ReporterConfig,
+  SnapshotUpdateState,
+} from 'types/Config';
 
 type Options = {
+  bail?: boolean,
+  collectCoverage?: boolean,
+  collectCoverageFrom?: Array<string>,
+  collectCoverageOnlyFrom?: ?{[key: string]: boolean},
+  coverageDirectory?: string,
+  coverageReporters?: Array<string>,
+  mode?: 'watch' | 'watchAll',
+  noSCM?: boolean,
+  notify?: boolean,
+  notifyMode?: string,
+  onlyFailures?: boolean,
+  passWithNoTests?: boolean,
+  reporters?: Array<ReporterConfig>,
   testNamePattern?: string,
   testPathPattern?: string,
-  noSCM?: boolean,
   updateSnapshot?: SnapshotUpdateState,
-  mode?: 'watch' | 'watchAll',
-  passWithNoTests?: boolean,
-  onlyFailures?: boolean,
+  verbose?: ?boolean,
 };
 
 export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
@@ -63,6 +77,46 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
 
   if ('onlyFailures' in options) {
     newConfig.onlyFailures = options.onlyFailures || false;
+  }
+
+  if ('bail' in options) {
+    newConfig.bail = options.bail || false;
+  }
+
+  if ('collectCoverage' in options) {
+    newConfig.collectCoverage = options.collectCoverage || false;
+  }
+
+  if (options.collectCoverageFrom) {
+    newConfig.collectCoverageFrom = options.collectCoverageFrom;
+  }
+
+  if (options.collectCoverageOnlyFrom) {
+    newConfig.collectCoverageOnlyFrom = options.collectCoverageOnlyFrom;
+  }
+
+  if (options.coverageDirectory) {
+    newConfig.coverageDirectory = options.coverageDirectory;
+  }
+
+  if (options.coverageReporters) {
+    newConfig.coverageReporters = options.coverageReporters;
+  }
+
+  if ('notify' in options) {
+    newConfig.notify = options.notify || false;
+  }
+
+  if (options.notifyMode) {
+    newConfig.notifyMode = options.notifyMode;
+  }
+
+  if (options.reporters) {
+    newConfig.reporters = options.reporters;
+  }
+
+  if ('verbose' in options) {
+    newConfig.verbose = options.verbose || false;
   }
 
   return Object.freeze(newConfig);

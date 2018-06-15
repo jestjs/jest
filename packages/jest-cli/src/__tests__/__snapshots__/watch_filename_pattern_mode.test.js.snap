@@ -80,6 +80,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
 [MOCK - cursorRestorePosition]"
 `;
 
+exports[`Watch mode flows Pressing "P" enters pattern mode 9`] = `
+Object {
+  "bail": false,
+  "collectCoverage": false,
+  "notify": false,
+  "onlyChanged": false,
+  "onlyFailures": false,
+  "passWithNoTests": true,
+  "testNamePattern": "",
+  "testPathPattern": "p.*3",
+  "verbose": false,
+  "watch": true,
+  "watchAll": false,
+}
+`;
+
 exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
 "[MOCK - cursorHide]
 [MOCK - clearScreen]
