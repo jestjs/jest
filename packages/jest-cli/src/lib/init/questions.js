@@ -15,14 +15,7 @@ type Question = {
   choices?: Array<{title: string, value: string}>,
 };
 
-const questions: Array<Question> = [
-  {
-    initial: true,
-    message:
-      'Would you like to use Jest when running "test" script in "package.json"?',
-    name: 'scripts',
-    type: 'confirm',
-  },
+const defaultQuestions: Array<Question> = [
   {
     choices: [
       {title: 'node', value: 'node'},
@@ -47,7 +40,15 @@ const questions: Array<Question> = [
   },
 ];
 
-export default questions;
+export default defaultQuestions;
+
+export const testScriptQuestion: Question = {
+  initial: true,
+  message:
+    'Would you like to use Jest when running "test" script in "package.json"?',
+  name: 'scripts',
+  type: 'confirm',
+};
 
 export const typescriptQuestion: Question = {
   initial: true,

@@ -165,6 +165,20 @@ describe('init', () => {
     });
   });
 
+  describe('already has "jest" in packageJson.scripts.test', () => {
+    it('should not ask "test script question"', async () => {
+      prompts.mockReturnValueOnce({});
+
+      await init(resolveFromFixture('test_script_configured'));
+
+      const questionsNames = prompts.mock.calls[0][0].map(
+        question => question.name,
+      );
+
+      expect(questionsNames).not.toContain('scripts');
+    });
+  });
+
   describe('typescript project', () => {
     it('should ask "typescript question" when has typescript in dependencies', async () => {
       prompts.mockReturnValueOnce({});

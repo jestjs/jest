@@ -11,7 +11,10 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
-import questions, {typescriptQuestion} from './questions';
+import defaultQuestions, {
+  typescriptQuestion,
+  testScriptQuestion,
+} from './questions';
 import {NotFoundPackageJsonError, MalformedPackageJsonError} from './errors';
 import {PACKAGE_JSON, JEST_CONFIG} from '../../constants';
 import generateConfigFile from './generate_config_file';
@@ -34,6 +37,7 @@ export default async (rootDir: string = process.cwd()) => {
     throw new NotFoundPackageJsonError(rootDir);
   }
 
+  const questions = defaultQuestions.slice(0);
   let hasJestProperty: boolean = false;
   let hasJestConfig: boolean = false;
   let projectPackageJson: ?Object;
@@ -68,6 +72,14 @@ export default async (rootDir: string = process.cwd()) => {
       console.log('Aborting...');
       return;
     }
+  }
+
+  // Add test script installation only if needed
+  if (
+    !projectPackageJson.scripts ||
+    projectPackageJson.scripts.test !== 'jest'
+  ) {
+    questions.unshift(testScriptQuestion);
   }
 
   // Try to detect typescript and add a question if needed
