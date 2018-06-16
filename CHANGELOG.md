@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-cli]` Add `jest --init` option that generates a basic configuration file with a short description for each option ([#6442](https://github.com/facebook/jest/pull/6442))
+
 ### Fixes
 
 - `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
