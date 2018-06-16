@@ -9,6 +9,29 @@
 
 import {defaults, descriptions} from 'jest-config';
 
+const stringifyOption = (
+  option: string,
+  map: Object,
+  linePrefix: string = '',
+): string => {
+  const optionDescription = `  // ${descriptions[option]}`;
+  const stringifiedObject = `${option}: ${JSON.stringify(
+    map[option],
+    null,
+    2,
+  )}`;
+
+  return (
+    optionDescription +
+    '\n' +
+    stringifiedObject
+      .split('\n')
+      .map(line => '  ' + linePrefix + line)
+      .join('\n') +
+    ',\n'
+  );
+};
+
 const generateConfigFile = (results: {[string]: boolean}): string => {
   const {typescript, coverage, clearMocks, environment} = results;
 
@@ -48,29 +71,6 @@ const generateConfigFile = (results: {[string]: boolean}): string => {
   }
 
   const overrideKeys: Array<string> = Object.keys(overrides);
-
-  const stringifyOption = (
-    option: string,
-    map: Object,
-    linePrefix: string = '',
-  ): string => {
-    const optionDescription = `  // ${descriptions[option]}`;
-    const stringifiedObject = `${option}: ${JSON.stringify(
-      map[option],
-      null,
-      2,
-    )}`;
-
-    return (
-      optionDescription +
-      '\n' +
-      stringifiedObject
-        .split('\n')
-        .map(line => '  ' + linePrefix + line)
-        .join('\n') +
-      ',\n'
-    );
-  };
 
   const properties: Array<string> = [];
 
