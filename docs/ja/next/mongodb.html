@@ -42,10 +42,10 @@
   };
 
   <span class="hljs-comment">// Write global config to disk because all tests run in different contexts.</span>
-  fs.writeFileSync(mongoFileConfigPath, <span class="hljs-built_in">JSON</span>.stringify(mongoConfig));
+  fs.writeFileSync(globalConfigPath, <span class="hljs-built_in">JSON</span>.stringify(mongoConfig));
 
   <span class="hljs-comment">// Set reference to mongod in order to close the server during teardown.</span>
-  global.__MONGOD__ = mongod;
+  global.__MONGOD__ = mongoServer;
 };
 </code></pre>
 <p>そして、Mongo 用のカスタムテスト環境も作ります。</p>
