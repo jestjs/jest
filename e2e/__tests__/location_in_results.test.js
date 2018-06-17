@@ -77,11 +77,11 @@ describe(`run, with '--testLocationInResults' flag`, () => {
     assertions = result.testResults[0].assertionResults;
   });
 
-  it('result should success', () => {
+  it('result should success, with 6 total tests', () => {
+    result = runJest.json('location-in-results', ['--testLocationInResults'])
+      .json;
+    assertions = result.testResults[0].assertionResults;
     expect(result.success).toBe(true);
-  });
-
-  it('result should have 6 total tests', () => {
     expect(result.numTotalTests).toBe(6);
   });
 
