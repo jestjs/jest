@@ -39,3 +39,19 @@ test('jest throws an error when globalSetup does not export a function', () => {
     `TypeError: globalSetup file must export a function at ${setupPath}`,
   );
 });
+
+test('globalSetup function gets jest config object as a parameter', () => {
+  const setupPath = path.resolve(
+    __dirname,
+    '../global-setup/setup-with-config.js',
+  );
+
+  const testPathPattern = 'custom_tests_dir/pass';
+
+  const result = runJest('global-setup', [
+    `--globalSetup=${setupPath}`,
+    `--testPathPattern=${testPathPattern}`,
+  ]);
+
+  expect(result.stdout).toBe(testPathPattern);
+});
