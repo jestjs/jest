@@ -71,7 +71,7 @@ describe(`run, with '--testLocationInResults' flag`, () => {
   let result;
   let assertions;
 
-  beforeAll(() => {
+  beforeEach(() => {
     result = runJest.json('location-in-results', ['--testLocationInResults'])
       .json;
     assertions = result.testResults[0].assertionResults;
@@ -92,7 +92,7 @@ describe(`run, with '--testLocationInResults' flag`, () => {
           'location',
           expect.objectContaining({
             column: 1,
-            line: 10,
+            line: 12,
           }),
         );
       });
@@ -104,7 +104,7 @@ describe(`run, with '--testLocationInResults' flag`, () => {
           'location',
           expect.objectContaining({
             column: 1,
-            line: 14,
+            line: 16,
           }),
         );
       });
@@ -116,7 +116,7 @@ describe(`run, with '--testLocationInResults' flag`, () => {
           'location',
           expect.objectContaining({
             column: 1,
-            line: 18,
+            line: 20,
           }),
         );
       });
@@ -128,7 +128,7 @@ describe(`run, with '--testLocationInResults' flag`, () => {
           'location',
           expect.objectContaining({
             column: ConditionalTest.isJestCircusRun() ? 3 : 2,
-            line: 23,
+            line: 25,
           }),
         );
       });
@@ -140,7 +140,7 @@ describe(`run, with '--testLocationInResults' flag`, () => {
           'location',
           expect.objectContaining({
             column: ConditionalTest.isJestCircusRun() ? 3 : 2,
-            line: 27,
+            line: 29,
           }),
         );
       });
@@ -152,7 +152,7 @@ describe(`run, with '--testLocationInResults' flag`, () => {
           'location',
           expect.objectContaining({
             column: ConditionalTest.isJestCircusRun() ? 3 : 2,
-            line: 31,
+            line: 33,
           }),
         );
       });
