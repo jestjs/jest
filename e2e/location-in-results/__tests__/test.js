@@ -7,6 +7,8 @@
 // This file is missing 'use strict' to force babel into doing something
 // as we have `transform-strict-mode`
 
+/* eslint jest/no-focused-tests: 0 */
+
 it('it no ancestors', () => {
   expect(true).toBeTruthy();
 });
