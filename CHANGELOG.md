@@ -2,6 +2,7 @@
 
 ### Fixes
 
+- `[docs]` Fixed error in documentation for expect.not.arrayContaining(array). ([#6491](https://github.com/facebook/jest/pull/6491))
 - `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
 - `[expect]` Using symbolic property names in arrays no longer causes the `toEqual` matcher to fail ([#6391](https://github.com/facebook/jest/pull/6391))
 - `[expect]` `toEqual` no longer tries to compare non-enumerable symbolic properties, to be consistent with non-symbolic properties. ([#6398](https://github.com/facebook/jest/pull/6398))
