@@ -773,6 +773,8 @@ The following is a visualization of the default regex:
 └── component.js # not test
 ```
 
+_Note: `testRegex` will try to detect test files using the **absolute file path** therefore having a folder with name that match it will run all the files as tests_
+
 ### `testResultsProcessor` [string]
 
 Default: `undefined`
