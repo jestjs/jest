@@ -46,7 +46,7 @@ test('globalSetup function gets jest config object as a parameter', () => {
     '../global-setup/setup-with-config.js',
   );
 
-  const testPathPattern = 'custom_tests_dir/pass';
+  const testPathPattern = 'pass';
 
   const result = runJest('global-setup', [
     `--globalSetup=${setupPath}`,

@@ -56,7 +56,7 @@ test('globalTeardown function gets jest config object as a parameter', () => {
     '../global-teardown/teardown-with-config.js',
   );
 
-  const testPathPattern = 'custom_tests_dir/pass';
+  const testPathPattern = 'pass';
 
   const result = runJest('global-teardown', [
     `--globalTeardown=${teardownPath}`,
