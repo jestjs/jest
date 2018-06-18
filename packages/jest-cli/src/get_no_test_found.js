@@ -3,7 +3,7 @@ import pluralize from './pluralize';
 
 export default function getNoTestFound(testRunData, globalConfig): string {
   const testFiles = testRunData.reduce(
-    (current, testRun) => (current += testRun.matches.total || 0),
+    (current, testRun) => current + testRun.matches.total || 0,
     0,
   );
   let dataMessage;
