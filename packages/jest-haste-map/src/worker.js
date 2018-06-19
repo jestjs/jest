@@ -52,11 +52,15 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   // Process a package.json that is returned as a PACKAGE type with its name.
   if (filePath.endsWith(PACKAGE_JSON)) {
     content = fs.readFileSync(filePath, 'utf8');
-    const fileData = JSON.parse(content);
+    try {
+      const fileData = JSON.parse(content);
 
-    if (fileData.name) {
-      id = fileData.name;
-      module = [filePath, H.PACKAGE];
+      if (fileData.name) {
+        id = fileData.name;
+        module = [filePath, H.PACKAGE];
+      }
+    } catch (err) {
+      throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`)
     }
 
     // Process a randome file that is returned as a MODULE.
