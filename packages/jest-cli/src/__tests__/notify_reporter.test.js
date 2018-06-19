@@ -45,8 +45,21 @@ const aggregatedResultsFailure: AggregatedResult = {
   success: false,
 };
 
+const aggregatedResultsNoTests: AggregatedResult = {
+  numFailedTestSuites: 0,
+  numFailedTests: 0,
+  numPassedTestSuites: 0,
+  numPassedTests: 0,
+  numPendingTestSuites: 0,
+  numPendingTests: 0,
+  numRuntimeErrorTestSuites: 0,
+  numTotalTestSuites: 0,
+  numTotalTests: 0,
+};
+
 // Simulated sequence of events for NotifyReporter
 const notifyEvents = [
+  aggregatedResultsNoTests,
   aggregatedResultsSuccess,
   aggregatedResultsFailure,
   aggregatedResultsSuccess,
