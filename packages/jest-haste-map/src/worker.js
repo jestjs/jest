@@ -60,7 +60,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
         module = [filePath, H.PACKAGE];
       }
     } catch (err) {
-      throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`)
+      throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
     }
 
     // Process a randome file that is returned as a MODULE.
