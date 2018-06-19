@@ -28,10 +28,10 @@ import {
 
 const Promise = getOriginalPromise();
 
-const run = async (): Promise<RunResult> => {
+const run = async (numRetries: number): Promise<RunResult> => {
   const {rootDescribeBlock} = getState();
   dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(rootDescribeBlock);
+  await _runTestsForDescribeBlock(rootDescribeBlock, numRetries);
   dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -39,19 +39,30 @@ const run = async (): Promise<RunResult> => {
   );
 };
 
-const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
+const _runTestsForDescribeBlock = async (
+  describeBlock: DescribeBlock,
+  numRetries: number,
+) => {
   dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
   for (const hook of beforeAll) {
     await _callHook({describeBlock, hook});
   }
+
   for (const test of describeBlock.tests) {
+    let numRetriesAvailable = numRetries;
+
     await _runTest(test);
+
+    while (numRetriesAvailable > 0 && test.errors.length > 0) {
+      await _runTest(test);
+      numRetriesAvailable--;
+    }
   }
 
   for (const child of describeBlock.children) {
-    await _runTestsForDescribeBlock(child);
+    await _runTestsForDescribeBlock(child, numRetries);
   }
 
   for (const hook of afterAll) {

@@ -94,6 +94,7 @@ export default ({
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   testResultsProcessor: 'processor-node-module',
+  testRetries: 0,
   testRunner: 'jasmine2',
   testURL: 'about:blank',
   timers: 'real',

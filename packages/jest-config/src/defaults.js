@@ -70,6 +70,7 @@ export default ({
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '',
   testResultsProcessor: null,
+  testRetries: 0,
   testRunner: 'jasmine2',
   testURL: 'about:blank',
   timers: 'real',
