@@ -52,7 +52,10 @@ export const check = (argv: Argv) => {
   }
 
   const intRetries = parseInt(argv.testRetries, 10);
-  if (isNaN(intRetries) || intRetries < 0) {
+  if (
+    (argv.hasOwnProperty('testRetries') && isNaN(intRetries)) ||
+    intRetries < 0
+  ) {
     throw new Error(
       'The --testRetries option requires a positive integer to be specified.\n' +
         'Example usage: jest --testRetries=3',
