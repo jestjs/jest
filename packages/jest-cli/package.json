@@ -32,6 +32,7 @@
     "jest-worker": "^23.0.1",
     "micromatch": "^2.3.11",
     "node-notifier": "^5.2.1",
+    "prompts": "^0.1.9",
     "realpath-native": "^1.0.0",
     "rimraf": "^2.5.4",
     "slash": "^1.0.0",

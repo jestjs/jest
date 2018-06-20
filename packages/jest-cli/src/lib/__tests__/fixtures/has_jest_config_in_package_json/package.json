@@ -1,0 +1,6 @@
+{
+  "name": "has_jest_config_in_package_json",
+  "jest": {
+    "coverage": true
+  }
+}

@@ -60,20 +60,13 @@ export const parse = (file: string): BabylonParserResult => {
     expects.push(expect);
   };
 
-  const isFunctionCall = node => {
-    return (
-      node.type === 'ExpressionStatement' &&
-      node.expression &&
-      node.expression.type === 'CallExpression'
-    );
-  };
+  const isFunctionCall = node =>
+    node.type === 'ExpressionStatement' &&
+    node.expression &&
+    node.expression.type === 'CallExpression';
 
-  const isFunctionDeclaration = (nodeType: string) => {
-    return (
-      nodeType === 'ArrowFunctionExpression' ||
-      nodeType === 'FunctionExpression'
-    );
-  };
+  const isFunctionDeclaration = (nodeType: string) =>
+    nodeType === 'ArrowFunctionExpression' || nodeType === 'FunctionExpression';
 
   // Pull out the name of a CallExpression (describe/it)
   // handle cases where it's a member expression (.only)

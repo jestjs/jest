@@ -63,8 +63,8 @@ export const printChildren = (
   depth: number,
   refs: Refs,
   printer: Printer,
-): string => {
-  return children
+): string =>
+  children
     .map(
       child =>
         config.spacingOuter +
@@ -74,7 +74,6 @@ export const printChildren = (
           : printer(child, config, indentation, depth, refs)),
     )
     .join('');
-};
 
 export const printText = (text: string, config: Config): string => {
   const contentColor = config.colors.content;

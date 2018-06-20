@@ -13,8 +13,8 @@ import {KEYS} from 'jest-watcher';
 export default (
   pipe: stream$Writable | tty$WriteStream,
   stdin: stream$Readable | tty$ReadStream = process.stdin,
-): Promise<void> => {
-  return new Promise((resolve, reject) => {
+): Promise<void> =>
+  new Promise((resolve, reject) => {
     if (typeof stdin.setRawMode === 'function') {
       const messages = [
         chalk.red('There are deprecation warnings.\n'),
@@ -41,4 +41,3 @@ export default (
       resolve();
     }
   });
-};

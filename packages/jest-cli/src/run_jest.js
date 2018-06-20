@@ -200,9 +200,11 @@ export default (async function runJest({
   );
 
   if (collectCoverageFrom.length) {
-    globalConfig = Object.freeze(
-      Object.assign({}, globalConfig, {collectCoverageFrom}),
-    );
+    // $FlowFixMe Object.assign
+    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
+      collectCoverageFrom,
+    });
+    globalConfig = Object.freeze(newConfig);
   }
 
   allTests = sequencer.sort(allTests);
@@ -247,9 +249,11 @@ export default (async function runJest({
     globalConfig.silent !== true &&
     globalConfig.verbose !== false
   ) {
-    globalConfig = Object.freeze(
-      Object.assign({}, globalConfig, {verbose: true}),
-    );
+    // $FlowFixMe Object.assign
+    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
+      verbose: true,
+    });
+    globalConfig = Object.freeze(newConfig);
   }
 
   // When using more than one context, make all printed paths relative to the
@@ -278,7 +282,7 @@ export default (async function runJest({
       );
     }
 
-    await globalSetup();
+    await globalSetup(globalConfig);
   }
   const results = await new TestScheduler(
     globalConfig,
@@ -301,7 +305,7 @@ export default (async function runJest({
       );
     }
 
-    await globalTeardown();
+    await globalTeardown(globalConfig);
   }
   return processResults(results, {
     collectHandles,
