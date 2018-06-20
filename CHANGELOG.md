@@ -10,6 +10,10 @@
 
 - `[docs]` Add jest-each docs for 1 dimensional arrays ([#6444](https://github.com/facebook/jest/pull/6444/files))
 
+### Features
+
+- `[jest-runtime]` Avoid generating multiple instances of haste maps when the configuration is identical ([#6507](https://github.com/facebook/jest/pull/6507/files))
+
 ## 23.1.0
 
 ### Features
