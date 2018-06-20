@@ -113,7 +113,7 @@ FUNCTIONS.mock = args => {
             /^mock/i.test(name) ||
             // Allow istanbul's coverage variable to pass.
             /^(?:__)?cov/.test(name),
-            'The module factory of `jest.mock()` is not allowed to ' +
+          'The module factory of `jest.mock()` is not allowed to ' +
             'reference any out-of-scope variables.\n' +
             'Invalid variable access: ' +
             name +
