@@ -8,9 +8,7 @@
 'use strict';
 
 // fails because there is no `strip-flow-types` transform
-const thisFunctionIsNeverInstrumented = (a: string) => {
-  return null;
-};
+const thisFunctionIsNeverInstrumented = (a: string) => null;
 
 test('this is never called', () => {
   thisFunctionIsNeverInstrumented();

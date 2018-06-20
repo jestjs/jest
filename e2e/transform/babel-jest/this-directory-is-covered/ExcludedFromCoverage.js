@@ -8,9 +8,7 @@
 require('./Covered');
 require('../NotCovered');
 
-const thisFunctionIsNeverInstrumented = () => {
-  return null;
-};
+const thisFunctionIsNeverInstrumented = () => null;
 
 module.exports = {
   thisFunctionIsNeverInstrumented,

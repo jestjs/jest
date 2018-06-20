@@ -8,9 +8,7 @@
 
 /* globals spyOn */
 const subject = {
-  func: () => {
-    return 'foo';
-  },
+  func: () => 'foo',
 };
 
 test('spyOn', () => {

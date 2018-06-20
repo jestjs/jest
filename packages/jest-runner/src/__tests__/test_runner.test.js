@@ -13,16 +13,17 @@ const {TestWatcher} = require('jest-cli');
 
 let mockWorkerFarm;
 
-jest.mock('jest-worker', () => {
-  return jest.fn(worker => {
-    return (mockWorkerFarm = {
-      end: jest.fn(),
-      getStderr: jest.fn(),
-      getStdout: jest.fn(),
-      worker: jest.fn((data, callback) => require(worker)(data, callback)),
-    });
-  });
-});
+jest.mock('jest-worker', () =>
+  jest.fn(
+    worker =>
+      (mockWorkerFarm = {
+        end: jest.fn(),
+        getStderr: jest.fn(),
+        getStdout: jest.fn(),
+        worker: jest.fn((data, callback) => require(worker)(data, callback)),
+      }),
+  ),
+);
 
 jest.mock('../test_worker', () => {});
 
