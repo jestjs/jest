@@ -97,6 +97,10 @@ const testModes = (notifyMode: string, arl: Array<AggregatedResult>) => {
     );
     previousContext = newContext;
     reporter.onRunComplete(new Set(), ar);
+
+    if (ar.numTotalTests === 0) {
+      expect(notify.notify).not.toHaveBeenCalled();
+    }
   });
 
   expect(
