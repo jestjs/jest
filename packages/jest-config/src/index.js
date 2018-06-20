@@ -26,6 +26,7 @@ export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './defaults';
+export {default as descriptions} from './descriptions';
 
 export function readConfig(
   argv: Argv,
