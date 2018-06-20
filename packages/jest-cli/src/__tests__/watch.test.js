@@ -641,7 +641,6 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       testNamePattern: 'test',
-      testPathPattern: '',
       watch: true,
       watchAll: false,
     });
@@ -659,7 +658,6 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
-      testNamePattern: '',
       testPathPattern: 'file',
       watch: true,
       watchAll: false,

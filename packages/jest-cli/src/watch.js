@@ -19,7 +19,6 @@ import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import getChangedFilesPromise from './get_changed_files_promise';
 import exit from 'exit';
-import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
 import {isInteractive} from 'jest-util';
@@ -105,51 +104,22 @@ export default function watch(
     verbose?: boolean,
   } = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
-    // It is unfortunate that Flow isn't smart enough yet to let us
-    // implement a generic assign loop over a list of white-listed
-    // option names here :-(
     globalConfig = updateGlobalConfig(globalConfig, {
-      bail: bail !== undefined ? bail : globalConfig.bail,
-      collectCoverage:
-        collectCoverage !== undefined
-          ? collectCoverage
-          : globalConfig.collectCoverage,
-      collectCoverageFrom:
-        collectCoverageFrom !== undefined
-          ? collectCoverageFrom
-          : globalConfig.collectCoverageFrom,
-      collectCoverageOnlyFrom:
-        collectCoverageOnlyFrom !== undefined
-          ? collectCoverageOnlyFrom
-          : globalConfig.collectCoverageOnlyFrom,
-      coverageDirectory:
-        coverageDirectory !== undefined
-          ? coverageDirectory
-          : globalConfig.coverageDirectory,
-      coverageReporters:
-        coverageReporters !== undefined
-          ? coverageReporters
-          : globalConfig.coverageReporters,
+      bail,
+      collectCoverage,
+      collectCoverageFrom,
+      collectCoverageOnlyFrom,
+      coverageDirectory,
+      coverageReporters,
       mode,
-      notify: notify !== undefined ? notify : globalConfig.notify,
-      notifyMode:
-        notifyMode !== undefined ? notifyMode : globalConfig.notifyMode,
-      onlyFailures:
-        onlyFailures !== undefined ? onlyFailures : globalConfig.onlyFailures,
-      reporters: reporters !== undefined ? reporters : globalConfig.reporters,
-      testNamePattern:
-        testNamePattern !== undefined
-          ? testNamePattern
-          : globalConfig.testNamePattern,
-      testPathPattern:
-        testPathPattern !== undefined
-          ? replacePathSepForRegex(testPathPattern)
-          : globalConfig.testPathPattern,
-      updateSnapshot:
-        updateSnapshot !== undefined
-          ? updateSnapshot
-          : globalConfig.updateSnapshot,
-      verbose: verbose !== undefined ? verbose : globalConfig.verbose,
+      notify,
+      notifyMode,
+      onlyFailures,
+      reporters,
+      testNamePattern,
+      testPathPattern,
+      updateSnapshot,
+      verbose,
     });
 
     startRun(globalConfig);

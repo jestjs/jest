@@ -7,6 +7,8 @@
  * @flow
  */
 
+import {replacePathSepForRegex} from 'jest-regex-util';
+
 import type {
   GlobalConfig,
   ReporterConfig,
@@ -41,10 +43,6 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     options = {};
   }
 
-  if (options.updateSnapshot) {
-    newConfig.updateSnapshot = options.updateSnapshot;
-  }
-
   if (options.mode === 'watch') {
     newConfig.watch = true;
     newConfig.watchAll = false;
@@ -53,12 +51,13 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     newConfig.watchAll = true;
   }
 
-  if ('testPathPattern' in options) {
-    newConfig.testPathPattern = options.testPathPattern || '';
+  if (options.testNamePattern !== undefined) {
+    newConfig.testNamePattern = options.testNamePattern || '';
   }
 
-  if ('testNamePattern' in options) {
-    newConfig.testNamePattern = options.testNamePattern || '';
+  if (options.testPathPattern !== undefined) {
+    newConfig.testPathPattern =
+      replacePathSepForRegex(options.testPathPattern) || '';
   }
 
   newConfig.onlyChanged = false;
@@ -67,55 +66,59 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     !newConfig.testNamePattern &&
     !newConfig.testPathPattern;
 
+  if (options.bail !== undefined) {
+    newConfig.bail = options.bail || false;
+  }
+
+  if (options.collectCoverage !== undefined) {
+    newConfig.collectCoverage = options.collectCoverage || false;
+  }
+
+  if (options.collectCoverageFrom !== undefined) {
+    newConfig.collectCoverageFrom = options.collectCoverageFrom;
+  }
+
+  if (options.collectCoverageOnlyFrom !== undefined) {
+    newConfig.collectCoverageOnlyFrom = options.collectCoverageOnlyFrom;
+  }
+
+  if (options.coverageDirectory !== undefined) {
+    newConfig.coverageDirectory = options.coverageDirectory;
+  }
+
+  if (options.coverageReporters !== undefined) {
+    newConfig.coverageReporters = options.coverageReporters;
+  }
+
   if (options.noSCM) {
     newConfig.noSCM = true;
   }
 
-  if (options.passWithNoTests) {
-    newConfig.passWithNoTests = true;
-  }
-
-  if ('onlyFailures' in options) {
-    newConfig.onlyFailures = options.onlyFailures || false;
-  }
-
-  if ('bail' in options) {
-    newConfig.bail = options.bail || false;
-  }
-
-  if ('collectCoverage' in options) {
-    newConfig.collectCoverage = options.collectCoverage || false;
-  }
-
-  if (options.collectCoverageFrom) {
-    newConfig.collectCoverageFrom = options.collectCoverageFrom;
-  }
-
-  if (options.collectCoverageOnlyFrom) {
-    newConfig.collectCoverageOnlyFrom = options.collectCoverageOnlyFrom;
-  }
-
-  if (options.coverageDirectory) {
-    newConfig.coverageDirectory = options.coverageDirectory;
-  }
-
-  if (options.coverageReporters) {
-    newConfig.coverageReporters = options.coverageReporters;
-  }
-
-  if ('notify' in options) {
+  if (options.notify !== undefined) {
     newConfig.notify = options.notify || false;
   }
 
-  if (options.notifyMode) {
+  if (options.notifyMode !== undefined) {
     newConfig.notifyMode = options.notifyMode;
   }
 
-  if (options.reporters) {
+  if (options.onlyFailures !== undefined) {
+    newConfig.onlyFailures = options.onlyFailures || false;
+  }
+
+  if (options.passWithNoTests !== undefined) {
+    newConfig.passWithNoTests = true;
+  }
+
+  if (options.reporters !== undefined) {
     newConfig.reporters = options.reporters;
   }
 
-  if ('verbose' in options) {
+  if (options.updateSnapshot !== undefined) {
+    newConfig.updateSnapshot = options.updateSnapshot;
+  }
+
+  if (options.verbose !== undefined) {
     newConfig.verbose = options.verbose || false;
   }
 
