@@ -278,7 +278,7 @@ export default (async function runJest({
       );
     }
 
-    await globalSetup();
+    await globalSetup(globalConfig);
   }
   const results = await new TestScheduler(
     globalConfig,
@@ -301,7 +301,7 @@ export default (async function runJest({
       );
     }
 
-    await globalTeardown();
+    await globalTeardown(globalConfig);
   }
   return processResults(results, {
     collectHandles,
