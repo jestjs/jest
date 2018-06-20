@@ -71,7 +71,7 @@ const WHITELISTED_IDENTIFIERS = {
 };
 Object.keys(global).forEach(name => (WHITELISTED_IDENTIFIERS[name] = true));
 
-const JEST_GLOBAL = { name: 'jest' };
+const JEST_GLOBAL = {name: 'jest'};
 const IDVisitor = {
   ReferencedIdentifier(path) {
     this.ids.add(path);
@@ -92,7 +92,7 @@ FUNCTIONS.mock = args => {
 
     const ids = new Set();
     const parentScope = moduleFactory.parentPath.scope;
-    moduleFactory.traverse(IDVisitor, { ids });
+    moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const name = id.node.name;
       let found = false;
@@ -110,20 +110,20 @@ FUNCTIONS.mock = args => {
       if (!found) {
         invariant(
           (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name]) ||
-          /^mock/i.test(name) ||
-          // Allow istanbul's coverage variable to pass.
-          /^(?:__)?cov/.test(name),
-          'The module factory of `jest.mock()` is not allowed to ' +
-          'reference any out-of-scope variables.\n' +
-          'Invalid variable access: ' +
-          name +
-          '\n' +
-          'Whitelisted objects: ' +
-          Object.keys(WHITELISTED_IDENTIFIERS).join(', ') +
-          '.\n' +
-          'Note: This is a precaution to guard against uninitialized mock ' +
-          'variables. If it is ensured that the mock is required lazily, ' +
-          'variable names prefixed with `mock` (case insensitive) are permitted.',
+            /^mock/i.test(name) ||
+            // Allow istanbul's coverage variable to pass.
+            /^(?:__)?cov/.test(name),
+            'The module factory of `jest.mock()` is not allowed to ' +
+            'reference any out-of-scope variables.\n' +
+            'Invalid variable access: ' +
+            name +
+            '\n' +
+            'Whitelisted objects: ' +
+            Object.keys(WHITELISTED_IDENTIFIERS).join(', ') +
+            '.\n' +
+            'Note: This is a precaution to guard against uninitialized mock ' +
+            'variables. If it is ensured that the mock is required lazily, ' +
+            'variable names prefixed with `mock` (case insensitive) are permitted.',
         );
       }
     }
