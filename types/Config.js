@@ -189,6 +189,7 @@ export type GlobalConfig = {|
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean},
   coverageDirectory: string,
+  coveragePathIgnorePatterns?: Array<string>,
   coverageReporters: Array<string>,
   coverageThreshold: {global: {[key: string]: number}},
   detectLeaks: boolean,
