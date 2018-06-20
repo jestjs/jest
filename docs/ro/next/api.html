@@ -230,7 +230,10 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt; {
 <li>First row of variable name column headings separated with <code>|</code></li>
 <li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
 </ul></li>
-<li><code>name</code>: <code>String</code> the title of the test suite, use <code>$variable</code> to inject test data into the suite title from the tagged template expressions.</li>
+<li><code>name</code>: <code>String</code> the title of the test suite, use <code>$variable</code> to inject test data into the suite title from the tagged template expressions.
+<ul>
+<li>To inject nested object values use you can supply a keyPath i.e. <code>$variable.path.to.value</code></li>
+</ul></li>
 <li><code>fn</code>: <code>Function</code> the suite of tests to be ran, this is the function that will receive the test data object.</li>
 </ul>
 <p>Exemplu:</p>
@@ -420,7 +423,10 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <li>First row of variable name column headings separated with <code>|</code></li>
 <li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
 </ul></li>
-<li><code>name</code>: <code>String</code> the title of the test, use <code>$variable</code> to inject test data into the test title from the tagged template expressions.</li>
+<li><code>name</code>: <code>String</code> the title of the test, use <code>$variable</code> to inject test data into the test title from the tagged template expressions.
+<ul>
+<li>To inject nested object values use you can supply a keyPath i.e. <code>$variable.path.to.value</code></li>
+</ul></li>
 <li><code>fn</code>: <code>Function</code> the test to be ran, this is the function that will receive the test data object.</li>
 </ul>
 <p>Exemplu:</p>
