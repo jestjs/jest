@@ -1066,12 +1066,10 @@ describe('preset without setupFiles', () => {
   beforeAll(() => {
     jest.doMock(
       '/node_modules/react-foo/jest-preset',
-      () => {
-        return {
-          moduleNameMapper: {b: 'b'},
-          modulePathIgnorePatterns: ['b'],
-        };
-      },
+      () => ({
+        moduleNameMapper: {b: 'b'},
+        modulePathIgnorePatterns: ['b'],
+      }),
       {virtual: true},
     );
   });

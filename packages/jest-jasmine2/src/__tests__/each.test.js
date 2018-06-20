@@ -21,18 +21,16 @@ describe('installEach', () => {
     ['xdescribe'],
   ].forEach(keyPath => {
     describe(`.${keyPath.join('.')}`, () => {
-      const getEnvironmentMock = () => {
-        return {
-          global: {
-            describe: jest.fn(),
-            fdescribe: jest.fn(),
-            fit: jest.fn(),
-            it: jest.fn(),
-            xdescribe: jest.fn(),
-            xit: jest.fn(),
-          },
-        };
-      };
+      const getEnvironmentMock = () => ({
+        global: {
+          describe: jest.fn(),
+          fdescribe: jest.fn(),
+          fit: jest.fn(),
+          it: jest.fn(),
+          xdescribe: jest.fn(),
+          xit: jest.fn(),
+        },
+      });
 
       describe('Table Array', () => {
         test('calls global function with given title', () => {

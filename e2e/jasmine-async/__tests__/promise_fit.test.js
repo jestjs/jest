@@ -14,11 +14,7 @@ describe('promise fit', () => {
     expect(true).toBe(false);
   });
 
-  fit('will run', () => {
-    return Promise.resolve();
-  });
+  fit('will run', () => Promise.resolve());
 
-  fit('will run and fail', () => {
-    return Promise.reject();
-  });
+  fit('will run and fail', () => Promise.reject());
 });

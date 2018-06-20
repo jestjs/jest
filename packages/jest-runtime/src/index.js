@@ -72,9 +72,10 @@ const getModuleNameMapper = (config: ProjectConfig) => {
     Array.isArray(config.moduleNameMapper) &&
     config.moduleNameMapper.length
   ) {
-    return config.moduleNameMapper.map(([regex, moduleName]) => {
-      return {moduleName, regex: new RegExp(regex)};
-    });
+    return config.moduleNameMapper.map(([regex, moduleName]) => ({
+      moduleName,
+      regex: new RegExp(regex),
+    }));
   }
   return null;
 };

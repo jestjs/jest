@@ -109,6 +109,10 @@ To run tests in another project with the development build of Jest:
 
 ```sh
 cd /path/to/another/project
+
+# link development build to the other project
+yarn link jest-cli
+
 jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 

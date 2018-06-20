@@ -294,6 +294,10 @@ export const options = {
       'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
+  init: {
+    description: 'Generate a basic configuration file',
+    type: 'boolean',
+  },
   json: {
     default: undefined,
     description:

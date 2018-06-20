@@ -110,13 +110,11 @@ class HomeSplash extends React.Component {
 
 class Index extends React.Component {
   render() {
-    const showcase = siteConfig.users.map((user, i) => {
-      return (
-        <a href={user.infoLink} key={i}>
-          <img src={user.image} title={user.caption} />
-        </a>
-      );
-    });
+    const showcase = siteConfig.users.map((user, i) => (
+      <a href={user.infoLink} key={i}>
+        <img src={user.image} title={user.caption} />
+      </a>
+    ));
 
     return (
       <div>
