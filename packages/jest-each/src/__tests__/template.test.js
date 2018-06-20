@@ -138,7 +138,66 @@ describe('jest-each', () => {
         );
       });
 
-      test('calls global with cb function with object built from tabel headings and values', () => {
+      test('calls global with title containing $key in multiple positions', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+          ${0} | ${1} | ${1}
+          ${1} | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        testFunction(
+          'add($a, $b) expected string: a=$a, b=$b, expected=$expected',
+          noop,
+        );
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'add(0, 1) expected string: a=0, b=1, expected=1',
+          expectFunction,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'add(1, 1) expected string: a=1, b=1, expected=2',
+          expectFunction,
+        );
+      });
+
+      test('calls global with title containing $key.path', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          ${{foo: {bar: 'baz'}}}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        testFunction('interpolates object keyPath to value: $a.foo.bar', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'interpolates object keyPath to value: "baz"',
+          expectFunction,
+        );
+      });
+
+      test('calls global with title containing last seen object when $key.path is invalid', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          ${{foo: {bar: 'baz'}}}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        testFunction('interpolates object keyPath to value: $a.foo.qux', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'interpolates object keyPath to value: {"bar": "baz"}',
+          expectFunction,
+        );
+      });
+
+      test('calls global with cb function with object built from table headings and values', () => {
         const globalTestMocks = getGlobalTestMocks();
         const testCallBack = jest.fn();
         const eachObject = each.withGlobal(globalTestMocks)`

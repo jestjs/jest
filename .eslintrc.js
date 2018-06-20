@@ -20,6 +20,7 @@ module.exports = {
     {
       files: ['*.md'],
       rules: {
+        'arrow-body-style': 0,
         'consistent-return': 0,
         'flowtype/require-valid-file-annotation': 0,
         'import/no-extraneous-dependencies': 0,
@@ -111,6 +112,7 @@ module.exports = {
   parser: 'babel-eslint',
   plugins: ['markdown', 'import', 'prettier'],
   rules: {
+    'arrow-body-style': 2,
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
     'flowtype/require-valid-file-annotation': 2,

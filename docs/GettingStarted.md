@@ -69,6 +69,14 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 ## Additional Configuration
 
+### Generate a basic configuration file
+
+Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:
+
+```bash
+jest --init
+```
+
 ### Using Babel
 
 To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
