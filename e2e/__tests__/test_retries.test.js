@@ -12,6 +12,10 @@ const fs = require('fs');
 const path = require('path');
 const runJest = require('../runJest');
 
+const ConditionalTest = require('../../scripts/ConditionalTest');
+
+ConditionalTest.skipSuiteOnJasmine();
+
 describe('Test Retries', () => {
   const outputFileName = 'retries.result.json';
   const outputFilePath = path.join(
@@ -35,11 +39,11 @@ describe('Test Retries', () => {
 
     // Test retries only available via JEST_CIRCUS
     // also testResults.invocations only available via JEST_CIRCUS
-    runJest(
-      'test-retries',
-      ['--config', JSON.stringify(reporterConfig), 'retry.test.js'],
-      {useJestCircus: true},
-    );
+    runJest('test-retries', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      'retry.test.js',
+    ]);
 
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
 

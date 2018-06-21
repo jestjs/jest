@@ -57,18 +57,7 @@ function runJest(
       }
     : {};
 
-  const jestCircusOverrides = options.useJestCircus
-    ? {
-        JEST_CIRCUS: 1,
-      }
-    : {};
-
-  const env = Object.assign(
-    {},
-    process.env,
-    nodePathOverrides,
-    jestCircusOverrides,
-  );
+  const env = Object.assign({}, process.env, nodePathOverrides);
 
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
