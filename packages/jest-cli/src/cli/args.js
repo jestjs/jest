@@ -51,17 +51,6 @@ export const check = (argv: Argv) => {
     );
   }
 
-  const intRetries = parseInt(argv.testRetries, 10);
-  if (
-    (argv.hasOwnProperty('testRetries') && isNaN(intRetries)) ||
-    intRetries < 0
-  ) {
-    throw new Error(
-      'The --testRetries option requires a positive integer to be specified.\n' +
-        'Example usage: jest --testRetries=3',
-    );
-  }
-
   if (
     argv.config &&
     !isJSONString(argv.config) &&
@@ -591,11 +580,6 @@ export const options = {
       'This processor must be a node module that exports ' +
       'a function expecting as the first argument the result object.',
     type: 'string',
-  },
-  testRetries: {
-    default: 0,
-    description: 'Allows failed tests to be retried n-times automatically.',
-    type: 'number',
   },
   testRunner: {
     description:

@@ -83,24 +83,24 @@ Ran all test suites."
 
 exports[`Snapshot works with escaped characters 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   1 written, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   2 written, 2 total
 Time:        <<REPLACED>>
 Ran all test suites matching /snapshot.test.js/i."
 `;
 
 exports[`Snapshot works with escaped characters 2`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       2 passed, 2 total
-Snapshots:   1 written, 1 passed, 2 total
+Tests:       3 passed, 3 total
+Snapshots:   1 written, 2 passed, 3 total
 Time:        <<REPLACED>>
 Ran all test suites matching /snapshot.test.js/i."
 `;
 
 exports[`Snapshot works with escaped characters 3`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       2 passed, 2 total
-Snapshots:   2 passed, 2 total
+Tests:       3 passed, 3 total
+Snapshots:   3 passed, 3 total
 Time:        <<REPLACED>>
 Ran all test suites matching /snapshot.test.js/i."
 `;

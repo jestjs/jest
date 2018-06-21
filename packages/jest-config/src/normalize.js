@@ -552,7 +552,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testRetries':
       case 'testURL':
       case 'timers':
       case 'useStderr':
@@ -577,7 +576,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   newOptions.json = argv.json;
 
   newOptions.testFailureExitCode = parseInt(newOptions.testFailureExitCode, 10);
-  newOptions.testRetries = parseInt(newOptions.testRetries, 10);
 
   for (const key of [
     'lastCommit',

@@ -45,6 +45,7 @@ export type Jest = {|
     methodName: string,
     accessType?: 'get' | 'set',
   ): JestMockFn,
+  retryTimes(numRetries: number): Jest,
   unmock(moduleName: string): Jest,
   useFakeTimers(): Jest,
   useRealTimers(): Jest,

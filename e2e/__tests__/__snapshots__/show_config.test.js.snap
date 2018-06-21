@@ -57,7 +57,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"/node_modules/\\"
       ],
       \\"testRegex\\": \\"\\",
-      \\"testRetries\\": 0,
       \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
       \\"testURL\\": \\"about:blank\\",
       \\"timers\\": \\"real\\",
@@ -107,7 +106,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"testFailureExitCode\\": 1,
     \\"testPathPattern\\": \\"\\",
     \\"testResultsProcessor\\": null,
-    \\"testRetries\\": 0,
     \\"updateSnapshot\\": \\"all\\",
     \\"useStderr\\": false,
     \\"verbose\\": null,

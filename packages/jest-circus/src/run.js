@@ -28,10 +28,10 @@ import {
 
 const Promise = getOriginalPromise();
 
-const run = async (numRetries: number): Promise<RunResult> => {
+const run = async (): Promise<RunResult> => {
   const {rootDescribeBlock} = getState();
   dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(rootDescribeBlock, numRetries);
+  await _runTestsForDescribeBlock(rootDescribeBlock);
   dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -39,10 +39,7 @@ const run = async (numRetries: number): Promise<RunResult> => {
   );
 };
 
-const _runTestsForDescribeBlock = async (
-  describeBlock: DescribeBlock,
-  numRetries: number,
-) => {
+const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
@@ -50,10 +47,21 @@ const _runTestsForDescribeBlock = async (
     await _callHook({describeBlock, hook});
   }
 
-  for (const test of describeBlock.tests) {
-    let numRetriesAvailable = numRetries;
+  // Tests that fail and are retried we run after other tests
+  const retryTimes = parseInt(global.retryTimes, 10) || 0;
+  const deferredRetryTests = [];
 
+  for (const test of describeBlock.tests) {
     await _runTest(test);
+
+    if (retryTimes > 0 && test.errors.length > 0) {
+      deferredRetryTests.push(test);
+    }
+  }
+
+  // Re-run failed tests n-times if configured
+  for (const test of deferredRetryTests) {
+    let numRetriesAvailable = retryTimes;
 
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
       await _runTest(test);
@@ -62,7 +70,7 @@ const _runTestsForDescribeBlock = async (
   }
 
   for (const child of describeBlock.children) {
-    await _runTestsForDescribeBlock(child, numRetries);
+    await _runTestsForDescribeBlock(child);
   }
 
   for (const hook of afterAll) {

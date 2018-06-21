@@ -108,7 +108,7 @@ export const runAndTransformResultsToJestFormat = async ({
   globalConfig: GlobalConfig,
   testPath: string,
 }): Promise<TestResult> => {
-  const runResult = await run(globalConfig.testRetries);
+  const runResult = await run();
 
   let numFailingTests = 0;
   let numPassingTests = 0;
@@ -137,6 +137,7 @@ export const runAndTransformResultsToJestFormat = async ({
       duration: testResult.duration,
       failureMessages: testResult.errors,
       fullName: ancestorTitles.concat(title).join(' '),
+      invocations: testResult.invocations,
       location: testResult.location,
       numPassingAsserts: 0,
       status,

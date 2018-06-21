@@ -6,6 +6,8 @@
  */
 'use strict';
 
-// prettier-ignore
-test('escape strings', () => expect('one: \\\'').toMatchSnapshot());
-test('escape strings two', () => expect('two: \'"').toMatchSnapshot());
+jest.retryTimes(3);
+
+it('retryTimes set', () => {
+  expect(true).toBeFalsy();
+});
