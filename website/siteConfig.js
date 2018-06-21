@@ -119,9 +119,6 @@ const siteConfig = {
     secondaryColor: '#7f2c39',
     prismColor: 'rgba(153, 66, 79, 0.03)',
   },
-  highlight: {
-    theme: 'ocean',
-  },
   scripts: ['https://buttons.github.io/buttons.js'],
   repoUrl,
   siteConfigUrl:
