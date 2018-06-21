@@ -107,6 +107,7 @@ const siteConfig = {
   footerIcon: 'img/jest-outline.svg',
   favicon: 'img/favicon/favicon.ico',
   ogImage: 'img/opengraph.png',
+  onPageNav: 'separate',
   recruitingLink: 'https://crowdin.com/project/jest',
   algolia: {
     apiKey: process.env.ALGOLIA_JEST_API_KEY,
@@ -117,6 +118,9 @@ const siteConfig = {
     primaryColor: '#99424f',
     secondaryColor: '#7f2c39',
     prismColor: 'rgba(153, 66, 79, 0.03)',
+  },
+  highlight: {
+    theme: 'ocean',
   },
   scripts: ['https://buttons.github.io/buttons.js'],
   repoUrl,

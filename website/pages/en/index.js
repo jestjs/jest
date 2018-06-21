@@ -41,7 +41,7 @@ class HomeSplash extends React.Component {
           <div className="wrapper homeWrapper">
             <div className="projectLogo">
               <img
-                src={siteConfig.baseUrl + 'img/jest-outline.svg'}
+                src={siteConfig.baseUrl + 'img/jest.svg'}
                 alt="Jest"
               />
             </div>
