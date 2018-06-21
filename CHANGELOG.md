@@ -7,6 +7,7 @@
 
 ### Fixes
 
+- [`jest-jasmine2`] Remove throwing an error when return value is not a promise or undefined ([#6517](https://github.com/facebook/jest/pull/6517))
 - `[jest-cli]` Add check to make sure one or more tests have run before notifying when using `--notify` ([#6495](https://github.com/facebook/jest/pull/6495))
 - `[jest-cli]` Pass `globalConfig` as a parameter to `globalSetup` and `globalTeardown` functions ([#6486](https://github.com/facebook/jest/pull/6486))
 - `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
