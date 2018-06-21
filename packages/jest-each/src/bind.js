@@ -129,12 +129,19 @@ const buildTable = (
       ),
     );
 
+const getMatchingKeyPaths = title => (matches, key) =>
+  matches.concat(title.match(new RegExp(`\\$${key}[\\.\\w]*`, 'g')) || []);
+
+const replaceKeyPathWithValue = data => (title, match) => {
+  const keyPath = match.replace('$', '').split('.');
+  const value = getPath(data, keyPath);
+  return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
+};
+
 const interpolate = (title: string, data: any) =>
-  Object.keys(data).reduce(
-    (acc, key) =>
-      acc.replace('$' + key, pretty(data[key], {maxDepth: 1, min: true})),
-    title,
-  );
+  Object.keys(data)
+    .reduce(getMatchingKeyPaths(title), []) // aka flatMap
+    .reduce(replaceKeyPathWithValue(data), title);
 
 const applyObjectParams = (obj: any, test: Function) => {
   if (test.length > 1) return done => test(obj, done);
@@ -144,3 +151,8 @@ const applyObjectParams = (obj: any, test: Function) => {
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
+
+const getPath = (o: Object, [head, ...tail]: Array<string>) => {
+  if (!head || !o.hasOwnProperty || !o.hasOwnProperty(head)) return o;
+  return getPath(o[head], tail);
+};

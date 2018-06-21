@@ -7,8 +7,6 @@
 
 'use strict';
 
-const a = (b, c) => {
-  return b + c;
-};
+const a = (b, c) => b + c;
 
 module.exports = {a};

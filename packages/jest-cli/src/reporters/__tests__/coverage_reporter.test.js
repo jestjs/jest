@@ -103,13 +103,11 @@ describe('onRunComplete', () => {
       };
     });
 
-    libSourceMaps.createSourceMapStore = jest.fn(() => {
-      return {
-        transformCoverage(map) {
-          return {map};
-        },
-      };
-    });
+    libSourceMaps.createSourceMapStore = jest.fn(() => ({
+      transformCoverage(map) {
+        return {map};
+      },
+    }));
   });
 
   test('getLastError() returns an error when threshold is not met for global', () => {

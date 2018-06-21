@@ -131,8 +131,8 @@ export const getSnapshotData = (
 const addExtraLineBreaks = string =>
   string.includes('\n') ? `\n${string}\n` : string;
 
-export const serialize = (data: any): string => {
-  return addExtraLineBreaks(
+export const serialize = (data: any): string =>
+  addExtraLineBreaks(
     normalizeNewlines(
       prettyFormat(data, {
         escapeRegex: true,
@@ -141,14 +141,12 @@ export const serialize = (data: any): string => {
       }),
     ),
   );
-};
 
 // unescape double quotes
 export const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
 
-const printBacktickString = (str: string) => {
-  return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
-};
+const printBacktickString = (str: string) =>
+  '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
 
 export const ensureDirectoryExists = (filePath: Path) => {
   try {

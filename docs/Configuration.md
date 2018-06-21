@@ -303,13 +303,13 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
 ### `globalTeardown` [string]
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
 ### `moduleDirectories` [array<string>]
 
@@ -772,6 +772,8 @@ The following is a visualization of the default regex:
 ├── bar.spec.jsx # test
 └── component.js # not test
 ```
+
+_Note: `testRegex` will try to detect test files using the **absolute file path** therefore having a folder with name that match it will run all the files as tests_
 
 ### `testResultsProcessor` [string]
 

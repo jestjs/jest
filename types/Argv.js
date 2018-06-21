@@ -42,6 +42,7 @@ export type Argv = {|
   h: boolean,
   haste: string,
   help: boolean,
+  init: boolean,
   json: boolean,
   lastCommit: boolean,
   logHeapUsage: boolean,

@@ -36,6 +36,4 @@ test('done(non-error)', done => {
   done(deepObject);
 });
 
-test('returned promise rejection', () => {
-  return Promise.reject(deepObject);
-});
+test('returned promise rejection', () => Promise.reject(deepObject));

@@ -12,7 +12,5 @@ describe('promise xit', () => {
     expect(true).toBe(false);
   });
 
-  it('will run', () => {
-    return Promise.resolve();
-  });
+  it('will run', () => Promise.resolve());
 });
