@@ -35,13 +35,11 @@ describe('Test Retries', () => {
 
     // Test retries only available via JEST_CIRCUS
     // also testResults.invocations only available via JEST_CIRCUS
-    process.env.JEST_CIRCUS = '1';
-
-    runJest('test-retries', [
-      '--config',
-      JSON.stringify(reporterConfig),
-      'retry.test.js',
-    ]);
+    runJest(
+      'test-retries',
+      ['--config', JSON.stringify(reporterConfig), 'retry.test.js'],
+      {useJestCircus: true},
+    );
 
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
 

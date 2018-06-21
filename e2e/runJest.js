@@ -21,6 +21,7 @@ const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 type RunJestOptions = {
   nodePath?: string,
   skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
+  useJestCircus?: boolean,
 };
 
 // return the result of the spawned process:
@@ -49,12 +50,26 @@ function runJest(
     );
   }
 
-  const env = options.nodePath
-    ? Object.assign({}, process.env, {
+  const nodePathOverrides = options.nodePath
+    ? {
         FORCE_COLOR: 0,
         NODE_PATH: options.nodePath,
-      })
-    : process.env;
+      }
+    : {};
+
+  const jestCircusOverrides = options.useJestCircus
+    ? {
+        JEST_CIRCUS: 1,
+      }
+    : {};
+
+  const env = Object.assign(
+    {},
+    process.env,
+    nodePathOverrides,
+    jestCircusOverrides,
+  );
+
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
     env,
