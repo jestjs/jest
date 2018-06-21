@@ -40,10 +40,7 @@ class HomeSplash extends React.Component {
         <div className="homeSplashFade">
           <div className="wrapper homeWrapper">
             <div className="projectLogo">
-              <img
-                src={siteConfig.baseUrl + 'img/jest.svg'}
-                alt="Jest"
-              />
+              <img src={siteConfig.baseUrl + 'img/jest.svg'} alt="Jest" />
             </div>
             <div className="inner">
               <h2 className="projectTitle">
@@ -87,7 +84,7 @@ class HomeSplash extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="githubButton" style={{minHeight: '20px'}}>
+              <div className="githubButton" style={{ minHeight: '20px' }}>
                 <a
                   className="github-button"
                   href={this.props.config.repoUrl}
@@ -165,7 +162,7 @@ class Index extends React.Component {
           <Container padding={['bottom', 'top']}>
             <div
               className="productShowcaseSection paddingBottom"
-              style={{textAlign: 'center'}}
+              style={{ textAlign: 'center' }}
             >
               <h2>
                 <translate>Zero configuration testing platform</translate>
@@ -173,11 +170,11 @@ class Index extends React.Component {
               <MarkdownBlock>
                 <translate>
                   Jest is used by Facebook to test all JavaScript code including
-                  React applications. One of Jest's philosophies is to provide an
-                  integrated \"zero-configuration\" experience. We observed that
-                  when engineers are provided with ready-to-use tools, they end up
-                  writing more tests, which in turn results in more stable and
-                  healthy code bases.
+                  React applications. One of Jest's philosophies is to provide
+                  an integrated \"zero-configuration\" experience. We observed
+                  that when engineers are provided with ready-to-use tools, they
+                  end up writing more tests, which in turn results in more
+                  stable and healthy code bases.
                 </translate>
               </MarkdownBlock>
             </div>
@@ -348,7 +345,7 @@ class Index extends React.Component {
 
             <div
               className="productShowcaseSection paddingTop"
-              style={{textAlign: 'center'}}
+              style={{ textAlign: 'center' }}
             >
               <a
                 className="button"
