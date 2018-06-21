@@ -92,14 +92,8 @@ function promisifyIt(originalFn, env) {
           }
           done.fail(isError ? error : extraError);
         });
-      } else if (returnValue === undefined) {
-        done();
       } else {
-        done.fail(
-          new Error(
-            'Jest: `it` and `test` must return either a Promise or undefined.',
-          ),
-        );
+        done();
       }
     };
 

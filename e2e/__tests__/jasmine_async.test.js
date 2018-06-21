@@ -93,16 +93,6 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(1);
   });
 
-  it('throws when not a promise is returned', () => {
-    const result = runJest.json('jasmine-async', ['returning_values.test.js']);
-    const json = result.json;
-
-    expect(json.numTotalTests).toBe(11);
-    expect(json.numPassedTests).toBe(0);
-    expect(json.numFailedTests).toBe(11);
-    expect(json.numPendingTests).toBe(0);
-  });
-
   it('tests async promise code', () => {
     const result = runJest.json('jasmine-async', ['promise_it.test.js']);
     const json = result.json;
