@@ -84,7 +84,7 @@ class HomeSplash extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="githubButton" style={{ minHeight: '20px' }}>
+              <div className="githubButton" style={{minHeight: '20px'}}>
                 <a
                   className="github-button"
                   href={this.props.config.repoUrl}
@@ -162,7 +162,7 @@ class Index extends React.Component {
           <Container padding={['bottom', 'top']}>
             <div
               className="productShowcaseSection paddingBottom"
-              style={{ textAlign: 'center' }}
+              style={{textAlign: 'center'}}
             >
               <h2>
                 <translate>Zero configuration testing platform</translate>
@@ -345,7 +345,7 @@ class Index extends React.Component {
 
             <div
               className="productShowcaseSection paddingTop"
-              style={{ textAlign: 'center' }}
+              style={{textAlign: 'center'}}
             >
               <a
                 className="button"
