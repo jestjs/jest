@@ -120,7 +120,7 @@ class Index extends React.Component {
       <div>
         <HomeSplash language={this.props.language} config={siteConfig} />
         <div className="mainContainer">
-          <Container padding={['bottom', 'top']}>
+          <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               align="center"
               contents={[
@@ -162,26 +162,26 @@ class Index extends React.Component {
               layout="fourColumn"
             />
           </Container>
-
-          <div
-            className="productShowcaseSection paddingBottom"
-            style={{textAlign: 'center'}}
-          >
-            <h2>
-              <translate>Zero configuration testing platform</translate>
-            </h2>
-            <MarkdownBlock>
-              <translate>
-                Jest is used by Facebook to test all JavaScript code including
-                React applications. One of Jest's philosophies is to provide an
-                integrated \"zero-configuration\" experience. We observed that
-                when engineers are provided with ready-to-use tools, they end up
-                writing more tests, which in turn results in more stable and
-                healthy code bases.
-              </translate>
-            </MarkdownBlock>
-          </div>
-
+          <Container padding={['bottom', 'top']}>
+            <div
+              className="productShowcaseSection paddingBottom"
+              style={{textAlign: 'center'}}
+            >
+              <h2>
+                <translate>Zero configuration testing platform</translate>
+              </h2>
+              <MarkdownBlock>
+                <translate>
+                  Jest is used by Facebook to test all JavaScript code including
+                  React applications. One of Jest's philosophies is to provide an
+                  integrated \"zero-configuration\" experience. We observed that
+                  when engineers are provided with ready-to-use tools, they end up
+                  writing more tests, which in turn results in more stable and
+                  healthy code bases.
+                </translate>
+              </MarkdownBlock>
+            </div>
+          </Container>
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               contents={[
@@ -245,7 +245,6 @@ class Index extends React.Component {
               ]}
             />
           </Container>
-
           <Container background="dark" padding={['bottom', 'top']}>
             <a className="anchor" name="use" />
             <a className="hash-link" href="#use" />
