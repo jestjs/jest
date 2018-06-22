@@ -49,14 +49,12 @@ function runJest(
     );
   }
 
-  const nodePathOverrides = options.nodePath
-    ? {
+  const env = options.nodePath
+    ? Object.assign({}, process.env, {
         FORCE_COLOR: 0,
         NODE_PATH: options.nodePath,
-      }
-    : {};
-
-  const env = Object.assign({}, process.env, nodePathOverrides);
+      })
+    : process.env;
 
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
