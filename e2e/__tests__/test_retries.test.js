@@ -56,9 +56,41 @@ describe('Test Retries', () => {
     }
 
     expect(jsonResult.numPassedTests).toBe(0);
-    expect(jsonResult.numFailedTests).toBe(2);
+    expect(jsonResult.numFailedTests).toBe(1);
     expect(jsonResult.numPendingTests).toBe(0);
     expect(jsonResult.testResults[0].testResults[0].invocations).toBe(4);
-    expect(jsonResult.testResults[1].testResults[0].invocations).toBe(1);
+  });
+
+  it('does not retry by default', () => {
+    let jsonResult;
+
+    const reporterConfig = {
+      reporters: [
+        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
+      ],
+    };
+
+    // Test retries only available via JEST_CIRCUS
+    // also testResults.invocations only available via JEST_CIRCUS
+    runJest('test-retries', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      'control.test.js',
+    ]);
+
+    const testOutput = fs.readFileSync(outputFilePath, 'utf8');
+
+    try {
+      jsonResult = JSON.parse(testOutput);
+    } catch (err) {
+      throw new Error(
+        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
+      );
+    }
+
+    expect(jsonResult.numPassedTests).toBe(0);
+    expect(jsonResult.numFailedTests).toBe(1);
+    expect(jsonResult.numPendingTests).toBe(0);
+    expect(jsonResult.testResults[0].testResults[0].invocations).toBe(1);
   });
 });
