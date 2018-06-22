@@ -128,7 +128,7 @@ describe('Snapshot', () => {
     ]);
     let stderr = result.stderr;
 
-    expect(stderr).toMatch('2 snapshots written');
+    expect(stderr).toMatch('1 snapshot written');
     expect(result.status).toBe(0);
     expect(extractSummary(stderr).summary).toMatchSnapshot();
 
