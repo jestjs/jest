@@ -2116,9 +2116,9 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
+classnames@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
 
 cli-cursor@^2.1.0:
   version "2.1.0"
@@ -2129,6 +2129,14 @@ cli-cursor@^2.1.0:
 cli-width@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
+
+clipboard@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/clipboard/-/clipboard-2.0.1.tgz#a12481e1c13d8a50f5f036b0560fe5d16d74e46a"
+  dependencies:
+    good-listener "^1.2.2"
+    select "^1.1.2"
+    tiny-emitter "^2.0.0"
 
 clipboardy@^1.2.2:
   version "1.2.3"
@@ -3185,6 +3193,10 @@ delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
 
+delegate@^3.1.2:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
+
 delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
@@ -3295,9 +3307,9 @@ doctrine@^2.1.0:
   dependencies:
     esutils "^2.0.2"
 
-docusaurus@^1.0.6:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/docusaurus/-/docusaurus-1.1.5.tgz#66f7f55185b61946e0bc5eaa73a389f0f5ae2616"
+docusaurus@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/docusaurus/-/docusaurus-1.3.0.tgz#a2a8a8f581390d53bffefc4b5e699699576970c9"
   dependencies:
     babel-plugin-transform-class-properties "^6.24.1"
     babel-plugin-transform-object-rest-spread "^6.26.0"
@@ -3308,7 +3320,7 @@ docusaurus@^1.0.6:
     babel-traverse "^6.25.0"
     babylon "^6.17.4"
     chalk "^2.1.0"
-    classnames "^2.2.5"
+    classnames "^2.2.6"
     color "^2.0.1"
     commander "^2.11.0"
     crowdin-cli "^0.3.0"
@@ -3327,16 +3339,17 @@ docusaurus@^1.0.6:
     imagemin-svgo "^6.0.0"
     markdown-toc "^1.2.0"
     mkdirp "^0.5.1"
-    react "^16.3.2"
+    prismjs "^1.15.0"
+    react "^16.4.1"
     react-dev-utils "^5.0.1"
-    react-dom "^16.3.2"
+    react-dom "^16.4.1"
     remarkable "^1.7.1"
     request "^2.87.0"
     shelljs "^0.7.8"
     sitemap "^1.13.0"
     tcp-port-used "^0.1.2"
     tiny-lr "^1.1.1"
-    tree-node-cli "^1.2.1"
+    tree-node-cli "^1.2.2"
 
 dom-serialize@^2.2.0:
   version "2.2.1"
@@ -4827,6 +4840,12 @@ glogg@^1.0.0:
   resolved "https://registry.yarnpkg.com/glogg/-/glogg-1.0.1.tgz#dcf758e44789cc3f3d32c1f3562a3676e6a34810"
   dependencies:
     sparkles "^1.0.0"
+
+good-listener@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
+  dependencies:
+    delegate "^3.1.2"
 
 got@^5.0.0:
   version "5.7.1"
@@ -8419,6 +8438,12 @@ prettylint@^1.0.0:
     meow "^3.7.0"
     tslib "^1.8.0"
 
+prismjs@^1.15.0:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.15.0.tgz#8801d332e472091ba8def94976c8877ad60398d9"
+  optionalDependencies:
+    clipboard "^2.0.0"
+
 private@^0.1.6, private@^0.1.7, private@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"
@@ -8711,7 +8736,7 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-dom@*, react-dom@^16.3.2:
+react-dom@*:
   version "16.4.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.0.tgz#099f067dd5827ce36a29eaf9a6cdc7cbf6216b1e"
   dependencies:
@@ -8720,7 +8745,7 @@ react-dom@*, react-dom@^16.3.2:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-dom@16.4.1:
+react-dom@16.4.1, react-dom@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
   dependencies:
@@ -8839,7 +8864,7 @@ react-transform-hmr@^1.0.4:
     global "^4.3.0"
     react-proxy "^1.1.7"
 
-react@*, react@^16.3.2:
+react@*:
   version "16.4.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.4.0.tgz#402c2db83335336fba1962c08b98c6272617d585"
   dependencies:
@@ -8857,7 +8882,7 @@ react@16.0.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react@16.4.1:
+react@16.4.1, react@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.4.1.tgz#de51ba5764b5dbcd1f9079037b862bd26b82fe32"
   dependencies:
@@ -9567,6 +9592,10 @@ seek-bzip@^1.0.3:
   resolved "https://registry.yarnpkg.com/seek-bzip/-/seek-bzip-1.0.5.tgz#cfe917cb3d274bcffac792758af53173eb1fabdc"
   dependencies:
     commander "~2.8.1"
+
+select@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
 
 semver-regex@^1.0.0:
   version "1.0.0"
@@ -10511,6 +10540,10 @@ timespan@2.3.x:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/timespan/-/timespan-2.3.0.tgz#4902ce040bd13d845c8f59b27e9d59bad6f39929"
 
+tiny-emitter@^2.0.0:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.0.2.tgz#82d27468aca5ade8e5fd1e6d22b57dd43ebdfb7c"
+
 tiny-lr@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/tiny-lr/-/tiny-lr-1.1.1.tgz#9fa547412f238fedb068ee295af8b682c98b2aab"
@@ -10603,7 +10636,7 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-tree-node-cli@^1.2.1:
+tree-node-cli@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-node-cli/-/tree-node-cli-1.2.2.tgz#d8aa63f7ed4eeea02d047e0b30b662194d9ec4fc"
   dependencies:
