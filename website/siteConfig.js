@@ -123,6 +123,7 @@ const siteConfig = {
   repoUrl,
   siteConfigUrl:
     'https://github.com/facebook/jest/edit/master/website/siteConfig.js',
+  cleanUrl: true,
 };
 
 module.exports = siteConfig;
