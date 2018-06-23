@@ -58,11 +58,11 @@ function deepMerge(target, source) {
     Object.keys(source).forEach(key => {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (!(key in target))
-          Object.assign(output, {[key]: source[key]});
+          Object.assign(mergedOutput, {[key]: source[key]});
         else
-          output[key] = deepMerge(target[key], source[key]);
+          mergedOutput[key] = deepMerge(target[key], source[key]);
       } else {
-        Object.assign(output, {[key]: source[key]});
+        Object.assign(mergedOutput, {[key]: source[key]});
       }
     });
   }
