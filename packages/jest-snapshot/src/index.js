@@ -48,6 +48,27 @@ const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
   };
 };
 
+function isObject(item) {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+function deepMerge(target, source) {
+  let mergedOutput = Object.assign({}, target);
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key]) && !source[key].$$typeof) {
+        if (!(key in target))
+          Object.assign(output, {[key]: source[key]});
+        else
+          output[key] = deepMerge(target[key], source[key]);
+      } else {
+        Object.assign(output, {[key]: source[key]});
+      }
+    });
+  }
+  return mergedOutput;
+}
+
 const toMatchSnapshot = function(
   received: any,
   propertyMatchers?: any,
@@ -98,7 +119,7 @@ const toMatchSnapshot = function(
         report,
       };
     } else {
-      Object.assign(received, propertyMatchers);
+      received = deepMerge(received, propertyMatchers);
     }
   }
 
