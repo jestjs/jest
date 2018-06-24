@@ -77,6 +77,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   return null;
 };
 
+function isObject(item) {
+  return item && typeof item === 'object' && !Array.isArray(item);
+}
+
 export const testNameToKey = (testName: string, count: number) =>
   testName + ' ' + count;
 
@@ -176,4 +180,19 @@ export const saveSnapshotFile = (
     snapshotPath,
     writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
+};
+
+export const deepMerge = (target: any, source: any) => {
+  const mergedOutput = Object.assign({}, target);
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key]) && !source[key].$$typeof) {
+        if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
+        else mergedOutput[key] = deepMerge(target[key], source[key]);
+      } else {
+        Object.assign(mergedOutput, {[key]: source[key]});
+      }
+    });
+  }
+  return mergedOutput;
 };

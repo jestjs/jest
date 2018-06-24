@@ -18,6 +18,7 @@ const {
   saveSnapshotFile,
   serialize,
   testNameToKey,
+  deepMerge,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
@@ -197,4 +198,13 @@ test('serialize handles \\r\\n', () => {
   const serializedData = serialize(data);
 
   expect(serializedData).toBe('\n"<div>\n</div>"\n');
+});
+
+describe('DeepMerge', () => {
+  it('Correctly merges objects with property matchers', () => {
+    const target = {data: {bar: 'bar', foo: 'foo'}};
+    const propertyMatchers = {data: {foo: expect.any(String)}};
+    const mergedOutput = deepMerge(target, propertyMatchers);
+    expect(Object.keys(mergedOutput.data)).toContain('bar', 'foo');
+  });
 });
