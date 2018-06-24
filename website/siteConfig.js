@@ -113,7 +113,7 @@ const siteConfig = {
     apiKey: process.env.ALGOLIA_JEST_API_KEY,
     indexName: 'jest',
     algoliaOptions: {
-      facetFilters: ['language:LANGUAGE'],
+      facetFilters: ['language:LANGUAGE', 'version:VERSION'],
     },
   },
   gaTrackingId: 'UA-44373548-17',
