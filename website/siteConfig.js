@@ -107,6 +107,7 @@ const siteConfig = {
   footerIcon: 'img/jest-outline.svg',
   favicon: 'img/favicon/favicon.ico',
   ogImage: 'img/opengraph.png',
+  onPageNav: 'separate',
   recruitingLink: 'https://crowdin.com/project/jest',
   algolia: {
     apiKey: process.env.ALGOLIA_JEST_API_KEY,
@@ -122,6 +123,7 @@ const siteConfig = {
   repoUrl,
   siteConfigUrl:
     'https://github.com/facebook/jest/edit/master/website/siteConfig.js',
+  cleanUrl: true,
 };
 
 module.exports = siteConfig;

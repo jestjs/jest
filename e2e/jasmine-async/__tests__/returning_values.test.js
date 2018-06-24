@@ -21,8 +21,6 @@ describe('returning values', () => {
     {},
     () => {},
   ].forEach(val => {
-    it(`throws if '${val}:${typeof val}' is returned`, () => {
-      return val;
-    });
+    it(`throws if '${val}:${typeof val}' is returned`, () => val);
   });
 });

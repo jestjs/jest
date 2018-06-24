@@ -151,8 +151,8 @@ class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    const resolveNodeModule = name => {
-      return Resolver.findNodeModule(name, {
+    const resolveNodeModule = name =>
+      Resolver.findNodeModule(name, {
         basedir: dirname,
         browser: this._options.browser,
         extensions,
@@ -161,7 +161,6 @@ class Resolver {
         resolver: this._options.resolver,
         rootDir: this._options.rootDir,
       });
-    };
 
     if (!skipResolution) {
       module = resolveNodeModule(moduleName);

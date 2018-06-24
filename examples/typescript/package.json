@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "name": "example-typescript",
   "dependencies": {
-    "react": "*",
-    "react-dom": "*",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
     "typescript": "*"
   },
   "devDependencies": {
-    "@types/jest": "^19.2.4",
+    "@types/jest": "^23.1.1",
     "jest": "*",
     "ts-jest": "*"
   },

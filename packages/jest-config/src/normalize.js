@@ -169,9 +169,9 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
   }
 
   if (value) {
-    value = value.map(filePath => {
-      return filePath.replace(/^(!?)(<rootDir>\/)(.*)/, '$1$3');
-    });
+    value = value.map(filePath =>
+      filePath.replace(/^(!?)(<rootDir>\/)(.*)/, '$1$3'),
+    );
   }
 
   return value;
@@ -180,17 +180,16 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
 const normalizeUnmockedModulePathPatterns = (
   options: InitialOptions,
   key: string,
-) => {
+) =>
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
   // separators, etc).
   //
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
-  return options[key].map(pattern =>
+  options[key].map(pattern =>
     replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
   );
-};
 
 const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   if (options.scriptPreprocessor && options.transform) {

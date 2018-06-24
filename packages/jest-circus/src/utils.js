@@ -145,9 +145,8 @@ export const getEachHooksForTest = (
   return result;
 };
 
-export const describeBlockHasTests = (describe: DescribeBlock) => {
-  return describe.tests.length || describe.children.some(describeBlockHasTests);
-};
+export const describeBlockHasTests = (describe: DescribeBlock) =>
+  describe.tests.length || describe.children.some(describeBlockHasTests);
 
 const _makeTimeoutMessage = (timeout, isHook) =>
   `Exceeded timeout of ${timeout}ms for a ${
@@ -246,12 +245,10 @@ export const getTestDuration = (test: TestEntry): ?number => {
 export const makeRunResult = (
   describeBlock: DescribeBlock,
   unhandledErrors: Array<Error>,
-): RunResult => {
-  return {
-    testResults: makeTestResults(describeBlock),
-    unhandledErrors: unhandledErrors.map(_formatError),
-  };
-};
+): RunResult => ({
+  testResults: makeTestResults(describeBlock),
+  unhandledErrors: unhandledErrors.map(_formatError),
+});
 
 const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
   const {includeTestLocationInResult} = getState();

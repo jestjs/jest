@@ -53,13 +53,10 @@ class JestAssertionError extends Error {
   matcherResult: any;
 }
 
-const isPromise = obj => {
-  return (
-    !!obj &&
-    (typeof obj === 'object' || typeof obj === 'function') &&
-    typeof obj.then === 'function'
-  );
-};
+const isPromise = obj =>
+  !!obj &&
+  (typeof obj === 'object' || typeof obj === 'function') &&
+  typeof obj.then === 'function';
 
 const createToThrowErrorMatchingSnapshotMatcher = function(matcher) {
   return function(received: any, testName?: string) {
@@ -131,12 +128,9 @@ const expect = (actual: any, ...rest): ExpectationObject => {
   return expectation;
 };
 
-const getMessage = message => {
-  return (
-    (message && message()) ||
-    matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.')
-  );
-};
+const getMessage = message =>
+  (message && message()) ||
+  matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
 
 const makeResolveMatcher = (
   matcherName: string,
@@ -227,8 +221,8 @@ const makeThrowingMatcher = (
   isNot: boolean,
   actual: any,
   err?: JestAssertionError,
-): ThrowingMatcherFn => {
-  return function throwingMatcher(...args): any {
+): ThrowingMatcherFn =>
+  function throwingMatcher(...args): any {
     let throws = true;
     const utils = Object.assign({}, matcherUtils, {
       iterableEquality,
@@ -319,7 +313,6 @@ const makeThrowingMatcher = (
       return handlError(error);
     }
   };
-};
 
 expect.extend = (matchers: MatchersObject): void =>
   setMatchers(matchers, false, expect);

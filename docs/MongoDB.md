@@ -35,10 +35,10 @@ module.exports = async function() {
   };
 
   // Write global config to disk because all tests run in different contexts.
-  fs.writeFileSync(mongoFileConfigPath, JSON.stringify(mongoConfig));
+  fs.writeFileSync(globalConfigPath, JSON.stringify(mongoConfig));
 
   // Set reference to mongod in order to close the server during teardown.
-  global.__MONGOD__ = mongod;
+  global.__MONGOD__ = mongoServer;
 };
 ```
 

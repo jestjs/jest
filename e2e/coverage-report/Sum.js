@@ -8,13 +8,9 @@
 require('./SumDependency.js');
 require('./OtherFile');
 
-const uncoveredFunction = () => {
-  return 1 + 'abc';
-};
+const uncoveredFunction = () => 1 + 'abc';
 
-const sum = (a, b) => {
-  return a + b;
-};
+const sum = (a, b) => a + b;
 
 module.exports = {
   sum,

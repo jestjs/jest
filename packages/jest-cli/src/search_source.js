@@ -116,16 +116,16 @@ export default class SearchSource {
     }
 
     const testCasesKeys = Object.keys(testCases);
-    data.tests = allPaths.filter(test => {
-      return testCasesKeys.reduce((flag, key) => {
+    data.tests = allPaths.filter(test =>
+      testCasesKeys.reduce((flag, key) => {
         if (testCases[key](test.path)) {
           data.stats[key] = ++data.stats[key] || 1;
           return flag && true;
         }
         data.stats[key] = data.stats[key] || 0;
         return false;
-      }, true);
-    });
+      }, true),
+    );
 
     return data;
   }
