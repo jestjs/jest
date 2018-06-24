@@ -109,7 +109,7 @@
 <blockquote>
 <p>Node6ではプロキシはデフォルトで有効であることに注意してください。Node6以前のバージョンを使用している場合は、Jestを <code>node --harmony_proxies node_modules/.bin/jest</code>コマンドで起動するようにして下さい。</p>
 </blockquote>
-<p>If <code>moduleNameMapper</code> cannot fulfill your requirements, you can use Jest's <a href="/jest/docs/ja/configuration#transform-object-string-string"><code>transform</code></a> config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that <code>require('logo.jpg');</code> returns <code>'logo'</code>) can be written as:</p>
+<p><code>moduleNameMapper</code>では不十分な場合は、Jest の <a href="/jest/docs/ja/configuration#transform-object-string-string"><code>transform</code></a>設定オプションでアセットの変換方法を指定できます。 例えばファイルのベースネームに変換したい場合(<code>require('logo.jpg');</code> から <code>'logo'</code> に変換)は、次のように記述してください:</p>
 <pre><code class="hljs css languages- js"><span class="hljs-comment">// fileTransformer.js</span>
 <span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
 
@@ -156,7 +156,7 @@
 }
 </code></pre>
 <blockquote>
-<p>Note: <code>&lt;rootDir&gt;</code> is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your <code>package.json</code> is located unless you specify a custom <code>rootDir</code> option in your configuration.</p>
+<p>注意: <code>&lt;rootDir&gt;</code> は、Jest によってプロジェクトのルートディレクトリに置換される特別なトークンです。 ほとんどの場合、設定で特別に <code>rootDir</code> オプションを指定しない限り、この値は<code>package.json</code> ファイルが格納されているディレクトリになります。</p>
 </blockquote>
 <p>webpackの <code>resolve.root</code>オプションも<code>modulePaths</code>オプションによって<code>NODE_PATH</code>環境変数を設定することと同様のことができます。</p>
 <pre><code class="hljs css languages- json">// package.json
@@ -195,7 +195,7 @@
 <p>注意: より複雑なwebpackの構成については、次のようなプロジェクトも参考にして下さい: <a href="https://github.com/istarkov/babel-plugin-webpack-loaders">babel-plugin-webpack-loaders</a></p>
 </blockquote>
 <h2><a class="anchor" aria-hidden="true" id="webpack2と使用する場合"></a><a href="#webpack2と使用する場合" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>webpack2と使用する場合</h2>
-<p>webpack2はESモジュールのネイティブサポートを提供しています。 However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the <code>test</code> environment.</p>
+<p>webpack2はESモジュールのネイティブサポートを提供しています。 しかし、JestはNode上で動作するため、ESモジュールはCommonJSモジュールにトランスパイルされている必要があります。 Webpack 2を利用する場合は、 <code>test</code>環境でのみESモジュールをCommonJSモジュールに変換させたいと考えるでしょう。</p>
 <pre><code class="hljs css languages- json">// .babelrc
 {
   "presets": [["env", {"modules": false}]],
@@ -210,7 +210,7 @@
 <blockquote>
 <p>注意: Jestはテストを高速化するためキャッシュ機能を持っています。 .babelrcを変更後にJestがうまく動作しない場合は、Jestを<code>--no-cache</code>オプションを付けて実行してください。</p>
 </blockquote>
-<p>If you use dynamic imports (<code>import('some-file.js').then(module =&gt; ...)</code>), you need to enable the <code>dynamic-import-node</code> plugin.</p>
+<p><code>import('some-file.js').then (module = &gt;...)</code>のように動的インポートを使用する場合は、 <code>dynamic-import-node</code> プラグインを有効にする必要があります。</p>
 <pre><code class="hljs css languages- json">// .babelrc
 {
   "presets": [["env", {"modules": false}]],
