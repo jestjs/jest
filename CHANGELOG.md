@@ -18,6 +18,7 @@
 ### Chore & Maintenance
 
 - `[docs]` Add jest-each docs for 1 dimensional arrays ([#6444](https://github.com/facebook/jest/pull/6444/files))
+- `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
 
 ## 23.1.0
 
