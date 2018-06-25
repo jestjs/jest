@@ -1,5 +1,7 @@
 ## master
 
+## 23.2.0
+
 ### Features
 
 - `[jest-each]` Add support for keyPaths in test titles ([#6457](https://github.com/facebook/jest/pull/6457))
