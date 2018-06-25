@@ -256,7 +256,7 @@ export default class TestScheduler {
   }
 
   _shouldAddDefaultReporters(
-    reporters?: Array<string | ReporterConfig>
+    reporters?: Array<string | ReporterConfig>,
   ): boolean {
     return (
       !reporters ||
