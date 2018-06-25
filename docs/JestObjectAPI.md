@@ -328,8 +328,18 @@ test('will fail', () => {
 
 To run with jest circus:
 
+Install jest-circus
+
 ```
-JEST_CIRCUS=1 jest
+yarn add --dev jest-circus
+```
+
+Then set as the testRunner in your jest config:
+
+```js
+module.exports = {
+  testRunner: 'jest-circus/runner',
+};
 ```
 
 Returns the `jest` object for chaining.

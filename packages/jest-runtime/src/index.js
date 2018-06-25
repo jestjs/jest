@@ -831,7 +831,7 @@ class Runtime {
     };
 
     const retryTimes = (numTestRetries: number) => {
-      this._environment.global.retryTimes = numTestRetries;
+      this._environment.global[Symbol.for('RETRY_TIMES')] = numTestRetries;
       return jestObject;
     };
 

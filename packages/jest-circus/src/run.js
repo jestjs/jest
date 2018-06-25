@@ -48,7 +48,7 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   }
 
   // Tests that fail and are retried we run after other tests
-  const retryTimes = parseInt(global.retryTimes, 10) || 0;
+  const retryTimes = parseInt(global[Symbol.for('RETRY_TIMES')], 10) || 0;
   const deferredRetryTests = [];
 
   for (const test of describeBlock.tests) {
