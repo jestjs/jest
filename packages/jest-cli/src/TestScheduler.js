@@ -255,10 +255,14 @@ export default class TestScheduler {
     }
   }
 
-  _shouldAddDefaultReporters(reporters?: Array<string | ReporterConfig>): boolean {
+  _shouldAddDefaultReporters(
+    reporters?: Array<string | ReporterConfig>
+  ): boolean {
     return (
       !reporters ||
-      !!reporters.find(reporter => this._getReporterProps(reporter).path === 'default')
+      !!reporters.find(
+        reporter => this._getReporterProps(reporter).path === 'default',
+      )
     );
   }
 
@@ -306,7 +310,7 @@ export default class TestScheduler {
   _addCustomReporters(reporters: Array<string | ReporterConfig>) {
     reporters.forEach((reporter, index) => {
       const {options, path} = this._getReporterProps(reporter);
-      
+
       if (path === 'default') return;
 
       try {
