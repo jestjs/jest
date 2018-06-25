@@ -87,6 +87,7 @@ const siteConfig = {
   title: 'Jest',
   tagline: '🃏 Delightful JavaScript Testing',
   url: 'https://facebook.github.io',
+  cname: 'jestjs.io',
   baseUrl: '/',
   projectName: 'jest',
   repo: 'facebook/jest',
