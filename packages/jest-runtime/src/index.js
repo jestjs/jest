@@ -830,6 +830,11 @@ class Runtime {
       return jestObject;
     };
 
+    const retryTimes = (numTestRetries: number) => {
+      this._environment.global[Symbol.for('RETRY_TIMES')] = numTestRetries;
+      return jestObject;
+    };
+
     const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
@@ -855,6 +860,7 @@ class Runtime {
       resetModuleRegistry: resetModules,
       resetModules,
       restoreAllMocks,
+      retryTimes,
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),

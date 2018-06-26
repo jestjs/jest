@@ -137,6 +137,7 @@ export const runAndTransformResultsToJestFormat = async ({
       duration: testResult.duration,
       failureMessages: testResult.errors,
       fullName: ancestorTitles.concat(title).join(' '),
+      invocations: testResult.invocations,
       location: testResult.location,
       numPassingAsserts: 0,
       status,

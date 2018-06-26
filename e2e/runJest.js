@@ -55,6 +55,7 @@ function runJest(
         NODE_PATH: options.nodePath,
       })
     : process.env;
+
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
     env,
