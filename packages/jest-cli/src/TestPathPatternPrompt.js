@@ -10,7 +10,7 @@
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ScrollOptions} from 'types/Watch';
-import type SearchSource from './search_source';
+import type SearchSource from './SearchSource';
 
 import {
   PatternPrompt,

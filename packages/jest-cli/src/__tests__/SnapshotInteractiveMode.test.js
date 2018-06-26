@@ -7,7 +7,7 @@
 
 import chalk from 'chalk';
 import {KEYS} from 'jest-watcher';
-import SnapshotInteractiveMode from '../snapshot_interactive_mode';
+import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - eraseDown]',

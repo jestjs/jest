@@ -8,7 +8,7 @@
 
 'use strict';
 
-import TestScheduler from '../test_scheduler';
+import TestScheduler from '../TestScheduler';
 import SummaryReporter from '../reporters/summary_reporter';
 
 jest.mock('../reporters/default_reporter');

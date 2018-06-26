@@ -15,7 +15,7 @@ import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
-import testPathPatternToRegExp from './test_path_pattern_to_regexp';
+import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 

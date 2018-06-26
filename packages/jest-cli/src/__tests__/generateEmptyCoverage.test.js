@@ -8,7 +8,7 @@
  */
 'use strict';
 
-import generateEmptyCoverage from '../generate_empty_coverage';
+import generateEmptyCoverage from '../generateEmptyCoverage';
 
 const os = require('os');
 const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
