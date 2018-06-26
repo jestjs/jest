@@ -62,7 +62,7 @@ it('renders correctly', () => {
 
 In that case, Jest will print this output:
 
-![](/jest/img/content/failedSnapshotTest.png)
+![](/img/content/failedSnapshotTest.png)
 
 Since we just updated our component to point to a different address, it's reasonable to expect changes in the snapshot for this component. Our snapshot test case is failing because the snapshot for our updated component no longer matches the snapshot artifact for this test case.
 

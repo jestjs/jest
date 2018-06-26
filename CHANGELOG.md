@@ -1,5 +1,9 @@
 ## master
 
+### Chore & Maintenance
+
+- `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
+
 ## 23.2.0
 
 ### Features

@@ -11,7 +11,7 @@ A few months ago we announced [Jest 19](http://facebook.github.io/jest/blog/2017
 
 Until now, Jest could only operate in one project at a time. This is often cumbersome if you are working on many smaller projects that each have their own setup and configuration. With Jest 20, we rewrote the test runner completely to run many projects at the same time within a single instance of Jest, for example if you are working on a React frontend and a node.js backend. Here is a video of Jest running tests for [React](https://github.com/facebook/react), [Relay](https://github.com/facebook/relay), [Yarn](https://github.com/yarnpkg/yarn) and Jest all at the same time:
 
-![multi-runner](/jest/img/blog/20-multi-runner.gif)
+![multi-runner](/img/blog/20-multi-runner.gif)
 
 <!--truncate-->
 
@@ -62,7 +62,7 @@ test('compares apples and bananas', async () => {
 
 This example will print a test failure similar to this:
 
-![testing-apis](/jest/img/blog/20-testing-apis.png)
+![testing-apis](/img/blog/20-testing-apis.png)
 
 ## Breaking Changes
 
