@@ -81,7 +81,7 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 });
 </code></pre>
 <p>En ese caso, Jest imprimirá esta salida:</p>
-<p><img src="/jest/img/content/failedSnapshotTest.png" alt=""></p>
+<p><img src="/img/content/failedSnapshotTest.png" alt=""></p>
 <p>Ya que sólo actualizamos nuestro componente para que apunte a una dirección diferente, es razonable esperar cambios en la instantánea de este componente. Nuestro test de instantánea está fallando porque la instantánea de nuestro componente actualizado ya no concuerda con el artefacto de instantáneas para este caso de test.</p>
 <p>Para resolver esto, necesitamos actualizar nuestros artefactos de instantánea. Puede ejecutar Jest con un &quot;flag&quot; que le dirá que vuelva a generar las instantáneas:</p>
 <pre><code class="hljs">jest --updateSnapshot

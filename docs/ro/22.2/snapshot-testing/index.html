@@ -80,7 +80,7 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 });
 </code></pre>
 <p>În acest caz, Jest va afișa următoarele:</p>
-<p><img src="/jest/img/content/failedSnapshotTest.png" alt=""></p>
+<p><img src="/img/content/failedSnapshotTest.png" alt=""></p>
 <p>Din moment ce am actualizat componenta noastre pentru a indica spre o altă adresă, este firesc să aşteptăm modificări în imaginea acestei componente. Test nostru de imagine eșuează deoarece imagine actualizată pentru componenta noastră nu mai corespunde cu imaginea de referință.</p>
 <p>Pentru a rezolva acest lucru, vom avea nevoie pentru să actualizăm imaginea de referință. Puteţi rula Jest cu o opțiune care-i va indica să regenereze imaginile:</p>
 <pre><code class="hljs css languages- bash">jest --updateSnapshot

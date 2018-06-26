@@ -80,7 +80,7 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 });
 </code></pre>
 <p>Nesse caso, Jest irá imprimir esta saída:</p>
-<p><img src="/jest/img/content/failedSnapshotTest.png" alt=""></p>
+<p><img src="/img/content/failedSnapshotTest.png" alt=""></p>
 <p>Uma vez que acabamos de atualizar nosso componente para apontar para um endereço diferente, é razoável esperar mudanças no snapshot para este componente. Nosso caso de teste de snapshot está falhando porque o snapshot para nosso componente atualizado já não coincide com o artefato de snapshot para este caso de teste.</p>
 <p>Para resolver esse problema, precisamos atualizar nossos artefatos de snapshot. Você pode executar Jest com uma flag que irá dizer para re-gerar snapshots:</p>
 <pre><code class="hljs css languages- bash">jest --updateSnapshot

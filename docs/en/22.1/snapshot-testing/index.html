@@ -80,7 +80,7 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 });
 </code></pre>
 <p>In that case, Jest will print this output:</p>
-<p><img src="/jest/img/content/failedSnapshotTest.png" alt=""></p>
+<p><img src="/img/content/failedSnapshotTest.png" alt=""></p>
 <p>Since we just updated our component to point to a different address, it's reasonable to expect changes in the snapshot for this component. Our snapshot test case is failing because the snapshot for our updated component no longer matches the snapshot artifact for this test case.</p>
 <p>To resolve this, we will need to update our snapshot artifacts. You can run Jest with a flag that will tell it to re-generate snapshots:</p>
 <pre><code class="hljs">jest <span class="hljs-comment">--updateSnapshot</span>
