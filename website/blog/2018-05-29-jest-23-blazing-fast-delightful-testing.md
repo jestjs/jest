@@ -17,7 +17,7 @@ For a full list see the [changelog](https://github.com/facebook/jest/blob/master
 
 We've added a new default watch menu option we're calling Interactive Snapshot Mode. This new mode allows you to step through each failing snapshot in each failing suite to review your failed snapshots and choose to update or skip each individually.
 
-![Interactive snapshot mode in action](/jest/img/blog/23-interactive.gif)
+![Interactive snapshot mode in action](/img/blog/23-interactive.gif)
 
 See the Interactive Snapshot Mode docs [here](https://facebook.github.io/jest/docs/en/snapshot-testing.html#interactive-snapshot-mode).
 
@@ -25,7 +25,7 @@ See the Interactive Snapshot Mode docs [here](https://facebook.github.io/jest/do
 
 Often, objects you're snapshotting contain generated values like Dates and IDs. Jest now allows you to pass properties to the snapshot matcher which specify the structure of the data instead of the specific values. These property matchers are then verified before serializing the matcher type (instead of the value), giving you consistent snapshot results across test runs.
 
-![Snapshot Property Matchers](/jest/img/blog/23-snapshot-matchers.png)
+![Snapshot Property Matchers](/img/blog/23-snapshot-matchers.png)
 
 See the updated `toMatchSnapshot` [docs](https://facebook.github.io/jest/docs/en/expect.html#tomatchsnapshotpropertymatchers-snapshotname) or the Property Matcher [guide](https://facebook.github.io/jest/docs/en/snapshot-testing.html#property-matchers) for more information.
 
@@ -33,7 +33,7 @@ See the updated `toMatchSnapshot` [docs](https://facebook.github.io/jest/docs/en
 
 We now support asynchronous matchers with `expect.extends`! Async matchers return a Promise so that you can `await` for the matcher to resolve. As an example:
 
-![Custom asynchronous matchers in action](/jest/img/blog/23-async-matchers.png)
+![Custom asynchronous matchers in action](/img/blog/23-async-matchers.png)
 
 Docs available [here](https://facebook.github.io/jest/docs/en/expect.html#expectextendmatchers).
 
@@ -41,13 +41,13 @@ Docs available [here](https://facebook.github.io/jest/docs/en/expect.html#expect
 
 Asymmetric matchers are a great tool to use when you only care about asymmetric equality. For example, when the left side is expected to be an object with some subset of properties on the right, instead of an exact match. Jest provides a number of asymmetric matchers out of the box, and in this release we're introducing Custom Asymmetric Matchers.
 
-![Custom asymmetric matchers in action](/jest/img/blog/23-asymmetric-matchers.png)
+![Custom asymmetric matchers in action](/img/blog/23-asymmetric-matchers.png)
 
 ## Jest Each
 
 [@mattphillipsio](https://twitter.com/mattphillipsio) has donated the `jest-each` package to Jest Core (thanks Matt!). `jest-each` is a library inspired by [`mocha-each`](https://yarnpkg.com/en/package/mocha-each) and [Spock Data Tables](http://spockframework.org/spock/docs/1.1/data_driven_testing.html#data-tables) which allows you to define a table of test cases, and then run a test for each row with the specified column values. We support both array types and template literals for all flavors of `describe` and `test`. Docs are available [here](https://facebook.github.io/jest/docs/en/api.html#testeachtable-name-fn), and for those not on Jest 23 yet, we're still publishing [`jest-each`](https://yarnpkg.com/en/package/jest-each) separately!
 
-![jest-each in action](/jest/img/blog/23-jest-each.png)
+![jest-each in action](/img/blog/23-jest-each.png)
 
 Huge shout out to Prettier for [fixing](https://github.com/prettier/prettier/pull/4423) the table formatting so quickly ([see Prettier 1.13](https://prettier.io/blog/2018/05/23/1.13.0.html#format-new-describeeach-table-in-jest-23-4423-by-ikatyang))!
 
@@ -63,7 +63,7 @@ We only add matchers to core if we believe they will be useful to a large amount
 - nthReturnedWith
 - toStrictEqual
 
-![New matchers in action](/jest/img/blog/23-new-matchers.png)
+![New matchers in action](/img/blog/23-new-matchers.png)
 
 See the updated expect docs [here](https://facebook.github.io/jest/docs/en/expect.html).
 
@@ -73,11 +73,11 @@ A common issue we see on the issue tracker relates to “Jest” hanging after a
 
 To help debug these issues, we're now detecting when Jest does not exit:
 
-![Detecting hanging tests](/jest/img/blog/23-hanging-before.png)
+![Detecting hanging tests](/img/blog/23-hanging-before.png)
 
 And we offer a new flag `--detectOpenHandles` to help find the open handles:
 
-![Running detectOpenHandles](/jest/img/blog/23-hanging-after.png)
+![Running detectOpenHandles](/img/blog/23-hanging-after.png)
 
 See the updated CLI docs [here](https://facebook.github.io/jest/docs/en/cli.html#detectopenhandles).
 
@@ -87,7 +87,7 @@ We have completely rewritten the watch mode system to allow adding custom plugin
 
 With this change, we're also now able to bring back typeahead support as a Watch Mode Plugin via [jest-watch-typeahead](https://yarnpkg.com/en/package/jest-watch-typeahead)!
 
-![Typeahead plugin in action](/jest/img/blog/23-typeahead.gif)
+![Typeahead plugin in action](/img/blog/23-typeahead.gif)
 
 See [jest-watch-typeahead](https://github.com/jest-community/jest-watch-typeahead) for documentation and install instructions. Huge thank you to [@rogeliog](https://twitter.com/rogeliog) for the new watch mode plugin system and the jest-watch-typeahead plugin!
 

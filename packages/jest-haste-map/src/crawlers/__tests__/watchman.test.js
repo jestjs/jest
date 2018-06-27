@@ -108,8 +108,8 @@ describe('watchman watch', () => {
     watchman.Client.mock.instances[0].command.mockClear();
   });
 
-  test('returns a list of all files when there are no clocks', () => {
-    return watchmanCrawl({
+  test('returns a list of all files when there are no clocks', () =>
+    watchmanCrawl({
       data: {
         clocks: Object.create(null),
         files: Object.create(null),
@@ -150,8 +150,7 @@ describe('watchman watch', () => {
       expect(data.files).toEqual(mockFiles);
 
       expect(client.end).toBeCalled();
-    });
-  });
+    }));
 
   test('updates the file object when the clock is given', () => {
     mockResponse = {

@@ -96,6 +96,7 @@ const each = require('jest-each');
 ##### `each`:
 
 - parameters: `Array` of Arrays with the arguments that are passed into the `testFn` for each row
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 
 ##### `.test`:
 
@@ -116,6 +117,7 @@ const each = require('jest-each');
 ##### `each`:
 
 - parameters: `Array` of Arrays with the arguments that are passed into the `suiteFn` for each row
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 
 ##### `.describe`:
 
@@ -269,6 +271,7 @@ each`
 ##### `.test`:
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each[tagged template].describe(name, suiteFn)`
@@ -304,6 +307,7 @@ each`
 ##### `.describe`:
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 
 ### Usage

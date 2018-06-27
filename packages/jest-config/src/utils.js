@@ -28,13 +28,8 @@ export const DOCUMENTATION_NOTE = `  ${chalk.bold(
   https://facebook.github.io/jest/docs/configuration.html
 `;
 
-const createValidationError = (message: string) => {
-  return new ValidationError(
-    `${BULLET}Validation Error`,
-    message,
-    DOCUMENTATION_NOTE,
-  );
-};
+const createValidationError = (message: string) =>
+  new ValidationError(`${BULLET}Validation Error`, message, DOCUMENTATION_NOTE);
 
 export const resolve = (
   resolver: ?string,
@@ -60,9 +55,8 @@ export const resolve = (
   return module;
 };
 
-export const escapeGlobCharacters = (path: Path): Glob => {
-  return path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
-};
+export const escapeGlobCharacters = (path: Path): Glob =>
+  path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
 
 export const replaceRootDirInPath = (
   rootDir: string,

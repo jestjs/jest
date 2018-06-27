@@ -160,8 +160,8 @@ describe('Runtime', () => {
       });
     });
 
-    it('uses manual mocks when using a custom resolver', () => {
-      return createRuntime(__filename, {
+    it('uses manual mocks when using a custom resolver', () =>
+      createRuntime(__filename, {
         // using the default resolver as a custom resolver
         resolver: require.resolve('./defaultResolver.js'),
       }).then(runtime => {
@@ -171,8 +171,7 @@ describe('Runtime', () => {
         );
 
         expect(exports.isManualMockModule).toBe(true);
-      });
-    });
+      }));
 
     it('provides `require.main` in mock', () =>
       createRuntime(__filename).then(runtime => {

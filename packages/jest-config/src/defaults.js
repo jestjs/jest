@@ -9,30 +9,18 @@
 
 import type {DefaultOptions} from 'types/Config';
 
-import os from 'os';
-import path from 'path';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
+import getCacheDirectory from './get_cache_directory';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
-
-const cacheDirectory = (() => {
-  const {getuid} = process;
-  if (getuid == null) {
-    return path.join(os.tmpdir(), 'jest');
-  }
-  // On some platforms tmpdir() is `/tmp`, causing conflicts between different
-  // users and permission issues. Adding an additional subdivision by UID can
-  // help.
-  return path.join(os.tmpdir(), 'jest_' + getuid.call(process).toString(36));
-})();
 
 export default ({
   automock: false,
   bail: false,
   browser: false,
   cache: true,
-  cacheDirectory,
+  cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,
   clearMocks: false,
   collectCoverage: false,

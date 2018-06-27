@@ -13,74 +13,70 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-export const makeEmptyAggregatedTestResult = (): AggregatedResult => {
-  return {
-    numFailedTestSuites: 0,
-    numFailedTests: 0,
-    numPassedTestSuites: 0,
-    numPassedTests: 0,
-    numPendingTestSuites: 0,
-    numPendingTests: 0,
-    numRuntimeErrorTestSuites: 0,
-    numTotalTestSuites: 0,
-    numTotalTests: 0,
-    openHandles: [],
-    snapshot: {
-      added: 0,
-      didUpdate: false, // is set only after the full run
-      failure: false,
-      filesAdded: 0,
-      // combines individual test results + removed files after the full run
-      filesRemoved: 0,
-      filesUnmatched: 0,
-      filesUpdated: 0,
-      matched: 0,
-      total: 0,
-      unchecked: 0,
-      uncheckedKeysByFile: [],
-      unmatched: 0,
-      updated: 0,
-    },
-    startTime: 0,
-    success: true,
-    testResults: [],
-    wasInterrupted: false,
-  };
-};
+export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
+  numFailedTestSuites: 0,
+  numFailedTests: 0,
+  numPassedTestSuites: 0,
+  numPassedTests: 0,
+  numPendingTestSuites: 0,
+  numPendingTests: 0,
+  numRuntimeErrorTestSuites: 0,
+  numTotalTestSuites: 0,
+  numTotalTests: 0,
+  openHandles: [],
+  snapshot: {
+    added: 0,
+    didUpdate: false, // is set only after the full run
+    failure: false,
+    filesAdded: 0,
+    // combines individual test results + removed files after the full run
+    filesRemoved: 0,
+    filesUnmatched: 0,
+    filesUpdated: 0,
+    matched: 0,
+    total: 0,
+    unchecked: 0,
+    uncheckedKeysByFile: [],
+    unmatched: 0,
+    updated: 0,
+  },
+  startTime: 0,
+  success: true,
+  testResults: [],
+  wasInterrupted: false,
+});
 
 export const buildFailureTestResult = (
   testPath: string,
   err: SerializableError,
-): TestResult => {
-  return {
-    console: null,
-    displayName: '',
-    failureMessage: null,
-    leaks: false,
-    numFailingTests: 0,
-    numPassingTests: 0,
-    numPendingTests: 0,
-    openHandles: [],
-    perfStats: {
-      end: 0,
-      start: 0,
-    },
-    skipped: false,
-    snapshot: {
-      added: 0,
-      fileDeleted: false,
-      matched: 0,
-      unchecked: 0,
-      uncheckedKeys: [],
-      unmatched: 0,
-      updated: 0,
-    },
-    sourceMaps: {},
-    testExecError: err,
-    testFilePath: testPath,
-    testResults: [],
-  };
-};
+): TestResult => ({
+  console: null,
+  displayName: '',
+  failureMessage: null,
+  leaks: false,
+  numFailingTests: 0,
+  numPassingTests: 0,
+  numPendingTests: 0,
+  openHandles: [],
+  perfStats: {
+    end: 0,
+    start: 0,
+  },
+  skipped: false,
+  snapshot: {
+    added: 0,
+    fileDeleted: false,
+    matched: 0,
+    unchecked: 0,
+    uncheckedKeys: [],
+    unmatched: 0,
+    updated: 0,
+  },
+  sourceMaps: {},
+  testExecError: err,
+  testFilePath: testPath,
+  testResults: [],
+});
 
 // Add individual test result to an aggregated test result
 export const addResult = (

@@ -199,11 +199,9 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // pathstrings instead of actually trying to access the physical directory.
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
-    jest.doMock('realpath-native', () => {
-      return {
-        sync: dirInput => dirInput,
-      };
-    });
+    jest.doMock('realpath-native', () => ({
+      sync: dirInput => dirInput,
+    }));
   });
 
   afterAll(() => {

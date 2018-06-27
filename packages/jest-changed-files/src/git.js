@@ -16,8 +16,8 @@ import childProcess from 'child_process';
 const findChangedFilesUsingCommand = async (
   args: Array<string>,
   cwd: Path,
-): Promise<Array<Path>> => {
-  return new Promise((resolve, reject) => {
+): Promise<Array<Path>> =>
+  new Promise((resolve, reject) => {
     const child = childProcess.spawn('git', args, {cwd});
     let stdout = '';
     let stderr = '';
@@ -42,7 +42,6 @@ const findChangedFilesUsingCommand = async (
       }
     });
   });
-};
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (
@@ -79,8 +78,8 @@ const adapter: SCMAdapter = {
     }
   },
 
-  getRoot: async (cwd: string): Promise<?string> => {
-    return new Promise(resolve => {
+  getRoot: async (cwd: string): Promise<?string> =>
+    new Promise(resolve => {
       try {
         let stdout = '';
         const options = ['rev-parse', '--show-toplevel'];
@@ -91,8 +90,7 @@ const adapter: SCMAdapter = {
       } catch (e) {
         resolve(null);
       }
-    });
-  },
+    }),
 };
 
 export default adapter;

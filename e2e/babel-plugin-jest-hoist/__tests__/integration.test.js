@@ -61,6 +61,10 @@ jest.dontMock('../__test_modules__/Mocked');
 const myObject = {mock: () => {}};
 myObject.mock('apple', 27);
 
+// Variable names prefixed with `mock` (ignore case) should not throw as out-of-scope
+const MockMethods = () => {};
+jest.mock('../__test_modules__/f', () => MockMethods);
+
 describe('babel-plugin-jest-hoist', () => {
   it('does not throw during transform', () => {
     const object = {};

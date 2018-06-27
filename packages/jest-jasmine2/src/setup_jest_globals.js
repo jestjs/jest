@@ -44,14 +44,12 @@ const addSuppressedErrors = result => {
 const addAssertionErrors = result => {
   const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
-    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => {
-      return {
-        actual,
-        expected,
-        message: error.stack,
-        passed: false,
-      };
-    });
+    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
+      actual,
+      expected,
+      message: error.stack,
+      passed: false,
+    }));
     result.status = 'failed';
     result.failedExpectations = result.failedExpectations.concat(jasmineErrors);
   }
