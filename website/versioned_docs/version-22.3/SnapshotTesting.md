@@ -62,7 +62,7 @@ it('renders correctly', () => {
 
 In that case, Jest will print this output:
 
-![](/jest/img/content/failedSnapshotTest.png)
+![](/img/content/failedSnapshotTest.png)
 
 Since we just updated our component to point to a different address, it's reasonable to expect changes in the snapshot for this component. Our snapshot test case is failing because the snapshot for our updated component no longer matches the snapshot artifact for this test case.
 
@@ -82,13 +82,13 @@ You can try out this functionality by cloning the [snapshot example](https://git
 
 Failed snapshots can also be updated interactively in watch mode:
 
-![](/jest/img/content/interactiveSnapshot.png)
+![](/img/content/interactiveSnapshot.png)
 
 Once you enter Interactive Snapshot Mode, Jest will step you through the failed snapshots one test suite at a time and give you the opportunity to review the failed output.
 
 From here you can choose to update that snapshot or skip to the next:
 
-![](/jest/img/content/interactiveSnapshotUpdate.gif)
+![](/img/content/interactiveSnapshotUpdate.gif)
 
 ## Best Practices
 

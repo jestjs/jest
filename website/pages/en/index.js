@@ -128,7 +128,7 @@ class Index extends React.Component {
                       Works out of the box for any React project.
                     </translate>
                   ),
-                  image: '/jest/img/content/female-technologist.png',
+                  image: '/img/content/female-technologist.png',
                   imageAlign: 'top',
                   title: <translate>Developer Ready</translate>,
                 },
@@ -139,7 +139,7 @@ class Index extends React.Component {
                       to changed files and is optimized to give signal quickly.
                     </translate>
                   ),
-                  image: '/jest/img/content/runner.png',
+                  image: '/img/content/runner.png',
                   imageAlign: 'top',
                   title: <translate>Instant Feedback</translate>,
                 },
@@ -151,7 +151,7 @@ class Index extends React.Component {
                       changes over time.
                     </translate>
                   ),
-                  image: '/jest/img/content/camera-with-flash.png',
+                  image: '/img/content/camera-with-flash.png',
                   imageAlign: 'top',
                   title: <translate>Snapshot Testing</translate>,
                 },
@@ -192,7 +192,7 @@ class Index extends React.Component {
                       tests conflict with each other.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-fast.png',
+                  image: '/img/content/feature-fast.png',
                   imageAlign: 'right',
                   title: <translate>Fast and sandboxed</translate>,
                 },
@@ -212,7 +212,7 @@ class Index extends React.Component {
                       untested files.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-coverage.png',
+                  image: '/img/content/feature-coverage.png',
                   imageAlign: 'left',
                   title: <translate>Built-in code coverage reports</translate>,
                 },
@@ -235,7 +235,7 @@ class Index extends React.Component {
                       prefer, Jest will find and run your tests.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-config-react.png',
+                  image: '/img/content/feature-config-react.png',
                   imageAlign: 'right',
                   title: <translate>Zero configuration</translate>,
                 },
@@ -280,7 +280,7 @@ class Index extends React.Component {
                       `jest-react-native`.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-mocking.png',
+                  image: '/img/content/feature-mocking.png',
                   imageAlign: 'left',
                   title: <translate>Powerful mocking library</translate>,
                 },
@@ -300,7 +300,7 @@ class Index extends React.Component {
                       [ts-jest](https://github.com/kulshekhar/ts-jest).
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-typescript.png',
+                  image: '/img/content/feature-typescript.png',
                   imageAlign: 'right',
                   title: <translate>Works with TypeScript</translate>,
                 },
