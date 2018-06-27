@@ -26,7 +26,7 @@ Or via [`npm`](https://www.npmjs.com/):
 npm install --save-dev jest
 ```
 
-The minimum supported Node version is `v6.0.0` by default. If you need to support Node 4, refer to the [Compatibility issues](https://facebook.github.io/jest/docs/en/troubleshooting.html#compatibility-issues) section.
+The minimum supported Node version is `v6.0.0` by default. If you need to support Node 4, refer to the [Compatibility issues](https://jestjs.io/docs/en/troubleshooting#compatibility-issues) section.
 
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
@@ -66,7 +66,7 @@ PASS  ./sum.test.js
 
 **You just successfully wrote your first test using Jest!**
 
-This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://facebook.github.io/jest/docs/using-matchers.html).
+This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://jestjs.io/docs/using-matchers).
 
 ## Running from command line
 
@@ -78,7 +78,7 @@ Here's how to run Jest on files matching `my-test`, using `config.json` as a con
 jest my-test --notify --config=config.json
 ```
 
-If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://jestjs.io/docs/cli) page.
 
 ## Additional Configuration
 
@@ -92,7 +92,7 @@ If you'd like to learn more about running `jest` through the command line, take 
 > yarn add --dev 'babel-core@^7.0.0-0' @babel/core
 > ```
 
-Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
+Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
 
 ```json
 {
@@ -140,12 +140,12 @@ To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshek
 
 ## Documentation
 
-Learn more about using [Jest on the official site!](http://facebook.github.io/jest)
+Learn more about using [Jest on the official site!](https://jestjs.io)
 
-- [Getting Started](http://facebook.github.io/jest/docs/en/getting-started.html)
-- [Guides](http://facebook.github.io/jest/docs/en/snapshot-testing.html)
-- [API Reference](http://facebook.github.io/jest/docs/en/api.html)
-- [Configuring Jest](http://facebook.github.io/jest/docs/en/configuration.html)
+- [Getting Started](https://jestjs.io/docs/en/getting-started)
+- [Guides](https://jestjs.io/docs/en/snapshot-testing)
+- [API Reference](https://jestjs.io/docs/en/api)
+- [Configuring Jest](https://jestjs.io/docs/en/configuration)
 
 ## Badge
 
