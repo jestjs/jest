@@ -10,7 +10,7 @@ Object {
 exports[`ScriptTransformer transforms a file properly 1`] = `
 "({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {
   var path = \\"/fruits/banana.js\\",
-      hash = \\"04636d4ae73b4b3e24bf6fba39e08c946fd0afb5\\",
+      hash = \\"9f1180962452ae22d1c732f4dc9184bf433b8cee\\",
       Function = function () {}.constructor,
       global = new Function('return this')(),
       gcv = \\"__coverage__\\",
@@ -35,7 +35,7 @@ exports[`ScriptTransformer transforms a file properly 1`] = `
     },
     f: {},
     b: {},
-    _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\"
+    _coverageSchema: \\"d34fc3e6b8297bcde183f5492bcb8fcb36775295\\"
   },
       coverage = global[gcv] || (global[gcv] = {});
 
@@ -55,7 +55,7 @@ module.exports = \\"banana\\";
 exports[`ScriptTransformer transforms a file properly 2`] = `
 "({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_23yvu8etmu = function () {
   var path = \\"/fruits/kiwi.js\\",
-      hash = \\"58d742d8c615e16eb5dffec9322e6ed1babde8f3\\",
+      hash = \\"6c0a86e235e77d381387bcd74be2f47c91f1a6ed\\",
       Function = function () {}.constructor,
       global = new Function('return this')(),
       gcv = \\"__coverage__\\",
@@ -118,7 +118,7 @@ exports[`ScriptTransformer transforms a file properly 2`] = `
       \\"0\\": 0
     },
     b: {},
-    _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\"
+    _coverageSchema: \\"d34fc3e6b8297bcde183f5492bcb8fcb36775295\\"
   },
       coverage = global[gcv] || (global[gcv] = {});
 
