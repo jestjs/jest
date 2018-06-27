@@ -86,7 +86,7 @@ const repoUrl = 'https://github.com/facebook/jest';
 const siteConfig = {
   title: 'Jest',
   tagline: '🃏 Delightful JavaScript Testing',
-  url: 'https://facebook.github.io',
+  url: 'https://jestjs.io',
   cname: 'jestjs.io',
   baseUrl: '/',
   projectName: 'jest',
