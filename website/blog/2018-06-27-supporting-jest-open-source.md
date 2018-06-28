@@ -16,6 +16,7 @@ At the Jest Summit we announced the Jest Open Collective. This is our way to hel
 In this post we'll outline what the Jest Open Collective is, the structure, and the goals we have.
 
 # The Jest Open Collective
+
 ![Banner image for Jest Open Collective](/img/blog/collective.png)
 
 Open Collective is a platform to manage groups of people transparently. Jest joins projects like [Webpack](https://opencollective.com/webpack), [Babel](https://opencollective.com/babel), [Mocha](https://opencollective.com/mochajs), [Preact](https://opencollective.com/preact#budget), [Vue](https://opencollective.com/vuejs), and many more in supporting the open source community through the Open Collective platform.
@@ -24,9 +25,9 @@ Open Collective is a platform to manage groups of people transparently. Jest joi
 
 The Jest Open Collective is a group of open source contributors who operate in full transparency to:
 
-* Receive funds from backers and sponsors
-* Approve expenses submitted by the community
-* Give everyone visibility on the budget
+- Receive funds from backers and sponsors
+- Approve expenses submitted by the community
+- Give everyone visibility on the budget
 
 ## What is the structure of the collective
 
@@ -36,17 +37,17 @@ The Jest Open Collective is currently managed by three non-Facebook core contrib
 - [Simen Bukkhus](https://github.com/simenb)
 - [Rick Hanlon](https://twitter.com/rickhanlonii)
 
-Michal has been an active Jest contributor since September 2016, Simen joined the core team in June 2017, and Rick joined in January. They're responsible for setting the budget, approving expenses, and managing admins of the collective. We have elected to keep Christoph Nakazawa as an adviser.
+Michal has been an active Jest contributor since September 2016, Simen joined the core team in June 2017, and Rick joined in January. They're responsible for setting the budget, approving expenses, and managing admins of the collective. We have elected to keep [Christoph Nakazawa](https://twitter.com/cpojer) as an adviser.
 
-There are two levels of support for the collective: Backers and Sponsors.
+There are two levels of support for the collective: Backer and Sponsor.
 
 ### Backers
+
 Backers of the collective are individuals contributing at least $2/month. We'll include a list of backers on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
 ### Sponsors
-Sponsors of the collective are individuals and organizations contributing at least $100/month. We'll place sponsor logos with a link to their site on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
-Facebook's mission is to give people the power to build community and bring people together. This applies to strong open source communities as well, and [Facebook Open Source](https://opencollective.com/fbopensource) has joined as our first sponsor with a commitment of $1000/month. This contribution sets a firm foundation for the future of the collective, and we appreciate their support to the Jest open source community as well as a number of other [communities](https://opencollective.com/fbopensource).
+Sponsors of the collective are individuals and organizations contributing at least $100/month. We'll place sponsor logos with a link to their site on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
 ## What is the goal of the collective
 
@@ -54,14 +55,14 @@ The goal of the collective is to support the work of open source contributors to
 
 To achieve that goal, we will use the funds to:
 
-* Cover speaker travel expenses
-* Host events and meetups
-* Print and distribute swag
-* Develop and fund a bug bounty program (TBD)
+- Cover speaker travel expenses
+- Host events and meetups
+- Print and distribute swag
+- Develop and fund a bug bounty program (TBD)
 
-This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on twitter!
+This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on [twitter](https://twitter.com/fbjest)!
 
-#  Thank You
+# Thank You
 
 Finally, thank you to everyone who contributes to the Jest community and open source in general. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together.
 
