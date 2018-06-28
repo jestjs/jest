@@ -4,7 +4,7 @@
         <title>Jest Blog</title>
         <link>https://jestjs.io/blog</link>
         <description>The best place to stay up-to-date with the latest Jest news and events.</description>
-        <lastBuildDate>Tue, 29 May 2018 06:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 27 Jun 2018 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
@@ -12,6 +12,15 @@
             <url>https://jestjs.io/img/jest.svg</url>
             <link>https://jestjs.io/blog</link>
         </image>
+        <item>
+            <title><![CDATA[Supporting Jest Open Source]]></title>
+            <link>https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html</link>
+            <guid>https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html</guid>
+            <pubDate>Wed, 27 Jun 2018 06:00:00 GMT</pubDate>
+            <description><![CDATA[<p>Jest is maintained by a community of open source contributors and Facebook employees.</p>
+<p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focu</p>
+]]></description>
+        </item>
         <item>
             <title><![CDATA[Jest 23: 🔥 Blazing Fast Delightful Testing]]></title>
             <link>https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html</link>

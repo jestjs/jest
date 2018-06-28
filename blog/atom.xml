@@ -2,11 +2,25 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jestjs.io/blog</id>
     <title>Jest Blog</title>
-    <updated>2018-05-29T06:00:00Z</updated>
+    <updated>2018-06-27T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://jestjs.io/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Jest news and events.</subtitle>
     <logo>https://jestjs.io/img/jest.svg</logo>
+    <entry>
+        <title type="html"><![CDATA[Supporting Jest Open Source]]></title>
+        <id>https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html</id>
+        <link href="https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html">
+        </link>
+        <updated>2018-06-27T06:00:00Z</updated>
+        <summary type="html"><![CDATA[<p>Jest is maintained by a community of open source contributors and Facebook employees.</p>
+<p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focu</p>
+]]></summary>
+        <author>
+            <name>Rick Hanlon II</name>
+            <uri>https://twitter.com/rickhanlonii</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Jest 23: 🔥 Blazing Fast Delightful Testing]]></title>
         <id>https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html</id>

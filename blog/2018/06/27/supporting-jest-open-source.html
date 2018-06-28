@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Supporting Jest Open Source · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest is maintained by a community of open source contributors and Facebook employees."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Supporting Jest Open Source · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/blog/2018/06/27/supporting-jest-open-source"/><meta property="og:description" content="Jest is maintained by a community of open source contributors and Facebook employees."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>23.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class=""><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class="siteNavGroupActive"><a href="/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/ja">日本語</a></li><li><a href="/es-ES">Español</a></li><li><a href="/pt-BR">Português (Brasil)</a></li><li><a href="/ro">Română</a></li><li><a href="/ru">Русский</a></li><li><a href="/uk">Українська</a></li><li><a href="/zh-Hans">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(){
+          if(languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Recent Posts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Recent Posts</h3><ul><li class="navListItem navListItemActive"><a class="navItem" href="/blog/2018/06/27/supporting-jest-open-source">Supporting Jest Open Source</a></li><li class="navListItem"><a class="navItem" href="/blog/2018/05/29/jest-23-blazing-fast-delightful-testing">Jest 23: 🔥 Blazing Fast Delightful Testing</a></li><li class="navListItem"><a class="navItem" href="/blog/2017/12/18/jest-22">Jest 22: Refinements &amp; Custom Runners</a></li><li class="navListItem"><a class="navItem" href="/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner">Jest 20: 💖 Delightful Testing &amp; 🏃🏽 Multi-Project-Runner</a></li><li class="navListItem"><a class="navItem" href="/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements">🃏 Jest 19: Immersive Watch Mode &amp; Test Platform Improvements</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/blog/2018/06/27/supporting-jest-open-source">Supporting Jest Open Source</a></h1><p class="post-meta">June 27, 2018</p><div class="authorBlock"><p class="post-authorName"><a href="https://twitter.com/rickhanlonii" target="_blank" rel="noreferrer noopener">Rick Hanlon II</a></p><div class="authorPhoto"><a href="https://twitter.com/rickhanlonii" target="_blank" rel="noreferrer noopener"><img src="https://graph.facebook.com/160800566/picture/?height=200&amp;width=200" alt="Rick Hanlon II"/></a></div></div></header><div><span><p>Jest is maintained by a community of open source contributors and Facebook employees.</p>
+<p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focused on the problems specific to Facebook's scale, and run all proposed releases on Facebook's enormous test suite before publishing.</p>
+<p>All of us do our part to make testing delightful.</p>
+<p>At the Jest Summit we announced the Jest Open Collective. This is our way to help support the efforts of the open source Jest community. <strong>To be absolutely clear: Facebook employees cannot benefit from the Jest Open Collective.</strong> The collective's sole purpose is to support the open source side of the Jest community.</p>
+<p>In this post we'll outline what the Jest Open Collective is, the structure, and the goals we have.</p>
+<h1><a class="anchor" aria-hidden="true" id="the-jest-open-collective"></a><a href="#the-jest-open-collective" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>The Jest Open Collective</h1>
+<p><img src="/img/blog/collective.png" alt="Banner image for Jest Open Collective"></p>
+<p>Open Collective is a platform to manage groups of people transparently. Jest joins projects like <a href="https://opencollective.com/webpack">Webpack</a>, <a href="https://opencollective.com/babel">Babel</a>, <a href="https://opencollective.com/mochajs">Mocha</a>, <a href="https://opencollective.com/preact">Preact</a>, <a href="https://opencollective.com/vuejs">Vue</a>, and many more in supporting the open source community through the Open Collective platform.</p>
+<h2><a class="anchor" aria-hidden="true" id="what-is-the-jest-open-collective"></a><a href="#what-is-the-jest-open-collective" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is the Jest Open Collective</h2>
+<p>The Jest Open Collective is a group of open source contributors who operate in full transparency to:</p>
+<ul>
+<li>Receive funds from backers and sponsors</li>
+<li>Approve expenses submitted by the community</li>
+<li>Give everyone visibility on the budget</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="what-is-the-structure-of-the-collective"></a><a href="#what-is-the-structure-of-the-collective" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is the structure of the collective</h2>
+<p>The Jest Open Collective is currently managed by three non-Facebook core contributors from the open source community:</p>
+<ul>
+<li><a href="https://twitter.com/thymikee">Michal Pierzchala</a></li>
+<li><a href="https://github.com/simenb">Simen Bukkhus</a></li>
+<li><a href="https://twitter.com/rickhanlonii">Rick Hanlon</a></li>
+</ul>
+<p>Michal has been an active Jest contributor since September 2016, Simen joined the core team in June 2017, and Rick joined in January. They're responsible for setting the budget, approving expenses, and managing admins of the collective. We have elected to keep <a href="https://twitter.com/cpojer">Christoph Nakazawa</a> as an adviser.</p>
+<p>There are two levels of support for the collective: Backer and Sponsor.</p>
+<h3><a class="anchor" aria-hidden="true" id="backers"></a><a href="#backers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backers</h3>
+<p>Backers of the collective are individuals contributing at least $2/month. We'll include a list of backers on the Jest homepage, README on github/yarn/npm, and Contributors page.</p>
+<h3><a class="anchor" aria-hidden="true" id="sponsors"></a><a href="#sponsors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Sponsors</h3>
+<p>Sponsors of the collective are individuals and organizations contributing at least $100/month. We'll place sponsor logos with a link to their site on the Jest homepage, README on github/yarn/npm, and Contributors page.</p>
+<h2><a class="anchor" aria-hidden="true" id="what-is-the-goal-of-the-collective"></a><a href="#what-is-the-goal-of-the-collective" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is the goal of the collective</h2>
+<p>The goal of the collective is to support the work of open source contributors to Jest in order to make testing delightful.</p>
+<p>To achieve that goal, we will use the funds to:</p>
+<ul>
+<li>Cover speaker travel expenses</li>
+<li>Host events and meetups</li>
+<li>Print and distribute swag</li>
+<li>Develop and fund a bug bounty program (TBD)</li>
+</ul>
+<p>This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on <a href="https://twitter.com/fbjest">twitter</a>!</p>
+<h1><a class="anchor" aria-hidden="true" id="thank-you"></a><a href="#thank-you" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Thank You</h1>
+<p>Finally, thank you to everyone who contributes to the Jest community and open source in general. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together.</p>
+<p>The Jest core team would also like to make a special thank you to Facebook Open Source for driving the creation of this collective.</p>
+</span></div></div><div class="blogSocialSection"></div></div><div class="blog-recent"><a class="button" href="/blog">Recent Posts</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#what-is-the-jest-open-collective">What is the Jest Open Collective</a></li><li><a href="#what-is-the-structure-of-the-collective">What is the structure of the collective</a><ul class="toc-headings"><li><a href="#backers">Backers</a></li><li><a href="#sponsors">Sponsors</a></li></ul></li><li><a href="#what-is-the-goal-of-the-collective">What is the goal of the collective</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/getting-started.html">Getting Started</a><a href="/docs/en/snapshot-testing.html">Guides</a><a href="/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="/en/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:en","version:23.0"]}
+              });
+            </script></body></html>
