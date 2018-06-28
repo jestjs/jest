@@ -5,7 +5,7 @@ authorURL: https://twitter.com/rickhanlonii
 authorFBID: 160800566
 ---
 
-Jest is maintained by a combination of Facebook employees and a community of open source contributors.
+Jest is maintained by a community of open source contributors and Facebook employees.
 
 Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focused on the problems specific to Facebook's scale, and run all proposed releases on Facebook's enormous test suite before publishing.
 
