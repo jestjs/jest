@@ -34,7 +34,7 @@ The Jest Open Collective is a group of open source contributors who operate in f
 The Jest Open Collective is currently managed by three non-Facebook core contributors from the open source community:
 
 - [Michal Pierzchala](https://twitter.com/thymikee)
-- [Simen Bukkhus](https://github.com/simenb)
+- [Simen Bekkhus](https://github.com/simenb)
 - [Rick Hanlon](https://twitter.com/rickhanlonii)
 
 Michal has been an active Jest contributor since September 2016, Simen joined the core team in June 2017, and Rick joined in January. They're responsible for setting the budget, approving expenses, and managing admins of the collective. We have elected to keep [Christoph Nakazawa](https://twitter.com/cpojer) as an adviser.
