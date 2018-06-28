@@ -402,6 +402,12 @@ Presets may also be relative filesystem paths.
 }
 ```
 
+### `prettier` [string]
+
+Default: `'prettier'`
+
+Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
+
 ### `projects` [array<string | ProjectConfig>]
 
 Default: `undefined`

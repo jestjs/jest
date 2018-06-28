@@ -93,6 +93,49 @@ Once you're finished, Jest will give you a summary before returning back to watc
 
 ![](/img/content/interactiveSnapshotDone.png)
 
+### Inline Snapshots
+
+Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
+
+> Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
+>
+> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettier"`](./Configuration.md#prettier-string) configuration property.
+
+**Example:**
+
+First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
+
+```javascript
+it('renders correctly', () => {
+  const tree = renderer
+    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot();
+});
+```
+
+The next time you run Jest, `tree` will be evaluated, and a snapshot will be written as an argument to `toMatchInlineSnapshot`:
+
+```javascript
+it('renders correctly', () => {
+  const tree = renderer
+    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot(`
+<a
+  className="normal"
+  href="https://prettier.io"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  Prettier
+</a>
+`);
+});
+```
+
+That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
+
 ### Property Matchers
 
 Often there are fields in the object you want to snapshot which are generated (like IDs and Dates). If you try to snapshot these objects, they will force the snapshot to fail on every run:

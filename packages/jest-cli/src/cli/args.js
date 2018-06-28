@@ -424,6 +424,11 @@ export const options = {
     description: "A preset that is used as a base for Jest's configuration.",
     type: 'string',
   },
+  prettier: {
+    default: 'prettier',
+    description: 'The path to the "prettier" module used for inline snapshots.',
+    type: 'string',
+  },
   projects: {
     description:
       'A list of projects that use Jest to run all tests of all ' +

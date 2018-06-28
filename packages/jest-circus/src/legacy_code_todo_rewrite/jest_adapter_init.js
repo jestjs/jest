@@ -92,7 +92,11 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  const snapshotState = new SnapshotState(testPath, {
+    expand,
+    getPrettier: () => (config.prettier ? localRequire(config.prettier) : null),
+    updateSnapshot,
+  });
   setState({snapshotState, testPath});
 
   // Return it back to the outer scope (test runner outside the VM).
