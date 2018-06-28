@@ -14,6 +14,7 @@ const GridBlock = CompLibrary.GridBlock;
 
 const translate = require('../../server/translate.js').translate;
 const translation = require('../../server/translation.js');
+const backers = require(process.cwd() + '/backers.json');
 
 const siteConfig = require(process.cwd() + '/siteConfig.js');
 
@@ -32,6 +33,89 @@ class Button extends React.Component {
 Button.defaultProps = {
   target: '_self',
 };
+
+class Contributors extends React.Component {
+  render() {
+    return (
+      <div>
+        <h2>
+          <translate>Sponsors</translate>
+        </h2>
+        <p>
+          <translate>
+            Sponsors are those who contribute $100 or more per month to Jest
+          </translate>
+        </p>
+        <div>
+          {backers.filter(b => b.tier === 'sponsor').map(b => (
+            <a
+              key={b.id}
+              className="sponsor-item"
+              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+              target="_blank"
+              href={b.website || `https://opencollective.com/${b.slug}`}
+            >
+              {
+                <img
+                  className="sponsor-avatar"
+                  src={b.avatar}
+                  alt={
+                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
+                  }
+                />
+              }
+            </a>
+          ))}
+        </div>
+        <div className="support">
+          <a
+            className="support-button"
+            href="https://opencollective.com/webpack#support"
+          >
+            <translate>Become a sponsor</translate>
+          </a>
+        </div>
+        <h2>
+          <translate>Backers</translate>
+        </h2>
+        <p>
+          <translate>
+            Backers are those who contribute $2 or more per month to Jest
+          </translate>
+        </p>
+        <div>
+          {backers.filter(b => b.tier === 'backer').map(b => (
+            <a
+              key={b.id}
+              className="backer-item"
+              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+              target="_blank"
+              href={b.website || `https://opencollective.com/${b.slug}`}
+            >
+              {
+                <img
+                  className="backer-avatar"
+                  src={b.avatar}
+                  alt={
+                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
+                  }
+                />
+              }
+            </a>
+          ))}
+          <div>
+            <a
+              className="support-button"
+              href="https://opencollective.com/webpack#support"
+            >
+              <translate>Become a backer</translate>
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 
 class HomeSplash extends React.Component {
   render() {
@@ -367,6 +451,7 @@ class Index extends React.Component {
               </translate>
             </p>
             <div className="logos">{showcase}</div>
+            <Contributors />
           </div>
         </div>
       </div>
