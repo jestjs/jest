@@ -70,7 +70,7 @@ class Contributors extends React.Component {
         <div className="support">
           <a
             className="support-button"
-            href="https://opencollective.com/webpack#support"
+            href="https://opencollective.com/jest#support"
           >
             <translate>Become a sponsor</translate>
           </a>
@@ -106,7 +106,7 @@ class Contributors extends React.Component {
           <div>
             <a
               className="support-button"
-              href="https://opencollective.com/webpack#support"
+              href="https://opencollective.com/jest#support"
             >
               <translate>Become a backer</translate>
             </a>
