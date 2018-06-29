@@ -322,6 +322,9 @@ export default function(j$) {
 
     this.describe = function(description, specDefinitions) {
       const suite = suiteFactory(description);
+      if (!specDefinitions) {
+        return;
+      }
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
