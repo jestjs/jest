@@ -294,6 +294,10 @@ export const options = {
       'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
+  init: {
+    description: 'Generate a basic configuration file',
+    type: 'boolean',
+  },
   json: {
     default: undefined,
     description:
@@ -418,6 +422,11 @@ export const options = {
   },
   preset: {
     description: "A preset that is used as a base for Jest's configuration.",
+    type: 'string',
+  },
+  prettier: {
+    default: 'prettier',
+    description: 'The path to the "prettier" module used for inline snapshots.',
     type: 'string',
   },
   projects: {
@@ -574,7 +583,7 @@ export const options = {
     description:
       'Allows the use of a custom results processor. ' +
       'This processor must be a node module that exports ' +
-      'a function expecting as the first argument the result object',
+      'a function expecting as the first argument the result object.',
     type: 'string',
   },
   testRunner: {

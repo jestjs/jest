@@ -212,15 +212,15 @@ exports[`spyOn.test.js errors in errorOnDeprecated mode 1`] = `
 
     Illegal usage of global \`spyOn\`, prefer \`jest.spyOn\`.
 
-      15 | 
-      16 | test('spyOn', () => {
-    > 17 |   spyOn(subject, 'func').and.returnValue('bar');
+      13 | 
+      14 | test('spyOn', () => {
+    > 15 |   spyOn(subject, 'func').and.returnValue('bar');
          |   ^
-      18 |   expect(subject.func()).toBe('bar');
-      19 | });
-      20 | 
+      16 |   expect(subject.func()).toBe('bar');
+      17 | });
+      18 | 
 
-      at __tests__/spyOn.test.js:17:3
+      at __tests__/spyOn.test.js:15:3
 
 "
 `;

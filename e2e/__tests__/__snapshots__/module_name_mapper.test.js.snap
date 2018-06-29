@@ -20,7 +20,7 @@ exports[`moduleNameMapper wrong configuration 1`] = `
     \\"moduleNameMapper\\": {
       \\"/\\\\.(css|less)$/\\": \\"no-such-module\\"
     },
-    \\"resolver\\": undefined
+    \\"resolver\\": null
 
 "
 `;

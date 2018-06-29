@@ -14,6 +14,7 @@ const GridBlock = CompLibrary.GridBlock;
 
 const translate = require('../../server/translate.js').translate;
 const translation = require('../../server/translation.js');
+const backers = require(process.cwd() + '/backers.json');
 
 const siteConfig = require(process.cwd() + '/siteConfig.js');
 
@@ -33,6 +34,89 @@ Button.defaultProps = {
   target: '_self',
 };
 
+class Contributors extends React.Component {
+  render() {
+    return (
+      <div>
+        <h2>
+          <translate>Sponsors</translate>
+        </h2>
+        <p>
+          <translate>
+            Sponsors are those who contribute $100 or more per month to Jest
+          </translate>
+        </p>
+        <div>
+          {backers.filter(b => b.tier === 'sponsor').map(b => (
+            <a
+              key={b.id}
+              className="sponsor-item"
+              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+              target="_blank"
+              href={b.website || `https://opencollective.com/${b.slug}`}
+            >
+              {
+                <img
+                  className="sponsor-avatar"
+                  src={b.avatar}
+                  alt={
+                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
+                  }
+                />
+              }
+            </a>
+          ))}
+        </div>
+        <div className="support">
+          <a
+            className="support-button"
+            href="https://opencollective.com/jest#support"
+          >
+            <translate>Become a sponsor</translate>
+          </a>
+        </div>
+        <h2>
+          <translate>Backers</translate>
+        </h2>
+        <p>
+          <translate>
+            Backers are those who contribute $2 or more per month to Jest
+          </translate>
+        </p>
+        <div>
+          {backers.filter(b => b.tier === 'backer').map(b => (
+            <a
+              key={b.id}
+              className="backer-item"
+              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+              target="_blank"
+              href={b.website || `https://opencollective.com/${b.slug}`}
+            >
+              {
+                <img
+                  className="backer-avatar"
+                  src={b.avatar}
+                  alt={
+                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
+                  }
+                />
+              }
+            </a>
+          ))}
+          <div>
+            <a
+              className="support-button"
+              href="https://opencollective.com/jest#support"
+            >
+              <translate>Become a backer</translate>
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
 class HomeSplash extends React.Component {
   render() {
     return (
@@ -40,10 +124,7 @@ class HomeSplash extends React.Component {
         <div className="homeSplashFade">
           <div className="wrapper homeWrapper">
             <div className="projectLogo">
-              <img
-                src={siteConfig.baseUrl + 'img/jest-outline.svg'}
-                alt="Jest"
-              />
+              <img src={siteConfig.baseUrl + 'img/jest.svg'} alt="Jest" />
             </div>
             <div className="inner">
               <h2 className="projectTitle">
@@ -110,19 +191,17 @@ class HomeSplash extends React.Component {
 
 class Index extends React.Component {
   render() {
-    const showcase = siteConfig.users.map((user, i) => {
-      return (
-        <a href={user.infoLink} key={i}>
-          <img src={user.image} title={user.caption} />
-        </a>
-      );
-    });
+    const showcase = siteConfig.users.map((user, i) => (
+      <a href={user.infoLink} key={i}>
+        <img src={user.image} title={user.caption} />
+      </a>
+    ));
 
     return (
       <div>
         <HomeSplash language={this.props.language} config={siteConfig} />
         <div className="mainContainer">
-          <Container padding={['bottom', 'top']}>
+          <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               align="center"
               contents={[
@@ -133,7 +212,7 @@ class Index extends React.Component {
                       Works out of the box for any React project.
                     </translate>
                   ),
-                  image: '/jest/img/content/female-technologist.png',
+                  image: '/img/content/female-technologist.png',
                   imageAlign: 'top',
                   title: <translate>Developer Ready</translate>,
                 },
@@ -144,7 +223,7 @@ class Index extends React.Component {
                       to changed files and is optimized to give signal quickly.
                     </translate>
                   ),
-                  image: '/jest/img/content/runner.png',
+                  image: '/img/content/runner.png',
                   imageAlign: 'top',
                   title: <translate>Instant Feedback</translate>,
                 },
@@ -156,7 +235,7 @@ class Index extends React.Component {
                       changes over time.
                     </translate>
                   ),
-                  image: '/jest/img/content/camera-with-flash.png',
+                  image: '/img/content/camera-with-flash.png',
                   imageAlign: 'top',
                   title: <translate>Snapshot Testing</translate>,
                 },
@@ -164,26 +243,26 @@ class Index extends React.Component {
               layout="fourColumn"
             />
           </Container>
-
-          <div
-            className="productShowcaseSection paddingBottom"
-            style={{textAlign: 'center'}}
-          >
-            <h2>
-              <translate>Zero configuration testing platform</translate>
-            </h2>
-            <MarkdownBlock>
-              <translate>
-                Jest is used by Facebook to test all JavaScript code including
-                React applications. One of Jest's philosophies is to provide an
-                integrated \"zero-configuration\" experience. We observed that
-                when engineers are provided with ready-to-use tools, they end up
-                writing more tests, which in turn results in more stable and
-                healthy code bases.
-              </translate>
-            </MarkdownBlock>
-          </div>
-
+          <Container padding={['bottom', 'top']}>
+            <div
+              className="productShowcaseSection paddingBottom"
+              style={{textAlign: 'center'}}
+            >
+              <h2>
+                <translate>Zero configuration testing platform</translate>
+              </h2>
+              <MarkdownBlock>
+                <translate>
+                  Jest is used by Facebook to test all JavaScript code including
+                  React applications. One of Jest's philosophies is to provide
+                  an integrated \"zero-configuration\" experience. We observed
+                  that when engineers are provided with ready-to-use tools, they
+                  end up writing more tests, which in turn results in more
+                  stable and healthy code bases.
+                </translate>
+              </MarkdownBlock>
+            </div>
+          </Container>
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               contents={[
@@ -197,7 +276,7 @@ class Index extends React.Component {
                       tests conflict with each other.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-fast.png',
+                  image: '/img/content/feature-fast.png',
                   imageAlign: 'right',
                   title: <translate>Fast and sandboxed</translate>,
                 },
@@ -217,7 +296,7 @@ class Index extends React.Component {
                       untested files.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-coverage.png',
+                  image: '/img/content/feature-coverage.png',
                   imageAlign: 'left',
                   title: <translate>Built-in code coverage reports</translate>,
                 },
@@ -240,14 +319,13 @@ class Index extends React.Component {
                       prefer, Jest will find and run your tests.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-config-react.png',
+                  image: '/img/content/feature-config-react.png',
                   imageAlign: 'right',
                   title: <translate>Zero configuration</translate>,
                 },
               ]}
             />
           </Container>
-
           <Container background="dark" padding={['bottom', 'top']}>
             <a className="anchor" name="use" />
             <a className="hash-link" href="#use" />
@@ -286,7 +364,7 @@ class Index extends React.Component {
                       `jest-react-native`.
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-mocking.png',
+                  image: '/img/content/feature-mocking.png',
                   imageAlign: 'left',
                   title: <translate>Powerful mocking library</translate>,
                 },
@@ -306,7 +384,7 @@ class Index extends React.Component {
                       [ts-jest](https://github.com/kulshekhar/ts-jest).
                     </translate>
                   ),
-                  image: '/jest/img/content/feature-typescript.png',
+                  image: '/img/content/feature-typescript.png',
                   imageAlign: 'right',
                   title: <translate>Works with TypeScript</translate>,
                 },
@@ -373,6 +451,7 @@ class Index extends React.Component {
               </translate>
             </p>
             <div className="logos">{showcase}</div>
+            <Contributors />
           </div>
         </div>
       </div>

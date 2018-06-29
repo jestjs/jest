@@ -110,12 +110,8 @@ describe('moduleMocker', () => {
       const foo = new ClassFooMock();
       const bar = new ClassFooMock();
 
-      foo.x.mockImplementation(() => {
-        return 'Foo';
-      });
-      bar.x.mockImplementation(() => {
-        return 'Bar';
-      });
+      foo.x.mockImplementation(() => 'Foo');
+      bar.x.mockImplementation(() => 'Bar');
 
       expect(foo.x()).toBe('Foo');
       expect(bar.x()).toBe('Bar');
@@ -755,9 +751,7 @@ describe('moduleMocker', () => {
     it('should mock calls to a mock function', () => {
       const mockFn = moduleMocker.fn();
 
-      mockFn.mockImplementation(() => {
-        return 'Foo';
-      });
+      mockFn.mockImplementation(() => 'Foo');
 
       expect(typeof mockFn.getMockImplementation()).toBe('function');
       expect(mockFn.getMockImplementation()()).toBe('Foo');
@@ -787,12 +781,8 @@ describe('moduleMocker', () => {
       const mockFn = moduleMocker.fn();
 
       mockFn
-        .mockImplementationOnce(() => {
-          return 'Foo';
-        })
-        .mockImplementationOnce(() => {
-          return 'Bar';
-        });
+        .mockImplementationOnce(() => 'Foo')
+        .mockImplementationOnce(() => 'Bar');
 
       expect(mockFn()).toBe('Foo');
       expect(mockFn()).toBe('Bar');
@@ -803,15 +793,9 @@ describe('moduleMocker', () => {
       const mockFn = moduleMocker.fn();
 
       mockFn
-        .mockImplementationOnce(() => {
-          return 'Foo';
-        })
-        .mockImplementationOnce(() => {
-          return 'Bar';
-        })
-        .mockImplementation(() => {
-          return 'Default';
-        });
+        .mockImplementationOnce(() => 'Foo')
+        .mockImplementationOnce(() => 'Bar')
+        .mockImplementation(() => 'Default');
 
       expect(mockFn()).toBe('Foo');
       expect(mockFn()).toBe('Bar');

@@ -33,12 +33,12 @@ test('nodescribe.example', () => {
 
   const expectations = Object.create(null);
   allAssertion.forEach(assertion => {
-    expectations['test ' + assertion + ' 1'] = {
+    expectations[assertion + ' 1'] = {
       assertion,
       checked: false,
       number: 1,
     };
-    expectations['test ' + assertion + ' 2'] = {
+    expectations[assertion + ' 2'] = {
       assertion,
       checked: false,
       number: 2,

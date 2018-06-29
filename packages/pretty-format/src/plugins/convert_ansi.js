@@ -12,8 +12,8 @@ import type {Config, Printer, NewPlugin, Refs} from 'types/PrettyFormat';
 import ansiRegex from 'ansi-regex';
 import style from 'ansi-styles';
 
-const toHumanReadableAnsi = text => {
-  return text.replace(ansiRegex(), (match, offset, string) => {
+const toHumanReadableAnsi = text =>
+  text.replace(ansiRegex(), (match, offset, string) => {
     switch (match) {
       case style.red.close:
       case style.green.close:
@@ -58,7 +58,6 @@ const toHumanReadableAnsi = text => {
         return '';
     }
   });
-};
 
 export const test = (val: any) =>
   typeof val === 'string' && val.match(ansiRegex());

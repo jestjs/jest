@@ -1,10 +1,38 @@
 ## master
 
+### Features
+
+- `[jest-snapshot]` Introduce `toMatchInlineSnapshot` and `toThrowErrorMatchingInlineSnapshot` matchers ([#6380](https://github.com/facebook/jest/pull/6380))
+
 ### Fixes
 
+- `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
+
+### Chore & Maintenance
+
+- `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
+
+## 23.2.0
+
+### Features
+
+- `[jest-each]` Add support for keyPaths in test titles ([#6457](https://github.com/facebook/jest/pull/6457))
+- `[jest-cli]` Add `jest --init` option that generates a basic configuration file with a short description for each option ([#6442](https://github.com/facebook/jest/pull/6442))
+- `[jest.retryTimes]` Add `jest.retryTimes()` option that allows failed tests to be retried n-times when using jest-circus. ([#6498](https://github.com/facebook/jest/pull/6498))
+
+### Fixes
+
+- `[jest-cli]` Add check to make sure one or more tests have run before notifying when using `--notify` ([#6495](https://github.com/facebook/jest/pull/6495))
+- `[jest-cli]` Pass `globalConfig` as a parameter to `globalSetup` and `globalTeardown` functions ([#6486](https://github.com/facebook/jest/pull/6486))
+- `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
 - `[expect]` Using symbolic property names in arrays no longer causes the `toEqual` matcher to fail ([#6391](https://github.com/facebook/jest/pull/6391))
 - `[expect]` `toEqual` no longer tries to compare non-enumerable symbolic properties, to be consistent with non-symbolic properties. ([#6398](https://github.com/facebook/jest/pull/6398))
-- `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
+- `[jest-util]` `console.timeEnd` now properly log elapsed time in milliseconds. ([#6456](https://github.com/facebook/jest/pull/6456))
+- `[jest-mock]` Fix `MockNativeMethods` access in react-native `jest.mock()` ([#6505](https://github.com/facebook/jest/pull/6505))
+
+### Chore & Maintenance
+
+- `[docs]` Add jest-each docs for 1 dimensional arrays ([#6444](https://github.com/facebook/jest/pull/6444/files))
 
 ## 23.1.0
 

@@ -11,7 +11,13 @@
 const slash = require('slash');
 
 jest
-  .mock('fs')
+  .mock('fs', () =>
+    // Node 10.5.x compatibility
+    Object.assign({}, jest.genMockFromModule('fs'), {
+      ReadStream: require.requireActual('fs').ReadStream,
+      WriteStream: require.requireActual('fs').WriteStream,
+    }),
+  )
   .mock('graceful-fs')
   .mock('jest-haste-map', () => ({
     getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
@@ -26,21 +32,17 @@ jest
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = str => {
-      return str.replace(/'/, `'`);
-    };
+    const escapeStrings = str => str.replace(/'/, `'`);
 
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: (content, filename, config) => {
-        return `
+      process: (content, filename, config) => `
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
             config: '${escapeStrings(JSON.stringify(config))}',
           };
-        `;
-      },
+        `,
     };
   },
   {virtual: true},
@@ -48,78 +50,60 @@ jest.mock(
 
 jest.mock(
   'preprocessor-with-sourcemaps',
-  () => {
-    return {
-      getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: jest.fn(),
-    };
-  },
+  () => ({
+    getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
+    process: jest.fn(),
+  }),
   {virtual: true},
 );
 
 jest.mock(
   'css-preprocessor',
-  () => {
-    return {
-      getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
-      process: (content, filename, config) => {
-        return `
+  () => ({
+    getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
+    process: (content, filename, config) => `
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
           };
-        `;
-      },
-    };
-  },
+        `,
+  }),
   {virtual: true},
 );
 
 jest.mock(
   'passthrough-preprocessor',
-  () => {
-    return {
-      process: jest.fn(),
-    };
-  },
+  () => ({
+    process: jest.fn(),
+  }),
   {virtual: true},
 );
 
 // Bad preprocessor
-jest.mock(
-  'skipped-required-props-preprocessor',
-  () => {
-    return {};
-  },
-  {virtual: true},
-);
+jest.mock('skipped-required-props-preprocessor', () => ({}), {virtual: true});
 
 // Bad preprocessor
 jest.mock(
   'skipped-required-create-transformer-props-preprocessor',
-  () => {
-    return {
-      createTransformer() {
-        return {};
-      },
-    };
-  },
+  () => ({
+    createTransformer() {
+      return {};
+    },
+  }),
   {virtual: true},
 );
 
 jest.mock(
   'skipped-process-method-preprocessor',
-  () => {
-    return {
-      createTransformer() {
-        const mockProcess = jest.fn();
-        mockProcess.mockReturnValue('code');
-        return {
-          process: mockProcess,
-        };
-      },
-    };
-  },
+  () => ({
+    createTransformer() {
+      const mockProcess = jest.fn();
+      mockProcess.mockReturnValue('code');
+      return {
+        process: mockProcess,
+      };
+    },
+  }),
   {virtual: true},
 );
 

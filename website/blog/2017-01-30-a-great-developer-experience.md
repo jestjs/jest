@@ -29,11 +29,11 @@ We have created a [showcase of users](/jest/users.html) to highlight some of the
 
 <div class="productShowcaseSection">
  <div class="logos">
-   <img src="/jest/img/logos/twitter.png" title="Twitter"/>
-   <img src="/jest/img/logos/pinterest.png" title="Pinterest"/>
-   <img src="/jest/img/logos/paypal.png" title="PayPal"/>
-   <img src="/jest/img/logos/ibm.png" title="IBM"/>
-   <img src="/jest/img/logos/spotify.png" title="Spotify"/>
+   <img src="/img/logos/twitter.png" title="Twitter"/>
+   <img src="/img/logos/pinterest.png" title="Pinterest"/>
+   <img src="/img/logos/paypal.png" title="PayPal"/>
+   <img src="/img/logos/ibm.png" title="IBM"/>
+   <img src="/img/logos/spotify.png" title="Spotify"/>
  </div>
 </div>
 
