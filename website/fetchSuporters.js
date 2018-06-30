@@ -5,6 +5,7 @@ const path = require('path');
 
 const REQUIRED_KEYS = ['id'];
 
+// prettier-ignore
 request(
   'https://opencollective.com/api/groups/jest/backers',
   (err, response, body) => {
@@ -18,12 +19,14 @@ request(
     for (const item of content) {
       for (const key of REQUIRED_KEYS) {
         if (!item || typeof item !== 'object')
+          // prettier-ignore
           throw new Error(
-            `backer info item (${JSON.stringify(item)} is not an object`,
+            `backer info item (${JSON.stringify(item)} is not an object`
           );
         if (!(key in item))
+          // prettier-ignore
           throw new Error(
-            `backer info item (${JSON.stringify(item)} doesn't include ${key}`,
+            `backer info item (${JSON.stringify(item)} doesn't include ${key}`
           );
       }
     }
@@ -33,5 +36,5 @@ request(
         console.error('Failed to write backers file: ', err);
       } else console.log('Fetched 1 file: backers.json');
     });
-  },
+  }
 );
