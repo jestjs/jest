@@ -7,22 +7,32 @@
 
 import type {AggregatedResult, TestResult} from '@jest/test-result';
 import {preRunMessage} from 'jest-util';
+import type {Config} from '@jest/types';
 import type {Context, Reporter, ReporterOnStartOptions, Test} from './types';
 
 const {remove: preRunMessageRemove} = preRunMessage;
 
 export default class BaseReporter implements Reporter {
   private _error?: Error;
+  private _stream: NodeJS.WriteStream;
+
+  constructor(globalConfig?: Config.GlobalConfig) {
+    if (globalConfig && globalConfig.useStderr) {
+      this._stream = process.stderr;
+    } else {
+      this._stream = process.stdout;
+    }
+  }
 
   log(message: string): void {
-    process.stderr.write(message + '\n');
+    this._stream.write(message + '\n');
   }
 
   onRunStart(
     _results?: AggregatedResult,
     _options?: ReporterOnStartOptions,
   ): void {
-    preRunMessageRemove(process.stderr);
+    preRunMessageRemove(this._stream);
   }
 
   onTestResult(

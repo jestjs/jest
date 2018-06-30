@@ -54,7 +54,7 @@ export default class CoverageReporter extends BaseReporter {
     globalConfig: Config.GlobalConfig,
     options?: CoverageReporterOptions,
   ) {
-    super();
+    super(globalConfig);
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
