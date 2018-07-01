@@ -23,11 +23,11 @@ exports[`cannot have describe with no implementation 1`] = `
 "FAIL __tests__/only-constructs.test.js
   ● Test suite failed to run
 
-    Missing second argument. It must be a callback function.
+    Missing second argument supplied to 'describe'. It must be a callback function.
 
       1 | 
     > 2 |     describe('describe, no implementation');
-        | ^
+        |     ^
       3 |   
 
       at packages/jest-jasmine2/build/jasmine/Env.js:<<LINE>>:<<COLUMN>>
@@ -49,7 +49,7 @@ exports[`cannot test with no implementation 1`] = `
 "FAIL __tests__/only-constructs.test.js
   ● Test suite failed to run
 
-    Missing second argument. It must be a callback function.
+    Missing second argument supplied to 'it'. It must be a callback function.
 
       1 | 
       2 |     it('it', () => {});
@@ -76,7 +76,7 @@ exports[`cannot test with no implementation with expand arg 1`] = `
 "FAIL __tests__/only-constructs.test.js
   ● Test suite failed to run
 
-    Missing second argument. It must be a callback function.
+    Missing second argument supplied to 'it'. It must be a callback function.
 
       1 | 
       2 |     it('it', () => {});

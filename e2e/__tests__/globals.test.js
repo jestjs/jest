@@ -123,8 +123,8 @@ test('cannot have describe with no implementation', () => {
   expect(status).toBe(1);
 
   const {summary, rest} = extractSummary(stderr, {stripLocation: true});
-  expect(clean(rest)).toMatchSnapshot();
-  expect(clean(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('cannot test with no implementation', () => {
