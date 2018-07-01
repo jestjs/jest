@@ -946,7 +946,7 @@ describe('preset', () => {
         },
         {},
       );
-    }).toThrowErrorMatchingSnapshot();
+    }).toThrowError(/Unexpected token }/);
   });
 
   test('works with "react-native"', () => {
