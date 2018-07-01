@@ -6,6 +6,7 @@
  *
  */
 
+import pretty from 'pretty-format';
 import each from '../';
 
 const noop = () => {};
@@ -136,6 +137,52 @@ describe('jest-each', () => {
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: world',
+          expectFunction,
+        );
+      });
+
+      test('calls global test title with %p placeholder injected at the correct positions', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          ['string1', 'pretty1', 'string2', 'pretty2'],
+          ['string1', 'pretty1', 'string2', 'pretty2'],
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %s %p %s %p', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          `expected string: string1 ${pretty('pretty1')} string2 ${pretty(
+            'pretty2',
+          )}`,
+          expectFunction,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          `expected string: string1 ${pretty('pretty1')} string2 ${pretty(
+            'pretty2',
+          )}`,
+          expectFunction,
+        );
+      });
+
+      test('does not calls global test title with %p placeholder when no data is supplied at given position', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          ['string1', 'pretty1', 'string2'],
+          ['string1', 'pretty1', 'string2'],
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %s %p %s %p', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          `expected string: string1 ${pretty('pretty1')} string2 %p`,
+          expectFunction,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          `expected string: string1 ${pretty('pretty1')} string2 %p`,
           expectFunction,
         );
       });

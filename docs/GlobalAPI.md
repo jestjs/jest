@@ -231,8 +231,10 @@ Use `describe.each` if you keep duplicating the same test suites with different 
 #### 1. `describe.each(table)(name, fn)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 - `name`: `String` the title of the test suite.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
     - `%s`- String.
     - `%d`- Number.
     - `%i` - Integer.
@@ -269,6 +271,7 @@ describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
   - First row of variable name column headings separated with `|`
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions.
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
 
 Example:
@@ -475,8 +478,10 @@ Use `test.each` if you keep duplicating the same test with different data. `test
 #### 1. `test.each(table)(name, fn)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 - `name`: `String` the title of the test block.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
     - `%s`- String.
     - `%d`- Number.
     - `%i` - Integer.
@@ -503,6 +508,7 @@ test.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
   - First row of variable name column headings separated with `|`
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - `fn`: `Function` the test to be ran, this is the function that will receive the test data object.
 
 Example:

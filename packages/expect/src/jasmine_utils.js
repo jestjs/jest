@@ -209,7 +209,12 @@ function keys(obj, isArray, hasKey) {
         keys.push(key);
       }
     }
-    return keys.concat((Object.getOwnPropertySymbols(o): Array<any>));
+    return keys.concat(
+      (Object.getOwnPropertySymbols(o): Array<any>).filter(
+        //$FlowFixMe Jest complains about nullability, but we know for sure that property 'symbol' does exist.
+        symbol => Object.getOwnPropertyDescriptor(o, symbol).enumerable,
+      ),
+    );
   })(obj);
 
   if (!isArray) {
@@ -222,7 +227,8 @@ function keys(obj, isArray, hasKey) {
   }
 
   for (var x = 0; x < allKeys.length; x++) {
-    if (!allKeys[x].match(/^[0-9]+$/)) {
+    //$FlowFixMe
+    if (typeof allKeys[x] === 'symbol' || !allKeys[x].match(/^[0-9]+$/)) {
       extraKeys.push(allKeys[x]);
     }
   }

@@ -427,7 +427,7 @@ export default function(j$) {
         queueableFn: {
           fn,
           timeout() {
-            return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
           },
         },
         throwOnExpectationFailure,
@@ -516,7 +516,7 @@ export default function(j$) {
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -525,7 +525,7 @@ export default function(j$) {
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -534,7 +534,7 @@ export default function(j$) {
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -543,7 +543,7 @@ export default function(j$) {
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };

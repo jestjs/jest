@@ -26,6 +26,7 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
   - Also under the aliases: `.xdescribe`
 - Asynchronous tests with `done`
 - Unique test titles with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+  - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
   - `%s`- String.
   - `%d`- Number.
   - `%i` - Integer.
@@ -95,11 +96,13 @@ const each = require('jest-each');
 ##### `each`:
 
 - parameters: `Array` of Arrays with the arguments that are passed into the `testFn` for each row
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 
 ##### `.test`:
 
 - name: `String` the title of the `test`.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
     - `%s`- String.
     - `%d`- Number.
     - `%i` - Integer.
@@ -114,11 +117,13 @@ const each = require('jest-each');
 ##### `each`:
 
 - parameters: `Array` of Arrays with the arguments that are passed into the `suiteFn` for each row
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 
 ##### `.describe`:
 
 - name: `String` the title of the `describe`
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
     - `%s`- String.
     - `%d`- Number.
     - `%i` - Integer.
@@ -266,6 +271,7 @@ each`
 ##### `.test`:
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each[tagged template].describe(name, suiteFn)`
@@ -301,6 +307,7 @@ each`
 ##### `.describe`:
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 
 ### Usage

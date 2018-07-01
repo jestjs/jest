@@ -64,13 +64,13 @@ function browserBuild(pkgName, entryPath, destination) {
       rollupResolve(),
     ],
     strict: false,
-  }).then(bundle => {
-    return bundle.write({
+  }).then(bundle =>
+    bundle.write({
       file: destination,
       format: 'umd',
       name: pkgName,
-    });
-  });
+    })
+  );
 }
 
 module.exports = browserBuild;

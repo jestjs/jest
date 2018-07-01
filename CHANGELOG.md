@@ -1,18 +1,50 @@
 ## master
 
+### Features
+
+- `[jest-snapshot]` Introduce `toMatchInlineSnapshot` and `toThrowErrorMatchingInlineSnapshot` matchers ([#6380](https://github.com/facebook/jest/pull/6380))
+
+### Chore & Maintenance
+
+- `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
+
+## 23.2.0
+
+### Features
+
+- `[jest-each]` Add support for keyPaths in test titles ([#6457](https://github.com/facebook/jest/pull/6457))
+- `[jest-cli]` Add `jest --init` option that generates a basic configuration file with a short description for each option ([#6442](https://github.com/facebook/jest/pull/6442))
+- `[jest.retryTimes]` Add `jest.retryTimes()` option that allows failed tests to be retried n-times when using jest-circus. ([#6498](https://github.com/facebook/jest/pull/6498))
+
+### Fixes
+
+- `[jest-cli]` Add check to make sure one or more tests have run before notifying when using `--notify` ([#6495](https://github.com/facebook/jest/pull/6495))
+- `[jest-cli]` Pass `globalConfig` as a parameter to `globalSetup` and `globalTeardown` functions ([#6486](https://github.com/facebook/jest/pull/6486))
+- `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
+- `[expect]` Using symbolic property names in arrays no longer causes the `toEqual` matcher to fail ([#6391](https://github.com/facebook/jest/pull/6391))
+- `[expect]` `toEqual` no longer tries to compare non-enumerable symbolic properties, to be consistent with non-symbolic properties. ([#6398](https://github.com/facebook/jest/pull/6398))
+- `[jest-util]` `console.timeEnd` now properly log elapsed time in milliseconds. ([#6456](https://github.com/facebook/jest/pull/6456))
+- `[jest-mock]` Fix `MockNativeMethods` access in react-native `jest.mock()` ([#6505](https://github.com/facebook/jest/pull/6505))
+
+### Chore & Maintenance
+
+- `[docs]` Add jest-each docs for 1 dimensional arrays ([#6444](https://github.com/facebook/jest/pull/6444/files))
+
 ## 23.1.0
 
 ### Features
 
+- `[jest-each]` Add pretty-format serialising to each titles ([#6357](https://github.com/facebook/jest/pull/6357))
 - `[jest-cli]` shouldRunTestSuite watch hook now receives an object with `config`, `testPath` and `duration` ([#6350](https://github.com/facebook/jest/pull/6350))
 - `[jest-each]` Support one dimensional array of data ([#6351](https://github.com/facebook/jest/pull/6351))
 - `[jest-watch]` create new package `jest-watch` to ease custom watch plugin development ([#6318](https://github.com/facebook/jest/pull/6318))
 - `[jest-circus]` Make hooks in empty describe blocks error ([#6320](https://github.com/facebook/jest/pull/6320))
-- Add a config/CLI option `errorOnDeprecated` which makes calling deprecated APIs throw hepful error messages.
+- Add a config/CLI option `errorOnDeprecated` which makes calling deprecated APIs throw hepful error messages ([#6339](https://github.com/facebook/jest/pull/6339))
 
 ### Fixes
 
-- `[jest-each]` Stop test title concatenating extra args ([##6346](https://github.com/facebook/jest/pull/#6346))
+- `[jest-each]` Fix pluralising missing arguments error ([#6369](https://github.com/facebook/jest/pull/6369))
+- `[jest-each]` Stop test title concatenating extra args ([#6346](https://github.com/facebook/jest/pull/6346))
 - `[expect]` toHaveBeenNthCalledWith/nthCalledWith gives wrong call messages if not matched ([#6340](https://github.com/facebook/jest/pull/6340))
 - `[jest-each]` Make sure invalid arguments to `each` points back to the user's code ([#6347](https://github.com/facebook/jest/pull/6347))
 - `[expect]` toMatchObject throws TypeError when a source property is null ([#6313](https://github.com/facebook/jest/pull/6313))

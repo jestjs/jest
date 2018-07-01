@@ -32,6 +32,7 @@ export type Jest = {|
   resetModuleRegistry(): Jest,
   resetModules(): Jest,
   restoreAllMocks(): Jest,
+  retryTimes(numRetries: number): Jest,
   runAllImmediates(): void,
   runAllTicks(): void,
   runAllTimers(): void,

@@ -54,7 +54,7 @@ exports[`snap 1`] = `
 
 We decided it's a good time to introduce versioned snapshots to ensure all developers are using a compatible version of Jest. Here's how we warn you about the need to update your snapshot:
 
-![snapshot-version](/jest/img/blog/19-snapshot-version.png)
+![snapshot-version](/img/blog/19-snapshot-version.png)
 
 Please make sure you revert any local changes before updating to make the transition smooth and to ensure you aren't including any unwanted changes from failing tests in your new snapshots.
 
@@ -62,7 +62,7 @@ Please make sure you revert any local changes before updating to make the transi
 
 Skipped tests are now printed as a single line instead of showing every individual one when testing in verbose mode or a single suite. Hopefully it will let you focus on currently important tests. It also occupies far less space!
 
-![skipped-tests](/jest/img/blog/19-skipped-tests.png)
+![skipped-tests](/img/blog/19-skipped-tests.png)
 
 ## New CLI arguments
 
@@ -73,7 +73,7 @@ Jest 19 ships with two new coverage-related arguments which you can run from CLI
 
 We now also error on invalid CLI arguments instead of ignoring them. But we've got your back with helpful error message like the one below, e.g. when you try running `jest --watc`:
 
-![cli-error](/jest/img/blog/19-cli-error.png)
+![cli-error](/img/blog/19-cli-error.png)
 
 ## `expect` Improvements
 
@@ -99,7 +99,7 @@ While we refactored the validation and normalization code for Jest's configurati
 
 `jest-validate` is a generic configuration validation tool that helps you with warnings, errors and deprecation messages in your JavaScript tool. It's also capable of showing users friendly examples of correct configuration and it comes with a simple but powerful API. We hope it'll make a good addition to your projects!
 
-![validate](/jest/img/blog/19-validate.png)
+![validate](/img/blog/19-validate.png)
 
 We're happy to announce that `jest-validate` is validating config options of [prettier](https://github.com/jlongster/prettier) since [v0.12](https://github.com/jlongster/prettier/blob/master/CHANGELOG.md#0120). Feel free to add it to your project, try it, send us feedback and improve it by making pull requests on GitHub.
 
@@ -107,7 +107,7 @@ We're happy to announce that `jest-validate` is validating config options of [pr
 
 We moved the asymmetric matchers implementation from Jasmine into Jest, which enabled us to further improve the user experience around them. As a result, asymmetric matchers are now pretty-printed nicely, we added the new [`expect.stringContaining()`](http://facebook.github.io/jest/docs/expect.html#expectstringcontainingstring) matcher and we also paired them with [`expect.toMatchObject()`](http://facebook.github.io/jest/docs/expect.html#tomatchobjectobject) so you can use the best of both:
 
-![asymmetric-matchers](/jest/img/blog/19-asymmetric-matchers.png)
+![asymmetric-matchers](/img/blog/19-asymmetric-matchers.png)
 
 ## Better manual mocks
 
