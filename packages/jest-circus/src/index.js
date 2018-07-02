@@ -77,6 +77,7 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
   return dispatch({
     asyncError,
     fn,
+    mode: fn ? undefined : 'skip',
     name: 'add_test',
     testName,
     timeout,
