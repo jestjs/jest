@@ -68,10 +68,10 @@ Usar con puppeteer</a></li><li class="navListItem navListItemActive"><a class="n
   };
 
   <span class="hljs-comment">// Write global config to disk because all tests run in different contexts.</span>
-  fs.writeFileSync(mongoFileConfigPath, <span class="hljs-built_in">JSON</span>.stringify(mongoConfig));
+  fs.writeFileSync(globalConfigPath, <span class="hljs-built_in">JSON</span>.stringify(mongoConfig));
 
   <span class="hljs-comment">// Set reference to mongod in order to close the server during teardown.</span>
-  global.__MONGOD__ = mongod;
+  global.__MONGOD__ = mongoServer;
 };
 </code></pre>
 <p>Entonces necesitamos un entorno de prueba personalizado para Mongo</p>
