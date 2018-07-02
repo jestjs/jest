@@ -112,7 +112,7 @@ test('only', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('cannot test with no implementation', () => {
+test('tests with no implementation', () => {
   const filename = 'only-constructs.test.js';
   const content = `
     it('it', () => {});
@@ -122,7 +122,7 @@ test('cannot test with no implementation', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-  expect(status).toBe(1);
+  expect(status).toBe(0);
 
   const {summary} = extractSummary(stderr);
   expect(cleanStderr(stderr)).toMatchSnapshot();
@@ -190,7 +190,7 @@ test('only with expand arg', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('cannot test with no implementation with expand arg', () => {
+test('tests with no implementation with expand arg', () => {
   const filename = 'only-constructs.test.js';
   const content = `
     it('it', () => {});
@@ -200,7 +200,7 @@ test('cannot test with no implementation with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR, ['--expand']);
-  expect(status).toBe(1);
+  expect(status).toBe(0);
 
   const {summary} = extractSummary(stderr);
   expect(cleanStderr(stderr)).toMatchSnapshot();

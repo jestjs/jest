@@ -448,12 +448,7 @@ export default function(j$) {
           `Invalid first argument, ${description}. It must be a string.`,
         );
       }
-      if (fn === undefined) {
-        throw new Error(
-          'Missing second argument. It must be a callback function.',
-        );
-      }
-      if (typeof fn !== 'function') {
+      if (fn !== undefined && typeof fn !== 'function') {
         throw new Error(
           `Invalid second argument, ${fn}. It must be a callback function.`,
         );
