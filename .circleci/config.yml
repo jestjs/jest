@@ -34,6 +34,10 @@ aliases:
       else
         echo "Skipping deploy."
       fi
+  
+  - &filter-ignore-gh-pages
+    branches:
+      ignore: gh-pages
 
 version: 2
 jobs:
@@ -148,4 +152,5 @@ workflows:
       - test-node-10
       - test-jest-circus
       - test-browser
-      - test-and-deploy-website
+      - test-and-deploy-website:
+          filters: *filter-ignore-gh-pages
