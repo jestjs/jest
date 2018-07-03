@@ -219,7 +219,7 @@ Run tests from one or more projects.
 
 ### `--reporters`
 
-Run tests with specified reporters. [Reporter options](http://jestjs.io/docs/en/configuration#reporters-array-modulename-modulename-options) are not available via CLI. Example with multiple reporters:
+Run tests with specified reporters. [Reporter options](configuration#reporters-array-modulename-modulename-options) are not available via CLI. Example with multiple reporters:
 
 `jest --reporters="default" --reporters="jest-junit"`
 
