@@ -402,7 +402,7 @@ Presets may also be relative filesystem paths.
 }
 ```
 
-### `prettier` [string]
+### `prettierPath` [string]
 
 Default: `'prettier'`
 

@@ -1127,8 +1127,8 @@ describe('watchPlugins', () => {
     );
 
     expect(options.watchPlugins).toEqual([
-      '/node_modules/my-watch-plugin',
-      '/root/path/to/plugin',
+      {config: {}, path: '/node_modules/my-watch-plugin'},
+      {config: {}, path: '/root/path/to/plugin'},
     ]);
   });
 });
