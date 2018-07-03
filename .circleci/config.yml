@@ -13,23 +13,31 @@ aliases:
 
   - &deploy
     command: |
-      # Deploy Jest website using Docusaurus bot
-      git config --global user.email "docusaurus-bot@users.noreply.github.com"
-      git config --global user.name "Website Deployment Script"
-      echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
-      # install Docusaurus and generate file of English strings
-      yarn && cd website && yarn write-translations
-      # crowdin install
-      sudo apt-get update
-      sudo apt-get install default-jre rsync
-      wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
-      sudo dpkg -i crowdin.deb
-      sleep 5
-      # translations upload/download
-      yarn crowdin-upload
-      yarn crowdin-download
-      # build and publish website
-      GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
+      if [[ $CIRCLE_PROJECT_USERNAME == "facebook" && -z $CI_PULL_REQUEST && -z $CIRCLE_PR_USERNAME ]]; then
+        # Deploy Jest website using Docusaurus bot
+        git config --global user.email "docusaurus-bot@users.noreply.github.com"
+        git config --global user.name "Website Deployment Script"
+        echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
+        # install Docusaurus and generate file of English strings
+        yarn && cd website && yarn write-translations
+        # crowdin install
+        sudo apt-get update
+        sudo apt-get install default-jre rsync
+        wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
+        sudo dpkg -i crowdin.deb
+        sleep 5
+        # translations upload/download
+        yarn crowdin-upload
+        yarn crowdin-download
+        # build and publish website
+        GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
+      else
+        echo "Skipping deploy."
+      fi
+  
+  - &filter-ignore-gh-pages
+    branches:
+      ignore: gh-pages
 
 version: 2
 jobs:
@@ -125,6 +133,7 @@ jobs:
     working_directory: ~/jest
     docker:
       - image: circleci/node:8
+    resource_class: large
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -143,4 +152,5 @@ workflows:
       - test-node-10
       - test-jest-circus
       - test-browser
-      - test-and-deploy-website
+      - test-and-deploy-website:
+          filters: *filter-ignore-gh-pages
