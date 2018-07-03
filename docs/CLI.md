@@ -217,6 +217,12 @@ Allows the test suite to pass when no files are found.
 
 Run tests from one or more projects.
 
+### `--reporters`
+
+Run tests with specified reporters. [Reporter options](http://jestjs.io/docs/en/configuration#reporters-array-modulename-modulename-options) are not available via CLI. Example with multiple reporters:
+
+`jest --reporters="default" --reporters="jest-junit"`
+
 ### `--runInBand`
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
