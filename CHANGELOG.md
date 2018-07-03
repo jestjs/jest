@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-cli]` Allow watch plugin to be configured ([#6603](https://github.com/facebook/jest/pull/6603))
 - `[jest-snapshot]` Introduce `toMatchInlineSnapshot` and `toThrowErrorMatchingInlineSnapshot` matchers ([#6380](https://github.com/facebook/jest/pull/6380))
 
 ### Chore & Maintenance
