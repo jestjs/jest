@@ -65,7 +65,7 @@ export default ({
   notifyMode: 'always',
   onlyChanged: false,
   preset: 'react-native',
-  prettier: '<rootDir>/node_modules/prettier',
+  prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
   reporters: [
     'default',

@@ -440,10 +440,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             rootDir: options.rootDir,
           });
         break;
-      case 'prettier':
-        // We only want this to throw if "prettier" is explicitly passed from
-        // config or CLI, and the requested path isn't found. Otherwise we set
-        // it to null and throw an error lazily when it is used.
+      case 'prettierPath':
+        // We only want this to throw if "prettierPath" is explicitly passed
+        // from config or CLI, and the requested path isn't found. Otherwise we
+        // set it to null and throw an error lazily when it is used.
         value =
           options[key] &&
           resolve(newOptions.resolver, {
