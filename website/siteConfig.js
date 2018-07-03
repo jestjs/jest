@@ -50,33 +50,33 @@ const videos = [
 const users = [
   {
     caption: 'Facebook',
-    image: '/jest/img/logos/facebook.png',
+    image: '/img/logos/facebook.png',
     infoLink: 'https://code.facebook.com',
   },
 
   {
     caption: 'Twitter',
-    image: '/jest/img/logos/twitter.png',
+    image: '/img/logos/twitter.png',
     infoLink: 'https://www.twitter.com',
   },
   {
     caption: 'The New York Times',
-    image: '/jest/img/logos/nyt.png',
+    image: '/img/logos/nyt.png',
     infoLink: 'http://www.nytimes.com/',
   },
   {
     caption: 'Spotify',
-    image: '/jest/img/logos/spotify.png',
+    image: '/img/logos/spotify.png',
     infoLink: 'https://www.spotify.com',
   },
   {
     caption: 'Airbnb',
-    image: '/jest/img/logos/airbnb.png',
+    image: '/img/logos/airbnb.png',
     infoLink: 'https://www.airbnb.com/',
   },
   {
     caption: 'Instagram',
-    image: '/jest/img/logos/instagram.png',
+    image: '/img/logos/instagram.png',
     infoLink: 'https://www.instagram.com/',
   },
 ];
@@ -86,8 +86,9 @@ const repoUrl = 'https://github.com/facebook/jest';
 const siteConfig = {
   title: 'Jest',
   tagline: '🃏 Delightful JavaScript Testing',
-  url: 'https://facebook.github.io',
-  baseUrl: '/jest/',
+  url: 'https://jestjs.io',
+  cname: 'jestjs.io',
+  baseUrl: '/',
   projectName: 'jest',
   repo: 'facebook/jest',
   users,
@@ -112,6 +113,9 @@ const siteConfig = {
   algolia: {
     apiKey: process.env.ALGOLIA_JEST_API_KEY,
     indexName: 'jest',
+    algoliaOptions: {
+      facetFilters: ['language:LANGUAGE', 'version:23.0'],
+    },
   },
   gaTrackingId: 'UA-44373548-17',
   colors: {

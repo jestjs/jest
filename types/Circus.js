@@ -194,6 +194,7 @@ export type TestEntry = {|
   asyncError: Exception, // Used if the test failure contains no usable stack trace
   errors: TestError,
   fn: ?TestFn,
+  invocations: number,
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,

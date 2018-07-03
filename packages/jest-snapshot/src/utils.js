@@ -145,8 +145,11 @@ export const serialize = (data: any): string =>
 // unescape double quotes
 export const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
 
+export const escapeBacktickString = (str: string) =>
+  str.replace(/`|\\|\${/g, '\\$&');
+
 const printBacktickString = (str: string) =>
-  '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
+  '`' + escapeBacktickString(str) + '`';
 
 export const ensureDirectoryExists = (filePath: Path) => {
   try {

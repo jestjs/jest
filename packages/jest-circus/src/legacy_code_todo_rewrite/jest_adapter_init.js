@@ -92,7 +92,11 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  const snapshotState = new SnapshotState(testPath, {
+    expand,
+    getPrettier: () => (config.prettier ? localRequire(config.prettier) : null),
+    updateSnapshot,
+  });
   setState({snapshotState, testPath});
 
   // Return it back to the outer scope (test runner outside the VM).
@@ -137,6 +141,7 @@ export const runAndTransformResultsToJestFormat = async ({
       duration: testResult.duration,
       failureMessages: testResult.errors,
       fullName: ancestorTitles.concat(title).join(' '),
+      invocations: testResult.invocations,
       location: testResult.location,
       numPassingAsserts: 0,
       status,
