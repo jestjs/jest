@@ -30,7 +30,7 @@ Watch Usage
  › Press p to filter by a filename regex pattern.
  › Press t to filter by a test name regex pattern.
  › Press q to quit watch mode.
- › Press k to configured prompt.
+ › Press k to filter with a custom prompt.
  › Press Enter to trigger a test run.
 ",
 ]

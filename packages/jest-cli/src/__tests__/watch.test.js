@@ -385,7 +385,10 @@ describe('Watch mode flows', () => {
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
         watchPlugins: [
-          {config: {key: 'k', prompt: 'configured prompt'}, path: pluginPath},
+          {
+            config: {key: 'k', prompt: 'filter with a custom prompt'},
+            path: pluginPath,
+          },
         ],
       }),
       contexts,
