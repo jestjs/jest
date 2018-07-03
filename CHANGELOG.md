@@ -2,11 +2,19 @@
 
 ### Features
 
+- `[jest-cli]` Allow watch plugin to be configured ([#6603](https://github.com/facebook/jest/pull/6603))
 - `[jest-snapshot]` Introduce `toMatchInlineSnapshot` and `toThrowErrorMatchingInlineSnapshot` matchers ([#6380](https://github.com/facebook/jest/pull/6380))
+
+### Fixes
+
+- `[jest-regex-util]` Improve handling already escaped path separators on Windows ([#6523](https://github.com/facebook/jest/pull/6523))
+- `[jest-cli]` Fix `testNamePattern` value with interactive snapshots ([#6579](https://github.com/facebook/jest/pull/6579))
+- `[jest-cli]` Fix enter to interrupt watch mode ([#6601](https://github.com/facebook/jest/pull/6601))
 
 ### Chore & Maintenance
 
 - `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
+- `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
 - `[*]` Transpile object shorthand into Node 4 compatible syntax ([#6582](https://github.com/facebook/jest/pull/6582))
 
 ## 23.2.0

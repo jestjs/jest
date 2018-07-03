@@ -62,6 +62,7 @@ module.exports = {
         'examples/**/*',
         'scripts/**/*',
         'e2e/*/**/*',
+        'website/*.js',
         'website/*/**/*',
         'eslintImportResolver.js',
       ],

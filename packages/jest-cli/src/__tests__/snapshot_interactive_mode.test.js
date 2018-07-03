@@ -43,8 +43,8 @@ describe('SnapshotInteractiveMode', () => {
 
   test('call to run process the first file', () => {
     const assertions = [
-      {path: 'first.js', title: 'test one'},
-      {path: 'second.js', title: 'test two'},
+      {fullName: 'test one', path: 'first.js'},
+      {fullName: 'test two', path: 'second.js'},
     ];
     instance.run(assertions, mockCallback);
     expect(instance.isActive()).toBeTruthy();
@@ -53,8 +53,8 @@ describe('SnapshotInteractiveMode', () => {
 
   test('call to abort', () => {
     const assertions = [
-      {path: 'first.js', title: 'test one'},
-      {path: 'second.js', title: 'test two'},
+      {fullName: 'test one', path: 'first.js'},
+      {fullName: 'test two', path: 'second.js'},
     ];
     instance.run(assertions, mockCallback);
     expect(instance.isActive()).toBeTruthy();
@@ -66,8 +66,8 @@ describe('SnapshotInteractiveMode', () => {
 
   test('call to reset', () => {
     const assertions = [
-      {path: 'first.js', title: 'test one'},
-      {path: 'second.js', title: 'test two'},
+      {fullName: 'test one', path: 'first.js'},
+      {fullName: 'test two', path: 'second.js'},
     ];
     instance.run(assertions, mockCallback);
     expect(instance.isActive()).toBeTruthy();
@@ -85,7 +85,7 @@ describe('SnapshotInteractiveMode', () => {
   });
 
   test('press ENTER trigger a run', () => {
-    const assertions = [{path: 'first.js', title: 'test one'}];
+    const assertions = [{fullName: 'test one', path: 'first.js'}];
     instance.run(assertions, mockCallback);
     instance.put(KEYS.ENTER);
     expect(mockCallback).toHaveBeenCalledTimes(2);
@@ -93,7 +93,7 @@ describe('SnapshotInteractiveMode', () => {
   });
 
   test('skip 1 test, then restart', () => {
-    const assertions = [{path: 'first.js', title: 'test one'}];
+    const assertions = [{fullName: 'test one', path: 'first.js'}];
 
     instance.run(assertions, mockCallback);
     expect(mockCallback).nthCalledWith(1, assertions[0], false);
@@ -113,7 +113,7 @@ describe('SnapshotInteractiveMode', () => {
   });
 
   test('skip 1 test, then quit', () => {
-    const assertions = [{path: 'first.js', title: 'test one'}];
+    const assertions = [{fullName: 'test one', path: 'first.js'}];
 
     instance.run(assertions, mockCallback);
     expect(mockCallback).nthCalledWith(1, assertions[0], false);
@@ -143,7 +143,7 @@ describe('SnapshotInteractiveMode', () => {
       instance.updateWithResults({snapshot: {failure: true}});
     });
 
-    const assertions = [{path: 'first.js', title: 'test one'}];
+    const assertions = [{fullName: 'test one', path: 'first.js'}];
 
     instance.run(assertions, mockCallback);
     expect(mockCallback).nthCalledWith(1, assertions[0], false);
@@ -162,8 +162,8 @@ describe('SnapshotInteractiveMode', () => {
 
   test('skip 2 tests, then finish and restart', () => {
     const assertions = [
-      {path: 'first.js', title: 'test one'},
-      {path: 'first.js', title: 'test two'},
+      {fullName: 'test one', path: 'first.js'},
+      {fullName: 'test two', path: 'first.js'},
     ];
     instance.run(assertions, mockCallback);
     expect(mockCallback).nthCalledWith(1, assertions[0], false);
@@ -207,8 +207,8 @@ describe('SnapshotInteractiveMode', () => {
     });
 
     const assertions = [
-      {path: 'first.js', title: 'test one'},
-      {path: 'first.js', title: 'test two'},
+      {fullName: 'test one', path: 'first.js'},
+      {fullName: 'test two', path: 'first.js'},
     ];
 
     instance.run(assertions, mockCallback);
@@ -255,8 +255,8 @@ describe('SnapshotInteractiveMode', () => {
     });
 
     const assertions = [
-      {path: 'first.js', title: 'test one'},
-      {path: 'first.js', title: 'test two'},
+      {fullName: 'test one', path: 'first.js'},
+      {fullName: 'test two', path: 'first.js'},
     ];
 
     instance.run(assertions, mockCallback);
@@ -303,8 +303,8 @@ describe('SnapshotInteractiveMode', () => {
     });
 
     const assertions = [
-      {path: 'first.js', title: 'test one'},
-      {path: 'first.js', title: 'test two'},
+      {fullName: 'test one', path: 'first.js'},
+      {fullName: 'test two', path: 'first.js'},
     ];
 
     instance.run(assertions, mockCallback);
