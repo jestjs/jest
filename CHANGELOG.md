@@ -4,6 +4,10 @@
 
 - `[jest-snapshot]` Introduce `toMatchInlineSnapshot` and `toThrowErrorMatchingInlineSnapshot` matchers ([#6380](https://github.com/facebook/jest/pull/6380))
 
+### Fixes
+
+- `[jest-regex-util]` Improve handling already escaped path separators on Windows ([#6523](https://github.com/facebook/jest/pull/6523))
+
 ### Chore & Maintenance
 
 - `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
