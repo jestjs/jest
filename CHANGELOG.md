@@ -7,6 +7,7 @@
 ### Chore & Maintenance
 
 - `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
+- `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
 
 ## 23.2.0
 
@@ -29,7 +30,6 @@
 ### Chore & Maintenance
 
 - `[docs]` Add jest-each docs for 1 dimensional arrays ([#6444](https://github.com/facebook/jest/pull/6444/files))
-- `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
 
 ## 23.1.0
 
