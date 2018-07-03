@@ -90,7 +90,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   modulePathIgnorePatterns: [],
   modulePaths: [],
   name: 'test_name',
-  prettier: 'prettier',
+  prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,
   resolver: null,
