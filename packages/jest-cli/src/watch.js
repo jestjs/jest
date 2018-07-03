@@ -263,7 +263,7 @@ export default function watch(
     if (
       isRunning &&
       testWatcher &&
-      !['q', KEYS.ENTER, 'a', 'o', 'f'].concat(pluginKeys).includes(key)
+      ['q', KEYS.ENTER, 'a', 'o', 'f'].concat(pluginKeys).includes(key)
     ) {
       testWatcher.setState({interrupted: true});
       return;
