@@ -19,11 +19,11 @@ request(
       for (const key of REQUIRED_KEYS) {
         if (!item || typeof item !== 'object')
           throw new Error(
-            `backer info item (${JSON.stringify(item)} is not an object`,
+            `backer info item (${JSON.stringify(item)} is not an object`
           );
         if (!(key in item))
           throw new Error(
-            `backer info item (${JSON.stringify(item)} doesn't include ${key}`,
+            `backer info item (${JSON.stringify(item)} doesn't include ${key}`
           );
       }
     }
@@ -33,5 +33,5 @@ request(
         console.error('Failed to write backers file: ', err);
       } else console.log('Fetched 1 file: backers.json');
     });
-  },
+  }
 );
