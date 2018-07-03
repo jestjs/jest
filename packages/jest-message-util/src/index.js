@@ -153,7 +153,10 @@ export const formatExecError = (
   return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
 };
 
-const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
+const removeInternalStackEntries = (
+  lines: string[],
+  options: StackTraceOptions,
+): string[] => {
   let pathCounter = 0;
 
   return lines.filter(line => {
@@ -221,7 +224,12 @@ const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-const getTopFrame = (lines: string[]) => {
+export const getStackTraceLines = (
+  stack: string,
+  options: StackTraceOptions = {noStackTrace: false},
+) => removeInternalStackEntries(stack.split(/\n/), options);
+
+export const getTopFrame = (lines: string[]) => {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -243,14 +251,12 @@ export const formatStackTrace = (
   options: StackTraceOptions,
   testPath: ?Path,
 ) => {
-  let lines = stack.split(/\n/);
+  const lines = getStackTraceLines(stack, options);
+  const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
-  lines = removeInternalStackEntries(lines, options);
-
-  const topFrame = getTopFrame(lines);
 
   if (topFrame) {
     const filename = topFrame.file;

@@ -80,7 +80,7 @@ it('works with promises', () => {
 
 We call `jest.mock('../request')` to tell Jest to use our manual mock. `it` expects the return value to be a Promise that is going to be resolved. You can chain as many Promises as you like and call `expect` at any time, as long as you return a Promise at the end.
 
-### `.resolves`
+## `.resolves`
 
 There is a less verbose way using `resolves` to unwrap the value of a fulfilled promise together with any other matcher. If the promise is rejected, the assertion will fail.
 
@@ -91,7 +91,7 @@ it('works with resolves', () => {
 });
 ```
 
-### `async`/`await`
+## `async`/`await`
 
 Writing tests using the `async`/`await` syntax is easy. Here is how you'd write the same examples from before:
 
@@ -112,7 +112,7 @@ it('works with async/await and resolves', async () => {
 
 To enable async/await in your project, install [`babel-preset-env`](http://babeljs.io/docs/plugins/preset-env/) and enable the feature in your `.babelrc` file.
 
-### Error handling
+## Error handling
 
 Errors can be handled using the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test:
 
@@ -140,7 +140,7 @@ it('tests error with async/await', async () => {
 });
 ```
 
-### `.rejects`
+## `.rejects`
 
 The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail.
 

@@ -80,6 +80,7 @@ export const makeTest = (
     duration: null,
     errors: [],
     fn,
+    invocations: 0,
     mode: _mode,
     name: convertDescriptorToString(name),
     parent,
@@ -276,6 +277,7 @@ const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
     testResults.push({
       duration: test.duration,
       errors: test.errors.map(_formatError),
+      invocations: test.invocations,
       location,
       status,
       testPath,

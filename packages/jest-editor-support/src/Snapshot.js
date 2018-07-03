@@ -89,14 +89,7 @@ const buildName: (
 ) => string = (snapshotNode, parents, position) => {
   const fullName = parents.map(parent => parent.arguments[0].value).join(' ');
 
-  let describeLess = '';
-  if (!isDescribe(parents[0].callee)) {
-    // If `it` or `test` exists without a surrounding `describe`
-    // then `test ` is prepended to the snapshot fullName.
-    describeLess = 'test ';
-  }
-
-  return utils.testNameToKey(describeLess + fullName, position);
+  return utils.testNameToKey(fullName, position);
 };
 
 export default class Snapshot {
