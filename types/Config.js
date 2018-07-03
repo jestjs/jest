@@ -235,7 +235,7 @@ export type GlobalConfig = {|
   watch: boolean,
   watchAll: boolean,
   watchman: boolean,
-  watchPlugins: ?Array<string | [string, Object]>,
+  watchPlugins: ?Array<{path: string, config: Object}>,
 |};
 
 export type ProjectConfig = {|
