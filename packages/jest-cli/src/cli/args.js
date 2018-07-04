@@ -67,7 +67,7 @@ export const check = (argv: Argv) => {
 
 export const usage =
   'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
-export const docs = 'Documentation: https://facebook.github.io/jest/';
+export const docs = 'Documentation: https://jestjs.io/';
 
 export const options = {
   all: {

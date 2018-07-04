@@ -632,7 +632,7 @@ class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-            `See: http://jestjs.io/docs/manual-mocks.html#content`,
+            `See: https://jestjs.io/docs/manual-mocks.html#content`,
         );
       }
       this._mockMetaDataCache[modulePath] = mockMetadata;

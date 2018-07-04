@@ -18,6 +18,7 @@
 - `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
 - `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
 - `[*]` Transpile object shorthand into Node 4 compatible syntax ([#6582](https://github.com/facebook/jest/pull/6582))
+- `[*]` Update all legacy links to jestjs.io ([#6622](https://github.com/facebook/jest/pull/6622))
 
 ## 23.2.0
 
@@ -921,7 +922,7 @@
 
 ## jest 18.0.0
 
-See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
+See https://jestjs.io/blog/2016/12/15/2016-in-jest.html
 
 - The testResultsProcessor function is now required to return the modified results.
 - Removed `pit` and `mockImpl`. Use `it` or `mockImplementation` instead.
@@ -1058,7 +1059,7 @@ See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
 
 ## jest 15.0.0
 
-- See https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
+- See https://jestjs.io/blog/2016/09/01/jest-15.html
 - Jest by default now also recognizes files ending in `.spec.js` and `.test.js` as test files.
 - Completely replaced most Jasmine matchers with new Jest matchers.
 - Rewrote Jest's CLI output for test failures and summaries.
@@ -1152,7 +1153,7 @@ See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
 - Added `jest-resolve` as a standalone package based on the Facebook module resolution algorithm.
 - Added `jest-changed-files` as a standalone package to detect changed files in a git or hg repo.
 - Added `--setupTestFrameworkFile` to cli.
-- Added support for coverage thresholds. See http://facebook.github.io/jest/docs/api.html#coveragethreshold-object.
+- Added support for coverage thresholds. See https://jestjs.io/docs/en/configuration#coveragethreshold-object.
 - Updated to jsdom 9.0.
 - Updated and improved stack trace reporting.
 - Added `module.filename` and removed the invalid `module.__filename` field.

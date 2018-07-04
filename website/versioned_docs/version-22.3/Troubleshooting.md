@@ -240,4 +240,4 @@ Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istan
 
 ## Still unresolved?
 
-See [Help](/jest/help.html).
+See [Help](/help.html).
