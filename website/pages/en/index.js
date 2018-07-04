@@ -293,7 +293,7 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Easily create code coverage reports using
-                      [`--coverage`](https://facebook.github.io/jest/docs/en/cli.html#coverage).
+                      [`--coverage`](https://jestjs.io/docs/en/cli.html#coverage).
                       No additional setup or libraries needed! Jest can collect
                       code coverage information from entire projects, including
                       untested files.
@@ -361,10 +361,9 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Powerful [mocking
-                      library](/jest/docs/en/mock-functions.html) for functions
-                      and modules. Mock React Native components using
-                      `jest-react-native`.
+                      Powerful [mocking library](/docs/en/mock-functions.html)
+                      for functions and modules. Mock React Native components
+                      using `jest-react-native`.
                     </translate>
                   ),
                   image: '/img/content/feature-mocking.png',

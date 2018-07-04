@@ -84,7 +84,7 @@ const generateConfigFile = (results: {[string]: boolean}): string => {
 
   return (
     '// For a detailed explanation regarding each configuration property, visit:\n' +
-    '// https://facebook.github.io/jest/docs/en/configuration.html\n\n' +
+    '// https://jestjs.io/docs/en/configuration.html\n\n' +
     'module.exports = {\n' +
     properties.join('\n') +
     '};\n'
