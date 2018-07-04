@@ -36,7 +36,7 @@ Finally, we are now properly mapping code coverage when using TypeScript and we 
 
 We made a number of additions and improvements to the testing APIs which will help write more effective tests. We'd like to point out that all of these improvements were made entirely by community members!
 
-- **Better async testing:** Added new async/Promise support through resolves/rejects modifiers on expect: `expect(Promise(…)).resolves.toEqual(…)`. [See documentation](https://facebook.github.io/jest/docs/en/expect.html#resolves).
+- **Better async testing:** Added new async/Promise support through resolves/rejects modifiers on expect: `expect(Promise(…)).resolves.toEqual(…)`. [See documentation](https://jestjs.io/docs/en/expect.html#resolves).
 - **Expect <n> assertions:** Along with the existing `expect.assertions(n)`, the new `expect.hasAssertions()` can be used to ensure a test has at least one assertion.
 - **Lint Plugin:** A `valid-expect` rule was added to `eslint-plugin-jest` to ensure that an assertion is called after invoking `expect`. This will prevent mistakes like a stray `expect(banana);` with a missing assertion call.
 - **Pretty-Format Plugins:** A number of new pretty-format plugins were added to Jest. We now pretty-print [Immutable.js](https://github.com/facebook/immutable-js/) data structures and HtmlElements in assertion failures and snapshots.
@@ -76,7 +76,7 @@ As with every major release, we are making a number of breaking changes to make 
 
 - **Documentation:** Documentation is critical to share best practices and teach everyone how to write effective tests which will lead to better software. Over the last few weeks we have also expanded Jest's documentation to include a Snapshot Testing FAQ, a guide with information about how to use Jest with common JavaScript libraries as well as we documented the new features mentioned above.
 - **Translations:** We are now asking for your help to [translate the Jest documentation](https://crowdin.com/project/jest) to make it easier for people to learn how to use Jest.
-- **Custom Reporters:** Jest now supports custom test reporters through the `reporters` configuration option. You can finally customize the output of Jest as well as integrate it with other tools by generating reports in formats such as XML. [See documentation](https://facebook.github.io/jest/docs/en/configuration.html#reporters-array-modulename-modulename-options).
+- **Custom Reporters:** Jest now supports custom test reporters through the `reporters` configuration option. You can finally customize the output of Jest as well as integrate it with other tools by generating reports in formats such as XML. [See documentation](https://jestjs.io/docs/en/configuration.html#reporters-array-modulename-modulename-options).
 - **Codebase Health:** It was only possible iterate so quickly in Jest because we spent a significant amount of time on the health of the codebase. We were one of the early adopters of [prettier](https://github.com/prettier/prettier), we notably increased flow coverage, forked Jasmine to improve our test runner library and we rewrote and refactored significant portions of Jest itself to set up Jest for success in the future.
 - **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full changelog can be found in the [Jest repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
 

@@ -20,7 +20,7 @@ import {createProcess} from './Process';
 // settings object will be in memory.
 
 // Ideally anything you care about adding should have a default in
-// the constructor see https://facebook.github.io/jest/docs/configuration.html
+// the constructor see https://jestjs.io/docs/configuration.html
 // for full deets
 
 // For now, this is all we care about inside the config
