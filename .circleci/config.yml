@@ -11,10 +11,10 @@ aliases:
       - website/node_modules
     key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
-  - &deploy
+  - &website
     command: |
       if [[ $CIRCLE_PROJECT_USERNAME == "facebook" && -z $CI_PULL_REQUEST && -z $CIRCLE_PR_USERNAME ]]; then
-        # Deploy Jest website using Docusaurus bot
+        # configure Docusaurus bot
         git config --global user.email "docusaurus-bot@users.noreply.github.com"
         git config --global user.name "Website Deployment Script"
         echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
@@ -32,7 +32,8 @@ aliases:
         # build and publish website
         GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
       else
-        echo "Skipping deploy."
+        echo "Skipping deploy. Test website build"
+        cd website && yarn && yarn build
       fi
   
   - &filter-ignore-gh-pages
@@ -129,7 +130,7 @@ jobs:
       - store_test_results:
                 path: reports/junit
 
-  test-and-deploy-website:
+  test-or-deploy-website:
     working_directory: ~/jest
     docker:
       - image: circleci/node:8
@@ -139,7 +140,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - deploy: *deploy
+      - run: *website
 
 # Workflows enables us to run multiple jobs in parallel
 workflows:
@@ -152,5 +153,5 @@ workflows:
       - test-node-10
       - test-jest-circus
       - test-browser
-      - test-and-deploy-website:
+      - test-or-deploy-website:
           filters: *filter-ignore-gh-pages
