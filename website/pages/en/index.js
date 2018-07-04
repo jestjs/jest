@@ -17,6 +17,8 @@ const translation = require('../../server/translation.js');
 const backers = require(process.cwd() + '/backers.json');
 
 const siteConfig = require(process.cwd() + '/siteConfig.js');
+const idx = (target, path) =>
+  path.reduce((obj, key) => (obj && obj[key] ? obj[key] : null), target);
 
 class Button extends React.Component {
   render() {
@@ -130,10 +132,11 @@ class HomeSplash extends React.Component {
               <h2 className="projectTitle">
                 {siteConfig.title}
                 <small>
-                  {
-                    translation[this.props.language]['localized-strings']
-                      .tagline
-                  }
+                  {idx(translation, [
+                    this.props.language,
+                    'localized-strings',
+                    'tagline',
+                  ]) || siteConfig.tagline}
                 </small>
               </h2>
               <div className="section promoSection">
