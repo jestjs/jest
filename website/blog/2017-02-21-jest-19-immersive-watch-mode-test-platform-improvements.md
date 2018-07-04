@@ -105,7 +105,7 @@ We're happy to announce that `jest-validate` is validating config options of [pr
 
 ## Improved asymmetric matchers
 
-We moved the asymmetric matchers implementation from Jasmine into Jest, which enabled us to further improve the user experience around them. As a result, asymmetric matchers are now pretty-printed nicely, we added the new [`expect.stringContaining()`](http://facebook.github.io/jest/docs/expect.html#expectstringcontainingstring) matcher and we also paired them with [`expect.toMatchObject()`](http://facebook.github.io/jest/docs/expect.html#tomatchobjectobject) so you can use the best of both:
+We moved the asymmetric matchers implementation from Jasmine into Jest, which enabled us to further improve the user experience around them. As a result, asymmetric matchers are now pretty-printed nicely, we added the new [`expect.stringContaining()`](https://jestjs.io/docs/expect.html#expectstringcontainingstring) matcher and we also paired them with [`expect.toMatchObject()`](https://jestjs.io/docs/expect.html#tomatchobjectobject) so you can use the best of both:
 
 ![asymmetric-matchers](/img/blog/19-asymmetric-matchers.png)
 
@@ -124,7 +124,7 @@ As you may have already seen, [Hector Ramos](https://twitter.com/hectorramos) an
 - Under [Docs](https://jestjs.io/docs/getting-started.html#content) you can find an introduction to Jest, including [Getting Started](https://jestjs.io/docs/getting-started.html#content) or [Testing Asynchronous Code](https://jestjs.io/docs/asynchronous.html#content) and handy guides like [Snapshot Testing](https://jestjs.io/docs/snapshot-testing.html#content), [Testing React Native App](https://jestjs.io/docs/tutorial-react-native.html#content), [Using with webpack](https://jestjs.io/docs/webpack.html#content) or [Migrating to Jest](https://jestjs.io/docs/migration-guide.html#content) and many more!
 - The [API](https://jestjs.io/docs/api.html) section on the other hand lists all available methods exposed by Jest: the `expect` and `jest` objects, mock functions, globals, along with configuration options from _package.json_ and from the CLI.
 
-The homepage was completely redesigned to be more descriptive of what Jest is about: “_Zero configuration testing platform_”. We also made sure it reads better on mobile devices. And for those using RSS – we finally provide a [feed for our blog](http://facebook.github.io/jest/blog/feed.xml).
+The homepage was completely redesigned to be more descriptive of what Jest is about: “_Zero configuration testing platform_”. We also made sure it reads better on mobile devices. And for those using RSS – we finally provide a [feed for our blog](https://jestjs.io/blog/feed.xml).
 
 ## Community Updates
 

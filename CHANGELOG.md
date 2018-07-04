@@ -1151,7 +1151,7 @@ See https://jestjs.io/blog/2016/12/15/2016-in-jest.html
 - Added `jest-resolve` as a standalone package based on the Facebook module resolution algorithm.
 - Added `jest-changed-files` as a standalone package to detect changed files in a git or hg repo.
 - Added `--setupTestFrameworkFile` to cli.
-- Added support for coverage thresholds. See http://facebook.github.io/jest/docs/api.html#coveragethreshold-object.
+- Added support for coverage thresholds. See https://jestjs.io/docs/en/configuration#coveragethreshold-object.
 - Updated to jsdom 9.0.
 - Updated and improved stack trace reporting.
 - Added `module.filename` and removed the invalid `module.__filename` field.

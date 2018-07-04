@@ -54,7 +54,7 @@
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
   },
-  "homepage": "http://jestjs.io/",
+  "homepage": "https://jestjs.io/",
   "license": "MIT",
   "keywords": [
     "ava",

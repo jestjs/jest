@@ -227,7 +227,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### What's the difference between snapshot testing and visual regression testing?
 
-Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing).
 
 ### Does snapshot testing substitute unit testing?
 

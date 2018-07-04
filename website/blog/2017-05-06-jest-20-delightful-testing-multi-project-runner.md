@@ -5,7 +5,7 @@ authorURL: http://twitter.com/cpojer
 authorFBID: 100000023028168
 ---
 
-A few months ago we announced [Jest 19](http://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html) which came with major new features and was the biggest Jest release until today. Jest 20 has twice the amount of changes compared to the previous version, features a complete rewrite of the test runner, adds new testing APIs. The new release enables a new level of customization and configuration for projects all while making it effortless to upgrade. Beyond Painless JavaScript Testing, we believe Jest is now delivering a **Delightful JavaScript Testing experience**. Let's take a look at the best new features and changes in depth:
+A few months ago we announced [Jest 19](https://jestjs.io/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html) which came with major new features and was the biggest Jest release until today. Jest 20 has twice the amount of changes compared to the previous version, features a complete rewrite of the test runner, adds new testing APIs. The new release enables a new level of customization and configuration for projects all while making it effortless to upgrade. Beyond Painless JavaScript Testing, we believe Jest is now delivering a **Delightful JavaScript Testing experience**. Let's take a look at the best new features and changes in depth:
 
 ## Multi-Project-Runner & Configuration Overhaul
 
