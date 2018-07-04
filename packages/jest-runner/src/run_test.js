@@ -190,7 +190,9 @@ async function runTestInternal(
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    await environment.teardown();
+    if (typeof environment.teardown === 'function') {
+      await environment.teardown();
+    }
 
     sourcemapSupport.resetRetrieveHandlers();
   }
