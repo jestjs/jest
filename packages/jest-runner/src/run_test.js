@@ -146,7 +146,9 @@ async function runTestInternal(
   sourcemapSupport.install(sourcemapOptions);
 
   try {
-    await environment.setup();
+    if (typeof environment.setup === 'function') {
+      await environment.setup();
+    }
 
     let result: TestResult;
 
