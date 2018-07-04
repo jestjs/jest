@@ -77,9 +77,9 @@ We now also error on invalid CLI arguments instead of ignoring them. But we've g
 
 ## `expect` Improvements
 
-- [`expect.addSnapshotSerializer`](/jest/docs/expect.html#expectaddsnapshotserializerserializer)
-- [`expect.stringContaining`](/jest/docs/expect.html#expectstringcontainingstring)
-- [`jest.spyOn`](/jest/docs/jest-object.html#jestspyonobject-methodname)
+- [`expect.addSnapshotSerializer`](/docs/expect.html#expectaddsnapshotserializerserializer)
+- [`expect.stringContaining`](/docs/expect.html#expectstringcontainingstring)
+- [`jest.spyOn`](/docs/jest-object.html#jestspyonobject-methodname)
 
 We're close to almost full feature parity with the `expect` npm package. [Michael Jackson](https://twitter.com/mjackson), the author of the package, agreed to [donate](https://github.com/facebook/jest/issues/1679) it to the Jest project, which means that `jest-matchers` will be renamed to `expect`. Since our version of `expect` is not intended to be fully compatible, [Christopher Chedeau](https://twitter.com/Vjeux) is working on a codemod to make the transition painless. Christopher also worked on a number of improvements to `jest-matchers` which enables it to be used outside of Jest and even [works inside browsers](https://github.com/facebook/jest/pull/2795).
 
