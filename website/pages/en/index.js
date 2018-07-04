@@ -361,10 +361,9 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Powerful [mocking
-                      library](/docs/en/mock-functions.html) for functions
-                      and modules. Mock React Native components using
-                      `jest-react-native`.
+                      Powerful [mocking library](/docs/en/mock-functions.html)
+                      for functions and modules. Mock React Native components
+                      using `jest-react-native`.
                     </translate>
                   ),
                   image: '/img/content/feature-mocking.png',
