@@ -1,5 +1,7 @@
 ## master
 
+## 23.3.0
+
 ### Features
 
 - `[jest-cli]` Allow watch plugin to be configured ([#6603](https://github.com/facebook/jest/pull/6603))
