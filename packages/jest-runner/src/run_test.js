@@ -146,7 +146,9 @@ async function runTestInternal(
   sourcemapSupport.install(sourcemapOptions);
 
   try {
-    await environment.setup();
+    if (typeof environment.setup === 'function') {
+      await environment.setup();
+    }
 
     let result: TestResult;
 
@@ -190,7 +192,9 @@ async function runTestInternal(
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    await environment.teardown();
+    if (typeof environment.teardown === 'function') {
+      await environment.teardown();
+    }
 
     sourcemapSupport.resetRetrieveHandlers();
   }
