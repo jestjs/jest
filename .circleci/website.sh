@@ -2,10 +2,9 @@
 
 set -e
 
-WEBSITE_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E -c "(^docs\/.*)|(^website\/.*)")
-if [[ $WEBSITE_CHANGED == 0 ]]; then
+FILES_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD)
+if grep -E "(^docs\/.*)|(^website\/.*)" $FILES_CHANGED; then
     echo "Skipping deploy & test. No relevant website files has changed"
-    exit 0;
 else
     if [[ $CIRCLE_PROJECT_USERNAME == "facebook" && -z $CI_PULL_REQUEST && -z $CIRCLE_PR_USERNAME ]]; then
         # configure Docusaurus bot
