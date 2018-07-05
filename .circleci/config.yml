@@ -13,6 +13,11 @@ aliases:
 
   - &website
     command: |
+      WEBSITE_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E -c "(^docs\/.*)|(^website\/.*)")
+      if [[ $WEBSITE_CHANGED == 0 ]]; then
+          echo "No relevant website files has changed"
+          exit 0;
+      fi
       if [[ $CIRCLE_PROJECT_USERNAME == "facebook" && -z $CI_PULL_REQUEST && -z $CIRCLE_PR_USERNAME ]]; then
         # configure Docusaurus bot
         git config --global user.email "docusaurus-bot@users.noreply.github.com"
