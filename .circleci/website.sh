@@ -23,8 +23,8 @@ else
         yarn crowdin-download
         # build and publish website
         GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
-      else
+    else
         echo "Skipping deploy. Test website build"
         cd website && yarn && yarn build
-      fi
+    fi
 fi
