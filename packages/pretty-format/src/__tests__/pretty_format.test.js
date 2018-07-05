@@ -234,6 +234,11 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('2001-09-09T01:46:40.000Z');
   });
 
+  it('prints an invalid date', () => {
+    const val = new Date(Infinity);
+    expect(prettyFormat(val)).toEqual('invalid-date');
+  });
+
   it('prints an empty object', () => {
     const val = {};
     expect(prettyFormat(val)).toEqual('Object {}');
