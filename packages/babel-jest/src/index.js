@@ -31,7 +31,7 @@ const THIS_FILE = fs.readFileSync(__filename);
 const createTransformer = (options: any): Transformer => {
   const cache = Object.create(null);
 
-  const getBabelRC = filename => {
+  const getBabelOptions = filename => {
     const paths = [];
     let directory = filename;
     while (directory !== (directory = path.dirname(directory))) {
@@ -42,13 +42,13 @@ const createTransformer = (options: any): Transformer => {
       paths.push(directory);
       const configFilePath = path.join(directory, BABELRC_FILENAME);
       if (fs.existsSync(configFilePath)) {
-        cache[directory] = fs.readFileSync(configFilePath, 'utf8');
+        cache[directory] = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
         break;
       }
       const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
       if (fs.existsSync(configJsFilePath)) {
         // $FlowFixMe
-        cache[directory] = JSON.stringify(require(configJsFilePath));
+        cache[directory] = require(configJsFilePath);
         break;
       }
       const resolvedJsonFilePath = path.join(directory, PACKAGE_JSON);
@@ -60,25 +60,14 @@ const createTransformer = (options: any): Transformer => {
         // $FlowFixMe
         const packageJsonFileContents = require(packageJsonFilePath);
         if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
-          cache[directory] = JSON.stringify(
-            packageJsonFileContents[BABEL_CONFIG_KEY],
-          );
+          cache[directory] = packageJsonFileContents[BABEL_CONFIG_KEY];
           break;
         }
       }
     }
     paths.forEach(directoryPath => (cache[directoryPath] = cache[directory]));
-    return cache[directory] || '';
+    return cache[directory] || {};
   };
-
-  options = Object.assign({}, options, {
-    compact: false,
-    plugins: (options && options.plugins) || [],
-    presets: ((options && options.presets) || []).concat([jestPreset]),
-    sourceMaps: 'both',
-  });
-  delete options.cacheDirectory;
-  delete options.filename;
 
   return {
     canInstrument: true,
@@ -98,7 +87,7 @@ const createTransformer = (options: any): Transformer => {
         .update('\0', 'utf8')
         .update(configString)
         .update('\0', 'utf8')
-        .update(getBabelRC(filename))
+        .update(JSON.stringify(getBabelOptions(filename)))
         .update('\0', 'utf8')
         .update(instrument ? 'instrument' : '')
         .digest('hex');
@@ -116,7 +105,19 @@ const createTransformer = (options: any): Transformer => {
         return src;
       }
 
-      const theseOptions = Object.assign({filename}, options);
+      // Preserve previous behavior where the provided options are used if set,
+      // falling back to detecting the closest .babelrc file in parent-folders.
+      const babelOptions = options || getBabelOptions(filename);
+      const theseOptions = Object.assign({}, babelOptions, {
+        compact: false,
+        filename,
+        plugins: (babelOptions && babelOptions.plugins) || [],
+        presets: ((babelOptions && babelOptions.presets) || []).concat([
+          jestPreset,
+        ]),
+        sourceMaps: 'both',
+      });
+      delete theseOptions.cacheDirectory;
       if (transformOptions && transformOptions.instrument) {
         theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js
