@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 WEBSITE_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E -c "(^docs\/.*)|(^website\/.*)")
 if [[ $WEBSITE_CHANGED == 0 ]]; then
     echo "Skipping deploy & test. No relevant website files has changed"
