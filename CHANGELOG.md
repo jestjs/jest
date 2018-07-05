@@ -21,6 +21,7 @@
 - `[*]` Update all legacy links to jestjs.io ([#6622](https://github.com/facebook/jest/pull/6622))
 - `[docs]` Add docs for 23.1, 23.2, and 23.3 ([#6623](https://github.com/facebook/jest/pull/6623))
 - `[website]` Only test/deploy website if relevant files are changed ([#6626](https://github.com/facebook/jest/pull/6626))
+- `[docs]` Describe behavior of `resetModules` option when set to `false` ([#6641](https://github.com/facebook/jest/pull/6641))
 
 ## 23.2.0
 
