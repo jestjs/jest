@@ -19,7 +19,6 @@ else
         sudo apt-get install default-jre rsync
         wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
         sudo dpkg -i crowdin.deb
-        sleep 5
         # translations upload/download
         yarn crowdin-upload
         yarn crowdin-download
