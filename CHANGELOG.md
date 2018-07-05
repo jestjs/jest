@@ -19,6 +19,7 @@
 - `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
 - `[*]` Transpile object shorthand into Node 4 compatible syntax ([#6582](https://github.com/facebook/jest/pull/6582))
 - `[*]` Update all legacy links to jestjs.io ([#6622](https://github.com/facebook/jest/pull/6622))
+- `[docs]` Add docs for 23.1, 23.2, and 23.3 ([#6623](https://github.com/facebook/jest/pull/6623))
 
 ## 23.2.0
 
