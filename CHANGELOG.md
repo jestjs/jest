@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+- `[pretty-format]` Fix formatting of invalid Date objects ([#6635](https://github.com/facebook/jest/pull/6635))
+
 ## 23.3.0
 
 ### Features
@@ -12,7 +16,6 @@
 - `[jest-regex-util]` Improve handling already escaped path separators on Windows ([#6523](https://github.com/facebook/jest/pull/6523))
 - `[jest-cli]` Fix `testNamePattern` value with interactive snapshots ([#6579](https://github.com/facebook/jest/pull/6579))
 - `[jest-cli]` Fix enter to interrupt watch mode ([#6601](https://github.com/facebook/jest/pull/6601))
-- `[pretty-format]` Fix formatting of invalid Date objects ([#6635](https://github.com/facebook/jest/pull/6635))
 
 ### Chore & Maintenance
 
