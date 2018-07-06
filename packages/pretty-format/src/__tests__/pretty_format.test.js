@@ -236,7 +236,7 @@ describe('prettyFormat()', () => {
 
   it('prints an invalid date', () => {
     const val = new Date(Infinity);
-    expect(prettyFormat(val)).toEqual('invalid-date');
+    expect(prettyFormat(val)).toEqual('Date { NaN }');
   });
 
   it('prints an empty object', () => {
