@@ -47,6 +47,7 @@
 - `[jest-cli]` Write configuration to stdout when the option was explicitly passed to Jest ([#6447](https://github.com/facebook/jest/pull/6447))
 - `[jest-cli]` Fix regression on non-matching suites ([6657](https://github.com/facebook/jest/pull/6657))
 - `[jest-runtime]` Roll back `micromatch` version to prevent regression when matching files ([#6661](https://github.com/facebook/jest/pull/6661))
+- `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
 
 ## 23.3.0
 
