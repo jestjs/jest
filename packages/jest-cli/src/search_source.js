@@ -47,7 +47,9 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  const matchers = globs.map(each => micromatch.matcher(each, {dot: true}));
+  const matchers = globs.map(each =>
+    micromatch.matcher(each.replace(/\\\\/g, '/'), {dot: true}),
+  );
   return path => matchers.some(each => each(path));
 };
 
