@@ -36,6 +36,13 @@ type MockFunctionResultType = 'return' | 'throw' | 'incomplete';
  */
 type MockFunctionResult = {
   /**
+   * True if the call completed by throwing.
+   * False if the call completed by returning.
+   * Undefined if the call has not yet completed.
+   * @deprecated Use {@link #type} instead.
+   */
+  isThrow: boolean | undefined,
+  /**
    * Indicates how the call completed.
    */
   type: MockFunctionResultType,
@@ -360,6 +367,7 @@ class ModuleMockerClass {
         const mockResult = {
           type: 'incomplete',
           value: undefined,
+          isThrow: undefined
         };
         mockState.results.push(mockResult);
         mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
@@ -446,6 +454,7 @@ class ModuleMockerClass {
           //       is called during the execution of the mock.
           mockResult.type = callDidThrowError ? 'throw' : 'return';
           mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
+          mockResult.isThrow = callDidThrowError;
         }
 
         return finalReturnValue;
