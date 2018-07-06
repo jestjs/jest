@@ -365,9 +365,9 @@ class ModuleMockerClass {
         // issues caused by recursion where results can be recorded in the
         // wrong order.
         const mockResult = {
+          isThrow: undefined,
           type: 'incomplete',
           value: undefined,
-          isThrow: undefined
         };
         mockState.results.push(mockResult);
         mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
