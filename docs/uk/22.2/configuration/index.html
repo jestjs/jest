@@ -9,8 +9,10 @@
             </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/uk"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/uk/versions"><h3>22.2</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/uk/22.2/getting-started" target="_self">Документація</a></li><li class="siteNavGroupActive"><a href="/docs/uk/22.2/api" target="_self">API</a></li><li class=""><a href="/uk/help" target="_self">Допомога</a></li><li class=""><a href="/blog" target="_self">Блог</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg"/>Українська</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/22.2/configuration">English</a></li><li><a href="/docs/ja/22.2/configuration">日本語</a></li><li><a href="/docs/es-ES/22.2/configuration">Español</a></li><li><a href="/docs/pt-BR/22.2/configuration">Português (Brasil)</a></li><li><a href="/docs/ro/22.2/configuration">Română</a></li><li><a href="/docs/ru/22.2/configuration">Русский</a></li><li><a href="/docs/zh-Hans/22.2/configuration">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
-        languagesMenuItem.addEventListener("click", function(){
-          if(languagesDropDown.className == "hide") {
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
             languagesDropDown.className = "visible";
           } else {
             languagesDropDown.className = "hide";
@@ -606,6 +608,6 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
                 apiKey: '833906d7486e4059359fa58823c4ef56',
                 indexName: 'jest',
                 inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:uk","version:23.3"]}
+                algoliaOptions: {"facetFilters":["language:uk","version:22.2"]}
               });
             </script></body></html>

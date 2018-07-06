@@ -9,8 +9,10 @@
             </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>next</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/next/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/next/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/next/es6-class-mocks">English</a></li><li><a href="/docs/ja/next/es6-class-mocks">日本語</a></li><li><a href="/docs/es-ES/next/es6-class-mocks">Español</a></li><li><a href="/docs/ro/next/es6-class-mocks">Română</a></li><li><a href="/docs/ru/next/es6-class-mocks">Русский</a></li><li><a href="/docs/uk/next/es6-class-mocks">Українська</a></li><li><a href="/docs/zh-Hans/next/es6-class-mocks">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
-        languagesMenuItem.addEventListener("click", function(){
-          if(languagesDropDown.className == "hide") {
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
             languagesDropDown.className = "visible";
           } else {
             languagesDropDown.className = "hide";
@@ -300,6 +302,6 @@ it(<span class="hljs-string">'We can check if the consumer called a method on th
                 apiKey: '833906d7486e4059359fa58823c4ef56',
                 indexName: 'jest',
                 inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:pt-BR","version:23.3"]}
+                algoliaOptions: {"facetFilters":["language:pt-BR","version:next"]}
               });
             </script></body></html>
