@@ -47,8 +47,7 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  const matchers = globs.map(each => micromatch.matcher(each, {dot: true}));
-  return path => matchers.some(each => each(path));
+  return path => micromatch([path], globs, {dot: true}).length > 0;
 };
 
 const regexToMatcher = (testRegex: string) => {
