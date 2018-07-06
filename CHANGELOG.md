@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+- `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
+
 ## 23.3.0
 
 ### Features

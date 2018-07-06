@@ -30,7 +30,7 @@ import TestRunner from 'jest-runner';
 import TestWatcher from './test_watcher';
 import VerboseReporter from './reporters/verbose_reporter';
 
-const SLOW_TEST_TIME = 3000;
+const SLOW_TEST_TIME = 1000;
 
 // The default jest-runner is required because it is the default test runner
 // and required implicitly through the `runner` ProjectConfig option.
@@ -85,15 +85,25 @@ export default class TestScheduler {
       getEstimatedTime(timings, this._globalConfig.maxWorkers) / 1000,
     );
 
-    // Run in band if we only have one test or one worker available.
-    // If we are confident from previous runs that the tests will finish quickly
-    // we also run in band to reduce the overhead of spawning workers.
-    const runInBand =
+    // Run in band if we only have one test or one worker available, unless we
+    // are using the watch mode, in which case the TTY has to be responsive and
+    // we cannot schedule anything in the main thread. Same logic applies to
+    // watchAll.
+    //
+    // If we are confident from previous runs that the tests will finish
+    // quickly we also run in band to reduce the overhead of spawning workers.
+    const areFastTests = timings.every(timing => timing < SLOW_TEST_TIME);
+
+    const runInBandWatch = tests.length <= 1 && areFastTests;
+    const runInBandNonWatch =
       this._globalConfig.maxWorkers <= 1 ||
       tests.length <= 1 ||
-      (tests.length <= 20 &&
-        timings.length > 0 &&
-        timings.every(timing => timing < SLOW_TEST_TIME));
+      (tests.length <= 20 && timings.length > 0 && areFastTests);
+
+    const runInBand =
+      this._globalConfig.watch || this._globalConfig.watchAll
+        ? runInBandWatch
+        : runInBandNonWatch;
 
     const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
