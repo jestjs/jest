@@ -1,6 +1,6 @@
 {
   "name": "jest-validate",
-  "version": "23.2.0",
+  "version": "23.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"

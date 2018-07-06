@@ -176,7 +176,7 @@ describe('Watch mode flows', () => {
       await watch(
         Object.assign({}, globalConfig, {
           rootDir: __dirname,
-          watchPlugins: [watchPluginPath],
+          watchPlugins: [{config: {}, path: watchPluginPath}],
         }),
         contexts,
         pipe,
@@ -195,7 +195,10 @@ describe('Watch mode flows', () => {
     ci_watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [watchPlugin2Path, watchPluginPath],
+        watchPlugins: [
+          {config: {}, path: watchPluginPath},
+          {config: {}, path: watchPlugin2Path},
+        ],
       }),
       contexts,
       pipe,
@@ -302,7 +305,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       }),
       contexts,
       pipe,
@@ -338,7 +341,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       }),
       contexts,
       pipe,
@@ -354,6 +357,47 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(run).toHaveBeenCalled();
+  });
+
+  it('allows WatchPlugins to be configured', async () => {
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_with_config`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          constructor({config}) {
+            this._key = config.key;
+            this._prompt = config.prompt;
+          }
+          onKey() {}
+          run() {}
+          getUsageInfo() {
+            return {
+              key: this._key || 'z',
+              prompt: this._prompt || 'default prompt',
+            };
+          }
+        },
+      {virtual: true},
+    );
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [
+          {
+            config: {key: 'k', prompt: 'filter with a custom prompt'},
+            path: pluginPath,
+          },
+        ],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
 
   it('allows WatchPlugins to hook into file system changes', async () => {
@@ -373,7 +417,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       }),
       contexts,
       pipe,
@@ -414,7 +458,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       }),
       contexts,
       pipe,
@@ -474,7 +518,10 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath, pluginPath2],
+        watchPlugins: [
+          {config: {}, path: pluginPath},
+          {config: {}, path: pluginPath2},
+        ],
       }),
       contexts,
       pipe,

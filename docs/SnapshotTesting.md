@@ -41,7 +41,7 @@ exports[`renders correctly 1`] = `
 
 The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will simply compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code that should be fixed, or the implementation has changed and the snapshot needs to be updated.
 
-More information on how snapshot testing works and why we built it can be found on the [release blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
+More information on how snapshot testing works and why we built it can be found on the [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
 
 ### Updating Snapshots
 
@@ -99,7 +99,7 @@ Inline snapshots behave identically to external snapshots (`.snap` files), excep
 
 > Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
 >
-> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettier"`](./Configuration.md#prettier-string) configuration property.
+> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettierPath"`](./Configuration.md#prettierpath-string) configuration property.
 
 **Example:**
 
@@ -269,7 +269,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### What's the difference between snapshot testing and visual regression testing?
 
-Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing).
 
 ### Does snapshot testing substitute unit testing?
 

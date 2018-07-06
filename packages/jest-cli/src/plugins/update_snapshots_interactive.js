@@ -41,8 +41,8 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
         testResult.testResults.forEach(result => {
           if (result.status === 'failed') {
             failedTestPaths.push({
+              fullName: result.fullName,
               path: testResult.testFilePath,
-              title: result.title,
             });
           }
         });
@@ -77,7 +77,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
           (assertion: ?AssertionLocation, shouldUpdateSnapshot: boolean) => {
             updateConfigAndRun({
               mode: 'watch',
-              testNamePattern: assertion ? `^${assertion.title}$` : '',
+              testNamePattern: assertion ? `^${assertion.fullName}$` : '',
               testPathPattern: assertion ? assertion.path : '',
 
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',

@@ -20,7 +20,7 @@ Object {
 
 exports[`init project with package.json and no jest config all questions answered with answer: "No" should return the default configuration (an empty config) 1`] = `
 "// For a detailed explanation regarding each configuration property, visit:
-// https://facebook.github.io/jest/docs/en/configuration.html
+// https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
   // All imported modules in your tests should be mocked automatically
