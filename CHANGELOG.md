@@ -2,6 +2,7 @@
 
 ### Fixes
 
+- `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
 - `[pretty-format]` Fix formatting of invalid Date objects ([#6635](https://github.com/facebook/jest/pull/6635))
 
 ## 23.3.0
@@ -24,6 +25,8 @@
 - `[*]` Transpile object shorthand into Node 4 compatible syntax ([#6582](https://github.com/facebook/jest/pull/6582))
 - `[*]` Update all legacy links to jestjs.io ([#6622](https://github.com/facebook/jest/pull/6622))
 - `[docs]` Add docs for 23.1, 23.2, and 23.3 ([#6623](https://github.com/facebook/jest/pull/6623))
+- `[website]` Only test/deploy website if relevant files are changed ([#6626](https://github.com/facebook/jest/pull/6626))
+- `[docs]` Describe behavior of `resetModules` option when set to `false` ([#6641](https://github.com/facebook/jest/pull/6641))
 
 ## 23.2.0
 
