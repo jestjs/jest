@@ -41,7 +41,7 @@ exports[`renders correctly 1`] = `
 
 The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will simply compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code that should be fixed, or the implementation has changed and the snapshot needs to be updated.
 
-More information on how snapshot testing works and why we built it can be found on the [release blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
+More information on how snapshot testing works and why we built it can be found on the [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
 
 ### Updating Snapshots
 
@@ -61,7 +61,7 @@ it('renders correctly', () => {
 
 In that case, Jest will print this output:
 
-![](/jest/img/content/failedSnapshotTest.png)
+![](/img/content/failedSnapshotTest.png)
 
 Since we just updated our component to point to a different address, it's reasonable to expect changes in the snapshot for this component. Our snapshot test case is failing because the snapshot for our updated component no longer matches the snapshot artifact for this test case.
 
@@ -81,17 +81,60 @@ You can try out this functionality by cloning the [snapshot example](https://git
 
 Failed snapshots can also be updated interactively in watch mode:
 
-![](/jest/img/content/interactiveSnapshot.png)
+![](/img/content/interactiveSnapshot.png)
 
 Once you enter Interactive Snapshot Mode, Jest will step you through the failed snapshots one test at a time and give you the opportunity to review the failed output.
 
 From here you can choose to update that snapshot or skip to the next:
 
-![](/jest/img/content/interactiveSnapshotUpdate.gif)
+![](/img/content/interactiveSnapshotUpdate.gif)
 
 Once you're finished, Jest will give you a summary before returning back to watch mode:
 
-![](/jest/img/content/interactiveSnapshotDone.png)
+![](/img/content/interactiveSnapshotDone.png)
+
+### Inline Snapshots
+
+Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
+
+> Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
+>
+> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettierPath"`](./Configuration.md#prettierpath-string) configuration property.
+
+**Example:**
+
+First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
+
+```javascript
+it('renders correctly', () => {
+  const tree = renderer
+    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot();
+});
+```
+
+The next time you run Jest, `tree` will be evaluated, and a snapshot will be written as an argument to `toMatchInlineSnapshot`:
+
+```javascript
+it('renders correctly', () => {
+  const tree = renderer
+    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot(`
+<a
+  className="normal"
+  href="https://prettier.io"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  Prettier
+</a>
+`);
+});
+```
+
+That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
 
 ### Property Matchers
 
@@ -226,7 +269,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### What's the difference between snapshot testing and visual regression testing?
 
-Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing).
 
 ### Does snapshot testing substitute unit testing?
 

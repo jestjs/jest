@@ -79,8 +79,8 @@ export type FailedAssertion = {|
 |};
 
 export type AssertionLocation = {|
+  fullName: string,
   path: string,
-  title: string,
 |};
 
 export type Status = 'passed' | 'failed' | 'skipped' | 'pending';

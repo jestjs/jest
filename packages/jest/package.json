@@ -1,11 +1,11 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "23.1.0",
+  "version": "23.3.0",
   "main": "build/jest.js",
   "dependencies": {
     "import-local": "^1.0.0",
-    "jest-cli": "^23.1.0"
+    "jest-cli": "^23.3.0"
   },
   "bin": {
     "jest": "./bin/jest.js"
@@ -17,7 +17,7 @@
     "type": "git",
     "url": "https://github.com/facebook/jest"
   },
-  "homepage": "http://facebook.github.io/jest/",
+  "homepage": "https://jestjs.io/",
   "license": "MIT",
   "keywords": [
     "ava",

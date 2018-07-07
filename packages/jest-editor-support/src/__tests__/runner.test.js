@@ -345,20 +345,27 @@ describe('events', () => {
     runner.start();
   });
 
-  it('expects JSON from stdout, then it passes the JSON', () => {
+  it('expects JSON from both stdout and stderr, then it passes the JSON', () => {
     const data = jest.fn();
     runner.on('executableJSON', data);
 
     runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
 
-    // Emitting data through stdout should trigger sending JSON
-    fakeProcess.stdout.emit('data', 'Test results written to file');
-    expect(data).toBeCalled();
+    const doTest = (out: stream$Readable) => {
+      data.mockClear();
 
-    // And lets check what we emit
-    const dataAtPath = readFileSync(runner.outputPath);
-    const storedJSON = JSON.parse(dataAtPath.toString());
-    expect(data.mock.calls[0][0]).toEqual(storedJSON);
+      // Emitting data through stdout should trigger sending JSON
+      out.emit('data', 'Test results written to file');
+      expect(data).toBeCalled();
+
+      // And lets check what we emit
+      const dataAtPath = readFileSync(runner.outputPath);
+      const storedJSON = JSON.parse(dataAtPath.toString());
+      expect(data.mock.calls[0][0]).toEqual(storedJSON);
+    };
+
+    doTest(fakeProcess.stdout);
+    doTest(fakeProcess.stderr);
   });
 
   it('emits errors when process errors', () => {

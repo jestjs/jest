@@ -47,7 +47,6 @@ export type RawModuleMap = {|
   mocks: MockData,
 |};
 
-// prettier-ignore
 export type FileMetaData = [
   /* id */ string,
   /* mtime */ number,

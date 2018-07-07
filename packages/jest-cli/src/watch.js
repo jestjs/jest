@@ -133,7 +133,6 @@ export default function watch(
   const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
     InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
   );
-
   watchPlugins.forEach((plugin: WatchPlugin) => {
     const hookSubscriber = hooks.getSubscriber();
     if (plugin.apply) {
@@ -142,10 +141,11 @@ export default function watch(
   });
 
   if (globalConfig.watchPlugins != null) {
-    for (const pluginModulePath of globalConfig.watchPlugins) {
+    for (const pluginWithConfig of globalConfig.watchPlugins) {
       // $FlowFixMe dynamic require
-      const ThirdPartyPlugin = require(pluginModulePath);
+      const ThirdPartyPlugin = require(pluginWithConfig.path);
       const plugin: WatchPlugin = new ThirdPartyPlugin({
+        config: pluginWithConfig.config,
         stdin,
         stdout: outputStream,
       });
@@ -263,7 +263,13 @@ export default function watch(
       outputStream,
       startRun,
       testWatcher,
-    }).catch(error => console.error(chalk.red(error.stack)));
+    }).catch(error =>
+      // Errors thrown inside `runJest`, e.g. by resolvers, are caught here for
+      // continuous watch mode execution. We need to reprint them to the
+      // terminal and give just a little bit of extra space so they fit below
+      // `preRunMessagePrint` message nicely.
+      console.error('\n\n' + chalk.red(error)),
+    );
   };
 
   const onKeypress = (key: string) => {
@@ -290,7 +296,7 @@ export default function watch(
     if (
       isRunning &&
       testWatcher &&
-      !['q', KEYS.ENTER, 'a', 'o', 'f'].concat(pluginKeys).includes(key)
+      ['q', KEYS.ENTER, 'a', 'o', 'f'].concat(pluginKeys).includes(key)
     ) {
       testWatcher.setState({interrupted: true});
       return;

@@ -49,6 +49,7 @@ export default ({
   notify: false,
   notifyMode: 'always',
   preset: null,
+  prettierPath: 'prettier',
   projects: null,
   resetMocks: false,
   resetModules: false,

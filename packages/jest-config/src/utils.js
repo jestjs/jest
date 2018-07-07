@@ -13,11 +13,19 @@ import path from 'path';
 import {ValidationError} from 'jest-validate';
 import Resolver from 'jest-resolve';
 import chalk from 'chalk';
+
+type ResolveOptions = {|
+  rootDir: string,
+  key: string,
+  filePath: Path,
+  optional?: boolean,
+|};
+
 export const BULLET: string = chalk.bold('\u25cf ');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold(
   'Configuration Documentation:',
 )}
-  https://facebook.github.io/jest/docs/configuration.html
+  https://jestjs.io/docs/configuration.html
 `;
 
 const createValidationError = (message: string) =>
@@ -25,9 +33,7 @@ const createValidationError = (message: string) =>
 
 export const resolve = (
   resolver: ?string,
-  rootDir: string,
-  key: string,
-  filePath: Path,
+  {key, filePath, rootDir, optional}: ResolveOptions,
 ) => {
   const module = Resolver.findNodeModule(
     replaceRootDirInPath(rootDir, filePath),
@@ -37,7 +43,7 @@ export const resolve = (
     },
   );
 
-  if (!module) {
+  if (!module && !optional) {
     throw createValidationError(
       `  Module ${chalk.bold(filePath)} in the ${chalk.bold(
         key,

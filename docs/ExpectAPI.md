@@ -1025,11 +1025,17 @@ test('this house has my desired features', () => {
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-The optional propertyMatchers argument allows you to specify asymmetric matchers which are verified instead of the exact values.
+The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values.
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
 
 _Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
+
+### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
+
+Ensures that a value matches the most recent snapshot. Unlike [`.toMatchSnapshot()`](#tomatchsnapshotpropertymatchers-snapshotname), the snapshots will be written to the current source file, inline.
+
+Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
 
 ### `.toStrictEqual(value)`
 
@@ -1133,4 +1139,10 @@ And it will generate the following snapshot:
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
-Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+
+### `.toThrowErrorMatchingInlineSnapshot()`
+
+This matcher is much like [`.toThrowErrorMatchingSnapshot`](#tothrowerrormatchingsnapshot), except instead of writing the snapshot value to a `.snap` file, it will be written into the source code automatically.
+
+Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.

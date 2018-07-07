@@ -53,6 +53,7 @@ export type DefaultOptions = {|
   notify: boolean,
   notifyMode: string,
   preset: ?string,
+  prettierPath: ?string,
   projects: ?Array<string | ProjectConfig>,
   resetMocks: boolean,
   resetModules: boolean,
@@ -135,6 +136,7 @@ export type InitialOptions = {
   passWithNoTests?: boolean,
   preprocessorIgnorePatterns?: Array<Glob>,
   preset?: ?string,
+  prettierPath?: ?string,
   projects?: Array<Glob>,
   replname?: ?string,
   resetMocks?: boolean,
@@ -176,7 +178,7 @@ export type InitialOptions = {
   watch?: boolean,
   watchAll?: boolean,
   watchman?: boolean,
-  watchPlugins?: Array<string>,
+  watchPlugins?: Array<string | [string, Object]>,
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -233,7 +235,7 @@ export type GlobalConfig = {|
   watch: boolean,
   watchAll: boolean,
   watchman: boolean,
-  watchPlugins: ?Array<string>,
+  watchPlugins: ?Array<{path: string, config: Object}>,
 |};
 
 export type ProjectConfig = {|
@@ -259,6 +261,7 @@ export type ProjectConfig = {|
   modulePathIgnorePatterns: Array<string>,
   modulePaths: Array<string>,
   name: string,
+  prettierPath: string,
   resetMocks: boolean,
   resetModules: boolean,
   resolver: ?Path,

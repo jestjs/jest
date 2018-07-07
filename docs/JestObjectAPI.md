@@ -21,6 +21,7 @@ The `jest` object is automatically in scope within every test file. The methods 
 - [`jest.resetAllMocks()`](#jestresetallmocks)
 - [`jest.restoreAllMocks()`](#jestrestoreallmocks)
 - [`jest.resetModules()`](#jestresetmodules)
+- [`jest.retryTimes()`](#jestretrytimes)
 - [`jest.runAllTicks()`](#jestrunallticks)
 - [`jest.runAllTimers()`](#jestrunalltimers)
 - [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
@@ -308,6 +309,37 @@ test('works too', () => {
   const sum = require('../sum');
   // sum is a different copy of the sum module from the previous test.
 });
+```
+
+Returns the `jest` object for chaining.
+
+### `jest.retryTimes()`
+
+Runs failed tests n-times until they pass or until the max number of retries are exhausted. This only works with jest-circus!
+
+Example in a test:
+
+```js
+jest.retryTimes(3);
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+To run with jest circus:
+
+Install jest-circus
+
+```
+yarn add --dev jest-circus
+```
+
+Then set as the testRunner in your jest config:
+
+```js
+module.exports = {
+  testRunner: 'jest-circus/runner',
+};
 ```
 
 Returns the `jest` object for chaining.

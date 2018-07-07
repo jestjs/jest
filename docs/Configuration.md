@@ -402,6 +402,12 @@ Presets may also be relative filesystem paths.
 }
 ```
 
+### `prettierPath` [string]
+
+Default: `'prettier'`
+
+Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
+
 ### `projects` [array<string | ProjectConfig>]
 
 Default: `undefined`
@@ -517,7 +523,7 @@ Automatically reset mock state between every test. Equivalent to calling `jest.r
 
 Default: `false`
 
-If enabled, the module registry for every test file will be reset before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
+By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
 
 ### `resolver` [string]
 
@@ -605,6 +611,8 @@ It's worth noting that this code will execute _before_ [`setupTestFrameworkScrip
 Default: `undefined`
 
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+
+If you want this path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside the path string, like `"<rootDir>/a-configs-folder"`.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
@@ -876,7 +884,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
-Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](http://facebook.github.io/jest/docs/en/tutorial-react-native.html#transformignorepatterns-customization).
+Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
 
 ### `unmockedModulePathPatterns` [array<string>]
 
