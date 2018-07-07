@@ -12,8 +12,6 @@ import path from 'path';
 
 jest.setTimeout(15000);
 
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
-
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
 const testMatch = ['**/__testtests__/**/*'];
@@ -25,8 +23,6 @@ let findMatchingTests;
 let normalize;
 
 describe('SearchSource', () => {
-  ConditionalTest.skipSuiteOnWindows();
-
   const name = 'SearchSource';
   let Runtime;
   let SearchSource;
@@ -465,22 +461,24 @@ describe('SearchSource', () => {
     });
 
     it('does not mistake roots folders with prefix names', async () => {
-      const config = normalize(
-        {
-          name,
-          rootDir: '.',
-          roots: ['/foo/bar/prefix'],
-        },
-        {},
-      ).options;
+      if (process.platform !== 'win32') {
+        const config = normalize(
+          {
+            name,
+            rootDir: '.',
+            roots: ['/foo/bar/prefix'],
+          },
+          {},
+        ).options;
 
-      searchSource = new SearchSource(
-        await Runtime.createContext(config, {maxWorkers}),
-      );
+        searchSource = new SearchSource(
+          await Runtime.createContext(config, {maxWorkers}),
+        );
 
-      const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
-      const data = searchSource.findTestsByPaths(input);
-      expect(data.tests).toEqual([]);
+        const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
+        const data = searchSource.findTestsByPaths(input);
+        expect(data.tests).toEqual([]);
+      }
     });
   });
 });
