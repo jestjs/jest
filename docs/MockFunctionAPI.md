@@ -50,19 +50,19 @@ For example: A mock function `f` that has been called three times, returning `'r
   {
     type: 'return',
     value: 'result1',
-    isThrow: false // deprecated
+    isThrow: false, // deprecated
   },
   {
     type: 'throw',
     value: {
       /* Error instance */
-    },,
-    isThrow: true // deprecated
+    },
+    isThrow: true, // deprecated
   },
   {
     type: 'return',
-    value: 'result2',,
-    isThrow: false // deprecated
+    value: 'result2',
+    isThrow: false, // deprecated
   },
 ];
 ```
