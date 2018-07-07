@@ -2,10 +2,50 @@
 
 ### Fixes
 
+- `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
+- `[jest-cli]` properly reprint resolver errors in watch mode ([#6407](https://github.com/facebook/jest/pull/6407))
+- `[jest-cli]` Write configuration to stdout when the option was explicitly passed to Jest ([#6447](https://github.com/facebook/jest/pull/6447))
+
+## 23.3.0
+
+### Features
+
+- `[jest-cli]` Allow watch plugin to be configured ([#6603](https://github.com/facebook/jest/pull/6603))
+- `[jest-snapshot]` Introduce `toMatchInlineSnapshot` and `toThrowErrorMatchingInlineSnapshot` matchers ([#6380](https://github.com/facebook/jest/pull/6380))
+
+### Fixes
+
+- `[jest-regex-util]` Improve handling already escaped path separators on Windows ([#6523](https://github.com/facebook/jest/pull/6523))
+- `[jest-cli]` Fix `testNamePattern` value with interactive snapshots ([#6579](https://github.com/facebook/jest/pull/6579))
+- `[jest-cli]` Fix enter to interrupt watch mode ([#6601](https://github.com/facebook/jest/pull/6601))
+
+### Chore & Maintenance
+
+- `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
+- `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
+- `[*]` Transpile object shorthand into Node 4 compatible syntax ([#6582](https://github.com/facebook/jest/pull/6582))
+- `[*]` Update all legacy links to jestjs.io ([#6622](https://github.com/facebook/jest/pull/6622))
+- `[docs]` Add docs for 23.1, 23.2, and 23.3 ([#6623](https://github.com/facebook/jest/pull/6623))
+- `[website]` Only test/deploy website if relevant files are changed ([#6626](https://github.com/facebook/jest/pull/6626))
+- `[docs]` Describe behavior of `resetModules` option when set to `false` ([#6641](https://github.com/facebook/jest/pull/6641))
+
+## 23.2.0
+
+### Features
+
+- `[jest-each]` Add support for keyPaths in test titles ([#6457](https://github.com/facebook/jest/pull/6457))
+- `[jest-cli]` Add `jest --init` option that generates a basic configuration file with a short description for each option ([#6442](https://github.com/facebook/jest/pull/6442))
+- `[jest.retryTimes]` Add `jest.retryTimes()` option that allows failed tests to be retried n-times when using jest-circus. ([#6498](https://github.com/facebook/jest/pull/6498))
+
+### Fixes
+
+- `[jest-cli]` Add check to make sure one or more tests have run before notifying when using `--notify` ([#6495](https://github.com/facebook/jest/pull/6495))
+- `[jest-cli]` Pass `globalConfig` as a parameter to `globalSetup` and `globalTeardown` functions ([#6486](https://github.com/facebook/jest/pull/6486))
 - `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
 - `[expect]` Using symbolic property names in arrays no longer causes the `toEqual` matcher to fail ([#6391](https://github.com/facebook/jest/pull/6391))
 - `[expect]` `toEqual` no longer tries to compare non-enumerable symbolic properties, to be consistent with non-symbolic properties. ([#6398](https://github.com/facebook/jest/pull/6398))
-- `[jest-cli]` Write configuration to stdout when the option was explicitly passed to Jest ([#6447](https://github.com/facebook/jest/pull/6447))
+- `[jest-util]` `console.timeEnd` now properly log elapsed time in milliseconds. ([#6456](https://github.com/facebook/jest/pull/6456))
+- `[jest-mock]` Fix `MockNativeMethods` access in react-native `jest.mock()` ([#6505](https://github.com/facebook/jest/pull/6505))
 
 ### Chore & Maintenance
 
@@ -891,7 +931,7 @@
 
 ## jest 18.0.0
 
-See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
+See https://jestjs.io/blog/2016/12/15/2016-in-jest.html
 
 - The testResultsProcessor function is now required to return the modified results.
 - Removed `pit` and `mockImpl`. Use `it` or `mockImplementation` instead.
@@ -1028,7 +1068,7 @@ See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
 
 ## jest 15.0.0
 
-- See https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
+- See https://jestjs.io/blog/2016/09/01/jest-15.html
 - Jest by default now also recognizes files ending in `.spec.js` and `.test.js` as test files.
 - Completely replaced most Jasmine matchers with new Jest matchers.
 - Rewrote Jest's CLI output for test failures and summaries.
@@ -1122,7 +1162,7 @@ See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
 - Added `jest-resolve` as a standalone package based on the Facebook module resolution algorithm.
 - Added `jest-changed-files` as a standalone package to detect changed files in a git or hg repo.
 - Added `--setupTestFrameworkFile` to cli.
-- Added support for coverage thresholds. See http://facebook.github.io/jest/docs/api.html#coveragethreshold-object.
+- Added support for coverage thresholds. See https://jestjs.io/docs/en/configuration#coveragethreshold-object.
 - Updated to jsdom 9.0.
 - Updated and improved stack trace reporting.
 - Added `module.filename` and removed the invalid `module.__filename` field.

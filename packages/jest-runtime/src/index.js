@@ -72,9 +72,10 @@ const getModuleNameMapper = (config: ProjectConfig) => {
     Array.isArray(config.moduleNameMapper) &&
     config.moduleNameMapper.length
   ) {
-    return config.moduleNameMapper.map(([regex, moduleName]) => {
-      return {moduleName, regex: new RegExp(regex)};
-    });
+    return config.moduleNameMapper.map(([regex, moduleName]) => ({
+      moduleName,
+      regex: new RegExp(regex),
+    }));
   }
   return null;
 };
@@ -631,7 +632,7 @@ class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-            `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
+            `See: https://jestjs.io/docs/manual-mocks.html#content`,
         );
       }
       this._mockMetaDataCache[modulePath] = mockMetadata;
@@ -829,6 +830,11 @@ class Runtime {
       return jestObject;
     };
 
+    const retryTimes = (numTestRetries: number) => {
+      this._environment.global[Symbol.for('RETRY_TIMES')] = numTestRetries;
+      return jestObject;
+    };
+
     const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
@@ -854,6 +860,7 @@ class Runtime {
       resetModuleRegistry: resetModules,
       resetModules,
       restoreAllMocks,
+      retryTimes,
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),

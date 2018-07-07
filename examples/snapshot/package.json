@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "name": "example-snapshot",
   "dependencies": {
-    "react": "*"
+    "react": "16.4.1"
   },
   "devDependencies": {
     "babel-jest": "*",

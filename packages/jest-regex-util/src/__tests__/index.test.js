@@ -31,17 +31,23 @@ describe('replacePathSepForRegex()', () => {
 
     it('should not escape an escaped dot', () => {
       expect(replacePathSepForRegex('a\\.dotfile')).toBe('a\\.dotfile');
-
-      // If we expect Windows path separators to be escaped, one would expect
-      // the regular expression "\\\." to be unescaped as "\.". This is not the
-      // current behavior.
-      expect(replacePathSepForRegex('a\\\\\\.dotfile')).toBe(
-        'a\\\\\\\\\\.dotfile',
-      );
+      expect(replacePathSepForRegex('a\\\\\\.dotfile')).toBe('a\\\\\\.dotfile');
     });
 
     it('should not escape an escaped regexp symbol', () => {
       expect(replacePathSepForRegex('b\\(86')).toBe('b\\(86');
+    });
+
+    it('should escape Windows path separators inside groups', () => {
+      expect(replacePathSepForRegex('[/\\\\]')).toBe('[\\\\\\\\]');
+    });
+
+    it('should escape Windows path separator at the beginning', () => {
+      expect(replacePathSepForRegex('\\a')).toBe('\\\\a');
+    });
+
+    it('should not escape several already escaped path separators', () => {
+      expect(replacePathSepForRegex('\\\\\\\\')).toBe('\\\\\\\\');
     });
   });
 });

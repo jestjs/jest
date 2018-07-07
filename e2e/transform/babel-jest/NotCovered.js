@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const thisFunctionIsNeverInstrumented = () => {
-  return null;
-};
+const thisFunctionIsNeverInstrumented = () => null;
 
 module.exports = {
   thisFunctionIsNeverInstrumented,

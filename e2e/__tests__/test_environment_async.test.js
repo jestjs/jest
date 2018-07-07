@@ -13,7 +13,7 @@ const os = require('os');
 const runJest = require('../runJest');
 const {cleanup} = require('../Utils');
 
-const DIR = os.tmpdir() + '/jest';
+const DIR = os.tmpdir() + '/jest-test-environment';
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

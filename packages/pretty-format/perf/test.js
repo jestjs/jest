@@ -54,20 +54,20 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
     prettyFormat(value, prettyFormatOpts),
   );
 
-  const inspected = testCase('util.inspect()  ', () => {
-    return util.inspect(value, {
+  const inspected = testCase('util.inspect()  ', () =>
+    util.inspect(value, {
       depth: null,
       showHidden: true,
-    });
-  });
+    }),
+  );
 
-  const stringified = testCase('JSON.stringify()', () => {
-    return JSON.stringify(value, null, '  ');
-  });
+  const stringified = testCase('JSON.stringify()', () =>
+    JSON.stringify(value, null, '  '),
+  );
 
-  const results = [formatted, inspected, stringified].sort((a, b) => {
-    return a.time - b.time;
-  });
+  const results = [formatted, inspected, stringified].sort(
+    (a, b) => a.time - b.time,
+  );
 
   const winner = results[0];
 

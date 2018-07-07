@@ -148,3 +148,36 @@ class MyWatchPlugin {
   }
 }
 ```
+
+## Customization
+
+Plugins can be customized via your Jest configuration.
+
+```javascript
+// jest.config.js
+module.exports = {
+  // ...
+  watchPlugins: [
+    [
+      'path/to/yourWatchPlugin',
+      {
+        key: 'k', // <- your custom key
+        prompt: 'show a custom prompt',
+      },
+    ],
+  ],
+};
+```
+
+Recommended config names:
+
+- `key`: Modifies the plugin key.
+- `prompt`: Allows user to customize the text in the plugin prompt.
+
+If the user provided a custom configuration, it will be passed as an argument to the plugin constructor.
+
+```javascript
+class MyWatchPlugin {
+  constructor({config}) {}
+}
+```

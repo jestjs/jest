@@ -53,24 +53,24 @@ class JestAssertionError extends Error {
   matcherResult: any;
 }
 
-const isPromise = obj => {
-  return (
-    !!obj &&
-    (typeof obj === 'object' || typeof obj === 'function') &&
-    typeof obj.then === 'function'
-  );
-};
+const isPromise = obj =>
+  !!obj &&
+  (typeof obj === 'object' || typeof obj === 'function') &&
+  typeof obj.then === 'function';
 
 const createToThrowErrorMatchingSnapshotMatcher = function(matcher) {
-  return function(received: any, testName?: string) {
-    return matcher.apply(this, [received, testName, true]);
+  return function(received: any, testNameOrInlineSnapshot?: string) {
+    return matcher.apply(this, [received, testNameOrInlineSnapshot, true]);
   };
 };
 
 const getPromiseMatcher = (name, matcher) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher('.' + name, true);
-  } else if (name === 'toThrowErrorMatchingSnapshot') {
+  } else if (
+    name === 'toThrowErrorMatchingSnapshot' ||
+    name === 'toThrowErrorMatchingInlineSnapshot'
+  ) {
     return createToThrowErrorMatchingSnapshotMatcher(matcher);
   }
 
@@ -131,12 +131,9 @@ const expect = (actual: any, ...rest): ExpectationObject => {
   return expectation;
 };
 
-const getMessage = message => {
-  return (
-    (message && message()) ||
-    matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.')
-  );
-};
+const getMessage = message =>
+  (message && message()) ||
+  matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
 
 const makeResolveMatcher = (
   matcherName: string,
@@ -227,8 +224,8 @@ const makeThrowingMatcher = (
   isNot: boolean,
   actual: any,
   err?: JestAssertionError,
-): ThrowingMatcherFn => {
-  return function throwingMatcher(...args): any {
+): ThrowingMatcherFn =>
+  function throwingMatcher(...args): any {
     let throws = true;
     const utils = Object.assign({}, matcherUtils, {
       iterableEquality,
@@ -245,6 +242,7 @@ const makeThrowingMatcher = (
       getState(),
       {
         equals,
+        error: err,
         isNot,
         utils,
       },
@@ -319,7 +317,6 @@ const makeThrowingMatcher = (
       return handlError(error);
     }
   };
-};
 
 expect.extend = (matchers: MatchersObject): void =>
   setMatchers(matchers, false, expect);

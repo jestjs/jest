@@ -169,9 +169,9 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
   }
 
   if (value) {
-    value = value.map(filePath => {
-      return filePath.replace(/^(!?)(<rootDir>\/)(.*)/, '$1$3');
-    });
+    value = value.map(filePath =>
+      filePath.replace(/^(!?)(<rootDir>\/)(.*)/, '$1$3'),
+    );
   }
 
   return value;
@@ -180,17 +180,16 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
 const normalizeUnmockedModulePathPatterns = (
   options: InitialOptions,
   key: string,
-) => {
+) =>
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
   // separators, etc).
   //
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
-  return options[key].map(pattern =>
+  options[key].map(pattern =>
     replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
   );
-};
 
 const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   if (options.scriptPreprocessor && options.transform) {
@@ -373,12 +372,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   options = (options: InitialOptions);
 
   if (options.resolver) {
-    newOptions.resolver = resolve(
-      null,
-      options.rootDir,
-      'resolver',
-      options.resolver,
-    );
+    newOptions.resolver = resolve(null, {
+      filePath: options.resolver,
+      key: 'resolver',
+      rootDir: options.rootDir,
+    });
   }
 
   Object.keys(options).reduce((newOptions, key) => {
@@ -395,8 +393,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'snapshotSerializers':
         value =
           options[key] &&
-          options[key].map(
-            resolve.bind(null, newOptions.resolver, options.rootDir, key),
+          options[key].map(filePath =>
+            resolve(newOptions.resolver, {
+              filePath,
+              key,
+              rootDir: options.rootDir,
+            }),
           );
         break;
       case 'modulePaths':
@@ -429,9 +431,27 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'testRunner':
+      case 'filter':
         value =
           options[key] &&
-          resolve(newOptions.resolver, options.rootDir, key, options[key]);
+          resolve(newOptions.resolver, {
+            filePath: options[key],
+            key,
+            rootDir: options.rootDir,
+          });
+        break;
+      case 'prettierPath':
+        // We only want this to throw if "prettierPath" is explicitly passed
+        // from config or CLI, and the requested path isn't found. Otherwise we
+        // set it to null and throw an error lazily when it is used.
+        value =
+          options[key] &&
+          resolve(newOptions.resolver, {
+            filePath: options[key],
+            key,
+            optional: options[key] === DEFAULT_CONFIG[key],
+            rootDir: options.rootDir,
+          });
         break;
       case 'moduleNameMapper':
         const moduleNameMapper = options[key];
@@ -448,12 +468,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           transform &&
           Object.keys(transform).map(regex => [
             regex,
-            resolve(
-              newOptions.resolver,
-              options.rootDir,
+            resolve(newOptions.resolver, {
+              filePath: transform[regex],
               key,
-              transform[regex],
-            ),
+              rootDir: options.rootDir,
+            }),
           ]);
         break;
       case 'coveragePathIgnorePatterns':
@@ -467,12 +486,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'haste':
         value = Object.assign({}, options[key]);
         if (value.hasteImplModulePath != null) {
-          value.hasteImplModulePath = resolve(
-            newOptions.resolver,
-            options.rootDir,
-            'haste.hasteImplModulePath',
-            replaceRootDirInPath(options.rootDir, value.hasteImplModulePath),
-          );
+          value.hasteImplModulePath = resolve(newOptions.resolver, {
+            filePath: replaceRootDirInPath(
+              options.rootDir,
+              value.hasteImplModulePath,
+            ),
+            key: 'haste.hasteImplModulePath',
+            rootDir: options.rootDir,
+          });
         }
         break;
       case 'projects':
@@ -501,11 +522,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'testRegex':
         value = options[key] && replacePathSepForRegex(options[key]);
-        break;
-      case 'filter':
-        value =
-          options[key] &&
-          resolve(newOptions.resolver, options.rootDir, key, options[key]);
         break;
       case 'automock':
       case 'bail':
@@ -563,9 +579,27 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = options[key];
         break;
       case 'watchPlugins':
-        value = (options[key] || []).map(watchPlugin =>
-          resolve(newOptions.resolver, options.rootDir, key, watchPlugin),
-        );
+        value = (options[key] || []).map(watchPlugin => {
+          if (typeof watchPlugin === 'string') {
+            return {
+              config: {},
+              path: resolve(newOptions.resolver, {
+                filePath: watchPlugin,
+                key,
+                rootDir: options.rootDir,
+              }),
+            };
+          } else {
+            return {
+              config: watchPlugin[1] || {},
+              path: resolve(newOptions.resolver, {
+                filePath: watchPlugin[0],
+                key,
+                rootDir: options.rootDir,
+              }),
+            };
+          }
+        });
         break;
     }
     newOptions[key] = value;
