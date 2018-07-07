@@ -352,22 +352,13 @@ class Resolver {
               rootDir: this._options.rootDir,
             });
           if (!module) {
-            const error = new Error(
-              chalk.red(`${chalk.bold('Configuration error')}:
-
-Could not locate module ${chalk.bold(moduleName)} (mapped as ${chalk.bold(
-                updatedName,
-              )})
-
-Please check:
-
-"moduleNameMapper": {
-  "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
-},
-"resolver": ${chalk.bold(String(resolver))}`),
+            throw createNoMappedModuleFoundError(
+              moduleName,
+              updatedName,
+              mappedModuleName,
+              regex,
+              resolver,
             );
-            error.stack = '';
-            throw error;
           }
           return module;
         }
@@ -380,5 +371,32 @@ Please check:
     return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
 }
+
+const createNoMappedModuleFoundError = (
+  moduleName,
+  updatedName,
+  mappedModuleName,
+  regex,
+  resolver,
+) => {
+  const error = new Error(
+    chalk.red(`${chalk.bold('Configuration error')}:
+
+Could not locate module ${chalk.bold(moduleName)} mapped as:
+${chalk.bold(updatedName)}.
+
+Please check your configuration for these entries:
+{
+  "moduleNameMapper": {
+    "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
+  },
+  "resolver": ${chalk.bold(String(resolver))}
+}`),
+  );
+
+  error.name = '';
+
+  return error;
+};
 
 module.exports = Resolver;
