@@ -41,7 +41,7 @@ type MockFunctionResult = {
    * Undefined if the call has not yet completed.
    * @deprecated Use {@link #type} instead.
    */
-  isThrow: ?boolean,
+  isThrow: boolean | void,
   /**
    * Indicates how the call completed.
    */
