@@ -16,4 +16,4 @@ cache:
     - "node_modules"
 
 script:
-  - yarn run test-ci-partial
+  - travis_wait 20 yarn run test-ci-partial
