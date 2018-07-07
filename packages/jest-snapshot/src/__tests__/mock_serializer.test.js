@@ -101,6 +101,7 @@ test('indent option', () => {
     '],',
     '"results": Array [',
     'Object {',
+    '"isThrow": false,',
     '"type": "return",',
     '"value": Object {',
     '"key": "value",',
@@ -116,7 +117,7 @@ test('min option', () => {
   const fn = jest.fn(val => val);
   fn({key: 'value'});
   const expected =
-    '[MockFunction] {"calls": [[{"key": "value"}]], "results": [{"type": "return", "value": {"key": "value"}}]}';
+    '[MockFunction] {"calls": [[{"key": "value"}]], "results": [{"isThrow": false, "type": "return", "value": {"key": "value"}}]}';
   expect(prettyFormat(fn, {min: true, plugins: [plugin]})).toBe(expected);
 });
 
@@ -150,6 +151,7 @@ test('maxDepth option', () => {
     '    ],',
     '    "results": Array [', // ++depth === 2
     '      Object {', // ++depth === 3
+    '        "isThrow": false,',
     '        "type": "return",',
     '        "value": undefined,',
     '      },',
