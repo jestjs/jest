@@ -499,7 +499,7 @@ describe('Watch mode flows', () => {
       const pluginPath = `${__dirname}/__fixtures__/plugin_path_config_updater`;
       const config = Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       });
 
       jest.doMock(
