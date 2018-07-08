@@ -93,7 +93,9 @@ export default class SnapshotState {
       const lines = getStackTraceLines(error.stack);
       const frame = getTopFrame(lines);
       if (!frame) {
-        throw new Error("Jest: Couln't infer stack frame for inline snapshot.");
+        throw new Error(
+          "Jest: Couldn't infer stack frame for inline snapshot.",
+        );
       }
       this._inlineSnapshots.push({
         frame,
