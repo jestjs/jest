@@ -19,6 +19,10 @@ import type {Readable} from 'stream';
 import {CHILD_MESSAGE_CALL, WorkerInterface} from './types';
 import WorkerPool from './WorkerPool';
 
+const defaultFarmOptions = {
+  useNodeWorkersIfPossible: canUseWorkerThreads(),
+};
+
 function getExposedMethods(
   workerPath: string,
   options?: FarmOptions = {},
@@ -40,6 +44,16 @@ function getExposedMethods(
   }
 
   return exposedMethods;
+}
+
+function canUseWorkerThreads(): boolean {
+  let workerThreadsAreSupported = false;
+  try {
+    require.resolve('worker_threads');
+    workerThreadsAreSupported = true;
+  } catch (_) {}
+
+  return workerThreadsAreSupported;
 }
 
 /**
@@ -77,12 +91,13 @@ export default class JestWorker {
   constructor(workerPath: string, options?: FarmOptions = {}) {
     this._cacheKeys = Object.create(null);
     this._offset = 0;
-    this._options = options;
-    this._threadPool = options.WorkerPool
-      ? new options.WorkerPool(workerPath, options)
-      : new WorkerPool(workerPath, options);
+    this._options = Object.assign({}, defaultFarmOptions, options);
 
-    this._bindExposedWorkerMethods(workerPath, options);
+    this._threadPool = this._options.WorkerPool
+      ? new this._options.WorkerPool(workerPath, this._options)
+      : new WorkerPool(workerPath, this._options);
+
+    this._bindExposedWorkerMethods(workerPath, this._options);
   }
 
   _bindExposedWorkerMethods(workerPath: string, options?: FarmOptions): void {

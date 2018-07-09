@@ -13,7 +13,8 @@ import mergeStream from 'merge-stream';
 import os from 'os';
 import path from 'path';
 
-import Worker from '../workers/ChildProcessWorker';
+import ChildProcessWorker from '../workers/ChildProcessWorker';
+import NodeThreadsWorker from '../workers/NodeThreadsWorker';
 import {CHILD_MESSAGE_END} from '../types';
 
 import type {Readable} from 'stream';
@@ -45,6 +46,7 @@ export default class BaseWorkerPool {
       const workerOptions: WorkerOptions = {
         forkOptions: options.forkOptions || {},
         maxRetries: options.maxRetries || 3,
+        useNodeWorkersIfPossible: options.useNodeWorkersIfPossible,
         workerId: i + 1,
         workerPath,
       };
@@ -89,8 +91,10 @@ export default class BaseWorkerPool {
     return this._workers;
   }
 
-  createWorker(workerOptions: WorkerOptions): Worker {
-    return new Worker(workerOptions);
+  createWorker(workerOptions: WorkerOptions): WorkerInterface {
+    return workerOptions.useNodeWorkersIfPossible
+      ? new NodeThreadsWorker(workerOptions)
+      : new ChildProcessWorker(workerOptions);
   }
 
   end(): void {
