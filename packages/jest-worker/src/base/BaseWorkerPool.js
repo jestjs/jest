@@ -13,7 +13,7 @@ import mergeStream from 'merge-stream';
 import os from 'os';
 import path from 'path';
 
-import Worker from '../ChildProcessWorker';
+import Worker from '../workers/ChildProcessWorker';
 import {CHILD_MESSAGE_END} from '../types';
 
 import type {Readable} from 'stream';

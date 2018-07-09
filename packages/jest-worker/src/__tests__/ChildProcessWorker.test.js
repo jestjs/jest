@@ -38,7 +38,7 @@ beforeEach(() => {
     return forkInterface;
   });
 
-  Worker = require('../ChildProcessWorker').default;
+  Worker = require('../workers/ChildProcessWorker').default;
 });
 
 afterEach(() => {
@@ -47,7 +47,7 @@ afterEach(() => {
 });
 
 it('passes fork options down to child_process.fork, adding the defaults', () => {
-  const child = require.resolve('../child');
+  const child = require.resolve('../workers/child');
 
   process.execArgv = ['--inspect', '-p'];
 

@@ -9,9 +9,9 @@
 
 'use strict';
 
-import BaseWorker from './base/BaseWorker';
+import BaseWorker from '../base/BaseWorker';
 
-import type {WorkerOptions} from './types';
+import type {WorkerOptions} from '../types';
 
 export default class ExpirementalWorker extends BaseWorker {
   _options: WorkerOptions;
@@ -23,6 +23,13 @@ export default class ExpirementalWorker extends BaseWorker {
 
     this.initialize();
   }
+
+  // $FlowFixMe: Flow doesn't know about experimental features of Node
+  // const {isMainThread, parentPort} = require('worker_threads');
+  // if (!isMainThread) {
+  //   throw Error("Worker can't be used in the main thread");
+  // }
+  // parentPort.postMessage([PARENT_MESSAGE_OK, result]);
 
   initialize() {
     // $FlowFixMe: Flow doesn't know about experimental features of Node

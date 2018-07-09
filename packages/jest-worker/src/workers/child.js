@@ -15,7 +15,7 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
-} from './types';
+} from '../types';
 
 let file = null;
 
@@ -54,20 +54,11 @@ process.on('message', (request: any /* Should be ChildMessage */) => {
 });
 
 function reportSuccess(result: any) {
-  try {
-    // $FlowFixMe: Flow doesn't know about experimental features of Node
-    const {isMainThread, parentPort} = require('worker_threads');
-    if (!isMainThread) {
-      throw Error("Worker can't be used in the main thread");
-    }
-    parentPort.postMessage([PARENT_MESSAGE_OK, result]);
-  } catch (_) {
-    if (!process || !process.send) {
-      throw new Error('Child can only be used on a forked process');
-    }
-
-    process.send([PARENT_MESSAGE_OK, result]);
+  if (!process || !process.send) {
+    throw new Error('Child can only be used on a forked process');
   }
+
+  process.send([PARENT_MESSAGE_OK, result]);
 }
 
 function reportError(error: Error) {

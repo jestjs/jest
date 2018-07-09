@@ -11,14 +11,14 @@
 
 import childProcess from 'child_process';
 
-import BaseWorker from './base/BaseWorker';
+import BaseWorker from '../base/BaseWorker';
 
-import {PARENT_MESSAGE_ERROR, CHILD_MESSAGE_INITIALIZE} from './types';
+import {PARENT_MESSAGE_ERROR, CHILD_MESSAGE_INITIALIZE} from '../types';
 
 import type {ChildProcess} from 'child_process';
 import type {Readable} from 'stream';
 
-import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from './types';
+import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from '../types';
 
 /**
  * This class wraps the child process and provides a nice interface to

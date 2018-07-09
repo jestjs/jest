@@ -27,7 +27,7 @@ beforeEach(() => {
   mockCount = 0;
 
   jest.mock(
-    '../my-fancy-worker',
+    '../workers/my-fancy-worker',
     () => {
       mockCount++;
 
@@ -74,7 +74,7 @@ beforeEach(() => {
   );
 
   jest.mock(
-    '../my-fancy-standalone-worker',
+    '../workers/my-fancy-standalone-worker',
     () => jest.fn().mockImplementation(() => 12345),
     {virtual: true},
   );
@@ -82,7 +82,7 @@ beforeEach(() => {
   // This mock emulates a transpiled Babel module that carries a default export
   // that corresponds to a method.
   jest.mock(
-    '../my-fancy-babel-worker',
+    '../workers/my-fancy-babel-worker',
     () => ({
       __esModule: true,
       default: jest.fn().mockImplementation(() => 67890),
@@ -94,7 +94,7 @@ beforeEach(() => {
   process.send = jest.fn();
 
   // Require the child!
-  require('../child');
+  require('../workers/child');
 });
 
 afterEach(() => {
