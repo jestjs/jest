@@ -38,7 +38,6 @@ export default class ExpirementalWorker implements WorkerInterface {
   _retries: number;
 
   constructor(options: WorkerOptions) {
-    super();
     this._options = options;
     this._queue = null;
 
@@ -107,12 +106,11 @@ export default class ExpirementalWorker implements WorkerInterface {
     this._worker.on('message', this.onMessage.bind(this));
     this._worker.on('exit', this.onExit.bind(this));
 
-    const {port1} = new MessageChannel();
-
-    this._worker.postMessage(
-      [CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath, port1],
-      [port1],
-    );
+    this._worker.postMessage([
+      CHILD_MESSAGE_INITIALIZE,
+      false,
+      this._options.workerPath,
+    ]);
   }
 
   onMessage(response: any /* Should be ParentMessage */) {

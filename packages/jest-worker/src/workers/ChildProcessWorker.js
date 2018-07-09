@@ -56,7 +56,6 @@ export default class ChildProcessWorker implements WorkerInterface {
   _retries: number;
 
   constructor(options: WorkerOptions) {
-    super();
     this._options = options;
     this._queue = null;
 
