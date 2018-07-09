@@ -94,7 +94,7 @@ function reportError(error: Error) {
 function execMethod(method: string, args: $ReadOnlyArray<any>): void {
   // $FlowFixMe: This has to be a dynamic require.
   const main = require(file);
-  let result;
+  let result: mixed;
 
   try {
     if (method === 'default') {

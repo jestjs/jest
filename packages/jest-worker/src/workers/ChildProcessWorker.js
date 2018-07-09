@@ -11,8 +11,6 @@
 
 import childProcess from 'child_process';
 
-import BaseWorker from '../base/BaseWorker';
-
 import {
   PARENT_MESSAGE_ERROR,
   CHILD_MESSAGE_INITIALIZE,
@@ -23,7 +21,13 @@ import {
 import type {ChildProcess} from 'child_process';
 import type {Readable} from 'stream';
 
-import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from '../types';
+import type {
+  ChildMessage,
+  OnEnd,
+  OnStart,
+  WorkerOptions,
+  QueueChildMessage,
+} from '../types';
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -43,8 +47,13 @@ import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from '../types';
  * field is changed to "true", so that other workers which might encounter the
  * same call skip it.
  */
-export default class ChildProcessWorker extends BaseWorker implements WorkerInterface {
+export default class ChildProcessWorker implements WorkerInterface {
   _child: ChildProcess;
+  _busy: boolean;
+  _last: ?QueueChildMessage;
+  _options: WorkerOptions;
+  _queue: ?QueueChildMessage;
+  _retries: number;
 
   constructor(options: WorkerOptions) {
     super();
@@ -87,7 +96,51 @@ export default class ChildProcessWorker extends BaseWorker implements WorkerInte
     }
   }
 
-  _receive(response: any /* Should be ParentMessage */) {
+  initialize() {
+    const child = childProcess.fork(
+      require.resolve('./child'),
+      // $FlowFixMe: Flow does not work well with Object.assign.
+      Object.assign(
+        {
+          cwd: process.cwd(),
+          env: Object.assign({}, process.env, {
+            JEST_WORKER_ID: this._options.workerId,
+          }),
+          // Suppress --debug / --inspect flags while preserving others (like --harmony).
+          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+          silent: true,
+        },
+        this._options.forkOptions,
+      ),
+    );
+
+    child.on('message', this.onMessage.bind(this));
+    child.on('exit', this.onExit.bind(this));
+
+    // $FlowFixMe: wrong "ChildProcess.send" signature.
+    child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
+
+    this._retries++;
+    this._child = child;
+    this._busy = false;
+
+    // If we exceeded the amount of retries, we will emulate an error reply
+    // coming from the child. This avoids code duplication related with cleaning
+    // the queue, and scheduling the next call.
+    if (this._retries > this._options.maxRetries) {
+      const error = new Error('Call retries were exceeded');
+
+      this.onMessage([
+        PARENT_MESSAGE_ERROR,
+        error.name,
+        error.message,
+        error.stack,
+        {type: 'WorkerError'},
+      ]);
+    }
+  }
+
+  onMessage(response: any /* Should be ParentMessage */) {
     const item = this._queue;
 
     if (!item) {
@@ -131,47 +184,9 @@ export default class ChildProcessWorker extends BaseWorker implements WorkerInte
     }
   }
 
-  initialize() {
-    const child = childProcess.fork(
-      require.resolve('./child'),
-      // $FlowFixMe: Flow does not work well with Object.assign.
-      Object.assign(
-        {
-          cwd: process.cwd(),
-          env: Object.assign({}, process.env, {
-            JEST_WORKER_ID: this._options.workerId,
-          }),
-          // Suppress --debug / --inspect flags while preserving others (like --harmony).
-          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-          silent: true,
-        },
-        this._options.forkOptions,
-      ),
-    );
-
-    child.on('message', this._receive.bind(this));
-    child.on('exit', this._exit.bind(this));
-
-    // $FlowFixMe: wrong "ChildProcess.send" signature.
-    child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
-
-    this._retries++;
-    this._child = child;
-    this._busy = false;
-
-    // If we exceeded the amount of retries, we will emulate an error reply
-    // coming from the child. This avoids code duplication related with cleaning
-    // the queue, and scheduling the next call.
-    if (this._retries > this._options.maxRetries) {
-      const error = new Error('Call retries were exceeded');
-
-      this._receive([
-        PARENT_MESSAGE_ERROR,
-        error.name,
-        error.message,
-        error.stack,
-        {type: 'WorkerError'},
-      ]);
+  onExit(exitCode: number) {
+    if (exitCode !== 0) {
+      this.initialize();
     }
   }
 

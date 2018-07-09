@@ -55,7 +55,8 @@ export interface WorkerInterface {
   send(ChildMessage, Function, Function): void;
   getStderr(): Readable;
   getStdout(): Readable;
-  _exit(number): void;
+  onExit(number): void;
+  onMessage(any): void;
 }
 
 export type FarmOptions = {

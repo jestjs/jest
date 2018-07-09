@@ -9,8 +9,6 @@
 
 'use strict';
 
-import BaseWorker from '../base/BaseWorker';
-
 import {
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_OK,
@@ -18,14 +16,26 @@ import {
 } from '../types';
 
 import type {Readable} from 'stream';
-import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from '../types';
+import type {
+  ChildMessage,
+  OnEnd,
+  OnStart,
+  WorkerOptions,
+  WorkerInterface,
+  QueueChildMessage,
+} from '../types';
 
 // $FlowFixMe: Flow doesn't know about experimental features of Node
 const {Worker, MessageChannel} = require('worker_threads');
 
-export default class ExpirementalWorker extends BaseWorker {
+export default class ExpirementalWorker implements WorkerInterface {
   _options: WorkerOptions;
   _worker: Worker;
+  _busy: boolean;
+  _last: ?QueueChildMessage;
+  _options: WorkerOptions;
+  _queue: ?QueueChildMessage;
+  _retries: number;
 
   constructor(options: WorkerOptions) {
     super();
@@ -73,7 +83,39 @@ export default class ExpirementalWorker extends BaseWorker {
     }
   }
 
-  _onMessage(response: any /* Should be ParentMessage */) {
+  initialize() {
+    this._worker = new Worker(__dirname + '/threadChild.js', {
+      eval: false,
+      stderr: true,
+      stdout: true,
+
+      // $FlowFixMe: Flow does not work well with Object.assign.
+      workerData: Object.assign(
+        {
+          cwd: process.cwd(),
+          env: Object.assign({}, process.env, {
+            JEST_WORKER_ID: this._options.workerId,
+          }),
+          // Suppress --debug / --inspect flags while preserving others (like --harmony).
+          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+          silent: true,
+        },
+        this._options.forkOptions,
+      ),
+    });
+
+    this._worker.on('message', this.onMessage.bind(this));
+    this._worker.on('exit', this.onExit.bind(this));
+
+    const {port1} = new MessageChannel();
+
+    this._worker.postMessage(
+      [CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath, port1],
+      [port1],
+    );
+  }
+
+  onMessage(response: any /* Should be ParentMessage */) {
     const item = this._queue;
 
     if (!item) {
@@ -117,36 +159,10 @@ export default class ExpirementalWorker extends BaseWorker {
     }
   }
 
-  initialize() {
-    this._worker = new Worker(__dirname + '/threadChild.js', {
-      eval: false,
-      stderr: true,
-      stdout: true,
-
-      // $FlowFixMe: Flow does not work well with Object.assign.
-      workerData: Object.assign(
-        {
-          cwd: process.cwd(),
-          env: Object.assign({}, process.env, {
-            JEST_WORKER_ID: this._options.workerId,
-          }),
-          // Suppress --debug / --inspect flags while preserving others (like --harmony).
-          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-          silent: true,
-        },
-        this._options.forkOptions,
-      ),
-    });
-
-    this._worker.on('message', this._onMessage.bind(this));
-    this._worker.on('exit', this._exit.bind(this));
-
-    const {port1} = new MessageChannel();
-
-    this._worker.postMessage(
-      [CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath, port1],
-      [port1],
-    );
+  onExit(exitCode: number) {
+    if (exitCode !== 0) {
+      this.initialize();
+    }
   }
 
   send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
