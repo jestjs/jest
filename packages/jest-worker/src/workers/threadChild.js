@@ -25,6 +25,9 @@ import type {
 
 let file = null;
 
+// $FlowFixMe
+import {parentPort, isMainThread} from 'worker_threads';
+
 /**
  * This file is a small bootstrapper for workers. It sets up the communication
  * between the worker and the parent process, interpreting parent messages and
@@ -38,7 +41,7 @@ let file = null;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-process.on('message', (request: any) => {
+parentPort.on('message', (request: any /* Should be ChildMessage */): void => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
@@ -62,15 +65,15 @@ process.on('message', (request: any) => {
 });
 
 function reportSuccess(result: any) {
-  if (!process || !process.send) {
+  if (isMainThread) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  process.send([PARENT_MESSAGE_OK, result]);
+  parentPort.postMessage([PARENT_MESSAGE_OK, result]);
 }
 
 function reportError(error: Error) {
-  if (!process || !process.send) {
+  if (isMainThread) {
     throw new Error('Child can only be used on a forked process');
   }
 
@@ -78,7 +81,7 @@ function reportError(error: Error) {
     error = new Error('"null" or "undefined" thrown');
   }
 
-  process.send([
+  parentPort.postMessage([
     PARENT_MESSAGE_ERROR,
     error.constructor && error.constructor.name,
     error.message,

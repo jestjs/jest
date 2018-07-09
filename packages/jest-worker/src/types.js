@@ -25,6 +25,7 @@ export const PARENT_MESSAGE_ERROR: 1 = 1;
 // Option objects.
 
 import type {Readable} from 'stream';
+const EventEmitter = require('events');
 
 export type ForkOptions = {
   cwd?: string,
@@ -77,10 +78,21 @@ export type WorkerOptions = {|
 
 // Messages passed from the parent to the children.
 
+export type MessagePort = {
+  ...typeof EventEmitter,
+  postMessage(any): void,
+};
+
+export type MessageChannel = {
+  port1: MessagePort,
+  port2: MessagePort,
+};
+
 export type ChildMessageInitialize = [
   typeof CHILD_MESSAGE_INITIALIZE, // type
   boolean, // processed
   string, // file
+  ?MessagePort, // MessagePort
 ];
 
 export type ChildMessageCall = [
