@@ -236,7 +236,13 @@ export default function watch(
       outputStream,
       startRun,
       testWatcher,
-    }).catch(error => console.error(chalk.red(error.stack)));
+    }).catch(error =>
+      // Errors thrown inside `runJest`, e.g. by resolvers, are caught here for
+      // continuous watch mode execution. We need to reprint them to the
+      // terminal and give just a little bit of extra space so they fit below
+      // `preRunMessagePrint` message nicely.
+      console.error('\n\n' + chalk.red(error)),
+    );
   };
 
   const onKeypress = (key: string) => {

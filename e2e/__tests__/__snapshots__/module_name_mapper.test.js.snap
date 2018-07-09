@@ -13,14 +13,27 @@ exports[`moduleNameMapper wrong configuration 1`] = `
 
     Configuration error:
 
-    Could not locate module ./style.css (mapped as no-such-module)
+    Could not locate module ./style.css mapped as:
+    no-such-module.
 
-    Please check:
+    Please check your configuration for these entries:
+    {
+      \\"moduleNameMapper\\": {
+        \\"/\\\\.(css|less)$/\\": \\"no-such-module\\"
+      },
+      \\"resolver\\": null
+    }
 
-    \\"moduleNameMapper\\": {
-      \\"/\\\\.(css|less)$/\\": \\"no-such-module\\"
-    },
-    \\"resolver\\": null
+       8 | 'use strict';
+       9 | 
+    > 10 | require('./style.css');
+         | ^
+      11 | 
+      12 | module.exports = () => 'test';
+      13 | 
+
+      at packages/jest-resolve/build/index.js:400:17
+      at index.js:10:1
 
 "
 `;
