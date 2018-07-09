@@ -9,18 +9,38 @@
 
 'use strict';
 
-import mergeStream from 'merge-stream';
-import os from 'os';
-import path from 'path';
-
-import type {FarmOptions} from './types';
+import type {
+  WorkerPool as WorkerPoolInterface,
+  FarmOptions,
+  ChildMessage,
+} from './types';
 import type {Readable} from 'stream';
 
-import {CHILD_MESSAGE_CALL, CHILD_MESSAGE_END} from './types';
-import Worker from './worker';
+import {CHILD_MESSAGE_CALL, WorkerInterface} from './types';
+import WorkerPool from './WorkerPool';
 
-/* istanbul ignore next */
-const emptyMethod = () => {};
+function getExposedMethods(
+  workerPath: string,
+  options?: FarmOptions = {},
+): $ReadOnlyArray<string> {
+  let exposedMethods = options.exposedMethods;
+
+  // If no methods list is given, try getting it by auto-requiring the module.
+  if (!exposedMethods) {
+    // $FlowFixMe: This has to be a dynamic require.
+    const module: Function | Object = require(workerPath);
+
+    exposedMethods = Object.keys(module).filter(
+      name => typeof module[name] === 'function',
+    );
+
+    if (typeof module === 'function') {
+      exposedMethods.push('default');
+    }
+  }
+
+  return exposedMethods;
+}
 
 /**
  * The Jest farm (publicly called "Worker") is a class that allows you to queue
@@ -29,7 +49,7 @@ const emptyMethod = () => {};
  * of the child processes, and bridged to the main process.
  *
  * Bridged methods are specified by using the "exposedMethods" property of the
- * options "object". This is an array of strings, where each of them corresponds
+ * "options" object. This is an array of strings, where each of them corresponds
  * to the exported name in the loaded module.
  *
  * You can also control the amount of workers by using the "numWorkers" property
@@ -47,67 +67,26 @@ const emptyMethod = () => {};
  *   processed by the same worker. This is specially useful if your workers are
  *   caching results.
  */
-export default class {
-  _stdout: Readable;
-  _stderr: Readable;
+export default class JestWorker {
+  _cacheKeys: {[string]: WorkerInterface, __proto__: null};
   _ending: boolean;
-  _cacheKeys: {[string]: Worker, __proto__: null};
-  _options: FarmOptions;
-  _workers: Array<Worker>;
   _offset: number;
+  _options: FarmOptions;
+  _threadPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: FarmOptions = {}) {
-    const numWorkers = options.numWorkers || os.cpus().length - 1;
-    const workers = new Array(numWorkers);
-    const stdout = mergeStream();
-    const stderr = mergeStream();
+    this._cacheKeys = Object.create(null);
+    this._offset = 0;
+    this._options = options;
+    this._threadPool = options.WorkerPool
+      ? new options.WorkerPool(workerPath, options)
+      : new WorkerPool(workerPath, options);
 
-    if (!path.isAbsolute(workerPath)) {
-      workerPath = require.resolve(workerPath);
-    }
+    this._bindExposedWorkerMethods(workerPath, options);
+  }
 
-    const sharedWorkerOptions = {
-      forkOptions: options.forkOptions || {},
-      maxRetries: options.maxRetries || 3,
-      workerPath,
-    };
-
-    for (let i = 0; i < numWorkers; i++) {
-      const workerOptions = Object.assign({}, sharedWorkerOptions, {
-        workerId: i + 1,
-      });
-      const worker = new Worker(workerOptions);
-      const workerStdout = worker.getStdout();
-      const workerStderr = worker.getStderr();
-
-      if (workerStdout) {
-        stdout.add(workerStdout);
-      }
-
-      if (workerStderr) {
-        stderr.add(workerStderr);
-      }
-
-      workers[i] = worker;
-    }
-
-    let exposedMethods = options.exposedMethods;
-
-    // If no methods list is given, try getting it by auto-requiring the module.
-    if (!exposedMethods) {
-      // $FlowFixMe: This has to be a dynamic require.
-      const child = require(workerPath);
-
-      exposedMethods = Object.keys(child).filter(
-        name => typeof child[name] === 'function',
-      );
-
-      if (typeof child === 'function') {
-        exposedMethods.push('default');
-      }
-    }
-
-    exposedMethods.forEach(name => {
+  _bindExposedWorkerMethods(workerPath: string, options?: FarmOptions): void {
+    getExposedMethods(workerPath, options).forEach(name => {
       if (name.startsWith('_')) {
         return;
       }
@@ -117,72 +96,35 @@ export default class {
       }
 
       // $FlowFixMe: dynamic extension of the class instance is expected.
-      this[name] = this._makeCall.bind(this, name);
+      this[name] = this._callFunctionWithArgs.bind(this, name);
     });
-
-    this._stdout = stdout;
-    this._stderr = stderr;
-    this._ending = false;
-    this._cacheKeys = Object.create(null);
-    this._options = options;
-    this._workers = workers;
-    this._offset = 0;
-  }
-
-  getStdout(): Readable {
-    return this._stdout;
-  }
-
-  getStderr(): Readable {
-    return this._stderr;
-  }
-
-  end() {
-    if (this._ending) {
-      throw new Error('Farm is ended, no more calls can be done to it');
-    }
-
-    const workers = this._workers;
-
-    // We do not cache the request object here. If so, it would only be only
-    // processed by one of the workers, and we want them all to close.
-    for (let i = 0; i < workers.length; i++) {
-      workers[i].send([CHILD_MESSAGE_END, false], emptyMethod, emptyMethod);
-    }
-
-    this._ending = true;
   }
 
   // eslint-disable-next-line no-unclear-flowtypes
-  _makeCall(method: string, ...args: Array<any>): Promise<any> {
+  _callFunctionWithArgs(method: string, ...args: Array<any>): Promise<any> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
 
     return new Promise((resolve, reject) => {
       const {computeWorkerKey} = this._options;
-      const workers = this._workers;
-      const length = workers.length;
-      const cacheKeys = this._cacheKeys;
-      const request = [CHILD_MESSAGE_CALL, false, method, args];
+      const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
 
-      let worker = null;
-      let hash = null;
+      let worker: ?WorkerInterface = null;
+      let hash: ?string = null;
 
       if (computeWorkerKey) {
         hash = computeWorkerKey.apply(this, [method].concat(args));
-        worker = hash == null ? null : cacheKeys[hash];
+        worker = hash == null ? null : this._cacheKeys[hash];
       }
 
-      // Do not use a fat arrow since we need the "this" value, which points to
-      // the worker that executed the call.
-      const onProcessStart = worker => {
+      const onStart: onStart = (worker: WorkerInterface) => {
         if (hash != null) {
-          cacheKeys[hash] = worker;
+          this._cacheKeys[hash] = worker;
         }
       };
 
-      const onProcessEnd = (error, result) => {
+      const onEnd: onEnd = (error: Error, result: mixed) => {
         if (error) {
           reject(error);
         } else {
@@ -190,22 +132,36 @@ export default class {
         }
       };
 
-      // If a worker is pre-selected, use it...
       if (worker) {
-        worker.send(request, onProcessStart, onProcessEnd);
-        return;
-      }
+        this._threadPool.send(worker, request, onStart, onEnd);
+      } else {
+        const workers = this._threadPool.getWorkers();
+        const length = workers.length;
 
-      // ... otherwise use all workers, so the first one available will pick it.
-      for (let i = 0; i < length; i++) {
-        workers[(i + this._offset) % length].send(
-          request,
-          onProcessStart,
-          onProcessEnd,
-        );
+        for (let i = 0; i < length; i++) {
+          const worker = workers[(i + this._offset) % length];
+          this._threadPool.send(worker, request, onStart, onEnd);
+        }
+        this._offset++;
       }
-
-      this._offset++;
     });
+  }
+
+  getStderr(): Readable {
+    return this._threadPool.getStderr();
+  }
+
+  getStdout(): Readable {
+    return this._threadPool.getStdout();
+  }
+
+  end(): void {
+    if (this._ending) {
+      throw new Error('Farm is ended, no more calls can be done to it');
+    }
+
+    this._threadPool.end();
+
+    this._ending = true;
   }
 }

@@ -54,11 +54,20 @@ process.on('message', (request: any /* Should be ChildMessage */) => {
 });
 
 function reportSuccess(result: any) {
-  if (!process || !process.send) {
-    throw new Error('Child can only be used on a forked process');
-  }
+  try {
+    // $FlowFixMe: Flow doesn't know about experimental features of Node
+    const {isMainThread, parentPort} = require('worker_threads');
+    if (!isMainThread) {
+      throw Error("Worker can't be used in the main thread");
+    }
+    parentPort.postMessage([PARENT_MESSAGE_OK, result]);
+  } catch (_) {
+    if (!process || !process.send) {
+      throw new Error('Child can only be used on a forked process');
+    }
 
-  process.send([PARENT_MESSAGE_OK, result]);
+    process.send([PARENT_MESSAGE_OK, result]);
+  }
 }
 
 function reportError(error: Error) {

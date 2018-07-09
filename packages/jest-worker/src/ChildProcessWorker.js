@@ -11,22 +11,14 @@
 
 import childProcess from 'child_process';
 
-import {
-  CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_ERROR,
-  PARENT_MESSAGE_OK,
-} from './types';
+import BaseWorker from './base/BaseWorker';
+
+import {PARENT_MESSAGE_ERROR, CHILD_MESSAGE_INITIALIZE} from './types';
 
 import type {ChildProcess} from 'child_process';
 import type {Readable} from 'stream';
 
-import type {
-  ChildMessage,
-  QueueChildMessage,
-  OnProcessEnd,
-  OnProcessStart,
-  WorkerOptions,
-} from './types';
+import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from './types';
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -46,19 +38,15 @@ import type {
  * field is changed to "true", so that other workers which might encounter the
  * same call skip it.
  */
-export default class {
-  _busy: boolean;
+export default class ChildProcessWorker extends BaseWorker {
   _child: ChildProcess;
-  _last: ?QueueChildMessage;
-  _options: WorkerOptions;
-  _queue: ?QueueChildMessage;
-  _retries: number;
 
   constructor(options: WorkerOptions) {
+    super();
     this._options = options;
     this._queue = null;
 
-    this._initialize();
+    this.initialize();
   }
 
   getStdout(): Readable {
@@ -69,11 +57,7 @@ export default class {
     return this._child.stderr;
   }
 
-  send(
-    request: ChildMessage,
-    onProcessStart: OnProcessStart,
-    onProcessEnd: OnProcessEnd,
-  ) {
+  send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
     const item = {next: null, onProcessEnd, onProcessStart, request};
 
     if (this._last) {
@@ -86,7 +70,7 @@ export default class {
     this._process();
   }
 
-  _initialize() {
+  initialize() {
     const child = childProcess.fork(
       require.resolve('./child'),
       // $FlowFixMe: Flow does not work well with Object.assign.
@@ -127,89 +111,6 @@ export default class {
         error.stack,
         {type: 'WorkerError'},
       ]);
-    }
-  }
-
-  _process() {
-    if (this._busy) {
-      return;
-    }
-
-    let item = this._queue;
-
-    // Calls in the queue might have already been processed by another worker,
-    // so we have to skip them.
-    while (item && item.request[1]) {
-      item = item.next;
-    }
-
-    this._queue = item;
-
-    if (item) {
-      // Flag the call as processed, so that other workers know that they don't
-      // have to process it as well.
-      item.request[1] = true;
-
-      // Tell the parent that this item is starting to be processed.
-      item.onProcessStart(this);
-
-      this._retries = 0;
-      this._busy = true;
-
-      // $FlowFixMe: wrong "ChildProcess.send" signature.
-      this._child.send(item.request);
-    } else {
-      this._last = item;
-    }
-  }
-
-  _receive(response: any /* Should be ParentMessage */) {
-    const item = this._queue;
-
-    if (!item) {
-      throw new TypeError('Unexpected response with an empty queue');
-    }
-
-    const onProcessEnd = item.onProcessEnd;
-
-    this._busy = false;
-    this._process();
-
-    switch (response[0]) {
-      case PARENT_MESSAGE_OK:
-        onProcessEnd(null, response[1]);
-        break;
-
-      case PARENT_MESSAGE_ERROR:
-        let error = response[4];
-
-        if (error != null && typeof error === 'object') {
-          const extra = error;
-          const NativeCtor = global[response[1]];
-          const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
-
-          error = new Ctor(response[2]);
-          // $FlowFixMe: adding custom properties to errors.
-          error.type = response[1];
-          error.stack = response[3];
-
-          for (const key in extra) {
-            // $FlowFixMe: adding custom properties to errors.
-            error[key] = extra[key];
-          }
-        }
-
-        onProcessEnd(error, null);
-        break;
-
-      default:
-        throw new TypeError('Unexpected response from worker: ' + response[0]);
-    }
-  }
-
-  _exit(exitCode: number) {
-    if (exitCode !== 0) {
-      this._initialize();
     }
   }
 }

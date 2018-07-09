@@ -24,7 +24,7 @@ export const PARENT_MESSAGE_ERROR: 1 = 1;
 
 // Option objects.
 
-import type Worker from './worker';
+import type {Readable} from 'stream';
 
 export type ForkOptions = {
   cwd?: string,
@@ -37,12 +37,34 @@ export type ForkOptions = {
   gid?: number,
 };
 
+export interface WorkerPool {
+  _options: FarmOptions;
+  _stderr: Readable;
+  _stdout: Readable;
+  _workers: Array<WorkerInterface>;
+  getStderr(): Readable;
+  getStdout(): Readable;
+  getWorkers(): Array<WorkerInterface>;
+  createWorker(WorkerOptions): WorkerInterface;
+  send(WorkerInterface, ChildMessage, Function, Function): void;
+  end(): void;
+}
+
+export interface WorkerInterface {
+  send(ChildMessage, Function, Function): void;
+  getStderr(): Readable;
+  getStdout(): Readable;
+  _exit(number): void;
+}
+
 export type FarmOptions = {
   computeWorkerKey?: (string, ...Array<any>) => ?string,
   exposedMethods?: $ReadOnlyArray<string>,
   forkOptions?: ForkOptions,
   maxRetries?: number,
   numWorkers?: number,
+  WorkerPool?: (workerPath: string, options?: FarmOptions) => WorkerPool,
+  useNodeWorkersIfPossible?: boolean,
 };
 
 export type WorkerOptions = {|
@@ -50,6 +72,7 @@ export type WorkerOptions = {|
   maxRetries: number,
   workerId: number,
   workerPath: string,
+  useNodeWorkersIfPossible?: boolean,
 |};
 
 // Messages passed from the parent to the children.
@@ -95,13 +118,12 @@ export type ParentMessageError = [
 export type ParentMessage = ParentMessageOk | ParentMessageError;
 
 // Queue types.
-
-export type OnProcessStart = Worker => void;
-export type OnProcessEnd = (?Error, ?any) => void;
+export type OnStart = WorkerInterface => void;
+export type OnEnd = (?Error, ?any) => void;
 
 export type QueueChildMessage = {|
   request: ChildMessage,
-  onProcessStart: OnProcessStart,
-  onProcessEnd: OnProcessEnd,
+  onProcessStart: OnStart,
+  onProcessEnd: OnEnd,
   next: ?QueueChildMessage,
 |};
