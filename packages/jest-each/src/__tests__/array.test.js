@@ -52,6 +52,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -66,10 +67,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -111,12 +114,14 @@ describe('jest-each', () => {
             foo: 'bar',
           })} () => {} [] Infinity NaN`,
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: world 1 null undefined 1.2 ${JSON.stringify({
             baz: 'qux',
           })} () => {} [] Infinity NaN`,
           expectFunction,
+          undefined,
         );
       });
 
@@ -134,10 +139,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: hello',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: world',
           expectFunction,
+          undefined,
         );
       });
 
@@ -157,12 +164,14 @@ describe('jest-each', () => {
             'pretty2',
           )}`,
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: string1 ${pretty('pretty1')} string2 ${pretty(
             'pretty2',
           )}`,
           expectFunction,
+          undefined,
         );
       });
 
@@ -180,10 +189,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: string1 ${pretty('pretty1')} string2 %p`,
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: string1 ${pretty('pretty1')} string2 %p`,
           expectFunction,
+          undefined,
         );
       });
 
@@ -237,6 +248,20 @@ describe('jest-each', () => {
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       });
+
+      test('calls gloabl with given timeout', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([['hello']]);
+
+        const testFunction = get(eachObject, keyPath);
+        testFunction('some test', noop, 10000);
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledWith(
+          'some test',
+          expect.any(Function),
+          10000,
+        );
+      });
     });
   });
 
@@ -278,6 +303,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -292,6 +318,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -309,10 +336,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: hello 1',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: world 2',
           expectFunction,
+          undefined,
         );
       });
     });
