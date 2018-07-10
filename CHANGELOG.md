@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-haste-map]` Add `computeDependencies` flag to avoid opening files if not needed ([#6667](https://github.com/facebook/jest/pull/6667))
+
 ### Fixes
 
 - `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
