@@ -7,13 +7,10 @@
  * @flow
  */
 
-import type {
-  GlobalConfig,
-  ReporterConfig,
-  SnapshotUpdateState,
-} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {WatchPlugin} from './types';
+import type {Options as UpdateGlobalConfigOptions} from './lib/update_global_config';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
@@ -86,23 +83,7 @@ export default function watch(
     testPathPattern,
     updateSnapshot,
     verbose,
-  }: {
-    bail?: boolean,
-    collectCoverage?: boolean,
-    collectCoverageFrom?: Array<string>,
-    collectCoverageOnlyFrom?: {[key: string]: boolean},
-    coverageDirectory?: string,
-    coverageReporters?: Array<string>,
-    mode?: 'watch' | 'watchAll',
-    notify?: boolean,
-    notifyMode?: string,
-    onlyFailures?: boolean,
-    reporters?: Array<ReporterConfig>,
-    testNamePattern?: string,
-    testPathPattern?: string,
-    updateSnapshot?: SnapshotUpdateState,
-    verbose?: boolean,
-  } = {}) => {
+  }: UpdateGlobalConfigOptions = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
       bail,

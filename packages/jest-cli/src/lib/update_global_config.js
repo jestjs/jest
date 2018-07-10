@@ -9,30 +9,29 @@
 
 import {replacePathSepForRegex} from 'jest-regex-util';
 
-import type {
-  GlobalConfig,
-  ReporterConfig,
-  SnapshotUpdateState,
-} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 
-type Options = {
-  bail?: boolean,
-  collectCoverage?: boolean,
-  collectCoverageFrom?: Array<string>,
-  collectCoverageOnlyFrom?: ?{[key: string]: boolean},
-  coverageDirectory?: string,
-  coverageReporters?: Array<string>,
+export type Options = {
+  bail?: $PropertyType<GlobalConfig, 'bail'>,
+  collectCoverage?: $PropertyType<GlobalConfig, 'collectCoverage'>,
+  collectCoverageFrom?: $PropertyType<GlobalConfig, 'collectCoverageFrom'>,
+  collectCoverageOnlyFrom?: $PropertyType<
+    GlobalConfig,
+    'collectCoverageOnlyFrom',
+  >,
+  coverageDirectory?: $PropertyType<GlobalConfig, 'coverageDirectory'>,
+  coverageReporters?: $PropertyType<GlobalConfig, 'coverageReporters'>,
   mode?: 'watch' | 'watchAll',
-  noSCM?: boolean,
-  notify?: boolean,
-  notifyMode?: string,
-  onlyFailures?: boolean,
-  passWithNoTests?: boolean,
-  reporters?: Array<ReporterConfig>,
-  testNamePattern?: string,
-  testPathPattern?: string,
-  updateSnapshot?: SnapshotUpdateState,
-  verbose?: ?boolean,
+  noSCM?: $PropertyType<GlobalConfig, 'noSCM'>,
+  notify?: $PropertyType<GlobalConfig, 'notify'>,
+  notifyMode?: $PropertyType<GlobalConfig, 'notifyMode'>,
+  onlyFailures?: $PropertyType<GlobalConfig, 'onlyFailures'>,
+  passWithNoTests?: $PropertyType<GlobalConfig, 'passWithNoTests'>,
+  reporters?: $PropertyType<GlobalConfig, 'reporters'>,
+  testNamePattern?: $PropertyType<GlobalConfig, 'testNamePattern'>,
+  testPathPattern?: $PropertyType<GlobalConfig, 'testPathPattern'>,
+  updateSnapshot?: $PropertyType<GlobalConfig, 'updateSnapshot'>,
+  verbose?: $PropertyType<GlobalConfig, 'verbose'>,
 };
 
 export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
