@@ -1,5 +1,7 @@
 ## master
 
+## 23.4.0
+
 ### Features
 
 - `[jest-haste-map]` Add `computeDependencies` flag to avoid opening files if not needed ([#6667](https://github.com/facebook/jest/pull/6667))
