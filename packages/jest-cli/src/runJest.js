@@ -176,7 +176,6 @@ export default (async function runJest({
               !micromatch(
                 [path.relative(globalConfig.rootDir, filename)],
                 globalConfig.collectCoverageFrom,
-                {dot: true},
               ).length
             ) {
               return false;
