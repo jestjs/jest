@@ -125,14 +125,14 @@ function buildFile(file, silent) {
   const destPath = getBuildPath(file, BUILD_DIR);
 
   mkdirp.sync(path.dirname(destPath));
-  if (micromatch.isMatch(file, IGNORE_PATTERN)) {
+  if (micromatch.isMatch(file, IGNORE_PATTERN, {dot: true})) {
     silent ||
       process.stdout.write(
         chalk.dim('  \u2022 ') +
           path.relative(PACKAGES_DIR, file) +
           ' (ignore)\n'
       );
-  } else if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
+  } else if (!micromatch.isMatch(file, JS_FILES_PATTERN, {dot: true})) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||
       process.stdout.write(

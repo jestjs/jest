@@ -30,7 +30,7 @@ export default function shouldInstrument(
   if (
     config.forceCoverageMatch &&
     config.forceCoverageMatch.length &&
-    micromatch.any(filename, config.forceCoverageMatch)
+    micromatch.any(filename, config.forceCoverageMatch, {dot: true})
   ) {
     return true;
   }
@@ -42,7 +42,7 @@ export default function shouldInstrument(
   if (
     config.testMatch &&
     config.testMatch.length &&
-    micromatch.any(filename, config.testMatch)
+    micromatch.any(filename, config.testMatch, {dot: true})
   ) {
     return false;
   }
@@ -63,6 +63,7 @@ export default function shouldInstrument(
     !micromatch(
       [path.relative(config.rootDir, filename)],
       options.collectCoverageFrom,
+      {dot: true},
     ).length
   ) {
     return false;
