@@ -244,7 +244,7 @@ describe('jest-each', () => {
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       });
 
-      test('calls gloabl with given timeout', () => {
+      test('calls global with given timeout', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
           a    | b    | expected
