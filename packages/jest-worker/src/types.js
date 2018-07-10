@@ -38,7 +38,7 @@ export type ForkOptions = {
   gid?: number,
 };
 
-export interface WorkerPool {
+export interface WorkerPoolInterface {
   _options: FarmOptions;
   _stderr: Readable;
   _stdout: Readable;
@@ -53,6 +53,7 @@ export interface WorkerPool {
 
 export interface WorkerInterface {
   send(ChildMessage, Function, Function): void;
+  getWorkerId(): number;
   getStderr(): Readable;
   getStdout(): Readable;
   onExit(number): void;
@@ -65,7 +66,10 @@ export type FarmOptions = {
   forkOptions?: ForkOptions,
   maxRetries?: number,
   numWorkers?: number,
-  WorkerPool?: (workerPath: string, options?: FarmOptions) => WorkerPool,
+  WorkerPool?: (
+    workerPath: string,
+    options?: FarmOptions,
+  ) => WorkerPoolInterface,
   useNodeWorkersIfPossible?: boolean,
 };
 
@@ -132,11 +136,12 @@ export type ParentMessage = ParentMessageOk | ParentMessageError;
 
 // Queue types.
 export type OnStart = WorkerInterface => void;
-export type OnEnd = (?Error, ?any) => void;
+export type OnEnd = (?Error, ?any, WorkerInterface) => void;
 
 export type QueueChildMessage = {|
   request: ChildMessage,
-  onProcessStart: OnStart,
-  onProcessEnd: OnEnd,
-  next: ?QueueChildMessage,
+  onStart: OnStart,
+  onEnd: OnEnd,
+  owner?: WorkerInterface,
+  next?: QueueChildMessage,
 |};

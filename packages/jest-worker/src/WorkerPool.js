@@ -16,7 +16,7 @@ import type {
   OnStart,
   OnEnd,
   WorkerInterface,
-  WorkerPool as WorkerPoolInterface,
+  WorkerPoolInterface,
 } from './types';
 
 class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {

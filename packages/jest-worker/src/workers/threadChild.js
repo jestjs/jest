@@ -17,16 +17,14 @@ import {
   PARENT_MESSAGE_OK,
 } from '../types';
 
-import type {
-  ChildMessage,
-  ChildMessageInitialize,
-  ChildMessageCall,
-} from '../types';
+import type {ChildMessageInitialize, ChildMessageCall} from '../types';
 
 let file = null;
 
-// $FlowFixMe
+/* eslint-disable import/no-unresolved */
+// $FlowFixMe: Flow doesn't support experimental node modules
 import {parentPort, isMainThread} from 'worker_threads';
+/* eslint-enable import/no-unresolved */
 
 /**
  * This file is a small bootstrapper for workers. It sets up the communication
@@ -41,28 +39,31 @@ import {parentPort, isMainThread} from 'worker_threads';
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-parentPort.on('message', (request: any /* Should be ChildMessage */): void => {
-  switch (request[0]) {
-    case CHILD_MESSAGE_INITIALIZE:
-      const init: ChildMessageInitialize = request;
-      file = init[2];
-      break;
+parentPort.on(
+  'message',
+  (request: any /* Should be ChildMessage */): void => {
+    switch (request[0]) {
+      case CHILD_MESSAGE_INITIALIZE:
+        const init: ChildMessageInitialize = request;
+        file = init[2];
+        break;
 
-    case CHILD_MESSAGE_CALL:
-      const call: ChildMessageCall = request;
-      execMethod(call[2], call[3]);
-      break;
+      case CHILD_MESSAGE_CALL:
+        const call: ChildMessageCall = request;
+        execMethod(call[2], call[3]);
+        break;
 
-    case CHILD_MESSAGE_END:
-      process.exit(0);
-      break;
+      case CHILD_MESSAGE_END:
+        process.exit(0);
+        break;
 
-    default:
-      throw new TypeError(
-        'Unexpected request from parent process: ' + request[0],
-      );
-  }
-});
+      default:
+        throw new TypeError(
+          'Unexpected request from parent process: ' + request[0],
+        );
+    }
+  },
+);
 
 function reportSuccess(result: any) {
   if (isMainThread) {

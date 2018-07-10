@@ -21,13 +21,7 @@ import {
 import type {ChildProcess} from 'child_process';
 import type {Readable} from 'stream';
 
-import type {
-  ChildMessage,
-  OnEnd,
-  OnStart,
-  WorkerOptions,
-  QueueChildMessage,
-} from '../types';
+import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from '../types';
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -49,50 +43,12 @@ import type {
  */
 export default class ChildProcessWorker implements WorkerInterface {
   _child: ChildProcess;
-  _busy: boolean;
-  _last: ?QueueChildMessage;
   _options: WorkerOptions;
-  _queue: ?QueueChildMessage;
-  _retries: number;
+  _onProcessEnd: OnEnd;
 
   constructor(options: WorkerOptions) {
     this._options = options;
-    this._queue = null;
-
     this.initialize();
-  }
-
-  _process() {
-    if (this._busy) {
-      return;
-    }
-
-    let item = this._queue;
-
-    // Calls in the queue might have already been processed by another worker,
-    // so we have to skip them.
-    while (item && item.request[1]) {
-      item = item.next;
-    }
-
-    this._queue = item;
-
-    if (item) {
-      // Flag the call as processed, so that other workers know that they don't
-      // have to process it as well.
-      item.request[1] = true;
-
-      // Tell the parent that this item is starting to be processed.
-      item.onProcessStart(this);
-
-      this._retries = 0;
-      this._busy = true;
-
-      // $FlowFixMe: wrong "ChildProcess.send" signature.
-      this._child.send(item.request);
-    } else {
-      this._last = item;
-    }
   }
 
   initialize() {
@@ -119,41 +75,13 @@ export default class ChildProcessWorker implements WorkerInterface {
     // $FlowFixMe: wrong "ChildProcess.send" signature.
     child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
 
-    this._retries++;
     this._child = child;
-    this._busy = false;
-
-    // If we exceeded the amount of retries, we will emulate an error reply
-    // coming from the child. This avoids code duplication related with cleaning
-    // the queue, and scheduling the next call.
-    if (this._retries > this._options.maxRetries) {
-      const error = new Error('Call retries were exceeded');
-
-      this.onMessage([
-        PARENT_MESSAGE_ERROR,
-        error.name,
-        error.message,
-        error.stack,
-        {type: 'WorkerError'},
-      ]);
-    }
   }
 
   onMessage(response: any /* Should be ParentMessage */) {
-    const item = this._queue;
-
-    if (!item) {
-      throw new TypeError('Unexpected response with an empty queue');
-    }
-
-    const onProcessEnd = item.onProcessEnd;
-
-    this._busy = false;
-    this._process();
-
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        onProcessEnd(null, response[1]);
+        this._onProcessEnd(null, response[1], this);
         break;
 
       case PARENT_MESSAGE_ERROR:
@@ -175,7 +103,7 @@ export default class ChildProcessWorker implements WorkerInterface {
           }
         }
 
-        onProcessEnd(error, null);
+        this._onProcessEnd(error, null, this);
         break;
 
       default:
@@ -190,16 +118,14 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
-    const item = {next: null, onProcessEnd, onProcessStart, request};
+    onProcessStart(this);
+    this._onProcessEnd = onProcessEnd;
+    // $FlowFixMe
+    this._child.send(request);
+  }
 
-    if (this._last) {
-      this._last.next = item;
-    } else {
-      this._queue = item;
-    }
-
-    this._last = item;
-    this._process();
+  getWorkerId(): number {
+    return this._options.workerId;
   }
 
   getStdout(): Readable {

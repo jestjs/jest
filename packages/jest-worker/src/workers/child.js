@@ -17,11 +17,7 @@ import {
   PARENT_MESSAGE_OK,
 } from '../types';
 
-import type {
-  ChildMessage,
-  ChildMessageInitialize,
-  ChildMessageCall,
-} from '../types';
+import type {ChildMessageInitialize, ChildMessageCall} from '../types';
 
 let file = null;
 

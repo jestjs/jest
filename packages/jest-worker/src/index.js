@@ -9,15 +9,12 @@
 
 'use strict';
 
-import type {
-  WorkerPool as WorkerPoolInterface,
-  FarmOptions,
-  ChildMessage,
-} from './types';
+import type {WorkerPoolInterface, FarmOptions, ChildMessage} from './types';
 import type {Readable} from 'stream';
 
 import {CHILD_MESSAGE_CALL, WorkerInterface} from './types';
 import WorkerPool from './WorkerPool';
+import WorkerQueueManager from './WorkerQueueManager';
 
 const defaultFarmOptions = {
   useNodeWorkersIfPossible: canUseWorkerThreads(),
@@ -84,18 +81,18 @@ function canUseWorkerThreads(): boolean {
 export default class JestWorker {
   _cacheKeys: {[string]: WorkerInterface, __proto__: null};
   _ending: boolean;
-  _offset: number;
   _options: FarmOptions;
+  _queueManager: WorkerQueueManager;
   _threadPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: FarmOptions = {}) {
     this._cacheKeys = Object.create(null);
-    this._offset = 0;
     this._options = Object.assign({}, defaultFarmOptions, options);
 
     this._threadPool = this._options.WorkerPool
       ? new this._options.WorkerPool(workerPath, this._options)
       : new WorkerPool(workerPath, this._options);
+    this._queueManager = new WorkerQueueManager(this._threadPool);
 
     this._bindExposedWorkerMethods(workerPath, this._options);
   }
@@ -139,7 +136,11 @@ export default class JestWorker {
         }
       };
 
-      const onEnd: onEnd = (error: Error, result: mixed) => {
+      const onEnd: onEnd = (
+        error: Error,
+        result: mixed,
+        worker: WorkerInterface,
+      ) => {
         if (error) {
           reject(error);
         } else {
@@ -147,18 +148,10 @@ export default class JestWorker {
         }
       };
 
-      if (worker) {
-        this._threadPool.send(worker, request, onStart, onEnd);
-      } else {
-        const workers = this._threadPool.getWorkers();
-        const length = workers.length;
+      const task = {onEnd, onStart, request};
+      const workerId = worker ? worker.getWorkerId() : undefined;
 
-        for (let i = 0; i < length; i++) {
-          const worker = workers[(i + this._offset) % length];
-          this._threadPool.send(worker, request, onStart, onEnd);
-        }
-        this._offset++;
-      }
+      this._queueManager.enqueue(task, workerId);
     });
   }
 

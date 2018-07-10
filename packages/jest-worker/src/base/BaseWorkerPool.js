@@ -47,7 +47,7 @@ export default class BaseWorkerPool {
         forkOptions: options.forkOptions || {},
         maxRetries: options.maxRetries || 3,
         useNodeWorkersIfPossible: options.useNodeWorkersIfPossible,
-        workerId: i + 1,
+        workerId: i,
         workerPath,
       };
 
