@@ -58,8 +58,8 @@ export default class WorkerQueueManager {
     }
 
     const onEnd = (error: ?Error, result: mixed, worker: WorkerInterface) => {
-      this.unlock(workerId);
       job.onEnd(error, result, worker);
+      this.unlock(workerId);
       this._process(workerId);
     };
 
