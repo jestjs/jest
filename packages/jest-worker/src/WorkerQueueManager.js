@@ -73,18 +73,21 @@ export default class WorkerQueueManager {
   }
 
   getNextJob(workerId: number): ?QueueChildMessage {
-    if (!this._queue[workerId]) {
+    let queueHead = this._queue[workerId];
+
+    if (!queueHead) {
       return null;
     }
 
     let job;
 
-    while (this._queue[workerId]) {
-      if (!this._queue[workerId].request[1]) {
-        job = this._queue[workerId];
+    while (queueHead) {
+      this._queue[workerId] = queueHead;
+      if (!queueHead.request[1]) {
+        job = queueHead;
         break;
       }
-      this._queue[workerId] = this._queue[workerId].next;
+      queueHead = queueHead.next;
     }
 
     return job;
