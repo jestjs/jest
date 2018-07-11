@@ -46,8 +46,56 @@ export default class WorkerQueueManager {
     // }
   }
 
+  _process(workerId: number): WorkerQueueManager {
+    if (this.isLocked(workerId)) {
+      return this;
+    }
+
+    const job = this.getNextJob(workerId);
+
+    if (!job) {
+      return this;
+    }
+
+    const onEnd = (error: ?Error, result: mixed, worker: WorkerInterface) => {
+      this.unlock(workerId);
+      job.onEnd(error, result, worker);
+      this._process(workerId);
+    };
+
+    this.lock(workerId);
+
+    this._workerPool.send(workerId, job.request, job.onStart, onEnd);
+
+    job.request[1] = true;
+
+    return this;
+  }
+
+  getNextJob(workerId: number): ?QueueChildMessage {
+    if (!this._queue[workerId]) {
+      return null;
+    }
+
+    let job;
+
+    while (this._queue[workerId]) {
+      if (!this._queue[workerId].request[1]) {
+        job = this._queue[workerId];
+        break;
+      }
+      this._queue[workerId] = this._queue[workerId].next;
+    }
+
+    return job;
+  }
+
   enqueue(task: QueueChildMessage, workerId?: number): WorkerQueueManager {
     if (workerId != null) {
+      if (task.request[1]) {
+        return this;
+      }
+
       if (this._queue[workerId]) {
         this._last[workerId].next = task;
       } else {
@@ -56,7 +104,7 @@ export default class WorkerQueueManager {
 
       this._last[workerId] = task;
 
-      this.run(workerId);
+      this._process(workerId);
     } else {
       const numOfWorkers = this._workerPool.getWorkers().length;
       for (let i = 0; i < numOfWorkers; i++) {
@@ -65,42 +113,6 @@ export default class WorkerQueueManager {
       }
       this._offset++;
     }
-
-    return this;
-  }
-
-  run(workerId: number): WorkerQueueManager {
-    if (this.isLocked(workerId)) {
-      return this;
-    }
-
-    const job = this._queue[workerId];
-    const worker = this._workerPool.getWorkers()[workerId];
-
-    if (!job) {
-      return this;
-    }
-
-    if (job.owner) {
-      this._queue[workerId] = job.next ? job.next : null;
-      return this.run(workerId);
-    }
-
-    if (!worker) {
-      throw Error(`Worker with ID "${workerId}" is not found`);
-    }
-
-    const onEnd = (error: ?Error, result: mixed, worker: WorkerInterface) => {
-      this.unlock(workerId);
-      job.onEnd(error, result, worker);
-      this.run(workerId);
-    };
-
-    this.lock(workerId);
-
-    this._workerPool.send(worker, job.request, job.onStart, onEnd);
-
-    job.owner = worker;
 
     return this;
   }

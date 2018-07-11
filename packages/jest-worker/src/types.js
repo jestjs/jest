@@ -43,7 +43,7 @@ export interface WorkerPoolInterface {
   getStdout(): Readable;
   getWorkers(): Array<WorkerInterface>;
   createWorker(WorkerOptions): WorkerInterface;
-  send(WorkerInterface, ChildMessage, Function, Function): void;
+  send(number, ChildMessage, Function, Function): void;
   end(): void;
 }
 
@@ -138,6 +138,5 @@ export type QueueChildMessage = {|
   request: ChildMessage,
   onStart: OnStart,
   onEnd: OnEnd,
-  owner?: WorkerInterface,
   next?: QueueChildMessage,
 |};

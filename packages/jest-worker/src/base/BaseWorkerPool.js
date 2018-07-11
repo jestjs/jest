@@ -91,6 +91,10 @@ export default class BaseWorkerPool {
     return this._workers;
   }
 
+  getWorkerById(workerId: number): WorkerInterface {
+    return this._workers[workerId];
+  }
+
   createWorker(workerOptions: WorkerOptions): WorkerInterface {
     return workerOptions.useNodeWorkersIfPossible
       ? new NodeThreadsWorker(workerOptions)

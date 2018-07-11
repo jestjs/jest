@@ -11,22 +11,16 @@
 
 import BaseWorkerPool from './base/BaseWorkerPool';
 
-import type {
-  ChildMessage,
-  OnStart,
-  OnEnd,
-  WorkerInterface,
-  WorkerPoolInterface,
-} from './types';
+import type {ChildMessage, OnStart, OnEnd, WorkerPoolInterface} from './types';
 
 class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   send(
-    worker: WorkerInterface,
+    workerId: number,
     request: ChildMessage,
     onStart: OnStart,
     onEnd: OnEnd,
   ): void {
-    worker.send(request, onStart, onEnd);
+    this.getWorkerById(workerId).send(request, onStart, onEnd);
   }
 }
 
