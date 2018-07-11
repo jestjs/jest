@@ -13,16 +13,25 @@ finish_describe_definition: describe
 run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
+hook_start: beforeAll
+> beforeAll
+hook_success: beforeAll
 run_describe_start: child describe
 test_start: my test
 hook_start: beforeEach
+> beforeEach
 hook_success: beforeEach
 test_fn_start: my test
-test_fn_failure: my test
+> my test
+test_fn_success: my test
 hook_start: afterEach
+> afterEach
 hook_success: afterEach
 test_done: my test
 run_describe_finish: child describe
+hook_start: afterAll
+> afterAll
+hook_success: afterAll
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
