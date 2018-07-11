@@ -50,11 +50,11 @@ export default class WorkerQueueManager {
     if (workerId != null) {
       if (this._queue[workerId]) {
         this._last[workerId].next = task;
-        this._last[workerId] = task;
       } else {
         this._queue[workerId] = task;
-        this._last[workerId] = task;
       }
+
+      this._last[workerId] = task;
 
       this.run(workerId);
     } else {
