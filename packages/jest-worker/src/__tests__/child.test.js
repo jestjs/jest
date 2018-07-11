@@ -94,7 +94,7 @@ beforeEach(() => {
   process.send = jest.fn();
 
   // Require the child!
-  require('../workers/child');
+  require('../workers/processChild');
 });
 
 afterEach(() => {

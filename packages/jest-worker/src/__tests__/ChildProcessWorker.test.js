@@ -47,7 +47,7 @@ afterEach(() => {
 });
 
 it('passes fork options down to child_process.fork, adding the defaults', () => {
-  const child = require.resolve('../workers/child');
+  const child = require.resolve('../workers/processChild');
 
   process.execArgv = ['--inspect', '-p'];
 

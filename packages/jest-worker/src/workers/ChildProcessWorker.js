@@ -53,7 +53,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   initialize() {
     const child = childProcess.fork(
-      require.resolve('./child'),
+      require.resolve('./processChild'),
       // $FlowFixMe: Flow does not work well with Object.assign.
       Object.assign(
         {
