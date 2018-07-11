@@ -899,6 +899,7 @@ describe('HasteMap', () => {
         expect(mockWorker.mock.calls).toEqual([
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/__mocks__/Pear.js',
               hasteImplModulePath: undefined,
@@ -906,6 +907,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/banana.js',
               hasteImplModulePath: undefined,
@@ -913,6 +915,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/pear.js',
               hasteImplModulePath: undefined,
@@ -920,6 +923,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/strawberry.js',
               hasteImplModulePath: undefined,
@@ -927,6 +931,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/vegetables/melon.js',
               hasteImplModulePath: undefined,

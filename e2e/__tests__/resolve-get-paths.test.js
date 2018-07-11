@@ -6,14 +6,11 @@
  *
  * @flow
  */
+'use strict';
 
-import type _Resolver from 'jest-resolve';
+const runJest = require('../runJest');
 
-import type {Path} from './Config';
-
-export type ResolveModuleConfig = {|
-  skipNodeResolution?: boolean,
-  paths?: Path[],
-|};
-
-export type Resolver = _Resolver;
+test('require.resolve.paths', () => {
+  const {status} = runJest('resolve-get-paths');
+  expect(status).toBe(0);
+});
