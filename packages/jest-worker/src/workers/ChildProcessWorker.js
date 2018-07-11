@@ -12,8 +12,8 @@
 import childProcess from 'child_process';
 
 import {
-  PARENT_MESSAGE_ERROR,
   CHILD_MESSAGE_INITIALIZE,
+  PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
   WorkerInterface,
 } from '../types';
