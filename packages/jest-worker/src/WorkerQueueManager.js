@@ -79,18 +79,13 @@ export default class WorkerQueueManager {
       return null;
     }
 
-    let job;
-
-    while (queueHead) {
-      this._queue[workerId] = queueHead;
-      if (!queueHead.request[1]) {
-        job = queueHead;
-        break;
-      }
+    while (queueHead && queueHead.request[1]) {
       queueHead = queueHead.next;
     }
 
-    return job;
+    this._queue[workerId] = queueHead;
+
+    return queueHead;
   }
 
   enqueue(task: QueueChildMessage, workerId?: number): WorkerQueueManager {
