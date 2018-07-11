@@ -64,15 +64,6 @@ export default class BaseWorkerPool {
       }
 
       this._workers[i] = worker;
-
-      // $FlowFixMe
-      this.getStderr = this.getStderr.bind(this);
-      // $FlowFixMe
-      this.getStdout = this.getStdout.bind(this);
-      // $FlowFixMe
-      this.getWorkers = this.getWorkers.bind(this);
-      // $FlowFixMe
-      this.end = this.end.bind(this);
     }
 
     this._stdout = stdout;
