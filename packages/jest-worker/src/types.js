@@ -39,10 +39,6 @@ export type ForkOptions = {
 };
 
 export interface WorkerPoolInterface {
-  _options: FarmOptions;
-  _stderr: Readable;
-  _stdout: Readable;
-  _workers: Array<WorkerInterface>;
   getStderr(): Readable;
   getStdout(): Readable;
   getWorkers(): Array<WorkerInterface>;
