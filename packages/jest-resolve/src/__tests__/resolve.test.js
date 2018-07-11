@@ -142,6 +142,20 @@ describe('resolveModule', () => {
       require.resolve('../../src/__mocks__/foo/node_modules/dep/index.js'),
     );
   });
+
+  it('is possible to specify custom resolve paths', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    });
+    const src = require.resolve('../');
+    const resolved = resolver.resolveModule(src, 'mockJsDependency', {
+      paths: [
+        path.resolve(__dirname, '../../src/__tests__'),
+        path.resolve(__dirname, '../../src/__mocks__'),
+      ],
+    });
+    expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
+  });
 });
 
 describe('getMockModule', () => {

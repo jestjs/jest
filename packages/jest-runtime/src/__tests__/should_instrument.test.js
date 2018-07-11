@@ -62,6 +62,22 @@ describe('should_instrument', () => {
       );
     });
 
+    it('should should match invalid globs, to be removed in the next major', () => {
+      const testSingleCollectCoverageFrom = pattern =>
+        testShouldInstrument(
+          'do/collect/coverage.js',
+          {
+            collectCoverage: true,
+            collectCoverageFrom: [pattern],
+          },
+          defaultConfig,
+        );
+
+      testSingleCollectCoverageFrom('**/do/**/*.{js}');
+      testSingleCollectCoverageFrom('**/do/**/*.{js|ts}');
+      testSingleCollectCoverageFrom('**/do/**.js');
+    });
+
     it('should return true if the file is not in coveragePathIgnorePatterns', () => {
       testShouldInstrument('do/collect/coverage.js', defaultOptions, {
         coveragePathIgnorePatterns: ['dont'],

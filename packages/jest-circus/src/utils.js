@@ -130,18 +130,20 @@ export const getEachHooksForTest = (
   let {parent: block} = test;
 
   do {
+    const beforeEachForCurrentBlock = [];
     for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
-          // Before hooks are executed from top to bottom, the opposite of the
-          // way we traversed it.
-          result.beforeEach.unshift(hook);
+          beforeEachForCurrentBlock.push(hook);
           break;
         case 'afterEach':
           result.afterEach.push(hook);
           break;
       }
     }
+    // 'beforeEach' hooks are executed from top to bottom, the opposite of the
+    // way we traversed it.
+    result.beforeEach = [...beforeEachForCurrentBlock, ...result.beforeEach];
   } while ((block = block.parent));
   return result;
 };
