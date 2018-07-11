@@ -16,10 +16,6 @@ import {CHILD_MESSAGE_CALL, WorkerInterface} from './types';
 import WorkerPool from './WorkerPool';
 import WorkerQueueManager from './WorkerQueueManager';
 
-const defaultFarmOptions = {
-  useNodeWorkersIfPossible: canUseWorkerThreads(),
-};
-
 function getExposedMethods(
   workerPath: string,
   options?: FarmOptions = {},
@@ -46,7 +42,8 @@ function getExposedMethods(
 function canUseWorkerThreads(): boolean {
   let workerThreadsAreSupported = false;
   try {
-    require.resolve('worker_threads');
+    // $FlowFixMe: Flow doesn't know about experimental APIs
+    require('worker_threads');
     workerThreadsAreSupported = true;
   } catch (_) {}
 
@@ -87,7 +84,9 @@ export default class JestWorker {
 
   constructor(workerPath: string, options?: FarmOptions = {}) {
     this._cacheKeys = Object.create(null);
-    this._options = Object.assign({}, defaultFarmOptions, options);
+    this._options = Object.assign({}, options, {
+      useNodeWorkersIfPossible: canUseWorkerThreads(),
+    });
 
     this._threadPool = this._options.WorkerPool
       ? new this._options.WorkerPool(workerPath, this._options)
