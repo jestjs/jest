@@ -203,8 +203,11 @@ test('serialize handles \\r\\n', () => {
 describe('DeepMerge', () => {
   it('Correctly merges objects with property matchers', () => {
     const target = {data: {bar: 'bar', foo: 'foo'}};
-    const propertyMatchers = {data: {foo: expect.any(String)}};
+    const matcher = expect.any(String);
+    const propertyMatchers = {data: {foo: matcher}};
     const mergedOutput = deepMerge(target, propertyMatchers);
-    expect(Object.keys(mergedOutput.data)).toContain('bar', 'foo');
+
+    expect(mergedOutput).toStrictEqual({data: {bar: 'bar', foo: matcher}});
+    expect(target).toStrictEqual({data: {bar: 'bar', foo: 'foo'}});
   });
 });
