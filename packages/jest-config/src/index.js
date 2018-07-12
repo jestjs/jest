@@ -173,6 +173,7 @@ const getConfigs = (
     modulePathIgnorePatterns: options.modulePathIgnorePatterns,
     modulePaths: options.modulePaths,
     name: options.name,
+    prettierPath: options.prettierPath,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
     resolver: options.resolver,

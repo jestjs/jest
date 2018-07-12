@@ -54,14 +54,12 @@ test('describe block cannot have hooks and no tests', () => {
 test('describe block _can_ have hooks if a child describe block has tests', () => {
   const result = runTest(`
     describe('describe', () => {
-      afterEach(() => {});
-      beforeEach(() => {});
-      afterAll(() => {});
-      beforeAll(() => {});
+      afterEach(() => console.log('> afterEach'));
+      beforeEach(() => console.log('> beforeEach'));
+      afterAll(() => console.log('> afterAll'));
+      beforeAll(() => console.log('> beforeAll'));
       describe('child describe', () => {
-        test('my test', () => {
-          expect(true).toBe(true);
-        })
+        test('my test', () => console.log('> my test'));
       })
     })
   `);

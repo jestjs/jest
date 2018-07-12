@@ -9,8 +9,11 @@
 
 import type _Resolver from 'jest-resolve';
 
+import type {Path} from './Config';
+
 export type ResolveModuleConfig = {|
   skipNodeResolution?: boolean,
+  paths?: Path[],
 |};
 
 export type Resolver = _Resolver;

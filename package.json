@@ -11,6 +11,7 @@
     "babel-plugin-transform-es2015-destructuring": "^6.23.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-plugin-transform-es2015-parameters": "^6.23.0",
+    "babel-plugin-transform-es2015-shorthand-properties": "^6.24.1",
     "babel-plugin-transform-es2015-spread": "^6.22.0",
     "babel-plugin-transform-flow-strip-types": "^6.18.0",
     "babel-plugin-transform-inline-imports-commonjs": "^1.2.0",
@@ -36,14 +37,14 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "~0.0.19",
     "execa": "^0.10.0",
-    "flow-bin": "^0.73.0",
+    "flow-bin": "^0.75.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
     "istanbul-api": "^1.3.1",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "jest-junit": "^5.1.0",
-    "jest-silent-reporter": "^0.0.5",
+    "jest-simple-dot-reporter": "^1.0.2",
     "jquery": "^3.2.1",
     "karma": "^2.0.0",
     "karma-browserify": "^5.1.1",
@@ -51,7 +52,7 @@
     "karma-mocha": "^1.3.0",
     "left-pad": "^1.1.1",
     "lerna": "2.11.0",
-    "micromatch": "^3.1.10",
+    "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
     "mocha": "^5.0.1",
     "mock-fs": "^4.4.1",
@@ -86,11 +87,11 @@
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
     "lint:md": "yarn --silent lint:md:ci --fix",
     "lint:md:ci": "prettylint '**/*.md' --ignore-path .gitignore",
-    "postinstall": "yarn build",
+    "postinstall": "opencollective postinstall && yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
-    "test-ci": "yarn jest-coverage -i --reporters jest-silent-reporter jest-junit && yarn test-leak && node scripts/mapCoverage.js && codecov",
-    "test-ci-partial": "yarn jest -i --reporters jest-silent-reporter jest-junit",
+    "test-ci": "yarn jest-coverage -i --reporters jest-simple-dot-reporter jest-junit && yarn test-leak && node scripts/mapCoverage.js && codecov",
+    "test-ci-partial": "yarn jest -i --reporters jest-simple-dot-reporter jest-junit",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn typecheck && yarn lint && yarn jest",
@@ -165,5 +166,13 @@
     "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all"
+  },
+  "dependencies": {
+    "opencollective": "^1.0.3"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/jest",
+    "logo": "https://opencollective.com/jest/logo.txt"
   }
 }

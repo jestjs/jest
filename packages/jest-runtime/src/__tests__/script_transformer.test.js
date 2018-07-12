@@ -11,7 +11,13 @@
 const slash = require('slash');
 
 jest
-  .mock('fs')
+  .mock('fs', () =>
+    // Node 10.5.x compatibility
+    Object.assign({}, jest.genMockFromModule('fs'), {
+      ReadStream: require.requireActual('fs').ReadStream,
+      WriteStream: require.requireActual('fs').WriteStream,
+    }),
+  )
   .mock('graceful-fs')
   .mock('jest-haste-map', () => ({
     getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
@@ -388,7 +394,7 @@ describe('ScriptTransformer', () => {
     const content =
       'var x = 1;\n' +
       '//# sourceMappingURL=data:application/json;base64,' +
-      new Buffer(sourceMap).toString('base64');
+      Buffer.from(sourceMap).toString('base64');
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
