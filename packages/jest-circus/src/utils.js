@@ -90,9 +90,11 @@ export const makeTest = (
   };
 };
 
+// Traverse the tree of describe blocks and return true if at least one describe
+// block has an enabled test.
 const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
-  return describeBlock.tests.some(
+  const hasOwnEnabledTests = describeBlock.tests.some(
     test =>
       !(
         test.mode === 'skip' ||
@@ -100,6 +102,8 @@ const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
         (testNamePattern && !testNamePattern.test(getTestID(test)))
       ),
   );
+
+  return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
 export const getAllHooksForDescribe = (

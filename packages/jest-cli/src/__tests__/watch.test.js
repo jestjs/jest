@@ -86,6 +86,11 @@ jest.doMock(
   {virtual: true},
 );
 
+const regularUpdateGlobalConfig = require('../lib/update_global_config')
+  .default;
+const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
+jest.doMock('../lib/update_global_config', () => updateGlobalConfig);
+
 const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
@@ -435,6 +440,101 @@ describe('Watch mode flows', () => {
     });
   });
 
+  it.each`
+    ok | option
+    ✔︎ | bail
+    ✖︎ | changedFilesWithAncestor
+    ✖︎ | changedSince
+    ✔︎ | collectCoverage
+    ✔︎ | collectCoverageFrom
+    ✔︎ | collectCoverageOnlyFrom
+    ✔︎ | coverageDirectory
+    ✔︎ | coverageReporters
+    ✖︎ | coverageThreshold
+    ✖︎ | detectLeaks
+    ✖︎ | detectOpenHandles
+    ✖︎ | enabledTestsMap
+    ✖︎ | errorOnDeprecated
+    ✖︎ | expand
+    ✖︎ | filter
+    ✖︎ | findRelatedTests
+    ✖︎ | forceExit
+    ✖︎ | globalSetup
+    ✖︎ | globalTeardown
+    ✖︎ | json
+    ✖︎ | lastCommit
+    ✖︎ | listTests
+    ✖︎ | logHeapUsage
+    ✖︎ | maxWorkers
+    ✖︎ | nonFlagArgs
+    ✖︎ | noSCM
+    ✖︎ | noStackTrace
+    ✔︎ | notify
+    ✔︎ | notifyMode
+    ✖︎ | onlyChanged
+    ✔︎ | onlyFailures
+    ✖︎ | outputFile
+    ✖︎ | passWithNoTests
+    ✖︎ | projects
+    ✖︎ | replname
+    ✔︎ | reporters
+    ✖︎ | rootDir
+    ✖︎ | runTestsByPath
+    ✖︎ | silent
+    ✖︎ | skipFilter
+    ✖︎ | testFailureExitCode
+    ✔︎ | testNamePattern
+    ✔︎ | testPathPattern
+    ✖︎ | testResultsProcessor
+    ✔︎ | updateSnapshot
+    ✖︎ | useStderr
+    ✔︎ | verbose
+    ✖︎ | watch
+    ✖︎ | watchAll
+    ✖︎ | watchman
+    ✖︎ | watchPlugins
+  `(
+    'allows WatchPlugins to modify only white-listed global config keys',
+    async ({ok, option}) => {
+      const pluginPath = `${__dirname}/__fixtures__/plugin_path_config_updater`;
+      const config = Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [{config: {}, path: pluginPath}],
+      });
+
+      jest.doMock(
+        pluginPath,
+        () =>
+          class WatchPlugin {
+            getUsageInfo() {
+              return {key: 'x', prompt: 'test option white-listing'};
+            }
+
+            run(globalConfig, updateConfigAndRun) {
+              updateConfigAndRun({[option]: '__JUST_TRYING__'});
+              return Promise.resolve();
+            }
+          },
+        {virtual: true},
+      );
+
+      watch(config, contexts, pipe, hasteMapInstances, stdin);
+      await nextTick();
+
+      stdin.emit('x');
+      await nextTick();
+
+      const lastCall = updateGlobalConfig.mock.calls.slice(-1)[0];
+      let expector = expect(lastCall[0]);
+      if (!ok) {
+        expector = expector.not;
+      }
+      expector.toMatchObject({
+        [option]: '__JUST_TRYING__',
+      });
+    },
+  );
+
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
     const run = jest.fn(() => Promise.resolve());
     const pluginPath = `${__dirname}/__fixtures__/plugin_path`;
@@ -588,7 +688,6 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       testNamePattern: 'test',
-      testPathPattern: '',
       watch: true,
       watchAll: false,
     });
@@ -606,7 +705,6 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
-      testNamePattern: '',
       testPathPattern: 'file',
       watch: true,
       watchAll: false,

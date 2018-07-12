@@ -59,3 +59,20 @@ test('multiple before each hooks in one describe are executed in the right order
 
   expect(stdout).toMatchSnapshot();
 });
+
+test('beforeAll is exectued correctly', () => {
+  const {stdout} = runTest(`
+    describe('describe 1', () => {
+      beforeAll(() => console.log('> beforeAll 1'));
+      test('test 1', () => console.log('> test 1'));
+
+      describe('2nd level describe', () => {
+        beforeAll(() => console.log('> beforeAll 2'));
+        test('test 2', () => console.log('> test 2'));
+        test('test 3', () => console.log('> test 3'));
+      });
+    });
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
