@@ -191,6 +191,49 @@ test('handles property matchers', () => {
   }
 });
 
+test('handles invalid property matchers', () => {
+  const filename = 'handle-property-matchers.test.js';
+  {
+    writeFiles(TESTS_DIR, {
+      [filename]: `test('invalid property matchers', () => {
+        expect({foo: 'bar'}).toMatchSnapshot(null);
+      });
+    `,
+    });
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(status).toBe(1);
+  }
+  {
+    writeFiles(TESTS_DIR, {
+      [filename]: `test('invalid property matchers', () => {
+        expect({foo: 'bar'}).toMatchSnapshot(null, 'test-name');
+      });
+    `,
+    });
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch(
+      'To provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+    );
+    expect(status).toBe(1);
+  }
+  {
+    writeFiles(TESTS_DIR, {
+      [filename]: `test('invalid property matchers', () => {
+        expect({foo: 'bar'}).toMatchSnapshot(undefined, 'test-name');
+      });
+    `,
+    });
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch(
+      'To provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+    );
+    expect(status).toBe(1);
+  }
+});
+
 test('handles property matchers with custom name', () => {
   const filename = 'handle-property-matchers-with-name.test.js';
   const template = makeTemplate(`test('handles property matchers with name', () => {
@@ -217,20 +260,21 @@ test('handles property matchers with custom name', () => {
     expect(stderr).toMatch(
       'Received value does not match snapshot properties for "handles property matchers with name: custom-name 1".',
     );
+    expect(stderr).toMatch('Expected snapshot to match properties:');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);
   }
 });
 
-test('handles property matchers with deep expect.objectContaining', () => {
+test('handles property matchers with deep properties', () => {
   const filename = 'handle-property-matchers-with-name.test.js';
-  const template = makeTemplate(`test('handles property matchers with deep expect.objectContaining', () => {
-      expect({ user: { createdAt: $1, name: 'Jest' }}).toMatchSnapshot({ user: expect.objectContaining({ createdAt: expect.any(Date) }) });
+  const template = makeTemplate(`test('handles property matchers with deep properties', () => {
+      expect({ user: { createdAt: $1, name: $2 }}).toMatchSnapshot({ user: { createdAt: expect.any(Date), name: $2 }});
     });
     `);
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['new Date()'])});
+    writeFiles(TESTS_DIR, {[filename]: template(['new Date()', '"Jest"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(status).toBe(0);
@@ -243,10 +287,21 @@ test('handles property matchers with deep expect.objectContaining', () => {
   }
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template(['"string"'])});
+    writeFiles(TESTS_DIR, {[filename]: template(['"string"', '"Jest"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
-      'Received value does not match snapshot properties for "handles property matchers with deep expect.objectContaining 1".',
+      'Received value does not match snapshot properties for "handles property matchers with deep properties 1".',
+    );
+    expect(stderr).toMatch('Expected snapshot to match properties:');
+    expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
+    expect(status).toBe(1);
+  }
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['new Date()', '"CHANGED"'])});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch(
+      'Received value does not match stored snapshot "handles property matchers with deep properties 1"',
     );
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);

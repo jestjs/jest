@@ -53,6 +53,12 @@ const toMatchSnapshot = function(
   propertyMatchers?: any,
   testName?: string,
 ) {
+  if (arguments.length === 3 && !propertyMatchers) {
+    throw new Error(
+      'Property matchers must be an object.\n\nTo provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+    );
+  }
+
   return _toMatchSnapshot({
     context: this,
     propertyMatchers,
@@ -118,6 +124,9 @@ const _toMatchSnapshot = ({
       : currentTestName || '';
 
   if (typeof propertyMatchers === 'object') {
+    if (propertyMatchers === null) {
+      throw new Error(`Property matchers must be an object.`);
+    }
     const propertyPass = context.equals(received, propertyMatchers, [
       context.utils.iterableEquality,
       context.utils.subsetEquality,
