@@ -279,7 +279,7 @@ class Resolver {
     }
 
     const moduleType = this._getModuleType(moduleName);
-    const absolutePath = this._getAbsolutPath(virtualMocks, from, moduleName);
+    const absolutePath = this._getAbsolutePath(virtualMocks, from, moduleName);
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
@@ -296,7 +296,7 @@ class Resolver {
     return this.isCoreModule(moduleName) ? 'node' : 'user';
   }
 
-  _getAbsolutPath(
+  _getAbsolutePath(
     virtualMocks: BooleanObject,
     from: Path,
     moduleName: string,
