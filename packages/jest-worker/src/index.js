@@ -9,16 +9,22 @@
 
 'use strict';
 
-import type {WorkerPoolInterface, FarmOptions, ChildMessage} from './types';
-import type {Readable} from 'stream';
-
+import os from 'os';
 import {CHILD_MESSAGE_CALL, WorkerInterface} from './types';
 import WorkerPool from './WorkerPool';
-import WorkerQueueManager from './WorkerQueueManager';
+import QueueManager from './QueueManager';
+
+import type {
+  WorkerPoolInterface,
+  WorkerPoolOptions,
+  FarmOptions,
+  ChildMessage,
+} from './types';
+import type {Readable} from 'stream';
 
 function getExposedMethods(
   workerPath: string,
-  options?: FarmOptions = {},
+  options: FarmOptions,
 ): $ReadOnlyArray<string> {
   let exposedMethods = options.exposedMethods;
 
@@ -79,24 +85,33 @@ export default class JestWorker {
   _cacheKeys: {[string]: WorkerInterface, __proto__: null};
   _ending: boolean;
   _options: FarmOptions;
-  _queueManager: WorkerQueueManager;
+  _queueManager: QueueManager;
   _threadPool: WorkerPoolInterface;
 
-  constructor(workerPath: string, options?: FarmOptions = {}) {
+  constructor(workerPath: string, options?: FarmOptions) {
     this._cacheKeys = Object.create(null);
-    this._options = Object.assign({}, options, {
-      useNodeWorkersIfPossible: canUseWorkerThreads(),
-    });
+    this._options = Object.assign({}, options);
+
+    const workerPoolOptions: WorkerPoolOptions = {
+      forkOptions: this._options.forkOptions || {},
+      maxRetries: this._options.maxRetries || 3,
+      numWorkers: os.cpus().length - 1,
+      useWorkers: canUseWorkerThreads(),
+    };
 
     this._threadPool = this._options.WorkerPool
-      ? new this._options.WorkerPool(workerPath, this._options)
-      : new WorkerPool(workerPath, this._options);
-    this._queueManager = new WorkerQueueManager(this._threadPool);
+      ? new this._options.WorkerPool(workerPath, workerPoolOptions)
+      : new WorkerPool(workerPath, workerPoolOptions);
+
+    this._queueManager = new QueueManager(
+      workerPoolOptions.numWorkers,
+      this._threadPool.send.bind(this._threadPool),
+    );
 
     this._bindExposedWorkerMethods(workerPath, this._options);
   }
 
-  _bindExposedWorkerMethods(workerPath: string, options?: FarmOptions): void {
+  _bindExposedWorkerMethods(workerPath: string, options: FarmOptions): void {
     getExposedMethods(workerPath, options).forEach(name => {
       if (name.startsWith('_')) {
         return;
@@ -135,11 +150,7 @@ export default class JestWorker {
         }
       };
 
-      const onEnd: onEnd = (
-        error: Error,
-        result: mixed,
-        worker: WorkerInterface,
-      ) => {
+      const onEnd: onEnd = (error: Error, result: mixed) => {
         if (error) {
           reject(error);
         } else {
@@ -148,9 +159,11 @@ export default class JestWorker {
       };
 
       const task = {onEnd, onStart, request};
-      const workerId = worker ? worker.getWorkerId() : undefined;
-
-      this._queueManager.enqueue(task, workerId);
+      if (worker) {
+        this._queueManager.enqueue(task, worker.getWorkerId());
+      } else {
+        this._queueManager.push(task);
+      }
     });
   }
 

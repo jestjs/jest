@@ -10,15 +10,12 @@
 'use strict';
 
 import mergeStream from 'merge-stream';
-import os from 'os';
 import path from 'path';
 
-import ChildProcessWorker from '../workers/ChildProcessWorker';
-import NodeThreadsWorker from '../workers/NodeThreadsWorker';
 import {CHILD_MESSAGE_END} from '../types';
 
 import type {Readable} from 'stream';
-import type {FarmOptions, WorkerOptions, WorkerInterface} from '../types';
+import type {WorkerPoolOptions, WorkerOptions, WorkerInterface} from '../types';
 
 /* istanbul ignore next */
 const emptyMethod = () => {};
@@ -26,14 +23,12 @@ const emptyMethod = () => {};
 export default class BaseWorkerPool {
   _stderr: Readable;
   _stdout: Readable;
-  _options: FarmOptions;
+  _options: WorkerPoolOptions;
   _workers: Array<WorkerInterface>;
 
-  constructor(workerPath: string, options: FarmOptions) {
+  constructor(workerPath: string, options: WorkerPoolOptions) {
     this._options = options;
-
-    const numWorkers = options.numWorkers || os.cpus().length - 1;
-    this._workers = new Array(numWorkers);
+    this._workers = new Array(options.numWorkers);
 
     if (!path.isAbsolute(workerPath)) {
       workerPath = require.resolve(workerPath);
@@ -42,11 +37,12 @@ export default class BaseWorkerPool {
     const stdout = mergeStream();
     const stderr = mergeStream();
 
-    for (let i = 0; i < numWorkers; i++) {
+    const {forkOptions, maxRetries} = options;
+
+    for (let i = 0; i < options.numWorkers; i++) {
       const workerOptions: WorkerOptions = {
-        forkOptions: options.forkOptions || {},
-        maxRetries: options.maxRetries || 3,
-        useNodeWorkersIfPossible: options.useNodeWorkersIfPossible,
+        forkOptions,
+        maxRetries,
         workerId: i,
         workerPath,
       };
@@ -87,9 +83,7 @@ export default class BaseWorkerPool {
   }
 
   createWorker(workerOptions: WorkerOptions): WorkerInterface {
-    return workerOptions.useNodeWorkersIfPossible
-      ? new NodeThreadsWorker(workerOptions)
-      : new ChildProcessWorker(workerOptions);
+    throw Error('Missing method createWorker in WorkerPool');
   }
 
   end(): void {

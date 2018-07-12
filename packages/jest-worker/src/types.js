@@ -64,17 +64,22 @@ export type FarmOptions = {
   numWorkers?: number,
   WorkerPool?: (
     workerPath: string,
-    options?: FarmOptions,
+    options?: WorkerPoolOptions,
   ) => WorkerPoolInterface,
-  useNodeWorkersIfPossible?: boolean,
 };
+
+export type WorkerPoolOptions = {|
+  forkOptions: ForkOptions,
+  maxRetries: number,
+  numWorkers: number,
+  useWorkers: boolean,
+|};
 
 export type WorkerOptions = {|
   forkOptions: ForkOptions,
   maxRetries: number,
   workerId: number,
   workerPath: string,
-  useNodeWorkersIfPossible?: boolean,
 |};
 
 // Messages passed from the parent to the children.
@@ -132,7 +137,7 @@ export type ParentMessage = ParentMessageOk | ParentMessageError;
 
 // Queue types.
 export type OnStart = WorkerInterface => void;
-export type OnEnd = (?Error, ?any, WorkerInterface) => void;
+export type OnEnd = (?Error, ?any) => void;
 
 export type QueueChildMessage = {|
   request: ChildMessage,

@@ -9,21 +9,19 @@
 
 'use strict';
 
-import type {
-  QueueChildMessage,
-  WorkerPoolInterface,
-  WorkerInterface,
-} from './types';
+import type {QueueChildMessage} from './types';
 
-export default class WorkerQueueManager {
-  _workerPool: WorkerPoolInterface;
-  _queue: Array<?QueueChildMessage>;
+export default class QueueManager {
+  _callback: Function;
   _last: Array<QueueChildMessage>;
   _locks: Array<boolean>;
+  _numOfWorkers: number;
   _offset: number;
+  _queue: Array<?QueueChildMessage>;
 
-  constructor(workerPool: WorkerPoolInterface) {
-    this._workerPool = workerPool;
+  constructor(numOfWorkers: number, callback: Function) {
+    this._callback = callback;
+    this._numOfWorkers = numOfWorkers;
     this._queue = [];
     this._last = [];
     this._locks = [];
@@ -46,7 +44,7 @@ export default class WorkerQueueManager {
     // }
   }
 
-  _process(workerId: number): WorkerQueueManager {
+  _process(workerId: number): QueueManager {
     if (this.isLocked(workerId)) {
       return this;
     }
@@ -57,15 +55,15 @@ export default class WorkerQueueManager {
       return this;
     }
 
-    const onEnd = (error: ?Error, result: mixed, worker: WorkerInterface) => {
-      job.onEnd(error, result, worker);
+    const onEnd = (error: ?Error, result: mixed) => {
+      job.onEnd(error, result);
       this.unlock(workerId);
       this._process(workerId);
     };
 
     this.lock(workerId);
 
-    this._workerPool.send(workerId, job.request, job.onStart, onEnd);
+    this._callback(workerId, job.request, job.onStart, onEnd);
 
     job.request[1] = true;
 
@@ -88,29 +86,29 @@ export default class WorkerQueueManager {
     return queueHead;
   }
 
-  enqueue(task: QueueChildMessage, workerId?: number): WorkerQueueManager {
-    if (workerId != null) {
-      if (task.request[1]) {
-        return this;
-      }
-
-      if (this._queue[workerId]) {
-        this._last[workerId].next = task;
-      } else {
-        this._queue[workerId] = task;
-      }
-
-      this._last[workerId] = task;
-
-      this._process(workerId);
-    } else {
-      const numOfWorkers = this._workerPool.getWorkers().length;
-      for (let i = 0; i < numOfWorkers; i++) {
-        const workerIdx = (this._offset + i) % numOfWorkers;
-        this.enqueue(task, workerIdx);
-      }
-      this._offset++;
+  enqueue(task: QueueChildMessage, workerId: number): QueueManager {
+    if (task.request[1]) {
+      return this;
     }
+
+    if (this._queue[workerId]) {
+      this._last[workerId].next = task;
+    } else {
+      this._queue[workerId] = task;
+    }
+
+    this._last[workerId] = task;
+    this._process(workerId);
+
+    return this;
+  }
+
+  push(task: QueueChildMessage): QueueManager {
+    for (let i = 0; i < this._numOfWorkers; i++) {
+      const workerIdx = (this._offset + i) % this._numOfWorkers;
+      this.enqueue(task, workerIdx);
+    }
+    this._offset++;
 
     return this;
   }

@@ -10,8 +10,17 @@
 'use strict';
 
 import BaseWorkerPool from './base/BaseWorkerPool';
+import ChildProcessWorker from './workers/ChildProcessWorker';
+import NodeThreadsWorker from './workers/NodeThreadsWorker';
 
-import type {ChildMessage, OnStart, OnEnd, WorkerPoolInterface} from './types';
+import type {
+  ChildMessage,
+  WorkerOptions,
+  OnStart,
+  OnEnd,
+  WorkerPoolInterface,
+  WorkerInterface,
+} from './types';
 
 class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   send(
@@ -21,6 +30,12 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
     onEnd: OnEnd,
   ): void {
     this.getWorkerById(workerId).send(request, onStart, onEnd);
+  }
+
+  createWorker(workerOptions: WorkerOptions): WorkerInterface {
+    return this._options.useWorkers
+      ? new NodeThreadsWorker(workerOptions)
+      : new ChildProcessWorker(workerOptions);
   }
 }
 

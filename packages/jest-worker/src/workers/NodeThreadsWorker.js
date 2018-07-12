@@ -70,7 +70,7 @@ export default class ExpirementalWorker implements WorkerInterface {
   onMessage(response: any /* Should be ParentMessage */) {
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        this._onProcessEnd(null, response[1], this);
+        this._onProcessEnd(null, response[1]);
         break;
 
       case PARENT_MESSAGE_ERROR:
@@ -92,7 +92,7 @@ export default class ExpirementalWorker implements WorkerInterface {
           }
         }
 
-        this._onProcessEnd(error, null, this);
+        this._onProcessEnd(error, null);
         break;
 
       default:
