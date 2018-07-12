@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-snapshot]` Correctly merge property matchers with the rest of the snapshot in `toMatchSnapshot`. ([#6528](https://github.com/facebook/jest/pull/6528))
+- `[jest-snapshot]` Add error messages for invalid property matchers. ([#6528](https://github.com/facebook/jest/pull/6528))
 
 ## 23.4.0
 
