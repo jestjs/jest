@@ -12,6 +12,7 @@ import type {InternalHasteMap, ModuleMetaData} from 'types/HasteMap';
 export type IgnoreMatcher = (item: string) => boolean;
 
 export type WorkerMessage = {
+  computeDependencies: boolean,
   computeSha1: boolean,
   filePath: string,
   hasteImplModulePath?: string,

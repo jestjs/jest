@@ -1,8 +1,24 @@
 ## master
 
+### Features
+
+- `[jest-cli]` Watch plugins now have access to a broader range of global configuration options in their `updateConfigAndRun` callbacks, so they can provide a wider set of extra features ([#6473](https://github.com/facebook/jest/pull/6473))
+
+## 23.4.0
+
+### Features
+
+- `[jest-haste-map]` Add `computeDependencies` flag to avoid opening files if not needed ([#6667](https://github.com/facebook/jest/pull/6667))
+- `[jest-runtime]` Support `require.resolve.paths` ([#6471](https://github.com/facebook/jest/pull/6471))
+- `[jest-runtime]` Support `paths` option for `require.resolve` ([#6471](https://github.com/facebook/jest/pull/6471))
+
 ### Fixes
 
 - `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
+- `[jest-cli]` properly reprint resolver errors in watch mode ([#6407](https://github.com/facebook/jest/pull/6407))
+- `[jest-cli]` Write configuration to stdout when the option was explicitly passed to Jest ([#6447](https://github.com/facebook/jest/pull/6447))
+- `[jest-cli]` Fix regression on non-matching suites ([6657](https://github.com/facebook/jest/pull/6657))
+- `[jest-runtime]` Roll back `micromatch` version to prevent regression when matching files ([#6661](https://github.com/facebook/jest/pull/6661))
 - `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
 
 ## 23.3.0
