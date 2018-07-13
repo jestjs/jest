@@ -93,18 +93,30 @@ module.exports = async function watchmanCrawl(
       Array.from(rootProjectDirMappings).map(
         async ([root, directoryFilters]) => {
           const expression = Array.from(defaultWatchExpression);
+          const glob = [];
+
           if (directoryFilters.length > 0) {
             expression.push([
               'anyof',
               ...directoryFilters.map(dir => ['dirname', dir]),
             ]);
+
+            for (const directory of directoryFilters) {
+              for (const extension of extensions) {
+                glob.push(`${directory}/**/*.${extension}`);
+              }
+            }
+          } else {
+            for (const extension of extensions) {
+              glob.push(`**/*.${extension}`);
+            }
           }
 
           const query = clocks[root]
             ? // Use the `since` generator if we have a clock available
               {expression, fields, since: clocks[root]}
-            : // Otherwise use the `suffix` generator
-              {expression, fields, suffix: extensions};
+            : // Otherwise use the `glob` filter
+              {expression, fields, glob};
 
           const response = await cmd('query', root, query);
 
