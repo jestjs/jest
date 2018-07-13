@@ -6,7 +6,7 @@
 
 ## Fixes
 
-- `[jest-haste-map]` Optimize watchman crawler by using `glob` on initial query
+- `[jest-haste-map]` Optimize watchman crawler by using `glob` on initial query ([#6689](https://github.com/facebook/jest/pull/6689))
 
 ## 23.4.0
 
