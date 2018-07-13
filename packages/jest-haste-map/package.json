@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "23.4.0",
+  "version": "23.4.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
