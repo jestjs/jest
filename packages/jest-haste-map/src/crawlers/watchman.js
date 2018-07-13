@@ -100,11 +100,15 @@ module.exports = async function watchmanCrawl(
               'anyof',
               ...directoryFilters.map(dir => ['dirname', dir]),
             ]);
-          }
 
-          for (const directory of directoryFilters) {
+            for (const directory of directoryFilters) {
+              for (const extension of extensions) {
+                glob.push(`${directory}/**/*.${extension}`);
+              }
+            }
+          } else {
             for (const extension of extensions) {
-              glob.push(`${directory}/**/*.${extension}`);
+              glob.push(`**/*.${extension}`);
             }
           }
 
