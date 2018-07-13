@@ -4,6 +4,10 @@
 
 - `[jest-cli]` Watch plugins now have access to a broader range of global configuration options in their `updateConfigAndRun` callbacks, so they can provide a wider set of extra features ([#6473](https://github.com/facebook/jest/pull/6473))
 
+## Fixes
+
+- `[jest-haste-map]` Optimize watchman crawler by using `glob` on initial query
+
 ## 23.4.0
 
 ### Features
