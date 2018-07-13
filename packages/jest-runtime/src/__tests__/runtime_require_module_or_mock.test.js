@@ -175,3 +175,97 @@ it('unmocks modules in config.unmockedModulePathPatterns for tests with automock
     const moduleData = nodeModule();
     expect(moduleData.isUnmocked()).toBe(true);
   }));
+
+describe('resetModules', () => {
+  it('resets all the modules', () =>
+    createRuntime(__filename, {
+      moduleNameMapper,
+    }).then(runtime => {
+      let exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+      exports.increment();
+      expect(exports.getState()).toBe(2);
+      runtime.resetModules();
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    }));
+});
+
+describe('withResetModules', () => {
+  it('resets all modules after the block', async () =>
+    createRuntime(__filename, {
+      moduleNameMapper,
+    }).then(async runtime => {
+      let exports;
+      await runtime.withResetModules(() => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+        exports.increment();
+        expect(exports.getState()).toBe(2);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    }));
+
+  it('can call resetModules within a withResetModules block', async () =>
+    createRuntime(__filename, {
+      moduleNameMapper,
+    }).then(async runtime => {
+      let exports;
+      await runtime.withResetModules(() => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+
+        exports.increment();
+        runtime.resetModules();
+
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    }));
+
+  describe('can use withResetModules from a beforeEach block', () => {
+    let exports;
+    beforeEach(() => {
+      jest.withResetModules(() => {
+        exports = require('./test_root/ModuleWithState');
+      });
+    });
+
+    it('can use the required module from beforeEach and re-require it', () => {
+      expect(exports.getState()).toBe(1);
+      exports.increment();
+      expect(exports.getState()).toBe(2);
+
+      exports = require('./test_root/ModuleWithState');
+      expect(exports.getState()).toBe(1);
+      exports.increment();
+      expect(exports.getState()).toBe(2);
+    });
+  });
+});

@@ -12,6 +12,7 @@
 require('ExclusivelyManualMock');
 require('ManuallyMocked');
 require('ModuleWithSideEffects');
+require('ModuleWithState');
 require('RegularModule');
 
 // We only care about the static analysis, not about the runtime.

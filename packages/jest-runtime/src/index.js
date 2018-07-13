@@ -97,6 +97,7 @@ class Runtime {
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
   _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
+  _sandboxRegistries: Array<ModuleRegistry>;
   _moduleRegistry: ModuleRegistry;
   _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
@@ -131,6 +132,7 @@ class Runtime {
     this._mockFactories = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
+    this._sandboxRegistries = [];
     this._moduleRegistry = Object.create(null);
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
@@ -281,11 +283,6 @@ class Runtime {
     );
     let modulePath;
 
-    const moduleRegistry =
-      !options || !options.isInternalModule
-        ? this._moduleRegistry
-        : this._internalModuleRegistry;
-
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
@@ -307,6 +304,19 @@ class Runtime {
 
     if (!modulePath) {
       modulePath = this._resolveModule(from, moduleName);
+    }
+
+    let moduleRegistry;
+
+    if (!options || !options.isInternalModule) {
+      moduleRegistry =
+        this._sandboxRegistries.find(
+          registry => modulePath && registry[modulePath],
+        ) ||
+        this._sandboxRegistries[0] ||
+        this._moduleRegistry;
+    } else {
+      moduleRegistry = this._internalModuleRegistry;
     }
 
     if (!moduleRegistry[modulePath]) {
@@ -418,7 +428,14 @@ class Runtime {
     }
   }
 
+  async withResetModules(fn: () => Promise<*> | void) {
+    this._sandboxRegistries.unshift(Object.create(null));
+    await fn();
+    this._sandboxRegistries.shift();
+  }
+
   resetModules() {
+    this._sandboxRegistries = [];
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
@@ -875,6 +892,10 @@ class Runtime {
       this.resetModules();
       return jestObject;
     };
+    const withResetModules = async (fn: () => Promise<*>) => {
+      await this.withResetModules(fn);
+      return jestObject;
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
@@ -932,6 +953,7 @@ class Runtime {
       unmock,
       useFakeTimers,
       useRealTimers,
+      withResetModules,
     };
     return jestObject;
   }
