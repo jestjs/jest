@@ -47,7 +47,9 @@ class DependencyResolver {
         }
         try {
           return this._resolver.resolveModule(file, dependency, options);
-        } catch (e) {}
+        } catch (e) {
+          console.error(e);
+        }
         return this._resolver.getMockModule(file, dependency);
       })
       .filter(Boolean);
