@@ -12,6 +12,7 @@ import chalk from 'chalk';
 import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
 
+const exitMock = jest.fn();
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
 const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
@@ -43,6 +44,7 @@ jest.mock(
 );
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+jest.doMock('exit', () => exitMock);
 jest.doMock(
   '../runJest',
   () =>
@@ -78,7 +80,7 @@ jest.doMock(
     class WatchPlugin2 {
       getUsageInfo() {
         return {
-          key: 'u',
+          key: 'r',
           prompt: 'do something else',
         };
       }
@@ -96,6 +98,7 @@ const watch = require('../watch').default;
 const nextTick = () => new Promise(res => process.nextTick(res));
 
 afterEach(runJestMock.mockReset);
+afterEach(exitMock.mockReset);
 
 describe('Watch mode flows', () => {
   let pipe;
@@ -323,7 +326,7 @@ describe('Watch mode flows', () => {
     expect(apply).toHaveBeenCalled();
   });
 
-  it('allows WatchPlugins to override internal plugins', async () => {
+  it('allows WatchPlugins to override eligible internal plugins', async () => {
     const run = jest.fn(() => Promise.resolve());
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_override`;
     jest.doMock(
@@ -362,6 +365,157 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(run).toHaveBeenCalled();
+  });
+
+  describe('when dealing with potential watch plugin key conflicts', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'error');
+      console.error.mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      console.error.mockRestore();
+    });
+
+    it.each`
+      key    | plugin
+      ${'q'} | ${'Quit'}
+      ${'u'} | ${'UpdateSnapshots'}
+      ${'i'} | ${'UpdateSnapshotsInteractive'}
+    `(
+      'forbids WatchPlugins overriding reserved internal plugins',
+      ({key, plugin}) => {
+        const run = jest.fn(() => Promise.resolve());
+        const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${key}`;
+        jest.doMock(
+          pluginPath,
+          () =>
+            class OffendingWatchPlugin {
+              constructor() {
+                this.run = run;
+              }
+              getUsageInfo() {
+                return {
+                  key,
+                  prompt: `custom "${key.toUpperCase()}" plugin`,
+                };
+              }
+            },
+          {virtual: true},
+        );
+
+        watch(
+          Object.assign({}, globalConfig, {
+            rootDir: __dirname,
+            watchPlugins: [{config: {}, path: pluginPath}],
+          }),
+          contexts,
+          pipe,
+          hasteMapInstances,
+          stdin,
+        );
+
+        expect(console.error).toHaveBeenLastCalledWith(
+          expect.stringMatching(
+            new RegExp(
+              `Jest configuration error: watch plugin OffendingWatchPlugin attempted to register key <${key}>, that is reserved internally for .+\\.\\s+Please change the configuration key for this plugin\\.`,
+              'm',
+            ),
+          ),
+        );
+
+        expect(exitMock).toHaveBeenCalled();
+      },
+    );
+
+    // The jury's still out on 'a', 'c', 'f', 'o', 'w' and '?'…
+    // See https://github.com/facebook/jest/issues/6693
+    it.each`
+      key    | plugin
+      ${'t'} | ${'TestNamePattern'}
+      ${'p'} | ${'TestPathPattern'}
+    `(
+      'allows WatchPlugins to override non-reserved internal plugins',
+      ({key, plugin}) => {
+        const run = jest.fn(() => Promise.resolve());
+        const pluginPath = `${__dirname}/__fixtures__/plugin_valid_override_${key}`;
+        jest.doMock(
+          pluginPath,
+          () =>
+            class ValidWatchPlugin {
+              constructor() {
+                this.run = run;
+              }
+              getUsageInfo() {
+                return {
+                  key,
+                  prompt: `custom "${key.toUpperCase()}" plugin`,
+                };
+              }
+            },
+          {virtual: true},
+        );
+
+        watch(
+          Object.assign({}, globalConfig, {
+            rootDir: __dirname,
+            watchPlugins: [{config: {}, path: pluginPath}],
+          }),
+          contexts,
+          pipe,
+          hasteMapInstances,
+          stdin,
+        );
+
+        expect(exitMock).not.toHaveBeenCalled();
+      },
+    );
+
+    it('forbids third-party WatchPlugins overriding each other', () => {
+      const pluginPaths = ['Foo', 'Bar'].map(ident => {
+        const run = jest.fn(() => Promise.resolve());
+        const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${ident.toLowerCase()}`;
+        jest.doMock(
+          pluginPath,
+          () => {
+            class OffendingThirdPartyWatchPlugin {
+              constructor() {
+                this.run = run;
+              }
+              getUsageInfo() {
+                return {
+                  key: '!',
+                  prompt: `custom "!" plugin ${ident}`,
+                };
+              }
+            }
+            OffendingThirdPartyWatchPlugin.displayName = `Offending${ident}ThirdPartyWatchPlugin`;
+            return OffendingThirdPartyWatchPlugin;
+          },
+          {virtual: true},
+        );
+        return pluginPath;
+      });
+
+      watch(
+        Object.assign({}, globalConfig, {
+          rootDir: __dirname,
+          watchPlugins: pluginPaths.map(path => ({config: {}, path})),
+        }),
+        contexts,
+        pipe,
+        hasteMapInstances,
+        stdin,
+      );
+
+      expect(console.error).toHaveBeenLastCalledWith(
+        expect.stringMatching(
+          /Jest configuration error: watch plugins OffendingFooThirdPartyWatchPlugin and OffendingBarThirdPartyWatchPlugin both attempted to register key <!>\.\s+Please change the key configuration for one of the conflicting plugins to avoid overlap\./m,
+        ),
+      );
+
+      expect(exitMock).toHaveBeenCalled();
+    });
   });
 
   it('allows WatchPlugins to be configured', async () => {

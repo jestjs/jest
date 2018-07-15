@@ -49,6 +49,18 @@ const INTERNAL_PLUGINS = [
   QuitPlugin,
 ];
 
+const RESERVED_KEY_PLUGINS = new Map([
+  [
+    UpdateSnapshotsPlugin,
+    {forbiddenOverwriteMessage: 'updating snapshots ballpark', key: 'u'},
+  ],
+  [
+    UpdateSnapshotsInteractivePlugin,
+    {forbiddenOverwriteMessage: 'updating snapshots interactively', key: 'i'},
+  ],
+  [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
+]);
+
 export default function watch(
   initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
@@ -122,6 +134,21 @@ export default function watch(
   });
 
   if (globalConfig.watchPlugins != null) {
+    const watchPluginKeys = new Map();
+    for (const plugin of watchPlugins) {
+      const reservedInfo = RESERVED_KEY_PLUGINS.get(plugin.constructor) || {};
+      const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
+      if (!key) {
+        continue;
+      }
+      const {forbiddenOverwriteMessage} = reservedInfo;
+      watchPluginKeys.set(key, {
+        forbiddenOverwriteMessage,
+        overwritable: forbiddenOverwriteMessage == null,
+        plugin,
+      });
+    }
+
     for (const pluginWithConfig of globalConfig.watchPlugins) {
       // $FlowFixMe dynamic require
       const ThirdPartyPlugin = require(pluginWithConfig.path);
@@ -130,6 +157,8 @@ export default function watch(
         stdin,
         stdout: outputStream,
       });
+      checkForConflicts(watchPluginKeys, plugin, globalConfig);
+
       const hookSubscriber = hooks.getSubscriber();
       if (plugin.apply) {
         plugin.apply(hookSubscriber);
@@ -286,11 +315,7 @@ export default function watch(
     const matchingWatchPlugin = filterInteractivePlugins(
       watchPlugins,
       globalConfig,
-    ).find(plugin => {
-      const usageData =
-        (plugin.getUsageInfo && plugin.getUsageInfo(globalConfig)) || {};
-      return usageData.key === key;
-    });
+    ).find(plugin => getPluginKey(plugin, globalConfig) === key);
 
     if (matchingWatchPlugin != null) {
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
@@ -378,6 +403,55 @@ export default function watch(
   startRun(globalConfig);
   return Promise.resolve();
 }
+
+const checkForConflicts = (watchPluginKeys, plugin, globalConfig) => {
+  const key = getPluginKey(plugin, globalConfig);
+  if (!key) {
+    return;
+  }
+
+  const conflictor = watchPluginKeys.get(key);
+
+  if (!conflictor || conflictor.overwritable) {
+    watchPluginKeys.set(key, {
+      overwritable: false,
+      plugin,
+    });
+    return;
+  }
+
+  let error;
+  if (conflictor.forbiddenOverwriteMessage) {
+    error = `Jest configuration error: watch plugin ${getPluginIdentifier(
+      plugin,
+    )} attempted to register key <${key}>, that is reserved internally for ${
+      conflictor.forbiddenOverwriteMessage
+    }.   Please change the configuration key for this plugin.`;
+  } else {
+    const plugins = [conflictor.plugin, plugin]
+      .map(getPluginIdentifier)
+      .join(' and ');
+    error = `Jest configuration error: watch plugins ${plugins} both attempted to register key <${key}>. Please change the key configuration for one of the conflicting plugins to avoid overlap.`;
+  }
+  console.error('\n\n' + chalk.red(error));
+  exit(64); // EX_USAGE
+};
+
+const getPluginIdentifier = plugin =>
+  // This breaks as `displayName` is not defined as a static, but since
+  // WatchPlugin is an interface, and it is my understanding interface
+  // static fields are not definable anymore, no idea how to circumvent
+  // this :-(
+  // $FlowFixMe: leave `displayName` be.
+  plugin.constructor.displayName || plugin.constructor.name;
+
+const getPluginKey = (plugin, globalConfig) => {
+  if (typeof plugin.getUsageInfo === 'function') {
+    return (plugin.getUsageInfo(globalConfig) || {}).key;
+  }
+
+  return null;
+};
 
 const usage = (
   globalConfig,

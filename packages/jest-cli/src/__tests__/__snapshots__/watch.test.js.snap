@@ -36,7 +36,7 @@ Watch Usage
 ]
 `;
 
-exports[`Watch mode flows allows WatchPlugins to override internal plugins 1`] = `
+exports[`Watch mode flows allows WatchPlugins to override eligible internal plugins 1`] = `
 Array [
   "
 Watch Usage
@@ -60,8 +60,8 @@ Watch Usage
  › Press p to filter by a filename regex pattern.
  › Press t to filter by a test name regex pattern.
  › Press q to quit watch mode.
+ › Press r to do something else.
  › Press s to do nothing.
- › Press u to do something else.
  › Press Enter to trigger a test run.
 ",
   ],

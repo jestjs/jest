@@ -20,6 +20,10 @@
 
 - `[jest-changed-files]` limit git and hg commands to specified roots ([#6732](https://github.com/facebook/jest/pull/6732))
 
+### Features
+
+- `[jest-cli]` Watch plugin key registrations are now checked for conflicts. Some built-in keys, such as `p` and `t` for test limitation, are overridable, but most built-in keys are reserved (e.g. `q`, `a` or `o`), and any key registered by a third-party plugin cannot be overriden by another third-party plugin. Explicit error messages are logged to the console and Jest exits with code 64 (`EX_USAGE`).
+
 ### Fixes
 
 - `[jest-circus]` Fix retryTimes so errors are reset before re-running ([#6762](https://github.com/facebook/jest/pull/6762))
