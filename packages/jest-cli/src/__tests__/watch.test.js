@@ -441,66 +441,63 @@ describe('Watch mode flows', () => {
   });
 
   it.each`
-    ok | option
-    ✔︎ | bail
-    ✖︎ | changedFilesWithAncestor
-    ✖︎ | changedSince
-    ✔︎ | collectCoverage
-    ✔︎ | collectCoverageFrom
-    ✔︎ | collectCoverageOnlyFrom
-    ✔︎ | coverageDirectory
-    ✔︎ | coverageReporters
-    ✖︎ | coverageThreshold
-    ✖︎ | detectLeaks
-    ✖︎ | detectOpenHandles
-    ✖︎ | enabledTestsMap
-    ✖︎ | errorOnDeprecated
-    ✖︎ | expand
-    ✖︎ | filter
-    ✖︎ | findRelatedTests
-    ✖︎ | forceExit
-    ✖︎ | globalSetup
-    ✖︎ | globalTeardown
-    ✖︎ | json
-    ✖︎ | lastCommit
-    ✖︎ | listTests
-    ✖︎ | logHeapUsage
-    ✖︎ | maxWorkers
-    ✖︎ | nonFlagArgs
-    ✖︎ | noSCM
-    ✖︎ | noStackTrace
-    ✔︎ | notify
-    ✔︎ | notifyMode
-    ✖︎ | onlyChanged
-    ✔︎ | onlyFailures
-    ✖︎ | outputFile
-    ✖︎ | passWithNoTests
-    ✖︎ | projects
-    ✖︎ | replname
-    ✔︎ | reporters
-    ✖︎ | rootDir
-    ✖︎ | runTestsByPath
-    ✖︎ | silent
-    ✖︎ | skipFilter
-    ✖︎ | testFailureExitCode
-    ✔︎ | testNamePattern
-    ✔︎ | testPathPattern
-    ✖︎ | testResultsProcessor
-    ✔︎ | updateSnapshot
-    ✖︎ | useStderr
-    ✔︎ | verbose
-    ✖︎ | watch
-    ✖︎ | watchAll
-    ✖︎ | watchman
-    ✖︎ | watchPlugins
+    ok      | option
+    ${'✔︎'} | ${'bail'}
+    ${'✖︎'} | ${'changedFilesWithAncestor'}
+    ${'✖︎'} | ${'changedSince'}
+    ${'✔︎'} | ${'collectCoverage'}
+    ${'✔︎'} | ${'collectCoverageFrom'}
+    ${'✔︎'} | ${'collectCoverageOnlyFrom'}
+    ${'✔︎'} | ${'coverageDirectory'}
+    ${'✔︎'} | ${'coverageReporters'}
+    ${'✖︎'} | ${'coverageThreshold'}
+    ${'✖︎'} | ${'detectLeaks'}
+    ${'✖︎'} | ${'detectOpenHandles'}
+    ${'✖︎'} | ${'enabledTestsMap'}
+    ${'✖︎'} | ${'errorOnDeprecated'}
+    ${'✖︎'} | ${'expand'}
+    ${'✖︎'} | ${'filter'}
+    ${'✖︎'} | ${'findRelatedTests'}
+    ${'✖︎'} | ${'forceExit'}
+    ${'✖︎'} | ${'globalSetup'}
+    ${'✖︎'} | ${'globalTeardown'}
+    ${'✖︎'} | ${'json'}
+    ${'✖︎'} | ${'lastCommit'}
+    ${'✖︎'} | ${'listTests'}
+    ${'✖︎'} | ${'logHeapUsage'}
+    ${'✖︎'} | ${'maxWorkers'}
+    ${'✖︎'} | ${'nonFlagArgs'}
+    ${'✖︎'} | ${'noSCM'}
+    ${'✖︎'} | ${'noStackTrace'}
+    ${'✔︎'} | ${'notify'}
+    ${'✔︎'} | ${'notifyMode'}
+    ${'✖︎'} | ${'onlyChanged'}
+    ${'✔︎'} | ${'onlyFailures'}
+    ${'✖︎'} | ${'outputFile'}
+    ${'✖︎'} | ${'passWithNoTests'}
+    ${'✖︎'} | ${'projects'}
+    ${'✖︎'} | ${'replname'}
+    ${'✔︎'} | ${'reporters'}
+    ${'✖︎'} | ${'rootDir'}
+    ${'✖︎'} | ${'runTestsByPath'}
+    ${'✖︎'} | ${'silent'}
+    ${'✖︎'} | ${'skipFilter'}
+    ${'✖︎'} | ${'testFailureExitCode'}
+    ${'✔︎'} | ${'testNamePattern'}
+    ${'✔︎'} | ${'testPathPattern'}
+    ${'✖︎'} | ${'testResultsProcessor'}
+    ${'✔︎'} | ${'updateSnapshot'}
+    ${'✖︎'} | ${'useStderr'}
+    ${'✔︎'} | ${'verbose'}
+    ${'✖︎'} | ${'watch'}
+    ${'✖︎'} | ${'watchAll'}
+    ${'✖︎'} | ${'watchman'}
+    ${'✖︎'} | ${'watchPlugins'}
   `(
     'allows WatchPlugins to modify only white-listed global config keys',
     async ({ok, option}) => {
-      const pluginPath = `${__dirname}/__fixtures__/plugin_path_config_updater`;
-      const config = Object.assign({}, globalConfig, {
-        rootDir: __dirname,
-        watchPlugins: [{config: {}, path: pluginPath}],
-      });
+      ok = ok === '✔︎';
+      const pluginPath = `${__dirname}/__fixtures__/plugin_path_config_updater_${option}`;
 
       jest.doMock(
         pluginPath,
@@ -518,20 +515,25 @@ describe('Watch mode flows', () => {
         {virtual: true},
       );
 
+      const config = Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [{config: {}, path: pluginPath}],
+      });
+
       watch(config, contexts, pipe, hasteMapInstances, stdin);
       await nextTick();
 
       stdin.emit('x');
       await nextTick();
 
-      const lastCall = updateGlobalConfig.mock.calls.slice(-1)[0];
-      let expector = expect(lastCall[0]);
+      // We need the penultimate call as Jest forces a final call to restore
+      // updateSnapshot because it's not sticky after a run…?
+      const lastCall = updateGlobalConfig.mock.calls.slice(-2)[0];
+      let expector = expect(lastCall[1]);
       if (!ok) {
         expector = expector.not;
       }
-      expector.toMatchObject({
-        [option]: '__JUST_TRYING__',
-      });
+      expector.toHaveProperty(option, '__JUST_TRYING__');
     },
   );
 
