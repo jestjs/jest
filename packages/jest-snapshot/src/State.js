@@ -25,6 +25,7 @@ import {saveInlineSnapshots, type InlineSnapshot} from './inline_snapshots';
 export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,
   getPrettier: () => null | any,
+  getBabelTraverse: () => Function,
   snapshotPath?: string,
   expand?: boolean,
 |};
@@ -46,6 +47,7 @@ export default class SnapshotState {
   _snapshotPath: Path;
   _inlineSnapshots: Array<InlineSnapshot>;
   _uncheckedKeys: Set<string>;
+  _getBabelTraverse: () => Function;
   _getPrettier: () => null | any;
   added: number;
   expand: boolean;
@@ -61,6 +63,7 @@ export default class SnapshotState {
     );
     this._snapshotData = data;
     this._dirty = dirty;
+    this._getBabelTraverse = options.getBabelTraverse;
     this._getPrettier = options.getPrettier;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
@@ -122,7 +125,8 @@ export default class SnapshotState {
       }
       if (hasInlineSnapshots) {
         const prettier = this._getPrettier(); // Load lazily
-        saveInlineSnapshots(this._inlineSnapshots, prettier);
+        const babelTraverse = this._getBabelTraverse(); // Load lazily
+        saveInlineSnapshots(this._inlineSnapshots, prettier, babelTraverse);
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {

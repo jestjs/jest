@@ -100,6 +100,7 @@ export default ({
   const {expand, updateSnapshot} = globalConfig;
   const snapshotState = new SnapshotState(testPath, {
     expand,
+    getBabelTraverse: () => require('babel-traverse').default,
     getPrettier: () =>
       config.prettierPath ? localRequire(config.prettierPath) : null,
     updateSnapshot,
