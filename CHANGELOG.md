@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[pretty-format]` Support serializing `DocumentFragment` ([#6705](https://github.com/facebook/jest/pull/6705))
+
 ### Fixes
 
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
