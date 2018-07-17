@@ -326,7 +326,7 @@ Testing.`;
 
     expect(fragment).toPrettyPrintTo(
       [
-        '<Fragment>',
+        '<DocumentFragment>',
         '  <li>',
         '    Firefox',
         '  </li>',
@@ -342,7 +342,7 @@ Testing.`;
         '  <li>',
         '    Internet Explorer',
         '  </li>',
-        '</Fragment>',
+        '</DocumentFragment>',
       ].join('\n'),
     );
   });

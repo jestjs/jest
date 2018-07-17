@@ -84,13 +84,10 @@ export const serialize = (
     return printComment(node.data, config);
   }
 
-  let type;
-
-  if (node.nodeType === FRAGMENT_NODE) {
-    type = `Fragment`;
-  } else {
-    type = node.tagName.toLowerCase();
-  }
+  const type =
+    node.nodeType === FRAGMENT_NODE
+      ? `DocumentFragment`
+      : node.tagName.toLowerCase();
 
   if (++depth > config.maxDepth) {
     return printElementAsLeaf(type, config);
