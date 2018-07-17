@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-cli]` Watch plugins now have access to a broader range of global configuration options in their `updateConfigAndRun` callbacks, so they can provide a wider set of extra features ([#6473](https://github.com/facebook/jest/pull/6473))
+- `[jest-snapshot]` `babel-traverse` is now passed to `jest-snapshot` explicitly to avoid unnecessary requires in every test
 
 ## 23.4.0
 
