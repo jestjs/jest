@@ -428,9 +428,9 @@ class Runtime {
     }
   }
 
-  async withResetModules(fn: () => Promise<*> | void) {
+  withResetModules(fn: () => void) {
     this._sandboxRegistries.unshift(Object.create(null));
-    await fn();
+    fn();
     this._sandboxRegistries.shift();
   }
 
@@ -892,8 +892,8 @@ class Runtime {
       this.resetModules();
       return jestObject;
     };
-    const withResetModules = async (fn: () => Promise<*>) => {
-      await this.withResetModules(fn);
+    const withResetModules = (fn: () => void) => {
+      this.withResetModules(fn);
       return jestObject;
     };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);

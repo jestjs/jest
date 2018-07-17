@@ -201,9 +201,9 @@ describe('withResetModules', () => {
   it('resets all modules after the block', async () =>
     createRuntime(__filename, {
       moduleNameMapper,
-    }).then(async runtime => {
+    }).then(runtime => {
       let exports;
-      await runtime.withResetModules(() => {
+      runtime.withResetModules(() => {
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
           'ModuleWithState',
@@ -223,9 +223,9 @@ describe('withResetModules', () => {
   it('can call resetModules within a withResetModules block', async () =>
     createRuntime(__filename, {
       moduleNameMapper,
-    }).then(async runtime => {
+    }).then(runtime => {
       let exports;
-      await runtime.withResetModules(() => {
+      runtime.withResetModules(() => {
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
           'ModuleWithState',
