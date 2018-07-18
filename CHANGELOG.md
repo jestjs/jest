@@ -3,6 +3,7 @@
 ### Fixes
 
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
+- `[docs]` Fix contributors link ([#6711](https://github.com/facebook/jest/pull/6711))
 
 ## 23.4.1
 
