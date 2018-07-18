@@ -220,6 +220,19 @@ describe('withResetModules', () => {
       expect(exports.getState()).toBe(1);
     }));
 
+  it('cannot nest withResetModules blocks', async () =>
+    createRuntime(__filename, {
+      moduleNameMapper,
+    }).then(runtime => {
+      expect(() => {
+        runtime.withResetModules(() => {
+          runtime.withResetModules(() => {});
+        });
+      }).toThrowError(
+        'withResetModules cannot be nested inside another withResetModules.',
+      );
+    }));
+
   it('can call resetModules within a withResetModules block', async () =>
     createRuntime(__filename, {
       moduleNameMapper,

@@ -96,8 +96,9 @@ class Runtime {
   _mockFactories: {[key: string]: () => any, __proto__: null};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
   _mockRegistry: {[key: string]: any, __proto__: null};
+  _sandboxMockRegistry: ?{[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
-  _sandboxRegistries: Array<ModuleRegistry>;
+  _sandboxModuleRegistry: ?ModuleRegistry;
   _moduleRegistry: ModuleRegistry;
   _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
@@ -132,7 +133,7 @@ class Runtime {
     this._mockFactories = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
-    this._sandboxRegistries = [];
+    this._sandboxModuleRegistry = null;
     this._moduleRegistry = Object.create(null);
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
@@ -309,12 +310,11 @@ class Runtime {
     let moduleRegistry;
 
     if (!options || !options.isInternalModule) {
-      moduleRegistry =
-        this._sandboxRegistries.find(
-          registry => modulePath && registry[modulePath],
-        ) ||
-        this._sandboxRegistries[0] ||
-        this._moduleRegistry;
+      if (this._moduleRegistry[modulePath] || !this._sandboxModuleRegistry) {
+        moduleRegistry = this._moduleRegistry;
+      } else {
+        moduleRegistry = this._sandboxModuleRegistry;
+      }
     } else {
       moduleRegistry = this._internalModuleRegistry;
     }
@@ -360,12 +360,16 @@ class Runtime {
       moduleName,
     );
 
-    if (this._mockRegistry[moduleID]) {
+    if (this._sandboxMockRegistry && this._sandboxMockRegistry[moduleID]) {
+      return this._sandboxMockRegistry[moduleID];
+    } else if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
     }
 
+    const mockRegistry = this._sandboxMockRegistry || this._mockRegistry;
+
     if (moduleID in this._mockFactories) {
-      return (this._mockRegistry[moduleID] = this._mockFactories[moduleID]());
+      return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
     }
 
     let manualMock = this._resolver.getMockModule(from, moduleName);
@@ -409,15 +413,15 @@ class Runtime {
 
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, undefined, this._mockRegistry, fromPath);
-      this._mockRegistry[moduleID] = localModule.exports;
+      this._execModule(localModule, undefined, mockRegistry, fromPath);
+      mockRegistry[moduleID] = localModule.exports;
       localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
-      this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
+      mockRegistry[moduleID] = this._generateMock(from, moduleName);
     }
 
-    return this._mockRegistry[moduleID];
+    return mockRegistry[moduleID];
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
@@ -429,16 +433,23 @@ class Runtime {
   }
 
   withResetModules(fn: () => void) {
-    this._sandboxRegistries.unshift(Object.create(null));
+    if (this._sandboxModuleRegistry || this._sandboxMockRegistry) {
+      throw new Error(
+        'withResetModules cannot be nested inside another withResetModules.',
+      );
+    }
+    this._sandboxModuleRegistry = Object.create(null);
+    this._sandboxMockRegistry = Object.create(null);
     fn();
-    this._sandboxRegistries.shift();
+    this._sandboxModuleRegistry = null;
+    this._sandboxMockRegistry = null;
   }
 
   resetModules() {
-    this._sandboxRegistries = [];
+    this._sandboxModuleRegistry = null;
+    this._sandboxMockRegistry = null;
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
-
     if (this._environment && this._environment.global) {
       const envGlobal = this._environment.global;
       Object.keys(envGlobal).forEach(key => {
@@ -450,7 +461,6 @@ class Runtime {
           globalMock._isMockFunction && globalMock.mockClear();
         }
       });
-
       if (envGlobal.mockClearTimers) {
         envGlobal.mockClearTimers();
       }
