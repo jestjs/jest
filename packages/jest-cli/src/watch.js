@@ -52,7 +52,7 @@ const INTERNAL_PLUGINS = [
 const RESERVED_KEY_PLUGINS = new Map([
   [
     UpdateSnapshotsPlugin,
-    {forbiddenOverwriteMessage: 'updating snapshots ballpark', key: 'u'},
+    {forbiddenOverwriteMessage: 'updating snapshots', key: 'u'},
   ],
   [
     UpdateSnapshotsInteractivePlugin,

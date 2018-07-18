@@ -218,7 +218,7 @@ The following keys for built-in functionality **can be overwritten** :
 - `p` (test filename pattern)
 - `t` (test name pattern)
 
-Any key not used by built-in functionality remains fair game, as you would expect. Try to avoid using keys that are difficult to obtain on various keyboards (e.g. `é`, `€`), or not visible by default (e.g. many Mac keyboards do not have visual hints for characters such as `|`, `\`, `[`, etc.)
+Any key not used by built-in functionality can be claimed, as you would expect. Try to avoid using keys that are difficult to obtain on various keyboards (e.g. `é`, `€`), or not visible by default (e.g. many Mac keyboards do not have visual hints for characters such as `|`, `\`, `[`, etc.)
 
 ### When a conflict happens
 
