@@ -9,7 +9,7 @@
 'use strict';
 
 import chalk from 'chalk';
-import TestWatcher from '../test_watcher';
+import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
@@ -18,7 +18,7 @@ const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
 let results;
 
 jest.mock(
-  '../search_source',
+  '../SearchSource',
   () =>
     class {
       constructor(context) {
@@ -44,7 +44,7 @@ jest.mock(
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
 jest.doMock(
-  '../run_jest',
+  '../runJest',
   () =>
     function() {
       const args = Array.from(arguments);

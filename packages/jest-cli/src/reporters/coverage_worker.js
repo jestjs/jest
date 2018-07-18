@@ -11,8 +11,8 @@ import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
 import exit from 'exit';
 import fs from 'fs';
-import generateEmptyCoverage from '../generate_empty_coverage';
-import type {CoverageWorkerResult} from '../generate_empty_coverage';
+import generateEmptyCoverage from '../generateEmptyCoverage';
+import type {CoverageWorkerResult} from '../generateEmptyCoverage';
 
 export type CoverageWorkerData = {|
   globalConfig: GlobalConfig,

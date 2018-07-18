@@ -1,9 +1,9 @@
-import runJest from '../run_jest';
+import runJest from '../runJest';
 
 jest.mock('jest-util');
 
 jest.mock(
-  '../test_scheduler',
+  '../TestScheduler',
   () =>
     class {
       constructor(globalConfig) {
@@ -17,7 +17,7 @@ jest.mock(
 );
 
 jest.mock(
-  '../test_sequencer',
+  '../TestSequencer',
   () =>
     class {
       sort(allTests) {
@@ -28,7 +28,7 @@ jest.mock(
 );
 
 jest.mock(
-  '../search_source',
+  '../SearchSource',
   () =>
     class {
       constructor(context) {

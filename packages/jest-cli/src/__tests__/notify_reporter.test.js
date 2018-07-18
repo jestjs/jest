@@ -8,9 +8,9 @@
 
 'use strict';
 
-import TestScheduler from '../test_scheduler';
+import TestScheduler from '../TestScheduler';
 import NotifyReporter from '../reporters/notify_reporter';
-import type {TestSchedulerContext} from '../test_scheduler';
+import type {TestSchedulerContext} from '../TestScheduler';
 import type {AggregatedResult} from '../../../../types/TestResult';
 
 jest.mock('../reporters/default_reporter');

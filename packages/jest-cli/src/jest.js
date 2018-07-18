@@ -9,9 +9,9 @@
 
 import {version as VERSION} from '../package.json';
 
-import SearchSource from './search_source';
-import TestScheduler from './test_scheduler';
-import TestWatcher from './test_watcher';
+import SearchSource from './SearchSource';
+import TestScheduler from './TestScheduler';
+import TestWatcher from './TestWatcher';
 import {run, runCLI} from './cli';
 
 module.exports = {

@@ -12,7 +12,7 @@ import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 import type {JestHookEmitter} from 'types/JestHooks';
-import type TestWatcher from './test_watcher';
+import type TestWatcher from './TestWatcher';
 
 import micromatch from 'micromatch';
 import chalk from 'chalk';
@@ -20,14 +20,14 @@ import path from 'path';
 import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
-import getNoTestsFoundMessage from './get_no_test_found_message';
-import SearchSource from './search_source';
-import TestScheduler from './test_scheduler';
-import TestSequencer from './test_sequencer';
-import {makeEmptyAggregatedTestResult} from './test_result_helpers';
-import FailedTestsCache from './failed_tests_cache';
+import getNoTestsFoundMessage from './getNoTestsFoundMessage';
+import SearchSource from './SearchSource';
+import TestScheduler from './TestScheduler';
+import TestSequencer from './TestSequencer';
+import {makeEmptyAggregatedTestResult} from './testResultHelpers';
+import FailedTestsCache from './FailedTestsCache';
 import {JestHook} from 'jest-watcher';
-import collectNodeHandles from './get_node_handles';
+import collectNodeHandles from './collectHandles';
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(

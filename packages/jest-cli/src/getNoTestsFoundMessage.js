@@ -1,7 +1,7 @@
-import getNoTestFound from './get_no_test_found';
-import getNoTestFoundRelatedToChangedFiles from './get_no_test_found_related_to_changed_files';
-import getNoTestFoundVerbose from './get_no_test_found_verbose';
-import getNoTestFoundFailed from './get_no_test_found_failed';
+import getNoTestFound from './getNoTestFound';
+import getNoTestFoundRelatedToChangedFiles from './getNoTestFoundRelatedToChangedFiles';
+import getNoTestFoundVerbose from './getNoTestFoundVerbose';
+import getNoTestFoundFailed from './getNoTestFoundFailed';
 
 export default function getNoTestsFoundMessage(
   testRunData,
