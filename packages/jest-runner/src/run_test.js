@@ -168,7 +168,7 @@ async function runTestInternal(
         true,
       );
 
-      global.process.stderr.write(formattedError + '\n');
+      process.stderr.write(formattedError);
 
       return realExit(...args);
     };
