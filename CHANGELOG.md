@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-runner]` print stack trace when `process.exit` is called from user code
+
 ### Fixes
 
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
