@@ -146,7 +146,11 @@ async function runTestInternal(
   // For runtime errors
   sourcemapSupport.install(sourcemapOptions);
 
-  if (environment.global.process && environment.global.process.exit) {
+  if (
+    environment.global &&
+    environment.global.process &&
+    environment.global.process.exit
+  ) {
     const realExit = environment.global.process.exit;
 
     environment.global.process.exit = function exit(...args) {
