@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-runner]` print stack trace when `process.exit` is called from user code
+- `[jest-runner]` print stack trace when `process.exit` is called from user code ([#6714](https://github.com/facebook/jest/pull/6714))
 
 ### Fixes
 
