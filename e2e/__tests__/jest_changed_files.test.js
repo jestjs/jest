@@ -224,6 +224,27 @@ test('gets changed files for git', async () => {
   ).toEqual(['file5.txt']);
 });
 
+test('should only monitor root paths for git', async () => {
+  writeFiles(DIR, {
+    'file1.txt': 'file1',
+    'nested_dir/file2.txt': 'file2',
+    'nested_dir/second_nested_dir/file3.txt': 'file3',
+  });
+
+  run(`${GIT} init`, DIR);
+
+  const roots = ['nested_dir', 'nested_dir/second_nested_dir'].map(filename =>
+    path.resolve(DIR, filename),
+  );
+
+  const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file2.txt', 'file3.txt']);
+});
+
 test('gets changed files for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
@@ -325,4 +346,32 @@ test('gets changed files for hg', async () => {
       .map(filePath => path.basename(filePath))
       .sort(),
   ).toEqual(['file5.txt']);
+});
+
+test('should only monitor root paths for hg', async () => {
+  if (process.env.CI) {
+    // Circle and Travis have very old version of hg (v2, and current
+    // version is v4.2) and its API changed since then and not compatible
+    // any more. Changing the SCM version on CIs is not trivial, so we'll just
+    // skip this test and run it only locally.
+    return;
+  }
+  writeFiles(DIR, {
+    'file1.txt': 'file1',
+    'nested_dir/file2.txt': 'file2',
+    'nested_dir/second_nested_dir/file3.txt': 'file3',
+  });
+
+  run(`${HG} init`, DIR);
+
+  const roots = ['nested_dir', 'nested_dir/second_nested_dir'].map(filename =>
+    path.resolve(DIR, filename),
+  );
+
+  const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file2.txt', 'file3.txt']);
 });

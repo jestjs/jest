@@ -1,5 +1,10 @@
 ## master
 
+
+### Performance
+
+- `[jest-changed-files]` limit git and hg commands to specified roots ([#6732](https://github.com/facebook/jest/pull/6732))
+
 ### Fixes
 
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))

@@ -23,6 +23,10 @@ export type ChangedFilesPromise = Promise<{|
 |}>;
 
 export type SCMAdapter = {|
-  findChangedFiles: (cwd: Path, options: Options) => Promise<Array<Path>>,
+  findChangedFiles: (
+    cwd: Path,
+    roots: Array<Path>,
+    options: Options,
+  ) => Promise<Array<Path>>,
   getRoot: (cwd: Path) => Promise<?Path>,
 |};
