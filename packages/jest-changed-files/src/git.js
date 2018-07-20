@@ -46,15 +46,16 @@ const findChangedFilesUsingCommand = async (
 const adapter: SCMAdapter = {
   findChangedFiles: async (
     cwd: string,
-    roots: Array<Path>,
     options?: Options,
   ): Promise<Array<Path>> => {
     const changedSince: ?string =
       options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
+    const includePaths: Array<Path> = (options && options.includePaths) || [];
+
     if (options && options.lastCommit) {
       return await findChangedFilesUsingCommand(
-        ['show', '--name-only', '--pretty=%b', 'HEAD'].concat(roots),
+        ['show', '--name-only', '--pretty=%b', 'HEAD'].concat(includePaths),
         cwd,
       );
     } else if (changedSince) {
@@ -65,16 +66,16 @@ const adapter: SCMAdapter = {
           '--pretty=%b',
           'HEAD',
           `^${changedSince}`,
-        ].concat(roots),
+        ].concat(includePaths),
         cwd,
       );
       const staged = await findChangedFilesUsingCommand(
-        ['diff', '--cached', '--name-only'].concat(roots),
+        ['diff', '--cached', '--name-only'].concat(includePaths),
         cwd,
       );
       const unstaged = await findChangedFilesUsingCommand(
         ['ls-files', '--other', '--modified', '--exclude-standard'].concat(
-          roots,
+          includePaths,
         ),
         cwd,
       );
@@ -82,7 +83,7 @@ const adapter: SCMAdapter = {
     } else {
       return await findChangedFilesUsingCommand(
         ['ls-files', '--other', '--modified', '--exclude-standard'].concat(
-          roots,
+          includePaths,
         ),
         cwd,
       );

@@ -13,6 +13,7 @@ export type Options = {|
   lastCommit?: boolean,
   withAncestor?: boolean,
   changedSince?: string,
+  includePaths?: Array<Path>,
 |};
 
 export type ChangedFiles = Set<Path>;
@@ -23,10 +24,6 @@ export type ChangedFilesPromise = Promise<{|
 |}>;
 
 export type SCMAdapter = {|
-  findChangedFiles: (
-    cwd: Path,
-    roots: Array<Path>,
-    options: Options,
-  ) => Promise<Array<Path>>,
+  findChangedFiles: (cwd: Path, options: Options) => Promise<Array<Path>>,
   getRoot: (cwd: Path) => Promise<?Path>,
 |};

@@ -31,10 +31,11 @@ const ANCESTORS = [
 const adapter: SCMAdapter = {
   findChangedFiles: async (
     cwd: string,
-    roots: Array<Path>,
     options: Options,
   ): Promise<Array<Path>> =>
     new Promise((resolve, reject) => {
+      const includePaths: Array<Path> = (options && options.includePaths) || [];
+
       const args = ['status', '-amnu'];
       if (options && options.withAncestor) {
         args.push('--rev', `ancestor(${ANCESTORS.join(', ')})`);
@@ -43,7 +44,7 @@ const adapter: SCMAdapter = {
       } else if (options && options.lastCommit === true) {
         args.push('-A');
       }
-      args.push(...roots);
+      args.push(...includePaths);
       const child = childProcess.spawn('hg', args, {cwd, env});
       let stdout = '';
       let stderr = '';
