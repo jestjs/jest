@@ -233,9 +233,7 @@ test('should only monitor root paths for git', async () => {
 
   run(`${GIT} init`, DIR);
 
-  const roots = ['nested_dir', 'nested_dir/second_nested_dir'].map(filename =>
-    path.resolve(DIR, filename),
-  );
+  const roots = [path.resolve(DIR, 'nested_dir')];
 
   const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -364,9 +362,7 @@ test('should only monitor root paths for hg', async () => {
 
   run(`${HG} init`, DIR);
 
-  const roots = ['nested_dir', 'nested_dir/second_nested_dir'].map(filename =>
-    path.resolve(DIR, filename),
-  );
+  const roots = [path.resolve(DIR, 'nested_dir')];
 
   const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
