@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-each]` introduces `%#` option to add index of the test to its title
+
 ### Performance
 
 - `[jest-changed-files]` limit git and hg commands to specified roots ([#6732](https://github.com/facebook/jest/pull/6732))
