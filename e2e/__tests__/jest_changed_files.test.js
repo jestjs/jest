@@ -224,7 +224,7 @@ test('gets changed files for git', async () => {
   ).toEqual(['file5.txt']);
 });
 
-test('monitors root paths for git', async () => {
+test('monitors only root paths for git', async () => {
   writeFiles(DIR, {
     'file1.txt': 'file1',
     'nested_dir/file2.txt': 'file2',
@@ -346,7 +346,7 @@ test('gets changed files for hg', async () => {
   ).toEqual(['file5.txt']);
 });
 
-test('monitors root paths for hg', async () => {
+test('monitors only root paths for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible
