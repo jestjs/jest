@@ -92,6 +92,8 @@ const createTransformer = (options: any): Transformer => {
         .createHash('md5')
         .update(THIS_FILE)
         .update('\0', 'utf8')
+        .update(JSON.stringify(options))
+        .update('\0', 'utf8')
         .update(fileData)
         .update('\0', 'utf8')
         .update(path.relative(rootDir, filename))

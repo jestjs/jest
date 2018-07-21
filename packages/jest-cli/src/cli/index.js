@@ -18,24 +18,31 @@ import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import exit from 'exit';
-import getChangedFilesPromise from '../get_changed_files_promise';
-import {formatHandleErrors} from '../get_node_handles';
+import getChangedFilesPromise from '../getChangedFilesPromise';
+import {formatHandleErrors} from '../collectHandles';
 import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
-import {print as preRunMessagePrint} from '../pre_run_message';
-import runJest from '../run_jest';
+import {print as preRunMessagePrint} from '../preRunMessage';
+import runJest from '../runJest';
 import Runtime from 'jest-runtime';
-import TestWatcher from '../test_watcher';
+import TestWatcher from '../TestWatcher';
 import watch from '../watch';
 import pluralize from '../pluralize';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
+import init from '../lib/init';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
+
+    if (argv.init) {
+      await init();
+      return;
+    }
+
     const projects = getProjectListFromCLIArgs(argv, project);
 
     const {results, globalConfig} = await runCLI(argv, projects);
@@ -198,10 +205,13 @@ const printDebugInfoAndExitIfNeeded = (
   configs,
   outputStream,
 ) => {
-  if (argv.debug || argv.showConfig) {
+  if (argv.debug) {
     logDebugMessages(globalConfig, configs, outputStream);
+    return;
   }
+
   if (argv.showConfig) {
+    logDebugMessages(globalConfig, configs, process.stdout);
     exit(0);
   }
 };

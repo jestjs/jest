@@ -63,9 +63,9 @@ class JestHooks {
         ),
       shouldRunTestSuite: async testSuiteInfo =>
         Promise.all(
-          this._listeners.shouldRunTestSuite.map(listener => {
-            return listener(testSuiteInfo);
-          }),
+          this._listeners.shouldRunTestSuite.map(listener =>
+            listener(testSuiteInfo),
+          ),
         ).then(result =>
           result.every(shouldRunTestSuite => shouldRunTestSuite),
         ),

@@ -127,7 +127,7 @@ export default class CustomConsole extends Console {
 
     if (startTime) {
       const endTime = new Date();
-      const time = (endTime - startTime) / 1000;
+      const time = endTime - startTime;
       this._log('time', format(`${label}: ${time}ms`));
       delete this._timers[label];
     }

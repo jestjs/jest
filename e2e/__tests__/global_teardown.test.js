@@ -49,3 +49,19 @@ test('jest throws an error when globalTeardown does not export a function', () =
     `TypeError: globalTeardown file must export a function at ${teardownPath}`,
   );
 });
+
+test('globalTeardown function gets jest config object as a parameter', () => {
+  const teardownPath = path.resolve(
+    __dirname,
+    '../global-teardown/teardown-with-config.js',
+  );
+
+  const testPathPattern = 'pass';
+
+  const result = runJest('global-teardown', [
+    `--globalTeardown=${teardownPath}`,
+    `--testPathPattern=${testPathPattern}`,
+  ]);
+
+  expect(result.stdout).toBe(testPathPattern);
+});

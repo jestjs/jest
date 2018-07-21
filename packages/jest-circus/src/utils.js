@@ -80,6 +80,7 @@ export const makeTest = (
     duration: null,
     errors: [],
     fn,
+    invocations: 0,
     mode: _mode,
     name: convertDescriptorToString(name),
     parent,
@@ -89,9 +90,11 @@ export const makeTest = (
   };
 };
 
+// Traverse the tree of describe blocks and return true if at least one describe
+// block has an enabled test.
 const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
-  return describeBlock.tests.some(
+  const hasOwnEnabledTests = describeBlock.tests.some(
     test =>
       !(
         test.mode === 'skip' ||
@@ -99,6 +102,8 @@ const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
         (testNamePattern && !testNamePattern.test(getTestID(test)))
       ),
   );
+
+  return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
 export const getAllHooksForDescribe = (
@@ -129,25 +134,26 @@ export const getEachHooksForTest = (
   let {parent: block} = test;
 
   do {
+    const beforeEachForCurrentBlock = [];
     for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
-          // Before hooks are executed from top to bottom, the opposite of the
-          // way we traversed it.
-          result.beforeEach.unshift(hook);
+          beforeEachForCurrentBlock.push(hook);
           break;
         case 'afterEach':
           result.afterEach.push(hook);
           break;
       }
     }
+    // 'beforeEach' hooks are executed from top to bottom, the opposite of the
+    // way we traversed it.
+    result.beforeEach = [...beforeEachForCurrentBlock, ...result.beforeEach];
   } while ((block = block.parent));
   return result;
 };
 
-export const describeBlockHasTests = (describe: DescribeBlock) => {
-  return describe.tests.length || describe.children.some(describeBlockHasTests);
-};
+export const describeBlockHasTests = (describe: DescribeBlock) =>
+  describe.tests.length || describe.children.some(describeBlockHasTests);
 
 const _makeTimeoutMessage = (timeout, isHook) =>
   `Exceeded timeout of ${timeout}ms for a ${
@@ -246,12 +252,10 @@ export const getTestDuration = (test: TestEntry): ?number => {
 export const makeRunResult = (
   describeBlock: DescribeBlock,
   unhandledErrors: Array<Error>,
-): RunResult => {
-  return {
-    testResults: makeTestResults(describeBlock),
-    unhandledErrors: unhandledErrors.map(_formatError),
-  };
-};
+): RunResult => ({
+  testResults: makeTestResults(describeBlock),
+  unhandledErrors: unhandledErrors.map(_formatError),
+});
 
 const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
   const {includeTestLocationInResult} = getState();
@@ -279,6 +283,7 @@ const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
     testResults.push({
       duration: test.duration,
       errors: test.errors.map(_formatError),
+      invocations: test.invocations,
       location,
       status,
       testPath,

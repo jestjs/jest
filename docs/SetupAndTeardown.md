@@ -5,7 +5,7 @@ title: Setup and Teardown
 
 Often while writing tests you have some setup work that needs to happen before tests run, and you have some finishing work that needs to happen after tests run. Jest provides helper functions to handle this.
 
-### Repeating Setup For Many Tests
+## Repeating Setup For Many Tests
 
 If you have some work you need to do repeatedly for many tests, you can use `beforeEach` and `afterEach`.
 
@@ -37,7 +37,7 @@ beforeEach(() => {
 });
 ```
 
-### One-Time Setup
+## One-Time Setup
 
 In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't just do it inline. Jest provides `beforeAll` and `afterAll` to handle this situation.
 
@@ -61,7 +61,7 @@ test('city database has San Juan', () => {
 });
 ```
 
-### Scoping
+## Scoping
 
 By default, the `before` and `after` blocks apply to every test in a file. You can also group tests together using a `describe` block. When they are inside a `describe` block, the `before` and `after` blocks only apply to the tests within that `describe` block.
 
@@ -127,7 +127,7 @@ describe('Scoped / Nested block', () => {
 // 1 - afterAll
 ```
 
-### Order of execution of describe and test blocks
+## Order of execution of describe and test blocks
 
 Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown in `before*` and `after*` handlers rather in the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
 
@@ -173,7 +173,7 @@ describe('outer', () => {
 // test for describe inner 2
 ```
 
-### General Advice
+## General Advice
 
 If a test is failing, one of the first things to check should be whether the test is failing when it's the only test that runs. In Jest it's simple to run only one test - just temporarily change that `test` command to a `test.only`:
 

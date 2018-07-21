@@ -16,7 +16,7 @@ import path from 'path';
 import util from 'util';
 import notifier from 'node-notifier';
 import BaseReporter from './base_reporter';
-import type {TestSchedulerContext} from '../test_scheduler';
+import type {TestSchedulerContext} from '../TestScheduler';
 
 const isDarwin = process.platform === 'darwin';
 
@@ -44,7 +44,10 @@ export default class NotifyReporter extends BaseReporter {
     const notifyMode = this._globalConfig.notifyMode;
     const statusChanged =
       this._context.previousSuccess !== success || this._context.firstRun;
+    const testsHaveRun = result.numTotalTests !== 0;
+
     if (
+      testsHaveRun &&
       success &&
       (notifyMode === 'always' ||
         notifyMode === 'success' ||
@@ -60,6 +63,7 @@ export default class NotifyReporter extends BaseReporter {
 
       notifier.notify({icon, message, title});
     } else if (
+      testsHaveRun &&
       !success &&
       (notifyMode === 'always' ||
         notifyMode === 'failure' ||

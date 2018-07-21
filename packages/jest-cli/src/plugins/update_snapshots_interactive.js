@@ -10,7 +10,7 @@ import type {JestHookSubscriber} from 'types/JestHooks';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
 import {BaseWatchPlugin} from 'jest-watcher';
-import SnapshotInteractiveMode from '../snapshot_interactive_mode';
+import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;
@@ -41,8 +41,8 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
         testResult.testResults.forEach(result => {
           if (result.status === 'failed') {
             failedTestPaths.push({
+              fullName: result.fullName,
               path: testResult.testFilePath,
-              title: result.title,
             });
           }
         });
@@ -77,7 +77,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
           (assertion: ?AssertionLocation, shouldUpdateSnapshot: boolean) => {
             updateConfigAndRun({
               mode: 'watch',
-              testNamePattern: assertion ? `^${assertion.title}$` : '',
+              testNamePattern: assertion ? `^${assertion.fullName}$` : '',
               testPathPattern: assertion ? assertion.path : '',
 
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',

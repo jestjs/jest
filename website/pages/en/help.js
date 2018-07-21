@@ -21,11 +21,10 @@ class Help extends React.Component {
           <translate>
             Find what you're looking for in our detailed documentation and
             guides.\n\n- Learn how to [get
-            started](/jest/docs/en/getting-started.html) with Jest.\n-
-            [Troubleshoot](/jest/docs/en/troubleshooting.html) problems with
-            Jest.\n- Learn how to [configure
-            Jest](/jest/docs/en/configuration.html).\n- Look at the full [API
-            Reference](/jest/docs/en/api.html).
+            started](/docs/en/getting-started.html) with Jest.\n-
+            [Troubleshoot](/docs/en/troubleshooting.html) problems with Jest.\n-
+            Learn how to [configure Jest](/docs/en/configuration.html).\n- Look
+            at the full [API Reference](/docs/en/api.html).
           </translate>
         ),
         title: <translate>Browse the docs</translate>,
@@ -50,7 +49,7 @@ class Help extends React.Component {
           <translate>
             Find out what's new with Jest.\n\n- Follow
             [Jest](https://twitter.com/fbjest) on Twitter.\n- Subscribe to the
-            [Jest blog](/jest/blog/).\n- Look at the
+            [Jest blog](/blog/).\n- Look at the
             [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
           </translate>
         ),

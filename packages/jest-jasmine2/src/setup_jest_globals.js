@@ -44,14 +44,12 @@ const addSuppressedErrors = result => {
 const addAssertionErrors = result => {
   const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
-    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => {
-      return {
-        actual,
-        expected,
-        message: error.stack,
-        passed: false,
-      };
-    });
+    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
+      actual,
+      expected,
+      message: error.stack,
+      passed: false,
+    }));
     result.status = 'failed';
     result.failedExpectations = result.failedExpectations.concat(jasmineErrors);
   }
@@ -100,7 +98,13 @@ export default ({
     });
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  const snapshotState = new SnapshotState(testPath, {
+    expand,
+    getBabelTraverse: () => require('babel-traverse').default,
+    getPrettier: () =>
+      config.prettierPath ? localRequire(config.prettierPath) : null,
+    updateSnapshot,
+  });
   setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

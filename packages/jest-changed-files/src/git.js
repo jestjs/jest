@@ -16,8 +16,8 @@ import childProcess from 'child_process';
 const findChangedFilesUsingCommand = async (
   args: Array<string>,
   cwd: Path,
-): Promise<Array<Path>> => {
-  return new Promise((resolve, reject) => {
+): Promise<Array<Path>> =>
+  new Promise((resolve, reject) => {
     const child = childProcess.spawn('git', args, {cwd});
     let stdout = '';
     let stderr = '';
@@ -42,7 +42,6 @@ const findChangedFilesUsingCommand = async (
       }
     });
   });
-};
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (
@@ -52,35 +51,47 @@ const adapter: SCMAdapter = {
     const changedSince: ?string =
       options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
+    const includePaths: Array<Path> = (options && options.includePaths) || [];
+
     if (options && options.lastCommit) {
       return await findChangedFilesUsingCommand(
-        ['show', '--name-only', '--pretty=%b', 'HEAD'],
+        ['show', '--name-only', '--pretty=%b', 'HEAD'].concat(includePaths),
         cwd,
       );
     } else if (changedSince) {
       const committed = await findChangedFilesUsingCommand(
-        ['log', '--name-only', '--pretty=%b', 'HEAD', `^${changedSince}`],
+        [
+          'log',
+          '--name-only',
+          '--pretty=%b',
+          'HEAD',
+          `^${changedSince}`,
+        ].concat(includePaths),
         cwd,
       );
       const staged = await findChangedFilesUsingCommand(
-        ['diff', '--cached', '--name-only'],
+        ['diff', '--cached', '--name-only'].concat(includePaths),
         cwd,
       );
       const unstaged = await findChangedFilesUsingCommand(
-        ['ls-files', '--other', '--modified', '--exclude-standard'],
+        ['ls-files', '--other', '--modified', '--exclude-standard'].concat(
+          includePaths,
+        ),
         cwd,
       );
       return [...committed, ...staged, ...unstaged];
     } else {
       return await findChangedFilesUsingCommand(
-        ['ls-files', '--other', '--modified', '--exclude-standard'],
+        ['ls-files', '--other', '--modified', '--exclude-standard'].concat(
+          includePaths,
+        ),
         cwd,
       );
     }
   },
 
-  getRoot: async (cwd: string): Promise<?string> => {
-    return new Promise(resolve => {
+  getRoot: async (cwd: string): Promise<?string> =>
+    new Promise(resolve => {
       try {
         let stdout = '';
         const options = ['rev-parse', '--show-toplevel'];
@@ -91,8 +102,7 @@ const adapter: SCMAdapter = {
       } catch (e) {
         resolve(null);
       }
-    });
-  },
+    }),
 };
 
 export default adapter;

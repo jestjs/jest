@@ -19,6 +19,7 @@
 /packages/*/package-lock.json
 
 /website/build
+/website/backers.json
 /website/node_modules
 /website/yarn.lock
 /website/translated_docs

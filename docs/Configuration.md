@@ -99,17 +99,17 @@ _Note: Core modules, like `fs`, are not mocked by default. They can be mocked ex
 
 _Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
 
-### `browser` [boolean]
-
-Default: `false`
-
-Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
-
 ### `bail` [boolean]
 
 Default: `false`
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
+
+### `browser` [boolean]
+
+Default: `false`
+
+Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
 ### `cacheDirectory` [string]
 
@@ -239,6 +239,12 @@ Jest will fail if:
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
 
+### `errorOnDeprecated` [boolean]
+
+Default: `false`
+
+Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
+
 ### `forceCoverageMatch` [array<string>]
 
 Default: `['']`
@@ -297,13 +303,19 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
 ### `globalTeardown` [string]
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
+
+### `moduleDirectories` [array<string>]
+
+Default: `["node_modules"]`
+
+An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
 
 ### `moduleFileExtensions` [array<string>]
 
@@ -312,12 +324,6 @@ Default: `["js", "json", "jsx", "node"]`
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 
 If you are using TypeScript this should be `["js", "jsx", "json", "ts", "tsx"]`, check [ts-jest's documentation](https://github.com/kulshekhar/ts-jest).
-
-### `moduleDirectories` [array<string>]
-
-Default: `["node_modules"]`
-
-An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
 
 ### `moduleNameMapper` [object<string, string>]
 
@@ -395,6 +401,12 @@ Presets may also be relative filesystem paths.
   "preset": "./node_modules/foo-bar/jest-preset.js"
 }
 ```
+
+### `prettierPath` [string]
+
+Default: `'prettier'`
+
+Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
 
 ### `projects` [array<string | ProjectConfig>]
 
@@ -511,7 +523,7 @@ Automatically reset mock state between every test. Equivalent to calling `jest.r
 
 Default: `false`
 
-If enabled, the module registry for every test file will be reset before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
+By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
 
 ### `resolver` [string]
 
@@ -600,6 +612,8 @@ Default: `undefined`
 
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
+If you want this path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside the path string, like `"<rootDir>/a-configs-folder"`.
+
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
 ### `snapshotSerializers` [array<string>]
@@ -663,12 +677,6 @@ Pretty foo: Object {
 ```
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
-
-### `errorOnDeprecated` [boolean]
-
-Default: `false`
-
-Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
 ### `testEnvironment` [string]
 
@@ -773,6 +781,8 @@ The following is a visualization of the default regex:
 └── component.js # not test
 ```
 
+_Note: `testRegex` will try to detect test files using the **absolute file path** therefore having a folder with name that match it will run all the files as tests_
+
 ### `testResultsProcessor` [string]
 
 Default: `undefined`
@@ -874,7 +884,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
-Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](http://facebook.github.io/jest/docs/en/tutorial-react-native.html#transformignorepatterns-customization).
+Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
 
 ### `unmockedModulePathPatterns` [array<string>]
 

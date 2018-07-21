@@ -8,13 +8,12 @@
 'use strict';
 
 describe('promise beforeEach', () => {
-  beforeEach(() => {
-    return new Promise(resolve => {
+  beforeEach(() =>
+    new Promise(resolve => {
       process.nextTick(resolve);
     }).then(() => {
       this.flag = 1;
-    });
-  });
+    }));
 
   // passing tests
   it('runs tests after beforeEach asynchronously completes', () => {
