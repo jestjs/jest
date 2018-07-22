@@ -19,6 +19,7 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
 import Resolver from 'jest-resolve';
+import Runtime from 'jest-runtime';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
@@ -677,12 +678,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    newOptions.collectCoverageFrom = argv._.map(filename => {
+    const coverageOptions = {
+      collectCoverage: newOptions.collectCoverage,
+      collectCoverageFrom: newOptions.collectCoverageFrom,
+      collectCoverageOnlyFrom: newOptions.collectCoverageOnlyFrom,
+    };
+    newOptions.collectCoverageFrom = argv._.reduce((sources, filename) => {
       filename = replaceRootDirInPath(options.rootDir, filename);
-      return path.isAbsolute(filename)
+      const source = path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
         : filename;
-    });
+      if (Runtime.shouldInstrument(filename, coverageOptions, newOptions)) {
+        return [...sources, source];
+      }
+      return sources;
+    }, []);
   }
 
   return {
