@@ -132,5 +132,6 @@ describe('--findRelatedTests flag', () => {
 
     // Neither a.js or b.js should be in the report
     expect(stdout).toMatch('No tests found');
+    expect(stderr).toBe('');
   });
 });
