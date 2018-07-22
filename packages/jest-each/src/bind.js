@@ -86,22 +86,23 @@ const arrayFormat = (title, rowIndex, ...args) => {
       if (prettyIndexes.indexOf(index) !== -1) {
         return {
           args: acc.args,
-          title: acc.title
-            .replace(PRETTY_PLACEHOLDER, pretty(arg, {maxDepth: 1, min: true}))
-            .replace(INDEX_PLACEHOLDER, `${rowIndex}`),
+          title: acc.title.replace(
+            PRETTY_PLACEHOLDER,
+            pretty(arg, {maxDepth: 1, min: true}),
+          ),
         };
       }
 
       return {
         args: acc.args.concat([arg]),
-        title: acc.title.replace(INDEX_PLACEHOLDER, `${rowIndex}`),
+        title: acc.title,
       };
     },
     {args: [], title},
   );
 
   return util.format(
-    prettyTitle,
+    prettyTitle.replace(INDEX_PLACEHOLDER, rowIndex.toString()),
     ...remainingArgs.slice(0, placeholders.length - prettyIndexes.length),
   );
 };
