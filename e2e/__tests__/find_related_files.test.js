@@ -123,10 +123,9 @@ describe('--findRelatedTests flag', () => {
         .sort()
         .join('\n'),
     ).toMatchSnapshot();
-    expect(stdout).toMatchSnapshot();
 
     // Only a.js should be in the report
-    const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
-    expect(stderr).toMatch(summaryMsg);
+    expect(stdout).toMatchSnapshot();
+    expect(stdout).not.toMatch('b.js');
   });
 });
