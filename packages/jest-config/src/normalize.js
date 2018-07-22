@@ -18,8 +18,8 @@ import validatePattern from './validate_pattern';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
+import micromatch from 'micromatch';
 import Resolver from 'jest-resolve';
-import Runtime from 'jest-runtime';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
@@ -678,21 +678,29 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    const coverageOptions = {
-      collectCoverage: newOptions.collectCoverage,
-      collectCoverageFrom: newOptions.collectCoverageFrom,
-      collectCoverageOnlyFrom: newOptions.collectCoverageOnlyFrom,
-    };
-    newOptions.collectCoverageFrom = argv._.reduce((sources, filename) => {
+    let collectCoverageFrom = argv._.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
-      const source = path.isAbsolute(filename)
+      return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
         : filename;
-      if (Runtime.shouldInstrument(filename, coverageOptions, newOptions)) {
-        return [...sources, source];
-      }
-      return sources;
-    }, []);
+    });
+
+    // Don't override existing collectCoverageFrom options
+    if (newOptions.collectCoverageFrom) {
+      collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
+        if (
+          !micromatch(
+            [path.relative(options.rootDir, filename)],
+            newOptions.collectCoverageFrom,
+          ).length
+        ) {
+          return patterns;
+        }
+        return [...patterns, filename];
+      }, newOptions.collectCoverageFrom);
+    }
+
+    newOptions.collectCoverageFrom = collectCoverageFrom;
   }
 
   return {
