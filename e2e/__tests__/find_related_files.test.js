@@ -90,4 +90,43 @@ describe('--findRelatedTests flag', () => {
     // coverage should be collected only for a.js
     expect(stdout).toMatchSnapshot();
   });
+
+  test('coverage configuration is applied correctly', () => {
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/a.test.js': `
+        require('../a');
+        test('a', () => expect(1).toBe(1));
+      `,
+      'a.js': 'module.exports = {}',
+      'b.js': 'module.exports = {}',
+      'package.json': JSON.stringify({
+        jest: {
+          collectCoverage: true,
+          collectCoverageFrom: ['a.js', '!b.js'],
+          testEnvironment: 'node',
+        },
+      }),
+    });
+
+    const {stdout, stderr} = runJest(DIR, [
+      '--findRelatedTests',
+      'a.js',
+      'b.js',
+    ]);
+    const {summary, rest} = extractSummary(stderr);
+    expect(summary).toMatchSnapshot();
+    expect(
+      rest
+        .split('\n')
+        .map(s => s.trim())
+        .sort()
+        .join('\n'),
+    ).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
+
+    // Only a.js should be in the report
+    const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
+    expect(stderr).toMatch(summaryMsg);
+  });
 });
