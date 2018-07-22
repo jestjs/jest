@@ -103,17 +103,16 @@ describe('--findRelatedTests flag', () => {
       'package.json': JSON.stringify({
         jest: {
           collectCoverage: true,
-          collectCoverageFrom: ['a.js', '!b.js'],
+          collectCoverageFrom: ['!b.js', 'a.js'],
           testEnvironment: 'node',
         },
       }),
     });
 
-    const {stdout, stderr} = runJest(DIR, [
-      '--findRelatedTests',
-      'a.js',
-      'b.js',
-    ]);
+    let stdout;
+    let stderr;
+    ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js', 'b.js']));
+
     const {summary, rest} = extractSummary(stderr);
     expect(summary).toMatchSnapshot();
     expect(
@@ -126,6 +125,12 @@ describe('--findRelatedTests flag', () => {
 
     // Only a.js should be in the report
     expect(stdout).toMatchSnapshot();
+    expect(stdout).toMatch('a.js');
     expect(stdout).not.toMatch('b.js');
+
+    ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'b.js']));
+
+    // Neither a.js or b.js should be in the report
+    expect(stdout).toMatch('No tests found');
   });
 });
