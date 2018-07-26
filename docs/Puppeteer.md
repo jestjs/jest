@@ -23,17 +23,18 @@ yarn add --dev jest-puppeteer
 }
 ```
 
-3. Write your test
+3.  Write your test
+
 ```js
 describe('Google', () => {
   beforeAll(async () => {
-    await page.goto('https://google.com')
-  })
+    await page.goto('https://google.com');
+  });
 
   it('should display "google" text on page', async () => {
-    await expect(page).toMatch('google')
-  })
-})
+    await expect(page).toMatch('google');
+  });
+});
 ```
 
 There's no need to load any dependencies. Puppeteer's `page` and `browser` classes will automatically be exposed
@@ -52,13 +53,13 @@ Here's an example of the GlobalSetup script
 
 ```js
 // setup.js
-const puppeteer = require('puppeteer')
-const mkdirp = require('mkdirp')
-const path = require('path')
-const fs = require('fs')
-const os = require('os')
+const puppeteer = require('puppeteer');
+const mkdirp = require('mkdirp');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
-const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup')
+const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
 module.exports = async function() {
   const browser = await puppeteer.launch();
@@ -76,13 +77,13 @@ Then we need a custom Test Environment for puppeteer
 
 ```js
 // puppeteer_environment.js
-const NodeEnvironment = require('jest-environment-node')
-const fs = require('fs')
-const path = require('path')
-const puppeteer = require('puppeteer')
-const os = require('os')
+const NodeEnvironment = require('jest-environment-node');
+const fs = require('fs');
+const path = require('path');
+const puppeteer = require('puppeteer');
+const os = require('os');
 
-const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup')
+const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
 class PuppeteerEnvironment extends NodeEnvironment {
   constructor(config) {
@@ -117,11 +118,11 @@ Finally we can close the puppeteer instance and clean-up the file
 
 ```js
 // teardown.js
-const os = require('os')
-const rimraf = require('rimraf')
-const path = require('path')
+const os = require('os');
+const rimraf = require('rimraf');
+const path = require('path');
 
-const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup')
+const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 module.exports = async function() {
   // close the browser instance
   await global.__BROWSER_GLOBAL__.close();
@@ -135,7 +136,7 @@ With all the things set up, we can now write our tests like this:
 
 ```js
 // test.js
-const timeout = 5000
+const timeout = 5000;
 
 describe(
   '/ (Home Page)',
@@ -156,12 +157,13 @@ describe(
 ```
 
 Finally, set `jest.config.js` to read from these files. (The `jest-puppeteer` preset does something like this under the hood.)
+
 ```js
 module.exports = {
   globalSetup: './setup.js',
   globalTeardown: './teardown.js',
   testEnvironment: './puppeteer_environment.js',
-}
+};
 ```
 
 Here's the code of [full working example](https://github.com/xfumihiro/jest-puppeteer-example).
