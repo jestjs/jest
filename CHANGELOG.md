@@ -22,7 +22,7 @@
 
 ### Features
 
-- `[jest-cli]` Watch plugin key registrations are now checked for conflicts. Some built-in keys, such as `p` and `t` for test limitation, are overridable, but most built-in keys are reserved (e.g. `q`, `a` or `o`), and any key registered by a third-party plugin cannot be overriden by another third-party plugin. Explicit error messages are logged to the console and Jest exits with code 64 (`EX_USAGE`).
+- `[jest-cli]` Watch plugin key registrations are now checked for conflicts. Some built-in keys, such as `p` and `t` for test limitation, are overridable, but most built-in keys are reserved (e.g. `q`, `a` or `o`), and any key registered by a third-party plugin cannot be overriden by another third-party plugin. Explicit validation errors are then triggered.
 
 ### Fixes
 

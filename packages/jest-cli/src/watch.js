@@ -37,6 +37,7 @@ import {
   getSortedUsageRows,
   filterInteractivePlugins,
 } from './lib/watch_plugins_helpers';
+import {ValidationError} from 'jest-validate';
 import activeFilters from './lib/active_filters_message';
 
 let hasExitListener = false;
@@ -411,7 +412,6 @@ const checkForConflicts = (watchPluginKeys, plugin, globalConfig) => {
   }
 
   const conflictor = watchPluginKeys.get(key);
-
   if (!conflictor || conflictor.overwritable) {
     watchPluginKeys.set(key, {
       overwritable: false,
@@ -422,19 +422,26 @@ const checkForConflicts = (watchPluginKeys, plugin, globalConfig) => {
 
   let error;
   if (conflictor.forbiddenOverwriteMessage) {
-    error = `Jest configuration error: watch plugin ${getPluginIdentifier(
-      plugin,
-    )} attempted to register key <${key}>, that is reserved internally for ${
-      conflictor.forbiddenOverwriteMessage
-    }.   Please change the configuration key for this plugin.`;
+    error = `
+  Watch plugin ${chalk.bold.red(
+    getPluginIdentifier(plugin),
+  )} attempted to register key ${chalk.bold.red(`<${key}>`)},
+  that is reserved internally for ${chalk.bold.red(
+    conflictor.forbiddenOverwriteMessage,
+  )}.
+  Please change the configuration key for this plugin.`.trim();
   } else {
     const plugins = [conflictor.plugin, plugin]
-      .map(getPluginIdentifier)
+      .map(p => chalk.bold.red(getPluginIdentifier(p)))
       .join(' and ');
-    error = `Jest configuration error: watch plugins ${plugins} both attempted to register key <${key}>. Please change the key configuration for one of the conflicting plugins to avoid overlap.`;
+    error = `
+  Watch plugins ${plugins} both attempted to register key ${chalk.bold.red(
+      `<${key}>`,
+    )}.
+  Please change the key configuration for one of the conflicting plugins to avoid overlap.`.trim();
   }
-  console.error('\n\n' + chalk.red(error));
-  exit(64); // EX_USAGE
+
+  throw new ValidationError('Watch plugin configuration error', error);
 };
 
 const getPluginIdentifier = plugin =>

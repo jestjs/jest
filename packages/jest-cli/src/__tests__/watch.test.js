@@ -12,7 +12,6 @@ import chalk from 'chalk';
 import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
 
-const exitMock = jest.fn();
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
 const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
@@ -44,7 +43,6 @@ jest.mock(
 );
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
-jest.doMock('exit', () => exitMock);
 jest.doMock(
   '../runJest',
   () =>
@@ -98,7 +96,6 @@ const watch = require('../watch').default;
 const nextTick = () => new Promise(res => process.nextTick(res));
 
 afterEach(runJestMock.mockReset);
-afterEach(exitMock.mockReset);
 
 describe('Watch mode flows', () => {
   let pipe;
@@ -368,14 +365,6 @@ describe('Watch mode flows', () => {
   });
 
   describe('when dealing with potential watch plugin key conflicts', () => {
-    beforeEach(() => {
-      jest.spyOn(console, 'error');
-      console.error.mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-      console.error.mockRestore();
-    });
 
     it.each`
       key    | plugin
@@ -404,27 +393,23 @@ describe('Watch mode flows', () => {
           {virtual: true},
         );
 
-        watch(
-          Object.assign({}, globalConfig, {
-            rootDir: __dirname,
-            watchPlugins: [{config: {}, path: pluginPath}],
-          }),
-          contexts,
-          pipe,
-          hasteMapInstances,
-          stdin,
-        );
-
-        expect(console.error).toHaveBeenLastCalledWith(
-          expect.stringMatching(
-            new RegExp(
-              `Jest configuration error: watch plugin OffendingWatchPlugin attempted to register key <${key}>, that is reserved internally for .+\\.\\s+Please change the configuration key for this plugin\\.`,
-              'm',
-            ),
+        expect(() => {
+          watch(
+            Object.assign({}, globalConfig, {
+              rootDir: __dirname,
+              watchPlugins: [{config: {}, path: pluginPath}],
+            }),
+            contexts,
+            pipe,
+            hasteMapInstances,
+            stdin,
+          );
+        }).toThrowError(
+          new RegExp(
+            `Watch plugin OffendingWatchPlugin attempted to register key <${key}>,\\s+that is reserved internally for .+\\.\\s+Please change the configuration key for this plugin\\.`,
+            'm',
           ),
         );
-
-        expect(exitMock).toHaveBeenCalled();
       },
     );
 
@@ -466,8 +451,6 @@ describe('Watch mode flows', () => {
           hasteMapInstances,
           stdin,
         );
-
-        expect(exitMock).not.toHaveBeenCalled();
       },
     );
 
@@ -497,24 +480,20 @@ describe('Watch mode flows', () => {
         return pluginPath;
       });
 
-      watch(
-        Object.assign({}, globalConfig, {
-          rootDir: __dirname,
-          watchPlugins: pluginPaths.map(path => ({config: {}, path})),
-        }),
-        contexts,
-        pipe,
-        hasteMapInstances,
-        stdin,
+      expect(() => {
+        watch(
+          Object.assign({}, globalConfig, {
+            rootDir: __dirname,
+            watchPlugins: pluginPaths.map(path => ({config: {}, path})),
+          }),
+          contexts,
+          pipe,
+          hasteMapInstances,
+          stdin,
+        );
+      }).toThrowError(
+        /Watch plugins OffendingFooThirdPartyWatchPlugin and OffendingBarThirdPartyWatchPlugin both attempted to register key <!>\.\s+Please change the key configuration for one of the conflicting plugins to avoid overlap\./m,
       );
-
-      expect(console.error).toHaveBeenLastCalledWith(
-        expect.stringMatching(
-          /Jest configuration error: watch plugins OffendingFooThirdPartyWatchPlugin and OffendingBarThirdPartyWatchPlugin both attempted to register key <!>\.\s+Please change the key configuration for one of the conflicting plugins to avoid overlap\./m,
-        ),
-      );
-
-      expect(exitMock).toHaveBeenCalled();
     });
   });
 
