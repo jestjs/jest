@@ -40,7 +40,7 @@ describe('Test Retries', () => {
 
     const reporterConfig = {
       reporters: [
-        ['<rootDir>/reporters/RetryReporter.js', { output: outputFilePath }],
+        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
       ],
     };
 
@@ -71,7 +71,7 @@ describe('Test Retries', () => {
 
     const reporterConfig = {
       reporters: [
-        ['<rootDir>/reporters/RetryReporter.js', { output: outputFilePath }],
+        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
       ],
     };
 
