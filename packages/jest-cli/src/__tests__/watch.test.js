@@ -365,7 +365,6 @@ describe('Watch mode flows', () => {
   });
 
   describe('when dealing with potential watch plugin key conflicts', () => {
-
     it.each`
       key    | plugin
       ${'q'} | ${'Quit'}
