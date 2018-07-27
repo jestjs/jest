@@ -20,6 +20,7 @@
 - `[jest-jasmine2]` Use prettier through `require` instead of `localRequire`. Fixes `matchInlineSnapshot` where prettier dependencies like `path` and `fs` are mocked with `jest.mock`. ([#6776](https://github.com/facebook/jest/pull/6776))
 - `[docs]` Fix contributors link ([#6711](https://github.com/facebook/jest/pull/6711))
 - `[website]` Fix website versions page to link to correct language ([#6734](https://github.com/facebook/jest/pull/6734))
+- `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
 
 ## 23.4.1
 
@@ -47,7 +48,6 @@
 - `[jest-cli]` Write configuration to stdout when the option was explicitly passed to Jest ([#6447](https://github.com/facebook/jest/pull/6447))
 - `[jest-cli]` Fix regression on non-matching suites ([6657](https://github.com/facebook/jest/pull/6657))
 - `[jest-runtime]` Roll back `micromatch` version to prevent regression when matching files ([#6661](https://github.com/facebook/jest/pull/6661))
-- `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
 
 ## 23.3.0
 
