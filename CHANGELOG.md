@@ -1,5 +1,7 @@
 ## master
 
+## 23.4.2
+
 ### Performance
 
 - `[jest-changed-files]` limit git and hg commands to specified roots ([#6732](https://github.com/facebook/jest/pull/6732))
