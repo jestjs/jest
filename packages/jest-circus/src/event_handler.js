@@ -125,6 +125,10 @@ const handler: EventHandler = (event, state): void => {
       event.test.errors.push([error, asyncError]);
       break;
     }
+    case 'test_retry': {
+      event.test.errors = [];
+      break;
+    }
     case 'run_start': {
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
