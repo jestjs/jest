@@ -113,3 +113,14 @@ exports[`supports async tests 1`] = `
 });
 "
 `;
+
+exports[`writes snapshots with non-literals in expect(...) 1`] = `
+"it('works with inline snapshots', () => {
+  expect({a: 1}).toMatchInlineSnapshot(\`
+Object {
+  \\"a\\": 1,
+}
+\`);
+});
+"
+`;

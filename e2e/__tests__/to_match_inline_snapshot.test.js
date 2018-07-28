@@ -163,3 +163,19 @@ test('supports async tests', () => {
   expect(status).toBe(0);
   expect(fileAfter).toMatchSnapshot();
 });
+
+test('writes snapshots with non-literals in expect(...)', () => {
+  const filename = 'async.test.js';
+  const test = `
+    it('works with inline snapshots', () => {
+      expect({a: 1}).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(status).toBe(0);
+  expect(fileAfter).toMatchSnapshot();
+});
