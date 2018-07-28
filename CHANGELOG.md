@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- `[jest-circus]` Fix retryTimes so errors are reset before re-running ([#6762](https://github.com/facebook/jest/pull/6762))
 - `[docs]` Update `expect.objectContaining()` description ([#6754](https://github.com/facebook/jest/pull/6754))
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
 - `[docs]` Fix contributors link ([#6711](https://github.com/facebook/jest/pull/6711))
