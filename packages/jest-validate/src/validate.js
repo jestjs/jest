@@ -11,8 +11,21 @@ import type {ValidationOptions} from './types';
 
 import defaultConfig from './default_config';
 
-const _validate = (config: Object, options: ValidationOptions) => {
-  let hasDeprecationWarnings = false;
+let hasDeprecationWarnings = false;
+
+const _validate = (
+  config: Object,
+  exampleConfig: Object,
+  options: ValidationOptions,
+) => {
+  if (
+    typeof config !== 'object' ||
+    config == null ||
+    typeof exampleConfig !== 'object' ||
+    exampleConfig == null
+  ) {
+    return {hasDeprecationWarnings};
+  }
 
   for (const key in config) {
     if (
@@ -28,26 +41,28 @@ const _validate = (config: Object, options: ValidationOptions) => {
       );
 
       hasDeprecationWarnings = hasDeprecationWarnings || isDeprecatedKey;
-    } else if (hasOwnProperty.call(options.exampleConfig, key)) {
+    } else if (hasOwnProperty.call(exampleConfig, key)) {
       if (
         typeof options.condition === 'function' &&
         typeof options.error === 'function' &&
-        !options.condition(config[key], options.exampleConfig[key])
+        !options.condition(config[key], exampleConfig[key])
       ) {
-        options.error(key, config[key], options.exampleConfig[key], options);
+        options.error(key, config[key], exampleConfig[key], options);
       }
     } else {
-      options.unknown &&
-        options.unknown(config, options.exampleConfig, key, options);
+      options.unknown && options.unknown(config, exampleConfig, key, options);
     }
+    _validate(config[key], exampleConfig[key], options);
   }
 
   return {hasDeprecationWarnings};
 };
 
 const validate = (config: Object, options: ValidationOptions) => {
-  _validate(options, defaultConfig); // validate against jest-validate config
-
+  hasDeprecationWarnings = false;
+  // _validate(options, options.exampleConfig, defaultConfig); // validate against jest-validate config
+  console.log(config);
+  console.log(config.exampleConfig);
   const defaultedOptions: ValidationOptions = Object.assign(
     {},
     defaultConfig,
@@ -55,10 +70,14 @@ const validate = (config: Object, options: ValidationOptions) => {
     {title: Object.assign({}, defaultConfig.title, options.title)},
   );
 
-  const {hasDeprecationWarnings} = _validate(config, defaultedOptions);
+  const {hasDeprecationWarnings: hdw} = _validate(
+    config,
+    options.exampleConfig,
+    defaultedOptions,
+  );
 
   return {
-    hasDeprecationWarnings,
+    hasDeprecationWarnings: hdw,
     isValid: true,
   };
 };

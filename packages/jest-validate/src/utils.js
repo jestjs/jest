@@ -19,7 +19,9 @@ export const WARNING = `${BULLET} Validation Warning`;
 export const format = (value: any): string =>
   typeof value === 'function'
     ? value.toString()
-    : prettyFormat(value, {min: true});
+    : JSON.stringify(value, null, 2)
+        .split('\n')
+        .join('\n    ');
 
 export class ValidationError extends Error {
   name: string;

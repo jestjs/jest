@@ -34,6 +34,9 @@ export default ({
   coverageThreshold: {
     global: {
       branches: 50,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
   },
   displayName: 'project-name',
@@ -46,6 +49,7 @@ export default ({
   globalTeardown: 'teardown.js',
   globals: {},
   haste: {
+    platforms: ['ios', 'android'],
     providesModuleNodeModules: ['react', 'react-native'],
   },
   json: false,
