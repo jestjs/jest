@@ -163,3 +163,20 @@ test('supports async tests', () => {
   expect(status).toBe(0);
   expect(fileAfter).toMatchSnapshot();
 });
+
+// issue: https://github.com/facebook/jest/issues/6702
+test('handles mocking native modules prettier relies on', () => {
+  const filename = 'mockFail.test.js';
+  const test = `
+    jest.mock('path', () => ({}));
+    jest.mock('fs', () => ({}));
+    test('inline snapshots', () => {
+      expect({}).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(status).toBe(0);
+});
