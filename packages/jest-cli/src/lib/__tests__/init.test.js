@@ -12,10 +12,10 @@ import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
 import init from '../init';
-import getCacheDirectory from '../../../../jest-config/build/get_cache_directory';
+import getCacheDirectory from '../../../../jest-config/build/getCacheDirectory';
 
 jest.mock('prompts');
-jest.mock('../../../../jest-config/build/get_cache_directory');
+jest.mock('../../../../jest-config/build/getCacheDirectory');
 
 // mocked to get the same snapshot on every machine
 getCacheDirectory.mockReturnValue('/tmp/jest');
