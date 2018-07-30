@@ -18,7 +18,7 @@ export default class BaseReporter {
   _error: ?Error;
 
   log(message: string) {
-    process.stderr.write(message + '\n');
+    process.stdout.write(message + '\n');
   }
 
   onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
