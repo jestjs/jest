@@ -11,22 +11,27 @@ import type {ValidationOptions} from './types';
 
 import chalk from 'chalk';
 import getType from 'jest-get-type';
-import {format, ValidationError, ERROR} from './utils';
+import {formatPrettyObject, ValidationError, ERROR} from './utils';
 
 export const errorMessage = (
   option: string,
   received: any,
   defaultValue: any,
   options: ValidationOptions,
+  path?: Array<string>,
 ): void => {
-  const message = `  Option ${chalk.bold(`"${option}"`)} must be of type:
+  const message = `  Option ${chalk.bold(
+    `"${path && path.length > 0 ? path.join('.') + '.' : ''}${option}"`,
+  )} must be of type:
     ${chalk.bold.green(getType(defaultValue))}
   but instead received:
     ${chalk.bold.red(getType(received))}
 
   Example:
   {
-    ${chalk.bold(`"${option}"`)}: ${chalk.bold(format(defaultValue))}
+    ${chalk.bold(`"${option}"`)}: ${chalk.bold(
+    formatPrettyObject(defaultValue),
+  )}
   }`;
 
   const comment = options.comment;

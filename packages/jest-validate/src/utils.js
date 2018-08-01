@@ -19,6 +19,11 @@ export const WARNING = `${BULLET} Validation Warning`;
 export const format = (value: any): string =>
   typeof value === 'function'
     ? value.toString()
+    : prettyFormat(value, {min: true});
+
+export const formatPrettyObject = (value: any): string =>
+  typeof value === 'function'
+    ? value.toString()
     : JSON.stringify(value, null, 2)
         .split('\n')
         .join('\n    ');

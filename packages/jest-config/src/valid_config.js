@@ -49,6 +49,8 @@ export default ({
   globalTeardown: 'teardown.js',
   globals: {},
   haste: {
+    defaultPlatform: 'ios',
+    hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
     providesModuleNodeModules: ['react', 'react-native'],
   },

@@ -17,6 +17,7 @@ const _validate = (
   config: Object,
   exampleConfig: Object,
   options: ValidationOptions,
+  path: Array<string> = [],
 ) => {
   if (
     typeof config !== 'object' ||
@@ -47,12 +48,25 @@ const _validate = (
         typeof options.error === 'function' &&
         !options.condition(config[key], exampleConfig[key])
       ) {
-        options.error(key, config[key], exampleConfig[key], options);
+        options.error(key, config[key], exampleConfig[key], options, path);
       }
+    } else if (
+      options.blacklist &&
+      options.blacklist.includes(path.join('.'))
+    ) {
+      // skip validating unknown options inside blacklisted paths
     } else {
-      options.unknown && options.unknown(config, exampleConfig, key, options);
+      options.unknown &&
+        options.unknown(config, exampleConfig, key, options, path);
     }
-    _validate(config[key], exampleConfig[key], options);
+
+    if (
+      !Array.isArray(exampleConfig[key]) &&
+      options.blacklist &&
+      !options.blacklist.includes(path.join('.'))
+    ) {
+      _validate(config[key], exampleConfig[key], options, [...path, key]);
+    }
   }
 
   return {hasDeprecationWarnings};
@@ -60,9 +74,7 @@ const _validate = (
 
 const validate = (config: Object, options: ValidationOptions) => {
   hasDeprecationWarnings = false;
-  // _validate(options, options.exampleConfig, defaultConfig); // validate against jest-validate config
-  console.log(config);
-  console.log(config.exampleConfig);
+
   const defaultedOptions: ValidationOptions = Object.assign(
     {},
     defaultConfig,
