@@ -122,7 +122,7 @@ test('tests error with promises', () => {
   return user.getUserName(2).catch(e =>
     expect(e).toEqual({
       error: 'User with 2 not found.',
-    }),
+    });
   );
 });
 
