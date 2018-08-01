@@ -555,6 +555,7 @@ export default function (j$) {
         isError,
         message
       } = checkIsError(error);
+
       const runnable = currentRunnable();
       if (!runnable) {
         throw new Error('Caught error after test environment was torn down')
