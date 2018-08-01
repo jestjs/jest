@@ -558,7 +558,7 @@ export default function (j$) {
 
       const runnable = currentRunnable();
       if (!runnable) {
-        throw new Error('Caught error after test environment was torn down')
+        throw new Error('Caught error after test environment was torn down');
       }
 
       runnable.addExpectationResult(false, {
