@@ -12,7 +12,6 @@ import type {ValidationOptions} from './types';
 import {deprecationWarning} from './deprecated';
 import {unknownOptionWarning} from './warnings';
 import {errorMessage} from './errors';
-import exampleConfig from './example_config';
 import validationCondition from './condition';
 import {ERROR, DEPRECATION, WARNING} from './utils';
 
@@ -23,7 +22,8 @@ export default ({
   deprecate: deprecationWarning,
   deprecatedConfig: {},
   error: errorMessage,
-  exampleConfig,
+  exampleConfig: {},
+  recursive: false,
   title: {
     deprecation: DEPRECATION,
     error: ERROR,

@@ -32,6 +32,7 @@ export type ValidationOptions = {
     path?: Array<string>,
   ) => void,
   exampleConfig: Object,
+  recursive?: boolean,
   title?: Title,
   unknown?: (
     config: Object,

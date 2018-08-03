@@ -13,6 +13,12 @@ import defaultConfig from './default_config';
 
 let hasDeprecationWarnings = false;
 
+const shouldSkipValidationForPath = (
+  path: Array<string>,
+  key: string,
+  blacklist: ?Array<string>,
+) => (blacklist ? blacklist.includes([...path, key].join('.')) : false);
+
 const _validate = (
   config: Object,
   exampleConfig: Object,
@@ -50,10 +56,7 @@ const _validate = (
       ) {
         options.error(key, config[key], exampleConfig[key], options, path);
       }
-    } else if (
-      options.blacklist &&
-      options.blacklist.includes(path.join('.'))
-    ) {
+    } else if (shouldSkipValidationForPath(path, key, options.blacklist)) {
       // skip validating unknown options inside blacklisted paths
     } else {
       options.unknown &&
@@ -61,9 +64,10 @@ const _validate = (
     }
 
     if (
+      options.recursive &&
       !Array.isArray(exampleConfig[key]) &&
       options.blacklist &&
-      !options.blacklist.includes(path.join('.'))
+      !shouldSkipValidationForPath(path, key, options.blacklist)
     ) {
       _validate(config[key], exampleConfig[key], options, [...path, key]);
     }

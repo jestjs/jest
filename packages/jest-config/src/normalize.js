@@ -341,6 +341,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
+    recursive: true,
   });
 
   options = normalizePreprocessor(
