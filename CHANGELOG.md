@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-validate]` Add `recursive` and `blacklist` options for deep config checks ([#6802](https://github.com/facebook/jest/pull/6802))
+
 ### Fixes
 
 - `[jest-config]` Fix `--coverage` with `--findRelatedTests` overwriting `collectCoverageFrom` options ([#6736](https://github.com/facebook/jest/pull/6736))
