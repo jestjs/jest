@@ -18,7 +18,7 @@ Where `ValidationOptions` are:
 
 ```js
 type ValidationOptions = {
-  blacklist?: Array<string>
+  blacklist?: Array<string>,
   comment?: string,
   condition?: (option: any, validOption: any) => boolean,
   deprecate?: (
@@ -35,7 +35,7 @@ type ValidationOptions = {
     options: ValidationOptions,
   ) => void,
   exampleConfig: Object,
-  recursive?: boolean
+  recursive?: boolean,
   title?: Title,
   unknown?: (
     config: Object,
