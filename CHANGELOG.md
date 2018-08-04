@@ -2,6 +2,7 @@
 
 ### Fixes
 
+- `[babel-jest]` Fix warning with `babel-core` during `npm install` or `yarn install`
 - `[jest-config]` Fix `--coverage` with `--findRelatedTests` overwriting `collectCoverageFrom` options ([#6736](https://github.com/facebook/jest/pull/6736))
 - `[jest-config]` Update default config for testURL from 'about:blank' to 'http://localhost' to address latest JSDOM security warning. ([#6792](https://github.com/facebook/jest/pull/6792))
 
