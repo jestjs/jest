@@ -14,7 +14,6 @@ type Title = {|
 |};
 
 export type ValidationOptions = {
-  blacklist?: Array<string>,
   comment?: string,
   condition?: (option: any, validOption: any) => boolean,
   deprecate?: (
@@ -33,6 +32,7 @@ export type ValidationOptions = {
   ) => void,
   exampleConfig: Object,
   recursive?: boolean,
+  recursiveBlacklist?: Array<string>,
   title?: Title,
   unknown?: (
     config: Object,

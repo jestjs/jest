@@ -16,7 +16,6 @@ import validationCondition from './condition';
 import {ERROR, DEPRECATION, WARNING} from './utils';
 
 export default ({
-  blacklist: [],
   comment: '',
   condition: validationCondition,
   deprecate: deprecationWarning,
@@ -24,6 +23,7 @@ export default ({
   error: errorMessage,
   exampleConfig: {},
   recursive: false,
+  recursiveBlacklist: [],
   title: {
     deprecation: DEPRECATION,
     error: ERROR,

@@ -10,7 +10,6 @@
 import type {ValidationOptions} from './types';
 
 const config: ValidationOptions = {
-  blacklist: [],
   comment: '  A comment',
   condition: (option, validOption) => true,
   deprecate: (config, option, deprecatedOptions, options) => false,
@@ -20,6 +19,7 @@ const config: ValidationOptions = {
   error: (option, received, defaultValue, options) => {},
   exampleConfig: {key: 'value', test: 'case'},
   recursive: true,
+  recursiveBlacklist: [],
   title: {
     deprecation: 'Deprecation Warning',
     error: 'Validation Error',

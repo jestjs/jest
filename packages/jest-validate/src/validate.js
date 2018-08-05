@@ -56,7 +56,9 @@ const _validate = (
       ) {
         options.error(key, config[key], exampleConfig[key], options, path);
       }
-    } else if (shouldSkipValidationForPath(path, key, options.blacklist)) {
+    } else if (
+      shouldSkipValidationForPath(path, key, options.recursiveBlacklist)
+    ) {
       // skip validating unknown options inside blacklisted paths
     } else {
       options.unknown &&
@@ -66,8 +68,8 @@ const _validate = (
     if (
       options.recursive &&
       !Array.isArray(exampleConfig[key]) &&
-      options.blacklist &&
-      !shouldSkipValidationForPath(path, key, options.blacklist)
+      options.recursiveBlacklist &&
+      !shouldSkipValidationForPath(path, key, options.recursiveBlacklist)
     ) {
       _validate(config[key], exampleConfig[key], options, [...path, key]);
     }

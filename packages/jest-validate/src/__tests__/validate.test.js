@@ -120,9 +120,9 @@ test('respects blacklist', () => {
   console.warn.mockReset();
 
   validate(config, {
-    blacklist: ['something.nested'],
     exampleConfig,
     recursive: true,
+    recursiveBlacklist: ['something.nested'],
   });
 
   expect(console.warn).not.toBeCalled();

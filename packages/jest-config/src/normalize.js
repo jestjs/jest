@@ -332,16 +332,16 @@ const showTestPathPatternError = (testPathPattern: string) => {
 
 export default function normalize(options: InitialOptions, argv: Argv) {
   const {hasDeprecationWarnings} = validate(options, {
-    blacklist: [
+    comment: DOCUMENTATION_NOTE,
+    deprecatedConfig: DEPRECATED_CONFIG,
+    exampleConfig: VALID_CONFIG,
+    recursive: true,
+    recursiveBlacklist: [
       'moduleNameMapper',
       'transform',
       'globals',
       'collectCoverageOnlyFrom',
     ],
-    comment: DOCUMENTATION_NOTE,
-    deprecatedConfig: DEPRECATED_CONFIG,
-    exampleConfig: VALID_CONFIG,
-    recursive: true,
   });
 
   options = normalizePreprocessor(
