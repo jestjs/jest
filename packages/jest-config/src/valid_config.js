@@ -21,7 +21,7 @@ export default ({
   cache: true,
   cacheDirectory: '/tmp/user/jest',
   changedFilesWithAncestor: false,
-  changedSince: '',
+  changedSince: 'master',
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
@@ -47,7 +47,7 @@ export default ({
   forceExit: false,
   globalSetup: 'setup.js',
   globalTeardown: 'teardown.js',
-  globals: {},
+  globals: {__DEV__: true},
   haste: {
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
@@ -93,7 +93,7 @@ export default ({
   skipNodeResolution: false,
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
-  testEnvironmentOptions: {},
+  testEnvironmentOptions: {userAgent: 'Agent/007'},
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
@@ -113,7 +113,16 @@ export default ({
   useStderr: false,
   verbose: false,
   watch: false,
-  watchPathIgnorePatterns: [],
-  watchPlugins: [],
+  watchPathIgnorePatterns: ['<rootDir>/e2e/'],
+  watchPlugins: [
+    'path/to/yourWatchPlugin',
+    [
+      'jest-watch-typeahead/filename',
+      {
+        key: 'k',
+        prompt: 'do something with my custom prompt',
+      },
+    ],
+  ],
   watchman: true,
 }: InitialOptions);

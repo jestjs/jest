@@ -337,10 +337,13 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     exampleConfig: VALID_CONFIG,
     recursive: true,
     recursiveBlacklist: [
+      'collectCoverageOnlyFrom',
+      // 'coverageThreshold' allows to use 'global' and glob strings on the same
+      // level, there's currently no way we can deal with such config
+      'coverageThreshold',
+      'globals',
       'moduleNameMapper',
       'transform',
-      'globals',
-      'collectCoverageOnlyFrom',
     ],
   });
 
