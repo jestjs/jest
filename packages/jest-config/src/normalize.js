@@ -335,7 +335,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
-    recursive: true,
     recursiveBlacklist: [
       'collectCoverageOnlyFrom',
       // 'coverageThreshold' allows to use 'global' and glob strings on the same

@@ -22,7 +22,6 @@ test('recursively validates default Jest config', () => {
   expect(
     validate(defaultConfig, {
       exampleConfig: validConfig,
-      recursive: true,
     }),
   ).toEqual({
     hasDeprecationWarnings: false,
@@ -34,7 +33,6 @@ test('recursively validates default jest-validate config', () => {
   expect(
     validate(jestValidateDefaultConfig, {
       exampleConfig: jestValidateExampleConfig,
-      recursive: true,
     }),
   ).toEqual({
     hasDeprecationWarnings: false,
@@ -61,7 +59,6 @@ test(`pretty prints valid config for Function`, () => {
   expect(() =>
     validate(config, {
       exampleConfig: validConfig,
-      recursive: true,
     }),
   ).toThrowErrorMatchingSnapshot();
 });
@@ -110,10 +107,7 @@ test('respects blacklist', () => {
     },
   };
 
-  validate(config, {
-    exampleConfig,
-    recursive: true,
-  });
+  validate(config, {exampleConfig});
 
   expect(console.warn).toBeCalled();
 
@@ -121,7 +115,6 @@ test('respects blacklist', () => {
 
   validate(config, {
     exampleConfig,
-    recursive: true,
     recursiveBlacklist: ['something.nested'],
   });
 
@@ -150,7 +143,6 @@ test('displays warning for deprecated config options', () => {
     validate(config, {
       deprecatedConfig,
       exampleConfig: validConfig,
-      recursive: true,
     }),
   ).toEqual({
     hasDeprecationWarnings: true,

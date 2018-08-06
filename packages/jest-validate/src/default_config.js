@@ -22,7 +22,7 @@ export default ({
   deprecatedConfig: {},
   error: errorMessage,
   exampleConfig: {},
-  recursive: false,
+  recursive: true,
   recursiveBlacklist: [],
   title: {
     deprecation: DEPRECATION,
