@@ -187,6 +187,30 @@ Object {
 `;
 ```
 
+Any given value that is not a matcher will be checked exactly and saved to the snaptshot:
+
+```javascript
+it('will check the values and pass', () => {
+  const user = {
+    createdAt: new Date(),
+    name: 'Bond... James Bond',
+  };
+
+  expect(user).toMatchSnapshot({
+    createdAt: expect.any(Date),
+    name: 'Bond... James Bond',
+  });
+});
+
+// Snapshot
+exports[`will check the values and pass 1`] = `
+Object {
+  "createdAt": Any<Date>,
+  "name": 'Bond... James Bond',
+}
+`;
+```
+
 ## Best Practices
 
 Snapshots are a fantastic tool for identifying unexpected interface changes within your application – whether that interface is an API response, UI, logs, or error messages. As with any testing strategy, there are some best-practices you should be aware of, and guidelines you should follow, in order to use them effectively.
