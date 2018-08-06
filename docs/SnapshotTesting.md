@@ -187,7 +187,7 @@ Object {
 `;
 ```
 
-Any given value that is not a matcher will be checked exactly and saved to the snaptshot:
+Any given value that is not a matcher will be checked exactly and saved to the snapshot:
 
 ```javascript
 it('will check the values and pass', () => {
