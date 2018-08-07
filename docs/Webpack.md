@@ -232,5 +232,25 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you n
   }
 }
 ```
+Note that if you're using Jest with Typescript through ts-jest then this configuration may have to be added to your Jest config globals.
+
+```json
+// jest
+{
+  "globals": {
+    "ts-jest": {
+      "tsConfigFile": "../root/tsconfig.test.json",
+      "babelConfig": {
+        "env": {
+          "test": {
+            "plugins": ["dynamic-import-node"]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 
 For an example of how to use Jest with Webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferkaplannyc/jest_react_redux_node_webpack_complex_example).
