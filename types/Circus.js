@@ -92,6 +92,10 @@ export type Event =
       test: TestEntry,
     |}
   | {|
+      name: 'test_retry',
+      test: TestEntry,
+    |}
+  | {|
       // the `test` in this case is all hooks + it/test function, not just the
       // function passed to `it/test`
       name: 'test_start',
