@@ -108,13 +108,12 @@ class Resolver {
     return null;
   }
 
-  resolveModule(
-    from: Path,
+  resolveModuleFromDirIfExists(
+    dirname: Path,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Path {
-    const dirname = path.dirname(from);
-    const paths = this._options.modulePaths;
+  ): ?Path {
+    const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
@@ -187,9 +186,25 @@ class Resolver {
       } catch (ignoredError) {}
     }
 
-    // 4. Throw an error if the module could not be found. `resolve.sync`
-    //    only produces an error based on the dirname but we have the actual
-    //    current module name available.
+    return null;
+  }
+
+  resolveModule(
+    from: Path,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): Path {
+    const dirname = path.dirname(from);
+    const module = this.resolveModuleFromDirIfExists(
+      dirname,
+      moduleName,
+      options,
+    );
+    if (module) return module;
+
+    // (4.) Throw an error if the module could not be found. `resolve.sync`
+    //      only produces an error based on the dirname but we have the actual
+    //      current module name available.
     const relativePath = path.relative(dirname, from);
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
@@ -264,7 +279,7 @@ class Resolver {
     }
 
     const moduleType = this._getModuleType(moduleName);
-    const absolutePath = this._getAbsolutPath(virtualMocks, from, moduleName);
+    const absolutePath = this._getAbsolutePath(virtualMocks, from, moduleName);
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
@@ -281,7 +296,7 @@ class Resolver {
     return this.isCoreModule(moduleName) ? 'node' : 'user';
   }
 
-  _getAbsolutPath(
+  _getAbsolutePath(
     virtualMocks: BooleanObject,
     from: Path,
     moduleName: string,

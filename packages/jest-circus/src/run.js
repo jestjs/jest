@@ -64,6 +64,9 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
     let numRetriesAvailable = retryTimes;
 
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
+      // Clear errors so retries occur
+      dispatch({name: 'test_retry', test});
+
       await _runTest(test);
       numRetriesAvailable--;
     }

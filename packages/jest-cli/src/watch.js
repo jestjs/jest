@@ -7,25 +7,25 @@
  * @flow
  */
 
-import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {WatchPlugin} from './types';
+import type {Options as UpdateGlobalConfigOptions} from './lib/update_global_config';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
-import getChangedFilesPromise from './get_changed_files_promise';
+import getChangedFilesPromise from './getChangedFilesPromise';
 import exit from 'exit';
-import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
 import {isInteractive} from 'jest-util';
-import {print as preRunMessagePrint} from './pre_run_message';
+import {print as preRunMessagePrint} from './preRunMessage';
 import createContext from './lib/create_context';
-import runJest from './run_jest';
+import runJest from './runJest';
 import updateGlobalConfig from './lib/update_global_config';
-import SearchSource from './search_source';
-import TestWatcher from './test_watcher';
-import FailedTestsCache from './failed_tests_cache';
+import SearchSource from './SearchSource';
+import TestWatcher from './TestWatcher';
+import FailedTestsCache from './FailedTestsCache';
 import {CLEAR} from './constants';
 import {KEYS, JestHook} from 'jest-watcher';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
@@ -68,31 +68,39 @@ export default function watch(
   });
 
   const updateConfigAndRun = ({
+    bail,
+    collectCoverage,
+    collectCoverageFrom,
+    collectCoverageOnlyFrom,
+    coverageDirectory,
+    coverageReporters,
     mode,
+    notify,
+    notifyMode,
+    onlyFailures,
+    reporters,
     testNamePattern,
     testPathPattern,
     updateSnapshot,
-  }: {
-    mode?: 'watch' | 'watchAll',
-    testNamePattern?: string,
-    testPathPattern?: string,
-    updateSnapshot?: SnapshotUpdateState,
-  } = {}) => {
+    verbose,
+  }: UpdateGlobalConfigOptions = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
+      bail,
+      collectCoverage,
+      collectCoverageFrom,
+      collectCoverageOnlyFrom,
+      coverageDirectory,
+      coverageReporters,
       mode,
-      testNamePattern:
-        testNamePattern !== undefined
-          ? testNamePattern
-          : globalConfig.testNamePattern,
-      testPathPattern:
-        testPathPattern !== undefined
-          ? replacePathSepForRegex(testPathPattern)
-          : globalConfig.testPathPattern,
-      updateSnapshot:
-        updateSnapshot !== undefined
-          ? updateSnapshot
-          : globalConfig.updateSnapshot,
+      notify,
+      notifyMode,
+      onlyFailures,
+      reporters,
+      testNamePattern,
+      testPathPattern,
+      updateSnapshot,
+      verbose,
     });
 
     startRun(globalConfig);

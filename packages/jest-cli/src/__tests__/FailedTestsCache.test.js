@@ -1,4 +1,4 @@
-import FailedTestsCache from '../failed_tests_cache';
+import FailedTestsCache from '../FailedTestsCache';
 
 describe('FailedTestsCache', () => {
   test('should filter tests', () => {

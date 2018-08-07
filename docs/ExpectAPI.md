@@ -62,7 +62,7 @@ test('even and odd numbers', () => {
 });
 ```
 
-`expect.extends` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a very similar matcher than `toBeDivisibleBy`, only difference is that the divisible number is going to be pulled from an external source.
+`expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a very similar matcher than `toBeDivisibleBy`, only difference is that the divisible number is going to be pulled from an external source.
 
 ```js
 expect.extend({
@@ -329,7 +329,7 @@ describe('not.stringMatching', () => {
 
 ### `expect.objectContaining(object)`
 
-`expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that are **not** in the expected object.
+`expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that **are present** in the expected object.
 
 Instead of literal property values in the expected object, you can use matchers, `expect.anything()`, and so on.
 
@@ -1025,7 +1025,7 @@ test('this house has my desired features', () => {
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values.
+The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
 

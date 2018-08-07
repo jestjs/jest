@@ -496,6 +496,61 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
+  _requireResolve(
+    from: Path,
+    moduleName?: string,
+    {paths}: {paths?: Path[]} = {},
+  ) {
+    if (moduleName == null) {
+      throw new Error(
+        'The first argument to require.resolve must be a string. Received null or undefined.',
+      );
+    }
+
+    if (paths) {
+      for (const p of paths) {
+        const absolutePath = path.resolve(from, '..', p);
+        const module = this._resolver.resolveModuleFromDirIfExists(
+          absolutePath,
+          moduleName,
+          // required to also resolve files without leading './' directly in the path
+          {paths: [absolutePath]},
+        );
+        if (module) {
+          return module;
+        }
+      }
+      throw new Error(
+        `Cannot resolve module '${moduleName}' from paths ['${paths.join(
+          "', '",
+        )}'] from ${from}`,
+      );
+    }
+
+    return this._resolveModule(from, moduleName);
+  }
+
+  _requireResolvePaths(from: Path, moduleName?: string) {
+    if (moduleName == null) {
+      throw new Error(
+        'The first argument to require.resolve.paths must be a string. Received null or undefined.',
+      );
+    }
+    if (!moduleName.length) {
+      throw new Error(
+        'The first argument to require.resolve.paths must not be the empty string.',
+      );
+    }
+
+    if (moduleName[0] === '.') {
+      return [path.resolve(from, '..')];
+    }
+    if (this._resolver.isCoreModule(moduleName)) {
+      return null;
+    }
+    return this._resolver.getModulePaths(path.resolve(from, '..'));
+  }
+
   _execModule(
     localModule: Module,
     options: ?InternalModuleOptions,
@@ -722,8 +777,10 @@ class Runtime {
     moduleRequire.extensions = Object.create(null);
     moduleRequire.requireActual = this.requireModule.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
-    moduleRequire.resolve = moduleName =>
-      this._resolveModule(from.filename, moduleName);
+    moduleRequire.resolve = (moduleName, options) =>
+      this._requireResolve(from.filename, moduleName, options);
+    moduleRequire.resolve.paths = moduleName =>
+      this._requireResolvePaths(from.filename, moduleName);
     Object.defineProperty(
       moduleRequire,
       'main',

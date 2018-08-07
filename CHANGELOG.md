@@ -2,11 +2,52 @@
 
 ### Fixes
 
+- `[jest-snapshot` Mark snapshots as obsolete when moved to an inline snapshot ([#6773](https://github.com/facebook/jest/pull/6773))
+- `[jest-config]` Fix `--coverage` with `--findRelatedTests` overwriting `collectCoverageFrom` options ([#6736](https://github.com/facebook/jest/pull/6736))
+- `[jest-config]` Update default config for testURL from 'about:blank' to 'http://localhost' to address latest JSDOM security warning. ([#6792](https://github.com/facebook/jest/pull/6792))
 - `[jest-each]` Add timeout support to parameterised tests ([#6660](https://github.com/facebook/jest/pull/6660))
+
+## 23.4.2
+
+### Performance
+
+- `[jest-changed-files]` limit git and hg commands to specified roots ([#6732](https://github.com/facebook/jest/pull/6732))
+
+### Fixes
+
+- `[jest-circus]` Fix retryTimes so errors are reset before re-running ([#6762](https://github.com/facebook/jest/pull/6762))
+- `[docs]` Update `expect.objectContaining()` description ([#6754](https://github.com/facebook/jest/pull/6754))
+- `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
+- `[jest-jasmine2]` Use prettier through `require` instead of `localRequire`. Fixes `matchInlineSnapshot` where prettier dependencies like `path` and `fs` are mocked with `jest.mock`. ([#6776](https://github.com/facebook/jest/pull/6776))
+- `[docs]` Fix contributors link ([#6711](https://github.com/facebook/jest/pull/6711))
+- `[website]` Fix website versions page to link to correct language ([#6734](https://github.com/facebook/jest/pull/6734))
+
+## 23.4.1
+
+### Features
+
+- `[jest-cli]` Watch plugins now have access to a broader range of global configuration options in their `updateConfigAndRun` callbacks, so they can provide a wider set of extra features ([#6473](https://github.com/facebook/jest/pull/6473))
+- `[jest-snapshot]` `babel-traverse` is now passed to `jest-snapshot` explicitly to avoid unnecessary requires in every test
+
+### Fixes
+
+- `[jest-haste-map]` Optimize watchman crawler by using `glob` on initial query ([#6689](https://github.com/facebook/jest/pull/6689))
+
+## 23.4.0
+
+### Features
+
+- `[jest-haste-map]` Add `computeDependencies` flag to avoid opening files if not needed ([#6667](https://github.com/facebook/jest/pull/6667))
+- `[jest-runtime]` Support `require.resolve.paths` ([#6471](https://github.com/facebook/jest/pull/6471))
+- `[jest-runtime]` Support `paths` option for `require.resolve` ([#6471](https://github.com/facebook/jest/pull/6471))
+
+### Fixes
+
 - `[jest-runner]` Force parallel runs for watch mode, to avoid TTY freeze ([#6647](https://github.com/facebook/jest/pull/6647))
 - `[jest-cli]` properly reprint resolver errors in watch mode ([#6407](https://github.com/facebook/jest/pull/6407))
 - `[jest-cli]` Write configuration to stdout when the option was explicitly passed to Jest ([#6447](https://github.com/facebook/jest/pull/6447))
 - `[jest-cli]` Fix regression on non-matching suites ([6657](https://github.com/facebook/jest/pull/6657))
+- `[jest-runtime]` Roll back `micromatch` version to prevent regression when matching files ([#6661](https://github.com/facebook/jest/pull/6661))
 
 ## 23.3.0
 

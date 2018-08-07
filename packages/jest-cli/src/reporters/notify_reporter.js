@@ -16,7 +16,7 @@ import path from 'path';
 import util from 'util';
 import notifier from 'node-notifier';
 import BaseReporter from './base_reporter';
-import type {TestSchedulerContext} from '../test_scheduler';
+import type {TestSchedulerContext} from '../TestScheduler';
 
 const isDarwin = process.platform === 'darwin';
 
