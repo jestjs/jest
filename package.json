@@ -26,6 +26,7 @@
     "codecov": "^3.0.0",
     "debug": "^3.0.1",
     "eslint": "^4.19.1",
+    "eslint-config-fbjs": "^2.0.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-flowtype": "^2.35.0",
