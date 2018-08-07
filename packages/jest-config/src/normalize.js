@@ -18,6 +18,7 @@ import validatePattern from './validate_pattern';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './get_max_workers';
+import micromatch from 'micromatch';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
@@ -677,12 +678,29 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    newOptions.collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = argv._.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
         : filename;
     });
+
+    // Don't override existing collectCoverageFrom options
+    if (newOptions.collectCoverageFrom) {
+      collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
+        if (
+          !micromatch(
+            [path.relative(options.rootDir, filename)],
+            newOptions.collectCoverageFrom,
+          ).length
+        ) {
+          return patterns;
+        }
+        return [...patterns, filename];
+      }, newOptions.collectCoverageFrom);
+    }
+
+    newOptions.collectCoverageFrom = collectCoverageFrom;
   }
 
   return {
