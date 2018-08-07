@@ -92,7 +92,9 @@ export default function(j$) {
     };
 
     const defaultResourcesForRunnable = function(id, parentRunnableId) {
-      const resources = {spies: []};
+      const resources = {
+        spies: [],
+      };
 
       runnableResources[id] = resources;
     };
@@ -258,7 +260,9 @@ export default function(j$) {
             suite.parentSuite && suite.parentSuite.id,
           );
           if (suite === topSuite) {
-            reporter.jasmineStarted({totalSpecsDefined});
+            reporter.jasmineStarted({
+              totalSpecsDefined,
+            });
           } else {
             reporter.suiteStarted(suite.result);
           }
@@ -549,7 +553,12 @@ export default function(j$) {
     this.fail = function(error) {
       const {isError, message} = checkIsError(error);
 
-      currentRunnable().addExpectationResult(false, {
+      const runnable = currentRunnable();
+      if (!runnable) {
+        throw new Error('Caught error after test environment was torn down');
+      }
+
+      runnable.addExpectationResult(false, {
         matcherName: '',
         passed: false,
         expected: '',
