@@ -135,7 +135,7 @@ describe('SearchSource', () => {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
           name,
           rootDir,
-          testMatch: ['**/not-really-a-test.txt'],
+          testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
           testRegex: '',
         },
         {},
