@@ -34,14 +34,17 @@ const adapter: SCMAdapter = {
     options: Options,
   ): Promise<Array<Path>> =>
     new Promise((resolve, reject) => {
-      let args = ['status', '-amnu'];
+      const includePaths: Array<Path> = (options && options.includePaths) || [];
+
+      const args = ['status', '-amnu'];
       if (options && options.withAncestor) {
         args.push('--rev', `ancestor(${ANCESTORS.join(', ')})`);
       } else if (options && options.changedSince) {
         args.push('--rev', `ancestor(., ${options.changedSince})`);
       } else if (options && options.lastCommit === true) {
-        args = ['tip', '--template', '{files%"{file}\n"}'];
+        args.push('-A');
       }
+      args.push(...includePaths);
       const child = childProcess.spawn('hg', args, {cwd, env});
       let stdout = '';
       let stderr = '';

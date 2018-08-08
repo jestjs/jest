@@ -23,12 +23,16 @@ import globals from '../index';
 const Promise = getOriginalPromise();
 export const initialize = ({
   config,
+  getPrettier,
+  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
   testPath,
 }: {
   config: ProjectConfig,
+  getPrettier: () => null | any,
+  getBabelTraverse: () => Function,
   globalConfig: GlobalConfig,
   localRequire: Path => any,
   testPath: Path,
@@ -94,8 +98,8 @@ export const initialize = ({
   const {expand, updateSnapshot} = globalConfig;
   const snapshotState = new SnapshotState(testPath, {
     expand,
-    getPrettier: () =>
-      config.prettierPath ? localRequire(config.prettierPath) : null,
+    getBabelTraverse,
+    getPrettier,
     updateSnapshot,
   });
   setState({snapshotState, testPath});

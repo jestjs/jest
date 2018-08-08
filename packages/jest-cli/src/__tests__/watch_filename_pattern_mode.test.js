@@ -24,7 +24,7 @@ jest.mock('ansi-escapes', () => ({
 }));
 
 jest.mock(
-  '../search_source',
+  '../SearchSource',
   () =>
     class {
       constructor(context) {
@@ -63,7 +63,7 @@ jest.doMock('strip-ansi');
 require('strip-ansi').mockImplementation(str => str);
 
 jest.doMock(
-  '../run_jest',
+  '../runJest',
   () =>
     function() {
       const args = Array.from(arguments);

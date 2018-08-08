@@ -42,7 +42,7 @@ const run = (cmd: string, cwd?: Path) => {
 const linkJestPackage = (packageName: string, cwd: Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
-  const destination = path.resolve(cwd, 'node_modules/');
+  const destination = path.resolve(cwd, 'node_modules/', packageName);
   mkdirp.sync(destination);
   rimraf.sync(destination);
   fs.symlinkSync(packagePath, destination, 'dir');
