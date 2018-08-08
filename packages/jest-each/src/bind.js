@@ -21,6 +21,7 @@ const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
+const INDEX_PLACEHOLDER = '%#';
 
 export default (cb: Function) => (...args: any) =>
   function eachBind(title: string, test: Function): void {
@@ -28,8 +29,8 @@ export default (cb: Function) => (...args: any) =>
       const table: Table = args[0].every(Array.isArray)
         ? args[0]
         : args[0].map(entry => [entry]);
-      return table.forEach(row =>
-        cb(arrayFormat(title, ...row), applyRestParams(row, test)),
+      return table.forEach((row, i) =>
+        cb(arrayFormat(title, i, ...row), applyRestParams(row, test)),
       );
     }
 
@@ -76,7 +77,7 @@ const getPrettyIndexes = placeholders =>
     [],
   );
 
-const arrayFormat = (title, ...args) => {
+const arrayFormat = (title, rowIndex, ...args) => {
   const placeholders = title.match(SUPPORTED_PLACEHOLDERS) || [];
   const prettyIndexes = getPrettyIndexes(placeholders);
 
@@ -101,7 +102,7 @@ const arrayFormat = (title, ...args) => {
   );
 
   return util.format(
-    prettyTitle,
+    prettyTitle.replace(INDEX_PLACEHOLDER, rowIndex.toString()),
     ...remainingArgs.slice(0, placeholders.length - prettyIndexes.length),
   );
 };
