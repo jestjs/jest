@@ -37,17 +37,23 @@ type Comment = {
   data: string,
   nodeType: 8,
 };
+type DocumentFragment = {
+  children: Array<Element>,
+  nodeType: 11,
+};
 
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
 const COMMENT_NODE = 8;
+const FRAGMENT_NODE = 11;
 
 const ELEMENT_REGEXP = /^((HTML|SVG)\w*)?Element$/;
 
 const testNode = (nodeType: any, name: any) =>
   (nodeType === ELEMENT_NODE && ELEMENT_REGEXP.test(name)) ||
   (nodeType === TEXT_NODE && name === 'Text') ||
-  (nodeType === COMMENT_NODE && name === 'Comment');
+  (nodeType === COMMENT_NODE && name === 'Comment') ||
+  (nodeType === FRAGMENT_NODE && name === 'DocumentFragment');
 
 export const test = (val: any) =>
   val &&
@@ -63,7 +69,7 @@ const propsReducer = (props, attribute) => {
 };
 
 export const serialize = (
-  node: Element | Text | Comment,
+  node: Element | Text | Comment | DocumentFragment,
   config: Config,
   indentation: string,
   depth: number,
@@ -78,7 +84,11 @@ export const serialize = (
     return printComment(node.data, config);
   }
 
-  const type = node.tagName.toLowerCase();
+  const type =
+    node.nodeType === FRAGMENT_NODE
+      ? `DocumentFragment`
+      : node.tagName.toLowerCase();
+
   if (++depth > config.maxDepth) {
     return printElementAsLeaf(type, config);
   }
@@ -86,8 +96,8 @@ export const serialize = (
   return printElement(
     type,
     printProps(
-      Array.prototype.map.call(node.attributes, keysMapper).sort(),
-      Array.prototype.reduce.call(node.attributes, propsReducer, {}),
+      Array.prototype.map.call(node.attributes || [], keysMapper).sort(),
+      Array.prototype.reduce.call(node.attributes || [], propsReducer, {}),
       config,
       indentation + config.indent,
       depth,
@@ -95,7 +105,7 @@ export const serialize = (
       printer,
     ),
     printChildren(
-      Array.prototype.slice.call(node.childNodes),
+      Array.prototype.slice.call(node.childNodes || node.children),
       config,
       indentation + config.indent,
       depth,
