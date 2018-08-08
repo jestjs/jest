@@ -13,6 +13,7 @@
 - `[jest-config]` Update default config for testURL from 'about:blank' to 'http://localhost' to address latest JSDOM security warning. ([#6792](https://github.com/facebook/jest/pull/6792))
 - `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
 - `[jest-cli]` Don't report promises as open handles ([#6716](https://github.com/facebook/jest/pull/6716))
+- `[jest-cli]` Improve the message when running coverage while there are no files matching global threshold ([#6334](https://github.com/facebook/jest/pull/6334))
 
 ## 23.4.2
 
@@ -123,7 +124,6 @@
 - `[jest-cli]` Normalize slashes in paths in CLI output on Windows ([#6310](https://github.com/facebook/jest/pull/6310))
 - `[jest-cli]` Fix run beforeAll in excluded suites tests" mode. ([#6234](https://github.com/facebook/jest/pull/6234))
 - `[jest-haste-map`] Compute SHA-1s for non-tracked files when using Node crawler ([#6264](https://github.com/facebook/jest/pull/6264))
-- `[jest-cli]` Improve the message when running coverage while there are no files matching global threshold ([#6334](https://github.com/facebook/jest/pull/6334))
 
 ### Chore & Maintenance
 
