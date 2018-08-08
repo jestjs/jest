@@ -108,8 +108,8 @@ describe('watchman watch', () => {
     watchman.Client.mock.instances[0].command.mockClear();
   });
 
-  test('returns a list of all files when there are no clocks', () => {
-    return watchmanCrawl({
+  test('returns a list of all files when there are no clocks', () =>
+    watchmanCrawl({
       data: {
         clocks: Object.create(null),
         files: Object.create(null),
@@ -141,7 +141,12 @@ describe('watchman watch', () => {
 
       expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms']);
 
-      expect(query[2].suffix).toEqual(['js', 'json']);
+      expect(query[2].glob).toEqual([
+        'fruits/**/*.js',
+        'fruits/**/*.json',
+        'vegetables/**/*.js',
+        'vegetables/**/*.json',
+      ]);
 
       expect(data.clocks).toEqual({
         [ROOT_MOCK]: 'c:fake-clock:1',
@@ -150,8 +155,7 @@ describe('watchman watch', () => {
       expect(data.files).toEqual(mockFiles);
 
       expect(client.end).toBeCalled();
-    });
-  });
+    }));
 
   test('updates the file object when the clock is given', () => {
     mockResponse = {
@@ -413,7 +417,7 @@ describe('watchman watch', () => {
 
       expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms']);
 
-      expect(query[2].suffix).toEqual(['js', 'json']);
+      expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
 
       expect(data.clocks).toEqual({
         [ROOT_MOCK]: 'c:fake-clock:1',

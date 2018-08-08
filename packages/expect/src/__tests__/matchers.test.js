@@ -442,6 +442,42 @@ describe('.toEqual()', () => {
       );
     }
   });
+
+  test('symbol based keys in arrays are processed correctly', () => {
+    const mySymbol = Symbol('test');
+    const actual1 = [];
+    actual1[mySymbol] = 3;
+    const actual2 = [];
+    actual2[mySymbol] = 4;
+    const expected = [];
+    expected[mySymbol] = 3;
+
+    expect(actual1).toEqual(expected);
+    expect(actual2).not.toEqual(expected);
+  });
+
+  test('non-enumerable members should be skipped during equal', () => {
+    const actual = {
+      x: 3,
+    };
+    Object.defineProperty(actual, 'test', {
+      enumerable: false,
+      value: 5,
+    });
+    expect(actual).toEqual({x: 3});
+  });
+
+  test('non-enumerable symbolic members should be skipped during equal', () => {
+    const actual = {
+      x: 3,
+    };
+    const mySymbol = Symbol('test');
+    Object.defineProperty(actual, mySymbol, {
+      enumerable: false,
+      value: 5,
+    });
+    expect(actual).toEqual({x: 3});
+  });
 });
 
 describe('.toBeInstanceOf()', () => {

@@ -9,34 +9,26 @@
 
 import type {DefaultOptions} from 'types/Config';
 
-import os from 'os';
-import path from 'path';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
+import getCacheDirectory from './get_cache_directory';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
-
-const cacheDirectory = (() => {
-  const {getuid} = process;
-  if (getuid == null) {
-    return path.join(os.tmpdir(), 'jest');
-  }
-  // On some platforms tmpdir() is `/tmp`, causing conflicts between different
-  // users and permission issues. Adding an additional subdivision by UID can
-  // help.
-  return path.join(os.tmpdir(), 'jest_' + getuid.call(process).toString(36));
-})();
 
 export default ({
   automock: false,
   bail: false,
   browser: false,
   cache: true,
-  cacheDirectory,
+  cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,
   clearMocks: false,
+  collectCoverage: false,
+  collectCoverageFrom: null,
+  coverageDirectory: null,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  coverageThreshold: null,
   detectLeaks: false,
   detectOpenHandles: false,
   errorOnDeprecated: false,
@@ -57,11 +49,18 @@ export default ({
   notify: false,
   notifyMode: 'always',
   preset: null,
+  prettierPath: 'prettier',
+  projects: null,
   resetMocks: false,
   resetModules: false,
+  resolver: null,
   restoreMocks: false,
+  rootDir: null,
+  roots: ['<rootDir>'],
   runTestsByPath: false,
   runner: 'jest-runner',
+  setupFiles: [],
+  setupTestFrameworkScriptFile: null,
   skipFilter: false,
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
@@ -72,8 +71,10 @@ export default ({
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '',
   testResultsProcessor: null,
-  testURL: 'about:blank',
+  testRunner: 'jasmine2',
+  testURL: 'http://localhost',
   timers: 'real',
+  transform: null,
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   useStderr: false,
   verbose: null,

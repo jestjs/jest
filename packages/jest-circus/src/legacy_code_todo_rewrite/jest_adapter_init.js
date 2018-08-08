@@ -23,12 +23,16 @@ import globals from '../index';
 const Promise = getOriginalPromise();
 export const initialize = ({
   config,
+  getPrettier,
+  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
   testPath,
 }: {
   config: ProjectConfig,
+  getPrettier: () => null | any,
+  getBabelTraverse: () => Function,
   globalConfig: GlobalConfig,
   localRequire: Path => any,
   testPath: Path,
@@ -92,7 +96,12 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  const snapshotState = new SnapshotState(testPath, {
+    expand,
+    getBabelTraverse,
+    getPrettier,
+    updateSnapshot,
+  });
   setState({snapshotState, testPath});
 
   // Return it back to the outer scope (test runner outside the VM).
@@ -137,6 +146,7 @@ export const runAndTransformResultsToJestFormat = async ({
       duration: testResult.duration,
       failureMessages: testResult.errors,
       fullName: ancestorTitles.concat(title).join(' '),
+      invocations: testResult.invocations,
       location: testResult.location,
       numPassingAsserts: 0,
       status,

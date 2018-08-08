@@ -135,7 +135,7 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 ### `--coverage`
 
-Indicates that test coverage information should be collected and reported in the output.
+Indicates that test coverage information should be collected and reported in the output. This option is also aliased by `--collectCoverage`.
 
 ### `--debug`
 
@@ -168,6 +168,10 @@ Force Jest to exit after all tests have completed running. This is useful when r
 ### `--help`
 
 Show the help information, similar to this page.
+
+### `--init`
+
+Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
 
 ### `--json`
 
@@ -212,6 +216,12 @@ Allows the test suite to pass when no files are found.
 ### `--projects <project1> ... <projectN>`
 
 Run tests from one or more projects.
+
+### `--reporters`
+
+Run tests with specified reporters. [Reporter options](configuration#reporters-array-modulename-modulename-options) are not available via CLI. Example with multiple reporters:
+
+`jest --reporters="default" --reporters="jest-junit"`
 
 ### `--runInBand`
 

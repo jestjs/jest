@@ -46,8 +46,30 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   for (const hook of beforeAll) {
     await _callHook({describeBlock, hook});
   }
+
+  // Tests that fail and are retried we run after other tests
+  const retryTimes = parseInt(global[Symbol.for('RETRY_TIMES')], 10) || 0;
+  const deferredRetryTests = [];
+
   for (const test of describeBlock.tests) {
     await _runTest(test);
+
+    if (retryTimes > 0 && test.errors.length > 0) {
+      deferredRetryTests.push(test);
+    }
+  }
+
+  // Re-run failed tests n-times if configured
+  for (const test of deferredRetryTests) {
+    let numRetriesAvailable = retryTimes;
+
+    while (numRetriesAvailable > 0 && test.errors.length > 0) {
+      // Clear errors so retries occur
+      dispatch({name: 'test_retry', test});
+
+      await _runTest(test);
+      numRetriesAvailable--;
+    }
   }
 
   for (const child of describeBlock.children) {

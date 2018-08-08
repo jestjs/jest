@@ -16,3 +16,5 @@ export const ICONS = {
   pending: '\u25CB',
   success: isWindows ? '\u221A' : '\u2713',
 };
+export const PACKAGE_JSON = 'package.json';
+export const JEST_CONFIG = 'jest.config.js';

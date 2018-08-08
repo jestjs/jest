@@ -1,5 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DEFAULT_TIMEOUT_INTERVAL.test.js errors in errorOnDeprecated mode 1`] = `
+"FAIL __tests__/DEFAULT_TIMEOUT_INTERVAL.test.js
+  ✕ DEFAULT_TIMEOUT_INTERVAL
+
+  ● DEFAULT_TIMEOUT_INTERVAL
+
+    Illegal usage of \`jasmine.DEFAULT_TIMEOUT_INTERVAL\`, prefer \`jest.setTimeout\`.
+
+       8 | 
+       9 | test('DEFAULT_TIMEOUT_INTERVAL', () => {
+    > 10 |   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+         |   ^
+      11 |   expect(true).toBe(true);
+      12 | });
+      13 | 
+
+      at __tests__/DEFAULT_TIMEOUT_INTERVAL.test.js:10:3
+
+"
+`;
+
 exports[`fail.test.js errors in errorOnDeprecated mode 1`] = `
 "FAIL __tests__/fail.test.js
   ✕ fail
@@ -191,15 +212,15 @@ exports[`spyOn.test.js errors in errorOnDeprecated mode 1`] = `
 
     Illegal usage of global \`spyOn\`, prefer \`jest.spyOn\`.
 
-      15 | 
-      16 | test('spyOn', () => {
-    > 17 |   spyOn(subject, 'func').and.returnValue('bar');
+      13 | 
+      14 | test('spyOn', () => {
+    > 15 |   spyOn(subject, 'func').and.returnValue('bar');
          |   ^
-      18 |   expect(subject.func()).toBe('bar');
-      19 | });
-      20 | 
+      16 |   expect(subject.func()).toBe('bar');
+      17 | });
+      18 | 
 
-      at __tests__/spyOn.test.js:17:3
+      at __tests__/spyOn.test.js:15:3
 
 "
 `;

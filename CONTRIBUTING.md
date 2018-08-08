@@ -109,6 +109,10 @@ To run tests in another project with the development build of Jest:
 
 ```sh
 cd /path/to/another/project
+
+# link development build to the other project
+yarn link jest-cli
+
 jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
@@ -148,6 +152,22 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 - Use semicolons;
 - Trailing commas,
 - Avd abbr wrds.
+
+## Credits
+
+This project exists thanks to all the people who [contribute](CONTRIBUTING.md). <a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+
+### [Backers](https://opencollective.com/jest#backer)
+
+Thank you to all our backers! 🙏
+
+<a href="https://opencollective.com/jest#backers" target="_blank"><img src="https://opencollective.com/jest/backers.svg?width=890"></a>
+
+### [Sponsors](https://opencollective.com/jest#sponsor)
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website.
+
+<a href="https://opencollective.com/jest/sponsor/0/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/0/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/1/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/1/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/2/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/2/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/3/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/3/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/4/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/4/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/5/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/5/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/6/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/6/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/7/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/7/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/8/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/8/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/9/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/9/avatar.svg"></a>
 
 ## License
 

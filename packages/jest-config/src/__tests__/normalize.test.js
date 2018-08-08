@@ -946,7 +946,7 @@ describe('preset', () => {
         },
         {},
       );
-    }).toThrowErrorMatchingSnapshot();
+    }).toThrowError(/Unexpected token }/);
   });
 
   test('works with "react-native"', () => {
@@ -1066,12 +1066,10 @@ describe('preset without setupFiles', () => {
   beforeAll(() => {
     jest.doMock(
       '/node_modules/react-foo/jest-preset',
-      () => {
-        return {
-          moduleNameMapper: {b: 'b'},
-          modulePathIgnorePatterns: ['b'],
-        };
-      },
+      () => ({
+        moduleNameMapper: {b: 'b'},
+        modulePathIgnorePatterns: ['b'],
+      }),
       {virtual: true},
     );
   });
@@ -1129,8 +1127,8 @@ describe('watchPlugins', () => {
     );
 
     expect(options.watchPlugins).toEqual([
-      '/node_modules/my-watch-plugin',
-      '/root/path/to/plugin',
+      {config: {}, path: '/node_modules/my-watch-plugin'},
+      {config: {}, path: '/root/path/to/plugin'},
     ]);
   });
 });

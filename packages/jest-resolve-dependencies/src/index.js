@@ -100,7 +100,6 @@ class DependencyResolver {
         }
       }
     }
-
     const modules = this._hasteFS.getAllFiles().map(file => ({
       dependencies: this.resolve(file, options),
       file,
