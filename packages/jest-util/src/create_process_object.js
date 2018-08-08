@@ -90,6 +90,7 @@ export default function() {
   }
 
   newProcess.env = createProcessEnv();
+  newProcess.exit = () => {};
   newProcess.send = () => {};
 
   return newProcess;
