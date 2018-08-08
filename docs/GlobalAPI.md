@@ -241,6 +241,7 @@ Use `describe.each` if you keep duplicating the same test suites with different 
     - `%f` - Floating point value.
     - `%j` - JSON.
     - `%o` - Object.
+    - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - `fn`: `Function` the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.
 
@@ -488,6 +489,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - `%f` - Floating point value.
     - `%j` - JSON.
     - `%o` - Object.
+    - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
 

@@ -34,7 +34,7 @@ describe('SearchSource', () => {
 
   beforeEach(() => {
     Runtime = require('jest-runtime');
-    SearchSource = require('../search_source').default;
+    SearchSource = require('../SearchSource').default;
     normalize = require('jest-config').normalize;
   });
 
@@ -135,7 +135,7 @@ describe('SearchSource', () => {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
           name,
           rootDir,
-          testMatch: ['**/not-really-a-test.txt'],
+          testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
           testRegex: '',
         },
         {},

@@ -18,16 +18,16 @@ import {
   addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
-} from './test_result_helpers';
+} from './testResultHelpers';
 import CoverageReporter from './reporters/coverage_reporter';
 import DefaultReporter from './reporters/default_reporter';
 import exit from 'exit';
 import NotifyReporter from './reporters/notify_reporter';
-import ReporterDispatcher from './reporter_dispatcher';
+import ReporterDispatcher from './ReporterDispatcher';
 import snapshot from 'jest-snapshot';
 import SummaryReporter from './reporters/summary_reporter';
 import TestRunner from 'jest-runner';
-import TestWatcher from './test_watcher';
+import TestWatcher from './TestWatcher';
 import VerboseReporter from './reporters/verbose_reporter';
 
 const SLOW_TEST_TIME = 1000;

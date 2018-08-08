@@ -15,7 +15,7 @@ import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import path from 'path';
 import micromatch from 'micromatch';
 import DependencyResolver from 'jest-resolve-dependencies';
-import testPathPatternToRegExp from './test_path_pattern_to_regexp';
+import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 
@@ -47,8 +47,7 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  const matchers = globs.map(each => micromatch.matcher(each, {dot: true}));
-  return path => matchers.some(each => each(path));
+  return path => micromatch([path], globs, {dot: true}).length > 0;
 };
 
 const regexToMatcher = (testRegex: string) => {
