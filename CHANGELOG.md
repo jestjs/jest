@@ -5,6 +5,7 @@
 - `[jest-runner]` print stack trace when `process.exit` is called from user code ([#6714](https://github.com/facebook/jest/pull/6714))
 - `[jest-each]` introduces `%#` option to add index of the test to its title ([#6414](https://github.com/facebook/jest/pull/6414))
 - `[pretty-format]` Support serializing `DocumentFragment` ([#6705](https://github.com/facebook/jest/pull/6705))
+- `[jest-cli]` Check watch plugins for key conflicts ([#6697](https://github.com/facebook/jest/pull/6697))
 
 ### Fixes
 
@@ -19,10 +20,6 @@
 ### Performance
 
 - `[jest-changed-files]` limit git and hg commands to specified roots ([#6732](https://github.com/facebook/jest/pull/6732))
-
-### Features
-
-- `[jest-cli]` Watch plugin key registrations are now checked for conflicts. Some built-in keys, such as `p` and `t` for test limitation, are overridable, but most built-in keys are reserved (e.g. `q`, `a` or `o`), and any key registered by a third-party plugin cannot be overriden by another third-party plugin. Explicit validation errors are then triggered.
 
 ### Fixes
 
