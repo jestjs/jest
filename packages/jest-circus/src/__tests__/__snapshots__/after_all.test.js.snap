@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`describe block _can_ have hooks if a child describe block has tests 1`] = `
+"start_describe_definition: describe
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterAll
+add_hook: beforeAll
+start_describe_definition: child describe
+add_test: my test
+finish_describe_definition: child describe
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+hook_start: beforeAll
+> beforeAll
+hook_success: beforeAll
+run_describe_start: child describe
+test_start: my test
+hook_start: beforeEach
+> beforeEach
+hook_success: beforeEach
+test_fn_start: my test
+> my test
+test_fn_success: my test
+hook_start: afterEach
+> afterEach
+hook_success: afterEach
+test_done: my test
+run_describe_finish: child describe
+hook_start: afterAll
+> afterAll
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe block cannot have hooks and no tests 1`] = `
+"start_describe_definition: describe
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterAll
+add_hook: beforeAll
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 4"
+`;
+
+exports[`tests are not marked done until their parent afterAll runs 1`] = `
+"start_describe_definition: describe
+add_hook: afterAll
+add_test: one
+add_test: two
+start_describe_definition: 2nd level describe
+add_hook: afterAll
+add_test: 2nd level test
+start_describe_definition: 3rd level describe
+add_test: 3rd level test
+add_test: 3rd level test#2
+finish_describe_definition: 3rd level describe
+finish_describe_definition: 2nd level describe
+finish_describe_definition: describe
+start_describe_definition: 2nd describe
+add_hook: afterAll
+add_test: 2nd describe test
+finish_describe_definition: 2nd describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+test_fn_start: one
+test_fn_success: one
+test_done: one
+test_start: two
+test_fn_start: two
+test_fn_success: two
+test_done: two
+run_describe_start: 2nd level describe
+test_start: 2nd level test
+test_fn_start: 2nd level test
+test_fn_success: 2nd level test
+test_done: 2nd level test
+run_describe_start: 3rd level describe
+test_start: 3rd level test
+test_fn_start: 3rd level test
+test_fn_success: 3rd level test
+test_done: 3rd level test
+test_start: 3rd level test#2
+test_fn_start: 3rd level test#2
+test_fn_success: 3rd level test#2
+test_done: 3rd level test#2
+run_describe_finish: 3rd level describe
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: 2nd level describe
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_start: 2nd describe
+test_start: 2nd describe test
+test_fn_start: 2nd describe test
+test_fn_success: 2nd describe test
+test_done: 2nd describe test
+hook_start: afterAll
+hook_failure: afterAll
+run_describe_finish: 2nd describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 1"
+`;

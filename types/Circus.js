@@ -92,6 +92,10 @@ export type Event =
       test: TestEntry,
     |}
   | {|
+      name: 'test_retry',
+      test: TestEntry,
+    |}
+  | {|
       // the `test` in this case is all hooks + it/test function, not just the
       // function passed to `it/test`
       name: 'test_start',
@@ -194,6 +198,7 @@ export type TestEntry = {|
   asyncError: Exception, // Used if the test failure contains no usable stack trace
   errors: TestError,
   fn: ?TestFn,
+  invocations: number,
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,

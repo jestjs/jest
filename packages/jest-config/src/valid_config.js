@@ -65,6 +65,7 @@ export default ({
   notifyMode: 'always',
   onlyChanged: false,
   preset: 'react-native',
+  prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
   reporters: [
     'default',
@@ -95,7 +96,7 @@ export default ({
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
-  testURL: 'about:blank',
+  testURL: 'http://localhost',
   timers: 'real',
   transform: {
     '^.+\\.js$': '<rootDir>/preprocessor.js',

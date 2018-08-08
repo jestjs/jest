@@ -17,7 +17,7 @@ import BaseReporter from './base_reporter';
 import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
 import getSnapshotSummary from './get_snapshot_summary';
-import testPathPatternToRegExp from '../test_path_pattern_to_regexp';
+import testPathPatternToRegExp from '../testPathPatternToRegexp';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 

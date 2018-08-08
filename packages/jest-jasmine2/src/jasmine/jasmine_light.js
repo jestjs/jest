@@ -45,7 +45,7 @@ import Timer from './Timer';
 exports.create = function(createOptions: Object) {
   const j$ = Object.assign({}, createOptions);
 
-  j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
+  j$._DEFAULT_TIMEOUT_INTERVAL = 5000;
 
   j$.getEnv = function(options: Object) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));

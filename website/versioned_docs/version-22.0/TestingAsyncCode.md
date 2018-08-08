@@ -6,7 +6,7 @@ original_id: asynchronous
 
 It's common in JavaScript for code to run asynchronously. When you have code that runs asynchronously, Jest needs to know when the code it is testing has completed, before it can move on to another test. Jest has several ways to handle this.
 
-### Callbacks
+## Callbacks
 
 The most common asynchronous pattern is callbacks.
 
@@ -42,7 +42,7 @@ test('the data is peanut butter', done => {
 
 If `done()` is never called, the test will fail, which is what you want to happen.
 
-### Promises
+## Promises
 
 If your code uses promises, there is a simpler way to handle asynchronous tests. Just return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
 
@@ -68,7 +68,7 @@ test('the fetch fails with an error', () => {
 });
 ```
 
-### `.resolves` / `.rejects`
+## `.resolves` / `.rejects`
 
 ##### available in Jest **20.0.0+**
 
@@ -92,7 +92,7 @@ test('the fetch fails with an error', () => {
 });
 ```
 
-### Async/Await
+## Async/Await
 
 Alternatively, you can use `async` and `await` in your tests. To write an async test, just use the `async` keyword in front of the function passed to `test`. For example, the same `fetchData` scenario can be tested with:
 

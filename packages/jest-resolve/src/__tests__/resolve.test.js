@@ -142,6 +142,20 @@ describe('resolveModule', () => {
       require.resolve('../../src/__mocks__/foo/node_modules/dep/index.js'),
     );
   });
+
+  it('is possible to specify custom resolve paths', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    });
+    const src = require.resolve('../');
+    const resolved = resolver.resolveModule(src, 'mockJsDependency', {
+      paths: [
+        path.resolve(__dirname, '../../src/__tests__'),
+        path.resolve(__dirname, '../../src/__mocks__'),
+      ],
+    });
+    expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
+  });
 });
 
 describe('getMockModule', () => {
@@ -199,11 +213,9 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // pathstrings instead of actually trying to access the physical directory.
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
-    jest.doMock('realpath-native', () => {
-      return {
-        sync: dirInput => dirInput,
-      };
-    });
+    jest.doMock('realpath-native', () => ({
+      sync: dirInput => dirInput,
+    }));
   });
 
   afterAll(() => {

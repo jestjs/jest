@@ -10,7 +10,6 @@
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jest_adapter_init');
@@ -34,8 +33,14 @@ const jestAdapter = async (
       expand: globalConfig.expand,
     });
 
+  const getPrettier = () =>
+    config.prettierPath ? require(config.prettierPath) : null;
+  const getBabelTraverse = () => require('babel-traverse').default;
+
   const {globals, snapshotState} = initialize({
     config,
+    getBabelTraverse,
+    getPrettier,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,

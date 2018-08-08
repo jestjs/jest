@@ -62,7 +62,7 @@ test('even and odd numbers', () => {
 });
 ```
 
-`expect.extends` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a very similar matcher than `toBeDivisibleBy`, only difference is that the divisible number is going to be pulled from an external source.
+`expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a very similar matcher than `toBeDivisibleBy`, only difference is that the divisible number is going to be pulled from an external source.
 
 ```js
 expect.extend({
@@ -329,7 +329,7 @@ describe('not.stringMatching', () => {
 
 ### `expect.objectContaining(object)`
 
-`expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that are **not** in the expected object.
+`expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that **are present** in the expected object.
 
 Instead of literal property values in the expected object, you can use matchers, `expect.anything()`, and so on.
 
@@ -1025,11 +1025,17 @@ test('this house has my desired features', () => {
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-The optional propertyMatchers argument allows you to specify asymmetric matchers which are verified instead of the exact values.
+The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
 
 _Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
+
+### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
+
+Ensures that a value matches the most recent snapshot. Unlike [`.toMatchSnapshot()`](#tomatchsnapshotpropertymatchers-snapshotname), the snapshots will be written to the current source file, inline.
+
+Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
 
 ### `.toStrictEqual(value)`
 
@@ -1133,4 +1139,10 @@ And it will generate the following snapshot:
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
-Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+
+### `.toThrowErrorMatchingInlineSnapshot()`
+
+This matcher is much like [`.toThrowErrorMatchingSnapshot`](#tothrowerrormatchingsnapshot), except instead of writing the snapshot value to a `.snap` file, it will be written into the source code automatically.
+
+Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.

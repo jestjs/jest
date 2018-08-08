@@ -42,7 +42,7 @@ type ContainIterable =
   | HTMLCollection<any>;
 
 const matchers: MatchersObject = {
-  toBe(received: any, expected: number) {
+  toBe(received: any, expected: any) {
     const comment = 'Object.is equality';
     const pass = Object.is(received, expected);
 
@@ -313,7 +313,7 @@ const matchers: MatchersObject = {
             `  ${printReceived(collection)}\n` +
             `To contain value:\n` +
             `  ${printExpected(value)}` +
-            (suggestToContainEqual ? ` ${SUGGEST_TO_CONTAIN_EQUAL}` : '')
+            (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
           );
         };
 

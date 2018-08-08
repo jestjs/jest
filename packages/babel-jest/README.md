@@ -13,10 +13,10 @@ yarn add --dev babel-jest babel-core
 > Note: If you are using babel version 7 you have to install `babel-jest` with
 >
 > ```bash
-> yarn add --dev babel-jest babel-core@^7.0.0-0 @babel/core
+> yarn add --dev babel-jest 'babel-core@^7.0.0-0' @babel/core
 > ```
 
-If you would like to write your own preprocessor, uninstall and delete babel-jest and set the [config.transform](http://facebook.github.io/jest/docs/configuration.html#transform-object-string-string) option to your preprocessor.
+If you would like to write your own preprocessor, uninstall and delete babel-jest and set the [config.transform](https://jestjs.io/docs/configuration#transform-object-string-string) option to your preprocessor.
 
 ## Setup
 

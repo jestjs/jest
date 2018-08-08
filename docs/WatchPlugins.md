@@ -23,6 +23,16 @@ class MyWatchPlugin {
 
 ## Hooking into Jest
 
+To connect your watch plugin to Jest, add its path under `watchPlugins` in your Jest configuration:
+
+```javascript
+// jest.config.js
+module.exports = {
+  // ...
+  watchPlugins: ['path/to/yourWatchPlugin'],
+};
+```
+
 Custom watch plugins can add hooks to Jest events. These hooks can be added either with or without having an interactive key in the watch mode menu.
 
 ### `apply(jestHooks)`
@@ -136,5 +146,59 @@ class MyWatchPlugin {
   run(globalConfig, updateConfigAndRun) {
     // do something.
   }
+}
+```
+
+**Note**: If you do call `updateConfigAndRun`, your `run` method should not resolve to a truthy value, as that would trigger a double-run.
+
+#### Authorized configuration keys
+
+For stability and safety reasons, only part of the global configuration keys can be updated with `updateConfigAndRun`. The current white list is as follows:
+
+- [`bail`](configuration.html#bail-boolean)
+- [`collectCoverage`](configuration.html#collectcoverage-boolean)
+- [`collectCoverageFrom`](configuration.html#collectcoveragefrom-array)
+- [`collectCoverageOnlyFrom`](configuration.html#collectcoverageonlyfrom-array)
+- [`coverageDirectory`](configuration.html#coveragedirectory-string)
+- [`coverageReporters`](configuration.html#coveragereporters-array)
+- [`notify`](configuration.html#notify-boolean)
+- [`notifyMode`](configuration.html#notifymode-string)
+- [`onlyFailures`](configuration.html#onlyfailures-boolean)
+- [`reporters`](configuration.html#reporters-array-modulename-modulename-options)
+- [`testNamePattern`](cli.html#testnamepattern-regex)
+- [`testPathPattern`](cli.html#testpathpattern-regex)
+- [`updateSnapshot`](cli.html#updatesnapshot)
+- [`verbose`](configuration.html#verbose-boolean)
+
+## Customization
+
+Plugins can be customized via your Jest configuration.
+
+```javascript
+// jest.config.js
+module.exports = {
+  // ...
+  watchPlugins: [
+    [
+      'path/to/yourWatchPlugin',
+      {
+        key: 'k', // <- your custom key
+        prompt: 'show a custom prompt',
+      },
+    ],
+  ],
+};
+```
+
+Recommended config names:
+
+- `key`: Modifies the plugin key.
+- `prompt`: Allows user to customize the text in the plugin prompt.
+
+If the user provided a custom configuration, it will be passed as an argument to the plugin constructor.
+
+```javascript
+class MyWatchPlugin {
+  constructor({config}) {}
 }
 ```

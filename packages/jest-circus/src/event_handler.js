@@ -114,6 +114,7 @@ const handler: EventHandler = (event, state): void => {
     case 'test_start': {
       state.currentlyRunningTest = event.test;
       event.test.startedAt = Date.now();
+      event.test.invocations += 1;
       break;
     }
     case 'test_fn_failure': {
@@ -122,6 +123,10 @@ const handler: EventHandler = (event, state): void => {
         test: {asyncError},
       } = event;
       event.test.errors.push([error, asyncError]);
+      break;
+    }
+    case 'test_retry': {
+      event.test.errors = [];
       break;
     }
     case 'run_start': {
