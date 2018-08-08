@@ -216,7 +216,7 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt; {
 <ul>
 <li><em>Note</em> If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. <code>[1, 2, 3] -&gt; [[1], [2], [3]]</code></li>
 </ul></li>
-<li><code>name</code>: <code>String</code> the title of the test suite.
+<li><code>nome</code>: <code>String</code> the title of the test suite.
 <ul>
 <li>Generate unique test titles by positionally injecting parameters with <a href="https://nodejs.org/api/util.html#util_util_format_format_args"><code>printf</code> formatting</a>:
 <ul>
@@ -227,6 +227,7 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt; {
 <li><code>%f</code> - Floating point value.</li>
 <li><code>%j</code> - JSON.</li>
 <li><code>%o</code> - Object.</li>
+<li><code>%#</code> - Index of the test case.</li>
 <li><code>%%</code> - single percent sign ('%'). This does not consume an argument.</li>
 </ul></li>
 </ul></li>
@@ -257,7 +258,7 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt; {
 <li>First row of variable name column headings separated with <code>|</code></li>
 <li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
 </ul></li>
-<li><code>name</code>: <code>String</code> the title of the test suite, use <code>$variable</code> to inject test data into the suite title from the tagged template expressions.
+<li><code>nome</code>: <code>String</code> the title of the test suite, use <code>$variable</code> to inject test data into the suite title from the tagged template expressions.
 <ul>
 <li>To inject nested object values use you can supply a keyPath i.e. <code>$variable.path.to.value</code></li>
 </ul></li>
@@ -419,7 +420,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <ul>
 <li><em>Note</em> If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. <code>[1, 2, 3] -&gt; [[1], [2], [3]]</code></li>
 </ul></li>
-<li><code>name</code>: <code>String</code> the title of the test block.
+<li><code>nome</code>: <code>String</code> the title of the test block.
 <ul>
 <li>Generate unique test titles by positionally injecting parameters with <a href="https://nodejs.org/api/util.html#util_util_format_format_args"><code>printf</code> formatting</a>:
 <ul>
@@ -430,6 +431,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <li><code>%f</code> - Floating point value.</li>
 <li><code>%j</code> - JSON.</li>
 <li><code>%o</code> - Object.</li>
+<li><code>%#</code> - Index of the test case.</li>
 <li><code>%%</code> - single percent sign ('%'). This does not consume an argument.</li>
 </ul></li>
 </ul></li>
@@ -450,7 +452,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <li>First row of variable name column headings separated with <code>|</code></li>
 <li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
 </ul></li>
-<li><code>name</code>: <code>String</code> the title of the test, use <code>$variable</code> to inject test data into the test title from the tagged template expressions.
+<li><code>nome</code>: <code>String</code> the title of the test, use <code>$variable</code> to inject test data into the test title from the tagged template expressions.
 <ul>
 <li>To inject nested object values use you can supply a keyPath i.e. <code>$variable.path.to.value</code></li>
 </ul></li>
