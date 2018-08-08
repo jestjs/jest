@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
+ * @flow
  */
 
 /* eslint-disable no-eval */
@@ -28,7 +29,7 @@ const sep = path.sep;
 
 describe('init', () => {
   beforeEach(() => {
-    // mock console.log to reduce noise from the tests
+    // $FlowFixMe mock console.log to reduce noise from the tests
     console.log = jest.fn();
     fs.writeFileSync = jest.fn();
     path.sep = '/';
@@ -36,6 +37,7 @@ describe('init', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    // $FlowFixMe
     console.log = consoleLog;
     fs.writeFileSync = writeFileSync;
     path.sep = sep;
