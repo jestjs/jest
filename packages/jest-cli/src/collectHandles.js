@@ -17,6 +17,9 @@ export default function collectHandles(): () => Array<Error> {
   const activeHandles: Map<string, Error> = new Map();
 
   function initHook(asyncId, type) {
+    if (type === 'PROMISE') {
+      return;
+    }
     const error = new Error(type);
 
     if (Error.captureStackTrace) {
