@@ -130,6 +130,54 @@ test('handles property matchers', () => {
   }
 });
 
+test('removes obsolete external snapshots', () => {
+  const filename = 'removes-obsolete-external-snapshots.test.js';
+  const snapshotPath = path.join(
+    TESTS_DIR,
+    '__snapshots__',
+    filename + '.snap',
+  );
+  const template = makeTemplate(`
+    test('removes obsolete external snapshots', () => {
+      expect('1').$1();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['toMatchSnapshot'])});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(status).toBe(0);
+    expect(fileAfter).toMatchSnapshot('initial write');
+    expect(fs.existsSync(snapshotPath)).toEqual(true);
+  }
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['toMatchInlineSnapshot'])});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('Snapshots:   1 obsolete, 1 written, 1 total');
+    expect(status).toBe(1);
+    expect(fileAfter).toMatchSnapshot('inline snapshot written');
+    expect(fs.existsSync(snapshotPath)).toEqual(true);
+  }
+
+  {
+    const {stderr, status} = runJest(DIR, [
+      '-w=1',
+      '--ci=false',
+      filename,
+      '-u',
+    ]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('Snapshots:   1 file removed, 1 passed, 1 total');
+    expect(status).toBe(0);
+    expect(fileAfter).toMatchSnapshot('external snapshot cleaned');
+    expect(fs.existsSync(snapshotPath)).toEqual(false);
+  }
+});
+
 test('supports async matchers', () => {
   const filename = 'async-matchers.test.js';
   const test = `
@@ -158,6 +206,23 @@ test('supports async tests', () => {
 
   writeFiles(TESTS_DIR, {[filename]: test});
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(status).toBe(0);
+  expect(fileAfter).toMatchSnapshot();
+});
+
+test('writes snapshots with non-literals in expect(...)', () => {
+  const filename = 'async.test.js';
+  const test = `
+    it('works with inline snapshots', () => {
+      expect({a: 1}).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(status).toBe(0);

@@ -173,3 +173,30 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
     'expect("`").toMatchInlineSnapshot(`\\``);\n',
   );
 });
+
+test('saveInlineSnapshots() works with non-literals in expect call', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  fs.readFileSync = (jest.fn(
+    () => `expect({a: 'a'}).toMatchInlineSnapshot();\n`,
+  ): any);
+  prettier.resolveConfig.sync.mockReturnValue({
+    bracketSpacing: false,
+    singleQuote: true,
+  });
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 18, file: filename, line: 1},
+        snapshot: `{a: 'a'}`,
+      },
+    ],
+    prettier,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    "expect({a: 'a'}).toMatchInlineSnapshot(`{a: 'a'}`);\n",
+  );
+});

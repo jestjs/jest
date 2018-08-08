@@ -308,6 +308,45 @@ Testing.`;
     );
   });
 
+  it('supports fragment node', () => {
+    const fragment = document.createDocumentFragment();
+    const browsers = [
+      'Firefox',
+      'Chrome',
+      'Opera',
+      'Safari',
+      'Internet Explorer',
+    ];
+
+    browsers.forEach(browser => {
+      const li = document.createElement('li');
+      li.textContent = browser;
+      fragment.appendChild(li);
+    });
+
+    expect(fragment).toPrettyPrintTo(
+      [
+        '<DocumentFragment>',
+        '  <li>',
+        '    Firefox',
+        '  </li>',
+        '  <li>',
+        '    Chrome',
+        '  </li>',
+        '  <li>',
+        '    Opera',
+        '  </li>',
+        '  <li>',
+        '    Safari',
+        '  </li>',
+        '  <li>',
+        '    Internet Explorer',
+        '  </li>',
+        '</DocumentFragment>',
+      ].join('\n'),
+    );
+  });
+
   describe('matches constructor name of SVG elements', () => {
     // Too bad, so sad, element.constructor.name of SVG elements
     // is HTMLUnknownElement in jsdom v9 and v10
