@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-runner]` print stack trace when `process.exit` is called from user code ([#6714](https://github.com/facebook/jest/pull/6714))
+
 ### Fixes
 
 - `[jest-snapshot` Mark snapshots as obsolete when moved to an inline snapshot ([#6773](https://github.com/facebook/jest/pull/6773))
