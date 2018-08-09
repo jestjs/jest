@@ -243,7 +243,7 @@ Use `describe.each` if you keep duplicating the same test suites with different 
     - `%o` - Object.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - `fn`: `Function` the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 
@@ -274,7 +274,7 @@ describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 - `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 
@@ -492,7 +492,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - `%o` - Object.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 
@@ -513,7 +513,7 @@ test.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - `fn`: `Function` the test to be ran, this is the function that will receive the test data object.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 
