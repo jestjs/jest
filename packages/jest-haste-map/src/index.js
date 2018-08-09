@@ -795,7 +795,10 @@ class HasteMap extends EventEmitter {
           // If the file was added or changed,
           // parse it and update the haste map.
           if (type === 'add' || type === 'change') {
-            invariant(stat, 'since the file exists or changed, it should have stats');
+            invariant(
+              stat,
+              'since the file exists or changed, it should have stats',
+            );
             const fileMetadata = ['', stat.mtime.getTime(), 0, [], null];
             hasteMap.files[filePath] = fileMetadata;
             const promise = this._processFile(
