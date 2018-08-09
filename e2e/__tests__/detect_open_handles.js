@@ -85,3 +85,14 @@ it('does not report promises', () => {
 
   expect(textAfterTest).toBe('');
 });
+
+it('prints out info about open handlers from inside tests', async () => {
+  const {stderr} = await runJest.until(
+    'detect-open-handles',
+    ['inside', '--detectOpenHandles'],
+    'Jest has detected',
+  );
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toMatchSnapshot();
+});
