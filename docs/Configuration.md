@@ -153,6 +153,24 @@ This will collect coverage information for all the files inside the project's `r
 
 _Note: This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`._
 
+<details>
+  <summary>Help:</summary>
+  If you are seeing coverage output such as...
+
+```
+=============================== Coverage summary ===============================
+Statements   : Unknown% ( 0/0 )
+Branches     : Unknown% ( 0/0 )
+Functions    : Unknown% ( 0/0 )
+Lines        : Unknown% ( 0/0 )
+================================================================================
+Jest: Coverage data for global was not found.
+```
+
+Most likely your glob patterns are not matching any files. Refer to the [micromatch](https://github.com/jonschlinkert/micromatch) documentation to ensure your globs are compatible.
+
+</details>
+
 ### `coverageDirectory` [string]
 
 Default: `undefined`
