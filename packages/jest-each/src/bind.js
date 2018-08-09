@@ -24,13 +24,13 @@ const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 
 export default (cb: Function) => (...args: any) =>
-  function eachBind(title: string, test: Function): void {
+  function eachBind(title: string, test: Function, timeout: number): void {
     if (args.length === 1) {
       const table: Table = args[0].every(Array.isArray)
         ? args[0]
         : args[0].map(entry => [entry]);
       return table.forEach((row, i) =>
-        cb(arrayFormat(title, i, ...row), applyRestParams(row, test)),
+        cb(arrayFormat(title, i, ...row), applyRestParams(row, test), timeout),
       );
     }
 
@@ -66,7 +66,7 @@ export default (cb: Function) => (...args: any) =>
     }
 
     return table.forEach(row =>
-      cb(interpolate(title, row), applyObjectParams(row, test)),
+      cb(interpolate(title, row), applyObjectParams(row, test), timeout),
     );
   };
 
