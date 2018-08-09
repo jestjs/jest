@@ -30,9 +30,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
+import {AssertionError} from 'assert';
 import queueRunner from '../queue_runner';
 import treeProcessor from '../tree_processor';
 import checkIsError from '../is_error';
+import assertionErrorMessage from '../assert_support';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
@@ -547,7 +549,18 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      const {isError, message} = checkIsError(error);
+      let isError;
+      let message;
+
+      if (error instanceof AssertionError) {
+        isError = false;
+        message = assertionErrorMessage(error, {expand: j$.Spec.expand});
+      } else {
+        const check = checkIsError(error);
+
+        isError = check.isError;
+        message = check.message;
+      }
 
       currentRunnable().addExpectationResult(false, {
         matcherName: '',
