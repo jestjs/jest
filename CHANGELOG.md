@@ -7,6 +7,7 @@
 - `[jest-each]` introduces `%#` option to add index of the test to its title ([#6414](https://github.com/facebook/jest/pull/6414))
 - `[pretty-format]` Support serializing `DocumentFragment` ([#6705](https://github.com/facebook/jest/pull/6705))
 - `[jest-validate]` Add `recursive` and `recursiveBlacklist` options for deep config checks ([#6802](https://github.com/facebook/jest/pull/6802))
+- `[jest-cli]` Check watch plugins for key conflicts ([#6697](https://github.com/facebook/jest/pull/6697))
 
 ### Fixes
 
