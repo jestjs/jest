@@ -1019,7 +1019,7 @@ test('this house has my desired features', () => {
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
   expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
-  
+
   // Referencing keys with dot in the key itself
   expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
