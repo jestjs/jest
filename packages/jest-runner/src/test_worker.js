@@ -10,6 +10,7 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {SerializableError, TestResult} from 'types/TestResult';
 import type {RawModuleMap} from 'types/HasteMap';
+import type {ErrorWithCode} from 'types/Errors';
 
 import exit from 'exit';
 import HasteMap from 'jest-haste-map';
@@ -30,7 +31,7 @@ process.on('uncaughtException', err => {
   exit(1);
 });
 
-const formatError = (error: string | Error): SerializableError => {
+const formatError = (error: string | ErrorWithCode): SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {

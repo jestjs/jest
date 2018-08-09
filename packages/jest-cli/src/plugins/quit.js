@@ -6,7 +6,7 @@
  *
  * @flow
  */
-import BaseWatchPlugin from '../base_watch_plugin';
+import {BaseWatchPlugin} from 'jest-watcher';
 
 class QuitPlugin extends BaseWatchPlugin {
   isInternal: true;
@@ -29,7 +29,7 @@ class QuitPlugin extends BaseWatchPlugin {
 
   getUsageInfo() {
     return {
-      key: 'q'.codePointAt(0),
+      key: 'q',
       prompt: 'quit watch mode',
     };
   }

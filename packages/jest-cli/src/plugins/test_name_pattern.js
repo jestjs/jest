@@ -7,10 +7,9 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import BaseWatchPlugin from '../base_watch_plugin';
-import TestNamePatternPrompt from '../test_name_pattern_prompt';
+import {BaseWatchPlugin, Prompt} from 'jest-watcher';
+import TestNamePatternPrompt from '../TestNamePatternPrompt';
 import activeFilters from '../lib/active_filters_message';
-import Prompt from '../lib/Prompt';
 
 class TestNamePatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
@@ -27,7 +26,7 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
 
   getUsageInfo() {
     return {
-      key: 't'.codePointAt(0),
+      key: 't',
       prompt: 'filter by a test name regex pattern',
     };
   }

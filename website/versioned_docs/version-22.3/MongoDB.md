@@ -4,9 +4,7 @@ title: Using with MongoDB
 original_id: mongodb
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and
-[Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can
-work smoothly with [MongoDB](https://www.mongodb.com/).
+With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [MongoDB](https://www.mongodb.com/).
 
 ## A jest-mongodb example
 
@@ -124,5 +122,4 @@ it('should aggregate docs from collection', async () => {
 });
 ```
 
-Here's the code of
-[full working example](https://github.com/vladgolubev/jest-mongodb).
+Here's the code of [full working example](https://github.com/vladgolubev/jest-mongodb).

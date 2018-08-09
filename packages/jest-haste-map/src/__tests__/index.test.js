@@ -22,8 +22,8 @@ jest.mock('child_process', () => ({
   execSync() {},
 }));
 
-jest.mock('jest-worker', () => {
-  return jest.fn(worker => {
+jest.mock('jest-worker', () =>
+  jest.fn(worker => {
     mockWorker = jest.fn((...args) => require(worker).worker(...args));
     mockEnd = jest.fn();
 
@@ -31,8 +31,8 @@ jest.mock('jest-worker', () => {
       end: mockEnd,
       worker: mockWorker,
     };
-  });
-});
+  }),
+);
 
 jest.mock('../crawlers/node');
 jest.mock('../crawlers/watchman', () =>
@@ -66,16 +66,12 @@ const mockWatcherConstructor = jest.fn(root => {
   return mockEmitters[root];
 });
 
-jest.mock('sane', () => {
-  return {
-    NodeWatcher: mockWatcherConstructor,
-    WatchmanWatcher: mockWatcherConstructor,
-  };
-});
+jest.mock('sane', () => ({
+  NodeWatcher: mockWatcherConstructor,
+  WatchmanWatcher: mockWatcherConstructor,
+}));
 
-jest.mock('../lib/watchman_watcher.js', () => {
-  return mockWatcherConstructor;
-});
+jest.mock('../lib/watchman_watcher.js', () => mockWatcherConstructor);
 
 let mockChangedFiles;
 let mockFs;
@@ -103,7 +99,7 @@ jest.mock('graceful-fs', () => ({
 }));
 jest.mock('fs', () => require('graceful-fs'));
 
-const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
+const ConditionalTest = require('../../../../scripts/ConditionalTest');
 
 const cacheFilePath = '/cache-file';
 let consoleWarn;
@@ -119,7 +115,7 @@ let mockWorker;
 let getCacheFilePath;
 
 describe('HasteMap', () => {
-  SkipOnWindows.suite();
+  ConditionalTest.skipSuiteOnWindows();
 
   beforeEach(() => {
     jest.resetModules();
@@ -209,8 +205,8 @@ describe('HasteMap', () => {
     );
   });
 
-  it('matches files against a pattern', () => {
-    return new HasteMap(defaultConfig).build().then(({hasteFS}) => {
+  it('matches files against a pattern', () =>
+    new HasteMap(defaultConfig).build().then(({hasteFS}) => {
       expect(hasteFS.matchFiles(/fruits/)).toEqual([
         '/fruits/__mocks__/Pear.js',
         '/fruits/banana.js',
@@ -221,8 +217,7 @@ describe('HasteMap', () => {
       expect(hasteFS.matchFiles(/__mocks__/)).toEqual([
         '/fruits/__mocks__/Pear.js',
       ]);
-    });
-  });
+    }));
 
   it('builds a haste map on a fresh cache', () => {
     // Include these files in the map
@@ -572,8 +567,8 @@ describe('HasteMap', () => {
       });
   });
 
-  it('does not access the file system on a warm cache with no changes', () => {
-    return new HasteMap(defaultConfig)
+  it('does not access the file system on a warm cache with no changes', () =>
+    new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: initialData}) => {
         // The first run should access the file system once for the (empty)
@@ -604,11 +599,10 @@ describe('HasteMap', () => {
             expect(data.files).toEqual(initialData.files);
             expect(data.map).toEqual(initialData.map);
           });
-      });
-  });
+      }));
 
-  it('only does minimal file system access when files change', () => {
-    return new HasteMap(defaultConfig)
+  it('only does minimal file system access when files change', () =>
+    new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: initialData}) => {
         fs.readFileSync.mockClear();
@@ -654,11 +648,10 @@ describe('HasteMap', () => {
             delete map.Banana;
             expect(data.map).toEqual(map);
           });
-      });
-  });
+      }));
 
-  it('correctly handles file deletions', () => {
-    return new HasteMap(defaultConfig)
+  it('correctly handles file deletions', () =>
+    new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: initialData}) => {
         fs.readFileSync.mockClear();
@@ -686,8 +679,7 @@ describe('HasteMap', () => {
             delete map.Banana;
             expect(data.map).toEqual(map);
           });
-      });
-  });
+      }));
 
   it('correctly handles platform-specific file additions', async () => {
     mockFs = Object.create(null);
@@ -874,13 +866,13 @@ describe('HasteMap', () => {
     const watchman = require('../crawlers/watchman');
     const mockImpl = watchman.getMockImplementation();
     // Wrap the watchman mock and add an invalid file to the file list.
-    watchman.mockImplementation(options => {
-      return mockImpl(options).then(() => {
+    watchman.mockImplementation(options =>
+      mockImpl(options).then(() => {
         const {data} = options;
         data.files['/fruits/invalid/file.js'] = ['', 34, 0, []];
         return data;
-      });
-    });
+      }),
+    );
     return new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: data}) => {
@@ -907,6 +899,7 @@ describe('HasteMap', () => {
         expect(mockWorker.mock.calls).toEqual([
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/__mocks__/Pear.js',
               hasteImplModulePath: undefined,
@@ -914,6 +907,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/banana.js',
               hasteImplModulePath: undefined,
@@ -921,6 +915,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/pear.js',
               hasteImplModulePath: undefined,
@@ -928,6 +923,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/fruits/strawberry.js',
               hasteImplModulePath: undefined,
@@ -935,6 +931,7 @@ describe('HasteMap', () => {
           ],
           [
             {
+              computeDependencies: true,
               computeSha1: false,
               filePath: '/vegetables/melon.js',
               hasteImplModulePath: undefined,
@@ -979,9 +976,9 @@ describe('HasteMap', () => {
     const watchman = require('../crawlers/watchman');
     const node = require('../crawlers/node');
 
-    watchman.mockImplementation(() => {
-      return Promise.reject(new Error('watchman error'));
-    });
+    watchman.mockImplementation(() =>
+      Promise.reject(new Error('watchman error')),
+    );
     node.mockImplementation(options => {
       const {data} = options;
       data.files = object({

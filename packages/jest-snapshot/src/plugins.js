@@ -18,15 +18,17 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
+  AsymmetricMatcher,
 } = prettyFormat.plugins;
 
-let PLUGINS = [
+let PLUGINS: Array<Plugin> = [
   ReactTestComponent,
   ReactElement,
   DOMElement,
   DOMCollection,
   Immutable,
   jestMockSerializer,
+  AsymmetricMatcher,
 ];
 
 // Prepend to list so the last added is the first tested.

@@ -1,7 +1,6 @@
 # jest-changed-files
 
-A module used internally by Jest to check which files have changed since you
-last committed in git or hg.
+A module used internally by Jest to check which files have changed since you last committed in git or hg.
 
 ## Install
 
@@ -17,13 +16,12 @@ Get the list of files and repos that have changed since the last commit.
 
 #### Parameters
 
-roots: Array of string paths gathered from
-[jest roots](https://facebook.github.io/jest/docs/configuration.html#roots-array-string).
+roots: Array of string paths gathered from [jest roots](https://jestjs.io/docs/configuration.html#roots-array-string).
 
 options: Object literal with keys
 
-* lastCommit: boolean
-* withAncestor: boolean
+- lastCommit: boolean
+- withAncestor: boolean
 
 ### findRepos(roots: <Array<string>>): Promise<?object>
 
@@ -31,8 +29,7 @@ Get a set of git and hg repositories.
 
 #### Parameters
 
-roots: Array of string paths gathered from
-[jest roots](https://facebook.github.io/jest/docs/configuration.html#roots-array-string).
+roots: Array of string paths gathered from [jest roots](https://jestjs.io/docs/configuration.html#roots-array-string).
 
 ## Usage
 

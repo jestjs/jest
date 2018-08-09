@@ -4,18 +4,14 @@ title: Jest Platform
 original_id: jest-platform
 ---
 
-You can cherry pick specific features of Jest and use them as standalone
-packages. Here's a list of the available packages:
+You can cherry pick specific features of Jest and use them as standalone packages. Here's a list of the available packages:
 
 ## jest-changed-files
 
-Tool for identifying modified files in a git/hg repository. Exports two
-functions:
+Tool for identifying modified files in a git/hg repository. Exports two functions:
 
-* `getChangedFilesForRoots` returns a promise that resolves to an object with
-  the changed files and repos.
-* `findRepos` returns a promise that resolves to a set of repositories contained
-  in the specified path.
+- `getChangedFilesForRoots` returns a promise that resolves to an object with the changed files and repos.
+- `findRepos` returns a promise that resolves to a set of repositories contained in the specified path.
 
 ### Example
 
@@ -28,14 +24,11 @@ getChangedFilesForRoots(['./'], {
 }).then(result => console.log(result.changedFiles));
 ```
 
-You can read more about `jest-changed-files` in the
-[readme file](https://github.com/facebook/jest/blob/master/packages/jest-changed-files/README.md).
+You can read more about `jest-changed-files` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-changed-files/README.md).
 
 ## jest-diff
 
-Tool for visualizing changes in data. Exports a function that compares two
-values of any type and returns a "pretty-printed" string illustrating the
-difference between the two arguments.
+Tool for visualizing changes in data. Exports a function that compares two values of any type and returns a "pretty-printed" string illustrating the difference between the two arguments.
 
 ### Example
 
@@ -53,8 +46,7 @@ console.log(result);
 
 ## jest-docblock
 
-Tool for extracting and parsing the comments at the top of a JavaScript file.
-Exports various function to manipulate the data inside the comment block.
+Tool for extracting and parsing the comments at the top of a JavaScript file. Exports various function to manipulate the data inside the comment block.
 
 ### Example
 
@@ -77,13 +69,11 @@ const parsed = parseWithComments(code);
 console.log(parsed);
 ```
 
-You can read more about `jest-docblock` in the
-[readme file](https://github.com/facebook/jest/blob/master/packages/jest-docblock/README.md).
+You can read more about `jest-docblock` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-docblock/README.md).
 
 ## jest-get-type
 
-Module that identifies the primitive type of any JavaScript value. Exports a
-function that returns a string with the type of the value passed as argument.
+Module that identifies the primitive type of any JavaScript value. Exports a function that returns a string with the type of the value passed as argument.
 
 ### Example
 
@@ -104,14 +94,10 @@ console.log(getType(undefinedValue));
 
 ## jest-validate
 
-Tool for validating configurations submitted by users. Exports a function that
-takes two arguments: the user's configuration and an object containing an
-example configuration and other options. The return value is an object with two
-attributes:
+Tool for validating configurations submitted by users. Exports a function that takes two arguments: the user's configuration and an object containing an example configuration and other options. The return value is an object with two attributes:
 
-* `hasDeprecationWarnings`, a boolean indicating whether the submitted
-  configuration has deprecation warnings,
-* `isValid`, a boolean indicating whether the configuration is correct or not.
+- `hasDeprecationWarnings`, a boolean indicating whether the submitted configuration has deprecation warnings,
+- `isValid`, a boolean indicating whether the configuration is correct or not.
 
 ### Example
 
@@ -130,15 +116,11 @@ const result = validate(configByUser, {
 console.log(result);
 ```
 
-You can read more about `jest-validate` in the
-[readme file](https://github.com/facebook/jest/blob/master/packages/jest-validate/README.md).
+You can read more about `jest-validate` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-validate/README.md).
 
 ## jest-worker
 
-Module used for parallelization of tasks. Exports a class `Worker` that takes
-the path of Node.js module and lets you call the module's exported methods as if
-they where class methods, returning a promise that resolves when the specified
-method finishes its execution in a forked process.
+Module used for parallelization of tasks. Exports a class `Worker` that takes the path of Node.js module and lets you call the module's exported methods as if they where class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
 
 ### Example
 
@@ -170,14 +152,11 @@ async function main() {
 main();
 ```
 
-You can read more about `jest-worker` in the
-[readme file](https://github.com/facebook/jest/blob/master/packages/jest-worker/README.md).
+You can read more about `jest-worker` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-worker/README.md).
 
 ## pretty-format
 
-Exports a function that converts any JavaScript value into a human-readable
-string. Supports all built-in JavaScript types out of the box and allows
-extension for application-specific types via user-defined plugins.
+Exports a function that converts any JavaScript value into a human-readable string. Supports all built-in JavaScript types out of the box and allows extension for application-specific types via user-defined plugins.
 
 ### Example
 
@@ -193,5 +172,4 @@ val.array = [-0, Infinity, NaN];
 console.log(prettyFormat(val));
 ```
 
-You can read more about `pretty-format` in the
-[readme file](https://github.com/facebook/jest/blob/master/packages/pretty-format/README.md).
+You can read more about `pretty-format` in the [readme file](https://github.com/facebook/jest/blob/master/packages/pretty-format/README.md).

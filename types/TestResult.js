@@ -79,8 +79,8 @@ export type FailedAssertion = {|
 |};
 
 export type AssertionLocation = {|
+  fullName: string,
   path: string,
-  title: string,
 |};
 
 export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
@@ -122,6 +122,7 @@ export type AggregatedResultWithoutCoverage = {
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
   numTotalTestSuites: number,
+  openHandles: Array<Error>,
   snapshot: SnapshotSummary,
   startTime: number,
   success: boolean,
@@ -149,6 +150,7 @@ export type TestResult = {|
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
+  openHandles: Array<Error>,
   perfStats: {|
     end: Milliseconds,
     start: Milliseconds,
@@ -205,6 +207,11 @@ export type CodeCoverageFormatter = (
   reporter?: CodeCoverageReporter,
 ) => ?Object;
 
+export type UncheckedSnapshot = {|
+  filePath: string,
+  keys: Array<string>,
+|};
+
 export type SnapshotSummary = {|
   added: number,
   didUpdate: boolean,
@@ -216,7 +223,7 @@ export type SnapshotSummary = {|
   matched: number,
   total: number,
   unchecked: number,
-  uncheckedKeys: Array<string>,
+  uncheckedKeysByFile: Array<UncheckedSnapshot>,
   unmatched: number,
   updated: number,
 |};

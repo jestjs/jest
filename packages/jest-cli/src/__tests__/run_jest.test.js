@@ -1,9 +1,9 @@
-import runJest from '../run_jest';
+import runJest from '../runJest';
 
 jest.mock('jest-util');
 
 const processErrWriteFn = process.stderr.write;
-describe('run_jest', () => {
+describe('runJest', () => {
   let stderrSpy;
   beforeEach(async () => {
     process.exit = jest.fn();

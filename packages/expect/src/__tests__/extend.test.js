@@ -7,6 +7,7 @@
  */
 
 const matcherUtils = require('jest-matcher-utils');
+const {iterableEquality, subsetEquality} = require('../utils');
 const {equals} = require('../jasmine_utils');
 const jestExpect = require('../');
 
@@ -34,7 +35,13 @@ it('is available globally', () => {
 it('exposes matcherUtils in context', () => {
   jestExpect.extend({
     _shouldNotError(actual, expected) {
-      const pass = this.utils === matcherUtils;
+      const pass = this.equals(
+        this.utils,
+        Object.assign(matcherUtils, {
+          iterableEquality,
+          subsetEquality,
+        }),
+      );
       const message = pass
         ? () => `expected this.utils to be defined in an extend call`
         : () => `expected this.utils not to be defined in an extend call`;

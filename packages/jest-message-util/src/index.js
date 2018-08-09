@@ -8,7 +8,7 @@
  */
 
 import type {Glob, Path} from 'types/Config';
-import type {AssertionResult, TestResult} from 'types/TestResult';
+import type {AssertionResult, SerializableError} from 'types/TestResult';
 
 import fs from 'fs';
 import path from 'path';
@@ -48,7 +48,7 @@ const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const JASMINE_IGNORE = /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
 const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
@@ -64,6 +64,12 @@ const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const ERROR_TEXT = 'Error: ';
 
+const indentAllLines = (lines: string, indent: string) =>
+  lines
+    .split('\n')
+    .map(line => (line ? indent + line : line))
+    .join('\n');
+
 const trim = string => (string || '').trim();
 
 // Some errors contain not only line numbers in stack traces
@@ -73,17 +79,18 @@ const trim = string => (string || '').trim();
 const trimPaths = string =>
   string.match(STACK_PATH_REGEXP) ? trim(string) : string;
 
-const getRenderedCallsite = (fileContent: string, line: number) => {
+const getRenderedCallsite = (
+  fileContent: string,
+  line: number,
+  column?: number,
+) => {
   let renderedCallsite = codeFrameColumns(
     fileContent,
-    {start: {line}},
+    {start: {column, line}},
     {highlightCode: true},
   );
 
-  renderedCallsite = renderedCallsite
-    .split('\n')
-    .map(line => MESSAGE_INDENT + line)
-    .join('\n');
+  renderedCallsite = indentAllLines(renderedCallsite, MESSAGE_INDENT);
 
   renderedCallsite = `\n${renderedCallsite}\n`;
   return renderedCallsite;
@@ -93,23 +100,26 @@ const getRenderedCallsite = (fileContent: string, line: number) => {
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  testResult: TestResult,
+  error?: Error | SerializableError | string,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath: Path,
+  testPath: ?Path,
+  reuseMessage: ?boolean,
 ) => {
-  let error = testResult.testExecError;
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
     error.stack = '';
   }
 
-  let {message, stack} = error;
+  let message, stack;
 
   if (typeof error === 'string' || !error) {
     error || (error = 'EMPTY ERROR');
     message = '';
     stack = error;
+  } else {
+    message = error.message;
+    stack = error.stack;
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -120,10 +130,8 @@ export const formatExecError = (
     message = separated.message;
   }
 
-  message = message
-    .split(/\n/)
-    .map(line => MESSAGE_INDENT + line)
-    .join('\n');
+  message = indentAllLines(message, MESSAGE_INDENT);
+
   stack =
     stack && !options.noStackTrace
       ? '\n' + formatStackTrace(stack, config, options, testPath)
@@ -134,18 +142,21 @@ export const formatExecError = (
     message = MESSAGE_INDENT + 'Error: No message was provided';
   }
 
-  return (
-    TITLE_INDENT +
-    TITLE_BULLET +
-    EXEC_ERROR_MESSAGE +
-    '\n\n' +
-    message +
-    stack +
-    '\n'
-  );
+  let messageToUse;
+
+  if (reuseMessage) {
+    messageToUse = ` ${message.trim()}`;
+  } else {
+    messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
+  }
+
+  return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
 };
 
-const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
+const removeInternalStackEntries = (
+  lines: string[],
+  options: StackTraceOptions,
+): string[] => {
   let pathCounter = 0;
 
   return lines.filter(line => {
@@ -193,12 +204,7 @@ const removeInternalStackEntries = (lines, options: StackTraceOptions) => {
   });
 };
 
-const formatPaths = (
-  config: StackTraceConfig,
-  options: StackTraceOptions,
-  relativeTestPath,
-  line,
-) => {
+const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
@@ -218,7 +224,12 @@ const formatPaths = (
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-const getTopFrame = (lines: string[]) => {
+export const getStackTraceLines = (
+  stack: string,
+  options: StackTraceOptions = {noStackTrace: false},
+) => removeInternalStackEntries(stack.split(/\n/), options);
+
+export const getTopFrame = (lines: string[]) => {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -240,14 +251,12 @@ export const formatStackTrace = (
   options: StackTraceOptions,
   testPath: ?Path,
 ) => {
-  let lines = stack.split(/\n/);
+  const lines = getStackTraceLines(stack, options);
+  const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
-  lines = removeInternalStackEntries(lines, options);
-
-  const topFrame = getTopFrame(lines);
 
   if (topFrame) {
     const filename = topFrame.file;
@@ -258,7 +267,11 @@ export const formatStackTrace = (
         // TODO: check & read HasteFS instead of reading the filesystem:
         // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
         fileContent = fs.readFileSync(filename, 'utf8');
-        renderedCallsite = getRenderedCallsite(fileContent, topFrame.line);
+        renderedCallsite = getRenderedCallsite(
+          fileContent,
+          topFrame.line,
+          topFrame.column,
+        );
       } catch (e) {
         // the file does not exist or is inaccessible, we ignore
       }
@@ -266,14 +279,14 @@ export const formatStackTrace = (
   }
 
   const stacktrace = lines
+    .filter(Boolean)
     .map(
       line =>
-        STACK_INDENT +
-        formatPaths(config, options, relativeTestPath, trimPaths(line)),
+        STACK_INDENT + formatPaths(config, relativeTestPath, trimPaths(line)),
     )
     .join('\n');
 
-  return renderedCallsite + stacktrace;
+  return `${renderedCallsite}\n${stacktrace}`;
 };
 
 export const formatResultsErrors = (
@@ -300,10 +313,7 @@ export const formatResultsErrors = (
             formatStackTrace(stack, config, options, testPath),
           ) + '\n';
 
-      message = message
-        .split(/\n/)
-        .map(line => MESSAGE_INDENT + line)
-        .join('\n');
+      message = indentAllLines(message, MESSAGE_INDENT);
 
       const title =
         chalk.bold.red(

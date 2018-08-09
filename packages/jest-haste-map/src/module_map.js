@@ -56,7 +56,7 @@ export default class ModuleMap {
   }
 
   getMockModule(name: string): ?Path {
-    return this._raw.mocks[name];
+    return this._raw.mocks[name] || this._raw.mocks[name + '/index'];
   }
 
   getRawModuleMap(): RawModuleMap {

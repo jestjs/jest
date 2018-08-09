@@ -9,11 +9,9 @@
 'use strict';
 
 import chalk from 'chalk';
-import {KEYS} from '../constants';
+import {KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
-
-let terminalWidth;
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
@@ -26,7 +24,7 @@ jest.mock('ansi-escapes', () => ({
 }));
 
 jest.mock(
-  '../search_source',
+  '../SearchSource',
   () =>
     class {
       findMatchingTests(pattern) {
@@ -41,7 +39,7 @@ jest.doMock('strip-ansi');
 require('strip-ansi').mockImplementation(str => str);
 
 jest.doMock(
-  '../run_jest',
+  '../runJest',
   () =>
     function() {
       const args = Array.from(arguments);
@@ -93,13 +91,7 @@ jest.doMock(
     },
 );
 
-jest.doMock('../lib/terminal_utils', () => ({
-  getTerminalWidth: () => terminalWidth,
-}));
-
 const watch = require('../watch').default;
-
-const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
 const globalConfig = {
   watch: true,
@@ -114,7 +106,6 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
-    terminalWidth = 80;
     pipe = {write: jest.fn()};
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config: {}}];
@@ -126,7 +117,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
-    stdin.emit(KEYS.T);
+    stdin.emit('t');
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
@@ -136,11 +127,11 @@ describe('Watch mode flows', () => {
     };
 
     // Write a pattern
-    ['c', 'o', 'n', ' ', '1', '2'].map(toHex).forEach(assertPattern);
+    ['c', 'o', 'n', ' ', '1', '2'].forEach(assertPattern);
 
     [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
 
-    ['*'].map(toHex).forEach(assertPattern);
+    ['*'].forEach(assertPattern);
 
     // Runs Jest again
     runJestMock.mockReset();

@@ -30,8 +30,8 @@ export const filterInteractivePlugins = (
 export const getSortedUsageRows = (
   watchPlugins: Array<WatchPlugin>,
   globalConfig: GlobalConfig,
-): Array<UsageData> => {
-  return filterInteractivePlugins(watchPlugins, globalConfig)
+): Array<UsageData> =>
+  filterInteractivePlugins(watchPlugins, globalConfig)
     .sort((a: WatchPlugin, b: WatchPlugin) => {
       if (a.isInternal) {
         return -1;
@@ -41,11 +41,10 @@ export const getSortedUsageRows = (
       const usageInfoB = b.getUsageInfo && b.getUsageInfo(globalConfig);
 
       if (usageInfoA && usageInfoB) {
-        return usageInfoA.key - usageInfoB.key;
+        return usageInfoA.key.localeCompare(usageInfoB.key);
       }
 
       return 0;
     })
     .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
     .filter(Boolean);
-};

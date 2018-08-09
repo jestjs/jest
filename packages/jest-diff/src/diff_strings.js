@@ -9,8 +9,8 @@
 
 import chalk from 'chalk';
 import {diffLines, structuredPatch} from 'diff';
-
 import {NO_DIFF_MESSAGE} from './constants.js';
+
 const DIFF_CONTEXT_DEFAULT = 5;
 
 export type DiffOptions = {|

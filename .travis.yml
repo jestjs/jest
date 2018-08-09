@@ -1,13 +1,9 @@
 language: node_js
 
 node_js:
-  - "8"
+  - "10"
 
 sudo: false
-
-branches:
-   only:
-   - master
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash

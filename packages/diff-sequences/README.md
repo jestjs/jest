@@ -2,48 +2,34 @@
 
 Compare items in two sequences to find a **longest common subsequence**.
 
-The items not in common are the items to delete or insert in a **shortest edit
-script**.
+The items not in common are the items to delete or insert in a **shortest edit script**.
 
-To maximize flexibility and minimize memory, you write **callback** functions as
-configuration:
+To maximize flexibility and minimize memory, you write **callback** functions as configuration:
 
-**Input** function `isCommon(aIndex, bIndex)` compares items at indexes in the
-sequences and returns a truthy/falsey value. This package might call your
-function more than once for some pairs of indexes.
+**Input** function `isCommon(aIndex, bIndex)` compares items at indexes in the sequences and returns a truthy/falsey value. This package might call your function more than once for some pairs of indexes.
 
-* Because your function encapsulates **comparison**, this package can compare
-  items according to `===` operator, `Object.is` method, or other criterion.
-* Because your function encapsulates **sequences**, this package can find
-  differences in arrays, strings, or other data.
+- Because your function encapsulates **comparison**, this package can compare items according to `===` operator, `Object.is` method, or other criterion.
+- Because your function encapsulates **sequences**, this package can find differences in arrays, strings, or other data.
 
-**Output** function `foundSubsequence(nCommon, aCommon, bCommon)` receives the
-number of adjacent items and starting indexes of each common subsequence. If
-sequences do not have common items, then this package does not call your
-function.
+**Output** function `foundSubsequence(nCommon, aCommon, bCommon)` receives the number of adjacent items and starting indexes of each common subsequence. If sequences do not have common items, then this package does not call your function.
 
-If N is the sum of lengths of sequences and L is length of a longest common
-subsequence, then D = N – 2L is the number of **differences** in the
-corresponding shortest edit script.
+If N is the sum of lengths of sequences and L is length of a longest common subsequence, then D = N – 2L is the number of **differences** in the corresponding shortest edit script.
 
-[_An O(ND) Difference Algorithm and Its Variations_](http://xmailserver.org/diff2.pdf)
-by Eugene W. Myers is fast when sequences have **few** differences.
+[_An O(ND) Difference Algorithm and Its Variations_](http://xmailserver.org/diff2.pdf) by Eugene W. Myers is fast when sequences have **few** differences.
 
-This package implements the **linear space** variation with optimizations so it
-is fast even when sequences have **many** differences.
+This package implements the **linear space** variation with optimizations so it is fast even when sequences have **many** differences.
 
 ## Usage
 
 To add this package as a dependency of a project, do either of the following:
 
-* `npm install diff-sequences`
-* `yarn add diff-sequences`
+- `npm install diff-sequences`
+- `yarn add diff-sequences`
 
-To use `diff` as the name of the default export from this package, do either of
-the following:
+To use `diff` as the name of the default export from this package, do either of the following:
 
-* `var diff = require('diff-sequences'); // CommonJS modules`
-* `import diff from 'diff-sequences'; // ECMAScript modules`
+- `var diff = require('diff-sequences'); // CommonJS modules`
+- `import diff from 'diff-sequences'; // ECMAScript modules`
 
 Call `diff` with the **lengths** of sequences and your **callback** functions:
 
@@ -64,8 +50,7 @@ diff(a.length, b.length, isCommon, foundSubsequence);
 
 ## Example of longest common subsequence
 
-Some sequences (for example, `a` and `b` in the example of usage) have more than
-one longest common subsequence.
+Some sequences (for example, `a` and `b` in the example of usage) have more than one longest common subsequence.
 
 This package finds the following common items:
 
@@ -83,9 +68,7 @@ The “edit graph” analogy in the Myers paper shows the following common items
 | `a[3] === b[2] && a[4] === b[3]` | `'a', 'b'` |
 | `a[6] === b[4]`                  | `'a'`      |
 
-Various packages which implement the Myers algorithm will **always agree** on
-the **length** of a longest common subsequence, but might **sometimes disagree**
-on which **items** are in it.
+Various packages which implement the Myers algorithm will **always agree** on the **length** of a longest common subsequence, but might **sometimes disagree** on which **items** are in it.
 
 ## Example of callback functions to count common items
 
@@ -120,19 +103,15 @@ var commonLength = countCommonItems(
 
 If the length difference `b.length - a.length` is:
 
-* negative: its absolute value is the minimum number of items to **delete** from
-  `a`
-* positive: it is the minimum number of items to **insert** from `b`
-* zero: there is an **equal** number of items to delete from `a` and insert from
-  `b`
-* non-zero: there is an equal number of **additional** items to delete from `a`
-  and insert from `b`
+- negative: its absolute value is the minimum number of items to **delete** from `a`
+- positive: it is the minimum number of items to **insert** from `b`
+- zero: there is an **equal** number of items to delete from `a` and insert from `b`
+- non-zero: there is an equal number of **additional** items to delete from `a` and insert from `b`
 
 In this example, `6 - 7` is:
 
-* negative: `1` is the minimum number of items to **delete** from `a`
-* non-zero: `2` is the number of **additional** items to delete from `a` and
-  insert from `b`
+- negative: `1` is the minimum number of items to **delete** from `a`
+- non-zero: `2` is the number of **additional** items to delete from `a` and insert from `b`
 
 ## Example of callback functions to find common items
 
@@ -168,8 +147,7 @@ const commonItems = findCommonItems(
 
 ## Example of callback functions to diff index intervals
 
-Instead of slicing array-like objects, you can adjust indexes in your callback
-functions.
+Instead of slicing array-like objects, you can adjust indexes in your callback functions.
 
 ```js
 // Diff index intervals that are half open [start, end) like array slice method.
@@ -192,12 +170,11 @@ const diffIndexIntervals = (a, aStart, aEnd, b, bStart, bEnd) => {
 
 ## Example of callback functions to emulate diff command
 
-Linux or Unix has a `diff` command to compare files line by line. Its output is
-a **shortest edit script**:
+Linux or Unix has a `diff` command to compare files line by line. Its output is a **shortest edit script**:
 
-* **c**hange adjacent lines from the first file to lines from the second file
-* **d**elete lines from the first file
-* **a**ppend or insert lines from the second file
+- **c**hange adjacent lines from the first file to lines from the second file
+- **d**elete lines from the first file
+- **a**ppend or insert lines from the second file
 
 ```js
 // Given zero-based half-open range [start, end) of array indexes,
@@ -263,8 +240,7 @@ const findShortestEditScript = (a, b) => {
 
 ## Example of callback functions to format diff lines
 
-Here is simplified code to format **changed and unchanged lines** in expected
-and received values after a test fails in Jest:
+Here is simplified code to format **changed and unchanged lines** in expected and received values after a test fails in Jest:
 
 ```js
 // Format diff with minus or plus for change lines and space for common lines.
@@ -333,9 +309,7 @@ const received = {
 const diffLines = formatDiffLines(expected, received);
 ```
 
-If N is the sum of lengths of sequences and L is length of a longest common
-subsequence, then N – L is length of an array of diff lines. In this example, N
-is 7 + 9, L is 5, and N – L is 11.
+If N is the sum of lengths of sequences and L is length of a longest common subsequence, then N – L is length of an array of diff lines. In this example, N is 7 + 9, L is 5, and N – L is 11.
 
 |  `i` | `diffLines[i]`                     | `aIndex` | `bIndex` |
 | ---: | :--------------------------------- | -------: | -------: |
@@ -353,9 +327,7 @@ is 7 + 9, L is 5, and N – L is 11.
 
 ## Example of callback functions to find diff items
 
-Here is simplified code to find changed and unchanged substrings **within
-adjacent changed lines** in expected and received values after a test fails in
-Jest:
+Here is simplified code to find changed and unchanged substrings **within adjacent changed lines** in expected and received values after a test fails in Jest:
 
 ```js
 // Return diff items for strings (compatible with diff-match-patch package).
@@ -415,9 +387,7 @@ const diffItems = findDiffItems(expectedDeleted, receivedInserted);
 | `7` |               `1` | `'fals'`          |
 | `8` |               `0` | `'e,'`            |
 
-The length difference `b.length - a.length` is equal to the sum of
-`diffItems[i][0]` values times `diffItems[i][1]` lengths. In this example, the
-difference `48 - 38` is equal to the sum `10`.
+The length difference `b.length - a.length` is equal to the sum of `diffItems[i][0]` values times `diffItems[i][1]` lengths. In this example, the difference `48 - 38` is equal to the sum `10`.
 
 | category of diff item | `[0]` |      `[1]` lengths | subtotal |
 | :-------------------- | ----: | -----------------: | -------: |
@@ -425,10 +395,7 @@ difference `48 - 38` is equal to the sum `10`.
 | to delete from `a`    |  `–1` |            `1 + 3` |     `-4` |
 | to insert from `b`    |   `1` |        `8 + 2 + 4` |     `14` |
 
-Instead of formatting the changed substrings with escape codes for colors in the
-`foundSubsequence` function to save memory, this example spends memory to **gain
-flexibility** before formatting, so a separate heuristic algorithm might modify
-the generic array of diff items to show changes more clearly:
+Instead of formatting the changed substrings with escape codes for colors in the `foundSubsequence` function to save memory, this example spends memory to **gain flexibility** before formatting, so a separate heuristic algorithm might modify the generic array of diff items to show changes more clearly:
 
 | `i` | `diffItems[i][0]` | `diffItems[i][1]` |
 | --: | ----------------: | :---------------- |
@@ -436,8 +403,4 @@ the generic array of diff items to show changes more clearly:
 | `7` |               `1` | `'false'`         |
 | `8` |               `0` | `','`             |
 
-For expected and received strings of serialized data, the result of finding
-changed **lines**, and then finding changed **substrings** within adjacent
-changed lines (as in the preceding two examples) sometimes displays the changes
-in a more intuitive way than the result of finding changed substrings, and then
-splitting them into changed and unchanged lines.
+For expected and received strings of serialized data, the result of finding changed **lines**, and then finding changed **substrings** within adjacent changed lines (as in the preceding two examples) sometimes displays the changes in a more intuitive way than the result of finding changed substrings, and then splitting them into changed and unchanged lines.

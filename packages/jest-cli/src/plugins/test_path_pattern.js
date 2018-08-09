@@ -8,10 +8,9 @@
  */
 
 import type {GlobalConfig} from 'types/Config';
-import BaseWatchPlugin from '../base_watch_plugin';
-import TestPathPatternPrompt from '../test_path_pattern_prompt';
+import {BaseWatchPlugin, Prompt} from 'jest-watcher';
+import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/active_filters_message';
-import Prompt from '../lib/Prompt';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
@@ -28,7 +27,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
 
   getUsageInfo() {
     return {
-      key: 'p'.codePointAt(0),
+      key: 'p',
       prompt: 'filter by a filename regex pattern',
     };
   }

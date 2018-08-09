@@ -16,6 +16,7 @@ import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   SUGGEST_TO_EQUAL,
+  SUGGEST_TO_CONTAIN_EQUAL,
   ensureNoExpected,
   ensureNumbers,
   matcherHint,
@@ -28,6 +29,8 @@ import {
   getPath,
   iterableEquality,
   subsetEquality,
+  typeEquality,
+  isOneline,
 } from './utils';
 import {equals} from './jasmine_utils';
 
@@ -39,7 +42,7 @@ type ContainIterable =
   | HTMLCollection<any>;
 
 const matchers: MatchersObject = {
-  toBe(received: any, expected: number) {
+  toBe(received: any, expected: any) {
     const comment = 'Object.is equality';
     const pass = Object.is(received, expected);
 
@@ -57,10 +60,8 @@ const matchers: MatchersObject = {
             getType(received) === getType(expected) &&
             (getType(received) === 'object' || getType(expected) === 'array') &&
             equals(received, expected, [iterableEquality]);
-
-          const diffString = diff(expected, received, {
-            expand: this.expand,
-          });
+          const oneline = isOneline(expected, received);
+          const diffString = diff(expected, received, {expand: this.expand});
 
           return (
             matcherHint('.toBe', undefined, undefined, {
@@ -70,7 +71,7 @@ const matchers: MatchersObject = {
             '\n\n' +
             `Expected: ${printExpected(expected)}\n` +
             `Received: ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
+            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '') +
             (suggestToEqual ? ` ${SUGGEST_TO_EQUAL}` : '')
           );
         };
@@ -170,7 +171,7 @@ const matchers: MatchersObject = {
           }) +
           '\n\n' +
           `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || constructor,
+            constructor.name || String(constructor),
           )}\n` +
           `Received value: ${printReceived(received)}`
       : () =>
@@ -179,7 +180,7 @@ const matchers: MatchersObject = {
           }) +
           '\n\n' +
           `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || constructor,
+            constructor.name || String(constructor),
           )}\n` +
           `Received constructor: ${RECEIVED_COLOR(
             received.constructor && received.constructor.name,
@@ -297,13 +298,24 @@ const matchers: MatchersObject = {
           `  ${printReceived(collection)}\n` +
           `Not to contain value:\n` +
           `  ${printExpected(value)}\n`
-      : () =>
-          matcherHint('.toContain', collectionType, 'value') +
-          '\n\n' +
-          `Expected ${collectionType}:\n` +
-          `  ${printReceived(collection)}\n` +
-          `To contain value:\n` +
-          `  ${printExpected(value)}`;
+      : () => {
+          const suggestToContainEqual =
+            converted !== null &&
+            typeof converted !== 'string' &&
+            converted instanceof Array &&
+            converted.findIndex(item =>
+              equals(item, value, [iterableEquality]),
+            ) !== -1;
+          return (
+            matcherHint('.toContain', collectionType, 'value') +
+            '\n\n' +
+            `Expected ${collectionType}:\n` +
+            `  ${printReceived(collection)}\n` +
+            `To contain value:\n` +
+            `  ${printExpected(value)}` +
+            (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
+          );
+        };
 
     return {message, pass};
   },
@@ -362,9 +374,9 @@ const matchers: MatchersObject = {
           `Received:\n` +
           `  ${printReceived(received)}`
       : () => {
-          const diffString = diff(expected, received, {
-            expand: this.expand,
-          });
+          const oneline = isOneline(expected, received);
+          const diffString = diff(expected, received, {expand: this.expand});
+
           return (
             matcherHint('.toEqual') +
             '\n\n' +
@@ -372,7 +384,7 @@ const matchers: MatchersObject = {
             `  ${printExpected(expected)}\n` +
             `Received:\n` +
             `  ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '')
           );
         };
 
@@ -602,6 +614,43 @@ const matchers: MatchersObject = {
         };
 
     return {message, pass};
+  },
+
+  toStrictEqual(received: any, expected: any) {
+    const pass = equals(
+      received,
+      expected,
+      [iterableEquality, typeEquality],
+      true,
+    );
+
+    const message = pass
+      ? () =>
+          matcherHint('.not.toStrictEqual') +
+          '\n\n' +
+          `Expected value to not equal:\n` +
+          `  ${printExpected(expected)}\n` +
+          `Received:\n` +
+          `  ${printReceived(received)}`
+      : () => {
+          const diffString = diff(expected, received, {
+            expand: this.expand,
+          });
+          return (
+            matcherHint('.toStrictEqual') +
+            '\n\n' +
+            `Expected value to equal:\n` +
+            `  ${printExpected(expected)}\n` +
+            `Received:\n` +
+            `  ${printReceived(received)}` +
+            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+          );
+        };
+
+    // Passing the the actual and expected objects so that a custom reporter
+    // could access them, for example in order to display a custom visual diff,
+    // or create a different error message
+    return {actual: received, expected, message, name: 'toStrictEqual', pass};
   },
 };
 

@@ -168,12 +168,12 @@ async function main() {
   console.log('-'.repeat(75));
   console.log(
     `% improvement over ${calls} calls (global time):`,
-    100 * (wFGT - jWGT) / wFGT,
+    (100 * (wFGT - jWGT)) / wFGT,
   );
 
   console.log(
     `% improvement over ${calls} calls (processing time):`,
-    100 * (wFPT - jWPT) / wFPT,
+    (100 * (wFPT - jWPT)) / wFPT,
   );
 }
 

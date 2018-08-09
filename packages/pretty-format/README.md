@@ -2,21 +2,17 @@
 
 > Stringify any JavaScript value.
 
-* Supports all built-in JavaScript types
-  * primitive types: `Boolean`, `null`, `Number`, `String`, `Symbol`,
-    `undefined`
-  * other non-collection types: `Date`, `Error`, `Function`, `RegExp`
-  * collection types:
-    * `arguments`, `Array`, `ArrayBuffer`, `DataView`, `Float32Array`,
-      `Float64Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Uint8Array`,
-      `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`,
-    * `Map`, `Set`, `WeakMap`, `WeakSet`
-    * `Object`
-* [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
-  * similar performance to `JSON.stringify` in v8
-  * significantly faster than `util.format` in Node.js
-* Serialize application-specific data types with built-in or user-defined
-  plugins
+- Supports all built-in JavaScript types
+  - primitive types: `Boolean`, `null`, `Number`, `String`, `Symbol`, `undefined`
+  - other non-collection types: `Date`, `Error`, `Function`, `RegExp`
+  - collection types:
+    - `arguments`, `Array`, `ArrayBuffer`, `DataView`, `Float32Array`, `Float64Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Uint8Array`, `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`,
+    - `Map`, `Set`, `WeakMap`, `WeakSet`
+    - `Object`
+- [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
+  - similar performance to `JSON.stringify` in v8
+  - significantly faster than `util.format` in Node.js
+- Serialize application-specific data types with built-in or user-defined plugins
 
 ## Installation
 
@@ -90,8 +86,7 @@ console.log(prettyFormat(onClick, options));
 | `printFunctionName` | `boolean` | `true`     | include or omit the name of a function                  |
 | `theme`             | `object`  |            | colors to highlight syntax in terminal                  |
 
-Property values of `theme` are from
-[ansi-styles colors](https://github.com/chalk/ansi-styles#colors)
+Property values of `theme` are from [ansi-styles colors](https://github.com/chalk/ansi-styles#colors)
 
 ```js
 const DEFAULT_THEME = {
@@ -107,8 +102,8 @@ const DEFAULT_THEME = {
 
 The `pretty-format` package provides some built-in plugins, including:
 
-* `ReactElement` for elements from `react`
-* `ReactTestComponent` for test objects from `react-test-renderer`
+- `ReactElement` for elements from `react`
+- `ReactTestComponent` for test objects from `react-test-renderer`
 
 ```js
 // CommonJS
@@ -152,15 +147,11 @@ const formatted2 = prettyFormat(renderer.create(element).toJSON(), {
 
 ## Usage in Jest
 
-For snapshot tests, Jest uses `pretty-format` with options that include some of
-its built-in plugins. For this purpose, plugins are also known as **snapshot
-serializers**.
+For snapshot tests, Jest uses `pretty-format` with options that include some of its built-in plugins. For this purpose, plugins are also known as **snapshot serializers**.
 
-To serialize application-specific data types, you can add modules to
-`devDependencies` of a project, and then:
+To serialize application-specific data types, you can add modules to `devDependencies` of a project, and then:
 
-In an **individual** test file, you can add a module as follows. It precedes any
-modules from Jest configuration.
+In an **individual** test file, you can add a module as follows. It precedes any modules from Jest configuration.
 
 ```js
 import serializer from 'my-serializer-module';
@@ -169,9 +160,7 @@ expect.addSnapshotSerializer(serializer);
 // tests which have `expect(value).toMatchSnapshot()` assertions
 ```
 
-For **all** test files, you can specify modules in Jest configuration. They
-precede built-in plugins for React, HTML, and Immutable.js data types. For
-example, in a `package.json` file:
+For **all** test files, you can specify modules in Jest configuration. They precede built-in plugins for React, HTML, and Immutable.js data types. For example, in a `package.json` file:
 
 ```json
 {
@@ -185,23 +174,17 @@ example, in a `package.json` file:
 
 A plugin is a JavaScript object.
 
-If `options` has a `plugins` array: for the first plugin whose `test(val)`
-method returns a truthy value, then `prettyFormat(val, options)` returns the
-result from either:
+If `options` has a `plugins` array: for the first plugin whose `test(val)` method returns a truthy value, then `prettyFormat(val, options)` returns the result from either:
 
-* `serialize(val, …)` method of the **improved** interface (available in
-  **version 21** or later)
-* `print(val, …)` method of the **original** interface (if plugin does not have
-  `serialize` method)
+- `serialize(val, …)` method of the **improved** interface (available in **version 21** or later)
+- `print(val, …)` method of the **original** interface (if plugin does not have `serialize` method)
 
 ### test
 
-Write `test` so it can receive `val` argument of any type. To serialize
-**objects** which have certain properties, then a guarded expression like
-`val != null && …` or more concise `val && …` prevents the following errors:
+Write `test` so it can receive `val` argument of any type. To serialize **objects** which have certain properties, then a guarded expression like `val != null && …` or more concise `val && …` prevents the following errors:
 
-* `TypeError: Cannot read property 'whatever' of null`
-* `TypeError: Cannot read property 'whatever' of undefined`
+- `TypeError: Cannot read property 'whatever' of null`
+- `TypeError: Cannot read property 'whatever' of undefined`
 
 For example, `test` method of built-in `ReactElement` plugin:
 
@@ -218,12 +201,12 @@ The **improved** interface is available in **version 21** or later.
 
 Write `serialize` to return a string, given the arguments:
 
-* `val` which “passed the test”
-* unchanging `config` object: derived from `options`
-* current `indentation` string: concatenate to `indent` from `config`
-* current `depth` number: compare to `maxDepth` from `config`
-* current `refs` array: find circular references in objects
-* `printer` callback function: serialize children
+- `val` which “passed the test”
+- unchanging `config` object: derived from `options`
+- current `indentation` string: concatenate to `indent` from `config`
+- current `depth` number: compare to `maxDepth` from `config`
+- current `refs` array: find circular references in objects
+- `printer` callback function: serialize children
 
 ### config
 
@@ -240,25 +223,19 @@ Write `serialize` to return a string, given the arguments:
 | `spacingInner`      | `strong`  | spacing to separate items in a list                     |
 | `spacingOuter`      | `strong`  | spacing to enclose a list of items                      |
 
-Each property of `colors` in `config` corresponds to a property of `theme` in
-`options`:
+Each property of `colors` in `config` corresponds to a property of `theme` in `options`:
 
-* the key is the same (for example, `tag`)
-* the value in `colors` is a object with `open` and `close` properties whose
-  values are escape codes from
-  [ansi-styles](https://github.com/chalk/ansi-styles) for the color value in
-  `theme` (for example, `'cyan'`)
+- the key is the same (for example, `tag`)
+- the value in `colors` is a object with `open` and `close` properties whose values are escape codes from [ansi-styles](https://github.com/chalk/ansi-styles) for the color value in `theme` (for example, `'cyan'`)
 
 Some properties in `config` are derived from `min` in `options`:
 
-* `spacingInner` and `spacingOuter` are **newline** if `min` is `false`
-* `spacingInner` is **space** and `spacingOuter` is **empty string** if `min` is
-  `true`
+- `spacingInner` and `spacingOuter` are **newline** if `min` is `false`
+- `spacingInner` is **space** and `spacingOuter` is **empty string** if `min` is `true`
 
 ### Example of serialize and test
 
-This plugin is a pattern you can apply to serialize composite data types. Of
-course, `pretty-format` does not need a plugin to serialize arrays :)
+This plugin is a pattern you can apply to serialize composite data types. Of course, `pretty-format` does not need a plugin to serialize arrays :)
 
 ```js
 // We reused more code when we factored out a function for child items
@@ -394,39 +371,33 @@ console.log(
 
 The **original** interface is adequate for plugins:
 
-* that **do not** depend on options other than `highlight` or `min`
-* that **do not** depend on `depth` or `refs` in recursive traversal, and
-* if values either
-  * do **not** require indentation, or
-  * do **not** occur as children of JavaScript data structures (for example,
-    array)
+- that **do not** depend on options other than `highlight` or `min`
+- that **do not** depend on `depth` or `refs` in recursive traversal, and
+- if values either
+  - do **not** require indentation, or
+  - do **not** occur as children of JavaScript data structures (for example, array)
 
 Write `print` to return a string, given the arguments:
 
-* `val` which “passed the test”
-* current `printer(valChild)` callback function: serialize children
-* current `indenter(lines)` callback function: indent lines at the next level
-* unchanging `config` object: derived from `options`
-* unchanging `colors` object: derived from `options`
+- `val` which “passed the test”
+- current `printer(valChild)` callback function: serialize children
+- current `indenter(lines)` callback function: indent lines at the next level
+- unchanging `config` object: derived from `options`
+- unchanging `colors` object: derived from `options`
 
 The 3 properties of `config` are `min` in `options` and:
 
-* `spacing` and `edgeSpacing` are **newline** if `min` is `false`
-* `spacing` is **space** and `edgeSpacing` is **empty string** if `min` is
-  `true`
+- `spacing` and `edgeSpacing` are **newline** if `min` is `false`
+- `spacing` is **space** and `edgeSpacing` is **empty string** if `min` is `true`
 
 Each property of `colors` corresponds to a property of `theme` in `options`:
 
-* the key is the same (for example, `tag`)
-* the value in `colors` is a object with `open` and `close` properties whose
-  values are escape codes from
-  [ansi-styles](https://github.com/chalk/ansi-styles) for the color value in
-  `theme` (for example, `'cyan'`)
+- the key is the same (for example, `tag`)
+- the value in `colors` is a object with `open` and `close` properties whose values are escape codes from [ansi-styles](https://github.com/chalk/ansi-styles) for the color value in `theme` (for example, `'cyan'`)
 
 ### Example of print and test
 
-This plugin prints functions with the **number of named arguments** excluding
-rest argument.
+This plugin prints functions with the **number of named arguments** excluding rest argument.
 
 ```js
 const plugin = {
@@ -464,9 +435,7 @@ Object {
 */
 ```
 
-This plugin **ignores** the `printFunctionName` option. That limitation of the
-original `print` interface is a reason to use the improved `serialize`
-interface, described above.
+This plugin **ignores** the `printFunctionName` option. That limitation of the original `print` interface is a reason to use the improved `serialize` interface, described above.
 
 ```js
 prettyFormat(val, {

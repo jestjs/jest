@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jest-each .describe throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .describe throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .describe.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .describe.only throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .fdescribe throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .fdescribe throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .fit throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .fit throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .it throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .it throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .it.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .it.only throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .test throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .test throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .test.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .test.only throws error when there are fewer arguments than headings when given one row 1`] = `
+"Not enough arguments supplied for given headings:
+<green>a | b | expected</>
+
+Received:
+<red>Array [</>
+<red>  0,</>
+<red>  1,</>
+<red>]</>
+
+Missing <red>2</> arguments"
+`;

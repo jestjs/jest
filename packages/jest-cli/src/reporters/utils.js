@@ -76,7 +76,7 @@ export const formatTestPath = (
   testPath: Path,
 ) => {
   const {dirname, basename} = relativePath(config, testPath);
-  return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+  return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
 };
 
 export const relativePath = (
@@ -108,6 +108,9 @@ export const getSummary = (
   const snapshotResults = aggregatedResults.snapshot;
   const snapshotsAdded = snapshotResults.added;
   const snapshotsFailed = snapshotResults.unmatched;
+  const snapshotsOutdated = snapshotResults.unchecked;
+  const snapshotsFilesRemoved = snapshotResults.filesRemoved;
+  const snapshotsDidUpdate = snapshotResults.didUpdate;
   const snapshotsPassed = snapshotResults.matched;
   const snapshotsTotal = snapshotResults.total;
   const snapshotsUpdated = snapshotResults.updated;
@@ -146,10 +149,28 @@ export const getSummary = (
     (snapshotsFailed
       ? chalk.bold.red(`${snapshotsFailed} failed`) + ', '
       : '') +
+    (snapshotsOutdated && !snapshotsDidUpdate
+      ? chalk.bold.yellow(`${snapshotsOutdated} obsolete`) + ', '
+      : '') +
+    (snapshotsOutdated && snapshotsDidUpdate
+      ? chalk.bold.green(`${snapshotsOutdated} removed`) + ', '
+      : '') +
+    (snapshotsFilesRemoved && !snapshotsDidUpdate
+      ? chalk.bold.yellow(
+          pluralize('file', snapshotsFilesRemoved) + ' obsolete',
+        ) + ', '
+      : '') +
+    (snapshotsFilesRemoved && snapshotsDidUpdate
+      ? chalk.bold.green(
+          pluralize('file', snapshotsFilesRemoved) + ' removed',
+        ) + ', '
+      : '') +
     (snapshotsUpdated
       ? chalk.bold.green(`${snapshotsUpdated} updated`) + ', '
       : '') +
-    (snapshotsAdded ? chalk.bold.green(`${snapshotsAdded} added`) + ', ' : '') +
+    (snapshotsAdded
+      ? chalk.bold.green(`${snapshotsAdded} written`) + ', '
+      : '') +
     (snapshotsPassed
       ? chalk.bold.green(`${snapshotsPassed} passed`) + ', '
       : '') +
@@ -175,7 +196,7 @@ const renderTime = (runTime, estimatedTime, width) => {
   if (estimatedTime > 2 && runTime < estimatedTime && width) {
     const availableWidth = Math.min(PROGRESS_BAR_WIDTH, width);
     const length = Math.min(
-      Math.floor(runTime / estimatedTime * availableWidth),
+      Math.floor((runTime / estimatedTime) * availableWidth),
       availableWidth,
     );
     if (availableWidth >= 2) {

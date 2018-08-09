@@ -32,6 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import queueRunner from '../queue_runner';
 import treeProcessor from '../tree_processor';
+import checkIsError from '../is_error';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
@@ -251,7 +252,6 @@ export default function(j$) {
           }
         },
         nodeStart(suite) {
-          currentDeclarationSuite = suite;
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(
             suite.id,
@@ -417,7 +417,7 @@ export default function(j$) {
         queueableFn: {
           fn,
           timeout() {
-            return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
           },
         },
         throwOnExpectationFailure,
@@ -506,7 +506,7 @@ export default function(j$) {
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -515,7 +515,7 @@ export default function(j$) {
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -524,7 +524,7 @@ export default function(j$) {
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -533,7 +533,7 @@ export default function(j$) {
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -547,11 +547,7 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      let message = 'Failed';
-      if (error) {
-        message += ': ';
-        message += error.message || error;
-      }
+      const {isError, message} = checkIsError(error);
 
       currentRunnable().addExpectationResult(false, {
         matcherName: '',
@@ -559,7 +555,7 @@ export default function(j$) {
         expected: '',
         actual: '',
         message,
-        error: error && error.message ? error : null,
+        error: isError ? error : new Error(message),
       });
     };
   }

@@ -9,7 +9,7 @@
 
 import {execSync} from 'child_process';
 import {version as VERSION} from '../package.json';
-import {worker} from './worker';
+import {getSha1, worker} from './worker';
 import crypto from 'crypto';
 import EventEmitter from 'events';
 import getMockName from './get_mock_name';
@@ -44,6 +44,7 @@ type HType = typeof H;
 
 type Options = {
   cacheDirectory?: string,
+  computeDependencies?: boolean,
   computeSha1?: boolean,
   console?: Console,
   extensions: Array<string>,
@@ -65,6 +66,7 @@ type Options = {
 
 type InternalOptions = {
   cacheDirectory: string,
+  computeDependencies: boolean,
   computeSha1: boolean,
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
@@ -86,7 +88,7 @@ type Watcher = {
   close(callback: () => void): void,
 };
 
-type WorkerInterface = {worker: typeof worker};
+type WorkerInterface = {worker: typeof worker, getSha1: typeof getSha1};
 
 export type ModuleMap = HasteModuleMap;
 export type FS = HasteFS;
@@ -213,6 +215,10 @@ class HasteMap extends EventEmitter {
     super();
     this._options = {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
+      computeDependencies:
+        options.computeDependencies === undefined
+          ? true
+          : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
@@ -407,9 +413,61 @@ class HasteMap extends EventEmitter {
       moduleMap[platform] = module;
     };
 
+    const fileMetadata = hasteMap.files[filePath];
+    const moduleMetadata = hasteMap.map[fileMetadata[H.ID]];
+    const computeSha1 = this._options.computeSha1 && !fileMetadata[H.SHA1];
+
+    // Callback called when the response from the worker is successful.
+    const workerReply = metadata => {
+      // `1` for truthy values instead of `true` to save cache space.
+      fileMetadata[H.VISITED] = 1;
+
+      const metadataId = metadata.id;
+      const metadataModule = metadata.module;
+
+      if (metadataId && metadataModule) {
+        fileMetadata[H.ID] = metadataId;
+        setModule(metadataId, metadataModule);
+      }
+
+      fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+
+      if (computeSha1) {
+        fileMetadata[H.SHA1] = metadata.sha1;
+      }
+    };
+
+    // Callback called when the response from the worker is an error.
+    const workerError = error => {
+      if (typeof error !== 'object' || !error.message || !error.stack) {
+        error = new Error(error);
+        error.stack = ''; // Remove stack for stack-less errors.
+      }
+
+      // $FlowFixMe: checking error code is OK if error comes from "fs".
+      if (!['ENOENT', 'EACCES'].includes(error.code)) {
+        throw error;
+      }
+
+      // If a file cannot be read we remove it from the file list and
+      // ignore the failure silently.
+      delete hasteMap.files[filePath];
+    };
+
     // If we retain all files in the virtual HasteFS representation, we avoid
     // reading them if they aren't important (node_modules).
     if (this._options.retainAllFiles && this._isNodeModulesDir(filePath)) {
+      if (computeSha1) {
+        return this._getWorker(workerOptions)
+          .getSha1({
+            computeDependencies: this._options.computeDependencies,
+            computeSha1,
+            filePath,
+            hasteImplModulePath: this._options.hasteImplModulePath,
+          })
+          .then(workerReply, workerError);
+      }
+
       return null;
     }
 
@@ -432,10 +490,6 @@ class HasteMap extends EventEmitter {
       }
       mocks[mockPath] = filePath;
     }
-
-    const fileMetadata = hasteMap.files[filePath];
-    const moduleMetadata = hasteMap.map[fileMetadata[H.ID]];
-    const computeSha1 = this._options.computeSha1 && !fileMetadata[H.SHA1];
 
     if (fileMetadata[H.VISITED]) {
       if (!fileMetadata[H.ID]) {
@@ -463,45 +517,12 @@ class HasteMap extends EventEmitter {
 
     return this._getWorker(workerOptions)
       .worker({
+        computeDependencies: this._options.computeDependencies,
         computeSha1,
         filePath,
         hasteImplModulePath: this._options.hasteImplModulePath,
       })
-      .then(
-        metadata => {
-          // `1` for truthy values instead of `true` to save cache space.
-          fileMetadata[H.VISITED] = 1;
-
-          const metadataId = metadata.id;
-          const metadataModule = metadata.module;
-
-          if (metadataId && metadataModule) {
-            fileMetadata[H.ID] = metadataId;
-            setModule(metadataId, metadataModule);
-          }
-
-          fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
-
-          if (computeSha1) {
-            fileMetadata[H.SHA1] = metadata.sha1;
-          }
-        },
-        error => {
-          if (typeof error !== 'object' || !error.message || !error.stack) {
-            error = new Error(error);
-            error.stack = ''; // Remove stack for stack-less errors.
-          }
-
-          // $FlowFixMe: checking error code is OK if error comes from "fs".
-          if (['ENOENT', 'EACCES'].indexOf(error.code) < 0) {
-            throw error;
-          }
-
-          // If a file cannot be read we remove it from the file list and
-          // ignore the failure silently.
-          delete hasteMap.files[filePath];
-        },
-      );
+      .then(workerReply, workerError);
   }
 
   _buildHasteMap(data: {
@@ -542,6 +563,7 @@ class HasteMap extends EventEmitter {
   _cleanup() {
     const worker = this._worker;
 
+    // $FlowFixMe
     if (worker && typeof worker.end === 'function') {
       worker.end();
     }
@@ -562,14 +584,14 @@ class HasteMap extends EventEmitter {
   _getWorker(options: ?{forceInBand: boolean}): WorkerInterface {
     if (!this._worker) {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
-        this._worker = {worker};
+        this._worker = {getSha1, worker};
       } else {
         // $FlowFixMe: assignment of a worker with custom properties.
         this._worker = (new Worker(require.resolve('./worker'), {
-          exposedMethods: ['worker'],
+          exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
-        }): {worker: typeof worker});
+        }): WorkerInterface);
       }
     }
 
@@ -646,7 +668,9 @@ class HasteMap extends EventEmitter {
     const Watcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
-        : os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
+        : os.platform() === 'darwin'
+          ? sane.FSEventsWatcher
+          : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
@@ -724,7 +748,6 @@ class HasteMap extends EventEmitter {
 
           if (mustCopy) {
             mustCopy = false;
-            // $FlowFixMe
             hasteMap = {
               clocks: copy(hasteMap.clocks),
               duplicates: copy(hasteMap.duplicates),
@@ -753,7 +776,6 @@ class HasteMap extends EventEmitter {
             if (Object.keys(moduleMap).length === 0) {
               delete hasteMap.map[moduleName];
             } else {
-              // $FlowFixMe
               hasteMap.map[moduleName] = moduleMap;
             }
           }

@@ -3,14 +3,11 @@ id: puppeteer
 title: Using with puppeteer
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and
-[Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can
-work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
+With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
 
 ## Use Puppeteer Preset
 
-[Jest Puppeteer](https://github.com/smooth-code/jest-puppeteer) provides all
-required configuration to run your tests using Puppeteer.
+[Jest Puppeteer](https://github.com/smooth-code/jest-puppeteer) provides all required configuration to run your tests using Puppeteer.
 
 1.  First install `jest-puppeteer`
 
@@ -43,9 +40,10 @@ Here's an example of the GlobalSetup script
 module.exports = async function() {
   const browser = await puppeteer.launch();
   // store the browser instance so we can teardown it later
-  global.__BROWSER__ = browser;
+  // this global is only available in the teardown but not in TestEnvironments
+  global.__BROWSER_GLOBAL__ = browser;
 
-  // file the wsEndpoint for TestEnvironments
+  // use the file system to expose the wsEndpoint for TestEnvironments
   mkdirp.sync(DIR);
   fs.writeFileSync(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
 };
@@ -90,7 +88,7 @@ Finally we can close the puppeteer instance and clean-up the file
 // teardown.js
 module.exports = async function() {
   // close the browser instance
-  await global.__BROWSER__.close();
+  await global.__BROWSER_GLOBAL__.close();
 
   // clean-up the wsEndpoint file
   rimraf.sync(DIR);
@@ -119,5 +117,4 @@ describe(
 );
 ```
 
-Here's the code of
-[full working example](https://github.com/xfumihiro/jest-puppeteer-example).
+Here's the code of [full working example](https://github.com/xfumihiro/jest-puppeteer-example).

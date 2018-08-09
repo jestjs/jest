@@ -32,16 +32,19 @@ const adapter: SCMAdapter = {
   findChangedFiles: async (
     cwd: string,
     options: Options,
-  ): Promise<Array<Path>> => {
-    return new Promise((resolve, reject) => {
-      let args = ['status', '-amnu'];
+  ): Promise<Array<Path>> =>
+    new Promise((resolve, reject) => {
+      const includePaths: Array<Path> = (options && options.includePaths) || [];
+
+      const args = ['status', '-amnu'];
       if (options && options.withAncestor) {
         args.push('--rev', `ancestor(${ANCESTORS.join(', ')})`);
       } else if (options && options.changedSince) {
         args.push('--rev', `ancestor(., ${options.changedSince})`);
       } else if (options && options.lastCommit === true) {
-        args = ['tip', '--template', '{files%"{file}\n"}'];
+        args.push('-A');
       }
+      args.push(...includePaths);
       const child = childProcess.spawn('hg', args, {cwd, env});
       let stdout = '';
       let stderr = '';
@@ -64,11 +67,10 @@ const adapter: SCMAdapter = {
           reject(new Error(code + ': ' + stderr));
         }
       });
-    });
-  },
+    }),
 
-  getRoot: async (cwd: Path): Promise<?Path> => {
-    return new Promise(resolve => {
+  getRoot: async (cwd: Path): Promise<?Path> =>
+    new Promise(resolve => {
       try {
         let stdout = '';
         const child = childProcess.spawn('hg', ['root'], {cwd, env});
@@ -78,8 +80,7 @@ const adapter: SCMAdapter = {
       } catch (e) {
         resolve(null);
       }
-    });
-  },
+    }),
 };
 
 export default adapter;

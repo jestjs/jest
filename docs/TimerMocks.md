@@ -3,11 +3,7 @@ id: timer-mocks
 title: Timer Mocks
 ---
 
-The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`,
-`clearInterval`) are less than ideal for a testing environment since they depend
-on real time to elapse. Jest can swap out timers with functions that allow you
-to control the passage of time.
-[Great Scott!](https://www.youtube.com/watch?v=5gVv10J4nio)
+The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. [Great Scott!](https://www.youtube.com/watch?v=5gVv10J4nio)
 
 ```javascript
 // timerGame.js
@@ -39,14 +35,11 @@ test('waits 1 second before ending the game', () => {
 });
 ```
 
-Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out
-setTimeout and other timer functions with mock functions.
+Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
 
 ## Run All Timers
 
-Another test we might want to write for this module is one that asserts that the
-callback is called after 1 second. To do this, we're going to use Jest's timer
-control APIs to fast-forward time right in the middle of the test:
+Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
 test('calls the callback after 1 second', () => {
@@ -69,10 +62,7 @@ test('calls the callback after 1 second', () => {
 
 ## Run Pending Timers
 
-There are also scenarios where you might have a recursive timer -- that is a
-timer that sets a new timer in its own callback. For these, running all the
-timers would be an endless loop… so something like `jest.runAllTimers()` is not
-desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
+There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
 
 ```javascript
 // infiniteTimerGame.js
@@ -132,13 +122,7 @@ describe('infiniteTimerGame', () => {
 
 ##### renamed from `runTimersToTime` to `advanceTimersByTime` in Jest **22.0.0**
 
-Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is
-called, all timers are advanced by `msToRun` milliseconds. All pending
-"macro-tasks" that have been queued via setTimeout() or setInterval(), and would
-be executed during this time frame, will be executed. Additionally if those
-macro-tasks schedule new macro-tasks that would be executed within the same time
-frame, those will be executed until there are no more macro-tasks remaining in
-the queue that should be run within msToRun milliseconds.
+Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
 
 ```javascript
 // timerGame.js
@@ -174,8 +158,6 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 });
 ```
 
-Lastly, it may occasionally be useful in some tests to be able to clear all of
-the pending timers. For this, we have `jest.clearAllTimers()`.
+Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
 
-The code for this example is available at
-[examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).
+The code for this example is available at [examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).

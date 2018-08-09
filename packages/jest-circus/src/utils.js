@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  */
 
 import type {
@@ -14,6 +14,7 @@ import type {
   DescribeBlock,
   Exception,
   Hook,
+  RunResult,
   TestEntry,
   TestContext,
   TestFn,
@@ -21,22 +22,40 @@ import type {
   TestName,
   TestResults,
 } from 'types/Circus';
+import {convertDescriptorToString} from 'jest-util';
+import isGeneratorFn from 'is-generator-fn';
+import co from 'co';
+
+import StackUtils from 'stack-utils';
+
+import prettyFormat from 'pretty-format';
+
+import {getState} from './state';
+
+// Try getting the real promise object from the context, if available. Someone
+// could have overridden it in a test. Async functions return it implicitly.
+// eslint-disable-next-line no-unused-vars
+const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+export const getOriginalPromise = () => Promise;
+
+const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 export const makeDescribe = (
   name: BlockName,
   parent: ?DescribeBlock,
   mode?: BlockMode,
 ): DescribeBlock => {
+  let _mode = mode;
   if (parent && !mode) {
     // If not set explicitly, inherit from the parent describe.
-    mode = parent.mode;
+    _mode = parent.mode;
   }
 
   return {
     children: [],
     hooks: [],
-    mode,
-    name,
+    mode: _mode,
+    name: convertDescriptorToString(name),
     parent,
     tests: [],
   };
@@ -47,24 +66,44 @@ export const makeTest = (
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
+  timeout: ?number,
+  asyncError: Exception,
 ): TestEntry => {
-  if (!fn) {
-    mode = 'skip'; // skip test if no fn passed
-  } else if (!mode) {
+  let _mode = mode;
+  if (!mode) {
     // if not set explicitly, inherit from its parent describe
-    mode = parent.mode;
+    _mode = parent.mode;
   }
 
   return {
+    asyncError,
     duration: null,
     errors: [],
     fn,
-    mode,
-    name,
+    invocations: 0,
+    mode: _mode,
+    name: convertDescriptorToString(name),
     parent,
     startedAt: null,
     status: null,
+    timeout,
   };
+};
+
+// Traverse the tree of describe blocks and return true if at least one describe
+// block has an enabled test.
+const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
+  const {hasFocusedTests, testNamePattern} = getState();
+  const hasOwnEnabledTests = describeBlock.tests.some(
+    test =>
+      !(
+        test.mode === 'skip' ||
+        (hasFocusedTests && test.mode !== 'only') ||
+        (testNamePattern && !testNamePattern.test(getTestID(test)))
+      ),
+  );
+
+  return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
 export const getAllHooksForDescribe = (
@@ -72,14 +111,16 @@ export const getAllHooksForDescribe = (
 ): {[key: 'beforeAll' | 'afterAll']: Array<Hook>} => {
   const result = {afterAll: [], beforeAll: []};
 
-  for (const hook of describe.hooks) {
-    switch (hook.type) {
-      case 'beforeAll':
-        result.beforeAll.push(hook);
-        break;
-      case 'afterAll':
-        result.afterAll.push(hook);
-        break;
+  if (hasEnabledTest(describe)) {
+    for (const hook of describe.hooks) {
+      switch (hook.type) {
+        case 'beforeAll':
+          result.beforeAll.push(hook);
+          break;
+        case 'afterAll':
+          result.afterAll.push(hook);
+          break;
+      }
     }
   }
 
@@ -93,42 +134,41 @@ export const getEachHooksForTest = (
   let {parent: block} = test;
 
   do {
+    const beforeEachForCurrentBlock = [];
     for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
-          // Before hooks are executed from top to bottom, the opposite of the
-          // way we traversed it.
-          result.beforeEach.unshift(hook);
+          beforeEachForCurrentBlock.push(hook);
           break;
         case 'afterEach':
           result.afterEach.push(hook);
           break;
       }
     }
+    // 'beforeEach' hooks are executed from top to bottom, the opposite of the
+    // way we traversed it.
+    result.beforeEach = [...beforeEachForCurrentBlock, ...result.beforeEach];
   } while ((block = block.parent));
   return result;
 };
 
+export const describeBlockHasTests = (describe: DescribeBlock) =>
+  describe.tests.length || describe.children.some(describeBlockHasTests);
+
 const _makeTimeoutMessage = (timeout, isHook) =>
-  new Error(
-    `Exceeded timeout of ${timeout}ms for a ${
-      isHook ? 'hook' : 'test'
-    }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`,
-  );
+  `Exceeded timeout of ${timeout}ms for a ${
+    isHook ? 'hook' : 'test'
+  }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-export const callAsyncFn = (
+export const callAsyncCircusFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
-  {
-    isHook,
-    test,
-    timeout,
-  }: {isHook?: ?boolean, test?: TestEntry, timeout: number},
-): Promise<any> => {
+  {isHook, timeout}: {isHook?: ?boolean, timeout: number},
+): Promise<mixed> => {
   let timeoutID;
 
   return new Promise((resolve, reject) => {
@@ -137,20 +177,33 @@ export const callAsyncFn = (
       timeout,
     );
 
-    // If this fn accepts `done` callback we return a promise that fullfills as
+    // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
     if (fn.length) {
-      const done = (reason?: Error | string): void =>
-        reason ? reject(reason) : resolve();
+      const done = (reason?: Error | string): void => {
+        // $FlowFixMe: It doesn't approve of .stack
+        const isError = reason && reason.message && reason.stack;
+        return reason
+          ? reject(
+              isError
+                ? reason
+                : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`),
+            )
+          : resolve();
+      };
 
       return fn.call(testContext, done);
     }
 
     let returnedValue;
-    try {
-      returnedValue = fn.call(testContext);
-    } catch (error) {
-      return reject(error);
+    if (isGeneratorFn(fn)) {
+      returnedValue = co.wrap(fn).call({});
+    } else {
+      try {
+        returnedValue = fn.call(testContext);
+      } catch (error) {
+        return reject(error);
+      }
     }
 
     // If it's a Promise, return it. Test for an object with a `then` function
@@ -196,7 +249,16 @@ export const getTestDuration = (test: TestEntry): ?number => {
   return startedAt ? Date.now() - startedAt : null;
 };
 
-export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+export const makeRunResult = (
+  describeBlock: DescribeBlock,
+  unhandledErrors: Array<Error>,
+): RunResult => ({
+  testResults: makeTestResults(describeBlock),
+  unhandledErrors: unhandledErrors.map(_formatError),
+});
+
+const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
+  const {includeTestLocationInResult} = getState();
   let testResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
@@ -210,16 +272,26 @@ export const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
     if (!status) {
       throw new Error('Status should be present after tests are run.');
     }
+
+    let location = null;
+    if (includeTestLocationInResult) {
+      const stackLine = test.asyncError.stack.split('\n')[1];
+      const {line, column} = stackUtils.parseLine(stackLine);
+      location = {column, line};
+    }
+
     testResults.push({
       duration: test.duration,
       errors: test.errors.map(_formatError),
+      invocations: test.invocations,
+      location,
       status,
       testPath,
     });
   }
 
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child));
+    testResults = testResults.concat(makeTestResults(child, config));
   }
 
   return testResults;
@@ -238,14 +310,48 @@ export const getTestID = (test: TestEntry) => {
   return titles.join(' ');
 };
 
-const _formatError = (error: ?Exception): string => {
-  if (!error) {
-    return 'NO ERROR MESSAGE OR STACK TRACE SPECIFIED';
-  } else if (error.stack) {
-    return error.stack;
-  } else if (error.message) {
-    return error.message;
+const _formatError = (errors: ?Exception | [?Exception, Exception]): string => {
+  let error;
+  let asyncError;
+
+  if (Array.isArray(errors)) {
+    error = errors[0];
+    asyncError = errors[1];
   } else {
-    return `${String(error)} thrown`;
+    error = errors;
+    asyncError = new Error();
+  }
+
+  if (error) {
+    if (error.stack) {
+      return error.stack;
+    }
+    if (error.message) {
+      return error.message;
+    }
+  }
+
+  asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+
+  return asyncError.stack;
+};
+
+export const addErrorToEachTestUnderDescribe = (
+  describeBlock: DescribeBlock,
+  error: Exception,
+  asyncError: Exception,
+) => {
+  for (const test of describeBlock.tests) {
+    test.errors.push([error, asyncError]);
+  }
+
+  for (const child of describeBlock.children) {
+    addErrorToEachTestUnderDescribe(child, error, asyncError);
+  }
+};
+
+export const invariant = (condition: *, message: string) => {
+  if (!condition) {
+    throw new Error(message);
   }
 };

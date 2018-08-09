@@ -24,6 +24,8 @@ export const PARENT_MESSAGE_ERROR: 1 = 1;
 
 // Option objects.
 
+import type Worker from './worker';
+
 export type ForkOptions = {
   cwd?: string,
   env?: Object,
@@ -94,10 +96,12 @@ export type ParentMessage = ParentMessageOk | ParentMessageError;
 
 // Queue types.
 
-export type QueueCallback = (?Error, ?any) => void;
+export type OnProcessStart = Worker => void;
+export type OnProcessEnd = (?Error, ?any) => void;
 
 export type QueueChildMessage = {|
   request: ChildMessage,
-  callback: QueueCallback,
+  onProcessStart: OnProcessStart,
+  onProcessEnd: OnProcessEnd,
   next: ?QueueChildMessage,
 |};

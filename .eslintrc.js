@@ -20,6 +20,7 @@ module.exports = {
     {
       files: ['*.md'],
       rules: {
+        'arrow-body-style': 0,
         'consistent-return': 0,
         'flowtype/require-valid-file-annotation': 0,
         'import/no-extraneous-dependencies': 0,
@@ -44,7 +45,7 @@ module.exports = {
       },
     },
     {
-      files: ['scripts/**/*', 'integration-tests/**/*'],
+      files: ['scripts/**/*', 'e2e/**/*'],
       rules: {
         'babel/func-params-comma-dangle': 0,
       },
@@ -56,14 +57,12 @@ module.exports = {
       },
     },
     {
-      excludedFiles: [
-        'integration-tests/__tests__/**/*',
-        'website/versioned_docs/**/*.md',
-      ],
+      excludedFiles: ['e2e/__tests__/**/*', 'website/versioned_docs/**/*.md'],
       files: [
         'examples/**/*',
         'scripts/**/*',
-        'integration-tests/*/**/*',
+        'e2e/*/**/*',
+        'website/*.js',
         'website/*/**/*',
         'eslintImportResolver.js',
       ],
@@ -81,7 +80,7 @@ module.exports = {
     },
     {
       files: [
-        'integration-tests/__tests__/**/*',
+        'e2e/__tests__/**/*',
         'packages/babel-jest/**/*.test.js',
         'packages/babel-plugin-jest-hoist/**/*.test.js',
         'packages/babel-preset-jest/**/*.test.js',
@@ -103,7 +102,7 @@ module.exports = {
       files: [
         'website/**',
         '**/__tests__/**',
-        'integration-tests/**',
+        'e2e/**',
         '**/pretty-format/perf/**',
       ],
       rules: {
@@ -114,6 +113,7 @@ module.exports = {
   parser: 'babel-eslint',
   plugins: ['markdown', 'import', 'prettier'],
   rules: {
+    'arrow-body-style': 2,
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
     'flowtype/require-valid-file-annotation': 2,

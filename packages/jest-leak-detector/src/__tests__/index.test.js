@@ -16,6 +16,9 @@ it('complains if the value is a primitive', () => {
   expect(() => new LeakDetector(false)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(42)).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector('foo')).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(Symbol())).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(Symbol('foo'))).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(NaN)).toThrowErrorMatchingSnapshot();
 });
 
 it('does not show the GC if hidden', () => {
@@ -57,6 +60,7 @@ it('tests different objects', () => {
     [],
     /foo/g,
     new Date(1234),
+    {},
   ];
 
   const detectors = refs.map(ref => new LeakDetector(ref));

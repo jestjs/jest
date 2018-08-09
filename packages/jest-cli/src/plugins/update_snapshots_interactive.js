@@ -6,11 +6,11 @@
  *
  * @flow
  */
-import type {JestHookSubscriber} from '../jest_hooks';
+import type {JestHookSubscriber} from 'types/JestHooks';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
-import BaseWatchPlugin from '../base_watch_plugin';
-import SnapshotInteractiveMode from '../snapshot_interactive_mode';
+import {BaseWatchPlugin} from 'jest-watcher';
+import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;
@@ -41,8 +41,8 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
         testResult.testResults.forEach(result => {
           if (result.status === 'failed') {
             failedTestPaths.push({
+              fullName: result.fullName,
               path: testResult.testFilePath,
-              title: result.title,
             });
           }
         });
@@ -53,7 +53,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   }
 
   apply(hooks: JestHookSubscriber) {
-    hooks.testRunComplete(results => {
+    hooks.onTestRunComplete(results => {
       this._failedSnapshotTestAssertions = this.getFailedSnapshotTestAssertions(
         results,
       );
@@ -77,7 +77,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
           (assertion: ?AssertionLocation, shouldUpdateSnapshot: boolean) => {
             updateConfigAndRun({
               mode: 'watch',
-              testNamePattern: assertion ? `^${assertion.title}$` : '',
+              testNamePattern: assertion ? `^${assertion.fullName}$` : '',
               testPathPattern: assertion ? assertion.path : '',
 
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
@@ -99,7 +99,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
       this._failedSnapshotTestAssertions.length > 0
     ) {
       return {
-        key: 'i'.codePointAt(0),
+        key: 'i',
         prompt: 'update failing snapshots interactively',
       };
     }

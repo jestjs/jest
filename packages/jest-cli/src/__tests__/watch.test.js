@@ -9,9 +9,8 @@
 'use strict';
 
 import chalk from 'chalk';
-import TestWatcher from '../test_watcher';
-import JestHooks from '../jest_hooks';
-import {KEYS} from '../constants';
+import TestWatcher from '../TestWatcher';
+import {JestHook, KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
@@ -19,7 +18,7 @@ const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
 let results;
 
 jest.mock(
-  '../search_source',
+  '../SearchSource',
   () =>
     class {
       constructor(context) {
@@ -45,7 +44,7 @@ jest.mock(
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
 jest.doMock(
-  '../run_jest',
+  '../runJest',
   () =>
     function() {
       const args = Array.from(arguments);
@@ -65,7 +64,7 @@ jest.doMock(
     class WatchPlugin1 {
       getUsageInfo() {
         return {
-          key: 's'.codePointAt(0),
+          key: 's',
           prompt: 'do nothing',
         };
       }
@@ -79,7 +78,7 @@ jest.doMock(
     class WatchPlugin2 {
       getUsageInfo() {
         return {
-          key: 'u'.codePointAt(0),
+          key: 'r',
           prompt: 'do something else',
         };
       }
@@ -87,10 +86,14 @@ jest.doMock(
   {virtual: true},
 );
 
+const regularUpdateGlobalConfig = require('../lib/update_global_config')
+  .default;
+const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
+jest.doMock('../lib/update_global_config', () => updateGlobalConfig);
+
 const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
-const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
 afterEach(runJestMock.mockReset);
 
@@ -178,7 +181,7 @@ describe('Watch mode flows', () => {
       await watch(
         Object.assign({}, globalConfig, {
           rootDir: __dirname,
-          watchPlugins: [watchPluginPath],
+          watchPlugins: [{config: {}, path: watchPluginPath}],
         }),
         contexts,
         pipe,
@@ -197,7 +200,10 @@ describe('Watch mode flows', () => {
     ci_watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [watchPlugin2Path, watchPluginPath],
+        watchPlugins: [
+          {config: {}, path: watchPluginPath},
+          {config: {}, path: watchPlugin2Path},
+        ],
       }),
       contexts,
       pipe,
@@ -287,7 +293,7 @@ describe('Watch mode flows', () => {
     expect(pipeMockCalls.slice(determiningTestsToRun + 1)).toMatchSnapshot();
   });
 
-  it('allows WatchPlugins to hook into JestHooks', async () => {
+  it('allows WatchPlugins to hook into JestHook', async () => {
     const apply = jest.fn();
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_register`;
     jest.doMock(
@@ -304,7 +310,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       }),
       contexts,
       pipe,
@@ -317,7 +323,7 @@ describe('Watch mode flows', () => {
     expect(apply).toHaveBeenCalled();
   });
 
-  it('allows WatchPlugins to override internal plugins', async () => {
+  it('allows WatchPlugins to override eligible internal plugins', async () => {
     const run = jest.fn(() => Promise.resolve());
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_override`;
     jest.doMock(
@@ -329,7 +335,7 @@ describe('Watch mode flows', () => {
           }
           getUsageInfo() {
             return {
-              key: 'p'.codePointAt(0),
+              key: 'p',
               prompt: 'custom "P" plugin',
             };
           }
@@ -340,7 +346,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       }),
       contexts,
       pipe,
@@ -352,21 +358,161 @@ describe('Watch mode flows', () => {
 
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
 
-    stdin.emit(toHex('p'));
+    stdin.emit('p');
     await nextTick();
 
     expect(run).toHaveBeenCalled();
   });
 
-  it('allows WatchPlugins to hook into file system changes', async () => {
-    const fileChange = jest.fn();
-    const pluginPath = `${__dirname}/__fixtures__/plugin_path_fs_change`;
+  describe('when dealing with potential watch plugin key conflicts', () => {
+    it.each`
+      key    | plugin
+      ${'q'} | ${'Quit'}
+      ${'u'} | ${'UpdateSnapshots'}
+      ${'i'} | ${'UpdateSnapshotsInteractive'}
+    `(
+      'forbids WatchPlugins overriding reserved internal plugins',
+      ({key, plugin}) => {
+        const run = jest.fn(() => Promise.resolve());
+        const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${key}`;
+        jest.doMock(
+          pluginPath,
+          () =>
+            class OffendingWatchPlugin {
+              constructor() {
+                this.run = run;
+              }
+              getUsageInfo() {
+                return {
+                  key,
+                  prompt: `custom "${key.toUpperCase()}" plugin`,
+                };
+              }
+            },
+          {virtual: true},
+        );
+
+        expect(() => {
+          watch(
+            Object.assign({}, globalConfig, {
+              rootDir: __dirname,
+              watchPlugins: [{config: {}, path: pluginPath}],
+            }),
+            contexts,
+            pipe,
+            hasteMapInstances,
+            stdin,
+          );
+        }).toThrowError(
+          new RegExp(
+            `Watch plugin OffendingWatchPlugin attempted to register key <${key}>,\\s+that is reserved internally for .+\\.\\s+Please change the configuration key for this plugin\\.`,
+            'm',
+          ),
+        );
+      },
+    );
+
+    // The jury's still out on 'a', 'c', 'f', 'o', 'w' and '?'…
+    // See https://github.com/facebook/jest/issues/6693
+    it.each`
+      key    | plugin
+      ${'t'} | ${'TestNamePattern'}
+      ${'p'} | ${'TestPathPattern'}
+    `(
+      'allows WatchPlugins to override non-reserved internal plugins',
+      ({key, plugin}) => {
+        const run = jest.fn(() => Promise.resolve());
+        const pluginPath = `${__dirname}/__fixtures__/plugin_valid_override_${key}`;
+        jest.doMock(
+          pluginPath,
+          () =>
+            class ValidWatchPlugin {
+              constructor() {
+                this.run = run;
+              }
+              getUsageInfo() {
+                return {
+                  key,
+                  prompt: `custom "${key.toUpperCase()}" plugin`,
+                };
+              }
+            },
+          {virtual: true},
+        );
+
+        watch(
+          Object.assign({}, globalConfig, {
+            rootDir: __dirname,
+            watchPlugins: [{config: {}, path: pluginPath}],
+          }),
+          contexts,
+          pipe,
+          hasteMapInstances,
+          stdin,
+        );
+      },
+    );
+
+    it('forbids third-party WatchPlugins overriding each other', () => {
+      const pluginPaths = ['Foo', 'Bar'].map(ident => {
+        const run = jest.fn(() => Promise.resolve());
+        const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${ident.toLowerCase()}`;
+        jest.doMock(
+          pluginPath,
+          () => {
+            class OffendingThirdPartyWatchPlugin {
+              constructor() {
+                this.run = run;
+              }
+              getUsageInfo() {
+                return {
+                  key: '!',
+                  prompt: `custom "!" plugin ${ident}`,
+                };
+              }
+            }
+            OffendingThirdPartyWatchPlugin.displayName = `Offending${ident}ThirdPartyWatchPlugin`;
+            return OffendingThirdPartyWatchPlugin;
+          },
+          {virtual: true},
+        );
+        return pluginPath;
+      });
+
+      expect(() => {
+        watch(
+          Object.assign({}, globalConfig, {
+            rootDir: __dirname,
+            watchPlugins: pluginPaths.map(path => ({config: {}, path})),
+          }),
+          contexts,
+          pipe,
+          hasteMapInstances,
+          stdin,
+        );
+      }).toThrowError(
+        /Watch plugins OffendingFooThirdPartyWatchPlugin and OffendingBarThirdPartyWatchPlugin both attempted to register key <!>\.\s+Please change the key configuration for one of the conflicting plugins to avoid overlap\./m,
+      );
+    });
+  });
+
+  it('allows WatchPlugins to be configured', async () => {
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_with_config`;
     jest.doMock(
       pluginPath,
       () =>
         class WatchPlugin {
-          apply(jestHooks) {
-            jestHooks.fileChange(fileChange);
+          constructor({config}) {
+            this._key = config.key;
+            this._prompt = config.prompt;
+          }
+          onKey() {}
+          run() {}
+          getUsageInfo() {
+            return {
+              key: this._key || 'z',
+              prompt: this._prompt || 'default prompt',
+            };
           }
         },
       {virtual: true},
@@ -375,7 +521,12 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [
+          {
+            config: {key: 'k', prompt: 'filter with a custom prompt'},
+            path: pluginPath,
+          },
+        ],
       }),
       contexts,
       pipe,
@@ -383,7 +534,35 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    expect(fileChange).toHaveBeenCalledWith({
+    expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
+  });
+
+  it('allows WatchPlugins to hook into file system changes', async () => {
+    const onFileChange = jest.fn();
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_fs_change`;
+    jest.doMock(
+      pluginPath,
+      () =>
+        class WatchPlugin {
+          apply(jestHooks) {
+            jestHooks.onFileChange(onFileChange);
+          }
+        },
+      {virtual: true},
+    );
+
+    watch(
+      Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [{config: {}, path: pluginPath}],
+      }),
+      contexts,
+      pipe,
+      hasteMapInstances,
+      stdin,
+    );
+
+    expect(onFileChange).toHaveBeenCalledWith({
       projects: [
         {
           config: contexts[0].config,
@@ -392,6 +571,103 @@ describe('Watch mode flows', () => {
       ],
     });
   });
+
+  it.each`
+    ok      | option
+    ${'✔︎'} | ${'bail'}
+    ${'✖︎'} | ${'changedFilesWithAncestor'}
+    ${'✖︎'} | ${'changedSince'}
+    ${'✔︎'} | ${'collectCoverage'}
+    ${'✔︎'} | ${'collectCoverageFrom'}
+    ${'✔︎'} | ${'collectCoverageOnlyFrom'}
+    ${'✔︎'} | ${'coverageDirectory'}
+    ${'✔︎'} | ${'coverageReporters'}
+    ${'✖︎'} | ${'coverageThreshold'}
+    ${'✖︎'} | ${'detectLeaks'}
+    ${'✖︎'} | ${'detectOpenHandles'}
+    ${'✖︎'} | ${'enabledTestsMap'}
+    ${'✖︎'} | ${'errorOnDeprecated'}
+    ${'✖︎'} | ${'expand'}
+    ${'✖︎'} | ${'filter'}
+    ${'✖︎'} | ${'findRelatedTests'}
+    ${'✖︎'} | ${'forceExit'}
+    ${'✖︎'} | ${'globalSetup'}
+    ${'✖︎'} | ${'globalTeardown'}
+    ${'✖︎'} | ${'json'}
+    ${'✖︎'} | ${'lastCommit'}
+    ${'✖︎'} | ${'listTests'}
+    ${'✖︎'} | ${'logHeapUsage'}
+    ${'✖︎'} | ${'maxWorkers'}
+    ${'✖︎'} | ${'nonFlagArgs'}
+    ${'✖︎'} | ${'noSCM'}
+    ${'✖︎'} | ${'noStackTrace'}
+    ${'✔︎'} | ${'notify'}
+    ${'✔︎'} | ${'notifyMode'}
+    ${'✖︎'} | ${'onlyChanged'}
+    ${'✔︎'} | ${'onlyFailures'}
+    ${'✖︎'} | ${'outputFile'}
+    ${'✖︎'} | ${'passWithNoTests'}
+    ${'✖︎'} | ${'projects'}
+    ${'✖︎'} | ${'replname'}
+    ${'✔︎'} | ${'reporters'}
+    ${'✖︎'} | ${'rootDir'}
+    ${'✖︎'} | ${'runTestsByPath'}
+    ${'✖︎'} | ${'silent'}
+    ${'✖︎'} | ${'skipFilter'}
+    ${'✖︎'} | ${'testFailureExitCode'}
+    ${'✔︎'} | ${'testNamePattern'}
+    ${'✔︎'} | ${'testPathPattern'}
+    ${'✖︎'} | ${'testResultsProcessor'}
+    ${'✔︎'} | ${'updateSnapshot'}
+    ${'✖︎'} | ${'useStderr'}
+    ${'✔︎'} | ${'verbose'}
+    ${'✖︎'} | ${'watch'}
+    ${'✖︎'} | ${'watchAll'}
+    ${'✖︎'} | ${'watchman'}
+    ${'✖︎'} | ${'watchPlugins'}
+  `(
+    'allows WatchPlugins to modify only white-listed global config keys',
+    async ({ok, option}) => {
+      ok = ok === '✔︎';
+      const pluginPath = `${__dirname}/__fixtures__/plugin_path_config_updater_${option}`;
+
+      jest.doMock(
+        pluginPath,
+        () =>
+          class WatchPlugin {
+            getUsageInfo() {
+              return {key: 'x', prompt: 'test option white-listing'};
+            }
+
+            run(globalConfig, updateConfigAndRun) {
+              updateConfigAndRun({[option]: '__JUST_TRYING__'});
+              return Promise.resolve();
+            }
+          },
+        {virtual: true},
+      );
+
+      const config = Object.assign({}, globalConfig, {
+        rootDir: __dirname,
+        watchPlugins: [{config: {}, path: pluginPath}],
+      });
+
+      watch(config, contexts, pipe, hasteMapInstances, stdin);
+      await nextTick();
+
+      stdin.emit('x');
+      await nextTick();
+
+      // We need the penultimate call as Jest forces a final call to restore
+      // updateSnapshot because it's not sticky after a run…?
+      const lastCall = updateGlobalConfig.mock.calls.slice(-2)[0];
+      let expector = expect(lastCall[1]);
+      if (!ok) {
+        expector = expector.not;
+      }
+      expector.toHaveProperty(option, '__JUST_TRYING__');
+    },
+  );
 
   it('triggers enter on a WatchPlugin when its key is pressed', async () => {
     const run = jest.fn(() => Promise.resolve());
@@ -405,7 +681,7 @@ describe('Watch mode flows', () => {
           }
           getUsageInfo() {
             return {
-              key: 's'.codePointAt(0),
+              key: 's',
               prompt: 'do nothing',
             };
           }
@@ -416,7 +692,7 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath],
+        watchPlugins: [{config: {}, path: pluginPath}],
       }),
       contexts,
       pipe,
@@ -424,7 +700,7 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    stdin.emit(Number('s'.charCodeAt(0)).toString(16));
+    stdin.emit('s');
 
     await nextTick();
 
@@ -445,7 +721,7 @@ describe('Watch mode flows', () => {
           onKey() {}
           getUsageInfo() {
             return {
-              key: 's'.codePointAt(0),
+              key: 's',
               prompt: 'do nothing',
             };
           }
@@ -465,7 +741,7 @@ describe('Watch mode flows', () => {
           onKey() {}
           getUsageInfo() {
             return {
-              key: 'z'.codePointAt(0),
+              key: 'z',
               prompt: 'also do nothing',
             };
           }
@@ -476,7 +752,10 @@ describe('Watch mode flows', () => {
     watch(
       Object.assign({}, globalConfig, {
         rootDir: __dirname,
-        watchPlugins: [pluginPath, pluginPath2],
+        watchPlugins: [
+          {config: {}, path: pluginPath},
+          {config: {}, path: pluginPath2},
+        ],
       }),
       contexts,
       pipe,
@@ -484,14 +763,14 @@ describe('Watch mode flows', () => {
       stdin,
     );
 
-    stdin.emit(Number('s'.charCodeAt(0)).toString(16));
+    stdin.emit('s');
     await nextTick();
     expect(run).toHaveBeenCalled();
-    stdin.emit(Number('z'.charCodeAt(0)).toString(16));
+    stdin.emit('z');
     await nextTick();
     expect(showPrompt2).not.toHaveBeenCalled();
     await resolveShowPrompt();
-    stdin.emit(Number('z'.charCodeAt(0)).toString(16));
+    stdin.emit('z');
     expect(showPrompt2).toHaveBeenCalled();
   });
 
@@ -499,7 +778,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.O);
+    stdin.emit('o');
 
     expect(runJestMock).toBeCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -513,7 +792,7 @@ describe('Watch mode flows', () => {
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
 
     expect(runJestMock).toBeCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -531,37 +810,35 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "t" reruns the tests in "test name pattern" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.T);
-    ['t', 'e', 's', 't'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit('t');
+    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       testNamePattern: 'test',
-      testPathPattern: '',
       watch: true,
       watchAll: false,
     });
   });
 
   it('Pressing "p" reruns the tests in "filename pattern" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.P);
-    ['f', 'i', 'l', 'e'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit('p');
+    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
-      testNamePattern: '',
       testPathPattern: 'file',
       watch: true,
       watchAll: false,
@@ -569,18 +846,18 @@ describe('Watch mode flows', () => {
   });
 
   it('Can combine "p" and "t" filters', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    stdin.emit(KEYS.P);
-    ['f', 'i', 'l', 'e'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit('p');
+    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
-    stdin.emit(KEYS.T);
-    ['t', 'e', 's', 't'].map(toHex).forEach(key => stdin.emit(key));
+    stdin.emit('t');
+    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -593,16 +870,16 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', async () => {
-    const hooks = new JestHooks();
+    const hooks = new JestHook();
 
     globalConfig.updateSnapshot = 'new';
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin, hooks);
     runJestMock.mockReset();
 
-    hooks.getEmitter().testRunComplete({snapshot: {failure: true}});
+    hooks.getEmitter().onTestRunComplete({snapshot: {failure: true}});
 
-    stdin.emit(KEYS.U);
+    stdin.emit('u');
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -611,7 +888,7 @@ describe('Watch mode flows', () => {
       watchAll: false,
     });
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
 
     await nextTick();
     // updateSnapshot is not sticky after a run.
@@ -623,11 +900,11 @@ describe('Watch mode flows', () => {
 
     results = {snapshot: {failure: true}};
 
-    stdin.emit(KEYS.A);
+    stdin.emit('a');
     await nextTick();
 
     runJestMock.mockReset();
-    stdin.emit(KEYS.U);
+    stdin.emit('u');
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -644,6 +921,23 @@ describe('Watch mode flows', () => {
     expect(runJestMock.mock.calls[0][0]).toMatchObject({
       globalConfig,
     });
+  });
+
+  it('shows the correct usage for the f key in "only failed tests" mode', () => {
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
+    const ci_watch = require('../watch').default;
+    ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+
+    stdin.emit('f');
+    stdin.emit('w');
+
+    const lastWatchDisplay = pipe.write.mock.calls.reverse()[0][0];
+    expect(lastWatchDisplay).toMatch('Press a to run all tests.');
+    expect(lastWatchDisplay).toMatch(
+      'Press f to quit "only failed tests" mode',
+    );
   });
 });
 

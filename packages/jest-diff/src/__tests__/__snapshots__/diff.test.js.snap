@@ -208,3 +208,37 @@ exports[`highlight only the last in odd length of leading spaces (expanded) 1`] 
 <red>+ }, {});</>
 <dim>  </pre></>"
 `;
+
+exports[`oneline strings 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- ab</>
+<red>+ aa</>"
+`;
+
+exports[`oneline strings 2`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- 123456789</>
+<red>+ 234567890</>"
+`;
+
+exports[`oneline strings 3`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- oneline</>
+<red>+ multi</>
+<red>+ line</>"
+`;
+
+exports[`oneline strings 4`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- multi</>
+<green>- line</>
+<red>+ oneline</>"
+`;

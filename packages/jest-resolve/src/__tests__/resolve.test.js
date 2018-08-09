@@ -142,6 +142,20 @@ describe('resolveModule', () => {
       require.resolve('../../src/__mocks__/foo/node_modules/dep/index.js'),
     );
   });
+
+  it('is possible to specify custom resolve paths', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    });
+    const src = require.resolve('../');
+    const resolved = resolver.resolveModule(src, 'mockJsDependency', {
+      paths: [
+        path.resolve(__dirname, '../../src/__tests__'),
+        path.resolve(__dirname, '../../src/__mocks__'),
+      ],
+    });
+    expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
+  });
 });
 
 describe('getMockModule', () => {
@@ -160,28 +174,6 @@ describe('getMockModule', () => {
           regex: /(.*)/,
         },
       ],
-      resolver: require.resolve('../__mocks__/userResolver'),
-    });
-    const src = require.resolve('../');
-    resolver.getMockModule(src, 'dependentModule');
-
-    expect(userResolver).toHaveBeenCalled();
-    expect(userResolver.mock.calls[0][0]).toBe('dependentModule');
-    expect(userResolver.mock.calls[0][1]).toHaveProperty(
-      'basedir',
-      path.dirname(src),
-    );
-  });
-
-  it('is possible to use custom resolver to resolve deps inside mock modules without moduleNameMapper', () => {
-    userResolver.mockImplementation(() => 'module');
-
-    const moduleMap = new ModuleMap({
-      duplicates: [],
-      map: [],
-      mocks: [],
-    });
-    const resolver = new Resolver(moduleMap, {
       resolver: require.resolve('../__mocks__/userResolver'),
     });
     const src = require.resolve('../');
@@ -221,11 +213,9 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // pathstrings instead of actually trying to access the physical directory.
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
-    jest.doMock('realpath-native', () => {
-      return {
-        sync: dirInput => dirInput,
-      };
-    });
+    jest.doMock('realpath-native', () => ({
+      sync: dirInput => dirInput,
+    }));
   });
 
   afterAll(() => {

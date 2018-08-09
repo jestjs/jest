@@ -31,8 +31,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
+import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../expectation_failed';
-
 import expectationResultFactory from '../expectation_result_factory';
 
 export default function Suite(attrs: Object) {
@@ -181,33 +181,6 @@ Suite.prototype.addExpectationResult = function() {
     }
   }
 };
-
-function convertDescriptorToString(descriptor) {
-  if (
-    typeof descriptor === 'string' ||
-    typeof descriptor === 'number' ||
-    descriptor === undefined
-  ) {
-    return descriptor;
-  }
-
-  if (typeof descriptor !== 'function') {
-    throw new Error('describe expects a class, function, number, or string.');
-  }
-
-  if (descriptor.name !== undefined) {
-    return descriptor.name;
-  }
-
-  const stringified = descriptor.toString();
-  const typeDescriptorMatch = stringified.match(/class|function/);
-  const indexOfNameSpace =
-    typeDescriptorMatch.index + typeDescriptorMatch[0].length;
-  const indexOfNameAfterSpace = stringified.search(/\(|\{/, indexOfNameSpace);
-  const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);
-
-  return name.trim();
-}
 
 function isAfterAll(children) {
   return children && children[0] && children[0].result.status;

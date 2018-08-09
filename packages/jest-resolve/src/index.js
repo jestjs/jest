@@ -10,6 +10,7 @@
 import type {Path} from 'types/Config';
 import type {ModuleMap} from 'types/HasteMap';
 import type {ResolveModuleConfig} from 'types/Resolve';
+import type {ErrorWithCode} from 'types/Errors';
 
 import fs from 'fs';
 import path from 'path';
@@ -107,13 +108,12 @@ class Resolver {
     return null;
   }
 
-  resolveModule(
-    from: Path,
+  resolveModuleFromDirIfExists(
+    dirname: Path,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Path {
-    const dirname = path.dirname(from);
-    const paths = this._options.modulePaths;
+  ): ?Path {
+    const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
@@ -150,8 +150,8 @@ class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    const resolveNodeModule = name => {
-      return Resolver.findNodeModule(name, {
+    const resolveNodeModule = name =>
+      Resolver.findNodeModule(name, {
         basedir: dirname,
         browser: this._options.browser,
         extensions,
@@ -160,7 +160,6 @@ class Resolver {
         resolver: this._options.resolver,
         rootDir: this._options.rootDir,
       });
-    };
 
     if (!skipResolution) {
       module = resolveNodeModule(moduleName);
@@ -187,14 +186,30 @@ class Resolver {
       } catch (ignoredError) {}
     }
 
-    // 4. Throw an error if the module could not be found. `resolve.sync`
-    //    only produces an error based on the dirname but we have the actual
-    //    current module name available.
+    return null;
+  }
+
+  resolveModule(
+    from: Path,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): Path {
+    const dirname = path.dirname(from);
+    const module = this.resolveModuleFromDirIfExists(
+      dirname,
+      moduleName,
+      options,
+    );
+    if (module) return module;
+
+    // (4.) Throw an error if the module could not be found. `resolve.sync`
+    //      only produces an error based on the dirname but we have the actual
+    //      current module name available.
     const relativePath = path.relative(dirname, from);
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
-    (err: Error & {code?: string}).code = 'MODULE_NOT_FOUND';
+    (err: ErrorWithCode).code = 'MODULE_NOT_FOUND';
     throw err;
   }
 
@@ -264,7 +279,7 @@ class Resolver {
     }
 
     const moduleType = this._getModuleType(moduleName);
-    const absolutePath = this._getAbsolutPath(virtualMocks, from, moduleName);
+    const absolutePath = this._getAbsolutePath(virtualMocks, from, moduleName);
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
@@ -281,7 +296,7 @@ class Resolver {
     return this.isCoreModule(moduleName) ? 'node' : 'user';
   }
 
-  _getAbsolutPath(
+  _getAbsolutePath(
     virtualMocks: BooleanObject,
     from: Path,
     moduleName: string,
@@ -308,7 +323,9 @@ class Resolver {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks[virtualMockPath]
       ? virtualMockPath
-      : moduleName ? this.resolveModule(from, moduleName) : from;
+      : moduleName
+        ? this.resolveModule(from, moduleName)
+        : from;
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
@@ -350,42 +367,17 @@ class Resolver {
               rootDir: this._options.rootDir,
             });
           if (!module) {
-            const error = new Error(
-              chalk.red(`${chalk.bold('Configuration error')}:
-
-Could not locate module ${chalk.bold(moduleName)} (mapped as ${chalk.bold(
-                updatedName,
-              )})
-
-Please check:
-
-"moduleNameMapper": {
-  "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
-},
-"resolver": ${chalk.bold(resolver)}`),
+            throw createNoMappedModuleFoundError(
+              moduleName,
+              updatedName,
+              mappedModuleName,
+              regex,
+              resolver,
             );
-            error.stack = '';
-            throw error;
           }
           return module;
         }
       }
-    }
-    if (resolver) {
-      // if moduleNameMapper didn't match anything, fallback to just the
-      // regular resolver
-      const module =
-        this.getModule(moduleName) ||
-        Resolver.findNodeModule(moduleName, {
-          basedir: dirname,
-          browser: this._options.browser,
-          extensions,
-          moduleDirectory,
-          paths,
-          resolver,
-          rootDir: this._options.rootDir,
-        });
-      return module;
     }
     return null;
   }
@@ -394,5 +386,32 @@ Please check:
     return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
 }
+
+const createNoMappedModuleFoundError = (
+  moduleName,
+  updatedName,
+  mappedModuleName,
+  regex,
+  resolver,
+) => {
+  const error = new Error(
+    chalk.red(`${chalk.bold('Configuration error')}:
+
+Could not locate module ${chalk.bold(moduleName)} mapped as:
+${chalk.bold(updatedName)}.
+
+Please check your configuration for these entries:
+{
+  "moduleNameMapper": {
+    "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
+  },
+  "resolver": ${chalk.bold(String(resolver))}
+}`),
+  );
+
+  error.name = '';
+
+  return error;
+};
 
 module.exports = Resolver;
