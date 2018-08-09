@@ -40,7 +40,7 @@ export default function collectHandles(): () => Array<Error> {
   const activeHandles: Map<string, Error> = new Map();
 
   function initHook(asyncId, type) {
-    if (type === 'PROMISE') {
+    if (type === 'PROMISE' || type === 'TIMERWRAP') {
       return;
     }
     const error = new Error(type);
