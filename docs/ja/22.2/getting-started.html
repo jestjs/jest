@@ -85,7 +85,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs css languages- bash">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>Note: If you are using a babel version 7 then you need to install <code>babel-jest</code> with the following command:</p>
+<p>注意: バージョン 7 の Babel を使用している場合は、以下のコマンドで <code>babel-jest</code> をインストールする必要があります。</p>
 <pre><code class="hljs css languages- bash"></code></pre>
 </blockquote>
 <p>npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime</p>
@@ -101,8 +101,8 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 </span></code></pre>
 <p>ES6 と React の構文が使用できるように設定されました。</p>
 <blockquote>
-<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. Jest では Babel が デフォルトで行うような、<code>NODE_ENV</code> が設定されていない場合に, <code>development</code> セクションを利用するといった事をしません。</p>
-<p>Note: If you've turned off transpilation of ES6 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
+<p>注意: もし Babel の <code>env</code> オプションでより複雑な Babel の設定を行っている場合は、Jest は自動的に <code>NODE_ENV</code> を <code>test</code> に設定することに注意してください。 Jest では Babel が デフォルトで行うような、<code>NODE_ENV</code> が設定されていない場合に, <code>development</code> セクションを利用するといった事をしません。</p>
+<p>注意: <code>{ &quot;modules&quot;: false }</code> オプションで ES6モジュールのトランスパイルを無効にしている場合、テスト環境では必ず有効にする必要があります。</p>
 </blockquote>
 <pre><code class="hljs css languages- json">{
   <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],

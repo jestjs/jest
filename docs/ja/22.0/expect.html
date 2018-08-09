@@ -307,7 +307,7 @@ expect.addSnapshotSerializer(serializer);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobevalue"></a><a href="#tobevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBe(value)</code></h3>
-<p><code>toBe</code> just checks that a value is what you expect. It uses <code>Object.is</code> to check exact equality.</p>
+<p><code>toBe</code> は、単に値が期待した通りであるかどうかをチェックします。内部では、厳密な等価性を検証するために、<code>Object.is</code> を使用しています。</p>
 <p>例えば以下のコードでは <code>can</code> オブジェクトのいくつかのプロパティを検証します。</p>
 <pre><code class="hljs css languages- js"><span class="hljs-keyword">const</span> can = {
   <span class="hljs-attr">name</span>: <span class="hljs-string">'pamplemousse'</span>,
@@ -578,9 +578,9 @@ test(<span class="hljs-string">'the house has my desired features'</span>, () =&
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tohavepropertykeypath-value"></a><a href="#tohavepropertykeypath-value" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveProperty(keyPath, value)</code></h3>
-<p>オブジェクトの指定された参照<code>keyPath</code>のプロパティが存在するかを確認するには、<code>.toHaveProperty</code> を使用して下さい。 For checking deeply nested properties in an object you may use <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors">dot notation</a> or an array containing the keyPath for deep references.</p>
+<p>オブジェクトの指定された参照<code>keyPath</code>のプロパティが存在するかを確認するには、<code>.toHaveProperty</code> を使用して下さい。 オブジェクト内で深くネストされたプロパティをチェックするには、 深い階層を参照するために、 <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Property_Accessors">ドット表記</a>や keyPath を含む配列を使用することができます。</p>
 <p>必要に応じて、 <code>value</code>を指定して、対象とするオブジェクトの<code>keyPath</code>の現在の値と等しいかを確認することができます。 このマッチャは(<code>toEqual()</code>のように) 'deep equality' を利用して再帰的に全てのフィールドの等価性を確認します。</p>
-<p>次に示す例ではネストされたプロパティを含む <code>houseForSale</code> オブジェクトを含んでいます。 We are using <code>toHaveProperty</code> to check for the existence and values of various properties in the object.</p>
+<p>次に示す例ではネストされたプロパティを含む <code>houseForSale</code> オブジェクトを含んでいます。 ここでは、オブジェクト内の様々なプロパティの存在と値をチェックするために、<code>toHaveProperty</code> を利用しています。</p>
 <pre><code class="hljs css languages- js"><span class="hljs-comment">// Object containing house features to be tested</span>
 <span class="hljs-keyword">const</span> houseForSale = {
   <span class="hljs-attr">bath</span>: <span class="hljs-literal">true</span>,
