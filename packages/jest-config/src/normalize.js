@@ -335,6 +335,15 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
+    recursiveBlacklist: [
+      'collectCoverageOnlyFrom',
+      // 'coverageThreshold' allows to use 'global' and glob strings on the same
+      // level, there's currently no way we can deal with such config
+      'coverageThreshold',
+      'globals',
+      'moduleNameMapper',
+      'transform',
+    ],
   });
 
   options = normalizePreprocessor(
