@@ -990,7 +990,7 @@ const houseForSale = {
     wallColor: 'white',
     'nice.oven': true,
   },
-  ceiling.height: 2'
+  'ceiling.height': 2',
 };
 
 test('this house has my desired features', () => {
@@ -1021,7 +1021,7 @@ test('this house has my desired features', () => {
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
   
   // Referencing keys with dot in the key itself
-    expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
+  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
 ```
 
