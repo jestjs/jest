@@ -990,7 +990,7 @@ const houseForSale = {
     wallColor: 'white',
     'nice.oven': true,
   },
-  ceiling.height: 2',
+  ceiling.height: 2'
 };
 
 test('this house has my desired features', () => {
