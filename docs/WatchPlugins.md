@@ -49,7 +49,7 @@ Below are the hooks available in Jest.
 
 #### `jestHooks.shouldRunTestSuite(testPath)`
 
-Returns a boolean (or `Promise<boolean>`) for handling asynchronous operations) to specify if a test should be run or not.
+Returns a boolean (or `Promise<boolean>` for handling asynchronous operations) to specify if a test should be run or not.
 
 For example:
 
