@@ -18,6 +18,8 @@ const config: ValidationOptions = {
   },
   error: (option, received, defaultValue, options) => {},
   exampleConfig: {key: 'value', test: 'case'},
+  recursive: true,
+  recursiveBlacklist: [],
   title: {
     deprecation: 'Deprecation Warning',
     error: 'Validation Error',

@@ -91,6 +91,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -109,10 +110,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -131,10 +134,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: a=0, b=1, expected=1',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: a=1, b=1, expected=2',
           expectFunction,
+          undefined,
         );
       });
 
@@ -156,10 +161,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'add(0, 1) expected string: a=0, b=1, expected=1',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'add(1, 1) expected string: a=1, b=1, expected=2',
           expectFunction,
+          undefined,
         );
       });
 
@@ -177,6 +184,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'interpolates object keyPath to value: "baz"',
           expectFunction,
+          undefined,
         );
       });
 
@@ -194,6 +202,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'interpolates object keyPath to value: {"bar": "baz"}',
           expectFunction,
+          undefined,
         );
       });
 
@@ -233,6 +242,23 @@ describe('jest-each', () => {
           expect(done).toBe('DONE');
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
+      });
+
+      test('calls global with given timeout', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+          ${0} | ${1} | ${1}
+        `;
+
+        const testFunction = get(eachObject, keyPath);
+        testFunction('some test', noop, 10000);
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledWith(
+          'some test',
+          expect.any(Function),
+          10000,
+        );
       });
     });
   });
@@ -278,6 +304,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -296,10 +323,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -318,10 +347,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: a=0, b=1, expected=1',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: a=1, b=1, expected=2',
           expectFunction,
+          undefined,
         );
       });
     });
