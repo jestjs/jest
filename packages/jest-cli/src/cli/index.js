@@ -16,7 +16,6 @@ import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
 import * as args from './args';
 import chalk from 'chalk';
-import stripAnsi from 'strip-ansi';
 import createContext from '../lib/create_context';
 import exit from 'exit';
 import getChangedFilesPromise from '../getChangedFilesPromise';
@@ -113,39 +112,12 @@ export const runCLI = async (
   if (openHandles && openHandles.length) {
     const formatted = formatHandleErrors(openHandles, configs[0]);
 
-    const stacks = new Set();
-
-    // E.g. timeouts might give multiple traces to the same line of code
-    // This hairy filtering tries to remove entries with duplicate stack traces
-    const uniqueErrors = formatted.filter(handle => {
-      const ansiFree: string = stripAnsi(handle);
-
-      const match = ansiFree.match(/\s+at(.*)/);
-
-      if (!match || match.length < 2) {
-        return true;
-      }
-
-      const stack = ansiFree.substr(ansiFree.indexOf(match[1])).trim();
-
-      if (stacks.has(stack)) {
-        return false;
-      }
-
-      stacks.add(stack);
-
-      return true;
-    });
-    const openHandlesString = pluralize(
-      'open handle',
-      uniqueErrors.length,
-      's',
-    );
+    const openHandlesString = pluralize('open handle', formatted.length, 's');
 
     const message =
       chalk.red(
         `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
-      ) + uniqueErrors.join('\n\n');
+      ) + formatted.join('\n\n');
 
     console.error(message);
   }

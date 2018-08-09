@@ -10,6 +10,7 @@
 import type {ProjectConfig} from 'types/Config';
 
 import {formatExecError} from 'jest-message-util';
+import stripAnsi from 'strip-ansi';
 
 function stackIsFromUser(stack) {
   // Either the test file, or something required by it
@@ -90,7 +91,33 @@ export function formatHandleErrors(
   errors: Array<Error>,
   config: ProjectConfig,
 ): Array<string> {
-  return errors.map(err =>
-    formatExecError(err, config, {noStackTrace: false}, undefined, true),
+  const stacks = new Set();
+
+  return (
+    errors
+      .map(err =>
+        formatExecError(err, config, {noStackTrace: false}, undefined, true),
+      )
+      // E.g. timeouts might give multiple traces to the same line of code
+      // This hairy filtering tries to remove entries with duplicate stack traces
+      .filter(handle => {
+        const ansiFree: string = stripAnsi(handle);
+
+        const match = ansiFree.match(/\s+at(.*)/);
+
+        if (!match || match.length < 2) {
+          return true;
+        }
+
+        const stack = ansiFree.substr(ansiFree.indexOf(match[1])).trim();
+
+        if (stacks.has(stack)) {
+          return false;
+        }
+
+        stacks.add(stack);
+
+        return true;
+      })
   );
 }
