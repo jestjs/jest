@@ -21,6 +21,10 @@
 - `[jest-snapshot]` Correctly merge property matchers with the rest of the snapshot in `toMatchSnapshot`. ([#6528](https://github.com/facebook/jest/pull/6528))
 - `[jest-snapshot]` Add error messages for invalid property matchers. ([#6528](https://github.com/facebook/jest/pull/6528))
 
+### Chore & Maintenance
+
+- `[docs]` Document another option to avoid warnings with React 16 ([#5258](https://github.com/facebook/jest/issues/5258))
+
 ## 23.4.2
 
 ### Performance
