@@ -14,6 +14,10 @@
 - `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
 - `[jest-cli]` Don't report promises as open handles ([#6716](https://github.com/facebook/jest/pull/6716))
 
+### Chore & Maintenance
+
+- `[docs]` Add note explaining when `jest.setTimeout` should be called ([#6817](https://github.com/facebook/jest/pull/6817/files))
+
 ## 23.4.2
 
 ### Performance
