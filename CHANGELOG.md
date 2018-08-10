@@ -1,5 +1,7 @@
 ## master
 
+## 23.5.0
+
 ### Features
 
 - `[jest-cli]` Add package name to `NotifyReporter` notification ([#5898](https://github.com/facebook/jest/pull/5898))
@@ -21,11 +23,16 @@
 - `[jest-snapshot]` Correctly merge property matchers with the rest of the snapshot in `toMatchSnapshot`. ([#6528](https://github.com/facebook/jest/pull/6528))
 - `[jest-snapshot]` Add error messages for invalid property matchers. ([#6528](https://github.com/facebook/jest/pull/6528))
 - `[jest-cli]` Show open handles from inside test files as well ([#6263](https://github.com/facebook/jest/pull/6263))
+- `[jest-haste-map]` Fix a problem where creating folders ending with `.js` could cause a crash ([#6818](https://github.com/facebook/jest/pull/6818))
 - `[jest-config]` Add name to project if one does not exist to pick correct resolver ([#5862](https://github.com/facebook/jest/pull/5862))
 
 ### Chore & Maintenance
 
 - `[docs]` Document another option to avoid warnings with React 16 ([#5258](https://github.com/facebook/jest/issues/5258))
+
+### Chore & Maintenance
+
+- `[docs]` Add note explaining when `jest.setTimeout` should be called ([#6817](https://github.com/facebook/jest/pull/6817/files))
 
 ## 23.4.2
 

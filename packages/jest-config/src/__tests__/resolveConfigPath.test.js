@@ -9,7 +9,7 @@
 
 import os from 'os';
 import path from 'path';
-import resolveConfigPath from '../resolve_config_path';
+import resolveConfigPath from '../resolveConfigPath';
 
 const {cleanup, writeFiles} = require('../../../../e2e/Utils');
 

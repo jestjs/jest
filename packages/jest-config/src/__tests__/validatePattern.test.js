@@ -6,7 +6,7 @@
  *
  */
 
-import validatePattern from '../validate_pattern';
+import validatePattern from '../validatePattern';
 
 describe('validate pattern function', () => {
   it('without passed args returns true', () => {

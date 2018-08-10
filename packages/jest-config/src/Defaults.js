@@ -11,7 +11,7 @@ import type {DefaultOptions} from 'types/Config';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
-import getCacheDirectory from './get_cache_directory';
+import getCacheDirectory from './getCacheDirectory';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
