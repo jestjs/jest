@@ -1,5 +1,31 @@
 ## master
 
+### Features
+
+- `[jest-cli]` Add package name to `NotifyReporter` notification ([#5898](https://github.com/facebook/jest/pull/5898))
+- `[jest-runner]` print stack trace when `process.exit` is called from user code ([#6714](https://github.com/facebook/jest/pull/6714))
+- `[jest-each]` introduces `%#` option to add index of the test to its title ([#6414](https://github.com/facebook/jest/pull/6414))
+- `[pretty-format]` Support serializing `DocumentFragment` ([#6705](https://github.com/facebook/jest/pull/6705))
+- `[jest-validate]` Add `recursive` and `recursiveBlacklist` options for deep config checks ([#6802](https://github.com/facebook/jest/pull/6802))
+- `[jest-cli]` Check watch plugins for key conflicts ([#6697](https://github.com/facebook/jest/pull/6697))
+
+### Fixes
+
+- `[jest-snapshot` Mark snapshots as obsolete when moved to an inline snapshot ([#6773](https://github.com/facebook/jest/pull/6773))
+- `[jest-config]` Fix `--coverage` with `--findRelatedTests` overwriting `collectCoverageFrom` options ([#6736](https://github.com/facebook/jest/pull/6736))
+- `[jest-config]` Update default config for testURL from 'about:blank' to 'http://localhost' to address latest JSDOM security warning. ([#6792](https://github.com/facebook/jest/pull/6792))
+- `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
+- `[jest-cli]` Don't report promises as open handles ([#6716](https://github.com/facebook/jest/pull/6716))
+- `[jest-each]` Add timeout support to parameterised tests ([#6660](https://github.com/facebook/jest/pull/6660))
+- `[jest-cli]` Improve the message when running coverage while there are no files matching global threshold ([#6334](https://github.com/facebook/jest/pull/6334))
+- `[jest-snapshot]` Correctly merge property matchers with the rest of the snapshot in `toMatchSnapshot`. ([#6528](https://github.com/facebook/jest/pull/6528))
+- `[jest-snapshot]` Add error messages for invalid property matchers. ([#6528](https://github.com/facebook/jest/pull/6528))
+- `[jest-cli]` Show open handles from inside test files as well ([#6263](https://github.com/facebook/jest/pull/6263))
+
+### Chore & Maintenance
+
+- `[docs]` Document another option to avoid warnings with React 16 ([#5258](https://github.com/facebook/jest/issues/5258))
+
 ## 23.4.2
 
 ### Performance
@@ -11,8 +37,10 @@
 - `[jest-circus]` Fix retryTimes so errors are reset before re-running ([#6762](https://github.com/facebook/jest/pull/6762))
 - `[docs]` Update `expect.objectContaining()` description ([#6754](https://github.com/facebook/jest/pull/6754))
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
+- `[jest-jasmine2]` Use prettier through `require` instead of `localRequire`. Fixes `matchInlineSnapshot` where prettier dependencies like `path` and `fs` are mocked with `jest.mock`. ([#6776](https://github.com/facebook/jest/pull/6776))
 - `[docs]` Fix contributors link ([#6711](https://github.com/facebook/jest/pull/6711))
 - `[website]` Fix website versions page to link to correct language ([#6734](https://github.com/facebook/jest/pull/6734))
+- `[expect]` Update `toContain` suggestion to contain equal message ([#6792](https://github.com/facebook/jest/pull/6810))
 
 ## 23.4.1
 

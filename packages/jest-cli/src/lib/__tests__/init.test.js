@@ -24,16 +24,21 @@ const resolveFromFixture = relativePath =>
   path.resolve(__dirname, 'fixtures', relativePath);
 
 const writeFileSync = fs.writeFileSync;
+const consoleLog = console.log;
 const sep = path.sep;
 
 describe('init', () => {
   beforeEach(() => {
+    // $FlowFixMe mock console.log to reduce noise from the tests
+    console.log = jest.fn();
     fs.writeFileSync = jest.fn();
     path.sep = '/';
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    // $FlowFixMe
+    console.log = consoleLog;
     fs.writeFileSync = writeFileSync;
     path.sep = sep;
   });

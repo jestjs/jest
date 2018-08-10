@@ -990,6 +990,7 @@ const houseForSale = {
     wallColor: 'white',
     'nice.oven': true,
   },
+  'ceiling.height': 2,
 };
 
 test('this house has my desired features', () => {
@@ -1018,6 +1019,9 @@ test('this house has my desired features', () => {
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
   expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
+
+  // Referencing keys with dot in the key itself
+  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
 ```
 
@@ -1025,7 +1029,7 @@ test('this house has my desired features', () => {
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values.
+The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
 

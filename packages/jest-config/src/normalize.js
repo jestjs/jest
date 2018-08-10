@@ -18,6 +18,7 @@ import validatePattern from './validatePattern';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
+import micromatch from 'micromatch';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
@@ -334,6 +335,15 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
+    recursiveBlacklist: [
+      'collectCoverageOnlyFrom',
+      // 'coverageThreshold' allows to use 'global' and glob strings on the same
+      // level, there's currently no way we can deal with such config
+      'coverageThreshold',
+      'globals',
+      'moduleNameMapper',
+      'transform',
+    ],
   });
 
   options = normalizePreprocessor(
@@ -677,12 +687,29 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    newOptions.collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = argv._.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
         : filename;
     });
+
+    // Don't override existing collectCoverageFrom options
+    if (newOptions.collectCoverageFrom) {
+      collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
+        if (
+          !micromatch(
+            [path.relative(options.rootDir, filename)],
+            newOptions.collectCoverageFrom,
+          ).length
+        ) {
+          return patterns;
+        }
+        return [...patterns, filename];
+      }, newOptions.collectCoverageFrom);
+    }
+
+    newOptions.collectCoverageFrom = collectCoverageFrom;
   }
 
   return {
