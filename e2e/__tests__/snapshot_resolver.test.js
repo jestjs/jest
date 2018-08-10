@@ -29,11 +29,10 @@ describe('Custom snapshot resolver', () => {
   it('Resolves snapshot files using custom resolver', () => {
     const result = runJest('snapshot-resolver', ['-w=1', '--ci=false']);
 
-    const info = result.stderr.toString();
-    expect(info).toMatch('1 snapshot written from 1 test suite');
+    expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
 
     // $FlowFixMe dynamic require
     const content = require(snapshotFile);
-    expect(content['snapshots are written to custom location 1']).toBeDefined();
+    expect(content).toHaveProperty('snapshots are written to custom location 1');
   });
 });
