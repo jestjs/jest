@@ -29,6 +29,10 @@
 
 - `[docs]` Document another option to avoid warnings with React 16 ([#5258](https://github.com/facebook/jest/issues/5258))
 
+### Chore & Maintenance
+
+- `[docs]` Add note explaining when `jest.setTimeout` should be called ([#6817](https://github.com/facebook/jest/pull/6817/files))
+
 ## 23.4.2
 
 ### Performance
