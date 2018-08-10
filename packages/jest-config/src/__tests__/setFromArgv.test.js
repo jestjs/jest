@@ -6,7 +6,7 @@
  *
  */
 
-import setFromArgv from '../set_from_argv';
+import setFromArgv from '../setFromArgv';
 
 test('maps special values to valid options', () => {
   const options = {};
