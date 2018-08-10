@@ -21,6 +21,7 @@
 - `[jest-snapshot]` Correctly merge property matchers with the rest of the snapshot in `toMatchSnapshot`. ([#6528](https://github.com/facebook/jest/pull/6528))
 - `[jest-snapshot]` Add error messages for invalid property matchers. ([#6528](https://github.com/facebook/jest/pull/6528))
 - `[jest-cli]` Show open handles from inside test files as well ([#6263](https://github.com/facebook/jest/pull/6263))
+- `[jest-haste-map]` Fix a problem where creating folders ending with `.js` could cause a crash ([#6818](https://github.com/facebook/jest/pull/6818))
 
 ### Chore & Maintenance
 

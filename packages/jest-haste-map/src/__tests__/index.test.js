@@ -1070,7 +1070,15 @@ describe('HasteMap', () => {
       expect(moduleMap.getModule('Banana')).toBeNull();
     });
 
-    const MOCK_STAT = {mtime: {getTime: () => 45}};
+    const MOCK_STAT_FILE = {
+      isDirectory: () => false,
+      mtime: {getTime: () => 45},
+    };
+
+    const MOCK_STAT_FOLDER = {
+      isDirectory: () => true,
+      mtime: {getTime: () => 45},
+    };
 
     hm_it('handles several change events at once', async hm => {
       mockFs['/fruits/tomato.js'] = [
@@ -1084,18 +1092,18 @@ describe('HasteMap', () => {
         ' */',
       ].join('\n');
       const e = mockEmitters['/fruits'];
-      e.emit('all', 'add', 'tomato.js', '/fruits', MOCK_STAT);
-      e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT);
+      e.emit('all', 'add', 'tomato.js', '/fruits', MOCK_STAT_FILE);
+      e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT_FILE);
       const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
       expect(eventsQueue).toEqual([
         {
           filePath: '/fruits/tomato.js',
-          stat: MOCK_STAT,
+          stat: MOCK_STAT_FILE,
           type: 'add',
         },
         {
           filePath: '/fruits/pear.js',
-          stat: MOCK_STAT,
+          stat: MOCK_STAT_FILE,
           type: 'change',
         },
       ]);
@@ -1107,8 +1115,8 @@ describe('HasteMap', () => {
 
     hm_it('does not emit duplicate change events', async hm => {
       const e = mockEmitters['/fruits'];
-      e.emit('all', 'change', 'tomato.js', '/fruits', MOCK_STAT);
-      e.emit('all', 'change', 'tomato.js', '/fruits', MOCK_STAT);
+      e.emit('all', 'change', 'tomato.js', '/fruits', MOCK_STAT_FILE);
+      e.emit('all', 'change', 'tomato.js', '/fruits', MOCK_STAT_FILE);
       const {eventsQueue} = await waitForItToChange(hm);
       expect(eventsQueue).toHaveLength(1);
     });
@@ -1117,11 +1125,19 @@ describe('HasteMap', () => {
       'emits a change even if a file in node_modules has changed',
       async hm => {
         const e = mockEmitters['/fruits'];
-        e.emit('all', 'add', 'apple.js', '/fruits/node_modules/', MOCK_STAT);
+        e.emit(
+          'all',
+          'add',
+          'apple.js',
+          '/fruits/node_modules/',
+          MOCK_STAT_FILE,
+        );
         const {eventsQueue, hasteFS} = await waitForItToChange(hm);
         const filePath = '/fruits/node_modules/apple.js';
         expect(eventsQueue).toHaveLength(1);
-        expect(eventsQueue).toEqual([{filePath, stat: MOCK_STAT, type: 'add'}]);
+        expect(eventsQueue).toEqual([
+          {filePath, stat: MOCK_STAT_FILE, type: 'add'},
+        ]);
         expect(hasteFS.getModuleName(filePath)).toBeDefined();
       },
     );
@@ -1133,15 +1149,25 @@ describe('HasteMap', () => {
         expect(initMM.getModule('Orange', 'ios')).toBeTruthy();
         expect(initMM.getModule('Orange', 'android')).toBeTruthy();
         const e = mockEmitters['/fruits'];
-        e.emit('all', 'change', 'Orange.ios.js', '/fruits/', MOCK_STAT);
-        e.emit('all', 'change', 'Orange.android.js', '/fruits/', MOCK_STAT);
+        e.emit('all', 'change', 'Orange.ios.js', '/fruits/', MOCK_STAT_FILE);
+        e.emit(
+          'all',
+          'change',
+          'Orange.android.js',
+          '/fruits/',
+          MOCK_STAT_FILE,
+        );
         const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
         expect(eventsQueue).toHaveLength(2);
         expect(eventsQueue).toEqual([
-          {filePath: '/fruits/Orange.ios.js', stat: MOCK_STAT, type: 'change'},
+          {
+            filePath: '/fruits/Orange.ios.js',
+            stat: MOCK_STAT_FILE,
+            type: 'change',
+          },
           {
             filePath: '/fruits/Orange.android.js',
-            stat: MOCK_STAT,
+            stat: MOCK_STAT_FILE,
             type: 'change',
           },
         ]);
@@ -1182,8 +1208,8 @@ describe('HasteMap', () => {
           ' */',
         ].join('\n');
         const e = mockEmitters['/fruits'];
-        e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT);
-        e.emit('all', 'add', 'blueberry.js', '/fruits', MOCK_STAT);
+        e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT_FILE);
+        e.emit('all', 'add', 'blueberry.js', '/fruits', MOCK_STAT_FILE);
         const {hasteFS, moduleMap} = await waitForItToChange(hm);
         expect(hasteFS.exists('/fruits/blueberry.js')).toBe(true);
         try {
@@ -1215,7 +1241,7 @@ describe('HasteMap', () => {
             ' */',
           ].join('\n');
           const e = mockEmitters['/fruits'];
-          e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT);
+          e.emit('all', 'change', 'pear.js', '/fruits', MOCK_STAT_FILE);
           const {moduleMap} = await waitForItToChange(hm);
           expect(moduleMap.getModule('Pear')).toBe('/fruits/blueberry.js');
           expect(moduleMap.getModule('OldPear')).toBe('/fruits/pear.js');
@@ -1231,10 +1257,24 @@ describe('HasteMap', () => {
           ' */',
         ].join('\n');
         const e = mockEmitters['/fruits'];
-        e.emit('all', 'change', 'blueberry.js', '/fruits', MOCK_STAT);
+        e.emit('all', 'change', 'blueberry.js', '/fruits', MOCK_STAT_FILE);
         const {moduleMap} = await waitForItToChange(hm);
         expect(moduleMap.getModule('Pear')).toBe('/fruits/pear.js');
         expect(moduleMap.getModule('Blueberry')).toBe('/fruits/blueberry.js');
+      });
+
+      hm_it('ignore directories', async hm => {
+        const e = mockEmitters['/fruits'];
+        e.emit('all', 'change', 'tomato.js', '/fruits', MOCK_STAT_FOLDER);
+        e.emit(
+          'all',
+          'change',
+          'tomato.js',
+          '/fruits/tomato.js/index.js',
+          MOCK_STAT_FILE,
+        );
+        const {eventsQueue} = await waitForItToChange(hm);
+        expect(eventsQueue).toHaveLength(1);
       });
     });
   });
