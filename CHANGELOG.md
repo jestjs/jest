@@ -1,5 +1,7 @@
 ## master
 
+## 23.5.0
+
 ### Features
 
 - `[jest-cli]` Add package name to `NotifyReporter` notification ([#5898](https://github.com/facebook/jest/pull/5898))
