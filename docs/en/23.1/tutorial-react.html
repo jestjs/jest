@@ -219,7 +219,7 @@ Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword
   }
 
   onChange() {
-    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">isChecked</span>: !<span class="hljs-keyword">this</span>.state.isChecked});
+    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">prevState</span> =&gt;</span> ({<span class="hljs-attr">isChecked</span>: !prevState.isChecked}));
   }
 
   render() {

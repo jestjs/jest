@@ -216,7 +216,7 @@ exports[<span class="hljs-string">`Link changes the class when hovered 3`</span>
   }
 
   onChange() {
-    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">isChecked</span>: !<span class="hljs-keyword">this</span>.state.isChecked});
+    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">prevState</span> =&gt;</span> ({<span class="hljs-attr">isChecked</span>: !prevState.isChecked}));
   }
 
   render() {
