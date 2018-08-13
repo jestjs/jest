@@ -28,6 +28,16 @@ Instead, it threw:
 <red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
 `;
 
+exports[`.toThrow() fails when given an empty string 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"\\"</>
+Instead, it threw:
+<red>  apple</>
+<red>      <dim>at toThrowMatchingStringOrRegexp (</>packages/expect/src/to_throw_matchers.js<dim>:109:13)</></>"
+`;
+
 exports[`.toThrow() invalid actual 1`] = `
 "<dim>expect(</><red>function</><dim>).toThrow(</><green>undefined</><dim>)</>
 
@@ -151,6 +161,16 @@ Expected the function not to throw an error of type:
 Instead, it threw:
 <red>  Error</>
 <red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
+`;
+
+exports[`.toThrowError() fails when given an empty string 1`] = `
+"<dim>expect(</><red>function</><dim>).toThrow(</><green>string</><dim>)</>
+
+Expected the function to throw an error matching:
+  <green>\\"\\"</>
+Instead, it threw:
+<red>  apple</>
+<red>      <dim>at toThrowMatchingStringOrRegexp (</>packages/expect/src/to_throw_matchers.js<dim>:109:13)</></>"
 `;
 
 exports[`.toThrowError() invalid actual 1`] = `
