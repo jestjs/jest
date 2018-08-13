@@ -99,6 +99,8 @@ With all the things set up, we can now write our tests like this:
 
 ```js
 // test.js
+const timeout = 5000;
+
 describe(
   '/ (Home Page)',
   () => {
