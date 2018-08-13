@@ -156,6 +156,36 @@ This will print something like this:
 
 When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. You should craft a precise failure message to make sure users of your custom assertions have a good developer experience.
 
+#### Custom snapshot matchers
+
+To use snapshot testing inside of your custom matcher you can import `jest-snapshot` and use it from within your matcher.
+
+Here's a simple snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
+
+```js
+const {toMatchSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  toMatchTrimmedSnapshot(received, length) {
+    return toMatchSnapshot.call(
+      this,
+      received.substring(0, length),
+      'toMatchTrimmedSnapshot',
+    );
+  },
+});
+
+it('stores only 10 characters', () => {
+  expect('extra long string oh my gerd').toMatchTrimmedSnapshot(10);
+});
+
+/*
+Stored snapshot will look like:
+
+exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
+*/
+```
+
 ### `expect.anything()`
 
 `expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
