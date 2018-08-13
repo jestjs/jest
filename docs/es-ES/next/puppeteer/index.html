@@ -122,6 +122,8 @@ Usar con puppeteer</h1></header><article><div><span><p>With the <a href="/docs/e
 </code></pre>
 <p>Con todo lo configurado, ahora podemos escribir nuestras pruebas de esta manera:</p>
 <pre><code class="hljs css languages- js"><span class="hljs-comment">// test.js</span>
+<span class="hljs-keyword">const</span> timeout = <span class="hljs-number">5000</span>;
+
 describe(
   <span class="hljs-string">'/ (Home Page)'</span>,
   () =&gt; {
