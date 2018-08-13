@@ -1,5 +1,9 @@
 ## master
 
+## Fixes
+
+- `[expect]` Add empty string check to `toThrow` matcher ([#6836](https://github.com/facebook/jest/pull/6836))
+
 ## 23.5.0
 
 ### Features
