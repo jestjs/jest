@@ -33,6 +33,8 @@ describe('Custom snapshot resolver', () => {
 
     // $FlowFixMe dynamic require
     const content = require(snapshotFile);
-    expect(content).toHaveProperty('snapshots are written to custom location 1');
+    expect(content).toHaveProperty(
+      'snapshots are written to custom location 1',
+    );
   });
 });
