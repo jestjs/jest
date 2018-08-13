@@ -29,9 +29,11 @@ class customError extends Error {
     class Err2 extends customError {}
 
     test('fails when given an empty string', () => {
-      expect(() => jestExpect(() => {
-        throw 'apple';
-      }).toThrow('')).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        jestExpect(() => {
+          throw new customError('apple');
+        }).toThrow(''),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     test('to throw or not to throw', () => {

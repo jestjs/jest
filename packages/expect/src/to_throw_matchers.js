@@ -109,7 +109,7 @@ const toThrowMatchingStringOrRegexp = (
     error = new Error(error);
   }
 
-  const pass = !!(error && value && error.message.match(pattern));
+  const pass = !!(error && error.message.match(pattern));
   const message = pass
     ? () =>
         matcherHint('.not' + name, 'function', getType(value)) +

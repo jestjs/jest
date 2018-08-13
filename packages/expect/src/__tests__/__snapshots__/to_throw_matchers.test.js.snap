@@ -34,8 +34,8 @@ exports[`.toThrow() fails when given an empty string 1`] = `
 Expected the function to throw an error matching:
   <green>\\"\\"</>
 Instead, it threw:
-<red>  apple</>
-<red>      <dim>at toThrowMatchingStringOrRegexp (</>packages/expect/src/to_throw_matchers.js<dim>:109:13)</></>"
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
 `;
 
 exports[`.toThrow() invalid actual 1`] = `
@@ -169,8 +169,8 @@ exports[`.toThrowError() fails when given an empty string 1`] = `
 Expected the function to throw an error matching:
   <green>\\"\\"</>
 Instead, it threw:
-<red>  apple</>
-<red>      <dim>at toThrowMatchingStringOrRegexp (</>packages/expect/src/to_throw_matchers.js<dim>:109:13)</></>"
+<red>  Error</>
+<red>      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</></>"
 `;
 
 exports[`.toThrowError() invalid actual 1`] = `

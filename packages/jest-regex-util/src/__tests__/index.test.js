@@ -1,6 +1,6 @@
 jest.mock('path');
 
-import {replacePathSepForRegex} from '../index';
+import {replacePathSepForRegex, escapeStrForRegex} from '../index';
 import path from 'path';
 
 describe('replacePathSepForRegex()', () => {
@@ -10,6 +10,16 @@ describe('replacePathSepForRegex()', () => {
     it('should return the path', () => {
       const expected = {};
       expect(replacePathSepForRegex(expected)).toBe(expected);
+    });
+  });
+
+  describe('escapeStrForRegex', () => {
+    it('returns empty regex when given empty string', () => {
+      expect(escapeStrForRegex('')).toBe('^$');
+    });
+
+    it('returns regex for given string: [0-9]', () => {
+      expect(escapeStrForRegex('[0-9]')).toBe('\\[0-9\\]');
     });
   });
 
