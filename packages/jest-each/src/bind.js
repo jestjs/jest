@@ -119,12 +119,10 @@ const applyRestParams = (
   supportsDone: boolean,
   params: Array<any>,
   test: Function,
-) => {
-  if (supportsDone && params.length < test.length)
-    return done => test(...params, done);
-
-  return () => test(...params);
-};
+) =>
+  supportsDone && params.length < test.length
+    ? done => test(...params, done)
+    : () => test(...params);
 
 const getHeadingKeys = (headings: string): Array<string> =>
   headings.replace(/\s/g, '').split('|');
@@ -157,11 +155,8 @@ const interpolate = (title: string, data: any) =>
     .reduce(getMatchingKeyPaths(title), []) // aka flatMap
     .reduce(replaceKeyPathWithValue(data), title);
 
-const applyObjectParams = (supportsDone: boolean, obj: any, test: Function) => {
-  if (supportsDone && test.length > 1) return done => test(obj, done);
-
-  return () => test(obj);
-};
+const applyObjectParams = (supportsDone: boolean, obj: any, test: Function) =>
+  supportsDone && test.length > 1 ? done => test(obj, done) : () => test(obj);
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
