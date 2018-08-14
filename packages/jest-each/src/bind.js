@@ -23,14 +23,18 @@ const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 
-export default (cb: Function) => (...args: any) =>
+export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout: number): void {
     if (args.length === 1) {
       const table: Table = args[0].every(Array.isArray)
         ? args[0]
         : args[0].map(entry => [entry]);
       return table.forEach((row, i) =>
-        cb(arrayFormat(title, i, ...row), applyRestParams(row, test), timeout),
+        cb(
+          arrayFormat(title, i, ...row),
+          applyRestParams(supportsDone, row, test),
+          timeout,
+        ),
       );
     }
 
@@ -66,7 +70,11 @@ export default (cb: Function) => (...args: any) =>
     }
 
     return table.forEach(row =>
-      cb(interpolate(title, row), applyObjectParams(row, test), timeout),
+      cb(
+        interpolate(title, row),
+        applyObjectParams(supportsDone, row, test),
+        timeout,
+      ),
     );
   };
 
@@ -107,8 +115,13 @@ const arrayFormat = (title, rowIndex, ...args) => {
   );
 };
 
-const applyRestParams = (params: Array<any>, test: Function) => {
-  if (params.length < test.length) return done => test(...params, done);
+const applyRestParams = (
+  supportsDone: boolean,
+  params: Array<any>,
+  test: Function,
+) => {
+  if (supportsDone && params.length < test.length)
+    return done => test(...params, done);
 
   return () => test(...params);
 };
@@ -144,8 +157,8 @@ const interpolate = (title: string, data: any) =>
     .reduce(getMatchingKeyPaths(title), []) // aka flatMap
     .reduce(replaceKeyPathWithValue(data), title);
 
-const applyObjectParams = (obj: any, test: Function) => {
-  if (test.length > 1) return done => test(obj, done);
+const applyObjectParams = (supportsDone: boolean, obj: any, test: Function) => {
+  if (supportsDone && test.length > 1) return done => test(obj, done);
 
   return () => test(obj);
 };
