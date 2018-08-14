@@ -124,9 +124,7 @@ const matchers: MatchersObject = {
           `Expected value to have a 'length' property that is a number. ` +
           `Received:\n` +
           `  ${printReceived(actual)}\n` +
-          (actual
-            ? `received.length:\n  ${printReceived(actual.length)}`
-            : ''),
+          (actual ? `received.length:\n  ${printReceived(actual.length)}` : ''),
       );
     }
 

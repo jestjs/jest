@@ -617,12 +617,13 @@ describe('.toBeDefined(), .toBeUndefined()', () => {
   });
 });
 
-
 describe('.toBeEmpty', () => {
   it('does not accept arguments', () => {
-    expect(() => jestExpect([]).toBeEmpty(false)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect([]).toBeEmpty(false),
+    ).toThrowErrorMatchingSnapshot();
   });
-  
+
   it('considers [] to be empty', () => {
     jestExpect([]).toBeEmpty();
   });
@@ -652,25 +653,19 @@ describe('.toBeEmpty', () => {
   });
 
   it('refuses to considers an object without a length property', () => {
-    expect(() =>
-      jestExpect(123).toBeEmpty()
-    ).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect(123).toBeEmpty()).toThrowErrorMatchingSnapshot();
   });
 
   it('refuses to considers an object with a non-numeric length property', () => {
     expect(() =>
-      jestExpect({length: 'not a number'}).toBeEmpty()
+      jestExpect({length: 'not a number'}).toBeEmpty(),
     ).toThrowErrorMatchingSnapshot();
   });
 
   test('error cases', () => {
-    expect(() =>
-      jestExpect("a").toBeEmpty()
-    ).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect('a').toBeEmpty()).toThrowErrorMatchingSnapshot();
 
-    expect(() =>
-      jestExpect("").not.toBeEmpty()
-    ).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect('').not.toBeEmpty()).toThrowErrorMatchingSnapshot();
   });
 });
 
