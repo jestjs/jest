@@ -584,6 +584,44 @@ exports[`.toBeDefined(), .toBeUndefined() undefined is undefined 2`] = `
 Received: <red>undefined</>"
 `;
 
+exports[`.toBeEmpty does not accept arguments 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeEmpty(</><dim>)</>
+
+Matcher does not accept any arguments.
+Got:
+  boolean: <green>false</>"
+`;
+
+exports[`.toBeEmpty error cases 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeEmpty(</><dim>)</>
+
+Received: <red>\\"a\\"</>"
+`;
+
+exports[`.toBeEmpty error cases 2`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeEmpty(</><dim>)</>
+
+Received: <red>\\"\\"</>"
+`;
+
+exports[`.toBeEmpty refuses to considers an object with a non-numeric length property 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveLength(</><green>length</><dim>)</>
+
+Expected value to have a 'length' property that is a number. Received:
+  <red>{\\"length\\": \\"not a number\\"}</>
+received.length:
+  <red>\\"not a number\\"</>"
+`;
+
+exports[`.toBeEmpty refuses to considers an object without a length property 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveLength(</><green>length</><dim>)</>
+
+Expected value to have a 'length' property that is a number. Received:
+  <red>123</>
+received.length:
+  <red>undefined</>"
+`;
+
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [-Infinity, -Infinity] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
 

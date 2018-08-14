@@ -111,6 +111,35 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toBeEmpty(actual: any, expected: void) {
+    ensureNoExpected(expected, '.toBeEmpty');
+
+    if (
+      typeof actual !== 'string' &&
+      (!actual || typeof actual.length !== 'number')
+    ) {
+      throw new Error(
+        matcherHint('[.not].toHaveLength', 'received', 'length') +
+          '\n\n' +
+          `Expected value to have a 'length' property that is a number. ` +
+          `Received:\n` +
+          `  ${printReceived(actual)}\n` +
+          (actual
+            ? `received.length:\n  ${printReceived(actual.length)}`
+            : ''),
+      );
+    }
+
+    const pass = actual.length === 0;
+    const message = () =>
+      matcherHint('.toBeEmpty', 'received', '', {
+        isNot: this.isNot,
+      }) +
+      '\n\n' +
+      `Received: ${printReceived(actual)}`;
+    return {message, pass};
+  },
+
   toBeFalsy(actual: any, expected: void) {
     ensureNoExpected(expected, '.toBeFalsy');
     const pass = !actual;
