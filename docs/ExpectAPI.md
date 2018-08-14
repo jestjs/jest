@@ -886,12 +886,27 @@ describe('the La Croix cans on my desk', () => {
 
 Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
 
-This is especially useful for checking arrays or strings size.
+This is especially useful for checking arrays or strings size. 
+
+Before using `.toHaveLength(0)`, consider `.toBeEmpty()` instead.
 
 ```js
 expect([1, 2, 3]).toHaveLength(3);
 expect('abc').toHaveLength(3);
 expect('').not.toHaveLength(5);
+```
+
+### `.toBeEmpty()`
+
+Use `.toBeEmpty` to check that an object's `.length` property is equal to `0`.
+
+This is especially useful for checking for empty arrays or strings.
+
+```js
+expect("").toBeEmpty();
+expect([]).toBeEmpty();
+expect([1, 2, 3]).not.toBeEmpty();
+expect(" ").not.toBeEmpty();
 ```
 
 ### `.toMatch(regexpOrString)`
