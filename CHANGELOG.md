@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[expect]` Add `toBeEmpty` matcher [#6839](https://github.com/facebook/jest/pull/6839)
+
 ## 23.5.0
 
 ### Features
