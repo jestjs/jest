@@ -1,5 +1,9 @@
 ## master
 
+### Chore & Maintenance
+
+- `[docs]` Add custom toMatchSnapshot matcher docs ([#6837](https://github.com/facebook/jest/pull/6837))
+
 ## 23.5.0
 
 ### Features
