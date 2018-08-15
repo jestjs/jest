@@ -76,8 +76,7 @@
 {
   "jest": {
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-        "&lt;rootDir&gt;/__mocks__/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
       "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js"
     }
   }
@@ -97,12 +96,11 @@
 <pre><code class="hljs css languages- bash">yarn add --dev identity-obj-proxy
 </code></pre>
 <p>Тоді запит className з об’єкта стилів буде повернутий як є (наприклад, <code>styles.foobar === 'foobar'</code>). Це дуже зручно для <a href="/docs/uk/23.1/snapshot-testing">тестування зі знімками</a> React компонентів.</p>
-<pre><code class="hljs css languages- json">// package.json (for CSS Modules)
+<pre><code class="hljs css languages- json">// package.json (для CSS Modules)
 {
   "jest": {
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-        "&lt;rootDir&gt;/__mocks__/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
       "\\.(css|less)$": "identity-obj-proxy"
     }
   }
@@ -128,8 +126,7 @@
       "\\.(css|less)$": "identity-obj-proxy"
     },
     "transform": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-        "&lt;rootDir&gt;/fileTransformer.js"
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/fileTransformer.js"
     }
   }
 }
