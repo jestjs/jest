@@ -47,7 +47,9 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  return path => micromatch([path.replace(/\\(?![{}()+?.^$])/g, '/')], globs, {dot: true}).length > 0;
+  return path =>
+    micromatch([path.replace(/\\(?![{}()+?.^$])/g, '/')], globs, {dot: true})
+      .length > 0;
 };
 
 const regexToMatcher = (testRegex: string) => {
