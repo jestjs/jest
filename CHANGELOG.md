@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+- `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
+
 ### Chore & Maintenance
 
 - `[docs]` Add custom toMatchSnapshot matcher docs ([#6837](https://github.com/facebook/jest/pull/6837))

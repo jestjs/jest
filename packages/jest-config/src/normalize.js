@@ -342,6 +342,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       'coverageThreshold',
       'globals',
       'moduleNameMapper',
+      'testEnvironmentOptions',
       'transform',
     ],
   });
