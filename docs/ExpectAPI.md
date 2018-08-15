@@ -293,7 +293,7 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 ### `expect.not.arrayContaining(array)`
 
-`expect.not.arrayContaining(array)` matches a received array which contains none of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
+`expect.not.arrayContaining(array)` matches a received array which does not contain all of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
 
 It is the inverse of `expect.arrayContaining`.
 
