@@ -2,7 +2,7 @@
 
 ### Fixes
 
-- `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6844](https://github.com/facebook/jest/pull/6844))
+- `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
 
 ### Chore & Maintenance
 
