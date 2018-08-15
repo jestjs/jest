@@ -146,7 +146,7 @@ function printBasicValue(
     return printSymbol(val);
   }
   if (toStringed === '[object Date]') {
-    return toISOString.call(val);
+    return isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
   }
   if (toStringed === '[object Error]') {
     return printError(val);

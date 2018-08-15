@@ -62,6 +62,10 @@
 
 - `[jest-haste-map]` Optimize watchman crawler by using `glob` on initial query ([#6689](https://github.com/facebook/jest/pull/6689))
 
+### Fixes
+
+- `[pretty-format]` Fix formatting of invalid Date objects ([#6635](https://github.com/facebook/jest/pull/6635))
+
 ## 23.4.0
 
 ### Features
