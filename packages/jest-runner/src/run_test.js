@@ -25,6 +25,7 @@ import {
 import LeakDetector from 'jest-leak-detector';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
+import {formatExecError} from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
 
 type RunTestInternalResult = {
@@ -144,6 +145,34 @@ async function runTestInternal(
 
   // For runtime errors
   sourcemapSupport.install(sourcemapOptions);
+
+  if (
+    environment.global &&
+    environment.global.process &&
+    environment.global.process.exit
+  ) {
+    const realExit = environment.global.process.exit;
+
+    environment.global.process.exit = function exit(...args) {
+      const error = new Error(`process.exit called with "${args.join(', ')}"`);
+
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, exit);
+      }
+
+      const formattedError = formatExecError(
+        error,
+        config,
+        {noStackTrace: false},
+        undefined,
+        true,
+      );
+
+      process.stderr.write(formattedError);
+
+      return realExit(...args);
+    };
+  }
 
   try {
     await environment.setup();

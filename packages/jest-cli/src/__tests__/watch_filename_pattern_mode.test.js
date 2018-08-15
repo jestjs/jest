@@ -24,7 +24,7 @@ jest.mock('ansi-escapes', () => ({
 }));
 
 jest.mock(
-  '../search_source',
+  '../SearchSource',
   () =>
     class {
       constructor(context) {
@@ -63,7 +63,7 @@ jest.doMock('strip-ansi');
 require('strip-ansi').mockImplementation(str => str);
 
 jest.doMock(
-  '../run_jest',
+  '../runJest',
   () =>
     function() {
       const args = Array.from(arguments);
@@ -125,14 +125,7 @@ describe('Watch mode flows', () => {
     expect(runJestMock).toBeCalled();
 
     // globalConfig is updated with the current pattern
-    expect(runJestMock.mock.calls[0][0].globalConfig).toEqual({
-      onlyChanged: false,
-      passWithNoTests: true,
-      testNamePattern: '',
-      testPathPattern: 'p.*3',
-      watch: true,
-      watchAll: false,
-    });
+    expect(runJestMock.mock.calls[0][0].globalConfig).toMatchSnapshot();
   });
 
   it('Pressing "c" clears the filters', async () => {

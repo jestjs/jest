@@ -200,6 +200,11 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     jest.mock('./Widget', () => 'mock-widget');
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
+4.  Disable warnings all together (should be done in your jest setup file):
+    ```js
+    jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
+    ```
+    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzling console.warn and supress specific warnings.
 
 ### DOM Testing
 

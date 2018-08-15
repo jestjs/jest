@@ -135,7 +135,7 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 ### `--coverage`
 
-Indicates that test coverage information should be collected and reported in the output.
+Indicates that test coverage information should be collected and reported in the output. This option is also aliased by `--collectCoverage`.
 
 ### `--debug`
 

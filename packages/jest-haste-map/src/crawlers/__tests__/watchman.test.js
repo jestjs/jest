@@ -141,7 +141,12 @@ describe('watchman watch', () => {
 
       expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms']);
 
-      expect(query[2].suffix).toEqual(['js', 'json']);
+      expect(query[2].glob).toEqual([
+        'fruits/**/*.js',
+        'fruits/**/*.json',
+        'vegetables/**/*.js',
+        'vegetables/**/*.json',
+      ]);
 
       expect(data.clocks).toEqual({
         [ROOT_MOCK]: 'c:fake-clock:1',
@@ -412,7 +417,7 @@ describe('watchman watch', () => {
 
       expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms']);
 
-      expect(query[2].suffix).toEqual(['js', 'json']);
+      expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
 
       expect(data.clocks).toEqual({
         [ROOT_MOCK]: 'c:fake-clock:1',

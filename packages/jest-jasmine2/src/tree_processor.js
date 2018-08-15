@@ -89,7 +89,7 @@ export default function treeProcessor(options: Options) {
       fn: getNodeHandler(child, enabled),
     }));
     if (!hasEnabledTest(node)) {
-      return [];
+      return children;
     }
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);
   }
