@@ -10,7 +10,7 @@ aliases:
       - node_modules
       - website/node_modules
     key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-  
+
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
@@ -53,9 +53,9 @@ jobs:
       - run:
           command: yarn test-ci-partial
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-jest-circus:
     working_directory: ~/jest
@@ -69,9 +69,9 @@ jobs:
       - run:
           command: JEST_CIRCUS=1 yarn test-ci-partial
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-node-8:
     working_directory: ~/jest
@@ -85,9 +85,9 @@ jobs:
       - run:
           command: yarn test-ci
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-node-6:
     working_directory: ~/jest
@@ -101,9 +101,9 @@ jobs:
       - run:
           command: yarn test-ci-partial
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-or-deploy-website:
     working_directory: ~/jest
