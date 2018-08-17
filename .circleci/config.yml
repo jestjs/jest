@@ -52,8 +52,6 @@ jobs:
       - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
-          environment:
-            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
           path: reports/junit
 
@@ -68,8 +66,6 @@ jobs:
       - save-cache: *save-cache
       - run:
           command: JEST_CIRCUS=1 yarn test-ci-partial
-          environment:
-            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
           path: reports/junit
 
@@ -84,8 +80,6 @@ jobs:
       - save-cache: *save-cache
       - run:
           command: yarn test-ci
-          environment:
-            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
           path: reports/junit
 
@@ -100,8 +94,6 @@ jobs:
       - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
-          environment:
-            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
           path: reports/junit
 
