@@ -2,12 +2,7 @@
 
 module.exports = {
   collectCoverageFrom: [
-    '**/packages/jest-*/**/*.js',
-    '**/packages/eslint-*/**/*.js',
-    '**/packages/pretty-format/**/*.js',
-    '**/packages/expect/**/*.js',
-    '**/packages/diff-sequences/**/*.js',
-    '**/packages/babel-jest/**/*.js',
+    '**/packages/*/**/*.js',
     '!**/bin/**',
     '!**/cli/**',
     '!**/perf/**',
