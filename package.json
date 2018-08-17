@@ -90,8 +90,8 @@
     "postinstall": "opencollective postinstall && yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
-    "test-ci": "JEST_SILENT_REPORTER_DOTS=true yarn jest-coverage -i --reporters jest-silent-reporter jest-junit && yarn test-leak && node scripts/mapCoverage.js && codecov",
-    "test-ci-partial": "JEST_SILENT_REPORTER_DOTS=true yarn jest -i --reporters jest-silent-reporter jest-junit",
+    "test-ci": "JEST_SILENT_REPORTER_DOTS=true yarn jest-coverage -i --config jest.config.ci.js && yarn test-leak && node scripts/mapCoverage.js && codecov",
+    "test-ci-partial": "JEST_SILENT_REPORTER_DOTS=true yarn jest -i --config jest.config.ci.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn typecheck && yarn lint && yarn jest",
@@ -103,64 +103,6 @@
     "website",
     "examples/*"
   ],
-  "jest": {
-    "modulePathIgnorePatterns": [
-      "examples/.*",
-      "packages/.*/build",
-      "packages/.*/build-es5",
-      "packages/jest-runtime/src/__tests__/test_root.*",
-      "website/.*",
-      "e2e/runtime-internal-module-registry/__mocks__"
-    ],
-    "collectCoverageFrom": [
-      "**/packages/jest-*/**/*.js",
-      "**/packages/eslint-*/**/*.js",
-      "**/packages/pretty-format/**/*.js",
-      "!**/bin/**",
-      "!**/cli/**",
-      "!**/perf/**",
-      "!**/__mocks__/**",
-      "!**/__tests__/**",
-      "!e2e/**"
-    ],
-    "coverageReporters": [
-      "json"
-    ],
-    "projects": [
-      "<rootDir>",
-      "<rootDir>/examples/*/"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/packages/babel-jest"
-    },
-    "setupTestFrameworkScriptFile": "<rootDir>/testSetupFile.js",
-    "snapshotSerializers": [
-      "<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js"
-    ],
-    "testEnvironment": "./packages/jest-environment-node",
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/examples/",
-      "/e2e/.*/__tests__",
-      "\\.snap$",
-      "/packages/.*/build",
-      "/packages/.*/build-es5",
-      "/packages/.*/src/__tests__/expect_util.js",
-      "/packages/jest-cli/src/__tests__/test_root",
-      "/packages/jest-cli/src/__tests__/__fixtures__/",
-      "/packages/jest-cli/src/lib/__tests__/fixtures/",
-      "/packages/jest-haste-map/src/__tests__/haste_impl.js",
-      "/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/",
-      "/packages/jest-runtime/src/__tests__/defaultResolver.js",
-      "/packages/jest-runtime/src/__tests__/module_dir/",
-      "/packages/jest-runtime/src/__tests__/NODE_PATH_dir",
-      "/packages/jest-snapshot/src/__tests__/plugins",
-      "/packages/jest-validate/src/__tests__/fixtures/",
-      "/packages/jest-worker/src/__performance_tests__",
-      "/packages/pretty-format/perf/test.js",
-      "/e2e/__tests__/iterator-to-null-test.js"
-    ]
-  },
   "prettier": {
     "bracketSpacing": false,
     "proseWrap": "never",
