@@ -121,9 +121,9 @@ test.each = bindEach(test);
 test.only.each = bindEach(test.only);
 test.skip.each = bindEach(test.skip);
 
-describe.each = bindEach(describe);
-describe.only.each = bindEach(describe.only);
-describe.skip.each = bindEach(describe.skip);
+describe.each = bindEach(describe, false);
+describe.only.each = bindEach(describe.only, false);
+describe.skip.each = bindEach(describe.skip, false);
 
 module.exports = {
   afterAll,

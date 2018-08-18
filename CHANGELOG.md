@@ -8,6 +8,10 @@
 
 - `[docs]` Add custom toMatchSnapshot matcher docs ([#6837](https://github.com/facebook/jest/pull/6837))
 
+### Fixes
+
+- `[jest-each`] Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
+
 ## 23.5.0
 
 ### Features
