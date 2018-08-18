@@ -17,6 +17,16 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 <yellow></>"
 `;
 
+exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Module <bold>exist-but-no-jest-preset</> should have \\"jest-preset.js\\" or \\"jest-preset.json\\" file at the root.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
 exports[`preset throws when preset not found 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>
