@@ -3,14 +3,12 @@
 ### Fixes
 
 - `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
+- `[jest-each`] Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
 
 ### Chore & Maintenance
 
 - `[docs]` Add custom toMatchSnapshot matcher docs ([#6837](https://github.com/facebook/jest/pull/6837))
-
-### Fixes
-
-- `[jest-each`] Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
+- `[docs]` Improve the documentation regarding preset configuration ([#6864](https://github.com/facebook/jest/issues/6864))
 
 ## 23.5.0
 
