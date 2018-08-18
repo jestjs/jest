@@ -253,6 +253,8 @@ export type ProjectConfig = {|
   errorOnDeprecated: boolean,
   filter: ?Path,
   forceCoverageMatch: Array<Glob>,
+  globalSetup: ?string,
+  globalTeardown: ?string,
   globals: ConfigGlobals,
   haste: HasteConfig,
   moduleDirectories: Array<string>,

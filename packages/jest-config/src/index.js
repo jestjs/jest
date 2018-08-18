@@ -164,6 +164,8 @@ const getConfigs = (
     errorOnDeprecated: options.errorOnDeprecated,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,
+    globalSetup: options.globalSetup,
+    globalTeardown: options.globalTeardown,
     globals: options.globals,
     haste: options.haste,
     moduleDirectories: options.moduleDirectories,

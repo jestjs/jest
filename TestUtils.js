@@ -79,6 +79,8 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   errorOnDeprecated: false,
   filter: null,
   forceCoverageMatch: [],
+  globalSetup: null,
+  globalTeardown: null,
   globals: {},
   haste: {
     providesModuleNodeModules: [],

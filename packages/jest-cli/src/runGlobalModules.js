@@ -1,0 +1,49 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
+import type {GlobalConfig} from 'types/Config';
+import type {Test} from 'types/TestRunner';
+
+export default async ({
+  allTests,
+  globalConfig,
+  moduleName,
+}: {
+  allTests: Array<Test>,
+  globalConfig: GlobalConfig,
+  moduleName: string,
+}) => {
+  const globalModulePaths = new Set(
+    allTests.map(test => test.context.config[moduleName]),
+  );
+
+  if (globalConfig[moduleName]) {
+    globalModulePaths.add(globalConfig[moduleName]);
+  }
+
+  if (globalModulePaths.size > 0) {
+    await Promise.all(
+      Array.from(globalModulePaths).map(async modulePath => {
+        if (!modulePath) {
+          return null;
+        }
+
+        // $FlowFixMe
+        const globalModule = require(modulePath);
+
+        if (typeof globalModule !== 'function') {
+          throw new TypeError(
+            `${moduleName} file must export a function at ${modulePath}`,
+          );
+        }
+
+        return globalModule(globalConfig);
+      }),
+    );
+  }
+};
