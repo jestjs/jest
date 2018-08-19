@@ -21,7 +21,7 @@ import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
-import runGlobalModules from './runGlobalModules';
+import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler from './TestScheduler';
 import TestSequencer from './TestSequencer';
@@ -272,7 +272,7 @@ export default (async function runJest({
     collectHandles = collectNodeHandles();
   }
 
-  await runGlobalModules({allTests, globalConfig, moduleName: 'globalSetup'});
+  await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
 
   const results = await new TestScheduler(
     globalConfig,
@@ -284,7 +284,7 @@ export default (async function runJest({
 
   sequencer.cacheResults(allTests, results);
 
-  await runGlobalModules({
+  await runGlobalHook({
     allTests,
     globalConfig,
     moduleName: 'globalTeardown',
