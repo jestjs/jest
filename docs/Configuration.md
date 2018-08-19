@@ -153,6 +153,24 @@ This will collect coverage information for all the files inside the project's `r
 
 _Note: This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`._
 
+<details>
+  <summary>Help:</summary>
+  If you are seeing coverage output such as...
+
+```
+=============================== Coverage summary ===============================
+Statements   : Unknown% ( 0/0 )
+Branches     : Unknown% ( 0/0 )
+Functions    : Unknown% ( 0/0 )
+Lines        : Unknown% ( 0/0 )
+================================================================================
+Jest: Coverage data for global was not found.
+```
+
+Most likely your glob patterns are not matching any files. Refer to the [micromatch](https://github.com/jonschlinkert/micromatch) documentation to ensure your globs are compatible.
+
+</details>
+
 ### `coverageDirectory` [string]
 
 Default: `undefined`
@@ -303,13 +321,13 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites.
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
 ### `globalTeardown` [string]
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
 ### `moduleDirectories` [array<string>]
 
@@ -392,7 +410,15 @@ Specifies notification mode. Requires `notify: true`.
 
 Default: `undefined`
 
-A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` or `jest-preset.js` module at its top level.
+A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a `jest-preset.json` or `jest-preset.js` file at the root.
+
+For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
+
+```json
+{
+  "preset": "foo-bar"
+}
+```
 
 Presets may also be relative filesystem paths.
 
@@ -401,6 +427,12 @@ Presets may also be relative filesystem paths.
   "preset": "./node_modules/foo-bar/jest-preset.js"
 }
 ```
+
+### `prettierPath` [string]
+
+Default: `'prettier'`
+
+Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
 
 ### `projects` [array<string | ProjectConfig>]
 
@@ -517,7 +549,7 @@ Automatically reset mock state between every test. Equivalent to calling `jest.r
 
 Default: `false`
 
-If enabled, the module registry for every test file will be reset before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
+By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
 
 ### `resolver` [string]
 
@@ -605,6 +637,8 @@ It's worth noting that this code will execute _before_ [`setupTestFrameworkScrip
 Default: `undefined`
 
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+
+If you want this path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside the path string, like `"<rootDir>/a-configs-folder"`.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
@@ -773,6 +807,8 @@ The following is a visualization of the default regex:
 └── component.js # not test
 ```
 
+_Note: `testRegex` will try to detect test files using the **absolute file path** therefore having a folder with name that match it will run all the files as tests_
+
 ### `testResultsProcessor` [string]
 
 Default: `undefined`
@@ -874,7 +910,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
-Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](http://facebook.github.io/jest/docs/en/tutorial-react-native.html#transformignorepatterns-customization).
+Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
 
 ### `unmockedModulePathPatterns` [array<string>]
 

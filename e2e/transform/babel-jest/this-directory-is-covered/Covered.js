@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const thisFunctionIsCovered = (): null => {
-  return null;
-};
+const thisFunctionIsCovered = (): null => null;
 
 thisFunctionIsCovered();
 

@@ -21,15 +21,20 @@ const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
+const INDEX_PLACEHOLDER = '%#';
 
-export default (cb: Function) => (...args: any) =>
-  function eachBind(title: string, test: Function): void {
+export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
+  function eachBind(title: string, test: Function, timeout: number): void {
     if (args.length === 1) {
       const table: Table = args[0].every(Array.isArray)
         ? args[0]
         : args[0].map(entry => [entry]);
-      return table.forEach(row =>
-        cb(arrayFormat(title, ...row), applyRestParams(row, test)),
+      return table.forEach((row, i) =>
+        cb(
+          arrayFormat(title, i, ...row),
+          applyRestParams(supportsDone, row, test),
+          timeout,
+        ),
       );
     }
 
@@ -65,7 +70,11 @@ export default (cb: Function) => (...args: any) =>
     }
 
     return table.forEach(row =>
-      cb(interpolate(title, row), applyObjectParams(row, test)),
+      cb(
+        interpolate(title, row),
+        applyObjectParams(supportsDone, row, test),
+        timeout,
+      ),
     );
   };
 
@@ -76,7 +85,7 @@ const getPrettyIndexes = placeholders =>
     [],
   );
 
-const arrayFormat = (title, ...args) => {
+const arrayFormat = (title, rowIndex, ...args) => {
   const placeholders = title.match(SUPPORTED_PLACEHOLDERS) || [];
   const prettyIndexes = getPrettyIndexes(placeholders);
 
@@ -101,16 +110,19 @@ const arrayFormat = (title, ...args) => {
   );
 
   return util.format(
-    prettyTitle,
+    prettyTitle.replace(INDEX_PLACEHOLDER, rowIndex.toString()),
     ...remainingArgs.slice(0, placeholders.length - prettyIndexes.length),
   );
 };
 
-const applyRestParams = (params: Array<any>, test: Function) => {
-  if (params.length < test.length) return done => test(...params, done);
-
-  return () => test(...params);
-};
+const applyRestParams = (
+  supportsDone: boolean,
+  params: Array<any>,
+  test: Function,
+) =>
+  supportsDone && params.length < test.length
+    ? done => test(...params, done)
+    : () => test(...params);
 
 const getHeadingKeys = (headings: string): Array<string> =>
   headings.replace(/\s/g, '').split('|');
@@ -129,18 +141,27 @@ const buildTable = (
       ),
     );
 
-const interpolate = (title: string, data: any) =>
-  Object.keys(data).reduce(
-    (acc, key) =>
-      acc.replace('$' + key, pretty(data[key], {maxDepth: 1, min: true})),
-    title,
-  );
+const getMatchingKeyPaths = title => (matches, key) =>
+  matches.concat(title.match(new RegExp(`\\$${key}[\\.\\w]*`, 'g')) || []);
 
-const applyObjectParams = (obj: any, test: Function) => {
-  if (test.length > 1) return done => test(obj, done);
-
-  return () => test(obj);
+const replaceKeyPathWithValue = data => (title, match) => {
+  const keyPath = match.replace('$', '').split('.');
+  const value = getPath(data, keyPath);
+  return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
 };
+
+const interpolate = (title: string, data: any) =>
+  Object.keys(data)
+    .reduce(getMatchingKeyPaths(title), []) // aka flatMap
+    .reduce(replaceKeyPathWithValue(data), title);
+
+const applyObjectParams = (supportsDone: boolean, obj: any, test: Function) =>
+  supportsDone && test.length > 1 ? done => test(obj, done) : () => test(obj);
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
+
+const getPath = (o: Object, [head, ...tail]: Array<string>) => {
+  if (!head || !o.hasOwnProperty || !o.hasOwnProperty(head)) return o;
+  return getPath(o[head], tail);
+};

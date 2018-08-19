@@ -21,6 +21,7 @@ The `jest` object is automatically in scope within every test file. The methods 
 - [`jest.resetAllMocks()`](#jestresetallmocks)
 - [`jest.restoreAllMocks()`](#jestrestoreallmocks)
 - [`jest.resetModules()`](#jestresetmodules)
+- [`jest.retryTimes()`](#jestretrytimes)
 - [`jest.runAllTicks()`](#jestrunallticks)
 - [`jest.runAllTimers()`](#jestrunalltimers)
 - [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
@@ -312,6 +313,37 @@ test('works too', () => {
 
 Returns the `jest` object for chaining.
 
+### `jest.retryTimes()`
+
+Runs failed tests n-times until they pass or until the max number of retries are exhausted. This only works with jest-circus!
+
+Example in a test:
+
+```js
+jest.retryTimes(3);
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+To run with jest circus:
+
+Install jest-circus
+
+```
+yarn add --dev jest-circus
+```
+
+Then set as the testRunner in your jest config:
+
+```js
+module.exports = {
+  testRunner: 'jest-circus/runner',
+};
+```
+
+Returns the `jest` object for chaining.
+
 ### `jest.runAllTicks()`
 
 Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
@@ -363,6 +395,8 @@ _Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-optio
 Set the default timeout interval for tests and before/after hooks in milliseconds.
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
+
+_Note: The method must be called after the test framework is installed in the environment and before the test runs. A good place to do this is in the `setupTestFrameworkScriptFile`._
 
 Example:
 

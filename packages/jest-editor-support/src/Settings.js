@@ -20,7 +20,7 @@ import {createProcess} from './Process';
 // settings object will be in memory.
 
 // Ideally anything you care about adding should have a default in
-// the constructor see https://facebook.github.io/jest/docs/configuration.html
+// the constructor see https://jestjs.io/docs/configuration.html
 // for full deets
 
 // For now, this is all we care about inside the config
@@ -46,12 +46,15 @@ export default class Settings extends EventEmitter {
   settings: ConfigRepresentation;
   workspace: ProjectWorkspace;
   spawnOptions: SpawnOptions;
+  _jsonPattern: RegExp;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this.workspace = workspace;
     this._createProcess = (options && options.createProcess) || createProcess;
-    this.spawnOptions = {shell: options && options.shell};
+    this.spawnOptions = {
+      shell: options && options.shell,
+    };
 
     // Defaults for a Jest project
     this.settings = {
@@ -60,6 +63,34 @@ export default class Settings extends EventEmitter {
     };
 
     this.configs = [this.settings];
+    this._jsonPattern = new RegExp(/^[\s]*\{/gm);
+  }
+
+  _parseConfig(text: string): void {
+    let settings = null;
+
+    try {
+      settings = JSON.parse(text);
+    } catch (err) {
+      // skip the non-json content, if any
+      const idx = text.search(this._jsonPattern);
+      if (idx > 0) {
+        if (this.workspace.debug) {
+          console.log(`skip config output noise: ${text.substring(0, idx)}`);
+        }
+        this._parseConfig(text.substring(idx));
+        return;
+      }
+      console.warn(`failed to parse config: \n${text}\nerror: ${err}`);
+      throw err;
+    }
+    this.jestVersionMajor = parseInt(settings.version.split('.').shift(), 10);
+    this.configs =
+      this.jestVersionMajor >= 21 ? settings.configs : [settings.config];
+
+    if (this.workspace.debug) {
+      console.log(`found config jestVersionMajor=${this.jestVersionMajor}`);
+    }
   }
 
   getConfigs(completed: any) {
@@ -70,10 +101,7 @@ export default class Settings extends EventEmitter {
     );
 
     this.getConfigProcess.stdout.on('data', (data: Buffer) => {
-      const settings = JSON.parse(data.toString());
-      this.jestVersionMajor = parseInt(settings.version.split('.').shift(), 10);
-      this.configs =
-        this.jestVersionMajor >= 21 ? settings.configs : [settings.config];
+      this._parseConfig(data.toString());
     });
 
     // They could have an older build of Jest which

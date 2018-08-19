@@ -38,7 +38,8 @@ export class Settings extends EventEmitter {
   getConfig(completed: Function): void;
   jestVersionMajor: number | null;
   settings: {
-    testRegex: string;
+    testRegex: string,
+    testMatch: string[],
   };
 }
 
@@ -49,12 +50,14 @@ export class ProjectWorkspace {
     pathToConfig: string,
     localJestMajorVersin: number,
     collectCoverage?: boolean,
+    debug?: boolean,
   );
   pathToJest: string;
   pathToConfig: string;
   rootPath: string;
   localJestMajorVersion: number;
   collectCoverage?: boolean;
+  debug?: boolean;
 }
 
 export interface IParseResults {
@@ -163,6 +166,7 @@ export interface JestTotalResultsMeta {
 
 export enum messageTypes {
   noTests = 1,
+  testResults = 3,
   unknown = 0,
   watchUsage = 2,
 }
@@ -181,4 +185,12 @@ export interface SnapshotMetadata {
 export class Snapshot {
   constructor(parser?: any, customMatchers?: string[]);
   getMetadata(filepath: string): SnapshotMetadata[];
+}
+
+type FormattedTestResults = {
+  testResults: TestResult[]
+}
+
+type TestResult = {
+  name: string
 }

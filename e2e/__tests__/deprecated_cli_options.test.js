@@ -25,5 +25,5 @@ it('Prints deprecation warnings for CLI flags', () => {
   Please update your configuration.
 
   CLI Options Documentation:
-  https://facebook.github.io/jest/docs/en/cli.html`);
+  https://jestjs.io/docs/en/cli.html`);
 });

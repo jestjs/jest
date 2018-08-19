@@ -1,8 +1,9 @@
 ---
-
 name: 🚀 Feature Proposal
 about: Submit a proposal for a new feature
 ---
+
+<!-- Love Jest? Please consider supporting our collective: 👉  https://opencollective.com/jest/donate -->
 
 ## 🚀 Feature Proposal
 

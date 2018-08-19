@@ -89,9 +89,9 @@ it('does not keep the prototype by default when top level is object', () => {
     this.length = 0;
   }();
 
-  const spy = jest.spyOn(Array, 'isArray').mockImplementation(object => {
-    return object === sourceObject.nestedArray;
-  });
+  const spy = jest
+    .spyOn(Array, 'isArray')
+    .mockImplementation(object => object === sourceObject.nestedArray);
 
   const copy = deepCyclicCopy(sourceObject, {keepPrototype: false});
 
@@ -168,9 +168,9 @@ it('does not keep the prototype for objects when keepPrototype = false', () => {
     this.length = 0;
   }();
 
-  const spy = jest.spyOn(Array, 'isArray').mockImplementation(object => {
-    return object === sourceobject.nestedArray;
-  });
+  const spy = jest
+    .spyOn(Array, 'isArray')
+    .mockImplementation(object => object === sourceobject.nestedArray);
 
   const copy = deepCyclicCopy(sourceobject, {keepPrototype: false});
 
@@ -201,9 +201,9 @@ it('keeps the prototype for objects when keepPrototype = true', () => {
     this.length = 0;
   }();
 
-  const spy = jest.spyOn(Array, 'isArray').mockImplementation(object => {
-    return object === sourceObject.nestedArray;
-  });
+  const spy = jest
+    .spyOn(Array, 'isArray')
+    .mockImplementation(object => object === sourceObject.nestedArray);
 
   const copy = deepCyclicCopy(sourceObject, {keepPrototype: true});
 

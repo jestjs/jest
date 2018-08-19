@@ -47,5 +47,12 @@ export const createProcess = (
     env,
     shell: options.shell,
   };
+
+  if (workspace.debug) {
+    console.log(
+      `spawning process with command=${command}, args=${runtimeArgs.toString()}`,
+    );
+  }
+
   return spawn(command, runtimeArgs, spawnOptions);
 };

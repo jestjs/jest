@@ -19,3 +19,15 @@ describe('Coverage Report', () => {
     expect(stdout).not.toMatch('0 tests passed');
   });
 });
+
+describe('File path not found in mulit-project scenario', () => {
+  it('outputs coverage report', () => {
+    const {stdout} = runJest('multi-project-config-root', [
+      '--runTestsByPath',
+      'not-a-valid-test',
+    ]);
+
+    expect(stdout).toMatch('No tests found');
+    expect(stdout).toMatch(/0 files checked across 2 projects\./);
+  });
+});

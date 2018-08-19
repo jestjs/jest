@@ -264,7 +264,7 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 ### `expect.not.arrayContaining(array)`
 
-`expect.not.arrayContaining(array)` matches a received array which contains none of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
+`expect.not.arrayContaining(array)` matches a received array which does not contain all of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
 
 It is the inverse of `expect.arrayContaining`.
 
@@ -1134,4 +1134,4 @@ And it will generate the following snapshot:
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
-Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.

@@ -53,13 +53,65 @@ const toMatchSnapshot = function(
   propertyMatchers?: any,
   testName?: string,
 ) {
-  this.dontThrow && this.dontThrow();
+  if (arguments.length === 3 && !propertyMatchers) {
+    throw new Error(
+      'Property matchers must be an object.\n\nTo provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+    );
+  }
+
+  return _toMatchSnapshot({
+    context: this,
+    propertyMatchers,
+    received,
+    testName,
+  });
+};
+
+const toMatchInlineSnapshot = function(
+  received: any,
+  propertyMatchersOrInlineSnapshot?: any,
+  inlineSnapshot?: string,
+) {
+  let propertyMatchers;
+  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
+    inlineSnapshot = propertyMatchersOrInlineSnapshot;
+  } else {
+    propertyMatchers = propertyMatchersOrInlineSnapshot;
+  }
+  return _toMatchSnapshot({
+    context: this,
+    inlineSnapshot: inlineSnapshot || '',
+    propertyMatchers,
+    received,
+  });
+};
+
+const _toMatchSnapshot = ({
+  context,
+  received,
+  propertyMatchers,
+  testName,
+  inlineSnapshot,
+}: {
+  context: MatcherState & {dontThrow?: () => any},
+  received: any,
+  propertyMatchers?: any,
+  testName?: string,
+  inlineSnapshot?: string,
+}) => {
+  context.dontThrow && context.dontThrow();
   testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
 
-  const {currentTestName, isNot, snapshotState}: MatcherState = this;
+  const {currentTestName, isNot, snapshotState} = context;
 
   if (isNot) {
-    throw new Error('Jest: `.not` cannot be used with `.toMatchSnapshot()`.');
+    const matcherName =
+      typeof inlineSnapshot === 'string'
+        ? 'toMatchInlineSnapshot'
+        : 'toMatchSnapshot';
+    throw new Error(
+      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
+    );
   }
 
   if (!snapshotState) {
@@ -72,9 +124,12 @@ const toMatchSnapshot = function(
       : currentTestName || '';
 
   if (typeof propertyMatchers === 'object') {
-    const propertyPass = this.equals(received, propertyMatchers, [
-      this.utils.iterableEquality,
-      this.utils.subsetEquality,
+    if (propertyMatchers === null) {
+      throw new Error(`Property matchers must be an object.`);
+    }
+    const propertyPass = context.equals(received, propertyMatchers, [
+      context.utils.iterableEquality,
+      context.utils.subsetEquality,
     ]);
 
     if (!propertyPass) {
@@ -84,9 +139,9 @@ const toMatchSnapshot = function(
         `${RECEIVED_COLOR('Received value')} does not match ` +
         `${EXPECTED_COLOR(`snapshot properties for "${key}"`)}.\n\n` +
         `Expected snapshot to match properties:\n` +
-        `  ${this.utils.printExpected(propertyMatchers)}` +
+        `  ${context.utils.printExpected(propertyMatchers)}` +
         `\nReceived:\n` +
-        `  ${this.utils.printReceived(received)}`;
+        `  ${context.utils.printReceived(received)}`;
 
       return {
         message: () =>
@@ -98,11 +153,16 @@ const toMatchSnapshot = function(
         report,
       };
     } else {
-      Object.assign(received, propertyMatchers);
+      received = utils.deepMerge(received, propertyMatchers);
     }
   }
 
-  const result = snapshotState.match(fullTestName, received);
+  const result = snapshotState.match({
+    error: context.error,
+    inlineSnapshot,
+    received,
+    testName: fullTestName,
+  });
   const {pass} = result;
   let {actual, expected} = result;
 
@@ -153,13 +213,50 @@ const toThrowErrorMatchingSnapshot = function(
   testName?: string,
   fromPromise: boolean,
 ) {
-  this.dontThrow && this.dontThrow();
+  return _toThrowErrorMatchingSnapshot({
+    context: this,
+    fromPromise,
+    received,
+    testName,
+  });
+};
 
-  const {isNot} = this;
+const toThrowErrorMatchingInlineSnapshot = function(
+  received: any,
+  inlineSnapshot?: string,
+  fromPromise?: boolean,
+) {
+  return _toThrowErrorMatchingSnapshot({
+    context: this,
+    fromPromise,
+    inlineSnapshot: inlineSnapshot || '',
+    received,
+  });
+};
+
+const _toThrowErrorMatchingSnapshot = ({
+  context,
+  received,
+  testName,
+  fromPromise,
+  inlineSnapshot,
+}: {
+  context: MatcherState & {dontThrow?: () => any},
+  received: any,
+  testName?: string,
+  fromPromise?: boolean,
+  inlineSnapshot?: string,
+}) => {
+  context.dontThrow && context.dontThrow();
+  const {isNot} = context;
+  const matcherName =
+    typeof inlineSnapshot === 'string'
+      ? 'toThrowErrorMatchingInlineSnapshot'
+      : 'toThrowErrorMatchingSnapshot';
 
   if (isNot) {
     throw new Error(
-      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
+      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
     );
   }
 
@@ -177,14 +274,19 @@ const toThrowErrorMatchingSnapshot = function(
 
   if (error === undefined) {
     throw new Error(
-      matcherHint('.toThrowErrorMatchingSnapshot', '() => {}', '') +
+      matcherHint(`.${matcherName}`, '() => {}', '') +
         '\n\n' +
         `Expected the function to throw an error.\n` +
         `But it didn't throw anything.`,
     );
   }
 
-  return toMatchSnapshot.call(this, error.message, testName);
+  return _toMatchSnapshot({
+    context,
+    inlineSnapshot,
+    received: error.message,
+    testName,
+  });
 };
 
 module.exports = {
@@ -193,7 +295,9 @@ module.exports = {
   addSerializer,
   cleanup,
   getSerializers,
+  toMatchInlineSnapshot,
   toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
   utils,
 };
