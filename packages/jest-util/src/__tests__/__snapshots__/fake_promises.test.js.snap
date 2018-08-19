@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FakePromises runAllPromises warns if promise rejection is not handled 1`] = `
+"UnhandledPromiseRejectionWarning: Unhandled promise rejection.
+"
+`;
