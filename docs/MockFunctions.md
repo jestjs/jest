@@ -22,7 +22,7 @@ function forEach(items, callback) {
 To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
 
 ```javascript
-const mockCallback = jest.fn();
+const mockCallback = jest.fn(x => 42 + x);
 forEach([0, 1], mockCallback);
 
 // The mock function is called twice
