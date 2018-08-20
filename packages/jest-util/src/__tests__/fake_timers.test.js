@@ -407,6 +407,8 @@ describe('FakeTimers', () => {
       };
 
       const fakePromises = new FakePromises({global});
+      fakePromises.useRealPromises();
+
       const timers = new FakeTimers({
         fakePromises,
         global,
@@ -414,7 +416,6 @@ describe('FakeTimers', () => {
         timerConfig,
       });
       timers.useFakeTimers();
-      timers.useRealPromises();
 
       const mock1 = jest.fn(() => {});
 
@@ -435,6 +436,8 @@ describe('FakeTimers', () => {
       };
 
       const fakePromises = new FakePromises({global});
+      fakePromises.useFakePromises();
+
       const timers = new FakeTimers({
         fakePromises,
         global,
@@ -442,7 +445,6 @@ describe('FakeTimers', () => {
         timerConfig,
       });
       timers.useFakeTimers();
-      timers.useFakePromises();
 
       const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
@@ -479,6 +481,8 @@ describe('FakeTimers', () => {
       };
 
       const fakePromises = new FakePromises({global});
+      fakePromises.useFakePromises();
+
       const timers = new FakeTimers({
         fakePromises,
         global,
@@ -486,7 +490,6 @@ describe('FakeTimers', () => {
         timerConfig,
       });
       timers.useFakeTimers();
-      timers.useFakePromises();
 
       const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
@@ -513,6 +516,8 @@ describe('FakeTimers', () => {
       };
 
       const fakePromises = new FakePromises({global});
+      fakePromises.useFakePromises();
+
       const timers = new FakeTimers({
         fakePromises,
         global,
@@ -520,7 +525,6 @@ describe('FakeTimers', () => {
         timerConfig,
       });
       timers.useFakeTimers();
-      timers.useFakePromises();
 
       const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
@@ -736,6 +740,7 @@ describe('FakeTimers', () => {
     it('also clears promises, if fake promises are being used', () => {
       const global = {process, setImmediate: () => {}};
       const fakePromises = new FakePromises({global});
+      fakePromises.useFakePromises();
       const timers = new FakeTimers({
         fakePromises,
         global,
@@ -743,7 +748,6 @@ describe('FakeTimers', () => {
         timerConfig,
       });
       timers.useFakeTimers();
-      timers.useFakePromises();
 
       const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
@@ -1357,44 +1361,6 @@ describe('FakeTimers', () => {
 
       expect(global.setImmediate).not.toBe(nativeSetImmediate);
       expect(global.clearImmediate).not.toBe(nativeClearImmediate);
-    });
-  });
-
-  describe('useFakePromises', () => {
-    it('sets the fake promises object to use fake promises', () => {
-      const nativeProcessNextTick = jest.fn();
-
-      const global = {
-        process: {nextTick: nativeProcessNextTick},
-      };
-      const fakePromises = new FakePromises({global});
-      const timers = new FakeTimers({
-        fakePromises,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakePromises();
-      expect(fakePromises.isUsingFakePromises()).toBe(true);
-    });
-  });
-
-  describe('useRealPromises', () => {
-    it('sets the fake promises object to use real promises', () => {
-      const nativeProcessNextTick = jest.fn();
-
-      const global = {
-        process: {nextTick: nativeProcessNextTick},
-      };
-      const fakePromises = new FakePromises({global});
-      const timers = new FakeTimers({
-        fakePromises,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useRealPromises();
-      expect(fakePromises.isUsingFakePromises()).toBe(false);
     });
   });
 });

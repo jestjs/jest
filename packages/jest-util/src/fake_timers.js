@@ -80,7 +80,6 @@ export default class FakeTimers<TimerRef> {
   _ticks: Array<Tick>;
   _timerAPIs: TimerAPI;
   _timers: {[key: TimerID]: Timer};
-  _usesFakePromises: boolean;
   _uuidCounter: number;
   _timerConfig: TimerConfig<TimerRef>;
 
@@ -117,7 +116,6 @@ export default class FakeTimers<TimerRef> {
       setTimeout: global.setTimeout,
     };
 
-    this._usesFakePromises = false;
     this._fakePromises = fakePromises;
 
     this.reset();
@@ -159,7 +157,7 @@ export default class FakeTimers<TimerRef> {
   }
 
   runAllMicroTasks() {
-    if (this._usesFakePromises) {
+    if (this._fakePromises.isUsingFakePromises()) {
       this._fakePromises.runAllPromises(this.runAllTicks.bind(this));
     } else {
       this.runAllTicks();
@@ -359,10 +357,6 @@ export default class FakeTimers<TimerRef> {
     setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
 
     global.process.nextTick = this._timerAPIs.nextTick;
-
-    if (this._usesFakePromises) {
-      this._fakePromises.useRealPromises();
-    }
   }
 
   useFakeTimers() {
@@ -377,20 +371,6 @@ export default class FakeTimers<TimerRef> {
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
-
-    if (this._usesFakePromises) {
-      this._fakePromises.useFakePromises();
-    }
-  }
-
-  useFakePromises() {
-    this._usesFakePromises = true;
-    this._fakePromises.useFakePromises();
-  }
-
-  useRealPromises() {
-    this._usesFakePromises = false;
-    this._fakePromises.useRealPromises();
   }
 
   _checkFakeTimers() {
