@@ -13,6 +13,11 @@ import type {Global} from 'types/Global';
 import {formatStackTrace} from 'jest-message-util';
 import setGlobal from './set_global';
 
+/**
+ * We don't know the type of arguments for a callback ahead of time which is why
+ * we are disabling the flowtype/no-weak-types rule here.
+ */
+
 /* eslint-disable flowtype/no-weak-types */
 type Callback = (...args: any) => void;
 /* eslint-enable flowtype/no-weak-types */
@@ -39,23 +44,13 @@ export default class FakePromises {
   _promisesCurrent: Array<PromiseNode>;
   _promisesUpNext: Array<PromiseNode>;
   _realPromise: Function;
-  _runAllTicks: Callback;
   _isRunning: boolean;
 
-  constructor({
-    config,
-    global,
-    runAllTicks,
-  }: {
-    config: ProjectConfig,
-    global: Global,
-    runAllTicks: Callback,
-  }) {
+  constructor({config, global}: {config: ProjectConfig, global: Global}) {
     this._config = config;
     this._global = global;
     this._promisesCurrent = [];
     this._promisesUpNext = [];
-    this._runAllTicks = runAllTicks;
     this._isRunning = false;
 
     this._realPromise = Promise;
@@ -71,16 +66,30 @@ export default class FakePromises {
     this._isRunning = false;
   }
 
-  runAllPromises() {
+  isUsingFakePromises() {
+    return this._global.Promise === this._fakePromise;
+  }
+
+  hasQueuedPromises() {
+    if (this._isRunning) {
+      return (
+        this._promisesCurrent.length > 0 || this._promisesUpNext.length > 0
+      );
+    } else {
+      return this._promisesCurrent.length > 0;
+    }
+  }
+
+  runAllPromises(runAllTicks: Callback) {
     this._checkFakePromises();
     while (this._promisesCurrent.length > 0) {
-      this._runAllTicks();
+      runAllTicks();
 
       while (this._promisesCurrent.length > 0) {
         this._runCurrentPromises();
       }
 
-      this._runAllTicks();
+      runAllTicks();
     }
   }
 

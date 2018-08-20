@@ -13,6 +13,7 @@ import type {ModuleMocker} from 'types/Mock';
 
 import {formatStackTrace} from 'jest-message-util';
 import setGlobal from './set_global';
+import FakePromises from './fake_promises';
 
 /**
  * We don't know the type of arguments for a callback ahead of time which is why
@@ -69,6 +70,7 @@ export default class FakeTimers<TimerRef> {
   _cancelledTicks: {[key: TimerID]: boolean};
   _config: ProjectConfig;
   _disposed: boolean;
+  _fakePromises: FakePromises;
   _fakeTimerAPIs: TimerAPI;
   _global: Global;
   _immediates: Array<Tick>;
@@ -78,17 +80,20 @@ export default class FakeTimers<TimerRef> {
   _ticks: Array<Tick>;
   _timerAPIs: TimerAPI;
   _timers: {[key: TimerID]: Timer};
+  _usesFakePromises: boolean;
   _uuidCounter: number;
   _timerConfig: TimerConfig<TimerRef>;
 
   constructor({
     global,
+    fakePromises,
     moduleMocker,
     timerConfig,
     config,
     maxLoops,
   }: {
     global: Global,
+    fakePromises: FakePromises,
     moduleMocker: ModuleMocker,
     timerConfig: TimerConfig<TimerRef>,
     config: ProjectConfig,
@@ -111,6 +116,9 @@ export default class FakeTimers<TimerRef> {
       setInterval: global.setInterval,
       setTimeout: global.setTimeout,
     };
+
+    this._usesFakePromises = false;
+    this._fakePromises = fakePromises;
 
     this.reset();
     this._createMocks();
@@ -147,6 +155,15 @@ export default class FakeTimers<TimerRef> {
     this._ticks = [];
     this._immediates = [];
     this._timers = {};
+    this._fakePromises.reset();
+  }
+
+  runAllMicroTasks() {
+    if (this._usesFakePromises) {
+      this._fakePromises.runAllPromises(this.runAllTicks.bind(this));
+    } else {
+      this.runAllTicks();
+    }
   }
 
   runAllTicks() {
@@ -180,6 +197,8 @@ export default class FakeTimers<TimerRef> {
 
   runAllImmediates() {
     this._checkFakeTimers();
+    this.runAllMicroTasks();
+
     // Only run a generous number of immediates and then bail.
     let i;
     for (i = 0; i < this._maxLoops; i++) {
@@ -188,6 +207,10 @@ export default class FakeTimers<TimerRef> {
         break;
       }
       this._runImmediate(immediate);
+
+      if (this._ticks.length || this._fakePromises.hasQueuedPromises()) {
+        this.runAllMicroTasks();
+      }
     }
 
     if (i === this._maxLoops) {
@@ -210,7 +233,7 @@ export default class FakeTimers<TimerRef> {
 
   runAllTimers() {
     this._checkFakeTimers();
-    this.runAllTicks();
+    this.runAllMicroTasks();
     this.runAllImmediates();
 
     // Only run a generous number of timers and then bail.
@@ -233,8 +256,8 @@ export default class FakeTimers<TimerRef> {
         this.runAllImmediates();
       }
 
-      if (this._ticks.length) {
-        this.runAllTicks();
+      if (this._ticks.length || this._fakePromises.hasQueuedPromises()) {
+        this.runAllMicroTasks();
       }
     }
 
@@ -336,6 +359,10 @@ export default class FakeTimers<TimerRef> {
     setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
 
     global.process.nextTick = this._timerAPIs.nextTick;
+
+    if (this._usesFakePromises) {
+      this._fakePromises.useRealPromises();
+    }
   }
 
   useFakeTimers() {
@@ -350,6 +377,20 @@ export default class FakeTimers<TimerRef> {
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
+
+    if (this._usesFakePromises) {
+      this._fakePromises.useFakePromises();
+    }
+  }
+
+  useFakePromises() {
+    this._usesFakePromises = true;
+    this._fakePromises.useFakePromises();
+  }
+
+  useRealPromises() {
+    this._usesFakePromises = false;
+    this._fakePromises.useRealPromises();
   }
 
   _checkFakeTimers() {

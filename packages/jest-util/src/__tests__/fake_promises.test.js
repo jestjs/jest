@@ -30,14 +30,13 @@ describe('FakePromises', () => {
       const runAllTicks = () => {};
       const promises = new FakePromises({
         global,
-        runAllTicks,
       });
       promises.useFakePromises();
 
       const p1 = global.Promise.resolve(0);
       const p2 = global.Promise.resolve(0);
 
-      promises.runAllPromises();
+      promises.runAllPromises(runAllTicks);
 
       expect(p1.dangerouslyGetNode().state).toBe('fulfilled');
       expect(p2.dangerouslyGetNode().state).toBe('fulfilled');
@@ -50,7 +49,6 @@ describe('FakePromises', () => {
       const global = {};
       const promises = new FakePromises({
         global,
-        runAllTicks: mock1,
       });
       promises.useFakePromises();
 
@@ -65,7 +63,7 @@ describe('FakePromises', () => {
       expect(mock2.mock.calls.length).toBe(0);
       expect(mock3.mock.calls.length).toBe(0);
 
-      promises.runAllPromises();
+      promises.runAllPromises(mock1);
 
       expect(mock1.mock.calls.length).toBe(2);
       expect(mock2.mock.calls.length).toBe(1);
@@ -78,7 +76,6 @@ describe('FakePromises', () => {
       const runAllTicks = () => {};
       const promises = new FakePromises({
         global,
-        runAllTicks,
       });
       promises.useFakePromises();
 
@@ -91,7 +88,7 @@ describe('FakePromises', () => {
       expect(mock1.mock.calls.length).toBe(0);
       expect(mock2.mock.calls.length).toBe(0);
 
-      promises.runAllPromises();
+      promises.runAllPromises(runAllTicks);
 
       expect(mock1.mock.calls.length).toBe(1);
       expect(mock2.mock.calls.length).toBe(1);
@@ -103,7 +100,6 @@ describe('FakePromises', () => {
       const runAllTicks = () => {};
       const promises = new FakePromises({
         global,
-        runAllTicks,
       });
       promises.useFakePromises();
 
@@ -124,7 +120,7 @@ describe('FakePromises', () => {
       expect(mock3.mock.calls.length).toBe(0);
       expect(mock4.mock.calls.length).toBe(0);
 
-      promises.runAllPromises();
+      promises.runAllPromises(runAllTicks);
 
       expect(mock1.mock.calls.length).toBe(1);
       expect(mock2.mock.calls.length).toBe(1);
@@ -139,7 +135,6 @@ describe('FakePromises', () => {
       const runAllTicks = () => {};
       const promises = new FakePromises({
         global,
-        runAllTicks,
       });
       promises.useFakePromises();
 
@@ -147,7 +142,7 @@ describe('FakePromises', () => {
         .then(() => 1)
         .then(() => 2);
 
-      promises.runAllPromises();
+      promises.runAllPromises(runAllTicks);
 
       const runOrder = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
@@ -158,7 +153,7 @@ describe('FakePromises', () => {
       expect(mock1.mock.calls.length).toBe(0);
       expect(mock2.mock.calls.length).toBe(0);
 
-      promises.runAllPromises();
+      promises.runAllPromises(runAllTicks);
 
       expect(mock1.mock.calls.length).toBe(1);
       expect(mock2.mock.calls.length).toBe(1);
@@ -174,11 +169,10 @@ describe('FakePromises', () => {
           rootDir: __dirname,
         },
         global,
-        runAllTicks,
       });
       promises.useFakePromises();
       global.Promise.reject(0);
-      promises.runAllPromises();
+      promises.runAllPromises(runAllTicks);
 
       expect(
         console.warn.mock.calls[0][0].split('\nStack Trace')[0],
@@ -191,7 +185,6 @@ describe('FakePromises', () => {
       const runAllTicks = () => {};
       const promises = new FakePromises({
         global,
-        runAllTicks,
       });
       promises.useFakePromises();
 
@@ -205,7 +198,7 @@ describe('FakePromises', () => {
       expect(mock1.mock.calls.length).toBe(0);
       expect(mock2.mock.calls.length).toBe(0);
 
-      promises.runAllPromises();
+      promises.runAllPromises(runAllTicks);
 
       expect(mock1.mock.calls.length).toBe(1);
       expect(mock2.mock.calls.length).toBe(0);
@@ -217,7 +210,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -227,7 +219,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toBe('x');
@@ -238,7 +230,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -248,7 +239,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toBe('x');
@@ -259,7 +250,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -272,7 +262,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
@@ -286,7 +276,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -300,7 +289,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -314,7 +303,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -325,7 +313,7 @@ describe('FakePromises', () => {
 
           expect(mock1.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock1.mock.calls[0][0]).toBe('x');
@@ -337,7 +325,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -352,7 +339,7 @@ describe('FakePromises', () => {
           expect(mock1.mock.calls.length).toBe(0);
           expect(mock2.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock2.mock.calls.length).toBe(1);
@@ -362,6 +349,7 @@ describe('FakePromises', () => {
 
       describe('if resolved value is a thenable', () => {
         it('calls the thenable callback asynchronously', () => {
+          const runAllTicks = () => {};
           const runOrder = [];
           const mock1 = jest.fn(() => runOrder.push('mock1'));
           const mock2 = jest.fn(() => runOrder.push('mock2'));
@@ -369,7 +357,6 @@ describe('FakePromises', () => {
           const global = {};
           const promises = new FakePromises({
             global,
-            runAllTicks: () => {},
           });
           promises.useFakePromises();
 
@@ -383,7 +370,7 @@ describe('FakePromises', () => {
           expect(mock1.mock.calls.length).toBe(0);
           expect(mock2.mock.calls.length).toBe(1);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock2.mock.calls.length).toBe(1);
@@ -395,7 +382,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -410,7 +396,7 @@ describe('FakePromises', () => {
 
           expect(mock1.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock1.mock.calls[0][0]).toBe('resolved value');
@@ -421,7 +407,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -436,7 +421,7 @@ describe('FakePromises', () => {
 
           expect(mock1.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock1.mock.calls[0][0]).toBe('rejected value');
@@ -447,7 +432,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -458,7 +442,7 @@ describe('FakePromises', () => {
 
           expect(mock1.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(0);
           expect(promise.dangerouslyGetNode().state).toBe('pending');
@@ -469,7 +453,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -491,7 +474,7 @@ describe('FakePromises', () => {
           expect(mock2.mock.calls.length).toBe(0);
           expect(mock3.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock2.mock.calls.length).toBe(1);
@@ -503,7 +486,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -520,7 +502,7 @@ describe('FakePromises', () => {
           expect(mock1.mock.calls.length).toBe(0);
           expect(mock2.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock2.mock.calls.length).toBe(1);
@@ -535,7 +517,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -545,7 +526,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toBe('x');
@@ -556,7 +537,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -575,7 +555,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(1);
@@ -589,7 +569,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -603,7 +582,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -615,7 +594,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -631,7 +609,7 @@ describe('FakePromises', () => {
         expect(mock2.mock.calls.length).toBe(0);
         expect(mock3.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(0);
@@ -644,13 +622,12 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
         const promise = global.Promise.resolve(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         const runOrder = [];
         const mock1 = jest.fn(() => runOrder.push('mock1'));
@@ -662,7 +639,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -674,7 +651,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -696,7 +672,7 @@ describe('FakePromises', () => {
         expect(mock3.mock.calls.length).toBe(0);
         expect(mock4.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -714,7 +690,6 @@ describe('FakePromises', () => {
               rootDir: __dirname,
             },
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -732,7 +707,7 @@ describe('FakePromises', () => {
           expect(mock2.mock.calls.length).toBe(0);
           expect(mock3.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(1);
           expect(mock2.mock.calls.length).toBe(0);
@@ -744,7 +719,6 @@ describe('FakePromises', () => {
           const runAllTicks = () => {};
           const promises = new FakePromises({
             global,
-            runAllTicks,
           });
           promises.useFakePromises();
 
@@ -756,7 +730,7 @@ describe('FakePromises', () => {
           expect(mock1.mock.calls.length).toBe(0);
           expect(mock2.mock.calls.length).toBe(0);
 
-          promises.runAllPromises();
+          promises.runAllPromises(runAllTicks);
 
           expect(mock1.mock.calls.length).toBe(0);
           expect(mock2.mock.calls.length).toBe(1);
@@ -770,7 +744,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -779,7 +752,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
       });
@@ -789,7 +762,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -802,7 +774,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(1);
@@ -813,7 +785,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -826,7 +797,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -838,7 +809,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -851,7 +821,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -863,7 +833,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -876,7 +845,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -890,7 +859,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -900,7 +868,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
       });
@@ -910,7 +878,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -920,7 +887,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toBe(undefined);
@@ -931,7 +898,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -945,7 +911,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -957,7 +923,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -971,7 +936,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock2.mock.calls.length).toBe(1);
@@ -985,7 +950,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -995,7 +959,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual([]);
@@ -1003,10 +967,8 @@ describe('FakePromises', () => {
 
       it('throws an error if argument is not an array', () => {
         const global = {};
-        const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
         expect(() => global.Promise.all(1)).toThrow(TypeError);
@@ -1017,7 +979,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1026,7 +987,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual([1]);
@@ -1037,7 +998,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1047,7 +1007,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual(['x']);
@@ -1058,7 +1018,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1069,7 +1028,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual(['p1', 'p2']);
@@ -1080,7 +1039,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1091,7 +1049,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual(['p1', 'p2']);
@@ -1102,7 +1060,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1114,7 +1071,7 @@ describe('FakePromises', () => {
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(0);
         expect(mock2.mock.calls.length).toBe(1);
@@ -1128,7 +1085,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1137,7 +1093,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(0);
         expect(promise.dangerouslyGetNode().state).toBe('pending');
@@ -1148,7 +1104,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1159,7 +1114,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual('y');
@@ -1170,7 +1125,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1179,7 +1133,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual('x');
@@ -1190,7 +1144,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1200,7 +1153,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual('x');
@@ -1211,7 +1164,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1222,7 +1174,7 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual('y');
@@ -1233,7 +1185,6 @@ describe('FakePromises', () => {
         const runAllTicks = () => {};
         const promises = new FakePromises({
           global,
-          runAllTicks,
         });
         promises.useFakePromises();
 
@@ -1244,11 +1195,44 @@ describe('FakePromises', () => {
 
         expect(mock1.mock.calls.length).toBe(0);
 
-        promises.runAllPromises();
+        promises.runAllPromises(runAllTicks);
 
         expect(mock1.mock.calls.length).toBe(1);
         expect(mock1.mock.calls[0][0]).toEqual('x');
       });
+    });
+  });
+
+  describe('isUsingFakePromises', () => {
+    it('indicates when using fake promises', () => {
+      const global = {};
+      const promises = new FakePromises({global});
+      promises.useFakePromises();
+      expect(promises.isUsingFakePromises()).toBe(true);
+    });
+
+    it('indicates when not using fake promises', () => {
+      const global = {};
+      const promises = new FakePromises({global});
+      promises.useRealPromises();
+      expect(promises.isUsingFakePromises()).toBe(false);
+    });
+  });
+
+  describe('hasQueuedPromises', () => {
+    it('indicates when no promises are queued', () => {
+      const global = {};
+      const promises = new FakePromises({global});
+      promises.useFakePromises();
+      expect(promises.hasQueuedPromises()).toBe(false);
+    });
+
+    it('indicates when promises are queued', () => {
+      const global = {};
+      const promises = new FakePromises({global});
+      promises.useFakePromises();
+      global.Promise.resolve(0);
+      expect(promises.hasQueuedPromises()).toBe(true);
     });
   });
 });
