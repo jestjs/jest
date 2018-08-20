@@ -91,6 +91,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   modulePaths: [],
   name: 'test_name',
   prettierPath: 'prettier',
+  promises: 'real',
   resetMocks: false,
   resetModules: false,
   resolver: null,

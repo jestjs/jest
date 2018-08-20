@@ -28,8 +28,15 @@ declare class $JestEnvironment {
     advanceTimersByTime(msToRun: number): void,
     runOnlyPendingTimers(): void,
     runWithRealTimers(callback: any): void,
+    useFakePromises(): void,
     useFakeTimers(): void,
+    useRealPromises(): void,
     useRealTimers(): void,
+  };
+  fakePromises: {
+    runAllPromises(callback: any): void,
+    useFakePromises(): void,
+    useRealPromises(): void,
   };
   testFilePath: string;
   moduleMocker: ModuleMocker;

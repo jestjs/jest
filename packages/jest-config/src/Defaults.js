@@ -51,6 +51,7 @@ export default ({
   preset: null,
   prettierPath: 'prettier',
   projects: null,
+  promises: 'real',
   resetMocks: false,
   resetModules: false,
   resolver: null,

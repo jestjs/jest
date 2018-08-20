@@ -34,6 +34,7 @@ export type Jest = {|
   restoreAllMocks(): Jest,
   retryTimes(numRetries: number): Jest,
   runAllImmediates(): void,
+  runAllPromises(): void,
   runAllTicks(): void,
   runAllTimers(): void,
   runOnlyPendingTimers(): void,
@@ -47,6 +48,8 @@ export type Jest = {|
     accessType?: 'get' | 'set',
   ): JestMockFn,
   unmock(moduleName: string): Jest,
+  useFakePromises(): Jest,
+  useRealPromises(): Jest,
   useFakeTimers(): Jest,
   useRealTimers(): Jest,
 |};

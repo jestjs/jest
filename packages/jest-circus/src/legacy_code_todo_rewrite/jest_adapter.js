@@ -51,6 +51,11 @@ const jestAdapter = async (
     environment.fakeTimers.useFakeTimers();
   }
 
+  if (config.promises === 'fake') {
+    environment.fakePromises.useFakePromises();
+    environment.fakeTimers.useFakePromises();
+  }
+
   globals.beforeEach(() => {
     if (config.resetModules) {
       runtime.resetModules();
@@ -65,6 +70,11 @@ const jestAdapter = async (
 
       if (config.timers === 'fake') {
         environment.fakeTimers.useFakeTimers();
+      }
+
+      if (config.promises === 'fake') {
+        environment.fakePromises.useFakePromises();
+        environment.fakeTimers.useFakePromises();
       }
     }
 

@@ -174,6 +174,7 @@ const getConfigs = (
     modulePaths: options.modulePaths,
     name: options.name,
     prettierPath: options.prettierPath,
+    promises: options.promises,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
     resolver: options.resolver,

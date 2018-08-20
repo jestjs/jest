@@ -71,6 +71,11 @@ async function jasmine2(
     environment.fakeTimers.useFakeTimers();
   }
 
+  if (config.promises === 'fake') {
+    environment.fakePromises.useFakePromises();
+    environment.fakeTimers.useFakePromises();
+  }
+
   env.beforeEach(() => {
     if (config.resetModules) {
       runtime.resetModules();
@@ -85,6 +90,11 @@ async function jasmine2(
 
       if (config.timers === 'fake') {
         environment.fakeTimers.useFakeTimers();
+      }
+
+      if (config.promises === 'fake') {
+        environment.fakePromises.useFakePromises();
+        environment.fakeTimers.useFakePromises();
       }
     }
 

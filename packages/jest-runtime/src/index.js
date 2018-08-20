@@ -863,6 +863,16 @@ class Runtime {
       this.restoreAllMocks();
       return jestObject;
     };
+    const useFakePromises = () => {
+      this._environment.fakePromises.useFakePromises();
+      this._environment.fakeTimers.useFakePromises();
+      return jestObject;
+    };
+    const useRealPromises = () => {
+      this._environment.fakePromises.useFakePromises();
+      this._environment.fakeTimers.useRealPromises();
+      return jestObject;
+    };
     const useFakeTimers = () => {
       this._environment.fakeTimers.useFakeTimers();
       return jestObject;
@@ -919,6 +929,7 @@ class Runtime {
       restoreAllMocks,
       retryTimes,
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
+      runAllPromises: () => this._environment.fakePromises.runAllPromises(),
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
       runOnlyPendingTimers: () =>
@@ -930,7 +941,9 @@ class Runtime {
       setTimeout,
       spyOn,
       unmock,
+      useFakePromises,
       useFakeTimers,
+      useRealPromises,
       useRealTimers,
     };
     return jestObject;
