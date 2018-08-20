@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "supports-color": "^5.5.0",
     "merge-stream": "^1.0.1"
   },
   "engines": {

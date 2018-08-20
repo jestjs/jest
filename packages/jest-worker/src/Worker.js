@@ -29,6 +29,8 @@ import type {
   WorkerOptions,
 } from './types';
 
+const supportsColor = require('supports-color');
+
 /**
  * This class wraps the child process and provides a nice interface to
  * communicate with. It takes care of:
@@ -88,23 +90,21 @@ export default class {
   }
 
   _initialize() {
-    const forceColor =
-      'FORCE_COLOR' in process.env
-        ? process.env['FORCE_COLOR']
-        : // $FlowFixMe: Does not know about isTTY
-          process.stdout.isTTY
-          ? '1'
-          : '0';
+    const forceColor = supportsColor.stdout ? {FORCE_COLOR: '1'} : {};
     const child = childProcess.fork(
       require.resolve('./child'),
       // $FlowFixMe: Flow does not work well with Object.assign.
       Object.assign(
         {
           cwd: process.cwd(),
-          env: Object.assign({}, process.env, {
-            FORCE_COLOR: forceColor,
-            JEST_WORKER_ID: this._options.workerId,
-          }),
+          env: Object.assign(
+            {},
+            process.env,
+            {
+              JEST_WORKER_ID: this._options.workerId,
+            },
+            forceColor,
+          ),
           // Suppress --debug / --inspect flags while preserving others (like --harmony).
           execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
           silent: true,
