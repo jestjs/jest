@@ -73,7 +73,6 @@ async function jasmine2(
 
   if (config.promises === 'fake') {
     environment.fakePromises.useFakePromises();
-    environment.fakeTimers.useFakePromises();
   }
 
   env.beforeEach(() => {
@@ -94,7 +93,6 @@ async function jasmine2(
 
       if (config.promises === 'fake') {
         environment.fakePromises.useFakePromises();
-        environment.fakeTimers.useFakePromises();
       }
     }
 

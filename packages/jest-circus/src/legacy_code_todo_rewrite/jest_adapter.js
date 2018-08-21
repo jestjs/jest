@@ -53,7 +53,6 @@ const jestAdapter = async (
 
   if (config.promises === 'fake') {
     environment.fakePromises.useFakePromises();
-    environment.fakeTimers.useFakePromises();
   }
 
   globals.beforeEach(() => {
@@ -74,7 +73,6 @@ const jestAdapter = async (
 
       if (config.promises === 'fake') {
         environment.fakePromises.useFakePromises();
-        environment.fakeTimers.useFakePromises();
       }
     }
 

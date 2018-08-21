@@ -22,13 +22,16 @@ The `jest` object is automatically in scope within every test file. The methods 
 - [`jest.restoreAllMocks()`](#jestrestoreallmocks)
 - [`jest.resetModules()`](#jestresetmodules)
 - [`jest.retryTimes()`](#jestretrytimes)
+- [`jest.runAllPromises(runAllTicks)`](#jestrunallpromises)
 - [`jest.runAllTicks()`](#jestrunallticks)
 - [`jest.runAllTimers()`](#jestrunalltimers)
 - [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
 - [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
 - [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
 - [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
+- [`jest.useFakePromises()`](#jestusefakepromises)
 - [`jest.useFakeTimers()`](#jestusefaketimers)
+- [`jest.useRealPromises()`](#jestuserealpromises)
 - [`jest.useRealTimers()`](#jestuserealtimers)
 - [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
 - [`jest.spyOn(object, methodName, accessType?)`](#jestspyonobject-methodname-accesstype)
@@ -344,11 +347,19 @@ module.exports = {
 
 Returns the `jest` object for chaining.
 
+### `jest.runAllPromises(runAllTicks)`
+
+Exhausts the **micro**-task queue (`process.nextTick` callbacks and promises scheduled via the `Promise` class).
+
+Uses the provided `runAllTicks` callback to exhaust all ticks that are currently queued. Fake promises should be in use (by calling `jest.useFakePromises` ) before calling this method.
+
+This is useful for synchronously executing scheduled promises and ticks in the order in their natural run order in node.
+
 ### `jest.runAllTicks()`
 
-Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
+Exhausts all scheduled next tick callbacks (usually interfaced in node via `process.nextTick`).
 
-When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
+When this API is called, all pending next tick callbacks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue. See the (Promise Mocks)(PromiseMocks.md) doc for more information.
 
 ### `jest.runAllTimers()`
 
@@ -404,9 +415,21 @@ Example:
 jest.setTimeout(1000); // 1 second
 ```
 
+### `jest.useFakePromises()`
+
+Instructs Jest to use fake versions of the standard Promise API (`Promise.resolve`, `Promise.reject`, `Promise.all`, `Promise.race`, `[Promise].then`, `[Promise].catch`, and `[Promise].finally`).
+
+Returns the `jest` object for chaining.
+
 ### `jest.useFakeTimers()`
 
 Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
+
+Returns the `jest` object for chaining.
+
+### `jest.useRealPromises()`
+
+Instructs Jest to use the real versions of the standard Promise API.
 
 Returns the `jest` object for chaining.
 

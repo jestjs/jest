@@ -34,7 +34,7 @@ export type Jest = {|
   restoreAllMocks(): Jest,
   retryTimes(numRetries: number): Jest,
   runAllImmediates(): void,
-  runAllPromises(): void,
+  runAllPromises(runAllTicks: Function): void,
   runAllTicks(): void,
   runAllTimers(): void,
   runOnlyPendingTimers(): void,
