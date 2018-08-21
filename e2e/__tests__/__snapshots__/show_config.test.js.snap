@@ -34,6 +34,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"modulePathIgnorePatterns\\": [],
       \\"name\\": \\"[md5 hash]\\",
       \\"prettierPath\\": null,
+      \\"promises\\": \\"real\\",
       \\"resetMocks\\": false,
       \\"resetModules\\": false,
       \\"resolver\\": null,
