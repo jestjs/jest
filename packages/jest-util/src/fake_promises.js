@@ -53,7 +53,7 @@ export default class FakePromises {
     this._promisesUpNext = [];
     this._isRunning = false;
 
-    this._realPromise = Promise;
+    this._realPromise = global.Promise;
     this._fakePromise = _Promise;
     this._fakePromise.onCreatedCallback = this._onPromiseCreated.bind(this);
 
