@@ -65,3 +65,18 @@ test('globalTeardown function gets jest config object as a parameter', () => {
 
   expect(result.stdout).toBe(testPathPattern);
 });
+
+test('globalTeardown with syntax error should notify that transform is not supported', () => {
+  const setupPath = path.resolve(
+    __dirname,
+    '../global-teardown/teardown_with_syntax_error.js',
+  );
+  const {status, stderr} = runJest('global-teardown', [
+    `--globalTeardown=${setupPath}`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch(
+    /Transform is currently not supported with globalTeardown/,
+  );
+});

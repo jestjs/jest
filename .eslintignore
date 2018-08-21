@@ -10,3 +10,6 @@ website/node_modules
 website/i18n/*.js
 website/translated_docs
 !.eslintrc.js
+e2e/global-setup/setup_with_syntax_error.js
+e2e/global-teardown/teardown_with_syntax_error.js
+

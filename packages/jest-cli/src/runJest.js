@@ -272,17 +272,29 @@ export default (async function runJest({
   }
 
   if (globalConfig.globalSetup) {
-    // $FlowFixMe
-    const globalSetup = require(globalConfig.globalSetup);
-    if (typeof globalSetup !== 'function') {
-      throw new TypeError(
-        `globalSetup file must export a function at ${
-          globalConfig.globalSetup
-        }`,
-      );
-    }
+    try {
+      // $FlowFixMe
+      const globalSetup = require(globalConfig.globalSetup);
+      if (typeof globalSetup !== 'function') {
+        throw new TypeError(
+          `globalSetup file must export a function at ${
+            globalConfig.globalSetup
+          }`,
+        );
+      }
 
-    await globalSetup(globalConfig);
+      await globalSetup(globalConfig);
+    } catch (error) {
+      if (error.toString().match(/SyntaxError:/)) {
+        throw new SyntaxError(
+          // $FlowFixMe
+          `Global setup can not be run from ${globalConfig.globalSetup}.\n` +
+            'Did you mean to use transform on it? Transform is currently not ' +
+            `supported with globalSetup.\n${error}`,
+        );
+      }
+      throw error;
+    }
   }
   const results = await new TestScheduler(
     globalConfig,
@@ -295,17 +307,31 @@ export default (async function runJest({
   sequencer.cacheResults(allTests, results);
 
   if (globalConfig.globalTeardown) {
-    // $FlowFixMe
-    const globalTeardown = require(globalConfig.globalTeardown);
-    if (typeof globalTeardown !== 'function') {
-      throw new TypeError(
-        `globalTeardown file must export a function at ${
-          globalConfig.globalTeardown
-        }`,
-      );
-    }
+    try {
+      // $FlowFixMe
+      const globalTeardown = require(globalConfig.globalTeardown);
+      if (typeof globalTeardown !== 'function') {
+        throw new TypeError(
+          `globalTeardown file must export a function at ${
+            globalConfig.globalTeardown
+          }`,
+        );
+      }
 
-    await globalTeardown(globalConfig);
+      await globalTeardown(globalConfig);
+    } catch (error) {
+      if (error.toString().match(/SyntaxError:/)) {
+        throw new SyntaxError(
+          `Global teardown can not be run from ${
+            // $FlowFixMe
+            globalConfig.globalTeardown
+          }.\n` +
+            'Did you mean to use transform on it? Transform is currently not ' +
+            `supported with globalTeardown.\n${error}`,
+        );
+      }
+      throw error;
+    }
   }
   return processResults(results, {
     collectHandles,
