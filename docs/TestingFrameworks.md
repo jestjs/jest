@@ -29,4 +29,4 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 
 ## Express.js
 
-- [How to test Express.js with Jest and Supertest](http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/) by Albert Gao ([@albertgao](https://twitter.com/albertgao)) 
+- [How to test Express.js with Jest and Supertest](http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/) by Albert Gao ([@albertgao](https://twitter.com/albertgao))
