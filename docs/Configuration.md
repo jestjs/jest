@@ -471,7 +471,7 @@ _Note: When using multi project runner, it's recommended to add a `displayName` 
 
 Default: `real`
 
-Setting this value to `fake` allows the use of fake promises to replace the `Promise` class introduced in ecma-script2015 specification. Fake promises are useful for synchronizing promises, or for use with jest's fake timers feature.
+Setting this value to `fake` allows the use of fake promises to replace the `Promise` class introduced in ecma-script2015 specification. Fake promises are useful for synchronizing promises, or for use with Jest's fake timers feature.
 
 ### `reporters` [array<moduleName | [moduleName, options]>]
 
