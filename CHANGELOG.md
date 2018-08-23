@@ -12,6 +12,7 @@
 - `[docs]` Add custom toMatchSnapshot matcher docs ([#6837](https://github.com/facebook/jest/pull/6837))
 - `[docs]` Improve the documentation regarding preset configuration ([#6864](https://github.com/facebook/jest/issues/6864))
 - `[docs]` Clarify usage of `--projects` CLI option ([#6872](https://github.com/facebook/jest/pull/6872))
+- `[docs]` Correct `failure-change` notification mode ([#6878](https://github.com/facebook/jest/pull/6878))
 - `[docs]` Add documentation for promise mocks, and clarify how micro-tasks behave when using timer mocks. ([#6876](https://github.com/facebook/jest/pull/6876))
 
 ## 23.5.0
