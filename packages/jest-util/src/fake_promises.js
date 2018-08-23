@@ -25,6 +25,7 @@ type Callback = (...args: any) => void;
 type PromiseState = 'pending' | 'fulfilled' | 'rejected';
 
 type PromiseNode = {|
+  id: number,
   state: PromiseState,
   parent?: ?PromiseNode,
   children: Array<PromiseNode>,
@@ -39,11 +40,14 @@ type Thenable = {|
 
 export default class FakePromises {
   _config: ProjectConfig;
+  _disposed: boolean;
   _fakePromise: Function;
   _global: Global;
   _promisesCurrent: Array<PromiseNode>;
   _promisesUpNext: Array<PromiseNode>;
   _realPromise: Function;
+  _idCounter: number;
+  _idToRef: {[number]: _Promise};
   _isRunning: boolean;
 
   constructor({config, global}: {config: ProjectConfig, global: Global}) {
@@ -57,7 +61,31 @@ export default class FakePromises {
     this._fakePromise = _Promise;
     this._fakePromise.onCreatedCallback = this._onPromiseCreated.bind(this);
 
+    this._disposed = false;
+    this._idToRef = {};
+    this._idCounter = 0;
+
     this.reset();
+
+    global.mockClearPromises = this.clearAllPromises.bind(this);
+  }
+
+  clearAllPromises() {
+    for (const id in this._idToRef) {
+      const promise = this._idToRef[Number(id)];
+      promise.dangerouslyClearNode();
+      delete this._idToRef[Number(id)];
+    }
+
+    this._idToRef = {};
+    this._promisesCurrent = [];
+    this._promisesUpNext = [];
+  }
+
+  dispose() {
+    this._disposed = true;
+    this.clearAllPromises();
+    delete _Promise.onCreatedCallback;
   }
 
   reset() {
@@ -81,6 +109,10 @@ export default class FakePromises {
   }
 
   runAllPromises(runAllTicks: Callback) {
+    if (this._disposed) {
+      return;
+    }
+
     this._checkFakePromises();
     while (this._promisesCurrent.length > 0) {
       runAllTicks();
@@ -263,24 +295,27 @@ export default class FakePromises {
     setGlobal(this._global, 'Promise', this._fakePromise);
   }
 
-  _onPromiseCreated(promise: PromiseNode) {
+  _onPromiseCreated(promise: _Promise, node: PromiseNode) {
+    node.id = this._idCounter++;
+    this._idToRef[node.id] = promise;
+
     if (
-      promise.parent !== null &&
-      promise.parent !== undefined &&
-      promise.parent.state !== 'pending'
+      node.parent !== null &&
+      node.parent !== undefined &&
+      node.parent.state !== 'pending'
     ) {
-      if (promise.parent.output instanceof _Promise) {
-        this._handleOutputIsPromise(promise.parent);
+      if (node.parent.output instanceof _Promise) {
+        this._handleOutputIsPromise(node.parent);
         return;
       } else if (
-        typeof promise.parent.output === 'object' &&
-        typeof promise.parent.output.then === 'function'
+        typeof node.parent.output === 'object' &&
+        typeof node.parent.output.then === 'function'
       ) {
-        this._handleOutputIsThenable(promise.parent, promise.parent.output);
+        this._handleOutputIsThenable(node.parent, node.parent.output);
         return;
       }
     }
-    this._schedulePromise(promise);
+    this._schedulePromise(node);
   }
 
   _schedulePromise(promise: PromiseNode) {
@@ -347,6 +382,7 @@ class _Promise {
   ) {
     this._node = {
       children: [],
+      id: -1,
       onFulfilled: onFulfilled ? onFulfilled : undefined,
       onRejected: onRejected ? onRejected : undefined,
       output: undefined,
@@ -358,14 +394,14 @@ class _Promise {
     const resolve = value => {
       if (this._node.onRejected === undefined) {
         this._node.onFulfilled = () => value;
-        _Promise.onCreatedCallback(this._node);
+        _Promise.onCreatedCallback(this, this._node);
         didSchedulePromise = true;
       }
     };
     const reject = reason => {
       if (this._node.onFulfilled === undefined) {
         this._node.onRejected = () => reason;
-        _Promise.onCreatedCallback(this._node);
+        _Promise.onCreatedCallback(this, this._node);
         didSchedulePromise = true;
       }
     };
@@ -380,7 +416,7 @@ class _Promise {
       typeof _Promise.onCreatedCallback === 'function' &&
       !didSchedulePromise
     ) {
-      _Promise.onCreatedCallback(this._node);
+      _Promise.onCreatedCallback(this, this._node);
     }
   }
 
@@ -508,6 +544,15 @@ class _Promise {
 
   dangerouslyGetNode() {
     return this._node;
+  }
+
+  dangerouslyClearNode() {
+    delete this._node.children;
+    delete this._node.parent;
+    delete this._node.onFulfilled;
+    delete this._node.onRejected;
+    delete this._node.output;
+    delete this._node;
   }
 
   static fromThenable(thenable: Thenable) {

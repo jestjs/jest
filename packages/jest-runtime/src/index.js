@@ -437,6 +437,9 @@ class Runtime {
       if (envGlobal.mockClearTimers) {
         envGlobal.mockClearTimers();
       }
+      if (envGlobal.mockClearPromises) {
+        envGlobal.mockClearPromises();
+      }
     }
   }
 

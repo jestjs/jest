@@ -85,6 +85,9 @@ class NodeEnvironment {
   }
 
   teardown(): Promise<void> {
+    if (this.fakePromises) {
+      this.fakePromises.dispose();
+    }
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }

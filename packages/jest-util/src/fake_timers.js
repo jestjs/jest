@@ -144,6 +144,7 @@ export default class FakeTimers<TimerRef> {
   dispose() {
     this._disposed = true;
     this.clearAllTimers();
+    delete this._fakePromises;
   }
 
   reset() {

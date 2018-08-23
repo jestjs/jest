@@ -14,6 +14,7 @@ JSDOMEnvironment.mockImplementation(function(config) {
   this.global = {
     JSON,
     console: {},
+    mockClearPromises: jest.fn(),
     mockClearTimers: jest.fn(),
   };
 
