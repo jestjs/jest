@@ -30,7 +30,7 @@ function find(
     activeCalls++;
     fs.readdir(directory, (err, names) => {
       activeCalls--;
-      if (!names) {
+      if (err) {
         callback(result);
         return;
       }
