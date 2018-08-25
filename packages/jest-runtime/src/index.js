@@ -930,8 +930,7 @@ class Runtime {
       restoreAllMocks,
       retryTimes,
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
-      runAllPromises: (runAllTicks: Function) =>
-        this._environment.fakePromises.runAllPromises(runAllTicks),
+      runAllPromises: () => this._environment.fakePromises.runAllPromises(),
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
       runOnlyPendingTimers: () =>

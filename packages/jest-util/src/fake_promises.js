@@ -108,20 +108,14 @@ export default class FakePromises {
     }
   }
 
-  runAllPromises(runAllTicks: Callback) {
+  runAllPromises() {
     if (this._disposed) {
       return;
     }
 
     this._checkFakePromises();
     while (this._promisesCurrent.length > 0) {
-      runAllTicks();
-
-      while (this._promisesCurrent.length > 0) {
-        this._runCurrentPromises();
-      }
-
-      runAllTicks();
+      this._runCurrentPromises();
     }
   }
 

@@ -159,7 +159,18 @@ export default class FakeTimers<TimerRef> {
 
   runAllMicroTasks() {
     if (this._fakePromises.isUsingFakePromises()) {
-      this._fakePromises.runAllPromises(this.runAllTicks.bind(this));
+      let i;
+      for (i = 0; i < this._maxLoops; i++) {
+        this.runAllTicks();
+
+        if (this._fakePromises.hasQueuedPromises()) {
+          this._fakePromises.runAllPromises();
+        } else {
+          break;
+        }
+      }
+
+      this.runAllTicks();
     } else {
       this.runAllTicks();
     }

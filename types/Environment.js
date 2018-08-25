@@ -34,7 +34,7 @@ declare class $JestEnvironment {
     useRealTimers(): void,
   };
   fakePromises: {
-    runAllPromises(callback: any): void,
+    runAllPromises(): void,
     useFakePromises(): void,
     useRealPromises(): void,
   };
