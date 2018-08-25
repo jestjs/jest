@@ -22,7 +22,7 @@ The `jest` object is automatically in scope within every test file. The methods 
 - [`jest.restoreAllMocks()`](#jestrestoreallmocks)
 - [`jest.resetModules()`](#jestresetmodules)
 - [`jest.retryTimes()`](#jestretrytimes)
-- [`jest.runAllPromises(runAllTicks)`](#jestrunallpromises)
+- [`jest.runAllPromises()`](#jestrunallpromises)
 - [`jest.runAllTicks()`](#jestrunallticks)
 - [`jest.runAllTimers()`](#jestrunalltimers)
 - [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
@@ -347,13 +347,13 @@ module.exports = {
 
 Returns the `jest` object for chaining.
 
-### `jest.runAllPromises(runAllTicks)`
+### `jest.runAllPromises()`
 
-Exhausts the **micro**-task queue (`process.nextTick` callbacks and promises scheduled via the `Promise` class).
+Exhausts all promises queued via the [`Promise` API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
-Uses the provided `runAllTicks` callback to exhaust all ticks that are currently queued. Fake promises should be in use (by calling `jest.useFakePromises`) before calling this method.
+Fake promises should be in use (by calling `jest.useFakePromises`) before calling this method.
 
-This is useful for synchronously executing scheduled promises and ticks in the same order they would if run in the Node.js environment.
+This is useful for synchronously executing scheduled promises. For running ticks, promises, and timers in the same order they would run in the Node.js environment, you should call [`jest.runAllTimers()`](#jestrunalltimers).
 
 ### `jest.runAllTicks()`
 
@@ -420,6 +420,8 @@ jest.setTimeout(1000); // 1 second
 Instructs Jest to use fake versions of the standard Promise API (`Promise.resolve`, `Promise.reject`, `Promise.all`, `Promise.race`, `[Promise].then`, `[Promise].catch`, and `[Promise].finally`).
 
 Returns the `jest` object for chaining.
+
+_Note: using fake promises will not mock promises created using the [`async-await` syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function), unless they are transpiled into explicit Promises (e.g. using Babel) before running the tests._
 
 ### `jest.useFakeTimers()`
 

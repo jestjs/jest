@@ -29,7 +29,6 @@ jest.useFakePromises();
 test('runs all queued promises', () => {
   const promiseGame = require('../promiseGame');
   const callback = jest.fn();
-  const runAllTicks = jest.fn();
 
   promiseGame(callback);
 
@@ -37,15 +36,11 @@ test('runs all queued promises', () => {
   expect(callback).not.toBeCalled();
 
   // Fast-forward until all promises are completed
-  jest.runAllPromises(runAllTicks);
+  jest.runAllPromises();
 
   // Now our callback should have been called!
   expect(callback).toBeCalled();
   expect(callback).toHaveBeenCalledTimes(1);
-
-  // Check that all ticks have been run
-  expect(runAllTicks).toBeCalled();
-  expect(runAllTicks).toHaveBeenCalledTimes(1);
 });
 ```
 
