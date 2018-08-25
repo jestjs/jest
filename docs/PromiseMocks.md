@@ -3,7 +3,7 @@ id: promise-mocks
 title: Promise Mocks
 ---
 
-Can be used to supplement the [timer mocks](TimerMocks.md). Timer mocks work by running timer callbacks synchronously, in the same order they normally would, but without waiting. Promise mocks can be used with timer mocks to skip wait times and still run node micro-tasks and macro-tasks in the order they normally would.
+Can be used to supplement the [timer mocks](TimerMocks.md). Timer mocks work by running timer callbacks synchronously, in the same order they normally would, but without waiting. Promise mocks can be used with timer mocks to skip wait times and still run micro-tasks and macro-tasks in the same order they would run in the Node.js environment.
 
 ```javascript
 // promiseGame.js

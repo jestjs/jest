@@ -5,7 +5,7 @@
 - `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
 - `[jest-each]` Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
 - `[jest-config]` Better error message for a case when a preset module was found, but no `jest-preset.js` or `jest-preset.json` at the root ([#6863](https://github.com/facebook/jest/pull/6863))
-- `[jest-util]` Introduce FakePromises to fix micro-task run-order issues when using FakeTimers. ([#6876](https://github.com/facebook/jest/pull/6876))
+- `[jest-util]` Introduce FakePromises to fix micro-task run-order issues when using FakeTimers ([#6876](https://github.com/facebook/jest/pull/6876))
 
 ### Chore & Maintenance
 
@@ -13,7 +13,7 @@
 - `[docs]` Improve the documentation regarding preset configuration ([#6864](https://github.com/facebook/jest/issues/6864))
 - `[docs]` Clarify usage of `--projects` CLI option ([#6872](https://github.com/facebook/jest/pull/6872))
 - `[docs]` Correct `failure-change` notification mode ([#6878](https://github.com/facebook/jest/pull/6878))
-- `[docs]` Add documentation for promise mocks, and clarify how micro-tasks behave when using timer mocks. ([#6876](https://github.com/facebook/jest/pull/6876))
+- `[docs]` Add documentation for promise mocks, and clarify how micro-tasks behave when using timer mocks ([#6876](https://github.com/facebook/jest/pull/6876))
 
 ## 23.5.0
 

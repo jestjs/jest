@@ -351,13 +351,13 @@ Returns the `jest` object for chaining.
 
 Exhausts the **micro**-task queue (`process.nextTick` callbacks and promises scheduled via the `Promise` class).
 
-Uses the provided `runAllTicks` callback to exhaust all ticks that are currently queued. Fake promises should be in use (by calling `jest.useFakePromises` ) before calling this method.
+Uses the provided `runAllTicks` callback to exhaust all ticks that are currently queued. Fake promises should be in use (by calling `jest.useFakePromises`) before calling this method.
 
-This is useful for synchronously executing scheduled promises and ticks in the order in their natural run order in node.
+This is useful for synchronously executing scheduled promises and ticks in the same order they would if run in the Node.js environment.
 
 ### `jest.runAllTicks()`
 
-Exhausts all scheduled next tick callbacks (usually interfaced in node via `process.nextTick`).
+Exhausts all scheduled next tick callbacks (usually interfaced in Node.js via `process.nextTick`).
 
 When this API is called, all pending next tick callbacks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue. See the (Promise Mocks)(PromiseMocks.md) doc for more information.
 
