@@ -31,38 +31,41 @@ The argument to `expect` should be the value that your code produces, and any ar
 
 ### `expect.extend(matchers)`
 
-You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number theory library and you're frequently asserting that numbers are divisible by other numbers. You could abstract that into a `toBeDivisibleBy` matcher:
+You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a `toBeWithinRange` matcher:
 
 ```js
 expect.extend({
-  toBeDivisibleBy(received, argument) {
-    const pass = received % argument == 0;
+  toBeWithinRange(received, floor, ceiling) {
+    const pass = received >= floor && received <= ceiling;
     if (pass) {
       return {
         message: () =>
-          `expected ${received} not to be divisible by ${argument}`,
+          `expected ${received} not to be within range ${floor} - ${ceiling}`,
         pass: true,
       };
     } else {
       return {
-        message: () => `expected ${received} to be divisible by ${argument}`,
+        message: () =>
+          `expected ${received} to be within range ${floor} - ${ceiling}`,
         pass: false,
       };
     }
   },
 });
 
-test('even and odd numbers', () => {
-  expect(100).toBeDivisibleBy(2);
-  expect(101).not.toBeDivisibleBy(2);
+test('numeric ranges', () => {
+  expect(100).toBeWithinRange(90, 110);
+  expect(101).not.toBeWithinRange(0, 100);
   expect({apples: 6, bananas: 3}).toEqual({
-    apples: expect.toBeDivisibleBy(2),
-    bananas: expect.not.toBeDivisibleBy(2),
+    apples: expect.toBeWithinRange(1, 10),
+    bananas: expect.not.toBeWithinRange(11, 20),
   });
 });
 ```
 
-`expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a very similar matcher than `toBeDivisibleBy`, only difference is that the divisible number is going to be pulled from an external source.
+#### Async Matchers
+
+`expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.
 
 ```js
 expect.extend({
@@ -91,7 +94,22 @@ test('is divisible by external value', async () => {
 });
 ```
 
+#### Custom Matchers API
+
 Matchers should return an object (or a Promise of an object) with two keys. `pass` indicates whether there was a match or not, and `message` provides a function with no arguments that returns an error message in case of failure. Thus, when `pass` is false, `message` should return the error message for when `expect(x).yourMatcher()` fails. And when `pass` is true, `message` should return the error message for when `expect(x).not.yourMatcher()` fails.
+
+Matchers are called with the argument passed to `expect(x)` followed by the arguments passed to `.yourMatcher(y, z)`:
+
+```js
+expect.extend({
+  yourMatcher(x, y, z) {
+    return {
+      pass: true,
+      message: '',
+    };
+  },
+});
+```
 
 These helper functions can be found on `this` inside a custom matcher:
 
