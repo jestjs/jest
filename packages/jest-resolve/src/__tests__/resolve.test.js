@@ -210,20 +210,13 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
       mocks: [],
     });
 
-    // Mocking realpath to function the old way, where it just looks at
-    // pathstrings instead of actually trying to access the physical directory.
-    // This test suite won't work otherwise, since we cannot make assumptions
-    // about the test environment when it comes to absolute paths.
-    jest.doMock('realpath-native', () => ({
-      sync: dirInput => dirInput,
-    }));
-
     jest
       .spyOn(fs, 'lstatSync')
       .mockImplementation(() => ({isSymbolicLink: () => false}));
   });
 
   afterAll(() => {
+    jest.restoreAllMocks();
     jest.resetModules();
     jest.dontMock('path');
   });
