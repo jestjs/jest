@@ -59,18 +59,18 @@ export const setMatchers = (
       // expect is defined
 
       class CustomMatcher extends AsymmetricMatcher {
-        sample: any;
+        sample: Array<any>;
 
-        constructor(sample: any, inverse: boolean = false) {
+        constructor(inverse: boolean = false, ...sample: Array<any>) {
           super();
-          this.sample = sample;
           this.inverse = inverse;
+          this.sample = sample;
         }
 
         asymmetricMatch(other: any) {
           const {pass} = ((matcher(
             (other: any),
-            (this.sample: any),
+            ...(this.sample: any),
           ): any): SyncExpectationResult);
 
           return this.inverse ? !pass : pass;
@@ -85,15 +85,17 @@ export const setMatchers = (
         }
 
         toAsymmetricMatcher() {
-          return `${this.toString()}<${this.sample}>`;
+          return `${this.toString()}<${this.sample.join(', ')}>`;
         }
       }
 
-      expect[key] = (sample: any) => new CustomMatcher(sample);
+      expect[key] = (...sample: Array<any>) =>
+        new CustomMatcher(false, ...sample);
       if (!expect.not) {
         expect.not = {};
       }
-      expect.not[key] = (sample: any) => new CustomMatcher(sample, true);
+      expect.not[key] = (...sample: Array<any>) =>
+        new CustomMatcher(true, ...sample);
     }
   });
 
