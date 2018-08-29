@@ -153,6 +153,24 @@ This will collect coverage information for all the files inside the project's `r
 
 _Note: This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`._
 
+<details>
+  <summary>Help:</summary>
+  If you are seeing coverage output such as...
+
+```
+=============================== Coverage summary ===============================
+Statements   : Unknown% ( 0/0 )
+Branches     : Unknown% ( 0/0 )
+Functions    : Unknown% ( 0/0 )
+Lines        : Unknown% ( 0/0 )
+================================================================================
+Jest: Coverage data for global was not found.
+```
+
+Most likely your glob patterns are not matching any files. Refer to the [micromatch](https://github.com/jonschlinkert/micromatch) documentation to ensure your globs are compatible.
+
+</details>
+
 ### `coverageDirectory` [string]
 
 Default: `undefined`
@@ -386,13 +404,21 @@ Specifies notification mode. Requires `notify: true`.
 - `success`: send a notification when tests pass.
 - `change`: send a notification when the status changed.
 - `success-change`: send a notification when tests pass or once when it fails.
-- `failure-success`: send a notification when tests fails or once when it passes.
+- `failure-change`: send a notification when tests fails or once when it passes.
 
 ### `preset` [string]
 
 Default: `undefined`
 
-A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` or `jest-preset.js` module at its top level.
+A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a `jest-preset.json` or `jest-preset.js` file at the root.
+
+For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
+
+```json
+{
+  "preset": "foo-bar"
+}
+```
 
 Presets may also be relative filesystem paths.
 

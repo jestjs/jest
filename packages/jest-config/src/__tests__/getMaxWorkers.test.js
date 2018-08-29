@@ -6,7 +6,7 @@
  *
  */
 
-import getMaxWorkers from '../get_max_workers';
+import getMaxWorkers from '../getMaxWorkers';
 
 jest.mock('os', () => ({
   cpus: () => ({length: 4}),

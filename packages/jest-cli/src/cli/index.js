@@ -110,12 +110,14 @@ export const runCLI = async (
   const {openHandles} = results;
 
   if (openHandles && openHandles.length) {
-    const openHandlesString = pluralize('open handle', openHandles.length, 's');
+    const formatted = formatHandleErrors(openHandles, configs[0]);
+
+    const openHandlesString = pluralize('open handle', formatted.length, 's');
 
     const message =
       chalk.red(
         `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
-      ) + formatHandleErrors(openHandles, configs[0]).join('\n\n');
+      ) + formatted.join('\n\n');
 
     console.error(message);
   }

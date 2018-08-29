@@ -222,13 +222,13 @@ describe('binaryStringToNumber', () => {
 });
 ```
 
-### `describe.each(table)(name, fn)`
+### `describe.each(table)(name, fn, timeout)`
 
 Use `describe.each` if you keep duplicating the same test suites with different data. `describe.each` allows you to write the test suite once and pass data in.
 
 `describe.each` is available with two APIs:
 
-#### 1. `describe.each(table)(name, fn)`
+#### 1. `describe.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
   - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
@@ -241,8 +241,10 @@ Use `describe.each` if you keep duplicating the same test suites with different 
     - `%f` - Floating point value.
     - `%j` - JSON.
     - `%o` - Object.
+    - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - `fn`: `Function` the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 
@@ -265,7 +267,7 @@ describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 );
 ```
 
-#### 2. `` describe.each`table`(name, fn) ``
+#### 2. `` describe.each`table`(name, fn, timeout) ``
 
 - `table`: `Tagged Template Literal`
   - First row of variable name column headings separated with `|`
@@ -273,6 +275,7 @@ describe.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 - `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 
@@ -467,7 +470,7 @@ test('has lemon in it', () => {
 
 Even though the call to `test` will return right away, the test doesn't complete until the promise resolves as well.
 
-### `test.each(table)(name, fn)`
+### `test.each(table)(name, fn, timeout)`
 
 Also under the alias: `it.each(table)(name, fn)` and `` it.each`table`(name, fn) ``
 
@@ -475,7 +478,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
 
 `test.each` is available with two APIs:
 
-#### 1. `test.each(table)(name, fn)`
+#### 1. `test.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
   - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
@@ -488,8 +491,10 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - `%f` - Floating point value.
     - `%j` - JSON.
     - `%o` - Object.
+    - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 
@@ -502,7 +507,7 @@ test.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 );
 ```
 
-#### 2. `` test.each`table`(name, fn) ``
+#### 2. `` test.each`table`(name, fn, timeout) ``
 
 - `table`: `Tagged Template Literal`
   - First row of variable name column headings separated with `|`
@@ -510,6 +515,7 @@ test.each([[1, 1, 2], [1, 2, 3], [2, 1, 3]])(
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - `fn`: `Function` the test to be ran, this is the function that will receive the test data object.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
 

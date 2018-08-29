@@ -313,7 +313,7 @@ const matchers: MatchersObject = {
             `  ${printReceived(collection)}\n` +
             `To contain value:\n` +
             `  ${printExpected(value)}` +
-            (suggestToContainEqual ? ` ${SUGGEST_TO_CONTAIN_EQUAL}` : '')
+            (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
           );
         };
 

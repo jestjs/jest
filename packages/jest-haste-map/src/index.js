@@ -12,11 +12,13 @@ import {version as VERSION} from '../package.json';
 import {getSha1, worker} from './worker';
 import crypto from 'crypto';
 import EventEmitter from 'events';
+import fs from 'fs';
 import getMockName from './get_mock_name';
 import getPlatformExtension from './lib/get_platform_extension';
 import H from './constants';
 import HasteFS from './haste_fs';
 import HasteModuleMap from './module_map';
+import invariant from 'invariant';
 // eslint-disable-next-line import/default
 import nodeCrawl from './crawlers/node';
 import normalizePathSep from './lib/normalize_path_sep';
@@ -719,10 +721,11 @@ class HasteMap extends EventEmitter {
       type: string,
       filePath: Path,
       root: Path,
-      stat: {mtime: Date},
+      stat: ?fs.Stats,
     ) => {
       filePath = path.join(root, normalizePathSep(filePath));
       if (
+        (stat && stat.isDirectory()) ||
         this._ignore(filePath) ||
         !extensions.some(extension => filePath.endsWith(extension))
       ) {
@@ -792,6 +795,10 @@ class HasteMap extends EventEmitter {
           // If the file was added or changed,
           // parse it and update the haste map.
           if (type === 'add' || type === 'change') {
+            invariant(
+              stat,
+              'since the file exists or changed, it should have stats',
+            );
             const fileMetadata = ['', stat.mtime.getTime(), 0, [], null];
             hasteMap.files[filePath] = fileMetadata;
             const promise = this._processFile(

@@ -135,7 +135,7 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 ### `--coverage`
 
-Indicates that test coverage information should be collected and reported in the output.
+Indicates that test coverage information should be collected and reported in the output. This option is also aliased by `--collectCoverage`.
 
 ### `--debug`
 
@@ -213,9 +213,9 @@ Alias: `-o`. Attempts to identify which tests to run based on which files have c
 
 Allows the test suite to pass when no files are found.
 
-### `--projects <project1> ... <projectN>`
+### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects.
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
 
 ### `--reporters`
 

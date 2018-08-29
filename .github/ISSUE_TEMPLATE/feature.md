@@ -1,5 +1,4 @@
 ---
-
 name: 🚀 Feature Proposal
 about: Submit a proposal for a new feature
 ---

@@ -31,38 +31,41 @@ The argument to `expect` should be the value that your code produces, and any ar
 
 ### `expect.extend(matchers)`
 
-You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number theory library and you're frequently asserting that numbers are divisible by other numbers. You could abstract that into a `toBeDivisibleBy` matcher:
+You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a `toBeWithinRange` matcher:
 
 ```js
 expect.extend({
-  toBeDivisibleBy(received, argument) {
-    const pass = received % argument == 0;
+  toBeWithinRange(received, floor, ceiling) {
+    const pass = received >= floor && received <= ceiling;
     if (pass) {
       return {
         message: () =>
-          `expected ${received} not to be divisible by ${argument}`,
+          `expected ${received} not to be within range ${floor} - ${ceiling}`,
         pass: true,
       };
     } else {
       return {
-        message: () => `expected ${received} to be divisible by ${argument}`,
+        message: () =>
+          `expected ${received} to be within range ${floor} - ${ceiling}`,
         pass: false,
       };
     }
   },
 });
 
-test('even and odd numbers', () => {
-  expect(100).toBeDivisibleBy(2);
-  expect(101).not.toBeDivisibleBy(2);
+test('numeric ranges', () => {
+  expect(100).toBeWithinRange(90, 110);
+  expect(101).not.toBeWithinRange(0, 100);
   expect({apples: 6, bananas: 3}).toEqual({
-    apples: expect.toBeDivisibleBy(2),
-    bananas: expect.not.toBeDivisibleBy(2),
+    apples: expect.toBeWithinRange(1, 10),
+    bananas: expect.not.toBeWithinRange(11, 20),
   });
 });
 ```
 
-`expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a very similar matcher than `toBeDivisibleBy`, only difference is that the divisible number is going to be pulled from an external source.
+#### Async Matchers
+
+`expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.
 
 ```js
 expect.extend({
@@ -91,7 +94,22 @@ test('is divisible by external value', async () => {
 });
 ```
 
+#### Custom Matchers API
+
 Matchers should return an object (or a Promise of an object) with two keys. `pass` indicates whether there was a match or not, and `message` provides a function with no arguments that returns an error message in case of failure. Thus, when `pass` is false, `message` should return the error message for when `expect(x).yourMatcher()` fails. And when `pass` is true, `message` should return the error message for when `expect(x).not.yourMatcher()` fails.
+
+Matchers are called with the argument passed to `expect(x)` followed by the arguments passed to `.yourMatcher(y, z)`:
+
+```js
+expect.extend({
+  yourMatcher(x, y, z) {
+    return {
+      pass: true,
+      message: '',
+    };
+  },
+});
+```
 
 These helper functions can be found on `this` inside a custom matcher:
 
@@ -155,6 +173,36 @@ This will print something like this:
 ```
 
 When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. You should craft a precise failure message to make sure users of your custom assertions have a good developer experience.
+
+#### Custom snapshot matchers
+
+To use snapshot testing inside of your custom matcher you can import `jest-snapshot` and use it from within your matcher.
+
+Here's a simple snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
+
+```js
+const {toMatchSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  toMatchTrimmedSnapshot(received, length) {
+    return toMatchSnapshot.call(
+      this,
+      received.substring(0, length),
+      'toMatchTrimmedSnapshot',
+    );
+  },
+});
+
+it('stores only 10 characters', () => {
+  expect('extra long string oh my gerd').toMatchTrimmedSnapshot(10);
+});
+
+/*
+Stored snapshot will look like:
+
+exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
+*/
+```
 
 ### `expect.anything()`
 
@@ -263,7 +311,7 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 ### `expect.not.arrayContaining(array)`
 
-`expect.not.arrayContaining(array)` matches a received array which contains none of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
+`expect.not.arrayContaining(array)` matches a received array which does not contain all of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
 
 It is the inverse of `expect.arrayContaining`.
 
@@ -329,7 +377,7 @@ describe('not.stringMatching', () => {
 
 ### `expect.objectContaining(object)`
 
-`expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that are **not** in the expected object.
+`expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that **are present** in the expected object.
 
 Instead of literal property values in the expected object, you can use matchers, `expect.anything()`, and so on.
 
@@ -990,6 +1038,7 @@ const houseForSale = {
     wallColor: 'white',
     'nice.oven': true,
   },
+  'ceiling.height': 2,
 };
 
 test('this house has my desired features', () => {
@@ -1018,6 +1067,9 @@ test('this house has my desired features', () => {
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
   expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
+
+  // Referencing keys with dot in the key itself
+  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
 ```
 
@@ -1025,7 +1077,7 @@ test('this house has my desired features', () => {
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values.
+The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
 

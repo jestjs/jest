@@ -39,7 +39,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
 
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
-    const asyncFn = function(done) {
+    const asyncJestLifecycle = function(done) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -57,7 +57,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
       }
     };
 
-    return originalFn.call(env, asyncFn, timeout);
+    return originalFn.call(env, asyncJestLifecycle, timeout);
   };
 }
 
@@ -79,7 +79,7 @@ function promisifyIt(originalFn, env) {
 
     const extraError = new Error();
 
-    const asyncFn = function(done) {
+    const asyncJestTest = function(done) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -103,7 +103,7 @@ function promisifyIt(originalFn, env) {
       }
     };
 
-    return originalFn.call(env, specName, asyncFn, timeout);
+    return originalFn.call(env, specName, asyncJestTest, timeout);
   };
 }
 
