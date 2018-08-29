@@ -3,8 +3,9 @@
 ### Fixes
 
 - `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
-- `[jest-each`] Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
-- `[jest-config`] Better error message for a case when a preset module was found, but no `jest-preset.js` or `jest-preset.json` at the root ([#6863](https://github.com/facebook/jest/pull/6863))
+- `[jest-each]` Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
+- `[jest-config]` Better error message for a case when a preset module was found, but no `jest-preset.js` or `jest-preset.json` at the root ([#6863](https://github.com/facebook/jest/pull/6863))
+- `[jest-resolve]` Check if the path is a symlink before resolving realpath ([#6906](https://github.com/facebook/jest/pull/6906))
 
 ### Chore & Maintenance
 
