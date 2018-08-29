@@ -9,6 +9,7 @@
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
 - `[docs]` Fix contributors link ([#6711](https://github.com/facebook/jest/pull/6711))
 - `[website]` Fix website versions page to link to correct language ([#6734](https://github.com/facebook/jest/pull/6734))
+- `[jest-haste-map`] Catch crawler error when unsuccessfully reading directories ([#6761](https://github.com/facebook/jest/pull/6761))
 
 ## 23.4.1
 
