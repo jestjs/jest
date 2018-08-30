@@ -30,7 +30,10 @@ function find(
     activeCalls++;
     fs.readdir(directory, (err, names) => {
       activeCalls--;
-
+      if (err) {
+        callback(result);
+        return;
+      }
       names.forEach(file => {
         file = path.join(directory, file);
         if (ignore(file)) {
