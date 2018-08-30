@@ -65,7 +65,6 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
   );
 });
 
-// $FlowFixMe test.each is not in flow-typed yet
 test.each([['babylon'], ['flow'], ['typescript']])(
   'saveInlineSnapshots() replaces existing template literal - %s parser',
   parser => {

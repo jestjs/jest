@@ -1,10 +1,19 @@
 ## master
 
+### Features
+
+- `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
+
 ### Fixes
 
+- `[expect]` Fix TypeError in `toBeInstanceOf` on `null` or `undefined` ([#6912](https://github.com/facebook/jest/pull/6912))
+- `[jest-jasmine2]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917))
+- `[jest-circus]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917))
+- `[expect]` Fix variadic custom asymmetric matchers ([#6898](https://github.com/facebook/jest/pull/6898))
 - `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
 - `[jest-each]` Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
 - `[jest-config]` Better error message for a case when a preset module was found, but no `jest-preset.js` or `jest-preset.json` at the root ([#6863](https://github.com/facebook/jest/pull/6863))
+- `[jest-haste-map]` Catch crawler error when unsuccessfully reading directories ([#6761](https://github.com/facebook/jest/pull/6761))
 - `[jest-util]` Introduce FakePromises to fix micro-task run-order issues when using FakeTimers ([#6876](https://github.com/facebook/jest/pull/6876))
 
 ### Chore & Maintenance
