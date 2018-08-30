@@ -92,7 +92,8 @@ or the following for Windows:
         "--runInBand"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
     }
   ]
 }
