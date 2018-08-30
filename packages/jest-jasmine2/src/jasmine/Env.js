@@ -503,6 +503,12 @@ export default function(j$) {
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {
+      if (typeof beforeEachFunction !== 'function') {
+        throw new Error(
+          `Invalid first argument, ${beforeEachFunction}. It must be a callback function.`,
+        );
+      }
+
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
         timeout() {
@@ -512,6 +518,12 @@ export default function(j$) {
     };
 
     this.beforeAll = function(beforeAllFunction, timeout) {
+      if (typeof beforeAllFunction !== 'function') {
+        throw new Error(
+          `Invalid first argument, ${beforeAllFunction}. It must be a callback function.`,
+        );
+      }
+
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
         timeout() {
@@ -521,6 +533,12 @@ export default function(j$) {
     };
 
     this.afterEach = function(afterEachFunction, timeout) {
+      if (typeof afterEachFunction !== 'function') {
+        throw new Error(
+          `Invalid first argument, ${afterEachFunction}. It must be a callback function.`,
+        );
+      }
+
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
         timeout() {
@@ -530,6 +548,12 @@ export default function(j$) {
     };
 
     this.afterAll = function(afterAllFunction, timeout) {
+      if (typeof afterAllFunction !== 'function') {
+        throw new Error(
+          `Invalid first argument, ${afterAllFunction}. It must be a callback function.`,
+        );
+      }
+
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
         timeout() {

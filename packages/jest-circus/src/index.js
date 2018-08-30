@@ -40,6 +40,12 @@ const _dispatchDescribe = (blockFn, blockName, mode?: BlockMode) => {
 };
 
 const _addHook = (fn: HookFn, hookType: HookType, hookFn, timeout: ?number) => {
+  if (typeof fn !== 'function') {
+    throw new Error(
+      `Invalid first argument, ${fn}. It must be a callback function.`,
+    );
+  }
+
   const asyncError = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(asyncError, hookFn);
