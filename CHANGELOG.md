@@ -14,6 +14,7 @@
 - `[jest-each]` Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
 - `[jest-config]` Better error message for a case when a preset module was found, but no `jest-preset.js` or `jest-preset.json` at the root ([#6863](https://github.com/facebook/jest/pull/6863))
 - `[jest-haste-map]` Catch crawler error when unsuccessfully reading directories ([#6761](https://github.com/facebook/jest/pull/6761))
+- `[jest-resolve]` Check if the path is a symlink before resolving realpath ([#6906](https://github.com/facebook/jest/pull/6906))
 
 ### Chore & Maintenance
 
