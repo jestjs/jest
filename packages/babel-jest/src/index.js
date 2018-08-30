@@ -24,6 +24,7 @@ import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';
+const BABEL_CONFIG_JS_FILENAME = 'babel.config.js';
 const BABEL_CONFIG_KEY = 'babel';
 const PACKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
@@ -45,7 +46,13 @@ const createTransformer = (options: any): Transformer => {
         cache[directory] = fs.readFileSync(configFilePath, 'utf8');
         break;
       }
-      const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
+      let configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
+      if (fs.existsSync(configJsFilePath)) {
+        // $FlowFixMe
+        cache[directory] = JSON.stringify(require(configJsFilePath));
+        break;
+      }
+      configJsFilePath = path.join(directory, BABEL_CONFIG_JS_FILENAME);
       if (fs.existsSync(configJsFilePath)) {
         // $FlowFixMe
         cache[directory] = JSON.stringify(require(configJsFilePath));

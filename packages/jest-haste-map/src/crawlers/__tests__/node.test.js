@@ -59,6 +59,8 @@ jest.mock('fs', () => {
         setTimeout(() => callback(null, ['directory', 'tomato.js']), 0);
       } else if (dir === '/fruits/directory') {
         setTimeout(() => callback(null, ['strawberry.js']), 0);
+      } else if (dir == '/error') {
+        setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
       }
     }),
     stat: jest.fn(stat),
@@ -213,6 +215,22 @@ describe('node crawler', () => {
       forceNodeFilesystemAPI: true,
       ignore: pearMatcher,
       roots: [],
+    }).then(data => {
+      expect(data.files).toEqual({});
+    });
+  });
+
+  it('completes with fs.readdir throwing an error', () => {
+    process.platform = 'win32';
+
+    nodeCrawl = require('../node');
+
+    const files = Object.create(null);
+    return nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      ignore: pearMatcher,
+      roots: ['/error'],
     }).then(data => {
       expect(data.files).toEqual({});
     });
