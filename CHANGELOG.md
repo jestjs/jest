@@ -13,6 +13,7 @@
 - `[jest-each]` Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
 - `[jest-config]` Better error message for a case when a preset module was found, but no `jest-preset.js` or `jest-preset.json` at the root ([#6863](https://github.com/facebook/jest/pull/6863))
 - `[jest-mock]` Fix inheritance of static properties and methods in mocks ([#6921](https://github.com/facebook/jest/pull/6921))
+- `[jest-haste-map]` Catch crawler error when unsuccessfully reading directories ([#6761](https://github.com/facebook/jest/pull/6761))
 
 ### Chore & Maintenance
 
