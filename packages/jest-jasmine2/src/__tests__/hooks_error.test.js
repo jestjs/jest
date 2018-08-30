@@ -10,13 +10,13 @@
 'use strict';
 
 describe('hooks error throwing', () => {
-  test.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
+  test.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(
     '%s throws an error when the first argument is not a function',
     fn => {
       expect(() => {
         global[fn]('param');
       }).toThrowError(
-        `Invalid first argument, param. It must be a callback function.`,
+        'Invalid first argument, param. It must be a callback function.',
       );
     },
   );
