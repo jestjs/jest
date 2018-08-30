@@ -690,9 +690,7 @@ class ModuleMockerClass {
           if (
             (!component.hasOwnProperty && component[slot] !== undefined) ||
             (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
-            (type === 'object' && component[slot] != Object.prototype[slot]) ||
-            // $FlowFixMe `Function` definition does not include `prototype`
-            (type === 'function' && component[slot] != Function.prototype[slot])
+            (type === 'object' && component[slot] != Object.prototype[slot])
           ) {
             const slotMetadata = this.getMetadata(component[slot], refs);
             if (slotMetadata) {

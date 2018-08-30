@@ -185,24 +185,6 @@ describe('moduleMocker', () => {
       expect(instanceFooMock.toString.mock).not.toBeUndefined();
     });
 
-    it('mocks ES2015 non-enumerable static properties and methods', () => {
-      class ClassFoo {
-        static foo() {}
-      }
-      ClassFoo.fooProp = () => {};
-
-      class ClassBar extends ClassFoo {}
-
-      const ClassBarMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(ClassBar),
-      );
-
-      expect(typeof ClassBarMock.foo).toBe('function');
-      expect(typeof ClassBarMock.fooProp).toBe('function');
-      expect(ClassBarMock.foo.mock).not.toBeUndefined();
-      expect(ClassBarMock.fooProp.mock).not.toBeUndefined();
-    });
-
     it('mocks methods that are bound multiple times', () => {
       const func = function func() {};
       const multipleBoundFunc = func.bind(null).bind(null);
